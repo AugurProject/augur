@@ -45,78 +45,83 @@ var ReportActions = {
       var eventsToReport = {};
       var pendingReports = self.flux.store("report").getPendingReports();
       async.eachSeries(eventIds, function (eventId, nextEvent) {
-        augur.getEventInfo(eventId, function (eventInfo) {
-          if (!eventInfo) return nextEvent("couldn't get event info");
-          if (eventInfo.error) return nextEvent(eventInfo);
-          var minValue = abi.bignum(eventInfo[3]);
-          var maxValue = abi.bignum(eventInfo[4]);
-          var numOutcomes = abi.bignum(eventInfo[5]);
-          eventsToReport[eventId] = {
-            id: eventId,
-            branchId: eventInfo[0],
-            expirationBlock: parseInt(eventInfo[1]),
-            outcome: eventInfo[2],
-            minValue: eventInfo[3],
-            maxValue: eventInfo[4],
-            numOutcomes: parseInt(eventInfo[5]),
-            report: _.findWhere(pendingReports, {
-              eventId: eventId,
-              branchId: branch.id,
-              reportPeriod: branch.reportPeriod
-            }) || {},
-            markets: []
-          };
-          augur.getDescription(eventId, function (description) {
-            if (description && description.error) return nextEvent(description);
-            eventsToReport[eventId].description = description;
-            augur.getEventIndex(branch.reportPeriod, eventId, function (eventIndex) {
-              if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
-              eventsToReport[eventId].index = eventIndex;
-              eventsToReport[eventId].report.eventIndex = eventIndex;
-              augur.getReportHash(branch.id, branch.reportPeriod, account, eventId, function (reportHash) {
-                if (reportHash && !reportHash.error && reportHash !== "0x0") {
-                  eventsToReport[eventId].report.branchId = branch.id;
-                  eventsToReport[eventId].report.eventId = eventId;
-                  eventsToReport[eventId].report.reportHash = reportHash;
-                }
-                augur.getReport(branch.id, branch.reportPeriod, eventId, function (report) {
-                  if (report && report !== "0") {
-                    eventsToReport[eventId].report.rescaledReportedOutcome = report;
+        augur.getReportable(branch.reportPeriod, eventId, function (reportable) {
+          console.log(eventId, "reportable:", reportable);
+          if (!reportable || reportable === "0") return nextEvent();
+          if (reportable.error) return nextEvent(reportable);
+          augur.getEventInfo(eventId, function (eventInfo) {
+            if (!eventInfo) return nextEvent("couldn't get event info");
+            if (eventInfo.error) return nextEvent(eventInfo);
+            var minValue = abi.bignum(eventInfo[3]);
+            var maxValue = abi.bignum(eventInfo[4]);
+            var numOutcomes = abi.bignum(eventInfo[5]);
+            eventsToReport[eventId] = {
+              id: eventId,
+              branchId: eventInfo[0],
+              expirationBlock: parseInt(eventInfo[1]),
+              outcome: eventInfo[2],
+              minValue: eventInfo[3],
+              maxValue: eventInfo[4],
+              numOutcomes: parseInt(eventInfo[5]),
+              report: _.findWhere(pendingReports, {
+                eventId: eventId,
+                branchId: branch.id,
+                reportPeriod: branch.reportPeriod
+              }) || {},
+              markets: []
+            };
+            augur.getDescription(eventId, function (description) {
+              if (description && description.error) return nextEvent(description);
+              eventsToReport[eventId].description = description;
+              augur.getEventIndex(branch.reportPeriod, eventId, function (eventIndex) {
+                if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
+                eventsToReport[eventId].index = eventIndex;
+                eventsToReport[eventId].report.eventIndex = eventIndex;
+                augur.getReportHash(branch.id, branch.reportPeriod, account, eventId, function (reportHash) {
+                  if (reportHash && !reportHash.error && reportHash !== "0x0") {
+                    eventsToReport[eventId].report.branchId = branch.id;
+                    eventsToReport[eventId].report.eventId = eventId;
+                    eventsToReport[eventId].report.reportHash = reportHash;
                   }
-                  augur.getMarkets(eventId, function (markets) {
-                    if (!markets) return nextEvent("no markets found");
-                    if (markets.error) return nextEvent(markets);
-                    async.each(markets, function (thisMarket, nextMarket) {
-                      var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
-                      if (market) {
-                        eventsToReport[eventId].markets.push(market);
-                        return nextMarket();
-                      }
-                      augur.getMarketInfo(thisMarket, function (marketInfo) {
-                        eventsToReport[eventId].type = marketInfo.type;
-                        if (report && report !== "0") {
-                          if (marketInfo.type === "scalar") {
-                            eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(maxValue.minus(minValue)).plus(minValue).toFixed();
-                          } else if (marketInfo.type === "categorical") {
-                            eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
-                          } else {
-                            eventsToReport[eventId].report.reportedOutcome = report;
-                          }
+                  augur.getReport(branch.id, branch.reportPeriod, eventId, function (report) {
+                    if (report && report !== "0") {
+                      eventsToReport[eventId].report.rescaledReportedOutcome = report;
+                    }
+                    augur.getMarkets(eventId, function (markets) {
+                      if (!markets) return nextEvent("no markets found");
+                      if (markets.error) return nextEvent(markets);
+                      async.each(markets, function (thisMarket, nextMarket) {
+                        var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
+                        if (market) {
+                          eventsToReport[eventId].markets.push(market);
+                          return nextMarket();
                         }
-                        self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
-                          augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
-                            if (err) console.error("getMetadata:", err);
-                            if (info) {
-                              if (metadata) info.metadata = metadata;
-                              eventsToReport[eventId].markets.push(info);
+                        augur.getMarketInfo(thisMarket, function (marketInfo) {
+                          eventsToReport[eventId].type = marketInfo.type;
+                          if (report && report !== "0") {
+                            if (marketInfo.type === "scalar") {
+                              eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                            } else if (marketInfo.type === "categorical") {
+                              eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                            } else {
+                              eventsToReport[eventId].report.reportedOutcome = report;
                             }
-                            nextMarket();
+                          }
+                          self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
+                            augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
+                              if (err) console.error("getMetadata:", err);
+                              if (info) {
+                                if (metadata) info.metadata = metadata;
+                                eventsToReport[eventId].markets.push(info);
+                              }
+                              nextMarket();
+                            });
                           });
                         });
+                      }, function (err) {
+                        if (err) return nextEvent(err);
+                        nextEvent();
                       });
-                    }, function (err) {
-                      if (err) return nextEvent(err);
-                      nextEvent();
                     });
                   });
                 });
@@ -198,7 +203,6 @@ var ReportActions = {
     } else {
       rescaledReportedOutcome = reportedOutcome;
     }
-    console.log("rescaled outcome:", rescaledReportedOutcome);
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
