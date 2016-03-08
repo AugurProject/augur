@@ -28,11 +28,9 @@ module.exports = {
     return this.state.eventsToReport[eventId];
   },
   getPendingReports: function () {
-    // if (!this.state.loadedReports &&
     if ((!this.state.pendingReports || !this.state.pendingReports.length) &&
         this.state.storageKey) {
       var reportsString = localStorage.getItem(this.state.storageKey);
-      console.log("got reportsString:", JSON.parse(reportsString));
       var pendingReports = reportsString ?
         JSON.parse(reportsString)[this.state.reportPeriod] : [];
       var report;
@@ -58,7 +56,6 @@ module.exports = {
       }
       var item = {};
       item[this.state.reportPeriod] = payload.pendingReports;
-      console.log("localStorage:", item);
       localStorage.setItem(this.state.storageKey, JSON.stringify(item));
     }
     this.state.pendingReports = payload.pendingReports;
@@ -74,7 +71,11 @@ module.exports = {
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateAccount: function (payload) {
-    this.state.storageKey = constants.report.REPORTS_STORAGE + payload.currentAccount;
+    if (payload.currentAccount === null) {
+      this.state.storageKey = null;
+    } else {
+      this.state.storageKey = constants.report.REPORTS_STORAGE + payload.currentAccount;
+    }
     this.emit(constants.CHANGE_EVENT);
   },
   handleUpdateCurrentBranchSuccess: function (payload) {
