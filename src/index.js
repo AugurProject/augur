@@ -1058,20 +1058,10 @@ Augur.prototype.getNumReportsEvent = function (branch, reportPeriod, eventID, ca
     return this.fire(tx, callback);
 };
 Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, isBinary) {
-    var fixedReport;
-    if (isBinary) {
-        fixedReport = abi.fix(report, "hex");
-    } else {
-        if (!indeterminate && abi.bignum(report).eq(new BigNumber("0.5"))) {
-            fixedReport = abi.hex(abi.fix(report).plus(new BigNumber(1)));
-        } else {
-            fixedReport = abi.fix(report, "hex");
-        }
-    }
     return abi.hex(this.utils.sha256([
         from || this.from,
         abi.hex(salt),
-        fixedReport,
+        abi.fix(report, "hex"),
         event
     ]));
 };
@@ -1082,18 +1072,8 @@ Augur.prototype.makeHash_contract = function (salt, report, event, indeterminate
         if (salt.callback) callback = salt.callback;
         salt = salt.salt;
     }
-    var fixedReport;
-    if (isBinary) {
-        fixedReport = abi.fix(report, "hex");
-    } else {
-        if (!indeterminate && abi.bignum(report).eq(new BigNumber("0.5"))) {
-            fixedReport = abi.hex(abi.fix(report).plus(new BigNumber(1)));
-        } else {
-            fixedReport = abi.fix(report, "hex");
-        }
-    }
     var tx = clone(this.tx.makeHash);
-    tx.params = [abi.hex(salt), fixedReport, event];
+    tx.params = [abi.hex(salt), abi.fix(report, "hex"), event];
     return this.fire(tx, callback);
 };
 Augur.prototype.calculateReportingThreshold = function (branch, eventID, reportPeriod, callback) {
@@ -1147,16 +1127,6 @@ Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt,
     onSent = onSent || this.utils.pass;
     onSuccess = onSuccess || this.utils.pass;
     onFailed = onFailed || this.utils.pass;
-    var fixedReport;
-    if (isBinary) {
-        fixedReport = abi.fix(report, "hex");
-    } else {
-        if (!indeterminate && abi.bignum(report).eq(new BigNumber("0.5"))) {
-            fixedReport = abi.hex(abi.fix(report).plus(new BigNumber(1)));
-        } else {
-            fixedReport = abi.fix(report, "hex");
-        }
-    }
     var tx = clone(this.tx.submitReport);
     if (eventIndex) {
         tx.params = [
@@ -1164,7 +1134,7 @@ Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt,
             reportPeriod,
             eventIndex,
             abi.hex(salt),
-            fixedReport,
+            abi.fix(report, "hex"),
             eventID,
             abi.fix(ethics, "hex")
         ];
@@ -1178,7 +1148,7 @@ Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt,
             reportPeriod,
             eventIndex,
             abi.hex(salt),
-            fixedReport,
+            abi.fix(report, "hex"),
             eventID,
             abi.fix(ethics, "hex")
         ];
