@@ -97,6 +97,12 @@ let ReportsPage = React.createClass({
         if (this.state.currentBranch && this.state.currentBranch.description) {
             branchDescription = this.state.currentBranch.description;
         }
+        let endOfPhase = "";
+        if (isCommitPeriod) {
+            endOfPhase = commitPeriodEndMillis.humanize(true);
+        } else {
+            endOfPhase = revealPeriodEndMillis.humanize(true);
+        }
 
         return (
             <div>
@@ -122,7 +128,7 @@ let ReportsPage = React.createClass({
                     </div>
                     <div className="col-sm-12">
                         <h4>
-                            <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span> (ends {commitPeriodEndMillis.humanize(true)})
+                            <span className="green">{phase}</span> phase of period <span className="blue">{reportPeriod}</span> (ends {endOfPhase})
                         </h4>
                     </div>
                 </div>

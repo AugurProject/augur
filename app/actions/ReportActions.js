@@ -357,7 +357,7 @@ var ReportActions = {
       console.log("Event expiration block:", expirationBlock);
       console.log("Creating binary event:", description);
     }
-    var multipleChoiceDescription = "What day will we launch the beta test?";
+    var multipleChoiceDescription = "What day will we launch the beta test? Choices: Yesterday, Today, Tomorrow, In Two Weeks (TM)";
     var scalarDescription = "How many users will the beta have during its first 24 hours?";
     var newMarkets = {binary: null, multipleChoice: null, scalar: null};
     this.flux.augur.createSingleEventMarket({
