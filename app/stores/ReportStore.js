@@ -14,7 +14,9 @@ module.exports = {
     ready: [],
     eventsToReport: {},
     pendingReports: [],
-    loadedReports: false
+    loadedReports: false,
+    reportPeriod: null,
+    storageKey: null
   },
   getState: function () {
     return this.state;
@@ -26,10 +28,13 @@ module.exports = {
     return this.state.eventsToReport[eventId];
   },
   getPendingReports: function () {
-    if (!this.state.loadedReports &&
-        (!this.state.pendingReports || !this.state.pendingReports.length)) {
-      var reportsString = localStorage.getItem(constants.report.REPORTS_STORAGE);
-      var pendingReports = reportsString ? JSON.parse(reportsString) : [];
+    // if (!this.state.loadedReports &&
+    if ((!this.state.pendingReports || !this.state.pendingReports.length) &&
+        this.state.storageKey) {
+      var reportsString = localStorage.getItem(this.state.storageKey);
+      console.log("got reportsString:", JSON.parse(reportsString));
+      var pendingReports = reportsString ?
+        JSON.parse(reportsString)[this.state.reportPeriod] : [];
       var report;
       for (var i = 0, len = pendingReports.length; i < len; ++i) {
         report = pendingReports[i];
@@ -51,9 +56,10 @@ module.exports = {
           this.state.eventsToReport[report.eventId].report = report;
         }
       }
-      localStorage.setItem(constants.report.REPORTS_STORAGE, JSON.stringify(payload.pendingReports));
-    } else {
-      localStorage.removeItem(constants.report.REPORTS_STORAGE);
+      var item = {};
+      item[this.state.reportPeriod] = payload.pendingReports;
+      console.log("localStorage:", item);
+      localStorage.setItem(this.state.storageKey, JSON.stringify(item));
     }
     this.state.pendingReports = payload.pendingReports;
     this.emit(constants.CHANGE_EVENT);
@@ -65,6 +71,14 @@ module.exports = {
   // payload: {branch}
   handleReady: function (payload) {
     this.state.ready.push(payload.branch);
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleUpdateAccount: function (payload) {
+    this.state.storageKey = constants.report.REPORTS_STORAGE + payload.currentAccount;
+    this.emit(constants.CHANGE_EVENT);
+  },
+  handleUpdateCurrentBranchSuccess: function (payload) {
+    this.state.reportPeriod = payload.reportPeriod || 0;
     this.emit(constants.CHANGE_EVENT);
   }
 };

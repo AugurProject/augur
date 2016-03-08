@@ -46,6 +46,7 @@ var flux = {
         },
         UPDATE_CURRENT_BRANCH_SUCCESS: function (payload) {
             flux.stores.branch.handleUpdateCurrentBranchSuccess(payload);
+            flux.stores.report.handleUpdateCurrentBranchSuccess(payload);
         },
         CHECK_QUORUM_SENT: function (payload) {
             flux.stores.branch.handleCheckQuorumSent(payload);
@@ -63,6 +64,7 @@ var flux = {
         },
         UPDATE_ACCOUNT: function (payload) {
             flux.stores.config.handleUpdateAccount(payload);
+            flux.stores.report.handleUpdateAccount(payload);
         },
         UPDATE_PERCENT_LOADED_SUCCESS: function (payload) {
             flux.stores.config.handleUpdatePercentLoadedSuccess(payload);

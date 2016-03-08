@@ -72,7 +72,9 @@ stores.report.initialize = function () {
   this.bindActions(
     constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
     constants.report.UPDATE_PENDING_REPORTS, this.handleUpdatePendingReports,
-    constants.report.READY, this.handleReady
+    constants.report.READY, this.handleReady,
+    constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
+    constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess
   );
 };
 stores.search.initialize = function () {

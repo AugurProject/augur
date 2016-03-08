@@ -73,7 +73,8 @@ module.exports = function (flux) {
             eventsToReport: {},
             pendingReports: [],
             ready: [],
-            loadedReports: false
+            loadedReports: false,
+            storageKey: null
         };
     }
     if (flux.stores.asset) {
