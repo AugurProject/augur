@@ -73,6 +73,9 @@ module.exports = {
   handleUpdateAccount: function (payload) {
     if (payload.currentAccount === null) {
       this.state.storageKey = null;
+      this.state.pendingReports = [];
+      this.state.loadedReports = false;
+      this.state.eventsToReport = {};
     } else {
       this.state.storageKey = constants.report.REPORTS_STORAGE + payload.currentAccount;
     }
