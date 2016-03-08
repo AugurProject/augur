@@ -1,7 +1,5 @@
 let React = require('react');
 
-let Link = require("react-router/lib/components/Link");
-
 let MarketCreateIndex = React.createClass({
     render() {
         return (
@@ -11,45 +9,44 @@ let MarketCreateIndex = React.createClass({
                 </h1>
 
                 <div className="">
-                    <Link to="market-create" query={{type: "binary"}}>
+                    <a href="#" data-type="binary" onClick={this.props.onMarketTypeChange}>
                         <h4>
-                            A market with a
-                            <span className="text-uppercase">yes</span> or <span className="text-uppercase">no</span>
-                            outcome
+                            A market with
+                            a <span className="text-uppercase">yes</span> or <span className="text-uppercase">no</span> outcome
                         </h4>
                         <span>
                             Select
                         </span>
-                    </Link>
+                    </a>
 
                     <p>
-                        Ask a question that has a simple <span className="text-uppercase">yes</span> or
-                        <span className="text-uppercase">no</span> answer
+                        Ask a question that has a
+                        simple <span className="text-uppercase">yes</span> or <span className="text-uppercase">no</span> answer
                     </p>
                 </div>
                 <div className="">
-                    <Link to="market-create" query={{type: "categorical"}}>
+                    <a href="#" data-type="categorical" onClick={this.props.onMarketTypeChange}>
                         <h4>
                             A market with a <span className="text-uppercase">multiple choice</span> outcome
                         </h4>
                         <span>
                             Select
                         </span>
-                    </Link>
+                    </a>
 
                     <p>
                         Ask a question and provide a series of multiple choice answers
                     </p>
                 </div>
                 <div className="">
-                    <Link to="market-create" query={{type: "scalar"}}>
+                    <a href="#" data-type="scalar" onClick={this.props.onMarketTypeChange}>
                         <h4>
                             A market with a <span className="text-uppercase">numeric</span> outcome
                         </h4>
                         <span>
                             Select
                         </span>
-                    </Link>
+                    </a>
 
                     <p>
                         Ask a question that has an answer somewhere within a range of numbers

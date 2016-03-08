@@ -20,6 +20,7 @@ let MarketCreateIndex = require("./MarketCreateIndex");
 let MarketCreateStep1 = require("./MarketCreateStep1");
 let MarketCreateStep2 = require("./MarketCreateStep2");
 let MarketCreateStep3 = require("./MarketCreateStep3");
+let MarketCreateStep4 = require("./MarketCreateStep4");
 
 let MarketCreatePage = React.createClass({
 
@@ -27,6 +28,7 @@ let MarketCreatePage = React.createClass({
 
   getInitialState: function () {
     return {
+      type: null,
       pageNumber: 1,
       marketText: '',
       detailsText: '',
@@ -41,13 +43,15 @@ let MarketCreatePage = React.createClass({
       tradingFee: '2',
       tradingFeeError: null,
       minDate: moment().format('YYYY-MM-DD'),
-      numOutcomes: 3,
       minValue: null,
       maxValue: null,
       minValueError: null,
       maxValueError: null,
-      choices: ["", ""],
-      choiceErrors: [null, null],
+      choices: [],
+      choiceErrors: [],
+      outcomePrices: [],
+      outcomePriceErrors: [],
+      outcomePriceGlobalError: null,
       resources: ["", ""],
       tags: ["", ""],
       tagErrors: [null, null],
@@ -128,32 +132,67 @@ let MarketCreatePage = React.createClass({
     this.setState({resources: resources});
   },
 
-  onChangeTradingFee: function (event) {
-    var amount = event.target.value;
-    if (!amount.match(/^[0-9]*\.?[0-9]*$/) ) {
-      this.setState({tradingFeeError: 'invalid fee'});
-    } else if (parseFloat(amount) > 12.5) {
-      this.setState({tradingFeeError: 'must be less than 12.5%'});
-    } else if (parseFloat(amount) < 0.7) {
-      this.setState({tradingFeeError: 'must be greater than 0.7%'});
-    } else {
-      this.setState({tradingFeeError: null});
+  validateTradingFee(tradingFee) {
+    let errorMessage = null;
+    if (!utilities.isNumeric(tradingFee)) {
+      errorMessage = 'Please enter valid trading fee';
+    } else if (parseFloat(tradingFee) > 12.5) {
+      errorMessage = 'Trading fee must be less than 12.5%';
+    } else if (parseFloat(tradingFee) < 0.7) {
+      errorMessage = 'Trading fee must be greater than 0.7%';
     }
-    this.setState({tradingFee: amount});
+    return {errorMessage};
+  },
+  validateMarketInvestment(marketInvestment) {
+    let errorMessage = null;
+    if (!utilities.isNumeric(marketInvestment)) {
+      errorMessage = 'Please enter valid initial liquidity';
+    } else if (parseFloat(marketInvestment) > this.state.cash.toNumber()) {
+      errorMessage = `Your maximum initial liquidity is ${this.state.cash.toFixed(2)}`;
+    } else if (parseFloat(marketInvestment) <= 0) {
+      errorMessage = 'Initial liquidity must be greater than 0';
+    }
+
+    return {errorMessage};
+  },
+  validateOutcomePrice(outcomePrice) {
+    let errorMessage = null;
+
+    if (!utilities.isNumeric(outcomePrice)) {
+      errorMessage = 'Please enter valid price';
+    } else {
+      let isScalarMarket = this.state.type === "scalar";
+      let min = isScalarMarket ? this.state.minValue : 0;
+      let max = isScalarMarket ? this.state.maxValue : 100;
+
+      if (parseFloat(outcomePrice) >= max) {
+        errorMessage = `Price must be less than ${max}`;
+      } else if (parseFloat(outcomePrice) <= min) {
+        errorMessage = `Price must be greater than ${min}`;
+      }
+    }
+
+    return {errorMessage};
+  },
+  onChangeTradingFee: function (event) {
+    this.setState({tradingFee: event.target.value}, () => {
+      this.validateStep3("tradingFee");
+    });
   },
 
   onChangeMarketInvestment: function (event) {
+    this.setState({marketInvestment: event.target.value}, () => {
+      this.validateStep3("marketInvestment");
+    });
+  },
 
-    var marketInvestment = event.target.value;
-    var cashLeft = this.state.cash - marketInvestment;
+  onOutcomePriceChange(event) {
+    let index = parseInt(event.target.getAttribute("data-index"));
+    let outcomePrices = this.state.outcomePrices.slice();
+    outcomePrices[index] = event.target.value;
 
-    if (cashLeft < 0) {
-      this.setState({marketInvestmentError: 'cost exceeds cash balance'});
-    } else {
-      this.setState({marketInvestmentError: null});
-    }
-    this.setState({
-      marketInvestment: marketInvestment
+    this.setState({outcomePrices}, () => {
+      this.validateStep3(`outcomePrices:${index}`);
     });
   },
 
@@ -182,29 +221,6 @@ let MarketCreatePage = React.createClass({
     this.setState({pageNumber: newPageNumber});
   },
 
-  /**
-   * Need to reset some values when transitioning from one type to another
-   */
-  componentWillReceiveProps(nextProps) {
-    let newMarketType = nextProps.query.type;
-    if (this.props.query.type != newMarketType) {
-      let newState = {
-        pageNumber: 1
-      };
-      switch (newMarketType) {
-        case "binary": // fallthrough
-        case "categorical":
-          newState.minValue = 1;
-          newState.maxValue = 2;
-          break;
-        case "scalar":
-          newState.minValue = null;
-          newState.maxValue = null;
-          break;
-      }
-      this.setState(newState);
-    }
-  },
   validatePage: function (pageNumber) {
     if (pageNumber === 1) {
       return this.validateStep1();
@@ -249,7 +265,7 @@ let MarketCreatePage = React.createClass({
     }
 
     if (fieldToValidate == null || fieldToValidate.indexOf("choices") > -1) {
-      if (this.props.query.type === "categorical") {
+      if (this.state.type === "categorical") {
         let choiceIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
         let choiceErrors = this.state.choiceErrors.slice();
         let choices = choiceIndex != null ? [this.state.choices[choiceIndex]] : this.state.choices.slice();
@@ -266,7 +282,7 @@ let MarketCreatePage = React.createClass({
     }
 
     if (fieldToValidate == null || fieldToValidate == "minMax") {
-      if (this.props.query.type === "scalar") {
+      if (this.state.type === "scalar") {
         let isMinValid = this.checkMinimum();
         let isMaxValid = this.checkMaximum();
         if (!isMinValid || !isMaxValid) {
@@ -308,8 +324,54 @@ let MarketCreatePage = React.createClass({
     
     return isStepValid;
   },
-  validateStep3() {
-    return true;
+  validateStep3(fieldToValidate) {
+    let isStepValid = true;
+
+    if (fieldToValidate == null || fieldToValidate == "tradingFee") {
+      let validationResult = this.validateTradingFee(this.state.tradingFee);
+      this.setState({tradingFeeError: validationResult.errorMessage});
+      if (validationResult.errorMessage != null) {
+        isStepValid = false;
+      }
+    }
+
+    if (fieldToValidate == null || fieldToValidate == "marketInvestment") {
+      let validationResult = this.validateMarketInvestment(this.state.marketInvestment);
+      this.setState({marketInvestmentError: validationResult.errorMessage});
+      if (validationResult.errorMessage != null) {
+        isStepValid = false;
+      }
+    }
+
+    if (fieldToValidate == null || fieldToValidate.indexOf("outcomePrices") > -1) {
+      let outcomePriceIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
+      let outcomePriceErrors = this.state.outcomePriceErrors.slice();
+      let outcomePrices = outcomePriceIndex != null ? [this.state.outcomePrices[outcomePriceIndex]] : this.state.outcomePrices.slice();
+
+      // iterates all outcomePrices, validating each
+      isStepValid = outcomePrices.reduce((isStepValid, outcomePrice, index) => {
+        let validationResult = this.validateOutcomePrice(outcomePrice);
+        outcomePriceErrors[outcomePriceIndex || index] = validationResult.errorMessage;
+        return validationResult.errorMessage == null ? isStepValid : false;
+      }, isStepValid);
+
+      let outcomePriceGlobalError = null;
+      if (this.state.type !== "scalar") {
+        let pricesSum = this.state.outcomePrices.reduce((sum, price) => {
+          return isNaN(parseFloat(price)) ? sum : sum + parseFloat(price);
+        }, 0);
+
+        if (pricesSum !== 100) {
+          // display error message on last input
+          outcomePriceGlobalError = "Prices don't add up to 100 %";
+          isStepValid = false;
+        }
+      }
+
+      this.setState({outcomePriceErrors, outcomePriceGlobalError});
+    }
+
+    return isStepValid;
   },
 
   onHide: function () {
@@ -317,13 +379,7 @@ let MarketCreatePage = React.createClass({
     this.props.onHide();
   },
 
-  onSubmit: function(event) {
-    if (!this.validatePage(this.state.pageNumber)) return;
-    let marketType;
-
-    if (this.props.query != null) {
-      marketType = this.props.query.type;
-    }
+  sendNewMarketRequest() {
     var self = this;
     var flux = this.getFlux();
     var newMarketParams = {
@@ -345,6 +401,7 @@ let MarketCreatePage = React.createClass({
     var checkbox = {createMarket: false, addMetadata: false};
     var minValue, maxValue, numOutcomes;
 
+    let marketType = this.state.type;
     if (marketType === "binary") {
       minValue = 1;
       maxValue = 2;
@@ -552,15 +609,43 @@ let MarketCreatePage = React.createClass({
     });
   },
 
-  render: function () {
-    let stepContent, subheading, footer, marketType;
+  onMarketTypeChange(event) {
+    event.preventDefault();
 
-    if (this.props.query != null) {
-      marketType = this.props.query.type;
+    let newMarketType = event.currentTarget.getAttribute("data-type");
+    console.log("%o", newMarketType);
+    let newState = {
+      type: newMarketType,
+      pageNumber: 1
+    };
+    switch (newMarketType) {
+      case "binary":
+        newState.choices = ["Yes", "No"];
+        newState.choiceErrors = [null, null];
+        break;
+      case "categorical":
+        newState.choices = ["", ""];
+        newState.choiceErrors = [null, null];
+        break;
+      case "scalar":
+        newState.choices = [""];
+        newState.choiceErrors = [null];
+        break;
+      default:
+        newState = this.getInitialState();
     }
 
+    this.setState(newState);
+  },
+
+  render: function () {
+    let marketType = this.state.type,
+        stepContent, subheading;
+
     if (marketType == null) {
-      return <MarketCreateIndex/>;
+      return <MarketCreateIndex
+          onMarketTypeChange={this.onMarketTypeChange}
+          />;
     }
 
     if (this.state.pageNumber === 2) {
@@ -588,12 +673,46 @@ let MarketCreatePage = React.createClass({
     } else if (this.state.pageNumber === 3) {
       stepContent = (
         <MarketCreateStep3
-          goToNextStep={this.goToNextStep}
-          goToPreviousStep={this.goToPreviousStep}
+            marketType={marketType}
+            minValue={this.state.minValue}
+            maxValue={this.state.maxValue}
+            tradingFee={this.state.tradingFee}
+            tradingFeeError={this.state.tradingFeeError}
+            onChangeTradingFee={this.onChangeTradingFee}
+            marketInvestment={this.state.marketInvestment}
+            marketInvestmentError={this.state.marketInvestmentError}
+            onChangeMarketInvestment={this.onChangeMarketInvestment}
+            choices={this.state.choices}
+            outcomePrices={this.state.outcomePrices}
+            outcomePriceErrors={this.state.outcomePriceErrors}
+            outcomePriceGlobalError={this.state.outcomePriceGlobalError}
+            onOutcomePriceChange={this.onOutcomePriceChange}
+            goToNextStep={this.goToNextStep}
+            goToPreviousStep={this.goToPreviousStep}
         />
       )
     } else if (this.state.pageNumber === 4) {
-
+      stepContent = (
+        <MarketCreateStep4
+            marketType={marketType}
+            marketText={this.state.marketText}
+            choices={this.state.choices}
+            maturationDate={this.state.maturationDate}
+            minValue={this.state.minValue}
+            maxValue={this.state.maxValue}
+            expirySource={this.state.expirySource}
+            expirySourceUrl={this.state.expirySourceUrl}
+            tags={this.state.tags}
+            detailsText={this.state.detailsText}
+            resources={this.state.resources}
+            imageDataURL={this.state.imageDataURL}
+            tradingFee={this.state.tradingFee}
+            marketInvestment={this.state.marketInvestment}
+            outcomePrices={this.state.outcomePrices}
+            goToNextStep={this.goToNextStep}
+            goToPreviousStep={this.goToPreviousStep}
+            />
+          )
     } else {
       stepContent = <MarketCreateStep1
           marketType={marketType}
@@ -627,9 +746,9 @@ let MarketCreatePage = React.createClass({
         <div className="">
           <ol className="breadcrumb">
             <li>
-              <Link to="market-create">
+              <a href="#" onClick={this.onMarketTypeChange}>
                 Type
-              </Link>
+              </a>
             </li>
             <li>
               <span className={`${this.state.pageNumber > 0 ? 'active' : ''}`}>Question</span>
