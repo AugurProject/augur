@@ -291,11 +291,11 @@ nav.header .register {
     overflow-y: auto;
 }
 .minimized {
-    max-height: 100px;
+    /*max-height: 100px;*/
+    max-height: 50%;
     overflow: hidden;
 }
 .min-button {
-    /*height: 25px;*/
     cursor: pointer;
 }
 .progress-modal {

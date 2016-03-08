@@ -6,7 +6,7 @@ var _ = require("lodash");
 var constants = require("../libs/constants");
 var isHosted = NODE_JS || document.location.protocol === "https:";
 var host = "http://127.0.0.1:8545";
-// var host = "https://report.augur.net";
+// var host = null;
 
 module.exports = {
   state: {

@@ -13,10 +13,7 @@ let ReportDetails = React.createClass({
         let blockNumber = flux.store("network").getState().blockNumber;
         let pathname = window.location.pathname.split("/");
         let eventId = pathname[pathname.length - 1];
-        let report = flux.store("report").getReport(branch.id, branch.reportPeriod);
-        if (!report) report = {};
-        console.log("loaded report from flux:", report);
-        return {branch, blockNumber, report};
+        return {branch, blockNumber};
     },
 
     render() {

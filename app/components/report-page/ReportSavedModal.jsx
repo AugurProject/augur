@@ -1,12 +1,17 @@
-let React = require('react');
-
-let Modal = require('react-bootstrap/lib/Modal');
-let Button = require('react-bootstrap/lib/Button');
+let React = require("react");
+let Navigation = require("react-router/lib/Navigation");
+let Modal = require("react-bootstrap/lib/Modal");
+let Button = require("react-bootstrap/lib/Button");
 
 let ReportSavedModal = React.createClass({
+
+    mixins: [Navigation],
+
     onCloseClick(event) {
+        this.transitionTo("reports");
         this.props.onHide();
     },
+
     render() {
         let markedAsUnethicalText;
         if (this.props.isUnethical) {
@@ -17,7 +22,8 @@ let ReportSavedModal = React.createClass({
             );
         }
         let timeInfo = <span />;
-        if (this.props.report && this.props.report.commitPeriodEndMillis) {
+        if (this.props.report &&
+            (this.props.report.commitPeriodEndMillis || this.props.report.revealPeriodEndMillis)) {
             timeInfo = (
                 <span>
                     This begins in {this.props.report.commitPeriodEndMillis.humanize(true)} and ends in {this.props.report.revealPeriodEndMillis.humanize(true)}.
@@ -25,10 +31,10 @@ let ReportSavedModal = React.createClass({
             );
         }
         return (
-            <Modal show={this.props.show} onHide={this.props.onHide} bsSize='large'>
-                <div className='modal-body clearfix'>
+            <Modal show={this.props.show} onHide={this.props.onHide} bsSize="large">
+                <div className="modal-body clearfix">
                     <h4>You have reported the outcome of this market!</h4>
-                    <div className='row'>
+                    <div className="row">
                         <div className="col-sm-12">
                             <p>
                                 The outcome you have reported is: <em>{this.props.reportedOutcomeName}</em>

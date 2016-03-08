@@ -24,12 +24,13 @@ var ReportActions = {
     var self = this;
     var augur = this.flux.augur;
     var branch = this.flux.store("branch").getCurrentBranch();
+    var account = this.flux.store("config").getAccount();
 
     // Only load events if the vote period indicated by the chain is the
     // previous period.
     if (!branch || branch.currentPeriod >= branch.reportPeriod + 2 ||
         branch.reportPeriod < branch.currentPeriod - 1) {
-      this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
+      return this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
     }
@@ -43,10 +44,13 @@ var ReportActions = {
       // initialize all events
       var eventsToReport = {};
       var pendingReports = self.flux.store("report").getPendingReports();
-      async.each(eventIds, function (eventId, nextEvent) {
+      async.eachSeries(eventIds, function (eventId, nextEvent) {
         augur.getEventInfo(eventId, function (eventInfo) {
           if (!eventInfo) return nextEvent("couldn't get event info");
           if (eventInfo.error) return nextEvent(eventInfo);
+          var minValue = abi.bignum(eventInfo[3]);
+          var maxValue = abi.bignum(eventInfo[4]);
+          var numOutcomes = abi.bignum(eventInfo[5]);
           eventsToReport[eventId] = {
             id: eventId,
             branchId: eventInfo[0],
@@ -56,40 +60,65 @@ var ReportActions = {
             maxValue: eventInfo[4],
             numOutcomes: parseInt(eventInfo[5]),
             report: _.findWhere(pendingReports, {
+              eventId: eventId,
               branchId: branch.id,
               reportPeriod: branch.reportPeriod
-            }),
+            }) || {},
             markets: []
           };
           augur.getDescription(eventId, function (description) {
             if (description && description.error) return nextEvent(description);
             eventsToReport[eventId].description = description;
-            augur.getEventIndex(eventId, branch.reportPeriod, function (eventIndex) {
+            augur.getEventIndex(branch.reportPeriod, eventId, function (eventIndex) {
               if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
               eventsToReport[eventId].index = eventIndex;
-              augur.getMarkets(eventId, function (markets) {
-                if (!markets) return nextEvent("no markets found");
-                if (markets.error) return nextEvent(markets);
-                async.each(markets, function (thisMarket, nextMarket) {
-                  var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
-                  if (market) {
-                    eventsToReport[eventId].markets.push(market);
-                    return nextMarket();
+              eventsToReport[eventId].report.eventIndex = eventIndex;
+              augur.getReportHash(branch.id, branch.reportPeriod, account, eventId, function (reportHash) {
+                if (reportHash && !reportHash.error && reportHash !== "0x0") {
+                  eventsToReport[eventId].report.branchId = branch.id;
+                  eventsToReport[eventId].report.eventId = eventId;
+                  eventsToReport[eventId].report.reportHash = reportHash;
+                }
+                augur.getReport(branch.id, branch.reportPeriod, eventId, function (report) {
+                  if (report && report !== "0") {
+                    eventsToReport[eventId].report.rescaledReportedOutcome = report;
                   }
-                  augur.getMarketInfo(thisMarket, function (marketInfo) {
-                    eventsToReport[eventId].type = marketInfo.type;
-                    self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
-                      augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
-                        if (err) console.error("getMetadata:", err);
-                        if (metadata) info.metadata = metadata;
-                        eventsToReport[eventId].markets.push(info);
-                        nextMarket();
+                  augur.getMarkets(eventId, function (markets) {
+                    if (!markets) return nextEvent("no markets found");
+                    if (markets.error) return nextEvent(markets);
+                    async.each(markets, function (thisMarket, nextMarket) {
+                      var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
+                      if (market) {
+                        eventsToReport[eventId].markets.push(market);
+                        return nextMarket();
+                      }
+                      augur.getMarketInfo(thisMarket, function (marketInfo) {
+                        eventsToReport[eventId].type = marketInfo.type;
+                        if (report && report !== "0") {
+                          if (marketInfo.type === "scalar") {
+                            eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                          } else if (marketInfo.type === "categorical") {
+                            eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                          } else {
+                            eventsToReport[eventId].report.reportedOutcome = report;
+                          }
+                        }
+                        self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
+                          augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
+                            if (err) console.error("getMetadata:", err);
+                            if (info) {
+                              if (metadata) info.metadata = metadata;
+                              eventsToReport[eventId].markets.push(info);
+                            }
+                            nextMarket();
+                          });
+                        });
                       });
+                    }, function (err) {
+                      if (err) return nextEvent(err);
+                      nextEvent();
                     });
                   });
-                }, function (err) {
-                  if (err) return nextEvent(err);
-                  nextEvent();
                 });
               });
             });
@@ -138,8 +167,10 @@ var ReportActions = {
           break;
         }
       }
+      if (!isUpdate) pendingReports.push(report);
+    } else {
+      pendingReports = [report];
     }
-    if (!isUpdate) pendingReports.push(report);
     this.dispatch(constants.report.UPDATE_PENDING_REPORTS, {pendingReports});
   },
 
@@ -155,19 +186,23 @@ var ReportActions = {
     var numOutcomes = abi.bignum(event.numOutcomes);
 
     // Re-scale scalar/categorical reports so they fall between 0 and 1
+    var rescaledReportedOutcome;
     if (event.type === "scalar") {
-      reportedOutcome = abi.bignum(reportedOutcome)
-                           .minus(minValue)
-                           .dividedBy(maxValue.minus(minValue)).toFixed();
+      rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                   .minus(minValue)
+                                   .dividedBy(maxValue.minus(minValue)).toFixed();
     } else if (event.type === "categorical") {
-      reportedOutcome = abi.bignum(reportedOutcome)
-                           .minus(abi.bignum(1))
-                           .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+      rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                   .minus(abi.bignum(1))
+                                   .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+    } else {
+      rescaledReportedOutcome = reportedOutcome;
     }
+    console.log("rescaled outcome:", rescaledReportedOutcome);
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
-    var reportHash = this.flux.augur.makeHash(salt, reportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
+    var reportHash = this.flux.augur.makeHash(salt, rescaledReportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
     this.flux.actions.report.updatePendingReports(
       this.flux.store("report").getPendingReports(), {
         branchId: branchId,
@@ -176,6 +211,7 @@ var ReportActions = {
         reportHash: reportHash,
         reportPeriod: reportPeriod,
         reportedOutcome: reportedOutcome,
+        rescaledReportedOutcome: rescaledReportedOutcome,
         salt: salt,
         isUnethical: isUnethical,
         isIndeterminate: isIndeterminate,
@@ -183,6 +219,13 @@ var ReportActions = {
         submitReport: false
       }
     );
+    console.log("submitReportHash:", {
+      branch: branchId,
+      reportHash: reportHash,
+      reportPeriod: reportPeriod,
+      eventID: event.id,
+      eventIndex: event.index
+    });
     this.flux.augur.submitReportHash({
       branch: branchId,
       reportHash: reportHash,
@@ -220,30 +263,36 @@ var ReportActions = {
     var sentReports = [];
     var currentBlock = this.flux.store("network").getState().blockNumber;
     async.forEachOf(pendingReports, function (report, index, nextReport) {
-      console.log("checking report:", index, report);
       if (report.submitReport) return nextReport();
       if (!report) return nextReport(new Error("no report found"));
       if (!report.branchId || report.reportPeriod === null || report.reportPeriod === undefined) {
         return nextReport(report);
       }
-      console.log("submitting report:", index, report);
       self.flux.augur.getPeriodLength(report.branchId, function (periodLength) {
         periodLength = abi.number(periodLength);
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
+          console.log("submitReport:", {
+            branch: report.branchId,
+            reportPeriod: report.reportPeriod,
+            eventIndex: report.eventIndex,
+            salt: report.salt,
+            report: report.rescaledReportedOutcome,
+            eventID: report.eventId,
+            ethics: Number(!report.isUnethical),
+            indeterminate: report.isIndeterminate
+          });
           self.flux.augur.submitReport({
             branch: report.branchId,
             reportPeriod: report.reportPeriod,
             eventIndex: report.eventIndex,
             salt: report.salt,
-            report: report.reportedOutcome,
+            report: report.rescaledReportedOutcome,
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
             indeterminate: report.isIndeterminate,
             onSent: function (res) {
-              report.submitReport = true;
-              pendingReports[index] = report;
               self.flux.actions.report.updatePendingReports(
                 self.flux.store("report").getPendingReports(), {
                   branchId: report.branchId,
@@ -305,7 +354,7 @@ var ReportActions = {
       branch: branchID,
       market: marketID,
       outcome: 1,
-      amount: "0.1",
+      amount: "1",
       limit: 0
     };
     var trade = clone(tradeParams);
@@ -339,55 +388,127 @@ var ReportActions = {
   createEvent: function (branchID, expirationBlock, description, cb) {
     var self = this;
     if (DEBUG) console.log("Event expiration block:", expirationBlock);
-    this.flux.augur.createEvent({
+    var multipleChoiceDescription = "What day will we launch the beta test? Choices: Yesterday, Today, Tomorrow, In Two Weeks (TM)";
+    var scalarDescription = "How many users will the beta have during its first 24 hours?";
+    var newMarkets = {binary: null, multipleChoice: null, scalar: null};
+    if (DEBUG) console.log("Creating binary market...");
+    this.flux.augur.createSingleEventMarket({
       branchId: branchID,
       description: description,
       expirationBlock: expirationBlock,
       minValue: 1,
       maxValue: 2,
       numOutcomes: 2,
-      onSent: self.flux.augur.utils.noop,
+      alpha: "0.0079",
+      initialLiquidity: 100,
+      tradingFee: "0.02",
+      onSent: function (res) {
+        
+      },
       onSuccess: function (res) {
-        var eventID = res.callReturn;
-        if (DEBUG) console.log("Event ID:", eventID);
+        var marketID = res.callReturn;
+        if (DEBUG) console.log("Binary market ID:", marketID);
+        self.flux.augur.ramble.addMetadata({
+          marketId: marketID,
+          details: "It's game over, man.  Game over!",
+          tags: ["asplosions", "world", "game over"],
+          source: "Reality Keys",
+          links: [
+            "http://www.lipsum.com/",
+            "https://github.com/traviskaufman/node-lipsum"
+          ]
+        }, function (sentResponse) {
+          // if (DEBUG) console.log("binary addMetadata sent:", sentResponse);
+        }, function (successResponse) {
+          // if (DEBUG) console.log("binary addMetadata success:", successResponse);
+        }, function (err) {
+          // console.error("binary addMetadata:", err);
+        });
+        self.flux.augur.getMarketEvents(marketID, function (events) {
+          newMarkets.binary = {eventID: events[0], marketID: marketID};
+          if (DEBUG) console.log("Creating multiple-choice market...");
+          self.flux.augur.createSingleEventMarket({
+            branchId: branchID,
+            description: multipleChoiceDescription,
+            expirationBlock: expirationBlock,
+            minValue: 1,
+            maxValue: 2,
+            numOutcomes: 4,
+            alpha: "0.0079",
+            initialLiquidity: 100,
+            tradingFee: "0.02",
+            onSent: function (res) {
+              
+            },
+            onSuccess: function (res) {
+              var marketID = res.callReturn;
+              if (DEBUG) console.log("Multiple-choice market ID:", marketID);
+              self.flux.augur.ramble.addMetadata({
+                marketId: marketID,
+                details: "Multiple-choice market test",
+                tags: ["testing", "multiple-choice", "categorical"],
+                source: "generic"
+              }, function (sentResponse) {
+                // if (DEBUG) console.log("multiple-choice addMetadata sent:", sentResponse);
+              }, function (successResponse) {
+                // if (DEBUG) console.log("multiple-choice addMetadata success:", successResponse);
+              }, function (err) {
+                // console.error("multiple-choice addMetadata:", err);
+              });
+              self.flux.augur.getMarketEvents(marketID, function (events) {
+                newMarkets.multipleChoice = {eventID: events[0], marketID: marketID};
+                if (DEBUG) console.log("Creating scalar market...");
+                self.flux.augur.createSingleEventMarket({
+                  branchId: branchID,
+                  description: scalarDescription,
+                  expirationBlock: expirationBlock,
+                  minValue: 0,
+                  maxValue: 1000000,
+                  numOutcomes: 2,
+                  alpha: "0.0079",
+                  initialLiquidity: 100,
+                  tradingFee: "0.02",
+                  onSent: function (res) {
 
-        // incorporate the event into a market on the new branch
-        self.flux.augur.createMarket({
-          branchId: branchID,
-          description: description,
-          alpha: "0.0079",
-          initialLiquidity: 100,
-          tradingFee: "0.02",
-          events: [eventID],
-          forkSelection: 1,
-          onSent: function (res) {
-            var metadata = {
-              marketId: res.callReturn,
-              details: "It's game over, man.  Game over!",
-              tags: ["asplosions", "world", "game over"],
-              source: "Reality Keys",
-              links: [
-                "http://www.lipsum.com/",
-                "https://github.com/traviskaufman/node-lipsum"
-              ]
-            };
-            self.flux.augur.ramble.addMetadata(metadata, function (sentResponse) {
-              if (DEBUG) console.log("addMetadata sent:", sentResponse);
-            }, function (successResponse) {
-              if (DEBUG) console.log("addMetadata success:", successResponse);
-            }, function (err) {
-              console.error("addMetadata:", err);
-            });
-          },
-          onSuccess: function (res) {
-            var marketID = res.callReturn;
-            if (DEBUG) console.log("Market ID:", marketID);
-            cb(null, {eventID: eventID, marketID: marketID});
-          },
-          onFailed: cb
+                  },
+                  onSuccess: function (res) {
+                    var marketID = res.callReturn;
+                    if (DEBUG) console.log("Scalar market ID:", marketID);
+                    self.flux.augur.ramble.addMetadata({
+                      marketId: marketID,
+                      details: "Scalar market test",
+                      tags: ["testing", "scalar", "numerical"],
+                      source: "generic"
+                    }, function (sentResponse) {
+                      // if (DEBUG) console.log("scalar addMetadata sent:", sentResponse);
+                    }, function (successResponse) {
+                      // if (DEBUG) console.log("scalar addMetadata success:", successResponse);
+                    }, function (err) {
+                      // console.error("scalar addMetadata:", err);
+                    });
+                    self.flux.augur.getMarketEvents(marketID, function (events) {
+                      newMarkets.scalar = {eventID: events[0], marketID: marketID};
+                      cb(null, newMarkets);
+                    });
+                  },
+                  onFailed: function (err) {
+                    console.error("getReady.createEvent (scalar):", err);
+                    cb(err);
+                  }
+                });
+              });
+            },
+            onFailed: function (err) {
+              console.error("getReady.createEvent (multiple-choice):", err);
+              cb(err);
+            }
+          });
         });
       },
-      onFailed: cb
+      onFailed: function (err) {
+        console.error("getReady.createEvent (binary):", err);
+        cb(err);
+      }
     });
   },
 
@@ -410,7 +531,7 @@ var ReportActions = {
         if (DEBUG) console.log("Branch ID:", branchID);
         self.flux.actions.branch.setCurrentBranch(branchID);
 
-        (function getReputation() {
+        (function catchup() {
           self.flux.actions.asset.updateAssets();
           self.flux.augur.rpc.blockNumber(function (currentBlock) {
             currentBlock = parseInt(currentBlock);
@@ -418,32 +539,36 @@ var ReportActions = {
               blockNumber: currentBlock
             });
             if (branchID === parent || (currentBlock % periodLength) / periodLength >= 0.5) {
-              return setTimeout(getReputation, 1000);
+              return setTimeout(catchup, 1000);
             }
 
             // get reputation on the new branch
+            function faucet(branchID, cb) {
+              self.flux.actions.asset.updateAssets();
+              self.flux.augur.reputationFaucet({
+                branch: branchID,
+                onSent: self.flux.augur.utils.noop,
+                onSuccess: function (res) {
+                  console.log("reputationFaucet success:", res);
+                  self.flux.actions.asset.updateAssets();
+                  cb(null, branchID);
+                },
+                onFailed: cb
+              });
+            }
+
             self.flux.augur.penalizationCatchup({
               branch: branchID,
               onSent: function (res) {
-                console.log("penalizationCatchup sent:", res);
+                if (DEBUG) console.log("getReady.penalizationCatchup sent:", res);
               },
               onSuccess: function (res) {
-                console.log("penalizationCatchup success:", res);
-                self.flux.actions.asset.updateAssets();
-                self.flux.augur.reputationFaucet({
-                  branch: branchID,
-                  onSent: self.flux.augur.utils.noop,
-                  onSuccess: function (res) {
-                    console.log("reputationFaucet success:", res);
-                    self.flux.actions.asset.updateAssets();
-                    cb(null, branchID);
-                  },
-                  onFailed: cb
-                });
+                if (DEBUG) console.log("getReady.penalizationCatchup success:", res);
+                faucet(branchID, cb);
               },
               onFailed: function (err) {
-                console.error("penalizationCatchup failed:", err);
-                self.flux.actions.asset.updateAssets();
+                if (DEBUG) console.error("getReady.penalizationCatchup failed:", err);
+                faucet(branchID, cb);
               }
             });
           });
@@ -483,8 +608,8 @@ var ReportActions = {
                 self.flux.augur.getCurrentPeriod(branchID, function (currentPeriod) {
                   currentPeriod = Math.floor(currentPeriod);
                   self.flux.augur.getEvents(branchID, period, function (events) {
-                    console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                    console.log("Events in period", period, events);
+                    if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
+                    if (DEBUG) console.log("Events in period", period, events);
                     if (currentPeriod > period + 1) {
                       if (DEBUG) {
                         console.log("Difference", currentPeriod - period + ". Incrementing period...");
@@ -492,24 +617,11 @@ var ReportActions = {
                       return self.flux.actions.report.checkPeriod(branchID, periodLength);
                     }
                     if (DEBUG) {
-                      console.log("Hitting Reputation faucet...");
-                      self.flux.augur.reputationFaucet({
-                        branch: branchID,
-                        onSent: function (res) {
-                          console.log("reputationFaucet sent:", res);
-                        },
-                        onSuccess: function (res) {
-                          console.log("reputationFaucet success:", res);
-                          self.flux.actions.asset.updateAssets();
-                          console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
-                          var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
-                          snd.play();
-                        },
-                        onFailed: function (err) {
-                          console.error("reputationFaucet failed:", res);
-                        }
-                      });
+                      console.log("Difference " + (currentPeriod - period) + ": ready for report hash submission.");
                     }
+                    var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
+                    snd.play();
+                    self.flux.actions.asset.updateAssets();
                     self.flux.actions.branch.updateCurrentBranch();
                     self.flux.actions.report.ready(branchID);
                   });
@@ -531,27 +643,28 @@ var ReportActions = {
   },
 
   // @param {string|integer} parent Hexadecimal string parent branch ID.
-  getReady: function (parent, periodLength, branchDescription, description, blocksUntilExpiration) {
+  getReady: function (parent, periodLength, branchDescription, eventDescription, blocksUntilExpiration) {
     var self = this;
     var flux = this.flux;
-    // var suffix = Math.random().toString(36).substring(4);
-    periodLength = periodLength || 30;
+    periodLength = periodLength || 100;
     branchDescription = "Jack's Super Sweet Reporting Test Branch";
-    blocksUntilExpiration = blocksUntilExpiration || 5;
-    // description = description || suffix;
-    description = "Will the world asplode before the end of the day on March 5, 2016?";
+    blocksUntilExpiration = blocksUntilExpiration || 15;
+    var binaryEventDescription = eventDescription || "Will the world asplode before the end of the day on March 6, 2016?";
     parent = parent || flux.store("branch").getCurrentBranch().id;
     flux.actions.report.setupNewBranch(parent, branchDescription, periodLength, function (err, branchID) {
       if (err) return console.error("getReady.setupNewBranch:", err);
       function createEvent(blockNumber) {
         var expirationBlock = blockNumber + blocksUntilExpiration;
-        flux.actions.report.createEvent(branchID, expirationBlock, description, function (err, ids) {
+        flux.actions.report.createEvent(branchID, expirationBlock, binaryEventDescription, function (err, ids) {
           if (err) return console.error("getReady.createEvent:", err);
-          if (!branchID || !ids || !ids.eventID || !ids.marketID) {
-            return console.error("getReady.createEvent:", ids);
-          }
-          flux.actions.report.tradeShares(branchID, ids.eventID, ids.marketID, function (err, trade) {
-            if (err) return console.error("getReady.tradeShares:", err);
+          async.forEachOf(ids, function (thisMarket, index, nextMarket) {
+            console.log("trading in:", thisMarket.marketID);
+            flux.actions.report.tradeShares(branchID, thisMarket.eventID, thisMarket.marketID, function (err, trade) {
+              if (err) return nextMarket(err);
+              nextMarket();
+            });
+          }, function (err) {
+            if (err) console.error("getReady.forEachOf:", err);
 
             // fast-forward to the period in which the new event expires
             flux.augur.getReportPeriod(branchID, function (period) {

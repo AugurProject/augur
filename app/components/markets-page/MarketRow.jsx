@@ -34,13 +34,17 @@ let MarketRow = React.createClass({
             } else {
                 tableHeaderClass = " holdings";
                 tableHeader = "Outcome reported";
-                reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                if (market.type === "scalar") {
+                    reportedOutcomeFmt = report.reportedOutcome;
+                } else {
+                    reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                }
             }
             content = (
                 <tbody>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Reported outcome</td>
-                        <td className="labelValue-value change-percent">{ reportedOutcomeFmt }</td>
+                        <td className="labelValue-value change-percent">{reportedOutcomeFmt}</td>
                     </tr>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Submission phase ends</td>
@@ -50,11 +54,22 @@ let MarketRow = React.createClass({
             );
         } else if (report.isRevealPeriod) {
             tableHeader = report.isConfirmed ? "Report confirmed" : "Confirming report...";
+            let reportedOutcomeFmt;
+            if (report.reportedOutcome == null) {
+                reportedOutcomeFmt = "-";
+                tableHeader = "Report not submitted"
+            } else {
+                if (market.type === "scalar") {
+                    reportedOutcomeFmt = report.reportedOutcome;
+                } else {
+                    reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                }
+            }
             content = (
                 <tbody>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Reported outcome</td>
-                        <td className="labelValue-value change-percent">{utilities.getOutcomeName(report.reportedOutcome, market).outcome} { report.isUnethical ? "/ Unethical" : "" }</td>
+                        <td className="labelValue-value change-percent">{reportedOutcomeFmt}</td>
                     </tr>
                     <tr className="labelValue">
                         <td className="labelValue-label outcome-name">Confirmation period closes</td>
@@ -142,14 +157,12 @@ let MarketRow = React.createClass({
      */
     getClickableDescription(market, report) {
         if (report != null) {
-            if (report.isCommitPeriod) {
+            if (report.isCommitPeriod || report.isRevealPeriod) {
                 return (
                     <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
                         {market.description}
                     </Link>
                 );
-            } else if (report.isRevealPeriod) {
-                return <a href="#">{market.description}</a>;
             } else {
                 return (
                     <Link to="report" params={{eventId: market.events[0].id.toString(16)}}>
@@ -158,7 +171,6 @@ let MarketRow = React.createClass({
                 );
             }
         }
-
         return (
             <Link to="market"
                 params={{marketId: market.id.toString(16)}}>
@@ -189,11 +201,7 @@ let MarketRow = React.createClass({
                         </button>
                     )
                 } else {
-                    return (
-                        <button className="btn btn-disabled">
-                            Report Complete
-                        </button>
-                    )
+                    return null;
                 }
             } else {
                 return (

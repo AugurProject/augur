@@ -33,7 +33,7 @@ let ReportPage = React.createClass({
         let market, reportedOutcome, isUnethical, report, isIndeterminate;
         if (event && event.markets && event.markets.length) {
             market = event.markets[0];
-            report = flux.store("report").getReport(branch.id, branch.reportPeriod);
+            report = flux.store("report").getReport(branch.id, branch.reportPeriod, eventId);
             if (report && report.reportedOutcome !== null && report.reportedOutcome !== undefined) {
                 reportedOutcome = event.report.reportedOutcome;
                 isUnethical = event.report.isUnethical;
@@ -104,6 +104,7 @@ let ReportPage = React.createClass({
                 event.target.id === "indeterminate") {
                 this.setState({isIndeterminate: true});
             }
+            console.log("set report to:", report);
             this.setState({reportedOutcome: report});
         }
     },
@@ -123,6 +124,12 @@ let ReportPage = React.createClass({
         let blockNumber = this.state.blockNumber;
         let isReportCommitPeriod = this.getFlux().store("branch").isReportCommitPeriod(blockNumber);
         let isReportRevealPeriod = !isReportCommitPeriod;
+        let reportedOutcomeName = "";
+        if (market.type === "scalar") {
+            reportedOutcomeName = this.state.reportedOutcome;
+        } else {
+            reportedOutcomeName = this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none";
+        }
         if (market.matured) {
             if (isReportCommitPeriod) {
                 return (
@@ -139,7 +146,7 @@ let ReportPage = React.createClass({
                             market={market} />
                         <ReportDetails market={market} />
                         <ReportSavedModal
-                            reportedOutcomeName={this.state.reportedOutcome != null ? utilities.getOutcomeName(this.state.reportedOutcome, market).outcome : "none"}
+                            reportedOutcomeName={reportedOutcomeName}
                             report={this.state.report}
                             isUnethical={this.state.isUnethical}
                             show={this.props.reportSavedModalOpen}
