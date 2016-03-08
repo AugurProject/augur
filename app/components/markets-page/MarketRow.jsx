@@ -8,9 +8,7 @@ let utilities = require("../../libs/utilities");
 let moment = require("moment");
 let Link = require("react-router/lib/components/Link");
 let OutcomeRow = require("./OutcomeRow");
-
-let Shepherd = require("tether-shepherd");
-let tour;
+let MarketRowTour = require("./MarketRowTour");
 
 /**
  * Represents detail of market in market lists.
@@ -339,98 +337,18 @@ let MarketRow = React.createClass({
     },
 
     componentDidMount() {
-        var self = this;
-
-        if (!this.props.tour || localStorage.getItem("tourMarketComplete") || localStorage.getItem("tourComplete")) {
-            return;
-        }
-
-        localStorage.setItem("tourMarketComplete", true);
-
-        let outcomes = this.props.market.outcomes;
-        let outcomeNames = utilities.getOutcomeNames(this.props.market);
-
-        Shepherd.once('cancel', () => localStorage.setItem("tourComplete", true));
-
-        tour = new Shepherd.Tour({
-            defaults: {
-                classes: "shepherd-element shepherd-open shepherd-theme-arrows",
-                showCancelLink: true
+        if (this.props.tour && this.props.market && this.refs.tradeButton && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete")) {
+            try {
+                MarketRowTour.show(this.props.market, ReactDOM.findDOMNode(this.refs.tradeButton));
+                localStorage.setItem("marketRowTourComplete", true);
+            } catch (e) {
+                console.warn('MarketRow tour failed to open (caught): ', e.message);
             }
-        });
-
-        // TODO add glowing border to current top market
-        tour.addStep("markets-list", {
-            title: "Welcome to the Augur beta test!",
-            text: "<p>On Augur, you can trade the probability of any real-world event happening. (Note: from now until the end of the beta test, everything on Augur is just play money!  Please do <b>not</b> send real Ether to your Augur beta account.)<br /></p>"+
-                "<p>In this market, you are considering:<br /><br /><b><i>" + this.props.market.description + "</i></b></p>",
-            attachTo: ".market-row .description top",
-            buttons: [{
-                text: "Exit",
-                classes: "shepherd-button-secondary",
-                action: tour.cancel
-            }, {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        // TODO highlight outcome labels
-        let outcomeList = "";
-        for (let i = 0; i < outcomeNames.length; ++i) {
-            outcomeList += "<li>" + outcomeNames[i] + " has a probability of " + utilities.getPercentageFormatted(this.props.market, outcomes[i]) + "</li>";
         }
-        tour.addStep("outcomes", {
-            text: "<p>This event has " + outcomeNames.length + " possible outcomes: " + outcomeNames.join(" or ") + "</p>" +
-                "<p>According to the market:</p>"+
-                "<ul class='tour-outcome-list'>" + outcomeList + "</ul>",
-            attachTo: ".outcomes right",
-            buttons: [{
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            }, {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        // TODO highlight trade button
-        tour.addStep("trade-button", {
-            title: "What do you think?",
-            text: "<p>" + this.props.market.description + " " + outcomeNames.join(" or ") + "?</p>"+
-                "<p>If you feel strongly enough, put your money where your mouth is and trade it!</p>",
-            attachTo: ".market-row .trade-button left",
-            buttons: [{
-                text: "Exit Tour",
-                classes: "shepherd-button-secondary",
-                action: tour.cancel
-            }, {
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            }],
-            when: {
-                show: function() {
-                    let el = ReactDOM.findDOMNode(self.refs.tradeButton);
-                    el.className += ' btn-warning super-highlight';
-                },
-
-                hide: function() {
-                    let el = ReactDOM.findDOMNode(self.refs.tradeButton);
-                    if (el) {
-                        el.className = el.className.replace(' btn-warning super-highlight', '');
-                    }
-                }
-            },
-            advanceOn: '.trade-button click'
-        });
-
-        setTimeout(() => tour.start(), 3000);
     },
 
     componentWillUnmount() {
-        tour && tour.hide();
+        MarketRowTour.hide();
     }
 });
 
