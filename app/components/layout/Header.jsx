@@ -116,7 +116,7 @@ let Header = React.createClass({
                     </li>
                     <li onClick={this.handleSendRepClick}>
                         <a href="#" className="">
-                            Reputation: {repBalance}
+                            Rep: {repBalance}
                         </a>
                     </li>
                     <li onClick={this.handleSendEtherClick}>
