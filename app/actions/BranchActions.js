@@ -92,8 +92,6 @@ module.exports = {
               }
             }
           });
-          // branch.calledPenalizeNotEnoughReports = true;
-          // self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
         }
 
         function penalizationCatchup() {
@@ -118,15 +116,15 @@ module.exports = {
               }
             }
           });
-          // branch.calledPenalizationCatchup = true;
-          // self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
         }
 
         function penalizeWrong() {
           self.flux.augur.getEvents(branch.id, prevPeriod, function (events) {
             if (!events || events.error) return console.error("getEvents:", events);
             async.each(events, function (event, nextEvent) {
+              console.log("penalizeWrong", event);
               if (branch.calledPenalizeWrong && branch.calledPenalizeWrong[event]) {
+                console.log("already penalized:", branch.calledPenalizeWrong[event]);
                 return nextEvent();
               }
               self.flux.augur.getMarkets(event, function (markets) {
@@ -141,7 +139,7 @@ module.exports = {
                         branch: branch.id,
                         event: event,
                         onSent: function (res) {
-                          console.log("penalizeWrong sent:", res);
+                          console.log("penalizeWrong sent for event " + event, res);
                           var branch = self.flux.store("branch").getCurrentBranch();
                           if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
                           branch.calledPenalizeWrong[event] = {
@@ -153,27 +151,22 @@ module.exports = {
                           self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
                         },
                         onSuccess: function (res) {
-                          console.log("penalizeWrong success:", res);
+                          console.log("penalizeWrong success for event " + event, res);
                           nextEvent();
                         },
                         onFailed: function (err) {
-                          console.error("penalizeWrong failed:", err);
+                          console.error("penalizeWrong failed for event" + event, err);
                           if (err.error === "-3") {
                             var branch = self.flux.store("branch").getCurrentBranch();
-                            branch.calledPenalizeWrong = [];
+                            if (branch.calledPenalizeWrong && branch.calledPenalizeWrong.length) {
+                              if (branch.calledPenalizeWrong[event]) {
+                                delete branch.calledPenalizeWrong[event];
+                              }
+                            }
                             branch.calledPenalizeNotEnoughReports = false;
                             self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
                             penalizeNotEnoughReports();
                           }
-                          // var branch = self.flux.store("branch").getCurrentBranch();
-                          // if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
-                          // branch.calledPenalizeWrong[event] = {
-                          //   branch: branch.id,
-                          //   event: event,
-                          //   reportPeriod: prevPeriod
-                          // };
-                          // console.log("branch.calledPenalizeWrong:", branch.calledPenalizeWrong);
-                          // self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
                           nextEvent(err);
                         }
                       });
