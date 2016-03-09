@@ -27,7 +27,8 @@ let MarketsPage = React.createClass({
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0,
             sortValue: null,
-            addMarketModalOpen: false
+            addMarketModalOpen: false,
+            selectedMarketStatus: this.selectedMarketStatusFromProps(this.props)
         };
     },
 
@@ -38,6 +39,7 @@ let MarketsPage = React.createClass({
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
         var tourMarketId = utils.getTourMarketKey(searchState.results, currentBranch);
+console.log('***', searchState);
         return {
             searchKeywords: searchState.keywords,
             markets: searchState.results,
@@ -67,11 +69,27 @@ let MarketsPage = React.createClass({
         this.getFlux().actions.search.sortMarkets(sortInput[0], parseInt(sortInput[1]));
     },
 
+    onChangeMarketStatus: function (newValue) {
+        switch(newValue.value) {
+            case 'expired':
+                this.transitionTo(this.context.router.getCurrentPathname(), null, { expired: true });
+                break;
+            default:
+                this.transitionTo(this.context.router.getCurrentPathname(), null, { expired: false });
+                break;
+        }
+    },
+
+    selectedMarketStatusFromProps: function(props) {
+        return props.query.expired === 'true' ? 'expired' : 'open';
+    },
+
     componentWillReceiveProps(nextProps) {
         if (this.props.query.expired !== nextProps.query.expired) {
             // when switching from one tab to another restart pagination
             this.setState(_.merge({}, this.state, {
-                pageNum: 0
+                pageNum: 0,
+                selectedMarketStatus: this.selectedMarketStatusFromProps(nextProps)
             }));
         }
     },
@@ -178,45 +196,40 @@ let MarketsPage = React.createClass({
                     Markets
                     {submitMarketAction}
                 </h1>
+                <div className="search-container">
+                    <InputClear
+                           value={this.state.searchKeywords}
+                           onChange={this.onChangeSearchInput}/>
+                </div>
 
-                <nav className="submenu">
-                    <ul className="list-group">
-                        <li className={ classnames('list-group-item', { 'active': this.props.query.expired !== 'true' }) } role="presentation">
-                            <Link to="markets" activeClassName="" role="tab">
-                                Open Markets
-                            </Link>
-                        </li>
-                        <li className={ classnames('list-group-item', { 'active': this.props.query.expired === 'true' }) } role="presentation">
-                            <Link to="markets" activeClassName="" query={{expired: true}} role="tab">
-                                Expired Markets
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
+                <div className="row dropdowns">
+                    <Select className="sort-control"
+                            value={this.state.sortValue}
+                            name="markets-sort"
+                            searchable={false}
+                            clearable={false}
+                            placeholder="Sort markets"
+                            onChange={this.onChangeSortBy}
+                            options={[
+                                {value: "creationBlock|1", label: "Creation date (newest first)"},
+                                {value: "creationBlock|0", label: "Creation date (oldest first)"},
+                                {value: "endBlock|0", label: "End date (soonest first)"},
+                                {value: "endBlock|1", label: "End date (farthest first)"},
+                                {value: "description|0", label: "Description"}
+                            ]}>
+                    </Select>
 
-                <div className="row search-sort-row">
-                    <div className="col-sm-4 col-xs-6">
-                        <Select className="sort-control"
-                                value={this.state.sortValue}
-                                name="markets-sort"
-                                searchable={false}
-                                clearable={false}
-                                placeholder="Sort markets"
-                                onChange={this.onChangeSortBy}
-                                options={[
-                                    {value: "creationBlock|1", label: "Creation date (newest first)"},
-                                    {value: "creationBlock|0", label: "Creation date (oldest first)"},
-                                    {value: "endBlock|0", label: "End date (soonest first)"},
-                                    {value: "endBlock|1", label: "End date (farthest first)"},
-                                    {value: "description|0", label: "Description"}
-                                ]}>
-                        </Select>
-                    </div>
-                    <div className="col-sm-4 col-xs-6 col-sm-offset-4 search-container">
-                        <InputClear
-                               value={this.state.searchKeywords}
-                               onChange={this.onChangeSearchInput}/>
-                    </div>
+                    <Select className="market-status"
+                            value={ this.state.selectedMarketStatus }
+                            name="market-status"
+                            searchable={false}
+                            clearable={false}
+                            onChange={this.onChangeMarketStatus}
+                            options={[
+                                {value: "open", label: "Open Markets"},
+                                {value: "expired", label: "Expired Markets"}
+                            ]}>
+                    </Select>
                 </div>
                 {pagination}
                 <div className="row">

@@ -1,9 +1,17 @@
+@padding: 0.4em; // parts that use this var are linked, need to be the same
+
 .input-clear {
-    .box {}
+    .box {
+        width: 100%;
+        font-size: inherit;
+        padding: @padding;
+    }
 
     .clear {
-        display: inline-block; position: relative;
-        left: -2rem;
+        display: inline-block; position: absolute;
+        top: 0.5em; right: 0.5em;
+        margin: 0;
+        padding: @padding;
         color: @color-grey-light2;
         background: transparent;
         border: 0;
