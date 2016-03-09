@@ -131,21 +131,6 @@ h1, h2, h3, h4, h5 {
     padding: 10px;
 }
 
-.marketPage h1 {
-    margin-bottom: 0;
-}
-.marketPage .tags {
-    margin-top: 0.5rem;
-}
-.marketPage .tags .tag {
-    margin-right: 0.6rem;
-    padding: 0.3rem;
-    border: solid 1px #d4dbe5;
-    border-radius: 3px;
-    font-size: 11px;
-    text-transform: uppercase;
-}
-
 nav.header .account {
     font-family: "Open Sans";
     font-size: 13px;
