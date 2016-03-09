@@ -62,6 +62,133 @@ module.exports = {
         }
         reportPeriod = abi.number(reportPeriod);
 
+        function penalizeNotEnoughReports() {
+          self.flux.augur.penalizeNotEnoughReports({
+            branch: branch.id,
+            onSent: function (res) {
+              console.log("penalizeNotEnoughReports sent:", res);
+              var branch = self.flux.store("branch").getCurrentBranch();
+              branch.calledPenalizeNotEnoughReports = true;
+              self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+            },
+            onSuccess: function (res) {
+              console.log("penalizeNotEnoughReports success:", res);
+              self.flux.actions.asset.updateAssets();
+            },
+            onFailed: function (err) {
+              var branch;
+              if (err.error === "-1") {
+                branch = self.flux.store("branch").getCurrentBranch();
+                branch.calledPenalizeNotEnoughReports = true;
+                self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+              } else if (err.error === "-2") {
+                branch = self.flux.store("branch").getCurrentBranch();
+                branch.calledPenalizationCatchup = false;
+                branch.calledPenalizeNotEnoughReports = false;
+                self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+                penalizationCatchup();
+              } else {
+                console.error("penalizeNotEnoughReports failed:", err);
+              }
+            }
+          });
+          // branch.calledPenalizeNotEnoughReports = true;
+          // self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+        }
+
+        function penalizationCatchup() {
+          self.flux.augur.penalizationCatchup({
+            branch: branch.id,
+            onSent: function (res) {
+              console.log("penalizationCatchup sent:", res);
+              var branch = self.flux.store("branch").getCurrentBranch();
+              branch.calledPenalizationCatchup = true;
+              self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+            },
+            onSuccess: function (res) {
+              console.log("penalizationCatchup success:", res);
+              self.flux.actions.asset.updateAssets();
+            },
+            onFailed: function (err) {
+              console.error("penalizationCatchup failed:", err);
+              if (err.error === "0") {
+                var branch = self.flux.store("branch").getCurrentBranch();
+                branch.calledPenalizationCatchup = true;
+                self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+              }
+            }
+          });
+          // branch.calledPenalizationCatchup = true;
+          // self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+        }
+
+        function penalizeWrong() {
+          self.flux.augur.getEvents(branch.id, prevPeriod, function (events) {
+            if (!events || events.error) return console.error("getEvents:", events);
+            async.each(events, function (event, nextEvent) {
+              if (branch.calledPenalizeWrong && branch.calledPenalizeWrong[event]) {
+                return nextEvent();
+              }
+              self.flux.augur.getMarkets(event, function (markets) {
+                if (!markets || markets.error) return console.error("getMarkets:", markets);
+                self.flux.augur.getOutcome(event, function (outcome) {
+                  if (outcome !== "0" && !outcome.error) {
+                    self.flux.augur.getReportHash(branch.id, prevPeriod, account, event, function (reportHash) {
+                      if (reportHash && reportHash.error) return nextEvent(reportHash);
+                      if (!reportHash || reportHash === "0x0") return nextEvent();
+                      console.log("Calling penalizeWrong for:", branch.id, prevPeriod, event);
+                      self.flux.augur.penalizeWrong({
+                        branch: branch.id,
+                        event: event,
+                        onSent: function (res) {
+                          console.log("penalizeWrong sent:", res);
+                          var branch = self.flux.store("branch").getCurrentBranch();
+                          if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
+                          branch.calledPenalizeWrong[event] = {
+                            branch: branch.id,
+                            event: event,
+                            reportPeriod: prevPeriod
+                          };
+                          console.log("branch.calledPenalizeWrong:", branch.calledPenalizeWrong);
+                          self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+                        },
+                        onSuccess: function (res) {
+                          console.log("penalizeWrong success:", res);
+                          nextEvent();
+                        },
+                        onFailed: function (err) {
+                          console.error("penalizeWrong failed:", err);
+                          if (err.error === "-3") {
+                            var branch = self.flux.store("branch").getCurrentBranch();
+                            branch.calledPenalizeWrong = [];
+                            branch.calledPenalizeNotEnoughReports = false;
+                            self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+                            penalizeNotEnoughReports();
+                          }
+                          // var branch = self.flux.store("branch").getCurrentBranch();
+                          // if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
+                          // branch.calledPenalizeWrong[event] = {
+                          //   branch: branch.id,
+                          //   event: event,
+                          //   reportPeriod: prevPeriod
+                          // };
+                          // console.log("branch.calledPenalizeWrong:", branch.calledPenalizeWrong);
+                          // self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+                          nextEvent(err);
+                        }
+                      });
+                    });
+                  } else {
+                    console.error("event", event, "does not yet have an outcome");
+                  }
+                });
+              });
+            }, function (err) {
+              if (err) console.error("each event error:", err);
+            });
+          });
+        }
+
         // if this is a new report period, load events to report
         if (reportPeriod > branch.reportPeriod) {
           console.log("New report period! Clearing pending reports...");
@@ -83,122 +210,21 @@ module.exports = {
                 // penalize if they did not submit enough reports.
                 if (reported === "1") {
                   if (!branch.calledPenalizeNotEnoughReports) {
-                    self.flux.augur.penalizeNotEnoughReports({
-                      branch: branch.id,
-                      onSent: function (res) {
-                        console.log("penalizeNotEnoughReports sent:", res);
-                        var branch = self.flux.store("branch").getCurrentBranch();
-                        branch.calledPenalizeNotEnoughReports = true;
-                        self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
-                      },
-                      onSuccess: function (res) {
-                        console.log("penalizeNotEnoughReports success:", res);
-                        self.flux.actions.asset.updateAssets();
-                      },
-                      onFailed: function (err) {
-                        if (err.error === "-1") {
-                          var branch = self.flux.store("branch").getCurrentBranch();
-                          branch.calledPenalizeNotEnoughReports = true;
-                          self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
-                        } else {
-                          console.error("penalizeNotEnoughReports failed:", err);
-                        }
-                      }
-                    });
-                    branch.calledPenalizeNotEnoughReports = true;
-                    self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+                    penalizeNotEnoughReports();
                   }
 
                 // if the reporter did not submit a report during the previous period,
                 // dock 10% for each report-less period.
                 } else {
                   if (!branch.calledPenalizationCatchup) {
-                    self.flux.augur.penalizationCatchup({
-                      branch: branch.id,
-                      onSent: function (res) {
-                        console.log("penalizationCatchup sent:", res);
-                        var branch = self.flux.store("branch").getCurrentBranch();
-                        branch.calledPenalizationCatchup = true;
-                        self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
-                      },
-                      onSuccess: function (res) {
-                        console.log("penalizationCatchup success:", res);
-                        self.flux.actions.asset.updateAssets();
-                      },
-                      onFailed: function (err) {
-                        console.error("penalizationCatchup failed:", err);
-                        if (err.error === "0") {
-                          var branch = self.flux.store("branch").getCurrentBranch();
-                          branch.calledPenalizationCatchup = true;
-                          self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
-                        }
-                      }
-                    });
-                    branch.calledPenalizationCatchup = true;
-                    self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
+                    penalizationCatchup();
                   }
                 }
               });
 
             // number-of-reports penalties applied; now penalize wrong answers.
             } else {
-              self.flux.augur.getEvents(branch.id, prevPeriod, function (events) {
-                if (!events || events.error) return console.error("getEvents:", events);
-                async.each(events, function (event, nextEvent) {
-                  if (branch.calledPenalizeWrong && branch.calledPenalizeWrong[event]) {
-                    return nextEvent();
-                  }
-                  self.flux.augur.getMarkets(event, function (markets) {
-                    if (!markets || markets.error) return console.error("getMarkets:", markets);
-                    self.flux.augur.getOutcome(event, function (outcome) {
-                      if (outcome !== "0" && !outcome.error) {
-                        self.flux.augur.getReportHash(branch.id, prevPeriod, account, event, function (reportHash) {
-                          if (reportHash && reportHash.error) return nextEvent(reportHash);
-                          if (!reportHash || reportHash === "0x0") return nextEvent();
-                          console.log("Calling penalizeWrong for:", branch.id, prevPeriod, event);
-                          self.flux.augur.penalizeWrong({
-                            branch: branch.id,
-                            event: event,
-                            onSent: function (res) {
-                              console.log("penalizeWrong sent:", res);
-                              var branch = self.flux.store("branch").getCurrentBranch();
-                              if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
-                              branch.calledPenalizeWrong[event] = {
-                                branch: branch.id,
-                                event: event,
-                                reportPeriod: prevPeriod
-                              };
-                              console.log("branch.calledPenalizeWrong:", branch.calledPenalizeWrong);
-                              self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
-                            },
-                            onSuccess: function (res) {
-                              console.log("penalizeWrong success:", res);
-                              nextEvent();
-                            },
-                            onFailed: function (err) {
-                              console.error("penalizeWrong failed:", err);
-                              var branch = self.flux.store("branch").getCurrentBranch();
-                              if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
-                              branch.calledPenalizeWrong[event] = {
-                                branch: branch.id,
-                                event: event,
-                                reportPeriod: prevPeriod
-                              };
-                              console.log("branch.calledPenalizeWrong:", branch.calledPenalizeWrong);
-                              self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
-                              nextEvent(err);
-                            }
-                          });
-                        });
-                      } else {
-                        console.error("event", event, "does not yet have an outcome");
-                      }
-                    });
-                  });
-                }, function (err) {
-                  if (err) console.error("each event error:", err);
-                });
-              });
+              penalizeWrong();
             }
           }
 

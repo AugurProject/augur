@@ -41,6 +41,7 @@ var ReportFillForm = React.createClass({
             );
         } else {
             outcomeOptions = outcomes.map(outcome => {
+                // console.log("outcome:", outcome.label);
                 return (
                     <div key={outcome.id} className="form-horizontal col-sm-12">
                         <Input type="radio"

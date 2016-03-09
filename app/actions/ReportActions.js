@@ -92,6 +92,7 @@ var ReportActions = {
                       async.each(markets, function (thisMarket, nextMarket) {
                         var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
                         if (market) {
+                          eventsToReport[eventId].type = market.type;
                           eventsToReport[eventId].markets.push(market);
                           return nextMarket();
                         }
@@ -202,6 +203,9 @@ var ReportActions = {
     } else {
       rescaledReportedOutcome = reportedOutcome;
     }
+    console.log("eventID:", event.id, event.type);
+    console.log("reportedOutcome:", reportedOutcome);
+    console.log("rescaledReportedOutcome:", rescaledReportedOutcome);
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
@@ -276,16 +280,7 @@ var ReportActions = {
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
-          if (DEBUG) console.log("submitReport:", {
-            branch: report.branchId,
-            reportPeriod: report.reportPeriod,
-            eventIndex: report.eventIndex,
-            salt: report.salt,
-            report: report.rescaledReportedOutcome,
-            eventID: report.eventId,
-            ethics: Number(!report.isUnethical),
-            indeterminate: report.isIndeterminate
-          });
+          if (DEBUG) console.log("submitReport:", JSON.stringify(report, null, 2));
           self.flux.augur.submitReport({
             branch: report.branchId,
             reportPeriod: report.reportPeriod,
@@ -466,7 +461,7 @@ var ReportActions = {
                   description: scalarDescription,
                   expirationBlock: expirationBlock,
                   minValue: 0,
-                  maxValue: 1000000,
+                  maxValue: 100,
                   numOutcomes: 2,
                   alpha: "0.0079",
                   initialLiquidity: 100,
