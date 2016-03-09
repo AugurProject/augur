@@ -26,7 +26,6 @@ let MarketsPage = React.createClass({
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0,
-            sortValue: null,
             addMarketModalOpen: false,
             selectedMarketStatus: this.selectedMarketStatusFromProps(this.props)
         };
@@ -42,6 +41,8 @@ let MarketsPage = React.createClass({
 
         return {
             searchKeywords: searchState.keywords,
+            sortBy: searchState.sortBy,
+            reverseSort: searchState.reverseSort,
             markets: searchState.results,
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
@@ -61,9 +62,6 @@ let MarketsPage = React.createClass({
     },
 
     onChangeSortBy: function (newValue) {
-        this.setState({
-            sortValue: newValue
-        });
         this.handlePageChanged({selected: 0});
         var sortInput = newValue.value.split('|');
         this.getFlux().actions.search.sortMarkets(sortInput[0], parseInt(sortInput[1]));
@@ -204,7 +202,7 @@ let MarketsPage = React.createClass({
 
                 <div className="row dropdowns">
                     <Select className="sort-control"
-                            value={this.state.sortValue}
+                            value={this.state.sortBy + '|' + this.state.reverseSort}
                             name="markets-sort"
                             searchable={false}
                             clearable={false}

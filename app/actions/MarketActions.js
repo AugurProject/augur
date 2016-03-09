@@ -238,6 +238,8 @@ module.exports = {
         // loading complete!
         console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
 
+        self.dispatch(constants.search.UPDATE_SORT_BY, {sortBy: 'creationBlock', reverse: 1});
+        
         // load delicious extras
 
         function getCreationBlocks(markets) {
