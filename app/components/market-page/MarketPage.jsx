@@ -129,14 +129,16 @@ let MarketPage = React.createClass({
         }
         let image = <span />;
         if (metadata.image) {
-            image = <img className="metadata-image" src={this.state.image} />;
+            image = <div className="metadata-image-container"><img className="metadata-image" src={this.state.image} /></div>;
         }
 
         return (
             <div className="marketPage">
                 {closeMarketButton}
-                <h1>{ this.state.market.description }</h1>
-                {image}
+                <h1>
+                    {image}
+                    { this.state.market.description }
+                </h1>
                 <div className="tags">
                     {tags}
                 </div>

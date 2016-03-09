@@ -1,8 +1,8 @@
 // main navigation bar
 .navbar {
+    width:100%;
     border-radius: 0;
-    margin-bottom: 0;
-    background-color: @color-teal;
+    background-color: @color-purple-dark;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
@@ -14,7 +14,9 @@
     }
 
     .container {
-        width: 100%;
+        left: 0; right: 0;
+        width: 100%; max-width: 1260px;
+        margin: 0 auto;
         padding: 0 1rem 0 4rem;
     }
 
@@ -28,7 +30,7 @@
             line-height: 8px;
             background-image: url(/images/augur_logo_small_white.png);
             background-repeat: no-repeat;
-            height: auto;
+            height: 3rem;
             padding-left: 40px;
             svg {
                 width: 25px;
@@ -41,7 +43,7 @@
 
     .navbar-header {
         .navbar-toggle {
-            padding: 20px 15px;
+            padding: 20px 2rem;
             line-height: 30px;
             margin: 0;
             height: auto;
@@ -73,7 +75,7 @@
                     &.active,
                     &:hover,
                     &:focus {
-                        background-color: @color-teal-dark;
+                        background-color: @color-purple;
                         color: @color-white;
                     }
                     &.btn {
@@ -250,7 +252,7 @@ body > .navbar-collapse::after {
     // Main navigation bar
     .navbar {
         .navbar-brandbox {
-            left: 10px;
+            left: 2rem;
         }
 
         > .container {
