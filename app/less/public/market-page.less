@@ -1,0 +1,48 @@
+@import "../partials/variables";
+
+.marketPage {
+    h1 {
+        display: flex;
+        align-items: center;
+
+        .metadata-image-container {
+            max-width: 20%;
+            margin: 0 1.3rem 0 0;
+            padding: 0;
+            overflow: hidden;
+            .metadata-image {
+                max-height: 10rem;
+                margin: 0; padding: 0;
+                border-radius: 2px;
+            }
+        }
+    }
+}
+
+@media (max-width: @screen-sm-min) {
+    .marketPage {
+        h1 {
+            font-size: 1.7rem;
+            .metadata-image-container {
+                margin: 0 1rem 0 0;
+                .metadata-image {
+                    max-height: 7rem;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: @screen-xs) {
+    .marketPage {
+        h1 {
+            font-size: 1.3rem;
+            .metadata-image-container {
+                margin: 0 0.7rem 0 0;
+                .metadata-image {
+                    max-height: 5rem;
+                }
+            }
+        }
+    }
+}
