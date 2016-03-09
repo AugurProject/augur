@@ -8,7 +8,7 @@ var isHosted = NODE_JS || document.location.protocol === "https:";
 
 module.exports = {
   state: {
-    host: (isHosted) ? null : "http://127.0.0.1:8545",
+    host: (isHosted) ? null : null,
     currentAccount: null,
     privateKey: null,
     handle: null,

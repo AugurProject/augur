@@ -34,13 +34,15 @@ module.exports = {
       var pendingReports = reportsString ?
         JSON.parse(reportsString)[this.state.reportPeriod] : [];
       var report;
-      for (var i = 0, len = pendingReports.length; i < len; ++i) {
-        report = pendingReports[i];
-        if (this.state.eventsToReport[report.eventId]) {
-          this.state.eventsToReport[report.eventId].report = report;
+      if (pendingReports && pendingReports.length) {
+        for (var i = 0, len = pendingReports.length; i < len; ++i) {
+          report = pendingReports[i];
+          if (this.state.eventsToReport[report.eventId]) {
+            this.state.eventsToReport[report.eventId].report = report;
+          }
         }
+        this.state.pendingReports = pendingReports;
       }
-      this.state.pendingReports = pendingReports;
       this.state.loadedReports = true;
     }
     return this.state.pendingReports;

@@ -222,7 +222,7 @@ var ReportActions = {
         submitReport: false
       }
     );
-    console.log("submitReportHash:", {
+    if (DEBUG) console.log("submitReportHash:", {
       branch: branchId,
       reportHash: reportHash,
       reportPeriod: reportPeriod,
@@ -262,7 +262,7 @@ var ReportActions = {
     var self = this;
     cb = cb || function (e, r) { console.log(e, r); };
     var pendingReports = this.flux.store("report").getPendingReports();
-    if (!pendingReports.length) return cb(null);
+    if (!pendingReports || !pendingReports.length) return cb(null);
     var sentReports = [];
     var currentBlock = this.flux.store("network").getState().blockNumber;
     async.forEachOf(pendingReports, function (report, index, nextReport) {
@@ -276,7 +276,7 @@ var ReportActions = {
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
-          console.log("submitReport:", {
+          if (DEBUG) console.log("submitReport:", {
             branch: report.branchId,
             reportPeriod: report.reportPeriod,
             eventIndex: report.eventIndex,
