@@ -99,10 +99,21 @@ var ReportActions = {
                         augur.getMarketInfo(thisMarket, function (marketInfo) {
                           eventsToReport[eventId].type = marketInfo.type;
                           if (report && report !== "0") {
+                            var bnReport;
                             if (marketInfo.type === "scalar") {
-                              eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                              bnReport = abi.bignum(report);
+                              if (bnReport.toFixed(1) === constants.INDETERMINATE_OUTCOME) {
+                                eventsToReport[eventId].report.reportedOutcome = constants.INDETERMINATE_OUTCOME;
+                              } else {
+                                eventsToReport[eventId].report.reportedOutcome = bnReport.times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                              }
                             } else if (marketInfo.type === "categorical") {
-                              eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                              bnReport = abi.bignum(report);
+                              if (bnReport.toFixed(1) === constants.INDETERMINATE_OUTCOME) {
+                                eventsToReport[eventId].report.reportedOutcome = constants.INDETERMINATE_OUTCOME;
+                              } else {
+                                eventsToReport[eventId].report.reportedOutcome = bnReport.times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                              }
                             } else {
                               eventsToReport[eventId].report.reportedOutcome = report;
                             }
@@ -192,16 +203,20 @@ var ReportActions = {
 
     // Re-scale scalar/categorical reports so they fall between 0 and 1
     var rescaledReportedOutcome;
-    if (event.type === "scalar") {
-      rescaledReportedOutcome = abi.bignum(reportedOutcome)
-                                   .minus(minValue)
-                                   .dividedBy(maxValue.minus(minValue)).toFixed();
-    } else if (event.type === "categorical") {
-      rescaledReportedOutcome = abi.bignum(reportedOutcome)
-                                   .minus(abi.bignum(1))
-                                   .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
-    } else {
+    if (isIndeterminate) {
       rescaledReportedOutcome = reportedOutcome;
+    } else {
+      if (event.type === "scalar") {
+        rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                     .minus(minValue)
+                                     .dividedBy(maxValue.minus(minValue)).toFixed();
+      } else if (event.type === "categorical") {
+        rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                     .minus(abi.bignum(1))
+                                     .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+      } else {
+        rescaledReportedOutcome = reportedOutcome;
+      }
     }
     console.log("eventID:", event.id, event.type);
     console.log("reportedOutcome:", reportedOutcome);
