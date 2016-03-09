@@ -39,7 +39,7 @@ let MarketsPage = React.createClass({
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
         var tourMarketId = utils.getTourMarketKey(searchState.results, currentBranch);
-console.log('***', searchState);
+
         return {
             searchKeywords: searchState.keywords,
             markets: searchState.results,
