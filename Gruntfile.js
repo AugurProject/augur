@@ -79,7 +79,7 @@ module.exports = function (grunt) {
         tasks: ['less:build']
       },
       copy: {
-        files: ['app/index.html', 'app/iamges/*', 'app/css/*', 'app/libs/*'],
+        files: ['app/index.html', 'app/iamges/*', 'app/css/*', 'app/libs/*', 'app/fonts/*'],
         tasks: ['newer:copy:main']
       }
     },
@@ -105,7 +105,14 @@ module.exports = function (grunt) {
             expand: true, // to use cwd
             cwd: 'app/libs',
             src: '**',
-            dest: 'target/libs/'},
+            dest: 'target/libs/'
+          },
+          {
+            expand: true,
+            cwd: 'app/fonts',
+            src: '**',
+            dest: 'target/fonts/'
+          },
           {
             'target/css/bootstrap.css': 'node_modules/bootstrap/dist/css/bootstrap.css'
           },

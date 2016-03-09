@@ -92,6 +92,7 @@ var ReportActions = {
                       async.each(markets, function (thisMarket, nextMarket) {
                         var market = self.flux.store("market").getMarket(abi.bignum(thisMarket));
                         if (market) {
+                          eventsToReport[eventId].type = market.type;
                           eventsToReport[eventId].markets.push(market);
                           return nextMarket();
                         }
@@ -202,6 +203,9 @@ var ReportActions = {
     } else {
       rescaledReportedOutcome = reportedOutcome;
     }
+    console.log("eventID:", event.id, event.type);
+    console.log("reportedOutcome:", reportedOutcome);
+    console.log("rescaledReportedOutcome:", rescaledReportedOutcome);
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
@@ -276,16 +280,7 @@ var ReportActions = {
         var reportingStartBlock = (report.reportPeriod + 1) * periodLength;
         var reportingCurrentBlock = currentBlock - reportingStartBlock;
         if (reportingCurrentBlock > (periodLength / 2)) {
-          if (DEBUG) console.log("submitReport:", {
-            branch: report.branchId,
-            reportPeriod: report.reportPeriod,
-            eventIndex: report.eventIndex,
-            salt: report.salt,
-            report: report.rescaledReportedOutcome,
-            eventID: report.eventId,
-            ethics: Number(!report.isUnethical),
-            indeterminate: report.isIndeterminate
-          });
+          if (DEBUG) console.log("submitReport:", JSON.stringify(report, null, 2));
           self.flux.augur.submitReport({
             branch: report.branchId,
             reportPeriod: report.reportPeriod,
@@ -332,20 +327,26 @@ var ReportActions = {
    * Methods to set up a new branch and prepare it for report testing. *
    *********************************************************************/
 
-  loadReadyBranch: function () {
+  loadReadyBranch: function (noFaucet) {
     var self = this;
     this.flux.augur.getBranches(function (branches) {
       if (branches && branches.constructor === Array && branches.length) {
         self.flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
+        if (noFaucet) {
+          self.flux.actions.asset.updateAssets();
+          return self.flux.actions.market.loadMarkets();
+        }
         self.flux.augur.reputationFaucet({
           branch: branches[branches.length - 1],
           onSent: function (res) {},
           onSuccess: function (res) {
             self.flux.actions.asset.updateAssets();
+            self.flux.actions.market.loadMarkets();
           },
           onFailed: function (err) {
             console.log("loadReadyBranch.reputationFaucet failed:", err);
             self.flux.actions.asset.updateAssets();
+            self.flux.actions.market.loadMarkets();
           }
         });
       }
@@ -466,7 +467,7 @@ var ReportActions = {
                   description: scalarDescription,
                   expirationBlock: expirationBlock,
                   minValue: 0,
-                  maxValue: 1000000,
+                  maxValue: 100,
                   numOutcomes: 2,
                   alpha: "0.0079",
                   initialLiquidity: 100,
@@ -627,6 +628,7 @@ var ReportActions = {
                     self.flux.actions.asset.updateAssets();
                     self.flux.actions.branch.updateCurrentBranch();
                     self.flux.actions.report.ready(branchID);
+                    self.flux.actions.market.loadMarkets();
                   });
                 });
               });

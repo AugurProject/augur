@@ -19,8 +19,11 @@ var ReportFillForm = React.createClass({
     onReportedOutcomeChanged(event) {
         let report = event.target.value;
         if (report !== null && report !== undefined) {
-            if (report === constants.INDETERMINATE_OUTCOME && event.target.id === "indeterminate") {
-                this.setState({isIndeterminate: true});
+            if (report === constants.INDETERMINATE_OUTCOME &&
+                event.target.id === "indeterminate") {
+                this.setState({
+                    isIndeterminate: !this.state.isIndeterminate
+                });
             }
             this.setState({reportedOutcome: report});
         }
@@ -31,13 +34,34 @@ var ReportFillForm = React.createClass({
         let nameAttr = "reportedOutcome";
         let outcomeOptions;
         if (market.type === "scalar") {
+            let event = market.events[0];
             outcomeOptions = [];
             outcomeOptions.push(
-                <Input type="text"
-                       name={nameAttr}
-                       placeholder="Event outcome"
-                       value={this.state.reportedOutcome}
-                       onChange={this.onReportedOutcomeChanged} />
+                <div key="scalar-outcome-report">
+                    <div className="col-sm-4 flush-left">
+                        <Input type="text"
+                               name={nameAttr}
+                               disabled={this.state.isIndeterminate}
+                               placeholder="Event outcome"
+                               value={this.state.reportedOutcome}
+                               className="full-width"
+                               onChange={this.onReportedOutcomeChanged} />
+                    </div>
+                    <div className="col-sm-8">
+                        Your answer must be at least <b>{event.minValue}</b>, but no more than <b>{event.maxValue}</b>.  If your answer is outside this range, select <b>Outcome is indeterminate</b>.
+                    </div>
+                </div>
+            );
+            outcomeOptions.push(
+                <div key="indeterminate" className="form-horizontal col-sm-12">
+                    <Input type="checkbox"
+                           id="indeterminate"
+                           name={nameAttr}
+                           value={constants.INDETERMINATE_OUTCOME}
+                           checked={this.state.isIndeterminate}
+                           label="Outcome is indeterminate"
+                           onChange={this.onReportedOutcomeChanged} />
+                </div>
             );
         } else {
             outcomeOptions = outcomes.map(outcome => {
@@ -52,18 +76,18 @@ var ReportFillForm = React.createClass({
                     </div>
                 );
             });
+            outcomeOptions.push(
+                <div key="indeterminate" className="form-horizontal col-sm-12">
+                    <Input type="radio"
+                           id="indeterminate"
+                           name={nameAttr}
+                           value={constants.INDETERMINATE_OUTCOME}
+                           checked={this.state.reportedOutcome == constants.INDETERMINATE_OUTCOME}
+                           label="Outcome is indeterminate"
+                           onChange={this.onReportedOutcomeChanged} />
+                </div>
+            );
         }
-        outcomeOptions.push(
-            <div key="indeterminate" className="form-horizontal col-sm-12">
-                <Input type="radio"
-                       id="indeterminate"
-                       name={nameAttr}
-                       value={constants.INDETERMINATE_OUTCOME}
-                       checked={this.state.reportedOutcome == constants.INDETERMINATE_OUTCOME}
-                       label="Outcome is indeterminate"
-                       onChange={this.onReportedOutcomeChanged} />
-            </div>
-        );
         return outcomeOptions;
     },
 
