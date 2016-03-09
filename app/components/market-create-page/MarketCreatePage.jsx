@@ -321,7 +321,7 @@ let MarketCreatePage = React.createClass({
 
       this.setState({tagErrors});
     }
-    
+
     return isStepValid;
   },
   validateStep3(fieldToValidate) {
@@ -376,7 +376,6 @@ let MarketCreatePage = React.createClass({
 
   onHide: function () {
     this.setState(this.getInitialState());
-    this.props.onHide();
   },
 
   sendNewMarketRequest() {
@@ -419,6 +418,8 @@ let MarketCreatePage = React.createClass({
       numOutcomes = this.state.choices.length;
     }
 
+    self.toggleProgressModal();
+
     flux.augur.createSingleEventMarket({
       branchId: branchId,
       description: newMarketParams.description,
@@ -438,7 +439,6 @@ let MarketCreatePage = React.createClass({
           status: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
           detail: r
         });
-        self.toggleProgressModal();
         flux.augur.ramble.addMetadata({
           marketId: marketId,
           image: metadata.image,
@@ -709,7 +709,7 @@ let MarketCreatePage = React.createClass({
             tradingFee={this.state.tradingFee}
             marketInvestment={this.state.marketInvestment}
             outcomePrices={this.state.outcomePrices}
-            goToNextStep={this.goToNextStep}
+            sendNewMarketRequest={this.sendNewMarketRequest}
             goToPreviousStep={this.goToPreviousStep}
             />
           )
