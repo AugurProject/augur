@@ -17,6 +17,13 @@ module.exports = {
     return !isNaN(parseFloat(n)) && isFinite(n);
   },
 
+  // http://stackoverflow.com/a/2901298/2059654
+  commafy: function (x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  },
+
   updateProgressModal: function (update, noStep) {
     var self = this;
     var state = this.state.progressModal;
@@ -71,7 +78,7 @@ module.exports = {
   },
 
   formatEther: function (wei) {
-    if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
+    if (!wei) return {value: '', unit: 'ether', withUnit: '-'};
     if (wei instanceof Error) throw wei;
     var value = abi.bignum(wei).dividedBy(constants.ETHER);
     var unit = 'ether';

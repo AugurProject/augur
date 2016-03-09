@@ -2,7 +2,7 @@
 .navbar {
     border-radius: 0;
     margin-bottom: 0;
-    background-color: @color-purple-dark;
+    background-color: @color-teal;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
@@ -18,28 +18,33 @@
         padding: 0 1rem 0 4rem;
     }
 
-    .navbar-header {
-        margin-right: 1rem;
-        .navbar-toggle {
-            padding: 20px 15px;
-            line-height: 30px;
-            margin: 0;
-            height: auto;
-        }
+    .navbar-brandbox {
+        top: 16px;
+        position: absolute;
         .navbar-brand {
-            margin-top: 0;
-            margin-bottom: 0;
-            font-size: @font-size-base;
-            line-height: 30px;
+            font-family: "Core Mellow";
+            font-size: 18pt;
+            font-weight: 400;
+            line-height: 8px;
+            background-image: url(/images/augur_logo_small_white.png);
+            background-repeat: no-repeat;
             height: auto;
-            padding: 20px 15px;
-            text-transform: uppercase;
+            padding-left: 40px;
             svg {
                 width: 25px;
                 height: 25px;
                 position: relative;
                 top: -2px;
             }
+        }
+    }
+
+    .navbar-header {
+        .navbar-toggle {
+            padding: 20px 15px;
+            line-height: 30px;
+            margin: 0;
+            height: auto;
         }
     }
     .navbar-collapse {
@@ -68,7 +73,7 @@
                     &.active,
                     &:hover,
                     &:focus {
-                        background-color: @color-purple;
+                        background-color: @color-teal-dark;
                         color: @color-white;
                     }
                     &.btn {
@@ -219,7 +224,16 @@ body > .navbar-collapse::after {
         visibility: visible;
     }
 
+    .navbar-brandbox {
+        left: 50%;
+        .navbar-brand {
+            position: relative;
+            left: -25%;
+        }
+    }
+
     .navbar-collapse.collapse {
+        margin-left: -55px;
         height: 5rem !important;
         line-height: 5rem;
         text-align: right;
@@ -235,8 +249,8 @@ body > .navbar-collapse::after {
 
     // Main navigation bar
     .navbar {
-        .navbar-brand {
-            margin-left: 25px;
+        .navbar-brandbox {
+            left: 10px;
         }
 
         > .container {

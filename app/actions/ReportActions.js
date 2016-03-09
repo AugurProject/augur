@@ -327,20 +327,26 @@ var ReportActions = {
    * Methods to set up a new branch and prepare it for report testing. *
    *********************************************************************/
 
-  loadReadyBranch: function () {
+  loadReadyBranch: function (noFaucet) {
     var self = this;
     this.flux.augur.getBranches(function (branches) {
       if (branches && branches.constructor === Array && branches.length) {
         self.flux.actions.branch.setCurrentBranch(branches[branches.length - 1]);
+        if (noFaucet) {
+          self.flux.actions.asset.updateAssets();
+          return self.flux.actions.market.loadMarkets();
+        }
         self.flux.augur.reputationFaucet({
           branch: branches[branches.length - 1],
           onSent: function (res) {},
           onSuccess: function (res) {
             self.flux.actions.asset.updateAssets();
+            self.flux.actions.market.loadMarkets();
           },
           onFailed: function (err) {
             console.log("loadReadyBranch.reputationFaucet failed:", err);
             self.flux.actions.asset.updateAssets();
+            self.flux.actions.market.loadMarkets();
           }
         });
       }
@@ -622,6 +628,7 @@ var ReportActions = {
                     self.flux.actions.asset.updateAssets();
                     self.flux.actions.branch.updateCurrentBranch();
                     self.flux.actions.report.ready(branchID);
+                    self.flux.actions.market.loadMarkets();
                   });
                 });
               });

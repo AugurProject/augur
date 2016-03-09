@@ -40,13 +40,13 @@ module.exports = React.createClass({
       loadingProgressModalWrapper = "pull-left loading-progress-modal-wrapper";
       if (this.props.complete) {
         active = false;
-        loadingProgressModalWrapper += " clickable";
+        loadingProgressModalWrapper += " pointer";
       }
       loadingProgressModal = "loading-progress-modal-minimized";
       loadingProgressModalRow = "loading-progress-modal-row";
       expandIcon = (
         <div className="pull-right">
-          <span className="minimize-icon">
+          <span className="pointer">
             <Glyphicon
               glyph="chevron-up"
               onClick={this.toggleMinimized} />
@@ -112,7 +112,7 @@ module.exports = React.createClass({
           <div className="col-sm-12 progress-modal-header">
             <h4 className={hideWhenMinimized}>
               {this.props.header}
-              <span className="minimize-icon pull-right">
+              <span className="pointer pull-right">
                 <Glyphicon
                   glyph="chevron-down"
                   onClick={this.toggleMinimized} />

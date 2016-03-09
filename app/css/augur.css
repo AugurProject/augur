@@ -1,8 +1,51 @@
+@font-face {
+    font-family: "Core Mellow";
+    font-weight: 200;
+    src: url("/fonts/S-Core-CoreMellow15Thin.otf") format("opentype");
+}
+@font-face {
+    font-family: "Core Mellow";
+    font-weight: 300;
+    src: url("/fonts/S-Core-CoreMellow25ExtraLight.otf") format("opentype");
+}
+@font-face {
+    font-family: "Core Mellow";
+    font-weight: 400;
+    src: url("/fonts/S-Core-CoreMellow35Light.otf") format("opentype");
+}
+@font-face {
+    font-family: "Core Mellow";
+    font-weight: 500;
+    src: url("/fonts/S-Core-CoreMellow45Regular.otf") format("opentype");
+}
+@font-face {
+    font-family: "Core Mellow";
+    font-weight: 600;
+    src: url("/fonts/S-Core-CoreMellow55Medium.otf") format("opentype");
+}
+@font-face {
+    font-family: "Core Mellow";
+    font-weight: 700;
+    src: url("/fonts/S-Core-CoreMellow65Bold.otf") format("opentype");
+}
+
 h1, h2, h3, h4, h5 {
-    font-family: 'Roboto';
+    font-family: "Roboto";
     font-weight: 500;
 }
 
+.pointer {
+    cursor: pointer;
+}
+.hidden {
+    display: none;
+}
+.flush-left {
+    padding-left: 0;
+}
+.indent {
+    padding-left: 20px;
+}
 
 #app.stopped {
     height: 100%;
@@ -24,41 +67,12 @@ h1, h2, h3, h4, h5 {
     display: none;
 }
 
-.branch-description {
-    font-size: 15pt;
-}
-
 #loading {
     background-color: #34495e;
     position: absolute;
     height: 100%;
     width: 100%;
 }
-
-.loading-progress {
-    margin-bottom: 0 !important;
-}
-.loading-progress-modal {
-    margin-bottom: 10px !important;
-}
-.loading-progress-modal-minimized {
-    margin-bottom: 2px !important;
-}
-.loading-progress-modal-row {
-    margin-right: -3px !important;
-    margin-left: -3px !important;
-    margin-top: 3px !important;
-}
-.minimize-icon {
-    cursor: pointer;
-}
-.loading-progress-modal-wrapper {
-    width: 97%;
-}
-.clickable {
-    cursor: pointer;
-}
-
 #loading .logo {
     position:absolute;
     left:50%;
@@ -89,131 +103,32 @@ h1, h2, h3, h4, h5 {
 #loading .progress-bar {
     background-color: #fff;
 }
-
-.spin {
-    display: inline-block;
-    -webkit-transform-origin: 47% 50%;
-    transform-origin: 47% 50%;
-    -webkit-animation: spin 1s infinite linear;
-    -moz-animation: spin 1s infinite linear;
-    -o-animation: spin 1s infinite linear;
-    animation: spin 1s infinite linear;
+.loading-progress {
+    margin-bottom: 0 !important;
 }
-
-.truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.loading-progress-modal {
+    margin-bottom: 10px !important;
 }
-
-.hidden {
-    display: none;
+.loading-progress-modal-minimized {
+    margin-bottom: 2px !important;
 }
-
-.no-truncate {
-    word-wrap: break-word;
+.loading-progress-modal-row {
+    margin-right: -3px !important;
+    margin-left: -3px !important;
+    margin-top: 3px !important;
 }
-
-p.address {
-    font-size: 12px;
-    background-color: #333;
-    color: #eee;
-    padding: 5px;
-    border-radius: 3px;
-    margin-top: 15px;
-}
-
-.metal {
-    background-color: #454545;
-    background-image: url("/images/metal.png");
-}
-
-nav.header {
-    background-color: #454545;
-    background-image: url("/images/metal.png");
-    margin-bottom: 20px;
-}
-nav.header h1 {
-    background-image: url('/images/augur_logo_200_white.png');
-    background-repeat: no-repeat;
-    background-size: 27px 32px;
-    background-position: 8px 8px;
-    font-size: 23px;
-    margin: 5px 0px 0px 0px;
-    position: relative;
-    float: left;
-    top: 0px;
-    color: #fff;
-    padding: 9px 10px 10px 44px;
-    font-weight: 300;
-}
-nav.header h1 > i {
-    color: #fff;
-    position: relative;
-    top: -8px;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 200;
-    left: 4px;
-    opacity: 0.75;
-}
-
-.icon-red {
-    color: #C24040;
-}
-.icon-green {
-    color: green;
-}
-.icon-white {
-    color: white;
-}
-.icon-blue {
-    color: #01A9DB;
-}
-
-.icon-background1 {
-    color: #ffffff;
-}
-
-.icon-background2 {
-    color: #ffffff;
-}
-
-.icon-background3 {
-    color: green;
-}
-
-.icon-background4 {
-    color: #01A9DB;
-}
-
-.icon-background6 {
-    color: #C24040;
-}
-
-.icon-background5 {
-    color: #c0c0ff;
-}
-
-.circle-icon2 {
-    background: #ffc0c0;
-    padding:30px;
-    border-radius: 50%;
-}
-
-.circle-icon {
-    background: #ffc0c0;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 100px;
-    vertical-align: middle;
-    padding: 30px;
+.loading-progress-modal-wrapper {
+    width: 97%;
 }
 
 .metadata-details {
     white-space: pre-wrap;
+}
+.metadata-image {
+    max-height: 300px;
+    max-width: 100%;
+    margin: 15px 0 10px 0;
+    padding: 10px;
 }
 
 .marketPage h1 {
@@ -231,12 +146,6 @@ nav.header h1 > i {
     text-transform: uppercase;
 }
 
-.navbar-brand {
-    background-image: url(/images/augur_logo_small_white.png);
-    background-repeat: no-repeat;
-    margin-top: 15px !important;
-    width: 35px;
-}
 nav.header .account {
     font-family: "Open Sans";
     font-size: 13px;
@@ -244,13 +153,6 @@ nav.header .account {
 }
 nav.header .navbar-text {
     margin-right: 0px;
-}
-nav.header .account {
-    margin-right: 8px;
-}
-nav.header .signout {
-    cursor: pointer;
-    text-transform: uppercase;
 }
 nav.header .signin,
 nav.header .register {
@@ -277,22 +179,17 @@ nav.header .register {
         margin: 10px 10px 0px -1px;
     }
 }
-.shadow {
-    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.4);
-}
 
-.hidden {
-    display: none;
+.full-width {
+    width: 100% !important;
 }
 .full-height {
     height: 250px;
+    max-height: 50%;
     overflow-y: auto;
 }
 .minimized {
-    /*max-height: 100px;*/
-    max-height: 50%;
+    max-height: 100px;
     overflow: hidden;
 }
 .min-button {
@@ -352,62 +249,17 @@ nav.header .register {
     margin: 10px 0px 0px 0px;
 }
 .modal-content {
-    /*background-color: #f9f6ea;*/
     background-color: #ffffff;
 }
 .progress {
     background-color: #D6D8C6;
 }
 
-.loading-blocks-progress {
-    margin: 0px 0px 0px 0px;
-    height: 6px;
+#branch h4 {
+    margin: 10px 0px 20px 0px;
 }
-
-.panel.panel-default,
-.panel.panel-default .panel-heading,
-.panel.panel-default .panel-body {
-    background-color: transparent;
-    color: #333;
-}
-.population {
-    margin-left: 10px;
-}
-
-.markets-list {
-    color: #333333;
-    font-size: 11pt;
-}
-.markets-list a {
-    color: #333333;
-}
-.markets-list-header {
-    border-bottom: 1px solid #474545;
-    width: 100%;
-    margin-left: 0;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    font-size: 12pt;
-}
-.markets-list-row {
-    padding-top: 2px;
-    padding-bottom: 2px;
-    width: 100%;
-    margin-left: 0;
-}
-.markets-list-row:hover {
-    background-color: #EFFBF8;
-}
-
-.event-outcomes {
-    padding-bottom: 15px;
-}
-.event-description {
-    font-size: 14pt !important;
-    border-bottom: 1px solid #474545 !important;
-}
-.event-subheading {
-    font-size: 10pt !important;
+.branch-description {
+    font-size: 15pt;
 }
 
 .account-info {
@@ -427,164 +279,6 @@ nav.header .register {
 .account-info ul li {
     padding: 3px 12px;
 }
-
-.sidebar .nav {
-    position: relative;
-    z-index: 100;
-    display: none;
-    color: #5d6576;
-    margin-top: -25px;
-    padding: 20px 0px 5px 0px;
-}
-.sidebar .nav ul {
-    list-style-type: none;
-    line-height: 24pt;
-    font-family: 'Open Sans';
-    padding: 0px 12px;
-    font-size: 12pt;
-}
-.sidebar .nav ul li {
-    padding: 3px 12px;
-}
-.sidebar .nav ul a {
-    color: #5d6576;
-    text-decoration: none;
-}
-.sidebar .nav ul a.active {
-    /*color: #ffe1a8;*/
-    color: #2ca8ff;
-    text-decoration: none;
-}
-.sidebar .nav ul a.active:hover {
-    background-color: rgb(230, 244, 230);
-    text-decoration: none;
-}
-.sidebar .nav ul a:hover {
-    text-decoration: none;
-}
-.sidebar .nav ul li:hover {
-    /*text-decoration: underline;*/
-    background-color: rgb(230, 244, 230);
-}
-.sidenar .nav ul a.disabled:hover {
-    text-decoration: none;
-}
-.sidebar .nav ul a.disabled {
-    opacity: 0.5;
-}
-.sidebar .nav div.divider {
-    margin: 10px 10px;
-    height: 1px;
-    border-bottom: 1px solid #eee;
-}
-.sidebar .nav p i {
-    letter-spacing: 0.02em;
-    font-style: normal;
-    display: inline-block;
-    background-color: #fff;
-    color: #34495e;
-    padding: 1px 6px 2px 6px;
-    border-radius: 8px;
-    margin: 0px 0px 0px 10px;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    opacity: 0.6;
-    position: relative;
-    top: -2px;
-}
-
-.account .address {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.account {
-    color: #54657e;
-}
-
-.network {
-    display: none;
-    box-shadow: none;
-    border: none;
-    -webkit-box-shadow: none;
-    margin-top: 15px;
-    color: #777;
-}
-.network .panel-body,
-.network .panel-heading {
-    padding: 5px;
-}
-.network .panel-body p {
-    padding: 0px 2px;
-    margin-bottom: 4px;
-    font-size: 12px;
-}
-.network .panel-body p:hover {
-    background-color: transparent;
-}
-.network .panel-body p:last-child {
-    margin-bottom: 0px;
-}
-.network .miner-off span {
-    color: red;
-}
-.network .miner-on span {
-    color: green;
-    font-weight: bold;
-}
-.network fieldset {
-    margin-top: 15px;
-}
-.network fieldset legend {
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
-.asset-panel {
-    padding: 0 !important;
-}
-.pointer {
-    cursor: pointer;
-}
-
-.assets {
-    background-color: #212E3F;
-    border-color: #999898;
-    border-radius: 3px;
-    border-width: 3px;
-    margin-top: 20px;
-    font-size: 13px;
-    color: #ffffff;
-}
-.assets .panel-heading {
-    text-transform: uppercase;
-    padding: 5px 10px;
-    color: #F0F0F0;
-    background-color: #a15684;
-    border-color: #7C4065;
-}
-.assets .panel-body {
-    padding: 0;
-}
-.assets .panel-body > div {
-    margin: 5px 0px 0px 0px;
-}
-.assets .panel-body .unit {
-    font-weight: 300;
-    text-transform: uppercase;
-}
-.assets .panel-body button {
-    font-size: 11px;
-    text-transform: uppercase;
-    position: relative;
-    top: -2px;
-}
-.assets .panel-body .send-button {
-    margin-left: 5px;
-}
-.assets .panel-body .send-button:last-child {
-    margin-right: 17px;
-}
 .account-info button {
     font-size: 11px;
     position: relative;
@@ -603,7 +297,21 @@ nav.header .register {
 .account-info .send-button {
     width: 100%;
 }
-
+.account .address {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+p.address {
+    font-size: 12px;
+    background-color: #333;
+    color: #eee;
+    padding: 5px;
+    border-radius: 3px;
+    margin-top: 15px;
+}
+.account {
+    color: #54657e;
+}
 #importAccountId {
     position: fixed;
     top: -100em;
@@ -621,161 +329,6 @@ nav.header .register {
     margin: 10px 0px 20px 0px;
 }
 
-.market-pane {
-    color: #000;
-    background-color: #fff;
-    border-radius: 3px;
-    display: block;
-    margin-bottom: 25px;
-}
-.market-pane.pending,
-.market-pane.invalid {
-    opacity: 0.75;
-}
-.market-pane.loading {
-    opacity: 0.50;
-}
-a.market-pane:hover {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-.market-pane h5 {
-    position: relative;
-    margin: 0px;
-    padding: 12px;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.3em;
-    text-align: justify;
-    text-justify: inter-word;
-    height: 84px;
-    background-color: #34495e; /* @color-dark-bg - to be consistent with top menu */
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    color: #fff;
-    overflow: hidden;
-}
-.market-pane:hover h5 {
-    background-color: #2C3E50; /* @color-dark-bg-active - to be consistent with top menu */
-}
-.market-pane .overlay {
-    position: absolute;
-    width: 100%;
-    height: 20px;
-    bottom: 0px;
-    left: 0px;
-}
-.market-pane .summary {
-    padding: 3px 12px;
-    background-color: #C3C7CF;
-    font-size: 20px;
-    height: 34px;
-}
-.market-pane .summary i {
-    font-weight: 100;
-    font-style: normal;
-    font-size: 16px;
-    margin-top: 3px;
-    height: 25px;
-}
-.market-pane.pending .summary {
-    background-color: #DDBD92;
-    pointer-events: none;
-}
-.market-pane.invalid .summary {
-    background-color: #C8C8C8;
-    pointer-events: none;
-}
-.market-pane.matured .summary {
-    background-color: #72D29B;
-}
-.market-pane .details {
-    padding: 6px 6px;
-    font-size: 12px;
-    color: #333;
-}
-.market-pane .details p {
-    margin: 0px;
-    clear: right;
-    padding: 0px 6px;
-}
-.market-pane .details p.alt {
-    background-color: rgb(230, 244, 230);
-}
-.market-pane .details b {
-    float: right;
-}
-@media (max-width: 480px) {
-    .market-pane {
-        margin-bottom: 25px;
-    }
-    .market-pane h5 {
-        margin: 0px;
-        padding: 10px;
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 1.3em;
-        height: 74px;
-    }
-    .market-pane .details {
-        padding: 6px 6px;
-        font-size: 14px;
-    }
-    .market-pane .summary {
-        padding: 3px 12px;
-        background-color: #a3b9e2;
-        font-size: 20px;
-    }
-    .market-pane .summary i {
-        font-weight: 100;
-        font-style: normal;
-        font-size: 16px;
-        margin-top: 3px;
-        height: 25px;
-    }
-    .market-pane .details {
-        padding: 6px 6px;
-        font-size: 14px;
-        color: #333;
-    }
-    .market-pane .details p {
-        margin: 0px;
-        clear: right;
-        padding: 0px 6px;
-    }
-}
-#branch h4 {
-    margin: 10px 0px 20px 0px;
-}
-
-#event {
-    display: none;
-}
-
-.pad-top-7 {
-    padding-top: 7px;
-}
-.pad-top-5 {
-    padding-top: 5px;
-}
-
-.ballot h4 {
-    font-weight: 400;
-    color: #ffffff;
-    text-shadow: 1px 1px #000000;
-    text-transform: uppercase;
-    font-family: "Lato";
-    font-size: 16pt;
-}
-
-.outcome.buy {
-
-}
-.outcome.sell {
-
-}
 .outcome h4 {
     height: 45px; /* @row_height */
     line-height: 45px; /* @row_height */
@@ -788,13 +341,6 @@ a.market-pane:hover {
     text-overflow: ellipsis;
     overflow: hidden;
     width: 100%;
-}
-.categorical {
-    text-transform: none;
-    width: 90%;
-}
-.metal-categorical {
-    min-width: 125px !important;
 }
 .outcome h4 .scalar {
     font-size: 30pt !important;
@@ -876,13 +422,6 @@ a.market-pane:hover {
     margin-bottom: -18px;
     text-transform: uppercase;
     height: 40px;
-}
-
-.metadata-image {
-    max-height: 300px;
-    max-width: 100%;
-    margin: 15px 0 10px 0;
-    padding: 10px;
 }
 
 .tour-outcome-list {
@@ -1043,7 +582,6 @@ a.market-pane:hover {
 .holdings .no.shares-held {
     background-color: rgb(194, 64, 64);
 }
-
 .holdings .description {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1060,104 +598,11 @@ a.market-pane:hover {
     color: #fff;
     background-color: #313232;
 }
-#ballots h3 {
-    border-bottom: none;
-}
-#ballots .now-marker {
-    display: none;
-    height: 6px;
-    width: 10px;
-    color: rgb(55, 117, 171);
-    margin-bottom: -4px;
-    position: relative;
-    top: -11px;
-    }
-#ballots .period-progress {
-    height: 1px;
-    margin: 0px;
-}
-#ballots .ballot {
-    border-radius: 5px;
-    background-color: rgb(253, 253, 186);
-    margin: 0px 0px 20px 0px;
-    padding: 0px;
-}
-#ballots .ballot h4 {
-    padding: 5px 12px;
-}
-#ballots .ballot p {
-    padding: 2px 12px;
-}
-#ballots .ballot .decision {
-    padding: 10px 10px 0px 10px;
-    border-bottom: 1px dotted #D0C173;
-}
-#ballots .ballot .decision:last-child {
-}
-#ballots .ballot .decision h4 {
-    margin-top: 3px;
-}
-#ballots .ballot .decision .outcomes {
-
-}
-#ballots .ballot button.submit-ballot {
-    margin-top: 15px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-}
-#ballots .no-decisions {
-    text-align: center;
-    margin-top: 50px;
-}
-
-#alert {
-    padding: 10px;
-    position: fixed;
-    width: 100%;
-    min-height: 40px;
-    opacity: 0.8;
-    bottom: 0;
-    margin-bottom: 0px;
-    border-radius: 0;
-    display: none;
-}
-#alert div {
-    max-height: 45px;
-    overflow-y: scroll;
-}
-#alert div p {
-    font-size: 13px;
-    margin-bottom: 5px;
-}
-
-.indent {
-    padding-left: 20px;
-}
 
 /* modals */
 
 .modal-body h4 {
     margin-top: 0px;
-}
-#no-eth-modal .modal-dialog {
-    max-width: 500px;
-}
-#no-eth-modal span.cmd {
-    font-family: "Lucida Console", Monaco, monospace;
-    font-size: 10px;
-    margin-left: 8px;
-}
-#no-eth-modal p.start-demo-mode {
-    margin: 20px 0px 0px 0px;
-}
-#no-eth-modal a.btn {
-    margin: 10px 0px 0px 0px;
-}
-#no-eth-modal .form-group {
-    margin: 26px 0px 0px 102px;
-}
-#no-eth-modal .form-group label {
-    font-size: 14px;
 }
 .send-modal input.dest-address {
     margin-bottom: 10px;
@@ -1189,14 +634,6 @@ a.market-pane:hover {
     width: 100%;
 }
 
-#confirm-modal button.confirm {
-    margin-left: 10px;
-}
-#confirm-modal .modal-body p {
-    font-size: 16px;
-    margin: 0px;
-    margin-bottom: 20px;
-}
 #add-market-modal h4 {
     margin: 0px;
     font-size: 20px;
