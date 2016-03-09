@@ -1,8 +1,6 @@
 // main navigation bar
 .navbar {
-    left: 0; right: 0;
-    max-width: 1260px;
-    margin: 0 auto;
+    width:100%;
     border-radius: 0;
     background-color: @color-purple-dark;
     color: @color-white;
@@ -16,7 +14,9 @@
     }
 
     .container {
-        width: 100%;
+        left: 0; right: 0;
+        width: 100%; max-width: 1260px;
+        margin: 0 auto;
         padding: 0 1rem 0 4rem;
     }
 
@@ -43,7 +43,7 @@
 
     .navbar-header {
         .navbar-toggle {
-            padding: 20px 15px;
+            padding: 20px 2rem;
             line-height: 30px;
             margin: 0;
             height: auto;
@@ -252,7 +252,7 @@ body > .navbar-collapse::after {
     // Main navigation bar
     .navbar {
         .navbar-brandbox {
-            left: 10px;
+            left: 2rem;
         }
 
         > .container {
