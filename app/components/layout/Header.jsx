@@ -157,7 +157,7 @@ let Header = React.createClass({
         return (
             <nav className="navbar" role="navigation">
                 <div className="navbar-brandbox">
-                    <Link className="navbar-brand" to="markets">augur</Link>
+                    <Link className="navbar-brand" to="markets"></Link>
                 </div>
                 <div className="container">
                     <div className="navbar-header">
