@@ -66,18 +66,6 @@ var AugurApp = React.createClass({
     this.getFlux().actions.config.connect();
   },
 
-  getLoadingProgress: function () {
-    var loadingProgress = <span />;
-    if (this.state.config.percentLoaded) {
-      loadingProgress = (
-        <ProgressBar now={Number(this.state.config.percentLoaded)} className="loading-progress" />
-      );
-    } else if (this.state.network.blockchainAge && this.state.network.blockchainAge < constants.MAX_BLOCKCHAIN_AGE) {
-      loadingProgress = (<span className="loading-text">loading...</span>);
-    }
-    return loadingProgress;
-  },
-
   toggleSignInModal: function () {
     this.setState({signInModalOpen: !this.state.signInModalOpen});
   },
@@ -103,7 +91,7 @@ var AugurApp = React.createClass({
 
   render: function () {
     return (
-      <div id="app" className={this.state.status}>
+      <div id="app">
         <SendEtherModal
           show={this.state.sendEtherModalOpen}
           onHide={this.toggleSendEtherModal} />
@@ -134,6 +122,7 @@ var AugurApp = React.createClass({
                 reportSavedModalOpen={this.state.reportSavedModalOpen} // report page
                 reportConfirmedModalOpen={this.state.reportConfirmedModalOpen} // report page
                 {...this.props}
+                isLoaded={ this.state.status === 'running' }
                 branch={this.state.branch}
                 market={this.state.market} />
             </div>
@@ -148,12 +137,6 @@ var AugurApp = React.createClass({
           onHide={this.toggleSignInModal} />
 
         <footer><div className="row container clearfix"></div></footer>
-
-        <section id="loading" className="container">
-          <div className="logo">
-            {this.getLoadingProgress()}
-          </div>
-        </section>
       </div>
     );
   }

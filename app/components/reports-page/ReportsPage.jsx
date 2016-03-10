@@ -41,7 +41,21 @@ let ReportsPage = React.createClass({
         let isCommitPeriod = this.state.isCommitPeriod;
         let isRevealPeriod = !isCommitPeriod;
         let marketRows = [];
-        if (this.state.currentBranch) {
+
+        let percentComplete = 0;
+        let phase = "Submission";
+        let progressBarStyle = "info";
+        let periodLength = "";
+        let reportPeriod = "";
+        let branchId = "";
+        let branchDescription = "";
+        let endOfPhase = "";
+
+        if (!this.props.isLoaded) {
+            marketRows = [<div key="loader" className="loader"></div>];
+        }
+
+        else if (this.state.currentBranch) {
             let periodLength = this.state.currentBranch.periodLength;
             var commitPeriodEndMillis = moment.duration(0);
             if (isCommitPeriod === true) {
@@ -69,39 +83,31 @@ let ReportsPage = React.createClass({
                         account={account} />
                 );
             }
-        }
 
-        let percentComplete = 0;
-        let phase = "Submission";
-        let progressBarStyle = "info";
-        if (this.state.currentBranch && this.state.currentBranch.percentComplete) {
-            percentComplete = this.state.currentBranch.percentComplete;
-            if (percentComplete > 50) {
-                progressBarStyle = "warning";
-                phase = "Confirmation";
+            if (this.state.currentBranch.percentComplete) {
+                percentComplete = this.state.currentBranch.percentComplete;
+                if (percentComplete > 50) {
+                    progressBarStyle = "warning";
+                    phase = "Confirmation";
+                }
             }
-        }
-        let periodLength = "";
-        if (this.state.currentBranch && this.state.currentBranch.periodLength) {
-            periodLength = this.state.currentBranch.periodLength.toFixed();
-        }
-        let reportPeriod = "";
-        if (this.state.currentBranch && this.state.currentBranch.reportPeriod) {
-            reportPeriod = this.state.currentBranch.reportPeriod.toFixed();
-        }
-        let branchId = "";
-        if (this.state.currentBranch && this.state.currentBranch.id) {
-            branchId = abi.hex(this.state.currentBranch.id);
-        }
-        let branchDescription = "";
-        if (this.state.currentBranch && this.state.currentBranch.description) {
-            branchDescription = this.state.currentBranch.description;
-        }
-        let endOfPhase = "";
-        if (isCommitPeriod) {
-            endOfPhase = commitPeriodEndMillis.humanize(true);
-        } else {
-            endOfPhase = revealPeriodEndMillis.humanize(true);
+            if (this.state.currentBranch.periodLength) {
+                periodLength = this.state.currentBranch.periodLength.toFixed();
+            }
+            if (this.state.currentBranch.reportPeriod) {
+                reportPeriod = this.state.currentBranch.reportPeriod.toFixed();
+            }
+            if (this.state.currentBranch.id) {
+                branchId = abi.hex(this.state.currentBranch.id);
+            }
+            if (this.state.currentBranch.description) {
+                branchDescription = this.state.currentBranch.description;
+            }
+            if (isCommitPeriod) {
+                endOfPhase = commitPeriodEndMillis.humanize(true);
+            } else {
+                endOfPhase = revealPeriodEndMillis.humanize(true);
+            }
         }
 
         return (

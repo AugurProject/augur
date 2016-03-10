@@ -153,27 +153,31 @@ let MarketsPage = React.createClass({
         }
         let numPages = Math.ceil(marketsCount / this.state.marketsPerPage);
 
-        let pagination = (
-            <div className="row">
-                <div className="col-xs-12">
-                    <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
-                    { numPages >= 2 &&
-                        <Paginate
-                            previousLabel={ <i className='fa fa-chevron-left'></i> }
-                            nextLabel={ <i className='fa fa-chevron-right'></i> }
-                            breakLabel={ <li className="break"><a href="">...</a></li> }
-                            pageNum={ numPages }
-                            marginPagesDisplayed={ 2 }
-                            pageRangeDisplayed={ 5 }
-                            forceSelected={ this.state.pageNum }
-                            clickCallback={ this.handlePageChanged }
-                            containerClassName={ 'paginator' }
-                            subContainerClassName={ 'pages' }
-                            activeClass={ 'active' } />
-                    }
+        let pagination;
+
+        if (this.props.isLoaded) {
+            pagination = (
+                <div className="row">
+                    <div className="col-xs-12">
+                        <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
+                        { numPages >= 2 &&
+                            <Paginate
+                                previousLabel={ <i className='fa fa-chevron-left'></i> }
+                                nextLabel={ <i className='fa fa-chevron-right'></i> }
+                                breakLabel={ <li className="break"><a href="">...</a></li> }
+                                pageNum={ numPages }
+                                marginPagesDisplayed={ 2 }
+                                pageRangeDisplayed={ 5 }
+                                forceSelected={ this.state.pageNum }
+                                clickCallback={ this.handlePageChanged }
+                                containerClassName={ 'paginator' }
+                                subContainerClassName={ 'pages' }
+                                activeClass={ 'active' } />
+                        }
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
 
         let submitMarketAction;
         if (this.state.account) {
@@ -230,21 +234,26 @@ let MarketsPage = React.createClass({
                     </Select>
                 </div>
                 {pagination}
-                <div className="row">
-                    <div className="col-xs-12">
-                        {tourMarketRow}
-                        {markets.map(market => {
-                            if (!tourMarketKey || (tourMarketKey && !tourMarketKey.eq(market.id))) {
-                                return (
-                                    <MarketRow
-                                        key={market.id}
-                                        account={account}
-                                        market={market}
-                                        numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
-                                );
-                            }
-                        })}
-                    </div>
+                <div className="row market-rows">
+                    { this.props.isLoaded &&
+                        <div className="col-xs-12">
+                            {tourMarketRow}
+                            {markets.map(market => {
+                                if (!tourMarketKey || (tourMarketKey && !tourMarketKey.eq(market.id))) {
+                                    return (
+                                        <MarketRow
+                                            key={market.id}
+                                            account={account}
+                                            market={market}
+                                            numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
+                                    );
+                                }
+                            })}
+                        </div>
+                    }
+                    { !this.props.isLoaded &&
+                        <div className="loader"></div>
+                    }
                 </div>
                 {pagination}
                 <AddMarketModal

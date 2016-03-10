@@ -77,9 +77,12 @@ let MarketPage = React.createClass({
         let market = this.state.market;
 
         if (market == null) {
-            return (
-                <div>No market info</div>
-            );
+            if (!this.props.isLoaded) {
+                return <div className="loader"></div>;
+            }
+            else {
+                return <div>No market info</div>;                
+            }
         }
         let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
