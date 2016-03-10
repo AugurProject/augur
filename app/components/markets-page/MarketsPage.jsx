@@ -155,7 +155,7 @@ let MarketsPage = React.createClass({
 
         let pagination;
 
-        if (this.props.isLoaded) {
+        if (this.props.isSiteLoaded) {
             pagination = (
                 <div className="row">
                     <div className="col-xs-12">
@@ -235,7 +235,7 @@ let MarketsPage = React.createClass({
                 </div>
                 {pagination}
                 <div className="row market-rows">
-                    { this.props.isLoaded &&
+                    { this.props.isSiteLoaded &&
                         <div className="col-xs-12">
                             {tourMarketRow}
                             {markets.map(market => {
@@ -251,7 +251,7 @@ let MarketsPage = React.createClass({
                             })}
                         </div>
                     }
-                    { !this.props.isLoaded &&
+                    { !this.props.isSiteLoaded &&
                         <div className="loader"></div>
                     }
                 </div>

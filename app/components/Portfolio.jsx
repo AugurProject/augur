@@ -36,7 +36,7 @@ let Overview = React.createClass({
     var account = this.state.account;
     var holdings;
 
-    if (!this.props.isLoaded) {
+    if (!this.props.isSiteLoaded) {
         holdings = [<div key="loader" className="loader"></div>];
     }
     else {

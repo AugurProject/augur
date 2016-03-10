@@ -51,7 +51,7 @@ let ReportsPage = React.createClass({
         let branchDescription = "";
         let endOfPhase = "";
 
-        if (!this.props.isLoaded) {
+        if (!this.props.isSiteLoaded) {
             marketRows = [<div key="loader" className="loader"></div>];
         }
 

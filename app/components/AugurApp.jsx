@@ -122,7 +122,7 @@ var AugurApp = React.createClass({
                 reportSavedModalOpen={this.state.reportSavedModalOpen} // report page
                 reportConfirmedModalOpen={this.state.reportConfirmedModalOpen} // report page
                 {...this.props}
-                isLoaded={ this.state.status === 'running' }
+                isSiteLoaded={ this.state.status === 'running' }
                 branch={this.state.branch}
                 market={this.state.market} />
             </div>

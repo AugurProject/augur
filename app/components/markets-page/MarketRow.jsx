@@ -337,6 +337,7 @@ let MarketRow = React.createClass({
     },
 
     componentDidMount() {
+console.log('**', this.props.isSiteLoaded);
         if (this.props.tour && this.props.market && this.refs.tradeButton && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete")) {
             try {
                 MarketRowTour.show(this.props.market, ReactDOM.findDOMNode(this.refs.tradeButton));
