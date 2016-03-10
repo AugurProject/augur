@@ -7,29 +7,19 @@ let MarketCreateStep4 = React.createClass({
             case "binary":
             case "categorical":
                 return (
-                    <div className="">
-                        <div className="">Answers:</div>
-                        <div className="">
-                            {this.props.choices.map((choice, index) => {
-                                return (
-                                    <p key={index}>{ choice }</p>
-                                )
-                            }, this)}
-                        </div>
-                    </div>
+                    <tr className="">
+                        <td className="">Answers:</td>
+                        <td className="">
+                            {this.props.choices.join(", ")}
+                        </td>
+                    </tr>
                 );
             case "scalar":
                 return (
-                    <div>
-                        <div className="">
-                            <div className="">Min value:</div>
-                            <div className="">{this.props.minValue}</div>
-                        </div>
-                        <div className="">
-                            <div className="">Max value:</div>
-                            <div className="">{this.props.maxValue}</div>
-                        </div>
-                    </div>
+                    <tr className="">
+                        <td className="">Min-max value:</td>
+                        <td className="">{this.props.minValue} - {this.props.maxValue}</td>
+                    </tr>
                 );
             default:
                 console.warn("MarketCreateStep4[getOutcomeInfo]: Unknown market type %o", marketType);
@@ -42,25 +32,25 @@ let MarketCreateStep4 = React.createClass({
             case "binary":
             case "categorical":
                 return (
-                    <div className="">
-                        <div className="">Starting prices:</div>
-                        <div className="">
+                    <tr className="">
+                        <td className="">Starting prices:</td>
+                        <td className="">
                             {this.props.choices.map((choice, index) => {
                                 return (
                                     <p>{choice}: {this.props.outcomePrices[index]}</p>
                                 )
                             }, this)}
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
                 );
             case "scalar":
                 return (
-                    <div className="">
-                        <div className="">Starting price:</div>
-                        <div className="">
+                    <tr className="">
+                        <td className="">Starting price:</td>
+                        <td className="">
                             <p>{this.props.outcomePrices[0]}</p>
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
                 );
             default:
                 console.warn("MarketCreateStep4[getStartingPrices]: Unknown market type %o", marketType);
@@ -74,71 +64,90 @@ let MarketCreateStep4 = React.createClass({
                     Review and open your new market
                 </h1>
 
+                <hr/>
+
                 <div className="form-group">
                     <h3>Your question</h3>
-                    <div className="">
-                        <div className="">Question:</div>
-                        <div className="">{this.props.marketText}</div>
-                    </div>
-                    { this.getOutcomeInfo() }
-                    <div className="">
-                        <div className="">End date:</div>
-                        <div className="">{this.props.maturationDate}</div>
-                    </div>
+                    <table className="table">
+                        <tbody>
+                            <tr className="">
+                                <td className="">Question:</td>
+                                <td className="">{this.props.marketText}</td>
+                            </tr>
+                            { this.getOutcomeInfo() }
+                            <tr className="">
+                                <td className="">End date:</td>
+                                <td className="">{this.props.maturationDate}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
                 </div>
+
+                <hr/>
 
                 <div className="form-group">
                     <h3>Additional information</h3>
-                    <div className="">
-                        <div className="">Expiry source:</div>
-                        <div className="">
-                            {this.props.expirySourceUrl != "" ? this.props.expirySourceUrl : "Local, national or international news media"}
-                        </div>
-                    </div>
-                    <div className="">
-                        <div className="">Tags:</div>
-                        <div className="">{this.props.tags.join(", ")}</div>
-                    </div>
-                    <div className="">
-                        <div className="">Further explanation:</div>
-                        <div className="">{this.props.detailsText}</div>
-                    </div>
-                    <div className="">
-                        <div className="">Helpful links:</div>
-                        <div className="">{this.props.resources.join(", ")}</div>
-                    </div>
-                    <div className="">
-                        <div className="">Image:</div>
-                        <div className="">
-                            {
-                                this.props.imageDataURL != null
-                                ? <img className="metadata-image" src={this.props.imageDataURL} />
-                                : "No image uploaded"
-                            }
-                        </div>
-                    </div>
+                    <table className="table">
+                        <tbody>
+                            <tr className="">
+                                <td className="">Expiry source:</td>
+                                <td className="">
+                                    {this.props.expirySourceUrl != "" ? this.props.expirySourceUrl : "Local, national or international news media"}
+                                </td>
+                            </tr>
+                            <tr className="">
+                                <td className="">Tags:</td>
+                                <td className="">{this.props.tags.length > 0 ? this.props.tags.join(", ") : "-"}</td>
+                            </tr>
+                            <tr className="">
+                                <td className="">Further explanation:</td>
+                                <td className="">{this.props.detailsText != "" ? this.props.detailsText : "-"}</td>
+                            </tr>
+                            <tr className="">
+                                <td className="">Helpful links:</td>
+                                <td className="">{this.props.resources.length > 0 ? this.props.resources.join(", ") : "-"}</td>
+                            </tr>
+                            <tr className="">
+                                <td className="">Image:</td>
+                                <td className="">
+                                    {
+                                        this.props.imageDataURL != null
+                                        ? <img className="metadata-image" src={this.props.imageDataURL} />
+                                        : "No image uploaded"
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+
+                <hr/>
 
                 <div className="form-group">
                     <h3>Trading fee and liquidity</h3>
-                    <div className="">
-                        <div className="">Trading fee:</div>
-                        <div className="">
-                            {this.props.tradingFee}%
-                        </div>
-                    </div>
-                    <div className="">
-                        <div className="">Initial liquidity:</div>
-                        <div className="">{this.props.marketInvestment}</div>
-                    </div>
-                    { this.getStartingPrices() }
+                    <table className="table">
+                        <tbody>
+                            <tr className="">
+                                <td className="">Trading fee:</td>
+                                <td className="">
+                                    {this.props.tradingFee}%
+                                </td>
+                            </tr>
+                            <tr className="">
+                                <td className="">Initial liquidity:</td>
+                                <td className="">{this.props.marketInvestment}</td>
+                            </tr>
+                            { this.getStartingPrices() }
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="form-group">
-                    <button type="button" onClick={this.props.goToPreviousStep}>
-                        back
+                    <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
+                        Back
                     </button>
-                    <button type="button" onClick={this.props.sendNewMarketRequest}>
+                    <button className="btn btn-primary" type="button" onClick={this.props.sendNewMarketRequest}>
                         Open market
                     </button>
                 </div>

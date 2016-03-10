@@ -37,34 +37,43 @@ let MarketCreateStep1 = React.createClass({
                 return null;
             case "categorical": {
                 let categoricalOutcomes = this.props.categoricalChoices;
+                let placeholders = ["New Zealand", "Australia", "South Africa", "Argentina"];
 
                 return (
                     <div className="form-group">
-                        <label for="">What are the possible answers to your question?</label>
+                        <h4>What are the possible answers to your question? (required)</h4>
                         <p>
                             All possible outcomes to your question must be covered by these answers. You can add an
                             "any other outcome" type answer at the end to ensure everything is covered.
                         </p>
                         {
                             categoricalOutcomes.map((outcome, index) => {
+                                let removeAction;
+                                if (index > 1) {
+                                    removeAction = (
+                                        <button className="btn btn-default" data-index={index}
+                                                onClick={this.props.onRemoveCategoricalOutcome}>
+                                            <span className="fa fa-times"></span>
+                                        </button>
+                                    );
+                                }
                                 return (
                                     <Input
                                         key={index}
                                         data-index={index}
                                         type="text"
-                                        // label={"Answer " + (i + 1)}
+                                        bsStyle={this.props.categoricalChoiceErrors[index] != null ? "error" : null}
                                         help={this.props.categoricalChoiceErrors[index]}
-                                        //bsStyle={this.state.choiceTextError[i] ? "error" : null}
                                         value={outcome}
-                                        //placeholder={placeholderText}
-                                        //wrapperClassName="row clearfix col-lg-12"
-                                        onChange={this.props.onChangeCategoricalChoices} />
+                                        placeholder={placeholders[index]}
+                                        onChange={this.props.onChangeCategoricalChoices}
+                                        buttonAfter={removeAction}/>
                                 );
                             }, this)
                         }
                         <div className="form-group">
                             <button className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
-                                <span className="">+</span> Add another answer
+                                Add another answer
                             </button>
                         </div>
                     </div>
@@ -82,7 +91,7 @@ let MarketCreateStep1 = React.createClass({
                         <Input
                             type="number"
                             help={this.props.minValueError}
-                            bsStyle={this.props.minValueError ? "error" : null}
+                            bsStyle={this.props.minValueError != null ? "error" : null}
                             value={this.props.minValue}
                             placeholder="Minimum answer"
                             onChange={this.props.onChangeMinimum} />
@@ -91,7 +100,7 @@ let MarketCreateStep1 = React.createClass({
                         <Input
                             type="number"
                             help={this.props.maxValueError}
-                            bsStyle={this.props.maxValueError ? "error" : null}
+                            bsStyle={this.props.maxValueError != null ? "error" : null}
                             value={this.props.maxValue}
                             placeholder="Maximum answer"
                             onChange={this.props.onChangeMaximum} />
@@ -105,47 +114,47 @@ let MarketCreateStep1 = React.createClass({
 
     render() {
         let marketType = this.props.marketType;
-        let placeholderText = this.getPlaceholderText(marketType);
-        let additionalQuestionInfo = this.getAdditionalQuestionInfo(marketType);
-
         return (
             <div>
                 <h1>What's your question?</h1>
 
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label for="marketText">
-                            What do you want to ask?
-                        </label>
+                        <h4>
+                            What do you want to ask? (required)
+                        </h4>
                         <Input
                             style={{width: "100%"}}
                             standalone={true}
-                            id="marketText"
                             type="text"
+                            bsStyle={this.props.marketTextError != null ? "error" : null}
                             help={this.props.marketTextError}
                             value={this.props.marketText}
-                            placeholder={placeholderText}
+                            placeholder={this.getPlaceholderText(marketType)}
                             onChange={this.props.onChangeMarketText} />
 
                     </div>
-                    { additionalQuestionInfo }
-                    <div className="form-group">
-                        <label for="">What's the end date for your question?</label>
+                    { this.getAdditionalQuestionInfo(marketType) }
+                    <div className={`form-group ${this.props.maturationDateError != null ? "has-error" : null}`}>
+                        <h4>What's the end date for your question? (required)</h4>
                         <DatePicker
                             minDate={this.state.minDate}
                             date={this.props.maturationDate}
                             hideFooter={true}
                             onChange={this.props.onEndDatePicked} />
 
-                        { this.props.maturationDateError }
+                        <span className={this.props.maturationDateError != null ? "has-error" : null}>
+                            <span className="help-block">
+                                { this.props.maturationDateError }
+                            </span>
+                        </span>
                     </div>
                     <div className="form-group">
-                        <label for="">Question checklist</label>
-                        todo?
-                    </div>
-                    <div className="form-group">
-                        <button type="submit">
-                            Next
+                        <button className="btn btn-primary" type="button" onClick={this.props.onMarketTypeChange}>
+                            Back
+                        </button>
+                        <button className="btn btn-primary" type="submit">
+                            Next (Additional market information)
                         </button>
                     </div>
                 </form>

@@ -13,29 +13,32 @@ let MarketCreateStep2 = React.createClass({
 
                 <form>
                     <div className="form-group">
-                        <label for="">What is the source of expiry information for your question? (required)</label>
+                        <h4>What is the source of expiry information for your question? (required)</h4>
 
                         <Input
                             value="generic"
+                            standalone={true}
                             type="radio"
                             checked={this.props.expirySource === "generic"}
                             label="Outcome will be covered by local, national or international news media."
-                            labelClassName="col-sm-10"
-                            wrapperClassName="col-sm-12"
+                            labelClassName=""
+                            wrapperClassName=""
                             onChange={this.props.onChangeExpirySource} />
                         <Input
                             value="specific"
+                            standalone={true}
                             type="radio"
+                            bsStyle={this.props.expirySourceUrlError != null ? "error" : null}
                             checked={this.props.expirySource === "specific"}
-                            label="Outcome will be detailed on a specific website."
-                            labelClassName="col-sm-10"
-                            wrapperClassName="col-sm-12"
+                            label="Outcome will be detailed on a specific publicly available website:"
+                            labelClassName=""
+                            wrapperClassName=""
                             onChange={this.props.onChangeExpirySource} />
-                        <div className="col-sm-12 indent">
-                            <p>Please enter the full URL of the website - which must be publicly available:</p>
+                        <div className="col-sm-12" style={{display: this.props.expirySource === "specific" ? "" : "none"}}>
                             <Input
-                                disabled={this.props.expirySource === "generic"}
                                 type="text"
+                                bsStyle={this.props.expirySourceUrlError != null ? "error" : null}
+                                help={this.props.expirySourceUrlError}
                                 value={this.props.expirySourceUrl}
                                 placeholder="http://www.boxofficemojo.com"
                                 onChange={this.props.onChangeExpirySourceUrl} />
@@ -43,9 +46,9 @@ let MarketCreateStep2 = React.createClass({
                     </div>
 
                     <div className="form-group">
-                        <h3>
-                            Add some tags to your market (required)
-                        </h3>
+                        <h4>
+                            Add some tags to your market (optional)
+                        </h4>
                         <p>
                             Up to three tags can be added to categorize your market. For example: politics, sports,
                             entertainment or technology.
@@ -56,6 +59,7 @@ let MarketCreateStep2 = React.createClass({
                                     <Input
                                         key={index}
                                         data-index={index}
+                                        bsStyle={this.props.tagErrors[index] != null ? "error" : null}
                                         help={this.props.tagErrors[index]}
                                         type="text"
                                         value={tag}
@@ -63,22 +67,29 @@ let MarketCreateStep2 = React.createClass({
                                 )
                             }, this)
                         }
-                        <Button bsStyle="default" onClick={this.props.onAddTag}>
-                            Add tag
-                        </Button>
+                        { this.props.tags.length < 3 &&
+                            <Button bsStyle="default" onClick={this.props.onAddTag}>
+                                Add tag
+                            </Button>
+                        }
                     </div>
 
                     <div className="form-group">
-                        <p>Does your question need further explanation? (optional)</p>
+                        <h4>Does your question need further explanation? (optional)</h4>
                         <Input
                             type="textarea"
+                            style={{width: "100%", height: "110px"}}
                             value={this.props.detailsText}
                             placeholder="Optional: enter a more detailed description of your market."
                             onChange={this.props.onChangeDetailsText} />
                     </div>
 
                     <div className="form-group">
-                        <p>Are there any helpful links you want to add? (optional) For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
+                        <h4>Are there any helpful links you want to add? (optional)</h4>
+                        <p>
+                            For example, if your question is about an election you could link to polling information or
+                            the webpages of candidates.
+                        </p>
                         {
                             this.props.resources.map((resource, index) => {
                                 return (
@@ -97,7 +108,11 @@ let MarketCreateStep2 = React.createClass({
                     </div>
 
                     <div className="form-group">
-                        <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 200px; images taller than this will be shrunken to a height of 200px.</p>
+                        <h4>Do you want an image displayed with your market? (optional)</h4>
+                        <p>
+                            Image files should be no larger than 3MB. Your image will be displayed at a 150px by 150px
+                            resolution.
+                        </p>
                         { this.props.imageDataURL &&
                             <img className="metadata-image" src={this.props.imageDataURL} />
                         }
@@ -108,11 +123,11 @@ let MarketCreateStep2 = React.createClass({
                     </div>
 
                     <div className="form-group">
-                        <button type="button" onClick={this.props.goToPreviousStep}>
-                            back
+                        <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
+                            Back
                         </button>
-                        <button type="button" onClick={this.props.goToNextStep}>
-                            next
+                        <button className="btn btn-primary" type="button" onClick={this.props.goToNextStep}>
+                            Next (Trading fee and liquidity)
                         </button>
                     </div>
                 </form>

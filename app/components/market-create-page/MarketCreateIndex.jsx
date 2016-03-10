@@ -7,51 +7,59 @@ let MarketCreateIndex = React.createClass({
                 <h1>
                     Select the type of market you want to create
                 </h1>
-
+                <hr/>
                 <div className="">
-                    <a href="#" data-type="binary" onClick={this.props.onMarketTypeChange}>
+                    <div className="layout--titleWithAction">
                         <h4>
-                            A market with
-                            a <span className="text-uppercase">yes</span> or <span className="text-uppercase">no</span> outcome
+                            <a href="#" data-type="binary" onClick={this.props.onMarketTypeChange}>
+                                A market with a <span className="text-uppercase">yes</span> or <span className="text-uppercase">no</span> outcome
+                            </a>
                         </h4>
-                        <span>
+                        <button className="btn btn-primary" data-type="binary" onClick={this.props.onMarketTypeChange}>
                             Select
-                        </span>
-                    </a>
+                        </button>
+                    </div>
 
                     <p>
                         Ask a question that has a
                         simple <span className="text-uppercase">yes</span> or <span className="text-uppercase">no</span> answer
                     </p>
                 </div>
+                <hr/>
                 <div className="">
-                    <a href="#" data-type="categorical" onClick={this.props.onMarketTypeChange}>
+                    <div className="layout--titleWithAction">
                         <h4>
-                            A market with a <span className="text-uppercase">multiple choice</span> outcome
+                            <a href="#" data-type="categorical" onClick={this.props.onMarketTypeChange}>
+                                A market with a <span className="text-uppercase">multiple choice</span> outcome
+                            </a>
                         </h4>
-                        <span>
+                        <button className="btn btn-primary" data-type="categorical" onClick={this.props.onMarketTypeChange}>
                             Select
-                        </span>
-                    </a>
+                        </button>
+                    </div>
 
                     <p>
                         Ask a question and provide a series of multiple choice answers
                     </p>
                 </div>
+                <hr/>
                 <div className="">
-                    <a href="#" data-type="scalar" onClick={this.props.onMarketTypeChange}>
+                    <div className="layout--titleWithAction">
                         <h4>
-                            A market with a <span className="text-uppercase">numeric</span> outcome
+                            <a href="#" data-type="scalar" onClick={this.props.onMarketTypeChange}>
+                                A market with a <span className="text-uppercase">numeric</span> outcome
+                            </a>
                         </h4>
-                        <span>
+                        <button className="btn btn-primary" data-type="scalar" onClick={this.props.onMarketTypeChange}>
                             Select
-                        </span>
-                    </a>
+                        </button>
+                    </div>
 
                     <p>
                         Ask a question that has an answer somewhere within a range of numbers
                     </p>
                 </div>
+                <hr/>
                 <div>
                     <h4>
                         Important:

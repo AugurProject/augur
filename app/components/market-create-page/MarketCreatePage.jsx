@@ -57,6 +57,7 @@ let MarketCreatePage = React.createClass({
       tagErrors: [null, null],
       expirySource: "generic",
       expirySourceUrl: "",
+      expirySourceUrlError: null,
       progressModal: {
         open: false,
         status: "",
@@ -204,7 +205,7 @@ let MarketCreatePage = React.createClass({
 
   onChangeExpirySourceUrl: function (event) {
     this.setState({expirySourceUrl: event.target.value}, () => {
-      this.validateStep2("expirySource");
+      this.validateStep2("expirySourceUrl");
     });
   },
 
@@ -297,29 +298,22 @@ let MarketCreatePage = React.createClass({
     let isStepValid = true;
 
     if (fieldToValidate == null || fieldToValidate == "expirySource") {
-      let isExpirySourceValid = true;
-      if (this.state.expirySource === "specific") {
-        isExpirySourceValid = this.state.expirySourceUrl !== "";
-      }
-      // no need to display custom error message, UI always contains info
-      if (!isExpirySourceValid) {
-        isStepValid = false;
+      if (this.state.expirySource === "generic") {
+        this.setState({expirySourceUrlError: null});
       }
     }
 
-    if (fieldToValidate == null || fieldToValidate.indexOf("tags") > -1) {
-      let tagIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
-      let tagErrors = this.state.tagErrors.slice();
-      let tags = tagIndex != null ? [this.state.tags[tagIndex]] : this.state.tags.slice();
-
-      // iterates all tags, validating each
-      isStepValid = tags.reduce((isStepValid, tag, index) => {
-        let validationResult = this.validateTag(tag);
-        tagErrors[tagIndex || index] = validationResult.errorMessage;
-        return validationResult.errorMessage == null ? isStepValid : false;
-      }, isStepValid);
-
-      this.setState({tagErrors});
+    if (fieldToValidate == null || fieldToValidate == "expirySourceUrl") {
+      let isExpirySourceUrlValid = true;
+      if (this.state.expirySource === "specific") {
+        if (this.state.expirySourceUrl === "") {
+          isExpirySourceUrlValid = false;
+        }
+      }
+      this.setState({expirySourceUrlError: isExpirySourceUrlValid ? null : "Please enter the full URL of the website"});
+      if (!isExpirySourceUrlValid) {
+        isStepValid = false;
+      }
     }
 
     return isStepValid;
@@ -346,25 +340,31 @@ let MarketCreatePage = React.createClass({
     if (fieldToValidate == null || fieldToValidate.indexOf("outcomePrices") > -1) {
       let outcomePriceIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
       let outcomePriceErrors = this.state.outcomePriceErrors.slice();
-      let outcomePrices = outcomePriceIndex != null ? [this.state.outcomePrices[outcomePriceIndex]] : this.state.outcomePrices.slice();
+      let outcomePrices = this.state.outcomePrices.slice();
 
-      // iterates all outcomePrices, validating each
-      isStepValid = outcomePrices.reduce((isStepValid, outcomePrice, index) => {
-        let validationResult = this.validateOutcomePrice(outcomePrice);
-        outcomePriceErrors[outcomePriceIndex || index] = validationResult.errorMessage;
-        return validationResult.errorMessage == null ? isStepValid : false;
-      }, isStepValid);
+      let validationResults = outcomePrices.map(this.validateOutcomePrice, this);
+
+      if (outcomePriceIndex != null) {
+        outcomePriceErrors[outcomePriceIndex] = validationResults[outcomePriceIndex].errorMessage;
+        if (validationResults[outcomePriceIndex].errorMessage != null) {
+          isStepValid = false;
+        }
+      } else {
+        validationResults.forEach((result, index) => {
+          outcomePriceErrors[outcomePriceIndex || index] = result.errorMessage;
+        });
+      }
 
       let outcomePriceGlobalError = null;
       if (this.state.type !== "scalar") {
-        let pricesSum = this.state.outcomePrices.reduce((sum, price) => {
-          return isNaN(parseFloat(price)) ? sum : sum + parseFloat(price);
-        }, 0);
+        let arePricesValid = validationResults.every(result => result.errorMessage == null);
+        if (arePricesValid) {
+          let pricesSum = this.state.outcomePrices.reduce((sum, price) => sum + parseFloat(price), 0);
 
-        if (pricesSum !== 100) {
-          // display error message on last input
-          outcomePriceGlobalError = "Prices don't add up to 100 %";
-          isStepValid = false;
+          if (pricesSum !== 100) {
+            outcomePriceGlobalError = "Prices don't add up to 100 %";
+            isStepValid = false;
+          }
         }
       }
 
@@ -386,8 +386,7 @@ let MarketCreatePage = React.createClass({
       initialLiquidity: this.state.marketInvestment,
       tradingFee: new BigNumber(this.state.tradingFee / 100)
     };
-    var source = (this.state.expirySource === "specific") ?
-      this.state.expirySourceUrl : this.state.expirySource;
+    var source = (this.state.expirySource === "specific") ? this.state.expirySourceUrl : this.state.expirySource;
     var pendingId = flux.actions.market.addPendingMarket(newMarketParams);
     var branchId = flux.store("branch").getCurrentBranch().id;
     var block = flux.store("network").getState().blockNumber;
@@ -507,7 +506,6 @@ let MarketCreatePage = React.createClass({
         flux.actions.market.deleteMarket(pendingId);
       }
     });
-    this.onHide();
   },
 
   handleDatePicked: function (dateText, moment, event) {
@@ -538,10 +536,25 @@ let MarketCreatePage = React.createClass({
   },
 
   onAddAnswer: function (event) {
+    event.preventDefault();
     var choices = this.state.choices.slice();
+    var outcomePrices = this.state.outcomePrices.slice();
     var choiceErrors = this.state.choiceErrors.slice();
     choices.push('');
+    outcomePrices.push(null);
     choiceErrors.push(null);
+    this.setState({ choices, outcomePrices, choiceErrors });
+  },
+  onRemoveAnswer: function (event) {
+    event.preventDefault();
+
+    let index = parseInt(event.currentTarget.getAttribute("data-index"));
+    let choices = this.state.choices.slice();
+    choices.splice(index, 1);
+    let outcomePrices = this.state.outcomePrices.slice();
+    outcomePrices.splice(index, 1);
+    let choiceErrors = this.state.choiceErrors.slice();
+    choiceErrors.splice(index, 1);
     this.setState({ choices, choiceErrors });
   },
 
@@ -613,7 +626,6 @@ let MarketCreatePage = React.createClass({
     event.preventDefault();
 
     let newMarketType = event.currentTarget.getAttribute("data-type");
-    console.log("%o", newMarketType);
     let newState = {
       type: newMarketType,
       pageNumber: 1
@@ -621,14 +633,17 @@ let MarketCreatePage = React.createClass({
     switch (newMarketType) {
       case "binary":
         newState.choices = ["Yes", "No"];
+        newState.outcomePrices = [null, null];
         newState.choiceErrors = [null, null];
         break;
       case "categorical":
         newState.choices = ["", ""];
+        newState.outcomePrices = [null, null];
         newState.choiceErrors = [null, null];
         break;
       case "scalar":
         newState.choices = [""];
+        newState.outcomePrices = [null];
         newState.choiceErrors = [null];
         break;
       default:
@@ -653,6 +668,7 @@ let MarketCreatePage = React.createClass({
         <MarketCreateStep2
           expirySource={this.state.expirySource}
           expirySourceUrl={this.state.expirySourceUrl}
+          expirySourceUrlError={this.state.expirySourceUrlError}
           onChangeExpirySource={this.onChangeExpirySource}
           onChangeExpirySourceUrl={this.onChangeExpirySourceUrl}
           tags={this.state.tags}
@@ -723,6 +739,7 @@ let MarketCreatePage = React.createClass({
           categoricalChoiceErrors={this.state.choiceErrors}
           onChangeCategoricalChoices={this.onChangeAnswerText}
           onAddCategoricalOutcome={this.onAddAnswer}
+          onRemoveCategoricalOutcome={this.onRemoveAnswer}
           maturationDate={this.state.maturationDate}
           maturationDateError={this.state.maturationDateError}
           minValue={this.state.minValue}
@@ -733,16 +750,13 @@ let MarketCreatePage = React.createClass({
           onChangeMaximum={this.onChangeMaximum}
           onEndDatePicked={this.handleDatePicked}
           goToNextStep={this.goToNextStep}
+          onMarketTypeChange={this.onMarketTypeChange}
           marketTextMaxLength={this.state.marketTextMaxLength}
           />;
     }
 
     return (
       <div>
-        <h4>
-          New Market Builder
-          <span className='subheading pull-right'>{subheading}</span>
-        </h4>
         <div className="">
           <ol className="breadcrumb">
             <li>

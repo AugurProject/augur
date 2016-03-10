@@ -1,3 +1,7 @@
+@import (reference) "../../../node_modules/bootstrap/less/variables";
+@import "./variables";
+@import (reference) "../../../node_modules/flex.less/flex";
+
 body {
     .display(flex);
     min-height: 100vh;
@@ -14,21 +18,15 @@ body {
     margin-bottom: 40px; // feedback button is in the way at the end of the page
 }
 
-// EU Cookie Law message box
-.cookieLawContent {
-    z-index: 1040;
-    padding: 10px;
-    background-color: @color-white;
-    text-align: center;
-    display: block;
-    .transition(300ms, linear);
-    &.notToShow {
-        display: none;
-        max-height: 0;
-        z-index: 0;
-        padding: 0;
-    }
-    button {
-        margin-left: 10px;
+.layout--titleWithAction {
+    @media (min-width: @screen-sm-min) {
+        // effectively makes text span just until the button. and aligns them vertically
+        .display(flex);
+        .align-items(baseline);
+
+        > :first-child {
+            margin-right: 0.5rem;
+            .flex(1);
+        }
     }
 }

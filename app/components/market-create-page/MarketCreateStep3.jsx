@@ -11,33 +11,42 @@ let MarketCreateStep3 = React.createClass({
             case "categorical":
                 return (
                     <div>
-                        <h3>
-                            Set the starting price of each outcome
-                        </h3>
+                        <h4>
+                            Set the starting price of each outcome (required)
+                        </h4>
                         <p>
                             These are your estimates of the percentage probability that each possible answer to your
                             question will be the correct outcome. The Market Maker will start selling the shares
                             purchased with your initial liquidity at these prices.
                         </p>
-                        {
-                            this.props.choices.map((outcome, index) => {
-                              return (
-                                  <Input
-                                      type="text"
-                                      label={outcome}
-                                      key={index}
-                                      data-index={index}
-                                      value={this.props.outcomePrices[index]}
-                                      help={this.props.outcomePriceErrors[index]}
-                                      addonAfter='%'
-                                      onChange={this.props.onOutcomePriceChange}
-                                      />
-                              );
-                            })
-                        }
+                        <p>
+                            Your estimated probabilities must equal 100%.
+                        </p>
+                        <div className="">
+                            {
+                                this.props.choices.map((outcome, index) => {
+                                  return (
+                                      <Input
+                                          type="text"
+                                          standalone={true}
+                                          label={outcome}
+                                          key={index}
+                                          data-index={index}
+                                          value={this.props.outcomePrices[index]}
+                                          bsStyle={this.props.outcomePriceErrors[index] != null ? "error" : null}
+                                          help={this.props.outcomePriceErrors[index]}
+                                          addonAfter='%'
+                                          onChange={this.props.onOutcomePriceChange}
+                                          />
+                                  );
+                                })
+                            }
+                        </div>
                         { this.props.outcomePriceGlobalError != null &&
-                            <p>
-                                { this.props.outcomePriceGlobalError }
+                            <p className="has-error">
+                                <span className="help-block">
+                                    { this.props.outcomePriceGlobalError }
+                                </span>
                             </p>
                         }
                     </div>
@@ -46,9 +55,9 @@ let MarketCreateStep3 = React.createClass({
                 let index = 0;
                 return (
                     <div>
-                        <h3>
-                            Set the starting price for your question
-                        </h3>
+                        <h4>
+                            Set the starting price for your question (required)
+                        </h4>
                         <p>
                             Enter what you believe is a fair and accurate estimate of the answer to your question. This
                             must lie between the minumum and maximum values set above. The Market Maker will start
@@ -59,6 +68,7 @@ let MarketCreateStep3 = React.createClass({
                             key={index}
                             data-index={index}
                             value={this.props.outcomePrices[index]}
+                            bsStyle={this.props.outcomePriceErrors[index] != null ? "error" : null}
                             help={this.props.outcomePriceErrors[index]}
                             onChange={this.props.onOutcomePriceChange}
                           />
@@ -87,9 +97,9 @@ let MarketCreateStep3 = React.createClass({
 
                 <form>
                     <div className="form-group">
-                        <h3>
-                            Set the trading fee for your market
-                        </h3>
+                        <h4>
+                            Set the trading fee for your market (required)
+                        </h4>
                         <p>
                             The Trading Fee is a percentage fee charged against the value of any trade made in the market.
                             You'll receive 50% of all fees charged during the lifetime of your market - with the other
@@ -97,6 +107,7 @@ let MarketCreateStep3 = React.createClass({
                         </p>
                         <Input
                             type='text'
+                            bsStyle={this.props.tradingFeeError != null ? "error" : null}
                             help={ this.props.tradingFeeError }
                             addonAfter='%'
                             value={ this.props.tradingFee }
@@ -104,9 +115,9 @@ let MarketCreateStep3 = React.createClass({
                     </div>
 
                     <div className="form-group">
-                        <h3>
-                            Set the amount of initial liquidity
-                        </h3>
+                        <h4>
+                            Set the amount of initial liquidity (required)
+                        </h4>
                         <p>
                             Initial liquidity is the amount of cash you're putting into the market to get trading started.
                             The Market Maker will use these funds to buy shares - which are then sold back to those
@@ -117,6 +128,7 @@ let MarketCreateStep3 = React.createClass({
                         <Input
                             type="text"
                             help={ this.props.marketInvestmentError }
+                            bsStyle={this.props.marketInvestmentError != null ? "error" : null}
                             value={ this.props.marketInvestment }
                             onChange={ this.props.onChangeMarketInvestment } />
                     </div>
@@ -128,11 +140,11 @@ let MarketCreateStep3 = React.createClass({
                     </div>
 
                     <div className="form-group">
-                        <button type="button" onClick={this.props.goToPreviousStep}>
-                            back
+                        <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
+                            Back
                         </button>
-                        <button type="button" onClick={this.props.goToNextStep}>
-                            next
+                        <button className="btn btn-primary" type="button" onClick={this.props.goToNextStep}>
+                            Next (Review)
                         </button>
                     </div>
                 </form>
