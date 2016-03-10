@@ -218,13 +218,16 @@ var ReportActions = {
         rescaledReportedOutcome = reportedOutcome;
       }
     }
-    console.log("eventID:", event.id, event.type);
-    console.log("reportedOutcome:", reportedOutcome);
-    console.log("rescaledReportedOutcome:", rescaledReportedOutcome);
+    if (DEBUG) {
+      console.log("eventID:", event.id, event.type);
+      console.log("reportedOutcome:", reportedOutcome);
+      console.log("rescaledReportedOutcome:", rescaledReportedOutcome);
+    }
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
-    var reportHash = this.flux.augur.makeHash(salt, rescaledReportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
+    var isScalar = event.type === "scalar";
+    var reportHash = this.flux.augur.makeHash(salt, rescaledReportedOutcome, event.id, account, isIndeterminate, isScalar);
     this.flux.actions.report.updatePendingReports(
       this.flux.store("report").getPendingReports(), {
         branchId: branchId,
@@ -237,6 +240,7 @@ var ReportActions = {
         salt: salt,
         isUnethical: isUnethical,
         isIndeterminate: isIndeterminate,
+        isScalar: isScalar,
         submitHash: false,
         submitReport: false
       }
@@ -305,6 +309,7 @@ var ReportActions = {
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
             indeterminate: report.isIndeterminate,
+            isScalar: report.isScalar,
             onSent: function (res) {
               self.flux.actions.report.updatePendingReports(
                 self.flux.store("report").getPendingReports(), {
@@ -316,6 +321,7 @@ var ReportActions = {
                   salt: report.salt,
                   isUnethical: report.isUnethical,
                   isIndeterminate: report.isIndeterminate,
+                  isScalar: report.isScalar,
                   submitHash: true,
                   submitReport: true
                 }
