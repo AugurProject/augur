@@ -1465,6 +1465,7 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
             marketID = marketsArray[shift];
             marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options);
             marketsInfo[marketID]._id = marketID;
+            marketsInfo[marketID].sortOrder = i;
             totalLen += len;
         }
         return marketsInfo;
@@ -1492,6 +1493,7 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
             }
             marketsInfo[marketID] = info;
             marketsInfo[marketID]._id = marketID;
+            marketsInfo[marketID].sortOrder = idx;
             next();
         });
     }, function (err) {
