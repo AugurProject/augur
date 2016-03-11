@@ -343,6 +343,7 @@ let MarketCreatePage = React.createClass({
       let outcomePrices = this.state.outcomePrices.slice();
 
       let validationResults = outcomePrices.map(this.validateOutcomePrice, this);
+      let arePricesValid = validationResults.every(result => result.errorMessage == null);
 
       if (outcomePriceIndex != null) {
         outcomePriceErrors[outcomePriceIndex] = validationResults[outcomePriceIndex].errorMessage;
@@ -350,6 +351,9 @@ let MarketCreatePage = React.createClass({
           isStepValid = false;
         }
       } else {
+        if (!arePricesValid) {
+          isStepValid = false;
+        }
         validationResults.forEach((result, index) => {
           outcomePriceErrors[outcomePriceIndex || index] = result.errorMessage;
         });
@@ -357,7 +361,6 @@ let MarketCreatePage = React.createClass({
 
       let outcomePriceGlobalError = null;
       if (this.state.type !== "scalar") {
-        let arePricesValid = validationResults.every(result => result.errorMessage == null);
         if (arePricesValid) {
           let pricesSum = this.state.outcomePrices.reduce((sum, price) => sum + parseFloat(price), 0);
 
