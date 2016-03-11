@@ -228,11 +228,16 @@ module.exports = {
 
                 // save markets to MarketStore
                 var percentLoaded = 100 * (index + 1) / numPages;
+                self.dispatch(constants.market.UPDATE_TOUR_MARKET, {
+                  markets: markets,
+                  currentPeriod: self.flux.stores.branch.getState().currentBranch.currentPeriod
+                });
                 self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
                   markets: markets,
                   percentLoaded: percentLoaded,
                   account: account
                 });
+
                 self.flux.actions.config.updatePercentLoaded(percentLoaded);
 
                 self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});

@@ -286,6 +286,7 @@ let MarketRow = React.createClass({
             <div className="market-row">
                 <div className="title">
                     <h4 className={`description ${tourClass}`}>
+                        {market.startingSortOrder} | {market.creationBlock}
                         {clickableDescription}
                     </h4>
                     {rowAction}
@@ -341,11 +342,30 @@ let MarketRow = React.createClass({
         );
     },
 
-    componentDidMount() {
-        if (this.props.tour && this.props.market && this.refs.tradeButton && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete")) {
+    getInitialState: function() {
+        return {
+            shouldOpenTour: false
+        };
+    },
+
+    componentWillReceiveProps : function(nextProps) {
+        if (nextProps.tour) {
+            var shouldOpenTour = !!nextProps.market && !localStorage.getItem("marketRowTourOpen") && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete");
+            if (this.state.shouldOpenTour !== shouldOpenTour) {
+                this.setState({
+                    shouldOpenTour: shouldOpenTour
+                });
+            }
+        }
+    },
+
+    componentDidUpdate() {
+        if (this.state.shouldOpenTour) {
             try {
-                MarketRowTour.show(this.props.market, ReactDOM.findDOMNode(this.refs.tradeButton));
-                localStorage.setItem("marketRowTourComplete", true);
+                setTimeout(() => {
+                    MarketRowTour.show(this.props.market, ReactDOM.findDOMNode(this.refs.tradeButton));
+                }, 4000);
+                localStorage.setItem("marketRowTourOpen", true);
             } catch (e) {
                 console.warn('MarketRow tour failed to open (caught): ', e.message);
             }
@@ -353,7 +373,7 @@ let MarketRow = React.createClass({
     },
 
     componentWillUnmount() {
-        MarketRowTour.hide();
+        MarketRowTour.hide('marketRowTourComplete');
     }
 });
 

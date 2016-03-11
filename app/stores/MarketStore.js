@@ -14,7 +14,8 @@ module.exports = {
     loadingPage: null,
     marketsPerPage: constants.MARKETS_PER_PAGE,
     initialLoadComplete: false,
-    orderBookChecked: null
+    orderBookChecked: null,
+    tourMarket: null
   },
   getState: function () {
     return this.state;
@@ -75,6 +76,22 @@ module.exports = {
       this.state.authoredMarkets = _.indexBy(filtered, "id");
     }
     this.emit(constants.CHANGE_EVENT);
+  },
+  handleUpdateTourMarket: function (payload) {
+    var markets = payload.markets,
+        currentPeriod = payload.currentPeriod;
+
+    if (!this.state.tourMarket) {
+      for (var p in markets) {
+        if (markets.hasOwnProperty(p) && markets[p].description && markets[p].description.length && markets[p].type === 'binary' && markets[p].tradingPeriod && abi.bignum(markets[p].tradingPeriod).toNumber() > currentPeriod) {
+          this.state.tourMarket = markets[p];
+          break;
+        }
+      }
+      if (this.state.tourMarket) {
+        this.emit(constants.CHANGE_EVENT);
+      }
+    }
   },
   handleUpdateMarketSuccess: function (payload) {
     if (this.state.markets[payload.market.id]) {

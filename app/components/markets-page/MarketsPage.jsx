@@ -37,7 +37,6 @@ let MarketsPage = React.createClass({
         var searchState = flux.store("search").getState();
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
-        var tourMarketId = utils.getTourMarketKey(searchState.results, currentBranch);
 
         return {
             searchKeywords: searchState.keywords,
@@ -47,7 +46,7 @@ let MarketsPage = React.createClass({
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
             account: account,
-            tourMarketKey: abi.bignum(tourMarketId)
+            tourMarket: marketState.tourMarket
         };
     },
 
@@ -136,24 +135,20 @@ let MarketsPage = React.createClass({
         let flux = this.getFlux();
         let account = this.state.account;
         let myOpenOrders = flux.augur.orders.get(account);
-        let tourMarketKey = this.state.tourMarketKey;
-        let tourMarketId;
-        if (tourMarketKey) tourMarketId = this.state.markets[tourMarketKey]._id;
-
+        let isVisibleTourMarket = this.state.tourMarket && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete");
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
-
-        let tourMarketRow = <span />;
-        if (tourMarketId && this.state.pageNum === 0 && this.props.query.expired !== "true") {
-            tourMarketRow = <MarketRow
-                                key={tourMarketKey}
-                                account={account}
-                                market={this.state.markets[tourMarketKey]}
-                                tour={true}
-                                numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
-        }
         let numPages = Math.ceil(marketsCount / this.state.marketsPerPage);
-
         let pagination;
+        let tourMarketRow;
+
+        if (isVisibleTourMarket) {
+            tourMarketRow = <MarketRow
+                                key={this.state.tourMarket.id}
+                                account={account}
+                                market={this.state.tourMarket}
+                                tour={ true }
+                                numOpenOrders={(myOpenOrders && myOpenOrders[this.state.tourMarket._id] && myOpenOrders[this.state.tourMarket._id][1] && myOpenOrders[this.state.tourMarket._id][1].length) || 0} />;
+        }
 
         if (this.props.isSiteLoaded) {
             pagination = (
@@ -237,9 +232,9 @@ let MarketsPage = React.createClass({
                 <div className="row market-rows">
                     { this.props.isSiteLoaded &&
                         <div className="col-xs-12">
-                            {tourMarketRow}
+                            { tourMarketRow }
                             {markets.map(market => {
-                                if (!tourMarketKey || (tourMarketKey && !tourMarketKey.eq(market.id))) {
+                                if (!isVisibleTourMarket || market !== this.state.tourMarket) {
                                     return (
                                         <MarketRow
                                             key={market.id}
