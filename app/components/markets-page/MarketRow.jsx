@@ -286,7 +286,6 @@ let MarketRow = React.createClass({
             <div className="market-row">
                 <div className="title">
                     <h4 className={`description ${tourClass}`}>
-                        {market.startingSortOrder} | {market.creationBlock}
                         {clickableDescription}
                     </h4>
                     {rowAction}
