@@ -7,8 +7,8 @@ var constants = require("../libs/constants");
 module.exports = {
   state: {
     keywords: '',
-    sortBy: '',
-    reverseSort: null,
+    sortBy: 'startingSortOrder',
+    reverseSort: 0,
     cleanKeywords: [],
     markets: {},
     results: {}
@@ -19,6 +19,7 @@ module.exports = {
   handleMarketsUpdated: function (payload) {
     this.state.markets = payload.markets;
     this.search();
+    this.sortMarkets();
     this.emit(constants.CHANGE_EVENT);
   },
   handleKeywordsUpdated: function (payload) {

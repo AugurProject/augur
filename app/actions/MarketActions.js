@@ -191,21 +191,34 @@ module.exports = {
       var numPages = Math.ceil(numMarkets / Number(marketsPerPage));
       var range = new Array(numPages);
       for (var i = 0; i < numPages; ++i) {
-        range[i] = i*marketsPerPage;
+        range[numPages - i - 1] = i*marketsPerPage;
       }
+
       var markets = {};
       async.forEachOfSeries(range, function (offset, index, next) {
-        var numMarketsToLoad = (index+1 === numPages) ? numMarkets - range[index] : marketsPerPage;
+        var numMarketsToLoad = (index === 0) ? numMarkets - range[index] : marketsPerPage;
         augur.getMarketsInfo({
           branch: branchId,
           offset: offset,
           numMarketsToLoad: numMarketsToLoad,
           callback: function (marketsInfo) {
             if (marketsInfo && !marketsInfo.error) {
+              Object.keys(marketsInfo).map(function(key) {
+                return marketsInfo[key];
+              })
+              .sort(function(a, b) {
+                return a.sortOrder - b.sortOrder;
+              })
+              .forEach(function(marketInfo, i) {
+                marketInfo.startingSortOrder = numMarkets - offset - i;
+              });
+
               var blackmarkets = blacklist.markets[augur.network_id][branchId];
-              async.each(marketsInfo, function (thisMarket, nextMarket) {
+              async.each(marketsInfo, function (thisMarket, nextMarket, i) {
                 self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
-                  if (marketInfo && marketInfo.id) markets[marketInfo.id] = marketInfo;
+                  if (marketInfo && marketInfo.id) {
+                    markets[marketInfo.id] = marketInfo;
+                  }
                   nextMarket();
                 });
               }, function (err) {
@@ -238,8 +251,6 @@ module.exports = {
         // loading complete!
         console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
 
-        self.dispatch(constants.search.UPDATE_SORT_BY, {sortBy: 'creationBlock', reverse: 1});
-        
         // load delicious extras
 
         function getCreationBlocks(markets) {
