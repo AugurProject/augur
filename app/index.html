@@ -45,15 +45,16 @@
       background-size: contain;
     	animation-name: anim;
     	animation-duration: 15s;
-    	animation-iteration-count: 1;
-    	animation-timing-function: cubic-bezier(.1,.98,.17,.9)
+    	animation-iteration-count: infinite;
+    	animation-timing-function: cubic-bezier(.11,.63,.25,.89);
+      animation-direction: alternate;
     }
     @keyframes anim {
       0% {
         transform: scale(1) rotate(0deg);
       }
     	100% {
-    		transform: scale(3) rotate(1.8deg);
+    		transform: scale(4) rotate(3deg);
     	}
     }
   </style>
