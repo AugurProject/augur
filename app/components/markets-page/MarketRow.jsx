@@ -9,6 +9,7 @@ let moment = require("moment");
 let Link = require("react-router/lib/components/Link");
 let OutcomeRow = require("./OutcomeRow");
 let MarketRowTour = require("./MarketRowTour");
+let constants = require("../../libs/constants");
 
 /**
  * Represents detail of market in market lists.
@@ -33,7 +34,11 @@ let MarketRow = React.createClass({
                 tableHeaderClass = " holdings";
                 tableHeader = "Outcome reported";
                 if (market.type === "scalar") {
-                    reportedOutcomeFmt = report.reportedOutcome;
+                    if (report.rescaledReportedOutcome === constants.INDETERMINATE_OUTCOME) {
+                        reportedOutcomeFmt = `indeterminate ${report.isUnethical ? "/ Unethical" : ""}`;
+                    } else {
+                        reportedOutcomeFmt = `${report.reportedOutcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                    }
                 } else {
                     reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
                 }

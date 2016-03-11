@@ -99,10 +99,21 @@ var ReportActions = {
                         augur.getMarketInfo(thisMarket, function (marketInfo) {
                           eventsToReport[eventId].type = marketInfo.type;
                           if (report && report !== "0") {
+                            var bnReport;
                             if (marketInfo.type === "scalar") {
-                              eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                              bnReport = abi.bignum(report);
+                              if (bnReport.toFixed(1) === constants.INDETERMINATE_OUTCOME) {
+                                eventsToReport[eventId].report.reportedOutcome = constants.INDETERMINATE_OUTCOME;
+                              } else {
+                                eventsToReport[eventId].report.reportedOutcome = bnReport.times(maxValue.minus(minValue)).plus(minValue).toFixed();
+                              }
                             } else if (marketInfo.type === "categorical") {
-                              eventsToReport[eventId].report.reportedOutcome = abi.bignum(report).times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                              bnReport = abi.bignum(report);
+                              if (bnReport.toFixed(1) === constants.INDETERMINATE_OUTCOME) {
+                                eventsToReport[eventId].report.reportedOutcome = constants.INDETERMINATE_OUTCOME;
+                              } else {
+                                eventsToReport[eventId].report.reportedOutcome = bnReport.times(numOutcomes.minus(abi.bignum(1))).plus(abi.bignum(1)).toFixed();
+                              }
                             } else {
                               eventsToReport[eventId].report.reportedOutcome = report;
                             }
@@ -192,24 +203,31 @@ var ReportActions = {
 
     // Re-scale scalar/categorical reports so they fall between 0 and 1
     var rescaledReportedOutcome;
-    if (event.type === "scalar") {
-      rescaledReportedOutcome = abi.bignum(reportedOutcome)
-                                   .minus(minValue)
-                                   .dividedBy(maxValue.minus(minValue)).toFixed();
-    } else if (event.type === "categorical") {
-      rescaledReportedOutcome = abi.bignum(reportedOutcome)
-                                   .minus(abi.bignum(1))
-                                   .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
-    } else {
+    if (isIndeterminate) {
       rescaledReportedOutcome = reportedOutcome;
+    } else {
+      if (event.type === "scalar") {
+        rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                     .minus(minValue)
+                                     .dividedBy(maxValue.minus(minValue)).toFixed();
+      } else if (event.type === "categorical") {
+        rescaledReportedOutcome = abi.bignum(reportedOutcome)
+                                     .minus(abi.bignum(1))
+                                     .dividedBy(numOutcomes.minus(abi.bignum(1))).toFixed();
+      } else {
+        rescaledReportedOutcome = reportedOutcome;
+      }
     }
-    console.log("eventID:", event.id, event.type);
-    console.log("reportedOutcome:", reportedOutcome);
-    console.log("rescaledReportedOutcome:", rescaledReportedOutcome);
+    if (DEBUG) {
+      console.log("eventID:", event.id, event.type);
+      console.log("reportedOutcome:", reportedOutcome);
+      console.log("rescaledReportedOutcome:", rescaledReportedOutcome);
+    }
 
     var account = this.flux.store("config").getAccount();
     var salt = utils.bytesToHex(secureRandom(32));
-    var reportHash = this.flux.augur.makeHash(salt, rescaledReportedOutcome, event.id, account, isIndeterminate, event.type === "binary");
+    var isScalar = event.type === "scalar";
+    var reportHash = this.flux.augur.makeHash(salt, rescaledReportedOutcome, event.id, account, isIndeterminate, isScalar);
     this.flux.actions.report.updatePendingReports(
       this.flux.store("report").getPendingReports(), {
         branchId: branchId,
@@ -222,6 +240,7 @@ var ReportActions = {
         salt: salt,
         isUnethical: isUnethical,
         isIndeterminate: isIndeterminate,
+        isScalar: isScalar,
         submitHash: false,
         submitReport: false
       }
@@ -290,6 +309,7 @@ var ReportActions = {
             eventID: report.eventId,
             ethics: Number(!report.isUnethical),
             indeterminate: report.isIndeterminate,
+            isScalar: report.isScalar,
             onSent: function (res) {
               self.flux.actions.report.updatePendingReports(
                 self.flux.store("report").getPendingReports(), {
@@ -301,6 +321,7 @@ var ReportActions = {
                   salt: report.salt,
                   isUnethical: report.isUnethical,
                   isIndeterminate: report.isIndeterminate,
+                  isScalar: report.isScalar,
                   submitHash: true,
                   submitReport: true
                 }
