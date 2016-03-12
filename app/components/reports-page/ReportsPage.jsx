@@ -53,10 +53,8 @@ let ReportsPage = React.createClass({
 
         if (!this.props.isSiteLoaded) {
             marketRows = [<div key="loader" className="loader"></div>];
-        }
-
-        else if (this.state.currentBranch) {
-            let periodLength = this.state.currentBranch.periodLength;
+        } else if (this.state.currentBranch) {
+            periodLength = this.state.currentBranch.periodLength;
             var commitPeriodEndMillis = moment.duration(0);
             if (isCommitPeriod === true) {
                 commitPeriodEndMillis = moment.duration(constants.SECONDS_PER_BLOCK * ((periodLength / 2) - (blockNumber % (periodLength / 2))), "seconds");

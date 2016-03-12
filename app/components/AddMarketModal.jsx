@@ -466,8 +466,11 @@ let AddMarketModal = React.createClass({
     this.setState({resources: resources});
   },
 
-  checkMinimum: function () {
-    if (utilities.isNumeric(this.state.minValue)) {
+  checkMinimum: function (minValue) {
+    if (minValue === null || minValue === undefined) {
+      minValue = this.state.minValue;
+    }
+    if (utilities.isNumeric(minValue)) {
       this.setState({minValueError: null});
       return true;
     } else {
@@ -476,8 +479,11 @@ let AddMarketModal = React.createClass({
     }
   },
 
-  checkMaximum: function () {
-    if (utilities.isNumeric(this.state.maxValue)) {
+  checkMaximum: function (maxValue) {
+    if (maxValue === null || maxValue === undefined) {
+      maxValue = this.state.maxValue;
+    }
+    if (utilities.isNumeric(maxValue)) {
       this.setState({maxValueError: null});
       return true;
     } else {
@@ -488,20 +494,16 @@ let AddMarketModal = React.createClass({
 
   onChangeMinimum: function (event) {
     var minValue = event.target.value;
-    if (utilities.isNumeric(minValue)) {
-      minValue = abi.number(minValue);
-    }
+    if (utilities.isNumeric(minValue)) minValue = abi.number(minValue);
     this.setState({minValue: minValue});
-    this.checkMinimum();
+    this.checkMinimum(minValue);
   },
 
   onChangeMaximum: function (event) {
     var maxValue = event.target.value;
-    if (utilities.isNumeric(maxValue)) {
-      maxValue = abi.number(maxValue);
-    }
+    if (utilities.isNumeric(maxValue)) maxValue = abi.number(maxValue);
     this.setState({maxValue: maxValue});
-    this.checkMaximum();
+    this.checkMaximum(maxValue);
   },
 
   render: function () {
@@ -803,7 +805,6 @@ let AddMarketModal = React.createClass({
             </div>
             <div className="col-sm-12">
               <p>What are the minimum and maximum allowed answers to your question?</p>
-              // TODO fix does not recognize 0
               <Input
                 type="text"
                 help={this.state.minValueError}
