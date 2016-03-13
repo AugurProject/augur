@@ -1324,9 +1324,10 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[7] = self.Markets[marketID].branch
         // info[8] = self.Markets[marketID].lenEvents
         // info[9] = self.Markets[marketID].cumulativeScale
-        // info[10] = INFO.getCreationFee(marketID)
-        // info[11] = INFO.getCreator(marketID)
-        var index = 12;
+        // info[10] = self.Markets[marketID].volume
+        // info[11] = INFO.getCreationFee(marketID)
+        // info[12] = INFO.getCreator(marketID)
+        var index = 13;
         info = {
             network: this.network_id || rpc.version(),
             traderCount: abi.number(rawInfo[1]),
@@ -1338,8 +1339,9 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             branchId: rawInfo[7],
             numEvents: abi.number(rawInfo[8]),
             cumulativeScale: abi.string(rawInfo[9]),
-            creationFee: abi.unfix(rawInfo[10], "string"),
-            author: abi.format_address(rawInfo[11]),
+            volume: abi.unfix(rawInfo[10], "string"),
+            creationFee: abi.unfix(rawInfo[11], "string"),
+            author: abi.format_address(rawInfo[12]),
             type: null,
             endDate: null,
             participants: {},
