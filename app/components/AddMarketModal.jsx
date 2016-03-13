@@ -444,7 +444,7 @@ let AddMarketModal = React.createClass({
     this.checkAnswerText(answerText, id);
     choices[id] = answerText;
     this.setState({choices: choices});
-    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ");
     this.setState({marketText: marketText});
   },
 

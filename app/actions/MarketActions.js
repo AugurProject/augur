@@ -392,6 +392,7 @@ module.exports = {
         });
         if (markets[marketId] && markets[marketId].outcomes) {
           markets[marketId].outcomes = marketInfo.outcomes;
+          markets[marketId].volume = abi.number(marketInfo.volume);
         } else {
           markets[marketId] = self.flux.actions.parseMarketInfo(marketInfo);
         }

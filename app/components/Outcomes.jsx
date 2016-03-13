@@ -250,7 +250,7 @@ var Overview = React.createClass({
                             data-tooltip={ !this.props.account ? singInOrRegisterText + 'sell' : !sharesHeld ? 'You have no shares to sell' : null }>Sell</Button>
 
                         <p className="shares-held">
-                            { sharesHeld } { sharesHeld === 1 ? 'share ' : 'shares ' } held
+                            { sharesHeld.toFixed(2) } { sharesHeld === 1 ? 'share ' : 'shares ' } held
                         </p>
                         { pendingSharesNode }
                     </div>
@@ -487,7 +487,7 @@ var TradeBase = {
                 </div>
                 <p>{ utils.getOutcomePrice(outcome) } cash/share</p>
                 <p>
-                    {outcome.sharesHeld.toNumber()} {outcome.sharesHeld.toNumber() === 1 ? 'share ' : 'shares '} held
+                    {outcome.sharesHeld.toFixed(2)} {outcome.sharesHeld.toNumber() === 1 ? 'share ' : 'shares '} held
                 </p>
                 <p className='new-price'>{this.getPriceDelta()}</p>
             </div>
