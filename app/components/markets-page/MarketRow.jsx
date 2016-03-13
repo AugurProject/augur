@@ -282,11 +282,15 @@ let MarketRow = React.createClass({
         }
         let rowAction = this.getRowAction(market, report);
         let clickableDescription = this.getClickableDescription(market, report);
+        let volume = "0.00";
+        if (market && market.volume) volume = market.volume.toFixed(2);
         return (
             <div className="market-row">
                 <div className="title">
                     <h4 className={`description ${tourClass}`}>
                         {clickableDescription}
+                        <br />
+                        <small>Volume: {volume} shares</small>
                     </h4>
                     {rowAction}
                 </div>

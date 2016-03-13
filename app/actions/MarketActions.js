@@ -87,6 +87,7 @@ module.exports = {
       marketInfo.tradingFee = abi.bignum(marketInfo.tradingFee);
       marketInfo.creationFee = abi.bignum(marketInfo.creationFee);
       marketInfo.traderCount = abi.bignum(marketInfo.traderCount);
+      marketInfo.volume = abi.number(marketInfo.volume);
       marketInfo.alpha = abi.bignum(marketInfo.alpha);
       marketInfo.tradingPeriod = abi.bignum(marketInfo.tradingPeriod);
       marketInfo.longDescription = marketInfo.description;
@@ -162,8 +163,6 @@ module.exports = {
       }
     }
     if (!totalIn.eq(new BigNumber(0))) {
-      // market.pnl = totalOut.minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
-      // market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).dividedBy(totalIn).times(new BigNumber(100)).toFixed(2);
       market.pnl = totalOut.minus(totalIn).toFixed(2);
       market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).toFixed(2);
       if (market.pnl === "-0.00") market.pnl = "0.00";
@@ -203,16 +202,15 @@ module.exports = {
           numMarketsToLoad: numMarketsToLoad,
           callback: function (marketsInfo) {
             if (marketsInfo && !marketsInfo.error) {
-              Object.keys(marketsInfo).map(function(key) {
+              Object.keys(marketsInfo).map(function (key) {
                 return marketsInfo[key];
               })
-              .sort(function(a, b) {
+              .sort(function (a, b) {
                 return a.sortOrder - b.sortOrder;
               })
-              .forEach(function(marketInfo, i) {
+              .forEach(function (marketInfo, i) {
                 marketInfo.startingSortOrder = numMarkets - offset - i;
               });
-
               var blackmarkets = blacklist.markets[augur.network_id][branchId];
               async.each(marketsInfo, function (thisMarket, nextMarket, i) {
                 self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
@@ -237,9 +235,8 @@ module.exports = {
                   percentLoaded: percentLoaded,
                   account: account
                 });
-
+                self.flux.actions.search.sortMarkets("volume", 1);
                 self.flux.actions.config.updatePercentLoaded(percentLoaded);
-
                 self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
 
                 // fetch next page of markets
@@ -416,7 +413,6 @@ module.exports = {
     callback = callback || function () {};
     this.flux.augur.ramble.getMarketMetadata(market._id, {sourceless: false}, function (err, metadata) {
       if (err || !metadata) return callback(err);
-      // console.info(market._id, "metadata loaded:", JSON.stringify(metadata, null, 2));
       self.dispatch(constants.market.LOAD_METADATA_SUCCESS, {metadata});
       callback();
     });
@@ -544,7 +540,7 @@ module.exports = {
   tradeSucceeded: function (marketId) {
     console.log("Trade completed in market:", abi.hex(marketId));
     this.flux.actions.asset.updateAssets();
-    this.flux.actions.market.loadMarket(marketId);
+    this.flux.actions.market.updatePrice(marketId);
   },
 
   // relativeShares is a signed integer representing a trade (buy/sell)

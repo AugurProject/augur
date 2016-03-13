@@ -208,6 +208,7 @@ let MarketsPage = React.createClass({
                             placeholder="Sort markets"
                             onChange={this.onChangeSortBy}
                             options={[
+                                {value: "volume|1", label: "Volume"},
                                 {value: "startingSortOrder|0", label: "Creation date (newest first)"},
                                 {value: "startingSortOrder|1", label: "Creation date (oldest first)"},
                                 {value: "endBlock|0", label: "End date (soonest first)"},
