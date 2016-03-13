@@ -25,7 +25,7 @@ GLOBAL.augur = (GLOBAL.reload = function () {
 GLOBAL.comments = augur.comments;
 augur.rpc.setLocalNode("http://127.0.0.1:8545");
 GLOBAL.b = augur.branches.dev;
-GLOBAL.ballot = [2, 1.5, 1.5, 1, 1.5, 1.5, 1];
+GLOBAL.log = console.log;
 
 longjohn.async_trace_limit = 25;
 longjohn.empty_frame = "";
