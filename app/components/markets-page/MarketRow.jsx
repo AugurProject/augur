@@ -289,8 +289,6 @@ let MarketRow = React.createClass({
                 <div className="title">
                     <h4 className={`description ${tourClass}`}>
                         {clickableDescription}
-                        <br />
-                        <small>Volume: {volume} shares</small>
                     </h4>
                     {rowAction}
                 </div>
@@ -309,9 +307,14 @@ let MarketRow = React.createClass({
                         <span className="labelValue-value end-date">{endDateFormatted}</span>
                     </div>
                     <div className="labelValue subtitle-group">
-                        <i className="fa fa-signal" style={{ transform: 'scaleX(-1)', fontSize: '0.8rem' }} />
+                        <i className="fa fa-money" />
                         <span className="labelValue-label trading-fee-label">Trading Fee: </span>
                         <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
+                    </div>
+                    <div className="labelValue subtitle-group">
+                        <i className="fa fa-signal" style={{ fontSize: '0.8rem' }} />
+                        <span className="labelValue-label end-date-label">Volume: </span>
+                        <span className="labelValue-value end-date">{volume} shares</span>
                     </div>
                 </div>
                 <div className="tags">

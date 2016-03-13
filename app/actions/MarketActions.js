@@ -255,12 +255,15 @@ module.exports = {
 
         // load delicious extras
 
+        var block = this.flux.store('network').getState().blockNumber;
+
         function getCreationBlocks(markets) {
           augur.getCreationBlocks(branchId, function (creationBlock) {
             for (var id in markets) {
               if (!markets.hasOwnProperty(id)) continue;
               if (creationBlock && creationBlock[markets[id]._id]) {
                 markets[id].creationBlock = creationBlock[markets[id]._id];
+                markets[id].creationDate = utils.blockToDate(markets[id].creationBlock, block);
               }
             }
             console.debug(
