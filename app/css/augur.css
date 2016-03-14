@@ -72,8 +72,8 @@ nav.header .register {
 .plain {
     list-style-type: none;
 }
-.plain li:hover {
-    background-color: #454545;
+.inline {
+    display: inline;
 }
 @media (max-width: 990px) {
     nav.header h1 {
@@ -137,6 +137,19 @@ nav.header .register {
 }
 .progress-status-box {
     padding-bottom: 10px;
+}
+
+.register-tos {
+    border: 1px solid #DFDFDF;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+.footer-tos {
+    max-width: 1170px;
+    margin: 0 auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid #DFDFDF;
 }
 
 .modal h3 {

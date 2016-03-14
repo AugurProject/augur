@@ -136,7 +136,17 @@ var AugurApp = React.createClass({
           show={this.state.signInModalOpen}
           onHide={this.toggleSignInModal} />
 
-        <footer><div className="row container clearfix"></div></footer>
+        <footer>
+          <div className="row clearfix footer-tos">
+            <div className="col-sm-12">
+              <div className="pull-right">
+                <span><a href="http://docs.augur.net">Documentation</a> | </span>
+                <span><a href="http://blog.augur.net">Blog</a> | </span>
+                <span><a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a></span>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
     );
   }
