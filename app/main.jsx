@@ -8,6 +8,7 @@ var Flux = require("fluxxor/lib/flux");
 var Router = require("react-router");
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
+let Redirect = require("react-router/lib/components/Redirect");
 var constants = require("./libs/constants");
 var utilities = require("./libs/utilities");
 var dispatcher = require("./stores/dispatcher.js");
@@ -51,12 +52,17 @@ flux.on("dispatch", function (type, payload) {
 });
 
 var routes = (
-  <Route name="app" handler={ AugurApp } flux={ flux }>
-    <DefaultRoute handler={ MarketsPage } flux={ flux } />
+  <Route name="app" path="/" handler={ AugurApp } flux={ flux }>
+    <Redirect from="*" to="markets"/>
+
     <Route name="overview" path="/overview" handler={ Overview } flux={ flux } title="Overview" />
-    <Route name="markets" path="/" handler={ MarketsPage } flux={ flux } title="Markets" />
-    <Route name="market-create" path="/markets/new" handler={ MarketCreatePage } flux={ flux } />
-    <Route name="market" path="/markets/:marketId" handler={ MarketPage } flux={ flux } />
+
+    <Route name="markets" path="/markets" flux={ flux } title="Markets">
+      <DefaultRoute handler={ MarketsPage } flux={ flux } />
+      <Route name="market-create" path="new" handler={ MarketCreatePage } flux={ flux } />
+      <Route name="market" path=":marketId" handler={ MarketPage } flux={ flux } />
+    </Route>
+
     <Route name="reports" path="/reports" handler={ ReportsPage } flux={ flux } title="Reporting" />
     <Route name="report" path="/reports/:eventId" handler={ ReportPage } flux={ flux } />
     <Route name="portfolio" path="/portfolio" handler={Portfolio} flux={flux} title="Portfolio" />
