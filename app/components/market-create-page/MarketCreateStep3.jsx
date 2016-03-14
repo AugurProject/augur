@@ -22,45 +22,50 @@ let MarketCreateStep3 = React.createClass({
                         <p>
                             Your estimated probabilities must equal 100%.
                         </p>
-                        <div className="">
-                            {
-                                this.props.choices.map((outcome, index) => {
-                                  return (
-                                      <Input
-                                          type="text"
-                                          standalone={true}
-                                          label={outcome}
-                                          key={index}
-                                          data-index={index}
-                                          value={this.props.outcomePrices[index]}
-                                          bsStyle={this.props.outcomePriceErrors[index] != null ? "error" : null}
-                                          help={this.props.outcomePriceErrors[index]}
-                                          addonAfter='%'
-                                          onChange={this.props.onOutcomePriceChange}
-                                          />
-                                  );
-                                })
-                            }
+                        <div className="row">
+                            <div className="col-sm-6 form-horizontal">
+                                {
+                                    this.props.choices.map((outcome, index) => {
+                                      return (
+                                          <Input
+                                              key={index}
+                                              type="text"
+                                              standalone={true}
+                                              label={outcome}
+                                              labelClassName="col-sm-2"
+                                              wrapperClassName="col-sm-5"
+                                              groupClassName="form-group"
+                                              data-index={index}
+                                              value={this.props.outcomePrices[index]}
+                                              bsStyle={this.props.outcomePriceErrors[index] != null ? "error" : null}
+                                              help={this.props.outcomePriceErrors[index]}
+                                              addonAfter='%'
+                                              onChange={this.props.onOutcomePriceChange}
+                                              />
+                                      );
+                                    })
+                                }
+                                { this.props.outcomePriceGlobalError != null &&
+                                    <p className="has-error">
+                                        <span className="help-block">
+                                            { this.props.outcomePriceGlobalError }
+                                        </span>
+                                    </p>
+                                }
+                            </div>
                         </div>
-                        { this.props.outcomePriceGlobalError != null &&
-                            <p className="has-error">
-                                <span className="help-block">
-                                    { this.props.outcomePriceGlobalError }
-                                </span>
-                            </p>
-                        }
                     </div>
                 );
             case "scalar": {
                 let index = 0;
                 return (
-                    <div>
+                    <div className="form-horizontal">
                         <h4>
                             Set the starting price for your question (required)
                         </h4>
                         <p>
                             Enter what you believe is a fair and accurate estimate of the answer to your question. This
-                            must lie between the minumum and maximum values set above. The Market Maker will start
+                            must lie between the minimum and maximum values set above. The Market Maker will start
                             selling the shares purchased with your initial liquidity at this prices.
                         </p>
                         <Input
@@ -69,6 +74,8 @@ let MarketCreateStep3 = React.createClass({
                             data-index={index}
                             value={this.props.outcomePrices[index]}
                             bsStyle={this.props.outcomePriceErrors[index] != null ? "error" : null}
+                            labelClassName="col-xs-2"
+                            wrapperClassName="col-xs-10"
                             help={this.props.outcomePriceErrors[index]}
                             onChange={this.props.onOutcomePriceChange}
                           />
@@ -87,8 +94,6 @@ let MarketCreateStep3 = React.createClass({
 
     },
     render() {
-        let startingPriceSection = this.generateInputs(this.props.marketType);
-
         return (
             <div>
                 <h1>
@@ -105,13 +110,19 @@ let MarketCreateStep3 = React.createClass({
                             You'll receive 50% of all fees charged during the lifetime of your market - with the other
                             50% being awarded to those reporting the outcome.
                         </p>
-                        <Input
-                            type='text'
-                            bsStyle={this.props.tradingFeeError != null ? "error" : null}
-                            help={ this.props.tradingFeeError }
-                            addonAfter='%'
-                            value={ this.props.tradingFee }
-                            onChange={ this.props.onChangeTradingFee } />
+
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <Input
+                                    type='text'
+                                    standalone={true}
+                                    bsStyle={this.props.tradingFeeError != null ? "error" : null}
+                                    help={ this.props.tradingFeeError }
+                                    addonAfter='%'
+                                    value={ this.props.tradingFee }
+                                    onChange={ this.props.onChangeTradingFee } />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -125,17 +136,22 @@ let MarketCreateStep3 = React.createClass({
                             the market is expired will be returned to you (along with any profit generated by the Market
                             Maker from selling shares).
                         </p>
-                        <Input
-                            type="text"
-                            help={ this.props.marketInvestmentError }
-                            bsStyle={this.props.marketInvestmentError != null ? "error" : null}
-                            value={ this.props.marketInvestment }
-                            onChange={ this.props.onChangeMarketInvestment } />
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <Input
+                                    type="text"
+                                    standalone={true}
+                                    help={ this.props.marketInvestmentError }
+                                    bsStyle={this.props.marketInvestmentError != null ? "error" : null}
+                                    value={ this.props.marketInvestment }
+                                    onChange={ this.props.onChangeMarketInvestment } />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="form-group">
                         {
-                            startingPriceSection
+                            this.generateInputs(this.props.marketType)
                         }
                     </div>
 

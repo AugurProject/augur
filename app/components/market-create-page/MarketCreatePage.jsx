@@ -52,8 +52,8 @@ let MarketCreatePage = React.createClass({
       outcomePrices: [],
       outcomePriceErrors: [],
       outcomePriceGlobalError: null,
-      resources: ["", ""],
-      tags: ["", ""],
+      resources: [],
+      tags: [],
       tagErrors: [null, null],
       expirySource: "generic",
       expirySourceUrl: "",
@@ -558,7 +558,7 @@ let MarketCreatePage = React.createClass({
     outcomePrices.splice(index, 1);
     let choiceErrors = this.state.choiceErrors.slice();
     choiceErrors.splice(index, 1);
-    this.setState({ choices, choiceErrors });
+    this.setState({ choices, outcomePrices, choiceErrors });
   },
 
   validateChoice: function (choice) {
@@ -760,28 +760,6 @@ let MarketCreatePage = React.createClass({
 
     return (
       <div>
-        <div className="">
-          <ol className="breadcrumb">
-            <li>
-              <a href="#" onClick={this.onMarketTypeChange}>
-                Type
-              </a>
-            </li>
-            <li>
-              <span className={`${this.state.pageNumber > 0 ? 'active' : ''}`}>Question</span>
-            </li>
-            <li>
-              <span className={`${this.state.pageNumber > 1 ? 'active' : ''}`}>Extra info</span>
-            </li>
-            <li>
-              <span className={`${this.state.pageNumber > 2 ? 'active' : ''}`}>Fees & liquidity</span>
-            </li>
-            <li>
-              <span className={`${this.state.pageNumber > 3 ? 'active' : ''}`}>Review</span>
-            </li>
-          </ol>
-        </div>
-
         {stepContent}
 
         <ProgressModal

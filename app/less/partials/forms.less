@@ -73,14 +73,7 @@ form {
     }
 }
 
-.form-group {
-    margin-bottom: 30px;
-}
-
 .form-horizontal {
-    & .form-group {
-        margin-bottom: 0;
-    }
     & .control-label,
     & .form-control-static {
         text-align: left;
@@ -93,6 +86,10 @@ form {
     & > *:not(:first-child) {
         margin-left: 20px;
     }
+}
+
+.form-group .btn + .btn {
+    margin-left: 20px;
 }
 
 .passwordStrengthInfo {

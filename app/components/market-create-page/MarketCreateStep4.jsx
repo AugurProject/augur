@@ -8,7 +8,7 @@ let MarketCreateStep4 = React.createClass({
             case "categorical":
                 return (
                     <tr className="">
-                        <td className="">Answers:</td>
+                        <td className="col-sm-3">Answers:</td>
                         <td className="">
                             {this.props.choices.join(", ")}
                         </td>
@@ -17,7 +17,7 @@ let MarketCreateStep4 = React.createClass({
             case "scalar":
                 return (
                     <tr className="">
-                        <td className="">Min-max value:</td>
+                        <td className="col-sm-3">Min-max value:</td>
                         <td className="">{this.props.minValue} - {this.props.maxValue}</td>
                     </tr>
                 );
@@ -33,11 +33,11 @@ let MarketCreateStep4 = React.createClass({
             case "categorical":
                 return (
                     <tr className="">
-                        <td className="">Starting prices:</td>
-                        <td className="">
+                        <td className="col-sm-3 text--verticalTop">Starting prices:</td>
+                        <td className="text--verticalTop">
                             {this.props.choices.map((choice, index) => {
                                 return (
-                                    <p>{choice}: {this.props.outcomePrices[index]}</p>
+                                    <p key={index}>{choice}: {this.props.outcomePrices[index]}</p>
                                 )
                             }, this)}
                         </td>
@@ -46,7 +46,7 @@ let MarketCreateStep4 = React.createClass({
             case "scalar":
                 return (
                     <tr className="">
-                        <td className="">Starting price:</td>
+                        <td className="col-sm-3">Starting price:</td>
                         <td className="">
                             <p>{this.props.outcomePrices[0]}</p>
                         </td>
@@ -68,15 +68,15 @@ let MarketCreateStep4 = React.createClass({
 
                 <div className="form-group">
                     <h3>Your question</h3>
-                    <table className="table">
+                    <table className="table table-condensed table-no-border">
                         <tbody>
                             <tr className="">
-                                <td className="">Question:</td>
+                                <td className="col-sm-3">Question:</td>
                                 <td className="">{this.props.marketText}</td>
                             </tr>
                             { this.getOutcomeInfo() }
                             <tr className="">
-                                <td className="">End date:</td>
+                                <td className="col-sm-3">End date:</td>
                                 <td className="">{this.props.maturationDate}</td>
                             </tr>
 
@@ -88,28 +88,28 @@ let MarketCreateStep4 = React.createClass({
 
                 <div className="form-group">
                     <h3>Additional information</h3>
-                    <table className="table">
+                    <table className="table table-condensed table-no-border">
                         <tbody>
                             <tr className="">
-                                <td className="">Expiry source:</td>
+                                <td className="col-sm-3">Expiry source:</td>
                                 <td className="">
                                     {this.props.expirySourceUrl != "" ? this.props.expirySourceUrl : "Local, national or international news media"}
                                 </td>
                             </tr>
                             <tr className="">
-                                <td className="">Tags:</td>
+                                <td className="col-sm-3">Tags:</td>
                                 <td className="">{this.props.tags.length > 0 ? this.props.tags.join(", ") : "-"}</td>
                             </tr>
                             <tr className="">
-                                <td className="">Further explanation:</td>
+                                <td className="col-sm-3">Further explanation:</td>
                                 <td className="">{this.props.detailsText != "" ? this.props.detailsText : "-"}</td>
                             </tr>
                             <tr className="">
-                                <td className="">Helpful links:</td>
+                                <td className="col-sm-3">Helpful links:</td>
                                 <td className="">{this.props.resources.length > 0 ? this.props.resources.join(", ") : "-"}</td>
                             </tr>
                             <tr className="">
-                                <td className="">Image:</td>
+                                <td className="col-sm-3">Image:</td>
                                 <td className="">
                                     {
                                         this.props.imageDataURL != null
@@ -126,16 +126,16 @@ let MarketCreateStep4 = React.createClass({
 
                 <div className="form-group">
                     <h3>Trading fee and liquidity</h3>
-                    <table className="table">
+                    <table className="table table-condensed table-no-border">
                         <tbody>
                             <tr className="">
-                                <td className="">Trading fee:</td>
+                                <td className="col-sm-3">Trading fee:</td>
                                 <td className="">
                                     {this.props.tradingFee}%
                                 </td>
                             </tr>
                             <tr className="">
-                                <td className="">Initial liquidity:</td>
+                                <td className="col-sm-3">Initial liquidity:</td>
                                 <td className="">{this.props.marketInvestment}</td>
                             </tr>
                             { this.getStartingPrices() }
@@ -147,7 +147,7 @@ let MarketCreateStep4 = React.createClass({
                     <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
                         Back
                     </button>
-                    <button className="btn btn-primary" type="button" onClick={this.props.sendNewMarketRequest}>
+                    <button className="btn btn-success" type="button" onClick={this.props.sendNewMarketRequest}>
                         Open market
                     </button>
                 </div>

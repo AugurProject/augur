@@ -46,35 +46,42 @@ let MarketCreateStep1 = React.createClass({
                             All possible outcomes to your question must be covered by these answers. You can add an
                             "any other outcome" type answer at the end to ensure everything is covered.
                         </p>
-                        {
-                            categoricalOutcomes.map((outcome, index) => {
-                                let removeAction;
-                                if (index > 1) {
-                                    removeAction = (
-                                        <button className="btn btn-default" data-index={index}
-                                                onClick={this.props.onRemoveCategoricalOutcome}>
-                                            <span className="fa fa-times"></span>
-                                        </button>
-                                    );
+                        <div className="row">
+                            <div className="col-sm-6 form-horizontal">
+                                {
+                                    categoricalOutcomes.map((outcome, index) => {
+                                        let removeAction;
+                                        if (index > 1) {
+                                            removeAction = (
+                                                <button className="btn btn-default" data-index={index}
+                                                        onClick={this.props.onRemoveCategoricalOutcome}>
+                                                    <span className="fa fa-times"></span>
+                                                </button>
+                                            );
+                                        }
+                                        return (
+                                            <Input
+                                                key={index}
+                                                data-index={index}
+                                                wrapperClassName="col-sm-5"
+                                                type="text"
+                                                bsStyle={this.props.categoricalChoiceErrors[index] != null ? "error" : null}
+                                                help={this.props.categoricalChoiceErrors[index]}
+                                                value={outcome}
+                                                placeholder={placeholders[index]}
+                                                onChange={this.props.onChangeCategoricalChoices}
+                                                buttonAfter={removeAction}/>
+                                        );
+                                    }, this)
                                 }
-                                return (
-                                    <Input
-                                        key={index}
-                                        data-index={index}
-                                        type="text"
-                                        bsStyle={this.props.categoricalChoiceErrors[index] != null ? "error" : null}
-                                        help={this.props.categoricalChoiceErrors[index]}
-                                        value={outcome}
-                                        placeholder={placeholders[index]}
-                                        onChange={this.props.onChangeCategoricalChoices}
-                                        buttonAfter={removeAction}/>
-                                );
-                            }, this)
-                        }
-                        <div className="form-group">
-                            <button className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
-                                Add another answer
-                            </button>
+                                <div className="form-group">
+                                    <div className="col-xs-12">
+                                        <button className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
+                                            Add another answer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
