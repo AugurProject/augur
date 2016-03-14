@@ -118,9 +118,9 @@ var AugurApp = React.createClass({
               <div id="period"></div>
               <RouteHandler
                 toggleSignInModal={this.toggleSignInModal}
-                toggleReportSavedModal={this.toggleReportSavedModal} // report page
-                reportSavedModalOpen={this.state.reportSavedModalOpen} // report page
-                reportConfirmedModalOpen={this.state.reportConfirmedModalOpen} // report page
+                toggleReportSavedModal={this.toggleReportSavedModal}
+                reportSavedModalOpen={this.state.reportSavedModalOpen}
+                reportConfirmedModalOpen={this.state.reportConfirmedModalOpen}
                 {...this.props}
                 isSiteLoaded={ this.state.status === 'running' }
                 branch={this.state.branch}
@@ -140,8 +140,11 @@ var AugurApp = React.createClass({
           <div className="row clearfix footer-tos">
             <div className="col-sm-12">
               <div className="pull-right">
+                <span><a href="https://www.hamsterpad.com/chat/dyffy">Slack</a> | </span>
                 <span><a href="http://docs.augur.net">Documentation</a> | </span>
                 <span><a href="http://blog.augur.net">Blog</a> | </span>
+                <span><a href="https://github.com/AugurProject">Github</a> | </span>
+                <span><a href="http://augur.zendesk.com/">FAQ</a> | </span>
                 <span><a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a></span>
               </div>
             </div>
