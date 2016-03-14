@@ -225,7 +225,7 @@ let MarketPage = React.createClass({
                     onHide={this.toggleCloseMarketModal} />
 
                 <Comments
-                    toggleSignInModal={this.state.toggleSignInModal}
+                    toggleSignInModal={this.props.toggleSignInModal}
                     market={this.state.market}
                     //comments={this.props.market.comments} // comments are already in market, should I pass them?
                     account={this.state.account}
