@@ -54,9 +54,9 @@ let MarketPage = React.createClass({
             }
         }
         let image = null;
-        if (market && market.metadata && market.metadata.image) {
-            image = market.metadata.image;
-        }
+        // if (market && market.metadata && market.metadata.image) {
+        //     image = market.metadata.image;
+        // }
         return {
             market,
             account,
@@ -133,9 +133,9 @@ let MarketPage = React.createClass({
             }
         }
         let image = <span />;
-        if (metadata.image) {
-            image = <div className="metadata-image-container"><img className="metadata-image" src={this.state.image} /></div>;
-        }
+        // if (metadata.image) {
+        //     image = <div className="metadata-image-container"><img className="metadata-image" src={this.state.image} /></div>;
+        // }
 
         return (
             <div className="marketPage">

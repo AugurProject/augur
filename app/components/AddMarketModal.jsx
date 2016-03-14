@@ -636,10 +636,10 @@ let AddMarketModal = React.createClass({
             onChange={this.onChangeResourceText} />;
       }
 
-      var image = <span />;
-      if (this.state.imageDataURL) {
-        image = <img className="metadata-image" src={this.state.imageDataURL} />;
-      }
+      // var image = <span />;
+      // if (this.state.imageDataURL) {
+      //   image = <img className="metadata-image" src={this.state.imageDataURL} />;
+      // }
 
       page = (
         <div>
@@ -686,7 +686,7 @@ let AddMarketModal = React.createClass({
                 onChange={this.onChangeDetailsText} />
             </div>
           </div>
-          <div className="form-group row">
+          {/*<div className="form-group row">
             <div className="col-sm-12">
               <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.</p>
               {image}
@@ -704,7 +704,7 @@ let AddMarketModal = React.createClass({
                   Add tag
                 </Button>}
             </div>
-          </div>
+          </div>*/}
           <div className="form-group row">
             <div className="col-sm-12">
               <p>Are there any helpful links you want to add? (optional) For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
