@@ -19,10 +19,7 @@ let UserTradesTab = require("./UserTradesTab");
 let UserFrozenFundsTab = require("./UserFrozenFundsTab");
 let Comments = require('./comments/Comments.jsx');
 let CloseMarketModal = require("../CloseMarket");
-
-let Shepherd = require("tether-shepherd");
-
-let tour;
+let Tour = require("./Tour");
 
 let MarketPage = React.createClass({
     mixins: [FluxMixin, StoreWatchMixin("branch", "market", "config")],
@@ -101,8 +98,8 @@ let MarketPage = React.createClass({
              closeMarketButton = (
                 <div className="close-market">
                     <Button
-                        bsSize="small"
-                        bsStyle="info"
+                        className="btn-block active close-market-button"
+                        bsStyle="warning"
                         onClick={this.toggleCloseMarketModal}>
                         Close Market
                     </Button>
@@ -132,22 +129,24 @@ let MarketPage = React.createClass({
         }
         let image = <span />;
         if (metadata.image) {
-            image = <img className="metadata-image" src={this.state.image} />;
+            image = <div className="metadata-image-container"><img className="metadata-image" src={this.state.image} /></div>;
         }
 
         return (
             <div className="marketPage">
-                <h1>{ this.state.market.description }</h1>
-                {image}
+                {closeMarketButton}
+                <h1>
+                    {image}
+                    { this.state.market.description }
+                </h1>
                 <div className="tags">
                     {tags}
                 </div>
+
                 <OrderTicket market={this.state.market} account={this.state.account}/>
                 <UserOrders market={this.state.market}/>
 
                 <MarketInfo market={market} />
-
-                {closeMarketButton}
 
                 <div onClick={this.toggleDetails} className="pointer">
                     <Glyphicon
@@ -168,42 +167,36 @@ let MarketPage = React.createClass({
                 </Collapse>
 
                 <div role="tabpanel" style={{marginTop: '15px'}}>
-                    <div className="row submenu">
-                        <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu" aria-expanded="false" aria-controls="collapseSubmenu">
-                            <h2>Navigation</h2>
-                        </a>
-
-                        <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
-                            <ul className="list-group" role="tablist" id="tabpanel">
-                                <li role="presentation" className="list-group-item active">
-                                    <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
-                                </li>
-                                {/* TODO: implement
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
-                                </li>
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" href="#userTradesTab" data-toggle="tab">
-                                        My Trades
-                                    </a>
-                                </li>
-                                <li role="presentation" className="list-group-item">
-                                    <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
-                                        Frozen Funds
-                                        <span ng-show="app.balance.eventMargin != null">
-                                        (<span ng-bind="app.balance.eventMarginFormatted"></span>)
-                                    </span>
-                                    </a>
-                                </li>
-                                */}
-                            </ul>
-                        </div>
-                    </div>
+                    <nav className="submenu">
+                        <ul className="list-group">
+                            <li role="presentation" className="list-group-item active">
+                                <a role="tab" href="#statsTab" data-toggle="tab">Stats & Charts</a>
+                            </li>
+                            {/* TODO: implement
+                            <li role="presentation" className="list-group-item">
+                                <a role="tab" href="#rulesTab" data-toggle="tab">Rules</a>
+                            </li>
+                            <li role="presentation" className="list-group-item">
+                                <a role="tab" href="#userTradesTab" data-toggle="tab">
+                                    My Trades
+                                </a>
+                            </li>
+                            <li role="presentation" className="list-group-item">
+                                <a role="tab" href="#userFrozenFundsTab" data-toggle="tab">
+                                    Frozen Funds
+                                    <span ng-show="app.balance.eventMargin != null">
+                                    (<span ng-bind="app.balance.eventMarginFormatted"></span>)
+                                </span>
+                                </a>
+                            </li>
+                            */}
+                        </ul>
+                    </nav>
 
                     <div className="tab-content">
                         <div id="statsTab" className="tab-pane active" role="tabpanel">
                             <StatsTab
-                                market={this.state.market}
+                                priceTimeSeries={this.state.market.priceTimeSeries}
                                 blockNumber={this.state.blockNumber} />
                         </div>
                         {/*
@@ -248,115 +241,15 @@ let MarketPage = React.createClass({
         this.stylesheetEl.setAttribute("href", "/css/market-detail.css");
         document.getElementsByTagName("head")[0].appendChild(this.stylesheetEl);
 
-        if (!this.state.tourMarketKey || !this.state.tourMarketKey.eq(this.state.market.id) || localStorage.getItem("tourTradeComplete") || localStorage.getItem("tourComplete")) {
-            return;
-        }
-        localStorage.setItem("tourTradeComplete", true);
-
-        let outcomes = this.state.market.outcomes;
-        let outcomeNames = utils.getOutcomeNames(this.state.market);
-        let price0 = utils.getOutcomePrice(outcomes[0]);
-        let price1 = utils.getOutcomePrice(outcomes[1]);
-        let percent0 = utils.priceToPercent(outcomes[0].price);
-        let percent1 = utils.priceToPercent(outcomes[1].price);
-
-        Shepherd.once('cancel', () => localStorage.setItem("tourComplete", true));
-
-        tour = new Shepherd.Tour({
-            defaults: {
-                classes: "shepherd-element shepherd-open shepherd-theme-arrows",
-                showCancelLink: true
+        if (this.state.tourMarketKey && this.state.tourMarketKey.eq(this.state.market.id) && !localStorage.getItem("marketPageTourComplete") && !localStorage.getItem("tourComplete")) {
+            try {
+                Tour.show(this.state.market);
+                localStorage.setItem("marketPageTourComplete", true);
+            } catch (e) {
+                console.warn('MarketPage tour failed to open (caught): ', e.message);
             }
-        });
 
-        tour.addStep("outcome1-price", {
-            title: "Market Price for " + outcomeNames[0].toUpperCase(),
-            text: "<div style='max-width:22rem;'><p>The current price of <b>" + outcomeNames[0].toUpperCase() + "</b> is " + price0 + " a share.</p>"+
-                "<p>That means people believe there's about a " + percent0 + " chance that the answer to</p>"+
-                "<p><i><b>" + this.state.market.description + "</b></i></p>"+
-                "<p>will be <b>" + outcomeNames[0].toUpperCase() + "</b>.</p></div>",
-            attachTo: ".outcome-" + outcomes[0].id + " .cash-per-share right",
-            buttons: [{
-                text: "Exit",
-                classes: "shepherd-button-secondary",
-                action: tour.cancel
-            }, {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        tour.addStep("outcome2-price", {
-            title: "Market Price for " + outcomeNames[1].toUpperCase(),
-            text: "<div style='max-width:22rem;'><p>The current price of <b>" + outcomeNames[1].toUpperCase() + "</b> is " + price1 + " a share.</p>"+
-                "<p>That means the market thinks there's about a <b>" + percent1 + "</b> chance the result will be " + outcomeNames[1].toUpperCase() + ".",
-            attachTo: ".outcome-" + outcomes[1].id + " .cash-per-share right",
-            buttons: [{
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            },
-            {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        tour.addStep("is-market-right", {
-            title: "What do you think?",
-            text: "<p>Is the market right?</p>" +
-                  "<p>Do you agree that the odds of a <b>" + outcomeNames[0].toUpperCase() + "</b> outcome is " + percent0 +
-                  " and a <b>" + outcomeNames[1].toUpperCase() + "</b> outcome " + percent1 + "?</p>",
-            buttons: [{
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            }, {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        tour.addStep("believe-one", {
-            title: outcomeNames[0].toUpperCase() + " should be higher",
-            text: "<p>If you think the probability of <b>" +  outcomeNames[0].toUpperCase() + "</b> occurring is higher than " + percent0 +
-                  ", buy some shares in the <b>" + outcomeNames[0].toUpperCase() + "</b>.</p>",
-            attachTo: ".outcome-" + outcomes[0].id + " .tradeAction-buy right",
-            buttons: [{
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            }, {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        tour.addStep("believe-two", {
-            title: outcomeNames[1].toUpperCase() + " should be higher",
-            text: "<p>If you think the probability of <b>" +  outcomeNames[1].toUpperCase() + "</b> occurring is higher than " + percent1 +
-                  ", buy some shares in the <b>" + outcomeNames[1].toUpperCase() + "</b>.</p>",
-            attachTo: ".outcome-" + outcomes[1].id + " .tradeAction-buy right",
-            buttons: [{
-                text: "Back",
-                classes: "shepherd-button-secondary",
-                action: tour.back
-            }, {
-                text: "Next",
-                action: tour.next
-            }]
-        });
-
-        tour.addStep("believe-either", {
-            title: "Profit!",
-            text: "<p>Whichever position you choose, you will make money if you're right!</p>",
-            buttons: [{
-                text: "Done",
-                action: tour.complete
-            }]
-        });
-
-        setTimeout(() => tour.start(), 1000);
+        }
     },
 
     componentWillUnmount() {
@@ -366,7 +259,7 @@ let MarketPage = React.createClass({
         clearTimeout(this.state.orderBookTimeout);
         clearTimeout(this.state.metadataTimeout);
 
-        tour && tour.hide();
+        Tour.hide();
     },
 
     getMetadata() {

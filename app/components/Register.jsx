@@ -55,7 +55,7 @@ let RegisterModal = React.createClass({
     if (this.isValid()) {
       let flux = this.getFlux();
       let self = this;
-      this.props.onHide();
+      setTimeout(() => self.props.onHide(), 0);
       this.updateProgressModal();
       this.updateProgressModal({
         header: "Creating New Account",
@@ -79,7 +79,17 @@ let RegisterModal = React.createClass({
               handle: null,
               keystore: null
             });
-            return self.setState({handleHelp: account.message});
+
+            self.setState({
+              handleHelp: account.message,
+              progressModal: {
+                ...self.getInitialState().progressModal
+              }
+            });
+
+            setTimeout(() => self.props.onHide(), 1);
+
+            return;
           }
           self.updateProgressModal([{
               detail: {account},
@@ -97,10 +107,10 @@ let RegisterModal = React.createClass({
           flux.actions.asset.updateAssets();
         },
         onSendEther: function (account) {
-          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " Ether.");
+          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
         },
         onSent: function (res) {
-          self.updateProgressModal("Requesting free Cash and Reputation...");
+          self.updateProgressModal("Requesting free play Cash and Reputation...");
         },
         onSuccess: function (res) {
           self.updateProgressModal({
@@ -212,7 +222,6 @@ let RegisterModal = React.createClass({
           });
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();
-          flux.actions.report.loadPendingReports();
         });
       });
     }
@@ -377,6 +386,9 @@ let RegisterModal = React.createClass({
                         label="Remember Me"
                         onChange={this.handlePersistChange} />
                     </div>
+                  </div>
+                  <div className="col-sm-12">
+                    <span className="red">Store your password in a safe place!</span>  Your password cannot be recovered.  If you forget it, you will lose all assets in your account.
                   </div>
                 </form>
               </TabPanel>

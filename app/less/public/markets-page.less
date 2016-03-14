@@ -1,23 +1,65 @@
 @import "../partials/variables";
 
 .marketsPage {
-    .search-sort-row {
-        padding: 2rem 0 1.7rem 0;
-        white-space: nowrap;
+    .dropdowns {
+        margin: 2rem 0 1.5rem 0;
 
-        .search-container {
-            .search-control {
-                width: 100%;
+        .Select, .Select.is-focused, .Select.is-pseudo-focused  {
+            display: inline-block;
+            margin: 0 1rem 0 0;
+
+
+            .Select-control {
+                width: 15rem;
+                background: @color-primary-normal;
+
+                .Select-placeholder {
+                    color: white;
+                }
+
+                .Select-value {
+                    .Select-value-label {
+                        color: white !important;
+                    }
+                }
+
+                .Select-arrow-zone {
+                    .Select-arrow {
+                        border-top-color: white !important;
+                    }
+                }
+            }
+
+            .Select-option {
+                color: white;
+                background: @color-primary-hover;
+            }
+
+            .Select-option.is-focused {
+                color: white;
+                background: @color-primary-active;
             }
         }
     }
-}
 
-@media (max-width: @screen-xs) {
-    .marketsPage {
-        .search-sort-row {
-            padding: 1rem 0 2rem 0;
-            white-space: wrap;
+    .search-container {
+        display: block; position: relative;
+        width: 100%;
+        margin: 2rem 0 0 0;
+        padding: 0;
+
+        .input-clear {
+            .box {
+                padding-left: 2.5em;
+                border-radius: 50px;
+            }
+            &:before {
+                display: block; position: absolute;
+                content: '\f002';
+                top: 0.5em; left: 1em;
+                font-family: 'FontAwesome';
+                color: @color-grey-light2;
+            }
         }
     }
 }

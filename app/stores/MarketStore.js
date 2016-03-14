@@ -119,6 +119,7 @@ module.exports = {
   },
   handleLoadPriceHistorySuccess: function (payload) {
     this.state.markets[payload.market.id].priceHistory = payload.priceHistory;
+    this.state.markets[payload.market.id].priceTimeSeries = payload.priceTimeSeries;
     this.state.markets[payload.market.id].priceHistoryStatus = "complete";
     this.emit(constants.CHANGE_EVENT);
   },
@@ -147,6 +148,14 @@ module.exports = {
       return true;
     } else {
       return false;
+    }
+  },
+  handleClosedMarket: function (payload) {
+    var market = this.state.markets[payload.market.id];
+    if (market) {
+      market.closed = true;
+      this.state.markets[payload.market.id] = market;
+      this.emit(constants.CHANGE_EVENT);
     }
   }
 };

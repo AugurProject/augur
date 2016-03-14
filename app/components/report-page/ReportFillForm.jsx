@@ -8,40 +8,108 @@ let classnames = require("classnames");
 
 var ReportFillForm = React.createClass({
 
+    getInitialState() {
+        return {
+            reportedOutcome: this.props.reportedOutcome || "",
+            isUnethical: this.props.isUnethical || null,
+            isIndeterminate: this.props.isIndeterminate || null
+        };
+    },
+
+    onReportedOutcomeChanged(event) {
+        let report = event.target.value;
+        if (report !== null && report !== undefined) {
+            if (report === constants.INDETERMINATE_OUTCOME &&
+                event.target.id === "indeterminate") {
+                this.setState({
+                    isIndeterminate: !this.state.isIndeterminate
+                });
+            }
+            this.setState({reportedOutcome: report});
+        }
+        this.props.onReportedOutcomeChanged(event);
+    },
+
     _getOutcomeOptions(outcomes, market) {
         let nameAttr = "reportedOutcome";
-        let outcomeOptions = outcomes.map(outcome => {
-            let outcomeName = utilities.getOutcomeName(outcome.id, market).outcome;
-            return (
-                <div key={outcome.id} className="form-horizontal col-sm-12">
-                    <Input type="radio"
-                           name={nameAttr}
-                           value={outcome.id}
-                           checked={this.props.reportedOutcome == outcome.id}
-                           label={outcomeName}
-                           onChange={this.props.onReportedOutcomeChanged} />
+        let outcomeOptions;
+        if (market.type === "scalar") {
+            let event = market.events[0];
+            outcomeOptions = [];
+            outcomeOptions.push(
+                <div key="scalar-outcome-report">
+                    <div className="col-sm-4 flush-left">
+                        <Input type="text"
+                               name={nameAttr}
+                               disabled={this.state.isIndeterminate}
+                               placeholder="Event outcome"
+                               value={this.state.reportedOutcome}
+                               className="full-width"
+                               onChange={this.onReportedOutcomeChanged} />
+                    </div>
+                    <div className="col-sm-8">
+                        Your answer must be at least <b>{event.minValue}</b>, but no more than <b>{event.maxValue}</b>.  If your answer is outside this range, select <b>Outcome is indeterminate</b>.
+                    </div>
                 </div>
             );
-        });
-        outcomeOptions.push(
-            <div key="indeterminate" className="form-horizontal col-sm-12">
-                <Input type="radio"
-                       id="indeterminate"
-                       name={nameAttr}
-                       value={constants.INDETERMINATE_OUTCOME}
-                       checked={this.props.reportedOutcome == constants.INDETERMINATE_OUTCOME}
-                       label="Outcome is indeterminate"
-                       onChange={this.props.onReportedOutcomeChanged} />
-            </div>
-        );
+            outcomeOptions.push(
+                <div key="indeterminate" className="form-horizontal col-sm-12">
+                    <Input type="checkbox"
+                           id="indeterminate"
+                           name={nameAttr}
+                           value={constants.INDETERMINATE_OUTCOME}
+                           checked={this.state.isIndeterminate}
+                           label="Outcome is indeterminate"
+                           onChange={this.onReportedOutcomeChanged} />
+                </div>
+            );
+        } else {
+            outcomeOptions = outcomes.map(outcome => {
+                return (
+                    <div key={outcome.id} className="form-horizontal col-sm-12">
+                        <Input type="radio"
+                               name={nameAttr}
+                               value={outcome.id}
+                               checked={this.state.reportedOutcome == outcome.id}
+                               label={outcome.label}
+                               onChange={this.onReportedOutcomeChanged} />
+                    </div>
+                );
+            });
+            outcomeOptions.push(
+                <div key="indeterminate" className="form-horizontal col-sm-12">
+                    <Input type="radio"
+                           id="indeterminate"
+                           name={nameAttr}
+                           value={constants.INDETERMINATE_OUTCOME}
+                           checked={this.state.reportedOutcome == constants.INDETERMINATE_OUTCOME}
+                           label="Outcome is indeterminate"
+                           onChange={this.onReportedOutcomeChanged} />
+                </div>
+            );
+        }
         return outcomeOptions;
+    },
+
+    onUnethicalChange(event) {
+        this.setState({isUnethical: event.target.checked});
+        this.props.onUnethicalChange(event);
+    },
+
+    onReportFormSubmit(event) {
+        event.preventDefault();
+        this.props.onReportFormSubmit(
+            this.state.reportedOutcome,
+            this.state.isUnethical,
+            this.state.isIndeterminate
+        );
     },
 
     render() {
         let market = this.props.market;
         let outcomeOptions = this._getOutcomeOptions(market.outcomes, market);
         return (
-            <form onSubmit={this.props.onReportFormSubmit}>
+            <form onSubmit={this.onReportFormSubmit}>
                 <div className="form-group">
                     <div className="row">
                         <div className="col-sm-3">
@@ -91,8 +159,8 @@ var ReportFillForm = React.createClass({
                                 <input type="checkbox"
                                        id="isUnethical-input"
                                        name="isUnethical"
-                                       checked={this.props.isUnethical}
-                                       onChange={this.props.onUnethicalChange}/>
+                                       checked={this.state.isUnethical}
+                                       onChange={this.onUnethicalChange}/>
                                 Yes, this question is unethical
                             </label>
                             <span className="help-block">

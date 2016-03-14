@@ -72,7 +72,9 @@ module.exports = function (flux) {
         flux.stores.report.state = {
             eventsToReport: {},
             pendingReports: [],
-            ready: []
+            ready: [],
+            loadedReports: false,
+            storageKey: null
         };
     }
     if (flux.stores.asset) {

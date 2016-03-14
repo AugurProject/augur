@@ -1,4 +1,5 @@
 let React = require("react");
+let classnames = require("classnames");
 let abi = require("augur-abi");
 let _ = require("lodash");
 let moment = require("moment");
@@ -12,6 +13,7 @@ let Select = require('react-select');
 let MarketRow = require("./MarketRow");
 let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
+let InputClear = require('../layout/InputClear');
 
 let MarketsPage = React.createClass({
 
@@ -23,7 +25,8 @@ let MarketsPage = React.createClass({
             marketsPerPage: constants.MARKETS_PER_PAGE,
             visiblePages: 3,
             pageNum: this.props.params.page ? this.props.params.page - 1 : 0,
-            sortValue: null
+            addMarketModalOpen: false,
+            selectedMarketStatus: this.selectedMarketStatusFromProps(this.props)
         };
     },
 
@@ -34,8 +37,11 @@ let MarketsPage = React.createClass({
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
         var tourMarketId = utils.getTourMarketKey(searchState.results, currentBranch);
+
         return {
             searchKeywords: searchState.keywords,
+            sortBy: searchState.sortBy,
+            reverseSort: searchState.reverseSort,
             markets: searchState.results,
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
@@ -49,30 +55,38 @@ let MarketsPage = React.createClass({
         this.setState({pageNum: data.selected});
     },
 
-    onChangeSearchInput: function (event) {
-        this.setState({searchKeywords: event.target.value});
-        this.debounceSearchInput(event.target.value);
+    onChangeSearchInput: function (searchKeywords) {
+        this.handlePageChanged({selected: 0});
+        this.getFlux().actions.search.updateKeywords(searchKeywords);
     },
 
     onChangeSortBy: function (newValue) {
-        this.setState({
-            sortValue: newValue
-        });
         this.handlePageChanged({selected: 0});
         var sortInput = newValue.value.split('|');
         this.getFlux().actions.search.sortMarkets(sortInput[0], parseInt(sortInput[1]));
     },
 
-    debounceSearchInput: _.debounce(function (val) {
-        this.handlePageChanged({selected: 0});
-        this.getFlux().actions.search.updateKeywords(val);
-    }, 500),
+    onChangeMarketStatus: function (newValue) {
+        switch(newValue.value) {
+            case 'expired':
+                this.transitionTo(this.context.router.getCurrentPathname(), null, { expired: true });
+                break;
+            default:
+                this.transitionTo(this.context.router.getCurrentPathname(), null, { expired: false });
+                break;
+        }
+    },
+
+    selectedMarketStatusFromProps: function(props) {
+        return props.query.expired === 'true' ? 'expired' : 'open';
+    },
 
     componentWillReceiveProps(nextProps) {
         if (this.props.query.expired !== nextProps.query.expired) {
             // when switching from one tab to another restart pagination
             this.setState(_.merge({}, this.state, {
-                pageNum: 0
+                pageNum: 0,
+                selectedMarketStatus: this.selectedMarketStatusFromProps(nextProps)
             }));
         }
     },
@@ -115,7 +129,8 @@ let MarketsPage = React.createClass({
 
     render() {
         let flux = this.getFlux();
-        let myOpenOrders = flux.augur.orders.get(this.state.account);
+        let account = this.state.account;
+        let myOpenOrders = flux.augur.orders.get(account);
         let tourMarketKey = this.state.tourMarketKey;
         let tourMarketId;
         if (tourMarketKey) tourMarketId = this.state.markets[tourMarketKey]._id;
@@ -126,6 +141,7 @@ let MarketsPage = React.createClass({
         if (tourMarketId && this.state.pageNum === 0 && this.props.query.expired !== "true") {
             tourMarketRow = <MarketRow
                                 key={tourMarketKey}
+                                account={account}
                                 market={this.state.markets[tourMarketKey]}
                                 tour={true}
                                 numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
@@ -174,56 +190,40 @@ let MarketsPage = React.createClass({
                     Markets
                     {submitMarketAction}
                 </h1>
-
-                <div className="row submenu">
-                    <a className="collapsed" data-toggle="collapse" href="#collapseSubmenu"
-                       aria-expanded="false"
-                       aria-controls="collapseSubmenu">
-                        <h2>Navigation</h2>
-                    </a>
-
-                    <div id="collapseSubmenu" className="col-xs-12 collapse" aria-expanded="false">
-                        <ul className="list-group" role="tablist" id="tabpanel">
-                            <li role="presentation" className={`list-group-item ${this.props.query.expired !== 'true' ? 'active' : ''}`}>
-                                <Link to='markets' role="tab" activeClassName="">
-                                    Open Markets
-                                </Link>
-                            </li>
-                            <li role="presentation" className={`list-group-item ${this.props.query.expired === 'true' ? 'active' : ''}`}>
-                                <Link to="markets" activeClassName="" query={{expired: true}} role="tab">
-                                    Expired Markets
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+                <div className="search-container">
+                    <InputClear
+                           value={this.state.searchKeywords}
+                           onChange={this.onChangeSearchInput}/>
                 </div>
 
-                <div className="row search-sort-row">
-                    <div className="col-sm-4 col-xs-6">
-                        <Select className="sort-control"
-                                value={this.state.sortValue}
-                                name="markets-sort"
-                                searchable={false}
-                                clearable={false}
-                                placeholder="Sort markets"
-                                onChange={this.onChangeSortBy}
-                                options={[
-                                    {value: "creationBlock|1", label: "Creation date (newest first)"},
-                                    {value: "creationBlock|0", label: "Creation date (oldest first)"},
-                                    {value: "endBlock|0", label: "End date (soonest first)"},
-                                    {value: "endBlock|1", label: "End date (farthest first)"},
-                                    {value: "description|0", label: "Description"}
-                                ]}>
-                        </Select>
-                    </div>
-                    <div className="col-sm-4 col-xs-6 col-sm-offset-4 search-container">
-                        <input type="search"
-                               className="form-control search-control"
-                               value={this.state.searchKeywords}
-                               placeholder="Search"
-                               tabIndex="0"
-                               onChange={this.onChangeSearchInput}/>
-                    </div>
+                <div className="row dropdowns">
+                    <Select className="sort-control"
+                            value={this.state.sortBy + '|' + this.state.reverseSort}
+                            name="markets-sort"
+                            searchable={false}
+                            clearable={false}
+                            placeholder="Sort markets"
+                            onChange={this.onChangeSortBy}
+                            options={[
+                                {value: "creationBlock|1", label: "Creation date (newest first)"},
+                                {value: "creationBlock|0", label: "Creation date (oldest first)"},
+                                {value: "endBlock|0", label: "End date (soonest first)"},
+                                {value: "endBlock|1", label: "End date (farthest first)"},
+                                {value: "description|0", label: "Description"}
+                            ]}>
+                    </Select>
+
+                    <Select className="market-status"
+                            value={ this.state.selectedMarketStatus }
+                            name="market-status"
+                            searchable={false}
+                            clearable={false}
+                            onChange={this.onChangeMarketStatus}
+                            options={[
+                                {value: "open", label: "Open Markets"},
+                                {value: "expired", label: "Expired Markets"}
+                            ]}>
+                    </Select>
                 </div>
                 {pagination}
                 <div className="row">
@@ -234,6 +234,7 @@ let MarketsPage = React.createClass({
                                 return (
                                     <MarketRow
                                         key={market.id}
+                                        account={account}
                                         market={market}
                                         numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
                                 );

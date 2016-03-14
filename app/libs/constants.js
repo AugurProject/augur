@@ -13,11 +13,12 @@ module.exports = {
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
   YES: ONE_FXP.mul(2),
-  INDETERMINATE_OUTCOME: 0.5,
+  INDETERMINATE_OUTCOME: "1.5",
   SECONDS_PER_BLOCK: 12,
   MAX_BLOCKCHAIN_AGE: 300,  // in seconds
   MARKETS_PER_PAGE: 15,
   MAX_ALLOWED_TAGS: 3,
+  MAX_ALLOWED_OUTCOMES: 8,
   MIN_ETHER_WARNING: 50000000000000000000,
   CHANGE_EVENT: 'change',
   config: keyMirror({
@@ -67,7 +68,8 @@ module.exports = {
     COMMENT_SAVED: null,
     CHECK_ORDER_BOOK_SUCCESS: null,
     LOAD_METADATA_SUCCESS: null,
-    INITIAL_LOAD_COMPLETE: null
+    INITIAL_LOAD_COMPLETE: null,
+    CLOSED_MARKET: null
   }),
   search: keyMirror({
     KEYWORDS_UPDATED: null,
@@ -76,8 +78,8 @@ module.exports = {
   report: keyMirror({
     REPORTS_STORAGE: null,
     SAVE_REPORT_SUCCESS: null,
+    LOAD_EVENTS_TO_REPORT: null,
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
-    LOAD_PENDING_REPORTS_SUCCESS: null,
     UPDATE_PENDING_REPORTS: null,
     READY: null
   })

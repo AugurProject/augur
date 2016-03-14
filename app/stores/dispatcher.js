@@ -56,7 +56,8 @@ stores.market.initialize = function () {
     constants.market.COMMENT_SAVED, this.handleCommentSaved,
     constants.market.CHECK_ORDER_BOOK_SUCCESS, this.handleCheckOrderBookSuccess,
     constants.market.LOAD_METADATA_SUCCESS, this.handleLoadMetadataSuccess,
-    constants.market.INITIAL_LOAD_COMPLETE, this.handleInitialLoadComplete
+    constants.market.INITIAL_LOAD_COMPLETE, this.handleInitialLoadComplete,
+    constants.market.CLOSED_MARKET, this.handleClosedMarket
   );
 };
 stores.network.initialize = function () {
@@ -70,10 +71,10 @@ stores.network.initialize = function () {
 stores.report.initialize = function () {
   this.bindActions(
     constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, this.handleLoadEventsToReportSuccess,
-    constants.report.LOAD_PENDING_REPORTS_SUCCESS, this.handleLoadPendingReportsSuccess,
-    constants.report.UPDATE_PENDING_REPORTS, this.handleLoadPendingReportsSuccess,
-    constants.report.SAVE_REPORT_SUCCESS, this.handleSaveReportSuccess,
-    constants.report.READY, this.handleReady
+    constants.report.UPDATE_PENDING_REPORTS, this.handleUpdatePendingReports,
+    constants.report.READY, this.handleReady,
+    constants.config.UPDATE_ACCOUNT, this.handleUpdateAccount,
+    constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, this.handleUpdateCurrentBranchSuccess
   );
 };
 stores.search.initialize = function () {

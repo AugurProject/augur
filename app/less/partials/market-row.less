@@ -40,19 +40,6 @@
           }
      }
 
-     .tags {
-          margin: @market-row-margin 0 0 0;
-
-          .tag {
-               margin-right: 0.72rem;
-               padding: 0.29rem 0.72rem;
-               border: solid 1px @color-grey-light2;
-               border-radius: 3px;
-               font-size: 11px;
-               text-transform: uppercase;
-          }
-     }
-
      .details {
           margin: 1rem 0 0 0;
 
@@ -102,21 +89,40 @@
                     }
                }
                &.holdings {
-                    .tabular {
+                    margin-right: 2%;
+
+                    .info {
+                         .content {
+                              padding-bottom: 0.4rem;
+                         }
+                    }
+
+                    .holdings-table {
                          width: 100%;
                          tr {
                               th {
-                                   background: @color-primary-active;
-                                   border-color: @color-primary-active;
+                                   white-space: nowrap;
                               }
                               td {
-                                   &.title {
-                                        text-align: left;
+                                   padding: 0.3rem 0;
+
+                                   &:first-child {
+                                        white-space: wrap;
                                    }
-                                   &.value {
+                                   &:not(:first-child) {
                                         text-align: right;
-                                        font-weight: 700;
+                                        white-space: nowrap;
                                    }
+
+                                   &.change-direction {
+                                        width: 0.5rem;
+                                        padding-left: 0;
+
+                                        .fa {
+                                             font-weight: 700;
+                                        }
+                                   }
+
                               }
                          }
                     }

@@ -54,7 +54,6 @@ let SignInModal = React.createClass({
           flux.actions.asset.updateAssets();
           flux.actions.market.loadMarkets();
           flux.actions.report.loadEventsToReport();
-          flux.actions.report.loadPendingReports();
           flux.actions.asset.loadMeanTradePrices();
           self.props.onHide();
         } else {

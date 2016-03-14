@@ -283,17 +283,16 @@ var Overview = React.createClass({
                 </h4>
                 <div className="content">
                     {buySellActions}
-                    <ProgressModal
-                        backdrop="static"
-                        show={this.state.progressModal.open}
-                        numSteps={this.state.progressModal.steps}
-                        step={this.state.progressModal.step}
-                        header={this.state.progressModal.header}
-                        status={this.state.progressModal.status}
-                        detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
-                        complete={this.state.progressModal.complete}
-                        onHide={this.toggleProgressModal} />
-                    </div>
+                </div>
+                <ProgressModal
+                    show={this.state.progressModal.open}
+                    numSteps={this.state.progressModal.steps}
+                    step={this.state.progressModal.step}
+                    header={this.state.progressModal.header}
+                    status={this.state.progressModal.status}
+                    detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
+                    complete={this.state.progressModal.complete}
+                    onHide={this.toggleProgressModal} />
             </div>
         );
     }

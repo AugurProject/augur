@@ -17,6 +17,13 @@ module.exports = {
     return !isNaN(parseFloat(n)) && isFinite(n);
   },
 
+  // http://stackoverflow.com/a/2901298/2059654
+  commafy: function (x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  },
+
   updateProgressModal: function (update, noStep) {
     var self = this;
     var state = this.state.progressModal;
@@ -71,7 +78,8 @@ module.exports = {
   },
 
   formatEther: function (wei) {
-    if (!wei) return { value: '', unit: 'ether', withUnit: '-' };
+    if (!wei) return {value: '', unit: 'ether', withUnit: '-'};
+    if (wei instanceof Error) throw wei;
     var value = abi.bignum(wei).dividedBy(constants.ETHER);
     var unit = 'ether';
     return {
@@ -134,10 +142,11 @@ module.exports = {
     switch (marketType) {
     case "categorical":
       if (market && market.longDescription && market.longDescription.indexOf("Choices:") > -1) {
+        id = Number(id);
         var desc = market.longDescription.split("Choices:");
         var choices = desc[desc.length - 1].split(",");
-        if (choices && choices.constructor === Array && choices.length > id - 1) {
-            return {type: "categorical", outcome: choices[id - 1].trim()};
+        if (id && choices && choices.constructor === Array && choices.length > id - 1) {
+          return {type: "categorical", outcome: choices[id - 1].trim()};
         }
         if (!warned[market._id]) {
           warned[market._id] = true;
@@ -151,10 +160,10 @@ module.exports = {
       }
       return {type: "categorical", outcome: id};
     case "scalar":
-      if (id === NO) return {type: "scalar", outcome: "⇩"};
+      if (parseInt(id) === NO) return {type: "scalar", outcome: "⇩"};
       return {type: "scalar", outcome: "⇧"};
     case "binary":
-      if (id === NO) return {type: "binary", outcome: "No"};
+      if (parseInt(id) === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};
     case "combinatorial":
       return {type: "combinatorial"};

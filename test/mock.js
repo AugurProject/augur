@@ -46,6 +46,7 @@ var flux = {
         },
         UPDATE_CURRENT_BRANCH_SUCCESS: function (payload) {
             flux.stores.branch.handleUpdateCurrentBranchSuccess(payload);
+            flux.stores.report.handleUpdateCurrentBranchSuccess(payload);
         },
         CHECK_QUORUM_SENT: function (payload) {
             flux.stores.branch.handleCheckQuorumSent(payload);
@@ -63,6 +64,7 @@ var flux = {
         },
         UPDATE_ACCOUNT: function (payload) {
             flux.stores.config.handleUpdateAccount(payload);
+            flux.stores.report.handleUpdateAccount(payload);
         },
         UPDATE_PERCENT_LOADED_SUCCESS: function (payload) {
             flux.stores.config.handleUpdatePercentLoadedSuccess(payload);
@@ -122,6 +124,9 @@ var flux = {
         INITIAL_LOAD_COMPLETE: function (payload) {
             flux.stores.market.handleInitialLoadComplete(payload);
         },
+        CLOSED_MARKET: function (payload) {
+            flux.stores.market.handleClosedMarket(payload);
+        },
 
         // network
         UPDATE_NETWORK: function (payload) {
@@ -141,14 +146,8 @@ var flux = {
         LOAD_EVENTS_TO_REPORT_SUCCESS: function (payload) {
             flux.stores.report.handleLoadEventsToReportSuccess(payload);
         },
-        LOAD_PENDING_REPORTS_SUCCESS: function (payload) {
-            flux.stores.report.handleLoadPendingReportsSuccess(payload);
-        },
         UPDATE_PENDING_REPORTS: function (payload) {
-            flux.stores.report.handleLoadPendingReportsSuccess(payload);
-        },
-        SAVE_REPORT_SUCCESS: function (payload) {
-            flux.stores.report.handleSaveReportSuccess(payload);
+            flux.stores.report.handleUpdatePendingReports(payload);
         },
         READY: function (payload) {
             flux.stores.report.handleReady(payload);

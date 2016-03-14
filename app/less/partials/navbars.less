@@ -1,8 +1,8 @@
 // main navigation bar
 .navbar {
+    width:100%;
     border-radius: 0;
-    margin-bottom: 0;
-    background-color: @color-teal;
+    background-color: @color-purple-dark;
     color: @color-white;
     font-size: @font-size-base;
     .display(flex);
@@ -14,32 +14,39 @@
     }
 
     .container {
-        width: 100%;
+        left: 0; right: 0;
+        width: 100%; max-width: 1260px;
+        margin: 0 auto;
         padding: 0 1rem 0 4rem;
     }
 
-    .navbar-header {
-        margin-right: 2rem;
-        .navbar-toggle {
-            padding: 20px 15px;
-            line-height: 30px;
-            margin: 0;
-            height: auto;
-        }
+    .navbar-brandbox {
+        top: 16px;
+        position: absolute;
         .navbar-brand {
-            margin-top: 0;
-            margin-bottom: 0;
-            font-size: @font-size-base;
-            line-height: 30px;
-            height: auto;
-            padding: 20px 15px;
-            text-transform: uppercase;
+            font-family: "Core Mellow";
+            font-size: 18pt;
+            font-weight: 400;
+            line-height: 8px;
+            background-image: url(/images/augur_logo_small_white.png);
+            background-repeat: no-repeat;
+            height: 3rem;
+            padding-left: 40px;
             svg {
                 width: 25px;
                 height: 25px;
                 position: relative;
                 top: -2px;
             }
+        }
+    }
+
+    .navbar-header {
+        .navbar-toggle {
+            padding: 20px 2rem;
+            line-height: 30px;
+            margin: 0;
+            height: auto;
         }
     }
     .navbar-collapse {
@@ -68,7 +75,7 @@
                     &.active,
                     &:hover,
                     &:focus {
-                        background-color: #269B8F;
+                        background-color: @color-purple;
                         color: @color-white;
                     }
                     &.btn {
@@ -113,7 +120,16 @@
             }
 
             &.navbar-right {
-                float: right !important;
+                text-align: right;
+                cursor: pointer;
+
+                li {
+                    display:block; float: none;
+
+                    a {
+                        font-size: 0.8rem;
+                    }
+                }
             }
         }
     }
@@ -210,7 +226,16 @@ body > .navbar-collapse::after {
         visibility: visible;
     }
 
+    .navbar-brandbox {
+        left: 50%;
+        .navbar-brand {
+            position: relative;
+            left: -25%;
+        }
+    }
+
     .navbar-collapse.collapse {
+        margin-left: -55px;
         height: 5rem !important;
         line-height: 5rem;
         text-align: right;
@@ -226,8 +251,8 @@ body > .navbar-collapse::after {
 
     // Main navigation bar
     .navbar {
-        .navbar-brand {
-            margin-left: 25px;
+        .navbar-brandbox {
+            left: 2rem;
         }
 
         > .container {
@@ -241,7 +266,7 @@ body > .navbar-collapse::after {
                 .align-items(stretch);
                 .flex-direction(column);
                 > li {
-                    border-top: 1px solid @color-teal-dark;
+                    border-top: 1px solid @color-purple;
                     &.dropdown {
                         .dropdown-toggle {
                             .caret {
@@ -264,7 +289,7 @@ body > .navbar-collapse::after {
                             padding-top: 0;
                             padding-bottom: 0;
                             > li {
-                                border-top: 1px solid @color-teal-dark;
+                                border-top: 1px solid @color-purple;
                                 background-color: @color-dark-bg-active;
                                 > a {
                                     padding: 15px 15px 15px 30px;
@@ -286,25 +311,9 @@ body > .navbar-collapse::after {
                 }
 
                 &.navbar-right {
-                    display: inline-block; position: relative;
-                    float: none !important;
-                    margin: 0;
-                    vertical-align: middle;
+                    display: block;
+                    margin: 0 -15px;
                     text-align: left;
-                    cursor: pointer;
-
-                    li {
-                        display:block;
-
-                        a {
-                            padding: 0.0rem 0.0rem;
-                            line-height: 1.2rem;
-
-                            span:first-child {
-                                color: @color-grey-lighter;
-                            }
-                        }
-                    }
                 }
             }
         }
