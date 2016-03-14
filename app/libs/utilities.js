@@ -200,32 +200,6 @@ module.exports = {
     }
   },
 
-  getTourMarketKey: function (markets, branch) {
-    var tourMarketId, price;
-    if (constants.TOUR_MARKET_ID && markets[abi.bignum(constants.TOUR_MARKET_ID)]) {
-      tourMarketId = constants.TOUR_MARKET_ID;
-    } else {
-      if (markets && branch && branch.currentPeriod) {
-        for (var marketId in markets) {
-          if (!markets.hasOwnProperty(marketId)) continue;
-          if (!markets[marketId].description) continue;
-          if (!markets[marketId].type) continue;
-          if (!markets[marketId].description.length) continue;
-          if (markets[marketId].tradingPeriod < branch.currentPeriod) continue;
-          if (markets[marketId].type === "binary") {
-            tourMarketId = marketId;
-            price = markets[marketId].outcomes[0].price.times(100).toFixed(1);
-            if (price > 0 && price < 100) {
-              tourMarketId = marketId;
-              break;
-            }
-          }
-        }
-      }
-    }
-    return tourMarketId;
-  },
-
   // check if account address is correctly formatted
   isValidAccount: function (address) {
     address = address.replace(/^0x/, '');  // strip leading '0x' is it exists

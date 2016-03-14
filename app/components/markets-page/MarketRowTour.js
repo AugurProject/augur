@@ -20,8 +20,20 @@ module.exports = {
         // TODO add glowing border to current top market
         tour.addStep("markets-list", {
             title: "Welcome to the Augur beta test!",
-            text: "<p>On Augur, you can trade the probability of any real-world event happening. (Note: from now until the end of the beta test, everything on Augur is just play money!  Please do <b>not</b> send real Ether to your Augur beta account.)<br /></p>"+
-                "<p>In this market, you are considering:<br /><br /><b><i>" + market.description + "</i></b></p>",
+            text: "<p>On Augur, you can trade the probability of any real-world event happening. <br /><br /><i style='font-size:0.8rem; font-weight: 700; color:#393939'>(Note: from now until the end of the beta test, everything on Augur is just play money!  Please do <b>not</b> send real Ether to your Augur beta account.)</i><br /></p>",
+            buttons: [{
+                text: "Exit",
+                classes: "shepherd-button-secondary",
+                action: tour.cancel
+            }, {
+                text: "Next",
+                action: tour.next
+            }]
+        });
+
+        tour.addStep("markets-list", {
+            title: "Welcome to the Augur beta test!",
+            text: "<p>In this market, you are considering:<br /><br /><b><i>" + market.description + "</i></b></p>",
             attachTo: ".market-row .description top",
             buttons: [{
                 text: "Exit",
@@ -84,10 +96,11 @@ module.exports = {
             advanceOn: '.trade-button click'
         });
 
-        setTimeout(() => tour.start(), 3000);
+        tour.start();
     },
 
-    hide: function() {
+    hide: function(localStorageKey) {
         tour && tour.hide();
+        tour && localStorageKey && localStorage.setItem(localStorageKey, true);
     }
 };

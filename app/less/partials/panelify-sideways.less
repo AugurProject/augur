@@ -1,4 +1,5 @@
 .panelify-sideways {
+    background: fade(@color-plain-normal, 7%);
     .title {
         padding: 1rem 1rem 0 1rem;
         vertical-align: middle;
@@ -19,31 +20,40 @@
     }
 
     &.primary {
+        background: fade(@color-primary-normal, 7%);
         .title, .content {
+            border-color: fade(@color-primary-normal, 20%);
             border-left-color: @color-primary-normal;
         }
     }
 
     &.info {
+        background: fade(@color-dark-normal, 7%);
         .title, .content {
-            border-left-color: #526069;
+            border-color: fade(@color-dark-normal, 20%);
+            border-left-color: @color-dark-normal;
         }
     }
 
     &.success {
+        background: fade(@color-success-normal, 7%);
         .title, .content {
+            border-color: fade(@color-success-normal, 20%);
             border-left-color: @color-success-normal;
         }
     }
 
     &.warning {
+        background: fade(@color-warning-normal, 7%);
         .title, .content {
+            border-color: fade(@color-warning-normal, 20%);
             border-left-color: @color-warning-normal;
         }
     }
 
     &.danger {
         .title, .content {
+            border-color: fade(@color-danger-normal, 20%);
             border-left-color: @color-danger-normal;
         }
     }

@@ -9,6 +9,7 @@ let moment = require("moment");
 let Link = require("react-router/lib/components/Link");
 let OutcomeRow = require("./OutcomeRow");
 let MarketRowTour = require("./MarketRowTour");
+let constants = require("../../libs/constants");
 
 /**
  * Represents detail of market in market lists.
@@ -33,7 +34,11 @@ let MarketRow = React.createClass({
                 tableHeaderClass = " holdings";
                 tableHeader = "Outcome reported";
                 if (market.type === "scalar") {
-                    reportedOutcomeFmt = report.reportedOutcome;
+                    if (report.rescaledReportedOutcome === constants.INDETERMINATE_OUTCOME) {
+                        reportedOutcomeFmt = `indeterminate ${report.isUnethical ? "/ Unethical" : ""}`;
+                    } else {
+                        reportedOutcomeFmt = `${report.reportedOutcome} ${report.isUnethical ? "/ Unethical" : ""}`;
+                    }
                 } else {
                     reportedOutcomeFmt = `${utilities.getOutcomeName(report.reportedOutcome, market).outcome} ${report.isUnethical ? "/ Unethical" : ""}`;
                 }
@@ -277,6 +282,8 @@ let MarketRow = React.createClass({
         }
         let rowAction = this.getRowAction(market, report);
         let clickableDescription = this.getClickableDescription(market, report);
+        let volume = "0.00";
+        if (market && market.volume) volume = market.volume.toFixed(2);
         return (
             <div className="market-row">
                 <div className="title">
@@ -300,9 +307,14 @@ let MarketRow = React.createClass({
                         <span className="labelValue-value end-date">{endDateFormatted}</span>
                     </div>
                     <div className="labelValue subtitle-group">
-                        <i className="fa fa-signal" style={{ transform: 'scaleX(-1)', fontSize: '0.8rem' }} />
+                        <i className="fa fa-money" />
                         <span className="labelValue-label trading-fee-label">Trading Fee: </span>
                         <span className="labelValue-value trading-fee">{market.tradingFee ? market.tradingFee.times(100).toFixed(1) + '%' : '-'}</span>
+                    </div>
+                    <div className="labelValue subtitle-group">
+                        <i className="fa fa-signal" style={{ fontSize: '0.8rem' }} />
+                        <span className="labelValue-label end-date-label">Volume: </span>
+                        <span className="labelValue-value end-date">{volume} shares</span>
                     </div>
                 </div>
                 <div className="tags">
@@ -336,11 +348,30 @@ let MarketRow = React.createClass({
         );
     },
 
-    componentDidMount() {
-        if (this.props.tour && this.props.market && this.refs.tradeButton && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete")) {
+    getInitialState: function() {
+        return {
+            shouldOpenTour: false
+        };
+    },
+
+    componentWillReceiveProps : function(nextProps) {
+        if (nextProps.tour) {
+            var shouldOpenTour = !!nextProps.market && !localStorage.getItem("marketRowTourOpen") && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete");
+            if (this.state.shouldOpenTour !== shouldOpenTour) {
+                this.setState({
+                    shouldOpenTour: shouldOpenTour
+                });
+            }
+        }
+    },
+
+    componentDidUpdate() {
+        if (this.state.shouldOpenTour) {
             try {
-                MarketRowTour.show(this.props.market, ReactDOM.findDOMNode(this.refs.tradeButton));
-                localStorage.setItem("marketRowTourComplete", true);
+                setTimeout(() => {
+                    MarketRowTour.show(this.props.market, ReactDOM.findDOMNode(this.refs.tradeButton));
+                }, 4000);
+                localStorage.setItem("marketRowTourOpen", true);
             } catch (e) {
                 console.warn('MarketRow tour failed to open (caught): ', e.message);
             }
@@ -348,7 +379,7 @@ let MarketRow = React.createClass({
     },
 
     componentWillUnmount() {
-        MarketRowTour.hide();
+        MarketRowTour.hide('marketRowTourComplete');
     }
 });
 

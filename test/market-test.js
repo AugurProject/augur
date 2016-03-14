@@ -17,10 +17,10 @@ var constants = require("../app/libs/constants");
 var flux = require("./mock");
 var tools = require("./tools");
 
-var host = "http://127.0.0.1:8545";
-flux.augur.rpc.setLocalNode(host);
-flux.augur.connect(host, process.env.GETH_IPC);
-// flux.augur.connect();
+// var host = "http://127.0.0.1:8545";
+// flux.augur.rpc.setLocalNode(host);
+// flux.augur.connect(host, process.env.GETH_IPC);
+flux.augur.connect();
 var account = {address: flux.augur.from};
 var blockNumber = flux.augur.rpc.blockNumber();
 var marketsInfo = flux.augur.getMarketsInfo(flux.augur.branches.dev);
@@ -35,66 +35,66 @@ for (var m in marketsInfo) {
 var rawInfo = clone(marketInfo);
 marketInfo = tools.parseMarketInfo(marketInfo, blockNumber, account);
 
-// test("marketInfo", function (t) {
-//     var market = rawInfo._id;
-//     t.false(rawInfo.id, "raw marketInfo's id field is unassigned");
-//     t.true(validator.isHexadecimal(abi.unfork(rawInfo._id)), "unfork(_id) is valid hex");
-//     t.true(validator.isNumeric(rawInfo.network), "network is numeric");
-//     t.true(validator.isIn(rawInfo.network, ["7", "10101"]), "network is 7 or 10101");
-//     t.true(validator.isInt(rawInfo.traderCount.toString()), "traderCount is an integer");
-//     t.true(rawInfo.traderIndex > -1, "traderIndex > -1");
-//     t.equal(rawInfo.alpha, "0.00790000000000000001", "alpha == 0.00790000000000000001");
-//     t.true(validator.isInt(rawInfo.tradingPeriod.toString()), "tradingPeriod is an integer");
-//     t.true(validator.isFloat(rawInfo.tradingFee), "tradingFee is a float");
-//     t.true(rawInfo.tradingFee > 0, "tradingFee > 0");
-//     t.true(rawInfo.tradingFee <= 1, "tradingFee <= 1");
-//     t.true(validator.isHexadecimal(abi.unfork(rawInfo.branchId)), "unfork(branchId) is valid hex");
-//     t.true(validator.isInt(rawInfo.numEvents.toString()), "numEvents is an integer");
-//     t.true(rawInfo.numEvents >= 1, "numEvents >= 1");
-//     t.true(validator.isInt(rawInfo.cumulativeScale), "cumulativeScale is a (string) integer");
-//     t.true(validator.isInt(rawInfo.creationFee), "creationFee is a (string) integer");
-//     t.true(Number(rawInfo.creationFee) > 0, "Number(creationFee) > 0");
-//     t.true(validator.isHexadecimal(abi.unfork(rawInfo.author)), "unfork(author) is valid hex");
-//     t.true(validator.isInt(rawInfo.endDate.toString()), "endDate is an integer");
-//     t.equal(rawInfo.participants.constructor, Object, "participants is an object");
-//     t.true(Object.keys(rawInfo.participants).length >= 0, "number of participants >= 0");
-//     t.true(validator.isInt(rawInfo.numOutcomes.toString()), "numOutcomes is an integer");
-//     t.true(rawInfo.numOutcomes > 1, "numOutcomes > 1");
-//     t.equal(rawInfo.outcomes.constructor, Array, "outcomes is an array");
-//     t.equal(rawInfo.numOutcomes, rawInfo.outcomes.length, "numOutcomes == outcomes.length");
-//     var outcome;
-//     for (var i = 0; i < rawInfo.numOutcomes; ++i) {
-//         outcome = rawInfo.outcomes[i];
-//         t.equal(outcome.constructor, Object, "outcome is an object");
-//         t.true(validator.isInt(outcome.id.toString()), "outcome.id is an integer");
-//         t.true(outcome.id > 0, "outcome.id > 0");
-//         t.true(validator.isFloat(outcome.outstandingShares), "outcome.outstandingShares is a (string) float");
-//         t.true(parseFloat(outcome.outstandingShares) > 0, "outcome.outstandingShares > 0");
-//         t.true(validator.isFloat(outcome.price), "outcome.price is a (string) float");
-//         t.equal(outcome.shares.constructor, Object, "outcome.shares is an object");
-//         t.true(Object.keys(outcome.shares).length >= 0, "number of share holders >= 0");
-//     }
-//     t.equal(rawInfo.events.constructor, Array, "events is an array");
-//     t.true(rawInfo.numEvents > 0, "numEvents > 0");
-//     t.true(rawInfo.events.length > 0, "events.length > 0");
-//     t.equal(rawInfo.numEvents, rawInfo.events.length, "numEvents == events.length");
-//     var event;
-//     for (i = 0; i < rawInfo.numEvents; ++i) {
-//         event = rawInfo.events[i];
-//         t.equal(event.constructor, Object, "event is an object");
-//         t.true(validator.isHexadecimal(abi.unfork(event.id)), "unfork(event.id) is valid hex");
-//         t.true(validator.isInt(event.endDate.toString()), "event.endDate is an integer");
-//         t.true(event.endDate > 0, "event.endDate > 0");
-//         t.true(validator.isInt(event.outcome), "event.outcome is a (string) integer");
-//         t.true(parseInt(event.outcome) >= 0, "event.outcome >= 0");
-//         t.true(validator.isInt(event.minValue), "event.minValue is a (string) integer");
-//         t.true(validator.isInt(event.maxValue), "event.maxValue is a (string) integer");
-//         t.true(parseInt(event.minValue) < parseInt(event.maxValue), "event.minValue < event.maxValue");
-//         t.true(validator.isInt(event.numOutcomes.toString()), "event.numOutcomes is an integer");
-//         t.true(event.numOutcomes > 1, "event.numOutcomes > 1");
-//     }
-//     t.end();
-// });
+test("marketInfo", function (t) {
+    var market = rawInfo._id;
+    t.false(rawInfo.id, "raw marketInfo's id field is unassigned");
+    t.true(validator.isHexadecimal(abi.unfork(rawInfo._id)), "unfork(_id) is valid hex");
+    t.true(validator.isNumeric(rawInfo.network), "network is numeric");
+    t.true(validator.isIn(rawInfo.network, ["7", "10101"]), "network is 7 or 10101");
+    t.true(validator.isInt(rawInfo.traderCount.toString()), "traderCount is an integer");
+    t.true(rawInfo.traderIndex > -1, "traderIndex > -1");
+    t.equal(rawInfo.alpha, "0.00790000000000000001", "alpha == 0.00790000000000000001");
+    t.true(validator.isInt(rawInfo.tradingPeriod.toString()), "tradingPeriod is an integer");
+    t.true(validator.isFloat(rawInfo.tradingFee), "tradingFee is a float");
+    t.true(rawInfo.tradingFee > 0, "tradingFee > 0");
+    t.true(rawInfo.tradingFee <= 1, "tradingFee <= 1");
+    t.true(validator.isHexadecimal(abi.unfork(rawInfo.branchId)), "unfork(branchId) is valid hex");
+    t.true(validator.isInt(rawInfo.numEvents.toString()), "numEvents is an integer");
+    t.true(rawInfo.numEvents >= 1, "numEvents >= 1");
+    t.true(validator.isInt(rawInfo.cumulativeScale), "cumulativeScale is a (string) integer");
+    t.true(validator.isInt(rawInfo.creationFee), "creationFee is a (string) integer");
+    t.true(Number(rawInfo.creationFee) > 0, "Number(creationFee) > 0");
+    t.true(validator.isHexadecimal(abi.unfork(rawInfo.author)), "unfork(author) is valid hex");
+    t.true(validator.isInt(rawInfo.endDate.toString()), "endDate is an integer");
+    t.equal(rawInfo.participants.constructor, Object, "participants is an object");
+    t.true(Object.keys(rawInfo.participants).length >= 0, "number of participants >= 0");
+    t.true(validator.isInt(rawInfo.numOutcomes.toString()), "numOutcomes is an integer");
+    t.true(rawInfo.numOutcomes > 1, "numOutcomes > 1");
+    t.equal(rawInfo.outcomes.constructor, Array, "outcomes is an array");
+    t.equal(rawInfo.numOutcomes, rawInfo.outcomes.length, "numOutcomes == outcomes.length");
+    var outcome;
+    for (var i = 0; i < rawInfo.numOutcomes; ++i) {
+        outcome = rawInfo.outcomes[i];
+        t.equal(outcome.constructor, Object, "outcome is an object");
+        t.true(validator.isInt(outcome.id.toString()), "outcome.id is an integer");
+        t.true(outcome.id > 0, "outcome.id > 0");
+        t.true(validator.isFloat(outcome.outstandingShares), "outcome.outstandingShares is a (string) float");
+        t.true(parseFloat(outcome.outstandingShares) > 0, "outcome.outstandingShares > 0");
+        t.true(validator.isFloat(outcome.price), "outcome.price is a (string) float");
+        t.equal(outcome.shares.constructor, Object, "outcome.shares is an object");
+        t.true(Object.keys(outcome.shares).length >= 0, "number of share holders >= 0");
+    }
+    t.equal(rawInfo.events.constructor, Array, "events is an array");
+    t.true(rawInfo.numEvents > 0, "numEvents > 0");
+    t.true(rawInfo.events.length > 0, "events.length > 0");
+    t.equal(rawInfo.numEvents, rawInfo.events.length, "numEvents == events.length");
+    var event;
+    for (i = 0; i < rawInfo.numEvents; ++i) {
+        event = rawInfo.events[i];
+        t.equal(event.constructor, Object, "event is an object");
+        t.true(validator.isHexadecimal(abi.unfork(event.id)), "unfork(event.id) is valid hex");
+        t.true(validator.isInt(event.endDate.toString()), "event.endDate is an integer");
+        t.true(event.endDate > 0, "event.endDate > 0");
+        t.true(validator.isInt(event.outcome), "event.outcome is a (string) integer");
+        t.true(parseInt(event.outcome) >= 0, "event.outcome >= 0");
+        t.true(validator.isInt(event.minValue), "event.minValue is a (string) integer");
+        t.true(validator.isInt(event.maxValue), "event.maxValue is a (string) integer");
+        t.true(parseInt(event.minValue) < parseInt(event.maxValue), "event.minValue < event.maxValue");
+        t.true(validator.isInt(event.numOutcomes.toString()), "event.numOutcomes is an integer");
+        t.true(event.numOutcomes > 1, "event.numOutcomes > 1");
+    }
+    t.end();
+});
 
 test("MarketActions.parseMarketInfo", function (t) {
     t.plan(17);

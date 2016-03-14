@@ -34,37 +34,38 @@ let Overview = React.createClass({
   render: function () {
 
     var account = this.state.account;
-    var holdings = _
-      .filter(this.state.holdings, market => {
-        return market.outcomes.some((outcome) => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
-      })
-      .map(function (market) {
-        return (
-          <MarketRow
-            key={market.id}
-            market={market}
-            contentType="holdings"
-            account={account} />
-        );
-      });
+    var holdings;
 
-    var holdingsSection = <span />
-    if (this.state.account && holdings.length) {
-      holdingsSection = (
-        <div>
-          <h1>Portfolio</h1>
-          <ListGroup className='holdings'>
-            { holdings }
-          </ListGroup>
-        </div>
-      );
+    if (!this.props.isSiteLoaded) {
+        holdings = [<div key="loader" className="loader"></div>];
     }
+    else {
+      holdings = _
+        .filter(this.state.holdings, market => {
+          return market.outcomes.some((outcome) => outcome.sharesHeld && outcome.sharesHeld.toNumber() > 0);
+        })
+        .map(function (market) {
+          return (
+            <MarketRow
+              key={market.id}
+              market={market}
+              contentType="holdings"
+              account={account} />
+          );
+        });
+    }
+
 
     return (
       <div id="overview">
         <div className='row'>
           <div className="col-xs-12">
-            {holdingsSection}
+            <div>
+              <h1>Portfolio</h1>
+              <ListGroup className='holdings'>
+                { holdings }
+              </ListGroup>
+            </div>
           </div>
         </div>
       </div>

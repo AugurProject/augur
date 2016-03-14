@@ -66,18 +66,6 @@ var AugurApp = React.createClass({
     this.getFlux().actions.config.connect();
   },
 
-  getLoadingProgress: function () {
-    var loadingProgress = <span />;
-    if (this.state.config.percentLoaded) {
-      loadingProgress = (
-        <ProgressBar now={Number(this.state.config.percentLoaded)} className="loading-progress" />
-      );
-    } else if (this.state.network.blockchainAge && this.state.network.blockchainAge < constants.MAX_BLOCKCHAIN_AGE) {
-      loadingProgress = (<span className="loading-text">loading...</span>);
-    }
-    return loadingProgress;
-  },
-
   toggleSignInModal: function () {
     this.setState({signInModalOpen: !this.state.signInModalOpen});
   },
@@ -103,7 +91,7 @@ var AugurApp = React.createClass({
 
   render: function () {
     return (
-      <div id="app" className={this.state.status}>
+      <div id="app">
         <SendEtherModal
           show={this.state.sendEtherModalOpen}
           onHide={this.toggleSendEtherModal} />
@@ -130,10 +118,11 @@ var AugurApp = React.createClass({
               <div id="period"></div>
               <RouteHandler
                 toggleSignInModal={this.toggleSignInModal}
-                toggleReportSavedModal={this.toggleReportSavedModal} // report page
-                reportSavedModalOpen={this.state.reportSavedModalOpen} // report page
-                reportConfirmedModalOpen={this.state.reportConfirmedModalOpen} // report page
+                toggleReportSavedModal={this.toggleReportSavedModal}
+                reportSavedModalOpen={this.state.reportSavedModalOpen}
+                reportConfirmedModalOpen={this.state.reportConfirmedModalOpen}
                 {...this.props}
+                isSiteLoaded={ this.state.status === 'running' }
                 branch={this.state.branch}
                 market={this.state.market} />
             </div>
@@ -147,13 +136,20 @@ var AugurApp = React.createClass({
           show={this.state.signInModalOpen}
           onHide={this.toggleSignInModal} />
 
-        <footer><div className="row container clearfix"></div></footer>
-
-        <section id="loading" className="container">
-          <div className="logo">
-            {this.getLoadingProgress()}
+        <footer>
+          <div className="row clearfix footer-tos">
+            <div className="col-sm-12">
+              <div className="pull-right">
+                <span><a href="https://www.hamsterpad.com/chat/dyffy">Slack</a> | </span>
+                <span><a href="http://docs.augur.net">Documentation</a> | </span>
+                <span><a href="http://blog.augur.net">Blog</a> | </span>
+                <span><a href="https://github.com/AugurProject">Github</a> | </span>
+                <span><a href="http://augur.zendesk.com/">FAQ</a> | </span>
+                <span><a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a></span>
+              </div>
+            </div>
           </div>
-        </section>
+        </footer>
       </div>
     );
   }

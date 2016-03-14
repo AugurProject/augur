@@ -444,7 +444,7 @@ let AddMarketModal = React.createClass({
     this.checkAnswerText(answerText, id);
     choices[id] = answerText;
     this.setState({choices: choices});
-    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+    var marketText = this.state.plainMarketText + " Choices: " + choices.join(", ");
     this.setState({marketText: marketText});
   },
 
@@ -466,8 +466,11 @@ let AddMarketModal = React.createClass({
     this.setState({resources: resources});
   },
 
-  checkMinimum: function () {
-    if (utilities.isNumeric(this.state.minValue)) {
+  checkMinimum: function (minValue) {
+    if (minValue === null || minValue === undefined) {
+      minValue = this.state.minValue;
+    }
+    if (utilities.isNumeric(minValue)) {
       this.setState({minValueError: null});
       return true;
     } else {
@@ -476,8 +479,11 @@ let AddMarketModal = React.createClass({
     }
   },
 
-  checkMaximum: function () {
-    if (utilities.isNumeric(this.state.maxValue)) {
+  checkMaximum: function (maxValue) {
+    if (maxValue === null || maxValue === undefined) {
+      maxValue = this.state.maxValue;
+    }
+    if (utilities.isNumeric(maxValue)) {
       this.setState({maxValueError: null});
       return true;
     } else {
@@ -488,20 +494,16 @@ let AddMarketModal = React.createClass({
 
   onChangeMinimum: function (event) {
     var minValue = event.target.value;
-    if (utilities.isNumeric(minValue)) {
-      minValue = abi.number(minValue);
-    }
+    if (utilities.isNumeric(minValue)) minValue = abi.number(minValue);
     this.setState({minValue: minValue});
-    this.checkMinimum();
+    this.checkMinimum(minValue);
   },
 
   onChangeMaximum: function (event) {
     var maxValue = event.target.value;
-    if (utilities.isNumeric(maxValue)) {
-      maxValue = abi.number(maxValue);
-    }
+    if (utilities.isNumeric(maxValue)) maxValue = abi.number(maxValue);
     this.setState({maxValue: maxValue});
-    this.checkMaximum();
+    this.checkMaximum(maxValue);
   },
 
   render: function () {
@@ -634,10 +636,10 @@ let AddMarketModal = React.createClass({
             onChange={this.onChangeResourceText} />;
       }
 
-      var image = <span />;
-      if (this.state.imageDataURL) {
-        image = <img className="metadata-image" src={this.state.imageDataURL} />;
-      }
+      // var image = <span />;
+      // if (this.state.imageDataURL) {
+      //   image = <img className="metadata-image" src={this.state.imageDataURL} />;
+      // }
 
       page = (
         <div>
@@ -684,9 +686,9 @@ let AddMarketModal = React.createClass({
                 onChange={this.onChangeDetailsText} />
             </div>
           </div>
-          <div className="form-group row">
+          {/*<div className="form-group row">
             <div className="col-sm-12">
-              <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.  This is exactly the way the image will look on the market page.  Note: the maximum recommended height for images is 300px; images taller than this will be shrunken to a height of 200px.</p>
+              <p>Upload an image to be displayed with your market. (optional) This uploader accepts most common image types (specifically, anything recognized as an image by the HTML5 File API).  A display of your image will be shown below this paragraph.</p>
               {image}
               <Input
                 type="file"
@@ -702,7 +704,7 @@ let AddMarketModal = React.createClass({
                   Add tag
                 </Button>}
             </div>
-          </div>
+          </div>*/}
           <div className="form-group row">
             <div className="col-sm-12">
               <p>Are there any helpful links you want to add? (optional) For example, if your question is about an election you could link to polling information or the webpages of candidates.</p>
@@ -803,7 +805,6 @@ let AddMarketModal = React.createClass({
             </div>
             <div className="col-sm-12">
               <p>What are the minimum and maximum allowed answers to your question?</p>
-              // TODO fix does not recognize 0
               <Input
                 type="text"
                 help={this.state.minValueError}

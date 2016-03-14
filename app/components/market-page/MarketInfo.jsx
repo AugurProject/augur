@@ -19,6 +19,7 @@ let MarketInfo = React.createClass({
         let creationDateFormatted = market.creationDate ? moment(market.creationDate).format('MMM D, YYYY') : '-';
         let endDateLabel = (market.endDate != null && market.matured) ? 'Matured:' : 'End date:';
         let endDateFormatted = market.endDate != null ? moment(market.endDate).format('MMM D, YYYY') : '-';
+        let volumeFormatted = market.volume != null ? market.volume.toFixed(2) : '0.00';
         let expirySource = "";
         if (market.metadata) expirySource = market.metadata.source;
 
@@ -31,6 +32,10 @@ let MarketInfo = React.createClass({
                             <tr className="labelValue">
                                 <td className="labelValue-label">Fee:</td>
                                 <td className="labelValue-value">{ tradingFeeFormatted }</td>
+                            </tr>
+                            <tr className="labelValue">
+                                <td className="labelValue-label">Volume:</td>
+                                <td className="labelValue-value">{ volumeFormatted } shares</td>
                             </tr>
                             <tr className="labelValue">
                                 <td className="labelValue-label">Outstanding shares:</td>

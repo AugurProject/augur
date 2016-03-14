@@ -46,6 +46,7 @@ stores.market.initialize = function () {
     constants.market.UPDATE_MARKETS_SUCCESS, this.handleUpdateMarketsSuccess,
     constants.market.UPDATE_MARKET_SUCCESS, this.handleUpdateMarketSuccess,
     constants.market.ADD_PENDING_MARKET_SUCCESS, this.handleAddPendingMarketSuccess,
+    constants.market.UPDATE_TOUR_MARKET, this.handleUpdateTourMarket,
     constants.market.ADD_MARKET_SUCCESS, this.handleAddMarketSuccess,
     constants.market.DELETE_MARKET_SUCCESS, this.handleDeleteMarketSuccess,
     constants.market.MARKETS_LOADING, this.handleMarketsLoading,

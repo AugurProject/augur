@@ -313,7 +313,7 @@ test("ConfigActions.initializeData", function (t) {
     var UPDATE_MARKET_SUCCESS = flux.register.UPDATE_MARKET_SUCCESS;
     var LOAD_EVENTS_TO_REPORT_SUCCESS = flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS;
     var UPDATE_EVENT_TO_REPORT = flux.register.UPDATE_EVENT_TO_REPORT;
-    var LOAD_PENDING_REPORTS_SUCCESS = flux.register.LOAD_PENDING_REPORTS_SUCCESS;
+    var UPDATE_PENDING_REPORTS = flux.register.UPDATE_PENDING_REPORTS;
     var LOAD_APPLICATION_DATA_SUCCESS = flux.register.LOAD_APPLICATION_DATA_SUCCESS;
     var FILTER_SETUP_COMPLETE = flux.register.FILTER_SETUP_COMPLETE;
     var FILTER_TEARDOWN_COMPLETE = flux.register.FILTER_TEARDOWN_COMPLETE;
@@ -349,10 +349,10 @@ test("ConfigActions.initializeData", function (t) {
         UPDATE_EVENT_TO_REPORT(payload);
         t.pass("dispatch UPDATE_EVENT_TO_REPORT");
     };
-    flux.register.LOAD_PENDING_REPORTS_SUCCESS = function (payload) {
+    flux.register.UPDATE_PENDING_REPORTS = function (payload) {
         t.equal(payload.constructor, Object, "payload is an object");
-        LOAD_PENDING_REPORTS_SUCCESS(payload);
-        t.pass("dispatch LOAD_PENDING_REPORTS_SUCCESS");
+        UPDATE_PENDING_REPORTS(payload);
+        t.pass("dispatch UPDATE_PENDING_REPORTS");
     };
     flux.register.LOAD_APPLICATION_DATA_SUCCESS = function (payload) {
         t.true(flux.augur.filters.price_filter.id === null, "price_filter.id is null");
@@ -405,7 +405,7 @@ test("ConfigActions.initializeData", function (t) {
         flux.register.UPDATE_MARKET_SUCCESS = UPDATE_MARKET_SUCCESS;
         flux.register.LOAD_EVENTS_TO_REPORT_SUCCESS = LOAD_EVENTS_TO_REPORT_SUCCESS;
         flux.register.UPDATE_EVENT_TO_REPORT = UPDATE_EVENT_TO_REPORT;
-        flux.register.LOAD_PENDING_REPORTS_SUCCESS = LOAD_PENDING_REPORTS_SUCCESS;
+        flux.register.UPDATE_PENDING_REPORTS = UPDATE_PENDING_REPORTS;
         flux.register.LOAD_APPLICATION_DATA_SUCCESS = LOAD_APPLICATION_DATA_SUCCESS;
         flux.register.FILTER_SETUP_COMPLETE = FILTER_SETUP_COMPLETE;
         flux.register.FILTER_TEARDOWN_COMPLETE = FILTER_TEARDOWN_COMPLETE;

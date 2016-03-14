@@ -23,7 +23,7 @@ let ReportDetails = React.createClass({
         if (metadata.links && metadata.links.constructor === Array) {
             for (var i = 0, n = metadata.links.length; i < n; ++i) {
                 links.push(
-                    <a href={metadata.links[i]}>
+                    <a key={"metadata-link-" + metadata.links[i]} href={metadata.links[i]}>
                         <li>{metadata.links[i]}</li>
                     </a>
                 );

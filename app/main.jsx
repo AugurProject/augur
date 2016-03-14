@@ -34,6 +34,7 @@ var stores = {
 
 window.abi = require("augur-abi");
 window.flux = new Flux(stores, actions);
+window._ = require("lodash");
 flux.augur = require("augur.js");
 
 var AugurApp = require("./components/AugurApp");

@@ -108,7 +108,7 @@ module.exports = {
             }]
         });
 
-        setTimeout(() => tour.start(), 1000);
+        tour.start();
     },
 
     hide: function() {

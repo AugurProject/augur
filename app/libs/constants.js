@@ -8,7 +8,6 @@ var BigNumber = require("bignumber.js");
 var ONE_FXP = new BigNumber(2).toPower(64);
 
 module.exports = {
-  TOUR_MARKET_ID: "-0x2b6f703ddee07d834ff3518f79e169f70d20e3342217726db0b1122b66fdf044",
   ETHER: new BigNumber(10).toPower(18),
   ONE_FXP: ONE_FXP,
   NO: ONE_FXP,
@@ -58,6 +57,7 @@ module.exports = {
     UPDATE_MARKETS_SUCCESS: null,
     UPDATE_MARKET_SUCCESS: null,
     ADD_PENDING_MARKET_SUCCESS: null,
+    UPDATE_TOUR_MARKET: null,
     ADD_MARKET_SUCCESS: null,
     DELETE_MARKET_SUCCESS: null,
     MARKETS_LOADING: null,

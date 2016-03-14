@@ -46,81 +46,6 @@ h1, h2, h3, h4, h5 {
 .indent {
     padding-left: 20px;
 }
-
-#app.stopped {
-    height: 100%;
-    width: 100%;
-}
-#app.stopped #main {
-    display: none;
-}
-#app.stopped nav {
-    display: none;
-}
-#app.stopped #loading {
-    display: block;
-}
-#app.running #main {
-    display: block;
-}
-#app.running #loading {
-    display: none;
-}
-
-#loading {
-    background-color: #34495e;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-}
-#loading .logo {
-    position:absolute;
-    left:50%;
-    top:50%;
-    background-image: url('/images/augur_logo_200_white.png');
-    background-repeat: no-repeat;
-    background-position-x: 5px;
-    width: 180px;
-    height: 200px;
-    margin: -100px 0px 0px -90px;
-    font-family: 'Open Sans';
-    color: rgb(209, 231, 231);
-    text-align: center;
-    opacity: 0.7;
-}
-#loading .loading-text {
-    display: inline-block;
-    margin: 220px -15px 0px -15px;
-    font-size: 16px;
-    letter-spacing: 0.2em;
-}
-#loading .progress {
-    height: 5px;
-    margin: 220px -15px 0px -15px;
-    opacity: 0.5;
-    background-color: #000;
-}
-#loading .progress-bar {
-    background-color: #fff;
-}
-.loading-progress {
-    margin-bottom: 0 !important;
-}
-.loading-progress-modal {
-    margin-bottom: 10px !important;
-}
-.loading-progress-modal-minimized {
-    margin-bottom: 2px !important;
-}
-.loading-progress-modal-row {
-    margin-right: -3px !important;
-    margin-left: -3px !important;
-    margin-top: 3px !important;
-}
-.loading-progress-modal-wrapper {
-    width: 97%;
-}
-
 .metadata-details {
     white-space: pre-wrap;
 }
@@ -147,8 +72,8 @@ nav.header .register {
 .plain {
     list-style-type: none;
 }
-.plain li:hover {
-    background-color: #454545;
+.inline {
+    display: inline;
 }
 @media (max-width: 990px) {
     nav.header h1 {
@@ -212,6 +137,19 @@ nav.header .register {
 }
 .progress-status-box {
     padding-bottom: 10px;
+}
+
+.register-tos {
+    border: 1px solid #DFDFDF;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+.footer-tos {
+    max-width: 1170px;
+    margin: 0 auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid #DFDFDF;
 }
 
 .modal h3 {

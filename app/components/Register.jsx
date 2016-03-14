@@ -428,6 +428,9 @@ let RegisterModal = React.createClass({
                 </form>
               </TabPanel>
             </Tabs>
+            <div className="col-sm-12 register-tos">
+              By registering an account, you agree to Augur's <a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a>.
+            </div>
           </div>
         </Modal>
         <ProgressModal

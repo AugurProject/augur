@@ -119,14 +119,15 @@ module.exports = {
         }
 
         function penalizeWrong() {
+          var penalized = false;
           self.flux.augur.getEvents(branch.id, prevPeriod, function (events) {
             if (!events || events.error) return console.error("getEvents:", events);
-            async.each(events, function (event, nextEvent) {
-              console.log("penalizeWrong", event);
+            async.eachSeries(events, function (event, nextEvent) {
               if (branch.calledPenalizeWrong && branch.calledPenalizeWrong[event]) {
-                console.log("already penalized:", branch.calledPenalizeWrong[event]);
                 return nextEvent();
               }
+              console.log("calling penalizeWrong:", event);
+              // console.log("before rep:", self.flux.augur.getBeforeRep(branch.id, prevPeriod));
               self.flux.augur.getMarkets(event, function (markets) {
                 if (!markets || markets.error) return console.error("getMarkets:", markets);
                 self.flux.augur.getOutcome(event, function (outcome) {
@@ -151,7 +152,9 @@ module.exports = {
                           self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
                         },
                         onSuccess: function (res) {
+                          penalized = true;
                           console.log("penalizeWrong success for event " + event, res);
+                          // console.log("after rep:", self.flux.augur.getAfterRep(branch.id, prevPeriod));
                           nextEvent();
                         },
                         onFailed: function (err) {
@@ -178,6 +181,10 @@ module.exports = {
               });
             }, function (err) {
               if (err) console.error("each event error:", err);
+              if (penalized) {
+                console.log("penalizeWrong completed for all events");
+                // console.log("final after rep:", self.flux.augur.getAfterRep(branch.id, prevPeriod));
+              }
             });
           });
         }
@@ -224,7 +231,13 @@ module.exports = {
           // if we're in the second half of the reporting period
           if (branch.isCommitPeriod === false) {
             self.flux.actions.report.submitQualifiedReports(function (err, res) {
-              if (err) console.error("ReportsPage.submitQualifiedReports:", err);
+              if (err) {
+                // -1 is already-reported error
+                if (err.error === "-1") {
+
+                }
+                console.error("ReportsPage.submitQualifiedReports:", err);
+              }
             });
             if (!branch.calledCollectFees) {
               self.flux.augur.collectFees({

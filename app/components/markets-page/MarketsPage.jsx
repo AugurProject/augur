@@ -36,7 +36,6 @@ let MarketsPage = React.createClass({
         var searchState = flux.store("search").getState();
         var currentBranch = flux.store("branch").getCurrentBranch();
         var account = flux.store("config").getAccount();
-        var tourMarketId = utils.getTourMarketKey(searchState.results, currentBranch);
 
         return {
             searchKeywords: searchState.keywords,
@@ -46,7 +45,7 @@ let MarketsPage = React.createClass({
             pendingMarkets: marketState.pendingMarkets,
             currentBranch: currentBranch,
             account: account,
-            tourMarketKey: abi.bignum(tourMarketId)
+            tourMarket: marketState.tourMarket
         };
     },
 
@@ -131,44 +130,44 @@ let MarketsPage = React.createClass({
         let flux = this.getFlux();
         let account = this.state.account;
         let myOpenOrders = flux.augur.orders.get(account);
-        let tourMarketKey = this.state.tourMarketKey;
-        let tourMarketId;
-        if (tourMarketKey) tourMarketId = this.state.markets[tourMarketKey]._id;
-
+        let isVisibleTourMarket = this.state.tourMarket && !localStorage.getItem("marketRowTourComplete") && !localStorage.getItem("tourComplete");
         let {markets, marketsCount, firstItemIndex, lastItemIndex} = this._getMarketsData();
-
-        let tourMarketRow = <span />;
-        if (tourMarketId && this.state.pageNum === 0 && this.props.query.expired !== "true") {
-            tourMarketRow = <MarketRow
-                                key={tourMarketKey}
-                                account={account}
-                                market={this.state.markets[tourMarketKey]}
-                                tour={true}
-                                numOpenOrders={(myOpenOrders && tourMarketId && myOpenOrders[tourMarketId] && myOpenOrders[tourMarketId][1] && myOpenOrders[tourMarketId][1].length) || 0} />
-        }
         let numPages = Math.ceil(marketsCount / this.state.marketsPerPage);
+        let pagination;
+        let tourMarketRow;
 
-        let pagination = (
-            <div className="row">
-                <div className="col-xs-12">
-                    <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
-                    { numPages >= 2 &&
-                        <Paginate
-                            previousLabel={ <i className='fa fa-chevron-left'></i> }
-                            nextLabel={ <i className='fa fa-chevron-right'></i> }
-                            breakLabel={ <li className="break"><a href="">...</a></li> }
-                            pageNum={ numPages }
-                            marginPagesDisplayed={ 2 }
-                            pageRangeDisplayed={ 5 }
-                            forceSelected={ this.state.pageNum }
-                            clickCallback={ this.handlePageChanged }
-                            containerClassName={ 'paginator' }
-                            subContainerClassName={ 'pages' }
-                            activeClass={ 'active' } />
-                    }
+        if (isVisibleTourMarket) {
+            tourMarketRow = <MarketRow
+                                key={this.state.tourMarket.id}
+                                account={account}
+                                market={this.state.tourMarket}
+                                tour={ true }
+                                numOpenOrders={(myOpenOrders && myOpenOrders[this.state.tourMarket._id] && myOpenOrders[this.state.tourMarket._id][1] && myOpenOrders[this.state.tourMarket._id][1].length) || 0} />;
+        }
+
+        if (this.props.isSiteLoaded) {
+            pagination = (
+                <div className="row">
+                    <div className="col-xs-12">
+                        <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
+                        { numPages >= 2 &&
+                            <Paginate
+                                previousLabel={ <i className='fa fa-chevron-left'></i> }
+                                nextLabel={ <i className='fa fa-chevron-right'></i> }
+                                breakLabel={ <li className="break"><a href="">...</a></li> }
+                                pageNum={ numPages }
+                                marginPagesDisplayed={ 2 }
+                                pageRangeDisplayed={ 5 }
+                                forceSelected={ this.state.pageNum }
+                                clickCallback={ this.handlePageChanged }
+                                containerClassName={ 'paginator' }
+                                subContainerClassName={ 'pages' }
+                                activeClass={ 'active' } />
+                        }
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
 
         let submitMarketAction = null;
         if (this.state.account) {
@@ -201,8 +200,9 @@ let MarketsPage = React.createClass({
                             placeholder="Sort markets"
                             onChange={this.onChangeSortBy}
                             options={[
-                                {value: "creationBlock|1", label: "Creation date (newest first)"},
-                                {value: "creationBlock|0", label: "Creation date (oldest first)"},
+                                {value: "volume|1", label: "Volume"},
+                                {value: "startingSortOrder|0", label: "Creation date (newest first)"},
+                                {value: "startingSortOrder|1", label: "Creation date (oldest first)"},
                                 {value: "endBlock|0", label: "End date (soonest first)"},
                                 {value: "endBlock|1", label: "End date (farthest first)"},
                                 {value: "description|0", label: "Description"}
@@ -222,21 +222,26 @@ let MarketsPage = React.createClass({
                     </Select>
                 </div>
                 {pagination}
-                <div className="row">
-                    <div className="col-xs-12">
-                        {tourMarketRow}
-                        {markets.map(market => {
-                            if (!tourMarketKey || (tourMarketKey && !tourMarketKey.eq(market.id))) {
-                                return (
-                                    <MarketRow
-                                        key={market.id}
-                                        account={account}
-                                        market={market}
-                                        numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
-                                );
-                            }
-                        })}
-                    </div>
+                <div className="row market-rows">
+                    { this.props.isSiteLoaded &&
+                        <div className="col-xs-12">
+                            { tourMarketRow }
+                            {markets.map(market => {
+                                if (!isVisibleTourMarket || market !== this.state.tourMarket) {
+                                    return (
+                                        <MarketRow
+                                            key={market.id}
+                                            account={account}
+                                            market={market}
+                                            numOpenOrders={(myOpenOrders && myOpenOrders[market._id] && myOpenOrders[market._id][1] && myOpenOrders[market._id][1].length) || 0} />
+                                    );
+                                }
+                            })}
+                        </div>
+                    }
+                    { !this.props.isSiteLoaded &&
+                        <div className="loader"></div>
+                    }
                 </div>
                 {pagination}
             </div>

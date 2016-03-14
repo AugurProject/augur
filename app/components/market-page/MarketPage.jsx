@@ -30,7 +30,8 @@ let MarketPage = React.createClass({
             orderBookTimeout: null,
             addMarketModalOpen: false,
             metadataTimeout: null,
-            showDetails: false
+            showDetails: false,
+            shouldOpenTour: false
         };
     },
 
@@ -39,6 +40,7 @@ let MarketPage = React.createClass({
         let flux = this.getFlux();
         let marketId = new BigNumber(this.props.params.marketId, 16);
         let market = flux.store("market").getMarket(marketId);
+        let marketState = flux.store("market").getState();
         let currentBranch = flux.store("branch").getCurrentBranch();
         let account = flux.store("config").getAccount();
         let handle = flux.store("config").getHandle();
@@ -52,15 +54,15 @@ let MarketPage = React.createClass({
             }
         }
         let image = null;
-        if (market && market.metadata && market.metadata.image) {
-            image = market.metadata.image;
-        }
+        // if (market && market.metadata && market.metadata.image) {
+        //     image = market.metadata.image;
+        // }
         return {
             market,
             account,
             handle,
             blockNumber,
-            tourMarketKey: abi.bignum(utils.getTourMarketKey(searchState.results, currentBranch)),
+            tourMarket: marketState.tourMarket,
             image
         };
     },
@@ -77,9 +79,12 @@ let MarketPage = React.createClass({
         let market = this.state.market;
 
         if (market == null) {
-            return (
-                <div>No market info</div>
-            );
+            if (!this.props.isSiteLoaded) {
+                return <div className="loader"></div>;
+            }
+            else {
+                return <div>No market info</div>;
+            }
         }
         let tags = [];
         if (market.metadata && market.metadata.tags && market.metadata.tags.length) {
@@ -128,9 +133,9 @@ let MarketPage = React.createClass({
             }
         }
         let image = <span />;
-        if (metadata.image) {
-            image = <div className="metadata-image-container"><img className="metadata-image" src={this.state.image} /></div>;
-        }
+        // if (metadata.image) {
+        //     image = <div className="metadata-image-container"><img className="metadata-image" src={this.state.image} /></div>;
+        // }
 
         return (
             <div className="marketPage">
@@ -230,6 +235,28 @@ let MarketPage = React.createClass({
         );
     },
 
+    componentWillReceiveProps : function(nextProps) {
+        var shouldOpenTour = this.state.market === this.state.tourMarket && !localStorage.getItem("marketPageTourOpen") && !localStorage.getItem("marketPageTourComplete") && !localStorage.getItem("tourComplete");
+        if (this.state.shouldOpenTour !== shouldOpenTour) {
+            this.setState({
+                shouldOpenTour: shouldOpenTour
+            });
+        }
+    },
+
+    componentDidUpdate() {
+        if (this.state.shouldOpenTour) {
+            try {
+                setTimeout(() => {
+                    Tour.show(this.state.market);
+                }, 2000);
+                localStorage.setItem("marketPageTourOpen", true);
+            } catch (e) {
+                console.warn('MarketPage tour failed to open (caught): ', e.message);
+            }
+        }
+    },
+
     componentDidMount() {
         this.getMetadata();
         this.checkOrderBook();
@@ -240,16 +267,6 @@ let MarketPage = React.createClass({
         this.stylesheetEl.setAttribute("type", "text/css");
         this.stylesheetEl.setAttribute("href", "/css/market-detail.css");
         document.getElementsByTagName("head")[0].appendChild(this.stylesheetEl);
-
-        if (this.state.tourMarketKey && this.state.tourMarketKey.eq(this.state.market.id) && !localStorage.getItem("marketPageTourComplete") && !localStorage.getItem("tourComplete")) {
-            try {
-                Tour.show(this.state.market);
-                localStorage.setItem("marketPageTourComplete", true);
-            } catch (e) {
-                console.warn('MarketPage tour failed to open (caught): ', e.message);
-            }
-
-        }
     },
 
     componentWillUnmount() {
@@ -259,7 +276,7 @@ let MarketPage = React.createClass({
         clearTimeout(this.state.orderBookTimeout);
         clearTimeout(this.state.metadataTimeout);
 
-        Tour.hide();
+        Tour.hide('marketPageTourComplete');
     },
 
     getMetadata() {
