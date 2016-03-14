@@ -5,6 +5,8 @@ let moment = require("moment");
 let DatePicker = require("react-date-picker");
 let Input = require("react-bootstrap/lib/Input");
 
+let constants = require("../../libs/constants");
+
 let MarketCreateStep1 = React.createClass({
     getInitialState() {
         return {
@@ -36,7 +38,7 @@ let MarketCreateStep1 = React.createClass({
             case "binary":
                 return null;
             case "categorical": {
-                let categoricalOutcomes = this.props.categoricalChoices;
+                let categoricalOutcomes = this.props.choices;
                 let placeholders = ["New Zealand", "Australia", "South Africa", "Argentina"];
 
                 return (
@@ -65,22 +67,24 @@ let MarketCreateStep1 = React.createClass({
                                                 data-index={index}
                                                 wrapperClassName="col-sm-5"
                                                 type="text"
-                                                bsStyle={this.props.categoricalChoiceErrors[index] != null ? "error" : null}
-                                                help={this.props.categoricalChoiceErrors[index]}
+                                                bsStyle={this.props.choiceErrors[index] != null ? "error" : null}
+                                                help={this.props.choiceErrors[index]}
                                                 value={outcome}
                                                 placeholder={placeholders[index]}
-                                                onChange={this.props.onChangeCategoricalChoices}
+                                                onChange={this.props.onChangeChoice}
                                                 buttonAfter={removeAction}/>
                                         );
                                     }, this)
                                 }
-                                <div className="form-group">
-                                    <div className="col-xs-12">
-                                        <button className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
-                                            Add another answer
-                                        </button>
+                                { categoricalOutcomes.length < constants.MAX_ALLOWED_OUTCOMES &&
+                                    <div className="form-group">
+                                        <div className="col-xs-12">
+                                            <button className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
+                                                Add another answer
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
