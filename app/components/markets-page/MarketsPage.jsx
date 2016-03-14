@@ -170,18 +170,14 @@ let MarketsPage = React.createClass({
             </div>
         );
 
-        let submitMarketAction;
+        let submitMarketAction = null;
         if (this.state.account) {
             submitMarketAction = (
-                <div>
-                    <Link to="market-create"
-                          className="pull-right btn btn-primary btn-success">
-                        New Market
-                    </Link>
-                </div>
+                <Link to="market-create"
+                      className="pull-right btn btn-primary btn-success">
+                    Create New Market
+                </Link>
             );
-        } else {
-            submitMarketAction = <span />;
         }
 
         return (
