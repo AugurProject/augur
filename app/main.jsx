@@ -54,8 +54,6 @@ flux.on("dispatch", function (type, payload) {
 
 var routes = (
   <Route name="app" path="/" handler={ AugurApp } flux={ flux }>
-    <Redirect from="*" to="markets"/>
-
     <Route name="overview" path="/overview" handler={ Overview } flux={ flux } title="Overview" />
 
     <Route name="markets" path="/markets" flux={ flux } title="Markets">
@@ -67,6 +65,9 @@ var routes = (
     <Route name="reports" path="/reports" handler={ ReportsPage } flux={ flux } title="Reporting" />
     <Route name="report" path="/reports/:eventId" handler={ ReportPage } flux={ flux } />
     <Route name="portfolio" path="/portfolio" handler={Portfolio} flux={flux} title="Portfolio" />
+
+    {/* redirect must be last */}
+    <Redirect from="*" to="markets"/>
   </Route>
 );
 
