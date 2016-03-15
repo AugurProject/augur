@@ -27,7 +27,7 @@ let MarketCreateStep1 = React.createClass({
             case "categorical":
                 return "Who will win the Four Nations Rugby Championship in 2016?";
             case "scalar":
-                return "What will the price of oil be at the end of 2016?";
+                return "What will the temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?";
             default:
                 console.warn("MarketCreateStep1[getPlaceholderText]: Unknown market type %o", marketType);
                 return "";
