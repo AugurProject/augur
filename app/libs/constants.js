@@ -19,7 +19,7 @@ module.exports = {
   MAX_ALLOWED_TAGS: 3,
   MAX_ALLOWED_OUTCOMES: 8,
   MIN_ETHER_WARNING: 50000000000000000000,
-  CHANGE_EVENT: 'change',
+  CHANGE_EVENT: "change",
   config: keyMirror({
     SET_HOST: null,
     SET_IS_HOSTED: null,
@@ -82,5 +82,6 @@ module.exports = {
     LOAD_EVENTS_TO_REPORT_SUCCESS: null,
     UPDATE_PENDING_REPORTS: null,
     READY: null
-  })
+  }),
+  FIREBASE_URL: "https://augur.firebaseio.com"
 };

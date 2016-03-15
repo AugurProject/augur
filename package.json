@@ -44,6 +44,7 @@
     "classnames": "2.2.3",
     "clone": "^1.0.2",
     "fbjs": "^0.5.1",
+    "firebase": "^2.4.1",
     "fluxxor": "^1.6.0",
     "formsy-react": "0.17.0",
     "immutable": "^3.7.6",
