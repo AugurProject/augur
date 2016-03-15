@@ -2,6 +2,7 @@ let React = require("react");
 let abi = require("augur-abi");
 let keys = require("keythereum");
 let uuid = require("node-uuid");
+let Firebase = require("firebase");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let Button = require('react-bootstrap/lib/Button');
 let Input = require('react-bootstrap/lib/Input');
@@ -13,6 +14,7 @@ let Tab = ReactTabs.Tab;
 let Tabs = ReactTabs.Tabs;
 let TabList = ReactTabs.TabList;
 let TabPanel = ReactTabs.TabPanel;
+let constants = require("../libs/constants");
 
 let RegisterModal = React.createClass({
 
@@ -23,6 +25,7 @@ let RegisterModal = React.createClass({
       handle: '',
       password: '',
       persist: false,
+      mailingList: false,
       verifyPassword: '',
       handleHelp: null,
       passwordHelp: null,
@@ -49,12 +52,21 @@ let RegisterModal = React.createClass({
 
   updateProgressModal: utilities.updateProgressModal,
 
+  mailingListSignup: function (handle, imported) {
+    new Firebase(constants.FIREBASE_URL).child("mailing-list").push().set({
+      handle: handle,
+      imported: imported,
+      timestamp: new Date().getTime()
+    });
+  },
+
   onRegister: function (event) {
     event.preventDefault();
 
     if (this.isValid()) {
       let flux = this.getFlux();
       let self = this;
+      let mailingListSignup = this.state.mailingList;
       setTimeout(() => self.props.onHide(), 0);
       this.updateProgressModal();
       this.updateProgressModal({
@@ -67,6 +79,9 @@ let RegisterModal = React.createClass({
         persist: this.state.persist
       }, {
         onRegistered: function (account) {
+          if (account && account.handle && mailingListSignup) {
+            self.mailingListSignup(account.handle, false);
+          }
           if (!account || account.error) {
             self.updateProgressModal({
               detail: {account},
@@ -140,6 +155,7 @@ let RegisterModal = React.createClass({
       var handle = this.state.handle;
       var password = this.state.password;
       var options = {persist: this.state.persist};
+      var mailingListSignup = this.state.mailingList;
       var keystore = this.state.keystore;
       var address = abi.prefix_hex(keystore.address);
       var flux = this.getFlux();
@@ -209,11 +225,14 @@ let RegisterModal = React.createClass({
               status: "Account saved.",
               detail: account
             }, {
-              status: "Your account has been successfully imported. This dialogue can now be safely closed.",
+              status: "Your account has been successfully imported.",
               complete: true
             }
           ]);
           console.log("account import successful:", flux.augur.web.account);
+          if (handle && mailingListSignup) {
+            self.mailingListSignup(account.handle, true);
+          }
           flux.actions.config.updateAccount({
             currentAccount: address,
             privateKey: privateKey,
@@ -288,6 +307,10 @@ let RegisterModal = React.createClass({
 
   handlePersistChange: function (event) {
     this.setState({persist: event.target.checked});
+  },
+
+  handleMailingListChange: function (event) {
+    this.setState({mailingList: event.target.checked});
   },
 
   render: function () {
@@ -374,17 +397,23 @@ let RegisterModal = React.createClass({
                         bsStyle={verifyPasswordStyle}
                         help={this.state.verifyPasswordHelp}
                         ref="input"
-                        placeholder='verify password'
+                        placeholder="verify password"
                         onChange={this.handleChange}
                         buttonAfter={submit} />
                     </div>
-                    <div className="col-sm-12">
+                    <div className="col-sm-12 register-options">
                       <Input
                         type="checkbox"
                         name="persist"
                         id="persist-checkbox"
                         label="Remember Me"
                         onChange={this.handlePersistChange} />
+                      <Input
+                        type="checkbox"
+                        name="mailinglist"
+                        id="mailinglist-checkbox"
+                        label="Sign up for the Augur mailing list"
+                        onChange={this.handleMailingListChange} />
                     </div>
                   </div>
                   <div className="col-sm-12">
@@ -416,13 +445,19 @@ let RegisterModal = React.createClass({
                         onChange={this.handleChange}
                         buttonAfter={importSubmit} />
                     </div>
-                    <div className="col-sm-12">
+                    <div className="col-sm-12 register-options">
                       <Input
                         type="checkbox"
                         name="persist"
                         id="persist-checkbox"
                         label="Remember Me"
                         onChange={this.handlePersistChange} />
+                      <Input
+                        type="checkbox"
+                        name="mailinglist"
+                        id="mailinglist-checkbox"
+                        label="Sign up for the Augur mailing list"
+                        onChange={this.handleMailingListChange} />
                     </div>
                   </div>
                 </form>

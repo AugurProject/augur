@@ -139,6 +139,13 @@ nav.header .register {
     padding-bottom: 10px;
 }
 
+.register-options {
+    margin-bottom: 30px;
+}
+.register-options .form-group {
+    margin-bottom: 0;
+}
+
 .register-tos {
     border: 1px solid #DFDFDF;
     border-radius: 5px;
