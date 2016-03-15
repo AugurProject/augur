@@ -1,5 +1,7 @@
 let React = require('react');
 
+let ConfirmNewMarketModal = require("./ConfirmNewMarketModal");
+
 let MarketCreateStep4 = React.createClass({
     getOutcomeInfo() {
         let marketType = this.props.marketType;
@@ -147,10 +149,16 @@ let MarketCreateStep4 = React.createClass({
                     <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
                         Back
                     </button>
-                    <button className="btn btn-success" type="button" onClick={this.props.sendNewMarketRequest}>
+                    <button className="btn btn-success" type="button" onClick={this.props.toggleConfirmNewMarketModal}>
                         Open market
                     </button>
                 </div>
+                <ConfirmNewMarketModal
+                    goToNextStep={this.props.goToNextStep}
+                    sendNewMarketRequest={this.props.sendNewMarketRequest}
+                    show={this.props.confirmNewMarketModalOpen}
+                    onHide={this.props.toggleConfirmNewMarketModal} />
+
             </div>
         )
     }

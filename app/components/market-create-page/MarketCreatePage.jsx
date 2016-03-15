@@ -14,17 +14,17 @@ let TimePicker = require("react-time-picker");
 let Button = require("react-bootstrap/lib/Button");
 let Link = require("react-router/lib/components/Link");
 let Input = require("react-bootstrap/lib/Input");
-let ProgressModal = require("../ProgressModal");
 
 let MarketCreateIndex = require("./MarketCreateIndex");
 let MarketCreateStep1 = require("./MarketCreateStep1");
 let MarketCreateStep2 = require("./MarketCreateStep2");
 let MarketCreateStep3 = require("./MarketCreateStep3");
 let MarketCreateStep4 = require("./MarketCreateStep4");
+let MarketCreateStep5 = require("./MarketCreateStep5");
 
 let MarketCreatePage = React.createClass({
 
-  mixins: [FluxMixin, StoreWatchMixin("market", "network", "asset")],
+  mixins: [FluxMixin, StoreWatchMixin("config", "market", "network", "asset")],
 
   getInitialState: function () {
     return {
@@ -58,33 +58,22 @@ let MarketCreatePage = React.createClass({
       expirySource: "generic",
       expirySourceUrl: "",
       expirySourceUrlError: null,
-      progressModal: {
-        open: false,
-        status: "",
-        header: "",
-        detail: null,
-        complete: null,
-        steps: 5,
-        step: 0
-      }
+      newMarketRequestStatus: "",
+      newMarketRequestStep: 0,
+      newMarketRequestStepCount: 5,
+      newMarketRequestDetail: null,
+      newMarketRequestComplete: false
     };
   },
 
   getStateFromFlux: function () {
     var flux = this.getFlux();
     return {
+      account: flux.store("config").getAccount(),
       cash: flux.store('asset').getState().cash,
       currentBlock: flux.store('network').getState().blockNumber,
       currentBranch: flux.store('branch').getCurrentBranch()
     }
-  },
-
-  updateProgressModal: utilities.updateProgressModal,
-
-  toggleProgressModal: function (event) {
-    var progressModal = this.state.progressModal;
-    progressModal.open = !progressModal.open;
-    this.setState({progressModal: progressModal});
   },
 
   onChangeMarketText: function (event) {
@@ -377,11 +366,12 @@ let MarketCreatePage = React.createClass({
     return isStepValid;
   },
 
-  onHide: function () {
-    this.setState(this.getInitialState());
-  },
-
   sendNewMarketRequest() {
+    this.setState({
+      newMarketRequestStatus: "Sending request",
+      newMarketRequestStep: this.state.newMarketRequestStep + 1
+    });
+
     var self = this;
     var flux = this.getFlux();
     var newMarketParams = {
@@ -399,7 +389,7 @@ let MarketCreatePage = React.createClass({
       tags: this.state.tags,
       links: this.state.resources
     };
-    var checkbox = {createMarket: false, addMetadata: false};
+    let isMarketCallSuccess, isMetaDataSuccess;
     var minValue, maxValue, numOutcomes;
 
     let marketType = this.state.type;
@@ -420,8 +410,6 @@ let MarketCreatePage = React.createClass({
       numOutcomes = this.state.choices.length;
     }
 
-    self.toggleProgressModal();
-
     flux.augur.createSingleEventMarket({
       branchId: branchId,
       description: newMarketParams.description,
@@ -435,11 +423,10 @@ let MarketCreatePage = React.createClass({
       onSent: function (r) {
         console.log("new market submitted:", r.txHash);
         var marketId = r.callReturn;
-        self.updateProgressModal();
-        self.updateProgressModal({
-          header: "Creating Market",
-          status: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
-          detail: r
+        self.setState({
+          newMarketRequestStep: self.state.newMarketRequestStep + 1,
+          newMarketRequestStatus: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
+          newMarketRequestDetail: r
         });
         flux.augur.ramble.addMetadata({
           marketId: marketId,
@@ -451,60 +438,48 @@ let MarketCreatePage = React.createClass({
           broadcast: true
         }, function (res) {
           console.log("ramble.addMetadata sent:", res);
-          self.updateProgressModal({
-            header: "Creating Market",
-            status: "Uploading market metadata...",
-            detail: r
+          self.setState({
+            newMarketRequestStep: self.state.newMarketRequestStep + 1,
+            newMarketRequestStatus: "Uploading market metadata...",
+            newMarketRequestDetail: res
           });
         }, function (res) {
+          isMetaDataSuccess = true;
           console.log("ramble.addMetadata success:", res);
-          self.updateProgressModal({
-            header: "Creating Market",
-            status: "Market metadata uploaded.",
-            detail: r
+          self.setState({
+            newMarketRequestStep: self.state.newMarketRequestStep + 1,
+            newMarketRequestComplete: isMarketCallSuccess,
+            newMarketRequestStatus: isMarketCallSuccess ? "Your market has been successfully created!" : "Market metadata uploaded",
+            newMarketRequestDetail: res
           });
-          checkbox.addMetadata = true;
-          if (checkbox.createMarket) {
-            self.updateProgressModal({
-              status: "Your market has been successfully created!",
-              complete: true
-            });
-          }
         }, function (err) {
           console.error("ramble.addMetadata:", err);
-          self.updateProgressModal({
-            header: "Creating Market",
-            status: "Market metadata upload failed.",
-            detail: r,
-            complete: true
+          self.setState({
+            newMarketRequestStatus: "Market metadata upload failed.",
+            newMarketRequestDetail: err,
+            newMarketRequestComplete: true
           });
         });
       },
       onSuccess: function (r) {
+        isMarketCallSuccess = true;
         console.log("new market ID:", r.callReturn);
         var marketId = abi.bignum(r.callReturn);
-        self.updateProgressModal({
-          header: "Creating Market",
-          status: "New market confirmed.",
-          detail: r
+        self.setState({
+          newMarketRequestStep: self.state.newMarketRequest.step + 1,
+          newMarketRequestComplete: isMetaDataSuccess,
+          newMarketRequestStatus: isMetaDataSuccess ? "Your market has been successfully created!" : "New market confirmed.",
+          newMarketRequestDetail: r
         });
-        checkbox.createMarket = true;
-        if (checkbox.addMetadata) {
-          self.updateProgressModal({
-            complete: true,
-            status: "Your market has been successfully created!"
-          });
-        }
         flux.actions.market.deleteMarket(pendingId);
         flux.actions.market.loadMarket(marketId);
       },
       onFailed: function (r) {
         console.error("market creation failed:", r);
-        self.updateProgressModal({
-          header: "Market Creation Failed",
-          status: "Your market could not be created.",
-          detail: r,
-          complete: true
+        self.setState({
+          newMarketRequestStatus: "Your market could not be created.",
+          newMarketRequestDetail: r,
+          newMarketRequestComplete: true
         });
         flux.actions.market.deleteMarket(pendingId);
       }
@@ -660,13 +635,45 @@ let MarketCreatePage = React.createClass({
     let marketType = this.state.type,
         stepContent, subheading;
 
+    if (this.state.account == null || this.state.cash == null || this.state.cash.toNumber() <= 0) {
+      return (
+        <div>
+          You can't open market because you don't have enough cash.
+        </div>
+      );
+    }
+
     if (marketType == null) {
       return <MarketCreateIndex
           onMarketTypeChange={this.onMarketTypeChange}
           />;
     }
 
-    if (this.state.pageNumber === 2) {
+    if (this.state.pageNumber === 1) {
+      stepContent = <MarketCreateStep1
+          marketType={marketType}
+          marketText={this.state.marketText}
+          marketTextError={this.state.marketTextError}
+          onChangeMarketText={this.onChangeMarketText}
+          choices={this.state.choices}
+          choiceErrors={this.state.choiceErrors}
+          onChangeChoice={this.onChangeAnswerText}
+          onAddCategoricalOutcome={this.onAddAnswer}
+          onRemoveCategoricalOutcome={this.onRemoveAnswer}
+          maturationDate={this.state.maturationDate}
+          maturationDateError={this.state.maturationDateError}
+          minValue={this.state.minValue}
+          minValueError={this.state.minValueError}
+          maxValue={this.state.maxValue}
+          maxValueError={this.state.maxValueError}
+          onChangeMinimum={this.onChangeMinimum}
+          onChangeMaximum={this.onChangeMaximum}
+          onEndDatePicked={this.handleDatePicked}
+          goToNextStep={this.goToNextStep}
+          onMarketTypeChange={this.onMarketTypeChange}
+          marketTextMaxLength={this.state.marketTextMaxLength}
+          />
+    } else if (this.state.pageNumber === 2) {
       stepContent = (
         <MarketCreateStep2
           marketText={this.state.marketText}
@@ -730,49 +737,26 @@ let MarketCreatePage = React.createClass({
             marketInvestment={this.state.marketInvestment}
             outcomePrices={this.state.outcomePrices}
             sendNewMarketRequest={this.sendNewMarketRequest}
+            confirmNewMarketModalOpen={this.props.confirmNewMarketModalOpen}
+            toggleConfirmNewMarketModal={this.props.toggleConfirmNewMarketModal}
+            goToNextStep={this.goToNextStep}
             goToPreviousStep={this.goToPreviousStep}
             />
           )
-    } else {
-      stepContent = <MarketCreateStep1
-          marketType={marketType}
-          marketText={this.state.marketText}
-          marketTextError={this.state.marketTextError}
-          onChangeMarketText={this.onChangeMarketText}
-          choices={this.state.choices}
-          choiceErrors={this.state.choiceErrors}
-          onChangeChoice={this.onChangeAnswerText}
-          onAddCategoricalOutcome={this.onAddAnswer}
-          onRemoveCategoricalOutcome={this.onRemoveAnswer}
-          maturationDate={this.state.maturationDate}
-          maturationDateError={this.state.maturationDateError}
-          minValue={this.state.minValue}
-          minValueError={this.state.minValueError}
-          maxValue={this.state.maxValue}
-          maxValueError={this.state.maxValueError}
-          onChangeMinimum={this.onChangeMinimum}
-          onChangeMaximum={this.onChangeMaximum}
-          onEndDatePicked={this.handleDatePicked}
-          goToNextStep={this.goToNextStep}
+    } else if (this.state.pageNumber === 5) {
+      stepContent = <MarketCreateStep5
           onMarketTypeChange={this.onMarketTypeChange}
-          marketTextMaxLength={this.state.marketTextMaxLength}
-          />;
+          newMarketRequestStep={this.state.newMarketRequestStep}
+          newMarketRequestStepCount={this.state.newMarketRequestStepCount}
+          newMarketRequestComplete={this.state.newMarketRequestComplete}
+          newMarketRequestDetail={this.state.newMarketRequestDetail}
+          newMarketRequestStatus={this.state.newMarketRequestStatus}
+        />
     }
 
     return (
       <div>
         {stepContent}
-
-        <ProgressModal
-          backdrop="static"
-          show={this.state.progressModal.open}
-          numSteps={this.state.progressModal.steps}
-          step={this.state.progressModal.step}
-          header={this.state.progressModal.header}
-          status={this.state.progressModal.status}
-          detail={JSON.stringify(this.state.progressModal.detail, null, 2)}
-          complete={this.state.progressModal.complete}
-          onHide={this.toggleProgressModal} />
       </div>
     );
   }
