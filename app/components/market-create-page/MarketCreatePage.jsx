@@ -29,6 +29,7 @@ let MarketCreatePage = React.createClass({
   getInitialState: function () {
     return {
       type: null,
+      newMarketId: null,
       pageNumber: 1,
       marketText: '',
       detailsText: '',
@@ -62,7 +63,8 @@ let MarketCreatePage = React.createClass({
       newMarketRequestStep: 0,
       newMarketRequestStepCount: 5,
       newMarketRequestDetail: null,
-      newMarketRequestComplete: false
+      newMarketRequestComplete: false,
+      newMarketRequestSuccess: null
     };
   },
 
@@ -207,8 +209,7 @@ let MarketCreatePage = React.createClass({
   },
 
   goToPreviousStep: function () {
-    var newPageNumber = this.state.pageNumber - 1;
-    this.setState({pageNumber: newPageNumber});
+    this.setState({pageNumber: this.state.pageNumber - 1});
   },
 
   validatePage: function (pageNumber) {
@@ -368,8 +369,11 @@ let MarketCreatePage = React.createClass({
 
   sendNewMarketRequest() {
     this.setState({
+      newMarketRequestDetail: null,
+      newMarketRequestComplete: false,
+      newMarketRequestSuccess: null,
       newMarketRequestStatus: "Sending request",
-      newMarketRequestStep: this.state.newMarketRequestStep + 1
+      newMarketRequestStep: 1
     });
 
     var self = this;
@@ -448,7 +452,9 @@ let MarketCreatePage = React.createClass({
           console.log("ramble.addMetadata success:", res);
           self.setState({
             newMarketRequestStep: self.state.newMarketRequestStep + 1,
+            newMarketId: marketId,
             newMarketRequestComplete: isMarketCallSuccess,
+            newMarketRequestSuccess: isMarketCallSuccess,
             newMarketRequestStatus: isMarketCallSuccess ? "Your market has been successfully created!" : "Market metadata uploaded",
             newMarketRequestDetail: res
           });
@@ -457,6 +463,7 @@ let MarketCreatePage = React.createClass({
           self.setState({
             newMarketRequestStatus: "Market metadata upload failed.",
             newMarketRequestDetail: err,
+            newMarketRequestSuccess: false,
             newMarketRequestComplete: true
           });
         });
@@ -466,8 +473,10 @@ let MarketCreatePage = React.createClass({
         console.log("new market ID:", r.callReturn);
         var marketId = abi.bignum(r.callReturn);
         self.setState({
-          newMarketRequestStep: self.state.newMarketRequest.step + 1,
+          newMarketId: marketId,
+          newMarketRequestStep: self.state.newMarketRequestStep + 1,
           newMarketRequestComplete: isMetaDataSuccess,
+          newMarketRequestSuccess: isMetaDataSuccess,
           newMarketRequestStatus: isMetaDataSuccess ? "Your market has been successfully created!" : "New market confirmed.",
           newMarketRequestDetail: r
         });
@@ -479,7 +488,8 @@ let MarketCreatePage = React.createClass({
         self.setState({
           newMarketRequestStatus: "Your market could not be created.",
           newMarketRequestDetail: r,
-          newMarketRequestComplete: true
+          newMarketRequestComplete: true,
+          newMarketRequestSuccess: false
         });
         flux.actions.market.deleteMarket(pendingId);
       }
@@ -745,12 +755,15 @@ let MarketCreatePage = React.createClass({
           )
     } else if (this.state.pageNumber === 5) {
       stepContent = <MarketCreateStep5
-          onMarketTypeChange={this.onMarketTypeChange}
+          sendNewMarketRequest={this.sendNewMarketRequest}
+          goToPreviousStep={this.goToPreviousStep}
+          newMarketId={this.state.newMarketId}
           newMarketRequestStep={this.state.newMarketRequestStep}
           newMarketRequestStepCount={this.state.newMarketRequestStepCount}
           newMarketRequestComplete={this.state.newMarketRequestComplete}
           newMarketRequestDetail={this.state.newMarketRequestDetail}
           newMarketRequestStatus={this.state.newMarketRequestStatus}
+          newMarketRequestSuccess={this.state.newMarketRequestSuccess}
         />
     }
 
