@@ -95,6 +95,7 @@
     "react-stylesheet": "0.6.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
+    "uglifyify": "^3.0.1",
     "validator": "^4.7.1",
     "webpack": "^1.12.10"
   }
