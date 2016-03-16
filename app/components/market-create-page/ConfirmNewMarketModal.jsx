@@ -39,22 +39,19 @@ let ConfirmNewMarketModal = React.createClass({
                                 </li>
                             </ul>
                         </div>
-                        <div className="col-sm-12">
-                            <Button
-                                className="text-capitalize"
-                                bsStyle="primary"
-                                onClick={this.onOpenMarketClick}>
-                                Open market
-                            </Button>
-                        </div>
-                        <div className="col-sm-12">
-                            <Button
-                                className="text-capitalize"
-                                bsStyle="link"
-                                onClick={this.onCancelClick}>
-                                Cancel
-                            </Button>
-                        </div>
+                    </div>
+                    <div className="form-group text-center">
+                        <Button
+                            bsStyle="primary"
+                            onClick={this.onCancelClick}>
+                            Cancel
+                        </Button>
+                        <Button
+                            className="text-capitalize"
+                            bsStyle="success"
+                            onClick={this.onOpenMarketClick}>
+                            Open market
+                        </Button>
                     </div>
                 </div>
             </Modal>
