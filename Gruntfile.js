@@ -19,7 +19,8 @@ config.browserify.build = {
       extensions: ['.jsx', '.js'],
       transform: [
         ['babelify'],
-        ['envify', config.envify.build]
+        ['envify', config.envify.build],
+        ['uglifyify', { 'global': true, 'compress': true, 'mangle': true }]
       ]
     }
   }
