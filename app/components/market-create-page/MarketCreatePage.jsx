@@ -212,6 +212,13 @@ let MarketCreatePage = React.createClass({
     this.setState({pageNumber: this.state.pageNumber - 1});
   },
 
+  /**
+   * This goes straight to the step, doesn't validate anything
+   */
+  goToStep(step) {
+    this.setState({pageNumber: step});
+  },
+
   validatePage: function (pageNumber) {
     if (pageNumber === 1) {
       return this.validateStep1();
@@ -750,6 +757,7 @@ let MarketCreatePage = React.createClass({
             confirmNewMarketModalOpen={this.props.confirmNewMarketModalOpen}
             toggleConfirmNewMarketModal={this.props.toggleConfirmNewMarketModal}
             goToNextStep={this.goToNextStep}
+            goToStep={this.goToStep}
             goToPreviousStep={this.goToPreviousStep}
             />
           )

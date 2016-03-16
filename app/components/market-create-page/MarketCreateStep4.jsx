@@ -59,6 +59,10 @@ let MarketCreateStep4 = React.createClass({
                 return "";
         }
     },
+    onEditClick(event) {
+        let step = parseInt(event.currentTarget.getAttribute("data-targetstep"), 10);
+        this.props.goToStep(step);
+    },
     render() {
         return (
             <div>
@@ -69,7 +73,12 @@ let MarketCreateStep4 = React.createClass({
                 <hr/>
 
                 <div className="form-group">
-                    <h3>Your question</h3>
+                    <div className="layout--titleWithAction">
+                        <h3>Your question</h3>
+                        <button className="btn btn-xs" onClick={this.onEditClick} data-targetstep="1">
+                            Edit
+                        </button>
+                    </div>
                     <table className="table table-condensed table-no-border">
                         <tbody>
                             <tr className="">
@@ -89,7 +98,12 @@ let MarketCreateStep4 = React.createClass({
                 <hr/>
 
                 <div className="form-group">
-                    <h3>Additional information</h3>
+                    <div className="layout--titleWithAction">
+                        <h3>Additional information</h3>
+                        <button className="btn btn-xs" onClick={this.onEditClick} data-targetstep="2">
+                            Edit
+                        </button>
+                    </div>
                     <table className="table table-condensed table-no-border">
                         <tbody>
                             <tr className="">
@@ -127,7 +141,12 @@ let MarketCreateStep4 = React.createClass({
                 <hr/>
 
                 <div className="form-group">
-                    <h3>Trading fee and liquidity</h3>
+                    <div className="layout--titleWithAction">
+                        <h3>Trading fee and liquidity</h3>
+                        <button className="btn btn-xs" onClick={this.onEditClick} data-targetstep="3">
+                            Edit
+                        </button>
+                    </div>
                     <table className="table table-condensed table-no-border">
                         <tbody>
                             <tr className="">
