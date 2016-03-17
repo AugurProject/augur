@@ -2,21 +2,21 @@
 @import "./variables";
 @import (reference) "../../../node_modules/flex.less/flex";
 
-body {
+.app-wrapper {
     .display(flex);
     min-height: 100vh;
     .flex-direction(column);
-    > .page-content {
+
+    > .app-body {
         .flex(1, 0, auto);
     }
-    > .page-footer {
-        margin-top: 55px; // H1's margin-top
+    > .app-footer {
+        margin-top: 15px;
     }
-    overflow-y: scroll !important; // avoids page jumping when results are searched and filtered
-}
 
-#app.running #main {
-    margin-bottom: 40px; // feedback button is in the way at the end of the page
+    @media (max-width: @screen-xs-max) {
+        margin-bottom: 40px; // feedback button is in the way at the end of the page
+    }
 }
 
 .layout--titleWithAction {

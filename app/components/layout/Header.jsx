@@ -155,7 +155,7 @@ let Header = React.createClass({
         }
 
         return (
-            <nav className="navbar" role="navigation">
+            <nav className="app-header navbar" role="navigation">
                 <div className="navbar-brandbox">
                     <Link className="navbar-brand" to="markets"></Link>
                 </div>

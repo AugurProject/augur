@@ -96,16 +96,7 @@ var AugurApp = React.createClass({
 
   render: function () {
     return (
-      <div id="app">
-        <SendEtherModal
-          show={this.state.sendEtherModalOpen}
-          onHide={this.toggleSendEtherModal} />
-        <SendRepModal
-            show={this.state.sendRepModalOpen}
-            onHide={this.toggleSendRepModal} />
-        <SendCashModal
-            show={this.state.sendCashModalOpen}
-            onHide={this.toggleSendCashModal} />
+      <div id="app" className="app-wrapper">
         <Header
             userAccount={this.state.config.currentAccount}
             isNewRegistration={this.state.config.isNewRegistration}
@@ -117,48 +108,50 @@ var AugurApp = React.createClass({
             toggleSendRepModal={this.toggleSendRepModal}
             toggleSendEtherModal={this.toggleSendEtherModal}
             asset={this.state.asset} />
-        <section id="main" className="container">
-          <div className="dash page row">
-            <div className="col-sm-12">
-              <div id="period"></div>
-              <RouteHandler
-                toggleConfirmNewMarketModal={this.toggleConfirmNewMarketModal}
-                confirmNewMarketModalOpen={this.state.confirmNewMarketModalOpen}
-                toggleSignInModal={this.toggleSignInModal}
-                toggleReportSavedModal={this.toggleReportSavedModal}
-                reportSavedModalOpen={this.state.reportSavedModalOpen}
-                reportConfirmedModalOpen={this.state.reportConfirmedModalOpen}
-                {...this.props}
-                isSiteLoaded={ this.state.status === 'running' }
-                branch={this.state.branch}
-                market={this.state.market} />
-            </div>
-          </div>
+
+        <section id="main" className="container app-body">
+          <div id="period"></div>
+          <RouteHandler
+            toggleConfirmNewMarketModal={this.toggleConfirmNewMarketModal}
+            confirmNewMarketModalOpen={this.state.confirmNewMarketModalOpen}
+            toggleSignInModal={this.toggleSignInModal}
+            toggleReportSavedModal={this.toggleReportSavedModal}
+            reportSavedModalOpen={this.state.reportSavedModalOpen}
+            reportConfirmedModalOpen={this.state.reportConfirmedModalOpen}
+            {...this.props}
+            isSiteLoaded={ this.state.status === 'running' }
+            branch={this.state.branch}
+            market={this.state.market} />
         </section>
 
-        <RegisterModal
-          show={this.state.registerModalOpen}
-          onHide={this.toggleRegisterModal} />
-        <SignInModal
-          show={this.state.signInModalOpen}
-          onHide={this.toggleSignInModal} />
-
-        <footer>
-          <div className="row clearfix footer-tos">
-            <div className="col-sm-12">
-              <div className="pull-right">
-                <span><a href="https://www.hamsterpad.com/chat/dyffy">Slack</a> | </span>
-                <span><a href="http://docs.augur.net">Documentation</a> | </span>
-                <span><a href="http://blog.augur.net">Blog</a> | </span>
-                <span><a href="http://augur.strikingly.com">About</a> | </span>
-                <span><a href="https://github.com/AugurProject">Github</a> | </span>
-                <span><a href="https://sale.augur.net">REP Login</a> | </span>
-                <span><a href="http://augur.zendesk.com/">FAQ</a> | </span>
-                <span><a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a></span>
-              </div>
-            </div>
+        <div className="container app-footer">
+          <div className="pull-right">
+            <span><a href="https://www.hamsterpad.com/chat/dyffy">Slack</a> | </span>
+            <span><a href="http://docs.augur.net">Documentation</a> | </span>
+            <span><a href="http://blog.augur.net">Blog</a> | </span>
+            <span><a href="http://augur.strikingly.com">About</a> | </span>
+            <span><a href="https://github.com/AugurProject">Github</a> | </span>
+            <span><a href="https://sale.augur.net">REP Login</a> | </span>
+            <span><a href="http://augur.zendesk.com/">FAQ</a> | </span>
+            <span><a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a></span>
           </div>
-        </footer>
+        </div>
+
+        <SendEtherModal
+            show={this.state.sendEtherModalOpen}
+            onHide={this.toggleSendEtherModal} />
+        <SendRepModal
+            show={this.state.sendRepModalOpen}
+            onHide={this.toggleSendRepModal} />
+        <SendCashModal
+            show={this.state.sendCashModalOpen}
+            onHide={this.toggleSendCashModal} />
+        <RegisterModal
+            show={this.state.registerModalOpen}
+            onHide={this.toggleRegisterModal} />
+        <SignInModal
+            show={this.state.signInModalOpen}
+            onHide={this.toggleSignInModal} />
       </div>
     );
   }
