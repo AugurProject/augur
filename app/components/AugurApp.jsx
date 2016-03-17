@@ -38,6 +38,7 @@ var AugurApp = React.createClass({
       sendRepModalOpen: false,
       reportSavedModalOpen: false,
       reportConfirmedModalOpen: false,
+      confirmNewMarketModalOpen: false,
       status: "stopped"
     };
   },
@@ -68,6 +69,10 @@ var AugurApp = React.createClass({
 
   toggleSignInModal: function () {
     this.setState({signInModalOpen: !this.state.signInModalOpen});
+  },
+
+  toggleConfirmNewMarketModal: function () {
+    this.setState({confirmNewMarketModalOpen: !this.state.confirmNewMarketModalOpen});
   },
 
   toggleRegisterModal: function () {
@@ -117,6 +122,8 @@ var AugurApp = React.createClass({
             <div className="col-sm-12">
               <div id="period"></div>
               <RouteHandler
+                toggleConfirmNewMarketModal={this.toggleConfirmNewMarketModal}
+                confirmNewMarketModalOpen={this.state.confirmNewMarketModalOpen}
                 toggleSignInModal={this.toggleSignInModal}
                 toggleReportSavedModal={this.toggleReportSavedModal}
                 reportSavedModalOpen={this.state.reportSavedModalOpen}

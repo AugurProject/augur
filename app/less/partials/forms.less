@@ -41,13 +41,9 @@ form {
         }
     }
 
-    .input-group-addon {
-        border: 2px solid @table-border-color;
-    }
     .has-error {
         .control-label,
-        .help-block,
-        * {
+        .help-block {
             color: @color-red;
         }
         &.has-feedback.text-danger.errorMessage {
@@ -77,14 +73,7 @@ form {
     }
 }
 
-.form-group {
-    margin-bottom: 30px;
-}
-
 .form-horizontal {
-    & .form-group {
-        margin-bottom: 0;
-    }
     & .control-label,
     & .form-control-static {
         text-align: left;
@@ -97,6 +86,10 @@ form {
     & > *:not(:first-child) {
         margin-left: 20px;
     }
+}
+
+.form-group .btn + .btn {
+    margin-left: 20px;
 }
 
 .passwordStrengthInfo {

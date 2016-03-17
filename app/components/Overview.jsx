@@ -3,10 +3,10 @@ let _ = require("lodash");
 let Navigation = require("react-router/lib/Navigation");
 let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let StoreWatchMixin = require("fluxxor/lib/store_watch_mixin");
+let Link = require("react-router/lib/components/Link");
 let Button = require('react-bootstrap/lib/Button');
 let utilities = require("../libs/utilities");
 let constants = require("../libs/constants");
-let AddMarketModal = require("./AddMarketModal");
 let MarketRow = require("./markets-page/MarketRow");
 
 let Overview = React.createClass({
@@ -16,10 +16,6 @@ let Overview = React.createClass({
     StoreWatchMixin('market', 'config', 'branch'),
     Navigation
   ],
-
-  getInitialState: function () {
-    return {addMarketModalOpen: false};
-  },
 
   getStateFromFlux: function () {
     let flux = this.getFlux();
@@ -34,10 +30,6 @@ let Overview = React.createClass({
       reportPeriod: flux.store('branch').getState().currentVotePeriod,
       currentBranch: currentBranch
     }
-  },
-
-  toggleAddMarketModal: function (event) {
-    this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
   },
 
   render: function () {
@@ -91,11 +83,10 @@ let Overview = React.createClass({
     var submitMarketAction;
     if (account) {
         submitMarketAction = (
-            <Button
-              className="pull-right btn-primary btn-success"
-              onClick={this.toggleAddMarketModal}>
+            <Link to="market-create"
+                  className="pull-right btn btn-primary btn-success">
               New Market
-            </Button>
+            </Link>
         );
     } else {
         submitMarketAction = <span />;
@@ -133,9 +124,6 @@ let Overview = React.createClass({
             {authoredMarketsSection}
           </div>
         </div>
-        <AddMarketModal
-          show={this.state.addMarketModalOpen}
-          onHide={this.toggleAddMarketModal} />
       </div>
     );
   }

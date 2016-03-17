@@ -11,7 +11,6 @@ let Link = require("react-router/lib/components/Link");
 let Button = require("react-bootstrap/lib/Button");
 let Select = require('react-select');
 let MarketRow = require("./MarketRow");
-let AddMarketModal = require("../AddMarketModal");
 let constants = require("../../libs/constants");
 let utils = require("../../libs/utilities");
 let InputClear = require('../layout/InputClear');
@@ -127,10 +126,6 @@ let MarketsPage = React.createClass({
         };
     },
 
-    toggleAddMarketModal: function (event) {
-        this.setState({addMarketModalOpen: !this.state.addMarketModalOpen});
-    },
-
     render() {
         let flux = this.getFlux();
         let account = this.state.account;
@@ -174,17 +169,14 @@ let MarketsPage = React.createClass({
             );
         }
 
-        let submitMarketAction;
+        let submitMarketAction = null;
         if (this.state.account) {
             submitMarketAction = (
-                <Button
-                  className="pull-right btn-primary btn-success"
-                  onClick={this.toggleAddMarketModal}>
-                  New Market
-                </Button>
+                <Link to="market-create"
+                      className="pull-right btn btn-primary btn-success">
+                    Create New Market
+                </Link>
             );
-        } else {
-            submitMarketAction = <span />;
         }
 
         return (
@@ -252,9 +244,6 @@ let MarketsPage = React.createClass({
                     }
                 </div>
                 {pagination}
-                <AddMarketModal
-                    show={this.state.addMarketModalOpen}
-                    onHide={this.toggleAddMarketModal} />
             </div>
         );
     }
