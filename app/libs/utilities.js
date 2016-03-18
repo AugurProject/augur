@@ -141,18 +141,22 @@ module.exports = {
     }
     switch (marketType) {
     case "categorical":
-      if (market && market.longDescription && market.longDescription.indexOf("Choices:") > -1) {
-        id = Number(id);
-        var desc = market.longDescription.split("Choices:");
-        var choices = desc[desc.length - 1].split(",");
-        if (id && choices && choices.constructor === Array && choices.length > id - 1) {
-          return {type: "categorical", outcome: choices[id - 1].trim()};
+      if (market) {
+        if (market.label && market.label !== "") {
+          return {type: "categorical", outcome: market.label};
+        } else if (market.longDescription && market.longDescription.indexOf("Choices:") > -1) {
+          id = Number(id);
+          var desc = market.longDescription.split("Choices:");
+          var choices = desc[desc.length - 1].split(",");
+          if (id && choices && choices.constructor === Array && choices.length > id - 1) {
+            return {type: "categorical", outcome: choices[id - 1].trim()};
+          }
+          if (!warned[market._id]) {
+            warned[market._id] = true;
+            console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
+          }
+          return {type: "categorical", outcome: id};
         }
-        if (!warned[market._id]) {
-          warned[market._id] = true;
-          console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
-        }
-        return {type: "categorical", outcome: id};
       }
       if (!warned[market._id]) {
         warned[market._id] = true;

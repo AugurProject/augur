@@ -133,12 +133,15 @@ module.exports = {
     return callback();
   },
 
-  calculatePnl: function (market) {
-    var account = this.flux.store("config").getAccount();
-    var totalIn = new BigNumber(0);
-    var totalOut = new BigNumber(0);
-    var totalUnsold = new BigNumber(0);
-    var cost, shares, unsoldShares, unsoldValue;
+  calculatePnl: function (market, account) {
+    var account = account || this.flux.store("config").getAccount();
+    var cashReceived = new BigNumber(0);
+    var cashSpent = new BigNumber(0);
+    var totalUnsoldValue = new BigNumber(0);
+    var sharesSold = new BigNumber(0);
+    var sharesBought = new BigNumber(0);
+    var unsoldValue = new BigNumber(0);
+    var cost, shares, unsoldShares;
     for (var outcome in market.trades) {
       if (!market.trades.hasOwnProperty(outcome)) continue;
       unsoldShares = null;
@@ -152,19 +155,27 @@ module.exports = {
         cost = abi.bignum(market.trades[outcome][i].cost);
         shares = abi.bignum(market.trades[outcome][i].shares);
         if (cost.lt(new BigNumber(0))) {
-          totalIn = totalIn.plus(cost.times(shares).abs());
+          cashSpent = cashSpent.plus(cost.times(shares).abs());
+          sharesBought = sharesBought.plus(shares);
         } else {
-          totalOut = totalOut.plus(cost.times(shares).abs());
+          cashReceived = cashReceived.plus(cost.times(shares).abs());
+          sharesSold = sharesSold.plus(shares);
         }
       }
       if (unsoldShares) {
-        unsoldValue = abi.bignum(this.flux.augur.getSimulatedSell(market, outcome, unsoldShares)[0]);
-        totalUnsold = totalUnsold.plus(unsoldValue);
+        unsoldValue = unsoldValue.plus(abi.bignum(this.flux.augur.getSimulatedSell(market, outcome, unsoldShares)[0]));
+        totalUnsoldValue = totalUnsoldValue.plus(unsoldValue);
       }
     }
-    if (!totalIn.eq(new BigNumber(0))) {
-      market.pnl = totalOut.minus(totalIn).toFixed(2);
-      market.unrealizedPnl = totalOut.plus(totalUnsold).minus(totalIn).toFixed(2);
+    if (!cashSpent.eq(new BigNumber(0))) {
+      var pnl;
+      if (cashReceived.eq(new BigNumber(0))) {
+        pnl = new BigNumber(0);
+      } else {
+        pnl = cashReceived.minus(sharesSold.times(cashSpent.dividedBy(sharesBought)));
+      }
+      market.pnl = pnl.toFixed(2);
+      market.unrealizedPnl = cashReceived.plus(totalUnsoldValue).minus(cashSpent).minus(pnl).toFixed(2);
       if (market.pnl === "-0.00") market.pnl = "0.00";
       if (market.unrealizedPnl === "-0.00") market.unrealizedPnl = "0.00";
     } else {
@@ -193,7 +204,7 @@ module.exports = {
         range[numPages - i - 1] = i*marketsPerPage;
       }
 
-      var markets = {};
+      var trades, markets = {};
       async.forEachOfSeries(range, function (offset, index, next) {
         var numMarketsToLoad = (index === 0) ? numMarkets - range[index] : marketsPerPage;
         augur.getMarketsInfo({
@@ -216,6 +227,13 @@ module.exports = {
                 self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
                   if (marketInfo && marketInfo.id) {
                     markets[marketInfo.id] = marketInfo;
+                  }
+                  var unforkedMarketId = abi.unfork(thisMarket._id, true);
+                  if (trades && trades[unforkedMarketId]) {
+                    thisMarket.trades = trades[unforkedMarketId];
+                    thisMarket = self.flux.actions.market.calculatePnl(thisMarket, account);
+                  } else {
+                    thisMarket.trades = null;
                   }
                   nextMarket();
                 });
@@ -240,7 +258,34 @@ module.exports = {
                 self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
 
                 // fetch next page of markets
-                next();
+                if (index > 0 || !account) return next();
+
+                augur.getAccountTrades(account, function (accountTrades) {
+                  trades = accountTrades;
+                  var thisMarket;
+                  for (var id in markets) {
+                    if (!markets.hasOwnProperty(id)) continue;
+                    thisMarket = markets[id];
+                    var unforkedMarketId = abi.unfork(thisMarket._id, true);
+                    if (trades && trades[unforkedMarketId]) {
+                      thisMarket.trades = trades[unforkedMarketId];
+                      thisMarket = self.flux.actions.market.calculatePnl(thisMarket, account);
+                    } else {
+                      thisMarket.trades = null;
+                    }
+                  }
+                  console.debug(
+                    "all account trades loaded in",
+                    ((new Date()).getTime() - start) / 1000, "seconds"
+                  );
+                  prevTime = (new Date()).getTime();
+                  self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+                    markets: markets,
+                    percentLoaded: percentLoaded,
+                    account: account
+                  });
+                  next();
+                });
               });
             } else {
               console.error("couldn't retrieve markets info:", marketsInfo);
@@ -253,58 +298,18 @@ module.exports = {
         // loading complete!
         console.debug("all markets loaded in", ((new Date()).getTime() - start) / 1000, "seconds");
 
-        // load delicious extras
-
         var block = this.flux.store('network').getState().blockNumber;
 
-        function getCreationBlocks(markets) {
-          augur.getCreationBlocks(branchId, function (creationBlock) {
-            for (var id in markets) {
-              if (!markets.hasOwnProperty(id)) continue;
-              if (creationBlock && creationBlock[markets[id]._id]) {
-                markets[id].creationBlock = creationBlock[markets[id]._id];
-                markets[id].creationDate = utils.blockToDate(markets[id].creationBlock, block);
-              }
-            }
-            console.debug(
-              "all markets + logs loaded in",
-              ((new Date()).getTime() - start) / 1000, "seconds"
-            );
-            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
-              markets: markets,
-              percentLoaded: 100,
-              account: account
-            });
-            async.eachSeries(markets, function (thisMarket, nextMarket) {
-              self.flux.actions.market.loadMetadata(thisMarket, nextMarket);
-            }, function (err) {
-              if (err) console.warn("metadata:", err);
-              console.debug(
-                "all markets + metadata + logs loaded in",
-                ((new Date()).getTime() - start) / 1000, "seconds"
-              );
-              self.dispatch(constants.market.INITIAL_LOAD_COMPLETE);
-            });
-          });
-        }
-
-        if (!account) return getCreationBlocks(markets);
-
-        augur.getAccountTrades(account, function (trades) {
-          var thisMarket;
+        augur.getCreationBlocks(branchId, function (creationBlock) {
           for (var id in markets) {
             if (!markets.hasOwnProperty(id)) continue;
-            thisMarket = markets[id];
-            var unforkedMarketId = abi.unfork(thisMarket._id, true);
-            if (trades && trades[unforkedMarketId]) {
-              thisMarket.trades = trades[unforkedMarketId];
-              thisMarket = self.flux.actions.market.calculatePnl(thisMarket);
-            } else {
-              thisMarket.trades = null;
+            if (creationBlock && creationBlock[markets[id]._id]) {
+              markets[id].creationBlock = creationBlock[markets[id]._id];
+              markets[id].creationDate = utils.blockToDate(markets[id].creationBlock, block);
             }
           }
           console.debug(
-            "all markets + trades loaded in",
+            "all markets + logs loaded in",
             ((new Date()).getTime() - start) / 1000, "seconds"
           );
           self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
@@ -312,7 +317,16 @@ module.exports = {
             percentLoaded: 100,
             account: account
           });
-          getCreationBlocks(markets);
+          async.eachSeries(markets, function (thisMarket, nextMarket) {
+            self.flux.actions.market.loadMetadata(thisMarket, nextMarket);
+          }, function (err) {
+            if (err) console.warn("metadata:", err);
+            console.debug(
+              "all markets + metadata + logs loaded in",
+              ((new Date()).getTime() - start) / 1000, "seconds"
+            );
+            self.dispatch(constants.market.INITIAL_LOAD_COMPLETE);
+          });
         });
       });
     });
@@ -360,11 +374,12 @@ module.exports = {
     var account = this.flux.store("config").getAccount();
     callback = callback || function () {};
     var hexMarketId = abi.hex(marketId);
+    var markets = this.flux.store("market").getState().markets;
+    // console.log("market.outcomes:", markets[marketId].outcomes);
     this.flux.augur.getMarketInfo(hexMarketId, function (marketInfo) {
       if (!marketInfo || marketInfo.error || !marketInfo.network) {
         return console.error("updatePrice:", marketInfo);
       }
-      var markets = self.flux.store("market").getState().markets;
       if (marketInfo.outcomes && marketInfo.outcomes.length) {
         var totalPrice = new BigNumber(0);
         var numOutcomes = marketInfo.numOutcomes;
@@ -385,7 +400,7 @@ module.exports = {
           }
           marketInfo.outcomes[i].normalizedPrice = marketInfo.outcomes[i].price.dividedBy(totalPrice);
           marketInfo.outcomes[i].pendingShares = new BigNumber(0);
-          marketInfo.outcomes[i].label = utils.getOutcomeName(marketInfo.outcomes[i].id, marketInfo).outcome;
+          marketInfo.outcomes[i].label = markets[marketId].label;
         }
         marketInfo.outcomes.sort(function (a, b) {
           return b.price.minus(a.price);
