@@ -409,7 +409,7 @@ module.exports = function () {
         getTxNonce: function (packaged, cb) {
             var self = this;
             augur.rpc.txCount(self.account.address, function (txCount) {
-                if (txCount && !txCount.error) {
+                if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount);
                 }
                 self.submitTx(packaged, cb);
