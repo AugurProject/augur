@@ -105,8 +105,6 @@ module.exports = {
         if (result && result.marketId) {
           marketId = abi.bignum(result.marketId);
           self.flux.actions.asset.updateAssets();
-          var thisMarket = self.flux.store("market").getState().markets[marketId];
-          console.log(thisMarket.outcomes);
           self.flux.actions.market.updatePrice(marketId, function (market) {
             if (result.user === account) {
               if (!market.trades) market.trades = {};
