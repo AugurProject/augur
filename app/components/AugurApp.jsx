@@ -126,13 +126,13 @@ var AugurApp = React.createClass({
 
         <div className="container app-footer">
           <div className="pull-right">
-            <span><a href="https://www.hamsterpad.com/chat/dyffy">Slack</a> | </span>
+            <span><a href="https://sale.augur.net">REP Login</a> | </span>
             <span><a href="http://docs.augur.net">Documentation</a> | </span>
             <span><a href="http://blog.augur.net">Blog</a> | </span>
-            <span><a href="http://augur.strikingly.com">About</a> | </span>
             <span><a href="https://github.com/AugurProject">Github</a> | </span>
-            <span><a href="https://sale.augur.net">REP Login</a> | </span>
-            <span><a href="http://augur.zendesk.com/">FAQ</a> | </span>
+            <span><a href="https://augur.zendesk.com/hc/en-us">FAQ</a> | </span>
+            <span><a href="http://augur.strikingly.com">About</a> | </span>
+            <span><a href="https://www.hamsterpad.com/chat/dyffy">Slack</a> | </span>
             <span><a href="http://augur.link/augur-beta-ToS-v2.pdf">Terms of Service</a></span>
           </div>
         </div>
