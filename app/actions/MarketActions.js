@@ -134,7 +134,7 @@ module.exports = {
   },
 
   calculatePnl: function (market, account) {
-    var account = account || this.flux.store("config").getAccount();
+    account = account || this.flux.store("config").getAccount();
     var cashReceived = new BigNumber(0);
     var cashSpent = new BigNumber(0);
     var totalUnsoldValue = new BigNumber(0);
