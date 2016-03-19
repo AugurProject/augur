@@ -9,7 +9,6 @@ var constants = require("./constants");
 
 var NO = 1;
 var YES = 2;
-var warned = {};
 
 module.exports = {
 
@@ -147,18 +146,10 @@ module.exports = {
       if (id && choices && choices.constructor === Array && choices.length > id - 1) {
         return {type: "categorical", outcome: choices[id - 1].trim()};
       }
-      if (!warned[market._id]) {
-        warned[market._id] = true;
-        console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
-      }
       return {type: "categorical", outcome: id};
     } else if (market.type === "binary") {
       if (parseInt(id) === NO) return {type: "binary", outcome: "No"};
       return {type: "binary", outcome: "Yes"};
-    }
-    if (!warned[market._id]) {
-      warned[market._id] = true;
-      console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
     }
     return {type: "categorical", outcome: id};
   },
@@ -166,10 +157,7 @@ module.exports = {
   getOutcomeName: function (id, market) {
     var marketType = market.type;
     if (id == constants.INDETERMINATE_OUTCOME) {
-      return {
-        type: marketType,
-        outcome: "indeterminate"
-      };
+      return {type: market.type, outcome: "indeterminate"};
     }
     var label;
     if (market && market.numOutcomes) {
@@ -179,21 +167,14 @@ module.exports = {
         }
       }
     }
-    switch (marketType) {
-    case "categorical":
-      if (label) return {type: "categorical", outcome: label};
-      return this.parseOutcomeText(id, market)
-    case "scalar":
-      if (parseInt(id) === NO) return {type: "scalar", outcome: "⇩"};
-      return {type: "scalar", outcome: "⇧"};
-    case "binary":
-      if (label) return {type: "binary", outcome: label};
-      return this.parseOutcomeText(id, market);
-    case "combinatorial":
-      return {type: "combinatorial"};
-    default:
-      console.error("unknown type:", market);
+    if (market.type === "scalar") {
+      if (parseInt(id) === NO) return {type: market.type, outcome: "⇩"};
+      return {type: market.type, outcome: "⇧"};
+    } else if (market.type === "combinatorial") {
+      return {type: market.type};
     }
+    if (label) return {type: market.type, outcome: label};
+    return this.parseOutcomeText(id, market);
   },
 
   getOutcomeNames: function (market) {

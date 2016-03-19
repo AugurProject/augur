@@ -1,5 +1,7 @@
 "use strict";
 
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
 var abi = require("augur-abi");
 var clone = require("clone");
 var constants = require("../libs/constants");
@@ -157,15 +159,34 @@ module.exports = {
   /**
    * Load all application data 
    */
-  initializeData: function () {
+  initializeData: function (marketId) {
     var self = this;
+    function initializeData() {
+      self.flux.actions.market.loadMarkets();
+      self.flux.actions.market.loadOrders();
+      self.flux.actions.report.loadEventsToReport();
+      self.flux.actions.config.setupFilters();
+      self.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
+    }
     this.flux.actions.branch.loadBranches();
     this.flux.actions.branch.setCurrentBranch();
-    this.flux.actions.market.loadMarkets();
-    this.flux.actions.market.loadOrders();
-    this.flux.actions.report.loadEventsToReport();
-    this.flux.actions.config.setupFilters();
-    this.dispatch(constants.config.LOAD_APPLICATION_DATA_SUCCESS);
+    if (marketId) {
+      this.flux.actions.market.loadMarket(marketId, initializeData);
+    } else if (!NODE_JS) {
+      var pathname = window.location.pathname.split("/");
+      if (pathname && pathname.length > 2 && pathname[2] !== "") {
+        marketId = abi.bignum(abi.prefix_hex(pathname[2]));
+        if (marketId) {
+          this.flux.actions.market.loadMarket(marketId, initializeData);
+        } else {
+          initializeData();
+        }
+      } else {
+        initializeData();
+      }
+    } else {
+      initializeData();
+    }
   },
 
   updateAccount: function (credentials) {
@@ -177,7 +198,7 @@ module.exports = {
     });
   },
 
-  userRegistered() {
+  userRegistered: function () {
     this.dispatch(constants.config.USER_REGISTERED, {});
   },
 
