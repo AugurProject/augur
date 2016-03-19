@@ -50,18 +50,21 @@ let MarketCreatePage = React.createClass({
       maxValueError: null,
       choices: [],
       choiceErrors: [],
+      addAnswerDisabled: false,
       outcomePrices: [],
       outcomePriceErrors: [],
       outcomePriceGlobalError: null,
       resources: [],
+      resourceErrors: [],
       tags: [],
-      tagErrors: [null, null],
+      tagErrors: [],
+      addTagDisabled: false,
       expirySource: "generic",
       expirySourceUrl: "",
       expirySourceUrlError: null,
       newMarketRequestStatus: "",
       newMarketRequestStep: 0,
-      newMarketRequestStepCount: 5,
+      newMarketRequestStepCount: 6,
       newMarketRequestDetail: null,
       newMarketRequestComplete: false,
       newMarketRequestSuccess: null
@@ -104,24 +107,37 @@ let MarketCreatePage = React.createClass({
   },
 
   onChangeTagText: function (event) {
-    let tags = this.state.tags.slice();
-    let id = parseInt(event.target.getAttribute("data-index"));
-    tags[id] = event.target.value;
+    var tags = this.state.tags.slice();
+    var id = parseInt(event.target.getAttribute("data-index"));
+    var tagText = event.target.value;
+    this.checkTagText(tagText, id);
+    tags[id] = tagText;
     this.setState({tags: tags}, () => {
       this.validateStep2(`tags:${id}`);
     });
   },
-  validateTag(tag) {
-    let isValid = !(/^\s*$/.test(tag));
-    let errorMessage = isValid ? null : "Tag cannot be blank";
-    return {errorMessage};
+  checkTagText: function (tagText, id) {
+    var isOk = !(/^\s*$/.test(tagText));
+    var tagErrors = this.state.tagErrors.slice();
+    tagErrors[id] = (isOk) ? null : "Tag cannot be blank";
+    this.setState({tagErrors: tagErrors})
+    return isOk;
   },
 
   onChangeResourceText: function (event) {
-    let resources = this.state.resources.slice();
-    let id = parseInt(event.target.getAttribute("data-index"));
-    resources[id] = event.target.value;
+    var resources = this.state.resources.slice();
+    var id = parseInt(event.target.getAttribute("data-index"));
+    var resourceText = event.target.value;
+    this.checkResourceText(resourceText, id);
+    resources[id] = resourceText;
     this.setState({resources: resources});
+  },
+  checkResourceText: function (resourceText, id) {
+    var isOk = !(/^\s*$/.test(resourceText));
+    var resourceErrors = this.state.resourceErrors.slice();
+    resourceErrors[id] = (isOk) ? null : "Resource cannot be blank";
+    this.setState({resourceErrors: resourceErrors})
+    return isOk;
   },
 
   validateTradingFee(tradingFee) {
@@ -334,7 +350,7 @@ let MarketCreatePage = React.createClass({
       }
     }
 
-    if (fieldToValidate == null || fieldToValidate.indexOf("outcomePrices") > -1) {
+    /*if (fieldToValidate == null || fieldToValidate.indexOf("outcomePrices") > -1) {
       let outcomePriceIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
       let outcomePriceErrors = this.state.outcomePriceErrors.slice();
       let outcomePrices = this.state.outcomePrices.slice();
@@ -369,7 +385,7 @@ let MarketCreatePage = React.createClass({
       }
 
       this.setState({outcomePriceErrors, outcomePriceGlobalError});
-    }
+    }*/
 
     return isStepValid;
   },
@@ -435,7 +451,7 @@ let MarketCreatePage = React.createClass({
         console.log("new market submitted:", r.txHash);
         var marketId = r.callReturn;
         self.setState({
-          newMarketRequestStep: self.state.newMarketRequestStep + 1,
+          newMarketRequestStep: 2,
           newMarketRequestStatus: "New market submitted.<br />Market ID: <small>" + r.callReturn + "</small><br />Waiting for confirmation...",
           newMarketRequestDetail: r
         });
@@ -450,15 +466,16 @@ let MarketCreatePage = React.createClass({
         }, function (res) {
           console.log("ramble.addMetadata sent:", res);
           self.setState({
-            newMarketRequestStep: self.state.newMarketRequestStep + 1,
+            newMarketRequestStep: 3,
             newMarketRequestStatus: "Uploading market metadata...",
             newMarketRequestDetail: res
           });
         }, function (res) {
           isMetaDataSuccess = true;
           console.log("ramble.addMetadata success:", res);
+          var requestStep = (isMarketCallSuccess) ? 5 : 4;
           self.setState({
-            newMarketRequestStep: self.state.newMarketRequestStep + 1,
+            newMarketRequestStep: requestStep,
             newMarketId: marketId,
             newMarketRequestComplete: isMarketCallSuccess,
             newMarketRequestSuccess: isMarketCallSuccess,
@@ -479,9 +496,10 @@ let MarketCreatePage = React.createClass({
         isMarketCallSuccess = true;
         console.log("new market ID:", r.callReturn);
         var marketId = abi.bignum(r.callReturn);
+        var requestStep = (isMetaDataSuccess) ? 5 : 4;
         self.setState({
           newMarketId: marketId,
-          newMarketRequestStep: self.state.newMarketRequestStep + 1,
+          newMarketRequestStep: requestStep,
           newMarketRequestComplete: isMetaDataSuccess,
           newMarketRequestSuccess: isMetaDataSuccess,
           newMarketRequestStatus: isMetaDataSuccess ? "Your market has been successfully created!" : "New market confirmed.",
@@ -514,35 +532,51 @@ let MarketCreatePage = React.createClass({
   },
 
   onAddTag: function (event) {
-    let tagErrors = this.state.tagErrors.slice();
-    let tags = this.state.tags.slice();
-
-    if (tags.length + 1 <= constants.MAX_ALLOWED_TAGS) {
+    var numTags = this.state.tags.length + 1;
+    if (numTags <= constants.MAX_ALLOWED_TAGS) {
+      var tags = this.state.tags.slice();
+      var tagErrors = this.state.tagErrors.slice();
       tags.push('');
       tagErrors.push(null);
-      this.setState({ tags, tagErrors });
+      this.setState({
+        tags: tags,
+        tagErrors: tagErrors,
+        addTagDisabled: numTags === constants.MAX_ALLOWED_TAGS
+      });
     }
   },
 
   onAddResource: function (event) {
-    let resources = this.state.resources.slice();
+    var numResources = this.state.resources.length + 1;
+    var resources = this.state.resources.slice();
+    var resourceErrors = this.state.resourceErrors;
     resources.push('');
-    this.setState({ resources });
+    resourceErrors.push(null);
+    this.setState({
+      resources: resources,
+      resourceErrors: resourceErrors
+    });
   },
 
   onAddAnswer: function (event) {
     event.preventDefault();
-    var choices = this.state.choices.slice();
-    var outcomePrices = this.state.outcomePrices.slice();
-    var choiceErrors = this.state.choiceErrors.slice();
-    choices.push('');
-    outcomePrices.push(null);
-    choiceErrors.push(null);
-    this.setState({ choices, outcomePrices, choiceErrors });
+    var numOutcomes = this.state.choices.length + 1;
+    if (numOutcomes <= constants.MAX_ALLOWED_OUTCOMES) {
+      var choices = this.state.choices.slice();
+      var outcomePrices = this.state.outcomePrices.slice();
+      var choiceErrors = this.state.choiceErrors.slice();
+      choices.push('');
+      outcomePrices.push(null);
+      choiceErrors.push(null);
+      this.setState({
+        choices: choices,
+        choiceErrors: choiceErrors,
+        addAnswerDisabled: numOutcomes === constants.MAX_ALLOWED_OUTCOMES
+      });
+    }
   },
   onRemoveAnswer: function (event) {
     event.preventDefault();
-
     let index = parseInt(event.currentTarget.getAttribute("data-index"));
     let choices = this.state.choices.slice();
     choices.splice(index, 1);
@@ -550,71 +584,78 @@ let MarketCreatePage = React.createClass({
     outcomePrices.splice(index, 1);
     let choiceErrors = this.state.choiceErrors.slice();
     choiceErrors.splice(index, 1);
-    this.setState({ choices, outcomePrices, choiceErrors });
+    var numOutcomes = this.state.choices.length - 1;
+    this.setState({
+      numOutcomes: numOutcomes,
+      choices,
+      outcomePrices,
+      choiceErrors,
+      addAnswerDisabled: numOutcomes === constants.MAX_ALLOWED_OUTCOMES
+    });
   },
-
-  validateChoice: function (choice) {
-    let isValid = !(/^\s*$/.test(choice));
-    let errorMessage = isValid ? null : "Answer cannot be blank";
-    return {errorMessage};
-  },
-
   onChangeAnswerText: function (event) {
     let answerText = event.target.value;
     let id = parseInt(event.target.getAttribute("data-index"));
     let choices = this.state.choices.slice();
+    this.checkAnswerText(answerText, id);
     choices[id] = answerText;
     let marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
     this.setState({choices, marketText}, () => {
       this.validateStep1(`choices:${id}`);
     });
   },
-
-  checkMinimum: function () {
-    let isMinNumeric = utilities.isNumeric(this.state.minValue);
-    this.setState({minValueError: isMinNumeric ? null : "Minimum value must be a number"});
-    return isMinNumeric;
+  checkAnswerText: function (answerText, id) {
+    var isOk = !(/^\s*$/.test(answerText));
+    var choiceErrors = this.state.choiceErrors.slice();
+    choiceErrors[id] = (isOk) ? null : "Answer cannot be blank";
+    this.setState({choiceErrors: choiceErrors})
+    return isOk;
   },
-
-  checkMaximum: function () {
-    let isMaxNumeric = utilities.isNumeric(this.state.maxValue),
-        isValid = true,
-        errorMessage;
-
-    if (!isMaxNumeric) {
-      errorMessage = "Maximum value must be a number";
-      isValid = false;
-    }
-
-    let isMinNumeric = utilities.isNumeric(this.state.minValue);
-    if (isMinNumeric && isMaxNumeric) {
-      if (this.state.maxValue <= this.state.minValue) {
-        errorMessage = "Maximum must be greater than minimum";
-        isValid = false;
-      }
-    }
-    this.setState({maxValueError: isValid ? null : errorMessage});
-    return isValid;
+  validateChoice: function (choice) {
+    let isValid = !(/^\s*$/.test(choice));
+    let errorMessage = isValid ? null : "Answer cannot be blank";
+    return {errorMessage};
   },
 
   onChangeMinimum: function (event) {
     var minValue = event.target.value;
-    if (utilities.isNumeric(minValue)) {
-      minValue = abi.number(minValue);
-    }
+    if (utilities.isNumeric(minValue)) minValue = abi.number(minValue);
     this.setState({minValue: minValue}, () => {
       this.validateStep1("minMax");
     });
+    this.checkMinimum(minValue);
   },
-
   onChangeMaximum: function (event) {
     var maxValue = event.target.value;
-    if (utilities.isNumeric(maxValue)) {
-      maxValue = abi.number(maxValue);
-    }
+    if (utilities.isNumeric(maxValue)) maxValue = abi.number(maxValue);
     this.setState({maxValue: maxValue}, () => {
       this.validateStep1("minMax");
     });
+    this.checkMaximum(maxValue);
+  },
+  checkMinimum: function (minValue) {
+    if (minValue === null || minValue === undefined) {
+      minValue = this.state.minValue;
+    }
+    if (utilities.isNumeric(minValue)) {
+      this.setState({minValueError: null});
+      return true;
+    } else {
+      this.setState({minValueError: "Minimum value must be a number"});
+      return false;
+    }
+  },
+  checkMaximum: function (maxValue) {
+    if (maxValue === null || maxValue === undefined) {
+      maxValue = this.state.maxValue;
+    }
+    if (utilities.isNumeric(maxValue)) {
+      this.setState({maxValueError: null});
+      return true;
+    } else {
+      this.setState({maxValueError: "Maximum value must be a number"});
+      return false;
+    }
   },
 
   onMarketTypeChange(event) {

@@ -16,7 +16,7 @@ let ConfirmNewMarketModal = React.createClass({
 
     render() {
         return (
-            <Modal show={this.props.show} onHide={this.props.onHide} bsSize="medium">
+            <Modal show={this.props.show} onHide={this.props.onHide}>
                 <div className="modal-body">
                     <h4>Your new market is ready to go!</h4>
                     <div className="row">

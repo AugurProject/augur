@@ -54,7 +54,7 @@ let MarketCreateStep5 = React.createClass({
 
         return (
             <div>
-                <h1>Market creation progress</h1>
+                <h1>Creating market...</h1>
                 <div className="row">
                     <div className="col-sm-4">
                         <ProgressBar
@@ -65,7 +65,8 @@ let MarketCreateStep5 = React.createClass({
                     </div>
                 </div>
                 <p>
-                    {this.props.newMarketRequestStatus}
+                    <span dangerouslySetInnerHTML={{__html: this.props.newMarketRequestStatus}}>
+                    </span>
                 </p>
                 <h4 className="pointer" onClick={this.onToggleDetailClick}>
                     Details

@@ -124,7 +124,7 @@ let MarketCreateStep4 = React.createClass({
                                 <td className="col-xs-3">Helpful links:</td>
                                 <td className="">{this.props.resources.length > 0 ? this.props.resources.join(", ") : "-"}</td>
                             </tr>
-                            <tr className="">
+                            {/*<tr className="">
                                 <td className="col-xs-3">Image:</td>
                                 <td className="">
                                     {
@@ -133,7 +133,7 @@ let MarketCreateStep4 = React.createClass({
                                         : "No image uploaded"
                                     }
                                 </td>
-                            </tr>
+                            </tr>*/}
                         </tbody>
                     </table>
                 </div>
@@ -159,7 +159,7 @@ let MarketCreateStep4 = React.createClass({
                                 <td className="col-xs-3">Initial liquidity:</td>
                                 <td className="">{this.props.marketInvestment}</td>
                             </tr>
-                            { this.getStartingPrices() }
+                            {/*{ this.getStartingPrices() }*/}
                         </tbody>
                     </table>
                 </div>

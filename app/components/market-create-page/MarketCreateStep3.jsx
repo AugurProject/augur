@@ -149,11 +149,11 @@ let MarketCreateStep3 = React.createClass({
                         </div>
                     </div>
 
-                    <div className="form-group">
+                    {/*<div className="form-group">
                         {
                             this.generateInputs(this.props.marketType)
                         }
-                    </div>
+                    </div>*/}
 
                     <div className="form-group">
                         <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>

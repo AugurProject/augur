@@ -108,7 +108,7 @@ let MarketCreateStep2 = React.createClass({
                         </Button>
                     </div>
 
-                    <div className="form-group">
+                    {/*<div className="form-group">
                         <h4>Do you want an image displayed with your market? (optional)</h4>
                         <p>
                             Image files should be no larger than 3MB. Your image will be displayed at a 150px by 150px
@@ -121,7 +121,7 @@ let MarketCreateStep2 = React.createClass({
                             type="file"
                             id="imageFile"
                             onChange={this.props.onUploadImageFile} />
-                    </div>
+                    </div>*/}
 
                     <div className="form-group">
                         <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>

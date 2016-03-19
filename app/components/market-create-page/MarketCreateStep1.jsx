@@ -93,12 +93,12 @@ let MarketCreateStep1 = React.createClass({
             case "scalar":
                 return (
                     <div className="form-group">
-                        <label for="">What are the minimum and maximum values allowed when answering?</label>
+                        <label htmlFor="">What are the minimum and maximum values allowed when answering?</label>
                         <p>
                             The answer to your question must be a number that falls between the minimum and maximum
                             values you're about to set.
                         </p>
-                        <label for="">Minimum</label>
+                        <label htmlFor="">Minimum</label>
                         <Input
                             type="number"
                             help={this.props.minValueError}
@@ -107,7 +107,7 @@ let MarketCreateStep1 = React.createClass({
                             placeholder="Minimum answer"
                             onChange={this.props.onChangeMinimum} />
 
-                        <label for="">Maximum</label>
+                        <label htmlFor="">Maximum</label>
                         <Input
                             type="number"
                             help={this.props.maxValueError}
