@@ -84,7 +84,9 @@ let MarketCreatePage = React.createClass({
   onChangeMarketText: function (event) {
     let plainMarketText = event.target.value;
     let choices = this.state.choices.slice();
-    let marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
+    if (this.state.type === "categorical") {
+      var marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
+    }
     this.setState({marketText, plainMarketText}, () => {
       this.validateStep1("marketText");
     });
