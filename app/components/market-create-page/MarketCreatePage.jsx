@@ -601,7 +601,9 @@ let MarketCreatePage = React.createClass({
     let choices = this.state.choices.slice();
     this.checkAnswerText(answerText, id);
     choices[id] = answerText;
-    let marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
+    if (this.state.type === "categorical") {
+      var marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
+    }
     this.setState({choices, marketText}, () => {
       this.validateStep1(`choices:${id}`);
     });
@@ -736,7 +738,7 @@ let MarketCreatePage = React.createClass({
     } else if (this.state.pageNumber === 2) {
       stepContent = (
         <MarketCreateStep2
-          marketText={this.state.marketText}
+          marketText={this.state.plainMarketText}
           expirySource={this.state.expirySource}
           expirySourceUrl={this.state.expirySourceUrl}
           expirySourceUrlError={this.state.expirySourceUrlError}
@@ -782,7 +784,7 @@ let MarketCreatePage = React.createClass({
       stepContent = (
         <MarketCreateStep4
             marketType={marketType}
-            marketText={this.state.marketText}
+            marketText={this.state.plainMarketText}
             choices={this.state.choices}
             maturationDate={this.state.maturationDate}
             minValue={this.state.minValue}
