@@ -144,10 +144,18 @@ module.exports = {
       if (market) {
         if (market.label && market.label !== "") {
           return {type: "categorical", outcome: market.label};
-        } else if (market.longDescription && market.longDescription.indexOf("Choices:") > -1) {
+        } else if (market.longDescription &&
+          (market.longDescription.indexOf("Choices:") > -1 ||
+           market.longDescription.indexOf("~|>") > -1)) {
           id = Number(id);
-          var desc = market.longDescription.split("Choices:");
-          var choices = desc[desc.length - 1].split(",");
+          var desc, choices;
+          if (market.longDescription.indexOf("~|>") > -1) {
+            desc = market.longDescription.split("~|>");
+            choices = desc[desc.length - 1].split("|");
+          } else if (market.longDescription.indexOf("Choices:") > -1) {
+            desc = market.longDescription.split("Choices:");
+            choices = desc[desc.length - 1].split(",");
+          }
           if (id && choices && choices.constructor === Array && choices.length > id - 1) {
             return {type: "categorical", outcome: choices[id - 1].trim()};
           }

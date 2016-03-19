@@ -82,8 +82,10 @@ let MarketCreatePage = React.createClass({
   },
 
   onChangeMarketText: function (event) {
-    var marketText = event.target.value;
-    this.setState({marketText, plainMarketText: marketText}, () => {
+    let plainMarketText = event.target.value;
+    let choices = this.state.choices.slice();
+    let marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
+    this.setState({marketText, plainMarketText}, () => {
       this.validateStep1("marketText");
     });
   },
@@ -599,7 +601,7 @@ let MarketCreatePage = React.createClass({
     let choices = this.state.choices.slice();
     this.checkAnswerText(answerText, id);
     choices[id] = answerText;
-    let marketText = this.state.plainMarketText + " Choices: " + choices.join(", ") + ".";
+    let marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
     this.setState({choices, marketText}, () => {
       this.validateStep1(`choices:${id}`);
     });
@@ -710,7 +712,7 @@ let MarketCreatePage = React.createClass({
     if (this.state.pageNumber === 1) {
       stepContent = <MarketCreateStep1
           marketType={marketType}
-          marketText={this.state.marketText}
+          marketText={this.state.plainMarketText}
           marketTextError={this.state.marketTextError}
           onChangeMarketText={this.onChangeMarketText}
           choices={this.state.choices}

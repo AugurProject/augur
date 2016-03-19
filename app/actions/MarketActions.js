@@ -92,7 +92,11 @@ module.exports = {
       marketInfo.tradingPeriod = abi.bignum(marketInfo.tradingPeriod);
       marketInfo.longDescription = marketInfo.description;
       if (marketInfo.type === "categorical") {
-        marketInfo.description = marketInfo.description.slice(0, marketInfo.description.indexOf("Choices:"));
+        if (marketInfo.description.indexOf("~|>") > -1) {
+          marketInfo.description = marketInfo.description.slice(0, marketInfo.description.indexOf("~|>"));
+        } else if (marketInfo.description.indexOf("Choices:") > -1) {
+          marketInfo.description = marketInfo.description.slice(0, marketInfo.description.indexOf("Choices:"));
+        }
       }
       if (marketInfo.participants[account]) {
         marketInfo.traderId = abi.bignum(marketInfo.participants[account]);
