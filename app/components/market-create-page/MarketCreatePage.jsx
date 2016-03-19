@@ -84,8 +84,9 @@ let MarketCreatePage = React.createClass({
   onChangeMarketText: function (event) {
     let plainMarketText = event.target.value;
     let choices = this.state.choices.slice();
+    let marketText = plainMarketText;
     if (this.state.type === "categorical") {
-      var marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
+      marketText += " ~|>" + choices.join("|");
     }
     this.setState({marketText, plainMarketText}, () => {
       this.validateStep1("marketText");
@@ -259,18 +260,21 @@ let MarketCreatePage = React.createClass({
     let isStepValid = true;
 
     if (fieldToValidate == null || fieldToValidate == "marketText") {
-      let isMarketTextLongEnough = this.state.marketText.length <= this.state.marketTextMaxLength;
-      this.setState({
-        marketTextError: isMarketTextLongEnough ? null : `Text exceeds the maximum length of ${this.state.marketTextMaxLength}`
-      });
-      if (!isMarketTextLongEnough) {
-        isStepValid = false;
-      }
-
-      let isMarketTextSet = this.state.marketText.length > 0;
-      this.setState({marketTextError: isMarketTextSet ? null : 'Please enter your question'});
-      if (!isMarketTextSet) {
-        isStepValid = false;
+      if (this.state.marketText) {
+        let isMarketTextSet = this.state.marketText.length > 0;
+        this.setState({marketTextError: isMarketTextSet ? null : 'Please enter your question'});
+        if (!isMarketTextSet) {
+          isStepValid = false;
+        }
+        if (this.state.marketText.length) {
+          let isMarketTextLongEnough = this.state.marketText.length <= this.state.marketTextMaxLength;
+          this.setState({
+            marketTextError: isMarketTextLongEnough ? null : `Text exceeds the maximum length of ${this.state.marketTextMaxLength}`
+          });
+          if (!isMarketTextLongEnough) {
+            isStepValid = false;
+          }
+        }
       }
     }
 
