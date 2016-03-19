@@ -91,7 +91,7 @@ module.exports = {
       marketInfo.alpha = abi.bignum(marketInfo.alpha);
       marketInfo.tradingPeriod = abi.bignum(marketInfo.tradingPeriod);
       marketInfo.longDescription = marketInfo.description;
-      if (marketInfo.type === "categorical") {
+      if (marketInfo.type !== "scalar") {
         if (marketInfo.description.indexOf("~|>") > -1) {
           marketInfo.description = marketInfo.description.slice(0, marketInfo.description.indexOf("~|>"));
         } else if (marketInfo.description.indexOf("Choices:") > -1) {

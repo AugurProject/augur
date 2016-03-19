@@ -131,6 +131,38 @@ module.exports = {
     }
   },
 
+  parseOutcomeText: function (id, market) {
+    var desc, choices;
+    if (market.longDescription &&
+        (market.longDescription.indexOf("Choices:") > -1 ||
+         market.longDescription.indexOf("~|>") > -1)) {
+      id = Number(id);
+      if (market.longDescription.indexOf("~|>") > -1) {
+        desc = market.longDescription.split("~|>");
+        choices = desc[desc.length - 1].split("|");
+      } else if (market.longDescription.indexOf("Choices:") > -1) {
+        desc = market.longDescription.split("Choices:");
+        choices = desc[desc.length - 1].split(",");
+      }
+      if (id && choices && choices.constructor === Array && choices.length > id - 1) {
+        return {type: "categorical", outcome: choices[id - 1].trim()};
+      }
+      if (!warned[market._id]) {
+        warned[market._id] = true;
+        console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
+      }
+      return {type: "categorical", outcome: id};
+    } else if (market.type === "binary") {
+      if (parseInt(id) === NO) return {type: "binary", outcome: "No"};
+      return {type: "binary", outcome: "Yes"};
+    }
+    if (!warned[market._id]) {
+      warned[market._id] = true;
+      console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
+    }
+    return {type: "categorical", outcome: id};
+  },
+
   getOutcomeName: function (id, market) {
     var marketType = market.type;
     if (id == constants.INDETERMINATE_OUTCOME) {
@@ -139,44 +171,24 @@ module.exports = {
         outcome: "indeterminate"
       };
     }
-    switch (marketType) {
-    case "categorical":
-      if (market) {
-        if (market.label && market.label !== "") {
-          return {type: "categorical", outcome: market.label};
-        } else if (market.longDescription &&
-          (market.longDescription.indexOf("Choices:") > -1 ||
-           market.longDescription.indexOf("~|>") > -1)) {
-          id = Number(id);
-          var desc, choices;
-          if (market.longDescription.indexOf("~|>") > -1) {
-            desc = market.longDescription.split("~|>");
-            choices = desc[desc.length - 1].split("|");
-          } else if (market.longDescription.indexOf("Choices:") > -1) {
-            desc = market.longDescription.split("Choices:");
-            choices = desc[desc.length - 1].split(",");
-          }
-          if (id && choices && choices.constructor === Array && choices.length > id - 1) {
-            return {type: "categorical", outcome: choices[id - 1].trim()};
-          }
-          if (!warned[market._id]) {
-            warned[market._id] = true;
-            console.warn("Market", market._id, "has", market.numOutcomes, "outcomes, but only", choices.length, "choices found.  Using outcome ID", id, "instead of outcome text.");
-          }
-          return {type: "categorical", outcome: id};
+    var label;
+    if (market && market.numOutcomes) {
+      for (var i = 0; i < market.numOutcomes; ++i) {
+        if (market.outcomes[i].id === Number(id)) {
+          label = market.outcomes[i].label;
         }
       }
-      if (!warned[market._id]) {
-        warned[market._id] = true;
-        console.warn("Choices not found for market", market._id, ".  Using outcome ID", id, "instead of outcome text.");
-      }
-      return {type: "categorical", outcome: id};
+    }
+    switch (marketType) {
+    case "categorical":
+      if (label) return {type: "categorical", outcome: label};
+      return this.parseOutcomeText(id, market)
     case "scalar":
       if (parseInt(id) === NO) return {type: "scalar", outcome: "⇩"};
       return {type: "scalar", outcome: "⇧"};
     case "binary":
-      if (parseInt(id) === NO) return {type: "binary", outcome: "No"};
-      return {type: "binary", outcome: "Yes"};
+      if (label) return {type: "binary", outcome: label};
+      return this.parseOutcomeText(id, market);
     case "combinatorial":
       return {type: "combinatorial"};
     default:
