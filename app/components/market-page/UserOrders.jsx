@@ -77,7 +77,7 @@ let UserOrders = React.createClass({
                             <thead>
                                 <tr>
                                     <th>Type</th>
-                                    <th className="text-right">Outcome</th>
+                                    <th className="text-center">Outcome</th>
                                     <th className="text-right">Qty.</th>
                                     <th className="text-right">Price</th>
                                     <th className="text-right">Cap</th>
