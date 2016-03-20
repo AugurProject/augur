@@ -147,12 +147,20 @@ let MarketCreatePage = React.createClass({
 
   validateTradingFee(tradingFee) {
     let errorMessage = null;
+    let minimumTradingFee;
+    if (this.state.marketInvestment < 100) {
+      minimumTradingFee = 2;
+    } else if (this.state.marketInvestment < 1000) {
+      minimumTradingFee = 1;
+    } else {
+      minimumTradingFee = 0.7; // branch parameter
+    }
     if (!utilities.isNumeric(tradingFee)) {
       errorMessage = 'Please enter valid trading fee';
     } else if (parseFloat(tradingFee) > 12.5) {
-      errorMessage = 'Trading fee must be less than 12.5%';
-    } else if (parseFloat(tradingFee) < 0.7) {
-      errorMessage = 'Trading fee must be greater than 0.7%';
+      errorMessage = 'Trading fee must be at most 12.5%';
+    } else if (parseFloat(tradingFee) < minimumTradingFee) {
+      errorMessage = 'Trading fee must be at least ' + minimumTradingFee + '%';
     }
     return {errorMessage};
   },
@@ -162,10 +170,9 @@ let MarketCreatePage = React.createClass({
       errorMessage = 'Please enter valid initial liquidity';
     } else if (parseFloat(marketInvestment) > this.state.cash.toNumber()) {
       errorMessage = `Your maximum initial liquidity is ${this.state.cash.toFixed(2)}`;
-    } else if (parseFloat(marketInvestment) <= 0) {
-      errorMessage = 'Initial liquidity must be greater than 0';
+    } else if (parseFloat(marketInvestment) < 50) {
+      errorMessage = 'Initial liquidity must be at least 50';
     }
-
     return {errorMessage};
   },
   validateOutcomePrice(outcomePrice) {
@@ -355,6 +362,12 @@ let MarketCreatePage = React.createClass({
       this.setState({marketInvestmentError: validationResult.errorMessage});
       if (validationResult.errorMessage != null) {
         isStepValid = false;
+      } else {
+        let valid = this.validateTradingFee(this.state.tradingFee);
+        this.setState({tradingFeeError: valid.errorMessage});
+        if (valid.errorMessage != null) {
+          isStepValid = false;
+        }
       }
     }
 
