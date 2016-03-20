@@ -257,12 +257,17 @@ module.exports = {
                   percentLoaded: percentLoaded,
                   account: account
                 });
-                self.flux.actions.search.sortMarkets("volume", 1);
                 self.flux.actions.config.updatePercentLoaded(percentLoaded);
                 self.dispatch(constants.market.MARKETS_LOADING, {loadingPage: null});
 
                 // fetch next page of markets
                 if (index > 0 || !account) return next();
+
+                // get the current account's trading history after the first
+                // page of markets has loaded.
+                // also, sort the first page.
+                self.flux.actions.search.sortMarkets("volume", 1);
+                next();
 
                 augur.getAccountTrades(account, function (accountTrades) {
                   trades = accountTrades;
@@ -285,10 +290,8 @@ module.exports = {
                   prevTime = (new Date()).getTime();
                   self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
                     markets: markets,
-                    percentLoaded: percentLoaded,
                     account: account
                   });
-                  next();
                 });
               });
             } else {
