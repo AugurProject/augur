@@ -120,7 +120,7 @@ var ReportActions = {
                           }
                           self.flux.actions.market.parseMarketInfo(marketInfo, function (info) {
                             augur.ramble.getMarketMetadata(thisMarket, {sourceless: false}, function (err, metadata) {
-                              if (err) console.error("getMetadata:", err);
+                              if (err && err.error !== 507) console.error("getMetadata:", err);
                               if (info) {
                                 if (metadata) info.metadata = metadata;
                                 eventsToReport[eventId].markets.push(info);
