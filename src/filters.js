@@ -52,7 +52,7 @@ module.exports = function () {
             if (!augur.rpc.etherscan || !f) {
                 return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
             }
-            var rpcUrl = "http://testnet.etherscan.io/api?module=proxy&action=eth_getLogs&" + Object.keys(filter).map(function (k) {
+            var rpcUrl = augur.rpc.etherscanApi + "&action=eth_getLogs&" + Object.keys(filter).map(function (k) {
                 return encodeURIComponent(k) + '=' + encodeURIComponent(filter[k]);
             }).join('&');
             request({method: "GET", url: rpcUrl}, function (e, response, body) {
