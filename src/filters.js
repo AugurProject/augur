@@ -4,8 +4,9 @@
 
 "use strict";
 
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+var request = (NODE_JS) ? require("request") : require("browser-request");
 var async = require("async");
-var chalk = require("chalk");
 var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
 var utils = require("./utilities");
@@ -48,7 +49,21 @@ module.exports = function () {
         },
 
         eth_getLogs: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
+            if (!augur.rpc.etherscan || !f) {
+                return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
+            }
+            var rpcUrl = "http://testnet.etherscan.io/api?module=proxy&action=eth_getLogs&" + Object.keys(filter).map(function (k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(filter[k]);
+            }).join('&');
+            request({method: "GET", url: rpcUrl}, function (e, response, body) {
+                if (e) {
+                    console.error("etherscan eth_call error:", e);
+                    augur.rpc.etherscan = false;
+                    f(e);
+                } else if (response.statusCode === 200) {
+                    augur.rpc.parse(body, null, f);
+                }
+            });
         },
 
         eth_uninstallFilter: function (filter, f) {
