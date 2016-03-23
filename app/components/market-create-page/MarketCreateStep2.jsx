@@ -53,25 +53,44 @@ let MarketCreateStep2 = React.createClass({
                             Up to three tags can be added to categorize your market. For example: politics, sports,
                             entertainment or technology.
                         </p>
-                        {
-                            this.props.tags.map((tag, index) => {
-                                return (
-                                    <Input
-                                        key={index}
-                                        data-index={index}
-                                        bsStyle={this.props.tagErrors[index] != null ? "error" : null}
-                                        help={this.props.tagErrors[index]}
-                                        type="text"
-                                        value={tag}
-                                        onChange={this.props.onChangeTagText} />
-                                )
-                            }, this)
-                        }
-                        { this.props.tags.length < 3 &&
-                            <Button bsStyle="default" onClick={this.props.onAddTag}>
-                                Add tag
-                            </Button>
-                        }
+                        <div className="row">
+                            <div className="col-sm-6 form-horizontal">
+                                {
+                                    this.props.tags.map((tag, index) => {
+                                        let removeAction = (
+                                            <button className="btn btn-default"
+                                                    type="button"
+                                                    data-index={index}
+                                                    onClick={this.props.onRemoveTag}>
+                                                <span className="fa fa-times"></span>
+                                            </button>
+                                        );
+
+                                        return (
+                                            <Input
+                                                key={index}
+                                                data-index={index}
+                                                wrapperClassName="col-sm-5"
+                                                bsStyle={this.props.tagErrors[index] != null ? "error" : null}
+                                                help={this.props.tagErrors[index]}
+                                                type="text"
+                                                buttonAfter={removeAction}
+                                                value={tag}
+                                                onChange={this.props.onChangeTagText} />
+                                        )
+                                    }, this)
+                                }
+                                { this.props.tags.length < this.props.maxAllowedTags &&
+                                    <div className="form-group">
+                                        <div className="col-xs-12">
+                                            <Button bsStyle="default" onClick={this.props.onAddTag}>
+                                                Add tag
+                                            </Button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -91,21 +110,44 @@ let MarketCreateStep2 = React.createClass({
                             For example, if your question is about an election you could link to polling information or
                             the webpages of candidates.
                         </p>
-                        {
-                            this.props.resources.map((resource, index) => {
-                                return (
-                                    <Input
-                                        key={index}
-                                        data-index={index}
-                                        type="text"
-                                        value={resource}
-                                        onChange={this.props.onChangeResourceText} />
-                                );
-                            }, this)
-                        }
-                        <Button bsStyle="default" onClick={this.props.onAddResource}>
-                            Add resource
-                        </Button>
+                        <div className="row">
+                            <div className="col-sm-6 form-horizontal">
+                                {
+                                    this.props.resources.map((resource, index) => {
+                                        let removeAction = (
+                                            <button className="btn btn-default"
+                                                    type="button"
+                                                    data-index={index}
+                                                    onClick={this.props.onRemoveResource}>
+                                                <span className="fa fa-times"></span>
+                                            </button>
+                                        );
+
+                                        return (
+                                            <Input
+                                                key={index}
+                                                data-index={index}
+                                                wrapperClassName="col-sm-5"
+                                                type="text"
+                                                bsStyle={this.props.resourceErrors[index] != null ? "error" : null}
+                                                help={this.props.resourceErrors[index]}
+                                                value={resource}
+                                                buttonAfter={removeAction}
+                                                onChange={this.props.onChangeResourceText} />
+                                        );
+                                    }, this)
+                                }
+                                { this.props.resources.length < this.props.maxAllowedResources &&
+                                    <div className="form-group">
+                                        <div className="col-xs-12">
+                                            <Button bsStyle="default" onClick={this.props.onAddResource}>
+                                                Add resource
+                                            </Button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
 
                     {/*<div className="form-group">

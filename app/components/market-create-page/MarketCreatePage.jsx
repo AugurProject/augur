@@ -58,7 +58,6 @@ let MarketCreatePage = React.createClass({
       resourceErrors: [],
       tags: [],
       tagErrors: [],
-      addTagDisabled: false,
       expirySource: "generic",
       expirySourceUrl: "",
       expirySourceUrlError: null,
@@ -112,37 +111,31 @@ let MarketCreatePage = React.createClass({
   },
 
   onChangeTagText: function (event) {
-    var tags = this.state.tags.slice();
-    var id = parseInt(event.target.getAttribute("data-index"));
-    var tagText = event.target.value;
-    this.checkTagText(tagText, id);
-    tags[id] = tagText;
+    let tags = this.state.tags.slice();
+    let id = parseInt(event.target.getAttribute("data-index"));
+    tags[id] = event.target.value;
     this.setState({tags: tags}, () => {
       this.validateStep2(`tags:${id}`);
     });
   },
-  checkTagText: function (tagText, id) {
-    var isOk = !(/^\s*$/.test(tagText));
-    var tagErrors = this.state.tagErrors.slice();
-    tagErrors[id] = (isOk) ? null : "Tag cannot be blank";
-    this.setState({tagErrors: tagErrors})
-    return isOk;
+  validateTag(tag) {
+    let isValid = !(/^\s*$/.test(tag));
+    let errorMessage = isValid ? null : "Tag cannot be blank";
+    return {errorMessage};
   },
 
   onChangeResourceText: function (event) {
-    var resources = this.state.resources.slice();
-    var id = parseInt(event.target.getAttribute("data-index"));
-    var resourceText = event.target.value;
-    this.checkResourceText(resourceText, id);
-    resources[id] = resourceText;
-    this.setState({resources: resources});
+    let resources = this.state.resources.slice();
+    let id = parseInt(event.target.getAttribute("data-index"));
+    resources[id] = event.target.value;
+    this.setState({resources}, () => {
+      this.validateStep2(`resources:${id}`);
+    });
   },
-  checkResourceText: function (resourceText, id) {
-    var isOk = !(/^\s*$/.test(resourceText));
-    var resourceErrors = this.state.resourceErrors.slice();
-    resourceErrors[id] = (isOk) ? null : "Resource cannot be blank";
-    this.setState({resourceErrors: resourceErrors})
-    return isOk;
+  validateResource: function (resourceText) {
+    let isValid = !(/^\s*$/.test(resourceText));
+    let errorMessage = isValid ? null : "Resource cannot be blank";
+    return {errorMessage};
   },
 
   validateTradingFee(tradingFee) {
@@ -166,12 +159,13 @@ let MarketCreatePage = React.createClass({
   },
   validateMarketInvestment(marketInvestment) {
     let errorMessage = null;
+    let minMarketInvestment = 50;
     if (!utilities.isNumeric(marketInvestment)) {
       errorMessage = 'Please enter valid initial liquidity';
     } else if (parseFloat(marketInvestment) > this.state.cash.toNumber()) {
       errorMessage = `Your maximum initial liquidity is ${this.state.cash.toFixed(2)}`;
-    } else if (parseFloat(marketInvestment) < 50) {
-      errorMessage = 'Initial liquidity must be at least 50';
+    } else if (parseFloat(marketInvestment) < minMarketInvestment) {
+      errorMessage = 'Initial liquidity must be at least ' + minMarketInvestment;
     }
     return {errorMessage};
   },
@@ -312,9 +306,15 @@ let MarketCreatePage = React.createClass({
 
     if (fieldToValidate == null || fieldToValidate == "minMax") {
       if (this.state.type === "scalar") {
-        let isMinValid = this.checkMinimum();
-        let isMaxValid = this.checkMaximum();
-        if (!isMinValid || !isMaxValid) {
+        let minValidation = this.validateMinimum();
+        let maxValidation = this.validateMaximum();
+
+        this.setState({
+          minValueError: minValidation.errorMessage,
+          maxValueError: maxValidation.errorMessage
+        });
+
+        if (minValidation.errorMessage != null || maxValidation.errorMessage != null) {
           isStepValid = false;
         }
       }
@@ -342,6 +342,36 @@ let MarketCreatePage = React.createClass({
       if (!isExpirySourceUrlValid) {
         isStepValid = false;
       }
+    }
+
+    if (fieldToValidate == null || fieldToValidate.indexOf("tags") > -1) {
+      let tagIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
+      let tagErrors = this.state.tagErrors.slice();
+      let tagsToValidate = tagIndex != null ? [this.state.tags[tagIndex]] : this.state.tags.slice();
+
+      // iterates all tags, validating each
+      isStepValid = tagsToValidate.reduce((isStepValid, tag, index) => {
+        let validationResult = this.validateTag(tag);
+        tagErrors[tagIndex || index] = validationResult.errorMessage;
+        return validationResult.errorMessage == null ? isStepValid : false;
+      }, isStepValid);
+
+      this.setState({tagErrors});
+    }
+
+    if (fieldToValidate == null || fieldToValidate.indexOf("resources") > -1) {
+      let resourceIndex = fieldToValidate == null ? null : fieldToValidate.split(":")[1];
+      let resourceErrors = this.state.resourceErrors.slice();
+      let resourcesToValidate = resourceIndex != null ? [this.state.resources[resourceIndex]] : this.state.resources.slice();
+
+      // iterates all resources, validating each
+      isStepValid = resourcesToValidate.reduce((isStepValid, resource, index) => {
+        let validationResult = this.validateResource(resource);
+        resourceErrors[resourceIndex || index] = validationResult.errorMessage;
+        return validationResult.errorMessage == null ? isStepValid : false;
+      }, isStepValid);
+
+      this.setState({resourceErrors});
     }
 
     return isStepValid;
@@ -553,29 +583,47 @@ let MarketCreatePage = React.createClass({
   },
 
   onAddTag: function (event) {
-    var numTags = this.state.tags.length + 1;
-    if (numTags <= constants.MAX_ALLOWED_TAGS) {
+    if (this.state.tags.length < constants.MAX_ALLOWED_TAGS) {
       var tags = this.state.tags.slice();
       var tagErrors = this.state.tagErrors.slice();
       tags.push('');
       tagErrors.push(null);
       this.setState({
-        tags: tags,
-        tagErrors: tagErrors,
-        addTagDisabled: numTags === constants.MAX_ALLOWED_TAGS
+        tags,
+        tagErrors
       });
     }
   },
-
+  onRemoveTag(event) {
+    let index = parseInt(event.currentTarget.getAttribute("data-index"));
+    let tags = this.state.tags.slice();
+    tags.splice(index, 1);
+    let tagErrors = this.state.tagErrors.slice();
+    tagErrors.splice(index, 1);
+    this.setState({
+      tags,
+      tagErrors
+    });
+  },
   onAddResource: function (event) {
-    var numResources = this.state.resources.length + 1;
     var resources = this.state.resources.slice();
     var resourceErrors = this.state.resourceErrors;
     resources.push('');
     resourceErrors.push(null);
     this.setState({
-      resources: resources,
-      resourceErrors: resourceErrors
+      resources,
+      resourceErrors
+    });
+  },
+  onRemoveResource(event) {
+    let index = parseInt(event.currentTarget.getAttribute("data-index"));
+    let resources = this.state.resources.slice();
+    resources.splice(index, 1);
+    let resourceErrors = this.state.resourceErrors.slice();
+    resourceErrors.splice(index, 1);
+    this.setState({
+      resources,
+      resourceErrors
     });
   },
 
@@ -646,7 +694,6 @@ let MarketCreatePage = React.createClass({
     this.setState({minValue: minValue}, () => {
       this.validateStep1("minMax");
     });
-    this.checkMinimum(minValue);
   },
   onChangeMaximum: function (event) {
     var maxValue = event.target.value;
@@ -654,31 +701,28 @@ let MarketCreatePage = React.createClass({
     this.setState({maxValue: maxValue}, () => {
       this.validateStep1("minMax");
     });
-    this.checkMaximum(maxValue);
   },
-  checkMinimum: function (minValue) {
-    if (minValue === null || minValue === undefined) {
-      minValue = this.state.minValue;
-    }
-    if (utilities.isNumeric(minValue)) {
-      this.setState({minValueError: null});
-      return true;
-    } else {
-      this.setState({minValueError: "Minimum value must be a number"});
-      return false;
-    }
+  validateMinimum: function () {
+    let isMinNumeric = utilities.isNumeric(this.state.minValue);
+    let errorMessage = isMinNumeric ? null : "Minimum value must be a number";
+    return {errorMessage};
   },
-  checkMaximum: function (maxValue) {
-    if (maxValue === null || maxValue === undefined) {
-      maxValue = this.state.maxValue;
+
+  validateMaximum: function () {
+    let isMaxValid = utilities.isNumeric(this.state.maxValue), errorMessage;
+
+    if (!isMaxValid) {
+      errorMessage = "Maximum value must be a number";
     }
-    if (utilities.isNumeric(maxValue)) {
-      this.setState({maxValueError: null});
-      return true;
-    } else {
-      this.setState({maxValueError: "Maximum value must be a number"});
-      return false;
+
+    let isMinValid = this.validateMinimum().errorMessage == null;
+    if (isMinValid && isMaxValid) {
+      if (this.state.maxValue <= this.state.minValue) {
+        errorMessage = "Maximum must be greater than minimum";
+      }
     }
+
+    return {errorMessage};
   },
 
   onMarketTypeChange(event) {
@@ -765,13 +809,18 @@ let MarketCreatePage = React.createClass({
           onChangeExpirySourceUrl={this.onChangeExpirySourceUrl}
           tags={this.state.tags}
           tagErrors={this.state.tagErrors}
+          maxAllowedTags={constants.MAX_ALLOWED_TAGS}
           onAddTag={this.onAddTag}
+          onRemoveTag={this.onRemoveTag}
           onChangeTagText={this.onChangeTagText}
           detailsText={this.state.detailsText}
           onChangeDetailsText={this.onChangeDetailsText}
           resources={this.state.resources}
+          resourceErrors={this.state.resourceErrors}
+          maxAllowedResources={constants.MAX_ALLOWED_RESOURCES}
           onChangeResourceText={this.onChangeResourceText}
           onAddResource={this.onAddResource}
+          onRemoveResource={this.onRemoveResource}
           imageDataURL={this.state.imageDataURL}
           onUploadImageFile={this.onUploadImageFile}
           goToNextStep={this.goToNextStep}
