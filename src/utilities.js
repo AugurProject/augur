@@ -8,7 +8,6 @@ var assert = (NODE_JS) ? require("assert") : console.assert;
 var crypto = require("crypto");
 var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
-var validator = require("validator");
 var moment = require("moment");
 var clone = require("clone");
 var chalk = require("chalk");
