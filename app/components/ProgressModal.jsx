@@ -68,7 +68,7 @@ module.exports = React.createClass({
       progressBar = (
         <ProgressBar
           bsStyle="success"
-          now={100 * (this.props.step / this.props.numSteps)}
+          now={100}
           className={loadingProgressModal}
           active={active}
           label={label} />
