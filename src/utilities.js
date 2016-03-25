@@ -222,7 +222,7 @@ module.exports = {
                     accounts[i] = abi.prefix_hex(accounts[i]);
                 }
             }
-            if (max_accounts && accounts.length > max_accounts) {
+            if (max_accounts && accounts && accounts.length > max_accounts) {
                 accounts = accounts.slice(0, max_accounts);
             }
             return accounts;

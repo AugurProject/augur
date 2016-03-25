@@ -49,21 +49,7 @@ module.exports = function () {
         },
 
         eth_getLogs: function (filter, f) {
-            if (!augur.rpc.etherscan || !f) {
-                return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
-            }
-            var rpcUrl = augur.rpc.etherscanApi + "&action=eth_getLogs&" + Object.keys(filter).map(function (k) {
-                return encodeURIComponent(k) + '=' + encodeURIComponent(filter[k]);
-            }).join('&');
-            request({method: "GET", url: rpcUrl}, function (e, response, body) {
-                if (e) {
-                    console.error("etherscan eth_call error:", e);
-                    augur.rpc.etherscan = false;
-                    f(e);
-                } else if (response.statusCode === 200) {
-                    augur.rpc.parse(body, null, f);
-                }
-            });
+            return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
         },
 
         eth_uninstallFilter: function (filter, f) {
