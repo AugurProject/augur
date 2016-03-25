@@ -76,7 +76,8 @@ module.exports = {
     if (marketInfo && marketInfo.branchId &&
         abi.bignum(marketInfo.branchId).eq(abi.bignum(branchId)) &&
         !_.contains(blackmarkets, marketId.toString(16)) &&
-        !marketInfo.invalid && marketInfo.price && marketInfo.description) {
+        !marketInfo.invalid && marketInfo.price &&
+        marketInfo.description && /\S/.test(marketInfo.description)) {
       marketInfo.id = marketId;
       marketInfo.endBlock = marketInfo.endDate;
       marketInfo.endDate = utils.blockToDate(marketInfo.endDate, block);
@@ -231,13 +232,13 @@ module.exports = {
                 self.flux.actions.market.parseMarketInfo(thisMarket, function (marketInfo) {
                   if (marketInfo && marketInfo.id) {
                     markets[marketInfo.id] = marketInfo;
-                  }
-                  var unforkedMarketId = abi.unfork(thisMarket._id, true);
-                  if (trades && trades[unforkedMarketId]) {
-                    thisMarket.trades = trades[unforkedMarketId];
-                    thisMarket = self.flux.actions.market.calculatePnl(thisMarket, account);
-                  } else {
-                    thisMarket.trades = null;
+                    var unforkedMarketId = abi.unfork(marketInfo._id, true);
+                    if (trades && trades[unforkedMarketId]) {
+                      marketInfo.trades = trades[unforkedMarketId];
+                      marketInfo = self.flux.actions.market.calculatePnl(marketInfo, account);
+                    } else {
+                      marketInfo.trades = null;
+                    }
                   }
                   nextMarket();
                 });
@@ -266,7 +267,7 @@ module.exports = {
                 // get the current account's trading history after the first
                 // page of markets has loaded.
                 // also, sort the first page.
-                self.flux.actions.search.sortMarkets("volume", 1);
+                // self.flux.actions.search.sortMarkets("volume", 1);
                 next();
 
                 augur.getAccountTrades(account, function (accountTrades) {
