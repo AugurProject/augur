@@ -31,9 +31,9 @@ let MarketCreatePage = React.createClass({
       type: null,
       newMarketId: null,
       pageNumber: 1,
+      plainMarketText: '',
       marketText: '',
       detailsText: '',
-      plainMarketText: '',
       marketTextMaxLength: 256,
       marketTextError: null,
       marketInvestment: '501',
@@ -82,10 +82,9 @@ let MarketCreatePage = React.createClass({
 
   onChangeMarketText: function (event) {
     let plainMarketText = event.target.value;
-    let choices = this.state.choices.slice();
     let marketText = plainMarketText;
     if (this.state.type === "categorical") {
-      marketText += " ~|>" + choices.join("|");
+      marketText += " ~|>" + this.state.choices.join("|");
     }
     this.setState({marketText, plainMarketText}, () => {
       this.validateStep1("marketText");
@@ -261,28 +260,27 @@ let MarketCreatePage = React.createClass({
     let isStepValid = true;
 
     if (fieldToValidate == null || fieldToValidate == "marketText") {
-      if (this.state.marketText) {
-        let isMarketTextSet = this.state.marketText.length > 0;
-        this.setState({marketTextError: isMarketTextSet ? null : 'Please enter your question'});
-        if (!isMarketTextSet) {
+      let isMarketTextSet = this.state.plainMarketText.length > 0;
+      let marketTextError = null;
+
+      if (isMarketTextSet) {
+        let isMarketTextLongEnough = this.state.plainMarketText.length <= this.state.marketTextMaxLength;
+        if (!isMarketTextLongEnough) {
+          marketTextError = `Text exceeds the maximum length of ${this.state.marketTextMaxLength}`;
           isStepValid = false;
         }
-        if (this.state.marketText.length) {
-          let isMarketTextLongEnough = this.state.marketText.length <= this.state.marketTextMaxLength;
-          this.setState({
-            marketTextError: isMarketTextLongEnough ? null : `Text exceeds the maximum length of ${this.state.marketTextMaxLength}`
-          });
-          if (!isMarketTextLongEnough) {
-            isStepValid = false;
-          }
-        }
+      } else {
+        marketTextError = 'Please enter your question';
+        isStepValid = false;
       }
+
+      this.setState({marketTextError});
     }
 
     if (fieldToValidate == null || fieldToValidate == "maturationDate") {
-      let isMaturationSet = this.state.maturationDate !== '';
-      this.setState({maturationDateError: isMaturationSet ? null : 'Please enter maturation date'});
-      if (!isMaturationSet) {
+      let validationResult = this.validateMatureDate(this.state.maturationDate);
+      this.setState({maturationDateError: validationResult.errorMessage});
+      if (validationResult.errorMessage != null) {
         isStepValid = false;
       }
     }
@@ -666,7 +664,6 @@ let MarketCreatePage = React.createClass({
     let answerText = event.target.value;
     let id = parseInt(event.target.getAttribute("data-index"));
     let choices = this.state.choices.slice();
-    this.checkAnswerText(answerText, id);
     choices[id] = answerText;
     if (this.state.type === "categorical") {
       var marketText = this.state.plainMarketText + " ~|>" + choices.join("|");
@@ -675,19 +672,20 @@ let MarketCreatePage = React.createClass({
       this.validateStep1(`choices:${id}`);
     });
   },
-  checkAnswerText: function (answerText, id) {
-    var isOk = !(/^\s*$/.test(answerText));
-    var choiceErrors = this.state.choiceErrors.slice();
-    choiceErrors[id] = (isOk) ? null : "Answer cannot be blank";
-    this.setState({choiceErrors: choiceErrors})
-    return isOk;
-  },
   validateChoice: function (choice) {
     let isValid = !(/^\s*$/.test(choice));
     let errorMessage = isValid ? null : "Answer cannot be blank";
     return {errorMessage};
   },
+  validateMatureDate(matureDate) {
+    let isMaturationSet = matureDate !== '';
+    let errorMessage = null;
 
+    if (!isMaturationSet) {
+      errorMessage = "Mature date cannot be blank";
+    }
+    return {errorMessage};
+  },
   onChangeMinimum: function (event) {
     var minValue = event.target.value;
     if (utilities.isNumeric(minValue)) minValue = abi.number(minValue);
