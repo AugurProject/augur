@@ -140,7 +140,7 @@ let MarketCreateStep1 = React.createClass({
                             type="text"
                             bsStyle={this.props.marketTextError != null ? "error" : null}
                             help={this.props.marketTextError}
-                            value={this.props.marketText}
+                            value={this.props.plainMarketText}
                             placeholder={this.getPlaceholderText(marketType)}
                             onChange={this.props.onChangeMarketText} />
 

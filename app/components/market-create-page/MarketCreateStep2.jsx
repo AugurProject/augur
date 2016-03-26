@@ -100,7 +100,7 @@ let MarketCreateStep2 = React.createClass({
 
                     <div className="form-group">
                         <h4>Does your question need further explanation? (optional)</h4>
-                        <p>Your question: {this.props.marketText}</p>
+                        <p>Your question: {this.props.plainMarketText}</p>
                         <Input
                             type="textarea"
                             style={{width: "100%", height: "110px"}}

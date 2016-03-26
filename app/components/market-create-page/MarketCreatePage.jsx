@@ -775,7 +775,7 @@ let MarketCreatePage = React.createClass({
     if (this.state.pageNumber === 1) {
       stepContent = <MarketCreateStep1
           marketType={marketType}
-          marketText={this.state.plainMarketText}
+          plainMarketText={this.state.plainMarketText}
           marketTextError={this.state.marketTextError}
           onChangeMarketText={this.onChangeMarketText}
           choices={this.state.choices}
@@ -799,7 +799,7 @@ let MarketCreatePage = React.createClass({
     } else if (this.state.pageNumber === 2) {
       stepContent = (
         <MarketCreateStep2
-          marketText={this.state.plainMarketText}
+          plainMarketText={this.state.plainMarketText}
           expirySource={this.state.expirySource}
           expirySourceUrl={this.state.expirySourceUrl}
           expirySourceUrlError={this.state.expirySourceUrlError}
@@ -850,7 +850,7 @@ let MarketCreatePage = React.createClass({
       stepContent = (
         <MarketCreateStep4
             marketType={marketType}
-            marketText={this.state.plainMarketText}
+            plainMarketText={this.state.plainMarketText}
             choices={this.state.choices}
             maturationDate={this.state.maturationDate}
             minValue={this.state.minValue}

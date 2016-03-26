@@ -83,7 +83,7 @@ let MarketCreateStep4 = React.createClass({
                         <tbody>
                             <tr className="">
                                 <td className="col-xs-3">Question:</td>
-                                <td className="">{this.props.marketText}</td>
+                                <td className="">{this.props.plainMarketText}</td>
                             </tr>
                             { this.getOutcomeInfo() }
                             <tr className="">
