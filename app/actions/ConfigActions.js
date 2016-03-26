@@ -45,13 +45,8 @@ module.exports = {
     var augur = this.flux.augur;
     augur.rpc.reset();
     augur.connect(null, null, function (connected) {
-      if (augur.rpc.nodes.hosted.length > 1) {
-        augur.rpc.excision = true;
-        augur.rpc.balancer = true;
-      } else {
-        augur.rpc.excision = false;
-        augur.rpc.balancer = false;
-      }
+      augur.rpc.excision = false;
+      augur.rpc.balancer = augur.rpc.nodes.hosted.length > 1;
       self.flux.actions.config.setIsHosted(connected);
       if (!connected) return cb(false);
       cb(augur.rpc.nodes.hosted[0]);

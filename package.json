@@ -37,7 +37,7 @@
     "async": "^1.4.2",
     "augur-abi": "^0.2.7",
     "augur-contracts": "AugurProject/augur-contracts",
-    "augur.js": "^0.17.6",
+    "augur.js": "^0.17.8",
     "bignumber.js": "^2.1.4",
     "bootstrap": "^3.3.4",
     "chalk": "^1.1.1",

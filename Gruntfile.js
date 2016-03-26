@@ -20,7 +20,7 @@ config.browserify.build = {
       transform: [
         ['babelify'],
         ['envify', config.envify.build],
-        ['uglifyify', { 'global': true, 'compress': true, 'mangle': true }]
+        ['uglifyify', { 'global': true, 'compress': true, 'mangle': false }]
       ]
     }
   }

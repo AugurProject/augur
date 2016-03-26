@@ -7,7 +7,7 @@ var constants = require("../libs/constants");
 module.exports = {
   state: {
     keywords: '',
-    sortBy: 'volume',
+    sortBy: 'startingSortOrder',
     reverseSort: 0,
     cleanKeywords: [],
     markets: {},
