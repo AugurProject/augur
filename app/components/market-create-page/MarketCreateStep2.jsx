@@ -4,6 +4,11 @@ let Button = require("react-bootstrap/lib/Button");
 let Input = require("react-bootstrap/lib/Input");
 
 let MarketCreateStep2 = React.createClass({
+    onSubmit(event) {
+        event.preventDefault();
+
+        this.props.goToNextStep();
+    },
     render() {
         return (
             <div>
@@ -11,7 +16,7 @@ let MarketCreateStep2 = React.createClass({
                     Additional market information
                 </h1>
 
-                <form>
+                <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <h4>What is the source of expiry information for your question? (required)</h4>
 
@@ -169,7 +174,7 @@ let MarketCreateStep2 = React.createClass({
                         <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
                             Back
                         </button>
-                        <button className="btn btn-primary" type="button" onClick={this.props.goToNextStep}>
+                        <button className="btn btn-primary" type="submit">
                             Next (Trading fee and liquidity)
                         </button>
                     </div>

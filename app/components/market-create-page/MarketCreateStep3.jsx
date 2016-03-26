@@ -5,6 +5,11 @@ let Input = require("react-bootstrap/lib/Input");
 
 let MarketCreateStep3 = React.createClass({
 
+    onSubmit(event) {
+        event.preventDefault();
+
+        this.props.goToNextStep();
+    },
     generateInputs(marketType) {
         switch (marketType) {
             case "binary":
@@ -100,7 +105,7 @@ let MarketCreateStep3 = React.createClass({
                     Trading fee and liquidity
                 </h1>
 
-                <form>
+                <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <h4>
                             Set the trading fee for your market (required)
@@ -159,7 +164,7 @@ let MarketCreateStep3 = React.createClass({
                         <button className="btn btn-primary" type="button" onClick={this.props.goToPreviousStep}>
                             Back
                         </button>
-                        <button className="btn btn-primary" type="button" onClick={this.props.goToNextStep}>
+                        <button className="btn btn-primary" type="submit">
                             Next (Review)
                         </button>
                     </div>
