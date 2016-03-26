@@ -6,6 +6,11 @@ let StatsTab = React.createClass({
     shouldComponentUpdate(nextProps, nextState) {
         var thisSeries = this.props.priceTimeSeries;
         var nextSeries = nextProps.priceTimeSeries;
+
+        if (thisSeries === nextSeries) {
+            return false;
+        }
+
         if (thisSeries && nextSeries) {
             if (nextSeries.length !== thisSeries.length) return true;
             var thisLength, nextLength;
