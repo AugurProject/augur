@@ -55,7 +55,7 @@ let MarketCreateStep1 = React.createClass({
                                         let removeAction;
                                         if (index > 1) {
                                             removeAction = (
-                                                <button className="btn btn-default" data-index={index}
+                                                <button className="btn btn-default" data-index={index} type="button"
                                                         onClick={this.props.onRemoveCategoricalOutcome}>
                                                     <span className="fa fa-times"></span>
                                                 </button>
@@ -79,7 +79,7 @@ let MarketCreateStep1 = React.createClass({
                                 { categoricalOutcomes.length < constants.MAX_ALLOWED_OUTCOMES &&
                                     <div className="form-group">
                                         <div className="col-xs-12">
-                                            <button className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
+                                            <button type="button" className="btn btn-default" onClick={this.props.onAddCategoricalOutcome}>
                                                 Add another answer
                                             </button>
                                         </div>
