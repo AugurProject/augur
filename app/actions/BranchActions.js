@@ -175,7 +175,7 @@ module.exports = {
                       });
                     });
                   } else {
-                    console.error("event", event, "does not yet have an outcome");
+                    console.error("event", event, "does not yet have an outcome" + markets[0]);
                   }
                 });
               });
