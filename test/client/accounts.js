@@ -73,25 +73,19 @@ describe("Register", function () {
                 checkAccount(augur, result);
                 augur.db.get(handle, function (rec) {
                     assert.notProperty(rec, "error");
-                    assert(rec.ciphertext);
-                    assert(rec.iv);
-                    assert(rec.kdfparams.salt);
+                    assert(rec.crypto.ciphertext);
+                    assert(rec.crypto.cipherparams.iv);
+                    assert(rec.crypto.kdfparams.salt);
                     assert.strictEqual(
-                        new Buffer(rec.iv, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.cipherparams.iv.length,
                         constants.IVSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.kdfparams.salt, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.kdfparams.salt.length,
                         constants.KEYSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.ciphertext, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.ciphertext.length,
                         constants.KEYSIZE*2
                     );
                     augur.web.logout();
@@ -109,26 +103,19 @@ describe("Register", function () {
             augur.web.register(handle2, password2, {doNotFund: true}, function (result) {
                 checkAccount(augur, result);
                 augur.db.get(handle2, function (rec) {
-                    assert.notProperty(rec, "error");
-                    assert(rec.ciphertext);
-                    assert(rec.iv);
-                    assert(rec.kdfparams.salt);
+                    assert(rec.crypto.ciphertext);
+                    assert(rec.crypto.cipherparams.iv);
+                    assert(rec.crypto.kdfparams.salt);
                     assert.strictEqual(
-                        new Buffer(rec.iv, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.cipherparams.iv.length,
                         constants.IVSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.kdfparams.salt, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.kdfparams.salt.length,
                         constants.KEYSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.ciphertext, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.ciphertext.length,
                         constants.KEYSIZE*2
                     );
                     augur.web.logout();
@@ -165,26 +152,20 @@ describe("Register", function () {
                         return done(rec);
                     }
                     assert(!rec.error);
-                    assert(rec.ciphertext);
-                    assert(rec.iv);
-                    assert(rec.kdfparams.salt);
+                    assert(rec.crypto.ciphertext);
+                    assert(rec.crypto.cipherparams.iv);
+                    assert(rec.crypto.kdfparams.salt);
                     assert.isObject(augur.web.account.keystore);
                     assert.strictEqual(
-                        new Buffer(rec.iv, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.cipherparams.iv.length,
                         constants.IVSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.kdfparams.salt, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.kdfparams.salt.length,
                         constants.KEYSIZE*2
                     );
                     assert.strictEqual(
-                        new Buffer(rec.ciphertext, "base64")
-                            .toString("hex")
-                            .length,
+                        rec.crypto.ciphertext.length,
                         constants.KEYSIZE*2
                     );
                     var stored = augur.db.get('');
@@ -324,46 +305,6 @@ describe("Login", function () {
         augur.web.login(handle, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
-        });
-    });
-
-});
-
-describe("Export key", function () {
-
-    it("export keystore object", function (done) {
-        this.timeout(constants.TIMEOUT);
-        augur.web.login(handle, password, function (user) {
-            assert.notProperty(user, "error");
-            assert.isTrue(Buffer.isBuffer(user.privateKey));
-            assert.isString(user.address);
-            assert.strictEqual(
-                user.privateKey.toString("hex").length,
-                constants.KEYSIZE*2
-            );
-            assert.strictEqual(user.address.length, 42);
-            var keystore = augur.web.exportKey();
-            assert.strictEqual(keystore.address, abi.strip_0x(user.address));
-            assert.strictEqual(keystore.Crypto.cipher, keys.constants.cipher);
-            assert.strictEqual(keystore.Crypto.kdf, constants.KDF);
-            assert.strictEqual(keystore.Crypto.kdfparams.dklen, constants.KEYSIZE);
-            if (keystore.Crypto.kdf === "pbkdf2") {
-                assert.strictEqual(keystore.Crypto.kdfparams.c, constants.ROUNDS);
-                assert.strictEqual(keystore.Crypto.kdfparams.prf, keys.constants.pbkdf2.prf);
-            } else if (keystore.Crypto.kdf === "scrypt") {
-                assert.strictEqual(keystore.Crypto.kdfparams.n, constants.ROUNDS);
-                assert.strictEqual(keystore.Crypto.kdfparams.r, keys.constants.scrypt.r);
-                assert.strictEqual(keystore.Crypto.kdfparams.p, keys.constants.scrypt.p);
-            }
-            augur.db.get(handle, function (account) {
-                assert.isObject(account);
-                assert.strictEqual(account.handle, handle);
-                assert.strictEqual(account.ciphertext.toString("hex"), keystore.Crypto.ciphertext);
-                assert.strictEqual(account.iv.toString("hex"), keystore.Crypto.cipherparams.iv);
-                assert.strictEqual(account.kdf, keystore.Crypto.kdf);
-                assert.strictEqual(account.kdfparams.salt.toString("hex"), keystore.Crypto.kdfparams.salt);
-                done();
-            });
         });
     });
 

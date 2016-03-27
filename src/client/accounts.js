@@ -101,8 +101,9 @@ module.exports = function () {
                     keys.deriveKey(password, plain.salt, null, function (derivedKey) {
                         if (derivedKey.error) return onRegistered(derivedKey);
 
-                        if (!Buffer.isBuffer(derivedKey))
+                        if (!Buffer.isBuffer(derivedKey)) {
                             derivedKey = new Buffer(derivedKey, "hex");
+                        }
 
                         var encryptedPrivateKey = new Buffer(keys.encrypt(
                             plain.privateKey,
@@ -110,50 +111,36 @@ module.exports = function () {
                             plain.iv
                         ), "base64").toString("hex");
 
-                        var mac = keys.getMAC(derivedKey, encryptedPrivateKey);
-                        var id = new Buffer(uuid.parse(uuid.v4()));
-                        var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
-
                         // encrypt private key using derived key and IV, then
                         // store encrypted key & IV, indexed by handle
-                        var accountData = {
-                            ciphertext: abi.prefix_hex(encryptedPrivateKey), // 256-bit
-                            iv: abi.prefix_hex(plain.iv.toString("hex")), // 128-bit
-                            mac: abi.prefix_hex(mac), // 256-bit
-                            cipher: keys.constants.cipher,
-                            kdf: constants.KDF,
-                            kdfparams: {
-                                c: keys.constants[constants.KDF].c,
-                                dklen: keys.constants[constants.KDF].dklen,
-                                prf: keys.constants[constants.KDF].prf,
-                                salt: abi.prefix_hex(plain.salt.toString("hex")) // 256-bit
+                        var keystore = {
+                            address: abi.format_address(keys.privateKeyToAddress(plain.privateKey)),
+                            crypto: {
+                                cipher: keys.constants.cipher,
+                                ciphertext: encryptedPrivateKey,
+                                cipherparams: {iv: plain.iv.toString("hex")},
+                                kdf: constants.KDF,
+                                kdfparams: {
+                                    c: keys.constants[constants.KDF].c,
+                                    dklen: keys.constants[constants.KDF].dklen,
+                                    prf: keys.constants[constants.KDF].prf,
+                                    salt: plain.salt.toString("hex")
+                                },
+                                mac: keys.getMAC(derivedKey, encryptedPrivateKey)
                             },
-                            id: abi.prefix_hex(id.toString("hex")), // 128-bit
-                            persist: options.persist // bool
+                            version: 3,
+                            id: uuid.v4()
                         };
-                        if (options.persist) {
-                            accountData.privateKey = abi.hex(plain.privateKey, true);
-                            accountData.address = address;
-                        }
-                        augur.db.put(handle, accountData, function (result) {
+                        augur.db.put(handle, keystore, function (result) {
                             if (!result) return onRegistered(errors.DB_WRITE_FAILED);
                             if (result.error) return onRegistered(result);
 
                             // set web.account object
-                            delete accountData.privateKey;
-                            delete accountData.address;
-                            delete accountData.persist;
-                            accountData.ciphertext = accountData.ciphertext.toString("hex");
-                            accountData.address = abi.strip_0x(address);
-                            accountData.iv = accountData.iv.toString("hex");
-                            accountData.kdfparams.salt = accountData.kdfparams.salt.toString("hex");
-                            accountData.mac = accountData.mac.toString("hex");
-                            accountData.id = uuid.unparse(new Buffer(abi.strip_0x(accountData.id), "hex"));
                             self.account = {
                                 handle: handle,
                                 privateKey: plain.privateKey,
-                                address: address,
-                                keystore: accountData
+                                address: keystore.address,
+                                keystore: keystore
                             };
                             if (options.persist) {
                                 augur.db.putPersistent(self.account);
@@ -183,58 +170,52 @@ module.exports = function () {
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
 
             // retrieve account info from database
-            augur.db.get(handle, function (stored) {
-                if (!stored || stored.error) return cb(errors.BAD_CREDENTIALS);
+            augur.db.get(handle, function (keystore) {
+                if (!keystore || keystore.error) return cb(errors.BAD_CREDENTIALS);
 
                 // derive secret key from password
-                keys.deriveKey(password, stored.kdfparams.salt, null, function (derived) {
+                keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derived) {
                     if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
 
                     // verify that message authentication codes match
-                    var storedKey = stored.ciphertext;
-                    if (keys.getMAC(derived, storedKey) !== stored.mac.toString("hex")) {
+                    var storedKey = keystore.crypto.ciphertext;
+                    if (keys.getMAC(derived, storedKey) !== keystore.crypto.mac.toString("hex")) {
                         return cb(errors.BAD_CREDENTIALS);
                     }
 
-                    if (!Buffer.isBuffer(derived))
+                    if (!Buffer.isBuffer(derived)) {
                         derived = new Buffer(derived, "hex");
+                    }
 
                     // decrypt stored private key using secret key
                     try {
-                        var dk = new Buffer(keys.decrypt(
+                        var privateKey = new Buffer(keys.decrypt(
                             storedKey,
                             derived.slice(0, 16),
-                            stored.iv
+                            keystore.crypto.cipherparams.iv
                         ), "hex");
 
                         // while logged in, web.account object is set
-                        var address = abi.format_address(keys.privateKeyToAddress(dk));
-                        delete stored.handle;
-                        stored.ciphertext = stored.ciphertext.toString("hex");
-                        stored.address = abi.strip_0x(address);
-                        stored.iv = stored.iv.toString("hex");
-                        stored.kdfparams.salt = stored.kdfparams.salt.toString("hex");
-                        stored.mac = stored.mac.toString("hex");
-                        stored.id = uuid.unparse(stored.id);
                         self.account = {
                             handle: handle,
-                            privateKey: dk,
-                            address: address,
-                            keystore: stored
+                            privateKey: privateKey,
+                            address: keystore.address,
+                            keystore: keystore
                         };
                         if (options.persist) {
                             augur.db.putPersistent(self.account);
                         }
+
                         augur.ramble.invoke = self.invoke;
                         augur.ramble.context = self;
                         augur.ramble.from = self.account.address;
                         cb(self.account);
 
                     // decryption failure: bad password
-                    } catch (e) {
-                        if (utils.is_function(cb)) {
-                            cb(errors.BAD_CREDENTIALS);
-                        }
+                    } catch (exc) {
+                        var e = clone(errors.BAD_CREDENTIALS);
+                        e.bubble = exc;
+                        if (utils.is_function(cb)) cb(e);
                     }
                 }); // deriveKey
             }); // augur.db.get
@@ -249,38 +230,6 @@ module.exports = function () {
                 augur.ramble.from = account.address;
             }
             return account;
-        },
-
-        exportKey: function () {
-            if (!this.account || !this.account.address || !this.account.privateKey) {
-                return errors.NOT_LOGGED_IN;
-            }
-            if (this.account.keystore && this.account.keystore.ciphertext) {
-                var kdfparams = clone(this.account.keystore.kdfparams);
-                kdfparams.salt = abi.strip_0x(kdfparams.salt);
-                return {
-                    address: abi.strip_0x(this.account.address),
-                    Crypto: {
-                        cipher: abi.strip_0x(this.account.keystore.cipher),
-                        ciphertext: abi.strip_0x(this.account.keystore.ciphertext),
-                        cipherparams: {iv: abi.strip_0x(this.account.keystore.iv)},
-                        mac: abi.strip_0x(this.account.keystore.mac),
-                        kdf: this.account.keystore.kdf,
-                        kdfparams: kdfparams
-                    },
-                    id: this.account.keystore.id,
-                    version: 3
-                };
-            }
-        },
-
-        importKey: function (password, json, cb) {
-            if (!utils.is_function(cb)) {
-                return keys.recover(password, JSON.parse(json));
-            }
-            keys.recover(password, JSON.parse(json), function (keyObj) {
-                cb(keyObj);
-            });
         },
 
         logout: function () {

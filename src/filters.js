@@ -5,7 +5,6 @@
 "use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-var request = (NODE_JS) ? require("request") : require("browser-request");
 var async = require("async");
 var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;

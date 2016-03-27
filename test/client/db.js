@@ -7,7 +7,9 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
+var clone = require("clone");
 var keys = require("keythereum");
+var uuid = require("node-uuid");
 var errors = require("augur-contracts").errors;
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
@@ -19,30 +21,37 @@ describe("Accounts", function () {
     var kdf = "pbkdf2";
     var userHandle = utils.sha256(new Date().toString()).slice(0, 10);
     var userHandle2 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
+    var address = "26bdb0438855e017fcfeac334496569567ea57b6";
     var account = {
-        handle: abi.prefix_hex(utils.sha256(userHandle)),
-        ciphertext: "0x76ea41f201cb8f28560adcf00d78fe3119efee03709b6c0102fb08e48ee101cf",
-        iv: "0x5b2e1ea324f8b450b9b95db1af11c0e9",
-        mac: "0x9438f894573a68739bf92d28a868fb18a2caea4c89bbeecf4c9c6c18291796ba",
-        id: "0x22790b9113f94c7783c15701e4b73633",
-        privateKey: "0x3e339cbafa93d48c0b6a27678ad994ebf7caebb067f4da7e9ac88fe552003ddb",
-        cipher: keys.constants.cipher,
-        kdf: kdf,
-        kdfparams: {
-            c: keys.constants[kdf].c,
-            dklen: keys.constants[kdf].dklen,
-            prf: keys.constants[kdf].prf,
-            salt: "0x12eed439bc9a90531b71819e4540c71c36ff99f6f04c572e2dad0581a79aba62",
-        },
-        address: "0x26bdb0438855e017fcfeac334496569567ea57b6"
+        handle: userHandle,
+        address: address,
+        privateKey: "3e339cbafa93d48c0b6a27678ad994ebf7caebb067f4da7e9ac88fe552003ddb",
+        keystore: {
+            address: address,
+            crypto: {
+                cipher: keys.constants.cipher,
+                ciphertext: "76ea41f201cb8f28560adcf00d78fe3119efee03709b6c0102fb08e48ee101cf",
+                cipherparams: {iv: "5b2e1ea324f8b450b9b95db1af11c0e9"},
+                mac: "9438f894573a68739bf92d28a868fb18a2caea4c89bbeecf4c9c6c18291796ba",
+                kdf: kdf,
+                id: "22790b9113f94c7783c15701e4b73633",
+                kdfparams: {
+                    c: keys.constants[kdf].c,
+                    dklen: keys.constants[kdf].dklen,
+                    prf: keys.constants[kdf].prf,
+                    salt: "12eed439bc9a90531b71819e4540c71c36ff99f6f04c572e2dad0581a79aba62",
+                }
+            },
+            id: uuid.v4()
+        }
     };
-    var persistent = abi.copy(account);
-    persistent.handle = abi.prefix_hex(utils.sha256(userHandle2));
+    var persistent = clone(account);
+    persistent.handle = userHandle2;
     persistent.persist = true;
     var persistentAccount = {
         handle: "d9a23ab",
         privateKey: "0x3e339cbafa93d48c0b6a27678ad994ebf7caebb067f4da7e9ac88fe552003ddb",
-        address: "0x26bdb0438855e017fcfeac334496569567ea57b6"
+        address: "26bdb0438855e017fcfeac334496569567ea57b6"
     };
 
     beforeEach(function () {
@@ -51,7 +60,7 @@ describe("Accounts", function () {
 
     it("save account", function (done) {
         this.timeout(augur.constants.TIMEOUT);
-        augur.db.put(userHandle, account, function (res) {
+        augur.db.put(userHandle, account.keystore, function (res) {
             if (res && res.error) return done(res);
             assert.isTrue(res);
             done();
@@ -72,22 +81,20 @@ describe("Accounts", function () {
             // synchronous
             var stored = augur.db.get(userHandle);
             if (stored && stored.error) return done(stored);
-            assert.strictEqual(userHandle, stored.handle);
-            assert.strictEqual(account.encryptedPrivateKey, abi.hex(stored.privateKey, true));
-            assert.strictEqual(account.iv, abi.hex(stored.iv, true));
-            assert.strictEqual(account.salt, abi.hex(stored.salt, true));
-            assert.strictEqual(account.mac, abi.hex(stored.mac, true));
-            assert.strictEqual(account.id, abi.hex(stored.id, true));
+            assert.strictEqual(account.keystore.crypto.ciphertext, stored.crypto.ciphertext);
+            assert.strictEqual(account.keystore.crypto.cipherparams.iv, stored.crypto.cipherparams.iv);
+            assert.strictEqual(account.keystore.crypto.salt, stored.crypto.salt);
+            assert.strictEqual(account.keystore.crypto.mac, stored.crypto.mac);
+            assert.strictEqual(account.keystore.id, stored.id);
 
-            // asynchronous
+            // // asynchronous
             augur.db.get(userHandle, function (storedAccount) {
                 if (storedAccount && storedAccount.error) return done(storedAccount);
-                assert.strictEqual(userHandle, storedAccount.handle);
-                assert.strictEqual(account.encryptedPrivateKey, abi.hex(storedAccount.privateKey, true));
-                assert.strictEqual(account.iv, abi.hex(storedAccount.iv, true));
-                assert.strictEqual(account.salt, abi.hex(storedAccount.salt, true));
-                assert.strictEqual(account.mac, abi.hex(storedAccount.mac, true));
-                assert.strictEqual(account.id, abi.hex(storedAccount.id, true));
+                assert.strictEqual(account.keystore.crypto.ciphertext, storedAccount.crypto.ciphertext);
+                assert.strictEqual(account.keystore.crypto.cipherparams.iv, storedAccount.crypto.cipherparams.iv);
+                assert.strictEqual(account.keystore.crypto.salt, storedAccount.crypto.salt);
+                assert.strictEqual(account.keystore.crypto.mac, storedAccount.crypto.mac);
+                assert.strictEqual(account.keystore.id, storedAccount.id);
                 done();
             });
         });
@@ -97,12 +104,11 @@ describe("Accounts", function () {
         this.timeout(augur.constants.TIMEOUT);
         var stored = augur.db.get(userHandle);
         if (stored && stored.error) return done(stored);
-        assert.strictEqual(userHandle, stored.handle);
-        assert.strictEqual(account.encryptedPrivateKey, abi.hex(stored.privateKey, true));
-        assert.strictEqual(account.iv, abi.hex(stored.iv, true));
-        assert.strictEqual(account.salt, abi.hex(stored.salt, true));
-        assert.strictEqual(account.mac, abi.hex(stored.mac, true));
-        assert.strictEqual(account.id, abi.hex(stored.id, true));
+        assert.strictEqual(account.keystore.crypto.ciphertext, stored.crypto.ciphertext);
+        assert.strictEqual(account.keystore.crypto.cipherparams.iv, stored.crypto.cipherparams.iv);
+        assert.strictEqual(account.keystore.crypto.salt, stored.crypto.salt);
+        assert.strictEqual(account.keystore.crypto.mac, stored.crypto.mac);
+        assert.strictEqual(account.keystore.id, stored.id);
         augur.db.remove(userHandle);
         assert.strictEqual(augur.db.get(userHandle).error, 99);
         done();

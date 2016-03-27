@@ -2170,14 +2170,20 @@ Augur.prototype.meanTradePrice = function (trades, sell) {
     return meanPrice;
 };
 
-Augur.prototype.getAccountTrades = function (account, cb) {
+Augur.prototype.getAccountTrades = function (account, options, cb) {
     var self = this;
+    if (!cb && this.utils.is_function(options)) {
+        cb = options;
+        options = null;
+    }
+    options = options || {};
     if (!account || !this.utils.is_function(cb)) return;
     this.filters.eth_getLogs({
-        fromBlock: "0x1",
-        toBlock: "latest",
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: ["updatePrice", abi.format_address(account), null, null]
+        topics: ["updatePrice", abi.format_address(account), null, null],
+        timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -2206,6 +2212,7 @@ Augur.prototype.getAccountTrades = function (account, cb) {
                 }
             }
         }
+        console.log("got account trades:", trades);
         cb(trades);
     });
 };
