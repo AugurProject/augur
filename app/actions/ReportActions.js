@@ -28,13 +28,14 @@ var ReportActions = {
 
     // Only load events if the vote period indicated by the chain is the
     // previous period.
-    if (!branch || branch.currentPeriod >= branch.reportPeriod + 2 ||
+    if (!branch || !branch.id || !branch.reportPeriod ||
+        branch.currentPeriod >= branch.reportPeriod + 2 ||
         branch.reportPeriod < branch.currentPeriod - 1) {
       return this.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
         eventsToReport: {}
       });
     }
-    augur.getEvents(branch.id, branch.reportPeriod, function (eventIds) {
+    augur.getEvents(branch.id, branch.reportPeriod.toString(), function (eventIds) {
       if (!eventIds || eventIds.constructor !== Array || eventIds.error) {
         return self.dispatch(constants.report.LOAD_EVENTS_TO_REPORT_SUCCESS, {
           eventsToReport: {}
@@ -45,7 +46,7 @@ var ReportActions = {
       var eventsToReport = {};
       var pendingReports = self.flux.store("report").getPendingReports();
       async.eachSeries(eventIds, function (eventId, nextEvent) {
-        augur.getReportable(branch.reportPeriod, eventId, function (reportable) {
+        augur.getReportable(branch.reportPeriod.toString(), eventId, function (reportable) {
           if (!reportable || reportable === "-1") return nextEvent();
           if (reportable.error) return nextEvent(reportable);
           augur.getEventInfo(eventId, function (eventInfo) {
@@ -76,13 +77,13 @@ var ReportActions = {
                 if (eventIndex && eventIndex.error) return nextEvent(eventIndex);
                 eventsToReport[eventId].index = eventIndex;
                 eventsToReport[eventId].report.eventIndex = eventIndex;
-                augur.getReportHash(branch.id, branch.reportPeriod, account, eventId, function (reportHash) {
+                augur.getReportHash(branch.id, branch.reportPeriod.toString(), account, eventId, function (reportHash) {
                   if (reportHash && !reportHash.error && reportHash !== "0x0") {
                     eventsToReport[eventId].report.branchId = branch.id;
                     eventsToReport[eventId].report.eventId = eventId;
                     eventsToReport[eventId].report.reportHash = reportHash;
                   }
-                  augur.getReport(branch.id, branch.reportPeriod, eventId, function (report) {
+                  augur.getReport(branch.id, branch.reportPeriod.toString(), eventId, function (report) {
                     if (report && report !== "0") {
                       eventsToReport[eventId].report.rescaledReportedOutcome = report;
                     }

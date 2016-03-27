@@ -46,7 +46,7 @@ let Overview = React.createClass({
       </div>
     );
     if (this.state.privateKey) {
-      var keystore = this.getFlux().augur.web.exportKey();
+      var keystore = this.getFlux().augur.web.account.keystore
       if (keystore) {
         var accountFilename = "UTC--" + new Date().toISOString() + "--" + keystore.address;
         var accountUrl = URL.createObjectURL(new Blob([

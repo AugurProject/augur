@@ -3,6 +3,7 @@ let FluxMixin = require("fluxxor/lib/flux_mixin")(React);
 let Button = require('react-bootstrap/lib/Button');
 let Input = require('react-bootstrap/lib/Input');
 let Modal = require('react-bootstrap/lib/Modal');
+let request = require("browser-request");
 let utilities = require("../libs/utilities");
 
 let SignInModal = React.createClass({

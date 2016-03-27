@@ -106,10 +106,15 @@ let RegisterModal = React.createClass({
 
             return;
           }
+          var accountFilename = "UTC--" + new Date().toISOString() + "--" + account.keystore.address;
+          var accountUrl = URL.createObjectURL(new Blob([
+            JSON.stringify(account.keystore)
+          ], {type: "application/json"}));
           self.updateProgressModal([{
               detail: {account},
               status: "Account created! Your new address is:<br /><i>" + account.address + "</i>"
             },
+            "<b>Please <a href='" + accountUrl + "' download='" + accountFilename + "'>download</a> your encrypted account information now!</b>  If you lose this file, we have no way of restoring your account.<iframe width='1' height='1' frameborder='0' src='" + accountUrl + "' download='" + accountFilename + "'></iframe>",
             "Waiting for free Ether..."
           ]);
           flux.actions.config.userRegistered();
@@ -125,7 +130,7 @@ let RegisterModal = React.createClass({
           self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
         },
         onSent: function (res) {
-          self.updateProgressModal("Requesting free play Cash and Reputation...");
+          self.updateProgressModal("Requesting free (play) Cash and Reputation...");
         },
         onSuccess: function (res) {
           self.updateProgressModal({
@@ -161,6 +166,7 @@ let RegisterModal = React.createClass({
       var flux = this.getFlux();
       var self = this;
       this.props.onHide();
+      this.updateProgressModal();
       this.updateProgressModal({
         header: "Importing Account",
         status: "Decrypting private key for " + address + "...",
@@ -176,28 +182,13 @@ let RegisterModal = React.createClass({
           });
           return console.error("onImportAccount keys.recover:", privateKey);
         }
-        var keystoreCrypto = keystore.Crypto || keystore.crypto;
-        var account = {
-            ciphertext: abi.prefix_hex(keystoreCrypto.ciphertext),
-            iv: abi.prefix_hex(keystoreCrypto.cipherparams.iv),
-            mac: abi.prefix_hex(keystoreCrypto.mac),
-            cipher: keystoreCrypto.cipher,
-            kdf: keystoreCrypto.kdf,
-            kdfparams: {
-                c: keystoreCrypto.kdfparams.c,
-                dklen: keystoreCrypto.kdfparams.dklen,
-                prf: keystoreCrypto.kdfparams.prf,
-                salt: abi.prefix_hex(keystoreCrypto.kdfparams.salt)
-            },
-            id: abi.prefix_hex(new Buffer(uuid.parse(keystore.id)).toString("hex"))
-        };
         self.updateProgressModal([{
             status: "Private key decrypted!",
-            detail: account
+            detail: keystore
           },
           "Saving account to your browser (localStorage)..."
         ]);
-        flux.augur.db.put(handle, account, function (result) {
+        flux.augur.db.put(handle, keystore, function (result) {
           if (!result || result.error) {
             self.updateProgressModal({
               status: "Could not save account.",
@@ -206,24 +197,18 @@ let RegisterModal = React.createClass({
             });
             return console.error("onImportAccount augur.db.put:", result);
           }
-          account.ciphertext = account.ciphertext.toString("hex");
-          account.address = abi.strip_0x(address);
-          account.iv = account.iv.toString("hex");
-          account.kdfparams.salt = account.kdfparams.salt.toString("hex");
-          account.mac = account.mac.toString("hex");
-          account.id = uuid.unparse(new Buffer(abi.strip_0x(account.id), "hex"));
           flux.augur.web.account = {
               handle: handle,
               privateKey: privateKey,
               address: address,
-              keystore: account
+              keystore: keystore
           };
           if (options.persist) {
               flux.augur.db.putPersistent(flux.augur.web.account);
           }
           self.updateProgressModal([{
               status: "Account saved.",
-              detail: account
+              detail: flux.augur.web.account
             }, {
               status: "Your account has been successfully imported.",
               complete: true
@@ -231,13 +216,13 @@ let RegisterModal = React.createClass({
           ]);
           console.log("account import successful:", flux.augur.web.account);
           if (handle && mailingListSignup) {
-            self.mailingListSignup(account.handle, true);
+            self.mailingListSignup(handle, true);
           }
           flux.actions.config.updateAccount({
             currentAccount: address,
             privateKey: privateKey,
             handle: handle,
-            keystore: account
+            keystore: keystore
           });
           flux.actions.asset.updateAssets();
           flux.actions.report.loadEventsToReport();
