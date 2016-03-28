@@ -60,6 +60,14 @@ let RegisterModal = React.createClass({
     });
   },
 
+  queueUpForFreeStuff: function (address, imported) {
+    new Firebase(constants.FIREBASE_URL).child("free-stuff").push().set({
+      address: address,
+      imported: imported,
+      timestamp: new Date().getTime()
+    });
+  },
+
   onRegister: function (event) {
     event.preventDefault();
 
@@ -80,8 +88,11 @@ let RegisterModal = React.createClass({
         persist: this.state.persist
       }, {
         onRegistered: function (account) {
-          if (account && account.handle && mailingListSignup) {
-            self.mailingListSignup(account.handle, false);
+          if (account && account.handle) {
+            if (mailingListSignup) {
+              self.mailingListSignup(account.handle, false);
+            }
+            self.queueUpForFreeStuff(account.address, false);
           }
           if (!account || account.error) {
             self.updateProgressModal({
@@ -219,6 +230,9 @@ let RegisterModal = React.createClass({
           console.log("account import successful:", flux.augur.web.account);
           if (handle && mailingListSignup) {
             self.mailingListSignup(handle, true);
+          }
+          if (address) {
+            self.queueUpForFreeStuff(address, true);
           }
           flux.actions.config.updateAccount({
             currentAccount: address,
