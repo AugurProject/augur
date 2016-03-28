@@ -36,7 +36,7 @@ let RegisterModal = React.createClass({
         header: "",
         detail: null,
         complete: null,
-        steps: 5,
+        steps: 3,
         step: 0
       },
       tab: 0,
@@ -76,6 +76,7 @@ let RegisterModal = React.createClass({
       });
       this.toggleProgressModal();
       flux.augur.web.register(this.state.handle, this.state.password, {
+        doNotFund: true,
         persist: this.state.persist
       }, {
         onRegistered: function (account) {
@@ -113,9 +114,10 @@ let RegisterModal = React.createClass({
           self.updateProgressModal([{
               detail: {account},
               status: "Account created! Your new address is:<br /><i>" + account.address + "</i>"
-            },
-            "<b>Please <a href='" + accountUrl + "' download='" + accountFilename + "'>download</a> your encrypted account information now!</b>  If you lose this file, we have no way of restoring your account.<iframe width='1' height='1' frameborder='0' src='" + accountUrl + "' download='" + accountFilename + "'></iframe>",
-            "Waiting for free Ether..."
+            }, {
+              status: "<b>Please <a href='" + accountUrl + "' download='" + accountFilename + "'>download</a> your encrypted account information now!</b>  If you lose this file, we have no way of restoring your account.",
+              complete: true
+            }
           ]);
           flux.actions.config.userRegistered();
           flux.actions.config.updateAccount({
@@ -125,30 +127,30 @@ let RegisterModal = React.createClass({
             keystore: account.keystore
           });
           flux.actions.asset.updateAssets();
-        },
-        onSendEther: function (account) {
-          self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
-        },
-        onSent: function (res) {
-          self.updateProgressModal("Requesting free (play) Cash and Reputation...");
-        },
-        onSuccess: function (res) {
-          self.updateProgressModal({
-            detail: {res},
-            status: "Registration complete!",
-            complete: true
-          });
-          flux.actions.asset.updateAssets();
-          flux.actions.market.loadMarkets();
-        },
-        onFailed: function (err) {
-          console.error(err);
-          self.updateProgressModal({
-            detail: {err},
-            status: "Registration failed.",
-            complete: true
-          });
         }
+        // onSendEther: function (account) {
+        //   self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
+        // },
+        // onSent: function (res) {
+        //   self.updateProgressModal("Requesting free (play) Cash and Reputation...");
+        // },
+        // onSuccess: function (res) {
+        //   self.updateProgressModal({
+        //     detail: {res},
+        //     status: "Registration complete!",
+        //     complete: true
+        //   });
+        //   flux.actions.asset.updateAssets();
+        //   flux.actions.market.loadMarkets();
+        // },
+        // onFailed: function (err) {
+        //   console.error(err);
+        //   self.updateProgressModal({
+        //     detail: {err},
+        //     status: "Registration failed.",
+        //     complete: true
+        //   });
+        // }
       });
     }
   },

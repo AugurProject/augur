@@ -48,7 +48,6 @@ var ReportActions = {
       async.eachSeries(eventIds, function (eventId, nextEvent) {
         self.flux.actions.report.isRequiredToReport(eventId, function (err, isRequiredToReport) {
           if (err) return nextEvent(err);
-          console.log("required to report:", isRequiredToReport);
           if (!isRequiredToReport) return nextEvent();
           augur.getReportable(branch.reportPeriod.toString(), eventId, function (reportable) {
             if (!reportable || reportable === "-1") return nextEvent();
@@ -162,6 +161,7 @@ var ReportActions = {
   isRequiredToReport: function (eventId, cb) {
     var self = this;
     var account = this.flux.store("config").getAccount();
+    if (!account) return cb(null);
     var randomNumber = abi.hex(abi.bignum(account).plus(abi.bignum(eventId)));
     var branch = this.flux.store("branch").getCurrentBranch();
     this.flux.augur.rpc.sha3(randomNumber, function (diceroll) {

@@ -216,7 +216,7 @@ module.exports = {
                 // if the reporter did not submit a report during the previous period,
                 // dock 10% for each report-less period.
                 } else {
-                  if (!branch.calledPenalizationCatchup) {
+                  if (account && !branch.calledPenalizationCatchup) {
                     penalizationCatchup();
                   }
                 }
