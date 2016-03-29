@@ -176,7 +176,7 @@ module.exports = {
                     });
                   } else {
                     console.error("event", event, "does not yet have an outcome", markets[0]);
-                    var branch = self.flux.store("branch").getCurrentBranch();
+                    branch = self.flux.store("branch").getCurrentBranch();
                     if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
                     branch.calledPenalizeWrong[event] = {
                       branch: branch.id,
