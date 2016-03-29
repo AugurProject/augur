@@ -242,7 +242,6 @@ module.exports = function () {
         invoke: function (itx, cb) {
             var self = this;
             var tx, packaged;
-            console.log("INVOKE:", itx);
 
             // if this is just a call, use ethrpc's regular invoke method
             if (!itx.send) return augur.rpc.fire(itx, cb);
@@ -318,7 +317,6 @@ module.exports = function () {
                     if (res) {
                         if (res.error) {
                             if (res.message.indexOf("rlp") > -1) {
-                                console.error("RLP encoding error:", res);
                                 err = clone(errors.RLP_ENCODING_ERROR);
                                 err.bubble = res;
                                 err.packaged = packaged;
@@ -327,7 +325,6 @@ module.exports = function () {
                                 ++packaged.nonce;
                                 return self.submitTx(packaged, cb);
                             } else {
-                                console.error("submitTx error:", res);
                                 err = clone(errors.RAW_TRANSACTION_ERROR);
                                 err.bubble = res;
                                 err.packaged = packaged;
