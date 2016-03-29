@@ -5,5 +5,5 @@ sudo service augur stop
 git pull origin develop
 npm install
 grunt
-grunt browserify:debug
+# grunt browserify:debug
 sudo service augur start
