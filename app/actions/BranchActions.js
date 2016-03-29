@@ -175,7 +175,15 @@ module.exports = {
                       });
                     });
                   } else {
-                    console.error("event", event, "does not yet have an outcome" + markets[0]);
+                    console.error("event", event, "does not yet have an outcome", markets[0]);
+                    var branch = self.flux.store("branch").getCurrentBranch();
+                    if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
+                    branch.calledPenalizeWrong[event] = {
+                      branch: branch.id,
+                      event: event,
+                      reportPeriod: prevPeriod
+                    };
+                    self.dispatch(constants.branch.UPDATE_CURRENT_BRANCH_SUCCESS, branch);
                   }
                 });
               });

@@ -36,7 +36,7 @@ let RegisterModal = React.createClass({
         header: "",
         detail: null,
         complete: null,
-        steps: 3,
+        steps: 5,
         step: 0
       },
       tab: 0,
@@ -60,14 +60,6 @@ let RegisterModal = React.createClass({
     });
   },
 
-  queueUpForFreeStuff: function (address, imported) {
-    new Firebase(constants.FIREBASE_URL).child("free-stuff").push().set({
-      address: address,
-      imported: imported,
-      timestamp: new Date().getTime()
-    });
-  },
-
   onRegister: function (event) {
     event.preventDefault();
 
@@ -84,15 +76,11 @@ let RegisterModal = React.createClass({
       });
       this.toggleProgressModal();
       flux.augur.web.register(this.state.handle, this.state.password, {
-        doNotFund: true,
         persist: this.state.persist
       }, {
         onRegistered: function (account) {
-          if (account && account.handle) {
-            if (mailingListSignup) {
-              self.mailingListSignup(account.handle, false);
-            }
-            self.queueUpForFreeStuff(account.address, false);
+          if (account && account.handle && mailingListSignup) {
+            self.mailingListSignup(account.handle, false);
           }
           if (!account || account.error) {
             self.updateProgressModal({
@@ -113,9 +101,7 @@ let RegisterModal = React.createClass({
                 ...self.getInitialState().progressModal
               }
             });
-
             setTimeout(() => self.props.onHide(), 1);
-
             return;
           }
           var accountFilename = "UTC--" + new Date().toISOString() + "--" + account.keystore.address;
@@ -125,10 +111,8 @@ let RegisterModal = React.createClass({
           self.updateProgressModal([{
               detail: {account},
               status: "Account created! Your new address is:<br /><i>" + account.address + "</i>"
-            }, {
-              status: "<b>Please <a href='" + accountUrl + "' download='" + accountFilename + "'>download</a> your encrypted account information now!</b>  If you lose this file, we have no way of restoring your account.",
-              complete: true
-            }
+            },
+            "<b>Please <a href='" + accountUrl + "' download='" + accountFilename + "'>download</a> your encrypted account information now!</b>  If you lose this file, we have no way of restoring your account."
           ]);
           flux.actions.config.userRegistered();
           flux.actions.config.updateAccount({
@@ -138,30 +122,49 @@ let RegisterModal = React.createClass({
             keystore: account.keystore
           });
           flux.actions.asset.updateAssets();
+        },
+        onSendEther: function (account) {
+          self.updateProgressModal("Received testnet Ether.");
+        },
+        onSent: function (res) {
+          self.updateProgressModal("Requesting free (play) Cash and Reputation...");
+        },
+        onSuccess: function (res) {
+          self.updateProgressModal({
+            detail: {res},
+            status: "Registration complete!",
+            complete: true
+          });
+          flux.actions.asset.updateAssets();
+          var markets = flux.store("market").getState().markets;
+          flux.augur.getAccountTrades(account.address, function (trades) {
+            var thisMarket;
+            for (var id in markets) {
+              if (!markets.hasOwnProperty(id)) continue;
+              thisMarket = markets[id];
+              var unforkedMarketId = abi.unfork(thisMarket._id, true);
+              if (trades && trades[unforkedMarketId]) {
+                thisMarket.trades = trades[unforkedMarketId];
+                thisMarket = self.flux.actions.market.calculatePnl(thisMarket, account.address);
+              } else {
+                thisMarket.trades = null;
+              }
+            }
+            console.debug("account trades loaded");
+            self.dispatch(constants.market.LOAD_MARKETS_SUCCESS, {
+              markets: markets,
+              account: account.address
+            });
+          });
+        },
+        onFailed: function (err) {
+          console.error(err);
+          self.updateProgressModal({
+            detail: {err},
+            status: "Registration failed.",
+            complete: true
+          });
         }
-        // onSendEther: function (account) {
-        //   self.updateProgressModal("Received " + flux.augur.constants.FREEBIE + " test Ether.");
-        // },
-        // onSent: function (res) {
-        //   self.updateProgressModal("Requesting free (play) Cash and Reputation...");
-        // },
-        // onSuccess: function (res) {
-        //   self.updateProgressModal({
-        //     detail: {res},
-        //     status: "Registration complete!",
-        //     complete: true
-        //   });
-        //   flux.actions.asset.updateAssets();
-        //   flux.actions.market.loadMarkets();
-        // },
-        // onFailed: function (err) {
-        //   console.error(err);
-        //   self.updateProgressModal({
-        //     detail: {err},
-        //     status: "Registration failed.",
-        //     complete: true
-        //   });
-        // }
       });
     }
   },
@@ -230,9 +233,6 @@ let RegisterModal = React.createClass({
           console.log("account import successful:", flux.augur.web.account);
           if (handle && mailingListSignup) {
             self.mailingListSignup(handle, true);
-          }
-          if (address) {
-            self.queueUpForFreeStuff(address, true);
           }
           flux.actions.config.updateAccount({
             currentAccount: address,
