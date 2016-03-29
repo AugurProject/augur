@@ -4,12 +4,15 @@
 
 "use strict";
 
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
 var BigNumber = require("bignumber.js");
 var ethTx = require("ethereumjs-tx");
 var keys = require("keythereum");
 var uuid = require("node-uuid");
 var clone = require("clone");
 var locks = require("locks");
+var request = (NODE_JS) ? require("request") : require("browser-request");
 var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
 var constants = require("../constants");
@@ -44,25 +47,19 @@ module.exports = function () {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
-            augur.rpc.coinbase(function (funder) {
-                if (!funder || funder.error) return onSendEther();
-                augur.rpc.sendEther({
-                    to: account.address,
-                    value: constants.FREEBIE,
-                    from: funder,
-                    onSent: function (r) {
-                        onRegistered(account);
-                    },
-                    onSuccess: function (r) {
-                        onSendEther(account);
-                        augur.fundNewAccount({
-                            branch: branch || augur.branches.dev,
-                            onSent: onSent,
-                            onSuccess: onSuccess,
-                            onFailed: onFailed
-                        });
-                    },
-                    onFailed: onSendEther
+            onRegistered(account);
+            var url = constants.FAUCET + abi.format_address(account.address);
+            request(url, function (err, response, body) {
+                if (err) return onFailed(err);
+                if (response.statusCode !== 200) {
+                    return onFailed(response.statusCode);
+                }
+                onSendEther(account);
+                augur.fundNewAccount({
+                    branch: branch || augur.branches.dev,
+                    onSent: onSent,
+                    onSuccess: onSuccess,
+                    onFailed: onFailed
                 });
             });
         },
@@ -142,6 +139,7 @@ module.exports = function () {
                                 address: keystore.address,
                                 keystore: keystore
                             };
+                            console.log("account:", self.account);
                             if (options.persist) {
                                 augur.db.putPersistent(self.account);
                             }
@@ -244,6 +242,7 @@ module.exports = function () {
         invoke: function (itx, cb) {
             var self = this;
             var tx, packaged;
+            console.log("INVOKE:", itx);
 
             // if this is just a call, use ethrpc's regular invoke method
             if (!itx.send) return augur.rpc.fire(itx, cb);
@@ -274,7 +273,7 @@ module.exports = function () {
             packaged = {
                 to: tx.to,
                 from: this.account.address,
-                gasLimit: (tx.gas) ? tx.gas : constants.DEFAULT_GAS,
+                gasLimit: tx.gas || constants.DEFAULT_GAS,
                 nonce: 0,
                 value: tx.value || "0x0",
                 data: abi.encode(tx)
@@ -317,29 +316,23 @@ module.exports = function () {
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
                     var err;
                     if (res) {
-
-                        // geth error -32603: nonce too low / known tx
-                        if (res.error === -32603) {
-
-                            // rlp encoding error also has -32603 error code
+                        if (res.error) {
                             if (res.message.indexOf("rlp") > -1) {
                                 console.error("RLP encoding error:", res);
                                 err = clone(errors.RLP_ENCODING_ERROR);
                                 err.bubble = res;
                                 err.packaged = packaged;
                                 return cb(err);
+                            } else if (res.message.indexOf("nonce") > -1) {
+                                ++packaged.nonce;
+                                return self.submitTx(packaged, cb);
+                            } else {
+                                console.error("submitTx error:", res);
+                                err = clone(errors.RAW_TRANSACTION_ERROR);
+                                err.bubble = res;
+                                err.packaged = packaged;
+                                return cb(err);
                             }
-
-                            ++packaged.nonce;
-                            return self.submitTx(packaged, cb);
-
-                        // other errors
-                        } else if (res.error) {
-                            console.error("submitTx error:", res);
-                            err = clone(errors.RAW_TRANSACTION_ERROR);
-                            err.bubble = res;
-                            err.packaged = packaged;
-                            return cb(err);
                         }
 
                         // res is the txhash if nothing failed immediately

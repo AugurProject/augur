@@ -24,9 +24,6 @@ module.exports = {
     MAX_TEST_ACCOUNTS: 3,
     MAX_TEST_SAMPLES: 10,
 
-    // free ether for new accounts on registration
-    FREEBIE: 5,
-
     // unit test timeout
     TIMEOUT: 600000,
 
@@ -46,5 +43,7 @@ module.exports = {
     TOLERANCE: new Decimal("0.00000001"),
     EPSILON: new Decimal("0.0000000000001"),
     MAX_ITER: 250,
-    MAX_SHARES_PER_TRADE: 1000
+    MAX_SHARES_PER_TRADE: 1000,
+
+    FAUCET: "https://faucet.augur.net/faucet/"
 };
