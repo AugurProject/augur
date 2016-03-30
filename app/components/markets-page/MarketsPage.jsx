@@ -154,7 +154,7 @@ let MarketsPage = React.createClass({
                             <Paginate
                                 previousLabel={ <i className='fa fa-chevron-left'></i> }
                                 nextLabel={ <i className='fa fa-chevron-right'></i> }
-                                breakLabel={ <li className="break"><a href="">...</a></li> }
+                                breakLabel={ <li className="break">...</li> }
                                 pageNum={ numPages }
                                 marginPagesDisplayed={ 2 }
                                 pageRangeDisplayed={ 5 }
