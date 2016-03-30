@@ -149,7 +149,7 @@ let MarketsPage = React.createClass({
             pagination = (
                 <div className="row">
                     <div className="col-xs-12">
-                        <span className='showing'>Showing { firstItemIndex + 1 } - { lastItemIndex } of { marketsCount }</span>
+                        <span className='showing'>Showing { marketsCount > 0 ? firstItemIndex + 1 : 0 } - { lastItemIndex } of { marketsCount }</span>
                         { numPages >= 2 &&
                             <Paginate
                                 previousLabel={ <i className='fa fa-chevron-left'></i> }
@@ -243,7 +243,7 @@ let MarketsPage = React.createClass({
                         <div className="loader"></div>
                     }
                 </div>
-                {pagination}
+                {marketsCount > 0 && pagination}
             </div>
         );
     }
