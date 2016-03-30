@@ -324,14 +324,13 @@ var TradeBase = {
     },
 
     handleChange: function () {
-        var rawValue = this.refs.inputShares.getValue();
-        var numShares = abi.number(rawValue);
-        this.setState({value: rawValue});
-        this.setState({inputError: null});
-        if (!numShares || numShares === '') {
-            return this.setState({simulation: null});
+        let rawValue = this.refs.inputShares.getValue();
+        this.setState({value: rawValue, inputError: null});
+        if (utils.isNumeric(rawValue)) {
+            this.debounceChange(abi.number(rawValue));
+        } else {
+            this.setState({simulation: null});
         }
-        this.debounceChange(numShares);
     },
 
     debounceChange: _.debounce(function (numShares) {
