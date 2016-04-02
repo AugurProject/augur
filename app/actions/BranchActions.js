@@ -176,6 +176,13 @@ module.exports = {
                     });
                   } else {
                     console.error("event", event, "does not yet have an outcome", markets[0]);
+                    self.flux.augur.closeMarket(branch.id, markets[0], function (res) {
+                      console.log("closeMarket sent:", res);
+                    }, function (res) {
+                      console.log("closeMarket success:", res);
+                    }, function (err) {
+                      console.log("closeMarket error:", err);
+                    });
                     branch = self.flux.store("branch").getCurrentBranch();
                     if (!branch.calledPenalizeWrong) branch.calledPenalizeWrong = {};
                     branch.calledPenalizeWrong[event] = {
