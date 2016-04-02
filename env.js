@@ -16,6 +16,7 @@ GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.web3 = require("web3");
 GLOBAL.contracts = require("augur-contracts");
 GLOBAL.abi = require("augur-abi");
+GLOBAL.request = require("request");
 GLOBAL.constants = require("./src/constants");
 GLOBAL.utils = require("./src/utilities");
 GLOBAL.Tx = contracts.Tx;

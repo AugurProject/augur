@@ -23,7 +23,7 @@
     "ethereumjs-connect": "^0.1.8",
     "ethereumjs-tx": "^0.6.9",
     "ethereumjs-util": "^1.5.1",
-    "ethrpc": "^0.5.10",
+    "ethrpc": "^0.6.0",
     "fzero": "^0.2.2",
     "keythereum": "^0.2.6",
     "locks": "^0.2.2",
