@@ -681,6 +681,7 @@ span.debug {
 
 #doorbell-button {
     left: 5%;
+    right: auto;
     padding: 6px 15px;
     background-color: #CCD5DB;
     opacity: 0.9;
