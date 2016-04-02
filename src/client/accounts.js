@@ -321,7 +321,9 @@ module.exports = function () {
                                 err.bubble = res;
                                 err.packaged = packaged;
                                 return cb(err);
-                            } else if (res.message.indexOf("nonce") > -1) {
+                            } else if (res.error === -32000) {
+                                console.warn(res);
+                                console.log(packaged);
                                 ++packaged.nonce;
                                 return self.submitTx(packaged, cb);
                             } else {
@@ -347,7 +349,7 @@ module.exports = function () {
         // get nonce: number of transactions
         getTxNonce: function (packaged, cb) {
             var self = this;
-            augur.rpc.txCount(self.account.address, function (txCount) {
+            augur.rpc.pendingTxCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount);
                 }
