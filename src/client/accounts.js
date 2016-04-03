@@ -321,7 +321,7 @@ module.exports = function () {
                                 err.bubble = res;
                                 err.packaged = packaged;
                                 return cb(err);
-                            } else if (res.error === -32000) {
+                            } else if (res.message.indexOf("Nonce too low") > -1) {
                                 console.warn(res);
                                 console.log(packaged);
                                 ++packaged.nonce;
