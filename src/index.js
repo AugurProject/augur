@@ -693,6 +693,9 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
             marketsArray.error === 500 && ++count < 4) {
             return self.fire(tx, cb);
         }
+        else if (marketsArray.error) {
+        	return callback(marketsArray);
+        }        
         self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
     };
     this.fire(tx, cb);
