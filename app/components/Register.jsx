@@ -44,6 +44,10 @@ let RegisterModal = React.createClass({
     };
   },
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.show === true;
+  },
+
   toggleProgressModal: function (event) {
     var progressModal = this.state.progressModal;
     progressModal.open = !progressModal.open;

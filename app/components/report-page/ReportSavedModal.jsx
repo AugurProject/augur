@@ -7,6 +7,10 @@ let ReportSavedModal = React.createClass({
 
     mixins: [Navigation],
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.show === true;
+    },
+
     onCloseClick(event) {
         this.transitionTo("reports");
         this.props.onHide();

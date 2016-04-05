@@ -5,6 +5,10 @@ let Button = require("react-bootstrap/lib/Button");
 
 let ConfirmNewMarketModal = React.createClass({
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.show === true;
+    },
+
     onOpenMarketClick(event) {
         this.props.goToNextStep();
         this.props.sendNewMarketRequest();
