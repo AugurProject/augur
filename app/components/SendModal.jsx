@@ -365,9 +365,10 @@ let SendEtherModal = React.createClass({
   onSend: function (event) {
     if (this.isValid(event)) {
       let flux = this.getFlux();
+      let amount = this.state.amount;
       flux.augur.rpc.sendEther({
         to: this.state.destination,
-        value: this.state.amount,
+        value: amount,
         from: flux.augur.from,
         onSent: function (res) {
           self.setState({progressText: "Sending " + amount + " Ether to " + destination + "..."});
