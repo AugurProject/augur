@@ -45,5 +45,9 @@ module.exports = {
     MAX_ITER: 250,
     MAX_SHARES_PER_TRADE: 1000,
 
-    FAUCET: "https://faucet.augur.net/faucet/"
+    FAUCET: "https://faucet.augur.net/faucet/",
+    LOGS: {
+        updatePrice: "updatePrice(int256,int256,int256,int256,int256,int256)",
+        creationBlock: "creationBlock(int256)"
+    }
 };

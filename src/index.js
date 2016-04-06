@@ -14,6 +14,7 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
+var constants = require("constants");
 var connector = require("ethereumjs-connect");
 var ramble = require("ramble");
 
@@ -32,7 +33,7 @@ function Augur() {
     this.from = null;
 
     this.utils = require("./utilities");
-    this.constants = require("./constants");
+    this.constants = constants;
     this.db = require("./client/db");
     this.orders = require("./client/orders");
     this.ramble = ramble;
@@ -377,31 +378,26 @@ Augur.prototype.getEventBranch = function (eventId, callback) {
     return this.fire(tx, callback);
 };
 Augur.prototype.getExpiration = function (eventId, callback) {
-    // event: sha256
     var tx = clone(this.tx.getExpiration);
     tx.params = eventId;
     return this.fire(tx, callback);
 };
 Augur.prototype.getOutcome = function (eventId, callback) {
-    // event: sha256
     var tx = clone(this.tx.getOutcome);
     tx.params = eventId;
     return this.fire(tx, callback);
 };
 Augur.prototype.getMinValue = function (eventId, callback) {
-    // event: sha256
     var tx = clone(this.tx.getMinValue);
     tx.params = eventId;
     return this.fire(tx, callback);
 };
 Augur.prototype.getMaxValue = function (eventId, callback) {
-    // event: sha256
     var tx = clone(this.tx.getMaxValue);
     tx.params = eventId;
     return this.fire(tx, callback);
 };
 Augur.prototype.getNumOutcomes = function (eventId, callback) {
-    // event: sha256
     var tx = clone(this.tx.getNumOutcomes);
     tx.params = eventId;
     return this.fire(tx, callback);
@@ -1813,7 +1809,7 @@ Augur.prototype.getPrices = function (market, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)")]
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice)]
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -1872,7 +1868,7 @@ Augur.prototype.getClosingPrices = function (market, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)")]
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice)]
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -1981,7 +1977,7 @@ Augur.prototype.getPriceHistory = function (branch, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)")]
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice)]
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -2014,7 +2010,7 @@ Augur.prototype.getMarketPriceHistory = function (market, cb) {
             fromBlock: "0x1",
             toBlock: "latest",
             address: this.contracts.buyAndSellShares,
-            topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)"), null, abi.unfork(market, true)]
+            topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true)]
         };
         if (!this.utils.is_function(cb)) {
             var logs = this.filters.eth_getLogs(filter);
@@ -2072,7 +2068,7 @@ Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)"), null, abi.unfork(market, true), outcome]
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true), outcome]
     };
     if (this.utils.is_function(cb)) {
         var self = this;
@@ -2104,7 +2100,7 @@ Augur.prototype.getCreationBlocks = function (branch, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.createMarket,
-        topics: [this.rpc.sha3("creationBlock(int256)")],
+        topics: [this.rpc.sha3(constants.LOGS.creationBlock)],
         timeout: 240000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -2136,7 +2132,7 @@ Augur.prototype.getMarketCreationBlock = function (market, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.createMarket,
-        topics: [this.rpc.sha3("creationBlock(int256)"), abi.unfork(market, true)],
+        topics: [this.rpc.sha3(constants.LOGS.creationBlock), abi.unfork(market, true)],
         timeout: 120000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -2187,8 +2183,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        // event updatePrice(user:indexed, market:indexed, outcome:indexed, price, cost, shares)
-        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)"), abi.format_address(account), null, null],
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.format_address(account), null, null],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -2273,8 +2268,6 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     } else {
         priceMatched = currentPrice.gte(order.price);
     }
-    console.log("outcomes:", JSON.stringify(marketInfo.outcomes, null, 2));
-    console.log("order:", JSON.stringify(order, null, 2));
 
     // price not matched: do not fill order
     if (!priceMatched) return cb.nextOrder(null);
@@ -2286,7 +2279,6 @@ Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
     } else {
         trade = {order: order, amount: order.amount.toFixed(), filled: true};
     }
-    console.log("making trade:", trade);
 
     // execute order
     if (trade !== undefined) {

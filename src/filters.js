@@ -370,7 +370,7 @@ module.exports = function () {
         setup_creation_filter: function (f) {
             return this.eth_newFilter({
                 address: augur.contracts.createMarket,
-                topics: [augur.rpc.sha3("creationBlock(int256)")]
+                topics: [augur.rpc.sha3(constants.LOGS.creationBlock)]
             }, f);
         },
 
@@ -497,7 +497,7 @@ module.exports = function () {
                     function (callback) {
                         var self = this;
                         if (this.price_filter.id === null && cb.price) {
-                            this.start_price_listener("updatePrice(int256,int256,int256,int256,int256,int256)", function () {
+                            this.start_price_listener(constants.LOGS.updatePrice, function () {
                                 self.pacemaker({price: cb.price});
                                 callback(null, ["price", self.price_filter.id]);
                             });
