@@ -377,6 +377,7 @@ module.exports = function () {
         // start listeners
 
         start_price_listener: function (filter_name, cb) {
+            var self = this;
             if (this.price_filter && this.price_filter.id) {
                 if (!utils.is_function(cb)) return this.price_filter.id;
                 return cb(this.price_filter.id);
@@ -393,7 +394,6 @@ module.exports = function () {
                 };
                 return filter_id;
             }
-            var self = this;
             this.setup_price_filter(filter_name, function (filter_id) {
                 if (!filter_id || filter_id === "0x") {
                     return cb(errors.FILTER_NOT_CREATED);

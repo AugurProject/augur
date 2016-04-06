@@ -14,7 +14,7 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
-var constants = require("constants");
+var constants = require("./constants");
 var connector = require("ethereumjs-connect");
 var ramble = require("ramble");
 
