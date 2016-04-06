@@ -19,6 +19,10 @@ let SendCashModal = React.createClass({
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.show === true;
+  },
+
   getInitialState: function () {
     return {
       amount: '',
@@ -143,6 +147,10 @@ let SendRepModal = React.createClass({
   assetType: 'rep',
 
   mixins: [FluxMixin, StoreWatchMixin('asset', 'branch')],
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.show === true;
+  },
 
   getInitialState: function () {
     return {
@@ -278,6 +286,10 @@ let SendEtherModal = React.createClass({
   assetType: 'ether',
 
   mixins: [FluxMixin, StoreWatchMixin('asset')],
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.show === true;
+  },
 
   getInitialState: function () {
     return {
