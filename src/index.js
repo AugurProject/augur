@@ -1810,7 +1810,7 @@ Augur.prototype.getPrices = function (market, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: ["updatePrice"]
+        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)")]
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -1869,7 +1869,7 @@ Augur.prototype.getClosingPrices = function (market, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: ["updatePrice"]
+        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)")]
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -1978,7 +1978,7 @@ Augur.prototype.getPriceHistory = function (branch, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: ["updatePrice"]
+        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)")]
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -2011,7 +2011,7 @@ Augur.prototype.getMarketPriceHistory = function (market, cb) {
             fromBlock: "0x1",
             toBlock: "latest",
             address: this.contracts.buyAndSellShares,
-            topics: ["updatePrice", null, abi.unfork(market, true)]
+            topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)"), null, abi.unfork(market, true)]
         };
         if (!this.utils.is_function(cb)) {
             var logs = this.filters.eth_getLogs(filter);
@@ -2069,7 +2069,7 @@ Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.buyAndSellShares,
-        topics: ["updatePrice", null, abi.unfork(market, true), outcome]
+        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)"), null, abi.unfork(market, true), outcome]
     };
     if (this.utils.is_function(cb)) {
         var self = this;
@@ -2101,7 +2101,8 @@ Augur.prototype.getCreationBlocks = function (branch, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.createMarket,
-        topics: ["creationBlock"]
+        topics: [this.rpc.sha3("creationBlock(int256)")],
+        timeout: 240000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -2132,7 +2133,8 @@ Augur.prototype.getMarketCreationBlock = function (market, cb) {
         fromBlock: "0x1",
         toBlock: "latest",
         address: this.contracts.createMarket,
-        topics: ["creationBlock", abi.unfork(market, true)]
+        topics: [this.rpc.sha3("creationBlock(int256)"), abi.unfork(market, true)],
+        timeout: 120000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
@@ -2182,7 +2184,8 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: ["updatePrice", abi.format_address(account), null, null],
+        // event updatePrice(user:indexed, market:indexed, outcome:indexed, price, cost, shares)
+        topics: [this.rpc.sha3("updatePrice(int256,int256,int256,int256,int256,int256)"), abi.format_address(account), null, null],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -2212,7 +2215,6 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
                 }
             }
         }
-        console.log("got account trades:", trades);
         cb(trades);
     });
 };

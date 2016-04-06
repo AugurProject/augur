@@ -663,7 +663,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             this.timeout(constants.TIMEOUT*4);
             var augur = utils.setup(require(augurpath), process.argv.slice(2));
 
-            augur.filters.start_price_listener("updatePrice", function (filter_id) {
+            augur.filters.start_price_listener("updatePrice(int256,int256,int256,int256,int256,int256)", function (filter_id) {
 
                 // poll contracts filter
                 listeners.push(setInterval(function () {
