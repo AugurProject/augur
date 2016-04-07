@@ -20,10 +20,6 @@ let SignInModal = React.createClass({
     };
   },
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.show === true;
-  },
-
   onSignIn: function (event) {
     event.preventDefault();
 

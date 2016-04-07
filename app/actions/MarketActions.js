@@ -202,7 +202,8 @@ module.exports = {
     var start = (new Date()).getTime();
     var prevTime = start;
     augur.getNumMarketsBranch(branchId, function (numMarkets) {
-      numMarkets = parseInt(numMarkets);
+      // numMarkets = parseInt(numMarkets);
+      numMarkets = 30;
       var numPages = Math.ceil(numMarkets / Number(marketsPerPage));
       var range = new Array(numPages);
       for (var i = 0; i < numPages; ++i) {
