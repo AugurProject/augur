@@ -164,14 +164,14 @@ var ReportActions = {
     if (!account) return cb(null);
     var randomNumber = abi.hex(abi.bignum(account).plus(abi.bignum(eventId)));
     var branch = this.flux.store("branch").getCurrentBranch();
-    this.flux.augur.rpc.sha3(randomNumber, function (diceroll) {
-      if (!diceroll) return cb(new Error("couldn't get sha3(account + eventID)"));
-      if (diceroll.error) return cb(diceroll);
-      self.flux.augur.calculateReportingThreshold(branch.id, eventId, branch.reportPeriod, function (threshold) {
-        if (!threshold) return cb(new Error("couldn't get reporting threshold for " + eventId));
-        if (threshold.error) return cb(threshold);
-        cb(null, abi.bignum(diceroll).lt(abi.bignum(threshold)));
-      });
+    var diceroll = this.flux.augur.rpc.sha3(randomNumber, true);
+    if (diceroll === null || diceroll === undefined) {
+      return cb(new Error("couldn't get sha3(account + eventID)"));
+    }
+    self.flux.augur.calculateReportingThreshold(branch.id, eventId, branch.reportPeriod, function (threshold) {
+      if (!threshold) return cb(new Error("couldn't get reporting threshold for " + eventId));
+      if (threshold.error) return cb(threshold);
+      cb(null, abi.bignum(diceroll).lt(abi.bignum(threshold)));
     });
   },
 
