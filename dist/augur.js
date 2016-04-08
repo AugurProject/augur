@@ -56434,6 +56434,7 @@ var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
 
+request = request.defaults({timeout: 120000})
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 keys.constants.pbkdf2.c = constants.ROUNDS;
@@ -58267,29 +58268,11 @@ Augur.prototype.getTotalRepReported = function (branch, reportPeriod, callback) 
     tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.getReporterBallot = function (branch, reportPeriod, reporterID, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getReporterBallot);
-    tx.params = [branch, reportPeriod, reporterID];
-    if (!this.utils.is_function(callback)) {
-        var reporterBallot = this.fire(tx);
-        if (reporterBallot && reporterBallot.error) return reporterBallot;
-        return reporterBallot.slice(0, this.getNumberEvents(branch, reportPeriod));
-    }
-    this.fire(tx, function (reporterBallot) {
-        if (reporterBallot && reporterBallot.error) return callback(reporterBallot);
-        this.getNumberEvents(branch, reportPeriod, function (numberEvents) {
-            if (numberEvents && numberEvents.error) return callback(numberEvents);
-            callback(reporterBallot.slice(0, numberEvents));
-        });
-    });
-};
-Augur.prototype.getReport = function (branch, reportPeriod, reporter, reportNum, callback) {
+Augur.prototype.getReport = function (branch, reportPeriod, eventId, callback) {
     // branch: sha256
     // reportPeriod: integer
     var tx = clone(this.tx.getReport);
-    tx.params = [branch, reportPeriod, reporter, reportNum];
+    tx.params = [branch, reportPeriod, eventId];
     return this.fire(tx, callback);
 };
 Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event, callback) {
@@ -60007,7 +59990,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.format_address(account), null, null],
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -60576,19 +60559,6 @@ module.exports = {
                 reputation: augur.getRepBalance(branch || augur.branches.dev, account),
                 ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
             };
-        }
-    },
-
-    read_ballots: function (augur, address, branch, period) {
-        var ballot, num_events;
-        console.log("Looking up ballots for", chalk.green(address));
-        for (var i = 0; i < period; ++i) {
-            ballot = augur.getReporterBallot(branch, i, address);
-            if (ballot.length && ballot[0] !== undefined) {
-                num_events = augur.getNumberEvents(branch, i);
-                console.log("Period", chalk.cyan(i), "\t",
-                    chalk.green(abi.fix(ballot.slice(0, num_events), "hex")));
-            }
         }
     },
 
@@ -61175,6 +61145,9 @@ module.exports = {
 
     parse: function (response, returns, callback) {
         var results, len, err;
+        if (response && response.error) {
+            console.log("response:", JSON.stringify(response, null, 2));
+        }
         try {
             if (response && typeof response === "string") {
                 response = JSON.parse(response);
@@ -61532,6 +61505,10 @@ module.exports = {
 
         // select local / hosted node(s) to receive RPC
         nodes = this.selectNodes();
+
+        // if (command.method === "eth_call") {
+            console.log("command:", JSON.stringify(command));
+        // }
 
         // asynchronous request if callback exists
         if (isFunction(callback)) {

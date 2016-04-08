@@ -18,6 +18,7 @@ var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
 
+request = request.defaults({timeout: 120000});
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
 
 keys.constants.pbkdf2.c = constants.ROUNDS;

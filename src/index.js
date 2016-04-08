@@ -443,29 +443,11 @@ Augur.prototype.getTotalRepReported = function (branch, reportPeriod, callback) 
     tx.params = [branch, reportPeriod];
     return this.fire(tx, callback);
 };
-Augur.prototype.getReporterBallot = function (branch, reportPeriod, reporterID, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getReporterBallot);
-    tx.params = [branch, reportPeriod, reporterID];
-    if (!this.utils.is_function(callback)) {
-        var reporterBallot = this.fire(tx);
-        if (reporterBallot && reporterBallot.error) return reporterBallot;
-        return reporterBallot.slice(0, this.getNumberEvents(branch, reportPeriod));
-    }
-    this.fire(tx, function (reporterBallot) {
-        if (reporterBallot && reporterBallot.error) return callback(reporterBallot);
-        this.getNumberEvents(branch, reportPeriod, function (numberEvents) {
-            if (numberEvents && numberEvents.error) return callback(numberEvents);
-            callback(reporterBallot.slice(0, numberEvents));
-        });
-    });
-};
-Augur.prototype.getReport = function (branch, reportPeriod, reporter, reportNum, callback) {
+Augur.prototype.getReport = function (branch, reportPeriod, eventId, callback) {
     // branch: sha256
     // reportPeriod: integer
     var tx = clone(this.tx.getReport);
-    tx.params = [branch, reportPeriod, reporter, reportNum];
+    tx.params = [branch, reportPeriod, eventId];
     return this.fire(tx, callback);
 };
 Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event, callback) {
@@ -2183,7 +2165,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.format_address(account), null, null],
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
