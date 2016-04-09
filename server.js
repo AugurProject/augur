@@ -24,6 +24,13 @@ function log(str) {
 }
 
 function serveHTTP(req, res) {
+
+    // redirect */blog/* urls to the augur.org/blog archive
+    if (req.url.match(/\/blog\//)) {
+        res.writeHead(302, {"Location": "http://www.augur.org" + req.url});
+        return res.end();
+    }
+
     // static URIs
     var re = /\/(css|images|fonts|app\.js|libs\/ipfsapi\.min\.js)/;
 
