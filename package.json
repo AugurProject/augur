@@ -57,7 +57,7 @@
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
     "npm-check-updates": "^2.6.1",
-    "onchange": "^2.2.0",
+    "onchange": "^2.3.0",
     "rimraf": "^2.5.2",
     "uglify-js": "^2.6.2",
     "watchify": "^3.7.0"
