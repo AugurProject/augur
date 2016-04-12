@@ -4,38 +4,38 @@
   "description": "augur-ui-react-components",
   "author": "Baz (@thinkloop)",
   "license": "AAL",
-  "main": "./src/app.jsx",
+  "main": "./dist/app.jsx",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thinkloop/augur2"
+    "url": "https://github.com/thinkloop/augur-ui-react-components.git"
   },
   "scripts": {
     "start": "http-server ./build -c-1 -p $PORT",
     "test": "echo \"Error: no test specified\" && exit 1",
     "_____": "",
     "watch": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=development npm run -s watch:all",
-    "build": "clear; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
+    "dist": "clear; echo \"* * * *  DIST  * * * *\"; NODE_ENV=production npm run -s dist:all",
     "______": "",
-    "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:js) && npm run -s build:html && npm run -s build:finish",
-    "build:assets": "cp ./src/assets/. ./build/$npm_package_version -R && echo ---------ASSETS---------`date +%r`",
-    "build:css": "for file in $npm_package_config_less_entry_files; do lessc $file | cleancss --s0 | npm run -s partial:replaceAssets > ./build/$npm_package_version/css/$(basename $file | sed -e 's~less~css~') ; done && echo ---------CSS------------`date +%r`",
-    "build:js": "npm run -s build:js:browserify | npm run -s partial:replaceAssets | npm run -s partial:uglify > ./build/$npm_package_version/build.js && echo ---------JS-------------`date +%r`",
-    "build:js:browserify": "browserify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge]",
-    "build:html": "cat ./src/index.html | npm run -s partial:replaceAssets | npm run -s build:html:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
-    "build:html:inline_sources": "inline-source --compress false --root ./build -",
-    "build:finish": "echo ---------FINISHED-------`date +%r`",
+    "dist:all": "npm run -s clean:dist && (npm run -s dist:css & npm run -s dist:assets & npm run -s dist:js) && npm run -s dist:finish",
+    "dist:assets": "cp ./src/assets/. ./dist -R && echo ---------ASSETS---------`date +%r`",
+    "dist:css": "lessc $npm_package_config_less_entry_file | cleancss --s0 > ./dist/styles.css | sed -e 's~less~css~' && echo ---------CSS------------`date +%r`",
+    "dist:js": "npm run -s dist:js:browserify | npm run -s partial:uglify > ./dist/app.jsx && echo ---------JS-------------`date +%r`",
+    "dist:js:browserify": "browserify $npm_package_config_js_entry_file_dist --extension=.js --extension=.jsx --detectGlobals false --standalone augur-react-components -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] | derequire",
+    "dist:finish": "echo ---------FINISHED-------`date +%r`",
     "_______": "",
-    "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
-    "watch:assets": "onchange './src/assets/**' -i -- npm run -s build:assets",
-    "watch:css": "onchange './src/**/*.less' -i -- npm run -s build:css",
-    "watch:js": "watchify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./build/$npm_package_version/build.js.map | npm run -s partial:replaceAssets > ./build/$npm_package_version/build.js && echo ---------WATCHIFY--------`date +%r`'",
-    "watch:html": "onchange './src/index.html' -i -- npm run -s build:html",
+    "watch:all": "npm run -s clean:build && (npm run -s watch:css & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
+    "watch:assets": "onchange './src/assets/**' -i -- npm run -s watch:assets:do",
+    "watch:assets:do": "cp ./src/assets/. ./build -R && echo ---------ASSETS---------`date +%r`",
+    "watch:css": "onchange './src/**/*.less' -i -- npm run -s watch:css:do",
+    "watch:css:do": "lessc $npm_package_config_less_entry_file > ./build/styles.css && echo ---------CSS------------`date +%r`",
+    "watch:js": "watchify $npm_package_config_js_entry_file_build --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./build/build.js.map > ./build/build.js && echo ---------WATCHIFY--------`date +%r`'",
+    "watch:html": "onchange './src/index.html' -i -- npm run -s watch:html:do",
+    "watch:html:do": "cat ./src/index.html > ./build/index.html && echo ---------HTML-----------`date +%r`",
     "________": "",
-    "clean": "rimraf ./build/* && mkdir -p ./build/$npm_package_version && mkdir -p ./build/$npm_package_version/css && touch $(npm run -s partial:index_filename) && echo ---------CLEAN----------`date +%r`",
+    "clean:build": "rimraf ./build/* && mkdir -p ./build && echo ---------CLEAN----------`date +%r`",
+    "clean:dist": "rimraf ./dist/* && mkdir -p ./dist && echo ---------CLEAN----------`date +%r`",
     "_________": "",
-    "partial:replaceAssets": "sed 's~${build_folder}~'$npm_package_version'~g'",
-    "partial:uglify": "[ $NODE_ENV = production ] && uglifyjs --compress drop_console,unused=true --mangle --screw-ie8 || cat",
-    "partial:index_filename": "[ $NODE_ENV != production ] && echo \"./build/index.html\" || echo \"./build/index-$npm_package_version.html\""
+    "partial:uglify": "[ $NODE_ENV = production ] && uglifyjs --compress drop_console,unused=true --mangle --screw-ie8 || cat"
   },
   "dependencies": {
     "classnames": "^2.2.3",
@@ -63,7 +63,8 @@
     "watchify": "^3.7.0"
   },
   "config": {
-    "js_entry_file": "./src/index.js",
-    "less_entry_files": "./src/main.less"
+    "js_entry_file_dist": "./src/app.jsx",
+    "js_entry_file_build": "./src/index.js",
+    "less_entry_file": "./src/styles.less"
   }
 }
