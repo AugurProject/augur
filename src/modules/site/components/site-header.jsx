@@ -31,7 +31,7 @@ module.exports = React.createClass({
 
 					<span className="spacer">&nbsp;</span>
 
-					{ !!p.loginAccount && !!p.loginAccount.id &&
+					{ !!p.loginAccount && !!p.loginAccount.id && !!p.loginAccount.id && !!p.positionsSummary.numPositions.value &&
 						<Link className={ classnames('site-nav-link', POSITIONS, { 'active': p.activePage === POSITIONS }) } { ...p.positionsLink }>
 
 							{ !!p.positionsSummary.numPositions.value &&
@@ -44,7 +44,7 @@ module.exports = React.createClass({
 							 }
 						</Link>
 					}
-					{ !!p.loginAccount && !!p.loginAccount.id &&
+					{ !!p.loginAccount && !!p.loginAccount.id && !!p.transactions.length &&
 						<Link className={ classnames('site-nav-link', TRANSACTIONS, { 'active': p.activePage === TRANSACTIONS }, { 'working': p.isTransactionsWorking }) }
 							title={ p.loginAccount.realEther && p.loginAccount.realEther.full }
 							{ ...p.transactionsLink }>

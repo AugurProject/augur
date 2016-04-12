@@ -1,7 +1,7 @@
 {
   "name": "augur-ui-react-components",
-  "version": "1.0.0",
-  "description": "augur-ui-react-components",
+  "version": "2.0.0",
+  "description": "Augur UI React Components",
   "author": "Baz (@thinkloop)",
   "license": "AAL",
   "main": "./dist/app.jsx",
