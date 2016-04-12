@@ -15,6 +15,7 @@ module.exports={
         "eventResolution": "0x2fac411c69994858409c24ed2a5567da29c61bca",
         "faucets": "0x895d32f2db7d01ebb50053f9e48aacf26584fe40",
         "makeReports": "0x79a406da9ea815fd8cbe75ba8a4cb6d493dbf9b4",
+        "metadata": "0x5cf043ea28e287e818e15181485b3d5d61474126",
         "orderBook": "0xc8bdc68526a959fcb932b57063c97b1fc6176709",
         "ramble": "0x42a77acc59bb566aa670d6e7639b99efa235e6f7",
         "sendReputation": "0x6b969e428c58d81429ef13240c0ecb3529aa91bb",
@@ -43,6 +44,7 @@ module.exports={
         "eventResolution": "0xd399af9820be7ddda37c7d85e701bf8ee2337739",
         "faucets": "0x94bab6be74df76e996b20329dff2ec39d3013dc3",
         "makeReports": "0x0b7c36b76208e2c968b04dce0658c03c27bfdc00",
+        "metadata": "0x5cf043ea28e287e818e15181485b3d5d61474126",
         "orderBook": "0xf86bbf277ae88a8b50ae90d97e1aafb1390e2984",
         "ramble": "0x2258a25e503b19dc3d2c2fdc9ca57a1d5985e30c",
         "sendReputation": "0x7e049a60e0106d263ffd0a60bcfbf4f63dd1f2a4",
@@ -71,6 +73,7 @@ module.exports={
         "eventResolution": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
         "faucets": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
         "makeReports": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
+        "metadata": "0x5cf043ea28e287e818e15181485b3d5d61474126",
         "orderBook": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
         "ramble": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
         "sendReputation": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
@@ -587,6 +590,21 @@ module.exports = function (network) {
 
     return {
 
+        // metadata.se
+        setMetadata: {
+            to: contracts.metadata,
+            method: "setMetadata",
+            signature: "iiiiss",
+            returns: "number",
+            send: true
+        },
+        getMetadata: {
+            to: contracts.metadata,
+            method: "getMetadata",
+            signature: "i",
+            returns: "hash[]"
+        },
+
         // faucets.se
         reputationFaucet: {
             to: contracts.faucets,
@@ -705,18 +723,6 @@ module.exports = function (network) {
             signature: "isii",
             returns: "number",
             send: true
-        },
-
-        // redeem_interpolate.se
-        redeem_interpolate: {
-            to: contracts.redeem_interpolate,
-            method: "interpolate",
-            signature: "iiiii"
-        },
-        read_ballots: {
-            to: contracts.redeem_interpolate,
-            method: "read_ballots",
-            signature: "iiiii"
         },
 
         // branches.se
@@ -55520,9 +55526,6 @@ module.exports = function () {
                                 augur.db.putPersistent(self.account);
                             }
 
-                            augur.ramble.invoke = self.invoke;
-                            augur.ramble.context = self;
-                            augur.ramble.from = self.account.address;
                             if (options.doNotFund) return onRegistered(self.account);
                             self.fund(self.account, augur.branches.dev, onRegistered, onSendEther, onSent, onSuccess, onFailed);
 
@@ -55580,9 +55583,6 @@ module.exports = function () {
                             augur.db.putPersistent(self.account);
                         }
 
-                        augur.ramble.invoke = self.invoke;
-                        augur.ramble.context = self;
-                        augur.ramble.from = self.account.address;
                         cb(self.account);
 
                     // decryption failure: bad password
@@ -55599,18 +55599,12 @@ module.exports = function () {
             var account = augur.db.getPersistent();
             if (account && account.privateKey) {
                 this.account = account;
-                augur.ramble.invoke = this.invoke;
-                augur.ramble.context = this;
-                augur.ramble.from = account.address;
             }
             return account;
         },
 
         logout: function () {
             this.account = {};
-            augur.ramble.invoke = null;
-            augur.ramble.context = augur.rpc;
-            augur.ramble.from = null;
             augur.db.removePersistent();
             augur.rpc.clear();
         },
@@ -56797,10 +56791,10 @@ var Decimal = require("decimal.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var request = (NODE_JS) ? require("request") : require("browser-request");
+var connector = require("ethereumjs-connect");
 var contracts = require("augur-contracts");
 var constants = require("./constants");
-var connector = require("ethereumjs-connect");
-var ramble = require("ramble");
 
 Decimal.config({precision: 64});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -56816,17 +56810,14 @@ function Augur() {
     this.coinbase = null;
     this.from = null;
 
-    this.utils = require("./utilities");
     this.constants = constants;
+    this.utils = require("./utilities");
     this.db = require("./client/db");
     this.orders = require("./client/orders");
-    this.ramble = ramble;
     this.connector = connector;
-    this.ramble.connector = connector;
     this.errors = contracts.errors;
 
     rpc.debug = this.options.debug;
-    this.ramble.rpc = rpc;
     this.rpc = rpc;
 
     // Branch IDs
@@ -56904,6 +56895,96 @@ Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
 /*************
  * Augur API *
  *************/
+
+// metadata.se
+Augur.prototype.setMetadata = function (market, tag1, tag2, tag3, source, details, links, linksUrl, onSent, onSuccess, onFailed) {
+    var self = this;
+    function setMetadata(market, tag1, tag2, tag3, source, linksUrl, onSent, onSuccess, onFailed) {
+        var tx = clone(self.tx.setMetadata);
+        tx.params = [market, tag1, tag2, tag3, source, linksUrl];
+        return self.transact(tx, onSent, onSuccess, onFailed);
+    }
+    if (market && market.market) {
+        if (market.tag1) tag1 = market.tag1;
+        if (market.tag2) tag2 = market.tag2;
+        if (market.tag3) tag3 = market.tag3;
+        if (market.source) source = market.source;
+        if (market.details) details = market.details;
+        if (market.linksUrl) linksUrl = market.linksUrl;
+        if (market.links) links = market.links;
+        if (market.onSent) onSent = market.onSent;
+        if (market.onSuccess) onSuccess = market.onSuccess;
+        if (market.onFailed) onFailed = market.onFailed;
+        market = market.market;
+    }
+    tag1 = (tag1 && tag1 !== "") ? abi.prefix_hex(abi.encode_hex(tag1)) : "0x0";
+    tag2 = (tag2 && tag2 !== "") ? abi.prefix_hex(abi.encode_hex(tag2)) : "0x0";
+    tag3 = (tag3 && tag3 !== "") ? abi.prefix_hex(abi.encode_hex(tag3)) : "0x0";
+    if (linksUrl) {
+        return setMetadata(market, tag1, tag2, tag3, source, linksUrl || "", onSent, onSuccess, onFailed);
+    }
+    request({
+        method: "POST",
+        headers: {"User-Agent": "request"},
+        url: "https://api.github.com/gists",
+        json: {
+            description: abi.strip_0x(market),
+            public: true,
+            files: {
+                "metadata.json": {
+                    content: JSON.stringify({
+                        details: details,
+                        links: links
+                    })
+                }
+            }
+        }
+    }, function (e, res, body) {
+        if (e) return onFailed(e);
+        if (res.statusCode === 201) linksUrl = body.url;
+        setMetadata(market, tag1, tag2, tag3, source, linksUrl || "", onSent, onSuccess, onFailed);
+    });
+};
+Augur.prototype.parseMetaList = function (metaList, callback) {
+    var metadata = {
+        tag1: (metaList[0] === "0x0") ? null : abi.decode_hex(metaList[0]),
+        tag2: (metaList[1] === "0x0") ? null : abi.decode_hex(metaList[1]),
+        tag3: (metaList[2] === "0x0") ? null : abi.decode_hex(metaList[2]),
+        details: null,
+        links: []
+    };
+    var sourceLength = parseInt(metaList[3]);
+    metadata.source = String.fromCharCode.apply(null, metaList.slice(6, 6+sourceLength));
+    var linksLength = parseInt(metaList[4]);
+    if (!linksLength) return callback(metadata);
+    var linksUrl = String.fromCharCode.apply(null, metaList.slice(metaList.length - linksLength));
+    request({
+        method: "GET",
+        headers: {"User-Agent": "request"},
+        url: linksUrl
+    }, function (e, res, body) {
+        if (e) console.error("getMetadata request error:", e);
+        if (res.statusCode === 200) {
+            var content = JSON.parse(JSON.parse(body).files["metadata.json"].content);
+            metadata.details = content.details || null;
+            metadata.links = content.links || [];
+        }
+        callback(metadata);
+    });
+};
+Augur.prototype.getMetadata = function (market, options, callback) {
+    var self = this;
+    if (!callback && this.utils.is_function(options)) {
+        callback = options;
+        options = null;
+    }
+    options = options || {};
+    var tx = clone(this.tx.getMetadata);
+    tx.params = market;
+    this.fire(tx, function (metaList) {
+        self.parseMetaList(metaList, callback);
+    });
+};
 
 // faucets.se
 Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
@@ -59276,7 +59357,7 @@ Augur.prototype.createBatch = function createBatch () {
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./client/accounts":307,"./client/db":308,"./client/orders":309,"./constants":310,"./filters":311,"./utilities":313,"_process":210,"async":6,"augur-abi":7,"augur-contracts":3,"bignumber.js":9,"clone":244,"decimal.js":245,"ethereumjs-connect":314,"ethrpc":316,"ramble":362}],313:[function(require,module,exports){
+},{"./client/accounts":307,"./client/db":308,"./client/orders":309,"./constants":310,"./filters":311,"./utilities":313,"_process":210,"async":6,"augur-abi":7,"augur-contracts":3,"bignumber.js":9,"browser-request":10,"clone":244,"decimal.js":245,"ethereumjs-connect":314,"ethrpc":316,"request":13}],313:[function(require,module,exports){
 (function (process,Buffer,__dirname){
 "use strict";
 
@@ -60104,9 +60185,9 @@ module.exports = {
 
     parse: function (response, returns, callback) {
         var results, len, err;
-        if (response && response.error) {
-            console.log("response:", JSON.stringify(response, null, 2));
-        }
+        // if (response && response.error) {
+        //     console.log("response:", JSON.stringify(response, null, 2));
+        // }
         try {
             if (response && typeof response === "string") {
                 response = JSON.parse(response);
@@ -60422,10 +60503,6 @@ module.exports = {
             returns = this.strip(command);
         }
 
-        if (command.method === "eth_sendRawTransaction") {
-            console.log("command:", JSON.stringify(command));
-        }
-
         // if we're on Node, use IPC if available and ipcpath is specified
         if (NODE_JS && this.ipcpath && command.method &&
             command.method.indexOf("Filter") === -1)
@@ -60475,7 +60552,6 @@ module.exports = {
         // asynchronous request if callback exists
         if (isFunction(callback)) {
             async.eachSeries(nodes, function (node, nextNode) {
-                console.log("node:", node);
                 if (!completed) {
                     if (self.debug.logs) {
                         console.log("nodes:", JSON.stringify(nodes));
@@ -60759,34 +60835,30 @@ module.exports = {
 
     // estimate a transaction's gas cost
     estimateGas: function (tx, f) {
-        tx.to = tx.to || "";
         return this.broadcast(this.marshal("estimateGas", tx), f);
     },
 
     // execute functions on contracts on the blockchain
     call: function (tx, f) {
-        tx.to = tx.to || "";
         tx.gas = tx.gas || this.DEFAULT_GAS;
         return this.broadcast(this.marshal("call", [tx, "latest"]), f);
     },
 
     sendTx: function (tx, f) {
-        tx.to = tx.to || "";
         tx.gas = tx.gas || this.DEFAULT_GAS;
         return this.broadcast(this.marshal("sendTransaction", tx), f);
     },
     sendTransaction: function (tx, f) {
-        tx.to = tx.to || "";
         tx.gas = tx.gas || this.DEFAULT_GAS;
         return this.broadcast(this.marshal("sendTransaction", tx), f);
     },
 
     // sendRawTx(RLP(tx.signed(privateKey))) -> txhash
     sendRawTx: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
+        return this.broadcast(this.marshal("sendRawTransaction", abi.prefix_hex(rawTx)), f);
     },
     sendRawTransaction: function (rawTx, f) {
-        return this.broadcast(this.marshal("sendRawTransaction", rawTx), f);
+        return this.broadcast(this.marshal("sendRawTransaction", abi.prefix_hex(rawTx)), f);
     },
 
     receipt: function (txhash, f) {
@@ -60814,7 +60886,7 @@ module.exports = {
 
     // publish a new contract to the blockchain (from the coinbase account)
     publish: function (compiled, f) {
-        return this.sendTx({ from: this.coinbase(), data: compiled }, f);
+        return this.sendTx({from: this.coinbase(), data: compiled}, f);
     },
 
     // Read the code in a contract on the blockchain
@@ -60961,6 +61033,7 @@ module.exports = {
             }
         } catch (exc) {
             err = abi.copy(errors.TRANSACTION_FAILED);
+            console.trace()
             err.bubble = exc;
             err.tx = itx;
             if (isFunction(f)) return f(err);
@@ -60968,6 +61041,7 @@ module.exports = {
         }
         if (!invoked) {
             err = abi.copy(errors.TRANSACTION_FAILED);
+            console.trace()
             err.bubble = "!invoked";
             err.tx = itx;
             if (isFunction(f)) return f(err);
@@ -61005,7 +61079,7 @@ module.exports = {
                 }
             }
             if (tx.from) tx.from = abi.format_address(tx.from);
-            tx.to = abi.format_address(tx.to);
+            if (tx.to) tx.to = abi.format_address(tx.to);
             dataAbi = abi.encode(tx);
             if (dataAbi) {
                 if (tx.callback && tx.callback.constructor === Function) {
@@ -90491,648 +90565,4 @@ function wrapproperty(obj, prop, message) {
 });
 
 }).call(this,require('_process'))
-},{"_process":210,"depd":360}],362:[function(require,module,exports){
-(function (process,global){
-/**
- * Ramble: an IPFS/Ethereum adapter.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var async = require("async");
-var connector = require("ethereumjs-connect");
-var multihash = require("multi-hash");
-var abi = require("augur-abi");
-var rpc = require("ethrpc");
-var errors = require("augur-contracts").errors;
-var ipfsAPI;
-if (global) {
-    ipfsAPI = global.ipfsAPI || require("ipfs-api");
-} else if (window) {
-    ipfsAPI = window.ipfsAPI || require("ipfs-api");
-} else {
-    ipfsAPI = require("ipfs-api");
-}
-
-function isFunction(f) {
-    return Object.prototype.toString.call(f) === "[object Function]";
-}
-
-var constants = {
-    IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
-    IPFS_REMOTE: [
-        //{host: "ipfs1.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs2.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs4.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs5.augur.net", port: "443", protocol: "https"}
-    ]
-};
-
-var IPFS_DEFAULT = constants.IPFS_LOCAL;
-var NUM_NODES = constants.IPFS_REMOTE.length;
-var REMOTE = null;
-if ((NODE_JS || document.location.protocol) === "https:") {
-    IPFS_DEFAULT = constants.IPFS_REMOTE[0];
-    REMOTE = IPFS_DEFAULT;
-}
-var ipfs;
-if (ipfsAPI && isFunction(ipfsAPI)) {
-    ipfs = ipfsAPI(IPFS_DEFAULT);
-}
-
-module.exports = {
-
-    debug: false,
-
-    ipfs: ipfs,
-
-    invoke: null,
-
-    context: rpc,
-
-    rpc: rpc,
-
-    constants: constants,
-
-    connector: connector,
-
-    remote: REMOTE,
-
-    remoteNodeIndex: 0,
-
-    remoteNodes: constants.IPFS_REMOTE,
-
-    localNode: (REMOTE) ? null : constants.IPFS_LOCAL,
-
-    getLogs: function (filter, f) {
-        return this.rpc.broadcast(this.rpc.marshal("getLogs", filter), f);
-    },
-
-    useLocalNode: function (url) {
-        if (url) this.localNode = url;
-        this.ipfs = ipfsAPI(this.localNode);
-        this.remote = null;
-        return this.localNode;
-    },
-
-    useRemoteNode: function (url) {
-        if (url) {
-            this.remote = url;
-            this.remoteNodes.push(url);
-            this.remoteNodeIndex = this.remoteNodes.length - 1;
-            ++NUM_NODES;
-        }
-        this.remote = this.remoteNodes[this.remoteNodeIndex % NUM_NODES];
-        this.ipfs = ipfsAPI(this.remote);
-        this.localNode = null;
-        return this.remote;
-    },
-
-    getComment: function (ipfsHash, blockNumber, cb, tries) {
-        var self = this;
-        tries = tries || 0;
-        if (tries > NUM_NODES) return cb(errors.IPFS_GET_FAILURE);
-        if (this.ipfs) {
-            this.ipfs.cat(ipfsHash, function (err, res) {
-                if (err) {
-                    self.remote = self.remoteNodes[self.remoteNodeIndex++ % NUM_NODES];
-                    self.ipfs = ipfsAPI(self.remote);
-                    return self.getComment(ipfsHash, blockNumber, cb, ++tries);
-                }
-                if (!res) return self.getComment(ipfsHash, blockNumber, cb, ++tries);
-                self.ipfs.pin.add(ipfsHash, function (e, pinned) {
-                    var comment;
-                    if (self.debug) console.log("getComment.pinned:", pinned);
-                    if (e) {
-                        self.remote = self.remoteNodes[self.remoteNodeIndex++ % NUM_NODES];
-                        self.ipfs = ipfsAPI(self.remote);
-                        return self.getComment(ipfsHash, blockNumber, cb, ++tries);
-                    }
-                    if (res.readable) {
-                        comment = "";
-                        res.on("data", function (data) { comment += data; });
-                        res.on("end", function () {
-                            comment = JSON.parse(comment.slice(comment.indexOf("{"), comment.lastIndexOf("}") + 1));
-                            if (blockNumber === null || blockNumber === undefined) {
-                                return cb(null, {
-                                    ipfsHash: ipfsHash,
-                                    author: comment.author,
-                                    message: comment.message || ""
-                                });
-                            }
-                            self.rpc.getBlock(blockNumber, true, function (block) {
-                                if (!block || block.error) return cb(block);
-                                cb(null, {
-                                    ipfsHash: ipfsHash,
-                                    author: comment.author,
-                                    message: comment.message || "",
-                                    blockNumber: parseInt(blockNumber),
-                                    time: parseInt(block.timestamp)
-                                });
-                            });
-                        });
-                    } else {
-                        try {
-                            comment = JSON.parse(res);
-                        } catch (exc) {
-                            console.error("[ramble] Comment parse error:", exc);
-                            try {
-                                console.log("comment:", res);
-                                comment = JSON.parse(res.slice(res.indexOf("{"), res.lastIndexOf("}") + 1));
-                            } catch (err) {
-                                console.error("[ramble] Comment parse/slice error:", err);
-                                console.log("comment:", res);
-                                return cb(err);
-                            }
-                        }
-                        if (blockNumber === null || blockNumber === undefined) {
-                            return cb(null, {
-                                ipfsHash: ipfsHash,
-                                author: comment.author,
-                                message: comment.message || ""
-                            });
-                        }
-                        self.rpc.getBlock(blockNumber, true, function (block) {
-                            if (!block || block.error) return cb(block);
-                            cb(null, {
-                                ipfsHash: ipfsHash,
-                                author: comment.author,
-                                message: comment.message || "",
-                                blockNumber: parseInt(blockNumber),
-                                time: parseInt(block.timestamp)
-                            });
-                        });
-                    }
-                });
-            });
-        }
-    },
-
-    getMetadata: function (ipfsHash, cb, tries) {
-        var self = this;
-        tries = tries || 0;
-        if (tries > NUM_NODES) return cb(errors.IPFS_GET_FAILURE);
-        if (this.ipfs) {
-            this.ipfs.cat(ipfsHash, function (err, res) {
-                var metadata;
-                if (err) {
-                    self.remote = self.remoteNodes[self.remoteNodeIndex++ % NUM_NODES];
-                    self.ipfs = ipfsAPI(self.remote);
-                    return self.getMetadata(ipfsHash, cb, ++tries);
-                }
-                if (!res) return self.getMetadata(ipfsHash, cb, ++tries);
-                self.ipfs.pin.add(ipfsHash, function (e, pinned) {
-                    if (self.debug) console.log("getMetadata.pinned:", pinned);
-                    if (e) {
-                        self.remote = self.remoteNodes[self.remoteNodeIndex++ % NUM_NODES];
-                        self.ipfs = ipfsAPI(self.remote);
-                        return self.getMetadata(ipfsHash, cb, ++tries);
-                    }
-                    if (res.readable) {
-                        metadata = "";
-                        res.on("data", function (data) { metadata += data; });
-                        res.on("end", function () {
-                            metadata = JSON.parse(metadata.slice(metadata.indexOf("{"), metadata.lastIndexOf("}") + 1));
-                            cb(null, metadata);
-                        });
-                    } else {
-                        try {
-                            metadata = JSON.parse(res);
-                        } catch (exc) {
-                            console.error("[ramble] Metadata parse error:", exc);
-                            try {
-                                console.log("metadata:", res);
-                                metadata = JSON.parse(res.slice(res.indexOf("{"), res.lastIndexOf("}") + 1));
-                            } catch (err) {
-                                console.error("[ramble] Metadata parse/slice error:", err);
-                                console.log("metadata:", res);
-                                return cb(err);
-                            }
-                        }
-                        cb(null, metadata);
-                    }
-                });
-            });
-        }
-    },
-
-    getMarketComments: function (market, options, cb) {
-        if (!cb && isFunction(options)) {
-            cb = options;
-            options = null;
-        }
-        options = options || {};
-        if (!market || !isFunction(cb)) return errors.PARAMETER_NUMBER_ERROR;
-        var self = this;
-        var loop = (this.debug) ? async.eachSeries : async.each;
-        if (this.ipfs) {
-            this.getLogs({
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.connector.contracts.ramble,
-                topics: [this.rpc.sha3("comment(int256,int256)")]
-            }, function (logs) {
-                if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                    return cb(errors.IPFS_GET_FAILURE);
-                }
-                if (logs.error) return cb(logs);
-                if (!logs || !market) return cb(errors.IPFS_GET_FAILURE);
-                var numLogs = logs.length;
-                if (options.numComments && options.numComments < numLogs) {
-                    logs = logs.slice(numLogs - options.numComments, numLogs);
-                }
-                var comments = [];
-                market = abi.bignum(abi.unfork(market));
-                loop(logs, function (thisLog, nextLog) {
-                    if (!thisLog || !thisLog.topics) return nextLog();
-                    if (!abi.bignum(abi.unfork(thisLog.topics[1])).eq(market)) {
-                        return nextLog();
-                    }
-                    var ipfsHash = multihash.encode(abi.unfork(thisLog.data));
-                    var blockNumber = abi.hex(thisLog.blockNumber);
-                    self.getComment(ipfsHash, blockNumber, function (err, comment) {
-                        if (err) return nextLog(err);
-                        if (!comment) return nextLog(errors.IPFS_GET_FAILURE);
-                        if (comment.error) return nextLog(errors.IPFS_GET_FAILURE);
-                        if (comment.author && comment.message && comment.time) {
-                            comments.push(comment);
-                        }
-                        nextLog();
-                    });
-                }, function (err) {
-                    if (err) return cb(err);
-                    comments.reverse();
-                    cb(null, comments);
-                });
-            });
-        }
-    },
-
-    // Set options.sourceless=true to fetch metadata even if it doesn't
-    // have a source field.
-    getMarketMetadata: function (market, options, cb) {
-        if (!cb && isFunction(options)) {
-            cb = options;
-            options = null;
-        }
-        options = options || {};
-        if (!market || !isFunction(cb)) return errors.PARAMETER_NUMBER_ERROR;
-        var self = this;
-        var loop = (this.debug) ? async.eachSeries : async.each;
-        if (this.ipfs) {
-            this.getLogs({
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: this.connector.contracts.ramble,
-                topics: [this.rpc.sha3("metadata(int256,int256)")]
-            }, function (logs) {
-                if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                    return cb(errors.IPFS_GET_FAILURE);
-                }
-                if (logs.error) return cb(logs);
-                if (!logs || !market) return cb(errors.IPFS_GET_FAILURE);
-                var numLogs = logs.length;
-                if (options.numComments && options.numComments < numLogs) {
-                    logs = logs.slice(numLogs - options.numComments, numLogs);
-                }
-                market = abi.bignum(abi.unfork(market));
-                loop(logs, function (thisLog, nextLog) {
-                    if (!thisLog || !thisLog.topics) return nextLog();
-                    if (!abi.bignum(abi.unfork(thisLog.topics[1])).eq(market)) {
-                        return nextLog();
-                    }
-                    var ipfsHash = multihash.encode(abi.unfork(thisLog.data));
-                    self.getMetadata(ipfsHash, function (err, metadata) {
-                        if (err) return nextLog(err);
-                        if (!metadata) return nextLog(errors.IPFS_GET_FAILURE);
-                        if (metadata.error) return nextLog(errors.IPFS_GET_FAILURE);
-                        if (options.sourceless || metadata.source) {
-                            return nextLog({metadata: metadata});
-                        }
-                        nextLog();
-                    });
-                }, function (res) {
-                    if (!res) return cb(errors.IPFS_GET_FAILURE);
-                    if (!res.metadata) return cb(res);
-                    cb(null, res.metadata);
-                });
-            });
-        }
-    },
-
-    // pin data to all remote nodes
-    broadcastPin: function (data, ipfsHash, cb) {
-        var self = this;
-        if (this.ipfs) {
-            var loop = (this.debug) ? async.forEachOfSeries : async.forEachOf;
-            var pinningNodes = [];
-            cb = cb || function () {};
-            var ipfsNodes = new Array(NUM_NODES);
-            for (var i = 0; i < NUM_NODES; ++i) {
-                ipfsNodes[i] = ipfsAPI(this.remoteNodes[i]);
-            }
-            loop(ipfsNodes, function (node, index, nextNode) {
-                if (self.debug) {
-                    console.log("remote node:", self.remoteNodes[index].host);
-                }
-                node.add(data, function (err, files) {
-                    if (self.debug) console.log("ipfs.add:", files);
-                    if ((err && err.code) || !files || files.error) {
-                        return nextNode(err || files);
-                    }
-                    node.pin.add(ipfsHash, function (err, pinned) {
-                        if (self.debug) console.log("ipfs.pin.add:", pinned);
-                        if (err && err.code) return nextNode(err);
-                        if (!pinned) return nextNode(errors.IPFS_ADD_FAILURE);
-                        if (pinned.error) return nextNode(pinned);
-                        if (pinned.toString().indexOf("<html>") === -1) {
-                            pinningNodes.push(self.remoteNodes[index]);
-                        }
-                        return nextNode();
-                    });
-                });
-            }, function (err) {
-                if (err) return cb(err);
-                cb(null, pinningNodes);
-            });
-        }
-    },
-
-    // comment: {marketId, message, author}
-    addMarketComment: function (comment, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (this.ipfs) {
-            var tx = {
-                to: this.connector.contracts.ramble,
-                from: this.connector.from,
-                method: "addComment",
-                signature: "ii",
-                send: true,
-                returns: "number",
-                invocation: {invoke: this.invoke, context: this.context}
-            };
-            var broadcast = comment.broadcast;
-            if (broadcast) delete comment.broadcast;
-            var data = this.ipfs.Buffer(JSON.stringify(comment));
-            this.ipfs.add(data, function (err, files) {
-                if (self.debug) console.log("ipfs.add:", files);
-                if (err || !files || files.error) {
-                    self.remote = self.remoteNodes[(self.remoteNodeIndex++) % NUM_NODES];
-                    if (self.debug) {
-                        console.log("connecting to remote node",
-                            self.remoteNodeIndex % NUM_NODES,
-                            self.remote);
-                    }
-                    self.ipfs = ipfsAPI(self.remote);
-                    return self.addMarketComment(comment, onSent, onSuccess, onFailed);
-                }
-                var ipfsHash = (files.constructor === Array) ? files[0].Hash : files.Hash;
-
-                // pin data to the active node
-                self.ipfs.pin.add(ipfsHash, function (err, pinned) {
-                    if (self.debug) console.log("ipfs.pin.add:", pinned);
-                    if (err) return onFailed(err);
-                    tx.params = [
-                        abi.unfork(comment.marketId, true),
-                        abi.hex(multihash.decode(ipfsHash), true)
-                    ];
-                    self.rpc.transact(tx, function (res) {
-                        if (broadcast) self.broadcastPin(data, ipfsHash);
-                        onSent(res);
-                    }, onSuccess, onFailed);
-                });
-            });
-        }
-    },
-
-    // metadata: {image: blob, details: text, links: url array, source: text}
-    addMetadata: function (metadata, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (this.ipfs) {
-            var tx = {
-                to: this.connector.contracts.ramble,
-                from: this.connector.from,
-                method: "addMetadata",
-                signature: "ii",
-                send: true,
-                returns: "number",
-                invocation: {invoke: this.invoke, context: this.context}
-            };
-            var broadcast = metadata.broadcast;
-            if (broadcast) delete metadata.broadcast;
-            if (metadata.image && this.ipfs.Buffer.isBuffer(metadata.image)) {
-                metadata.image = metadata.image.toString("base64");
-            }
-            var data = this.ipfs.Buffer(JSON.stringify(metadata));
-            this.ipfs.add(data, function (err, files) {
-                if (self.debug) console.log("ipfs.add:", files);
-                if (err || !files || files.error) {
-                    self.remote = self.remoteNodes[self.remoteNodeIndex++ % NUM_NODES];
-                    self.ipfs = ipfsAPI(self.remote);
-                    return self.addMetadata(metadata, onSent, onSuccess, onFailed);
-                }
-                var ipfsHash = (files.constructor === Array) ? files[0].Hash : files.Hash;
-
-                // pin data to the active node
-                self.ipfs.pin.add(ipfsHash, function (err, pinned) {
-                    if (self.debug) console.log("ipfs.pin.add:", pinned);
-                    if (err) return onFailed(err);
-                    tx.params = [
-                        abi.unfork(metadata.marketId, true),
-                        abi.hex(multihash.decode(ipfsHash), true)
-                    ];
-                    self.rpc.transact(tx, function (res) {
-                        if (broadcast) self.broadcastPin(data, ipfsHash);
-                        onSent(res);
-                    }, onSuccess, onFailed);
-                });
-            });
-        }
-    }
-};
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":210,"async":363,"augur-abi":364,"augur-contracts":3,"ethereumjs-connect":314,"ethrpc":316,"ipfs-api":13,"multi-hash":367}],363:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"_process":210,"dup":6}],364:[function(require,module,exports){
-arguments[4][7][0].apply(exports,arguments)
-},{"bignumber.js":365,"buffer":232,"dup":7,"js-sha3":366}],365:[function(require,module,exports){
-arguments[4][320][0].apply(exports,arguments)
-},{"dup":320}],366:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],367:[function(require,module,exports){
-(function (Buffer){
-/**
- * Multi-hash encoder/decoder.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var bs58 = require("bs58");
-
-module.exports = {
-
-    /**
-     * Add sha256 multi-hash tag to hex-encoded hash and convert to base58.
-     * (Prefix 1 if leading byte > 60; prefix 2 otherwise.)
-     * @param {string|Buffer} hex 32-byte buffer or hex-encoded string.
-     * @return {string} Base58-encoded string with sha256 multi-hash tag.
-     */
-    encode: function (hex) {
-        if (Buffer.isBuffer(hex)) hex = hex.toString("hex");
-        if (hex && hex.constructor === String) {
-            hex = hex.replace("0x", "");
-            if (hex.length !== 64) {
-                throw new Error("length error: expected 32-byte input");
-            }
-            if (parseInt(hex.slice(0, 2), 16) > 60) {
-                hex = "01" + hex;
-            } else {
-                hex = "02" + hex;
-            }
-            return "Qm" + bs58.encode(new Buffer(hex, "hex"));
-        }
-        throw new Error("unsupported format: expected hex string");
-    },
-
-    /**
-     * Remove multi-hash tag (assuming sha256, the IPFS default):
-     * 1. Remove leading two characters (Qm)
-     * 2. Decode base58 string to 33 byte array
-     * 3. Remove the leading byte, which is part of the hash tag
-     * @param {string|Buffer} hash Base58-encoded sha256 hash digest.
-     * @return {Buffer} 32-byte array with multihash tag removed.
-     */
-    decode: function (hash) {
-        if (hash && hash.constructor === String && hash.slice(0, 2) === "Qm") {
-            if (hash.length !== 46) {
-                throw new Error("length error: expected hash+tag length of 46");
-            }
-            return new Buffer(bs58.decode(hash.slice(2)).splice(1));
-        }
-        throw new Error("unsupported format: expected base58 string");
-    }
-
-};
-
-}).call(this,require("buffer").Buffer)
-},{"bs58":368,"buffer":232}],368:[function(require,module,exports){
-var basex = require('base-x')
-var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-var base58 = basex(ALPHABET)
-
-module.exports = {
-  encode: base58.encode,
-  decode: base58.decode
-}
-
-},{"base-x":369}],369:[function(require,module,exports){
-// base-x encoding
-// Forked from https://github.com/cryptocoinjs/bs58
-// Originally written by Mike Hearn for BitcoinJ
-// Copyright (c) 2011 Google Inc
-// Ported to JavaScript by Stefan Thomas
-// Merged Buffer refactorings from base58-native by Stephen Pair
-// Copyright (c) 2013 BitPay Inc
-
-/**
- * @param {string} ALPHABET
- * @return {encode: function, decode: function}
- */
-module.exports = function base (ALPHABET) {
-  var ALPHABET_MAP = {}
-  var BASE = ALPHABET.length
-  var LEADER = ALPHABET.charAt(0)
-
-  // pre-compute lookup table
-  for (var i = 0; i < ALPHABET.length; i++) {
-    ALPHABET_MAP[ALPHABET.charAt(i)] = i
-  }
-
-  /**
-   * @param {(Buffer|number[])} source
-   * @return {string}
-   */
-  function encode (source) {
-    if (source.length === 0) return ''
-
-    var digits = [0]
-    for (var i = 0; i < source.length; ++i) {
-      var carry = (digits[0] << 8) + source[i]
-      digits[0] = carry % BASE
-      carry = (carry / BASE) | 0
-
-      for (var j = 1; j < digits.length; ++j) {
-        carry += digits[j] << 8
-        digits[j] = carry % BASE
-        carry = (carry / BASE) | 0
-      }
-
-      while (carry > 0) {
-        digits.push(carry % BASE)
-        carry = (carry / BASE) | 0
-      }
-    }
-
-    // deal with leading zeros
-    for (var k = 0; source[k] === 0 && k < source.length - 1; ++k) {
-      digits.push(0)
-    }
-
-    // convert digits to a string
-    for (var ii = 0, jj = digits.length - 1; ii <= jj; ++ii, --jj) {
-      var tmp = ALPHABET[digits[ii]]
-      digits[ii] = ALPHABET[digits[jj]]
-      digits[jj] = tmp
-    }
-
-    return digits.join('')
-  }
-
-  /**
-   * @param {string} string
-   * @return {number[]}
-   */
-  function decode (string) {
-    if (string.length === 0) return []
-
-    var bytes = [0]
-    for (var i = 0; i < string.length; i++) {
-      var value = ALPHABET_MAP[string[i]]
-      if (value === undefined) throw new Error('Non-base' + BASE + ' character')
-
-      var carry = bytes[0] * BASE + value
-      bytes[0] = carry & 0xff
-      carry >>= 8
-
-      for (var j = 1; j < bytes.length; ++j) {
-        carry += bytes[j] * BASE
-        bytes[j] = carry & 0xff
-        carry >>= 8
-      }
-
-      while (carry > 0) {
-        bytes.push(carry & 0xff)
-        carry >>= 8
-      }
-    }
-
-    // deal with leading zeros
-    for (var k = 0; string[k] === LEADER && k < string.length - 1; ++k) {
-      bytes.push(0)
-    }
-
-    return bytes.reverse()
-  }
-
-  return {
-    encode: encode,
-    decode: decode
-  }
-}
-
-},{}]},{},[5]);
+},{"_process":210,"depd":360}]},{},[5]);

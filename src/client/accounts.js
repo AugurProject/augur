@@ -145,9 +145,6 @@ module.exports = function () {
                                 augur.db.putPersistent(self.account);
                             }
 
-                            augur.ramble.invoke = self.invoke;
-                            augur.ramble.context = self;
-                            augur.ramble.from = self.account.address;
                             if (options.doNotFund) return onRegistered(self.account);
                             self.fund(self.account, augur.branches.dev, onRegistered, onSendEther, onSent, onSuccess, onFailed);
 
@@ -205,9 +202,6 @@ module.exports = function () {
                             augur.db.putPersistent(self.account);
                         }
 
-                        augur.ramble.invoke = self.invoke;
-                        augur.ramble.context = self;
-                        augur.ramble.from = self.account.address;
                         cb(self.account);
 
                     // decryption failure: bad password
@@ -224,18 +218,12 @@ module.exports = function () {
             var account = augur.db.getPersistent();
             if (account && account.privateKey) {
                 this.account = account;
-                augur.ramble.invoke = this.invoke;
-                augur.ramble.context = this;
-                augur.ramble.from = account.address;
             }
             return account;
         },
 
         logout: function () {
             this.account = {};
-            augur.ramble.invoke = null;
-            augur.ramble.context = augur.rpc;
-            augur.ramble.from = null;
             augur.db.removePersistent();
             augur.rpc.clear();
         },

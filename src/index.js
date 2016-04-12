@@ -13,10 +13,10 @@ var Decimal = require("decimal.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var request = (NODE_JS) ? require("request") : require("browser-request");
+var connector = require("ethereumjs-connect");
 var contracts = require("augur-contracts");
 var constants = require("./constants");
-var connector = require("ethereumjs-connect");
-var ramble = require("ramble");
 
 Decimal.config({precision: 64});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -32,17 +32,14 @@ function Augur() {
     this.coinbase = null;
     this.from = null;
 
-    this.utils = require("./utilities");
     this.constants = constants;
+    this.utils = require("./utilities");
     this.db = require("./client/db");
     this.orders = require("./client/orders");
-    this.ramble = ramble;
     this.connector = connector;
-    this.ramble.connector = connector;
     this.errors = contracts.errors;
 
     rpc.debug = this.options.debug;
-    this.ramble.rpc = rpc;
     this.rpc = rpc;
 
     // Branch IDs
@@ -120,6 +117,96 @@ Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
 /*************
  * Augur API *
  *************/
+
+// metadata.se
+Augur.prototype.setMetadata = function (market, tag1, tag2, tag3, source, details, links, linksUrl, onSent, onSuccess, onFailed) {
+    var self = this;
+    function setMetadata(market, tag1, tag2, tag3, source, linksUrl, onSent, onSuccess, onFailed) {
+        var tx = clone(self.tx.setMetadata);
+        tx.params = [market, tag1, tag2, tag3, source, linksUrl];
+        return self.transact(tx, onSent, onSuccess, onFailed);
+    }
+    if (market && market.market) {
+        if (market.tag1) tag1 = market.tag1;
+        if (market.tag2) tag2 = market.tag2;
+        if (market.tag3) tag3 = market.tag3;
+        if (market.source) source = market.source;
+        if (market.details) details = market.details;
+        if (market.linksUrl) linksUrl = market.linksUrl;
+        if (market.links) links = market.links;
+        if (market.onSent) onSent = market.onSent;
+        if (market.onSuccess) onSuccess = market.onSuccess;
+        if (market.onFailed) onFailed = market.onFailed;
+        market = market.market;
+    }
+    tag1 = (tag1 && tag1 !== "") ? abi.prefix_hex(abi.encode_hex(tag1)) : "0x0";
+    tag2 = (tag2 && tag2 !== "") ? abi.prefix_hex(abi.encode_hex(tag2)) : "0x0";
+    tag3 = (tag3 && tag3 !== "") ? abi.prefix_hex(abi.encode_hex(tag3)) : "0x0";
+    if (linksUrl) {
+        return setMetadata(market, tag1, tag2, tag3, source, linksUrl || "", onSent, onSuccess, onFailed);
+    }
+    request({
+        method: "POST",
+        headers: {"User-Agent": "request"},
+        url: "https://api.github.com/gists",
+        json: {
+            description: abi.strip_0x(market),
+            public: true,
+            files: {
+                "metadata.json": {
+                    content: JSON.stringify({
+                        details: details,
+                        links: links
+                    })
+                }
+            }
+        }
+    }, function (e, res, body) {
+        if (e) return onFailed(e);
+        if (res.statusCode === 201) linksUrl = body.url;
+        setMetadata(market, tag1, tag2, tag3, source, linksUrl || "", onSent, onSuccess, onFailed);
+    });
+};
+Augur.prototype.parseMetaList = function (metaList, callback) {
+    var metadata = {
+        tag1: (metaList[0] === "0x0") ? null : abi.decode_hex(metaList[0]),
+        tag2: (metaList[1] === "0x0") ? null : abi.decode_hex(metaList[1]),
+        tag3: (metaList[2] === "0x0") ? null : abi.decode_hex(metaList[2]),
+        details: null,
+        links: []
+    };
+    var sourceLength = parseInt(metaList[3]);
+    metadata.source = String.fromCharCode.apply(null, metaList.slice(6, 6+sourceLength));
+    var linksLength = parseInt(metaList[4]);
+    if (!linksLength) return callback(metadata);
+    var linksUrl = String.fromCharCode.apply(null, metaList.slice(metaList.length - linksLength));
+    request({
+        method: "GET",
+        headers: {"User-Agent": "request"},
+        url: linksUrl
+    }, function (e, res, body) {
+        if (e) console.error("getMetadata request error:", e);
+        if (res.statusCode === 200) {
+            var content = JSON.parse(JSON.parse(body).files["metadata.json"].content);
+            metadata.details = content.details || null;
+            metadata.links = content.links || [];
+        }
+        callback(metadata);
+    });
+};
+Augur.prototype.getMetadata = function (market, options, callback) {
+    var self = this;
+    if (!callback && this.utils.is_function(options)) {
+        callback = options;
+        options = null;
+    }
+    options = options || {};
+    var tx = clone(this.tx.getMetadata);
+    tx.params = market;
+    this.fire(tx, function (metaList) {
+        self.parseMetaList(metaList, callback);
+    });
+};
 
 // faucets.se
 Augur.prototype.reputationFaucet = function (branch, onSent, onSuccess, onFailed) {
