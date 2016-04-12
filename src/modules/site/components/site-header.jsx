@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { MARKETS, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
+import { MARKETS, POSITIONS, TRANSACTIONS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 
 import Link from '../../link/components/link';

@@ -1,4 +1,4 @@
-import SiteHeader from '../../app/components/site-header';
+import SiteHeader from '../../site/components/site-header';
 
 module.exports = function(p) {
     return (

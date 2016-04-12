@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import SiteHeader from '../../app/components/site-header';
+import SiteHeader from '../../site/components/site-header';
 import Transactions from '../../transactions/components/transactions';
 
 module.exports = React.createClass({

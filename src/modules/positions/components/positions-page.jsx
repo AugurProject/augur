@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SiteHeader from '../../app/components/site-header';
+import SiteHeader from '../../site/components/site-header';
 import Positions from '../../positions/components/positions';
 import ValueDenomination from '../../common/components/value-denomination';
 

@@ -1,4 +1,4 @@
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../app/constants/pages';
+import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from '../auth/constants/auth-types';
 
 export const PATHS_PAGES = {

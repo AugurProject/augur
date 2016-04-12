@@ -1,7 +1,7 @@
 import React from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
-import SiteHeader from '../../app/components//site-header';
+import SiteHeader from '../../site/components//site-header';
 import Markets from '../../markets/components/markets';
 import Link from '../../link/components/link';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SiteHeader from '../../app/components/site-header';
+import SiteHeader from '../../site/components/site-header';
 import AuthForm from '../../auth/components/auth-form';
 
 module.exports = React.createClass({

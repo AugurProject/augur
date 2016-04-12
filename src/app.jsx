@@ -1,6 +1,7 @@
 import React from 'react';
+import { render } from 'react-dom';
 
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/app/constants/pages';
+import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -10,47 +11,59 @@ import AuthPage from './modules/auth/components/auth-page';
 import PositionsPage from './modules/positions/components/positions-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
-module.exports = React.createClass({
-    render: function() {
-        var p = this.props.selectors;
-        switch(p.activePage) {
-        	case REGISTER:
-            case LOGIN:
-            case LOGOUT:
-        		return <AuthPage
-        					siteHeader={ p.siteHeader }
-        					authForm={ p.authForm } />;
+export default function(appElement, selectors) {
+    var p = selectors,
+    	node;
 
-        	case MAKE:
-        		return <CreateMarketPage
-        					siteHeader={ p.siteHeader }
-        					createMarketForm={ p.createMarketForm } />;
+ 	switch(p.activePage) {
+    	case REGISTER:
+        case LOGIN:
+        case LOGOUT:
+    		node = <AuthPage
+    					siteHeader={ p.siteHeader }
+    					authForm={ p.authForm } />;
+    		break;
 
-        	case POSITIONS:
-        		return <PositionsPage
-        					siteHeader={ p.siteHeader }
-        					positions={ p.positions }
-        					positionsSummary={ p.positionsSummary } />;
+    	case MAKE:
+    		node = <CreateMarketPage
+    					siteHeader={ p.siteHeader }
+    					createMarketForm={ p.createMarketForm } />;
+    		break;
 
-        	case TRANSACTIONS:
-        		return <TransactionsPage
-        					siteHeader={ p.siteHeader }
-        					transactions={ p.transactions }
-        					transactionsTotals={ p.transactionsTotals } />;
+    	case POSITIONS:
+    		node = <PositionsPage
+    					siteHeader={ p.siteHeader }
+    					positions={ p.positions }
+    					positionsSummary={ p.positionsSummary } />;
+    		break;
 
-        	case M:
-        		return <MarketPage selectors={ p } />;
+    	case TRANSACTIONS:
+    		node = <TransactionsPage
+    					siteHeader={ p.siteHeader }
+    					transactions={ p.transactions }
+    					transactionsTotals={ p.transactionsTotals } />;
+    		break;
 
-        	default:
-        		return <MarketsPage
-        					siteHeader={ p.siteHeader }
-        					createMarketLink={ (p.links || {}).createMarketLink }
-        					onChangeKeywords={ p.keywordsChangeHandler }
+    	case M:
+    		node = <MarketPage selectors={ p } />;
+    		break;
 
-        					markets={ p.markets }
-        					favoriteMarkets={ p.favoriteMarkets }
-        					marketsHeader={ p.marketsHeader }
-        					filtersProps={ p.filtersProps } />;
-        }
+    	default:
+    		node = <MarketsPage
+    					siteHeader={ p.siteHeader }
+    					createMarketLink={ (p.links || {}).createMarketLink }
+    					onChangeKeywords={ p.keywordsChangeHandler }
+
+    					markets={ p.markets }
+    					favoriteMarkets={ p.favoriteMarkets }
+    					marketsHeader={ p.marketsHeader }
+    					filtersProps={ p.filtersProps } />;
+    		break;
     }
-});
+
+	render(
+		node,
+		appElement
+	);
+}
+

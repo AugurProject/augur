@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SiteHeader from '../../app/components/site-header';
+import SiteHeader from '../../site/components/site-header';
 import CreateMarketForm from '../../create-market/components/create-market-form';
 
 module.exports = React.createClass({
