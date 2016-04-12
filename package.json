@@ -1,64 +1,87 @@
 {
-  "name": "augur",
-  "version": "0.1.0",
-  "description": "Web client for Augur, a prediction markets platform",
-  "main": "app/main.jsx",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": "0.12.x"
-  },
+  "name": "augur-ui",
+  "version": "2.0.0",
+  "description": "Augur UI",
+  "author": "Augur Project",
+  "license": "AAL",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AugurProject/augur.git"
+    "url": "https://github.com/AugurProject/augur"
   },
-  "license": "AAL",
-  "bugs": {
-    "url": "https://github.com/AugurProject/augur/issues"
-  },
-  "homepage": "https://github.com/AugurProject/augur",
-  "browserify": {
-    "extensions": [
-      ".jsx"
-    ],
-    "transform": [
-      [
-        "babelify",
-        {}
-      ]
-    ]
+  "scripts": {
+    "start": "http-server ./build -c-1 -p $PORT",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "_____": "",
+    "watch": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=development npm run -s watch:all",
+    "watch:dummy": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=dummy npm run -s watch:all",
+    "build": "clear; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
+    "______": "",
+    "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:augurjs & npm run -s build:js) && npm run -s build:html && npm run -s build:finish",
+    "build:assets": "cp ./src/assets/. ./build/$npm_package_version -R && cp $npm_package_config_assets_folder ./build/$npm_package_version -R && echo ---------ASSETS---------`date +%r`",
+    "build:augurjs": "[ $NODE_ENV = dummy ] && touch ./build/$npm_package_version/augur.min.js || browserify $npm_package_config_augurjs_entry_folder/index.js --standalone augurjs | derequire | npm run -s partial:uglify > ./build/$npm_package_version/augur.min.js -R && echo ---------AUGURJS--------`date +%r`",
+    "build:css": "for file in $npm_package_config_less_entry_files; do lessc $file | cleancss --s0 | npm run -s partial:replaceAssets > ./build/$npm_package_version/$(basename $file | sed -e 's~less~css~') ; done && echo ---------CSS------------`date +%r`",
+    "build:js": "npm run -s build:js:browserify | npm run -s partial:replaceAssets | npm run -s partial:uglify > ./build/$npm_package_version/build.js && echo ---------JS-------------`date +%r`",
+    "build:js:browserify": "browserify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge]",
+    "build:html": "cat ./src/index.html | npm run -s partial:replaceAssets | npm run -s build:html:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
+    "build:html:inline_sources": "inline-source --compress false --root ./build -",
+    "build:finish": "echo ---------FINISHED-------`date +%r`",
+    "_______": "",
+    "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:assets & npm run -s watch:augurjs & npm run -s watch:js & npm run -s watch:html)",
+    "watch:assets": "onchange './src/assets/**' -i -- npm run -s build:assets",
+    "watch:augurjs": "onchange $npm_package_config_augurjs_entry_folder/** -i -- npm run -s build:augurjs",
+    "watch:css": "onchange './src/**/*.less' -i -- npm run -s build:css",
+    "watch:js": "watchify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./build/$npm_package_version/build.js.map | npm run -s partial:replaceAssets > ./build/$npm_package_version/build.js && echo ---------WATCHIFY--------`date +%r`'",
+    "watch:html": "onchange './src/index.html' -i -- npm run -s build:html",
+    "________": "",
+    "clean": "rimraf ./build/* && mkdir -p ./build/$npm_package_version && mkdir -p ./build/$npm_package_version && touch $(npm run -s partial:index_filename) && echo ---------CLEAN----------`date +%r`",
+    "_________": "",
+    "partial:replaceAssets": "sed 's~${build_folder}~'$npm_package_version'~g'",
+    "partial:uglify": "[ $NODE_ENV = production ] && uglifyjs --compress drop_console,unused=true --mangle --screw-ie8 || cat",
+    "partial:index_filename": "[ $NODE_ENV != production ] && echo \"./build/index.html\" || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "augur-abi": "^0.1.0",
-    "augur.js": "^0.9.11",
-    "babelify": "^6.1.1",
-    "bignumber.js": "^2.0.7",
-    "bootstrap": "^3.3.4",
-    "browserify": "^10.2.4",
-    "envify": "^3.4.0",
-    "es6-promise": "^2.0.1",
-    "firebase-token-generator": "^2.0.0",
-    "fluxxor": "^1.6.0",
-    "jquery": "^2.1.3",
-    "lodash": "^3.9.0",
-    "moment": "^2.10.2",
-    "node-static": "~0.7.6",
-    "pnglib": "0.0.1",
-    "react": "^0.13.3",
-    "react-bootstrap": "^0.23.7",
-    "react-cookie": "^0.2.3",
-    "react-date-picker": "^2.1.3",
-    "react-intl": "^1.2.0",
-    "react-paginate": "^0.1.33",
-    "react-router": "^0.13.3",
-    "secure-random": "^1.1.1",
-    "ua-parser-js": "^0.7.7",
-    "web3": "^0.9.1"
+    "augur-abi": "^0.2.7",
+    "augur-ui-react-components": "git+https://github.com/AugurProject/augur-ui-react-components.git",
+    "augur.js": "^0.19.0",
+    "bignumber.js": "^2.3.0",
+    "memoizerific": "^1.5.2",
+    "redux": "^3.4.0",
+    "redux-thunk": "^2.0.1",
+    "secure-random": "^1.1.1"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.6.0",
-    "grunt-contrib-jshint": "^0.11.1"
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "browserify-shim": "^3.8.12",
+    "clean-css": "^3.4.12",
+    "derequire": "^2.0.3",
+    "envify": "^3.4.0",
+    "exorcist": "^0.4.0",
+    "http-server": "^0.9.0",
+    "inline-source-cli": "^1.1.1",
+    "less": "^2.6.1",
+    "npm-check-updates": "^2.6.1",
+    "onchange": "^2.3.0",
+    "rimraf": "^2.5.2",
+    "uglify-js": "^2.6.2",
+    "watchify": "^3.7.0"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "ga": "global:ga",
+    "augur.js": "global:augurjs"
+  },
+  "config": {
+    "js_entry_file": "./src/index.js",
+    "less_entry_files": "./src/less/*.less",
+    "assets_folder": "./node_modules/augur-ui-react-components/dist/assets/**",
+    "augurjs_entry_folder": "./node_modules/augur.js/src"
   }
 }
