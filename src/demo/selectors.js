@@ -1,4 +1,4 @@
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../modules/site/constants/pages';
 
 var selectors = {
 	activePage: MARKETS,
