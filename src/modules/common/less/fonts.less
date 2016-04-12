@@ -1,0 +1,21 @@
+.font-face(@family: arial, @weight: 500, @style: normal, @path: ''){
+    @font-face{
+        font-family: @family;
+        src:url('@{path}.eot');
+        src:url('@{path}.eot?#iefix') format('embedded-opentype'),
+            url('@{path}.woff') format('woff'),
+            url('@{path}.ttf') format('truetype'),
+            url('@{path}.svg#icon') format('svg');
+        font-weight: @weight;
+        font-style: @style;
+    }
+}
+
+.font-face('FontAwesome', normal, normal, '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/fonts/fontawesome-webfont');
+
+@font-face{
+    font-family: CoreMellow;
+    src: url('/${build_folder}/fonts/core-mellow/core-mellow-35-light.otf');
+    font-weight: 400;
+    font-style: normal;
+}

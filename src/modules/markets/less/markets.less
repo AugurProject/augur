@@ -1,0 +1,153 @@
+.markets {
+	.page-header {
+		.button.make {
+			float: right;
+			font-size: 0.65em;
+			margin: 1.3em 0 0 2.5vw;
+		}
+	}
+
+	.page-content {
+		color: @color-dark-hover;
+
+		.search-sort-bar {
+			width: 100%;
+			padding: 0 2.3rem 1.5vmin 2.7rem;
+			background: @color-dark-hover;
+
+			.search-bar {
+				display: inline-block;
+				width: 70%;
+				margin: 0 .5% 0 0;
+				font-size: 3vmin;
+				vertical-align: top;
+
+
+			   &:before {
+			        display: block; position: absolute;
+			        content: '\f002';
+			        top: 0.65em; left: 0.7em;
+			        font-size: inherit;
+			        font-family: 'FontAwesome';
+			        color: @color-border-darker;
+			    }
+
+			    .box {
+			    	padding: 0.5em 2em;
+			    }
+			}
+
+			.sort-control {
+				display: inline-block;
+				width: 29%;
+				padding: .45em;
+				font-size: 3vmin;
+				vertical-align: top;
+
+			}
+		}
+
+		.markets-header {
+			display: flex;
+			width: 100%;
+			margin: 1vmin 0 0 0;
+			padding: 1.95rem 0 1.5rem 24rem;
+			color: @color-dark-hover;
+			background: white;
+			font-weight: 400;
+			font-size: 1.5rem;
+			text-transform: uppercase;
+
+			.markets-header-item {
+				display: inline-block;
+				line-height: 2.6rem;
+				margin-right: 3vw;
+				cursor: pointer;
+				opacity: 0.5;
+
+				* {
+					vertical-align: middle;
+				}
+
+				&.active {
+					opacity: 1;
+				}
+
+				&.favorites {
+					white-space: nowrap;
+
+					.name {
+						&:before {
+							display: inline-block; position: relative;
+							top: 0.12em;
+							margin-right: 0.5rem;
+							content: '';
+							color: #FFDA00;
+							font-family: FontAwesome;
+							font-size: 1.6em;
+							transform: rotate(58deg);
+							opacity: 0.45;
+						}
+					}
+				}
+
+				&.pending-reports {
+					color: fade(@color-danger-active, 90%);
+					font-weight: 700;
+					white-space: nowrap;
+
+					.name {
+						&:before {
+							display: inline-block; position: relative;
+							top: 0.12em;
+							margin-right: 0.5rem;
+							content: '\f12a';
+							color: fade(@color-danger-active, 70%);
+							font-family: FontAwesome;
+							font-size: 1.2em;
+						}
+					}
+				}
+
+				&.button {
+					opacity: 1;
+				}
+
+				.num {
+					font-weight: 900;
+					margin-left: 0.5rem;
+				}
+			}
+		}
+
+		.filters {
+			position: absolute; z-index: 2;
+			width: 21rem;
+			margin: 1vmin 0 2vmin 0;
+			padding: 0 0 3rem 0;
+			color: @color-dark-normal;
+			background: white;
+			border-radius: 1px;
+			font-size: 1.4rem;
+
+			.title {
+				display: block;
+				margin: 3rem 1rem 1rem 4rem;
+				font-size: 1.5rem;
+				font-weight: 700;
+			}
+
+			.filter {
+				display: block;
+				margin: 0.5rem 1rem 0.5rem 4rem;
+			}
+		}
+
+		.markets-list {
+			width: 100%; min-height: 40rem;
+			padding-left: 21rem;
+			line-height: 2.5em;
+			overflow: hidden;
+		}
+	}
+}

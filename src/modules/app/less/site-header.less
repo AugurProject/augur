@@ -1,0 +1,86 @@
+.site-header {
+    position: fixed; z-index: 9;
+    top: 0; left: 0;
+    width: 100%; height: @site-header-height;
+    background: white;
+
+    .site-nav {
+        display: flex;
+        max-width: @media-large-width;
+        top: 0; left: 0; bottom: 0; right: 0;
+        margin: auto;
+        padding: 0 2rem;
+        border-bottom: 3px solid @color-dark-hover;
+        font-size: 1.5em;
+
+        .spacer {
+            width:100%;
+        }
+
+        .site-nav-link {
+            display: block;
+            height: @site-header-height;
+            line-height: @site-header-height;
+            padding: 0 2vw;
+            white-space: nowrap;
+
+            &:hover, &:active {
+                background: fade(@color-dark-hover, 20%);
+            }
+
+            &:focus {
+                text-shadow: 0 0 @color-light-normal;
+            }
+
+            &.augur {
+            	font-family: CoreMellow;
+                font-size: 2em;
+                font-weight: 700;
+            }
+
+            &.active {
+                background: @color-dark-hover;
+                color: @color-light-normal;
+            }
+
+            &.positions {
+
+            }
+
+            &.transactions {
+            	&.working {
+	                &:not(.active) {
+	                	animation-name: site-header-item-bg;
+	                    animation-duration: 0.7s;
+	                    animation-iteration-count: infinite;
+	                    animation-direction: alternate;
+	                }
+            	}
+                strong {
+                    margin-left: 0 !important;
+                    margin-right: 1.5vw !important;
+                    &:last-child {
+                        margin-right: 0 !important;
+                    }
+                }
+
+                .link-text {
+                	white-space: nowrap;
+                }
+            }
+
+            strong {
+                font-weight: 900;
+            }
+        }
+    }
+}
+
+@keyframes site-header-item-bg {
+	0% {
+		background: fade(orange, 4%);
+	}
+	100% {
+		background: fade(orange, 13%);
+	}
+}

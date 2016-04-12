@@ -1,0 +1,129 @@
+.transactions {
+    .page-content {
+        font-size: 1.2rem;
+        background: white;
+
+        .transaction-item {
+			display: flex;
+			align-items: center;
+			padding: 2vh 0;
+            line-height: 2.5rem;
+            border-bottom: 1px solid @color-border;
+            background: fade(orange, 6%);
+            font-weight: 900;
+        	animation-name: transactions-active-bg;
+            animation-duration: 0.7s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+
+            &.failed {
+                background: fade(@color-danger-normal, 6%);
+                animation-name: unset;
+				.status-and-message {
+					color: @color-danger-normal;
+				}
+            }
+
+            &.pending {
+                background: fade(@color-light-normal, 50%);
+                animation-name: unset;
+				.status-and-message {
+					color: @color-dark-normal;
+				}
+            }
+
+            &.success {
+                background: fade(@color-success-normal, 6%);
+                animation-name: unset;
+				.status-and-message {
+					color: @color-success-normal;
+				}
+            }
+
+            .index {
+                display: inline-block;
+                width: 5%;
+                padding: 0 1% 0 0;
+                text-align: right;
+            }
+
+            .description {
+                display: inline-block;
+                width: 30%;
+                line-height: 1.5em;
+                padding: 0 3% 0 1%;
+                text-align: left;
+                border-right: 1px solid @color-border;
+                font-weight: 400;
+
+                > * {
+                	display: inline-block;
+                	margin-right: 0.7rem;
+                }
+
+                .action, .shares, .avg-price {
+                	font-weight: 900;
+                }
+
+                .outcome-name {
+                	text-transform: uppercase;
+                }
+
+                .market-description {
+                	line-height: 1.5em;
+                	font-size: 0.8rem;
+                }
+            }
+
+            .value-changes {
+                display: inline-block;
+                width: 45%;
+                padding: 0 3% 0 1%;
+                text-align: right;
+                font-size: 1.1rem;
+
+                .value-change {
+                    display: inline-block;
+                    padding: 0 3%;
+                    font-weight: 700;
+                    white-space: nowrap;
+                }
+            }
+
+            .status-and-message {
+                display: inline-block;
+                width: 20%;
+                padding: 0 3% 0 1%;
+				line-height: 1.2rem;
+                text-align: right;
+                border-left: 1px solid @color-border;
+                color: orange;
+
+	            .status {
+	            }
+
+	            .message {
+                	font-size: 0.8rem;
+	            }
+            }
+        }
+
+        .feel-free {
+			display: block;
+			padding: 2rem 3rem 5rem 3rem;
+			text-align: right;
+			color: @color-plain-active;
+			font-size: 1.1rem;
+			font-style: italic;
+        }
+    }
+}
+
+@keyframes transactions-active-bg {
+	0% {
+		background: fade(orange, 6%);
+	}
+	100% {
+		background: fade(orange, 20%);
+	}
+}

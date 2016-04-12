@@ -1,0 +1,153 @@
+.create-market {
+
+	.create-market-content {
+		padding: 4% 5%;
+		background: white;
+		font-size: 1.4rem;
+
+		h1 {
+			margin-bottom: 2rem;
+			font-size: 2.5rem;
+			font-weight: 700;
+		}
+
+		h4 {
+			margin: 2rem 0 0.5rem 0;
+			font-size: 1.75rem;
+			font-weight: 700;
+		}
+
+		label {
+			font-weight: 700;
+		}
+
+		.button {
+			font-size: 1.3rem;
+		}
+
+		.buttons {
+			.button {
+				margin: 2rem 1rem 1rem 0;
+			}
+		}
+
+		.error-message {
+			display: inline-block;
+			margin: 0.7rem 1rem;
+			color: @color-danger-normal;
+		}
+
+		.input-list {
+			margin: 2rem 0 1rem 0;
+
+			.item {
+				width: 100%;
+				margin: 1rem 0;
+
+				&.new-item {
+					opacity: 0.3;
+
+					&:hover {
+						opacity: 1;
+					}
+				}
+
+				.input {
+					width: 100%; max-width: 25rem
+				}
+			}
+		}
+
+		.step-1 {
+			.market-types {
+				.market-type {
+					margin: 2rem 1rem;
+
+					.button {
+						margin: 1.5rem 0;
+					}
+				}
+
+				.important-message {
+					margin: 2rem 1rem 1rem 1rem;
+				}
+			}
+		}
+
+		.step-2 {
+			.description {
+				.input {
+					font-size: 1.3em;
+					width: 100%;
+				}
+			}
+
+			.end-date {
+				margin-top: 2em;
+				.date-picker {
+					width: 100%; max-width: 40rem;
+					margin-top: 2rem;
+				}
+			}
+
+			.scalar {
+				.scalar-num {
+					margin: 2rem 0;
+					label {
+						display: block;
+						margin: 1rem 0;
+					}
+				}
+			}
+		}
+
+		.step-3 {
+			.expiry-source-option {
+				display: block;
+				margin: 1rem;
+				.input {
+					margin: 0 1rem 0 0;
+				}
+			}
+
+			.expiry-source-url {
+				.input {
+					width: 90%;
+					margin: 1rem 3rem 0 0;
+				}
+			}
+
+			.details-text-input {
+				width: 90%;
+				margin: 1rem 0px;
+			}
+
+			.resources-list {
+				.item {
+					width: 90%; max-width: unset;
+				}
+			}
+		}
+
+		.step-4 {
+			.input {
+				width: 5em;
+				margin-top: 2rem;
+				font-size: 2rem;
+				input {
+					text-align: right;
+				}
+			}
+
+			.denomination {
+				margin: 1rem;
+				font-size: 1.9rem;
+				font-weight: 900;
+			}
+
+			.fee {
+				margin-bottom: 2rem;
+			}
+		}
+	}
+}

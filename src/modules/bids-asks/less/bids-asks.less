@@ -1,0 +1,89 @@
+.bids-asks {
+	display: flex;
+	flex-wrap: wrap; justify-content: center;
+	padding: 0.5rem 0 3rem 0;
+	text-align: center;
+	font-size: 1.7vmin;
+
+	.bids-asks-group {
+		flex: 2;
+		display: inline-block;
+		min-width: 33.5em;
+		margin: 0.25rem;
+		padding: 2rem;
+		background: white;
+		border-radius: 1px;
+
+		h5 {
+			margin-bottom: 0.5em;
+			text-align: center;
+			border-bottom: 1px solid @color-border;
+		    font-size: 1.3em;
+		    font-weight: 700;
+		    text-transform: uppercase;
+
+		    .name-header {
+		    	display: inline-block;
+		    }
+
+		    .bids-header {
+		    	display: inline-block;
+		    	text-align: right;
+		    	font-size: 0.65em;
+		    	font-weight: 400;
+		    	padding-right: 2rem;
+		    }
+
+		    .asks-header {
+		    	display: inline-block;
+	    		padding-left: 2rem;
+		    	text-align: left;
+		    	font-size: 0.65em;
+		    	font-weight: 400;
+		    }
+		}
+
+		.bids {
+			display: inline-block;
+			padding-right: 2em;
+			vertical-align: top;
+			text-align: right;
+			border-right: 1px solid @color-border;
+
+			.bid {
+				> *:not(:first-child) {
+					display: inline-block;
+					min-width: 8em;
+					margin-left: 1em;
+				}
+				.price {
+					min-width: 4em;
+				}
+			}
+		}
+
+		.asks {
+			display: inline-block;
+			min-width: 8em;
+			padding-left: 2em;
+			vertical-align: top;
+			text-align: left;
+			border-left: 1px solid @color-border;
+
+			.ask {
+				> *:not(:last-child) {
+					display: inline-block;
+					min-width: 8em;
+					margin-right: 1em;
+				}
+				.price {
+					min-width: 4em;
+				}
+			}
+		}
+
+		.bid-ask {
+			min-width: 13em;
+		}
+	}
+}
