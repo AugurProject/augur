@@ -24665,7 +24665,10 @@ selectors.activePage = _pages.MARKETS;
 
 selectors.loginAccount = {
 	id: '123',
-	handle: 'Johnny'
+	handle: 'Johnny',
+	rep: emptyNumber('rep'),
+	ether: emptyNumber('eth'),
+	realEther: emptyNumber('eth')
 };
 
 selectors.links = {
@@ -24694,6 +24697,21 @@ selectors.links = {
 
 selectors.authForm = {};
 
+selectors.positions = [];
+selectors.positionsSummary = {
+	title: '0 Positions',
+	numPositions: null,
+	totalValue: null,
+	gainPercent: null
+};
+
+selectors.transactions = [];
+selectors.transactionsTotals = {
+	title: '0 Transactions'
+};
+selectors.nextTransaction = {};
+selectors.isTransactionsWorking = false;
+
 selectors.markets = [];
 selectors.allMarkets = [];
 selectors.filteredMarkets = [];
@@ -24713,14 +24731,6 @@ selectors.tradeOrders = [];
 selectors.tradeOrdersTotals = {};
 selectors.placeTradeHandler = function () {};
 
-selectors.positions = [];
-selectors.positionsSummary = {};
-
-selectors.transactions = [];
-selectors.transactionsTotals = {};
-selectors.nextTransaction = {};
-selectors.isTransactionsWorking = false;
-
 selectors.createMarketForm = {};
 selectors.createMarketForm2 = {};
 selectors.createMarketForm3 = {};
@@ -24738,6 +24748,30 @@ selectors.update = function (newState) {
 };
 
 module.exports = selectors;
+
+function zeroNumber(denomination) {
+	return {
+		value: 0,
+		formattedValue: 0,
+		formatted: '0',
+		rounded: '0',
+		minimized: '0',
+		full: '0',
+		denomination: denomination || ''
+	};
+}
+
+function emptyNumber(denomination) {
+	return {
+		value: 0,
+		formattedValue: 0,
+		formatted: '-',
+		rounded: '-',
+		minimized: '-',
+		full: '-',
+		denomination: denomination || ''
+	};
+}
 
 },{"../modules/auth/constants/auth-types":185,"../modules/site/constants/pages":223}],183:[function(require,module,exports){
 'use strict';
@@ -27280,12 +27314,13 @@ module.exports = _react2.default.createClass({
 					'span',
 					{ className: 'big-line' },
 					!!p.positionsSummary && !!p.positionsSummary.numPositions && p.positionsSummary.numPositions.minimized,
-					'  Positions worth',
+					' ',
+					!!p.positionsSummary && p.positionsSummary.title,
 					!!p.positionsSummary && p.positionsSummary.totalValue && '&nbsp;' + _react2.default.createElement(_valueDenomination2.default, p.positionsSummary.totalValue),
 					!!p.positionsSummary && p.positionsSummary.gainPercent && '&nbsp;' + '(' + _react2.default.createElement(_valueDenomination2.default, p.positionsSummary.gainPercent) + ')'
 				)
 			),
-			_react2.default.createElement(_positions2.default, {
+			!!p.positions && !!p.positions.length && _react2.default.createElement(_positions2.default, {
 				className: 'page-content positions-content',
 				positions: p.positions })
 		);
@@ -27679,9 +27714,9 @@ module.exports = _react2.default.createClass({
 					(!p.isTransactionsWorking || p.activePage === _pages.TRANSACTIONS) && _react2.default.createElement(
 						'span',
 						{ className: 'link-text' },
-						_react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.rep || {}, { denomination: 'rep', isMinimized: true, isRounded: true })),
+						_react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.rep || {}, { isMinimized: true, isRounded: true })),
 						'   ',
-						_react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.ether || {}, { denomination: 'eth', isMinimized: true, isRounded: true }))
+						_react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.ether || {}, { isMinimized: true, isRounded: true }))
 					),
 					p.isTransactionsWorking && p.activePage !== _pages.TRANSACTIONS && _react2.default.createElement(
 						'span',

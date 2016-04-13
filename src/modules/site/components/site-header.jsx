@@ -51,9 +51,9 @@ module.exports = React.createClass({
 
 								{ (!p.isTransactionsWorking || p.activePage === TRANSACTIONS) &&
 									<span className="link-text">
-										<ValueDenomination { ...p.loginAccount.rep || {} } denomination="rep" isMinimized={ true } isRounded={ true } />
+										<ValueDenomination { ...p.loginAccount.rep || {} } isMinimized={ true } isRounded={ true } />
 										&nbsp;&nbsp;&nbsp;
-										<ValueDenomination { ...p.loginAccount.ether || {} } denomination="eth" isMinimized={ true } isRounded={ true } />
+										<ValueDenomination { ...p.loginAccount.ether || {} } isMinimized={ true } isRounded={ true } />
 									</span>
 								}
 								{ p.isTransactionsWorking && p.activePage !== TRANSACTIONS &&

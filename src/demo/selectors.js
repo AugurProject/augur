@@ -7,7 +7,10 @@ selectors.activePage = MARKETS;
 
 selectors.loginAccount = {
 	id: '123',
-	handle: 'Johnny'
+	handle: 'Johnny',
+	rep: emptyNumber('rep'),
+	ether: emptyNumber('eth'),
+	realEther: emptyNumber('eth')
 };
 
 selectors.links = {
@@ -21,6 +24,21 @@ selectors.links = {
 };
 
 selectors.authForm = {};
+
+selectors.positions =  [];
+selectors.positionsSummary =  {
+	title: '0 Positions',
+	numPositions: null,
+	totalValue: null,
+	gainPercent: null
+};
+
+selectors.transactions =  [];
+selectors.transactionsTotals =  {
+	title: '0 Transactions'
+};
+selectors.nextTransaction =  {};
+selectors.isTransactionsWorking =  false;
 
 selectors.markets = [];
 selectors.allMarkets =  [];
@@ -41,13 +59,9 @@ selectors.tradeOrders =  [];
 selectors.tradeOrdersTotals =  {};
 selectors.placeTradeHandler =  () => {};
 
-selectors.positions =  [];
-selectors.positionsSummary =  {};
 
-selectors.transactions =  [];
-selectors.transactionsTotals =  {};
-selectors.nextTransaction =  {};
-selectors.isTransactionsWorking =  false;
+
+
 
 selectors.createMarketForm =  {};
 selectors.createMarketForm2 =  {};
@@ -65,3 +79,26 @@ selectors.update = function(newState) {
 
 module.exports = selectors;
 
+function zeroNumber(denomination) {
+	return {
+		value: 0,
+		formattedValue: 0,
+		formatted: '0',
+		rounded: '0',
+		minimized: '0',
+		full: '0',
+		denomination: denomination || ''
+	};
+}
+
+function emptyNumber(denomination) {
+	return {
+		value: 0,
+		formattedValue: 0,
+		formatted: '-',
+		rounded: '-',
+		minimized: '-',
+		full: '-',
+		denomination: denomination || ''
+	};
+}

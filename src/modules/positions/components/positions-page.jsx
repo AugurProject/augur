@@ -21,7 +21,8 @@ module.exports = React.createClass({
 				<header className="page-header">
 					<span className="big-line">
 						{ !!p.positionsSummary && !!p.positionsSummary.numPositions && p.positionsSummary.numPositions.minimized }
-						&nbsp; Positions worth
+
+						&nbsp;{ !!p.positionsSummary && p.positionsSummary.title }
 
 						{ !!p.positionsSummary && p.positionsSummary.totalValue &&
 							'&nbsp;' + <ValueDenomination { ...p.positionsSummary.totalValue } />
@@ -32,9 +33,11 @@ module.exports = React.createClass({
 					</span>
 				</header>
 
-				<Positions
-					className="page-content positions-content"
-					positions={ p.positions }/>
+				{ !!p.positions && !!p.positions.length &&
+					<Positions
+						className="page-content positions-content"
+						positions={ p.positions }/>
+				}
 			</main>
 		);
 	}
