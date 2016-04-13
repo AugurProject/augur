@@ -66,7 +66,7 @@ html,
 body {
   color: #32323a;
   background: #eeeeef;
-  background: linear-gradient(to right, #f0f0f5 0%, #ffffff 50%, #f0f0f5 100%);
+  background: linear-gradient(to right, #e6e6f0 0%, #ffffff 50%, #e6e6f0 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeef', endColorstr='#eeeeef', GradientType=1);
   font-family: 'Roboto', Arial, sans-serif;
   font-size: 10px;
