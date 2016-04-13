@@ -66,7 +66,7 @@ module.exports = React.createClass({
 			case MAKE_MARKET:
 				nodes.description = (
 					<span className="description">
-						Make
+						Make&nbsp;
 						<strong>{ p.data.type }</strong>
 						market
 						<br />

@@ -27992,7 +27992,7 @@ module.exports = _react2.default.createClass({
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
-					'Make',
+					'Make ',
 					_react2.default.createElement(
 						'strong',
 						null,
