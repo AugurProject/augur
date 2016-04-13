@@ -27992,13 +27992,22 @@ module.exports = _react2.default.createClass({
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
-					'Make  ',
+					_react2.default.createElement(
+						'span',
+						null,
+						'Make'
+					),
+					' ',
 					_react2.default.createElement(
 						'strong',
 						null,
 						p.data.type
 					),
-					'market',
+					_react2.default.createElement(
+						'span',
+						null,
+						'market'
+					),
 					_react2.default.createElement('br', null),
 					_react2.default.createElement(
 						'span',
@@ -28011,7 +28020,12 @@ module.exports = _react2.default.createClass({
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
-					'Report  ',
+					_react2.default.createElement(
+						'span',
+						null,
+						'Report'
+					),
+					' ',
 					_react2.default.createElement(
 						'strong',
 						null,
