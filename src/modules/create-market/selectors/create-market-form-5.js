@@ -25,7 +25,6 @@ export const selectMarketFromForm = function(formState, currentBlockNumber, curr
 	o.endBlock = selectEndBlockFromEndDate(formState.endDate.getTime(), currentBlockNumber, currentBlockMillisSinceEpoch);
 
 	o.tradingFee = formState.tradingFeePercent / 100;
-	o.tradingFeePercent = formatPercent(formState.tradingFeePercent, true);
 	o.volume = formatNumber(0);
 	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
