@@ -1,21 +1,15 @@
-import { formatEther, formatPercent } from '../../../utils/format-number';
+import { formatEther, formatPercent } from '../../../../utils/format-number';
 
-import { TRADING_FEE_MIN, TRADING_FEE_MAX, INITIAL_LIQUIDITY_MIN, TRADING_FEE_DEFAULT, INITIAL_LIQUIDITY_DEFAULT } from '../../create-market/constants/market-values-constraints';
+import { TRADING_FEE_MIN, TRADING_FEE_MAX, INITIAL_LIQUIDITY_MIN, TRADING_FEE_DEFAULT, INITIAL_LIQUIDITY_DEFAULT } from '../../../create-market/constants/market-values-constraints';
 
-import store from '../../../store';
-
-export default function() {
-	var { createMarketInProgress } = store.getState();
+export const select = function(formState) {
 	return {
-		tradingFeePercent: createMarketInProgress.tradingFeePercent || TRADING_FEE_DEFAULT,
-		tradingFee: createMarketInProgress.tradingFeePercent / 100,
-		initialLiquidity: createMarketInProgress.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-
-		errors: selectStep4ErrorMessages(createMarketInProgress)
+		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
+		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 	};
-};
+}
 
-export const isValidStep4 = function(formState) {
+export const isValid = function(formState) {
 	if (validateTradingFee(formState.tradingFeePercent)) {
 		return false;
 	}
@@ -27,7 +21,7 @@ export const isValidStep4 = function(formState) {
 	return true;
 };
 
-export const selectStep4ErrorMessages = function(formState) {
+export const errors = function(formState) {
 	var errors = {};
 
 	if (formState.tradingFeePercent !== undefined) {

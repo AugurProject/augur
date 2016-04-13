@@ -33,10 +33,6 @@ import nextTransaction from './modules/transactions/selectors/next-transaction';
 import isTransactionsWorking from './modules/transactions/selectors/is-transactions-working';
 
 import createMarketForm from './modules/create-market/selectors/create-market-form';
-import createMarketForm2 from './modules/create-market/selectors/create-market-form-2';
-import createMarketForm3 from './modules/create-market/selectors/create-market-form-3';
-import createMarketForm4 from './modules/create-market/selectors/create-market-form-4';
-import createMarketForm5 from './modules/create-market/selectors/create-market-form-5';
 
 import report from './modules/reports/selectors/report';
 import submitReportHandler from './modules/reports/selectors/submit-report-handler';
@@ -77,10 +73,6 @@ var selectors = {
 	isTransactionsWorking,
 
 	createMarketForm,
-	createMarketForm2,
-	createMarketForm3,
-	createMarketForm4,
-	createMarketForm5,
 
 	report,
 	submitReportHandler

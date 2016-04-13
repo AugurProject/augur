@@ -1,26 +1,21 @@
 import {
 	TAGS_MAX_NUM, TAGS_MAX_LENGTH,
 	RESOURCES_MAX_NUM, RESOURCES_MAX_LENGTH,
-	EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../create-market/constants/market-values-constraints';
+	EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
 
-import { FAILED } from '../../transactions/constants/statuses';
+import { FAILED } from '../../../transactions/constants/statuses';
 
-import store from '../../../store';
-
-export default function() {
-	var { createMarketInProgress } = store.getState();
+export const select = function(formState) {
 	return {
 		tagsMaxNum: TAGS_MAX_NUM,
 		tagMaxLength: TAGS_MAX_LENGTH,
 
 		resourcesMaxNum: RESOURCES_MAX_NUM,
-		resourceMaxLength: RESOURCES_MAX_LENGTH,
-
-		errors: selectStep3ErrorMessages(createMarketInProgress)
+		resourceMaxLength: RESOURCES_MAX_LENGTH
 	};
 };
 
-export const isValidStep3 = function(formState) {
+export const isValid = function(formState) {
 	if (validateExpirySource(formState.expirySource)) {
 		return false;
 	}
@@ -32,7 +27,7 @@ export const isValidStep3 = function(formState) {
 	return true;
 };
 
-export const selectStep3ErrorMessages = function(formState) {
+export const errors = function(formState) {
 	var errors = {};
 
 	if (formState.expirySource !== undefined) {

@@ -1,23 +1,12 @@
-import { formatNumber, formatPercent, formatDate } from '../../../utils/format-number';
+import { formatNumber, formatPercent, formatDate } from '../../../../utils/format-number';
 
-import { MILLIS_PER_BLOCK } from '../../app/constants/network';
-import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../create-market/constants/market-values-constraints';
+import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
+import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../../markets/constants/market-types';
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
 
-import * as CreateMarketActions from '../../create-market/actions/create-market-actions';
+import * as CreateMarketActions from '../../../create-market/actions/create-market-actions';
 
-import store from '../../../store';
-
-export default function() {
-	var { createMarketInProgress, blockchain } = store.getState(),
-		marketFromForm = selectMarketFromForm(createMarketInProgress, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch);
-
-	marketFromForm.onSubmit = () => store.dispatch(CreateMarketActions.submitNewMarketTransaction(marketFromForm));
-
-	return marketFromForm;
-};
-
-export const selectMarketFromForm = function(formState, currentBlockNumber, currentBlockMillisSinceEpoch) {
+export const select = function(formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch) {
 	var o = { ...formState };
 
 	o.type = formState.type;
@@ -25,11 +14,14 @@ export const selectMarketFromForm = function(formState, currentBlockNumber, curr
 	o.endBlock = selectEndBlockFromEndDate(formState.endDate.getTime(), currentBlockNumber, currentBlockMillisSinceEpoch);
 
 	o.tradingFee = formState.tradingFeePercent / 100;
+	o.tradingFeePercent = formatPercent(formState.tradingFeePercent);
 	o.volume = formatNumber(0);
 	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
 	o.outcomes = selectOutcomesFromForm(formState.type, formState.categoricalOutcomes, formState.scalarSmallNum, formState.scalarBigNum);
 	o.isFavorite = false;
+
+	o.onSubmit = () => dispatch(CreateMarketActions.submitNewMarketTransaction(o));
 
 	return o;
 };

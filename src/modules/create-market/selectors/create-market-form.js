@@ -1,85 +1,92 @@
 import memoizerific from 'memoizerific';
 
 import { MARKET_TYPES } from '../../markets/constants/market-types';
-import { TRADING_FEE_DEFAULT, INITIAL_LIQUIDITY_DEFAULT } from '../../create-market/constants/market-values-constraints';
 
 import * as CreateMarketActions from '../../create-market/actions/create-market-actions';
 
 import store from '../../../store';
 
-import { isValidStep2 } from '../../create-market/selectors/create-market-form-2';
-import { isValidStep3 } from '../../create-market/selectors/create-market-form-3';
-import { isValidStep4 } from '../../create-market/selectors/create-market-form-4';
+import * as Step2 from '../../create-market/selectors/form-steps/step-2';
+import * as Step3 from '../../create-market/selectors/form-steps/step-3';
+import * as Step4 from '../../create-market/selectors/form-steps/step-4';
+import * as Step5 from '../../create-market/selectors/form-steps/step-5';
+
 
 export default function() {
-	var { createMarketInProgress } = store.getState();
-	return selectCreateMarketForm(createMarketInProgress, store.dispatch);
+	var { createMarketInProgress, blockchain } = store.getState();
+	return selectCreateMarketForm(createMarketInProgress, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch, store.dispatch);
 }
 
-export const selectCreateMarketForm = memoizerific(1)(function(createMarketInProgress, dispatch) {
-	var selectors = require('../../../selectors'),
-		formState = {
+export const selectCreateMarketForm = memoizerific(1)(function(createMarketInProgress, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch) {
+	var formState = {
 			...createMarketInProgress,
 			errors: {}
-		},
-		isValid = false;
+		};
 
-	// next handler
+	// next step handler
 	formState.onValuesUpdated = (newValues) => dispatch(CreateMarketActions.updateMakeInProgress(newValues));
 
 	// init
 	if (!formState.step || !(formState.step >= 1)) {
-		return {
-			...formState,
-			step: 1
-		};
+		formState.step = 1;
+		return formState;
 	}
 
 	// step 1
 	if (!(formState.step > 1) || !MARKET_TYPES[formState.type]) {
-		return {
-			...formState,
-			step: 1
-		};
+		formState.step = 1;
+		return formState;
 	}
 
 	// step 2
-	isValid = isValidStep2(formState);
-	if (!(formState.step > 2) || !isValid) {
-		return {
-			...formState,
-			step: 2,
-			...selectors.createMarketForm2,
-			isValid
+	formState = {
+		...formState,
+		...Step2.select(formState)
+	};
+	formState.isValid = Step2.isValid(formState);
+	if (!(formState.step > 2) || !formState.isValid) {
+		formState.step = 2;
+		formState.errors = {
+			...formState.errors,
+			...Step2.errors(formState)
 		};
+		return formState;
 	}
 
 	// step 3
-	isValid = isValidStep3(formState);
-	if (!(formState.step > 3) || !isValid) {
-		return {
-			...formState,
-			step: 3,
-			...selectors.createMarketForm3,
-			isValid
+	formState = {
+		...formState,
+		...Step3.select(formState)
+	};
+	formState.isValid = Step3.isValid(formState);
+	if (!(formState.step > 3) || !formState.isValid) {
+		formState.step = 3;
+		formState.errors = {
+			...formState.errors,
+			...Step3.errors(formState)
 		};
+		return formState;
 	}
 
 	// step 4
-	isValid = isValidStep4(formState);
-	if (!(formState.step > 4) || !isValid) {
-		return {
-			...formState,
-			step: 4,
-			...selectors.createMarketForm4,
-			isValid
+	formState = {
+		...formState,
+		...Step4.select(formState)
+	};
+	formState.isValid = Step4.isValid(formState);
+	if (!(formState.step > 4) || !formState.isValid) {
+		formState.step = 4;
+		formState.errors = {
+			...formState.errors,
+			...Step4.errors(formState)
 		};
+		return formState;
 	}
 
 	// step 5
 	return {
 		...formState,
-		step: 5,
-		...selectors.createMarketForm5
+		...Step5.select(formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch),
+		step: 5
 	};
 });

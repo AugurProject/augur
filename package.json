@@ -60,6 +60,7 @@
     "derequire": "^2.0.3",
     "envify": "^3.4.0",
     "exorcist": "^0.4.0",
+    "firebase": "^2.4.2",
     "http-server": "^0.9.0",
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
