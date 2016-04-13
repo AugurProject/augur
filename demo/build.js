@@ -27997,7 +27997,6 @@ module.exports = _react2.default.createClass({
 						null,
 						'Make'
 					),
-					' ',
 					_react2.default.createElement(
 						'strong',
 						null,
@@ -28025,7 +28024,6 @@ module.exports = _react2.default.createClass({
 						null,
 						'Report'
 					),
-					' ',
 					_react2.default.createElement(
 						'strong',
 						null,
