@@ -19,7 +19,7 @@ module.exports = React.createClass({
 				<header className="page-header">
 					<span className="big-line">Be the market maker</span>.
 					Earn fees by making markets for people to trade.
-					The more people <b><i>trade</i></b> your markets, the <b><i>more fees</i></b> you will make.
+					The more people <b><i>trade</i></b> your markets, the more fees you will <b><i>make</i></b>.
 				</header>
 
 				<CreateMarketForm

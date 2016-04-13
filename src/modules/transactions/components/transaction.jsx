@@ -66,7 +66,7 @@ module.exports = React.createClass({
 			case MAKE_MARKET:
 				nodes.description = (
 					<span className="description">
-						Make&nbsp;
+						Make &nbsp;
 						<strong>{ p.data.type }</strong>
 						market
 						<br />
@@ -77,7 +77,7 @@ module.exports = React.createClass({
 			case SUBMIT_REPORT:
 				nodes.description = (
 					<span className="description">
-						Report&nbsp;
+						Report &nbsp;
 						<strong>{ p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '') }</strong>
 						{ !!p.data.isUnethical &&
 							<strong className="unethical"> and Unethical</strong>

@@ -26229,17 +26229,17 @@ module.exports = _react2.default.createClass({
 						'trade'
 					)
 				),
-				' your markets, the ',
+				' your markets, the more fees you will ',
 				_react2.default.createElement(
 					'b',
 					null,
 					_react2.default.createElement(
 						'i',
 						null,
-						'more fees'
+						'make'
 					)
 				),
-				' you will make.'
+				'.'
 			),
 			_react2.default.createElement(_createMarketForm2.default, _extends({
 				className: 'page-content create-market-content'
@@ -27992,7 +27992,7 @@ module.exports = _react2.default.createClass({
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
-					'Make ',
+					'Make  ',
 					_react2.default.createElement(
 						'strong',
 						null,
@@ -28011,7 +28011,7 @@ module.exports = _react2.default.createClass({
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
-					'Report ',
+					'Report  ',
 					_react2.default.createElement(
 						'strong',
 						null,
