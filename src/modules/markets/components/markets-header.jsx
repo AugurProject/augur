@@ -25,7 +25,10 @@ module.exports = React.createClass({
             <header className="markets-header">
                 <div className={ classnames('markets-header-item', 'all-markets', { 'active': !p.selectedMarketsHeader}) } onClick={ p.onClickAllMarkets }>
                     <span className="name">Markets</span>
-                    <span className="num">{ '(' + p.numMarkets + ')' }</span>
+
+                    { (!!p.numMarkets || p.numMarkets === 0) &&
+                        <span className="num">{ '(' + p.numMarkets + ')' }</span>
+                    }
                 </div>
 
                 { !!p.numPendingReports &&
@@ -36,7 +39,10 @@ module.exports = React.createClass({
                 }
                 <div className={ classnames('markets-header-item', 'favorites', { 'active': p.selectedMarketsHeader === FAVORITES }) } onClick={ p.onClickFavorites }>
                     <span className="name">Favorites</span>
-                    <span className="num">{ '(' + p.numFavorites + ')' }</span>
+
+                    { (!!p.numFavorites || p.numFavorites === 0) &&
+                        <span className="num">{ '(' + p.numFavorites + ')' }</span>
+                    }
                 </div>
             </header>
         );

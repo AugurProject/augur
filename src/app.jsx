@@ -13,33 +13,47 @@ import TransactionsPage from './modules/transactions/components/transactions-pag
 
 export default function(appElement, selectors) {
     var p = selectors,
+        siteHeader,
     	node;
+
+    siteHeader = {
+		activePage: p.activePage,
+		loginAccount: p.loginAccount,
+		positionsSummary: p.positionsSummary,
+		transactionsTotals: p.transactionsTotals,
+		isTransactionsWorking: p.isTransactionsWorking,
+
+		marketsLink: p.links && p.links.marketsLink || undefined,
+		positionsLink: p.links && p.links.positionsLink || undefined,
+		transactionsLink: p.links && p.links.transactionsLink || undefined,
+		authLink: p.links && p.links.authLink || undefined
+    };
 
  	switch(p.activePage) {
     	case REGISTER:
         case LOGIN:
         case LOGOUT:
     		node = <AuthPage
-    					siteHeader={ p.siteHeader }
+    					siteHeader={ siteHeader }
     					authForm={ p.authForm } />;
     		break;
 
     	case MAKE:
     		node = <CreateMarketPage
-    					siteHeader={ p.siteHeader }
+    					siteHeader={ siteHeader }
     					createMarketForm={ p.createMarketForm } />;
     		break;
 
     	case POSITIONS:
     		node = <PositionsPage
-    					siteHeader={ p.siteHeader }
+    					siteHeader={ siteHeader }
     					positions={ p.positions }
     					positionsSummary={ p.positionsSummary } />;
     		break;
 
     	case TRANSACTIONS:
     		node = <TransactionsPage
-    					siteHeader={ p.siteHeader }
+    					siteHeader={ siteHeader }
     					transactions={ p.transactions }
     					transactionsTotals={ p.transactionsTotals } />;
     		break;
@@ -50,7 +64,7 @@ export default function(appElement, selectors) {
 
     	default:
     		node = <MarketsPage
-    					siteHeader={ p.siteHeader }
+    					siteHeader={ siteHeader }
     					createMarketLink={ (p.links || {}).createMarketLink }
     					onChangeKeywords={ p.keywordsChangeHandler }
 

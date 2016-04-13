@@ -24530,33 +24530,47 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function (appElement, selectors) {
     var p = selectors,
+        siteHeader,
         node;
+
+    siteHeader = {
+        activePage: p.activePage,
+        loginAccount: p.loginAccount,
+        positionsSummary: p.positionsSummary,
+        transactionsTotals: p.transactionsTotals,
+        isTransactionsWorking: p.isTransactionsWorking,
+
+        marketsLink: p.links && p.links.marketsLink || undefined,
+        positionsLink: p.links && p.links.positionsLink || undefined,
+        transactionsLink: p.links && p.links.transactionsLink || undefined,
+        authLink: p.links && p.links.authLink || undefined
+    };
 
     switch (p.activePage) {
         case _authTypes.REGISTER:
         case _authTypes.LOGIN:
         case _authTypes.LOGOUT:
             node = _react2.default.createElement(_authPage2.default, {
-                siteHeader: p.siteHeader,
+                siteHeader: siteHeader,
                 authForm: p.authForm });
             break;
 
         case _pages.MAKE:
             node = _react2.default.createElement(_createMarketPage2.default, {
-                siteHeader: p.siteHeader,
+                siteHeader: siteHeader,
                 createMarketForm: p.createMarketForm });
             break;
 
         case _pages.POSITIONS:
             node = _react2.default.createElement(_positionsPage2.default, {
-                siteHeader: p.siteHeader,
+                siteHeader: siteHeader,
                 positions: p.positions,
                 positionsSummary: p.positionsSummary });
             break;
 
         case _pages.TRANSACTIONS:
             node = _react2.default.createElement(_transactionsPage2.default, {
-                siteHeader: p.siteHeader,
+                siteHeader: siteHeader,
                 transactions: p.transactions,
                 transactionsTotals: p.transactionsTotals });
             break;
@@ -24567,7 +24581,7 @@ exports.default = function (appElement, selectors) {
 
         default:
             node = _react2.default.createElement(_marketsPage2.default, {
-                siteHeader: p.siteHeader,
+                siteHeader: siteHeader,
                 createMarketLink: (p.links || {}).createMarketLink,
                 onChangeKeywords: p.keywordsChangeHandler,
 
@@ -24633,69 +24647,99 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var appElement = document.getElementById('app');
 
 
-(0, _app2.default)(appElement, _selectors2.default);
+_selectors2.default.render = function () {
+  return (0, _app2.default)(appElement, _selectors2.default);
+};
+_selectors2.default.render();
 
 },{"../app":180,"./selectors":182}],182:[function(require,module,exports){
 'use strict';
 
 var _pages = require('../modules/site/constants/pages');
 
-var selectors = {
-	activePage: _pages.MARKETS,
-	loginAccount: {},
-	siteHeader: {
-		loginAccount: {}
-	},
-	links: {},
+var _authTypes = require('../modules/auth/constants/auth-types');
 
-	authForm: {},
+var selectors = {};
 
-	markets: [],
-	allMarkets: [],
-	filteredMarkets: [],
-	favoriteMarkets: [],
-	reportMarkets: [],
+selectors.activePage = _pages.MARKETS;
 
-	market: {},
-	outcomes: [],
-
-	marketsHeader: {},
-	filtersProps: {},
-	keywordsChangeHandler: function keywordsChangeHandler() {},
-
-	tradeInProgress: {},
-	tradeMarket: {},
-	tradeOrders: [],
-	tradeOrdersTotals: {},
-	placeTradeHandler: function placeTradeHandler() {},
-
-	positions: [],
-	positionsSummary: {},
-
-	transactions: [],
-	transactionsTotals: {},
-	nextTransaction: {},
-	isTransactionsWorking: false,
-
-	createMarketForm: {},
-	createMarketForm2: {},
-	createMarketForm3: {},
-	createMarketForm4: {},
-	createMarketForm5: {},
-
-	report: {},
-	submitReportHandler: function submitReportHandler() {}
+selectors.loginAccount = {
+	id: '123',
+	handle: 'Johnny'
 };
 
-module.exports = {};
+selectors.links = {
+	authLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _authTypes.LOGIN });
+		} },
+	marketsLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _pages.MARKETS });
+		} },
+	positionsLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _pages.POSITIONS });
+		} },
+	transactionsLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _pages.TRANSACTIONS });
+		} },
+	marketLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _pages.M });
+		} },
+	previousLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _pages.MARKETS });
+		} },
+	createMarketLink: { href: '', onClick: function onClick() {
+			return module.exports.update({ activePage: _pages.MAKE });
+		} }
+};
 
-Object.keys(selectors).forEach(function (selectorKey) {
-	return Object.defineProperty(module.exports, selectorKey, { get: function get() {
-			return selectors[selectorKey];
-		}, enumerable: true });
-});
+selectors.authForm = {};
 
-},{"../modules/site/constants/pages":223}],183:[function(require,module,exports){
+selectors.markets = [];
+selectors.allMarkets = [];
+selectors.filteredMarkets = [];
+selectors.favoriteMarkets = [];
+selectors.reportMarkets = [];
+
+selectors.market = {};
+selectors.outcomes = [];
+
+selectors.marketsHeader = {};
+selectors.filtersProps = {};
+selectors.keywordsChangeHandler = function () {};
+
+selectors.tradeInProgress = {};
+selectors.tradeMarket = {};
+selectors.tradeOrders = [];
+selectors.tradeOrdersTotals = {};
+selectors.placeTradeHandler = function () {};
+
+selectors.positions = [];
+selectors.positionsSummary = {};
+
+selectors.transactions = [];
+selectors.transactionsTotals = {};
+selectors.nextTransaction = {};
+selectors.isTransactionsWorking = false;
+
+selectors.createMarketForm = {};
+selectors.createMarketForm2 = {};
+selectors.createMarketForm3 = {};
+selectors.createMarketForm4 = {};
+selectors.createMarketForm5 = {};
+
+selectors.report = {};
+selectors.submitReportHandler = function () {};
+
+selectors.update = function (newState) {
+	Object.keys(newState).forEach(function (key) {
+		return selectors[key] = newState[key];
+	});
+	selectors.render();
+};
+
+module.exports = selectors;
+
+},{"../modules/auth/constants/auth-types":185,"../modules/site/constants/pages":223}],183:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -24718,13 +24762,13 @@ module.exports = _react2.default.createClass({
 	propTypes: {
 		className: _react2.default.PropTypes.string,
 
-		title: _react2.default.PropTypes.string.isRequired,
+		title: _react2.default.PropTypes.string,
 		passwordPlaceholder: _react2.default.PropTypes.string,
 		password2Placeholder: _react2.default.PropTypes.string,
 
-		isVisibleUsername: _react2.default.PropTypes.bool.isRequired,
-		isVisiblePassword: _react2.default.PropTypes.bool.isRequired,
-		isVisiblePassword2: _react2.default.PropTypes.bool.isRequired,
+		isVisibleUsername: _react2.default.PropTypes.bool,
+		isVisiblePassword: _react2.default.PropTypes.bool,
+		isVisiblePassword2: _react2.default.PropTypes.bool,
 
 		clearUsername: _react2.default.PropTypes.bool,
 		clearPassword: _react2.default.PropTypes.bool,
@@ -24739,11 +24783,11 @@ module.exports = _react2.default.createClass({
 		botttomLinkText: _react2.default.PropTypes.string,
 		botttomLink: _react2.default.PropTypes.object,
 
-		closeLink: _react2.default.PropTypes.object.isRequired,
+		closeLink: _react2.default.PropTypes.object,
 
-		submitButtonText: _react2.default.PropTypes.string.isRequired,
-		submitButtonClass: _react2.default.PropTypes.string.isRequired,
-		onSubmit: _react2.default.PropTypes.func.isRequired
+		submitButtonText: _react2.default.PropTypes.string,
+		submitButtonClass: _react2.default.PropTypes.string,
+		onSubmit: _react2.default.PropTypes.func
 	},
 
 	getInitialState: function getInitialState() {
@@ -24946,8 +24990,8 @@ module.exports = _react2.default.createClass({
 		className: _react2.default.PropTypes.string,
 
 		title: _react2.default.PropTypes.string,
-		text: _react2.default.PropTypes.string.isRequired,
-		isChecked: _react2.default.PropTypes.bool.isRequired,
+		text: _react2.default.PropTypes.string,
+		isChecked: _react2.default.PropTypes.bool,
 		tabIndex: _react2.default.PropTypes.number,
 
 		onClick: _react2.default.PropTypes.func
@@ -26647,12 +26691,12 @@ module.exports = _react2.default.createClass({
         isCheckedScalar: _react2.default.PropTypes.bool,
         isCheckedCombinatorial: _react2.default.PropTypes.bool,
 
-        onClickFilterOpen: _react2.default.PropTypes.func.isRequired,
-        onClickFilterExpired: _react2.default.PropTypes.func.isRequired,
-        onClickFilterBinary: _react2.default.PropTypes.func.isRequired,
-        onClickFilterCategorical: _react2.default.PropTypes.func.isRequired,
-        onClickFilterScalar: _react2.default.PropTypes.func.isRequired,
-        onClickFilterCombinatorial: _react2.default.PropTypes.func.isRequired
+        onClickFilterOpen: _react2.default.PropTypes.func,
+        onClickFilterExpired: _react2.default.PropTypes.func,
+        onClickFilterBinary: _react2.default.PropTypes.func,
+        onClickFilterCategorical: _react2.default.PropTypes.func,
+        onClickFilterScalar: _react2.default.PropTypes.func,
+        onClickFilterCombinatorial: _react2.default.PropTypes.func
     },
 
     render: function render() {
@@ -26819,7 +26863,7 @@ module.exports = _react2.default.createClass({
                     { className: 'name' },
                     'Markets'
                 ),
-                _react2.default.createElement(
+                (!!p.numMarkets || p.numMarkets === 0) && _react2.default.createElement(
                     'span',
                     { className: 'num' },
                     '(' + p.numMarkets + ')'
@@ -26847,7 +26891,7 @@ module.exports = _react2.default.createClass({
                     { className: 'name' },
                     'Favorites'
                 ),
-                _react2.default.createElement(
+                (!!p.numFavorites || p.numFavorites === 0) && _react2.default.createElement(
                     'span',
                     { className: 'num' },
                     '(' + p.numFavorites + ')'
@@ -27235,12 +27279,10 @@ module.exports = _react2.default.createClass({
 				_react2.default.createElement(
 					'span',
 					{ className: 'big-line' },
-					p.positionsSummary.numPositions.minimized,
-					'  Positions worth   ',
-					_react2.default.createElement(_valueDenomination2.default, p.positionsSummary.totalValue),
-					'  (',
-					_react2.default.createElement(_valueDenomination2.default, p.positionsSummary.gainPercent),
-					')'
+					!!p.positionsSummary && !!p.positionsSummary.numPositions && p.positionsSummary.numPositions.minimized,
+					'  Positions worth',
+					!!p.positionsSummary && p.positionsSummary.totalValue && '&nbsp;' + _react2.default.createElement(_valueDenomination2.default, p.positionsSummary.totalValue),
+					!!p.positionsSummary && p.positionsSummary.gainPercent && '&nbsp;' + '(' + _react2.default.createElement(_valueDenomination2.default, p.positionsSummary.gainPercent) + ')'
 				)
 			),
 			_react2.default.createElement(_positions2.default, {
@@ -27616,10 +27658,10 @@ module.exports = _react2.default.createClass({
 					{ className: 'spacer' },
 					' '
 				),
-				!!p.loginAccount && !!p.loginAccount.id && !!p.positionsSummary.numPositions.value && _react2.default.createElement(
+				!!p.loginAccount && !!p.loginAccount.id && _react2.default.createElement(
 					_link2.default,
 					_extends({ className: (0, _classnames2.default)('site-nav-link', _pages.POSITIONS, { 'active': p.activePage === _pages.POSITIONS }) }, p.positionsLink),
-					!!p.positionsSummary.numPositions.value && _react2.default.createElement(_valueDenomination2.default, _extends({ className: 'positions-num' }, p.positionsSummary.numPositions, { isRounded: true })),
+					!!p.positionsSummary && !!p.positionsSummary.numPositions && _react2.default.createElement(_valueDenomination2.default, _extends({ className: 'positions-num' }, p.positionsSummary.numPositions, { isRounded: true })),
 					'  ',
 					_react2.default.createElement(
 						'strong',
@@ -27627,7 +27669,7 @@ module.exports = _react2.default.createClass({
 						'Positions'
 					),
 					'  ',
-					!!p.positionsSummary.gainPercent.value && _react2.default.createElement(_valueDenomination2.default, _extends({ className: 'positions-gain' }, p.positionsSummary.gainPercent, { isRounded: true }))
+					!!p.positionsSummary && !!p.positionsSummary.gainPercent && _react2.default.createElement(_valueDenomination2.default, _extends({ className: 'positions-gain' }, p.positionsSummary.gainPercent, { isRounded: true }))
 				),
 				!!p.loginAccount && !!p.loginAccount.id && _react2.default.createElement(
 					_link2.default,

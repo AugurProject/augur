@@ -6,13 +6,13 @@ module.exports = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
 
-		title: React.PropTypes.string.isRequired,
+		title: React.PropTypes.string,
 		passwordPlaceholder: React.PropTypes.string,
 		password2Placeholder: React.PropTypes.string,
 
-		isVisibleUsername: React.PropTypes.bool.isRequired,
-		isVisiblePassword: React.PropTypes.bool.isRequired,
-		isVisiblePassword2: React.PropTypes.bool.isRequired,
+		isVisibleUsername: React.PropTypes.bool,
+		isVisiblePassword: React.PropTypes.bool,
+		isVisiblePassword2: React.PropTypes.bool,
 
 		clearUsername: React.PropTypes.bool,
 		clearPassword: React.PropTypes.bool,
@@ -27,11 +27,11 @@ module.exports = React.createClass({
 		botttomLinkText: React.PropTypes.string,
 		botttomLink: React.PropTypes.object,
 
-		closeLink: React.PropTypes.object.isRequired,
+		closeLink: React.PropTypes.object,
 
-		submitButtonText: React.PropTypes.string.isRequired,
-        submitButtonClass: React.PropTypes.string.isRequired,
-		onSubmit: React.PropTypes.func.isRequired
+		submitButtonText: React.PropTypes.string,
+        submitButtonClass: React.PropTypes.string,
+		onSubmit: React.PropTypes.func
 	},
 
 	getInitialState: function() {

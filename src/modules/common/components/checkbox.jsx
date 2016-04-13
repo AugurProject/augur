@@ -6,8 +6,8 @@ module.exports = React.createClass({
 		className: React.PropTypes.string,
 
 		title: React.PropTypes.string,
-		text: React.PropTypes.string.isRequired,
-		isChecked: React.PropTypes.bool.isRequired,
+		text: React.PropTypes.string,
+		isChecked: React.PropTypes.bool,
 		tabIndex: React.PropTypes.number,
 
 		onClick: React.PropTypes.func

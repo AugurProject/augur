@@ -1,56 +1,67 @@
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../modules/site/constants/pages';
+import { REGISTER, LOGIN, LOGOUT } from '../modules/auth/constants/auth-types';
 
-var selectors = {
-	activePage: MARKETS,
-	loginAccount: {},
-	siteHeader: {
-		loginAccount: {}
-	},
-	links: {},
+var selectors = {};
 
-	authForm: {},
+selectors.activePage = MARKETS;
 
-	markets: [],
-	allMarkets: [],
-	filteredMarkets: [],
-	favoriteMarkets: [],
-	reportMarkets: [],
-
-	market: {},
-	outcomes: [],
-
-	marketsHeader: {},
-	filtersProps: {},
-	keywordsChangeHandler: () => {},
-
-	tradeInProgress: {},
-	tradeMarket: {},
-	tradeOrders: [],
-	tradeOrdersTotals: {},
-	placeTradeHandler: () => {},
-
-	positions: [],
-	positionsSummary: {},
-
-	transactions: [],
-	transactionsTotals: {},
-	nextTransaction: {},
-	isTransactionsWorking: false,
-
-	createMarketForm: {},
-	createMarketForm2: {},
-	createMarketForm3: {},
-	createMarketForm4: {},
-	createMarketForm5: {},
-
-	report: {},
-	submitReportHandler: () => {}
+selectors.loginAccount = {
+	id: '123',
+	handle: 'Johnny'
 };
 
-module.exports = {};
+selectors.links = {
+	authLink: { href: '', onClick: () => module.exports.update({ activePage: LOGIN }) },
+	marketsLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
+	positionsLink: { href: '', onClick: () => module.exports.update({ activePage: POSITIONS }) },
+	transactionsLink: { href: '', onClick: () => module.exports.update({ activePage: TRANSACTIONS }) },
+	marketLink: { href: '', onClick: () => module.exports.update({ activePage: M }) },
+	previousLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
+	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
+};
 
-Object.keys(selectors).forEach(selectorKey => Object.defineProperty(module.exports, selectorKey, { get: () => selectors[selectorKey], enumerable: true }));
+selectors.authForm = {};
 
+selectors.markets = [];
+selectors.allMarkets =  [];
+selectors.filteredMarkets =  [];
+selectors.favoriteMarkets =  [];
+selectors.reportMarkets =  [];
 
+selectors.market =  {};
+selectors.outcomes =  [];
 
+selectors.marketsHeader =  {};
+selectors.filtersProps =  {};
+selectors.keywordsChangeHandler =  () => {};
+
+selectors.tradeInProgress =  {};
+selectors.tradeMarket =  {};
+selectors.tradeOrders =  [];
+selectors.tradeOrdersTotals =  {};
+selectors.placeTradeHandler =  () => {};
+
+selectors.positions =  [];
+selectors.positionsSummary =  {};
+
+selectors.transactions =  [];
+selectors.transactionsTotals =  {};
+selectors.nextTransaction =  {};
+selectors.isTransactionsWorking =  false;
+
+selectors.createMarketForm =  {};
+selectors.createMarketForm2 =  {};
+selectors.createMarketForm3 =  {};
+selectors.createMarketForm4 =  {};
+selectors.createMarketForm5 =  {};
+
+selectors.report =  {};
+selectors.submitReportHandler = () => {};
+
+selectors.update = function(newState) {
+	Object.keys(newState).forEach(key => selectors[key] = newState[key]);
+	selectors.render();
+};
+
+module.exports = selectors;
 

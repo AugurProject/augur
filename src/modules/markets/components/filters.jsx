@@ -12,12 +12,12 @@ module.exports = React.createClass({
 		isCheckedScalar: React.PropTypes.bool,
 		isCheckedCombinatorial: React.PropTypes.bool,
 
-		onClickFilterOpen: React.PropTypes.func.isRequired,
-		onClickFilterExpired: React.PropTypes.func.isRequired,
-		onClickFilterBinary: React.PropTypes.func.isRequired,
-		onClickFilterCategorical: React.PropTypes.func.isRequired,
-		onClickFilterScalar: React.PropTypes.func.isRequired,
-		onClickFilterCombinatorial: React.PropTypes.func.isRequired
+		onClickFilterOpen: React.PropTypes.func,
+		onClickFilterExpired: React.PropTypes.func,
+		onClickFilterBinary: React.PropTypes.func,
+		onClickFilterCategorical: React.PropTypes.func,
+		onClickFilterScalar: React.PropTypes.func,
+		onClickFilterCombinatorial: React.PropTypes.func
     },
 
     render: function() {

@@ -31,15 +31,15 @@ module.exports = React.createClass({
 
 					<span className="spacer">&nbsp;</span>
 
-					{ !!p.loginAccount && !!p.loginAccount.id && !!p.positionsSummary.numPositions.value &&
+					{ !!p.loginAccount && !!p.loginAccount.id &&
 						<Link className={ classnames('site-nav-link', POSITIONS, { 'active': p.activePage === POSITIONS }) } { ...p.positionsLink }>
 
-							{ !!p.positionsSummary.numPositions.value &&
+							{ !!p.positionsSummary && !!p.positionsSummary.numPositions &&
 								<ValueDenomination className="positions-num" { ...p.positionsSummary.numPositions } isRounded={ true } />
 							}
 							&nbsp; <strong className="positions-name">Positions</strong> &nbsp;
 
-							 { !!p.positionsSummary.gainPercent.value &&
+							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent &&
 								<ValueDenomination className="positions-gain" { ...p.positionsSummary.gainPercent } isRounded={ true } />
 							 }
 						</Link>
