@@ -1,6 +1,6 @@
 {
   "firebase": "augur",
-  "public": "./target",
+  "public": "./build",
   "ignore": [
     "firebase.json",
     "**/.*",
