@@ -323,6 +323,17 @@ ex.loadPriceHistory = function(marketID, cb) {
 };
 
 ex.createMarket = function(branchID, newMarket, minValue, maxValue, numOutcomes, cb) {
+	console.log("createMarket:", {
+		branchId: branchID,
+		description: newMarket.description,
+		expirationBlock: newMarket.endBlock,
+		minValue: minValue,
+		maxValue: maxValue,
+		numOutcomes: numOutcomes,
+		alpha: "0.0079",
+		initialLiquidity: newMarket.initialLiquidity,
+		tradingFee: newMarket.tradingFee
+	});
 	augur.createSingleEventMarket({
 		branchId: branchID,
 		description: newMarket.description,
@@ -341,13 +352,20 @@ ex.createMarket = function(branchID, newMarket, minValue, maxValue, numOutcomes,
 
 ex.createMarketMetadata = function(newMarket, cb) {
 console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);
-	augur.ramble.addMetadata({
-			marketId: newMarket.id,
+	var tag1, tag2, tag3;
+	if (newMarket.tags && newMarket.tags.constructor === Array && newMarket.tags.length) {
+		tag1 = newMarket.tags[0];
+		if (newMarket.tags.length > 1) tag2 = newMarket.tags[1];
+		if (newMarket.tags.length > 2) tag3 = newMarket.tags[2];
+	}
+	augur.setMetadata({
+			market: newMarket.id,
 			details: newMarket.detailsText,
-			tags: newMarket.tags,
+			tag1: tag1,
+			tag2: tag2,
+			tag3: tag3,
 			links: newMarket.resources,
-			source: newMarket.expirySource,
-			broadcast: true
+			source: newMarket.expirySource
 		},
 		res => cb(null, { status: 'processing metadata...', metadata: res }),
 		res => cb(null, { status: SUCCESS, metadata: res }),
@@ -356,7 +374,7 @@ console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsTe
 };
 
 ex.loadMarketMetadata = function(marketID, cb) {
-	augur.ramble.getMarketMetadata(marketID, {sourceless: false}, cb);
+	augur.getMetadata(marketID, cb);
 };
 
 ex.loadRecentlyExpiredEventIDs = function(branchID, reportPeriod, cbChunk) {
