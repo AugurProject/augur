@@ -323,6 +323,7 @@ ex.loadPriceHistory = function(marketID, cb) {
 };
 
 ex.createMarket = function(branchID, newMarket, minValue, maxValue, numOutcomes, cb) {
+console.log('*****', newMarket);
 	augur.createSingleEventMarket({
 		branchId: branchID,
 		description: newMarket.description,
@@ -339,8 +340,8 @@ ex.createMarket = function(branchID, newMarket, minValue, maxValue, numOutcomes,
 	});
 };
 
+/*
 ex.createMarketMetadata = function(newMarket, cb) {
-console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);
 	augur.ramble.addMetadata({
 			marketId: newMarket.id,
 			details: newMarket.detailsText,
@@ -358,7 +359,7 @@ console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsTe
 ex.loadMarketMetadata = function(marketID, cb) {
 	augur.ramble.getMarketMetadata(marketID, {sourceless: false}, cb);
 };
-
+*/
 ex.loadRecentlyExpiredEventIDs = function(branchID, reportPeriod, cbChunk) {
 
 	// load events that expired last reporting period

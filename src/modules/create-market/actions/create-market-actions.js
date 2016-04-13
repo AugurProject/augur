@@ -34,12 +34,12 @@ export function submitNewMarketTransaction(newMarket) {
 			0,
 			0,
 			newMarket,
-			(transactionID) => dispatch(makeNewMarket(transactionID, newMarket))
+			(transactionID) => dispatch(createMarket(transactionID, newMarket))
 		)]));
 	};
 }
 
-export function makeNewMarket(transactionID, newMarket) {
+export function createMarket(transactionID, newMarket) {
 	return function(dispatch, getState) {
 		var opts = {};
 
@@ -81,8 +81,9 @@ export function makeNewMarket(transactionID, newMarket) {
 				dispatch(TransactionsActions.updateTransactions({
 					[transactionID]: { status: CREATING_MARKET }
 				}));
+
+				/*
 				AugurJS.createMarketMetadata(newMarket, (err, resMetadata) => {
-console.log('^^^^createMarketMetadata', err, resMetadata);
 					if (err) {
 						dispatch(TransactionsActions.updateTransactions({
 							[transactionID]: { message: 'failed to save tags, source, metadata' }
@@ -90,6 +91,7 @@ console.log('^^^^createMarketMetadata', err, resMetadata);
 						return;
 					}
 				});
+				*/
 			}
 			else {
 				dispatch(TransactionsActions.updateTransactions({

@@ -26,8 +26,6 @@ export const selectCreateMarketForm = memoizerific(1)(function(createMarketInPro
 
 	// next handler
 	formState.onValuesUpdated = (newValues) => dispatch(CreateMarketActions.updateMakeInProgress(newValues));
-	formState.tradingFeePercent = formState.tradingFeePercent || TRADING_FEE_DEFAULT;
-	formState.initialLiquidity = formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT;
 
 	// init
 	if (!formState.step || !(formState.step >= 1)) {
