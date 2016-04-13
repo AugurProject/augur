@@ -1,51 +1,23 @@
-Augur Client
-------------
+Augur
+=====
 
-This is the frontend for [Augur](http://augur.net), a decentralized prediction market platform that runs on Ethereum.
+This is the graphical front-end for [Augur](https://augur.net), a decentralized prediction market platform that runs on Ethereum.  Go to [augur.net](https://augur.net) to see it in action!
 
-## How Dapps Work
+Documentation
+-------------
 
-Ethereum Dapps store their data on the Ethereum blockchain, and their frontends are web pages that use the JavaScript API to access blockchain data.
+[http://docs.augur.net](http://docs.augur.net)
 
-* [Ethereum Frontier Guide](http://ethereum.gitbooks.io/frontier-guide/content/)
-* [Ethereum Development Tutorial](https://github.com/ethereum/wiki/wiki/Ethereum-Development-Tutorial)
-* [Ethereum JavaScript API](https://github.com/ethereum/wiki/wiki/JavaScript-API)
-* [Ethereum Wiki](https://github.com/ethereum/wiki/wiki)
-* [Ethereum Builders](http://ethereum.builders/) ([YouTube Channel](https://www.youtube.com/channel/UCYlXQeVJ__t7T5kgHWhhiXQ))
-* [State of the Dapps](https://docs.google.com/spreadsheets/d/1VdRMFENPzjL2V-vZhcc_aa5-ysf243t5vXlxC2b054g/edit#gid=0), a spreadsheet of Dapps in development
-
-## Getting Started
-
-The client is built and hosted at [http://client.augur.net](http://client.augur.net)
-
-You still need to run ethereum locally; the client will walk you through platform-specific installation instructions. 
-
-Alternatively, if you want to hack on Augur, or just really enjoy working at the terminal, you can follow the "Building the augur-client" instructions below.
-
-### Running Ethereum
-
-Install [go-ethereum](https://github.com/ethereum/go-ethereum/wiki). 
-
-Add a new account 
-```
-geth account new
-``` 
-and then start the client 
-```
-geth --rpc --rpccorsdomain 'http://client.augur.net' --shh --unlock 0 console
-```
-
-### Building the augur-client
+How to run
+----------
 
 Install [Node.js](https://nodejs.org/).
 
 ```
 git clone https://github.com/AugurProject/augur.git
 cd augur
-git checkout develop
-npm install -g grunt-cli
 npm install
-grunt browserify:build
+npm run build
 ```
 
 Start the local web server
@@ -53,18 +25,10 @@ Start the local web server
 npm start
 ```
 
-[http://localhost:8080](http://localhost:8080)
+Development
+-----------
 
-### Notes for development
-
-use `grunt watchify` to have grunt watch for changes.  `grunt browserify:debug` for helpful (yet slow) module mappings in console.
-
-also, a seperate dev branch is used when building in this manner and data will be seperate from the default build and hosted option above.
-
-## Contributing
-
-We think Augur and Ethereum are pretty awesome, and they're going to change the world. We encourage you to be a part of this.
-
-We use [ZenHub](https://zenhub.io) to organize our GitHub issues. Find an issue in the To Do column that looks good, comment on it to let us know you want to tackle it, and we'll help you get it done.
-
-Most discussions happen in our Slack, which has an IRC gateway in #augur on Freenode. You can ask for a Slack invite there, or stick with IRC if you prefer.
+Don't forget to build the app first (with `grunt`). To watch for changes run
+```
+npm run watch
+```
