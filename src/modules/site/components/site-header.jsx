@@ -35,9 +35,10 @@ module.exports = React.createClass({
 						<Link className={ classnames('site-nav-link', POSITIONS, { 'active': p.activePage === POSITIONS }) } { ...p.positionsLink }>
 
 							{ !!p.positionsSummary && !!p.positionsSummary.numPositions &&
-								<ValueDenomination className="positions-num" { ...p.positionsSummary.numPositions } isRounded={ true } /> + ' &nbsp;'
+								<ValueDenomination className="positions-num" { ...p.positionsSummary.numPositions } isRounded={ true } />
 							}
-							<strong className="positions-name">Positions</strong> &nbsp;
+
+							&nbsp;<strong className="positions-name">Positions</strong> &nbsp;
 
 							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent &&
 								<ValueDenomination className="positions-gain" { ...p.positionsSummary.gainPercent } isRounded={ true } />
