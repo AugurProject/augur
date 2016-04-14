@@ -17,11 +17,13 @@ module.exports = React.createClass({
             <div className="outcomes">
                 { p.outcomes.map((outcome, i) => (
                     <div key={ outcome.id } className="outcome">
-                        <ValueDenomination
-                            className="outcome-price"
-                            { ...outcome.pricePercent }
-                            formatted={ outcome.pricePercent.rounded }
-                            formattedValue={ outcome.pricePercent.roundedValue } />
+                        { !!outcome.pricePercent &&
+                            <ValueDenomination
+                                className="outcome-price"
+                                { ...outcome.pricePercent }
+                                formatted={ outcome.pricePercent.rounded }
+                                formattedValue={ outcome.pricePercent.roundedValue } />
+                        }
                         <span className="outcome-name">{ outcome.name }</span>
                     </div>
                 ))}
