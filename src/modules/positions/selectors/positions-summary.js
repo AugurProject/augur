@@ -18,7 +18,7 @@ export const selectPositionsSummary = memoizerific(20)(function(positions) {
 	});
 
 	return {
-		numPositions: formatNumber(positions.length, { decimals: 0, decimalsRounded: 0, denomination: 'Positions', zero: true }),
+		numPositions: formatNumber(positions.length, { decimals: 0, decimalsRounded: 0, denomination: 'Positions', omitSign: true, zero: true }),
 		totalValue: formatEther(totalValue),
 		totalCost: formatEther(totalCost),
 		gainPercent: formatPercent(totalCost ? ((totalValue - totalCost) / totalCost * 100) : 0),

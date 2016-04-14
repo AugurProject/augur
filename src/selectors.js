@@ -17,6 +17,9 @@ import outcomes from './modules/market/selectors/outcomes';
 import marketsHeader from './modules/markets/selectors/markets-header';
 import filtersProps from './modules/markets/selectors/filters-props';
 import keywordsChangeHandler from './modules/markets/selectors/keywords-change-handler';
+import selectedSort from './modules/markets/selectors/selected-sort';
+import sortOptions from './modules/markets/selectors/sort-options';
+import onChangeSort from './modules/markets/selectors/on-change-sort';
 
 import tradeInProgress from './modules/trade/selectors/trade-in-progress';
 import tradeMarket from './modules/trade/selectors/trade-market';
@@ -57,6 +60,10 @@ var selectors = {
 	marketsHeader,
 	filtersProps,
 	keywordsChangeHandler,
+
+	selectedSort,
+	sortOptions,
+	onChangeSort,
 
 	tradeInProgress,
 	tradeMarket,

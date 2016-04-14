@@ -21,8 +21,9 @@ import selectedMarketsHeader from './modules/markets/reducers/selected-markets-h
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
-import keywords from './modules//markets/reducers/keywords';
+import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
+import selectedSort from './modules/markets/reducers/selected-sort';
 
 module.exports = {
 	blockchain,
@@ -43,6 +44,8 @@ module.exports = {
 	selectedMarketsHeader,
 	keywords,
 	selectedFilters,
+	selectedSort,
+
 	tradesInProgress,
 	createMarketInProgress,
 

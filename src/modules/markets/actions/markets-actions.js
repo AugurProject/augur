@@ -14,6 +14,7 @@ export const UPDATE_OUTCOME_PRICE = 'UPDATE_OUTCOME_PRICE';
 
 export const UPDATE_KEYWORDS = 'UPDATE_KEYWORDS';
 export const TOGGLE_FILTER = 'TOGGLE_FILTER';
+export const UPDATE_SELECTED_SORT = 'UPDATE_SELECTED_SORT';
 
 export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
 export const UPDATED_SELECTED_MARKETS_HEADER = 'UPDATED_SELECTED_MARKETS_HEADER';
@@ -139,6 +140,10 @@ export function updateOutcomePrice(marketID, outcomeID, price) {
 
 export function updateKeywords(keywords) {
 	return { type: UPDATE_KEYWORDS, keywords};
+}
+
+export function updateSelectedSort(selectedSort) {
+	return { type: UPDATE_SELECTED_SORT, selectedSort};
 }
 
 export function toggleFilter(filterID) {

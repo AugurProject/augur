@@ -57,6 +57,12 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
     var { decimals, decimalsRounded, denomination, omitSign, zero } = opts,
         o;
 
+    decimals = decimals || 0;
+    decimalsRounded = decimalsRounded || 0;
+    denomination = denomination || '';
+    omitSign = omitSign !== false;
+    zero = zero !== false;
+
     if (!num && !zero) {
         return formatNone();
     }
@@ -77,22 +83,13 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
             o.formatted = '+' + o.formatted;
             o.minimized = '+' + o.minimized;
         }
-        else if (o.formattedValue < 0) {
-            o.formatted = '-' + o.formatted;
-            o.minimized = '-' + o.minimized;
-        }
-
         if (o.roundedValue > 0) {
             o.rounded = '+' + o.rounded;
-        }
-        else if (o.roundedValue < 0) {
-            o.rounded = '-' + o.rounded;
         }
     }
 
     o.denomination = denomination;
     o.full = o.formatted + o.denomination;
-
 
     return o;
 }
