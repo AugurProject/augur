@@ -40,6 +40,7 @@ module.exports = React.createClass({
                             onChange={ (prop) => p.onChangeSort(prop) } />
                         <button
                             className="sort-direction-button"
+                            title={ p.selectedSort.isDesc ? 'descending selected' : 'ascending selected' }
                             onClick={ () => p.onChangeSort(null, !p.selectedSort.isDesc) }>{ p.selectedSort.isDesc ? <span>&#xf161;</span> : <span>&#xf160;</span> }</button>
                     </div>
                 </div>
