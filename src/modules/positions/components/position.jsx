@@ -1,6 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 
+import Link from '../../link/components/link';
+
 module.exports = React.createClass({
     propTypes: {
 		rowspan: React.PropTypes.number,
@@ -15,6 +17,10 @@ module.exports = React.createClass({
 		shareChange: React.PropTypes.object,
 		totalCost: React.PropTypes.object,
 		netChange: React.PropTypes.object,
+
+		detailsLabel: React.PropTypes.string,
+		detailsClassName: React.PropTypes.string,
+		marketLink: React.PropTypes.object
     },
 
     render: function() {
@@ -37,7 +43,7 @@ module.exports = React.createClass({
                 <td className="value">{ p.totalValue && p.totalValue.full }</td>
                 <td className="net">{ p.netChange && p.netChange.full }</td>
                 <td className="buttons">
-                    <button className="button trade">Trade</button>
+                    <Link className={ classnames('button', p.detailsClassName) } { ...p.marketLink }>{ p.detailsLabel }</Link>
                 </td>
             </tr>
         );
