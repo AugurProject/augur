@@ -3,7 +3,6 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 
 import SiteHeader from '../../site/components//site-header';
 import Markets from '../../markets/components/markets';
-import Link from '../../link/components/link';
 
 module.exports = React.createClass({
     propTypes: {
@@ -31,7 +30,6 @@ module.exports = React.createClass({
 				<SiteHeader { ...p.siteHeader } />
 
 				<header className="page-header">
-					<Link className="button markets-header-item make" { ...p.createMarketLink }>Make a Market</Link>
 					<span className="big-line">Augur lets you trade any market</span>.
 					Find a market you can beat,
 					and buy shares on the side that <b><i>you think</i></b> should go up.

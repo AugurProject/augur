@@ -5,7 +5,7 @@ import MarketsHeader from './markets-header';
 import Filters from './filters';
 import MarketItem from './market-item';
 import Input from '../../common/components/input';
-
+import Link from '../../link/components/link';
 
 module.exports = React.createClass({
     propTypes: {
@@ -28,7 +28,10 @@ module.exports = React.createClass({
                     <select className="sort-control" />
                 </div>
 
-                <MarketsHeader { ...p.marketsHeader } />
+                <div className="markets-header-bar">
+                    <Link className="button make" { ...p.createMarketLink }>Make a Market</Link>
+                    <MarketsHeader { ...p.marketsHeader } />
+                </div>
 
                 <Filters { ...p.filtersProps } />
 

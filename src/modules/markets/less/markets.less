@@ -1,12 +1,6 @@
-.markets {
-	.page-header {
-		.button.make {
-			float: right;
-			font-size: 0.65em;
-			margin: 1.3em 0 0 2.5vw;
-		}
-	}
+@filters-width: 21rem;
 
+.markets {
 	.page-content {
 		color: @color-dark-hover;
 
@@ -47,82 +41,98 @@
 			}
 		}
 
-		.markets-header {
-			display: flex;
-			width: 100%;
-			margin: 1vmin 0 0 0;
-			padding: 1.95rem 0 1.5rem 24rem;
-			color: @color-dark-hover;
-			background: white;
-			font-weight: 400;
-			font-size: 1.5rem;
-			text-transform: uppercase;
+		.markets-header-bar {
+		    display: flex;
+		    padding: 1vmin 0 0 0;
 
-			.markets-header-item {
-				display: inline-block;
-				line-height: 2.6rem;
-				margin-right: 3vw;
-				cursor: pointer;
-				opacity: 0.5;
+			.button.make {
+				width: @filters-width; height: 6.5rem;
+				padding: 0;
+				line-height: 6.5rem;
+				text-align: center;
+				border-radius: 1px;
+				font-size: 1.6em;
+			}
 
-				* {
-					vertical-align: middle;
-				}
+			.markets-header {
+				display: flex;
+				flex: 2;
+				width: 100%; height: 6.5rem;
+				margin-left: 1vmin;
+				padding: 0 0 0 4rem;
+				line-height: 6rem;
+				color: @color-dark-hover;
+				background: white;
+				font-weight: 400;
+				font-size: 1.5rem;
+				text-transform: uppercase;
 
-				&.active {
-					opacity: 1;
-				}
+				.markets-header-item {
+					display: inline-block;
+					margin-right: 3vw;
+					cursor: pointer;
+					opacity: 0.5;
 
-				&.favorites {
-					white-space: nowrap;
+					* {
+						vertical-align: middle;
+					}
 
-					.name {
-						&:before {
-							display: inline-block; position: relative;
-							top: 0.12em;
-							margin-right: 0.5rem;
-							content: '';
-							color: #FFDA00;
-							font-family: FontAwesome;
-							font-size: 1.6em;
-							transform: rotate(58deg);
-							opacity: 0.45;
+					&.active {
+						opacity: 1;
+					}
+
+					&.favorites {
+						white-space: nowrap;
+
+						.name {
+							&:before {
+								display: inline-block; position: relative;
+								top: 0.12em;
+								margin-right: 0.5rem;
+								content: '';
+								color: #FFDA00;
+								font-family: FontAwesome;
+								font-size: 1.6em;
+								transform: rotate(58deg);
+								opacity: 0.45;
+							}
 						}
 					}
-				}
 
-				&.pending-reports {
-					color: fade(@color-danger-active, 90%);
-					font-weight: 700;
-					white-space: nowrap;
+					&.pending-reports {
+						color: fade(@color-danger-active, 90%);
+						font-weight: 700;
+						white-space: nowrap;
 
-					.name {
-						&:before {
-							display: inline-block; position: relative;
-							top: 0.12em;
-							margin-right: 0.5rem;
-							content: '\f12a';
-							color: fade(@color-danger-active, 70%);
-							font-family: FontAwesome;
-							font-size: 1.2em;
+						.name {
+							&:before {
+								display: inline-block; position: relative;
+								top: 0.12em;
+								margin-right: 0.5rem;
+								content: '\f12a';
+								color: fade(@color-danger-active, 70%);
+								font-family: FontAwesome;
+								font-size: 1.2em;
+							}
 						}
 					}
-				}
 
-				&.button {
-					opacity: 1;
-				}
+					&.button {
+						opacity: 1;
+					}
 
-				.num {
-					font-weight: 900;
-					margin-left: 0.5rem;
+					.num {
+						font-weight: 900;
+						margin-left: 0.5rem;
+					}
 				}
 			}
 		}
 
+
 		.filters {
 			position: absolute; z-index: 2;
-			width: 21rem;
+			width: @filters-width;
 			margin: 1vmin 0 2vmin 0;
 			padding: 0 0 3rem 0;
 			color: @color-dark-normal;
