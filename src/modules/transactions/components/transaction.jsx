@@ -101,10 +101,10 @@ module.exports = React.createClass({
 				{ nodes.description }
 				<span className="value-changes">
 					{ !! p.shares && !!p.shares.value &&
-						<ValueDenomination className="value-change shares" { ...p.shares } isColorized={ true } />
+						<ValueDenomination className="value-change shares" { ...p.shares } />
 					}
 					{ !! p.ether && !!p.ether.value &&
-						<ValueDenomination className="value-change ether" { ...p.ether } isColorized={ true } />
+						<ValueDenomination className="value-change ether" { ...p.ether } />
 					}
 				</span>
 				{ p.status &&

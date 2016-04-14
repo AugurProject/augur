@@ -48,8 +48,8 @@ module.exports = React.createClass({
 					isClearable={ false }
 					onChange={ (value) => p.onChangeTradesInProgress(parseFloat(p.numShares) || 0, parseFloat(value) || 0) } />
 
-				<ValueDenomination className="fee-to-pay" { ...p.feeToPay } isColorized={ true } />
-				<ValueDenomination className="total-cost" { ...p.totalCost } isColorized={ true } />
+				<ValueDenomination className="fee-to-pay" { ...p.feeToPay } />
+				<ValueDenomination className="total-cost" { ...p.totalCost } />
 			</div>
 		);
 	}

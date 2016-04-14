@@ -20,22 +20,22 @@ module.exports = React.createClass({
     render: function() {
         var p = this.props;
         return (
-            <tr className={ classnames(p.gainPercent.value >= 0 ? 'positive' : 'negative') }>
+            <tr>
                 { p.description &&
                     <td className="description" rowSpan={ p.rowspan }>{ p.description }</td>
                 }
                 <td className="outcome">{ p.outcomeName }</td>
 
-                <td className="qty">{ p.qtyShares.minimized }</td>
-                <td className="gain">{ p.gainPercent.full }</td>
+                <td className="qty">{ p.qtyShares && p.qtyShares.minimized }</td>
+                <td className="gain">{ p.gainPercent && p.gainPercent.full }</td>
 
-                <td className="last">{ p.lastPrice.full }</td>
-                <td className="purchase">{ p.purchasePrice.full }</td>
-                <td className="change">{ p.shareChange.full }</td>
+                <td className="last">{ p.lastPrice && p.lastPrice.full }</td>
+                <td className="purchase">{ p.purchasePrice && p.purchasePrice.full }</td>
+                <td className="change">{ p.shareChange && p.shareChange.full }</td>
 
-                <td className="cost">{ p.totalCost.full }</td>
-                <td className="value">{ p.totalValue.full }</td>
-                <td className="net">{ p.netChange.full }</td>
+                <td className="cost">{ p.totalCost && p.totalCost.full }</td>
+                <td className="value">{ p.totalValue && p.totalValue.full }</td>
+                <td className="net">{ p.netChange && p.netChange.full }</td>
                 <td className="buttons">
                     <button className="button trade">Trade</button>
                 </td>

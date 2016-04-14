@@ -25,12 +25,11 @@ selectors.links = {
 
 selectors.authForm = {};
 
-selectors.positions =  [];
+selectors.positions =  [{ marketID: '1', description: 'Market description #1' }];
 selectors.positionsSummary =  {
-	title: '0 Positions',
-	numPositions: null,
-	totalValue: null,
-	gainPercent: null
+	numPositions: makeNumber(3, 'Positions', true),
+	totalValue: makeNumber(985, 'eth'),
+	gainPercent: makeNumber(15, '%')
 };
 
 selectors.transactions =  [];
@@ -79,16 +78,32 @@ selectors.update = function(newState) {
 
 module.exports = selectors;
 
-function zeroNumber(denomination) {
-	return {
-		value: 0,
-		formattedValue: 0,
-		formatted: '0',
-		rounded: '0',
-		minimized: '0',
-		full: '0',
+function makeNumber(num, denomination, omitSign) {
+	var o = {
+		value: num,
+		formattedValue: num,
+		formatted: num.toString(),
+		rounded: num.toString(),
+		minimized: num.toString(),
 		denomination: denomination || ''
 	};
+
+	if (!omitSign) {
+        if (o.value > 0) {
+            o.formatted = '+' + o.formatted;
+            o.rounded = '+' + o.rounded;
+            o.minimized = '+' + o.minimized;
+        }
+        else if (o.formattedValue < 0) {
+            o.formatted = '-' + o.formatted;
+            o.rounded = '-' + o.rounded;
+            o.minimized = '-' + o.minimized;
+        }
+	}
+
+	o.full = o.formatted + o.denomination;
+
+	return o;
 }
 
 function emptyNumber(denomination) {

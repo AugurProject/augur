@@ -20,15 +20,20 @@ module.exports = React.createClass({
 
 				<header className="page-header">
 					<span className="big-line">
-						{ !!p.positionsSummary && !!p.positionsSummary.numPositions && p.positionsSummary.numPositions.minimized }
-
-						&nbsp;{ !!p.positionsSummary && p.positionsSummary.title }
+						{ !!p.positionsSummary && !!p.positionsSummary.numPositions &&
+							<ValueDenomination { ...p.positionsSummary.numPositions } />
+						}
 
 						{ !!p.positionsSummary && p.positionsSummary.totalValue &&
-							'&nbsp;' + <ValueDenomination { ...p.positionsSummary.totalValue } />
+							<ValueDenomination { ...p.positionsSummary.totalValue } />
 						}
+
 						{ !!p.positionsSummary && p.positionsSummary.gainPercent &&
-							'&nbsp;' + '(' + <ValueDenomination { ...p.positionsSummary.gainPercent } /> + ')'
+							<span>
+							(<ValueDenomination
+								{ ...p.positionsSummary.gainPercent }
+								formatted={ p.positionsSummary.gainPercent.formatted } />)
+							</span>
 						}
 					</span>
 				</header>

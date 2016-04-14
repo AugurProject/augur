@@ -44,7 +44,7 @@ module.exports = React.createClass({
 					</li>
 					<li className="property volume">
 						<span className="property-label">volume</span>
-						<ValueDenomination className="property-value" { ...p.volume } isRounded={ true } />
+						<ValueDenomination className="property-value" { ...p.volume } formatted={ p.volume.rounded } />
 					</li>
 				</ul>
 			</div>

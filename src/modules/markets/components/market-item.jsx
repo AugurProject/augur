@@ -48,7 +48,7 @@ module.exports = React.createClass({
 				</div>
 
 				{ p.outcomes &&
-					<Outcomes outcomes={ p.outcomes } isRounded={ true } />
+					<Outcomes outcomes={ p.outcomes } />
 				}
 
 				{ p.onClickToggleFavorite &&

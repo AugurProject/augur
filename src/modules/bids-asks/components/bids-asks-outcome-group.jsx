@@ -23,8 +23,8 @@ module.exports = React.createClass({
                 <div className="bids">
                     { p.bids.map((bid, i) => (
                         <article key={ bid.price.full } className="bid-ask bid">
-                            <ValueDenomination className="shares" { ...bid.shares } isColorized={ i === 0 } />
-                            <ValueDenomination className="price" { ...bid.price } isColorized={ i === 0 } />
+                            <ValueDenomination className="shares" { ...bid.shares } />
+                            <ValueDenomination className="price" { ...bid.price } />
                         </article>
                     ))}
                     { !p.bids.length &&
@@ -37,8 +37,8 @@ module.exports = React.createClass({
                 <div className="asks">
                     { p.asks.map((ask, i) => (
                         <article key={ ask.price.full } className="bid-ask ask">
-                            <ValueDenomination className="price" { ...ask.price } isColorized={ i === 0 } />
-                            <ValueDenomination className="shares" { ...ask.shares } isColorized={ i === 0 } />
+                            <ValueDenomination className="price" { ...ask.price } />
+                            <ValueDenomination className="shares" { ...ask.shares } />
                         </article>
                     ))}
                     { !p.asks.length &&

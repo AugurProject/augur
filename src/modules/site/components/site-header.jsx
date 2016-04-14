@@ -35,13 +35,19 @@ module.exports = React.createClass({
 						<Link className={ classnames('site-nav-link', POSITIONS, { 'active': p.activePage === POSITIONS }) } { ...p.positionsLink }>
 
 							{ !!p.positionsSummary && !!p.positionsSummary.numPositions &&
-								<ValueDenomination className="positions-num" { ...p.positionsSummary.numPositions } isRounded={ true } />
+								<ValueDenomination
+									className="positions-num"
+									{ ...p.positionsSummary.numPositions }
+									formatted={ p.positionsSummary.numPositions.rounded }
+									formattedValue={ p.positionsSummary.numPositions.roundedValue } />
 							}
 
-							&nbsp;<strong className="positions-name">Positions</strong> &nbsp;
-
 							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent &&
-								<ValueDenomination className="positions-gain" { ...p.positionsSummary.gainPercent } isRounded={ true } />
+								<ValueDenomination
+									className="positions-gain"
+									{ ...p.positionsSummary.gainPercent }
+									formatted={ p.positionsSummary.gainPercent.rounded }
+									formattedValue={ p.positionsSummary.gainPercent.roundedValue } />
 							 }
 						</Link>
 					}
@@ -52,9 +58,15 @@ module.exports = React.createClass({
 
 								{ (!p.isTransactionsWorking || p.activePage === TRANSACTIONS) &&
 									<span className="link-text">
-										<ValueDenomination { ...p.loginAccount.rep || {} } isMinimized={ true } isRounded={ true } />
+										<ValueDenomination
+											{ ...p.loginAccount.rep || {} }
+											formatted={ p.loginAccount.rep.rounded }
+											formattedValue={ p.loginAccount.rep.roundedValue } />
 										&nbsp;&nbsp;&nbsp;
-										<ValueDenomination { ...p.loginAccount.ether || {} } isMinimized={ true } isRounded={ true } />
+										<ValueDenomination
+											{ ...p.loginAccount.ether || {} }
+											formatted={ p.loginAccount.ether.rounded }
+											formattedValue={ p.loginAccount.ether.roundedValue } />
 									</span>
 								}
 								{ p.isTransactionsWorking && p.activePage !== TRANSACTIONS &&

@@ -6,8 +6,7 @@ import ValueDenomination from '../../common/components/value-denomination';
 
 module.exports = React.createClass({
     propTypes: {
-		outcomes: React.PropTypes.array,
-		isRounded: React.PropTypes.bool
+		outcomes: React.PropTypes.array
     },
 
     shouldComponentUpdate: shouldComponentUpdatePure,
@@ -18,7 +17,11 @@ module.exports = React.createClass({
             <div className="outcomes">
                 { p.outcomes.map((outcome, i) => (
                     <div key={ outcome.id } className="outcome">
-                        <ValueDenomination className="outcome-price" { ...outcome.pricePercent } isRounded={ p.isRounded } isColorized={ true } />
+                        <ValueDenomination
+                            className="outcome-price"
+                            { ...outcome.pricePercent }
+                            formatted={ outcome.pricePercent.rounded }
+                            formattedValue={ outcome.pricePercent.roundedValue } />
                         <span className="outcome-name">{ outcome.name }</span>
                     </div>
                 ))}
