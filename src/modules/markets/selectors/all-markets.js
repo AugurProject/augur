@@ -40,8 +40,8 @@ export const selectMarkets = memoizerific(1)((markets, recentlyExpiredMarkets, p
 			);
     	})
     	.sort((a, b) => {
-    		var aVal = a[selectedSort.prop] && a[selectedSort.prop].toLowerCase && a[selectedSort.prop].toLowerCase() || a[selectedSort.prop],
-    			bVal = b[selectedSort.prop] && b[selectedSort.prop].toLowerCase && b[selectedSort.prop].toLowerCase() || b[selectedSort.prop];
+    		var aVal = cleanSortVal(a[selectedSort.prop]),
+    			bVal = cleanSortVal(b[selectedSort.prop]);
 
 			if (bVal < aVal) {
 				return selectedSort.isDesc ? -1 : 1;
@@ -53,3 +53,15 @@ export const selectMarkets = memoizerific(1)((markets, recentlyExpiredMarkets, p
 			return a.id < b.id ? -1 : 1;
     	});
 });
+
+function cleanSortVal(val) {
+	if (val) {
+		if (val.value || val.value === 0) {
+			return val.value;
+		}
+		else if (val.toLowerCase) {
+			return val.toLowerCase();
+		}
+	}
+	return val;
+}

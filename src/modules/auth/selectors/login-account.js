@@ -5,9 +5,9 @@ import store from '../../../store';
 export default function() {
 	var { loginAccount } = store.getState();
 	return {
-		rep: formatNone(),
-		ether: formatNone(),
-		realEther: formatNone(),
-		...loginAccount
+		...loginAccount,
+		rep: loginAccount.rep && loginAccount.rep.formattedValue && loginAccount.rep.formattedValue !== 0 && loginAccount.rep || formatNone(),
+		ether: loginAccount.ether && loginAccount.ether.formattedValue && loginAccount.ether.formattedValue !== 0 && loginAccount.ether || formatNone(),
+		realEther: loginAccount.realEther && loginAccount.realEther.formattedValue && loginAccount.realEther.formattedValue !== 0 && loginAccount.realEther || formatNone()
 	};
 }
