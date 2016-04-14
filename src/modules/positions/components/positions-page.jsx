@@ -30,9 +30,9 @@ module.exports = React.createClass({
 
 						{ !!p.positionsSummary && p.positionsSummary.gainPercent &&
 							<span>
-							(<ValueDenomination
-								{ ...p.positionsSummary.gainPercent }
-								formatted={ p.positionsSummary.gainPercent.formatted } />)
+								(<ValueDenomination
+									{ ...p.positionsSummary.gainPercent }
+									formatted={ p.positionsSummary.gainPercent.formatted } />)
 							</span>
 						}
 					</span>

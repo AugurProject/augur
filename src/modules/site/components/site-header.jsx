@@ -42,7 +42,7 @@ module.exports = React.createClass({
 									formattedValue={ p.positionsSummary.numPositions.roundedValue } />
 							}
 
-							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent &&
+							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.gainPercent.formattedValue > 0 &&
 								<ValueDenomination
 									className="positions-gain"
 									{ ...p.positionsSummary.gainPercent }
@@ -60,13 +60,13 @@ module.exports = React.createClass({
 									<span className="link-text">
 										<ValueDenomination
 											{ ...p.loginAccount.rep || {} }
-											formatted={ p.loginAccount.rep.rounded }
-											formattedValue={ p.loginAccount.rep.roundedValue } />
-										&nbsp;&nbsp;&nbsp;
+											formatted={ p.loginAccount.rep && p.loginAccount.rep.rounded }
+											formattedValue={ p.loginAccount.rep && p.loginAccount.rep.roundedValue } />
+
 										<ValueDenomination
 											{ ...p.loginAccount.ether || {} }
-											formatted={ p.loginAccount.ether.rounded }
-											formattedValue={ p.loginAccount.ether.roundedValue } />
+											formatted={ p.loginAccount.ether && p.loginAccount.ether.rounded }
+											formattedValue={ p.loginAccount.ether && p.loginAccount.ether.roundedValue } />
 									</span>
 								}
 								{ p.isTransactionsWorking && p.activePage !== TRANSACTIONS &&
