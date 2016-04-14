@@ -20,7 +20,7 @@ export default function() {
 		positionsLink: selectPositionsLink(store.dispatch),
 		transactionsLink: selectTransactionsLink(store.dispatch),
 		marketLink: selectMarketLink(market, store.dispatch),
-		previousLink: selectPreviousLink(store.dispatch),
+		previousLink: selectPreviousLink(store.dispatch)
 	};
 }
 
@@ -50,11 +50,36 @@ export const selectMarketsLink = memoizerific(1)(function(dispatch) {
 });
 
 export const selectMarketLink = memoizerific(1)(function(market, dispatch) {
-	var href = PAGES_PATHS[M] + '/' + ListWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id;
-    return {
-		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
-    };
+	var href = PAGES_PATHS[M] + '/' + ListWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id,
+		link = {
+			href,
+			onClick: () => dispatch(LinkActions.showLink(href))
+		};
+
+	if (market.isReported) {
+    	link.text = 'Reported';
+    	link.className = 'reported';
+	}
+	else if (market.isRequiredToReportByAccount) {
+    	if (!market.isReportConfirmationPhase) {
+	    	link.text = 'Report';
+	    	link.className = 'report';
+    	}
+    	else {
+	    	link.text = 'Missed Report';
+	    	link.className = 'missed-report';
+    	}
+	}
+    else if (!market.isOpen) {
+    	link.text = 'View';
+    	link.className = 'view';
+    }
+    else {
+    	link.text = 'Trade';
+    	link.className = 'trade';
+    }
+
+    return link;
 });
 
 export const selectPositionsLink = memoizerific(1)(function(dispatch) {

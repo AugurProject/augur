@@ -58,29 +58,6 @@ export const assembleMarket = memoizerific(1000)((marketID, market, isRequiredTo
     o.isReported = isReported; // the user fully reported on this market
     o.isFavorite = isFavorite;
 
-	if (isReported) {
-    	o.detailsLabel = 'Reported';
-    	o.detailsClassName = 'reported';
-	}
-	else if (isRequiredToReportByAccount) {
-    	if (!isReportConfirmationPhase) {
-	    	o.detailsLabel = 'Report';
-	    	o.detailsClassName = 'report';
-    	}
-    	else {
-	    	o.detailsLabel = 'Missed Report';
-	    	o.detailsClassName = 'missed-report';
-    	}
-	}
-    else if (!o.isOpen) {
-    	o.detailsLabel = 'View';
-    	o.detailsClassName = 'view';
-    }
-    else {
-    	o.detailsLabel = 'Trade';
-    	o.detailsClassName = 'trade';
-    }
-
     o.marketLink = selectMarketLink(o, dispatch);
 
     o.onClickToggleFavorite = () => dispatch(MarketsActions.toggleFavorite(marketID));

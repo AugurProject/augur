@@ -1,20 +1,18 @@
 import memoizerific from 'memoizerific';
-import { formatNumber, formatEther, formatPercent, formatShares } from '../../../utils/format-number';
+import { formatEther, formatPercent, formatShares } from '../../../utils/format-number';
 
 import store from '../../../store';
 
+import { selectMarket } from '../../market/selectors/market';
+
 export default function() {
-	var { markets, outcomes, accountTrades } = store.getState();
-	return selectPositions(markets, outcomes, accountTrades);
-}
+	var { outcomes, accountTrades } = store.getState(),
+		newPositions = [];
 
-export const selectPositions = memoizerific(20)(function(markets, outcomes, accountTrades) {
-	var newPositions = [];
-
+	// loop through each outcome of each market in account trades, and make a position
 	Object.keys(accountTrades || {}).sort().forEach(marketID => Object.keys(accountTrades[marketID]).forEach((outcomeID, i, accountTradeKeys) => {
 		newPositions.push(makePosition(
-							marketID,
-							markets[marketID],
+							selectMarket(marketID),
 							outcomeID,
 							outcomes[marketID] && outcomes[marketID][outcomeID],
 							accountTrades[marketID][outcomeID],
@@ -35,34 +33,11 @@ export const selectPositions = memoizerific(20)(function(markets, outcomes, acco
 	});
 
 	return newPositions;
-});
+}
 
-export const selectPositionsSummary = memoizerific(20)(function(s) {
-	var { markets, outcomes, accountTrades } = s,
-		positionsList = selectPositionsList(markets, outcomes, accountTrades),
-		totalValue = 0,
-		totalCost = 0;
-
-	if (!positionsList) {
-		return {};
-	}
-
-	positionsList.forEach(position => {
-		totalValue += position.totalValue.value || 0;
-		totalCost += position.totalCost.value || 0;
-	});
-
-	return {
-		numPositions: formatNumber(positionsList.length),
-		totalValue: formatEther(totalValue),
-		totalCost: formatEther(totalCost),
-		gainPercent: formatPercent((totalValue - totalCost) / totalCost * 100),
-		netChange: formatEther(totalValue - totalCost)
-	};
-});
-
-export const makePosition = memoizerific(100)(function(marketID, market, outcomeID, outcome, outcomeTrades, totalOutcomes, outcomeIndex) {
+export const makePosition = memoizerific(100)(function(market, outcomeID, outcome, outcomeTrades, totalOutcomes, outcomeIndex) {
 	var o = {
+			...market,
 			lastPrice: formatEther(0),
 			qtyShares: formatShares(0),
 			purchasePrice: formatEther(0),
@@ -73,7 +48,7 @@ export const makePosition = memoizerific(100)(function(marketID, market, outcome
 			netChange: formatEther(0)
 		};
 
-	o.marketID = marketID;
+	o.marketID = market.id;
 	o.outcomeID = outcomeID;
 
 	if (market && outcomeIndex <= 0) {

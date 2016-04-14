@@ -24,13 +24,11 @@ export function tradeShares(transactionID, marketID, outcomeID, numShares, limit
 				return;
 			}
 
+			dispatch(PositionsActions.loadAccountTrades());
+
 			dispatch(TransactionsActions.updateTransactions({
 				[transactionID]: { status: res.status }
 			}));
-
-			if (res.status === SUCCESS) {
-				dispatch(PositionsActions.loadAccountTrades());
-			}
 		});
 	};
 }

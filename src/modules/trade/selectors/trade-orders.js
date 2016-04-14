@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatZero } from '../../../utils/format-number';
+import { formatShares, formatEther, formatNumber } from '../../../utils/format-number';
 
 import { BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES } from '../../transactions/constants/types';
 
@@ -146,7 +146,7 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 				marketDescription: market.description,
 				outcomeName: outcome.name.toUpperCase(),
 				avgPrice: formatEther(limitPrice),
-				feeToPay: formatZero() // no fee for market-making
+				feeToPay: formatNumber(0, { zero: true }) // no fee for market-making
 			},
 			(transactionID) => dispatch(TradeActions.tradeShares(transactionID, market.id, outcome.id, o.sharesRemaining, limitPrice, null))
 		));

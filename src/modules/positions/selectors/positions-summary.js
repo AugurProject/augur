@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { formatEther, formatPercent, formatShares } from '../../../utils/format-number';
+import { formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 
 export default function() {
 	var { positions } = require('../../../selectors');
@@ -10,9 +10,7 @@ export const selectPositionsSummary = memoizerific(20)(function(positions) {
 	var totalValue = 0,
 		totalCost = 0;
 
-	if (!positions) {
-		return {};
-	}
+	positions = positions || [];
 
 	positions.forEach(position => {
 		totalValue += position.totalValue.value || 0;
@@ -20,10 +18,10 @@ export const selectPositionsSummary = memoizerific(20)(function(positions) {
 	});
 
 	return {
-		numPositions: formatShares(positions.length),
+		numPositions: formatNumber(positions.length, { decimals: 0, decimalsRounded: 0, denomination: 'Positions', zero: true }),
 		totalValue: formatEther(totalValue),
 		totalCost: formatEther(totalCost),
-		gainPercent: formatPercent((totalValue - totalCost) / totalCost * 100),
+		gainPercent: formatPercent(totalCost ? ((totalValue - totalCost) / totalCost * 100) : 0),
 		netChange: formatEther(totalValue - totalCost)
 	};
 });
