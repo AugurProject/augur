@@ -40,9 +40,12 @@ module.exports = React.createClass({
                 <td className="cost">{ p.totalCost && p.totalCost.full }</td>
                 <td className="value">{ p.totalValue && p.totalValue.full }</td>
                 <td className="net">{ p.netChange && p.netChange.full }</td>
-                <td className="buttons">
-                    <Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
-                </td>
+
+                { !!p.marketLink &&
+                    <td className="buttons">
+                        <Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
+                    </td>
+                }
             </tr>
         );
     }

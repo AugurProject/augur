@@ -25,7 +25,25 @@ selectors.links = {
 
 selectors.authForm = {};
 
-selectors.positions =  [{ marketID: '1', description: 'Market description #1' }];
+selectors.positions =  [{
+	rowspan: 1,
+	description: 'Market description #1',
+	outcomeName: '',
+	qtyShares: makeNumber(16898, 'Shares'),
+	totalValue: makeNumber(14877, 'eth'),
+	gainPercent: makeNumber(14, '%'),
+	lastPrice: makeNumber(0.877, 'eth'),
+	purchasePrice: makeNumber(0.77, 'eth'),
+	shareChange: makeNumber(0.107, 'eth'),
+	totalCost: makeNumber(12555, 'eth'),
+	netChange: makeNumber(3344, 'eth'),
+	marketLink: {
+		text: 'Trade',
+		classNamme: 'trade',
+		onClick: () => module.exports.update({ activePage: M, market: { id: 1, description: '#1desc' } })
+	}
+}];
+
 selectors.positionsSummary =  {
 	numPositions: makeNumber(3, 'Positions', true),
 	totalValue: makeNumber(985, 'eth'),
