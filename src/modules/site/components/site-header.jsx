@@ -42,7 +42,7 @@ module.exports = React.createClass({
 									formattedValue={ p.positionsSummary.numPositions.roundedValue } />
 							}
 
-							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.gainPercent.formattedValue > 0 &&
+							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.gainPercent.roundedValue > 0 &&
 								<ValueDenomination
 									className="positions-gain"
 									{ ...p.positionsSummary.gainPercent }
@@ -57,22 +57,19 @@ module.exports = React.createClass({
 							{ ...p.transactionsLink }>
 
 								{ (!p.isTransactionsWorking || p.activePage === TRANSACTIONS) &&
-									<span className="link-text">
-										<ValueDenomination
-											{ ...p.loginAccount.rep || {} }
-											formatted={ p.loginAccount.rep && p.loginAccount.rep.rounded }
-											formattedValue={ p.loginAccount.rep && p.loginAccount.rep.roundedValue } />
-
-										<ValueDenomination
-											{ ...p.loginAccount.ether || {} }
-											formatted={ p.loginAccount.ether && p.loginAccount.ether.rounded }
-											formattedValue={ p.loginAccount.ether && p.loginAccount.ether.roundedValue } />
-									</span>
+									<ValueDenomination
+										{ ...p.loginAccount.rep || {} }
+										formatted={ p.loginAccount.rep && p.loginAccount.rep.rounded }
+										formattedValue={ p.loginAccount.rep && p.loginAccount.rep.roundedValue } />
+								}
+								{ (!p.isTransactionsWorking || p.activePage === TRANSACTIONS) &&
+									<ValueDenomination
+										{ ...p.loginAccount.ether || {} }
+										formatted={ p.loginAccount.ether && p.loginAccount.ether.rounded }
+										formattedValue={ p.loginAccount.ether && p.loginAccount.ether.roundedValue } />
 								}
 								{ p.isTransactionsWorking && p.activePage !== TRANSACTIONS &&
-									<span className="link-text">
-										{ p.transactionsTotals.title }
-									</span>
+									<span className="link-text">{ p.transactionsTotals.title }</span>
 								}
 						</Link>
 					}
