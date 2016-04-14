@@ -5,11 +5,13 @@
 		color: @color-dark-hover;
 
 		.search-sort-bar {
+			display: flex;
 			width: 100%;
 			padding: 0 2.3rem 1.5vmin 2.7rem;
 			background: @color-dark-hover;
 
 			.search-bar {
+				flex: 2;
 				display: inline-block;
 				width: 70%;
 				margin: 0 .5% 0 0;
@@ -31,13 +33,35 @@
 			    }
 			}
 
-			.sort-control {
+			.sort-container {
 				display: inline-block;
-				width: 29%;
-				padding: .45em;
-				font-size: 3vmin;
-				vertical-align: top;
+				padding: 0.5em 0 0 0;
+				color: @color-light-normal;
+				font-size: 2vmin;
 
+				.title {
+					display: block; position: absolute;
+					top: 0; left: 1.3rem;
+					font-size: 0.6em;
+					text-transform: uppercase;
+				}
+
+				.sort {
+					width: 23vmin;
+					margin-top: 0.1em;
+					font-size: 1.55em;
+					white-space: nowrap;
+				}
+
+				.sort-direction-button {
+					display: inline-block;
+					padding: 0;
+					color: @color-light-normal;
+					background: transparent;
+					border: 0;
+					font-family: FontAwesome;
+					font-size: 1.1em;
+				}
 			}
 		}
 

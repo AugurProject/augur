@@ -71,7 +71,12 @@ export default function(appElement, selectors) {
     					markets={ p.markets }
     					favoriteMarkets={ p.favoriteMarkets }
     					marketsHeader={ p.marketsHeader }
-    					filtersProps={ p.filtersProps } />;
+    					filtersProps={ p.filtersProps }
+
+    					selectedSort={ p.selectedSort }
+    					sortOptions={ p.sortOptions }
+    					onChangeSort={ p.onChangeSort }
+    					/>;
     		break;
     }
 

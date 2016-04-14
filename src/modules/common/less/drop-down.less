@@ -1,0 +1,41 @@
+.drop-down {
+	display: inline-block; position: relative;
+	color: @color-light-normal;
+	background: @color-dark-hover;
+	cursor: default;
+
+	&:hover, &:focus, &:active {
+		.options {
+			display: block;
+		}
+	}
+
+	.selected {
+		display: block;
+		padding: 0.5rem 1.2rem;
+	}
+
+	.options {
+		display: none; position: absolute; z-index: 1;
+		top: 100%; left: 0;
+		width: 100%;
+		color: @color-light-normal;
+		background: @color-dark-hover;
+		border-radius: 1px;
+
+		.option {
+			display: block;
+			padding: 0.5rem 1.4rem;
+			font-size: 0.8em;
+
+			&:hover, &:focus, &:active {
+				color: white;
+				background: @color-dark-active;
+			}
+
+			&:last-child {
+				padding-bottom: 1rem;
+			}
+		}
+	}
+}

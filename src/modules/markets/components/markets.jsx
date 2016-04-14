@@ -6,6 +6,7 @@ import Filters from './filters';
 import MarketItem from './market-item';
 import Input from '../../common/components/input';
 import Link from '../../link/components/link';
+import DropDown from '../../common/components/dropdown';
 
 module.exports = React.createClass({
     propTypes: {
@@ -16,7 +17,11 @@ module.exports = React.createClass({
 		filtersProps: React.PropTypes.object,
 		marketsHeader: React.PropTypes.object,
 
-		onChangeKeywords: React.PropTypes.func
+		selectedSort: React.PropTypes.object,
+		sortOptions: React.PropTypes.array,
+
+		onChangeKeywords: React.PropTypes.func,
+		onChangeSort: React.PropTypes.func
     },
 
     render: function() {
@@ -25,7 +30,18 @@ module.exports = React.createClass({
             <section className={ p.className }>
                 <div className="search-sort-bar">
                     <Input className="search-bar" value={ p.keywords } placeholder="Search" onChange={ p.onChangeKeywords } />
-                    <select className="sort-control" />
+
+                    <div className="sort-container">
+                        <span className="title">Sort By</span>
+                        <DropDown
+                            className="sort"
+                            selected={ p.sortOptions.find(opt => opt.value === p.selectedSort.prop) }
+                            options={ p.sortOptions }
+                            onChange={ (prop) => p.onChangeSort(prop) } />
+                        <button
+                            className="sort-direction-button"
+                            onClick={ () => p.onChangeSort(null, !p.selectedSort.isDesc) }>{ p.selectedSort.isDesc ? <span>&#xf161;</span> : <span>&#xf160;</span> }</button>
+                    </div>
                 </div>
 
                 <div className="markets-header-bar">

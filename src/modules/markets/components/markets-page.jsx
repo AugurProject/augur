@@ -18,7 +18,11 @@ module.exports = React.createClass({
 		filtersProps: React.PropTypes.object,
 		marketsHeader: React.PropTypes.object,
 
-		onChangeKeywords: React.PropTypes.func
+		selectedSort: React.PropTypes.object,
+		sortOptions: React.PropTypes.array,
+
+		onChangeKeywords: React.PropTypes.func,
+		onChangeSort: React.PropTypes.func
     },
 
     shouldComponentUpdate: shouldComponentUpdatePure,

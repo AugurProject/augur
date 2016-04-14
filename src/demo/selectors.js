@@ -57,6 +57,10 @@ selectors.transactionsTotals =  {
 selectors.nextTransaction =  {};
 selectors.isTransactionsWorking =  false;
 
+
+selectors.selectedSort = { prop: 'creationDate', isDesc: true };
+selectors.sortOptions = [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Description', value: 'description' }];
+
 selectors.markets = [];
 selectors.allMarkets =  [];
 selectors.filteredMarkets =  [];
@@ -69,6 +73,12 @@ selectors.outcomes =  [];
 selectors.marketsHeader =  {};
 selectors.filtersProps =  {};
 selectors.keywordsChangeHandler =  () => {};
+selectors.onChangeSort = (prop, isDesc) => {
+	if (isDesc !== false && isDesc !== true) {
+		isDesc = selectors.selectedSort.isDesc;
+	}
+	module.exports.update({ selectedSort: { prop: prop || selectors.selectedSort.prop, isDesc }});
+};
 
 selectors.tradeInProgress =  {};
 selectors.tradeMarket =  {};
