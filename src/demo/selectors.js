@@ -81,9 +81,13 @@ module.exports = selectors;
 function makeNumber(num, denomination, omitSign) {
 	var o = {
 		value: num,
+
 		formattedValue: num,
 		formatted: num.toString(),
+
+		roundedValue: num,
 		rounded: num.toString(),
+
 		minimized: num.toString(),
 		denomination: denomination || ''
 	};
