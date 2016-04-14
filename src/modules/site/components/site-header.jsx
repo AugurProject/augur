@@ -42,7 +42,7 @@ module.exports = React.createClass({
 									formattedValue={ p.positionsSummary.numPositions.roundedValue } />
 							}
 
-							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.gainPercent.roundedValue > 0 &&
+							 { !!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.numPositions.roundedValue > 0 &&
 								<ValueDenomination
 									className="positions-gain"
 									{ ...p.positionsSummary.gainPercent }

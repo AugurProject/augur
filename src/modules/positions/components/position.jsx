@@ -18,8 +18,6 @@ module.exports = React.createClass({
 		totalCost: React.PropTypes.object,
 		netChange: React.PropTypes.object,
 
-		detailsLabel: React.PropTypes.string,
-		detailsClassName: React.PropTypes.string,
 		marketLink: React.PropTypes.object
     },
 
@@ -43,7 +41,7 @@ module.exports = React.createClass({
                 <td className="value">{ p.totalValue && p.totalValue.full }</td>
                 <td className="net">{ p.netChange && p.netChange.full }</td>
                 <td className="buttons">
-                    <Link className={ classnames('button', p.detailsClassName) } { ...p.marketLink }>{ p.detailsLabel }</Link>
+                    <Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
                 </td>
             </tr>
         );

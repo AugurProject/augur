@@ -24,8 +24,6 @@ module.exports = React.createClass({
 
 		tags: React.PropTypes.array,
 
-		detailsLabel: React.PropTypes.string,
-		detailsClassName: React.PropTypes.string,
 		marketLink: React.PropTypes.object,
 
 		onClickToggleFavorite: React.PropTypes.func
@@ -40,9 +38,9 @@ module.exports = React.createClass({
 				<div className="basics-container">
 					<Basics { ...p } />
 
-					{ !!p.marketLink && !!p.detailsLabel &&
+					{ !!p.marketLink &&
 						<div className="buttons">
-							<Link className={ classnames('button', p.detailsClassName) } { ...p.marketLink }>{ p.detailsLabel }</Link>
+							<Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
 						</div>
 					}
 				</div>
