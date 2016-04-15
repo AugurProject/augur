@@ -23,6 +23,7 @@ selectors.links = {
 	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
 };
 
+
 selectors.authForm = {};
 
 selectors.positions =  [{
@@ -61,7 +62,7 @@ selectors.isTransactionsWorking =  false;
 selectors.selectedSort = { prop: 'creationDate', isDesc: true };
 selectors.sortOptions = [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Description', value: 'description' }];
 
-selectors.markets = [];
+selectors.markets = makeMarkets();
 selectors.allMarkets =  [];
 selectors.filteredMarkets =  [];
 selectors.favoriteMarkets =  [];
@@ -148,4 +149,36 @@ function emptyNumber(denomination) {
 		full: '-',
 		denomination: denomination || ''
 	};
+}
+
+function makeMarkets(numMarkets = 20) {
+	var markets = [],
+		types = ['binary', 'categorical', 'scalar'],
+		i;
+
+	for (i = 0; i < numMarkets; i++) {
+		markets.push(makeDummyMarket(i));
+	}
+
+	return markets;
+
+	function makeDummyMarket(index) {
+		return {
+			id: index.toString(),
+			type: types[randomInt(0, types.length - 1)],
+			description: 'Will the dwerps achieve a mwerp by the end of stwerp ' + (index + 1) + '?',
+			outcomes: [
+				{ id: 1, name: 'YES', pricePercent: makeNumber(randomInt(50, 100), '%') },
+				{ id: 2, name: 'NO', pricePercent: makeNumber(randomInt(20, 50), '%') },
+				{ id: 3, name: 'MAYBE', pricePercent: makeNumber(randomInt(0, 30), '%') }
+			],
+			endDate: { formatted: '12/12/2017' },
+			tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
+			volume: makeNumber(randomInt(0, 10000), 'Shares', true)
+		};
+	}
+}
+
+function randomInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
