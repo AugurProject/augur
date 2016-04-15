@@ -59,7 +59,7 @@ module.exports = React.createClass({
 			case REGISTER:
 				nodes.description = (
 					<span className="description">
-						Register Account
+						Load free beta assets
 					</span>
 				);
 				break;
