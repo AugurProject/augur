@@ -13,10 +13,9 @@ import TransactionsPage from './modules/transactions/components/transactions-pag
 
 export default function(appElement, selectors) {
     var p = selectors,
-        siteHeader,
     	node;
 
-    siteHeader = {
+    p.siteHeader = {
 		activePage: p.activePage,
 		loginAccount: p.loginAccount,
 		positionsSummary: p.positionsSummary,
@@ -34,37 +33,41 @@ export default function(appElement, selectors) {
         case LOGIN:
         case LOGOUT:
     		node = <AuthPage
-    					siteHeader={ siteHeader }
+    					siteHeader={ p.siteHeader }
     					authForm={ p.authForm } />;
     		break;
 
     	case MAKE:
     		node = <CreateMarketPage
-    					siteHeader={ siteHeader }
+    					siteHeader={ p.siteHeader }
     					createMarketForm={ p.createMarketForm } />;
     		break;
 
     	case POSITIONS:
     		node = <PositionsPage
-    					siteHeader={ siteHeader }
-    					positions={ p.positions }
-    					positionsSummary={ p.positionsSummary } />;
+    					siteHeader={ p.siteHeader }
+    					positionsSummary={ p.marketsTotals.positionsSummary }
+    					markets={ p.markets }
+    					/>;
     		break;
 
     	case TRANSACTIONS:
     		node = <TransactionsPage
-    					siteHeader={ siteHeader }
+    					siteHeader={ p.siteHeader }
     					transactions={ p.transactions }
     					transactionsTotals={ p.transactionsTotals } />;
     		break;
 
     	case M:
-    		node = <MarketPage selectors={ p } />;
+    		node = <MarketPage
+    		            siteHeader={ p.siteHeader }
+    		            market={ p.market }
+    		            numPendingReports={ p.marketsTotals.numPendingReports } />;
     		break;
 
     	default:
     		node = <MarketsPage
-    					siteHeader={ siteHeader }
+    					siteHeader={ p.siteHeader }
     					createMarketLink={ (p.links || {}).createMarketLink }
     					onChangeKeywords={ p.keywordsChangeHandler }
 

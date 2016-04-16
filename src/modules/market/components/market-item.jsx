@@ -2,8 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
-import Basics from '../../markets/components/basics';
-import Outcomes from '../../markets/components/outcomes';
+import Basics from '../../market/components/basics';
+import Outcomes from '../../market/components/outcomes';
 import Link from '../../link/components/link';
 
 module.exports = React.createClass({
@@ -34,7 +34,7 @@ module.exports = React.createClass({
 	render: function() {
 		var p = this.props;
 		return (
-			<article className="market">
+			<article className="market-item">
 				<div className="basics-container">
 					<Basics { ...p } />
 

@@ -75,7 +75,7 @@ module.exports = React.createClass({
 					}
 
 					<Link className={ classnames('site-nav-link', AUTH_TYPES[p.activePage], { 'active': !!AUTH_TYPES[p.activePage] }) } { ...p.authLink }>
-						{ p.loginAccount && p.loginAccount.id ? p.loginAccount.handle : 'Sign Up / Login' }
+						{ p.loginAccount && p.loginAccount.id ? 'Sign Out' : 'Sign Up / Login' }
 					</Link>
 				</nav>
 			</header>

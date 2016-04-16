@@ -1,32 +1,10 @@
 .trade-panel {
-    top: @site-header-height; left: 0; right :0;
-    max-width: @media-large-width;
-    margin: 0 auto;
-    line-height: 6vmin;
     color: @color-light-normal;
     background: @color-dark-hover;
-    font-size: 1.7vmin;
-
-    .trade-builder, .trade-orders {
-        padding: @page-header-padding;
-
-		.basics {
-			line-height: 2em;
-
-			.description {
-				line-height: 5vmin;
-				color: @color-light-normal;
-				font-size: 4vmin;
-			}
-
-			.properties {
-				color: @color-light-hover;
-			}
-		}
-    }
 
     .trade-panel-item, .trade-panel-item-header {
         display: flex;
+        padding: 0em 0 1em 0;
         align-items: center;
         white-space: nowrap;
 
@@ -70,6 +48,7 @@
     }
 
     .trade-panel-item-header {
+        margin-bottom: 1em;
         border-bottom: 1px solid fade(@color-dark-active, 50%);
         font-size: 0.8em;
         font-weight: 700;
@@ -172,9 +151,10 @@
     // LMSR
     .trade-panel-item, .trade-panel-item-header {
     	> * {
-    		width: 18.2%;
+    	    width: 100%;
+    		max-width: 23.5%;
     	}
-    	.top-ask, .top-bid, .limit-price {
+    	.top-ask, .top-bid, .limit-price, .fee-to-pay {
     		display: none;
     	}
     }

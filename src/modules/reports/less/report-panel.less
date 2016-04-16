@@ -1,76 +1,11 @@
 .report-panel {
-	.page-header {
-		font-size: 1.5rem;
-		padding-bottom: 4.5rem;
-
-		.basics {
-			padding-right: 5vmin;
-			line-height: 4vmin;
-
-			.description {
-				line-height: 5vmin;
-				color: @color-light-normal;
-				font-size: 4vmin;
-			}
-			.properties {
-				color: @color-light-hover;
-			}
-		}
-
-		.num-total-reports {
-			position: absolute; display: inline-block;
-			top: 4vmin; right: 4vmin;
-			padding: 1vmin;
-			line-height: 1em;
-			border: 4px solid @color-danger-normal;
-			border-radius: 1px;
-			font-size: 4vmin;
-		}
-	}
-
-	.page-content {
-		padding: 2rem 4rem 3rem 4rem;
-		background: white;
-		font-size: 1.4rem;
-
-		&.reported {
-			color: white;
-			background: @color-danger-normal;
-		}
-
-		h4 {
-			padding: 1rem 0;
-			font-size: 2rem;
-			font-weight: 700;
-		}
-
-		.outcome-options {
-			.outcome-option {
-				display: table;
-				margin: 1rem;
-			}
-		}
-
-		.unethical {
-			margin-top: 2rem;
-			.unethical-checkbox {
-				display: inline-block;
-				margin: 1rem;
-			}
-
-			.unethical-message {
-				display: block;
-				max-width: 55rem;
-				margin: 1rem 2.5rem;
-				font-size: 0.9em;
-				font-style: italic;
-			}
-		}
-
-		.button {
-			margin: 2em 0em;
-			font-size: 1.3rem;
-			font-weight: 700;
-		}
+	.num-total-reports {
+		display: inline-block; position: absolute; z-index: 1;
+		top: 4vmin; right: 4vmin;
+		padding: 1vmin;
+		line-height: 1em;
+		border: 4px solid @color-danger-normal;
+		border-radius: 1px;
+		font-size: 4vmin;
 	}
 }

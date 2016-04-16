@@ -1,14 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import Link from '../../link/components/link';
+import ValueDenomination from '../../common/components/value-denomination';
 
 module.exports = React.createClass({
     propTypes: {
-		rowspan: React.PropTypes.number,
-		description: React.PropTypes.string,
-		outcomeName: React.PropTypes.string,
-
+		name: React.PropTypes.string,
 		qtyShares: React.PropTypes.object,
 		totalValue: React.PropTypes.object,
 		gainPercent: React.PropTypes.object,
@@ -16,37 +13,51 @@ module.exports = React.createClass({
 		purchasePrice: React.PropTypes.object,
 		shareChange: React.PropTypes.object,
 		totalCost: React.PropTypes.object,
-		netChange: React.PropTypes.object,
-
-		marketLink: React.PropTypes.object
+		netChange: React.PropTypes.object
     },
 
     render: function() {
         var p = this.props;
         return (
-            <tr>
-                { p.description &&
-                    <td className="description" rowSpan={ p.rowspan }>{ p.description }</td>
-                }
-                <td className="outcome">{ p.outcomeName }</td>
-
-                <td className="qty">{ p.qtyShares && p.qtyShares.minimized }</td>
-                <td className="gain">{ p.gainPercent && p.gainPercent.full }</td>
-
-                <td className="last">{ p.lastPrice && p.lastPrice.full }</td>
-                <td className="purchase">{ p.purchasePrice && p.purchasePrice.full }</td>
-                <td className="change">{ p.shareChange && p.shareChange.full }</td>
-
-                <td className="cost">{ p.totalCost && p.totalCost.full }</td>
-                <td className="value">{ p.totalValue && p.totalValue.full }</td>
-                <td className="net">{ p.netChange && p.netChange.full }</td>
-
-                { !!p.marketLink &&
-                    <td className="buttons">
-                        <Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
-                    </td>
-                }
-            </tr>
+            <div className="position">
+                <div className="main-group">
+                    <span className="position-name">{ p.name }</span>
+                    <ValueDenomination { ...p.qtyShares } />
+                    <div className="position-pair">
+                        <ValueDenomination { ...p.gainPercent } />
+                        &nbsp;
+                        <span className="title">{ p.gainPercent.value > 0 ? 'gain' : 'loss' }</span>
+                    </div>
+                </div>
+                <div className="position-group">
+                    <div className="position-pair qty">
+                        <span className="title">per share gain/loss</span>
+                        <ValueDenomination { ...p.shareChange } />
+                    </div>
+                    <div className="position-pair last-price">
+                        <span className="title">last trade price</span>
+                        <ValueDenomination { ...p.lastPrice } />
+                    </div>
+                    <div className="position-pair purchase-price">
+                        <span className="title">avg. purchase price</span>
+                        <ValueDenomination { ...p.purchasePrice } />
+                    </div>
+                </div>
+                <div className="position-group">
+                    <div className="position-pair net-change">
+                        <span className="title">net gain/loss</span>
+                        <ValueDenomination { ...p.netChange } />
+                    </div>
+                    <div className="position-pair total-value">
+                        <span className="title">total value</span>
+                        <ValueDenomination { ...p.totalValue } />
+                    </div>
+                    <div className="position-pair total-cost">
+                        <span className="title">total cost</span>
+                        <ValueDenomination { ...p.totalCost } />
+                    </div>
+                </div>
+            </div>
         );
     }
 });

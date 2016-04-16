@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import MarketItem from '../../markets/components/market-item';
+import MarketItem from '../../market/components/market-item';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 
 module.exports = React.createClass({

@@ -20,7 +20,7 @@ module.exports = React.createClass({
 	render: function() {
 		var p = this.props;
 		return (
-			<div className="basics">
+			<section className="basics">
 				<span className="description">{ p.description }</span>
 
 				{ !!p.tags && !!p.tags.length &&
@@ -47,7 +47,7 @@ module.exports = React.createClass({
 						<ValueDenomination className="property-value" { ...p.volume } formatted={ p.volume.rounded } />
 					</li>
 				</ul>
-			</div>
+			</section>
 		);
 	}
 });

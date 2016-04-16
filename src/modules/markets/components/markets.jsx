@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import MarketsHeader from './markets-header';
 import Filters from './filters';
-import MarketItem from './market-item';
+import MarketItem from '../../market/components/market-item';
 import Input from '../../common/components/input';
 import Link from '../../link/components/link';
 import DropDown from '../../common/components/dropdown';

@@ -28,15 +28,14 @@ module.exports = React.createClass({
 
 	render: function() {
 		var p = this.props,
-			s = this.state,
-			outcomes = (p.outcomes || []);
+			s = this.state;
 
 		return (
-			<section className={ classnames('page-content', { 'reported': s.isReported }) }>
+			<section className={ classnames('report-form', { 'reported': s.isReported }) }>
 				<div ref="outcomeOptions" className="outcome-options">
 					<h4>{ !s.isReported ? 'Report the outcome' : 'Outcome Reported' }</h4>
 
-					{ outcomes.map(outcome => (
+					{ (p.outcomes || []).map(outcome => (
 						<span key={ outcome.id } className={ classnames('outcome-option', { 'disabled': s.isReported }) } onClick={ this.handleOutcomeChange }>
 							<input
 								type="radio"
@@ -44,7 +43,9 @@ module.exports = React.createClass({
 								name="outcome-option-radio"
 								value={ outcome.id }
 								checked={ s.reportedOutcomeID === outcome.id }
-								disabled={ s.isReported } />
+								disabled={ s.isReported }
+								onChange={ this.handleOutcomeChange }
+								/>
 							<span>{ outcome.name }</span>
 						</span>
 					))}
@@ -61,7 +62,7 @@ module.exports = React.createClass({
 						onClick={ !s.isReported && (() => this.setState({ isUnethical: !s.isUnethical })) || null } />
 
 					<span className="unethical-message">
-						The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting the outcome of this market.
+						The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
 					</span>
 				</div>
 

@@ -29,8 +29,8 @@
     "watch:css": "onchange './src/**/*.less' -i -- npm run -s watch:css:do",
     "watch:css:do": "lessc $npm_package_config_less_entry_file > ./demo/styles.css && echo ---------CSS------------`date +%r`",
     "watch:js": "watchify $npm_package_config_js_entry_file_demo --extension=.js --extension=.jsx -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./demo/build.js.map > ./demo/build.js && echo ---------WATCHIFY--------`date +%r`'",
-    "watch:html": "onchange './src/demo/index.html' -i -- npm run -s watch:html:do",
-    "watch:html:do": "cat ./src/demo/index.html > ./demo/index.html && echo ---------HTML-----------`date +%r`",
+    "watch:html": "onchange './src/index.html' -i -- npm run -s watch:html:do",
+    "watch:html:do": "cat ./src/index.html > ./demo/index.html && echo ---------HTML-----------`date +%r`",
     "________": "",
     "clean:demo": "rimraf ./demo/* && mkdir -p ./demo && echo ---------CLEAN----------`date +%r`",
     "clean:dist": "rimraf ./dist/* && mkdir -p ./dist && echo ---------CLEAN----------`date +%r`",
@@ -56,15 +56,15 @@
     "http-server": "^0.9.0",
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
-    "npm-check-updates": "^2.6.1",
-    "onchange": "^2.3.0",
+    "npm-check-updates": "^2.6.2",
+    "onchange": "^2.4.0",
     "rimraf": "^2.5.2",
     "uglify-js": "^2.6.2",
     "watchify": "^3.7.0"
   },
   "config": {
     "js_entry_file_dist": "./src/app.jsx",
-    "js_entry_file_demo": "./src/demo/index.js",
+    "js_entry_file_demo": "./src/index.js",
     "less_entry_file": "./src/styles.less"
   }
 }

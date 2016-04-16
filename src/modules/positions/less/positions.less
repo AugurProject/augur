@@ -1,76 +1,61 @@
-.positions {
+.positions-summary {
+	> * {
+		margin-right: 0.5em;
+	}
+}
+.page-content {
+	background: white;
+}
+.positions-container {
+	border-bottom: 4px solid @color-border;
 
-.page-header {
-	.big-line {
-		> * {
-			margin-right: 0.5em;
-		}
+	.description {
+		display: inline-block;
+		padding: 1vmin 4vmin 0vmin 4vmin;
+		font-size: 1.1rem;
 	}
 }
 
-.positions-content {
-	display: flex;
-	padding: 2vmin 4vmin;
-	background: white;
-	font-size: 1.15rem;
+.positions {
+	width: 100%;
+	padding: 2vmin 6vmin 1vmin 6vmin;
+	line-height: 1.9rem;
+	font-size: 1.2rem;
 
-	.positions-table {
-		width: 100%;
+	.position {
+		display: flex;
+		padding: 1rem;
 
-		th, td {
-			padding: 1rem;
+		.position-group {
+			padding: 0 4vmin;
 			text-align: right;
-			vertical-align: middle;
-			border-bottom: 1px solid @color-border;
-			white-space: nowrap;
 
-			&.description {
-				text-align: left;
-				vertical-align: middle;
-				white-space: normal;
-			}
-
-			&.outcome {
-				text-align: center;
-			}
-
-			&.gain {
-				font-weight: 700;
-				border-right: 2px solid @color-border;
-			}
-			&.cost {
-				border-left: 2px solid @color-border;
-			}
-			&.value, &.change, &.net {
-				font-weight: 700;
-			}
-		}
-		td {
-			&.description {
-				font-size: 1rem;
-			}
-			&.buttons {
-				padding-left: 2rem;
-				text-align: left;
+			.position-pair {
 				white-space: nowrap;
+				> * {
+					margin-left: 0.5em;
+				}
 
-				.button {
-					margin-right: 0.1rem;
+				.title {
+					font-size: 0.8em;
 				}
 			}
 		}
 
-		.positive {
-			.gain, .change, .net {
-				color: @color-positive;
-			}
-		}
+		.main-group {
+			text-align: right;
+			font-size: 1.4em;
 
-		.negative {
-			.gain, .change, .net {
-				color: @color-negative;
+			> * {
+				display: inline-block;
+				margin-right: 1.5em;
+				vertical-align: middle;
+			}
+
+			.position-name {
+				padding: 0.25em 0.5em;
+				border: 3px solid @color-border;
 			}
 		}
 	}
-}
 }

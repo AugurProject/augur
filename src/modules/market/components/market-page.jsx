@@ -1,38 +1,80 @@
 import React from 'react';
+import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
-import TradeView from './market-trade';
-import ReportView from './market-report';
-import ExpiredView from './market-expired';
-import NoneView from './market-none';
+import SiteHeader from '../../site/components/site-header';
+import Basics from '../../market/components/basics';
+import TradePanel from '../../trade/components/trade-panel';
+import ReportPanel from '../../reports/components/report-panel';
+import MarketPositions from '../../market/components/market-positions';
 
 module.exports = React.createClass({
-	render: function() {
-		var p = this.props.selectors;
+    propTypes: {
+        className: React.PropTypes.string,
+        siteHeader: React.PropTypes.object,
+		market: React.PropTypes.object,
+		numPendingReports: React.PropTypes.number
+    },
 
-		if (!p.market) {
-			return <NoneView
-						siteHeader={ p.siteHeader }
-						market={ p.market } />;
+	shouldComponentUpdate: shouldComponentUpdatePure,
+
+	render: function() {
+		var p = this.props,
+			nodes = [];
+
+		// no market
+		if (!p.market || !p.market.id) {
+			nodes.push(
+				<section key="no-market" className="basics">
+					<span className="description">No market</span>
+				</section>
+			);
 		}
-		else if (p.market.isRequiredToReportByAccount) {
-			return <ReportView
-							siteHeader={ p.siteHeader }
-							market={ p.market }
-							report={ p.report }
-							numTotalReports={ p.reportMarkets.length }
-							submitReportHandler={ p.submitReportHandler } />;
-		}
-		else if (!p.market.isOpen) {
-			return <ExpiredView siteHeader={ p.siteHeader } />;
-		}
+
+		// market exists
 		else {
-			return <TradeView
-							market={ p.market }
-							tradeMarket={ p.tradeMarket }
-							tradeOrders={ p.tradeOrders }
-							tradeOrdersTotals={ p.tradeOrdersTotals }
-							siteHeader={ p.siteHeader }
-							placeTradeHandler={ p.placeTradeHandler } />;
+			nodes.push(<Basics key="bascis" { ...p.market } />);
+
+			// report form
+			if (p.market.isRequiredToReportByAccount) {
+				nodes.push(
+					<ReportPanel
+						key="report-panel"
+						{ ...p.market }
+						{ ...p.market.report }
+						numPendingReports={ p.numPendingReports } />
+				);
+			}
+
+			// trade panel
+			else if (p.market.isOpen) {
+				nodes.push(
+			        <TradePanel
+			        	key="trade-panel"
+			            { ...p.market }
+			            { ...p.market.tradeSummary } />
+				);
+
+				// positions
+				if (p.market.positionsSummary && p.market.positionsSummary.numPositions && p.market.positionsSummary.numPositions.value) {
+					nodes.push(
+						<MarketPositions
+							key="market-positions"
+							className="market-positions"
+							positionsSummary={ p.market.positionsSummary }
+							outcomes={ p.market.outcomes }
+							/>
+					);
+				}
+			}
 		}
+
+		return (
+			<main className="page market">
+				<SiteHeader { ...p.siteHeader } />
+				<article className="page-content">
+					{ nodes }
+				</article>
+			</main>
+		);
 	}
 });

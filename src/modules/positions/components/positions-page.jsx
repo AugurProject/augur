@@ -2,47 +2,38 @@ import React from 'react';
 
 import SiteHeader from '../../site/components/site-header';
 import Positions from '../../positions/components/positions';
-import ValueDenomination from '../../common/components/value-denomination';
+import PositionsSummary from '../../positions/components/positions-summary';
 
 module.exports = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
 		siteHeader: React.PropTypes.object,
-		positions: React.PropTypes.array,
-		positionsSummary: React.PropTypes.object
+		positionsSummary: React.PropTypes.object,
+		markets: React.PropTypes.array
 	},
 
 	render: function() {
 		var p = this.props;
 		return (
-			<main className="page positions">
+			<main className="page positions-page">
 				<SiteHeader { ...p.siteHeader } />
 
 				<header className="page-header">
-					<span className="big-line">
-						{ !!p.positionsSummary && !!p.positionsSummary.numPositions &&
-							<ValueDenomination { ...p.positionsSummary.numPositions } />
-						}
-
-						{ !!p.positionsSummary && p.positionsSummary.totalValue &&
-							<ValueDenomination { ...p.positionsSummary.totalValue } />
-						}
-
-						{ !!p.positionsSummary && p.positionsSummary.gainPercent &&
-							<span>
-								(<ValueDenomination
-									{ ...p.positionsSummary.gainPercent }
-									formatted={ p.positionsSummary.gainPercent.formatted } />)
-							</span>
-						}
-					</span>
+					<PositionsSummary { ...p.positionsSummary } />
 				</header>
 
-				{ !!p.positions && !!p.positions.length &&
-					<Positions
-						className="page-content positions-content"
-						positions={ p.positions }/>
-				}
+				<section className="page-content">
+					{ !!p.markets && !!p.markets.length && p.markets.map(market => (
+						<div key={ market.id } className="positions-container">
+							<span className="description">{ market.description }</span>
+							{ !!market.outcomes && !!market.outcomes.length &&
+								<Positions
+									className="page-content positions-content"
+									outcomes={ market.outcomes }/>
+							}
+						</div>
+					))}
+				</section>
 			</main>
 		);
 	}

@@ -1,26 +1,20 @@
 import React from 'react';
 
-import Basics from '../../markets/components/basics';
 import TradePanelItem from './trade-panel-item';
 import Transaction from '../../transactions/components/transaction';
 
 module.exports = React.createClass({
 	propTypes: {
-		marketID: React.PropTypes.string,
-		description: React.PropTypes.string,
-		tradeOutcomes: React.PropTypes.array,
+		outcomes: React.PropTypes.array,
 		tradeOrders: React.PropTypes.array,
-		tradeOrdersTotals: React.PropTypes.object,
-		onClickPlaceTrade: React.PropTypes.func
+		onSubmitPlaceTrade: React.PropTypes.func
 	},
 
 	render: function() {
 		var p = this.props;
 		return (
-			<article className="trade-panel">
+			<section className="trade-panel">
 				<div className="trade-builder">
-					<Basics { ...p } />
-
 					<div className="trade-panel-item-header">
 						<span className="outcome-name">&nbsp;</span>
 						<span className="last-price">Last</span>
@@ -31,11 +25,11 @@ module.exports = React.createClass({
 						<span className="fee-to-pay">Fee</span>
 						<span className="total-cost">Cost</span>
 					</div>
-					{ p.tradeOutcomes && p.tradeOutcomes.map(tradeOutcome => (
+					{ p.outcomes && p.outcomes.map(outcome => (
 						<TradePanelItem
-							{ ...tradeOutcome }
-							key={ tradeOutcome.outcomeID }
-							/>
+							key={ outcome.id }
+							{ ...outcome }
+							{ ...outcome.trade } />
 					))}
 				</div>
 
@@ -52,18 +46,19 @@ module.exports = React.createClass({
 						))}
 
 						<Transaction
+							shares={ p.totalShares }
 							className="order total"
-							{ ...p.tradeOrdersTotals }
-							status={ undefined }
-						/>
+							ether={ p.totalEther }
+							gas={ p.totalGas }
+							status={ undefined } />
 					</div>
 				}
 				<div className="place-trade-container">
 					<button
 						className="button place-trade" disabled={ !p.tradeOrders || !p.tradeOrders.length }
-						onClick={ p.onClickPlaceTrade }>Place Trade</button>
+						onClick={ p.onSubmitPlaceTrade }>Place Trade</button>
 				</div>
-			</article>
+			</section>
 		);
 	}
 });
