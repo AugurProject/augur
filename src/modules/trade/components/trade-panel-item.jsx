@@ -16,7 +16,8 @@ module.exports = React.createClass({
 		topBid: React.PropTypes.object,
 		topAsk: React.PropTypes.object,
 		feeToPay: React.PropTypes.object,
-		totalEther: React.PropTypes.object,
+
+		tradeSummary: React.PropTypes.object,
 
 		sharesOwned: React.PropTypes.number,
 		etherAvailable: React.PropTypes.number,
@@ -49,7 +50,7 @@ module.exports = React.createClass({
 					onChange={ (value) => p.onChangeTrade(parseFloat(p.numShares) || 0, parseFloat(value) || 0) } />
 
 				<ValueDenomination className="fee-to-pay" { ...p.feeToPay } />
-				<ValueDenomination className="total-cost" { ...p.totalEther } />
+				<ValueDenomination className="total-cost" { ...p.tradeSummary.totalEther } />
 			</div>
 		);
 	}
