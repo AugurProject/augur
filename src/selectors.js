@@ -154,7 +154,9 @@ function makeMarkets(numMarkets = 20) {
 				trade: {
 					numShares: 0,
 					limitPrice: 0,
-					totalCost: makeNumber(0),
+					tradeSummary: {
+						totalEther: makeNumber(0)
+					},
 					onChangeTrade: (numShares, limitPrice) => {
 						limitPrice = m.outcomes[0].lastPrice.value;
 						m.outcomes[0].trade.numShares = numShares;
@@ -173,7 +175,9 @@ function makeMarkets(numMarkets = 20) {
 				trade: {
 					numShares: 0,
 					limitPrice: 0,
-					totalCost: null,
+					tradeSummary: {
+						totalEther: makeNumber(0)
+					},
 					onChangeTrade: (numShares, limitPrice) => {
 						limitPrice = m.outcomes[0].lastPrice.value;
 						m.outcomes[1].trade.numShares = numShares;
@@ -191,7 +195,9 @@ function makeMarkets(numMarkets = 20) {
 				trade: {
 					numShares: 0,
 					limitPrice: 0,
-					totalCost: null,
+					tradeSummary: {
+						totalEther: makeNumber(0)
+					},
 					onChangeTrade: (numShares, limitPrice) => {
 						limitPrice = m.outcomes[0].lastPrice.value;
 						m.outcomes[2].trade.numShares = numShares;
