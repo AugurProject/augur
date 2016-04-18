@@ -23,6 +23,7 @@ export function formatShares(num, opts) {
                             decimals: 2,
                             decimalsRounded: 0,
                             denomination: 'Shares',
+                            minimized: true,
                             ...opts });
 
 }
@@ -56,8 +57,8 @@ export function formatDate(d) {
 	};
 }
 
-export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', positiveSign: false, zero: true }) {
-    var { decimals, decimalsRounded, denomination, positiveSign, zero } = opts,
+export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', positiveSign: false, zero: true, minimized: false }) {
+    var { decimals, decimalsRounded, denomination, positiveSign, zero, minimized } = opts,
         o;
 
     decimals = decimals || 0;
@@ -89,6 +90,10 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
         if (o.roundedValue > 0) {
             o.rounded = '+' + o.rounded;
         }
+    }
+
+    if (minimized) {
+        o.formatted = o.minimized;
     }
 
     o.denomination = denomination;

@@ -57,7 +57,12 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 				return;
 		}
 
-		simulation = AugurJS.getSimulatedBuy(marketID, outcomeID, numShares);
+		if (numShares >= 0) {
+			simulation = AugurJS.getSimulatedBuy(marketID, outcomeID, numShares);
+		}
+		else {
+			simulation = AugurJS.getSimulatedSell(marketID, outcomeID, Math.abs(numShares));
+		}
 
 		dispatch({ type: UPDATE_TRADE_IN_PROGRESS, data: {
 			marketID,

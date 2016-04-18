@@ -310,6 +310,10 @@ ex.getSimulatedBuy = function(marketID, outcomeID, numShares) {
 	return augur.getSimulatedBuy(marketID, outcomeID, numShares);
 };
 
+ex.getSimulatedSell = function(marketID, outcomeID, numShares) {
+	return augur.getSimulatedSell(marketID, outcomeID, numShares);
+};
+
 ex.loadPriceHistory = function(marketID, cb) {
 	if (!marketID) {
 		cb('ERROR: loadPriceHistory() marketID required');
