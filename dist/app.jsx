@@ -26562,7 +26562,7 @@ module.exports = _react2.default.createClass({
 								key: 'market-positions',
 								className: 'market-positions',
 								positionsSummary: p.market.positionsSummary,
-								outcomes: p.market.positionOutcomes
+								positionOutcomes: p.market.positionOutcomes
 							}));
 						}
 					}
