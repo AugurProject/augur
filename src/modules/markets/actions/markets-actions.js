@@ -40,8 +40,7 @@ export function loadMarkets() {
 				}
 
 				marketsDataOutcomesData = ParseMarketsData(marketsData);
-				dispatch(updateMarketsData(marketsDataOutcomesData.marketsData));
-				dispatch(updateOutcomesData(marketsDataOutcomesData.outcomesData));
+				dispatch(updateMarketsData(marketsDataOutcomesData));
 
 /*
 				AugurJS.loadMarketMetadata(Object.keys(marketsData)[0], (err, metadata) => {
@@ -69,8 +68,7 @@ export function loadMarket(marketID) {
 				return console.info("ERROR: loadMarket()", err);
 			}
 			marketDataOutcomesData = ParseMarketsData({ [marketData['_id']]: marketData });
-			dispatch(updateMarketsData(marketDataOutcomesData.marketsData));
-			dispatch(updateOutcomesData(marketDataOutcomesData.outcomesData));
+			dispatch(updateMarketsData(marketDataOutcomesData));
 		});
 	};
 }
@@ -126,12 +124,8 @@ console.log('!!!!!!priceHistory', priceHistory);
 	};
 }
 
-export function updateMarketsData(marketsData) {
-	return { type: UPDATE_MARKETS_DATA, marketsData };
-}
-
-export function updateOutcomesData(outcomesData) {
-	return { type: UPDATE_OUTCOMES_DATA, outcomesData };
+export function updateMarketsData(marketsOutcomesData) {
+	return { type: UPDATE_MARKETS_DATA, ...marketsOutcomesData };
 }
 
 export function updateOutcomePrice(marketID, outcomeID, price) {

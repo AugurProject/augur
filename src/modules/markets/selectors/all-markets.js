@@ -2,43 +2,20 @@ import memoizerific from 'memoizerific';
 
 import store from '../../../store';
 
-import { assembleMarket } from '../../market/selectors/market';
+import { selectMarket } from '../../market/selectors/market';
 
 export default function() {
-    var { markets, recentlyExpiredMarkets, pendingReports, favorites, outcomes, blockchain, selectedSort } = store.getState(),
-    	dispatch = store.dispatch;
-    return selectMarkets(markets, recentlyExpiredMarkets, pendingReports, favorites, outcomes, selectedSort, blockchain, dispatch);
+    var { marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain } = store.getState();
+    return selectMarkets(marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((markets, recentlyExpiredMarkets, pendingReports, favorites, outcomes, selectedSort, blockchain, dispatch) => {
-	if (!markets) {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, dispatch) => {
+	if (!marketsData) {
 		return [];
 	}
 
-    return Object.keys(markets)
-    	.map(marketID => {
-    		var pendingReport;
-
-			if (!marketID || !markets[marketID]) {
-				return {};
-			}
-
-			pendingReport = pendingReports[recentlyExpiredMarkets[marketID]];
-
-    		return assembleMarket(
-	    		marketID,
-	    		markets[marketID],
-				!!pendingReport,
-				!!pendingReport && pendingReport.reportHash === true,
-				!!pendingReport && !!pendingReport.reportHash && !!pendingReport.reportHash.length,
-				!!favorites[marketID],
-				outcomes[marketID],
-				blockchain.currentBlockNumber,
-				blockchain.currentBlockMillisSinceEpoch,
-				blockchain.isReportConfirmationPhase,
-				dispatch
-			);
-    	})
+    return Object.keys(marketsData)
+    	.map(marketID => selectMarket(marketID))
     	.sort((a, b) => {
     		var aVal = cleanSortVal(a[selectedSort.prop]),
     			bVal = cleanSortVal(b[selectedSort.prop]);

@@ -1,4 +1,5 @@
-import { formatNone } from '../../../utils/format-number';
+import { formatRep, formatEther } from '../../../utils/format-number';
+
 
 import store from '../../../store';
 
@@ -6,8 +7,8 @@ export default function() {
 	var { loginAccount } = store.getState();
 	return {
 		...loginAccount,
-		rep: loginAccount.rep && loginAccount.rep.formattedValue && loginAccount.rep.formattedValue !== 0 && loginAccount.rep || formatNone(),
-		ether: loginAccount.ether && loginAccount.ether.formattedValue && loginAccount.ether.formattedValue !== 0 && loginAccount.ether || formatNone(),
-		realEther: loginAccount.realEther && loginAccount.realEther.formattedValue && loginAccount.realEther.formattedValue !== 0 && loginAccount.realEther || formatNone()
+		rep: formatRep(loginAccount.rep, { zero: true, decimalsRounded: 0 }),
+		ether: formatEther(loginAccount.ether, { zero: true, decimalsRounded: 0 }),
+		realEther: formatEther(loginAccount.realEther, { zero: true, decimalsRounded: 0 })
 	};
 }

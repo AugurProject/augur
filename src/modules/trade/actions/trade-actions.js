@@ -6,9 +6,21 @@ import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses'
 import * as TransactionsActions from '../../transactions/actions/transactions-actions';
 import * as PositionsActions from '../../positions/actions/positions-actions';
 
+import { selectMarket } from '../../market/selectors/market';
+import { selectTransactionsLink } from '../../link/selectors/links';
+
 export const UPDATE_BIDSASKS_DATA = 'UPDATE_BIDSASKS_DATA';
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
+
+export function placeTrade(marketID) {
+	return (dispatch, getState) => {
+		var market = selectMarket(marketID);
+		dispatch(TransactionsActions.addTransactions(market.tradeSummary.tradeOrders));
+		dispatch(clearTradeInProgress(marketID));
+		selectTransactionsLink(dispatch).onClick();
+	};
+}
 
 export function tradeShares(transactionID, marketID, outcomeID, numShares, limitPrice, cap) {
 	return (dispatch, getState) => {

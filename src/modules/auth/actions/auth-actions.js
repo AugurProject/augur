@@ -1,5 +1,3 @@
-import { formatRep, formatEther } from '../../../utils/format-number';
-
 import * as AugurJS from '../../../services/augurjs';
 
 import { REGISTER } from '../../auth/constants/auth-types';
@@ -9,9 +7,7 @@ import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses'
 import { BRANCH_ID } from '../../app/constants/network';
 
 import * as TransactionsActions from '../../transactions/actions/transactions-actions';
-import * as LinkActions from '../../link/actions/link-actions';
 import * as PositionsActions from '../../positions/actions/positions-actions';
-import * as MarketsActions from '../../markets/actions/markets-actions';
 import * as ReportsActions from '../../reports/actions/reports-actions';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
@@ -69,7 +65,7 @@ export function updateAssets() {
 				}
 
 				if (!loginAccount.ether || loginAccount.ether.value !==  ether) {
-					return dispatch(updateLoginAccount({ ether: formatEther(ether) }));
+					return dispatch(updateLoginAccount({ ether }));
 				}
 			},
 			(err, rep) => {
@@ -78,7 +74,7 @@ export function updateAssets() {
 					return;
 				}
 				if (!loginAccount.rep || loginAccount.rep.value !== rep) {
-					return dispatch(updateLoginAccount({ rep: formatRep(rep) }));
+					return dispatch(updateLoginAccount({ rep }));
 				}
 			},
 			(err, realEther) => {
@@ -88,7 +84,7 @@ export function updateAssets() {
 				}
 
 				if (!loginAccount.realEther || loginAccount.realEther.value !== realEther) {
-					return dispatch(updateLoginAccount({ realEther: formatEther(realEther) }));
+					return dispatch(updateLoginAccount({ realEther }));
 				}
 			});
 	};

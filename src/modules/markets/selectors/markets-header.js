@@ -8,16 +8,16 @@ import * as MarketsActions from '../actions/markets-actions';
 
 export default function() {
 	var { selectedMarketsHeader } = store.getState(),
-		{ filteredMarkets, favoriteMarkets, reportMarkets } = require('../../../selectors');
-	return selectMarketsHeader(selectedMarketsHeader, filteredMarkets, favoriteMarkets, reportMarkets, store.dispatch);
+		{ marketsTotals } = require('../../../selectors');
+	return selectMarketsHeader(selectedMarketsHeader, marketsTotals.numFiltered, marketsTotals.numFavorites, marketsTotals.numPendingReports, store.dispatch);
 }
 
-export const selectMarketsHeader = memoizerific(1)(function(selectedMarketsHeader, filteredMarkets, favoriteMarkets, reportMarkets, dispatch) {
+export const selectMarketsHeader = memoizerific(1)(function(selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) {
     return {
     	selectedMarketsHeader,
-    	numMarkets: filteredMarkets.length,
-    	numFavorites: favoriteMarkets.length,
-    	numPendingReports: reportMarkets.length,
+    	numMarkets: numFiltered,
+    	numFavorites: numFavorites,
+    	numPendingReports: numPendingReports,
         onClickAllMarkets: () => dispatch(MarketsActions.updateSelectedMarketsHeader(null)),
 		onClickFavorites: () => dispatch(MarketsActions.updateSelectedMarketsHeader(FAVORITES)),
 		onClickPendingReports: () => dispatch(MarketsActions.updateSelectedMarketsHeader(PENDING_REPORTS))

@@ -10,43 +10,18 @@ import * as TradeActions from '../../trade/actions/trade-actions';
 //import { selectOutcomeBids, selectOutcomeAsks } from '../../bids-asks/selectors/select-bids-asks';
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
 
-export default function() {
-	var { market, tradeInProgress } = require('../../../selectors');
-	return selectTradeOrders(market, tradeInProgress, store.dispatch);
-}
-
-export const selectTradeOrders = function(market, tradeInProgress, dispatch) {
+export const selectTradeOrders = function(market, marketTradeInProgress, dispatch) {
 	var orders = [];
 
-	if (!market || !tradeInProgress || !market.outcomes.length) {
+	if (!market || !marketTradeInProgress || !market.outcomes.length) {
 		return orders;
 	}
 
 	market.outcomes.forEach(outcome => {
-		if (!tradeInProgress[outcome.id] || !tradeInProgress[outcome.id].numShares) {
-			return;
-		}
-
-		var numShares = tradeInProgress[outcome.id].numShares,
-			totalCost = tradeInProgress[outcome.id].totalCost;
-
-		orders.push(selectNewTransaction(
-			numShares > 0 ? BUY_SHARES : SELL_SHARES,
-			-0.3,
-			numShares,
-			totalCost,
-			0,
-			{
-				marketID: market.id,
-				outcomeID: outcome.id,
-				marketDescription: market.description,
-				outcomeName: outcome.name.toUpperCase(),
-				avgPrice: formatEther(totalCost / numShares),
-				feeToPay: formatEther(0.9)
-			},
-			(transactionID) => dispatch(TradeActions.tradeShares(transactionID, market.id, outcome.id, numShares, null, null))
-		));
+		orders.concat(selectOutcomeTradeOrders(market, outcome, marketTradeInProgress[outcome.id], dispatch));
 	});
+
+	return orders;
 
 /* for limit-based system
 	market.outcomes.forEach(outcome => {
@@ -65,6 +40,35 @@ export const selectTradeOrders = function(market, tradeInProgress, dispatch) {
 		));
 	});
 */
+};
+
+export const selectOutcomeTradeOrders = function(market, outcome, outcomeTradeInProgress, dispatch) {
+	var orders = [];
+
+	if (!outcomeTradeInProgress || !outcomeTradeInProgress.numShares) {
+		return orders;
+	}
+
+	var numShares = outcomeTradeInProgress.numShares,
+		totalCost = outcomeTradeInProgress.totalCost;
+
+	orders.push(selectNewTransaction(
+		numShares > 0 ? BUY_SHARES : SELL_SHARES,
+		-0.3,
+		numShares,
+		totalCost,
+		0,
+		{
+			marketID: market.id,
+			outcomeID: outcome.id,
+			marketDescription: market.description,
+			outcomeName: outcome.name.toUpperCase(),
+			avgPrice: formatEther(totalCost / numShares),
+			feeToPay: formatEther(0.9)
+		},
+		(transactionID) => dispatch(TradeActions.tradeShares(transactionID, market.id, outcome.id, numShares, null, null))
+	));
+
 	return orders;
 };
 

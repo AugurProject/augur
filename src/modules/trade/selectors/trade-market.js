@@ -42,7 +42,7 @@ export const selectTradeMarket = memoizerific(10)(function(marketID, market = {}
     o.tradeOutcomes = market.outcomes.map(outcome => {
         //askKeys = Object.keys(marketBidsAsks[outcome.id] && marketBidsAsks[outcome.id][ASK] || {}).sort();
         //bidKeys = Object.keys(marketBidsAsks[outcome.id] && marketBidsAsks[outcome.id][BID] || {}).sort((a, b) => b - a);
-        outcomeTradeOrders = tradeOrders.filter(tradeOrder => tradeOrder.data.outcomeID === outcome.id);
+        outcomeTradeOrders = tradeOrders.filter(tradeOrder => tradeOrder.data.reportedOutcomeID === outcome.id);
 
         tradeOutcome = {
             outcomeID: outcome.id,

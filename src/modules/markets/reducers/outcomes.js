@@ -1,8 +1,8 @@
-import { UPDATE_OUTCOMES_DATA, UPDATE_OUTCOME_PRICE } from '../actions/markets-actions';
+import { UPDATE_MARKETS_DATA, UPDATE_OUTCOME_PRICE } from '../actions/markets-actions';
 
 export default function(outcomes = {}, action) {
     switch (action.type) {
-        case UPDATE_OUTCOMES_DATA:
+        case UPDATE_MARKETS_DATA:
             return {
                 ...outcomes,
                 ...action.outcomesData

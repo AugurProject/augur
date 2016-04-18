@@ -1,36 +1,36 @@
 import { MILLIS_PER_BLOCK } from '../modules/app/constants/network';
 
-export function formatRep(num, omitSign) {
+export function formatRep(num, opts) {
     return formatNumber(num, {
-                                    decimals: 0,
-                                    decimalsRounded: 0,
-                                    denomination: 'Rep',
-                                    omitSign });
+                            decimals: 0,
+                            decimalsRounded: 0,
+                            denomination: 'Rep',
+                            ...opts });
 }
 
-export function formatEther(num, omitSign) {
+export function formatEther(num, opts) {
     return formatNumber(num, {
-                                    decimals: 3,
-                                    decimalsRounded: 0,
-                                    denomination: 'Eth',
-                                    omitSign });
+                            decimals: 2,
+                            decimalsRounded: 1,
+                            denomination: 'Eth',
+                            ...opts });
 }
 
-export function formatShares(num, omitSign) {
+export function formatShares(num, opts) {
     return formatNumber(num, {
-                                    decimals: 2,
-                                    decimalsRounded: 0,
-                                    denomination: 'Shares',
-                                    omitSign });
+                            decimals: 2,
+                            decimalsRounded: 0,
+                            denomination: 'Shares',
+                            ...opts });
 
 }
 
-export function formatPercent(num, omitSign) {
+export function formatPercent(num, opts) {
     return formatNumber(num, {
-                                    decimals: 1,
-                                    decimalsRounded: 0,
-                                    denomination: '%',
-                                    omitSign });
+                            decimals: 1,
+                            decimalsRounded: 0,
+                            denomination: '%',
+                            ...opts });
 }
 
 export function formatBlockToDate(currentBlock, startBlock, startBlockMillisSinceEpoch) {

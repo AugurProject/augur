@@ -7,9 +7,14 @@ import { BRANCH_ID } from '../../app/constants/network';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
+import { SUBMIT_REPORT } from '../../transactions/constants/types';
 
 import * as MarketActions from '../../markets/actions/markets-actions';
 import * as TransactionsActions from '../../transactions/actions/transactions-actions';
+
+import { selectNewTransaction } from '../../transactions/selectors/transactions';
+import { selectMarket } from '../../market/selectors/market';
+import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links';
 
 export const UPDATE_RECENTLY_EXPIRED_EVENTS = 'UPDATE_RECENTLY_EXPIRED_EVENTS';
 export const UPDATE_PENDING_REPORTS = 'UPDATE_PENDING_REPORTS';
@@ -59,12 +64,51 @@ export function loadPendingReports(eventIDs) {
 	};
 }
 
-export function submitReport(transactionID, marketID, reportedOutcomeID, isUnethical) {
+export function submitReport(market, reportedOutcomeID, isUnethical) {
 	return (dispatch, getState) => {
-		var { loginAccount, markets, recentlyExpiredEvents, recentlyExpiredMarkets, blockchain } = getState(),
-			eventID = recentlyExpiredMarkets[marketID],
+		var { pendingReports, recentlyExpiredEvents, recentlyExpiredMarkets } = getState(),
+			currentEventID = recentlyExpiredMarkets[market.id];
+
+		dispatch(updatePendingReports({ [currentEventID]: { reportHash: true } }));
+
+		dispatch(TransactionsActions.addTransactions([selectNewTransaction(
+			SUBMIT_REPORT,
+			0,
+			0,
+			0,
+			0,
+			{
+				market: market,
+				outcome: market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {},
+				reportedOutcomeID,
+				isUnethical
+			},
+			(transactionID) => 	dispatch(processReport(transactionID, market, reportedOutcomeID, isUnethical))
+		)]));
+
+		var nextPendingReportEventID = Object.keys(pendingReports).find(eventID => (
+					!pendingReports[eventID].reportHash &&
+					recentlyExpiredEvents[eventID] &&
+					recentlyExpiredEvents[eventID].marketID &&
+					recentlyExpiredEvents[eventID].marketID !== market.id
+				)),
+				recentlyExpiredEvent = recentlyExpiredEvents[nextPendingReportEventID],
+				nextPendingReportMarket = recentlyExpiredEvent && selectMarket(recentlyExpiredEvent.marketID);
+
+		if (nextPendingReportMarket) {
+			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
+		}
+		else {
+			selectMarketsLink(dispatch).onClick();
+		}
+	};
+}
+
+export function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
+	return (dispatch, getState) => {
+		var { loginAccount, recentlyExpiredEvents, recentlyExpiredMarkets, blockchain } = getState(),
+			eventID = recentlyExpiredMarkets[market.id],
 			event = recentlyExpiredEvents[eventID],
-			market = markets[marketID],
 			report;
 
 		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID ) {

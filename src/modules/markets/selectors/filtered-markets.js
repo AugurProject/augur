@@ -7,19 +7,8 @@ import { MARKET_STATUSES, OPEN, RECENTLY_EXPIRED } from '../../markets/constants
 
 import store from '../../../store';
 
-export default function() {
-    var { keywords, selectedFilters } = store.getState(),
-    	{ allMarkets } = require('../../../selectors');
-    return selectFilteredMarkets(allMarkets, keywords, selectedFilters);
-}
-
-export const selectFilteredMarkets = memoizerific(3)(function(allMarkets, keywords, selectedFilters) {
-    if (!allMarkets || !allMarkets.length) {
-    	return [];
-    }
-
-    return allMarkets
-			.filter(market => isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters));
+export const isMarketFilterMatch = memoizerific(3)(function(market, keywords, selectedFilters) {
+    return isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters);
 
     function isMatchKeywords(market, keywords) {
         var keywordsArray = CleanKeywordsArray(keywords);

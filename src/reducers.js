@@ -5,7 +5,7 @@ import auth from './modules/auth/reducers/auth';
 import loginAccount from './modules/auth/reducers/login-account';
 import activePage from './modules/app/reducers/active-page';
 
-import markets from './modules/markets/reducers/markets';
+import marketsData from './modules/markets/reducers/markets-data';
 import favorites from './modules/markets/reducers/favorites';
 import recentlyExpiredMarkets from './modules/markets/reducers/recently-expired-markets';
 
@@ -33,7 +33,7 @@ module.exports = {
 	loginAccount,
 	activePage,
 
-	markets,
+	marketsData,
 	favorites,
 	recentlyExpiredMarkets,
 
