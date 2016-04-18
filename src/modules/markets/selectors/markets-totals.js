@@ -1,13 +1,17 @@
 import memoizerific from 'memoizerific';
 
+import store from '../../../store';
+
+import { selectFilteredMarkets } from '../../markets/selectors/filtered-markets';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
 export default function() {
-    var { allMarkets } = require('../../../selectors');
-    return selectMarketsTotals(allMarkets);
+	var { keywords, selectedFilters } = store.getState(),
+		{ allMarkets } = require('../../../selectors');
+    return selectMarketsTotals(allMarkets, keywords, selectedFilters);
 }
 
-export const selectMarketsTotals = memoizerific(1)((allMarkets) => {
+export const selectMarketsTotals = memoizerific(1)((allMarkets, keywords, selectedFilters) => {
 	var positions = { numPositions: 0, qtyShares: 0, totalValue: 0, totalCost: 0 },
 		totals;
 
@@ -18,9 +22,6 @@ export const selectMarketsTotals = memoizerific(1)((allMarkets) => {
 			}
 			if (market.isPendingReport) {
 				p.numPendingReports++;
-			}
-			if (market.isFiltersMatch) {
-				p.numFiltered++;
 			}
 
 			if (market.positionsSummary && market.positionsSummary.qtyShares && market.positionsSummary.qtyShares.value) {
@@ -38,6 +39,7 @@ export const selectMarketsTotals = memoizerific(1)((allMarkets) => {
 			numFiltered: 0
 		});
 
+	totals.numFiltered = selectFilteredMarkets(allMarkets, keywords, selectedFilters).length;
 	totals.positionsSummary = selectPositionsSummary(positions.numPositions, positions.qtyShares, positions.totalValue, positions.totalCost);
 
 	return totals;

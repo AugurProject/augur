@@ -14,7 +14,7 @@ import { selectOutcomeTradeOrders } from '../../trade/selectors/trade-orders';
 import { selectTradeSummary } from '../../trade/selectors/trade-summary';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
-import { isMarketFilterMatch } from '../../markets/selectors/filtered-markets';
+import { isMarketFiltersMatch } from '../../markets/selectors/filtered-markets';
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
 export default function() {
@@ -23,11 +23,11 @@ export default function() {
 }
 
 export const selectMarket = (marketID) => {
-	var { marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, keywords, selectedFilters, blockchain } = store.getState();
-	return assembleMarket(marketID, marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, keywords, selectedFilters, blockchain, store.dispatch);
+	var { marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
+	return assembleMarket(marketID, marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
 };
 
-export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, keywords, selectedFilters, blockchain, dispatch) => {
+export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
 	var market;
 
 	if (!marketID || !marketsData[marketID]|| !marketsData[marketID].description) {
@@ -52,7 +52,6 @@ export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites,
 
 	// this changes too often causing too many memoization cache misses, so externalized here (we dont care if ui doesnt immediately show small changes (if any) in end date)
 	market.endDate = formatBlockToDate(market.endBlock, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch);
-	market.isFiltersMatch = isMarketFilterMatch(market, keywords, selectedFilters);
 
 	return market;
 });

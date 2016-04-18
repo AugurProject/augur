@@ -7,31 +7,31 @@ import { MARKET_STATUSES, OPEN, RECENTLY_EXPIRED } from '../../markets/constants
 
 import store from '../../../store';
 
+import { selectFilteredMarkets } from '../../markets/selectors/filtered-markets';
+
 export default function() {
-    var { activePage, selectedMarketsHeader } = store.getState(),
+    var { activePage, selectedMarketsHeader, keywords, selectedFilters } = store.getState(),
     	{ allMarkets } = require('../../../selectors');
 
     if (activePage === POSITIONS) {
     	return selectPositions(allMarkets);
     }
 
-    if (selectedMarketsHeader === FAVORITES) {
-    	return selectFavorites(allMarkets);
-    }
-
     if (selectedMarketsHeader === PENDING_REPORTS) {
     	return selectPendingReports(allMarkets);
     }
 
-	return selectFiltered(allMarkets);
+    var filteredMarkets = selectFilteredMarkets(allMarkets, keywords, selectedFilters);
+
+    if (selectedMarketsHeader === FAVORITES) {
+    	return selectFavorites(filteredMarkets);
+    }
+
+	return filteredMarkets;
 }
 
-export const selectFiltered = memoizerific(1)(function(markets) {
-    return markets.filter(market => !!market.isFiltersMatch);
-});
-
 export const selectFavorites = memoizerific(1)(function(markets) {
-    return markets.filter(market => !!market.isFavorite && !!market.isFiltersMatch);
+    return markets.filter(market => !!market.isFavorite);
 });
 
 export const selectPendingReports = memoizerific(1)(function(markets) {

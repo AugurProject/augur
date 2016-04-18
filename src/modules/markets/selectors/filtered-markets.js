@@ -7,7 +7,12 @@ import { MARKET_STATUSES, OPEN, RECENTLY_EXPIRED } from '../../markets/constants
 
 import store from '../../../store';
 
-export const isMarketFilterMatch = memoizerific(3)(function(market, keywords, selectedFilters) {
+
+export const selectFilteredMarkets = memoizerific(3)(function(markets, keywords, selectedFilters) {
+    return markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilters));
+});
+
+export const isMarketFiltersMatch = memoizerific(3)(function(market, keywords, selectedFilters) {
     return isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters);
 
     function isMatchKeywords(market, keywords) {
@@ -15,7 +20,11 @@ export const isMarketFilterMatch = memoizerific(3)(function(market, keywords, se
         if (!keywordsArray.length) {
             return true;
         }
-        return keywordsArray.every(keyword => market.description.toLowerCase().indexOf(keyword) >= 0);
+        return keywordsArray.every(keyword => (
+            market.description.toLowerCase().indexOf(keyword) >= 0 ||
+            market.outcomes.some(outcome => outcome.name.indexOf(keyword) >= 0) ||
+            market.tags.some(tag => tag.toLowerCase().indexOf(keyword) >= 0)
+        ));
     }
 
     function isMatchFilters(market, selectedFilters) {
