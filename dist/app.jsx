@@ -24586,16 +24586,16 @@ exports.default = function (appElement, selectors) {
             node = _react2.default.createElement(_marketsPage2.default, {
                 siteHeader: p.siteHeader,
                 createMarketLink: (p.links || {}).createMarketLink,
-                onChangeKeywords: p.keywordsChangeHandler,
+                onChangeKeywords: p.searchSort.onChangeKeywords,
 
                 markets: p.markets,
                 favoriteMarkets: p.favoriteMarkets,
                 marketsHeader: p.marketsHeader,
                 filtersProps: p.filtersProps,
 
-                selectedSort: p.selectedSort,
-                sortOptions: p.sortOptions,
-                onChangeSort: p.onChangeSort
+                selectedSort: p.searchSort.selectedSort,
+                sortOptions: p.searchSort.sortOptions,
+                onChangeSort: p.searchSort.onChangeSort
             });
             break;
     }
@@ -24832,7 +24832,7 @@ module.exports = _react2.default.createClass({
 					{ className: 'big-line' },
 					'Augur is a completely decentralized system'
 				),
-				' including user accounts. Your credentials never leave the browser, and you are responsible for remembering them and keeping them safe.',
+				' including user accounts. Your credentials never leave the browser, and you are responsible for keeping them safe.',
 				_react2.default.createElement('br', null),
 				_react2.default.createElement(
 					'b',
