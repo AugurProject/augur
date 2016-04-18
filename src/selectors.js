@@ -218,6 +218,9 @@ function makeMarkets(numMarkets = 20) {
 			}
 		];
 
+		m.reportableOutcomes = m.outcomes.slice();
+		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
+
 		// trade summary
 		Object.defineProperty(m, 'tradeSummary', {
 			get: () => {

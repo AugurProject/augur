@@ -5,7 +5,7 @@ import Checkbox from '../../common/components/checkbox';
 
 module.exports = React.createClass({
 	propTypes: {
-		outcomes: React.PropTypes.array,
+		reportableOutcomes: React.PropTypes.array,
 		reportedOutcomeID: React.PropTypes.any,
 		isUnethical: React.PropTypes.bool,
 		isReported: React.PropTypes.bool,
@@ -35,8 +35,8 @@ module.exports = React.createClass({
 				<div ref="outcomeOptions" className="outcome-options">
 					<h4>{ !s.isReported ? 'Report the outcome' : 'Outcome Reported' }</h4>
 
-					{ (p.outcomes || []).map(outcome => (
-						<span key={ outcome.id } className={ classnames('outcome-option', { 'disabled': s.isReported }) } onClick={ this.handleOutcomeChange }>
+					{ (p.reportableOutcomes || []).map(outcome => (
+						<label key={ outcome.id } className={ classnames('outcome-option', { 'disabled': s.isReported }) }>
 							<input
 								type="radio"
 								className="outcome-option-radio"
@@ -46,8 +46,8 @@ module.exports = React.createClass({
 								disabled={ s.isReported }
 								onChange={ this.handleOutcomeChange }
 								/>
-							<span>{ outcome.name }</span>
-						</span>
+							{ outcome.name }
+						</label>
 					))}
 				</div>
 
@@ -81,17 +81,8 @@ module.exports = React.createClass({
 		);
 	},
 
-	handleOutcomeChange: function() {
-		var outcomeRadios = this.refs.outcomeOptions.getElementsByClassName('outcome-option-radio'),
-			i;
-
-		for (i = 0; i < outcomeRadios.length; i++) {
-			if (outcomeRadios[i].checked) {
-				return this.setState({ reportedOutcomeID: outcomeRadios[i].value });
-			}
-		}
-
-		this.setState({ reportedOutcomeID: null });
+	handleOutcomeChange: function(e) {
+		return this.setState({ reportedOutcomeID: e.target.value });
 	},
 
 	handleSubmit: function() {
