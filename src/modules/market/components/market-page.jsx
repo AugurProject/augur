@@ -61,7 +61,7 @@ module.exports = React.createClass({
 							key="market-positions"
 							className="market-positions"
 							positionsSummary={ p.market.positionsSummary }
-							outcomes={ p.market.outcomes }
+							outcomes={ p.market.positionOutcomes }
 							/>
 					);
 				}

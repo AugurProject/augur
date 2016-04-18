@@ -26,10 +26,10 @@ module.exports = React.createClass({
 					{ !!p.markets && !!p.markets.length && p.markets.map(market => (
 						<div key={ market.id } className="positions-container">
 							<span className="description">{ market.description }</span>
-							{ !!market.outcomes && !!market.outcomes.length &&
+							{ !!market.positionOutcomes && !!market.positionOutcomes.length &&
 								<Positions
 									className="page-content positions-content"
-									outcomes={ market.outcomes }/>
+									outcomes={ market.positionOutcomes } />
 							}
 						</div>
 					))}
