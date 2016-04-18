@@ -1,4 +1,4 @@
-.poitions-page {
+.positions-page {
 	.page-content {
 		background: white;
 
@@ -7,7 +7,15 @@
 
 .positions-summary {
 	> * {
-		margin-right: 0.5em;
+		margin-right: 0.8em;
+	}
+
+	.total-value {
+		.colorize();
+	}
+
+	.gain-percent {
+		.colorize();
 	}
 }
 
@@ -17,7 +25,8 @@
 	.description {
 		display: inline-block;
 		padding: 1vmin 4vmin 0vmin 4vmin;
-		font-size: 1.1rem;
+		font-size: 1.2em;
+		font-weight: 700;
 	}
 }
 
@@ -32,12 +41,21 @@
 		padding: 1rem;
 
 		.position-group {
-			padding: 0 4vmin;
 			text-align: right;
 
 			.position-pair {
+				display: inline-block;
+				min-width: 8em;
+				margin: 0 0 0.7em 0;
+				line-height: 1.1em;
 				white-space: nowrap;
+
+				&.per-share-gain, &.net-change {
+					.colorize();
+				}
+
 				> * {
+					display: block;
 					margin-left: 0.5em;
 				}
 
@@ -48,13 +66,20 @@
 		}
 
 		.main-group {
-			text-align: right;
-			font-size: 1.4em;
+			min-width: 40%;
+			text-align: left;
+			font-size: 1.2em;
+			white-space: nowrap;
+			.colorize();
 
 			> * {
 				display: inline-block;
 				margin-right: 1.5em;
 				vertical-align: middle;
+			}
+
+			.position-pair {
+				white-space: nowrap;
 			}
 
 			.position-name {

@@ -23,14 +23,14 @@ module.exports = React.createClass({
                 <div className="main-group">
                     <span className="position-name">{ p.name }</span>
                     <ValueDenomination { ...p.qtyShares } />
-                    <div className="position-pair">
+                    <div className="position-pair gain-percent">
                         <ValueDenomination { ...p.gainPercent } />
                         &nbsp;
                         <span className="title">{ p.gainPercent.value > 0 ? 'gain' : 'loss' }</span>
                     </div>
                 </div>
                 <div className="position-group">
-                    <div className="position-pair qty">
+                    <div className="position-pair per-share-gain">
                         <span className="title">per share gain/loss</span>
                         <ValueDenomination { ...p.shareChange } />
                     </div>

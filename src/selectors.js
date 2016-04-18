@@ -172,6 +172,15 @@ function makeMarkets(numMarkets = 20) {
 				name: 'NO',
 				lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
 				lastPricePercent: makeNumber(randomInt(20, 50), '%'),
+				position: {
+					qtyShares: makeNumber(455, 'Shares'),
+					totalValue: makeNumber(776, 'eth'),
+					gainPercent: makeNumber(-6, '%'),
+					purchasePrice: makeNumber(0.6, 'eth'),
+					shareChange: makeNumber(0.5, 'eth'),
+					totalCost: makeNumber(980, 'eth'),
+					netChange: makeNumber(230, 'eth')
+				},
 				trade: {
 					numShares: 0,
 					limitPrice: 0,

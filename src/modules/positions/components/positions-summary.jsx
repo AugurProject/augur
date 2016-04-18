@@ -20,11 +20,10 @@ module.exports = React.createClass({
 				}
 
 				{ p.gainPercent &&
-					<span>
-						(<ValueDenomination
-							{ ...p.gainPercent }
-							formatted={ p.gainPercent.formatted } className="gain-percent" />)
-					</span>
+					<ValueDenomination
+						{ ...p.gainPercent }
+						className="gain-percent"
+						formatted={ p.gainPercent.formatted } />
 				}
 			</div>
         );
