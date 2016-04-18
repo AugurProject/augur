@@ -18,7 +18,7 @@ export default function(appElement, selectors) {
     p.siteHeader = {
 		activePage: p.activePage,
 		loginAccount: p.loginAccount,
-		positionsSummary: p.positionsSummary,
+		positionsSummary: p.marketsTotals.positionsSummary,
 		transactionsTotals: p.transactionsTotals,
 		isTransactionsWorking: p.isTransactionsWorking,
 

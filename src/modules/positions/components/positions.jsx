@@ -11,7 +11,7 @@ module.exports = React.createClass({
     render: function() {
         var p = this.props;
         return (
-            <section className="positions">
+            <section className="positions-list">
                 { (p.outcomes || []).filter(outcome => outcome.position && outcome.position.qtyShares && outcome.position.qtyShares.value).map(outcome =>
                     <Position
                         key={ outcome.id }

@@ -252,7 +252,7 @@ function makeMarkets(numMarkets = 20) {
 		// report
 		m.report = {
 			isUnethical: true,
-			onSubmitReport: () => {}
+			onSubmitReport: (reportedOutcomeID, isUnethical) => {}
 		};
 
 		return m;
