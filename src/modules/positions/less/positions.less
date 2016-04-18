@@ -37,10 +37,14 @@
 	line-height: 1.9rem;
 	font-size: 1.2rem;
 
+
 	.position {
 		display: flex;
 		padding: 1.6em 4vmin 0.5em 4vmin;
-		border-top: 1px solid @color-border;
+
+		&:not(:first-child) {
+			border-top: 1px solid @color-border;
+		}
 
 		.position-group {
 			text-align: right;
