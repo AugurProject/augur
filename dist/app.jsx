@@ -27069,6 +27069,8 @@ var PENDING_REPORTS = exports.PENDING_REPORTS = 'pending reports';
 },{}],213:[function(_dereq_,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = _dereq_('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -27115,7 +27117,8 @@ module.exports = _react2.default.createClass({
                 _react2.default.createElement(
                     'div',
                     { className: 'position-pair gain-percent' },
-                    _react2.default.createElement(_valueDenomination2.default, p.gainPercent),
+                    _react2.default.createElement(_valueDenomination2.default, _extends({}, p.gainPercent, {
+                        formatted: p.gainPercent.minimized })),
                     ' ',
                     _react2.default.createElement(
                         'span',

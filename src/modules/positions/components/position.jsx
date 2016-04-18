@@ -24,7 +24,9 @@ module.exports = React.createClass({
                     <span className="position-name">{ p.name }</span>
                     <ValueDenomination { ...p.qtyShares } />
                     <div className="position-pair gain-percent">
-                        <ValueDenomination { ...p.gainPercent } />
+                        <ValueDenomination
+                            { ...p.gainPercent }
+                            formatted={ p.gainPercent.minimized } />
                         &nbsp;
                         <span className="title">{ p.gainPercent.value > 0 ? 'gain' : 'loss' }</span>
                     </div>
