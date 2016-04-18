@@ -70,8 +70,8 @@ console.log('>>|<< assembleBaseMarket >>|<<');
 	o.isOpen = isOpen;
 	o.isFavorite = isFavorite;
 
-	o.tradingFeePercent = formatPercent(marketData.tradingFee * 100, true);
-	o.volume = formatNumber(marketData.volume);
+	o.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
+	o.volume = formatNumber(marketData.volume, { positiveSign: false });
 
 	o.isRequiredToReportByAccount = !!pendingReport; // was the user chosen to report on this market
 	o.isPendingReport = o.isRequiredToReportByAccount && !pendingReport.reportHash && !isReportConfirmationPhase; // the user has not yet reported on this market
@@ -97,8 +97,8 @@ console.log('>>|<< assembleBaseMarket >>|<<');
 	        ...outcomeData,
 	        id: outcomeID,
 	        marketID,
-	        lastPrice: formatEther(outcomeData.price),
-	        lastPricePercent: formatPercent(outcomeData.price * 100)
+	        lastPrice: formatEther(outcomeData.price, { positiveSign: false }),
+	        lastPricePercent: formatPercent(outcomeData.price * 100, { positiveSign: false })
 		};
 
 		outcomeTradeOrders = selectOutcomeTradeOrders(o, outcome, outcomeTradeInProgress, dispatch);

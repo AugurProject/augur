@@ -5,6 +5,7 @@ export function formatRep(num, opts) {
                             decimals: 0,
                             decimalsRounded: 0,
                             denomination: 'Rep',
+                            positiveSign: true,
                             ...opts });
 }
 
@@ -13,6 +14,7 @@ export function formatEther(num, opts) {
                             decimals: 2,
                             decimalsRounded: 1,
                             denomination: 'Eth',
+                            positiveSign: true,
                             ...opts });
 }
 
@@ -30,6 +32,7 @@ export function formatPercent(num, opts) {
                             decimals: 1,
                             decimalsRounded: 0,
                             denomination: '%',
+                            positiveSign: true,
                             ...opts });
 }
 
@@ -53,14 +56,14 @@ export function formatDate(d) {
 	};
 }
 
-export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', omitSign: true, zero: true }) {
-    var { decimals, decimalsRounded, denomination, omitSign, zero } = opts,
+export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', positiveSign: false, zero: true }) {
+    var { decimals, decimalsRounded, denomination, positiveSign, zero } = opts,
         o;
 
     decimals = decimals || 0;
     decimalsRounded = decimalsRounded || 0;
     denomination = denomination || '';
-    omitSign = omitSign !== false;
+    positiveSign = !!positiveSign;
     zero = zero !== false;
 
     if (!num && !zero) {
@@ -78,7 +81,7 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
     o.minimized = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
 
-    if (!omitSign) {
+    if (positiveSign) {
         if (o.formattedValue > 0) {
             o.formatted = '+' + o.formatted;
             o.minimized = '+' + o.minimized;
