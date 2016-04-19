@@ -16,7 +16,6 @@ import searchSort from './modules/markets/selectors/search-sort';
 
 import transactions from './modules/transactions/selectors/transactions';
 import transactionsTotals from './modules/transactions/selectors/transactions-totals';
-import nextTransaction from './modules/transactions/selectors/next-transaction';
 import isTransactionsWorking from './modules/transactions/selectors/is-transactions-working';
 
 import createMarketForm from './modules/create-market/selectors/create-market-form';
@@ -41,7 +40,6 @@ var selectors = {
 
 	transactions,
 	transactionsTotals,
-	nextTransaction,
 	isTransactionsWorking
 };
 
