@@ -26709,8 +26709,7 @@ module.exports = _react2.default.createClass({
     propTypes: {
         isCheckedOpen: _react2.default.PropTypes.bool,
         isCheckedExpired: _react2.default.PropTypes.bool,
-        isCheckedPendingReport: _react2.default.PropTypes.bool,
-        isCheckedReported: _react2.default.PropTypes.bool,
+        isCheckedMissedOrReported: _react2.default.PropTypes.bool,
 
         isCheckedBinary: _react2.default.PropTypes.bool,
         isCheckedCategorical: _react2.default.PropTypes.bool,
@@ -26719,8 +26718,7 @@ module.exports = _react2.default.createClass({
 
         onClickFilterOpen: _react2.default.PropTypes.func,
         onClickFilterExpired: _react2.default.PropTypes.func,
-        onClickFilterPendingReport: _react2.default.PropTypes.func,
-        onClickFilterReported: _react2.default.PropTypes.func,
+        onClickFilterMissedOrReported: _react2.default.PropTypes.func,
 
         onClickFilterBinary: _react2.default.PropTypes.func,
         onClickFilterCategorical: _react2.default.PropTypes.func,
@@ -26748,8 +26746,7 @@ module.exports = _react2.default.createClass({
             ),
             _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'open', isChecked: p.isCheckedOpen, onClick: p.onClickFilterOpen }),
             _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'expired', isChecked: p.isCheckedExpired, onClick: p.onClickFilterExpired }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'pending report', isChecked: p.isCheckedPendingReport, onClick: p.onClickFilterPendingReport }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'reported', isChecked: p.isCheckedReported, onClick: p.onClickFilterReported })
+            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'reported / missed', isChecked: p.isCheckedMissedOrReported, onClick: p.onClickFilterMissedOrReported })
         );
     }
 });

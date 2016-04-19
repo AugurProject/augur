@@ -7,8 +7,7 @@ module.exports = React.createClass({
     propTypes: {
 		isCheckedOpen: React.PropTypes.bool,
 		isCheckedExpired: React.PropTypes.bool,
-		isCheckedPendingReport: React.PropTypes.bool,
-		isCheckedReported: React.PropTypes.bool,
+		isCheckedMissedOrReported: React.PropTypes.bool,
 
 		isCheckedBinary: React.PropTypes.bool,
 		isCheckedCategorical: React.PropTypes.bool,
@@ -17,8 +16,7 @@ module.exports = React.createClass({
 
 		onClickFilterOpen: React.PropTypes.func,
 		onClickFilterExpired: React.PropTypes.func,
-		onClickFilterPendingReport: React.PropTypes.func,
-		onClickFilterReported: React.PropTypes.func,
+		onClickFilterMissedOrReported: React.PropTypes.func,
 
 		onClickFilterBinary: React.PropTypes.func,
 		onClickFilterCategorical: React.PropTypes.func,
@@ -39,8 +37,7 @@ module.exports = React.createClass({
                 <span className="title">Status</span>
                 <Checkbox className="filter" text="open" isChecked={ p.isCheckedOpen } onClick={ p.onClickFilterOpen } />
                 <Checkbox className="filter" text="expired" isChecked={ p.isCheckedExpired } onClick={ p.onClickFilterExpired } />
-                <Checkbox className="filter" text="pending report" isChecked={ p.isCheckedPendingReport } onClick={ p.onClickFilterPendingReport } />
-                <Checkbox className="filter" text="reported" isChecked={ p.isCheckedReported } onClick={ p.onClickFilterReported } />
+                <Checkbox className="filter" text="reported / missed" isChecked={ p.isCheckedMissedOrReported } onClick={ p.onClickFilterMissedOrReported } />
             </aside>
         );
     }
