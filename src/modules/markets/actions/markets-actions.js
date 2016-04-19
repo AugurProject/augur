@@ -2,7 +2,10 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { ParseMarketsData } from '../../../utils/parse-market-data';
 
+
 import { BRANCH_ID } from '../../app/constants/network';
+
+import { loadPendingReports } from '../../reports/actions/update-pending-reports';
 
 export const UPDATE_MARKETS_DATA = 'UPDATE_MARKETS_DATA';
 export const UPDATE_MARKET_DATA = 'UPDATE_MARKET_DATA';
@@ -27,7 +30,9 @@ export function loadMarkets() {
 			}
 //numMarkets = 70; //TEMPORARY OVERRIDE
 			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (err, marketsData) => {
-				var marketsDataOutcomesData;
+				var { blockchain } = getState(),
+					marketsDataOutcomesData;
+
 				if (err) {
 					console.log('ERROR loadMarkets()', err);
 					return;
@@ -39,6 +44,8 @@ export function loadMarkets() {
 
 				marketsDataOutcomesData = ParseMarketsData(marketsData);
 				dispatch(updateMarketsData(marketsDataOutcomesData));
+				dispatch(loadPendingReports(marketsDataOutcomesData.marketsData));
+
 
 /*
 				AugurJS.loadMarketMetadata(Object.keys(marketsData)[0], (err, metadata) => {

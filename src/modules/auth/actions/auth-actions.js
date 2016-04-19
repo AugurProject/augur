@@ -33,17 +33,14 @@ export function loadLoginAccount() {
 
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
-		var { marketsData } = getState(),
-			eventIDs = Object.keys(marketsData).map(marketID => marketsData[marketID].eventID);
+		var { marketsData } = getState();
 
 		//dispatch(PositionsActions.loadMeanTradePrices());
 		dispatch(updateAssets());
 		dispatch(PositionsActions.loadAccountTrades());
 
 		dispatch(clearPendingReports());
-		if (eventIDs.length) {
-			dispatch(loadPendingReports(eventIDs));
-		}
+		dispatch(loadPendingReports(marketsData));
 	};
 }
 

@@ -60,15 +60,13 @@ export const selectMarketLink = memoizerific(1)(function(market, dispatch) {
     	link.text = 'Reported';
     	link.className = 'reported';
 	}
-	else if (market.isRequiredToReportByAccount) {
-    	if (!market.isReportConfirmationPhase) {
-	    	link.text = 'Report';
-	    	link.className = 'report';
-    	}
-    	else {
-	    	link.text = 'Missed Report';
-	    	link.className = 'missed-report';
-    	}
+	else if (market.isMissedReport) {
+    	link.text = 'Missed Report';
+    	link.className = 'missed-report';
+	}
+	else if (market.isPendingReport) {
+    	link.text = 'Report';
+    	link.className = 'report';
 	}
     else if (!market.isOpen) {
     	link.text = 'View';

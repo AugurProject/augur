@@ -1,7 +1,7 @@
 import { SHOW_LINK } from '../../link/actions/link-actions';
 import { TOGGLE_FILTER } from '../actions/markets-actions';
 
-export default function(selectedFilters = { }, action) {
+export default function(selectedFilters = { 'isOpen': true }, action) {
     var newSelectedFilters;
 
     switch (action.type) {

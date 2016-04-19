@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
 import { formatNumber, formatEther, formatPercent, formatBlockToDate } from '../../../utils/format-number';
+import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
@@ -43,7 +44,7 @@ export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites,
 		marketID,
 		marketsData[marketID],
 
-		parseInt(marketsData[marketID].endDate, 10) > blockchain.currentBlockNumber,
+		isMarketDataOpen(marketsData[marketID], blockchain.currentBlockNumber),
 		!!favorites[marketID],
 
 		outcomes[marketID],
@@ -61,8 +62,7 @@ export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites,
 	return market;
 });
 
-export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOpen, isFavorite, marketOutcomes, pendingReport, marketAccountTrades, marketTradeInProgress, isReportConfirmationPhase, dispatch) => {
-console.log('>>|<< assembleBaseMarket >>|<<');
+export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOpen, isFavorite, marketOutcomes, pendingReport, marketAccountTrades, marketTradeInProgress, isReportConfirmationPhase, dispatch) => {//console.log('>>|<< assembleBaseMarket >>|<<');
 	var o = {
 			...marketData,
 			id: marketID
@@ -99,9 +99,10 @@ console.log('>>|<< assembleBaseMarket >>|<<');
 	o.volume = formatNumber(marketData.volume, { positiveSign: false });
 
 	o.isRequiredToReportByAccount = !!pendingReport; // was the user chosen to report on this market
-	o.isPendingReport = o.isRequiredToReportByAccount && !pendingReport.reportHash && !isReportConfirmationPhase; // the user has not yet reported on this market
-	o.isReportSubmitted = !!pendingReport && !!pendingReport.reportHash; // the user submitted a report that is not yet confirmed
-	o.isReported = !!pendingReport && !!pendingReport.reportHash && !!pendingReport.reportHash.length; // the user fully reported on this market
+	o.isPendingReport = o.isRequiredToReportByAccount && !pendingReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
+	o.isReportSubmitted = !!pendingReport && !!pendingReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
+	o.isReported = !!pendingReport && !!pendingReport.reportHash && !!pendingReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+	o.isMissedReport = o.isRequiredToReportByAccount && !o.isReported && !o.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
 
 	o.marketLink = selectMarketLink(o, dispatch);
 	o.onClickToggleFavorite = () => dispatch(MarketsActions.toggleFavorite(marketID));
