@@ -2,20 +2,20 @@ import memoizerific from 'memoizerific';
 
 import store from '../../../store';
 
-import { selectMarket } from '../../market/selectors/market';
+import { assembleMarket } from '../../market/selectors/market';
 
 export default function() {
-    var { marketsData, favorites, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain } = store.getState();
-    return selectMarkets(marketsData, favorites, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, store.dispatch);
+    var { marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort } = store.getState();
+    return selectMarkets(marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
 
     return Object.keys(marketsData)
-    	.map(marketID => selectMarket(marketID))
+    	.map(marketID => assembleMarket(marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch))
     	.sort((a, b) => {
     		var aVal = cleanSortVal(a[selectedSort.prop]),
     			bVal = cleanSortVal(b[selectedSort.prop]);

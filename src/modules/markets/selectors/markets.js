@@ -22,11 +22,15 @@ export default function() {
     var filteredMarkets = selectFilteredMarkets(allMarkets, keywords, selectedFilters);
 
     if (selectedMarketsHeader === FAVORITES) {
-    	return selectFavorites(filteredMarkets);
+    	return selectPaginated(selectFavorites(filteredMarkets));
     }
 
-	return filteredMarkets;
+	return selectPaginated(filteredMarkets);
 }
+
+export const selectPaginated = memoizerific(1)(function(markets, pageIndex = 0, numPerPage = 20) {
+    return markets.slice(pageIndex * numPerPage, (pageIndex + 1) * numPerPage);
+});
 
 export const selectFavorites = memoizerific(1)(function(markets) {
     return markets.filter(market => !!market.isFavorite);
