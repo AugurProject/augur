@@ -20,17 +20,17 @@
 
 
 			   &:before {
-			        display: block; position: absolute;
-			        content: '\f002';
-			        top: 0.65em; left: 0.7em;
-			        font-size: inherit;
-			        font-family: 'FontAwesome';
-			        color: @color-border-darker;
-			    }
+					display: block; position: absolute;
+					content: '\f002';
+					top: 0.65em; left: 0.7em;
+					font-size: inherit;
+					font-family: 'FontAwesome';
+					color: @color-border-darker;
+				}
 
-			    .box {
-			    	padding: 0.5em 2em;
-			    }
+				.box {
+					padding: 0.5em 2em;
+				}
 			}
 
 			.sort-container {
@@ -66,8 +66,8 @@
 		}
 
 		.markets-header-bar {
-		    display: flex;
-		    padding: 1vmin 0 0 0;
+			display: flex;
+			padding: 1vmin 0 0 0;
 
 			.button.make {
 				width: @filters-width; height: 6.5rem;
@@ -181,6 +181,23 @@
 			padding-left: 21rem;
 			line-height: 2.5em;
 			overflow: hidden;
+		}
+	}
+}
+
+@media only screen and (max-width: @media-small-width) {
+	.markets {
+		.page-content {
+			.filters {
+				position: relative;
+				width: auto;
+				margin: 1vmin 0 0 0;
+				padding: 1em;
+			}
+
+			.markets-list {
+				padding-left: 0px;
+			}
 		}
 	}
 }
