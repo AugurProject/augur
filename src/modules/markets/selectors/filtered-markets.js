@@ -28,7 +28,7 @@ export const isMarketFiltersMatch = memoizerific(3)(function(market, keywords, s
         var selectedStatusProps,
             selectedTypeProps;
 
-        selectedStatusProps = ['isOpen', 'isExpired'].filter(statusProp => !!selectedFilters[statusProp]);
+        selectedStatusProps = ['isOpen', 'isExpired', 'isMissedOrReported', 'isPendingReport'].filter(statusProp => !!selectedFilters[statusProp]);
         selectedTypeProps = ['isBinary', 'isCategorical', 'isScalar'].filter(typeProp => !!selectedFilters[typeProp]);
 
         return (

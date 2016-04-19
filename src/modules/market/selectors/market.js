@@ -103,6 +103,7 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 	o.isReportSubmitted = !!pendingReport && !!pendingReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
 	o.isReported = !!pendingReport && !!pendingReport.reportHash && !!pendingReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
 	o.isMissedReport = o.isRequiredToReportByAccount && !o.isReported && !o.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
+	o.isMissedOrReported = o.isMissedReport || o.isReported;
 
 	o.marketLink = selectMarketLink(o, dispatch);
 	o.onClickToggleFavorite = () => dispatch(MarketsActions.toggleFavorite(marketID));

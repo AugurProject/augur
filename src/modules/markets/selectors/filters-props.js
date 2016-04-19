@@ -15,6 +15,8 @@ export const selectFiltersProps = memoizerific(10)(function(selectedFilters, dis
     return {
 		isCheckedOpen: !!selectedFilters['isOpen'],
 		isCheckedExpired: !!selectedFilters['isExpired'],
+		isCheckedPendingReport: !!selectedFilters['isPendingReport'],
+		isCheckedMissedOrReported: !!selectedFilters['isMissedOrReported'],
 
 		isCheckedBinary: !!selectedFilters['isBinary'],
 		isCheckedCategorical: !!selectedFilters['isCategorical'],
@@ -22,6 +24,8 @@ export const selectFiltersProps = memoizerific(10)(function(selectedFilters, dis
 
 		onClickFilterOpen: () => dispatch(MarketsActions.toggleFilter('isOpen')),
 		onClickFilterExpired: () => dispatch(MarketsActions.toggleFilter('isExpired')),
+		onClickFilterPendingReport: () => dispatch(MarketsActions.toggleFilter('isPendingReport')),
+		onClickFilterMissedOrReported: () => dispatch(MarketsActions.toggleFilter('isMissedOrReported')),
 
 		onClickFilterBinary: () => dispatch(MarketsActions.toggleFilter('isBinary')),
 		onClickFilterCategorical: () => dispatch(MarketsActions.toggleFilter('isCategorical')),
