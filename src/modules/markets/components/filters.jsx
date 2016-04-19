@@ -28,16 +28,19 @@ module.exports = React.createClass({
         var p = this.props;
         return (
             <aside className="filters">
-                <span className="title">Type</span>
-                <Checkbox className="filter" text="Yes / No" isChecked={ p.isCheckedBinary } onClick={ p.onClickFilterBinary } />
-                <Checkbox className="filter" text="Categorical" isChecked={ p.isCheckedCategorical } onClick={ p.onClickFilterCategorical } />
-                <Checkbox className="filter" text="Scalar" isChecked={ p.isCheckedScalar } onClick={ p.onClickFilterScalar } />
-                {/* <Checkbox className="filter" text="Combinatorial" isChecked={ p.isCheckedCombinatorial } onClick={ p.onClickFilterCombinatorial } /> */}
+                <div className="filters-group">
+                    <span className="title">Type</span>
+                    <Checkbox className="filter" text="Yes / No" isChecked={ p.isCheckedBinary } onClick={ p.onClickFilterBinary } />
+                    <Checkbox className="filter" text="Categorical" isChecked={ p.isCheckedCategorical } onClick={ p.onClickFilterCategorical } />
+                    <Checkbox className="filter" text="Scalar" isChecked={ p.isCheckedScalar } onClick={ p.onClickFilterScalar } />
+                </div>
 
-                <span className="title">Status</span>
-                <Checkbox className="filter" text="open" isChecked={ p.isCheckedOpen } onClick={ p.onClickFilterOpen } />
-                <Checkbox className="filter" text="expired" isChecked={ p.isCheckedExpired } onClick={ p.onClickFilterExpired } />
-                <Checkbox className="filter" text="reported / missed" isChecked={ p.isCheckedMissedOrReported } onClick={ p.onClickFilterMissedOrReported } />
+                <div className="filters-group">
+                    <span className="title">Status</span>
+                    <Checkbox className="filter" text="open" isChecked={ p.isCheckedOpen } onClick={ p.onClickFilterOpen } />
+                    <Checkbox className="filter" text="expired" isChecked={ p.isCheckedExpired } onClick={ p.onClickFilterExpired } />
+                    <Checkbox className="filter" text="reported / missed" isChecked={ p.isCheckedMissedOrReported } onClick={ p.onClickFilterMissedOrReported } />
+                </div>
             </aside>
         );
     }

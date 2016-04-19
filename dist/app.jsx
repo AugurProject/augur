@@ -26732,21 +26732,29 @@ module.exports = _react2.default.createClass({
             'aside',
             { className: 'filters' },
             _react2.default.createElement(
-                'span',
-                { className: 'title' },
-                'Type'
+                'div',
+                { className: 'filters-group' },
+                _react2.default.createElement(
+                    'span',
+                    { className: 'title' },
+                    'Type'
+                ),
+                _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'Yes / No', isChecked: p.isCheckedBinary, onClick: p.onClickFilterBinary }),
+                _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'Categorical', isChecked: p.isCheckedCategorical, onClick: p.onClickFilterCategorical }),
+                _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'Scalar', isChecked: p.isCheckedScalar, onClick: p.onClickFilterScalar })
             ),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'Yes / No', isChecked: p.isCheckedBinary, onClick: p.onClickFilterBinary }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'Categorical', isChecked: p.isCheckedCategorical, onClick: p.onClickFilterCategorical }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'Scalar', isChecked: p.isCheckedScalar, onClick: p.onClickFilterScalar }),
             _react2.default.createElement(
-                'span',
-                { className: 'title' },
-                'Status'
-            ),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'open', isChecked: p.isCheckedOpen, onClick: p.onClickFilterOpen }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'expired', isChecked: p.isCheckedExpired, onClick: p.onClickFilterExpired }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'reported / missed', isChecked: p.isCheckedMissedOrReported, onClick: p.onClickFilterMissedOrReported })
+                'div',
+                { className: 'filters-group' },
+                _react2.default.createElement(
+                    'span',
+                    { className: 'title' },
+                    'Status'
+                ),
+                _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'open', isChecked: p.isCheckedOpen, onClick: p.onClickFilterOpen }),
+                _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'expired', isChecked: p.isCheckedExpired, onClick: p.onClickFilterExpired }),
+                _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'reported / missed', isChecked: p.isCheckedMissedOrReported, onClick: p.onClickFilterMissedOrReported })
+            )
         );
     }
 });

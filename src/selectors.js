@@ -34,8 +34,10 @@ selectors.transactionsTotals =  {
 selectors.isTransactionsWorking =  false;
 
 
-selectors.selectedSort = { prop: 'creationDate', isDesc: true };
-selectors.sortOptions = [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Description', value: 'description' }];
+selectors.searchSort = {
+	selectedSort: { prop: 'creationDate', isDesc: true },
+	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Description', value: 'description' }]
+};
 
 selectors.marketsHeader =  {};
 selectors.markets = makeMarkets();
@@ -53,9 +55,17 @@ selectors.filtersProps =  {};
 selectors.keywordsChangeHandler =  () => {};
 selectors.onChangeSort = (prop, isDesc) => {
 	if (isDesc !== false && isDesc !== true) {
-		isDesc = selectors.selectedSort.isDesc;
+		isDesc = selectors.searchSort.selectedSort.isDesc;
 	}
-	module.exports.update({ selectedSort: { prop: prop || selectors.selectedSort.prop, isDesc }});
+	module.exports.update({
+		searchSort: {
+			...selectors.searchSort,
+			selectedSort: {
+				prop: prop || selectors.selectedSort.prop,
+				isDesc
+			}
+		}
+	});
 };
 
 
