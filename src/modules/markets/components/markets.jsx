@@ -1,8 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import MarketsHeader from './markets-header';
-import Filters from './filters';
+import MarketsHeader from '../../markets/components/markets-header';
+import Filters from '../../markets/components/filters';
 import MarketItem from '../../market/components/market-item';
 import Input from '../../common/components/input';
 import Link from '../../link/components/link';

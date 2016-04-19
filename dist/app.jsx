@@ -26933,11 +26933,11 @@ var _classnames = _dereq_('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _marketsHeader = _dereq_('./markets-header');
+var _marketsHeader = _dereq_('../../markets/components/markets-header');
 
 var _marketsHeader2 = _interopRequireDefault(_marketsHeader);
 
-var _filters = _dereq_('./filters');
+var _filters = _dereq_('../../markets/components/filters');
 
 var _filters2 = _interopRequireDefault(_filters);
 
@@ -27049,7 +27049,7 @@ module.exports = _react2.default.createClass({
     }
 });
 
-},{"../../common/components/dropdown":185,"../../common/components/input":187,"../../link/components/link":201,"../../market/components/market-item":203,"./filters":207,"./markets-header":208,"classnames":1,"react":179}],211:[function(_dereq_,module,exports){
+},{"../../common/components/dropdown":185,"../../common/components/input":187,"../../link/components/link":201,"../../market/components/market-item":203,"../../markets/components/filters":207,"../../markets/components/markets-header":208,"classnames":1,"react":179}],211:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
