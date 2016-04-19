@@ -9,7 +9,8 @@ import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/consta
 import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { SUBMIT_REPORT } from '../../transactions/constants/types';
 
-import * as TransactionsActions from '../../transactions/actions/transactions-actions';
+import { addTransactions } from '../../transactions/actions/add-transactions';
+import { updateTransactions } from '../../transactions/actions/update-transactions';
 import { updatePendingReports } from '../../reports/actions/update-pending-reports';
 
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
@@ -23,7 +24,7 @@ export function submitReport(market, reportedOutcomeID, isUnethical) {
 
 		dispatch(updatePendingReports({ [currentEventID]: { reportHash: true } }));
 
-		dispatch(TransactionsActions.addTransactions([selectNewTransaction(
+		dispatch(addTransactions([selectNewTransaction(
 			SUBMIT_REPORT,
 			0,
 			0,
@@ -57,12 +58,12 @@ export function processReport(transactionID, market, reportedOutcomeID, isUnethi
 			report;
 
 		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID ) {
-			return dispatch(TransactionsActions.updateTransactions({
+			return dispatch(updateTransactions({
 				[transactionID]: { status: FAILED, message: 'Missing data' }
 			}));
 		}
 
-		dispatch(TransactionsActions.updateTransactions({
+		dispatch(updateTransactions({
 			[transactionID]: { status: 'sending...' }
 		}));
 
@@ -82,12 +83,12 @@ export function processReport(transactionID, market, reportedOutcomeID, isUnethi
 		AugurJS.submitReportHash(BRANCH_ID, loginAccount.id, { ...event, id: eventID }, report, (err, res) => {
 			if (err) {
 				console.log('ERROR submitReportHash', err);
-				return dispatch(TransactionsActions.updateTransactions({
+				return dispatch(updateTransactions({
 					[transactionID]: { status: FAILED, message: err.message }
 				}));
 			}
 
-			dispatch(TransactionsActions.updateTransactions({
+			dispatch(updateTransactions({
 				[transactionID]: { status: res.status }
 			}));
 

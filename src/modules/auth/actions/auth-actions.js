@@ -6,7 +6,7 @@ import { PASSWORDS_DO_NOT_MATCH, PASSWORD_TOO_SHORT, USERNAME_REQUIRED } from '.
 import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { BRANCH_ID } from '../../app/constants/network';
 
-import * as TransactionsActions from '../../transactions/actions/transactions-actions';
+import { updateTransactions } from '../../transactions/actions/update-transactions';
 import * as PositionsActions from '../../positions/actions/positions-actions';
 import { loadPendingReports, clearPendingReports } from '../../reports/actions/update-pending-reports';
 
@@ -123,19 +123,19 @@ export function register(username, password, password2) {
 					dispatch(authError(err));
 				}
 				else {
-					dispatch(TransactionsActions.updateTransactions({ [transactionID]: { status: FAILED, message: err.message } }));
+					dispatch(updateTransactions({ [transactionID]: { status: FAILED, message: err.message } }));
 				}
 				return;
 			}
 			numAssetsLoaded++;
 			links.marketsLink.onClick();
-			dispatch(TransactionsActions.updateTransactions(makeTransactionUpdate()));
+			dispatch(updateTransactions(makeTransactionUpdate()));
 			dispatch(updateLoginAccount(loginAccount));
 
 		}, (res) => {
 			numAssetsLoaded++;
 			dispatch(updateAssets());
-			dispatch(TransactionsActions.updateTransactions(makeTransactionUpdate()));
+			dispatch(updateTransactions(makeTransactionUpdate()));
 		});
 
 		function makeTransactionUpdate() {

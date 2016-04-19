@@ -7,8 +7,9 @@ import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/co
 
 import AugurJS from '../../../services/augurjs';
 
-import * as TransactionsActions from '../../transactions/actions/transactions-actions';
 import * as MarketsActions from '../../markets/actions/markets-actions';
+import { addTransactions } from '../../transactions/actions/add-transactions';
+import { updateTransactions } from '../../transactions/actions/update-transactions';
 
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
 
@@ -27,7 +28,7 @@ export function submitNewMarketTransaction(newMarket) {
 	return function(dispatch, getState) {
 		var { links } = require('../../../selectors');
 		links.transactionsLink.onClick();
-		dispatch(TransactionsActions.addTransactions([selectNewTransaction(
+		dispatch(addTransactions([selectNewTransaction(
 			MAKE_MARKET,
 			0,
 			0,
@@ -41,7 +42,7 @@ export function submitNewMarketTransaction(newMarket) {
 
 export function createMarket(transactionID, newMarket) {
 	return function(dispatch, getState) {
-		dispatch(TransactionsActions.updateTransactions({
+		dispatch(updateTransactions({
 			[transactionID]: { status: 'sending...' }
 		}));
 
@@ -69,21 +70,21 @@ export function createMarket(transactionID, newMarket) {
 
 		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
 			if (err) {
-				dispatch(TransactionsActions.updateTransactions({
+				dispatch(updateTransactions({
 					[transactionID]: { status: FAILED, message: err.message }
 				}));
 				return;
 			}
 			if (res.status === CREATING_MARKET) {
 				newMarket.id = res.marketID;
-				dispatch(TransactionsActions.updateTransactions({
+				dispatch(updateTransactions({
 					[transactionID]: { status: CREATING_MARKET }
 				}));
 
 				/*
 				AugurJS.createMarketMetadata(newMarket, (err, resMetadata) => {
 					if (err) {
-						dispatch(TransactionsActions.updateTransactions({
+						dispatch(updateTransactions({
 							[transactionID]: { message: 'failed to save tags, source, metadata' }
 						}));
 						return;
@@ -92,7 +93,7 @@ export function createMarket(transactionID, newMarket) {
 				*/
 			}
 			else {
-				dispatch(TransactionsActions.updateTransactions({
+				dispatch(updateTransactions({
 					[transactionID]: { status: res.status }
 				}));
 				if (res.status === SUCCESS) {

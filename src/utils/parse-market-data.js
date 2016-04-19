@@ -4,6 +4,9 @@ import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME, YES, NO } from '.
 const CATEGORICAL_CHOICES_SEPARATOR = '~|>';
 const CATEGORICAL_CHOICE_SEPARATOR = '|';
 
+const CATEGORICAL_CHOICES_SEPARATOR2 = 'Choices:';
+const CATEGORICAL_CHOICE_SEPARATOR2 = ',';
+
 export function ParseMarketsData(marketsData) {
 	var o = {
 			marketsData: {},
@@ -31,7 +34,7 @@ export function ParseMarketsData(marketsData) {
 		o.marketsData[marketID] = marketData;
 
 		// get outcomes embedded in market description for categorical
-		if (marketData.type === CATEGORICAL && marketData.description && marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR) >= 0) {
+		if (marketData.type === CATEGORICAL && marketData.description) {
 			categoricalOutcomeNames = ParseCategoricalOutcomeNamesFromDescription(marketData);
 		}
 
@@ -79,12 +82,24 @@ export function ParseMarketsData(marketsData) {
 }
 
 export function ParseCategoricalOutcomeNamesFromDescription(marketData) {
-	var splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR),
+	var splitDescription,
+		categoricalOutcomeNames;
+
+	if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR) >= 0) {
+		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR),
 		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR);
+	}
+	else if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR2) >= 0) {
+		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR2),
+		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR2);
+	}
+	else {
+		return [];
+	}
 
 	marketData.description = splitDescription.join('').trim();
 
-	return categoricalOutcomeNames;
+	return categoricalOutcomeNames.map(name => name.trim());
 }
 
 export function MakeDescriptionFromCategoricalOutcomeNames(market) {
