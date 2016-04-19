@@ -31,7 +31,6 @@ selectors.transactions =  [];
 selectors.transactionsTotals =  {
 	title: '0 Transactions'
 };
-selectors.nextTransaction =  {};
 selectors.isTransactionsWorking =  false;
 
 
