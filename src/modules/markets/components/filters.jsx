@@ -32,7 +32,7 @@ module.exports = React.createClass({
 
                 <span className="title">Status</span>
                 <Checkbox className="filter" text="open" isChecked={ p.isCheckedOpen } onClick={ p.onClickFilterOpen } />
-                <Checkbox className="filter" text="recently expired" isChecked={ p.isCheckedExpired } onClick={ p.onClickFilterExpired } />
+                <Checkbox className="filter" text="expired" isChecked={ p.isCheckedExpired } onClick={ p.onClickFilterExpired } />
             </aside>
         );
     }

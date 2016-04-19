@@ -26423,8 +26423,8 @@ module.exports = _react2.default.createClass({
 		description: _react2.default.PropTypes.string,
 
 		outcomes: _react2.default.PropTypes.array,
+		isOpen: _react2.default.PropTypes.bool,
 		isFavorite: _react2.default.PropTypes.bool,
-		isRecentlyExpired: _react2.default.PropTypes.bool,
 		isPendingReport: _react2.default.PropTypes.bool,
 
 		endDate: _react2.default.PropTypes.object,
@@ -26741,7 +26741,7 @@ module.exports = _react2.default.createClass({
                 'Status'
             ),
             _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'open', isChecked: p.isCheckedOpen, onClick: p.onClickFilterOpen }),
-            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'recently expired', isChecked: p.isCheckedExpired, onClick: p.onClickFilterExpired })
+            _react2.default.createElement(_checkbox2.default, { className: 'filter', text: 'expired', isChecked: p.isCheckedExpired, onClick: p.onClickFilterExpired })
         );
     }
 });

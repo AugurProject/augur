@@ -11,8 +11,8 @@ module.exports = React.createClass({
 		description: React.PropTypes.string,
 
 		outcomes: React.PropTypes.array,
+		isOpen: React.PropTypes.bool,
 		isFavorite: React.PropTypes.bool,
-		isRecentlyExpired: React.PropTypes.bool,
 		isPendingReport: React.PropTypes.bool,
 
 		endDate: React.PropTypes.object,
