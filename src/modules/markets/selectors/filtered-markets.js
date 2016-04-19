@@ -20,7 +20,7 @@ export const isMarketFiltersMatch = memoizerific(3)(function(market, keywords, s
         return keywordsArray.every(keyword => (
             market.description.toLowerCase().indexOf(keyword) >= 0 ||
             market.outcomes.some(outcome => outcome.name.indexOf(keyword) >= 0) ||
-            market.tags.some(tag => tag.toLowerCase().indexOf(keyword) >= 0)
+            (market.tags || []).some(tag => tag.toLowerCase().indexOf(keyword) >= 0)
         ));
     }
 
