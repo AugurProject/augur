@@ -26543,7 +26543,7 @@ module.exports = _react2.default.createClass({
 				nodes.push(_react2.default.createElement(_basics2.default, _extends({ key: 'bascis' }, p.market)));
 
 				// report form
-				if (p.market.isRequiredToReportByAccount) {
+				if (p.market.isPendingReport) {
 					nodes.push(_react2.default.createElement(_reportPanel2.default, _extends({
 						key: 'report-panel'
 					}, p.market, p.market.report, {

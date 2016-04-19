@@ -35,7 +35,7 @@ module.exports = React.createClass({
 			nodes.push(<Basics key="bascis" { ...p.market } />);
 
 			// report form
-			if (p.market.isRequiredToReportByAccount) {
+			if (p.market.isPendingReport) {
 				nodes.push(
 					<ReportPanel
 						key="report-panel"

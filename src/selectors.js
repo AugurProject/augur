@@ -132,7 +132,7 @@ function makeMarkets(numMarkets = 20) {
 				tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
 				volume: makeNumber(randomInt(0, 10000), 'Shares', true),
 				isOpen: Math.random() > 0.1,
-				isRequiredToReportByAccount: Math.random() < 0.5,
+				isPendingReport: Math.random() < 0.5,
 				marketLink: { text: 'Trade', className: 'trade', onClick: () => module.exports.update({ activePage: M, market: m }) },
 			};
 
