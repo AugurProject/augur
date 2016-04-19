@@ -53,7 +53,7 @@ module.exports = React.createClass({
                 <Filters { ...p.filtersProps } />
 
                 <div className="markets-list">
-                    { (p.markets || []).slice(0, 50).map(market =>
+                    { (p.markets || []).map(market =>
                         <MarketItem
                             key={ market.id }
                             { ...market } />

@@ -27031,7 +27031,7 @@ module.exports = _react2.default.createClass({
             _react2.default.createElement(
                 'div',
                 { className: 'markets-list' },
-                (p.markets || []).slice(0, 50).map(function (market) {
+                (p.markets || []).map(function (market) {
                     return _react2.default.createElement(_marketItem2.default, _extends({
                         key: market.id
                     }, market));
