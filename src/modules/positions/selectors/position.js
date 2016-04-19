@@ -19,8 +19,6 @@ export const selectPositionFromOutcomeAccountTrades = memoizerific(100)(function
 	});
 
 	position = selectPositionsSummary(outcomeAccountTrades.length, qtyShares, totalValue, totalCost);
-	position.numTrades = position.numPositions;
-	delete position.numPositions;
 	return position;
 });
 
