@@ -3,7 +3,7 @@ import { ListWordsUnderLength } from '../../../utils/list-words-under-length';
 
 import { AUTH_PATHS, PAGES_PATHS } from '../../link/constants/paths';
 import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
-import { LOGIN, LOGOUT } from '../../auth/constants/auth-types';
+import { LOGIN, LOGOUT, REGISTER } from '../../auth/constants/auth-types';
 
 import * as LinkActions from '../../link/actions/link-actions';
 import * as AuthActions from '../../auth/actions/auth-actions';
@@ -11,10 +11,10 @@ import * as AuthActions from '../../auth/actions/auth-actions';
 import store from '../../../store';
 
 export default function() {
-	var { loginAccountID, auth } = store.getState(),
+	var { loginAccount, auth } = store.getState(),
 		{ market } = require('../../../selectors');
 	return {
-		authLink: selectAuthLink(!loginAccountID ? LOGOUT : auth.selectedAuthType, store.dispatch),
+		authLink: selectAuthLink(!!loginAccount.id ? LOGOUT : REGISTER, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
 		marketsLink: selectMarketsLink(store.dispatch),
 		positionsLink: selectPositionsLink(store.dispatch),
