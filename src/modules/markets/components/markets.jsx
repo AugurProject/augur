@@ -37,11 +37,11 @@ module.exports = React.createClass({
                             className="sort"
                             selected={ p.sortOptions.find(opt => opt.value === p.selectedSort.prop) }
                             options={ p.sortOptions }
-                            onChange={ (prop) => p.onChangeSort(prop) } />
+                            onChange={ (prop) => { var sortOption = p.sortOptions.find(opt => opt.value === prop); p.onChangeSort(sortOption.value, sortOption.isDesc) }} />
                         <button
                             className="sort-direction-button"
                             title={ p.selectedSort.isDesc ? 'descending selected' : 'ascending selected' }
-                            onClick={ () => p.onChangeSort(null, !p.selectedSort.isDesc) }>{ p.selectedSort.isDesc ? <span>&#xf161;</span> : <span>&#xf160;</span> }</button>
+                            onClick={ () => p.onChangeSort(p.selectedSort.prop, !p.selectedSort.isDesc) }>{ p.selectedSort.isDesc ? <span>&#xf161;</span> : <span>&#xf160;</span> }</button>
                     </div>
                 </div>
 

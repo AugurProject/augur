@@ -26993,7 +26993,9 @@ module.exports = _react2.default.createClass({
                         }),
                         options: p.sortOptions,
                         onChange: function onChange(prop) {
-                            return p.onChangeSort(prop);
+                            var sortOption = p.sortOptions.find(function (opt) {
+                                return opt.value === prop;
+                            });p.onChangeSort(sortOption.value, sortOption.isDesc);
                         } }),
                     _react2.default.createElement(
                         'button',
@@ -27001,7 +27003,7 @@ module.exports = _react2.default.createClass({
                             className: 'sort-direction-button',
                             title: p.selectedSort.isDesc ? 'descending selected' : 'ascending selected',
                             onClick: function onClick() {
-                                return p.onChangeSort(null, !p.selectedSort.isDesc);
+                                return p.onChangeSort(p.selectedSort.prop, !p.selectedSort.isDesc);
                             } },
                         p.selectedSort.isDesc ? _react2.default.createElement(
                             'span',
