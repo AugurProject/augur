@@ -1,4 +1,4 @@
-import { UPDATE_PENDING_REPORTS } from '../../reports/actions/reports-actions';
+import { UPDATE_PENDING_REPORTS, CLEAR_PENDING_REPORTS } from '../../reports/actions/update-pending-reports';
 
 /*
 Keys are eventID, values can be:
@@ -19,6 +19,9 @@ export default function(pendingReports = {}, action) {
             		return p;
             	}, {})
             };
+
+        case CLEAR_PENDING_REPORTS:
+            return {};
 
         default:
             return pendingReports;

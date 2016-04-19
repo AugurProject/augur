@@ -326,25 +326,14 @@ ex.loadPriceHistory = function(marketID, cb) {
 	});
 };
 
-ex.createMarket = function(branchID, newMarket, minValue, maxValue, numOutcomes, cb) {
-	console.log("createMarket:", {
-		branchId: branchID,
-		description: newMarket.description,
-		expirationBlock: newMarket.endBlock,
-		minValue: minValue,
-		maxValue: maxValue,
-		numOutcomes: numOutcomes,
-		alpha: "0.0079",
-		initialLiquidity: newMarket.initialLiquidity,
-		tradingFee: newMarket.tradingFee
-	});
+ex.createMarket = function(branchID, newMarket, cb) {
 	augur.createSingleEventMarket({
 		branchId: branchID,
 		description: newMarket.description,
 		expirationBlock: newMarket.endBlock,
-		minValue: minValue,
-		maxValue: maxValue,
-		numOutcomes: numOutcomes,
+		minValue: newMarket.minValue,
+		maxValue: newMarket.maxValue,
+		numOutcomes: newMarket.numOutcomes,
 		alpha: "0.0079",
 		initialLiquidity: newMarket.initialLiquidity,
 		tradingFee: newMarket.tradingFee,
@@ -381,100 +370,6 @@ ex.loadMarketMetadata = function(marketID, cb) {
 	augur.getMetadata(marketID, cb);
 };
 
-ex.loadRecentlyExpiredEventIDs = function(branchID, reportPeriod, cbChunk) {
-
-	// load events that expired last reporting period
-	augur.getEvents(branchID, reportPeriod.toString(), eventIDs => {
-
-		if (!eventIDs || !eventIDs.length) {
-			return cbChunk(null, {});
-		}
-
-		if (eventIDs.error) {
-			return cbChunk(eventIDs);
-		}
-
-		// load event info sequentially for each event-id
-		(function processEventID() {
-			var eventID = eventIDs.pop(),
-				numFinished = 0,
-				events = {};
-
-			events[eventID] = {};
-
-			augur.getEventInfo(eventID, eventInfo => {
-				if (eventInfo.error) {
-					console.log('ERROR getEventInfo', eventInfo); // continue processing even tho we have an error
-				}
-
-				eventInfo = eventInfo || {};
-
-				events[eventID].minValue = parseFloat(eventInfo[3]);
-				events[eventID].maxValue = parseFloat(eventInfo[4]);
-				events[eventID].numOutcomes = parseFloat(eventInfo[5]);
-
-				finish();
-			});
-
-			augur.getEventIndex(reportPeriod, eventID, function (eventIndex) {
-				if (eventIndex.error) {
-					console.log('ERROR getEventIndex', eventIndex); // continue processing even tho we have an error
-					return finish();
-				}
-
-				events[eventID].index = parseInt(eventIndex, 10);
-
-				finish();
-			});
-
-			augur.getMarkets(eventID, eventMarketIDs => {
-				events[eventID].marketID = (eventMarketIDs || [])[0];
-				finish();
-			});
-
-			function finish() {
-				if (++numFinished < 3) {
-					return;
-				}
-
-				// if there are more event ids, queue next one
-				if (eventIDs.length) {
-					setTimeout(processEventID, TIMEOUT_MILLIS);
-				}
-
-				return cbChunk(null, events);
-			}
-		})();
-	});
-};
-
-/*
-ex.loadRecentlyExpiredMarketIDs = function(eventIDs, cb) {
-	var marketIDs = {};
-
-	if (!eventIDs || !eventIDs.length) {
-		return cb(null, {});
-	}
-
-	// load market-ids related to each event-id one at a time
-	(function processEventID() {
-		var eventID = eventIDs.pop();
-		augur.getMarkets(eventID, eventMarketIDs => {
-			(eventMarketIDs || []).forEach(eventMarketID => marketIDs[eventMarketID] = eventID);
-
-			// if there are more event ids, re-run this function to get their market ids
-			if (eventIDs.length) {
-				setTimeout(processEventID, TIMEOUT_MILLIS);
-			}
-
-			// if no more event ids to process, exit this loop and callback
-			else {
-				cb(null, marketIDs);
-			}
-		});
-	})();
-};
-*/
 ex.getReport = function(branchID, reportPeriod, eventID) {
 	augur.getReport(branchID, reportPeriod, eventID, function (report) {
 		console.log('*************report', report);

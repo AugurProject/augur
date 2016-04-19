@@ -1,11 +1,12 @@
 import memoizerific from 'memoizerific';
 import { formatNumber, formatEther, formatPercent, formatBlockToDate } from '../../../utils/format-number';
 
+import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
 import * as MarketsActions from '../../markets/actions/markets-actions';
 import * as TradeActions from '../../trade/actions/trade-actions';
-import * as ReportsActions from '../../reports/actions/reports-actions';
+import { submitReport } from '../../reports/actions/submit-report';
 
 import store from '../../../store';
 
@@ -14,7 +15,6 @@ import { selectOutcomeTradeOrders } from '../../trade/selectors/trade-orders';
 import { selectTradeSummary } from '../../trade/selectors/trade-summary';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
-import { isMarketFiltersMatch } from '../../markets/selectors/filtered-markets';
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
 export default function() {
@@ -23,11 +23,16 @@ export default function() {
 }
 
 export const selectMarket = (marketID) => {
-	var { marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
-	return assembleMarket(marketID, marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
+	var { marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
+	return assembleMarket(marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
 };
 
-export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
+export const selectMarketFromEventID = (eventID) => {
+	var { marketsData } = store.getState();
+	return selectMarket(Object.keys(marketsData).find(marketID => marketsData[marketID].eventID === eventID));
+};
+
+export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
 	var market;
 
 	if (!marketID || !marketsData[marketID]|| !marketsData[marketID].description) {
@@ -42,7 +47,7 @@ export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites,
 		!!favorites[marketID],
 
 		outcomes[marketID],
-		pendingReports[recentlyExpiredMarkets[marketID]],
+		pendingReports[marketsData[marketID].eventID],
 		accountTrades[marketID],
 		tradesInProgress[marketID],
 
@@ -66,8 +71,28 @@ console.log('>>|<< assembleBaseMarket >>|<<');
 		positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
 	o.type = marketData.type;
+	switch (o.type) {
+		case BINARY:
+			o.isBinary = true;
+			o.isCategorical = false;
+			o.isScalar = false;
+			break;
+		case CATEGORICAL:
+			o.isBinary = false;
+			o.isCategorical = true;
+			o.isScalar = false;
+			break;
+		case SCALAR:
+			o.isBinary = false;
+			o.isCategorical = false;
+			o.isScalar = true;
+			break;
+	}
+
 	o.endBlock = parseInt(marketData.endDate, 10);
 	o.isOpen = isOpen;
+	o.isExpired = !isOpen;
+
 	o.isFavorite = isFavorite;
 
 	o.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
@@ -84,7 +109,7 @@ console.log('>>|<< assembleBaseMarket >>|<<');
 
 	o.report = {
 		...pendingReport,
-		onSubmitReport: (reportedOutcomeID, isUnethical) => dispatch(ReportsActions.submitReport(o, reportedOutcomeID, isUnethical))
+		onSubmitReport: (reportedOutcomeID, isUnethical) => dispatch(submitReport(o, reportedOutcomeID, isUnethical))
 	};
 
 	o.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {

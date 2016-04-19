@@ -8,7 +8,7 @@ import { BRANCH_ID } from '../../app/constants/network';
 
 import * as TransactionsActions from '../../transactions/actions/transactions-actions';
 import * as PositionsActions from '../../positions/actions/positions-actions';
-import * as ReportsActions from '../../reports/actions/reports-actions';
+import { loadPendingReports, clearPendingReports } from '../../reports/actions/update-pending-reports';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
 export const CLEAR_LOGIN_ACCOUNT = 'CLEAR_LOGIN_ACCOUNT';
@@ -33,15 +33,16 @@ export function loadLoginAccount() {
 
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
-		var { recentlyExpiredEvents } = getState(),
-			recentlyExpiredEventsKeys = Object.keys(recentlyExpiredEvents);
+		var { marketsData } = getState(),
+			eventIDs = Object.keys(marketsData).map(marketID => marketsData[marketID].eventID);
 
-		dispatch(PositionsActions.loadMeanTradePrices());
+		//dispatch(PositionsActions.loadMeanTradePrices());
 		dispatch(updateAssets());
 		dispatch(PositionsActions.loadAccountTrades());
 
-		if (recentlyExpiredEventsKeys.length) {
-			dispatch(ReportsActions.loadPendingReports(recentlyExpiredEventsKeys));
+		dispatch(clearPendingReports());
+		if (eventIDs.length) {
+			dispatch(loadPendingReports(eventIDs));
 		}
 	};
 }

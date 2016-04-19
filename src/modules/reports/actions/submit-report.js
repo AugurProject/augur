@@ -9,65 +9,17 @@ import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/consta
 import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { SUBMIT_REPORT } from '../../transactions/constants/types';
 
-import * as MarketActions from '../../markets/actions/markets-actions';
 import * as TransactionsActions from '../../transactions/actions/transactions-actions';
+import { updatePendingReports } from '../../reports/actions/update-pending-reports';
 
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
-import { selectMarket } from '../../market/selectors/market';
+import { selectMarketFromEventID } from '../../market/selectors/market';
 import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links';
-
-export const UPDATE_RECENTLY_EXPIRED_EVENTS = 'UPDATE_RECENTLY_EXPIRED_EVENTS';
-export const UPDATE_PENDING_REPORTS = 'UPDATE_PENDING_REPORTS';
-
-export function loadRecentlyExpiredEvents() {
-	return (dispatch, getState) => {
-		var { blockchain } = getState(),
-			gatheredRecentlyExpiredEvents = {},
-			timeoutID;
-
-		AugurJS.loadRecentlyExpiredEventIDs(BRANCH_ID, blockchain.reportPeriod, (err, recentlyExpiredEvents) => {
-			if (err) {
-				console.log('ERROR loadRecentlyExpiredEventIDs', err);
-				return;
-			}
-
-			gatheredRecentlyExpiredEvents = {
-				...gatheredRecentlyExpiredEvents,
-				...(recentlyExpiredEvents || {})
-			};
-
-			if (timeoutID) {
-				clearTimeout(timeoutID);
-			}
-			timeoutID = setTimeout(() => {
-					dispatch({ type: UPDATE_RECENTLY_EXPIRED_EVENTS, recentlyExpiredEvents: gatheredRecentlyExpiredEvents });
-					dispatch(loadPendingReports(Object.keys(gatheredRecentlyExpiredEvents)));
-					gatheredRecentlyExpiredEvents = {};
-				}, 450);
-		});
-	};
-}
-
-export function loadPendingReports(eventIDs) {
-	return (dispatch, getState) => {
-		var { loginAccount, blockchain } = getState();
-		if (!loginAccount || !loginAccount.id) {
-			return;
-		}
-		AugurJS.loadPendingReportEventIDs(eventIDs, loginAccount.id, blockchain.reportPeriod, BRANCH_ID, (err, eventIDs) => {
-			if (err) {
-				console.log('ERROR loadPendingReports', err);
-				return;
-			}
-			dispatch({ type: UPDATE_PENDING_REPORTS, pendingReports: eventIDs });
-		});
-	};
-}
 
 export function submitReport(market, reportedOutcomeID, isUnethical) {
 	return (dispatch, getState) => {
-		var { pendingReports, recentlyExpiredEvents, recentlyExpiredMarkets } = getState(),
-			currentEventID = recentlyExpiredMarkets[market.id];
+		var { marketsData, pendingReports } = getState(),
+			currentEventID = marketsData[market.id].eventID;
 
 		dispatch(updatePendingReports({ [currentEventID]: { reportHash: true } }));
 
@@ -86,14 +38,8 @@ export function submitReport(market, reportedOutcomeID, isUnethical) {
 			(transactionID) => 	dispatch(processReport(transactionID, market, reportedOutcomeID, isUnethical))
 		)]));
 
-		var nextPendingReportEventID = Object.keys(pendingReports).find(eventID => (
-					!pendingReports[eventID].reportHash &&
-					recentlyExpiredEvents[eventID] &&
-					recentlyExpiredEvents[eventID].marketID &&
-					recentlyExpiredEvents[eventID].marketID !== market.id
-				)),
-				recentlyExpiredEvent = recentlyExpiredEvents[nextPendingReportEventID],
-				nextPendingReportMarket = recentlyExpiredEvent && selectMarket(recentlyExpiredEvent.marketID);
+		var nextPendingReportEventID = Object.keys(pendingReports).find(eventID => !pendingReports[eventID].reportHash),
+			nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
 
 		if (nextPendingReportMarket) {
 			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
@@ -106,9 +52,8 @@ export function submitReport(market, reportedOutcomeID, isUnethical) {
 
 export function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
 	return (dispatch, getState) => {
-		var { loginAccount, recentlyExpiredEvents, recentlyExpiredMarkets, blockchain } = getState(),
-			eventID = recentlyExpiredMarkets[market.id],
-			event = recentlyExpiredEvents[eventID],
+		var { loginAccount, blockchain } = getState(),
+			eventID = market.eventID,
 			report;
 
 		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID ) {
@@ -155,6 +100,3 @@ export function processReport(transactionID, market, reportedOutcomeID, isUnethi
 	};
 }
 
-export function updatePendingReports(pendingReports) {
-	return { type: UPDATE_PENDING_REPORTS, pendingReports };
-}

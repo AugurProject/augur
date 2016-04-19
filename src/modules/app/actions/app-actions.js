@@ -4,7 +4,6 @@ import { BRANCH_ID } from '../../app/constants/network';
 
 import * as AuthActions from '../../auth/actions/auth-actions';
 import * as MarketsActions from '../../markets/actions/markets-actions';
-import * as ReportsActions from '../../reports/actions/reports-actions';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 export const UPDATE_BRANCH = 'UPDATE_BRANCH';
@@ -28,7 +27,6 @@ export function initAugur() {
 				AugurJS.loadCurrentBlock(blockNum => {
 					dispatch(updateBlockchain(blockNum));
 					dispatch(MarketsActions.loadMarkets());
-					dispatch(ReportsActions.loadRecentlyExpiredEvents());
 					dispatch(listenToUpdates());
 				});
 			});

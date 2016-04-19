@@ -2,8 +2,6 @@ import memoizerific from 'memoizerific';
 
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../../app/constants/pages';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
-import { MARKET_TYPES, BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
-import { MARKET_STATUSES, OPEN, RECENTLY_EXPIRED } from '../../markets/constants/market-statuses';
 
 import store from '../../../store';
 

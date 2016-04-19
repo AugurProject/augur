@@ -41,35 +41,33 @@ export function submitNewMarketTransaction(newMarket) {
 
 export function createMarket(transactionID, newMarket) {
 	return function(dispatch, getState) {
-		var opts = {};
-
 		dispatch(TransactionsActions.updateTransactions({
 			[transactionID]: { status: 'sending...' }
 		}));
 
 		if (newMarket.type === BINARY) {
-			opts.minValue = 1;
-			opts.maxValue = 2;
-			opts.numOutcomes = 2;
+			newMarket.minValue = 1;
+			newMarket.maxValue = 2;
+			newMarket.numOutcomes = 2;
 
 		}
 		else if (newMarket.type === SCALAR) {
-			opts.minValue = newMarket.scalarSmallNum;
-			opts.maxValue = newMarket.scalarBigNum;
-			opts.numOutcomes = 2;
+			newMarket.minValue = newMarket.scalarSmallNum;
+			newMarket.maxValue = newMarket.scalarBigNum;
+			newMarket.numOutcomes = 2;
 
 		}
 		else if (newMarket.type === CATEGORICAL) {
-			opts.minValue = 1;
-			opts.maxValue = 2;
-			opts.numOutcomes = newMarket.outcomes.length;
+			newMarket.minValue = 1;
+			newMarket.maxValue = 2;
+			newMarket.numOutcomes = newMarket.outcomes.length;
 		}
 
 		if (newMarket.type === CATEGORICAL) {
 			newMarket.description = MakeDescriptionFromCategoricalOutcomeNames(newMarket);
 		}
 
-		AugurJS.createMarket(BRANCH_ID, newMarket, opts.minValue, opts.maxValue, opts.numOutcomes, (err, res) => {
+		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
 			if (err) {
 				dispatch(TransactionsActions.updateTransactions({
 					[transactionID]: { status: FAILED, message: err.message }

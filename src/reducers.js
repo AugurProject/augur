@@ -7,9 +7,7 @@ import activePage from './modules/app/reducers/active-page';
 
 import marketsData from './modules/markets/reducers/markets-data';
 import favorites from './modules/markets/reducers/favorites';
-import recentlyExpiredMarkets from './modules/markets/reducers/recently-expired-markets';
 
-import recentlyExpiredEvents from './modules/reports/reducers/recently-expired-events';
 import pendingReports from './modules/reports/reducers/pending-reports';
 
 import outcomes from './modules/markets/reducers/outcomes';
@@ -35,9 +33,7 @@ module.exports = {
 
 	marketsData,
 	favorites,
-	recentlyExpiredMarkets,
 
-	recentlyExpiredEvents,
 	pendingReports,
 
 	selectedMarketID,

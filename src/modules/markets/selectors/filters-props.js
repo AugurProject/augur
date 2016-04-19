@@ -1,7 +1,6 @@
 import memoizerific from 'memoizerific';
 
 import { MARKET_TYPES, BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
-import { MARKET_STATUSES, OPEN, RECENTLY_EXPIRED } from '../../markets/constants/market-statuses';
 
 import * as MarketsActions from '../actions/markets-actions';
 
@@ -14,18 +13,18 @@ export default function() {
 
 export const selectFiltersProps = memoizerific(10)(function(selectedFilters, dispatch) {
     return {
-		isCheckedOpen: !!selectedFilters[OPEN],
-		isCheckedExpired: !!selectedFilters[RECENTLY_EXPIRED],
-		isCheckedBinary: !!selectedFilters[BINARY],
-		isCheckedCategorical: !!selectedFilters[CATEGORICAL],
-		isCheckedScalar: !!selectedFilters[SCALAR],
-		isCheckedCombinatorial: !!selectedFilters[COMBINATORIAL],
+		isCheckedOpen: !!selectedFilters['isOpen'],
+		isCheckedExpired: !!selectedFilters['isExpired'],
 
-		onClickFilterOpen: () => dispatch(MarketsActions.toggleFilter(OPEN)),
-		onClickFilterExpired: () => dispatch(MarketsActions.toggleFilter(RECENTLY_EXPIRED)),
-		onClickFilterBinary: () => dispatch(MarketsActions.toggleFilter(BINARY)),
-		onClickFilterCategorical: () => dispatch(MarketsActions.toggleFilter(CATEGORICAL)),
-		onClickFilterScalar: () => dispatch(MarketsActions.toggleFilter(SCALAR)),
-		onClickFilterCombinatorial: () => dispatch(MarketsActions.toggleFilter(COMBINATORIAL))
+		isCheckedBinary: !!selectedFilters['isBinary'],
+		isCheckedCategorical: !!selectedFilters['isCategorical'],
+		isCheckedScalar: !!selectedFilters['isScalar'],
+
+		onClickFilterOpen: () => dispatch(MarketsActions.toggleFilter('isOpen')),
+		onClickFilterExpired: () => dispatch(MarketsActions.toggleFilter('isExpired')),
+
+		onClickFilterBinary: () => dispatch(MarketsActions.toggleFilter('isBinary')),
+		onClickFilterCategorical: () => dispatch(MarketsActions.toggleFilter('isCategorical')),
+		onClickFilterScalar: () => dispatch(MarketsActions.toggleFilter('isScalar'))
     };
 });

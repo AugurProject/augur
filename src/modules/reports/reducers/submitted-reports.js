@@ -1,4 +1,4 @@
-import { SUBMIT_REPORTS } from '../../reports/actions/reports-actions';
+import { SUBMIT_REPORTS } from '../../reports/actions/submit-report';
 
 export default function(submittedReports = {}, action) {
     switch (action.type) {

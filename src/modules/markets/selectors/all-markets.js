@@ -5,11 +5,11 @@ import store from '../../../store';
 import { selectMarket } from '../../market/selectors/market';
 
 export default function() {
-    var { marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain } = store.getState();
-    return selectMarkets(marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, store.dispatch);
+    var { marketsData, favorites, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain } = store.getState();
+    return selectMarkets(marketsData, favorites, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, recentlyExpiredMarkets, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, pendingReports, outcomes, positions, tradesInProgress, selectedSort, keywords, selectedFilters, blockchain, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}

@@ -4,8 +4,6 @@ import { ParseMarketsData } from '../../../utils/parse-market-data';
 
 import { BRANCH_ID } from '../../app/constants/network';
 
-import * as ReportsActions from '../../reports/actions/reports-actions';
-
 export const UPDATE_MARKETS_DATA = 'UPDATE_MARKETS_DATA';
 export const UPDATE_MARKET_DATA = 'UPDATE_MARKET_DATA';
 
