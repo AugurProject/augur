@@ -170,34 +170,4 @@ describe("data_api/reporting", function () {
         });
     });
 
-    describe("hashReport([ballot], " + salt + ") ", function () {
-        var test = function (r) {
-            var hashable = [
-                augur.coinbase,
-                abi.hex(salt)
-            ].concat(abi.fix(ballot, "hex"));
-            var hashed = utils.sha256(hashable);
-            assert.strictEqual(hashed, abi.hex(r));
-        };
-        it("sync", function () {
-            test(augur.hashReport(ballot, salt));
-        });
-        it("async", function (done) {
-            augur.hashReport(ballot, salt, function (r) {
-                test(r); done();
-            });
-        });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            var params = [abi.fix(ballot, "hex"), abi.hex(salt)];
-            batch.add("hashReport", params, function (r) {
-                test(r);
-            });
-            batch.add("hashReport", params, function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
-    });
-
 });

@@ -915,15 +915,6 @@ Augur.prototype.getTotalRep = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
-Augur.prototype.hashReport = function (ballot, salt, callback) {
-    // ballot: number[]
-    // salt: integer
-    if (ballot.constructor === Array) {
-        var tx = clone(this.tx.hashReport);
-        tx.params = [abi.fix(ballot, "hex"), salt];
-        return this.fire(tx, callback);
-    }
-};
 
 // buy&sellShares.se
 Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {

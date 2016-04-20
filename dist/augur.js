@@ -1187,11 +1187,6 @@ module.exports = function (network) {
             signature: "i",
             returns: "unfix"
         },
-        hashReport: {
-            to: contracts.reporting,
-            method: "hashReport",
-            signature: "ai"
-        },
 
         // buy&sellShares.se
         commitTrade: {
@@ -57693,15 +57688,6 @@ Augur.prototype.getTotalRep = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
-Augur.prototype.hashReport = function (ballot, salt, callback) {
-    // ballot: number[]
-    // salt: integer
-    if (ballot.constructor === Array) {
-        var tx = clone(this.tx.hashReport);
-        tx.params = [abi.fix(ballot, "hex"), salt];
-        return this.fire(tx, callback);
-    }
-};
 
 // buy&sellShares.se
 Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
@@ -60056,6 +60042,7 @@ function isFunction(f) {
 }
 
 var HOSTED_NODES = [
+    // "https://morden-state.ether.camp/api/v1/transaction/submit"
     "https://eth3.augur.net",
     "https://eth4.augur.net",
     "https://eth5.augur.net"
@@ -60185,9 +60172,9 @@ module.exports = {
 
     parse: function (response, returns, callback) {
         var results, len, err;
-        // if (response && response.error) {
-        //     console.log("response:", JSON.stringify(response, null, 2));
-        // }
+        if (response && response.error) {
+            console.log("response:", JSON.stringify(response, null, 2));
+        }
         try {
             if (response && typeof response === "string") {
                 response = JSON.parse(response);
@@ -60546,7 +60533,8 @@ module.exports = {
         // select local / hosted node(s) to receive RPC
         nodes = this.selectNodes();
         // if (command.method === "eth_sendRawTransaction") {
-        //     nodes = ["http://frontier-lb.ether.camp/"].concat(nodes);
+        //     console.log("command:", JSON.stringify(command));
+        //     nodes = ["https://morden-state.ether.camp/api/v1/transaction/submit"].concat(nodes);
         // }
 
         // asynchronous request if callback exists

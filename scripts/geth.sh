@@ -11,7 +11,7 @@ else
     # address="0x639b41c4d3d399894f2a57894278e1653e7cd24c"
     # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
 fi
-maxpeers="64"
+maxpeers="128"
 network="${1}"
 symlink="$HOME/.ethereum"
 passfile="${symlink}/.password"
@@ -43,4 +43,4 @@ fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
 # geth $optargs --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "https://augur-dev.herokuapp.com http://augur-dev.herokuapp.com https://augur-exp.herokuapp.com http://augur-exp.herokuapp.com https://eth1.augur.net https://eth2.augur.net https://eth3.augur.net https://eth4.augur.net https://eth5.augur.net https://augur.divshot.io https://augur-stage.herokuapp.com https://client.augur.net http://localhost:8080 https://localhost:8080" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
-geth $optargs --cache 2048 --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "http://local.augur.net,http://localhost:8080" --genesis "${genesis}" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
+geth $optargs --cache 2048 --networkid $network --datadir $symlink --rpc --rpcapi "eth,net,web3,admin,personal" --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "http://local.augur.net,http://localhost:8080" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
