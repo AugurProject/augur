@@ -13,7 +13,6 @@ export default function(pagination = { selectedPageNum: 1, numPerPage: 10 }, act
         case UPDATE_KEYWORDS:
         case TOGGLE_FILTER:
         case UPDATED_SELECTED_MARKETS_HEADER:
-        case SHOW_LINK:
             return {
                 ...pagination,
                 selectedPageNum: 1
