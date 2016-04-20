@@ -5,7 +5,8 @@ import thunk from 'redux-thunk';
 
 import reducers from './reducers';
 
-var middleWare,
+var window = window || {},
+	middleWare,
 	hydrated;
 
 // console log middleware
