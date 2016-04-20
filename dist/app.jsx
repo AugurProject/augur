@@ -27072,6 +27072,11 @@ module.exports = _react2.default.createClass({
                         p.pagination.previousPageNum
                     )
                 ),
+                _react2.default.createElement(
+                    'span',
+                    { className: 'displaying' },
+                    'displaying ' + p.pagination.startItemNum + '-' + p.pagination.endItemNum + ' of ' + p.pagination.numUnpaginated
+                ),
                 !!p.pagination && !!p.pagination.nextPageNum && _react2.default.createElement(
                     'span',
                     { className: 'button-container next', onClick: function onClick() {

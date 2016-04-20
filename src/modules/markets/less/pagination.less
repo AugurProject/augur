@@ -3,17 +3,17 @@
 		.pagination {
 			display: block;
 			width: 100%;
-			margin: 1vmin 0;
+			margin: 1vmin 0 2em 0;
 			padding-left: @filters-width;
+			text-align: center;
 			font-size: 2em;
 
 			.button-container {
-				display: inline-block;
+				display: inline-block; position: absolute;
 				width: 3em;
-				margin: 0 2em;
-				color: @color-plain-active;
+				color: @color-dark-active;
 				font-weight: 900;
-				font-size: 2rem;
+				font-size: 1.5rem;
 				cursor: pointer;
 
 				> * {
@@ -25,25 +25,28 @@
 					margin: 0;
 					padding: 0;
 					line-height: 1em;
-					color: @color-plain-active;
+					color: @color-dark-active;
 					background: transparent;
 					font-family: FontAwesome;
 					font-weight: 900;
-					font-size: 5rem;
+					font-size: 4rem;
 				}
 
 				&.next {
-					float: right;
+					right: 2em;
 					text-align: right;
 				}
 				&.prev {
-					float: left;
+					left: 24rem;
 					text-align: left;
 				}
+			}
 
-				.selected-page-num {
-					flex: 2;
-				}
+			.displaying {
+				display: inline-block;
+				margin-top: 1em;
+			    font-size: 1.2rem;
+			    font-weight: 900;
 			}
 		}
 	}
