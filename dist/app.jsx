@@ -27053,7 +27053,7 @@ module.exports = _react2.default.createClass({
                     }, market));
                 })
             ),
-            _react2.default.createElement(
+            !!p.pagination && !!p.pagination.numUnpaginated && _react2.default.createElement(
                 'div',
                 { className: 'pagination' },
                 !!p.pagination && !!p.pagination.previousPageNum && _react2.default.createElement(

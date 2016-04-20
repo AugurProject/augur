@@ -61,21 +61,23 @@ module.exports = React.createClass({
                     )}
                 </div>
 
-                <div className="pagination">
-                    { !!p.pagination && !!p.pagination.previousPageNum &&
-                        <span className="button-container prev" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.previousPageNum) }>
-                            <button className="button prev">&#xf104;</button>
-                            <span className="num-label">{ p.pagination.previousPageNum }</span>
-                        </span>
-                    }
-                    <span className="displaying">{ 'displaying ' + p.pagination.startItemNum + '-' + p.pagination.endItemNum + ' of ' + p.pagination.numUnpaginated  }</span>
-                    { !!p.pagination && !!p.pagination.nextPageNum &&
-                        <span className="button-container next" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.nextPageNum) }>
-                            <span className="num-label">{ p.pagination.nextPageNum }</span>
-                            <button className="button next">&#xf105;</button>
-                        </span>
-                    }
-                </div>
+                { !!p.pagination && !!p.pagination.numUnpaginated &&
+                    <div className="pagination">
+                        { !!p.pagination && !!p.pagination.previousPageNum &&
+                            <span className="button-container prev" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.previousPageNum) }>
+                                <button className="button prev">&#xf104;</button>
+                                <span className="num-label">{ p.pagination.previousPageNum }</span>
+                            </span>
+                        }
+                        <span className="displaying">{ 'displaying ' + p.pagination.startItemNum + '-' + p.pagination.endItemNum + ' of ' + p.pagination.numUnpaginated  }</span>
+                        { !!p.pagination && !!p.pagination.nextPageNum &&
+                            <span className="button-container next" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.nextPageNum) }>
+                                <span className="num-label">{ p.pagination.nextPageNum }</span>
+                                <button className="button next">&#xf105;</button>
+                            </span>
+                        }
+                    </div>
+                }
             </section>
         );
     }
