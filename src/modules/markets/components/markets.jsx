@@ -12,10 +12,11 @@ module.exports = React.createClass({
     propTypes: {
         className: React.PropTypes.string,
 
+		marketsHeader: React.PropTypes.object,
 		markets: React.PropTypes.array,
 		keywords: React.PropTypes.string,
 		filtersProps: React.PropTypes.object,
-		marketsHeader: React.PropTypes.object,
+		pagination: React.PropTypes.object,
 
 		selectedSort: React.PropTypes.object,
 		sortOptions: React.PropTypes.array,
@@ -58,6 +59,21 @@ module.exports = React.createClass({
                             key={ market.id }
                             { ...market } />
                     )}
+                </div>
+
+                <div className="pagination">
+                    { !!p.pagination && !!p.pagination.previousPageNum &&
+                        <span className="button-container prev" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.previousPageNum) }>
+                            <button className="button prev">&#xf104;</button>
+                            <span className="num-label">{ p.pagination.previousPageNum }</span>
+                        </span>
+                    }
+                    { !!p.pagination && !!p.pagination.nextPageNum &&
+                        <span className="button-container next" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.nextPageNum) }>
+                            <span className="num-label">{ p.pagination.nextPageNum }</span>
+                            <button className="button next">&#xf105;</button>
+                        </span>
+                    }
                 </div>
             </section>
         );

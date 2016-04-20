@@ -72,9 +72,10 @@ export default function(appElement, selectors) {
     					onChangeKeywords={ p.searchSort.onChangeKeywords }
 
     					markets={ p.markets }
-    					favoriteMarkets={ p.favoriteMarkets }
     					marketsHeader={ p.marketsHeader }
+    					favoriteMarkets={ p.favoriteMarkets }
     					filtersProps={ p.filtersProps }
+    					pagination={ p.pagination }
 
     					selectedSort={ p.searchSort.selectedSort }
     					sortOptions={ p.searchSort.sortOptions }

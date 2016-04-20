@@ -24589,9 +24589,10 @@ exports.default = function (appElement, selectors) {
                 onChangeKeywords: p.searchSort.onChangeKeywords,
 
                 markets: p.markets,
-                favoriteMarkets: p.favoriteMarkets,
                 marketsHeader: p.marketsHeader,
+                favoriteMarkets: p.favoriteMarkets,
                 filtersProps: p.filtersProps,
+                pagination: p.pagination,
 
                 selectedSort: p.searchSort.selectedSort,
                 sortOptions: p.searchSort.sortOptions,
@@ -26881,9 +26882,10 @@ module.exports = _react2.default.createClass({
 		markets: _react2.default.PropTypes.array,
 		favoriteMarkets: _react2.default.PropTypes.array,
 
+		marketsHeader: _react2.default.PropTypes.object,
 		keywords: _react2.default.PropTypes.string,
 		filtersProps: _react2.default.PropTypes.object,
-		marketsHeader: _react2.default.PropTypes.object,
+		pagination: _react2.default.PropTypes.object,
 
 		selectedSort: _react2.default.PropTypes.object,
 		sortOptions: _react2.default.PropTypes.array,
@@ -26970,10 +26972,11 @@ module.exports = _react2.default.createClass({
     propTypes: {
         className: _react2.default.PropTypes.string,
 
+        marketsHeader: _react2.default.PropTypes.object,
         markets: _react2.default.PropTypes.array,
         keywords: _react2.default.PropTypes.string,
         filtersProps: _react2.default.PropTypes.object,
-        marketsHeader: _react2.default.PropTypes.object,
+        pagination: _react2.default.PropTypes.object,
 
         selectedSort: _react2.default.PropTypes.object,
         sortOptions: _react2.default.PropTypes.array,
@@ -27049,6 +27052,42 @@ module.exports = _react2.default.createClass({
                         key: market.id
                     }, market));
                 })
+            ),
+            _react2.default.createElement(
+                'div',
+                { className: 'pagination' },
+                !!p.pagination && !!p.pagination.previousPageNum && _react2.default.createElement(
+                    'span',
+                    { className: 'button-container prev', onClick: function onClick() {
+                            return p.pagination.onUpdateSelectedPageNum(p.pagination.previousPageNum);
+                        } },
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'button prev' },
+                        ''
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'num-label' },
+                        p.pagination.previousPageNum
+                    )
+                ),
+                !!p.pagination && !!p.pagination.nextPageNum && _react2.default.createElement(
+                    'span',
+                    { className: 'button-container next', onClick: function onClick() {
+                            return p.pagination.onUpdateSelectedPageNum(p.pagination.nextPageNum);
+                        } },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'num-label' },
+                        p.pagination.nextPageNum
+                    ),
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'button next' },
+                        ''
+                    )
+                )
             )
         );
     }

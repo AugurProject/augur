@@ -68,6 +68,20 @@ selectors.onChangeSort = (prop, isDesc) => {
 	});
 };
 
+selectors.pagination = {
+	numPerPage: 10,
+	numPages: 10,
+	selectedPageNum: 1,
+	nextPageNum: 2,
+	onUpdateSelectedPageNum: (selectedPageNum) => module.exports.update({
+		pagination: {
+			...selectors.pagination,
+			selectedPageNum,
+			nextPageNum: selectedPageNum + 1,
+			previousPageNum: selectedPageNum - 1
+		}
+	})
+};
 
 selectors.createMarketForm =  {};
 
