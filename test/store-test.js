@@ -1,27 +1,28 @@
 import { assert } from 'chai';
 import store from '../src/store';
 
-const expectedInitialState = {
-  blockchain: {},
-  branch: {},
-  auth: { selectedAuthType: 'register', err: null },
-  loginAccount: {},
-  activePage: 'markets',
-  marketsData: {},
-  favorites: {},
-  pendingReports: {},
-  selectedMarketID: null,
-  selectedMarketsHeader: null,
-  keywords: '',
-  selectedFilters: { isOpen: true },
-  selectedSort: { prop: 'volume', isDesc: true },
-  tradesInProgress: {},
-  createMarketInProgress: {},
-  outcomes: {},
-  bidsAsks: {},
-  accountTrades: {},
-  transactions: {}
-};
+// expectedInitialState = {
+//   blockchain: {},
+//   branch: {},
+//   auth: { selectedAuthType: 'register', err: null },
+//   loginAccount: {},
+//   activePage: 'markets',
+//   marketsData: {},
+//   favorites: {},
+//   pendingReports: {},
+//   selectedMarketID: null,
+//   selectedMarketsHeader: null,
+//   keywords: '',
+//   selectedFilters: { isOpen: true },
+//   selectedSort: { prop: 'volume', isDesc: true },
+//   tradesInProgress: {},
+//   createMarketInProgress: {},
+//   outcomes: {},
+//   bidsAsks: {},
+//   accountTrades: {},
+//   transactions: {}
+// }
+
 
 const state = store.getState();
 
