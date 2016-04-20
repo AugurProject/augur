@@ -27075,7 +27075,7 @@ module.exports = _react2.default.createClass({
                 _react2.default.createElement(
                     'span',
                     { className: 'displaying' },
-                    'displaying ' + p.pagination.startItemNum + '-' + p.pagination.endItemNum + ' of ' + p.pagination.numUnpaginated
+                    p.pagination.startItemNum + '-' + p.pagination.endItemNum + ' of ' + p.pagination.numUnpaginated
                 ),
                 !!p.pagination && !!p.pagination.nextPageNum && _react2.default.createElement(
                     'span',
