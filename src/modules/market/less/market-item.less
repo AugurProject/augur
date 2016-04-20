@@ -4,20 +4,35 @@
 	background: white;
 	border-radius: 1px;
 
-	.basics {
+	.basics-container {
 		display: inline-block;
 		width: 70%;
 		padding-right: 1em;
-		vertical-align: top;
+		vertical-align: middle;
 
-		.description {
-			width: 100%;
-			margin: 1.5rem 2.5vw 0 0;
-			color: black;
+		.basics {
+			.description {
+				width: 100%;
+				margin: 1.5rem 2.5vw 0 0;
+				color: black;
+			}
+
+			.properties {
+				color: @color-dark-active;
+			}
 		}
 
-		.properties {
-			color: @color-dark-active;
+		.buttons {
+			margin: 2.5rem 0 1rem 0;
+
+			.button {
+				height: 2.4em;
+				margin: 0 1rem 0 0;
+				padding: 0 0.75em;
+				line-height: 2.3em;
+				font-size: 1rem;
+				font-weight: 700;
+			}
 		}
 	}
 
@@ -25,7 +40,7 @@
 		display: inline-block;
 		width: 30%;
 		margin: auto 0;
-		vertical-align: bottom;
+		vertical-align: middle;
 
 		.outcome {
 			display: flex;
@@ -65,26 +80,17 @@
 			font-size: 2rem;
 		}
 	}
-
-	.buttons {
-		margin: 2.5rem 0 1rem 0;
-
-		.button {
-			height: 2.4em;
-			margin: 0 1rem 0 0;
-			padding: 0 0.75em;
-			line-height: 2.3em;
-			font-size: 1rem;
-			font-weight: 700;
-		}
-	}
 }
 
 @media only screen and (max-width: @media-mobile-width) {
 	.market-item {
-		.basics {
+		.basics-container {
 			display: block;
 			width: 100%;
+
+			.buttons {
+				margin: 2rem 0 0 0;
+			}
 		}
 
 		.outcomes {

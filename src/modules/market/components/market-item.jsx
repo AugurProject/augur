@@ -35,16 +35,17 @@ module.exports = React.createClass({
 		var p = this.props;
 		return (
 			<article className="market-item">
-				<Basics { ...p } />
+				<div className="basics-container">
+					<Basics { ...p } />
+					{ !!p.marketLink &&
+						<div className="buttons">
+							<Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
+						</div>
+					}
+				</div>
 
 				{ p.outcomes &&
 					<Outcomes outcomes={ p.outcomes } />
-				}
-
-				{ !!p.marketLink &&
-					<div className="buttons">
-						<Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
-					</div>
 				}
 
 				{ p.onClickToggleFavorite &&
