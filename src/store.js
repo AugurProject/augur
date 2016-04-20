@@ -17,8 +17,10 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
 	var state = store.getState();
 	next(action);
-	window && window.localStorage && window.localStorage.setItem('state', JSON.stringify({
-		favorites: state.favorites
+	window && window.localStorage && window.localStorage.setItem && window.localStorage.setItem('state', JSON.stringify({
+		favorites: state.favorites,
+		transactions: state.transactions,
+		accountTrades: state.accountTrades
 	}));
 };
 
@@ -32,5 +34,5 @@ else {
 
 export default createStore(
 	combineReducers(reducers),
-	window && window.localStorage && JSON.parse(window.localStorage.getItem('state')) || {},
+	window && window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem('state')) || {},
 	middleWare);
