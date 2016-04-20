@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "http-server ./build -c-1 -p $PORT",
-    "test": "mocha --compilers js:babel-register",
+    "test": "mocha --compilers js:babel-register --recursive",
+    "test:watch": "npm test -- --watch",
     "_____": "",
     "watch": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=development npm run -s watch:all",
     "watch:dummy": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=dummy npm run -s watch:all",
