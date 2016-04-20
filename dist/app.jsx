@@ -26449,12 +26449,8 @@ module.exports = _react2.default.createClass({
 		return _react2.default.createElement(
 			'article',
 			{ className: 'market-item' },
-			_react2.default.createElement(
-				'div',
-				{ className: 'basics-container' },
-				_react2.default.createElement(_basics2.default, p),
-				p.outcomes && _react2.default.createElement(_outcomes2.default, { outcomes: p.outcomes })
-			),
+			_react2.default.createElement(_basics2.default, p),
+			p.outcomes && _react2.default.createElement(_outcomes2.default, { outcomes: p.outcomes }),
 			!!p.marketLink && _react2.default.createElement(
 				'div',
 				{ className: 'buttons' },

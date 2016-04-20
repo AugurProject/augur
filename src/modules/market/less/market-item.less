@@ -4,57 +4,53 @@
 	background: white;
 	border-radius: 1px;
 
-	.basics-container {
-		display: flex;
+	.basics {
+		display: inline-block;
+		width: 70%;
 		padding-right: 1em;
-		overflow: hidden;
+		vertical-align: top;
 
-		.basics {
-			display: inline-block;
-			width: 75%;
-			vertical-align: top;
-
-			.description {
-				width: 100%;
-				margin: 1.5rem 2.5vw 0 0;
-				color: black;
-			}
-
-			.properties {
-				color: @color-dark-active;
-			}
+		.description {
+			width: 100%;
+			margin: 1.5rem 2.5vw 0 0;
+			color: black;
 		}
 
-		.outcomes {
-			display: block;
-			width: 30%;
-			margin: auto 0;
+		.properties {
+			color: @color-dark-active;
+		}
+	}
 
-			.outcome {
-				display: flex;
-				margin-top: .1em;
-				padding: .3em;
-				line-height: 1.4em;
-				border-left: 4px solid @color-site-background;
-				font-size: 1.1rem; font-weight: 700;
+	.outcomes {
+		display: inline-block;
+		width: 30%;
+		margin: auto 0;
+		vertical-align: bottom;
 
-				.outcome-name {
-					display: inline-block;
-					width: 70%;
-					text-align: left;
-				}
-				.outcome-price {
-					display: inline-block;
-					width: 30%;
-					margin-right: 1em;
-					text-align: right;
-					font-weight: 400;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
+		.outcome {
+			display: flex;
+			margin-top: .1em;
+			padding: .3em;
+			line-height: 1.4em;
+			border-left: 4px solid @color-site-background;
+			font-size: 1.1rem; font-weight: 700;
 
-					.colorize();
-				}
+			.outcome-name {
+				display: inline-block;
+				width: 70%;
+				text-align: left;
+			}
+			.outcome-price {
+				display: inline-block;
+				width: 30%;
+				margin-right: 1em;
+				text-align: right;
+				font-weight: 400;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+
+				.colorize();
 			}
 		}
 	}
@@ -86,27 +82,24 @@
 
 @media only screen and (max-width: @media-mobile-width) {
 	.market-item {
-		.basics-container {
+		.basics {
 			display: block;
+			width: 100%;
+		}
 
-			.basics {
-				width: 100%;
-			}
+		.outcomes {
+			width: auto;
+			padding: 1.5em 1em 0 0;
 
-			.outcomes {
-				width: auto;
-				padding: 1.5em 1em 0 0;
+			.outcome {
+				display: inline-block;
+				margin-right: 1.5em;
+				font-size: 1.3em;
+				white-space: nowrap;
 
-				.outcome {
-					display: inline-block;
-					margin-right: 1.5em;
-					font-size: 1.3em;
-					white-space: nowrap;
-
-					> * {
-						width: auto !important;
-						vertical-align: middle;
-					}
+				> * {
+					width: auto !important;
+					vertical-align: middle;
 				}
 			}
 		}
