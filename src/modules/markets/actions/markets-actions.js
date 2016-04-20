@@ -20,6 +20,8 @@ export const UPDATE_SELECTED_SORT = 'UPDATE_SELECTED_SORT';
 export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
 export const UPDATED_SELECTED_MARKETS_HEADER = 'UPDATED_SELECTED_MARKETS_HEADER';
 
+export const UPDATE_SELECTED_PAGE_NUM = 'UPDATE_SELECTED_PAGE_NUM';
+
 export function loadMarkets() {
 	var chunkSize = 25;
 
@@ -156,3 +158,11 @@ export function toggleFavorite(marketID) {
 export function updateSelectedMarketsHeader(selectedMarketsHeader) {
 	return { type: UPDATED_SELECTED_MARKETS_HEADER, selectedMarketsHeader };
 }
+
+export function updateSelectedPageNum(selectedPageNum) {
+	return (dispatch, getState) => {
+		dispatch({ type: UPDATE_SELECTED_PAGE_NUM, selectedPageNum });
+		window && window.scrollTo(0, 0);
+	};
+}
+

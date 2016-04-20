@@ -8,6 +8,7 @@ import marketsHeader from './modules/markets/selectors/markets-header';
 import markets from './modules/markets/selectors/markets';
 import allMarkets from './modules/markets/selectors/all-markets';
 import marketsTotals from './modules/markets/selectors/markets-totals';
+import pagination from './modules/markets/selectors/pagination';
 
 import market from './modules/market/selectors/market';
 
@@ -32,6 +33,7 @@ var selectors = {
 	markets,
 	allMarkets,
 	marketsTotals,
+	pagination,
 
 	market,
 

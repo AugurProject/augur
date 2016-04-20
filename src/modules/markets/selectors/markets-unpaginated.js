@@ -8,19 +8,9 @@ import store from '../../../store';
 import { selectFilteredMarkets } from '../../markets/selectors/filtered-markets';
 
 export default function() {
-    var { activePage, selectedMarketsHeader, keywords, selectedFilters, pagination } = store.getState(),
-    	{ allMarkets } = require('../../../selectors'),
-    	unpaginated = selectUnpaginated(allMarkets, activePage, selectedMarketsHeader, keywords, selectedFilters);
+    var { activePage, selectedMarketsHeader, keywords, selectedFilters } = store.getState(),
+    	{ allMarkets } = require('../../../selectors');
 
-    if (activePage !== POSITIONS && selectedMarketsHeader !== PENDING_REPORTS) {
-    	return selectPaginated(unpaginated, pagination.selectedPageNum, pagination.numPerPage);
-    }
-    else {
-        return unpaginated;
-    }
-}
-
-export const selectUnpaginated = memoizerific(1)(function(allMarkets, activePage, selectedMarketsHeader, keywords, selectedFilters) {
     if (activePage === POSITIONS) {
     	return selectPositions(allMarkets);
     }
@@ -36,10 +26,10 @@ export const selectUnpaginated = memoizerific(1)(function(allMarkets, activePage
     }
 
 	return filteredMarkets;
-});
+}
 
-export const selectPaginated = memoizerific(1)(function(markets, pageNum, numPerPage) {
-    return markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage);
+export const selectPaginated = memoizerific(1)(function(markets, pageNum = 1, numPerPage = 20) {
+    return markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage - 1);
 });
 
 export const selectFavorites = memoizerific(1)(function(markets) {

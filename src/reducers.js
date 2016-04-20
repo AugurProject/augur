@@ -7,6 +7,7 @@ import activePage from './modules/app/reducers/active-page';
 
 import marketsData from './modules/markets/reducers/markets-data';
 import favorites from './modules/markets/reducers/favorites';
+import pagination from './modules/markets/reducers/pagination';
 
 import pendingReports from './modules/reports/reducers/pending-reports';
 
@@ -33,6 +34,7 @@ module.exports = {
 
 	marketsData,
 	favorites,
+	pagination,
 
 	pendingReports,
 
