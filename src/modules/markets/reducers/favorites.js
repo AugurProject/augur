@@ -12,7 +12,7 @@ export default function(favorites = { }, action) {
                 delete newFavorites[action.marketID];
             }
             else {
-                newFavorites[action.marketID] = true;
+                newFavorites[action.marketID] = Date.now();
             }
             return newFavorites;
 
