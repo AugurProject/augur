@@ -26452,17 +26452,17 @@ module.exports = _react2.default.createClass({
 				'div',
 				{ className: 'basics-container' },
 				_react2.default.createElement(_basics2.default, p),
-				!!p.marketLink && _react2.default.createElement(
-					'div',
-					{ className: 'buttons' },
-					_react2.default.createElement(
-						_link2.default,
-						_extends({}, p.marketLink, { className: (0, _classnames2.default)('button', p.marketLink.className) }),
-						p.marketLink.text
-					)
+				p.outcomes && _react2.default.createElement(_outcomes2.default, { outcomes: p.outcomes })
+			),
+			!!p.marketLink && _react2.default.createElement(
+				'div',
+				{ className: 'buttons' },
+				_react2.default.createElement(
+					_link2.default,
+					_extends({}, p.marketLink, { className: (0, _classnames2.default)('button', p.marketLink.className) }),
+					p.marketLink.text
 				)
 			),
-			p.outcomes && _react2.default.createElement(_outcomes2.default, { outcomes: p.outcomes }),
 			p.onClickToggleFavorite && _react2.default.createElement(
 				'button',
 				{
