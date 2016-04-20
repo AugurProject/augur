@@ -1,7 +1,7 @@
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 
-import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
 import store from '../../../store';
 
@@ -25,7 +25,7 @@ export const selectTransactionsTotals = memoizerific(1)(function(transactions) {
         if (transaction.status === PENDING) {
             o.numPending++;
         }
-        else if (transaction.status === SUCCESS || transaction.status === FAILED) {
+        else if ([SUCCESS, FAILED, INTERRUPTED].indexOf(transaction.status) >= 0) {
             o.numComplete++;
         }
         else {

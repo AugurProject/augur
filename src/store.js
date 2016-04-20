@@ -1,9 +1,12 @@
+import { SUCCESS, FAILED, PENDING, INTERRUPTED } from './modules/transactions/constants/statuses';
+
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import reducers from './reducers';
 
-var middleWare;
+var middleWare,
+	hydrated;
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -32,7 +35,16 @@ else {
 	middleWare = applyMiddleware(thunk, localStorageMiddleware);
 }
 
+// hydrated state
+hydrated = window && window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem('state'));
+if (hydrated && hydrated.transactions) {
+	Object.keys(hydrated.transactions).forEach(key => {
+		if ([SUCCESS, FAILED, PENDING, INTERRUPTED].indexOf(hydrated.transactions[key].status) < 0) {
+			hydrated.transactions[key].status = INTERRUPTED;
+		}
+	});
+}
 export default createStore(
 	combineReducers(reducers),
-	window && window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem('state')) || {},
+	hydrated || {},
 	middleWare);

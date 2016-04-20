@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 
-import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
 import store from '../../../store';
 
@@ -10,5 +10,5 @@ export default function() {
 }
 
 export const selectIsWorking = memoizerific(1)(function(transactions) {
-	return Object.keys(transactions || {}).some(id => transactions[id].status !== PENDING && transactions[id].status !== SUCCESS && transactions[id].status !== FAILED);
+	return Object.keys(transactions || {}).some(id => [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactions[id].status) < 0);
 });
