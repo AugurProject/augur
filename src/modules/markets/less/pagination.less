@@ -10,10 +10,10 @@
 
 			.button-container {
 				display: inline-block; position: absolute;
-				width: 3em;
 				color: @color-dark-active;
 				font-weight: 900;
 				font-size: 1.3rem;
+				white-space: nowrap;
 				cursor: pointer;
 
 				> * {
@@ -47,6 +47,21 @@
 				margin-top: 1em;
 			    font-size: 1.2rem;
 			    font-weight: 900;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: @media-small-width) {
+	.markets {
+		.page-content {
+			.pagination {
+				padding-left: 0;
+				.button-container {
+					&.prev {
+						left: 2rem;
+					}
+				}
 			}
 		}
 	}

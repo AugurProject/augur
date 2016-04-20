@@ -27065,11 +27065,6 @@ module.exports = _react2.default.createClass({
                         'button',
                         { className: 'button prev' },
                         ''
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'num-label' },
-                        p.pagination.previousPageNum
                     )
                 ),
                 _react2.default.createElement(
@@ -27082,11 +27077,6 @@ module.exports = _react2.default.createClass({
                     { className: 'button-container next', onClick: function onClick() {
                             return p.pagination.onUpdateSelectedPageNum(p.pagination.nextPageNum);
                         } },
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'num-label' },
-                        p.pagination.nextPageNum
-                    ),
                     _react2.default.createElement(
                         'button',
                         { className: 'button next' },

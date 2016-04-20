@@ -66,13 +66,13 @@ module.exports = React.createClass({
                         { !!p.pagination && !!p.pagination.previousPageNum &&
                             <span className="button-container prev" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.previousPageNum) }>
                                 <button className="button prev">&#xf104;</button>
-                                <span className="num-label">{ p.pagination.previousPageNum }</span>
+                                {/* <span className="num-label">{ p.pagination.previousItemNum }</span> */}
                             </span>
                         }
                         <span className="displaying">{ p.pagination.startItemNum + '-' + p.pagination.endItemNum + ' of ' + p.pagination.numUnpaginated  }</span>
                         { !!p.pagination && !!p.pagination.nextPageNum &&
                             <span className="button-container next" onClick={ () => p.pagination.onUpdateSelectedPageNum(p.pagination.nextPageNum) }>
-                                <span className="num-label">{ p.pagination.nextPageNum }</span>
+                                {/* <span className="num-label">{ p.pagination.nextItemNum }</span> */}
                                 <button className="button next">&#xf105;</button>
                             </span>
                         }
