@@ -11,7 +11,7 @@ import { SUBMIT_REPORT } from '../../transactions/constants/types';
 
 import { addTransactions } from '../../transactions/actions/add-transactions';
 import { updateTransactions } from '../../transactions/actions/update-transactions';
-import { updatePendingReports } from '../../reports/actions/update-pending-reports';
+import { updateReports } from '../../reports/actions/update-reports';
 
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
 import { selectMarketFromEventID } from '../../market/selectors/market';
@@ -19,10 +19,10 @@ import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links'
 
 export function submitReport(market, reportedOutcomeID, isUnethical) {
 	return (dispatch, getState) => {
-		var { marketsData, pendingReports } = getState(),
+		var { marketsData, reports } = getState(),
 			currentEventID = marketsData[market.id].eventID;
 
-		dispatch(updatePendingReports({ [currentEventID]: { reportHash: true } }));
+		dispatch(updateReports({ [currentEventID]: { reportHash: true } }));
 
 		dispatch(addTransactions([selectNewTransaction(
 			SUBMIT_REPORT,
@@ -39,7 +39,7 @@ export function submitReport(market, reportedOutcomeID, isUnethical) {
 			(transactionID) => 	dispatch(processReport(transactionID, market, reportedOutcomeID, isUnethical))
 		)]));
 
-		var nextPendingReportEventID = Object.keys(pendingReports).find(eventID => !pendingReports[eventID].reportHash),
+		var nextPendingReportEventID = Object.keys(reports).find(eventID => !reports[eventID].reportHash),
 			nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
 
 		if (nextPendingReportMarket) {
@@ -78,7 +78,7 @@ export function processReport(transactionID, market, reportedOutcomeID, isUnethi
 			reportHash: true
 		};
 
-		dispatch(updatePendingReports({ [eventID]: report }));
+		dispatch(updateReports({ [eventID]: report }));
 
 		AugurJS.submitReportHash(BRANCH_ID, loginAccount.id, { ...event, id: eventID }, report, (err, res) => {
 			if (err) {
@@ -93,7 +93,7 @@ export function processReport(transactionID, market, reportedOutcomeID, isUnethi
 			}));
 
 			if (res.status === SUCCESS) {
-				dispatch(updatePendingReports({ [eventID]: { reportHash: res.reportHash }}));
+				dispatch(updateReports({ [eventID]: { reportHash: res.reportHash }}));
 			}
 
 			return;

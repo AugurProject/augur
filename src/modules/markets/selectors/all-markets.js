@@ -5,17 +5,17 @@ import store from '../../../store';
 import { assembleMarket } from '../../market/selectors/market';
 
 export default function() {
-    var { marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort } = store.getState();
-    return selectMarkets(marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, store.dispatch);
+    var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort } = store.getState();
+    return selectMarkets(marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
 
     return Object.keys(marketsData)
-    	.map(marketID => assembleMarket(marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch))
+    	.map(marketID => assembleMarket(marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch))
     	.sort((a, b) => {
     		var aVal = cleanSortVal(a[selectedSort.prop]),
     			bVal = cleanSortVal(b[selectedSort.prop]);

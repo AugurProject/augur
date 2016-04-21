@@ -26,8 +26,8 @@ export default function() {
 }
 
 export const selectMarket = (marketID) => {
-	var { marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
-	return assembleMarket(marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
+	var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
+	return assembleMarket(marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
 };
 
 export const selectMarketFromEventID = (eventID) => {
@@ -35,7 +35,7 @@ export const selectMarketFromEventID = (eventID) => {
 	return selectMarket(Object.keys(marketsData).find(marketID => marketsData[marketID].eventID === eventID));
 };
 
-export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
+export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
 	var market;
 
 	if (!marketID || !marketsData[marketID]|| !marketsData[marketID].description) {
@@ -50,7 +50,7 @@ export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites,
 		!!favorites[marketID],
 
 		outcomes[marketID],
-		pendingReports[marketsData[marketID].eventID],
+		reports[marketsData[marketID].eventID],
 		accountTrades[marketID],
 		tradesInProgress[marketID],
 

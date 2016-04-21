@@ -8,7 +8,7 @@ import { BRANCH_ID } from '../../app/constants/network';
 
 import { updateTransactions } from '../../transactions/actions/update-transactions';
 import * as PositionsActions from '../../positions/actions/positions-actions';
-import { loadPendingReports, clearPendingReports } from '../../reports/actions/update-pending-reports';
+import { loadReports, clearReports } from '../../reports/actions/update-reports';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
 export const CLEAR_LOGIN_ACCOUNT = 'CLEAR_LOGIN_ACCOUNT';
@@ -39,8 +39,8 @@ export function loadLoginAccountDependents() {
 		dispatch(updateAssets());
 		dispatch(PositionsActions.loadAccountTrades());
 
-		dispatch(clearPendingReports());
-		dispatch(loadPendingReports(marketsData));
+		dispatch(clearReports());
+		dispatch(loadReports(marketsData));
 	};
 }
 

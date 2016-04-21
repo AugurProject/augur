@@ -5,7 +5,7 @@ import { ParseMarketsData } from '../../../utils/parse-market-data';
 
 import { BRANCH_ID } from '../../app/constants/network';
 
-import { loadPendingReports } from '../../reports/actions/update-pending-reports';
+import { loadReports } from '../../reports/actions/update-reports';
 
 export const UPDATE_MARKETS_DATA = 'UPDATE_MARKETS_DATA';
 export const UPDATE_MARKET_DATA = 'UPDATE_MARKET_DATA';
@@ -46,7 +46,7 @@ export function loadMarkets() {
 
 				marketsDataOutcomesData = ParseMarketsData(marketsData);
 				dispatch(updateMarketsData(marketsDataOutcomesData));
-				dispatch(loadPendingReports(marketsDataOutcomesData.marketsData));
+				dispatch(loadReports(marketsDataOutcomesData.marketsData));
 
 
 /*

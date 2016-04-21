@@ -4,10 +4,10 @@ import { BRANCH_ID } from '../../app/constants/network';
 
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
-export const UPDATE_PENDING_REPORTS = 'UPDATE_PENDING_REPORTS';
-export const CLEAR_PENDING_REPORTS = 'CLEAR_PENDING_REPORTS';
+export const UPDATE_REPORTS = 'UPDATE_REPORTS';
+export const CLEAR_REPORTS = 'CLEAR_REPORTS';
 
-export function loadPendingReports(marketsData) {
+export function loadReports(marketsData) {
 	return (dispatch, getState) => {
 		var { loginAccount, blockchain } = getState(),
 			eventIDs;
@@ -26,18 +26,18 @@ export function loadPendingReports(marketsData) {
 
 		AugurJS.loadPendingReportEventIDs(eventIDs, loginAccount.id, blockchain.reportPeriod, BRANCH_ID, (err, eventIDs) => {
 			if (err) {
-				console.log('ERROR loadPendingReports', err);
+				console.log('ERROR loadReports', err);
 				return;
 			}
-			dispatch({ type: UPDATE_PENDING_REPORTS, pendingReports: eventIDs });
+			dispatch({ type: UPDATE_REPORTS, reports: eventIDs });
 		});
 	};
 }
 
-export function updatePendingReports(pendingReports) {
-	return { type: UPDATE_PENDING_REPORTS, pendingReports };
+export function updateReports(reports) {
+	return { type: UPDATE_REPORTS, reports };
 }
 
-export function clearPendingReports() {
-	return { type: CLEAR_PENDING_REPORTS };
+export function clearReports() {
+	return { type: CLEAR_REPORTS };
 }

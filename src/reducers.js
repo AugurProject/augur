@@ -9,7 +9,7 @@ import marketsData from './modules/markets/reducers/markets-data';
 import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
 
-import pendingReports from './modules/reports/reducers/pending-reports';
+import reports from './modules/reports/reducers/reports';
 
 import outcomes from './modules/markets/reducers/outcomes';
 import bidsAsks from './modules/bids-asks/reducers/bids-asks';
@@ -36,7 +36,7 @@ module.exports = {
 	favorites,
 	pagination,
 
-	pendingReports,
+	reports,
 
 	selectedMarketID,
 	selectedMarketsHeader,
