@@ -5,8 +5,9 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
-import * as MarketsActions from '../../markets/actions/markets-actions';
-import * as TradeActions from '../../trade/actions/trade-actions';
+import { toggleFavorite } from '../../markets/actions/toggle-favorite';
+import { placeTrade } from '../../trade/actions/place-trade';
+import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';
 
 import store from '../../../store';
@@ -24,8 +25,8 @@ export default function() {
 }
 
 export const selectMarket = (marketID) => {
-	var { marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
-	return assembleMarket(marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
+	var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
+	return assembleMarket(marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
 };
 
 export const selectMarketFromEventID = (eventID) => {
@@ -33,7 +34,7 @@ export const selectMarketFromEventID = (eventID) => {
 	return selectMarket(Object.keys(marketsData).find(marketID => marketsData[marketID].eventID === eventID));
 };
 
-export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, pendingReports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
+export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
 	var market;
 
 	if (!marketID || !marketsData[marketID]|| !marketsData[marketID].description) {
@@ -48,7 +49,7 @@ export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites,
 		!!favorites[marketID],
 
 		outcomes[marketID],
-		pendingReports[marketsData[marketID].eventID],
+		reports[marketsData[marketID].eventID],
 		accountTrades[marketID],
 		tradesInProgress[marketID],
 
@@ -106,8 +107,8 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 	o.isMissedOrReported = o.isMissedReport || o.isReported;
 
 	o.marketLink = selectMarketLink(o, dispatch);
-	o.onClickToggleFavorite = () => dispatch(MarketsActions.toggleFavorite(marketID));
-	o.onSubmitPlaceTrade = () => dispatch(TradeActions.placeTrade(marketID));
+	o.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
+	o.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 	o.report = {
 		...pendingReport,
@@ -134,7 +135,7 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			onChangeTrade: (numShares, limitPrice) => dispatch(TradeActions.updateTradesInProgress(marketID, outcome.id, numShares, limitPrice))
+			onChangeTrade: (numShares, limitPrice) => dispatch(updateTradesInProgress(marketID, outcome.id, numShares, limitPrice))
 		};
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {

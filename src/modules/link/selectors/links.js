@@ -5,13 +5,13 @@ import { AUTH_PATHS, PAGES_PATHS } from '../../link/constants/paths';
 import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
 import { LOGIN, LOGOUT, REGISTER } from '../../auth/constants/auth-types';
 
-import * as LinkActions from '../../link/actions/link-actions';
-import * as AuthActions from '../../auth/actions/auth-actions';
+import { showLink } from '../../link/actions/show-link';
+import { logout } from '../../auth/actions/logout';
 
 import store from '../../../store';
 
 export default function() {
-	var { loginAccount, auth } = store.getState(),
+	var { loginAccount } = store.getState(),
 		{ market } = require('../../../selectors');
 	return {
 		authLink: selectAuthLink(!!loginAccount.id ? LOGOUT : REGISTER, store.dispatch),
@@ -25,81 +25,81 @@ export default function() {
 }
 
 export const selectPreviousLink = memoizerific(1)(function(dispatch) {
-    return {
+	return {
 		href: PAGES_PATHS[MARKETS],
-		onClick: (href) => dispatch(LinkActions.showPreviousLink(href))
-    };
+		onClick: (href) => dispatch(showPreviousLink(href))
+	};
 });
 
 export const selectAuthLink = memoizerific(1)(function(selectedAuthType, dispatch) {
 	var href = selectedAuthType !== LOGOUT ? PAGES_PATHS[selectedAuthType] : PAGES_PATHS[LOGIN];
-    return {
+	return {
 		href,
 		onClick: selectedAuthType !== LOGOUT ?
-					() => dispatch(LinkActions.showLink(href)) :
-					() => { dispatch(AuthActions.logout()); dispatch(LinkActions.showLink(href)); }
-    };
+					() => dispatch(showLink(href)) :
+					() => { dispatch(logout()); dispatch(showLink(href)); }
+	};
 });
 
 export const selectMarketsLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[MARKETS];
-    return {
+	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
-    };
+		onClick: () => dispatch(showLink(href))
+	};
 });
 
 export const selectMarketLink = memoizerific(1)(function(market, dispatch) {
 	var href = PAGES_PATHS[M] + '/' + ListWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id,
 		link = {
 			href,
-			onClick: () => dispatch(LinkActions.showLink(href))
+			onClick: () => dispatch(showLink(href))
 		};
 
 	if (market.isReported) {
-    	link.text = 'Reported';
-    	link.className = 'reported';
+		link.text = 'Reported';
+		link.className = 'reported';
 	}
 	else if (market.isMissedReport) {
-    	link.text = 'Missed Report';
-    	link.className = 'missed-report';
+		link.text = 'Missed Report';
+		link.className = 'missed-report';
 	}
 	else if (market.isPendingReport) {
-    	link.text = 'Report';
-    	link.className = 'report';
+		link.text = 'Report';
+		link.className = 'report';
 	}
-    else if (!market.isOpen) {
-    	link.text = 'View';
-    	link.className = 'view';
-    }
-    else {
-    	link.text = 'Trade';
-    	link.className = 'trade';
-    }
+	else if (!market.isOpen) {
+		link.text = 'View';
+		link.className = 'view';
+	}
+	else {
+		link.text = 'Trade';
+		link.className = 'trade';
+	}
 
-    return link;
+	return link;
 });
 
 export const selectPositionsLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[POSITIONS];
-    return {
+	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
-    };
+		onClick: () => dispatch(showLink(href))
+	};
 });
 
 export const selectTransactionsLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[TRANSACTIONS];
-    return {
+	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
-    };
+		onClick: () => dispatch(showLink(href))
+	};
 });
 
 export const selectCreateMarketLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[MAKE];
-    return {
+	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
-    };
+		onClick: () => dispatch(showLink(href))
+	};
 });

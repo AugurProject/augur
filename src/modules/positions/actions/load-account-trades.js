@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
+import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
 
 export function loadAccountTrades() {
 	return (dispatch, getState) => {
@@ -37,10 +37,7 @@ export function loadAccountTrades() {
 	};
 }
 
-export function updateAccountTradesData(data) {
-    return { type: UPDATE_ACCOUNT_TRADES_DATA, data };
-}
-
+/*
 export function loadMeanTradePrices() {
     return (dispatch, getState) => {
         var { loginAccount } = getState();
@@ -50,11 +47,10 @@ console.log('========loadMeanTradePrices>>>>', err, meanTradePrices);
                 return console.info('ERR loadMeanTradePrices():', err);
             }
 
-            /*
             if (meanTradePrices) {
                 dispatch(updatePositionsData(meanTradePrices));
             }
-            */
         });
     };
 }
+*/

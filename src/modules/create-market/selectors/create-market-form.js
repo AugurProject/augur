@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 
 import { MARKET_TYPES } from '../../markets/constants/market-types';
 
-import * as CreateMarketActions from '../../create-market/actions/create-market-actions';
+import { updateMakeInProgress } from '../../create-market/actions/update-make-in-progress';
 
 import store from '../../../store';
 
@@ -24,7 +24,7 @@ export const selectCreateMarketForm = memoizerific(1)(function(createMarketInPro
 		};
 
 	// next step handler
-	formState.onValuesUpdated = (newValues) => dispatch(CreateMarketActions.updateMakeInProgress(newValues));
+	formState.onValuesUpdated = (newValues) => dispatch(updateMakeInProgress(newValues));
 
 	// init
 	if (!formState.step || !(formState.step >= 1)) {

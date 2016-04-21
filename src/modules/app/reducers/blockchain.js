@@ -1,4 +1,4 @@
-import { UPDATE_BLOCKCHAIN } from '../../app/actions/app-actions';
+import { UPDATE_BLOCKCHAIN } from '../../app/actions/update-blockchain';
 
 export default function(blockchain = {}, action) {
     switch (action.type) {

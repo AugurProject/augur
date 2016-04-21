@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 
 import reducers from './reducers';
 
-var window = window || {},
+var windowRef = window || {},
 	middleWare,
 	hydrated;
 
@@ -21,7 +21,7 @@ const consoleLog = store => next => action => {
 const localStorageMiddleware = store => next => action => {
 	var state = store.getState();
 	next(action);
-	window && window.localStorage && window.localStorage.setItem && window.localStorage.setItem('state', JSON.stringify({
+	windowRef.localStorage && windowRef.localStorage.setItem && windowRef.localStorage.setItem('state', JSON.stringify({
 		favorites: state.favorites,
 		transactions: state.transactions,
 		accountTrades: state.accountTrades
@@ -37,7 +37,7 @@ else {
 }
 
 // hydrated state
-hydrated = window && window.localStorage && window.localStorage.getItem && JSON.parse(window.localStorage.getItem('state'));
+hydrated = windowRef.localStorage && windowRef.localStorage.getItem && JSON.parse(windowRef.localStorage.getItem('state'));
 if (hydrated && hydrated.transactions) {
 	Object.keys(hydrated.transactions).forEach(key => {
 		if ([SUCCESS, FAILED, PENDING, INTERRUPTED].indexOf(hydrated.transactions[key].status) < 0) {

@@ -1,4 +1,4 @@
-import { UPDATE_BIDSASKS_DATA } from '../actions/bids-asks-actions';
+import { UPDATE_BIDSASKS_DATA } from '../actions/update-bids-asks';
 
 export default function(bidsAsks = {}, action) {
     var newBidAsk,

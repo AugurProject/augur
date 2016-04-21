@@ -7,24 +7,14 @@ import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/co
 
 import AugurJS from '../../../services/augurjs';
 
-import * as MarketsActions from '../../markets/actions/markets-actions';
+import { loadMarket } from '../../markets/actions/load-market';
 import { addTransactions } from '../../transactions/actions/add-transactions';
 import { updateTransactions } from '../../transactions/actions/update-transactions';
+import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
 
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
 
-export const UPDATE_MAKE_IN_PROGRESS = 'UPDATE_MAKE_IN_PROGRESS';
-export const CLEAR_MAKE_IN_PROGRESS = 'CLEAR_MAKE_IN_PROGRESS';
-
-export function updateMakeInProgress(data) {
-	return { type: UPDATE_MAKE_IN_PROGRESS, data };
-}
-
-export function clearMakeInProgress() {
-	return { type: CLEAR_MAKE_IN_PROGRESS };
-}
-
-export function submitNewMarketTransaction(newMarket) {
+export function submitNewMarket(newMarket) {
 	return function(dispatch, getState) {
 		var { links } = require('../../../selectors');
 		links.transactionsLink.onClick();
@@ -98,7 +88,7 @@ export function createMarket(transactionID, newMarket) {
 				}));
 				if (res.status === SUCCESS) {
 					dispatch(clearMakeInProgress());
-					setTimeout(() => dispatch(MarketsActions.loadMarket(res.marketID)), 5000);
+					setTimeout(() => dispatch(loadMarket(res.marketID)), 5000);
 				}
 			}
 		});

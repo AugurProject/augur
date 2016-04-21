@@ -1,5 +1,5 @@
-import { SHOW_LINK } from '../../link/actions/link-actions';
-import { TOGGLE_FILTER } from '../actions/markets-actions';
+import { SHOW_LINK } from '../../link/actions/show-link';
+import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
 
 export default function(selectedFilters = { 'isOpen': true }, action) {
     var newSelectedFilters;

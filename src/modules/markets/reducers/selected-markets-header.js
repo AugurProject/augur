@@ -1,4 +1,4 @@
-import { UPDATED_SELECTED_MARKETS_HEADER } from '../../markets/actions/markets-actions';
+import { UPDATED_SELECTED_MARKETS_HEADER } from '../../markets/actions/update-selected-markets-header';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 export default function(selectedMarketsHeader = null, action) {
