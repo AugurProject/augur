@@ -4,7 +4,7 @@ import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../../markets/constants/market-types';
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
 
-import * as CreateMarketActions from '../../../create-market/actions/create-market-actions';
+import { submitNewMarket } from '../../../create-market/actions/submit-new-market';
 
 export const select = function(formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch) {
 	var o = { ...formState };
@@ -21,7 +21,7 @@ export const select = function(formState, currentBlockNumber, currentBlockMillis
 	o.outcomes = selectOutcomesFromForm(formState.type, formState.categoricalOutcomes, formState.scalarSmallNum, formState.scalarBigNum);
 	o.isFavorite = false;
 
-	o.onSubmit = () => dispatch(CreateMarketActions.submitNewMarketTransaction(o));
+	o.onSubmit = () => dispatch(submitNewMarket(o));
 
 	return o;
 };

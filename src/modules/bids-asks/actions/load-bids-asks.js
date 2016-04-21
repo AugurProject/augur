@@ -1,9 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
-
-export const UPDATE_BIDSASKS_DATA = 'UPDATE_BIDSASKS_DATA';
-
 export function loadBidsAsks(marketID) {
     return (dispatch, getState) => {
         var s = getState(),
@@ -52,8 +48,4 @@ export function loadBidsAsks(marketID) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
     };
-}
-
-export function updateBidsAsks(bidsAsksData) {
-    return { type: UPDATE_BIDSASKS_DATA, bidsAsksData };
 }
