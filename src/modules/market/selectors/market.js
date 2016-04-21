@@ -5,8 +5,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
-import * as MarketsActions from '../../markets/actions/markets-actions';
-
+import { toggleFavorite } from '../../markets/actions/toggle-favorite';
 import { placeTrade } from '../../trade/actions/place-trade';
 import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';
@@ -108,7 +107,7 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 	o.isMissedOrReported = o.isMissedReport || o.isReported;
 
 	o.marketLink = selectMarketLink(o, dispatch);
-	o.onClickToggleFavorite = () => dispatch(MarketsActions.toggleFavorite(marketID));
+	o.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
 	o.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 	o.report = {

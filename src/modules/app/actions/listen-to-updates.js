@@ -2,8 +2,8 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateCurrentBlock } from '../../app/actions/update-current-block';
-
-import * as MarketsActions from '../../markets/actions/markets-actions';
+import { loadMarket } from '../../markets/actions/load-market';
+import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 
 export function listenToUpdates() {
 	return function(dispatch, getState) {
@@ -25,7 +25,7 @@ export function listenToUpdates() {
 				if (!outcomePriceChange || !outcomePriceChange.marketId || !outcomePriceChange.outcome || !outcomePriceChange.price) {
 					return;
 				}
-				dispatch(MarketsActions.updateOutcomePrice(outcomePriceChange.marketId, outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
+				dispatch(updateOutcomePrice(outcomePriceChange.marketId, outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
 			},
 
 			// new market, { blockNumber, marketId }
@@ -33,7 +33,7 @@ export function listenToUpdates() {
 				if (!result.marketId) {
 					return;
 				}
-				dispatch(MarketsActions.loadMarket(result.marketId));
+				dispatch(loadMarket(result.marketId));
 			}
 		);
 	};

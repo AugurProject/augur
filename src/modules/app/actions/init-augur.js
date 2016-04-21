@@ -6,8 +6,7 @@ import { updateBranch } from '../../app/actions/update-branch';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { listenToUpdates } from '../../app/actions/listen-to-updates';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
-
-import * as MarketsActions from '../../markets/actions/markets-actions';
+import { loadMarkets } from '../../markets/actions/load-markets';
 
 export function initAugur() {
 	return (dispatch, getState) => {
@@ -27,7 +26,7 @@ export function initAugur() {
 
 				AugurJS.loadCurrentBlock(blockNum => {
 					dispatch(updateBlockchain(blockNum));
-					dispatch(MarketsActions.loadMarkets());
+					dispatch(loadMarkets());
 					dispatch(listenToUpdates());
 				});
 			});

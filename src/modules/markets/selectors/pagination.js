@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 
-import { updateSelectedPageNum } from '../actions/markets-actions';
+import { updateSelectedPageNum } from '../../markets/actions/update-selected-page-num';
 
 import store from '../../../store';
 

@@ -1,4 +1,4 @@
-import { TOGGLE_FAVORITE } from '../../markets/actions/markets-actions';
+import { TOGGLE_FAVORITE } from '../../markets/actions/toggle-favorite';
 
 export default function(favorites = { }, action) {
     var newFavorites;

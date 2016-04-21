@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_DATA, UPDATE_MARKET_DATA } from '../../markets/actions/markets-actions';
+import { UPDATE_MARKETS_DATA, UPDATE_MARKET_DATA } from '../../markets/actions/update-markets-data';
 
 export default function(marketsData = {}, action) {
     switch (action.type) {

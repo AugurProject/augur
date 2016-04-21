@@ -1,4 +1,5 @@
-import { UPDATE_MARKETS_DATA, UPDATE_OUTCOME_PRICE } from '../actions/markets-actions';
+import { UPDATE_MARKETS_DATA } from '../../markets/actions/update-markets-data';
+import { UPDATE_OUTCOME_PRICE } from '../../markets/actions/update-outcome-price';
 
 export default function(outcomes = {}, action) {
     switch (action.type) {

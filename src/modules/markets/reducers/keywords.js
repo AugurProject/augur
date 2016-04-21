@@ -1,4 +1,4 @@
-import { UPDATE_KEYWORDS } from '../actions/markets-actions';
+import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
 
 export default function(keywords = '', action) {
     switch (action.type) {
