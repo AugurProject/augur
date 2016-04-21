@@ -1,4 +1,4 @@
-import { SHOW_LINK } from '../../link/actions/link-actions';
+import { SHOW_LINK } from '../../link/actions/show-link';
 import { M } from '../../app/constants/pages';
 import { PATHS_PAGES } from '../../link/constants/paths';
 

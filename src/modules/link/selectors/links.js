@@ -5,7 +5,7 @@ import { AUTH_PATHS, PAGES_PATHS } from '../../link/constants/paths';
 import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
 import { LOGIN, LOGOUT, REGISTER } from '../../auth/constants/auth-types';
 
-import * as LinkActions from '../../link/actions/link-actions';
+import { showLink } from '../../link/actions/show-link';
 import { logout } from '../../auth/actions/logout';
 
 import store from '../../../store';
@@ -27,7 +27,7 @@ export default function() {
 export const selectPreviousLink = memoizerific(1)(function(dispatch) {
 	return {
 		href: PAGES_PATHS[MARKETS],
-		onClick: (href) => dispatch(LinkActions.showPreviousLink(href))
+		onClick: (href) => dispatch(showPreviousLink(href))
 	};
 });
 
@@ -36,8 +36,8 @@ export const selectAuthLink = memoizerific(1)(function(selectedAuthType, dispatc
 	return {
 		href,
 		onClick: selectedAuthType !== LOGOUT ?
-					() => dispatch(LinkActions.showLink(href)) :
-					() => { dispatch(logout()); dispatch(LinkActions.showLink(href)); }
+					() => dispatch(showLink(href)) :
+					() => { dispatch(logout()); dispatch(showLink(href)); }
 	};
 });
 
@@ -45,7 +45,7 @@ export const selectMarketsLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[MARKETS];
 	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
+		onClick: () => dispatch(showLink(href))
 	};
 });
 
@@ -53,7 +53,7 @@ export const selectMarketLink = memoizerific(1)(function(market, dispatch) {
 	var href = PAGES_PATHS[M] + '/' + ListWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id,
 		link = {
 			href,
-			onClick: () => dispatch(LinkActions.showLink(href))
+			onClick: () => dispatch(showLink(href))
 		};
 
 	if (market.isReported) {
@@ -84,7 +84,7 @@ export const selectPositionsLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[POSITIONS];
 	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
+		onClick: () => dispatch(showLink(href))
 	};
 });
 
@@ -92,7 +92,7 @@ export const selectTransactionsLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[TRANSACTIONS];
 	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
+		onClick: () => dispatch(showLink(href))
 	};
 });
 
@@ -100,6 +100,6 @@ export const selectCreateMarketLink = memoizerific(1)(function(dispatch) {
 	var href = PAGES_PATHS[MAKE];
 	return {
 		href,
-		onClick: () => dispatch(LinkActions.showLink(href))
+		onClick: () => dispatch(showLink(href))
 	};
 });

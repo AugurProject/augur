@@ -1,5 +1,5 @@
 import { UPDATE_TRANSACTIONS } from '../../transactions/actions/update-transactions';
-import { SHOW_LINK } from '../../link/actions/link-actions';
+import { SHOW_LINK } from '../../link/actions/show-link';
 import { PATHS_AUTH } from '../../link/constants/paths';
 import { LOGOUT } from '../../auth/constants/auth-types';
 

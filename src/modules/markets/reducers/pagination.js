@@ -4,7 +4,7 @@ import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
 import { UPDATED_SELECTED_MARKETS_HEADER } from '../../markets/actions/update-selected-markets-header';
 
-import { SHOW_LINK } from '../../link/actions/link-actions';
+import { SHOW_LINK } from '../../link/actions/show-link';
 
 export default function(pagination = { selectedPageNum: 1, numPerPage: 10 }, action) {
     switch (action.type) {

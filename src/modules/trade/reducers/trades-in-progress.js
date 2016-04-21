@@ -1,5 +1,5 @@
 import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from '../../trade/actions/update-trades-in-progress';
-import { SHOW_LINK } from '../../link/actions/link-actions';
+import { SHOW_LINK } from '../../link/actions/show-link';
 import { PATHS_AUTH } from '../../link/constants/paths';
 import { LOGOUT } from '../../auth/constants/auth-types';
 
