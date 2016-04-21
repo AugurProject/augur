@@ -9,7 +9,7 @@
     "url": "https://github.com/AugurProject/augur"
   },
   "scripts": {
-    "start": "http-server ./build -c-1 -p $PORT",
+    "start": "firebase serve -p $PORT",
     "test": "echo \"Error: no test specified\" && exit 1",
     "_____": "",
     "watch": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=development npm run -s watch:all",
@@ -61,7 +61,6 @@
     "envify": "^3.4.0",
     "exorcist": "^0.4.0",
     "firebase-tools": "^2.2.1",
-    "http-server": "^0.9.0",
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
     "npm-check-updates": "^2.6.3",
