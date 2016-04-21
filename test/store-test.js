@@ -61,9 +61,9 @@ describe('src/store.js', () => {
     assert.isObject(state.favorites, 'favorites is an object');
     assert.deepEqual(state.favorites, {}, 'favorites is an empty object');
 
-    assert.isOk(state.pendingReports, 'pendingReports is defined');
-    assert.isObject(state.pendingReports, 'pendingReports is an object');
-    assert.deepEqual(state.pendingReports, {}, 'pendingReports is an empty object');
+    assert.isOk(state.reports, 'reports is defined');
+    assert.isObject(state.reports, 'reports is an object');
+    assert.deepEqual(state.reports, {}, 'reports is an empty object');
 
     assert.isNotOk(store.selectedMarketID, 'selectedMarketID is null');
     assert.isNotOk(store.selectedMarketsHeader, 'selectedMarketsHeader is null');
