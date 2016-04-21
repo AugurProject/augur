@@ -1,12 +1,13 @@
 import {
   assert
 } from 'chai';
-import * as AugurJS from '../../../src/services/augurjs';
-import Augur from 'augur.js';
+import proxyquire from 'proxyquire';
+// import * as AugurJS from '../../../src/services/augurjs';
+// import Augur from 'augur.js';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import * as actions from '../../../src/modules/trade/actions/update-trades-in-progress';
+// import * as actions from '../../../src/modules/trade/actions/update-trades-in-progress';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -23,8 +24,12 @@ const testState = {
   marketsData: {
     test: {
       _id: 'test',
-      outcomeID: {
-        test: '123'
+      outcomeID: 'outcomeID',
+      details: {
+        numShares: 1000,
+        limitPrice: 50,
+        totalCost: 3.50,
+        newPrice: .5,
       }
     }
   },
@@ -49,33 +54,28 @@ const testState = {
 };
 
 const store = mockStore(testState);
+const fakeAugurJS = {};
+
 
 describe('src/modules/trade/actions/trade-actions.js', () => {
   let sandbox;
+  let actions;
+  console.log(new Date());
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create();
-    sandbox.stub(Augur, "getMarketInfo", (marketID, callback) => {
-      return {
-        _id: marketID,
-        outcomeID: { test: '123' }
-      };
+    // this works but only if we do before each... not sure why yet.
+    // This is all getting called correctly but trades in progress still fails.
+    actions = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
+      '../../../services/augurjs': fakeAugurJS
     });
-    sandbox.stub(Augur, "lsLmsr", (market, callback) => {
-      return  350;
-    });
-    sandbox.stub(Augur, "getSimulatedBuy", (market, outcome, amount, callback) => {});
-    sandbox.stub(AugurJS, "getSimulatedBuy", (marketID, outcomeID, numShares) => {
-      return { '0': 3.50, '1': .5 };
-    });
-    sandbox.stub(AugurJS, "getSimulatedSell", (marketID, outcomeID, numShares) => {
-      [3.50, .5]
-    });
-  });
 
-  afterEach(() => {
-    // restore the environment as it was before
-    sandbox.restore();
+    fakeAugurJS.getSimulatedBuy = (market, outcome, numShares) => {
+      console.log('Correct Place Hit');
+      return {
+        0: 3.50,
+        1: 0.5
+      };
+    };
   });
 
   it('should dispatch clear market', () => {
@@ -86,18 +86,11 @@ describe('src/modules/trade/actions/trade-actions.js', () => {
     assert.deepEqual(actions.clearTradeInProgress('test'), expectedOutput);
   });
 
-  it('should be able to handle more advanced actions...', () => {
-    /*
-    this is going to be an tough one because the action im attempting to call
-    calls other actions that take from store which will be empty, it wont be
-    using the test store i have. This is going to require some rethinking...
-    Also AugurJS is called sometimes and we will need to use a dummy version or possible post test markets with extremely long lifetimes that can be used to test some of our actions...but i don't think that's a great idea overall.
-    */
-
+  it('should update trades in progress', () => {
+    // console.log(store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 3, 1)));
     return store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 3, 1))
       .then(() => { // return of async actions
         console.log(store.getActions())
       });
-
   });
 });

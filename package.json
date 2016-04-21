@@ -70,6 +70,7 @@
     "mocha": "^2.4.5",
     "npm-check-updates": "^2.6.3",
     "onchange": "^2.4.0",
+    "proxyquire": "^1.7.4",
     "redux-mock-store": "^1.0.2",
     "rimraf": "^2.5.2",
     "sinon": "^1.17.3",
