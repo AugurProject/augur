@@ -2,7 +2,7 @@ import {assert} from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import * as actions from '../../../src/modules/trade/actions/trade-actions';
+import * as actions from '../../../src/modules/trade/actions/update-trades-in-progress';
 
 const middlewares = [ thunk ];
 const mockStore = configureMockStore(middlewares);

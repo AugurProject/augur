@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 
 import reducers from './reducers';
 
-var windowRef = window || {},
+var windowRef = typeof window == "undefined" ? {} : window,
 	middleWare,
 	hydrated;
 

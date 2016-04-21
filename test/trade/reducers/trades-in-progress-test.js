@@ -3,9 +3,9 @@ import reducer
 from '../../../src/modules/trade/reducers/trades-in-progress';
 //import constants used by reducer
 import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS }
-from '../../../src/modules/trade/actions/trade-actions';
+from '../../../src/modules/trade/actions/update-trades-in-progress';
 import { SHOW_LINK }
-from '../../../src/modules/link/actions/link-actions';
+from '../../../src/modules/link/actions/show-link';
 
 describe('src/modules/trade/reducers/trade-in-progress.js', () => {
   const testState = {
