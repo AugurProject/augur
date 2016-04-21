@@ -5,7 +5,7 @@ import { BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES } from '../../transacti
 
 import store from '../../../store';
 
-import * as TradeActions from '../../trade/actions/trade-actions';
+import { tradeShares } from '../../trade/actions/place-trade';
 
 //import { selectOutcomeBids, selectOutcomeAsks } from '../../bids-asks/selectors/select-bids-asks';
 import { selectNewTransaction } from '../../transactions/selectors/transactions';
@@ -66,7 +66,7 @@ export const selectOutcomeTradeOrders = function(market, outcome, outcomeTradeIn
 			avgPrice: formatEther(totalCost / numShares),
 			feeToPay: formatEther(0.9)
 		},
-		(transactionID) => dispatch(TradeActions.tradeShares(transactionID, market.id, outcome.id, numShares, null, null))
+		(transactionID) => dispatch(tradeShares(transactionID, market.id, outcome.id, numShares, null, null))
 	));
 
 	return orders;
@@ -131,7 +131,7 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 				avgPrice: formatEther(Math.abs(o.ether / o.shares)),
 				feeToPay: formatEther(o.feeToPay)
 			},
-			(transactionID) => dispatch(TradeActions.tradeShares(transactionID, market.id, outcome.id, o.shares, limitPrice, null))
+			(transactionID) => dispatch(tradeShares(transactionID, market.id, outcome.id, o.shares, limitPrice, null))
 		));
 	}
 
@@ -152,7 +152,7 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 				avgPrice: formatEther(limitPrice),
 				feeToPay: formatNumber(0, { zero: true }) // no fee for market-making
 			},
-			(transactionID) => dispatch(TradeActions.tradeShares(transactionID, market.id, outcome.id, o.sharesRemaining, limitPrice, null))
+			(transactionID) => dispatch(tradeShares(transactionID, market.id, outcome.id, o.sharesRemaining, limitPrice, null))
 		));
 	}
 

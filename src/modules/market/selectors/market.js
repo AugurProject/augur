@@ -6,7 +6,9 @@ import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/consta
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
 import * as MarketsActions from '../../markets/actions/markets-actions';
-import * as TradeActions from '../../trade/actions/trade-actions';
+
+import { placeTrade } from '../../trade/actions/place-trade';
+import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';
 
 import store from '../../../store';
@@ -107,7 +109,7 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 
 	o.marketLink = selectMarketLink(o, dispatch);
 	o.onClickToggleFavorite = () => dispatch(MarketsActions.toggleFavorite(marketID));
-	o.onSubmitPlaceTrade = () => dispatch(TradeActions.placeTrade(marketID));
+	o.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 	o.report = {
 		...pendingReport,
@@ -134,7 +136,7 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			onChangeTrade: (numShares, limitPrice) => dispatch(TradeActions.updateTradesInProgress(marketID, outcome.id, numShares, limitPrice))
+			onChangeTrade: (numShares, limitPrice) => dispatch(updateTradesInProgress(marketID, outcome.id, numShares, limitPrice))
 		};
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {

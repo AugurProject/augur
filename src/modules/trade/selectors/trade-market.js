@@ -5,7 +5,8 @@ import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
 
 import store from '../../../store';
 
-import * as TradePanelActions from '../actions/trade-actions';
+import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
+
 import * as BidsAsksActions from '../../bids-asks/actions/bids-asks-actions';
 import * as MarketsActions from '../../markets/actions/markets-actions';
 
@@ -54,7 +55,7 @@ export const selectTradeMarket = memoizerific(10)(function(marketID, market = {}
             totalCost: formatEther(outcomeTradeOrders.reduce((p, tradeOrder) => p + tradeOrder.ether.value, 0)),
             numShares: tradeInProgress[outcome.id] && tradeInProgress[outcome.id].numShares || 0,
             limitPrice: tradeInProgress[outcome.id] && tradeInProgress[outcome.id].limitPrice || 0,
-            onChangeTradesInProgress: function(numShares, limitPrice) { dispatch(TradePanelActions.updateTradesInProgress(marketID, outcome.id, numShares, limitPrice)) }
+            onChangeTradesInProgress: function(numShares, limitPrice) { dispatch(updateTradesInProgress(marketID, outcome.id, numShares, limitPrice)) }
         };
 
         return tradeOutcome;
