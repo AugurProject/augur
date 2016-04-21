@@ -6,7 +6,8 @@ import { FAILED } from '../../transactions/constants/statuses';
 
 import store from '../../../store';
 
-import * as AuthActions from '../../auth/actions/auth-actions';
+import { register } from '../../auth/actions/register';
+import { login } from '../../auth/actions/login';
 
 import { selectAuthLink } from '../../link/selectors/links';
 
@@ -51,7 +52,7 @@ export const selectRegister = function(auth, dispatch) {
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (username, password, password2) => dispatch(AuthActions.register(username, password, password2))
+		onSubmit: (username, password, password2) => dispatch(register(username, password, password2))
 	};
 };
 
@@ -73,7 +74,7 @@ export const selectLogin = function(auth, dispatch) {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (username, password) => dispatch(AuthActions.login(username, password))
+		onSubmit: (username, password) => dispatch(login(username, password))
 	};
 };
 

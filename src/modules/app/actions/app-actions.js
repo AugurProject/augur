@@ -2,7 +2,9 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { BRANCH_ID } from '../../app/constants/network';
 
-import * as AuthActions from '../../auth/actions/auth-actions';
+import { updateAssets } from '../../auth/actions/update-assets';
+import { loadLoginAccount } from '../../auth/actions/load-login-account';
+
 import * as MarketsActions from '../../markets/actions/markets-actions';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
@@ -15,7 +17,7 @@ export function initAugur() {
 				return console.error('connect failure:', err);
 			}
 
-			dispatch(AuthActions.loadLoginAccount());
+			dispatch(loadLoginAccount());
 
 			AugurJS.loadBranch(BRANCH_ID, (err, branch) => {
 				if (err) {
@@ -69,7 +71,7 @@ export function listenToUpdates() {
 
 			// new block
 			(errNone, blockHash) => {
-				dispatch(AuthActions.updateAssets());
+				dispatch(updateAssets());
 				dispatch(updateCurrentBlock());
 			},
 

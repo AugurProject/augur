@@ -2,7 +2,7 @@ import { DEFAULT_AUTH_TYPE } from '../../auth/constants/auth-types';
 import { PATHS_AUTH } from '../../link/constants/paths';
 
 import { SHOW_LINK } from '../../link/actions/link-actions';
-import { AUTH_ERROR } from '../actions/auth-actions';
+import { AUTH_ERROR } from '../../auth/actions/auth-error';
 
 export default function(auth = { selectedAuthType: DEFAULT_AUTH_TYPE, err: null }, action) {
     switch (action.type) {

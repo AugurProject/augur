@@ -1,4 +1,4 @@
-import { UPDATE_LOGIN_ACCOUNT, CLEAR_LOGIN_ACCOUNT } from '../actions/auth-actions';
+import { UPDATE_LOGIN_ACCOUNT, CLEAR_LOGIN_ACCOUNT } from '../actions/update-login-account';
 import { SHOW_LINK } from '../../link/actions/link-actions';
 import { PATHS_AUTH } from '../../link/constants/paths';
 import { LOGOUT } from '../../auth/constants/auth-types';
