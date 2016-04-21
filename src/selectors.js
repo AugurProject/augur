@@ -24,7 +24,6 @@ selectors.links = {
 	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
 };
 
-
 selectors.authForm = {};
 
 selectors.transactions =  [];
