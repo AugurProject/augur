@@ -6,8 +6,7 @@ import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses'
 import { addTransactions } from '../../transactions/actions/add-transactions';
 import { updateTransactions } from '../../transactions/actions/update-transactions';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
-
-import * as PositionsActions from '../../positions/actions/positions-actions';
+import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 
 import { selectMarket } from '../../market/selectors/market';
 import { selectTransactionsLink } from '../../link/selectors/links';
@@ -35,7 +34,7 @@ export function tradeShares(transactionID, marketID, outcomeID, numShares, limit
 				return;
 			}
 
-			dispatch(PositionsActions.loadAccountTrades());
+			dispatch(loadAccountTrades());
 
 			dispatch(updateTransactions({
 				[transactionID]: { status: res.status }

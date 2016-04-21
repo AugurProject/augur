@@ -1,4 +1,4 @@
-import { UPDATE_ACCOUNT_TRADES_DATA } from '../../positions/actions/positions-actions';
+import { UPDATE_ACCOUNT_TRADES_DATA } from '../../positions/actions/update-account-trades-data';
 
 export default function(accountTrades = {}, action) {
     switch (action.type) {

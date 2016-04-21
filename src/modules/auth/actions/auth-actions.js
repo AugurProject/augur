@@ -7,7 +7,8 @@ import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses'
 import { BRANCH_ID } from '../../app/constants/network';
 
 import { updateTransactions } from '../../transactions/actions/update-transactions';
-import * as PositionsActions from '../../positions/actions/positions-actions';
+import { loadAccountTrades } from '../../positions/actions/load-account-trades';
+
 import { loadReports, clearReports } from '../../reports/actions/update-reports';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
@@ -35,9 +36,9 @@ export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
 		var { marketsData } = getState();
 
-		//dispatch(PositionsActions.loadMeanTradePrices());
+		//dispatch(loadMeanTradePrices());
 		dispatch(updateAssets());
-		dispatch(PositionsActions.loadAccountTrades());
+		dispatch(loadAccountTrades());
 
 		dispatch(clearReports());
 		dispatch(loadReports(marketsData));
