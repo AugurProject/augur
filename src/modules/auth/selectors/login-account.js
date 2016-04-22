@@ -1,6 +1,4 @@
 import { formatRep, formatEther } from '../../../utils/format-number';
-
-
 import store from '../../../store';
 
 export default function() {
