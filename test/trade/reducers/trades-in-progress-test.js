@@ -1,13 +1,20 @@
-import { assert } from 'chai';
+import {
+  assert
+} from 'chai';
 import reducer
 from '../../../src/modules/trade/reducers/trades-in-progress';
 //import constants used by reducer
-import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS }
+import {
+  UPDATE_TRADE_IN_PROGRESS,
+  CLEAR_TRADE_IN_PROGRESS
+}
 from '../../../src/modules/trade/actions/update-trades-in-progress';
-import { SHOW_LINK }
+import {
+  SHOW_LINK
+}
 from '../../../src/modules/link/actions/show-link';
 
-describe('src/modules/trade/reducers/trade-in-progress.js', () => {
+describe(`src/modules/trade/reducers/trade-in-progress.js`, () => {
   const testState = {
     MarketID: {
       MarketID: 'testStateMarketID',
@@ -49,7 +56,7 @@ describe('src/modules/trade/reducers/trade-in-progress.js', () => {
     assert.deepEqual(reducer(testState, testAction), expectedState);
   });
 
-  it('should clear trade in progress when SHOW_LINK is LOGOUT', () => {
+  it(`should clear trade in progress when SHOW_LINK is LOGOUT`, () => {
     const testAction = {
       type: SHOW_LINK,
       parsedURL: {
@@ -59,10 +66,10 @@ describe('src/modules/trade/reducers/trade-in-progress.js', () => {
 
     const expectedState = {};
 
-    assert.deepEqual(reducer(testState, testAction), expectedState);
+    assert.deepEqual(reducer(testState, testAction), expectedState, `reducer doesn't produce the expected state`);
   });
 
-  it('should be able to update a trade in progress', () => {
+  it(`should be able to update a trade in progress`, () => {
     const testAction = {
       type: UPDATE_TRADE_IN_PROGRESS,
       data: {
@@ -89,10 +96,10 @@ describe('src/modules/trade/reducers/trade-in-progress.js', () => {
       }
     };
 
-    assert.deepEqual(reducer(testState, testAction), expectedState);
+    assert.deepEqual(reducer(testState, testAction), expectedState, `reducer doesn't produce the expected state`);
   });
 
-  it('should be able to remove a trade in progress', () => {
+  it(`should be able to remove a trade in progress`, () => {
     const testAction = {
       type: CLEAR_TRADE_IN_PROGRESS,
       marketID: 'MarketID2',
@@ -108,7 +115,7 @@ describe('src/modules/trade/reducers/trade-in-progress.js', () => {
       MarketID2: {}
     };
 
-    assert.deepEqual(reducer(testState, testAction), expectedState);
+    assert.deepEqual(reducer(testState, testAction), expectedState, `reducer doesn't produce the expected state`);
   });
 
 });

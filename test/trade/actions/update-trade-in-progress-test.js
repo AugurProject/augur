@@ -5,59 +5,53 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-// going to need better test state data eventually...
-const testState = {
-  blockchain: {},
-  branch: {},
-  auth: {
-    selectedAuthType: 'register',
-    err: null
-  },
-  loginAccount: {},
-  activePage: 'markets',
-  marketsData: {
-    test: {
-      _id: 'test',
-      outcomeID: 'outcomeID',
-      details: {
-        numShares: 100,
-        limitPrice: 50,
-        totalCost: 25,
-        newPrice: 12,
+describe(`src/modules/trade/actions/trade-actions.js`, () => {
+  // going to need better test state data eventually...
+  const testState = {
+    blockchain: {},
+    branch: {},
+    auth: {
+      selectedAuthType: 'register',
+      err: null
+    },
+    loginAccount: {},
+    activePage: 'markets',
+    marketsData: {
+      test: {
+        _id: 'test',
+        outcomeID: 'outcomeID',
+        details: {
+          numShares: 100,
+          limitPrice: 50,
+          totalCost: 25,
+          newPrice: 12,
+        }
       }
-    }
-  },
-  favorites: {},
-  pendingReports: {},
-  selectedMarketID: null,
-  selectedMarketsHeader: null,
-  keywords: '',
-  selectedFilters: {
-    isOpen: true
-  },
-  selectedSort: {
-    prop: 'volume',
-    isDesc: true
-  },
-  tradesInProgress: {},
-  createMarketInProgress: {},
-  outcomes: {},
-  bidsAsks: {},
-  accountTrades: {},
-  transactions: {}
-};
+    },
+    favorites: {},
+    pendingReports: {},
+    selectedMarketID: null,
+    selectedMarketsHeader: null,
+    keywords: '',
+    selectedFilters: {
+      isOpen: true
+    },
+    selectedSort: {
+      prop: 'volume',
+      isDesc: true
+    },
+    tradesInProgress: {},
+    createMarketInProgress: {},
+    outcomes: {},
+    bidsAsks: {},
+    accountTrades: {},
+    transactions: {}
+  };
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const fakeAugurJS = {};
 
-const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
-
-const fakeAugurJS = {};
-
-
-describe('src/modules/trade/actions/trade-actions.js', () => {
-  let sandbox;
-  let actions;
-  let store;
-  console.log(new Date());
+  let sandbox, actions, store;
 
   beforeEach(() => {
     store = mockStore(testState);
@@ -66,7 +60,6 @@ describe('src/modules/trade/actions/trade-actions.js', () => {
     });
 
     fakeAugurJS.getSimulatedBuy = (market, outcome, numShares) => {
-      // console.log('fakeAugurJS.getSimulatedBuy() called.');
       return {
         0: 3.50,
         1: 0.5
@@ -74,7 +67,6 @@ describe('src/modules/trade/actions/trade-actions.js', () => {
     };
 
     fakeAugurJS.getSimulatedSell = (market, outcome, numShares) => {
-      // console.log('fakeAugurJS.getSimulatedSell() called.');
       return {
         0: 5.50,
         1: 1.5
@@ -82,16 +74,15 @@ describe('src/modules/trade/actions/trade-actions.js', () => {
     };
   });
 
-  it('should dispatch clear market', () => {
+  it(`should dispatch clear market`, () => {
     const expectedOutput = {
       type: 'CLEAR_TRADE_IN_PROGRESS',
       marketID: 'test'
     };
-    assert.deepEqual(actions.clearTradeInProgress('test'), expectedOutput);
+    assert.deepEqual(actions.clearTradeInProgress('test'), expectedOutput, `actions.clearTradeInProgress doesn't produce the expected output.`);
   });
 
-  it('should update trades in progress', () => {
-    // console.log(store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 3, 1)));
+  it(`should update trades in progress`, () => {
     const expectedOutput = [{
       type: actions.UPDATE_TRADE_IN_PROGRESS,
       data: {
@@ -146,6 +137,6 @@ describe('src/modules/trade/actions/trade-actions.js', () => {
     store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 4, 2));
     store.dispatch(actions.updateTradesInProgress('test2', 'outcomeID2', -4, 1));
 
-    assert.deepEqual(store.getActions(), expectedOutput);
+    assert.deepEqual(store.getActions(), expectedOutput, `a series of actions.updateTradesInProgress calls didn't produce the correct output.`);
   });
 });
