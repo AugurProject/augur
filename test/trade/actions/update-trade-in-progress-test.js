@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-describe(`src/modules/trade/actions/trade-actions.js`, () => {
+describe(`modules/trade/actions/trade-actions.js`, () => {
   // going to need better test state data eventually...
   const testState = {
     blockchain: {},

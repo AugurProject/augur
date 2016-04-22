@@ -4,7 +4,7 @@ import {
 import proxyquire from 'proxyquire';
 import realSelector from '../../../src/modules/trade/selectors/trade-in-progress';
 
-describe(`src/modules/trade/selectors/trade-in-progress.js`, () => {
+describe(`modules/trade/selectors/trade-in-progress.js`, () => {
   const testState = {
     selectedMarketID: 'testmarket',
     tradesInProgress: {

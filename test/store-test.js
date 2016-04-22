@@ -29,7 +29,7 @@ import store from '../src/store';
   transactions: {}
 }
 */
-describe(`src/store.js`, () => {
+describe(`store.js`, () => {
   const state = store.getState();
 
   it('should initialize with the correct default state', () => {

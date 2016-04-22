@@ -14,7 +14,7 @@ import {
 }
 from '../../../src/modules/link/actions/show-link';
 
-describe(`src/modules/trade/reducers/trade-in-progress.js`, () => {
+describe(`modules/trade/reducers/trade-in-progress.js`, () => {
   const testState = {
     MarketID: {
       MarketID: 'testStateMarketID',
