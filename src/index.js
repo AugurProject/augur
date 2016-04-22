@@ -385,14 +385,14 @@ Augur.prototype.getNumMarketsBranch = function (branch, callback) {
     var tx = clone(this.tx.getNumMarketsBranch);
     tx.params = branch;
     return this.fire(tx, callback);
-    // return callback("30");
+    // return callback("90");
 };
 Augur.prototype.getNumMarkets = function (branch, callback) {
     // branch: sha256
     var tx = clone(this.tx.getNumMarketsBranch);
     tx.params = branch;
     return this.fire(tx, callback);
-    // return callback("30");
+    // return callback("90");
 };
 Augur.prototype.getMinTradingFee = function (branch, callback) {
     // branch: sha256
@@ -752,21 +752,20 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
     var tx = clone(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
     tx.timeout = 240000;
-    if (!this.utils.is_function(callback)) {
+    if (!callback) {
         return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
     }
-    var count = 0;
     // stub array
-    // var marketsArray = require("../data/marketsInfo");
-    // self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
+    // this.parseMarketsArray(clone(require("../data/marketsInfo")), parseMarketsOptions, callback);
     // stub object
-    // callback(require("../data/marketsInfoObject"));
+    // callback(clone(require("../data/marketsInfoObject")));
+    var count = 0;
     var cb = function (marketsArray) {
         if (typeof marketsArray === "object" &&
             marketsArray.error === 500 && ++count < 4) {
             return self.fire(tx, cb);
         } else if (marketsArray.error) {
-        	return callback(marketsArray);
+            return callback(marketsArray);
         }        
         self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
     };
@@ -1377,7 +1376,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
-    if (rawInfo && rawInfo.length) {
+    if (rawInfo && rawInfo.length > 12) {
 
         // all-inclusive except comments & price history
         // info[0] = marketID
@@ -1418,6 +1417,29 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         info.events = new Array(info.numEvents);
         var traderFields = info.numOutcomes + 1;
 
+        // // stub outcomes
+        // info.outcomes = [
+        //     { shares: {},
+        //        id: 1,
+        //        outstandingShares: '958.03160360851467471988',
+        //        price: '0.26095191446788312817' },
+        //      { shares: {},
+        //        id: 2,
+        //        outstandingShares: '958.03160360851467471988',
+        //        price: '0.26095191446788312817' },
+        //      { shares: {},
+        //        id: 3,
+        //        outstandingShares: '958.03160360851467471988',
+        //        price: '0.26095191446788312817' },
+        //      { shares: {},
+        //        id: 4,
+        //        outstandingShares: '958.03160360851467471988',
+        //        price: '0.26095191446788312817' }];
+        // info.winningOutcomes = ["0", "0", "0", "0", "0", "0", "0", "0"];
+
+        // // stub trader info
+        // info.participants = {};
+
         // organize trader info
         for (var i = 0; i < info.numOutcomes; ++i) {
             info.outcomes[i] = {shares: {}};
@@ -1430,6 +1452,19 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
                 info.outcomes[j].shares[addr] = abi.unfix(rawInfo[i*traderFields + index + j + 1], "string");
             }
         }
+
+        // // stub events
+        // info.events = [{
+        //     id: '-0xa6df8015971904468ec42cb2269ae0b19d04e975cf391863399a859688395da5',
+        //     endDate: 1416466,
+        //     outcome: '0',
+        //     minValue: '1',
+        //     maxValue: '2',
+        //     numOutcomes: 4,
+        //     type: 'categorical'
+        // }];
+        // info.type = 'categorical';
+        // info.endDate = 1416466;
 
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
@@ -1457,6 +1492,9 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
                 info.endDate = endDate;
             }
         }
+
+        // stub description
+        // info.description = 'What medal will Spain win on UEFA Euro 2016 in France? Choices: Gold, Silver, Bronce, Ninguna';
 
         // organize outcome info
         index += info.numEvents*EVENTS_FIELDS;
@@ -1488,25 +1526,25 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
 
         // multi-event (combinatorial) markets: batch event descriptions
         info.type = "combinatorial";
-        if (options && options.combinatorial) {
-            var txList = new Array(info.numEvents);
-            for (i = 0; i < info.numEvents; ++i) {
-                txList[i] = clone(this.tx.getDescription);
-                txList[i].params = info.events[i].id;
-            }
-            if (this.utils.is_function(callback)) {
-                return rpc.batch(txList, function (response) {
-                    for (var i = 0, len = response.length; i < len; ++i) {
-                        info.events[i].description = response[i];
-                    }
-                    callback(info);
-                });
-            }
-            var response = rpc.batch(txList);
-            for (i = 0; i < response.length; ++i) {
-                info.events[i].description = response[i];
-            }
-        }
+        // if (options && options.combinatorial) {
+        //     var txList = new Array(info.numEvents);
+        //     for (i = 0; i < info.numEvents; ++i) {
+        //         txList[i] = clone(this.tx.getDescription);
+        //         txList[i].params = info.events[i].id;
+        //     }
+        //     if (this.utils.is_function(callback)) {
+        //         return rpc.batch(txList, function (response) {
+        //             for (var i = 0, len = response.length; i < len; ++i) {
+        //                 info.events[i].description = response[i];
+        //             }
+        //             callback(info);
+        //         });
+        //     }
+        //     var response = rpc.batch(txList);
+        //     for (i = 0; i < response.length; ++i) {
+        //         info.events[i].description = response[i];
+        //     }
+        // }
     }
     if (!this.utils.is_function(callback)) return info;
     callback(info);
@@ -1516,11 +1554,11 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
         return marketsArray;
     }
-    if (this.utils.is_function(options) && !callback) {
-        callback = options;
-        options = {};
-    }
-    options = options || {};
+    // if (this.utils.is_function(options) && !callback) {
+    //     callback = options;
+    //     options = {};
+    // }
+    // options = options || {};
     numMarkets = parseInt(marketsArray.shift());
     marketsInfo = {};
     totalLen = 0;
@@ -1529,12 +1567,189 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
         shift = numMarkets + totalLen;
         rawInfo = marketsArray.slice(shift, shift + len);
         marketID = marketsArray[shift];
-        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options);
+        // stub parsedMarketInfo
+        // marketsInfo[marketID] = {
+        //   "network": "2",
+        //   "traderCount": 39,
+        //   "alpha": "0.00790000000000000001",
+        //   "traderIndex": 0,
+        //   "numOutcomes": 2,
+        //   "tradingPeriod": 198,
+        //   "tradingFee": "0.01999999999999999998",
+        //   "branchId": "0xf69b5",
+        //   "numEvents": 1,
+        //   "cumulativeScale": "1",
+        //   "volume": "9376.5",
+        //   "creationFee": "1003",
+        //   "author": "0x15f6400a88fb320822b689607d425272bea2175f",
+        //   "type": "binary",
+        //   "endDate": 7929479,
+        //   "participants": {
+        //     "0x15f6400a88fb320822b689607d425272bea2175f": 0,
+        //     "0xef14eba1eb0be35b4a6dee7e9ac6a6f0388b5c41": 1,
+        //     "0x9a86cde6cf6d32f4e6f300b10b9b6619118f7c51": 2,
+        //     "0xda79f44748f278551ba2bf7f6a630c3594a5d2eb": 3,
+        //     "0x0d4003130535deac525d724b672c01261a9b567d": 4,
+        //     "0xfddf8aaf4b4f97ac270316594e4924b01c63d3cc": 5,
+        //     "0xb6fd159205bf3b92f60f78c019ad65284f9ffb21": 6,
+        //     "0x7fb674d9c60891d274fc6258451d32db2fc7df40": 7,
+        //     "0x5c68596113831d55afe69c8ae037cc598faedf9f": 8,
+        //     "0xb9d9aad8e81bc08fc68fcfdb0ded38705e699fda": 9,
+        //     "0x63f09aaa62e1720e6ddcbbea963c25c24176bfd4": 10,
+        //     "0x68337fc135a86ce9005ec37ddbd0a57f45003e56": 11,
+        //     "0x023f17af27447a90022b864cee931953c7e34754": 12,
+        //     "0x7ee5bfb4eddd0af1431a6e4ca873e3cad638efd2": 13,
+        //     "0xb40f8dfbfab73b848b3e36d009a3a3a1f9c4a927": 14,
+        //     "0xcd3d7b6a63c553bbe904d2218e2567f3515bbe45": 15,
+        //     "0x77217d8a665e965d4c15f52f4d28c3be66be974e": 16,
+        //     "0x86f4d95cbe2850bf3e671c0bd2a1781327cf8c83": 17,
+        //     "0xc320f4a54b96d14415a61ca79e3938e49e95173d": 18,
+        //     "0xe8c2ed92ec753e48bf0c19cae3c1702763b932fa": 19,
+        //     "0x24e422c64f9303e0619ab3c4dc7e40da3b921cc1": 20,
+        //     "0x01166f66af24e73f063fba9de0611dfc26182c41": 21,
+        //     "0x3554675ec55a1164444c38e9c5ef8869886dc17b": 22,
+        //     "0xbe6c716d4617ffcd76afb5eae4fd3c659c96cf75": 23,
+        //     "0x96338173781b55865617b1f4319724356eac2349": 24,
+        //     "0x8f0b8dc476d05ac1db753cece855045afec95f2f": 25,
+        //     "0xf33d4702e54b215d84e7452420f7573b5a320a0e": 26,
+        //     "0x44cedf074170510b62eccb0e54ef8b3d5b2ab1ee": 27,
+        //     "0xab526219c892e868fa83b81a50c6b960a6286283": 28,
+        //     "0x8773d5431e1662c8d6a9f7097a8b86da0b54ccff": 29,
+        //     "0xdf0ce4776d29098e32cd62716c705b2c818166a8": 30,
+        //     "0xf6c4e0603e7b6fa3b536b6e839fd0ca7a8fc6408": 31,
+        //     "0xe96d4be25df4c0398ce0e4ea31cd6f4e73940f8b": 32,
+        //     "0x978aab455ad33d1a636070bb598972fd4618b4ae": 33,
+        //     "0x2f5ba05613397d1fc8ae787e2bcaee9f898fc2d3": 34,
+        //     "0x98c5ff510a7f5bce0c2cef823d88983bb9318f2f": 35,
+        //     "0x338f36e306514388a98d43acee0d30b20f20ab12": 36,
+        //     "0x22f74df2e1130b1d627025dc7f48e686bf6b47e2": 37,
+        //     "0x2adab04fd69bf4a74068603f7fb291720663e218": 38
+        //   },
+        //   "winningOutcomes": [
+        //     "0",
+        //     "0",
+        //     "0",
+        //     "0",
+        //     "0",
+        //     "0",
+        //     "0",
+        //     "0"
+        //   ],
+        //   "description": "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
+        //   "outcomes": [
+        //     {
+        //       "shares": {
+        //         "0x15f6400a88fb320822b689607d425272bea2175f": "0",
+        //         "0xef14eba1eb0be35b4a6dee7e9ac6a6f0388b5c41": "5",
+        //         "0x9a86cde6cf6d32f4e6f300b10b9b6619118f7c51": "2",
+        //         "0xda79f44748f278551ba2bf7f6a630c3594a5d2eb": "0",
+        //         "0x0d4003130535deac525d724b672c01261a9b567d": "10",
+        //         "0xfddf8aaf4b4f97ac270316594e4924b01c63d3cc": "0",
+        //         "0xb6fd159205bf3b92f60f78c019ad65284f9ffb21": "0",
+        //         "0x7fb674d9c60891d274fc6258451d32db2fc7df40": "0",
+        //         "0x5c68596113831d55afe69c8ae037cc598faedf9f": "1",
+        //         "0xb9d9aad8e81bc08fc68fcfdb0ded38705e699fda": "1000",
+        //         "0x63f09aaa62e1720e6ddcbbea963c25c24176bfd4": "0",
+        //         "0x68337fc135a86ce9005ec37ddbd0a57f45003e56": "0",
+        //         "0x023f17af27447a90022b864cee931953c7e34754": "0",
+        //         "0x7ee5bfb4eddd0af1431a6e4ca873e3cad638efd2": "0",
+        //         "0xb40f8dfbfab73b848b3e36d009a3a3a1f9c4a927": "1",
+        //         "0xcd3d7b6a63c553bbe904d2218e2567f3515bbe45": "0",
+        //         "0x77217d8a665e965d4c15f52f4d28c3be66be974e": "1200",
+        //         "0x86f4d95cbe2850bf3e671c0bd2a1781327cf8c83": "0",
+        //         "0xc320f4a54b96d14415a61ca79e3938e49e95173d": "0",
+        //         "0xe8c2ed92ec753e48bf0c19cae3c1702763b932fa": "0",
+        //         "0x24e422c64f9303e0619ab3c4dc7e40da3b921cc1": "0",
+        //         "0x01166f66af24e73f063fba9de0611dfc26182c41": "0",
+        //         "0x3554675ec55a1164444c38e9c5ef8869886dc17b": "0",
+        //         "0xbe6c716d4617ffcd76afb5eae4fd3c659c96cf75": "0",
+        //         "0x96338173781b55865617b1f4319724356eac2349": "0",
+        //         "0x8f0b8dc476d05ac1db753cece855045afec95f2f": "1000",
+        //         "0xf33d4702e54b215d84e7452420f7573b5a320a0e": "10",
+        //         "0x44cedf074170510b62eccb0e54ef8b3d5b2ab1ee": "20",
+        //         "0xab526219c892e868fa83b81a50c6b960a6286283": "0",
+        //         "0x8773d5431e1662c8d6a9f7097a8b86da0b54ccff": "0",
+        //         "0xdf0ce4776d29098e32cd62716c705b2c818166a8": "10",
+        //         "0xf6c4e0603e7b6fa3b536b6e839fd0ca7a8fc6408": "0",
+        //         "0xe96d4be25df4c0398ce0e4ea31cd6f4e73940f8b": "0",
+        //         "0x978aab455ad33d1a636070bb598972fd4618b4ae": "1000",
+        //         "0x2f5ba05613397d1fc8ae787e2bcaee9f898fc2d3": "10",
+        //         "0x98c5ff510a7f5bce0c2cef823d88983bb9318f2f": "100",
+        //         "0x338f36e306514388a98d43acee0d30b20f20ab12": "0",
+        //         "0x22f74df2e1130b1d627025dc7f48e686bf6b47e2": "0",
+        //         "0x2adab04fd69bf4a74068603f7fb291720663e218": "50"
+        //       },
+        //       "id": 1,
+        //       "outstandingShares": "5411.13441626079105274861",
+        //       "price": "0.02186526413919054335"
+        //     },
+        //     {
+        //       "shares": {
+        //         "0x15f6400a88fb320822b689607d425272bea2175f": "10",
+        //         "0xef14eba1eb0be35b4a6dee7e9ac6a6f0388b5c41": "0",
+        //         "0x9a86cde6cf6d32f4e6f300b10b9b6619118f7c51": "0",
+        //         "0xda79f44748f278551ba2bf7f6a630c3594a5d2eb": "10",
+        //         "0x0d4003130535deac525d724b672c01261a9b567d": "0",
+        //         "0xfddf8aaf4b4f97ac270316594e4924b01c63d3cc": "10",
+        //         "0xb6fd159205bf3b92f60f78c019ad65284f9ffb21": "100",
+        //         "0x7fb674d9c60891d274fc6258451d32db2fc7df40": "100",
+        //         "0x5c68596113831d55afe69c8ae037cc598faedf9f": "0",
+        //         "0xb9d9aad8e81bc08fc68fcfdb0ded38705e699fda": "0",
+        //         "0x63f09aaa62e1720e6ddcbbea963c25c24176bfd4": "100",
+        //         "0x68337fc135a86ce9005ec37ddbd0a57f45003e56": "500",
+        //         "0x023f17af27447a90022b864cee931953c7e34754": "100",
+        //         "0x7ee5bfb4eddd0af1431a6e4ca873e3cad638efd2": "500",
+        //         "0xb40f8dfbfab73b848b3e36d009a3a3a1f9c4a927": "0",
+        //         "0xcd3d7b6a63c553bbe904d2218e2567f3515bbe45": "1000",
+        //         "0x77217d8a665e965d4c15f52f4d28c3be66be974e": "0",
+        //         "0x86f4d95cbe2850bf3e671c0bd2a1781327cf8c83": "100",
+        //         "0xc320f4a54b96d14415a61ca79e3938e49e95173d": "100",
+        //         "0xe8c2ed92ec753e48bf0c19cae3c1702763b932fa": "1",
+        //         "0x24e422c64f9303e0619ab3c4dc7e40da3b921cc1": "1000",
+        //         "0x01166f66af24e73f063fba9de0611dfc26182c41": "100",
+        //         "0x3554675ec55a1164444c38e9c5ef8869886dc17b": "100",
+        //         "0xbe6c716d4617ffcd76afb5eae4fd3c659c96cf75": "2",
+        //         "0x96338173781b55865617b1f4319724356eac2349": "20",
+        //         "0x8f0b8dc476d05ac1db753cece855045afec95f2f": "0",
+        //         "0xf33d4702e54b215d84e7452420f7573b5a320a0e": "0",
+        //         "0x44cedf074170510b62eccb0e54ef8b3d5b2ab1ee": "0",
+        //         "0xab526219c892e868fa83b81a50c6b960a6286283": "752",
+        //         "0x8773d5431e1662c8d6a9f7097a8b86da0b54ccff": "1",
+        //         "0xdf0ce4776d29098e32cd62716c705b2c818166a8": "0",
+        //         "0xf6c4e0603e7b6fa3b536b6e839fd0ca7a8fc6408": "0.5",
+        //         "0xe96d4be25df4c0398ce0e4ea31cd6f4e73940f8b": "0",
+        //         "0x978aab455ad33d1a636070bb598972fd4618b4ae": "0",
+        //         "0x2f5ba05613397d1fc8ae787e2bcaee9f898fc2d3": "0",
+        //         "0x98c5ff510a7f5bce0c2cef823d88983bb9318f2f": "0",
+        //         "0x338f36e306514388a98d43acee0d30b20f20ab12": "150",
+        //         "0x22f74df2e1130b1d627025dc7f48e686bf6b47e2": "1",
+        //         "0x2adab04fd69bf4a74068603f7fb291720663e218": "0"
+        //       },
+        //       "id": 2,
+        //       "outstandingShares": "5749.63441626079105274861",
+        //       "price": "0.97974840768541593405"
+        //     }
+        //   ],
+        //   "events": [
+        //     {
+        //       "id": "-0x9cbd3b3f1b5d6d05ce5c6c3411b21c441002a19141c092786b05bf6be9b5e8f6",
+        //       "endDate": 7929479,
+        //       "outcome": "0",
+        //       "minValue": "1",
+        //       "maxValue": "2",
+        //       "numOutcomes": 2,
+        //       "type": "binary"
+        //     }
+        //   ],
+        //   "price": "0.97974840768541593405"
+        // };
+        // marketsInfo[marketID] = require("../data/parsedMarketInfo" + i);
+        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options || {});
         marketsInfo[marketID]._id = marketID;
         marketsInfo[marketID].sortOrder = i;
         totalLen += len;
     }
-    if (!this.utils.is_function(callback)) return marketsInfo;
+    if (!callback) return marketsInfo;
     callback(marketsInfo);
 };
 Augur.prototype.checkPeriod = function (branch) {
