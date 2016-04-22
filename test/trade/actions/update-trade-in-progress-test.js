@@ -2,16 +2,10 @@ import {
   assert
 } from 'chai';
 import proxyquire from 'proxyquire';
-// import * as AugurJS from '../../../src/services/augurjs';
-// import Augur from 'augur.js';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-// import * as actions from '../../../src/modules/trade/actions/update-trades-in-progress';
 
-const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
-// going to need better test state data.
+// going to need better test state data eventually...
 const testState = {
   blockchain: {},
   branch: {},
@@ -26,10 +20,10 @@ const testState = {
       _id: 'test',
       outcomeID: 'outcomeID',
       details: {
-        numShares: 1000,
+        numShares: 100,
         limitPrice: 50,
-        totalCost: 3.50,
-        newPrice: .5,
+        totalCost: 25,
+        newPrice: 12,
       }
     }
   },
@@ -53,27 +47,37 @@ const testState = {
   transactions: {}
 };
 
-const store = mockStore(testState);
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
+
 const fakeAugurJS = {};
 
 
 describe('src/modules/trade/actions/trade-actions.js', () => {
   let sandbox;
   let actions;
+  let store;
   console.log(new Date());
 
   beforeEach(() => {
-    // this works but only if we do before each... not sure why yet.
-    // This is all getting called correctly but trades in progress still fails.
+    store = mockStore(testState);
     actions = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../services/augurjs': fakeAugurJS
     });
 
     fakeAugurJS.getSimulatedBuy = (market, outcome, numShares) => {
-      console.log('Correct Place Hit');
+      // console.log('fakeAugurJS.getSimulatedBuy() called.');
       return {
         0: 3.50,
         1: 0.5
+      };
+    };
+
+    fakeAugurJS.getSimulatedSell = (market, outcome, numShares) => {
+      // console.log('fakeAugurJS.getSimulatedSell() called.');
+      return {
+        0: 5.50,
+        1: 1.5
       };
     };
   });
@@ -88,9 +92,60 @@ describe('src/modules/trade/actions/trade-actions.js', () => {
 
   it('should update trades in progress', () => {
     // console.log(store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 3, 1)));
-    return store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 3, 1))
-      .then(() => { // return of async actions
-        console.log(store.getActions())
-      });
+    const expectedOutput = [{
+      type: actions.UPDATE_TRADE_IN_PROGRESS,
+      data: {
+        marketID: 'test',
+        outcomeID: 'outcomeID',
+        details: {
+          numShares: 3,
+          limitPrice: 1,
+          totalCost: 3.5,
+          newPrice: 0.5
+        }
+      }
+    }, {
+      type: actions.UPDATE_TRADE_IN_PROGRESS,
+      data: {
+        marketID: 'test2',
+        outcomeID: 'outcomeID2',
+        details: {
+          numShares: -6,
+          limitPrice: 3,
+          totalCost: 5.5,
+          newPrice: 1.5
+        }
+      }
+    }, {
+      type: actions.UPDATE_TRADE_IN_PROGRESS,
+      data: {
+        marketID: 'test',
+        outcomeID: 'outcomeID',
+        details: {
+          numShares: 4,
+          limitPrice: 2,
+          totalCost: 3.5,
+          newPrice: 0.5
+        }
+      }
+    }, {
+      type: actions.UPDATE_TRADE_IN_PROGRESS,
+      data: {
+        marketID: 'test2',
+        outcomeID: 'outcomeID2',
+        details: {
+          numShares: -4,
+          limitPrice: 1,
+          totalCost: 5.5,
+          newPrice: 1.5
+        }
+      }
+    }];
+    store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 3, 1));
+    store.dispatch(actions.updateTradesInProgress('test2', 'outcomeID2', -6, 3));
+    store.dispatch(actions.updateTradesInProgress('test', 'outcomeID', 4, 2));
+    store.dispatch(actions.updateTradesInProgress('test2', 'outcomeID2', -4, 1));
+
+    assert.deepEqual(store.getActions(), expectedOutput);
   });
 });
