@@ -57158,12 +57158,14 @@ Augur.prototype.getNumMarketsBranch = function (branch, callback) {
     var tx = clone(this.tx.getNumMarketsBranch);
     tx.params = branch;
     return this.fire(tx, callback);
+    // return callback("30");
 };
 Augur.prototype.getNumMarkets = function (branch, callback) {
     // branch: sha256
     var tx = clone(this.tx.getNumMarketsBranch);
     tx.params = branch;
     return this.fire(tx, callback);
+    // return callback("30");
 };
 Augur.prototype.getMinTradingFee = function (branch, callback) {
     // branch: sha256
@@ -57505,6 +57507,7 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     return marketInfo;
 };
 Augur.prototype.getMarketsInfo = function (options, callback) {
+    // TODO: don't load entire array into memory!
     // options: {branch, offset, numMarketsToLoad, combinatorial, callback}
     var self = this;
     if (this.utils.is_function(options) && !callback) {
@@ -57526,12 +57529,16 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
         return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
     }
     var count = 0;
+    // stub array
+    // var marketsArray = require("../data/marketsInfo");
+    // self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
+    // stub object
+    // callback(require("../data/marketsInfoObject"));
     var cb = function (marketsArray) {
         if (typeof marketsArray === "object" &&
             marketsArray.error === 500 && ++count < 4) {
             return self.fire(tx, cb);
-        }
-        else if (marketsArray.error) {
+        } else if (marketsArray.error) {
         	return callback(marketsArray);
         }        
         self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
@@ -58278,8 +58285,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     callback(info);
 };
 Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
-    var numMarkets, marketsInfo, totalLen, lengths, totalLengths, i, j, self,
-        len, shift, rawInfo, marketID;
+    var numMarkets, marketsInfo, totalLen, i, len, shift, rawInfo, marketID;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
         return marketsArray;
     }
@@ -58291,49 +58297,18 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
     numMarkets = parseInt(marketsArray.shift());
     marketsInfo = {};
     totalLen = 0;
-    if (!this.utils.is_function(callback)) {
-        for (i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[i]);
-            shift = numMarkets + totalLen;
-            rawInfo = marketsArray.slice(shift, shift + len);
-            marketID = marketsArray[shift];
-            marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options);
-            marketsInfo[marketID]._id = marketID;
-            marketsInfo[marketID].sortOrder = i;
-            totalLen += len;
-        }
-        return marketsInfo;
-    }
-    self = this;
-    lengths = new Array(numMarkets);
-    totalLengths = Array.apply(null, {
-        length: numMarkets
-    }).map(Number.prototype.valueOf, 0);
     for (i = 0; i < numMarkets; ++i) {
-        lengths[i] = parseInt(marketsArray[i]);
-        for (j = 0; j < i; ++j) {
-            totalLengths[i] += lengths[j];
-        }
-    }
-    async.forEachOf(lengths, function (len, idx, next) {
-        var shift, rawInfo, marketID;
-        shift = numMarkets + totalLengths[idx];
+        len = parseInt(marketsArray[i]);
+        shift = numMarkets + totalLen;
         rawInfo = marketsArray.slice(shift, shift + len);
         marketID = marketsArray[shift];
-        self.parseMarketInfo(rawInfo, options, function (info) {
-            if (!info) return next(self.errors.NO_MARKET_INFO);
-            if (info.constructor !== Object || info.error) {
-                return next(info);
-            }
-            marketsInfo[marketID] = info;
-            marketsInfo[marketID]._id = marketID;
-            marketsInfo[marketID].sortOrder = idx;
-            next();
-        });
-    }, function (err) {
-        if (err) return callback(err);
-        callback(marketsInfo);
-    });
+        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options);
+        marketsInfo[marketID]._id = marketID;
+        marketsInfo[marketID].sortOrder = i;
+        totalLen += len;
+    }
+    if (!this.utils.is_function(callback)) return marketsInfo;
+    callback(marketsInfo);
 };
 Augur.prototype.checkPeriod = function (branch) {
     var period = abi.number(this.getVotePeriod(branch));
@@ -60043,9 +60018,7 @@ function isFunction(f) {
 
 var HOSTED_NODES = [
     // "https://morden-state.ether.camp/api/v1/transaction/submit"
-    "https://eth3.augur.net",
-    "https://eth4.augur.net",
-    "https://eth5.augur.net"
+    "https://eth3.augur.net"
 ];
 
 module.exports = {
@@ -61021,7 +60994,6 @@ module.exports = {
             }
         } catch (exc) {
             err = abi.copy(errors.TRANSACTION_FAILED);
-            console.trace()
             err.bubble = exc;
             err.tx = itx;
             if (isFunction(f)) return f(err);
@@ -61029,7 +61001,6 @@ module.exports = {
         }
         if (!invoked) {
             err = abi.copy(errors.TRANSACTION_FAILED);
-            console.trace()
             err.bubble = "!invoked";
             err.tx = itx;
             if (isFunction(f)) return f(err);
