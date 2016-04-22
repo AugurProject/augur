@@ -1,3 +1,5 @@
+import memoizerific from 'memoizerific';
+
 import { MILLIS_PER_BLOCK } from '../modules/app/constants/network';
 
 export function formatRep(num, opts) {
@@ -37,15 +39,10 @@ export function formatPercent(num, opts) {
                             ...opts });
 }
 
-export function formatBlockToDate(currentBlock, startBlock, startBlockMillisSinceEpoch) {
+export function makeDateFromBlock(currentBlock, startBlock, startBlockMillisSinceEpoch) {
 	var millis = (currentBlock - startBlock) * MILLIS_PER_BLOCK,
 		currentMillisSinceEpoch = startBlockMillisSinceEpoch + millis;
-	try {
-		return formatDate(new Date(currentMillisSinceEpoch));
-	}
-	catch (e) {
-		return null;
-	}
+	return new Date(currentMillisSinceEpoch);
 }
 
 export function formatDate(d) {
