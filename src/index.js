@@ -10,6 +10,7 @@ const appElement = document.getElementById('app');
 if (process.env.NODE_ENV === 'development') {
     window.redux = store;
     window.selectors = require('./selectors');
+    window.App = App;
     console.log('********************************************* \n DEVELOPMENT MODE \n window.selectors \n window.redux.getState() \n window.augurjs \n ********************************************* \n');
 }
 

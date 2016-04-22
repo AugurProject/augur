@@ -49,10 +49,11 @@ export function formatBlockToDate(currentBlock, startBlock, startBlockMillisSinc
 }
 
 export function formatDate(d) {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	d = (d instanceof Date) ? d : new Date(0);
 	return {
 		date: d,
-		formatted: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+		formatted: months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
 		full: d.toISOString()
 	};
 }

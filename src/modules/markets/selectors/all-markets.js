@@ -13,8 +13,8 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 	if (!marketsData) {
 		return [];
 	}
-
-    return Object.keys(marketsData)
+//console.time('selectMarkets');
+	var markets = Object.keys(marketsData)
     	.map(marketID => assembleMarket(marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch))
     	.sort((a, b) => {
     		var aVal = cleanSortVal(a[selectedSort.prop]),
@@ -29,6 +29,8 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 
 			return a.id < b.id ? -1 : 1;
     	});
+//console.timeEnd('selectMarkets');
+    return markets;
 });
 
 function cleanSortVal(val) {
