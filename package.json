@@ -56,7 +56,7 @@
     "http-server": "^0.9.0",
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
-    "npm-check-updates": "^2.6.2",
+    "npm-check-updates": "^2.6.3",
     "onchange": "^2.4.0",
     "rimraf": "^2.5.2",
     "uglify-js": "^2.6.2",
