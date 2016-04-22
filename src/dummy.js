@@ -47,7 +47,7 @@ ex.loadMarkets = function(branchId, chunkSize, totalMarkets, isDesc, chunkCB) {
 		return {
 			[index] : {
 				type: types[randomInt(0, types.length - 1)],
-				description: 'Will the dwerps achieve a mwerp by the end of stwerp ' + (index + 1) + '?',
+				description: 'Will the dwerps achieve a mwerp by the end of zwerp ' + (index + 1) + '?',
 				outcomes: [
 					{ id: 1, name: 'YES', price: randomInt(0, 100) / 100 },
 					{ id: 2, name: 'NO', price: randomInt(0, 100) / 100 },

@@ -25287,7 +25287,7 @@ module.exports = _react2.default.createClass({
 						{ className: 'button select', onClick: function onClick() {
 								return _this.props.onValuesUpdated({ type: _marketTypes.BINARY, step: 2 });
 							} },
-						'Select'
+						'Yes / No'
 					),
 					_react2.default.createElement(
 						'p',
@@ -25309,7 +25309,7 @@ module.exports = _react2.default.createClass({
 						{ className: 'button select', onClick: function onClick() {
 								return _this.props.onValuesUpdated({ type: _marketTypes.CATEGORICAL, step: 2 });
 							} },
-						'Select'
+						'Multiple Choice'
 					),
 					_react2.default.createElement(
 						'p',
@@ -25331,7 +25331,7 @@ module.exports = _react2.default.createClass({
 						{ className: 'button select', onClick: function onClick() {
 								return _this.props.onValuesUpdated({ type: _marketTypes.SCALAR, step: 2 });
 							} },
-						'Select'
+						'Numeric'
 					),
 					_react2.default.createElement(
 						'p',

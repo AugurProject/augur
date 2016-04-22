@@ -157,7 +157,7 @@ function makeMarkets(numMarkets = 20) {
 			m = {
 				id: id,
 				type: types[randomInt(0, types.length - 1)],
-				description: 'Will the dwerps achieve a mwerp by the end of stwerp ' + (index + 1) + '?',
+				description: 'Will the dwerps achieve a mwerp by the end of zwerp ' + (index + 1) + '?',
 				endDate: { formatted: '12/12/2017' },
 				tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
 				volume: makeNumber(randomInt(0, 10000), 'Shares', true),
