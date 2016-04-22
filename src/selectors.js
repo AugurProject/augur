@@ -14,6 +14,7 @@ import market from './modules/market/selectors/market';
 
 import filtersProps from './modules/markets/selectors/filters-props';
 import searchSort from './modules/markets/selectors/search-sort';
+import keywords from './modules/markets/selectors/keywords';
 
 import transactions from './modules/transactions/selectors/transactions';
 import transactionsTotals from './modules/transactions/selectors/transactions-totals';
@@ -39,6 +40,7 @@ var selectors = {
 
 	filtersProps,
 	searchSort,
+	keywords,
 
 	transactions,
 	transactionsTotals,

@@ -1,6 +1,5 @@
 import memoizerific from 'memoizerific';
 
-import { updateKeywords } from '../../markets/actions/update-keywords';
 import { updateSelectedSort } from '../../markets/actions/update-selected-sort';
 
 import store from '../../../store';
@@ -10,8 +9,7 @@ export default function() {
 	return {
 		selectedSort,
 		sortOptions: selectSortOptions(selectedSort),
-		onChangeSort: selectOnChangeSort(store.dispatch),
-		onChangeKeywords: selectOnChangeKeywords(store.dispatch)
+		onChangeSort: selectOnChangeSort(store.dispatch)
 	};
 }
 
@@ -55,8 +53,4 @@ export const selectOnChangeSort = memoizerific(1)(function(dispatch) {
 
         dispatch(updateSelectedSort(o));
     };
-});
-
-export const selectOnChangeKeywords = memoizerific(1)(function(dispatch) {
-    return (keywords) => dispatch(updateKeywords(keywords));
 });
