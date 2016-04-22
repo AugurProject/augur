@@ -8,7 +8,7 @@ import { updateMarketsData } from '../../markets/actions/update-markets-data';
 import { loadReports } from '../../reports/actions/update-reports';
 
 export function loadMarkets() {
-	var chunkSize = 25;
+	var chunkSize = 10;
 
 	return (dispatch, getState) => {
 		AugurJS.loadNumMarkets(BRANCH_ID, (err, numMarkets) => {
