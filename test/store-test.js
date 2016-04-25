@@ -26,7 +26,7 @@ import store from '../src/store';
   outcomes: {},
   bidsAsks: {},
   accountTrades: {},
-  transactions: {}
+  transactionsData: {}
 }
 */
 describe(`store.js`, () => {
@@ -104,8 +104,8 @@ describe(`store.js`, () => {
     assert.isObject(state.accountTrades, 'accountTrades is not an object');
     assert.deepEqual(state.accountTrades, {}, 'accountTrades is not an empty object');
 
-    assert.isOk(state.transactions, 'transactions is not defined');
-    assert.isObject(state.transactions, 'transactions is not an object');
-    assert.deepEqual(state.transactions, {}, 'transactions is not an empty object');
+    assert.isOk(state.transactionsData, 'transactionsData is not defined');
+    assert.isObject(state.transactionsData, 'transactionsData is not an object');
+    assert.deepEqual(state.transactionsData, {}, 'transactionsData is not an empty object');
   });
 });
