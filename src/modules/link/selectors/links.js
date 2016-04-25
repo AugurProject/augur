@@ -3,9 +3,9 @@ import { ListWordsUnderLength } from '../../../utils/list-words-under-length';
 
 import { AUTH_PATHS, PAGES_PATHS } from '../../link/constants/paths';
 import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
-import { LOGIN, LOGOUT, REGISTER } from '../../auth/constants/auth-types';
+import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 
-import { showLink } from '../../link/actions/show-link';
+import { showLink, showPreviousLink } from '../../link/actions/show-link';
 import { logout } from '../../auth/actions/logout';
 
 import store from '../../../store';
@@ -14,7 +14,7 @@ export default function() {
 	var { loginAccount } = store.getState(),
 		{ market } = require('../../../selectors');
 	return {
-		authLink: selectAuthLink(!!loginAccount.id ? LOGOUT : REGISTER, store.dispatch),
+		authLink: selectAuthLink(loginAccount.id ? LOGIN : REGISTER, !!loginAccount.id, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
 		marketsLink: selectMarketsLink(store.dispatch),
 		positionsLink: selectPositionsLink(store.dispatch),
@@ -31,13 +31,11 @@ export const selectPreviousLink = memoizerific(1)(function(dispatch) {
 	};
 });
 
-export const selectAuthLink = memoizerific(1)(function(selectedAuthType, dispatch) {
-	var href = selectedAuthType !== LOGOUT ? PAGES_PATHS[selectedAuthType] : PAGES_PATHS[LOGIN];
+export const selectAuthLink = memoizerific(1)(function(authType, alsoLogout, dispatch) {
+	var href = PAGES_PATHS[authType];
 	return {
 		href,
-		onClick: selectedAuthType !== LOGOUT ?
-					() => dispatch(showLink(href)) :
-					() => { dispatch(logout()); dispatch(showLink(href)); }
+		onClick: () => { !!alsoLogout && dispatch(logout()); dispatch(showLink(href)); }
 	};
 });
 

@@ -1,9 +1,6 @@
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
-
-import store from '../../../store';
 
 export default function() {
 	var { transactions } = require('../../../selectors');
