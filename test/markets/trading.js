@@ -53,93 +53,93 @@ var marketInfo = {
     _id: '-0x5b91755f722e2f95c5fff056c73faaaca986d82eeb9d09bd30ff443b65e9cc2d'
 };
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+beforeEach(function () {
+    augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+});
 
-    beforeEach(function () {
-        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
-    });
+var amount = 1;
+var outcome = 2;
 
-    var amount = 1;
-    var outcome = 2;
+it("lsLmsr", function () {
+    var cost = augur.lsLmsr(marketInfo);
+    assert.strictEqual(parseFloat(cost).toFixed(4), "50.0000");
+});
 
-    it("lsLmsr", function () {
-        var cost = augur.lsLmsr(marketInfo);
-        assert.strictEqual(parseFloat(cost).toFixed(4), "50.0000");
-    });
+it("price", function () {
+    var price = augur.price(marketInfo, outcome);
+    assert.strictEqual(parseFloat(price).toFixed(4), "0.5055");
+});
 
-    it("price", function () {
-        var price = augur.price(marketInfo, outcome);
-        assert.strictEqual(parseFloat(price).toFixed(4), "0.5055");
-    });
+it("getSimulatedBuy", function () {
+    var simulatedBuy = augur.getSimulatedBuy(marketInfo, outcome, amount);
+    assert.isArray(simulatedBuy);
+    assert.strictEqual(simulatedBuy.length, 2);
+    assert.strictEqual(parseFloat(simulatedBuy[0]).toFixed(8), "0.65425639");
+    assert.strictEqual(parseFloat(simulatedBuy[1]).toFixed(8), "0.78436838");
+});
 
-    it("getSimulatedBuy", function () {
-        var simulatedBuy = augur.getSimulatedBuy(marketInfo, outcome, amount);
-        assert.isArray(simulatedBuy);
-        assert.strictEqual(simulatedBuy.length, 2);
-        assert.strictEqual(parseFloat(simulatedBuy[0]).toFixed(8), "0.65425639");
-        assert.strictEqual(parseFloat(simulatedBuy[1]).toFixed(8), "0.78436838");
-    });
+it("getSimulatedSell", function () {
+    marketInfo
+    var simulatedSell = augur.getSimulatedSell(marketInfo, outcome, amount);
+    assert.isArray(simulatedSell);
+    assert.strictEqual(simulatedSell.length, 2);
+    assert.strictEqual(parseFloat(simulatedSell[0]).toFixed(8), "0.35402040");
+    assert.strictEqual(parseFloat(simulatedSell[1]).toFixed(8), "0.21950285");
+});
 
-    it("getSimulatedSell", function () {
-        marketInfo
-        var simulatedSell = augur.getSimulatedSell(marketInfo, outcome, amount);
-        assert.isArray(simulatedSell);
-        assert.strictEqual(simulatedSell.length, 2);
-        assert.strictEqual(parseFloat(simulatedSell[0]).toFixed(8), "0.35402040");
-        assert.strictEqual(parseFloat(simulatedSell[1]).toFixed(8), "0.21950285");
-    });
-
-    describe("makeMarketHash", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function () {
-                var params = [
-                    t.market,
-                    t.outcome,
-                    abi.fix(t.amount, "hex"),
-                    (t.limit) ? abi.fix(t.limit, "hex") : 0
-                ];
-                var localHash = augur.makeMarketHash(t);
-                var contractHash = augur.fire({
-                    to: augur.contracts.buyAndSellShares,
-                    method: "makeMarketHash",
-                    signature: "iiii",
-                    returns: "hash",
-                    params: params
-                });
-                assert.strictEqual(abi.hex(localHash), abi.hex(contractHash));
+describe("makeMarketHash", function () {
+    var test = function (t) {
+        it(JSON.stringify(t), function () {
+            var params = [
+                t.market,
+                t.outcome,
+                abi.fix(t.amount, "hex"),
+                (t.limit) ? abi.fix(t.limit, "hex") : 0
+            ];
+            var localHash = augur.makeMarketHash(t);
+            var contractHash = augur.fire({
+                to: augur.contracts.buyAndSellShares,
+                method: "makeMarketHash",
+                signature: "iiii",
+                returns: "hash",
+                params: params
             });
-        };
-        test({
-            market: marketInfo._id,
-            outcome: 1,
-            amount: 1,
-            limit: 0
+            assert.strictEqual(abi.hex(localHash), abi.hex(contractHash));
         });
-        test({
-            market: marketInfo._id,
-            outcome: 1,
-            amount: 1,
-            limit: "0.45"
-        });
-        test({
-            market: marketInfo._id,
-            outcome: 2,
-            amount: "2.6",
-            limit: 0
-        });
-        test({
-            market: "0xdeadbeef",
-            outcome: 2,
-            amount: 50,
-            limit: "0.45"
-        });
-        test({
-            market: "0xdeadbeef",
-            outcome: 150,
-            amount: 100000,
-            limit: "0.99995"
-        });
+    };
+    test({
+        market: marketInfo._id,
+        outcome: 1,
+        amount: 1,
+        limit: 0
     });
+    test({
+        market: marketInfo._id,
+        outcome: 1,
+        amount: 1,
+        limit: "0.45"
+    });
+    test({
+        market: marketInfo._id,
+        outcome: 2,
+        amount: "2.6",
+        limit: 0
+    });
+    test({
+        market: "0xdeadbeef",
+        outcome: 2,
+        amount: 50,
+        limit: "0.45"
+    });
+    test({
+        market: "0xdeadbeef",
+        outcome: 150,
+        amount: 100000,
+        limit: "0.99995"
+    });
+});
+
+if (!process.env.CONTINUOUS_INTEGRATION) {
 
     describe("commitTrade", function () {
         var test = function (t) {

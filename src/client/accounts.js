@@ -140,7 +140,6 @@ module.exports = function () {
                                 address: keystore.address,
                                 keystore: keystore
                             };
-                            console.log("account:", self.account);
                             if (options.persist) {
                                 augur.db.putPersistent(self.account);
                             }

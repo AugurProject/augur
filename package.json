@@ -20,7 +20,7 @@
     "chalk": "^1.1.1",
     "clone": "^1.0.2",
     "decimal.js": "^5.0.1",
-    "ethereumjs-connect": "^0.2.0",
+    "ethereumjs-connect": "^0.2.1",
     "ethereumjs-tx": "^1.1.1",
     "ethereumjs-util": "^4.3.0",
     "ethrpc": "^0.7.0",
