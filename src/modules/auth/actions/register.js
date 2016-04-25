@@ -7,13 +7,15 @@ import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses'
 
 import { updateAssets } from '../../auth/actions/update-assets';
 import { authError } from '../../auth/actions/auth-error';
-import { updateTransactions } from '../../transactions/actions/update-transactions';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import { makeTransactionID } from '../../transactions/actions/add-transactions';
 
 export function register(username, password, password2) {
 	return (dispatch, getState) => {
 		var { links } = require('../../../selectors'),
-			transactionID = Date.now() + window.performance.now() * 1000,
+			transactionID = makeTransactionID(),
 			numAssetsLoaded = -1;
 
 		if (!username || !username.length) {
@@ -30,19 +32,19 @@ export function register(username, password, password2) {
 					dispatch(authError(err));
 				}
 				else {
-					dispatch(updateTransactions({ [transactionID]: { status: FAILED, message: err.message } }));
+					dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				}
 				return;
 			}
 			numAssetsLoaded++;
 			links.marketsLink.onClick();
-			dispatch(updateTransactions(makeTransactionUpdate()));
+			dispatch(updateTransactionsData({ [transactionID]: makeTransactionUpdate() }));
 			dispatch(updateLoginAccount(loginAccount));
 
 		}, (res) => {
 			numAssetsLoaded++;
 			dispatch(updateAssets());
-			dispatch(updateTransactions(makeTransactionUpdate()));
+			dispatch(updateExistingTransaction(transactionID, makeTransactionUpdate()));
 		});
 
 		function makeTransactionUpdate() {
@@ -51,15 +53,13 @@ export function register(username, password, password2) {
 			transactionObj.type = REGISTER;
 
 			if (numAssetsLoaded < 3) {
-				transactionObj.status = 'loading beta ether & rep...';
+				transactionObj.status = 'loading ether & rep...';
 			}
 			else {
 				transactionObj.status = SUCCESS;
 			}
 
-			return {
-				[transactionID]: transactionObj
-			};
+			return transactionObj;
 		}
 	};
 }

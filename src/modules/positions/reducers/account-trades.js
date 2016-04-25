@@ -1,4 +1,5 @@
 import { UPDATE_ACCOUNT_TRADES_DATA } from '../../positions/actions/update-account-trades-data';
+import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
 
 export default function(accountTrades = {}, action) {
     switch (action.type) {
@@ -7,6 +8,9 @@ export default function(accountTrades = {}, action) {
                 ...accountTrades,
                 ...action.data
             };
+
+        case CLEAR_LOGIN_ACCOUNT:
+            return {};
 
         default:
             return accountTrades;

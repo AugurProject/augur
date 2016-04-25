@@ -5,7 +5,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
-import { toggleFavorite } from '../../markets/actions/toggle-favorite';
+import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
 import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';

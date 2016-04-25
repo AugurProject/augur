@@ -6,23 +6,20 @@ import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses'
 import store from '../../../store';
 
 export default function() {
-	var { transactions } = store.getState();
-	return selectTransactions(transactions);
+	var { transactionsData } = store.getState();
+	return selectTransactions(transactionsData);
 }
 
-export const selectTransactions = memoizerific(1)(function(transactionsCollection) {
-    return Object.keys(transactionsCollection || {}).sort((a, b) => parseFloat(b) - parseFloat(a)).map(id => transactionsCollection[id]);
+export const selectTransactions = memoizerific(1)(function(transactionsData) {
+    return Object.keys(transactionsData || {})
+            .sort((a, b) => parseFloat(b) - parseFloat(a))
+            .map(id => {
+                return {
+                    ...transactionsData[id],
+                    gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
+                    ether: transactionsData[id].etherWithoutGas && formatEther(transactionsData[id].etherWithoutGas),
+                    shares: transactionsData[id].sharesChange && formatShares(transactionsData[id].sharesChange),
+                    rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
+                };
+            });
 });
-
-export const selectNewTransaction = function(type, gas, sharesChange, etherChangeWithoutGas, repChange, data, action) {
-    return {
-        type,
-        status: PENDING,
-        gas: formatEther(gas),
-        ether: formatEther(etherChangeWithoutGas),
-        shares: formatShares(sharesChange),
-        rep: formatRep(repChange),
-        data: data,
-        action: action
-    };
-};
