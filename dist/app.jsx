@@ -27997,7 +27997,7 @@ module.exports = _react2.default.createClass({
 					'Load free beta assets'
 				);
 				break;
-			case _types.MAKE_MARKET:
+			case _types.CREATE_MARKET:
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
@@ -28207,7 +28207,7 @@ var SELL_SHARES = exports.SELL_SHARES = "sell_shares";
 var BID_SHARES = exports.BID_SHARES = 'bid_shares';
 var ASK_SHARES = exports.ASK_SHARES = "ask_shares";
 
-var MAKE_MARKET = exports.MAKE_MARKET = "make_market";
+var CREATE_MARKET = exports.CREATE_MARKET = "create_market";
 var SUBMIT_REPORT = exports.SUBMIT_REPORT = "submit_report";
 
 var REGISTER_ACCOUNT = exports.REGISTER_ACCOUNT = 'register_account';
