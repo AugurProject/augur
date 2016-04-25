@@ -9,31 +9,6 @@ export function ParseURL(url) {
         parsed.searchParams = parseSearch(splitURL[1]);
     }
 
-    function parsePath(pathString) {
-    	if (!pathString || pathString === '/') {
-    	    return ['/'];
-    	}
-    	return pathString.split('/').filter(pathItem => pathItem && pathItem.indexOf('.') <= -1).map(pathItem => '/' + pathItem);
-    }
-
-    function parseSearch(searchString) {
-    	var pairSplit;
-    	return (searchString || '').replace(/^\?/, '').split('&').reduce((p, pair) => {
-    		pairSplit = pair.split('=');
-    		if (pairSplit.length >= 1) {
-                if (pairSplit[0].length) {
-                    if (pairSplit.length >= 2 && pairSplit[1]) {
-                        p[decodeURIComponent(pairSplit[0])] = decodeURIComponent(pairSplit[1]);
-                    }
-                    else {
-                        p[decodeURIComponent(pairSplit[0])] = '';
-                    }
-                }
-    		}
-    		return p;
-    	}, {});
-    }
-
     return MakeLocation(parsed.pathArray, parsed.searchParams);
 }
 
@@ -58,4 +33,29 @@ export function MakeLocation(pathArray = [], searchParams = {}) {
         searchParams,
         url
     };
+}
+
+function parsePath(pathString) {
+    if (!pathString || pathString === '/') {
+        return ['/'];
+    }
+    return pathString.split('/').filter(pathItem => pathItem && pathItem.indexOf('.') <= -1).map(pathItem => '/' + pathItem);
+}
+
+function parseSearch(searchString) {
+    var pairSplit;
+    return (searchString || '').replace(/^\?/, '').split('&').reduce((p, pair) => {
+        pairSplit = pair.split('=');
+        if (pairSplit.length >= 1) {
+            if (pairSplit[0].length) {
+                if (pairSplit.length >= 2 && pairSplit[1]) {
+                    p[decodeURIComponent(pairSplit[0])] = decodeURIComponent(pairSplit[1]);
+                }
+                else {
+                    p[decodeURIComponent(pairSplit[0])] = '';
+                }
+            }
+        }
+        return p;
+    }, {});
 }

@@ -8,6 +8,7 @@ export function updateKeywords(keywords) {
 	return (dispatch, getState) => {
 		dispatch({ type: UPDATE_KEYWORDS, keywords});
 
+		// todo: somehow make this nicer
 		let s = getState();
 		let filtersQuery = Object.keys(s.selectedFilters)
 			.map(filter => `${filter}=${s.selectedFilters[filter]}`);

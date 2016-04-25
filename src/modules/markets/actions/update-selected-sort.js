@@ -8,6 +8,7 @@ export function updateSelectedSort(selectedSort) {
 	return (dispatch, getState) => {
 		dispatch({type: UPDATE_SELECTED_SORT, selectedSort});
 
+		// todo: somehow make this nicer
 		let s = getState();
 		let filtersQuery = Object.keys(s.selectedFilters)
 			.map(filter => `${filter}=${s.selectedFilters[filter]}`);

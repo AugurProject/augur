@@ -10,6 +10,7 @@ export function toggleFilter(filterID) {
 	return (dispatch, getState) => {
 		dispatch({type: TOGGLE_FILTER, filterID});
 
+		// todo: somehow make this nicer
 		let s = getState();
 		let filtersParams = Object.keys(s.selectedFilters)
 			.filter(filterName => s.selectedFilters[filterName])
@@ -20,9 +21,12 @@ export function toggleFilter(filterID) {
 		let sortParam = {
 			sort: `${s.selectedSort.prop}|${s.selectedSort.isDesc}`
 		};
-		let searchParam = {
-			search: s.keywords
-		};
+		let searchParam;
+		if (s.keywords != null && s.keywords.length > 0) {
+			searchParam = {
+				search: s.keywords
+			};
+		}
 
 		dispatch(showLink(makeUrl([PAGES_PATHS[MARKETS]], Object.assign({}, filtersParams, sortParam, searchParam)).url));
 	}

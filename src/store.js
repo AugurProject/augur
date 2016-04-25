@@ -46,41 +46,7 @@ if (localStorageState && localStorageState.transactions) {
 	});
 }
 
-let urlState;
-if (windowRef.location != null) {
-	let urlParams = parseUrl(windowRef.location.href).searchParams;
-	urlState = {};
-	urlState.selectedFilters = {
-		isOpen: urlParams['isOpen'] === "true",
-		isExpired: urlParams['isExpired'] === "true",
-		isPendingReport: urlParams['isPendingReport'] === "true",
-		isMissedOrReported: urlParams['isMissedOrReported'] === "true",
-
-		isBinary: urlParams['isBinary'] === "true",
-		isCategorical: urlParams['isCategorical'] === "true",
-		isScalar: urlParams['isScalar'] === "true"
-	};
-
-	if (urlParams[SEARCH_PARAM_NAME] != null && urlParams[SEARCH_PARAM_NAME] !== "") {
-		urlState.keywords = urlParams[SEARCH_PARAM_NAME];
-	}
-
-	if (urlParams[SORT_PARAM_NAME] != null && urlParams[SORT_PARAM_NAME] !== "") {
-		let sortSplit = urlParams[SORT_PARAM_NAME].split("|");
-		urlState.selectedSort = {
-			prop: sortSplit[0],
-			isDesc: sortSplit[1] === "true"
-		};
-	}
-
-	if (urlParams[PAGE_PARAM_NAME] != null && urlParams[PAGE_PARAM_NAME] !== "") {
-		urlState.pagination = {
-			selectedPageNum: parseInt(urlParams[PAGE_PARAM_NAME], 10)
-		}
-	}
-}
-
-let initialState = Object.assign({}, localStorageState, urlState);
+let initialState = Object.assign({}, localStorageState);
 
 export default createStore(
 	combineReducers(reducers),

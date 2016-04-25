@@ -8,6 +8,7 @@ export function updateSelectedPageNum(selectedPageNum) {
 	return (dispatch, getState) => {
 		dispatch({ type: UPDATE_SELECTED_PAGE_NUM, selectedPageNum });
 
+		// todo: somehow make this nicer
 		let s = getState();
 		let filtersQuery = Object.keys(s.selectedFilters)
 			.map(filter => `${filter}=${s.selectedFilters[filter]}`);

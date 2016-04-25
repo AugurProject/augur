@@ -3,10 +3,12 @@ import { UPDATE_SELECTED_SORT } from '../../markets/actions/update-selected-sort
 import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
 import { UPDATED_SELECTED_MARKETS_HEADER } from '../../markets/actions/update-selected-markets-header';
+import { PAGE_PARAM_NAME } from '../../markets/constants/param-names';
+import { DEFAULT_PAGE } from '../../markets/constants/pagination';
 
 import { SHOW_LINK } from '../../link/actions/show-link';
 
-export default function(pagination = { selectedPageNum: 1, numPerPage: 10 }, action) {
+export default function(pagination = { selectedPageNum: DEFAULT_PAGE, numPerPage: 10 }, action) {
     switch (action.type) {
         case UPDATE_SELECTED_PAGE_NUM:
             return {
@@ -20,8 +22,19 @@ export default function(pagination = { selectedPageNum: 1, numPerPage: 10 }, act
         case UPDATED_SELECTED_MARKETS_HEADER:
             return {
                 ...pagination,
-                selectedPageNum: 1
+                selectedPageNum: DEFAULT_PAGE
             };
+        case SHOW_LINK:
+            let params = action.parsedURL.searchParams;
+            let newPageNum = params[PAGE_PARAM_NAME];
+            if (newPageNum != null && newPageNum !== '' && parseInt(newPageNum, 10) != DEFAULT_PAGE) {
+                return {
+                    ...pagination,
+                    selectedPageNum: parseInt(newPageNum, 10)
+                };
+            }
+
+            return pagination;
 
         default:
             return pagination;
