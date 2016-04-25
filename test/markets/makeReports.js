@@ -1,259 +1,505 @@
 /**
- * augur.js unit tests
+ * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";
 
 var assert = require("chai").assert;
+var async = require("async");
 var abi = require("augur-abi");
+var contracts = require("augur-contracts");
+var clone = require("clone");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var random = require("../random");
+var augur = require("../../src");
+augur.tx = new contracts.Tx("2");
 
 var DEBUG = true;
-var branchID = augur.branches.dev;
-var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
-var suffix = Math.random().toString(36).substring(4);
-var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
-var periodLength = 75;
-var report = 1;
-var salt = "1337";
-var eventID, newBranchID, marketID;
+var noop = function () {};
 
-describe("makeReports.makeHash", function () {
-    var test = function (t) {
-        it("salt=" + t.salt + ", report=" + t.report + ", eventID=" + t.eventID, function () {
-            var localHash = augur.makeHash(t.salt, t.report, t.eventID, null, t.isScalar);
-            var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.isScalar);
-            assert.strictEqual(localHash, contractHash);
+describe("Unit tests", function () {
+
+    describe("call", function () {
+
+        var test = function (t) {
+            it(JSON.stringify(t.params), function (done) {
+                this.timeout(augur.constants.TIMEOUT);
+                var expected = clone(augur.tx[t.method]);
+                if (t.params && t.params.length === 1) {
+                    expected.params = t.params[0];
+                } else {
+                    expected.params = clone(t.params);
+                }
+                if (t.fixed && t.fixed.length) {
+                    for (var i = 0; i < t.fixed.length; ++i) {
+                        expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
+                    }
+                }
+                var teardown = function (e) {
+                    augur.fire = fire;
+                    done(e);
+                };
+                var fire = augur.fire;
+                augur.fire = function (tx, callback) {
+                    if (tx.timeout) delete tx.timeout;
+                    if (!tx.params) tx.params = [];
+                    if (tx.params && tx.params.constructor === Array &&
+                        tx.params.length === 1) {
+                        tx.params = tx.params[0];
+                    }
+                    assert.deepEqual(tx, expected);
+                    teardown();
+                };
+                augur[t.method].apply(augur, t.params.concat(t.callback));
+            });
+        };
+
+        var cases = [{
+            method: "getNumEventsToReport",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getReportedPeriod",
+            parameters: ["hash", "int", "address"]
+        }, {
+            method: "getReportable",
+            parameters: ["int", "hash"]
+        }, {
+            method: "getNumReportsActual",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getSubmittedHash",
+            parameters: ["hash", "int", "address"]
+        }, {
+            method: "getBeforeRep",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getAfterRep",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getReport",
+            parameters: ["hash", "int", "hash"]
+        }, {
+            method: "getRRUpToDate",
+            parameters: []
+        }, {
+            method: "getNumReportsExpectedEvent",
+            parameters: ["hash", "int", "hash"]
+        }, {
+            method: "getNumReportsEvent",
+            parameters: ["hash", "int", "hash"]
+        }, {
+            method: "calculateReportingThreshold",
+            parameters: ["hash", "hash", "int"]
+        }, {
+            method: "checkReportValidity",
+            parameters: ["hash", "fixed", "int"]
+        }];
+
+        async.each(cases, function (thisCase, nextCase) {
+            describe(thisCase.method, function () {
+                var params, fixed;
+                var numParams = thisCase.parameters.length;
+                for (var i = 0, n = augur.constants.UNIT_TEST_SAMPLES; i < n; ++i) {
+                    params = new Array(numParams);
+                    fixed = [];
+                    for (var j = 0; j < numParams; ++j) {
+                        if (!thisCase.parameters[j] || !random[thisCase.parameters[j]])
+                            continue;
+                        params[j] = random[thisCase.parameters[j]]();
+                        if (thisCase.parameters[j] === "fixed") fixed.push(j);
+                    }
+                    if (!thisCase.asyncOnly) {
+                        test({
+                            method: this.title,
+                            params: params,
+                            fixed: fixed
+                        });
+                    }
+                    test({
+                        method: this.title,
+                        params: params,
+                        fixed: fixed,
+                        callback: noop
+                    });
+                }
+            });
+        }, function (err) {
+            if (err) console.error(err);
         });
-    };
-    test({
-        salt: salt,
-        report: report,
-        eventID: "-0xab47f3b71bdf6b7765c73d0073c8b9862159c628a55f0c6949e84a98abfc182"
+
     });
-    for (var i = 0; i < 10; ++i) {
-        test({
-            salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
-            report: Math.round(Math.random() * 50),
-            eventID: abi.prefix_hex(utils.sha256(Math.random().toString()))
+
+    describe("sendTransaction", function () {
+
+        var testObject = function (t, next) {
+            var expected = clone(augur.tx[t.method]);
+            if (t.params && t.params.length === 1) {
+                expected.params = t.params[0];
+            } else {
+                expected.params = clone(t.params);
+            }
+            if (t.fixed && t.fixed.length) {
+                for (var i = 0; i < t.fixed.length; ++i) {
+                    expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
+                }
+            }
+            var transact = augur.transact;
+            augur.transact = function (tx, onSent, onSuccess, onFailed) {
+                if (tx.timeout) delete tx.timeout;
+                if (!tx.params) tx.params = [];
+                if (tx.params && tx.params.constructor === Array &&
+                    tx.params.length === 1) {
+                    tx.params = tx.params[0];
+                }
+                it("[object] " + JSON.stringify(t), function () {
+                    assert.deepEqual(tx, expected);
+                });
+                augur.transact = transact;
+                next();
+            };
+            var labels = utils.labels(augur[t.method]);
+            var params = {onSent: noop, onSuccess: noop, onFailed: noop};
+            for (var i = 0; i < labels.length; ++i) {
+                if (params[labels[i]]) continue;
+                params[labels[i]] = t.params[i];
+            }
+            augur[t.method](params);
+        };
+
+        var testPositional = function (t, next) {
+            var expected = clone(augur.tx[t.method]);
+            if (t.params && t.params.length === 1) {
+                expected.params = t.params[0];
+            } else {
+                expected.params = clone(t.params);
+            }
+            if (t.fixed && t.fixed.length) {
+                for (var i = 0; i < t.fixed.length; ++i) {
+                    expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
+                }
+            }
+            var transact = augur.transact;
+            augur.transact = function (tx, onSent, onSuccess, onFailed) {
+                if (tx.timeout) delete tx.timeout;
+                if (!tx.params) tx.params = [];
+                if (tx.params && tx.params.constructor === Array &&
+                    tx.params.length === 1) {
+                    tx.params = tx.params[0];
+                }
+                it("[positional] " + JSON.stringify(t), function () {
+                    assert.deepEqual(tx, expected);
+                });
+                augur.transact = transact;
+                next();
+            };
+            augur[t.method].apply(augur, t.params.concat([noop, noop, noop]));
+        };
+
+        var cases = [{
+            method: "submitReportHash",
+            parameters: ["hash", "hash", "int", "hash", "int"]
+        }, {
+            method: "submitReport",
+            parameters: ["hash", "int", "int", "intHexString", "fixed", "hash", "fixed", null]
+        }, {
+            method: "submitReport",
+            parameters: ["hash", "int", "int", "intHexString", "fixed", "hash", "fixed", "1"]
+        }];
+
+        async.eachSeries(cases, function (thisCase, nextCase) {
+            describe(thisCase.method, function () {
+                var method = this.title;
+                var numParams = thisCase.parameters.length;
+                var count = 0;
+                async.whilst(
+                    function () { return count < augur.constants.UNIT_TEST_SAMPLES; },
+                    function (callback) {
+                        ++count;
+                        var params = new Array(numParams);
+                        var fixed = [];
+                        for (var j = 0; j < numParams; ++j) {
+                            if (thisCase.parameters[j] === null ||
+                                thisCase.parameters[j] === undefined ||
+                                !random[thisCase.parameters[j]]) continue;
+                            params[j] = random[thisCase.parameters[j]]();
+                            if (thisCase.parameters[j] === "fixed") fixed.push(j);
+                        }
+                        var tests = {positional: null, object: null, complete: null};
+                        testPositional({method: method, params: params, fixed: fixed}, function () {
+                            tests.positional = true;
+                            if (tests.object && tests.complete === null) {
+                                tests.complete = true;
+                                callback();
+                            }
+                        });
+                        testObject({method: method, params: params, fixed: fixed}, function () {
+                            tests.object = true;
+                            if (tests.positional && tests.complete === null) {
+                                tests.complete = true;
+                                callback();
+                            }
+                        });
+                    },
+                    nextCase
+                );
+            });
+        }, function (err) {
+            if (err) console.error(err);
         });
-        test({
-            salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
-            report: Math.round(Math.random() * 50),
-            eventID: abi.prefix_hex(utils.sha256(Math.random().toString())),
-            isScalar: true
-        });
-    }
+
+    });
 });
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+describe("Integration tests", function () {
 
-    describe("Commit-and-reveal", function () {
+    var augur = utils.setup(require("../../src"), process.argv.slice(2));
 
-        before(function (done) {
-            this.timeout(augur.constants.TIMEOUT*100);
+    var branchID = augur.branches.dev;
+    var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
+    var suffix = Math.random().toString(36).substring(4);
+    var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+    var periodLength = 75;
+    var report = 1;
+    var salt = "1337";
+    var eventID, newBranchID, marketID;
 
-            var branchDescription = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
-            var tradingFee = "0.01";
-
-            // create a new branch
-            augur.createBranch({
-                description: branchDescription,
-                periodLength: periodLength,
-                parent: branchID,
-                tradingFee: tradingFee,
-                oracleOnly: 0,
-                onSent: utils.noop,
-                onSuccess: function (res) {
-                    newBranchID = res.branchID;
-                    assert.strictEqual(newBranchID, utils.sha256([
-                        0,
-                        res.from,
-                        abi.fix(47, "hex"),
-                        periodLength,
-                        parseInt(res.blockNumber),
-                        branchID,
-                        parseInt(abi.fix(tradingFee, "hex")),
-                        0,
-                        branchDescription
-                    ]));
-                    if (DEBUG) console.log("Branch ID:", newBranchID);
-
-                    // get reputation on the new branch
-                    augur.reputationFaucet({
-                        branch: newBranchID,
-                        onSent: utils.noop,
-                        onSuccess: function (res) {
-
-                            function createEvent(newBranchID, description, expirationBlock) {
-                                if (DEBUG) console.log("Event expiration block:", expirationBlock);
-                                augur.createEvent({
-                                    branchId: newBranchID,
-                                    description: description,
-                                    expirationBlock: expirationBlock,
-                                    minValue: 1,
-                                    maxValue: 2,
-                                    numOutcomes: 2,
-                                    onSent: utils.noop,
-                                    onSuccess: function (res) {
-                                        eventID = res.callReturn;
-                                        if (DEBUG) console.log("Event ID:", eventID);
-
-                                        // incorporate the event into a market on the new branch
-                                        augur.createMarket({
-                                            branchId: newBranchID,
-                                            description: description,
-                                            alpha: "0.0079",
-                                            initialLiquidity: 100,
-                                            tradingFee: "0.02",
-                                            events: [eventID],
-                                            forkSelection: 1,
-                                            onSent: utils.noop,
-                                            onSuccess: function (res) {
-                                                marketID = res.callReturn;
-                                                if (DEBUG) console.log("Market ID:", marketID);
-
-                                                // fast-forward to the period in which the new event expires
-                                                var period = parseInt(augur.getReportPeriod(newBranchID));
-                                                var currentPeriod = augur.getCurrentPeriod(newBranchID);
-                                                var blockNumber = augur.rpc.blockNumber();
-                                                var blocksToGo = periodLength - (blockNumber % periodLength);
-                                                if (DEBUG) {
-                                                    console.log("Current block:", blockNumber);
-                                                    console.log("Fast forwarding", blocksToGo, "blocks...");
-                                                }
-                                                augur.rpc.fastforward(blocksToGo, function (endBlock) {
-                                                    assert.notProperty(endBlock, "error");
-                                                    done();
-                                                });
-                                            },
-                                            onFailed: done
-                                        });
-                                    },
-                                    onFailed: done
-                                });
-                            }
-
-                            assert.strictEqual(res.callReturn, "1");
-                            assert.strictEqual(augur.getRepBalance(newBranchID, augur.from), "47");
-
-                            // create an event on the new branch
-                            var blockNumber = augur.rpc.blockNumber();
-                            var blocksToGo = periodLength - (blockNumber % periodLength);
-                            if (DEBUG) {
-                                console.log("Current block:", blockNumber);
-                                console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
-                            }
-                            if (blocksToGo > 10) {
-                                return createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
-                            }
-                            augur.rpc.fastforward(blocksToGo, function (endBlock) {
-                                assert.notProperty(endBlock, "error");
-                                createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
-                            });
-                        },
-                        onFailed: done
-                    });
-                },
-                onFailed: done
+    describe("makeHash", function () {
+        var test = function (t) {
+            it("salt=" + t.salt + ", report=" + t.report + ", eventID=" + t.eventID, function () {
+                var localHash = augur.makeHash(t.salt, t.report, t.eventID, null, t.isScalar);
+                var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.isScalar);
+                assert.strictEqual(localHash, contractHash);
             });
+        };
+        test({
+            salt: salt,
+            report: report,
+            eventID: "-0xab47f3b71bdf6b7765c73d0073c8b9862159c628a55f0c6949e84a98abfc182"
         });
+        for (var i = 0; i < 10; ++i) {
+            test({
+                salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
+                report: Math.round(Math.random() * 50),
+                eventID: abi.prefix_hex(utils.sha256(Math.random().toString()))
+            });
+            test({
+                salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
+                report: Math.round(Math.random() * 50),
+                eventID: abi.prefix_hex(utils.sha256(Math.random().toString())),
+                isScalar: true
+            });
+        }
+    });
 
-        it("makeReports.submitReportHash", function (done) {
-            this.timeout(augur.constants.TIMEOUT*100);
-            var blockNumber = augur.rpc.blockNumber();
-            if (DEBUG) console.log("Current block:", blockNumber + "\tResidual:", blockNumber % periodLength);
-            var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
-            if (DEBUG) console.log("Events in start period", startPeriod, augur.getEvents(newBranchID, startPeriod));
-            var currentPeriod = augur.getCurrentPeriod(newBranchID);
-            if (DEBUG) console.log("Current period:", currentPeriod);
-            currentPeriod = currentPeriod.toFixed(6);
-            if (DEBUG) console.log("Events in current period", currentPeriod, augur.getEvents(newBranchID, currentPeriod));
-            if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
-                if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
-                augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
-                    assert.strictEqual(res.callReturn, "1");
-                    var period = parseInt(augur.getReportPeriod(newBranchID));
-                    if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                    currentPeriod = Math.floor(currentPeriod).toString();
-                    if (DEBUG) console.log("Events in new period", period, augur.getEvents(newBranchID, period));
-                    if (DEBUG) console.log("Difference " + (Number(currentPeriod) - period) + ". Submitting report hash...");
-                    var eventIndex = augur.getEventIndex(period, eventID);
-                    var reportHash = augur.makeHash(salt, report, eventID);
-                    var diceroll = augur.rpc.sha3(abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID))));
-                    var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period);
-                    var blockNumber = augur.rpc.blockNumber();
-                    if (DEBUG) console.log("Residual:", blockNumber % periodLength);
-                    var currentExpPeriod = blockNumber / periodLength;
-                    if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
-                    assert.isTrue(currentExpPeriod >= period + 1);
-                    assert.isBelow(currentExpPeriod, period + 2);
-                    if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
-                        return augur.submitReportHash({
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        describe("Commit-and-reveal", function () {
+
+            before(function (done) {
+                this.timeout(augur.constants.TIMEOUT*100);
+
+                var branchDescription = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+                var tradingFee = "0.01";
+
+                // create a new branch
+                augur.createBranch({
+                    description: branchDescription,
+                    periodLength: periodLength,
+                    parent: branchID,
+                    tradingFee: tradingFee,
+                    oracleOnly: 0,
+                    onSent: utils.noop,
+                    onSuccess: function (res) {
+                        newBranchID = res.branchID;
+                        assert.strictEqual(newBranchID, utils.sha256([
+                            0,
+                            res.from,
+                            abi.fix(47, "hex"),
+                            periodLength,
+                            parseInt(res.blockNumber),
+                            branchID,
+                            parseInt(abi.fix(tradingFee, "hex")),
+                            0,
+                            branchDescription
+                        ]));
+                        if (DEBUG) console.log("Branch ID:", newBranchID);
+
+                        // get reputation on the new branch
+                        augur.reputationFaucet({
                             branch: newBranchID,
-                            reportHash: reportHash,
-                            reportPeriod: period,
-                            eventID: eventID,
-                            eventIndex: eventIndex,
-                            onSent: function (res) {
-                                if (DEBUG) console.log("submitReportHash sent:", res);
-                                assert(res.txHash);
-                                assert.strictEqual(res.callReturn, "1");
-                            },
+                            onSent: utils.noop,
                             onSuccess: function (res) {
-                                if (DEBUG) console.log("submitReportHash success:", res);
-                                assert(res.txHash);
+
+                                function createEvent(newBranchID, description, expirationBlock) {
+                                    if (DEBUG) console.log("Event expiration block:", expirationBlock);
+                                    augur.createEvent({
+                                        branchId: newBranchID,
+                                        description: description,
+                                        expirationBlock: expirationBlock,
+                                        minValue: 1,
+                                        maxValue: 2,
+                                        numOutcomes: 2,
+                                        onSent: utils.noop,
+                                        onSuccess: function (res) {
+                                            eventID = res.callReturn;
+                                            if (DEBUG) console.log("Event ID:", eventID);
+
+                                            // incorporate the event into a market on the new branch
+                                            augur.createMarket({
+                                                branchId: newBranchID,
+                                                description: description,
+                                                alpha: "0.0079",
+                                                initialLiquidity: 100,
+                                                tradingFee: "0.02",
+                                                events: [eventID],
+                                                forkSelection: 1,
+                                                onSent: utils.noop,
+                                                onSuccess: function (res) {
+                                                    marketID = res.callReturn;
+                                                    if (DEBUG) console.log("Market ID:", marketID);
+
+                                                    // fast-forward to the period in which the new event expires
+                                                    var period = parseInt(augur.getReportPeriod(newBranchID));
+                                                    var currentPeriod = augur.getCurrentPeriod(newBranchID);
+                                                    var blockNumber = augur.rpc.blockNumber();
+                                                    var blocksToGo = periodLength - (blockNumber % periodLength);
+                                                    if (DEBUG) {
+                                                        console.log("Current block:", blockNumber);
+                                                        console.log("Fast forwarding", blocksToGo, "blocks...");
+                                                    }
+                                                    augur.rpc.fastforward(blocksToGo, function (endBlock) {
+                                                        assert.notProperty(endBlock, "error");
+                                                        done();
+                                                    });
+                                                },
+                                                onFailed: done
+                                            });
+                                        },
+                                        onFailed: done
+                                    });
+                                }
+
                                 assert.strictEqual(res.callReturn, "1");
-                                done();
+                                assert.strictEqual(augur.getRepBalance(newBranchID, augur.from), "47");
+
+                                // create an event on the new branch
+                                var blockNumber = augur.rpc.blockNumber();
+                                var blocksToGo = periodLength - (blockNumber % periodLength);
+                                if (DEBUG) {
+                                    console.log("Current block:", blockNumber);
+                                    console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
+                                }
+                                if (blocksToGo > 10) {
+                                    return createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
+                                }
+                                augur.rpc.fastforward(blocksToGo, function (endBlock) {
+                                    assert.notProperty(endBlock, "error");
+                                    createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
+                                });
                             },
                             onFailed: done
                         });
-                    }
-                }, console.error);
-            }
-        });
-
-        it("makeReports.submitReport", function (done) {
-            this.timeout(augur.constants.TIMEOUT*100);
-
-            // fast-forward to the second half of the reporting period
-            var period = parseInt(augur.getReportPeriod(newBranchID));
-            var blockNumber = augur.rpc.blockNumber();
-            var blocksToGo = Math.ceil((periodLength / 2) - (blockNumber % (periodLength / 2)));
-            if (DEBUG) {
-                console.log("Current block:", blockNumber);
-                console.log("Next half-period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
-                console.log("Fast forwarding", blocksToGo, "blocks...");
-            }
-            augur.rpc.fastforward(blocksToGo, function (endBlock) {
-                assert.strictEqual(parseInt(augur.getReportPeriod(newBranchID)), period);
-                var eventIndex = augur.getEventIndex(period, eventID);
-                return augur.submitReport({
-                    branch: newBranchID,
-                    reportPeriod: period,
-                    eventIndex: eventIndex,
-                    salt: salt,
-                    report: report,
-                    eventID: eventID,
-                    ethics: 1,
-                    onSent: function (res) {
-                        if (DEBUG) console.log("submitReport sent:", res);
-                        assert(res.txHash);
-                        assert.strictEqual(res.callReturn, "1");
-                    },
-                    onSuccess: function (res) {
-                        if (DEBUG) console.log("submitReport success:", res);
-                        assert(res.txHash);
-                        assert.strictEqual(res.callReturn, "1");
-                        done();
                     },
                     onFailed: done
                 });
             });
-        });
-    });
 
-}
+            it("makeReports.submitReportHash", function (done) {
+                this.timeout(augur.constants.TIMEOUT*100);
+                var blockNumber = augur.rpc.blockNumber();
+                if (DEBUG) console.log("Current block:", blockNumber + "\tResidual:", blockNumber % periodLength);
+                var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
+                if (DEBUG) console.log("Events in start period", startPeriod, augur.getEvents(newBranchID, startPeriod));
+                var currentPeriod = augur.getCurrentPeriod(newBranchID);
+                if (DEBUG) console.log("Current period:", currentPeriod);
+                currentPeriod = currentPeriod.toFixed(6);
+                if (DEBUG) console.log("Events in current period", currentPeriod, augur.getEvents(newBranchID, currentPeriod));
+                if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
+                    if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
+                    augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
+                        assert.strictEqual(res.callReturn, "1");
+                        var period = parseInt(augur.getReportPeriod(newBranchID));
+                        if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
+                        currentPeriod = Math.floor(currentPeriod).toString();
+                        if (DEBUG) console.log("Events in new period", period, augur.getEvents(newBranchID, period));
+                        if (DEBUG) console.log("Difference " + (Number(currentPeriod) - period) + ". Submitting report hash...");
+                        var eventIndex = augur.getEventIndex(period, eventID);
+                        var reportHash = augur.makeHash(salt, report, eventID);
+                        var diceroll = augur.rpc.sha3(abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID))));
+                        var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period);
+                        var blockNumber = augur.rpc.blockNumber();
+                        if (DEBUG) console.log("Residual:", blockNumber % periodLength);
+                        var currentExpPeriod = blockNumber / periodLength;
+                        if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
+                        assert.isTrue(currentExpPeriod >= period + 1);
+                        assert.isBelow(currentExpPeriod, period + 2);
+                        if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+                            return augur.submitReportHash({
+                                branch: newBranchID,
+                                reportHash: reportHash,
+                                reportPeriod: period,
+                                eventID: eventID,
+                                eventIndex: eventIndex,
+                                onSent: function (res) {
+                                    if (DEBUG) console.log("submitReportHash sent:", res);
+                                    assert(res.txHash);
+                                    assert.strictEqual(res.callReturn, "1");
+                                },
+                                onSuccess: function (res) {
+                                    if (DEBUG) console.log("submitReportHash success:", res);
+                                    assert(res.txHash);
+                                    assert.strictEqual(res.callReturn, "1");
+                                    done();
+                                },
+                                onFailed: done
+                            });
+                        }
+                    }, console.error);
+                }
+            });
+
+            it("makeReports.submitReport", function (done) {
+                this.timeout(augur.constants.TIMEOUT*100);
+
+                // fast-forward to the second half of the reporting period
+                var period = parseInt(augur.getReportPeriod(newBranchID));
+                var blockNumber = augur.rpc.blockNumber();
+                var blocksToGo = Math.ceil((periodLength / 2) - (blockNumber % (periodLength / 2)));
+                if (DEBUG) {
+                    console.log("Current block:", blockNumber);
+                    console.log("Next half-period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
+                    console.log("Fast forwarding", blocksToGo, "blocks...");
+                }
+                augur.rpc.fastforward(blocksToGo, function (endBlock) {
+                    assert.strictEqual(parseInt(augur.getReportPeriod(newBranchID)), period);
+                    var eventIndex = augur.getEventIndex(period, eventID);
+                    return augur.submitReport({
+                        branch: newBranchID,
+                        reportPeriod: period,
+                        eventIndex: eventIndex,
+                        salt: salt,
+                        report: report,
+                        eventID: eventID,
+                        ethics: 1,
+                        onSent: function (res) {
+                            if (DEBUG) console.log("submitReport sent:", res);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                        },
+                        onSuccess: function (res) {
+                            if (DEBUG) console.log("submitReport success:", res);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                            done();
+                        },
+                        onFailed: done
+                    });
+                });
+            });
+        });
+
+    }
+
+});

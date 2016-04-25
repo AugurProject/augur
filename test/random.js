@@ -34,5 +34,8 @@ module.exports = {
             arr[i] = this.int();
         }
         return arr;
+    },
+    fixed: function (max) {
+        return this.float(max);
     }
 };

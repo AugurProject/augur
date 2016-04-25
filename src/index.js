@@ -1073,7 +1073,7 @@ Augur.prototype.submitReportHash = function (branch, reportHash, reportPeriod, e
     var self = this;
     if (branch.constructor === Object && branch.branch) {
         reportHash = branch.reportHash;
-        reportPeriod = branch.reportPeriod || branch.votePeriod;
+        reportPeriod = branch.reportPeriod;
         eventID = branch.eventID;
         eventIndex = branch.eventIndex;
         if (branch.onSent) onSent = branch.onSent;
@@ -1085,7 +1085,7 @@ Augur.prototype.submitReportHash = function (branch, reportHash, reportPeriod, e
     onSuccess = onSuccess || this.utils.pass;
     onFailed = onFailed || this.utils.pass;
     var tx = clone(this.tx.submitReportHash);
-    if (eventIndex) {
+    if (eventIndex !== null && eventIndex !== undefined) {
         tx.params = [branch, reportHash, reportPeriod, eventID, eventIndex];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
@@ -1096,16 +1096,15 @@ Augur.prototype.submitReportHash = function (branch, reportHash, reportPeriod, e
         self.transact(tx, onSent, onSuccess, onFailed);
     });
 };
-Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt, report, eventID, ethics, indeterminate, isScalar, onSent, onSuccess, onFailed) {
+Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt, report, eventID, ethics, isScalar, onSent, onSuccess, onFailed) {
     var self = this;
     if (branch.constructor === Object && branch.branch) {
-        reportPeriod = branch.reportPeriod || branch.votePeriod;
+        reportPeriod = branch.reportPeriod;
         eventIndex = branch.eventIndex;
         salt = branch.salt;
         report = branch.report;
         eventID = branch.eventID;
         ethics = branch.ethics;
-        indeterminate = branch.indeterminate;
         isScalar = branch.isScalar;
         if (branch.onSent) onSent = branch.onSent;
         if (branch.onSuccess) onSuccess = branch.onSuccess;
@@ -1122,7 +1121,7 @@ Augur.prototype.submitReport = function (branch, reportPeriod, eventIndex, salt,
         fixedReport = abi.fix(report, "hex");
     }
     var tx = clone(this.tx.submitReport);
-    if (eventIndex) {
+    if (eventIndex !== null && eventIndex !== undefined) {
         tx.params = [
             branch,
             reportPeriod,

@@ -15,7 +15,6 @@ var constants = require("../../src/constants");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
 var random = require("../random");
-var marketsInBranch = require("./fixtures/marketsInBranch.json");
 augur.tx = new contracts.Tx("2");
 
 var noop = function () {};
@@ -38,6 +37,7 @@ describe("Unit tests", function () {
             var fire = augur.fire;
             augur.fire = function (tx, callback) {
                 if (tx.timeout) delete tx.timeout;
+                if (!tx.params) tx.params = [];
                 if (tx.params && tx.params.constructor === Array &&
                     tx.params.length === 1) {
                     tx.params = tx.params[0];
@@ -130,7 +130,7 @@ describe("Unit tests", function () {
         describe(thisCase.method, function () {
             var params;
             var numParams = thisCase.parameters.length;
-            for (var i = 0, n = marketsInBranch.length; i < n; ++i) {
+            for (var i = 0, n = augur.constants.UNIT_TEST_SAMPLES; i < n; ++i) {
                 params = new Array(numParams);
                 for (var j = 0; j < numParams; ++j) {
                     params[j] = random[thisCase.parameters[j]]();
