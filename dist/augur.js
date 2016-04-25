@@ -46595,10 +46595,6 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
     if (!callback) {
         return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
     }
-    // stub array
-    // this.parseMarketsArray(clone(require("../data/marketsInfo")), parseMarketsOptions, callback);
-    // stub object
-    // callback(clone(require("../data/marketsInfoObject")));
     var count = 0;
     var cb = function (marketsArray) {
         if (typeof marketsArray === "object" &&
@@ -46673,11 +46669,15 @@ Augur.prototype.getWinningOutcomes = function (market, callback) {
     tx.params = market;
     if (!this.utils.is_function(callback)) {
         var winningOutcomes = this.fire(tx);
-        if (winningOutcomes && winningOutcomes.error) return winningOutcomes;
+        if (!winningOutcomes) return null;
+        if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+            return winningOutcomes;
+        }
         return winningOutcomes.slice(0, this.getMarketNumOutcomes(market));
     }
     this.fire(tx, function (winningOutcomes) {
-        if (winningOutcomes && winningOutcomes.error) {
+        if (!winningOutcomes) return callback(null);
+        if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
             return callback(winningOutcomes);
         }
         self.getMarketNumOutcomes(market, function (numOutcomes) {
@@ -46693,16 +46693,16 @@ Augur.prototype.initialLiquidityAmount = function (market, outcome, callback) {
     tx.params = [market, outcome];
     return this.fire(tx, callback);
 };
-Augur.prototype.getParticipantSharesPurchased = function (market, participantNumber, outcome, callback) {
-    // market: sha256 hash id
-    var tx = clone(this.tx.getParticipantSharesPurchased);
-    tx.params = [market, participantNumber, outcome];
-    return this.fire(tx, callback);
-};
 Augur.prototype.getSharesPurchased = function (market, outcome, callback) {
     // market: sha256 hash id
     var tx = clone(this.tx.getSharesPurchased);
     tx.params = [market, outcome];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getParticipantSharesPurchased = function (market, participantNumber, outcome, callback) {
+    // market: sha256 hash id
+    var tx = clone(this.tx.getParticipantSharesPurchased);
+    tx.params = [market, participantNumber, outcome];
     return this.fire(tx, callback);
 };
 // Get the participant number (the array index) for specified address
@@ -48294,8 +48294,6 @@ module.exports = {
                     } else {
                         params.push(args[j]);
                     }
-                } else {
-                    return null;
                 }
             }
         }

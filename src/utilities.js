@@ -78,8 +78,6 @@ module.exports = {
                     } else {
                         params.push(args[j]);
                     }
-                } else {
-                    return null;
                 }
             }
         }

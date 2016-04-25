@@ -14,8 +14,11 @@ var contracts = require("augur-contracts");
 var constants = require("../../src/constants");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
+var random = require("../random");
 var marketsInBranch = require("./fixtures/marketsInBranch.json");
 augur.tx = new contracts.Tx("2");
+
+var noop = function () {};
 
 describe("Unit tests", function () {
 
@@ -42,29 +45,100 @@ describe("Unit tests", function () {
                 assert.deepEqual(tx, expected);
                 teardown();
             };
-            augur[t.method].apply(augur, t.params);
+            augur[t.method].apply(augur, t.params.concat(t.callback));
         });
     };
 
-    var methods = [
-        "getVolume",
-        "getForkSelection",
-        "getMarketInfo",
-        "getMarketEvents",
-        "getNumEvents",
-        "getBranchID",
-        "getCurrentParticipantNumber",
-        "getMarketNumOutcomes",
-        "getAlpha",
-        "getCumScale",
-        "getTradingPeriod",
-        "getTradingFee"
-    ];
+    var cases = [{
+        method: "getVolume",
+        parameters: ["hash"]
+    }, {
+        method: "getForkSelection",
+        parameters: ["hash"]
+    }, {
+        method: "getMarketInfo",
+        parameters: ["hash"]
+    }, {
+        method: "getMarketEvents",
+        parameters: ["hash"]
+    }, {
+        method: "getNumEvents",
+        parameters: ["hash"]
+    }, {
+        method: "getBranchID",
+        parameters: ["hash"]
+    }, {
+        method: "getCurrentParticipantNumber",
+        parameters: ["hash"]
+    }, {
+        method: "getMarketNumOutcomes",
+        parameters: ["hash"]
+    }, {
+        method: "getAlpha",
+        parameters: ["hash"]
+    }, {
+        method: "getCumScale",
+        parameters: ["hash"]
+    }, {
+        method: "getTradingPeriod",
+        parameters: ["hash"]
+    }, {
+        method: "getTradingFee",
+        parameters: ["hash"]
+    }, {
+        method: "getWinningOutcomes",
+        parameters: ["hash"]
+    }, {
+        method: "initialLiquidityAmount",
+        parameters: ["hash", "int"]
+    }, {
+        method: "initialLiquidityAmount",
+        parameters: ["hash", "intString"]
+    }, {
+        method: "initialLiquidityAmount",
+        parameters: ["hash", "intHexString"]
+    }, {
+        method: "getSharesPurchased",
+        parameters: ["hash", "int"]
+    }, {
+        method: "getSharesPurchased",
+        parameters: ["hash", "intString"]
+    }, {
+        method: "getSharesPurchased",
+        parameters: ["hash", "intHexString"]
+    }, {
+        method: "getParticipantSharesPurchased",
+        parameters: ["hash", "int", "int"]
+    }, {
+        method: "getParticipantSharesPurchased",
+        parameters: ["hash", "intString", "intString"]
+    }, {
+        method: "getParticipantSharesPurchased",
+        parameters: ["hash", "intHexString", "intHexString"]
+    }, {
+        method: "getParticipantID",
+        parameters: ["hash", "int"]
+    }, {
+        method: "getParticipantID",
+        parameters: ["hash", "intString"]
+    }, {
+        method: "getParticipantID",
+        parameters: ["hash", "intHexString"]
+    }];
 
-    async.each(methods, function (method, nextMethod) {
-        describe(method, function () {
+    async.each(cases, function (thisCase, nextCase) {
+        describe(thisCase.method, function () {
+            var params;
+            var numParams = thisCase.parameters.length;
             for (var i = 0, n = marketsInBranch.length; i < n; ++i) {
-                test({method: this.title, params: [marketsInBranch[i]]});
+                params = new Array(numParams);
+                for (var j = 0; j < numParams; ++j) {
+                    params[j] = random[thisCase.parameters[j]]();
+                }
+                if (!thisCase.asyncOnly) {
+                    test({method: this.title, params: params});
+                }
+                test({method: this.title, params: params, callback: noop});
             }
         });
     }, function (err) {
@@ -165,7 +239,6 @@ describe("Integration tests", function () {
         var r;
         assert(info.constructor === Array || info.constructor === Object);
         if (info.constructor === Array) {
-            console.log(info.length);
             assert.isAbove(info.length, 43);
             info = augur.rpc.encodeResult(info);
             assert.strictEqual(info[7], branchId);
