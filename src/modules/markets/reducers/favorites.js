@@ -1,9 +1,15 @@
-import { TOGGLE_FAVORITE } from '../../markets/actions/toggle-favorite';
+import { UPDATE_FAVORITES, TOGGLE_FAVORITE } from '../../markets/actions/update-favorites';
 
 export default function(favorites = { }, action) {
     var newFavorites;
 
     switch (action.type) {
+        case UPDATE_FAVORITES:
+            return {
+                ...favorites,
+                ...action.favorites
+            };
+
         case TOGGLE_FAVORITE:
             newFavorites = {
                 ...favorites

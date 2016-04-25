@@ -1,16 +1,8 @@
 import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from '../../trade/actions/update-trades-in-progress';
-import { SHOW_LINK } from '../../link/actions/show-link';
-import { PATHS_AUTH } from '../../link/constants/paths';
-import { LOGOUT } from '../../auth/constants/auth-types';
+import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
 
 export default function(tradesInProgress = {}, action) {
     switch (action.type) {
-        case SHOW_LINK:
-        	if (PATHS_AUTH[action.parsedURL.pathArray[0]] === LOGOUT) {
-        		return {};
-        	}
-            return tradesInProgress;
-
         case UPDATE_TRADE_IN_PROGRESS:
             return {
                 ...tradesInProgress,
@@ -27,6 +19,9 @@ export default function(tradesInProgress = {}, action) {
                 ...tradesInProgress,
                 [action.marketID]: {}
             };
+
+        case CLEAR_LOGIN_ACCOUNT:
+            return {};
 
         default:
             return tradesInProgress;

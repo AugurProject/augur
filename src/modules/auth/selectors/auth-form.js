@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 
-import { REGISTER, LOGIN, LOGOUT } from '../../auth/constants/auth-types';
+import { REGISTER, LOGIN } from '../../auth/constants/auth-types';
 import { INVALID_USERNAME_OR_PASSWORD, USERNAME_REQUIRED, PASSWORDS_DO_NOT_MATCH, PASSWORD_TOO_SHORT, USERNAME_TAKEN } from '../../auth/constants/form-errors';
 import { FAILED } from '../../transactions/constants/statuses';
 
@@ -29,7 +29,6 @@ export const selectAuthType = function(auth, dispatch) {
 		case REGISTER:
 			return selectRegister(auth, dispatch);
 		case LOGIN:
-		case LOGOUT:
 			return selectLogin(auth, dispatch);
 	}
 };
@@ -44,7 +43,7 @@ export const selectRegister = function(auth, dispatch) {
 		isVisiblePassword2: true,
 
 		topLinkText: 'Login',
-		topLink: selectAuthLink(LOGIN, dispatch),
+		topLink: selectAuthLink(LOGIN, false, dispatch),
 
 		msg: errMsg,
 		msgClass: errMsg ? 'error' : 'success',
@@ -66,7 +65,7 @@ export const selectLogin = function(auth, dispatch) {
 		isVisiblePassword2: false,
 
 		topLinkText: 'Sign Up',
-		topLink: selectAuthLink(REGISTER, dispatch),
+		topLink: selectAuthLink(REGISTER, false, dispatch),
 
 		msg: errMsg,
 		msgClass: errMsg ? 'error' : 'success',

@@ -5,10 +5,10 @@ import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/consta
 import store from '../../../store';
 
 export default function() {
-	var { transactions } = store.getState();
-	return selectIsWorking(transactions);
+	var { transactionsData } = store.getState();
+	return selectIsWorking(transactionsData);
 }
 
-export const selectIsWorking = memoizerific(1)(function(transactions) {
-	return Object.keys(transactions || {}).some(id => [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactions[id].status) < 0);
+export const selectIsWorking = memoizerific(1)(function(transactionsData) {
+	return Object.keys(transactionsData || {}).some(id => [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0);
 });

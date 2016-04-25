@@ -1,11 +1,11 @@
 import memoizerific from 'memoizerific';
-import { formatNumber, formatEther, formatPercent, formatBlockToDate } from '../../../utils/format-number';
+import { formatNumber, formatEther, formatPercent, formatDate, makeDateFromBlock } from '../../../utils/format-number';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
-import { toggleFavorite } from '../../markets/actions/toggle-favorite';
+import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
 import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';
@@ -25,8 +25,31 @@ export default function() {
 }
 
 export const selectMarket = (marketID) => {
-	var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState();
-	return assembleMarket(marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, store.dispatch);
+	var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState(),
+		endDate;
+
+	if (!marketID || !marketsData || !marketsData[marketID] || !marketsData[marketID].description || !marketsData[marketID].eventID) {
+		return {};
+	}
+
+	endDate = makeDateFromBlock(marketsData[marketID].endDate, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch);
+
+	return assembleMarket(
+		marketID,
+		marketsData[marketID],
+		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+
+		!!favorites[marketID],
+		outcomes[marketID],
+
+		reports[marketsData[marketID].eventID],
+		accountTrades[marketID],
+		tradesInProgress[marketID],
+		endDate.getFullYear(),
+		endDate.getMonth(),
+		endDate.getDate(),
+		blockchain && blockchain.isReportConfirmationPhase,
+		store.dispatch);
 };
 
 export const selectMarketFromEventID = (eventID) => {
@@ -34,36 +57,21 @@ export const selectMarketFromEventID = (eventID) => {
 	return selectMarket(Object.keys(marketsData).find(marketID => marketsData[marketID].eventID === eventID));
 };
 
-export const assembleMarket = memoizerific(1)((marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch) => {
-	var market;
-
-	if (!marketID || !marketsData[marketID]|| !marketsData[marketID].description) {
-		return {};
-	}
-
-	market = assembleBaseMarket(
+export const assembleMarket = memoizerific(1000)(function(
 		marketID,
-		marketsData[marketID],
+		marketData,
+		isOpen,
+		isFavorite,
+		marketOutcomes,
+		marketReport,
+		marketAccountTrades,
+		marketTradeInProgress,
+		endDateYear,
+		endDateMonth,
+		endDateDay,
+		isReportConfirmationPhase,
+		dispatch) { //console.log('>>assembleMarket<<');
 
-		isMarketDataOpen(marketsData[marketID], blockchain.currentBlockNumber),
-		!!favorites[marketID],
-
-		outcomes[marketID],
-		reports[marketsData[marketID].eventID],
-		accountTrades[marketID],
-		tradesInProgress[marketID],
-
-		blockchain.isReportConfirmationPhase,
-		dispatch
-	);
-
-	// this changes too often causing too many memoization cache misses, so externalized here (we dont care if ui doesnt immediately show small changes (if any) in end date)
-	market.endDate = formatBlockToDate(market.endBlock, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch);
-
-	return market;
-});
-
-export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOpen, isFavorite, marketOutcomes, pendingReport, marketAccountTrades, marketTradeInProgress, isReportConfirmationPhase, dispatch) => {//console.log('>>|<< assembleBaseMarket >>|<<');
 	var o = {
 			...marketData,
 			id: marketID
@@ -91,6 +99,7 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 	}
 
 	o.endBlock = parseInt(marketData.endDate, 10);
+	o.endDate = endDateYear && endDateMonth && endDateDay && formatDate(new Date(endDateYear, endDateMonth, endDateDay));
 	o.isOpen = isOpen;
 	o.isExpired = !isOpen;
 
@@ -99,10 +108,10 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 	o.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
 	o.volume = formatNumber(marketData.volume, { positiveSign: false });
 
-	o.isRequiredToReportByAccount = !!pendingReport; // was the user chosen to report on this market
-	o.isPendingReport = o.isRequiredToReportByAccount && !pendingReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
-	o.isReportSubmitted = !!pendingReport && !!pendingReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
-	o.isReported = !!pendingReport && !!pendingReport.reportHash && !!pendingReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+	o.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
+	o.isPendingReport = o.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
+	o.isReportSubmitted = o.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
+	o.isReported = o.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
 	o.isMissedReport = o.isRequiredToReportByAccount && !o.isReported && !o.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
 	o.isMissedOrReported = o.isMissedReport || o.isReported;
 
@@ -111,9 +120,11 @@ export const assembleBaseMarket = memoizerific(1000)((marketID, marketData, isOp
 	o.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
 	o.report = {
-		...pendingReport,
+		...marketReport,
 		onSubmitReport: (reportedOutcomeID, isUnethical) => dispatch(submitReport(o, reportedOutcomeID, isUnethical))
 	};
+
+	o.outcomes = [];
 
 	o.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
 		var outcomeData = marketOutcomes[outcomeID],

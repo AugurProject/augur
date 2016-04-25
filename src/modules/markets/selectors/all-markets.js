@@ -1,4 +1,6 @@
 import memoizerific from 'memoizerific';
+import { isMarketDataOpen } from '../../../utils/is-market-data-open';
+import { makeDateFromBlock } from '../../../utils/format-number';
 
 import store from '../../../store';
 
@@ -14,11 +16,69 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 		return [];
 	}
 
-    return Object.keys(marketsData)
-    	.map(marketID => assembleMarket(marketID, marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, dispatch))
+/*
+	var markets = [],
+		marketKeys,
+		len,
+		i;
+	marketKeys = Object.keys(marketsData);
+	len = marketKeys.length;
+console.time('selectMarkets');
+
+	for (i = 0; i < len; i++) {
+		markets.push(assembleMarket(
+			marketKeys[i],
+			marketsData[marketKeys[i]],
+			isMarketDataOpen(marketsData[marketKeys[i]], blockchain && blockchain.currentBlockNumber),
+
+			!!favorites[marketKeys[i]],
+			outcomes[marketKeys[i]],
+
+			reports[marketsData[marketKeys[i]].eventID],
+			accountTrades[marketKeys[i]],
+			tradesInProgress[marketKeys[i]],
+			formatBlockToDate(marketsData[marketKeys[i]].endDate, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch),
+			blockchain && blockchain.isReportConfirmationPhase,
+			dispatch));
+	}
+
+	markets.sort((a, b) => {
+		var aVal = cleanSortVal(a[selectedSort.prop]),
+			bVal = cleanSortVal(b[selectedSort.prop]);
+
+		if (bVal < aVal) {
+			return selectedSort.isDesc ? -1 : 1;
+		}
+		else if (bVal > aVal) {
+			return selectedSort.isDesc ? 1 : -1;
+		}
+
+		return a.id < b.id ? -1 : 1;
+	});
+*/
+	return Object.keys(marketsData)
+    	.map(marketID => {
+    		var endDate = makeDateFromBlock(marketsData[marketID].endDate, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch); // this is here for performance reasons not to trigger memoization on every block
+    		return assembleMarket(
+	    		marketID,
+				marketsData[marketID],
+				isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+
+				!!favorites[marketID],
+				outcomes[marketID],
+
+				reports[marketsData[marketID].eventID],
+				accountTrades[marketID],
+				tradesInProgress[marketID],
+				endDate.getFullYear(),
+				endDate.getMonth(),
+				endDate.getDate(),
+				blockchain && blockchain.isReportConfirmationPhase,
+				dispatch);
+    	})
     	.sort((a, b) => {
-    		var aVal = cleanSortVal(a[selectedSort.prop]),
-    			bVal = cleanSortVal(b[selectedSort.prop]);
+			var aVal = cleanSortVal(a[selectedSort.prop]),
+				bVal = cleanSortVal(b[selectedSort.prop]);
 
 			if (bVal < aVal) {
 				return selectedSort.isDesc ? -1 : 1;
@@ -28,7 +88,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			}
 
 			return a.id < b.id ? -1 : 1;
-    	});
+		});
 });
 
 function cleanSortVal(val) {

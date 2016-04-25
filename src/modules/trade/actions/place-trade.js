@@ -4,7 +4,7 @@ import { BRANCH_ID } from '../../app/constants/network';
 import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { addTransactions } from '../../transactions/actions/add-transactions';
-import { updateTransactions } from '../../transactions/actions/update-transactions';
+import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 
@@ -22,23 +22,20 @@ export function placeTrade(marketID) {
 
 export function tradeShares(transactionID, marketID, outcomeID, numShares, limitPrice, cap) {
 	return (dispatch, getState) => {
-		dispatch(updateTransactions({
+		dispatch(updateExistingTransaction({
 			[transactionID]: { status: 'sending...' }
 		}));
 
 		AugurJS.tradeShares(BRANCH_ID, marketID, outcomeID, numShares, null, null, (err, res) => {
 			if (err) {
-				dispatch(updateTransactions({
+				dispatch(updateExistingTransaction({
 					[transactionID]: { status: FAILED, message: err && err.message }
 				}));
 				return;
 			}
 
 			dispatch(loadAccountTrades());
-
-			dispatch(updateTransactions({
-				[transactionID]: { status: res.status }
-			}));
+			dispatch(updateExistingTransaction(transactionID, { status: res.status }));
 		});
 	};
 }

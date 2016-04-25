@@ -1,14 +1,10 @@
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther, formatNumber } from '../../../utils/format-number';
 
-import { BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES } from '../../transactions/constants/types';
-
 import store from '../../../store';
 
-import { tradeShares } from '../../trade/actions/place-trade';
-
 //import { selectOutcomeBids, selectOutcomeAsks } from '../../bids-asks/selectors/select-bids-asks';
-import { selectNewTransaction } from '../../transactions/selectors/transactions';
+import { makeTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 
 export const selectTradeOrders = function(market, marketTradeInProgress, dispatch) {
 	var orders = [];
@@ -50,28 +46,29 @@ export const selectOutcomeTradeOrders = function(market, outcome, outcomeTradeIn
 	}
 
 	var numShares = outcomeTradeInProgress.numShares,
-		totalCost = outcomeTradeInProgress.totalCost;
+		totalCost = outcomeTradeInProgress.totalCost,
+		tradeTransaction = makeTradeTransaction(
+			numShares < 0,
+			market,
+			outcome,
+			numShares,
+			totalCost,
+			0.9,
+			-0.3,
+			dispatch
+		);
 
-	orders.push(selectNewTransaction(
-		numShares > 0 ? BUY_SHARES : SELL_SHARES,
-		-0.3,
-		numShares,
-		totalCost,
-		0,
-		{
-			marketID: market.id,
-			outcomeID: outcome.id,
-			marketDescription: market.description,
-			outcomeName: outcome.name.toUpperCase(),
-			avgPrice: formatEther(totalCost / numShares),
-			feeToPay: formatEther(0.9)
-		},
-		(transactionID) => dispatch(tradeShares(transactionID, market.id, outcome.id, numShares, null, null))
-	));
+
+	tradeTransaction.gas = formatEther(tradeTransaction.gas);
+	tradeTransaction.ether = formatEther(tradeTransaction.ether);
+	tradeTransaction.shares = formatShares(tradeTransaction.shares);
+
+	orders.push(tradeTransaction);
 
 	return orders;
 };
 
+/*
 export const selectOutcomeTransactions = memoizerific(5)(function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispatch) {
 	var isSell = numShares < 0,
 		outcomeBidsOrAsks = !isSell ? outcomeAsks : outcomeBids,
@@ -158,3 +155,4 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 
 	return orders;
 });
+*/
