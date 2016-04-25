@@ -16,7 +16,7 @@ describe(`modules/markets/reducers/keywords.js`, () => {
     };
     const expectedOutput = keywords;
 
-    assert.equal(reducer(null, action), expectedOutput, `didn't return keywords when they aren't passed to the reducer`);
+    assert.equal(reducer(undefined, action), expectedOutput, `didn't return keywords when they aren't passed to the reducer`);
     assert.equal(reducer(currKeywords, action), expectedOutput, `didn't return keywords when keywords already is defined and passed to reducer`);
   });
 });
