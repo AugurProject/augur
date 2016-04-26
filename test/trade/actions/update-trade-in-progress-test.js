@@ -50,8 +50,7 @@ describe(`modules/trade/actions/trade-actions.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
-
-  let sandbox, actions, store;
+  let actions, store;
 
   beforeEach(() => {
     store = mockStore(testState);
