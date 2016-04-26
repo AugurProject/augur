@@ -13,43 +13,10 @@ var utils = require("../../src/utilities");
 var contracts = require("augur-contracts");
 var constants = require("../../src/constants");
 var augurpath = "../../src/index";
-var augur = require(augurpath);
-var random = require("../random");
-augur.tx = new contracts.Tx("2");
-
-var noop = function () {};
+var runner = require("../runner");
 
 describe("Unit tests", function () {
-
-    var test = function (t) {
-        it(JSON.stringify(t.params), function (done) {
-            this.timeout(augur.constants.TIMEOUT);
-            var expected = clone(augur.tx[t.method]);
-            if (t.params && t.params.length === 1) {
-                expected.params = t.params[0];
-            } else {
-                expected.params = t.params;
-            }
-            var teardown = function (e) {
-                augur.fire = fire;
-                done(e);
-            };
-            var fire = augur.fire;
-            augur.fire = function (tx, callback) {
-                if (tx.timeout) delete tx.timeout;
-                if (!tx.params) tx.params = [];
-                if (tx.params && tx.params.constructor === Array &&
-                    tx.params.length === 1) {
-                    tx.params = tx.params[0];
-                }
-                assert.deepEqual(tx, expected);
-                teardown();
-            };
-            augur[t.method].apply(augur, t.params.concat(t.callback));
-        });
-    };
-
-    var cases = [{
+    runner("eth_call", [{
         method: "getVolume",
         parameters: ["hash"]
     }, {
@@ -124,27 +91,7 @@ describe("Unit tests", function () {
     }, {
         method: "getParticipantID",
         parameters: ["hash", "intHexString"]
-    }];
-
-    async.each(cases, function (thisCase, nextCase) {
-        describe(thisCase.method, function () {
-            var params;
-            var numParams = thisCase.parameters.length;
-            for (var i = 0, n = augur.constants.UNIT_TEST_SAMPLES; i < n; ++i) {
-                params = new Array(numParams);
-                for (var j = 0; j < numParams; ++j) {
-                    params[j] = random[thisCase.parameters[j]]();
-                }
-                if (!thisCase.asyncOnly) {
-                    test({method: this.title, params: params});
-                }
-                test({method: this.title, params: params, callback: noop});
-            }
-        });
-    }, function (err) {
-        if (err) console.error(err);
-    });
-
+    }]);
 });
 
 describe("Integration tests", function () {

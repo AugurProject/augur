@@ -45229,7 +45229,7 @@ module.exports = {
 
     // maximum number of accounts/samples for testing
     MAX_TEST_ACCOUNTS: 3,
-    UNIT_TEST_SAMPLES: 250,
+    UNIT_TEST_SAMPLES: 50,
     MAX_TEST_SAMPLES: 3,
 
     // unit test timeout

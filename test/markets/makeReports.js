@@ -6,57 +6,19 @@
 "use strict";
 
 var assert = require("chai").assert;
-var async = require("async");
 var abi = require("augur-abi");
 var contracts = require("augur-contracts");
 var clone = require("clone");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
-var random = require("../random");
-var augur = require("../../src");
-augur.tx = new contracts.Tx("2");
+var runner = require("../runner");
 
 var DEBUG = true;
-var noop = function () {};
 
 describe("Unit tests", function () {
 
-    describe("call", function () {
-
-        var test = function (t) {
-            it(JSON.stringify(t.params), function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                var expected = clone(augur.tx[t.method]);
-                if (t.params && t.params.length === 1) {
-                    expected.params = t.params[0];
-                } else {
-                    expected.params = clone(t.params);
-                }
-                if (t.fixed && t.fixed.length) {
-                    for (var i = 0; i < t.fixed.length; ++i) {
-                        expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
-                    }
-                }
-                var teardown = function (e) {
-                    augur.fire = fire;
-                    done(e);
-                };
-                var fire = augur.fire;
-                augur.fire = function (tx, callback) {
-                    if (tx.timeout) delete tx.timeout;
-                    if (!tx.params) tx.params = [];
-                    if (tx.params && tx.params.constructor === Array &&
-                        tx.params.length === 1) {
-                        tx.params = tx.params[0];
-                    }
-                    assert.deepEqual(tx, expected);
-                    teardown();
-                };
-                augur[t.method].apply(augur, t.params.concat(t.callback));
-            });
-        };
-
-        var cases = [{
+    describe("eth_call", function () {
+        runner(this.title, [{
             method: "getNumEventsToReport",
             parameters: ["hash", "int"]
         }, {
@@ -95,109 +57,11 @@ describe("Unit tests", function () {
         }, {
             method: "checkReportValidity",
             parameters: ["hash", "fixed", "int"]
-        }];
-
-        async.each(cases, function (thisCase, nextCase) {
-            describe(thisCase.method, function () {
-                var params, fixed;
-                var numParams = thisCase.parameters.length;
-                for (var i = 0, n = augur.constants.UNIT_TEST_SAMPLES; i < n; ++i) {
-                    params = new Array(numParams);
-                    fixed = [];
-                    for (var j = 0; j < numParams; ++j) {
-                        if (!thisCase.parameters[j] || !random[thisCase.parameters[j]])
-                            continue;
-                        params[j] = random[thisCase.parameters[j]]();
-                        if (thisCase.parameters[j] === "fixed") fixed.push(j);
-                    }
-                    if (!thisCase.asyncOnly) {
-                        test({
-                            method: this.title,
-                            params: params,
-                            fixed: fixed
-                        });
-                    }
-                    test({
-                        method: this.title,
-                        params: params,
-                        fixed: fixed,
-                        callback: noop
-                    });
-                }
-            });
-        }, function (err) {
-            if (err) console.error(err);
-        });
-
+        }]);
     });
 
-    describe("sendTransaction", function () {
-
-        var testObject = function (t, next) {
-            var expected = clone(augur.tx[t.method]);
-            if (t.params && t.params.length === 1) {
-                expected.params = t.params[0];
-            } else {
-                expected.params = clone(t.params);
-            }
-            if (t.fixed && t.fixed.length) {
-                for (var i = 0; i < t.fixed.length; ++i) {
-                    expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
-                }
-            }
-            var transact = augur.transact;
-            augur.transact = function (tx, onSent, onSuccess, onFailed) {
-                if (tx.timeout) delete tx.timeout;
-                if (!tx.params) tx.params = [];
-                if (tx.params && tx.params.constructor === Array &&
-                    tx.params.length === 1) {
-                    tx.params = tx.params[0];
-                }
-                it("[object] " + JSON.stringify(t), function () {
-                    assert.deepEqual(tx, expected);
-                });
-                augur.transact = transact;
-                next();
-            };
-            var labels = utils.labels(augur[t.method]);
-            var params = {onSent: noop, onSuccess: noop, onFailed: noop};
-            for (var i = 0; i < labels.length; ++i) {
-                if (params[labels[i]]) continue;
-                params[labels[i]] = t.params[i];
-            }
-            augur[t.method](params);
-        };
-
-        var testPositional = function (t, next) {
-            var expected = clone(augur.tx[t.method]);
-            if (t.params && t.params.length === 1) {
-                expected.params = t.params[0];
-            } else {
-                expected.params = clone(t.params);
-            }
-            if (t.fixed && t.fixed.length) {
-                for (var i = 0; i < t.fixed.length; ++i) {
-                    expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
-                }
-            }
-            var transact = augur.transact;
-            augur.transact = function (tx, onSent, onSuccess, onFailed) {
-                if (tx.timeout) delete tx.timeout;
-                if (!tx.params) tx.params = [];
-                if (tx.params && tx.params.constructor === Array &&
-                    tx.params.length === 1) {
-                    tx.params = tx.params[0];
-                }
-                it("[positional] " + JSON.stringify(t), function () {
-                    assert.deepEqual(tx, expected);
-                });
-                augur.transact = transact;
-                next();
-            };
-            augur[t.method].apply(augur, t.params.concat([noop, noop, noop]));
-        };
-
-        var cases = [{
+    describe("eth_sendTransaction", function () {
+        runner(this.title, [{
             method: "submitReportHash",
             parameters: ["hash", "hash", "int", "hash", "int"]
         }, {
@@ -206,49 +70,7 @@ describe("Unit tests", function () {
         }, {
             method: "submitReport",
             parameters: ["hash", "int", "int", "intHexString", "fixed", "hash", "fixed", "1"]
-        }];
-
-        async.eachSeries(cases, function (thisCase, nextCase) {
-            describe(thisCase.method, function () {
-                var method = this.title;
-                var numParams = thisCase.parameters.length;
-                var count = 0;
-                async.whilst(
-                    function () { return count < augur.constants.UNIT_TEST_SAMPLES; },
-                    function (callback) {
-                        ++count;
-                        var params = new Array(numParams);
-                        var fixed = [];
-                        for (var j = 0; j < numParams; ++j) {
-                            if (thisCase.parameters[j] === null ||
-                                thisCase.parameters[j] === undefined ||
-                                !random[thisCase.parameters[j]]) continue;
-                            params[j] = random[thisCase.parameters[j]]();
-                            if (thisCase.parameters[j] === "fixed") fixed.push(j);
-                        }
-                        var tests = {positional: null, object: null, complete: null};
-                        testPositional({method: method, params: params, fixed: fixed}, function () {
-                            tests.positional = true;
-                            if (tests.object && tests.complete === null) {
-                                tests.complete = true;
-                                callback();
-                            }
-                        });
-                        testObject({method: method, params: params, fixed: fixed}, function () {
-                            tests.object = true;
-                            if (tests.positional && tests.complete === null) {
-                                tests.complete = true;
-                                callback();
-                            }
-                        });
-                    },
-                    nextCase
-                );
-            });
-        }, function (err) {
-            if (err) console.error(err);
-        });
-
+        }]);
     });
 });
 
