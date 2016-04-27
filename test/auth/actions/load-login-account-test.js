@@ -28,7 +28,8 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
     };
   });
 
-  it(`should update the login account`, () => {
+  it(`should update the login account`);
+// , () => {
     // This is going to be very complicated....
     // actions = proxyquire('../../../src/modules/auth/actions/load-login-account', {
     //   '../../../services/augurjs': fakeAugurJS
@@ -37,7 +38,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
     // store.dispatch(actions.loadLoginAccount());
     // console.log(store.getActions());
     // assert.deepEqual(actions.loadLoginAccount(), {});
-  });
+  // });
 
   it(`should load login account dependents`);
 });
