@@ -15,7 +15,6 @@ var noop = function () {};
 var test = {
     eth_call: function (t, next) {
         next = next || noop;
-        console.log(t.method);
         var expected = clone(augur.tx[t.method]);
         if (t.params && t.params.length === 1) {
             expected.params = t.params[0];
