@@ -4,18 +4,13 @@ import {
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import testState from '../../testState';
 
 describe(`modules/auth/actions/logout.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
   let action, store;
-  let testState = {
-    auth: {
-      err: null,
-      selectedAuthType: 'register'
-    }
-  };
   store = mockStore(testState);
   fakeAugurJS.logout = () => {
     return;

@@ -11,7 +11,8 @@ describe(`modules/auth/actions/update-assets.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
   let action, store;
-  store = mockStore(testState);
+  let thisTestState = Object.assign({}, testState);
+  store = mockStore(thisTestState);
   fakeAugurJS.loadAssets = (BRANCH_ID, loginID, cbEther, cbRep, cbRealEther) => {
     cbEther(null, 500);
     cbRep(null, 25);

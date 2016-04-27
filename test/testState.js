@@ -32,6 +32,7 @@ const testState = {
     }
   },
   keywords: '',
+  marketsData: {},
   pagination: {
     numPerPage: 10,
     selectedPageNum: 1
