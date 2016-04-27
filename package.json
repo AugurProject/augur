@@ -9,7 +9,7 @@
     "url": "https://github.com/AugurProject/augur"
   },
   "scripts": {
-    "start": "http-server ./build -c-1 -p $PORT",
+    "start": "firebase serve -p $PORT",
     "test": "mocha --compilers js:babel-register --recursive",
     "test:watch": "npm test -- --watch",
     "_____": "",
@@ -64,7 +64,6 @@
     "envify": "^3.4.0",
     "exorcist": "^0.4.0",
     "firebase-tools": "^2.2.1",
-    "http-server": "^0.9.0",
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
     "mocha": "^2.4.5",
