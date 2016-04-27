@@ -46784,56 +46784,56 @@ Augur.prototype.commitTrade = function (market, hash, onSent, onSuccess, onFaile
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.buyShares = function (branch, market, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branch && branch.constructor === Object && branch.branchId) {
-        market = branch.marketId; // sha256
-        outcome = branch.outcome; // integer (1 or 2 for binary)
-        amount = branch.amount;   // number -> fixed-point
-        limit = branch.limit;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId; // sha256
+Augur.prototype.buyShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
+    if (branchId && branchId.constructor === Object && branchId.branchId) {
+        marketId = branchId.marketId; // sha256
+        outcome = branchId.outcome; // integer (1 or 2 for binary)
+        amount = branchId.amount;   // number -> fixed-point
+        limit = branchId.limit;
+        if (branchId.onSent) onSent = branchId.onSent;
+        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
+        if (branchId.onFailed) onFailed = branchId.onFailed;
+        branchId = branchId.branchId; // sha256
     }
     var tx = clone(this.tx.buyShares);
-    if (market && market.constructor === BigNumber) {
-        market = abi.prefix_hex(market.toString(16));
+    if (marketId && marketId.constructor === BigNumber) {
+        marketId = abi.prefix_hex(marketId.toString(16));
     }
-    if (branch && branch.constructor === BigNumber) {
-        branch = abi.prefix_hex(branch.toString(16));
+    if (branchId && branchId.constructor === BigNumber) {
+        branchId = abi.prefix_hex(branchId.toString(16));
     }
     limit = (limit) ? abi.fix(limit, "hex") : 0;
     if (onSent) {
-        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
-    tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+    tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
     return this.transact(tx);
 };
-Augur.prototype.sellShares = function (branch, market, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branch && branch.constructor === Object && branch.branchId) {
-        market = branch.marketId; // sha256
-        outcome = branch.outcome; // integer (1 or 2 for binary)
-        amount = branch.amount;   // number -> fixed-point
-        limit = branch.limit;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId; // sha256
+Augur.prototype.sellShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
+    if (branchId && branchId.constructor === Object && branchId.branchId) {
+        marketId = branchId.marketId; // sha256
+        outcome = branchId.outcome; // integer (1 or 2 for binary)
+        amount = branchId.amount;   // number -> fixed-point
+        limit = branchId.limit;
+        if (branchId.onSent) onSent = branchId.onSent;
+        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
+        if (branchId.onFailed) onFailed = branchId.onFailed;
+        branchId = branchId.branchId; // sha256
     }
     var tx = clone(this.tx.sellShares);
-    if (market && market.constructor === BigNumber) {
-        market = abi.prefix_hex(market.toString(16));
+    if (marketId && marketId.constructor === BigNumber) {
+        marketId = abi.prefix_hex(marketId.toString(16));
     }
-    if (branch && branch.constructor === BigNumber) {
-        branch = abi.prefix_hex(branch.toString(16));
+    if (branchId && branchId.constructor === BigNumber) {
+        branchId = abi.prefix_hex(branchId.toString(16));
     }
     limit = (limit) ? abi.fix(limit, "hex") : 0;
     if (onSent) {
-        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
         this.transact(tx, onSent, onSuccess, onFailed);
     } else {
-        tx.params = [branch, market, outcome, abi.fix(amount, "hex"), limit];
+        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
         return this.transact(tx);
     }
 };
