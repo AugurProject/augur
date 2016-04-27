@@ -4,6 +4,9 @@
   "description": "Augur UI React Components",
   "author": "Baz (@thinkloop)",
   "license": "AAL",
+  "engines": {
+    "node": ">= 4.2.x"
+  },
   "main": "./dist/app.jsx",
   "repository": {
     "type": "git",
