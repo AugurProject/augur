@@ -34,7 +34,7 @@ var test = {
         var fire = augur.fire;
         augur.fire = function (tx, callback) {
             if (tx.timeout) delete tx.timeout;
-            if (!tx.params) tx.params = [];
+            if (tx.params === null || tx.params === undefined) tx.params = [];
             if (tx.params && tx.params.constructor === Array &&
                 tx.params.length === 1) {
                 tx.params = tx.params[0];
