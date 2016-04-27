@@ -6,7 +6,7 @@ const testState = {
     err: null,
     selectedAuthType: 'register'
   },
-  bidAsks: {},
+  bidsAsks: {},
   blockchain: {
     currentBlockMillisSinceEpoch: 1461774253983,
     currentBlockNumber: 833339,
