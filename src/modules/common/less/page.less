@@ -1,11 +1,13 @@
-.page {
+@import (reference) "../../../../node_modules/flex.less/flex";
 
+.page {
+    .display(flex);
+    min-height: 100vh;
+    .flex-direction(column);
 }
 
 .page-header {
-    top: @site-header-height; left: 0; right :0;
-    max-width: @media-large-width;
-    margin: 0 auto;
+    margin-top: @site-header-height;
     padding: 3.5vmin 3rem 2.5vmin 2.9rem;
 	line-height: 2.2em;
     color: white;
@@ -19,9 +21,12 @@
 }
 
 .page-content {
-    top: 0; left: 0; right: 0;
-    max-width: @media-large-width;
-    margin: @site-header-height auto 0 auto;
+    .flex(1, 0, auto);
     padding: 0;
     color: @color-dark-active;
+}
+
+.page-footer {
+    font-size: 1.5em;
+    padding: 5px 0;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import SiteHeader from '../../site/components/site-header';
+import SiteFooter from '../../site/components/site-footer';
 import Positions from '../../positions/components/positions';
 import PositionsSummary from '../../positions/components/positions-summary';
 
@@ -19,21 +20,27 @@ module.exports = React.createClass({
 				<SiteHeader { ...p.siteHeader } />
 
 				<header className="page-header">
-					<PositionsSummary { ...p.positionsSummary } />
+					<div className="l-container">
+						<PositionsSummary { ...p.positionsSummary } />
+					</div>
 				</header>
 
 				<section className="page-content">
-					{ !!p.markets && !!p.markets.length && p.markets.map(market => (
-						<div key={ market.id } className="positions-container">
-							<span className="description">{ market.description }</span>
-							{ !!market.positionOutcomes && !!market.positionOutcomes.length &&
-								<Positions
-									className="page-content positions-content"
-									outcomes={ market.positionOutcomes } />
-							}
-						</div>
-					))}
+					<div className="l-container">
+						{ !!p.markets && !!p.markets.length && p.markets.map(market => (
+							<div key={ market.id } className="positions-container">
+								<span className="description">{ market.description }</span>
+								{ !!market.positionOutcomes && !!market.positionOutcomes.length &&
+									<Positions
+										className="page-content positions-content"
+										outcomes={ market.positionOutcomes } />
+								}
+							</div>
+						))}
+					</div>
 				</section>
+
+				<SiteFooter />
 			</main>
 		);
 	}
