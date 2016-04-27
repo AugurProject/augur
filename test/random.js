@@ -37,5 +37,8 @@ module.exports = {
     },
     fixed: function (max) {
         return this.float(max);
+    },
+    ether: function (min, max) {
+        return this.int(min, max);
     }
 };

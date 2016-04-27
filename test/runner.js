@@ -15,6 +15,7 @@ var noop = function () {};
 var test = {
     eth_call: function (t, next) {
         next = next || noop;
+        console.log(t.method);
         var expected = clone(augur.tx[t.method]);
         if (t.params && t.params.length === 1) {
             expected.params = t.params[0];
@@ -24,6 +25,11 @@ var test = {
         if (t.fixed && t.fixed.length) {
             for (var i = 0; i < t.fixed.length; ++i) {
                 expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
+            }
+        }
+        if (t.ether && t.ether.length) {
+            for (var i = 0; i < t.ether.length; ++i) {
+                expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
             }
         }
         var fire = augur.fire;
@@ -54,6 +60,11 @@ var test = {
             if (t.fixed && t.fixed.length) {
                 for (var i = 0; i < t.fixed.length; ++i) {
                     expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
+                }
+            }
+            if (t.ether && t.ether.length) {
+                for (var i = 0; i < t.ether.length; ++i) {
+                    expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
                 }
             }
             var transact = augur.transact;
@@ -90,6 +101,11 @@ var test = {
                     expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
                 }
             }
+            if (t.ether && t.ether.length) {
+                for (var i = 0; i < t.ether.length; ++i) {
+                    expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
+                }
+            }
             var transact = augur.transact;
             augur.transact = function (tx, onSent, onSuccess, onFailed) {
                 if (tx.timeout) delete tx.timeout;
@@ -121,23 +137,26 @@ var run = {
             function (callback) {
                 ++count;
                 var params = new Array(numParams);
-                var fixed = [];
+                var fixed = [], ether = [];
                 for (var j = 0; j < numParams; ++j) {
                     if (!testCase.parameters[j] || !random[testCase.parameters[j]])
                         callback();
                     params[j] = random[testCase.parameters[j]]();
                     if (testCase.parameters[j] === "fixed") fixed.push(j);
+                    if (testCase.parameters[j] === "ether") ether.push(j);
                 }
                 if (!testCase.asyncOnly) {
                     test.eth_call({
                         method: method,
                         params: params,
-                        fixed: fixed
+                        fixed: fixed,
+                        ether: ether
                     }, function () {
                         test.eth_call({
                             method: method,
                             params: params,
                             fixed: fixed,
+                            ether: ether,
                             callback: noop
                         }, callback);
                     });
@@ -146,6 +165,7 @@ var run = {
                         method: method,
                         params: params,
                         fixed: fixed,
+                        ether: ether,
                         callback: noop
                     }, callback);
                 }
@@ -164,19 +184,21 @@ var run = {
             function (callback) {
                 ++count;
                 var params = new Array(numParams);
-                var fixed = [];
+                var fixed = [], ether = [];
                 for (var j = 0; j < numParams; ++j) {
                     if (testCase.parameters[j] === null ||
                         testCase.parameters[j] === undefined ||
                         !random[testCase.parameters[j]]) continue;
                     params[j] = random[testCase.parameters[j]]();
                     if (testCase.parameters[j] === "fixed") fixed.push(j);
+                    if (testCase.parameters[j] === "ether") ether.push(j);
                 }
                 var tests = {positional: null, object: null, complete: null};
                 test.eth_sendTransaction.positional({
                     method: method,
                     params: params,
-                    fixed: fixed
+                    fixed: fixed,
+                    ether: ether
                 }, function () {
                     tests.positional = true;
                     if (tests.object && tests.complete === null) {
@@ -187,7 +209,8 @@ var run = {
                 test.eth_sendTransaction.object({
                     method: method,
                     params: params,
-                    fixed: fixed
+                    fixed: fixed,
+                    ether: ether
                 }, function () {
                     tests.object = true;
                     if (tests.positional && tests.complete === null) {

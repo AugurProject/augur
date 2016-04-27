@@ -9,13 +9,48 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var runner = require("../runner");
 
-var branch_id = augur.branches.dev;
-var branch_number = "0";
+describe("Unit tests", function () {
+    runner("eth_call", [{
+        method: "getNumBranches",
+        parameters: []
+    }, {
+        method: "getBranches",
+        parameters: []
+    }, {
+        method: "getMarketsInBranch",
+        parameters: ["hash"]
+    }, {
+        method: "getPeriodLength",
+        parameters: ["hash"]
+    }, {
+        method: "getVotePeriod",
+        parameters: ["hash"]
+    }, {
+        method: "getReportPeriod",
+        parameters: ["hash"]
+    }, {
+        method: "getNumMarketsBranch",
+        parameters: ["hash"]
+    }, {
+        method: "getNumMarkets",
+        parameters: ["hash"]
+    }, {
+        method: "getMinTradingFee",
+        parameters: ["hash"]
+    }, {
+        method: "getBranch",
+        parameters: ["int"]
+    }]);
+});
 
-// branches.se
-describe("branches.se", function () {
+describe("Integration tests", function () {
+
+    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var branch_id = augur.branches.dev;
+    var branch_number = "0";
+
     describe("getBranches", function () {
         var test = function (r) {
             assert.isArray(r);

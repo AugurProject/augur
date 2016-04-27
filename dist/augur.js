@@ -755,6 +755,18 @@ module.exports = function (network) {
             signature: "i",
             returns: "number"
         },
+        getReportPeriod: {
+            to: contracts.branches,
+            method: "getVotePeriod",
+            signature: "i",
+            returns: "number"
+        },
+        getNumMarkets: {
+            to: contracts.branches,
+            method: "getNumMarketsBranch",
+            signature: "i",
+            returns: "number"
+        },
         getNumMarketsBranch: {
             to: contracts.branches,
             method: "getNumMarketsBranch",
@@ -46247,6 +46259,7 @@ Augur.prototype.sendCashFrom = function (to, value, from, onSent, onSuccess, onF
     tx.params = [to, abi.fix(value, "hex"), from];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
+// TODO unit test
 Augur.prototype.depositEther = function (value, onSent, onSuccess, onFailed) {
     // value: amount of ether to exchange for cash (in ETHER, not wei!)
     if (value && value.value) {
@@ -46256,14 +46269,14 @@ Augur.prototype.depositEther = function (value, onSent, onSuccess, onFailed) {
         value = value.value;
     }
     var tx = clone(this.tx.depositEther);
-    tx.value = "0x" + abi.bignum(value).mul(rpc.ETHER).toString(16);
+    tx.value = abi.prefix_hex(abi.bignum(value).mul(rpc.ETHER).toString(16));
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 Augur.prototype.withdrawEther = function (to, value, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.withdrawEther);
     var unpacked = this.utils.unpack(to, this.utils.labels(this.withdrawEther), arguments);
     tx.params = unpacked.params;
-    tx.params[1] = abi.bignum(tx.params[1]).mul(rpc.ETHER).toFixed();
+    tx.params[1] = abi.prefix_hex(abi.bignum(tx.params[1]).mul(rpc.ETHER).toString(16));
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
@@ -46318,7 +46331,7 @@ Augur.prototype.getVotePeriod = function (branch, callback) {
 };
 Augur.prototype.getReportPeriod = function (branch, callback) {
     // branch: sha256 hash id
-    var tx = clone(this.tx.getVotePeriod);
+    var tx = clone(this.tx.getReportPeriod);
     tx.params = branch;
     return this.fire(tx, callback);
 };

@@ -3,15 +3,31 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var augur = require("../../src");
+var runner = require("../runner");
 
-var payment_value = 1;
-var branch = augur.branches.dev;
-var coinbase = augur.coinbase;
+describe("Unit tests", function () {
+    runner("eth_sendTransaction", [{
+        method: "reputationFaucet",
+        parameters: ["hash"]
+    }, {
+        method: "cashFaucet",
+        parameters: []
+    }, {
+        method: "fundNewAccount",
+        parameters: ["hash"]
+    }]);
+});
 
-describe("Faucets", function () {
+describe("Integration tests", function () {
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        var payment_value = 1;
+        var branch = augur.branches.dev;
+        var coinbase = augur.coinbase;
+
         it("cashFaucet", function (done) {
             this.timeout(augur.constants.TIMEOUT);
             augur.cashFaucet(
