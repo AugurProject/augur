@@ -1,3 +1,8 @@
+/**
+ *
+ * @param {String} url
+ * @return {{pathArray: Array, searchParams: Object, url: String}}
+ */
 export function ParseURL(url) {
     var splitURL = url.split('?'),
         parsed = {};
@@ -12,6 +17,12 @@ export function ParseURL(url) {
     return MakeLocation(parsed.pathArray, parsed.searchParams);
 }
 
+/**
+ *
+ * @param {Array} pathArray
+ * @param {Object} searchParams
+ * @return {{pathArray: Array, searchParams: Object, url: String}}
+ */
 export function MakeLocation(pathArray = [], searchParams = {}) {
     var pathname = pathArray.join(''),
         search = searchParams && Object.keys(searchParams).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(searchParams[key])).join('&') || '',

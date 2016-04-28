@@ -2,6 +2,12 @@ import { ParseURL } from '../../../utils/parse-url';
 
 export const SHOW_LINK = 'SHOW_LINK';
 
+/**
+ *
+ * @param {String} url URL to display in address bar
+ * @param {=Object} options
+ * @return {Function}
+ */
 export function showLink(url, options = {}) {
     return function(dispatch, getState) {
         dispatch({ type: SHOW_LINK, parsedURL: ParseURL(url) });
