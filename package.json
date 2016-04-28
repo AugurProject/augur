@@ -17,7 +17,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "_____": "",
     "watch": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=development npm run -s watch:all",
-    "dist": "clear; echo \"* * * *  DIST  * * * *\"; NODE_ENV=production npm run -s dist:all && git add --all && git commit -m 'build & publish' && npm version patch && git push && git push --tags && npm publish",
+    "dist": "clear; echo \"* * * *  DIST  * * * *\"; NODE_ENV=production npm run -s dist:all; git add --all && git commit -m 'build & publish' && npm version patch && git push && git push --tags && npm publish",
     "______": "",
     "dist:all": "npm run -s clean:dist && (npm run -s dist:css & npm run -s dist:assets & npm run -s dist:js) && npm run -s dist:finish",
     "dist:assets": "cp ./src/assets/. ./dist/assets -R && echo ---------ASSETS---------`date +%r`",
