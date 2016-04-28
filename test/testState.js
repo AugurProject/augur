@@ -6,7 +6,23 @@ const testState = {
     err: null,
     selectedAuthType: 'register'
   },
-  bidsAsks: {},
+  bidsAsks: {
+    testMarketID: {
+      id: 'test',
+      testOutcomeID: {
+        ask: {
+          3: {
+            '0xtest123': 500
+          }
+        },
+        bid: {
+          5: {
+            '0xtest123': 1000
+          }
+        }
+      }
+    }
+  },
   blockchain: {
     currentBlockMillisSinceEpoch: 1461774253983,
     currentBlockNumber: 833339,
