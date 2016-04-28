@@ -11,7 +11,7 @@ ex.connect = function(cb) {
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	augur.connect(null, null, function (connected) {
+	augur.connect("http://127.0.0.1:8545", null, function (connected) {
 		if (!connected) return cb("could not connect to ethereum");
 		cb(null, connected);
 	});
