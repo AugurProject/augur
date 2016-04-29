@@ -8,17 +8,62 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
-var constants = augur.constants;
+var runner = require("../runner");
 
-var amount = "1";
-var branchID = augur.branches.dev;
-var markets = augur.getMarketsInBranch(branchID);
-var marketID = markets[markets.length - 1];
-var eventID = augur.getMarketEvents(marketID)[0];
+describe("Unit tests", function () {
+    describe("eth_call", function () {
+        runner(this.title, [{
+            method: "getmode",
+            parameters: ["hash"]
+        }, {
+            method: "getUncaughtOutcome",
+            parameters: ["hash"]
+        }, {
+            method: "getMarkets",
+            parameters: ["hash"]
+        }, {
+            method: "getReportingThreshold",
+            parameters: ["hash"]
+        }, {
+            method: "getEventInfo",
+            parameters: ["hash"]
+        }, {
+            method: "getEventBranch",
+            parameters: ["hash"]
+        }, {
+            method: "getExpiration",
+            parameters: ["hash"]
+        }, {
+            method: "getOutcome",
+            parameters: ["hash"]
+        }, {
+            method: "getMinValue",
+            parameters: ["hash"]
+        }, {
+            method: "getMaxValue",
+            parameters: ["hash"]
+        }, {
+            method: "getNumOutcomes",
+            parameters: ["hash"]
+        }]);
+    });
+    describe("eth_sendTransaction", function () {
+        runner(this.title, [{
+            method: "setOutcome",
+            parameters: ["hash", "int"]
+        }]);
+    });
+});
 
-// events.se
-describe("events.se", function () {
+describe("Integration tests", function () {
+
+    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var amount = "1";
+    var branchID = augur.branches.dev;
+    var markets = augur.getMarketsInBranch(branchID);
+    var marketID = markets[markets.length - 1];
+    var eventID = augur.getMarketEvents(marketID)[0];
+
     describe("getMarkets(" + eventID + ")", function () {
         var test = function (res) {
             assert.isArray(res);

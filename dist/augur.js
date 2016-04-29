@@ -45252,13 +45252,6 @@ module.exports = {
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
-    IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
-    IPFS_REMOTE: [
-        // {host: "ipfs1.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs2.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs4.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs5.augur.net", port: "443", protocol: "https"}
-    ],
 
     TOLERANCE: new Decimal("0.00000001"),
     EPSILON: new Decimal("0.0000000000001"),
@@ -46317,13 +46310,14 @@ Augur.prototype.getEventInfo = function (eventId, callback) {
         }
         return info;
     };
-    this.tx.getEventInfo.params = eventId;
+    var tx = clone(this.tx.getEventInfo);
+    tx.params = eventId;
     if (this.utils.is_function(callback)) {
-        this.fire(this.tx.getEventInfo, function (info) {
+        this.fire(tx, function (info) {
             callback(parse_info(info));
         });
     } else {
-        return parse_info(this.fire(this.tx.getEventInfo));
+        return parse_info(this.fire(tx));
     }
 };
 Augur.prototype.getEventBranch = function (eventId, callback) {

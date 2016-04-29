@@ -363,13 +363,14 @@ Augur.prototype.getEventInfo = function (eventId, callback) {
         }
         return info;
     };
-    this.tx.getEventInfo.params = eventId;
+    var tx = clone(this.tx.getEventInfo);
+    tx.params = eventId;
     if (this.utils.is_function(callback)) {
-        this.fire(this.tx.getEventInfo, function (info) {
+        this.fire(tx, function (info) {
             callback(parse_info(info));
         });
     } else {
-        return parse_info(this.fire(this.tx.getEventInfo));
+        return parse_info(this.fire(tx));
     }
 };
 Augur.prototype.getEventBranch = function (eventId, callback) {

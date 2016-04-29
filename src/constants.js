@@ -33,13 +33,6 @@ module.exports = {
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
-    IPFS_LOCAL: {host: "localhost", port: "5001", protocol: "http"},
-    IPFS_REMOTE: [
-        // {host: "ipfs1.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs2.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs4.augur.net", port: "443", protocol: "https"},
-        {host: "ipfs5.augur.net", port: "443", protocol: "https"}
-    ],
 
     TOLERANCE: new Decimal("0.00000001"),
     EPSILON: new Decimal("0.0000000000001"),
