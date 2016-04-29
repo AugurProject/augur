@@ -8,15 +8,38 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var runner = require("../runner");
 
-var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
-var branchId = augur.branches.dev;
-var reporter_index = "0";
-var ballot = [2, 2, 1, 2];
-var salt = "1337";
+describe("Unit tests", function () {
+    runner("eth_call", [{
+        method: "getRepBalance",
+        parameters: ["hash", "address"]
+    }, {
+        method: "getRepByIndex",
+        parameters: ["hash", "int"]
+    }, {
+        method: "getReporterID",
+        parameters: ["hash", "int"]
+    }, {
+        method: "getNumberReporters",
+        parameters: ["hash"]
+    }, {
+        method: "repIDToIndex",
+        parameters: ["hash", "address"]
+    }, {
+        method: "getTotalRep",
+        parameters: ["hash"]
+    }]);
+});
 
-describe("data_api/reporting", function () {
+describe("Integration tests", function () {
+
+    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
+    var branchId = augur.branches.dev;
+    var reporter_index = "0";
+    var ballot = [2, 2, 1, 2];
+    var salt = "1337";
 
     describe("getTotalRep(" + branchId + ")", function () {
         var test = function (r) {

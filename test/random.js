@@ -26,6 +26,7 @@ module.exports = {
         return (Math.random() * max).toFixed(6);
     },
     string: function (size) {
+        size = size || 128;
         return Array(size + 1).join((Math.random().toString(36) + "00000000000000000").slice(2, 18)).slice(0, size);
     },
     array: function (size) {
@@ -37,6 +38,12 @@ module.exports = {
     },
     fixed: function (max) {
         return this.float(max);
+    },
+    fixedInt: function (min, max) {
+        return this.int(min, max);
+    },
+    bool: function () {
+        return Math.round(Math.random()).toString();
     },
     ether: function (min, max) {
         return this.int(min, max);

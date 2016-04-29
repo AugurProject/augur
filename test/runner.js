@@ -39,7 +39,7 @@ var test = {
                 tx.params.length === 1) {
                 tx.params = tx.params[0];
             }
-            it(JSON.stringify(t), function () {
+            it(JSON.stringify(t.params), function () {
                 assert.deepEqual(tx, expected);
             });
             augur.fire = fire;
@@ -74,7 +74,7 @@ var test = {
                     tx.params.length === 1) {
                     tx.params = tx.params[0];
                 }
-                it("[object] " + JSON.stringify(t), function () {
+                it("[object] " + JSON.stringify(t.params), function () {
                     assert.deepEqual(tx, expected);
                 });
                 augur.transact = transact;
@@ -113,7 +113,7 @@ var test = {
                     tx.params.length === 1) {
                     tx.params = tx.params[0];
                 }
-                it("[positional] " + JSON.stringify(t), function () {
+                it("[positional] " + JSON.stringify(t.params), function () {
                     assert.deepEqual(tx, expected);
                 });
                 augur.transact = transact;
