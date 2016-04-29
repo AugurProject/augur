@@ -9,7 +9,6 @@ var nodeStatic = require("node-static");
 var fs = require("fs");
 var http = require("http");
 var https = require("https");
-var util = require("util");
 var chalk = require("chalk");
 var getopt = require("posix-getopt");
 
