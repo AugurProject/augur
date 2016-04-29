@@ -4,7 +4,7 @@ export const SELL_SHARES = "sell_shares";
 export const BID_SHARES = 'bid_shares';
 export const ASK_SHARES = "ask_shares";
 
-export const MAKE_MARKET = "make_market";
+export const CREATE_MARKET = "create_market";
 export const SUBMIT_REPORT = "submit_report";
 
 export const REGISTER_ACCOUNT = 'register_account';

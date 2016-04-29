@@ -24640,7 +24640,7 @@ var _transactionsPage2 = _interopRequireDefault(_transactionsPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./modules/auth/components/auth-page":182,"./modules/auth/constants/auth-types":183,"./modules/create-market/components/create-market-page":199,"./modules/market/components/market-page":204,"./modules/markets/components/markets-page":209,"./modules/positions/components/positions-page":214,"./modules/site/constants/pages":220,"./modules/transactions/components/transactions-page":224,"react":179,"react-dom":16}],181:[function(_dereq_,module,exports){
+},{"./modules/auth/components/auth-page":182,"./modules/auth/constants/auth-types":183,"./modules/create-market/components/create-market-page":199,"./modules/market/components/market-page":204,"./modules/markets/components/markets-page":209,"./modules/positions/components/positions-page":214,"./modules/site/constants/pages":221,"./modules/transactions/components/transactions-page":225,"react":179,"react-dom":16}],181:[function(_dereq_,module,exports){
 'use strict';
 
 var _react = _dereq_('react');
@@ -24804,6 +24804,10 @@ var _siteHeader = _dereq_('../../site/components/site-header');
 
 var _siteHeader2 = _interopRequireDefault(_siteHeader);
 
+var _siteFooter = _dereq_('../../site/components/site-footer');
+
+var _siteFooter2 = _interopRequireDefault(_siteFooter);
+
 var _authForm = _dereq_('../../auth/components/auth-form');
 
 var _authForm2 = _interopRequireDefault(_authForm);
@@ -24829,30 +24833,35 @@ module.exports = _react2.default.createClass({
 				'header',
 				{ className: 'page-header' },
 				_react2.default.createElement(
-					'span',
-					{ className: 'big-line' },
-					'Augur is a completely decentralized system'
-				),
-				' including user accounts. Your credentials never leave the browser, and you are responsible for keeping them safe.',
-				_react2.default.createElement('br', null),
-				_react2.default.createElement(
-					'b',
-					null,
+					'div',
+					{ className: 'l-container' },
 					_react2.default.createElement(
-						'i',
-						{ className: 'negative' },
-						'It is impossible to recover your account if your credentials get lost!'
+						'span',
+						{ className: 'big-line' },
+						'Augur is a completely decentralized system'
+					),
+					' including user accounts. Your credentials never leave the browser, and you are responsible for keeping them safe.',
+					_react2.default.createElement('br', null),
+					_react2.default.createElement(
+						'b',
+						null,
+						_react2.default.createElement(
+							'i',
+							{ className: 'negative' },
+							'It is impossible to recover your account if your credentials get lost!'
+						)
 					)
 				)
 			),
 			_react2.default.createElement(_authForm2.default, _extends({
 				className: 'auth-form'
-			}, p.authForm))
+			}, p.authForm)),
+			_react2.default.createElement(_siteFooter2.default, null)
 		);
 	}
 });
 
-},{"../../auth/components/auth-form":181,"../../site/components/site-header":219,"react":179}],183:[function(_dereq_,module,exports){
+},{"../../auth/components/auth-form":181,"../../site/components/site-footer":219,"../../site/components/site-header":220,"react":179}],183:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25195,7 +25204,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"../../../utils/should-component-update-pure":227,"classnames":1,"react":179}],188:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"classnames":1,"react":179}],188:[function(_dereq_,module,exports){
 'use strict';
 
 var _react = _dereq_('react');
@@ -25287,7 +25296,7 @@ module.exports = _react2.default.createClass({
 						{ className: 'button select', onClick: function onClick() {
 								return _this.props.onValuesUpdated({ type: _marketTypes.BINARY, step: 2 });
 							} },
-						'Select'
+						'Yes / No'
 					),
 					_react2.default.createElement(
 						'p',
@@ -25309,7 +25318,7 @@ module.exports = _react2.default.createClass({
 						{ className: 'button select', onClick: function onClick() {
 								return _this.props.onValuesUpdated({ type: _marketTypes.CATEGORICAL, step: 2 });
 							} },
-						'Select'
+						'Multiple Choice'
 					),
 					_react2.default.createElement(
 						'p',
@@ -25331,7 +25340,7 @@ module.exports = _react2.default.createClass({
 						{ className: 'button select', onClick: function onClick() {
 								return _this.props.onValuesUpdated({ type: _marketTypes.SCALAR, step: 2 });
 							} },
-						'Select'
+						'Numeric'
 					),
 					_react2.default.createElement(
 						'p',
@@ -26168,6 +26177,10 @@ var _siteHeader = _dereq_('../../site/components/site-header');
 
 var _siteHeader2 = _interopRequireDefault(_siteHeader);
 
+var _siteFooter = _dereq_('../../site/components/site-footer');
+
+var _siteFooter2 = _interopRequireDefault(_siteFooter);
+
 var _createMarketForm = _dereq_('../../create-market/components/create-market-form');
 
 var _createMarketForm2 = _interopRequireDefault(_createMarketForm);
@@ -26193,40 +26206,53 @@ module.exports = _react2.default.createClass({
 				'header',
 				{ className: 'page-header' },
 				_react2.default.createElement(
-					'span',
-					{ className: 'big-line' },
-					'Be the market maker'
-				),
-				'. Earn fees by making markets for people to trade. The more people ',
-				_react2.default.createElement(
-					'b',
-					null,
+					'div',
+					{ className: 'l-container' },
 					_react2.default.createElement(
-						'i',
-						null,
-						'trade'
-					)
-				),
-				' your markets, the more fees you will ',
-				_react2.default.createElement(
-					'b',
-					null,
+						'span',
+						{ className: 'big-line' },
+						'Be the market maker'
+					),
+					'. Earn fees by making markets for people to trade. The more people ',
 					_react2.default.createElement(
-						'i',
+						'b',
 						null,
-						'make'
-					)
-				),
-				'.'
+						_react2.default.createElement(
+							'i',
+							null,
+							'trade'
+						)
+					),
+					' your markets, the more fees you will ',
+					_react2.default.createElement(
+						'b',
+						null,
+						_react2.default.createElement(
+							'i',
+							null,
+							'make'
+						)
+					),
+					'.'
+				)
 			),
-			_react2.default.createElement(_createMarketForm2.default, _extends({
-				className: 'page-content create-market-content'
-			}, p.createMarketForm))
+			_react2.default.createElement(
+				'div',
+				{ className: 'page-content' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'l-container' },
+					_react2.default.createElement(_createMarketForm2.default, _extends({
+						className: 'create-market-content'
+					}, p.createMarketForm))
+				)
+			),
+			_react2.default.createElement(_siteFooter2.default, null)
 		);
 	}
 });
 
-},{"../../create-market/components/create-market-form":198,"../../site/components/site-header":219,"react":179}],200:[function(_dereq_,module,exports){
+},{"../../create-market/components/create-market-form":198,"../../site/components/site-footer":219,"../../site/components/site-header":220,"react":179}],200:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26475,7 +26501,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"../../../utils/should-component-update-pure":227,"../../link/components/link":201,"../../market/components/basics":202,"../../market/components/outcomes":206,"classnames":1,"react":179}],204:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"../../link/components/link":201,"../../market/components/basics":202,"../../market/components/outcomes":206,"classnames":1,"react":179}],204:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -26491,6 +26517,10 @@ var _shouldComponentUpdatePure2 = _interopRequireDefault(_shouldComponentUpdateP
 var _siteHeader = _dereq_('../../site/components/site-header');
 
 var _siteHeader2 = _interopRequireDefault(_siteHeader);
+
+var _siteFooter = _dereq_('../../site/components/site-footer');
+
+var _siteFooter2 = _interopRequireDefault(_siteFooter);
 
 var _basics = _dereq_('../../market/components/basics');
 
@@ -26576,13 +26606,18 @@ module.exports = _react2.default.createClass({
 			_react2.default.createElement(
 				'article',
 				{ className: 'page-content' },
-				nodes
-			)
+				_react2.default.createElement(
+					'div',
+					{ className: 'l-container' },
+					nodes
+				)
+			),
+			_react2.default.createElement(_siteFooter2.default, null)
 		);
 	}
 });
 
-},{"../../../utils/should-component-update-pure":227,"../../market/components/basics":202,"../../market/components/market-positions":205,"../../reports/components/report-panel":218,"../../site/components/site-header":219,"../../trade/components/trade-panel":222,"react":179}],205:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"../../market/components/basics":202,"../../market/components/market-positions":205,"../../reports/components/report-panel":218,"../../site/components/site-footer":219,"../../site/components/site-header":220,"../../trade/components/trade-panel":223,"react":179}],205:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -26630,7 +26665,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"../../../utils/should-component-update-pure":227,"../../positions/components/positions":216,"../../positions/components/positions-summary":215,"classnames":1,"react":179}],206:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"../../positions/components/positions":216,"../../positions/components/positions-summary":215,"classnames":1,"react":179}],206:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -26687,7 +26722,7 @@ module.exports = _react2.default.createClass({
     }
 });
 
-},{"../../../utils/should-component-update-pure":227,"../../common/components/value-denomination":188,"classnames":1,"react":179}],207:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"../../common/components/value-denomination":188,"classnames":1,"react":179}],207:[function(_dereq_,module,exports){
 'use strict';
 
 var _react = _dereq_('react');
@@ -26847,10 +26882,8 @@ module.exports = _react2.default.createClass({
     }
 });
 
-},{"../../../utils/should-component-update-pure":227,"../../markets/constants/markets-headers":212,"classnames":1,"react":179}],209:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"../../markets/constants/markets-headers":212,"classnames":1,"react":179}],209:[function(_dereq_,module,exports){
 'use strict';
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _react = _dereq_('react');
 
@@ -26860,9 +26893,13 @@ var _shouldComponentUpdatePure = _dereq_('../../../utils/should-component-update
 
 var _shouldComponentUpdatePure2 = _interopRequireDefault(_shouldComponentUpdatePure);
 
-var _siteHeader = _dereq_('../../site/components//site-header');
+var _siteHeader = _dereq_('../../site/components/site-header');
 
 var _siteHeader2 = _interopRequireDefault(_siteHeader);
+
+var _siteFooter = _dereq_('../../site/components/site-footer');
+
+var _siteFooter2 = _interopRequireDefault(_siteFooter);
 
 var _markets = _dereq_('../../markets/components/markets');
 
@@ -26906,28 +26943,41 @@ module.exports = _react2.default.createClass({
 				'header',
 				{ className: 'page-header' },
 				_react2.default.createElement(
-					'span',
-					{ className: 'big-line' },
-					'Augur lets you trade any market'
-				),
-				'. Find a market you can beat, and buy shares on the side that ',
-				_react2.default.createElement(
-					'b',
-					null,
+					'div',
+					{ className: 'l-container' },
 					_react2.default.createElement(
-						'i',
+						'span',
+						{ className: 'big-line' },
+						'Augur lets you trade any market'
+					),
+					'. Find a market you can beat, and buy shares on the side that ',
+					_react2.default.createElement(
+						'b',
 						null,
-						'you think'
-					)
-				),
-				' should go up. When you\'re right, you make money.'
+						_react2.default.createElement(
+							'i',
+							null,
+							'you think'
+						)
+					),
+					' should go up. When you\'re right, you make money.'
+				)
 			),
-			_react2.default.createElement(_markets2.default, _extends({ className: 'page-content' }, p))
+			_react2.default.createElement(
+				'div',
+				{ className: 'page-content' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'l-container' },
+					_react2.default.createElement(_markets2.default, p)
+				)
+			),
+			_react2.default.createElement(_siteFooter2.default, null)
 		);
 	}
 });
 
-},{"../../../utils/should-component-update-pure":227,"../../markets/components/markets":210,"../../site/components//site-header":219,"react":179}],210:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":228,"../../markets/components/markets":210,"../../site/components/site-footer":219,"../../site/components/site-header":220,"react":179}],210:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27259,6 +27309,10 @@ var _siteHeader = _dereq_('../../site/components/site-header');
 
 var _siteHeader2 = _interopRequireDefault(_siteHeader);
 
+var _siteFooter = _dereq_('../../site/components/site-footer');
+
+var _siteFooter2 = _interopRequireDefault(_siteFooter);
+
 var _positions = _dereq_('../../positions/components/positions');
 
 var _positions2 = _interopRequireDefault(_positions);
@@ -27288,31 +27342,40 @@ module.exports = _react2.default.createClass({
 			_react2.default.createElement(
 				'header',
 				{ className: 'page-header' },
-				_react2.default.createElement(_positionsSummary2.default, p.positionsSummary)
+				_react2.default.createElement(
+					'div',
+					{ className: 'l-container' },
+					_react2.default.createElement(_positionsSummary2.default, p.positionsSummary)
+				)
 			),
 			_react2.default.createElement(
 				'section',
 				{ className: 'page-content' },
-				!!p.markets && !!p.markets.length && p.markets.map(function (market) {
-					return _react2.default.createElement(
-						'div',
-						{ key: market.id, className: 'positions-container' },
-						_react2.default.createElement(
-							'span',
-							{ className: 'description' },
-							market.description
-						),
-						!!market.positionOutcomes && !!market.positionOutcomes.length && _react2.default.createElement(_positions2.default, {
-							className: 'page-content positions-content',
-							outcomes: market.positionOutcomes })
-					);
-				})
-			)
+				_react2.default.createElement(
+					'div',
+					{ className: 'l-container' },
+					!!p.markets && !!p.markets.length && p.markets.map(function (market) {
+						return _react2.default.createElement(
+							'div',
+							{ key: market.id, className: 'positions-container' },
+							_react2.default.createElement(
+								'span',
+								{ className: 'description' },
+								market.description
+							),
+							!!market.positionOutcomes && !!market.positionOutcomes.length && _react2.default.createElement(_positions2.default, {
+								className: 'page-content positions-content',
+								outcomes: market.positionOutcomes })
+						);
+					})
+				)
+			),
+			_react2.default.createElement(_siteFooter2.default, null)
 		);
 	}
 });
 
-},{"../../positions/components/positions":216,"../../positions/components/positions-summary":215,"../../site/components/site-header":219,"react":179}],215:[function(_dereq_,module,exports){
+},{"../../positions/components/positions":216,"../../positions/components/positions-summary":215,"../../site/components/site-footer":219,"../../site/components/site-header":220,"react":179}],215:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27570,6 +27633,108 @@ module.exports = _react2.default.createClass({
 });
 
 },{"../../reports/components/report-form":217,"classnames":1,"react":179}],219:[function(_dereq_,module,exports){
+"use strict";
+
+var _react = _dereq_("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = _react2.default.createClass({
+    displayName: "exports",
+    render: function render() {
+        return _react2.default.createElement(
+            "div",
+            { className: "page-footer" },
+            _react2.default.createElement(
+                "div",
+                { className: "l-container" },
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "https://sale.augur.net", target: "_blank" },
+                        "REP Login"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "http://docs.augur.net", target: "_blank" },
+                        "Documentation"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "http://blog.augur.net", target: "_blank" },
+                        "Blog"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "https://github.com/AugurProject", target: "_blank" },
+                        "Github"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "https://augur.zendesk.com/hc/en-us", target: "_blank" },
+                        "FAQ"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "http://augur.strikingly.com", target: "_blank" },
+                        "About"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "https://www.hamsterpad.com/chat/dyffy", target: "_blank" },
+                        "Slack"
+                    ),
+                    " | "
+                ),
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    _react2.default.createElement(
+                        "a",
+                        { href: "http://augur.link/augur-beta-ToS-v2.pdf", target: "_blank" },
+                        "Terms of Service"
+                    )
+                )
+            )
+        );
+    }
+});
+
+},{"react":179}],220:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27619,60 +27784,64 @@ module.exports = _react2.default.createClass({
 			'header',
 			{ className: 'site-header' },
 			_react2.default.createElement(
-				'nav',
-				{ className: 'site-nav' },
+				'div',
+				{ className: 'l-container' },
 				_react2.default.createElement(
-					_link2.default,
-					_extends({ className: (0, _classnames2.default)('site-nav-link', 'augur', { 'active': p.activePage === _pages.MARKETS }) }, p.marketsLink),
-					'augur'
-				),
-				_react2.default.createElement(
-					'span',
-					{ className: 'spacer' },
-					' '
-				),
-				!!p.loginAccount && !!p.loginAccount.id && _react2.default.createElement(
-					_link2.default,
-					_extends({ className: (0, _classnames2.default)('site-nav-link', _pages.POSITIONS, { 'active': p.activePage === _pages.POSITIONS }) }, p.positionsLink),
-					!!p.positionsSummary && !!p.positionsSummary.numPositions && _react2.default.createElement(_valueDenomination2.default, _extends({
-						className: 'positions-num'
-					}, p.positionsSummary.numPositions, {
-						formatted: p.positionsSummary.numPositions.rounded,
-						formattedValue: p.positionsSummary.numPositions.roundedValue })),
-					!!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.numPositions.roundedValue > 0 && _react2.default.createElement(_valueDenomination2.default, _extends({
-						className: 'positions-gain'
-					}, p.positionsSummary.gainPercent, {
-						formatted: p.positionsSummary.gainPercent.rounded,
-						formattedValue: p.positionsSummary.gainPercent.roundedValue }))
-				),
-				!!p.loginAccount && !!p.loginAccount.id && _react2.default.createElement(
-					_link2.default,
-					_extends({ className: (0, _classnames2.default)('site-nav-link', _pages.TRANSACTIONS, { 'active': p.activePage === _pages.TRANSACTIONS }, { 'working': p.isTransactionsWorking }),
-						title: p.loginAccount.realEther && 'real ether: ' + p.loginAccount.realEther.full
-					}, p.transactionsLink),
-					(!p.isTransactionsWorking || p.activePage === _pages.TRANSACTIONS) && _react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.rep || {}, {
-						formatted: p.loginAccount.rep && p.loginAccount.rep.rounded,
-						formattedValue: p.loginAccount.rep && p.loginAccount.rep.roundedValue })),
-					(!p.isTransactionsWorking || p.activePage === _pages.TRANSACTIONS) && _react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.ether || {}, {
-						formatted: p.loginAccount.ether && p.loginAccount.ether.rounded,
-						formattedValue: p.loginAccount.ether && p.loginAccount.ether.roundedValue })),
-					p.isTransactionsWorking && p.activePage !== _pages.TRANSACTIONS && _react2.default.createElement(
+					'nav',
+					{ className: 'site-nav' },
+					_react2.default.createElement(
+						_link2.default,
+						_extends({ className: (0, _classnames2.default)('site-nav-link', 'augur', { 'active': p.activePage === _pages.MARKETS }) }, p.marketsLink),
+						'augur'
+					),
+					_react2.default.createElement(
 						'span',
-						{ className: 'link-text' },
-						p.transactionsTotals.title
+						{ className: 'spacer' },
+						' '
+					),
+					!!p.loginAccount && !!p.loginAccount.id && _react2.default.createElement(
+						_link2.default,
+						_extends({ className: (0, _classnames2.default)('site-nav-link', _pages.POSITIONS, { 'active': p.activePage === _pages.POSITIONS }) }, p.positionsLink),
+						!!p.positionsSummary && !!p.positionsSummary.numPositions && _react2.default.createElement(_valueDenomination2.default, _extends({
+							className: 'positions-num'
+						}, p.positionsSummary.numPositions, {
+							formatted: p.positionsSummary.numPositions.rounded,
+							formattedValue: p.positionsSummary.numPositions.roundedValue })),
+						!!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.numPositions.roundedValue > 0 && _react2.default.createElement(_valueDenomination2.default, _extends({
+							className: 'positions-gain'
+						}, p.positionsSummary.gainPercent, {
+							formatted: p.positionsSummary.gainPercent.rounded,
+							formattedValue: p.positionsSummary.gainPercent.roundedValue }))
+					),
+					!!p.loginAccount && !!p.loginAccount.id && _react2.default.createElement(
+						_link2.default,
+						_extends({ className: (0, _classnames2.default)('site-nav-link', _pages.TRANSACTIONS, { 'active': p.activePage === _pages.TRANSACTIONS }, { 'working': p.isTransactionsWorking }),
+							title: p.loginAccount.realEther && 'real ether: ' + p.loginAccount.realEther.full
+						}, p.transactionsLink),
+						(!p.isTransactionsWorking || p.activePage === _pages.TRANSACTIONS) && _react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.rep || {}, {
+							formatted: p.loginAccount.rep && p.loginAccount.rep.rounded,
+							formattedValue: p.loginAccount.rep && p.loginAccount.rep.roundedValue })),
+						(!p.isTransactionsWorking || p.activePage === _pages.TRANSACTIONS) && _react2.default.createElement(_valueDenomination2.default, _extends({}, p.loginAccount.ether || {}, {
+							formatted: p.loginAccount.ether && p.loginAccount.ether.rounded,
+							formattedValue: p.loginAccount.ether && p.loginAccount.ether.roundedValue })),
+						p.isTransactionsWorking && p.activePage !== _pages.TRANSACTIONS && _react2.default.createElement(
+							'span',
+							{ className: 'link-text' },
+							p.transactionsTotals.title
+						)
+					),
+					_react2.default.createElement(
+						_link2.default,
+						_extends({ className: (0, _classnames2.default)('site-nav-link', _authTypes.AUTH_TYPES[p.activePage], { 'active': !!_authTypes.AUTH_TYPES[p.activePage] }) }, p.authLink),
+						p.loginAccount && p.loginAccount.id ? 'Sign Out' : 'Sign Up / Login'
 					)
-				),
-				_react2.default.createElement(
-					_link2.default,
-					_extends({ className: (0, _classnames2.default)('site-nav-link', _authTypes.AUTH_TYPES[p.activePage], { 'active': !!_authTypes.AUTH_TYPES[p.activePage] }) }, p.authLink),
-					p.loginAccount && p.loginAccount.id ? 'Sign Out' : 'Sign Up / Login'
 				)
 			)
 		);
 	}
 });
 
-},{"../../auth/constants/auth-types":183,"../../common/components/value-denomination":188,"../../link/components/link":201,"../../site/constants/pages":220,"classnames":1,"react":179}],220:[function(_dereq_,module,exports){
+},{"../../auth/constants/auth-types":183,"../../common/components/value-denomination":188,"../../link/components/link":201,"../../site/constants/pages":221,"classnames":1,"react":179}],221:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27686,7 +27855,7 @@ var M = exports.M = 'm';
 
 var DEFAULT_PAGE = exports.DEFAULT_PAGE = MARKETS;
 
-},{}],221:[function(_dereq_,module,exports){
+},{}],222:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27767,7 +27936,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"../../common/components/input":187,"../../common/components/value-denomination":188,"classnames":1,"react":179}],222:[function(_dereq_,module,exports){
+},{"../../common/components/input":187,"../../common/components/value-denomination":188,"classnames":1,"react":179}],223:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27891,7 +28060,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"../../transactions/components/transaction":223,"./trade-panel-item":221,"react":179}],223:[function(_dereq_,module,exports){
+},{"../../transactions/components/transaction":224,"./trade-panel-item":222,"react":179}],224:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27997,7 +28166,7 @@ module.exports = _react2.default.createClass({
 					'Load free beta assets'
 				);
 				break;
-			case _types.MAKE_MARKET:
+			case _types.CREATE_MARKET:
 				nodes.description = _react2.default.createElement(
 					'span',
 					{ className: 'description' },
@@ -28095,7 +28264,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"../../auth/constants/auth-types":183,"../../common/components/value-denomination":188,"../../transactions/constants/types":226,"classnames":1,"react":179}],224:[function(_dereq_,module,exports){
+},{"../../auth/constants/auth-types":183,"../../common/components/value-denomination":188,"../../transactions/constants/types":227,"classnames":1,"react":179}],225:[function(_dereq_,module,exports){
 'use strict';
 
 var _react = _dereq_('react');
@@ -28109,6 +28278,10 @@ var _classnames2 = _interopRequireDefault(_classnames);
 var _siteHeader = _dereq_('../../site/components/site-header');
 
 var _siteHeader2 = _interopRequireDefault(_siteHeader);
+
+var _siteFooter = _dereq_('../../site/components/site-footer');
+
+var _siteFooter2 = _interopRequireDefault(_siteFooter);
 
 var _transactions = _dereq_('../../transactions/components/transactions');
 
@@ -28136,19 +28309,32 @@ module.exports = _react2.default.createClass({
 				'header',
 				{ className: 'page-header' },
 				_react2.default.createElement(
-					'span',
-					{ className: 'big-line' },
-					p.transactionsTotals.title
+					'div',
+					{ className: 'l-container' },
+					_react2.default.createElement(
+						'span',
+						{ className: 'big-line' },
+						p.transactionsTotals.title
+					)
 				)
 			),
-			_react2.default.createElement(_transactions2.default, {
-				className: 'page-content transactions-content',
-				transactions: p.transactions })
+			_react2.default.createElement(
+				'div',
+				{ className: 'page-content' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'l-container' },
+					_react2.default.createElement(_transactions2.default, {
+						className: 'transactions-content',
+						transactions: p.transactions })
+				)
+			),
+			_react2.default.createElement(_siteFooter2.default, null)
 		);
 	}
 });
 
-},{"../../site/components/site-header":219,"../../transactions/components/transactions":225,"classnames":1,"react":179}],225:[function(_dereq_,module,exports){
+},{"../../site/components/site-footer":219,"../../site/components/site-header":220,"../../transactions/components/transactions":226,"classnames":1,"react":179}],226:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -28195,7 +28381,7 @@ module.exports = _react2.default.createClass({
     }
 });
 
-},{"./transaction":223,"classnames":1,"react":179}],226:[function(_dereq_,module,exports){
+},{"./transaction":224,"classnames":1,"react":179}],227:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28207,12 +28393,12 @@ var SELL_SHARES = exports.SELL_SHARES = "sell_shares";
 var BID_SHARES = exports.BID_SHARES = 'bid_shares';
 var ASK_SHARES = exports.ASK_SHARES = "ask_shares";
 
-var MAKE_MARKET = exports.MAKE_MARKET = "make_market";
+var CREATE_MARKET = exports.CREATE_MARKET = "create_market";
 var SUBMIT_REPORT = exports.SUBMIT_REPORT = "submit_report";
 
 var REGISTER_ACCOUNT = exports.REGISTER_ACCOUNT = 'register_account';
 
-},{}],227:[function(_dereq_,module,exports){
+},{}],228:[function(_dereq_,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -16,19 +16,19 @@ module.exports = React.createClass({
 				<div className="market-types">
 					<div className="market-type binary">
 						<h4>A market with a YES or NO outcome</h4>
-						<button className="button select" onClick={ () => this.props.onValuesUpdated({ type: BINARY, step: 2 }) }>Select</button>
+						<button className="button select" onClick={ () => this.props.onValuesUpdated({ type: BINARY, step: 2 }) }>Yes / No</button>
 						<p>Ask a question that has a simple YES or NO answer</p>
 					</div>
 					<hr/>
 					<div className="market-type categorical">
 						<h4>A market with a MULTIPLE CHOICE outcome</h4>
-						<button className="button select" onClick={ () => this.props.onValuesUpdated({ type: CATEGORICAL, step: 2 }) }>Select</button>
+						<button className="button select" onClick={ () => this.props.onValuesUpdated({ type: CATEGORICAL, step: 2 }) }>Multiple Choice</button>
 						<p>Ask a question and provide a set of multiple choice answers</p>
 					</div>
 					<hr/>
 					<div className="market-type scalar">
 						<h4>A market with a NUMERIC outcome</h4>
-						<button className="button select" onClick={ () => this.props.onValuesUpdated({ type: SCALAR, step: 2 }) }>Select</button>
+						<button className="button select" onClick={ () => this.props.onValuesUpdated({ type: SCALAR, step: 2 }) }>Numeric</button>
 						<p>Ask a question that has an answer within a range of numbers</p>
 					</div>
 				</div>

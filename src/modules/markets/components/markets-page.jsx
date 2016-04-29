@@ -1,7 +1,8 @@
 import React from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
-import SiteHeader from '../../site/components//site-header';
+import SiteHeader from '../../site/components/site-header';
+import SiteFooter from '../../site/components/site-footer';
 import Markets from '../../markets/components/markets';
 
 module.exports = React.createClass({
@@ -35,13 +36,21 @@ module.exports = React.createClass({
 				<SiteHeader { ...p.siteHeader } />
 
 				<header className="page-header">
-					<span className="big-line">Augur lets you trade any market</span>.
-					Find a market you can beat,
-					and buy shares on the side that <b><i>you think</i></b> should go up.
-					When you're right, you make money.
+					<div className="l-container">
+						<span className="big-line">Augur lets you trade any market</span>.
+						Find a market you can beat,
+						and buy shares on the side that <b><i>you think</i></b> should go up.
+						When you're right, you make money.
+					</div>
 				</header>
 
-				<Markets className="page-content" { ...p } />
+				<div className="page-content">
+					<div className="l-container">
+						<Markets { ...p } />
+					</div>
+				</div>
+
+				<SiteFooter />
 			</div>
 		);
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { MAKE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_REPORT } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_REPORT } from '../../transactions/constants/types';
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 
 import ValueDenomination from '../../common/components/value-denomination';
@@ -63,7 +63,7 @@ module.exports = React.createClass({
 					</span>
 				);
 				break;
-			case MAKE_MARKET:
+			case CREATE_MARKET:
 				nodes.description = (
 					<span className="description">
 						<span>Make</span>

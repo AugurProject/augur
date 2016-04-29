@@ -2,6 +2,7 @@ import React from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 
 import SiteHeader from '../../site/components/site-header';
+import SiteFooter from '../../site/components/site-footer';
 import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
@@ -72,8 +73,12 @@ module.exports = React.createClass({
 			<main className="page market">
 				<SiteHeader { ...p.siteHeader } />
 				<article className="page-content">
-					{ nodes }
+					<div className="l-container">
+						{ nodes }
+					</div>
 				</article>
+
+				<SiteFooter />
 			</main>
 		);
 	}

@@ -2,6 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import SiteHeader from '../../site/components/site-header';
+import SiteFooter from '../../site/components/site-footer';
 import Transactions from '../../transactions/components/transactions';
 
 module.exports = React.createClass({
@@ -19,12 +20,20 @@ module.exports = React.createClass({
 				<SiteHeader { ...p.siteHeader } />
 
 				<header className="page-header">
-					<span className="big-line">{ p.transactionsTotals.title }</span>
+					<div className="l-container">
+						<span className="big-line">{ p.transactionsTotals.title }</span>
+					</div>
 				</header>
 
-				<Transactions
-					className="page-content transactions-content"
-					transactions={ p.transactions } />
+				<div className="page-content">
+					<div className="l-container">
+						<Transactions
+							className="transactions-content"
+							transactions={ p.transactions } />
+					</div>
+				</div>
+
+				<SiteFooter />
 			</main>
 		);
 	}

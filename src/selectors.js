@@ -1,6 +1,6 @@
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
-import { MAKE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_REPORT } from './modules/transactions/constants/types';
+import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_REPORT } from './modules/transactions/constants/types';
 
 var selectors = {};
 
@@ -157,7 +157,7 @@ function makeMarkets(numMarkets = 20) {
 			m = {
 				id: id,
 				type: types[randomInt(0, types.length - 1)],
-				description: 'Will the dwerps achieve a mwerp by the end of stwerp ' + (index + 1) + '?',
+				description: 'Will the dwerps achieve a mwerp by the end of zwerp ' + (index + 1) + '?',
 				endDate: { formatted: '12/12/2017' },
 				tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
 				volume: makeNumber(randomInt(0, 10000), 'Shares', true),
