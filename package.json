@@ -12,7 +12,7 @@
     "url": "https://github.com/AugurProject/augur"
   },
   "scripts": {
-    "start": "firebase serve -p $PORT",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "_____": "",
     "watch": "clear; echo \"* * * *  WATCH  * * * *\"; NODE_ENV=development npm run -s watch:all",
@@ -63,11 +63,12 @@
     "derequire": "^2.0.3",
     "envify": "^3.4.0",
     "exorcist": "^0.4.0",
-    "firebase-tools": "^2.2.1",
     "inline-source-cli": "^1.1.1",
     "less": "^2.6.1",
+    "node-static": "^0.7.7",
     "npm-check-updates": "^2.6.3",
     "onchange": "^2.4.0",
+    "posix-getopt": "^1.2.0",
     "rimraf": "^2.5.2",
     "uglify-js": "^2.6.2",
     "watchify": "^3.7.0"
