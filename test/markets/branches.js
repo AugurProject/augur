@@ -1,5 +1,5 @@
 /**
- * augur.js unit tests
+ * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -12,37 +12,48 @@ var utils = require("../../src/utilities");
 var runner = require("../runner");
 
 describe("Unit tests", function () {
-    runner("eth_call", [{
-        method: "getNumBranches",
-        parameters: []
-    }, {
-        method: "getBranches",
-        parameters: []
-    }, {
-        method: "getMarketsInBranch",
-        parameters: ["hash"]
-    }, {
-        method: "getPeriodLength",
-        parameters: ["hash"]
-    }, {
-        method: "getVotePeriod",
-        parameters: ["hash"]
-    }, {
-        method: "getReportPeriod",
-        parameters: ["hash"]
-    }, {
-        method: "getNumMarketsBranch",
-        parameters: ["hash"]
-    }, {
-        method: "getNumMarkets",
-        parameters: ["hash"]
-    }, {
-        method: "getMinTradingFee",
-        parameters: ["hash"]
-    }, {
-        method: "getBranch",
-        parameters: ["int"]
-    }]);
+    describe("eth_call", function () {
+        runner(this.title, [{
+            method: "getNumBranches",
+            parameters: []
+        }, {
+            method: "getBranches",
+            parameters: []
+        }, {
+            method: "getMarketsInBranch",
+            parameters: ["hash"]
+        }, {
+            method: "getPeriodLength",
+            parameters: ["hash"]
+        }, {
+            method: "getVotePeriod",
+            parameters: ["hash"]
+        }, {
+            method: "getReportPeriod",
+            parameters: ["hash"]
+        }, {
+            method: "getNumMarketsBranch",
+            parameters: ["hash"]
+        }, {
+            method: "getNumMarkets",
+            parameters: ["hash"]
+        }, {
+            method: "getMinTradingFee",
+            parameters: ["hash"]
+        }, {
+            method: "getBranch",
+            parameters: ["int"]
+        }]);
+    });
+    describe("eth_sendTransaction", function () {
+        runner(this.title, [{
+            method: "incrementPeriod",
+            parameters: ["hash"]
+        }, {
+            method: "addMarket",
+            parameters: ["hash", "hash"]
+        }]);
+    });
 });
 
 describe("Integration tests", function () {

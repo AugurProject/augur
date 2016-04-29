@@ -985,13 +985,6 @@ module.exports = function (network) {
             signature: "iii",
             send: true
         },
-        setReporterBallot: {
-            to: contracts.expiringEvents,
-            method: "setReporterBallot",
-            signature: "iiiai",
-            send: true,
-            returns: "number"
-        },
         getTotalReputation: {
             to: contracts.expiringEvents,
             method: "getTotalReputation",
@@ -47124,6 +47117,12 @@ Augur.prototype.closeMarket = function (branch, market, onSent, onSuccess, onFai
  * Utility methods *
  *******************/
 
+Augur.prototype.updatePeriod = function (branch) {
+    var currentPeriod = this.getCurrentPeriod(branch);
+    this.incrementPeriod(branch);
+    this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
+};
+
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var EVENTS_FIELDS = 6;
     var OUTCOMES_FIELDS = 2;
@@ -47327,41 +47326,11 @@ Augur.prototype.proportionCorrect = function (event, branch, period, callback) {
     tx.params = [event, branch, period];
     return this.fire(tx, callback);
 };
-Augur.prototype.updatePeriod = function (branch) {
-    var currentPeriod = this.getCurrentPeriod(branch);
-    this.incrementPeriod(branch);
-    this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
-};
-Augur.prototype.setReportHash = function (branch, reportPeriod, reporter, reportHash, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.setReportHash);
-    var unpacked = this.utils.unpack(branch, this.utils.labels(this.setReportHash), arguments);
-    tx.params = unpacked.params;
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
-Augur.prototype.getOutcomesFinal = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getOutcomesFinal);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReporterPayouts = function (branch, reportPeriod, callback) {
-    // branch: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.getReporterPayouts);
-    tx.params = [branch, reportPeriod];
-    return this.fire(tx, callback);
-};
-Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.incrementPeriod);
-    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
-    tx.params = unpacked.params;
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
 Augur.prototype.moveEventsToCurrentPeriod = function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.moveEventsToCurrentPeriod);
-    tx.params = [branch, currentVotePeriod, currentPeriod];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.moveEventsToCurrentPeriod), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.incrementPeriodAfterReporting = function (branch, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.incrementPeriodAfterReporting);
@@ -47393,19 +47362,19 @@ Augur.prototype.penalizationCatchup = function (branch, onSent, onSuccess, onFai
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.slashRep = function (branch, salt, report, reporter, eventID, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
-        eventID = branch.eventID;
-        salt = branch.salt;
-        report = branch.report;
-        reporter = branch.reporter;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
+Augur.prototype.slashRep = function (branchId, salt, report, reporter, eventID, onSent, onSuccess, onFailed) {
+    if (branchId.constructor === Object && branchId.branchId) {
+        eventID = branchId.eventID;
+        salt = branchId.salt;
+        report = branchId.report;
+        reporter = branchId.reporter;
+        onSent = branchId.onSent;
+        onSuccess = branchId.onSuccess;
+        onFailed = branchId.onFailed;
+        branchId = branchId.branchId;
     }
     var tx = clone(this.tx.slashRep);
-    tx.params = [branch, salt, abi.fix(report, "hex"), reporter, eventID];
+    tx.params = [branchId, salt, abi.fix(report, "hex"), reporter, eventID];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -47432,6 +47401,7 @@ Augur.prototype.modifyShares = function (marketID, outcome, amount, onSent, onSu
     var tx = clone(this.tx.modifyShares);
     var unpacked = this.utils.unpack(marketID, this.utils.labels(this.modifyShares), arguments);
     tx.params = unpacked.params;
+    tx.params[2] = abi.fix(tx.params[2], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.initializeMarket = function (marketID, events, tradingPeriod, tradingFee, branch, onSent, onSuccess, onFailed) {
@@ -47441,13 +47411,11 @@ Augur.prototype.initializeMarket = function (marketID, events, tradingPeriod, tr
     tx.params[3] = abi.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.setTotalReputation = function (branch, reportPeriod, totalReputation, onSent, onSuccess, onFailed) {
-    // branch: sha256
-    // reportPeriod: integer
-    // totalReputation: number -> fixed
-    var tx = clone(this.tx.setTotalReputation);
-    tx.params = [branch, reportPeriod, abi.fix(totalReputation, "hex")];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.incrementPeriod);
+    var unpacked = this.utils.unpack(branchId, this.utils.labels(this.incrementPeriod), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.addMarket = function (branchId, marketID, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.addMarket);
@@ -47461,23 +47429,19 @@ Augur.prototype.addEvent = function (branchId, futurePeriod, eventID, onSent, on
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
+Augur.prototype.setTotalReputation = function (branch, reportPeriod, totalReputation, onSent, onSuccess, onFailed) {
+    // branch: sha256
+    // reportPeriod: integer
+    // totalReputation: number -> fixed
+    var tx = clone(this.tx.setTotalReputation);
+    tx.params = [branch, reportPeriod, abi.fix(totalReputation, "hex")];
+    return this.transact(tx, onSent, onSuccess, onFailed);
+};
 Augur.prototype.setTotalRepReported = function (branchId, reportPeriod, repReported, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.setTotalRepReported);
     var unpacked = this.utils.unpack(branchId, this.utils.labels(this.addMarket), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
-Augur.prototype.setReporterBallot = function (branchId, reportPeriod, reporterID, report, reputation, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.setReporterBallot);
-    tx.params = [branchId, reportPeriod, reporterID, abi.fix(report, "hex"), reputation];
-    return this.transact(tx, onSent, onSuccess, onFailed);
-};
-Augur.prototype.makeBallot = function (branchId, reportPeriod, callback) {
-    // branchId: sha256
-    // reportPeriod: integer
-    var tx = clone(this.tx.makeBallot);
-    tx.params = [branchId, reportPeriod];
-    return this.fire(tx, callback);
 };
 
 /*************************************

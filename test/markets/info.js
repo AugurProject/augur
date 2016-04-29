@@ -1,5 +1,5 @@
 /**
- * augur.js unit tests
+ * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -11,16 +11,24 @@ var utils = require("../../src/utilities");
 var runner = require("../runner");
 
 describe("Unit tests", function () {
-    runner("eth_call", [{
-        method: "getCreator",
-        parameters: ["address"]
-    }, {
-        method: "getCreationFee",
-        parameters: ["address"]
-    }, {
-        method: "getDescription",
-        parameters: ["hash"]
-    }]);
+    describe("eth_call", function () {
+        runner(this.title, [{
+            method: "getCreator",
+            parameters: ["address"]
+        }, {
+            method: "getCreationFee",
+            parameters: ["address"]
+        }, {
+            method: "getDescription",
+            parameters: ["hash"]
+        }]);
+    });
+    describe("eth_sendTransaction", function () {
+        runner(this.title, [{
+            method: "setInfo",
+            parameters: ["hash", "string", "address", "fixed"]
+        }]);
+    });
 });
 
 describe("Integration tests", function () {

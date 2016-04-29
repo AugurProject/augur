@@ -1,6 +1,6 @@
 (function () {
 /**
- * augur.js unit tests
+ * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
  */
 

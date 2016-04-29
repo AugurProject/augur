@@ -16,82 +16,96 @@ var augurpath = "../../src/index";
 var runner = require("../runner");
 
 describe("Unit tests", function () {
-    runner("eth_call", [{
-        method: "getVolume",
-        parameters: ["hash"]
-    }, {
-        method: "getForkSelection",
-        parameters: ["hash"]
-    }, {
-        method: "getMarketInfo",
-        parameters: ["hash"]
-    }, {
-        method: "getMarketEvents",
-        parameters: ["hash"]
-    }, {
-        method: "getNumEvents",
-        parameters: ["hash"]
-    }, {
-        method: "getBranchID",
-        parameters: ["hash"]
-    }, {
-        method: "getCurrentParticipantNumber",
-        parameters: ["hash"]
-    }, {
-        method: "getMarketNumOutcomes",
-        parameters: ["hash"]
-    }, {
-        method: "getAlpha",
-        parameters: ["hash"]
-    }, {
-        method: "getCumScale",
-        parameters: ["hash"]
-    }, {
-        method: "getTradingPeriod",
-        parameters: ["hash"]
-    }, {
-        method: "getTradingFee",
-        parameters: ["hash"]
-    }, {
-        method: "getWinningOutcomes",
-        parameters: ["hash"]
-    }, {
-        method: "initialLiquidityAmount",
-        parameters: ["hash", "int"]
-    }, {
-        method: "initialLiquidityAmount",
-        parameters: ["hash", "intString"]
-    }, {
-        method: "initialLiquidityAmount",
-        parameters: ["hash", "intHexString"]
-    }, {
-        method: "getSharesPurchased",
-        parameters: ["hash", "int"]
-    }, {
-        method: "getSharesPurchased",
-        parameters: ["hash", "intString"]
-    }, {
-        method: "getSharesPurchased",
-        parameters: ["hash", "intHexString"]
-    }, {
-        method: "getParticipantSharesPurchased",
-        parameters: ["hash", "int", "int"]
-    }, {
-        method: "getParticipantSharesPurchased",
-        parameters: ["hash", "intString", "intString"]
-    }, {
-        method: "getParticipantSharesPurchased",
-        parameters: ["hash", "intHexString", "intHexString"]
-    }, {
-        method: "getParticipantID",
-        parameters: ["hash", "int"]
-    }, {
-        method: "getParticipantID",
-        parameters: ["hash", "intString"]
-    }, {
-        method: "getParticipantID",
-        parameters: ["hash", "intHexString"]
-    }]);
+    describe("eth_call", function () {
+        runner(this.title, [{
+            method: "getVolume",
+            parameters: ["hash"]
+        }, {
+            method: "getForkSelection",
+            parameters: ["hash"]
+        }, {
+            method: "getMarketInfo",
+            parameters: ["hash"]
+        }, {
+            method: "getMarketEvents",
+            parameters: ["hash"]
+        }, {
+            method: "getNumEvents",
+            parameters: ["hash"]
+        }, {
+            method: "getBranchID",
+            parameters: ["hash"]
+        }, {
+            method: "getCurrentParticipantNumber",
+            parameters: ["hash"]
+        }, {
+            method: "getMarketNumOutcomes",
+            parameters: ["hash"]
+        }, {
+            method: "getAlpha",
+            parameters: ["hash"]
+        }, {
+            method: "getCumScale",
+            parameters: ["hash"]
+        }, {
+            method: "getTradingPeriod",
+            parameters: ["hash"]
+        }, {
+            method: "getTradingFee",
+            parameters: ["hash"]
+        }, {
+            method: "getWinningOutcomes",
+            parameters: ["hash"]
+        }, {
+            method: "initialLiquidityAmount",
+            parameters: ["hash", "int"]
+        }, {
+            method: "initialLiquidityAmount",
+            parameters: ["hash", "intString"]
+        }, {
+            method: "initialLiquidityAmount",
+            parameters: ["hash", "intHexString"]
+        }, {
+            method: "getSharesPurchased",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getSharesPurchased",
+            parameters: ["hash", "intString"]
+        }, {
+            method: "getSharesPurchased",
+            parameters: ["hash", "intHexString"]
+        }, {
+            method: "getParticipantSharesPurchased",
+            parameters: ["hash", "int", "int"]
+        }, {
+            method: "getParticipantSharesPurchased",
+            parameters: ["hash", "intString", "intString"]
+        }, {
+            method: "getParticipantSharesPurchased",
+            parameters: ["hash", "intHexString", "intHexString"]
+        }, {
+            method: "getParticipantID",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getParticipantID",
+            parameters: ["hash", "intString"]
+        }, {
+            method: "getParticipantID",
+            parameters: ["hash", "intHexString"]
+        }]);
+    });
+    describe("eth_sendTransaction", function () {
+        runner(this.title, [{
+            method: "initialLiquiditySetup",
+            parameters: ["hash", "fixed", "fixed", "int"]
+        }, {
+            method: "initializeMarket",
+            parameters: ["hash", "hashArray", "int", "fixed", "hash"]
+        }, {
+            method: "modifyShares",
+            parameters: ["hash", "int", "fixed"]
+        }]);
+    });
 });
 
 describe("Integration tests", function () {
