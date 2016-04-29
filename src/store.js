@@ -1,6 +1,4 @@
 import { SUCCESS, FAILED, PENDING, INTERRUPTED } from './modules/transactions/constants/statuses';
-import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME } from './modules/markets/constants/param-names';
-import { ParseURL as parseUrl } from "./utils/parse-url";
 
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
