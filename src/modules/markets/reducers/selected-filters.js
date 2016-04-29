@@ -2,7 +2,7 @@ import { SHOW_LINK } from '../../link/actions/show-link';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
 
 export default function(selectedFilters = { 'isOpen': true }, action) {
-    var newSelectedFilters;
+    let newSelectedFilters;
 
     switch (action.type) {
         case TOGGLE_FILTER:
@@ -14,6 +14,35 @@ export default function(selectedFilters = { 'isOpen': true }, action) {
             }
             else {
                 newSelectedFilters[action.filterID] = true;
+            }
+            return newSelectedFilters;
+
+        case SHOW_LINK:
+            newSelectedFilters = {
+                ...selectedFilters
+            };
+
+            let params = action.parsedURL.searchParams;
+            if (params['isOpen'] === "true") {
+                newSelectedFilters.isOpen = true;
+            }
+            if (params['isExpired'] === "true") {
+                newSelectedFilters.isExpired = true;
+            }
+            if (params['isPendingReport'] === "true") {
+                newSelectedFilters.isPendingReport = true;
+            }
+            if (params['isMissedOrReported'] === "true") {
+                newSelectedFilters.isMissedOrReported = true;
+            }
+            if (params['isBinary'] === "true") {
+                newSelectedFilters.isBinary = true;
+            }
+            if (params['isCategorical'] === "true") {
+                newSelectedFilters.isCategorical = true;
+            }
+            if (params['isScalar'] === "true") {
+                newSelectedFilters.isScalar = true;
             }
             return newSelectedFilters;
 
