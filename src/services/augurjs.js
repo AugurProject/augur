@@ -8,10 +8,11 @@ var TIMEOUT_MILLIS = 50,
 	ex = {};
 
 ex.connect = function(cb) {
-	// augur.rpc.nodes.hosted = ["https://report.augur.net"];
-	augur.connect(null, null, function (connected) {
-		console.log("augurjs.connect:", connected);
-		if (!connected) return cb("your failure has been noted");
+	if (process.env.ETHEREUM_HOST_RPC) {
+		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
+	}
+	augur.connect("http://127.0.0.1:8545", null, function (connected) {
+		if (!connected) return cb("could not connect to ethereum");
 		cb(null, connected);
 	});
 };
@@ -199,6 +200,7 @@ ex.listenToUpdates = function(cbBlock, cbContracts, cbPrice, cbCreation) {
 };
 
 ex.loadAccountTrades = function(accountID, cb) {
+	console.log("loading trades for account:", accountID);
 	augur.getAccountTrades(accountID, null, function(accountTrades) {
 		if (!accountTrades) {
 			return cb();
@@ -364,10 +366,6 @@ console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsTe
 		res => cb(null, { status: SUCCESS, metadata: res }),
 		err => cb(err)
 	);
-};
-
-ex.loadMarketMetadata = function(marketID, cb) {
-	augur.getMetadata(marketID, cb);
 };
 
 ex.getReport = function(branchID, reportPeriod, eventID) {

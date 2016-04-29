@@ -1,10 +1,21 @@
-import { updateTransactions } from '../../transactions/actions/update-transactions';
+import { PENDING } from '../../transactions/constants/statuses';
 
-export function addTransactions(transactions) {
+import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+
+export function addTransactions(transactionsArray) {
     return function(dispatch, getState) {
-    	dispatch(updateTransactions(transactions.reduce((p, transaction) => {
-		    p[Math.round(Date.now() + window.performance.now() * 1000)] = transaction;
-		    return p;
-		}, {})));
+        dispatch(updateTransactionsData(transactionsArray.reduce((p, transaction) => {
+            transaction.status = PENDING;
+            p[makeTransactionID()] = transaction;
+            return p;
+        }, {})));
     };
+}
+
+export function addTransaction(transaction) {
+    return addTransactions([transaction]);
+}
+
+export function makeTransactionID() {
+    return Math.round(Date.now() + (window.performance.now() * 100));
 }

@@ -1,3 +1,5 @@
+import memoizerific from 'memoizerific';
+
 import { MILLIS_PER_BLOCK } from '../modules/app/constants/network';
 
 export function formatRep(num, opts) {
@@ -37,22 +39,18 @@ export function formatPercent(num, opts) {
                             ...opts });
 }
 
-export function formatBlockToDate(currentBlock, startBlock, startBlockMillisSinceEpoch) {
+export function makeDateFromBlock(currentBlock, startBlock, startBlockMillisSinceEpoch) {
 	var millis = (currentBlock - startBlock) * MILLIS_PER_BLOCK,
 		currentMillisSinceEpoch = startBlockMillisSinceEpoch + millis;
-	try {
-		return formatDate(new Date(currentMillisSinceEpoch));
-	}
-	catch (e) {
-		return null;
-	}
+	return new Date(currentMillisSinceEpoch);
 }
 
 export function formatDate(d) {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	d = (d instanceof Date) ? d : new Date(0);
 	return {
 		date: d,
-		formatted: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+		formatted: months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
 		full: d.toISOString()
 	};
 }
