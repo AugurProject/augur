@@ -39,18 +39,6 @@ else {
 	middleWare = applyMiddleware(thunk, localStorageMiddleware);
 }
 
-let localStorageState = windowRef.localStorage && windowRef.localStorage.getItem && JSON.parse(windowRef.localStorage.getItem('state'));
-if (localStorageState && localStorageState.transactions) {
-	Object.keys(localStorageState.transactions).forEach(key => {
-		if ([SUCCESS, FAILED, PENDING, INTERRUPTED].indexOf(localStorageState.transactions[key].status) < 0) {
-			localStorageState.transactions[key].status = INTERRUPTED;
-		}
-	});
-}
-
-let initialState = Object.assign({}, localStorageState);
-
 export default createStore(
 	combineReducers(reducers),
-	initialState,
 	middleWare);
