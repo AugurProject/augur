@@ -6,6 +6,5 @@ npm-debug*
 aux
 test-aux
 scratch
-data/intrade
-data/events.dat
 build
+data
