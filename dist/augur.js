@@ -46775,13 +46775,6 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
         description = description.description;
     }
     oracleOnly = oracleOnly || 0;
-    // console.log({
-    //     description: description,
-    //     periodLength: periodLength,
-    //     parent: parent,
-    //     tradingFee: tradingFee,
-    //     oracleOnly: oracleOnly
-    // });
     return this.createSubbranch({
         description: description,
         periodLength: periodLength,
@@ -46832,20 +46825,20 @@ Augur.prototype.createSubbranch = function (description, periodLength, parent, t
 // p2pWagers.se
 
 // sendReputation.se
-Augur.prototype.sendReputation = function (branch, to, value, onSent, onSuccess, onFailed) {
-    // branch: sha256
+Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSuccess, onFailed) {
+    // branchId: sha256
     // to: sha256
     // value: number -> fixed-point
-    if (branch && branch.branchId && branch.to && branch.value) {
-        to = branch.to;
-        value = branch.value;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
-        branch = branch.branchId;
+    if (branchId && branchId.branchId && branchId.to && branchId.value) {
+        to = branchId.to;
+        value = branchId.value;
+        if (branchId.onSent) onSent = branchId.onSent;
+        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
+        if (branchId.onFailed) onFailed = branchId.onFailed;
+        branchId = branchId.branchId;
     }
     var tx = clone(this.tx.sendReputation);
-    tx.params = [branch, to, abi.fix(value, "hex")];
+    tx.params = [branchId, to, abi.fix(value, "hex")];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
@@ -47027,35 +47020,32 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
 };
 
 // createSingleEventMarket.se
-Augur.prototype.createSingleEventMarket = function (branch, description, expirationBlock, minValue, maxValue, numOutcomes, alpha, liquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
-        description = branch.description;         // string
-        minValue = branch.minValue;               // integer (1 for binary)
-        maxValue = branch.maxValue;               // integer (2 for binary)
-        numOutcomes = branch.numOutcomes;         // integer (2 for binary)
-        expirationBlock = branch.expirationBlock; // integer
-        alpha = branch.alpha;                     // number -> fixed-point
-        liquidity = branch.initialLiquidity;      // number -> fixed-point
-        tradingFee = branch.tradingFee;           // number -> fixed-point
-        forkSelection = branch.forkSelection;     // integer
-        onSent = branch.onSent;                   // function({id, txhash})
-        onSuccess = branch.onSuccess;             // function({id, txhash})
-        onFailed = branch.onFailed;               // function({id, txhash})
-        if (branch.onSent) onSent = branch.onSent;           // function({id, txhash})
-        if (branch.onSuccess) onSuccess = branch.onSuccess;  // function({id, txhash})
-        if (branch.onFailed) onFailed = branch.onFailed;     // function({id, txhash})
-        branch = branch.branchId;                 // sha256 hash
+Augur.prototype.createSingleEventMarket = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, alpha, initialLiquidity, tradingFee, forkSelection, onSent, onSuccess, onFailed) {
+    if (branchId.constructor === Object && branchId.branchId) {
+        description = branchId.description;           // string
+        expirationBlock = branchId.expirationBlock;   // integer
+        minValue = branchId.minValue;                 // integer (1 for binary)
+        maxValue = branchId.maxValue;                 // integer (2 for binary)
+        numOutcomes = branchId.numOutcomes;           // integer (2 for binary)
+        alpha = branchId.alpha;                       // number -> fixed-point
+        initialLiquidity = branchId.initialLiquidity; // number -> fixed-point
+        tradingFee = branchId.tradingFee;             // number -> fixed-point
+        forkSelection = branchId.forkSelection;       // integer
+        onSent = branchId.onSent;                     // function
+        onSuccess = branchId.onSuccess;               // function
+        onFailed = branchId.onFailed;                 // function
+        branchId = branchId.branchId;                 // sha256 hash
     }
     var tx = clone(this.tx.createSingleEventMarket);
     tx.params = [
-        branch,
+        branchId,
         description,
         expirationBlock,
         minValue,
         maxValue,
         numOutcomes,
         abi.fix(alpha, "hex"),
-        abi.fix(liquidity, "hex"),
+        abi.fix(initialLiquidity, "hex"),
         abi.fix(tradingFee, "hex"),
         forkSelection || 1
     ];
@@ -47063,24 +47053,24 @@ Augur.prototype.createSingleEventMarket = function (branch, description, expirat
 };
 
 // createEvent.se
-Augur.prototype.createEvent = function (branch, description, expDate, minValue, maxValue, numOutcomes, onSent, onSuccess, onFailed) {
+Augur.prototype.createEvent = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, onSent, onSuccess, onFailed) {
     // first parameter can optionally be a transaction object
-    if (branch.constructor === Object && branch.branchId) {
-        description = branch.description; // string
-        minValue = branch.minValue;       // integer (1 for binary)
-        maxValue = branch.maxValue;       // integer (2 for binary)
-        numOutcomes = branch.numOutcomes; // integer (2 for binary)
-        expDate = branch.expDate || branch.expirationBlock;  // integer
-        if (branch.onSent) onSent = branch.onSent;           // function({id, txhash})
-        if (branch.onSuccess) onSuccess = branch.onSuccess;  // function({id, txhash})
-        if (branch.onFailed) onFailed = branch.onFailed;     // function({id, txhash})
-        branch = branch.branchId;         // sha256 hash
+    if (branchId.constructor === Object && branchId.branchId) {
+        description = branchId.description;         // string
+        minValue = branchId.minValue;               // integer (1 for binary)
+        maxValue = branchId.maxValue;               // integer (2 for binary)
+        numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+        expirationBlock = branchId.expirationBlock; // integer
+        onSent = branchId.onSent;                   // function
+        onSuccess = branchId.onSuccess;             // function
+        onFailed = branchId.onFailed;               // function
+        branchId = branchId.branchId;               // sha256 hash
     }
     var tx = clone(this.tx.createEvent);
     tx.params = [
-        branch,
+        branchId,
         description,
-        expDate,
+        expirationBlock,
         minValue,
         maxValue,
         numOutcomes
@@ -47089,20 +47079,19 @@ Augur.prototype.createEvent = function (branch, description, expDate, minValue, 
 };
 
 // createMarket.se
-Augur.prototype.createMarket = function (branch, description, alpha, liquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object && branch.branchId) {
-        alpha = branch.alpha;                 // number -> fixed-point
-        description = branch.description;     // string
-        liquidity = branch.initialLiquidity;  // number -> fixed-point
-        tradingFee = branch.tradingFee;       // number -> fixed-point
-        events = branch.events;               // array [sha256, ...]
-        forkSelection = branch.forkSelection; // integer
-        onSent = branch.onSent;               // function({id, txhash})
-        onSuccess = branch.onSuccess;         // function({id, txhash})
-        onFailed = branch.onFailed;           // function({id, txhash})
-        branch = branch.branchId;             // sha256 hash
+Augur.prototype.createMarket = function (branchId, description, alpha, initialLiquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
+    if (branchId.constructor === Object && branchId.branchId) {
+        alpha = branchId.alpha;                        // number -> fixed-point
+        description = branchId.description;            // string
+        initialLiquidity = branchId.initialLiquidity;  // number -> fixed-point
+        tradingFee = branchId.tradingFee;              // number -> fixed-point
+        events = branchId.events;                      // array [sha256, ...]
+        forkSelection = branchId.forkSelection;        // integer
+        onSent = branchId.onSent;                      // function
+        onSuccess = branchId.onSuccess;                // function
+        onFailed = branchId.onFailed;                  // function
+        branchId = branchId.branchId;                  // sha256 hash
     }
-    forkSelection = forkSelection || 1;
     var tx = clone(this.tx.createMarket);
     if (events && events.length) {
         for (var i = 0, len = events.length; i < len; ++i) {
@@ -47112,13 +47101,13 @@ Augur.prototype.createMarket = function (branch, description, alpha, liquidity, 
         }
     }
     tx.params = [
-        branch,
+        branchId,
         description,
         abi.fix(alpha, "hex"),
-        abi.fix(liquidity, "hex"),
+        abi.fix(initialLiquidity, "hex"),
         abi.fix(tradingFee, "hex"),
         events,
-        1
+        forkSelection || 1
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
@@ -47127,9 +47116,9 @@ Augur.prototype.createMarket = function (branch, description, alpha, liquidity, 
 Augur.prototype.closeMarket = function (branch, market, onSent, onSuccess, onFailed) {
     if (branch.constructor === Object && branch.branch) {
         market = branch.market;
-        if (branch.onSent) onSent = branch.onSent;
-        if (branch.onSuccess) onSuccess = branch.onSuccess;
-        if (branch.onFailed) onFailed = branch.onFailed;
+        onSent = branch.onSent;
+        onSuccess = branch.onSuccess;
+        onFailed = branch.onFailed;
         branch = branch.branch;
     }
     var tx = clone(this.tx.closeMarket);
