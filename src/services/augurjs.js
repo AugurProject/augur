@@ -1,3 +1,4 @@
+import * as async from 'async';
 import augur from 'augur.js';
 import abi from 'augur-abi';
 import BigNumber from 'bignumber.js';
@@ -470,15 +471,159 @@ ex.submitReportHash = function(branchID, accountID, event, report, cb) {
 	});
 };
 
-ex.penalizationCatchup = augur.penalizationCatchup.bind(augur);
-ex.penalizeNotEnoughReports = augur.penalizeNotEnoughReports.bind(augur);
-ex.closeMarket = augur.closeMarket.bind(augur);
-ex.penalizeWrong = augur.penalizeWrong.bind(augur);
-ex.collectFees = augur.collectFees.bind(augur);
-ex.getEvents = augur.getEvents.bind(augur);
-ex.getMarkets = augur.getMarkets.bind(augur);
-ex.getOutcome = augur.getOutcome.bind(augur);
+ex.penalizationCatchup = function (branchID, cb) {
+	augur.penalizationCatchup({
+		branch: branchID,
+		onSent: res => {
+			console.log("penalizationCatchup sent:", res);
+		},
+		onSuccess: res => {
+			console.log("penalizationCatchup success:", res);
+			cb(null, res);
+		},
+		onFailed: err => {
+			console.error("penalizationCatchup failed:", err);
+			if (err.error === "0") {
+				// already caught up
+			}
+			cb(err);
+		}
+	});
+};
+
+ex.penalizeNotEnoughReports = function (branchID, cb) {
+	var self = this;
+	augur.penalizeNotEnoughReports({
+		branch: branchID,
+		onSent: res => {
+			console.log("penalizeNotEnoughReports sent:", res);
+		},
+		onSuccess: res => {
+			console.log("penalizeNotEnoughReports success:", res);
+			cb(null, res);
+		},
+		onFailed: err => {
+			console.error("penalizeNotEnoughReports failed:", err);
+			if (err.error === "-1") {
+				// already called
+				return cb(err);
+			} else if (err.error === "-2") {
+				// need to catch up
+				return self.penalizationCatchup(branchID, cb);
+			}
+			cb(err);
+		}
+	});
+};
+
+ex.penalizeWrong = function (branchID, period, event, cb) {
+	var self = this;
+	augur.getMarkets(event, markets => {
+		if (!markets || markets.error) return console.error("getMarkets:", markets);
+		augur.getOutcome(event, outcome => {
+			if (outcome !== "0" && !outcome.error) {
+				console.log("Calling penalizeWrong for:", branchID, period, event);
+				augur.penalizeWrong({
+					branch: branchID,
+					event: event,
+					onSent: res => {
+						console.log("penalizeWrong sent for event " + event, res);
+					},
+					onSuccess: res => {
+						console.log("penalizeWrong success for event " + event, res);
+						cb(null, res);
+					},
+					onFailed: err => {
+						console.error("penalizeWrong failed for event" + event, err);
+						if (err.error === "-3") {
+							augur.penalizeNotEnoughReports(branchID, (err, res) => {
+								self.penalizeWrong(branchID, period, event, cb);
+							});
+						}
+						cb(err);
+					}
+				});
+			} else {
+				self.closeMarket(branchID, markets[0], (err, res) => {
+					if (err) return cb(err);
+					self.penalizeWrong(branchID, period, event, cb);
+				});
+			}
+		});
+	});
+};
+
+ex.closeMarkets = function (branchID, period, cb) {
+	var self = this;
+	augur.getEvents(branchID, period, events => {
+		if (!events || events.error) {
+			console.error("getEvents:", events);
+			return cb(events || "no events found");
+		}
+		var closedMarkets = [];
+		async.eachSeries(events, (event, nextEvent) => {
+			augur.getOutcome(event, outcome => {
+				if (outcome !== "0") return nextEvent();
+				augur.getMarkets(event, markets => {
+					if (!markets || markets.error) {
+						return nextEvent(markets || "no markets found");
+					}
+					async.eachSeries(markets, (market, nextMarket) => {
+						if (closedMarkets.indexOf(market) > -1) {
+							return nextMarket();
+						}
+						self.closeMarket(branchID, market, (err, res) => {
+							closedMarkets.push(market);
+							nextMarket();
+						});
+					}, nextEvent);
+				});
+			});
+		}, err => {
+			if (err) return cb(err, closedMarkets);
+			cb(null, closedMarkets);
+		});
+	});
+};
+
+ex.closeMarket = function (branchID, marketID, cb) {
+	augur.closeMarket({
+		branch: branchID,
+		market: marketID,
+		onSent: res => {
+			console.log("closeMarket sent:", res);
+		},
+		onSuccess: res => {
+			console.log("closeMarket success:", res);
+			cb(null, res);
+		},
+		onFailed: err => {
+			console.error("closeMarket error:", err);
+			cb(err);
+		}
+	});
+};
+
+ex.collectFees = function (branchID, cb) {
+	augur.collectFees({
+		branch: branchID,
+		onSent: res => {
+			console.log("collectFees sent:", res);
+		},
+		onSuccess: res => {
+			console.log("collectFees success:", res);
+			cb(null, res);
+		},
+		onFailed: err => {
+			console.error("collectFees error:", err);
+			cb(err);
+		}
+	});
+};
+
 ex.getReportPeriod = augur.getReportPeriod.bind(augur);
+ex.submitReport = augur.submitReport.bind(augur);
+ex.getEvents = augur.getEvents.bind(augur);
 ex.getReportedPeriod = augur.getReportedPeriod.bind(augur);
 ex.incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting.bind(augur);
 ex.rpc = augur.rpc;

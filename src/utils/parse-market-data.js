@@ -34,7 +34,7 @@ export function ParseMarketsData(marketsData) {
 		o.marketsData[marketID] = marketData;
 
 		// get outcomes embedded in market description for categorical
-		if (marketData.type === CATEGORICAL && marketData.description) {
+		if (marketData.description && (marketData.type === CATEGORICAL || marketData.type === BINARY)) {
 			categoricalOutcomeNames = ParseCategoricalOutcomeNamesFromDescription(marketData);
 		}
 
@@ -52,7 +52,11 @@ export function ParseMarketsData(marketsData) {
 
 			switch (marketData.type) {
 				case BINARY:
-					p[outcome.id].name = parseInt(outcome.id, 10) === NO ? 'No' : 'Yes';
+					if (categoricalOutcomeNames) {
+						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || outcome.id.toString();
+					} else {
+						p[outcome.id].name = parseInt(outcome.id, 10) === NO ? 'No' : 'Yes';
+					}
 					return p;
 
 				case CATEGORICAL:

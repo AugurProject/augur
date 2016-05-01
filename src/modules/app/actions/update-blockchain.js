@@ -31,6 +31,11 @@ export function updateBlockchain(blockNum) {
 									var isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
 									if (!isCurrent) return incrementPeriod(currentPeriod);
 									console.debug("Branch caught up!");
+									// if we've entered a new half-period, call autoReportSequence
+									var isReportConfirmationPhase = (blockNum % branch.periodLength) > (branch.periodLength / 2);
+									if (isReportConfirmationPhase !== blockchain.isReportConfirmationPhase) {
+										dispatch(autoReportSequence(isReportConfirmationPhase));
+									}
 									dispatch({
 										type: UPDATE_BLOCKCHAIN,
 										data: {
@@ -51,6 +56,13 @@ export function updateBlockchain(blockNum) {
 				} else {
 					AugurJS.rpc.blockNumber(function (blockNumber) {
 						blockNumber = parseInt(blockNumber);
+
+						// if we've entered a new half-period, call autoReportSequence
+						var isReportConfirmationPhase = (blockNumber % branch.periodLength) > (branch.periodLength / 2);
+						if (isReportConfirmationPhase !== blockchain.isReportConfirmationPhase) {
+							dispatch(autoReportSequence(isReportConfirmationPhase));
+						}
+
 						dispatch({
 							type: UPDATE_BLOCKCHAIN,
 							data: {
@@ -85,11 +97,5 @@ export function updateBlockchain(blockNum) {
 
 		// increment period if needed
 		incrementPeriod(currentPeriod);
-
-		// if we've entered a new half-period (or just logged in), then call updateBranch
-		var isReportConfirmationPhase = (blockNum % branch.periodLength) > (branch.periodLength / 2);
-		if (isReportConfirmationPhase !== blockchain.isReportConfirmationPhase) {
-			dispatch(autoReportSequence());
-		}
 	};
 }
