@@ -470,4 +470,17 @@ ex.submitReportHash = function(branchID, accountID, event, report, cb) {
 	});
 };
 
+ex.penalizationCatchup = augur.penalizationCatchup.bind(augur);
+ex.penalizeNotEnoughReports = augur.penalizeNotEnoughReports.bind(augur);
+ex.closeMarket = augur.closeMarket.bind(augur);
+ex.penalizeWrong = augur.penalizeWrong.bind(augur);
+ex.collectFees = augur.collectFees.bind(augur);
+ex.getEvents = augur.getEvents.bind(augur);
+ex.getMarkets = augur.getMarkets.bind(augur);
+ex.getOutcome = augur.getOutcome.bind(augur);
+ex.getReportPeriod = augur.getReportPeriod.bind(augur);
+ex.getReportedPeriod = augur.getReportedPeriod.bind(augur);
+ex.incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting.bind(augur);
+ex.rpc = augur.rpc;
+
 module.exports = ex;

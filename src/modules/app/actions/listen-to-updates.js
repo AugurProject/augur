@@ -15,7 +15,7 @@ export function listenToUpdates() {
 				dispatch(updateCurrentBlock());
 			},
 
-			// new contracts
+			// transactions involving augur contracts
 			(errNone, filtrate) => {
 				console.log('augur contracts:', filtrate)
 			},

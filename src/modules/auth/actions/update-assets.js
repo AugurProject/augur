@@ -40,6 +40,7 @@ export function updateAssets() {
 				if (!loginAccount.realEther || loginAccount.realEther.value !== realEther) {
 					return dispatch(updateLoginAccount({ realEther }));
 				}
-			});
+			}
+		);
 	};
 }
