@@ -53,7 +53,7 @@ export function ParseMarketsData(marketsData) {
 			switch (marketData.type) {
 				case BINARY:
 					if (categoricalOutcomeNames) {
-						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || outcome.id.toString();
+						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || (parseInt(outcome.id, 10) === NO ? 'No' : 'Yes');
 					} else {
 						p[outcome.id].name = parseInt(outcome.id, 10) === NO ? 'No' : 'Yes';
 					}
