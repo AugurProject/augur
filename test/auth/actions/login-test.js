@@ -11,6 +11,9 @@ describe(`modules/auth/actions/login.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
   const fakeSelectors = {};
+  const updtLoginAccStub = {};
+  const ldLoginAccStub = {};
+  const autoStub = {};
   let action, store;
   let thisTestState = Object.assign({}, testState, {
     loginAccount: {}
@@ -31,10 +34,23 @@ describe(`modules/auth/actions/login.js`, () => {
       onClick: () => {}
     }
   };
+
+  let updateTestString = 'updateLoginAccount(loginAccount) called.';
+  let ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
+  let ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
+  let autoTestString = 'autoReportSequence() called.';
+
+  updtLoginAccStub.updateLoginAccount = (loginAccount) => updateTestString;
+  ldLoginAccStub.loadLoginAccountDependents = () => ldLoginAccDepTestString;
+  ldLoginAccStub.loadLoginAccountLocalStorage = (id) => ldLoginAccLSTestString;
+  autoStub.autoReportSequence = () => autoTestString;
+
   action = proxyquire('../../../src/modules/auth/actions/login', {
     '../../../services/augurjs': fakeAugurJS,
     '../../../selectors': fakeSelectors,
-    '@noCallThru': true
+    '../../auth/actions/update-login-account': updtLoginAccStub,
+    '../../auth/actions/load-login-account': ldLoginAccStub,
+    '../../reports/actions/auto-report-sequence': autoStub
   });
 
   beforeEach(() => {
@@ -43,26 +59,8 @@ describe(`modules/auth/actions/login.js`, () => {
 
   it(`should attempt to login an account given user/pass`, () => {
     store.dispatch(action.login('test', 'test', 'test'));
-    const expectedOutput = [{
-      type: 'UPDATE_LOGIN_ACCOUNT',
-      data: {
-        address: 'test',
-        id: 'test',
-        handle: 'test',
-        ether: 0,
-        realEther: 0,
-        rep: 0
-      }
-    }, {
-      type: 'UPDATE_LOGIN_ACCOUNT',
-      data: {
-        ether: undefined,
-        realEther: undefined,
-        rep: undefined
-      }
-    }, {
-      type: 'CLEAR_REPORTS'
-    }];
+    const expectedOutput = [ldLoginAccLSTestString, updateTestString, ldLoginAccDepTestString, autoTestString];
     assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
   });
+
 });
