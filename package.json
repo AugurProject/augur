@@ -44,6 +44,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo \"./build/index.html\" || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
+    "async": "^2.0.0-rc.3",
     "augur-abi": "^0.2.7",
     "augur-ui-react-components": "^2.0.2",
     "augur.js": "^0.19.7",
