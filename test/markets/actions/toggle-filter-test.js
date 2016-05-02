@@ -12,16 +12,24 @@ describe(`modules/markets/actions/toggle-fiter.js`, () => {
   let state = Object.assign({}, testState);
   let store = mockStore(state);
   let out;
-  // Mock the Window object;
-  global.window = {};
-  global.window.location = {
-    pathname: '/',
-    search: '?isOpen=true'
-  };
-  global.window.history = {
-    pushState: (a, b, c) => true
-  };
-  global.window.scrollTo = (x, y) => true;
+
+  beforeEach(() => {
+    store.clearActions();
+    // Mock the Window object
+    global.window = {};
+    global.window.location = {
+      pathname: '/',
+      search: '?isOpen=true'
+    };
+    global.window.history = {
+      pushState: (a, b, c) => true
+    };
+    global.window.scrollTo = (x, y) => true;
+  });
+
+  afterEach(() => {
+    global.window = {};
+  });
 
   it(`should dispatch a toggle filter action`, () => {
     const filterID = '123test456';

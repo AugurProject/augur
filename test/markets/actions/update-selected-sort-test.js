@@ -12,16 +12,24 @@ describe('modules/markets/actions/update-selected-sort', () => {
   let state = Object.assign({}, testState);
   let store = mockStore(state);
   let out;
-  // Mock the Window object;
-  global.window = {};
-  global.window.location = {
-    pathname: '/',
-    search: '?isOpen=true'
-  };
-  global.window.history = {
-    pushState: (a, b, c) => true
-  };
-  global.window.scrollTo = (x, y) => true;
+
+  beforeEach(() => {
+    store.clearActions();
+    // Mock the Window object
+    global.window = {};
+    global.window.location = {
+      pathname: '/',
+      search: '?isOpen=true'
+    };
+    global.window.history = {
+      pushState: (a, b, c) => true
+    };
+    global.window.scrollTo = (x, y) => true;
+  });
+
+  afterEach(() => {
+    global.window = {};
+  });
 
   it(`should return an UPDATE_SELECTED_SORT action object`, () => {
     const selectedSort = 'puppies';

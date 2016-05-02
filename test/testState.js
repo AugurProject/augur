@@ -49,6 +49,7 @@ const testState = {
   },
   keywords: '',
   marketsData: {},
+  outcomes: { testMarketID: { id: 'testMarketID'}, test: {id: 'test'} },
   pagination: {
     numPerPage: 10,
     selectedPageNum: 1
