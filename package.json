@@ -78,6 +78,7 @@
     "proxyquire": "^1.7.4",
     "redux-mock-store": "^1.0.2",
     "rimraf": "^2.5.2",
+    "sinon": "^1.17.4",
     "uglify-js": "^2.6.2",
     "watchify": "^3.7.0"
   },

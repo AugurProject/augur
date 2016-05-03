@@ -8,6 +8,7 @@ import testState from '../../testState';
 import * as selector from '../../../src/modules/trade/selectors/trade-orders';
 
 describe(`modules/trade/selectors/trade-orders.js`, () => {
+  proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   let state = Object.assign({}, testState);

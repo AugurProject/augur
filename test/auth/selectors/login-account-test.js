@@ -5,6 +5,7 @@ import proxyquire from 'proxyquire';
 import testState from '../../testState';
 
 describe(`modules/auth/selectors/login-account.js`, () => {
+  proxyquire.noPreserveCache();
   let out, selector, state, fakeStore;
   state = Object.assign({}, testState, {
     loginAccount: {

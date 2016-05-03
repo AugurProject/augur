@@ -10,12 +10,12 @@ import {
 } from '../../../src/modules/auth/actions/update-login-account';
 
 describe(`modules/auth/actions/load-login-account.js`, () => {
+  proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
   const fakeUpdateAssets = {};
   const fakeLoadAcctTrades = {};
-  proxyquire.noPreserveCache();
   let action, store;
   let thisTestState = Object.assign({}, testState, {
     loginAccount: {}

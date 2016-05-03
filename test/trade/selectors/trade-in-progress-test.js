@@ -5,6 +5,7 @@ import proxyquire from 'proxyquire';
 import realSelector from '../../../src/modules/trade/selectors/trade-in-progress';
 
 describe(`modules/trade/selectors/trade-in-progress.js`, () => {
+  proxyquire.noPreserveCache();
   const testState = {
     selectedMarketID: 'testmarket',
     tradesInProgress: {

@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe(`modules/auth/actions/logout.js`, () => {
+  proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};

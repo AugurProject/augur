@@ -9,6 +9,7 @@ import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../../src/modules
 import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../../src/modules/transactions/constants/statuses';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
+  proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   let store, action, out;
@@ -39,8 +40,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
   };
   let fakeLoadMarket = {};
   fakeLoadMarket.loadMarket = (marketID) => true;
-
-
 
   action = proxyquire('../../../src/modules/create-market/actions/submit-new-market', {
     '../../transactions/actions/add-create-market-transaction': fakeInclude,
@@ -115,6 +114,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
       });
     };
     store.dispatch(action.createMarket('trans12345', {type: BINARY}));
-    console.log(store.getActions());
+    // console.log(store.getActions());
+    assert.deepEqual(store.getActions(), [], `Didn't properly dispatch actions for a error when creating account`);
   });
 });
