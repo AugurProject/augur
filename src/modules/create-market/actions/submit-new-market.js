@@ -47,7 +47,7 @@ export function createMarket(transactionID, newMarket) {
 
 		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
 			if (err) {
-				dispatch(transactionID(transactionID, { status: FAILED, message: err.message }));
+				dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				return;
 			}
 			if (res.status === CREATING_MARKET) {
@@ -64,5 +64,3 @@ export function createMarket(transactionID, newMarket) {
 		});
 	};
 }
-
-

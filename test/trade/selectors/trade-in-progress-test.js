@@ -11,18 +11,15 @@ describe(`modules/trade/selectors/trade-in-progress.js`, () => {
       'testmarket': 'this is a test'
     }
   };
-
   let selector, fakeStore;
 
-  before(() => {
-    fakeStore = {
-      default: {
-        getState: () => testState
-      }
-    };
-    selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
-      '../../../store': fakeStore
-    });
+  fakeStore = {
+    default: {
+      getState: () => testState
+    }
+  };
+  selector = proxyquire('../../../src/modules/trade/selectors/trade-in-progress', {
+    '../../../store': fakeStore
   });
 
   it(`should return tradesInProgress[selectedMarketID] if available`, () => {
