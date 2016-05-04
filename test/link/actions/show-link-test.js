@@ -14,8 +14,6 @@ describe(`modules/link/actions/show-link.js`, () => {
   let out;
   const URL = '/test?search=example';
 
-
-
   beforeEach(() => {
     store.clearActions();
     // Mock the window object
