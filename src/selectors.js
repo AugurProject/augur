@@ -24,6 +24,11 @@ selectors.links = {
 	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
 };
 
+selectors.keywords = {
+	value: '',
+	onChangeKeywords: () => {}
+};
+
 selectors.authForm = {};
 
 selectors.transactions =  [];
@@ -51,7 +56,6 @@ selectors.marketsTotals = {
 };
 
 selectors.filtersProps =  {};
-selectors.keywordsChangeHandler =  () => {};
 selectors.onChangeSort = (prop, isDesc) => {
 	if (isDesc !== false && isDesc !== true) {
 		isDesc = selectors.searchSort.selectedSort.isDesc;
