@@ -29,7 +29,7 @@
     "watch:dist:all": "npm run -s clean:dist && (npm run -s watch:dist:css & npm run -s watch:dist:assets & npm run -s watch:dist:js)",
     "watch:dist:assets": "onchange './src/assets/**' -i -- npm run -s dist:assets",
     "watch:dist:css": "onchange './src/**/*.less' -i -- npm run -s dist:css",
-    "watch:dist:js": "echo asdf && watchify $npm_package_config_js_entry_file_dist --extension=.js --extension=.jsx --detectGlobals false --standalone augur-react-components -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] -o 'derequire > ./dist/app.jsx && echo ---------WATCHIFY--------`date +%r`'",
+    "watch:dist:js": "watchify $npm_package_config_js_entry_file_dist --extension=.js --extension=.jsx --detectGlobals false --standalone augur-react-components -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] -o 'derequire > ./dist/app.jsx && echo ---------WATCHIFY--------`date +%r`'",
     "________": "",
     "watch:all": "npm run -s clean:demo && (npm run -s watch:css & npm run -s watch:assets & npm run -s watch:js & npm run -s watch:html)",
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s watch:assets:do",
