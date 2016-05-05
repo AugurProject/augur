@@ -7,12 +7,14 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
+import Chart from '../../market/components/chart';
 
 module.exports = React.createClass({
     propTypes: {
         className: React.PropTypes.string,
         siteHeader: React.PropTypes.object,
 		market: React.PropTypes.object,
+		priceTimeSeries: React.PropTypes.array,
 		numPendingReports: React.PropTypes.number
     },
 
@@ -66,6 +68,11 @@ module.exports = React.createClass({
 							/>
 					);
 				}
+
+				nodes.push(
+					<Chart
+						series={ p.priceTimeSeries } />
+				);
 			}
 		}
 

@@ -62,6 +62,7 @@ export default function(appElement, selectors) {
     		node = <MarketPage
     		            siteHeader={ p.siteHeader }
     		            market={ p.market }
+						priceTimeSeries= { p.priceTimeSeries }
     		            numPendingReports={ p.marketsTotals.numPendingReports } />;
     		break;
 

@@ -29,6 +29,28 @@ selectors.keywords = {
 	onChangeKeywords: () => {}
 };
 
+let dayMillis = 24 * 60 * 60 * 1000;
+let nowMillis = new Date().getTime();
+selectors.priceTimeSeries = [{
+		name: "outcome 1",
+		data: [
+			[nowMillis - 50 * dayMillis, 0.3],
+			[nowMillis - 40 * dayMillis, 0.1],
+			[nowMillis - 30 * dayMillis, 0.65],
+			[nowMillis - 20 * dayMillis, 0.93]
+		],
+		color: "#f00"
+	},
+	{
+		name: "outcome 2",
+		data: [
+			[nowMillis - 55 * dayMillis, 0.8],
+			[nowMillis - 45 * dayMillis, 0.7],
+			[nowMillis - 35 * dayMillis, 0.6],
+			[nowMillis - 25 * dayMillis, 0.4]
+		],
+		color: "#0f0"
+	}];
 selectors.authForm = {};
 
 selectors.transactions =  [];
