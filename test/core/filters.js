@@ -190,15 +190,15 @@ describe("Price history", function () {
         });
     }
 
-    it("getPriceHistory(" + branch + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var start = (new Date()).getTime();
-        augur.getPriceHistory(branch, function (priceHistory) {
-            console.log("getPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
-            assert.notProperty(priceHistory, "error");
-            assert.isObject(priceHistory);
-            var marketIdUnforked = abi.unfork(marketId, true);
-            if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+        it("getPriceHistory(" + branch + ")", function (done) {
+            this.timeout(constants.TIMEOUT);
+            var start = (new Date()).getTime();
+            augur.getPriceHistory(branch, function (priceHistory) {
+                console.log("getPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
+                assert.notProperty(priceHistory, "error");
+                assert.isObject(priceHistory);
+                var marketIdUnforked = abi.unfork(marketId, true);
                 assert.property(priceHistory, marketIdUnforked);
                 assert.property(priceHistory[marketIdUnforked], outcome);
                 assert.isArray(priceHistory[marketIdUnforked][outcome]);
@@ -210,12 +210,10 @@ describe("Price history", function () {
                 assert.property(priceHistory[marketIdUnforked][outcome][0], "user");
                 assert.isAbove(priceHistory[marketIdUnforked][outcome][0].market.length, 64);
                 assert.strictEqual(priceHistory[marketIdUnforked][outcome][0].user.length, 42);
-            }
-            done();
+                done();
+            });
         });
-    });
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
         it("[async] getMarketPriceHistory(" + marketId + ")", function (done) {
             this.timeout(constants.TIMEOUT);
             var start = (new Date()).getTime();
