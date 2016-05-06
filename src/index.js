@@ -1528,63 +1528,66 @@ Augur.prototype.getPriceHistory = function (branch, cb) {
         cb(priceHistory);
     });
 };
-Augur.prototype.getMarketPriceHistory = function (market, cb) {
-    if (market) {
-        var filter = {
-            fromBlock: "0x1",
-            toBlock: "latest",
-            address: this.contracts.buyAndSellShares,
-            topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true)]
-        };
-        if (!this.utils.is_function(cb)) {
-            var logs = this.filters.eth_getLogs(filter);
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return cb(null);
-            }
-            if (logs.error) throw new Error(JSON.stringify(logs));
-            var outcome, parsed, priceHistory = {};
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    outcome = abi.number(logs[i].topics[3]);
-                    if (!priceHistory[outcome]) priceHistory[outcome] = [];
-                    parsed = rpc.unmarshal(logs[i].data);
-                    priceHistory[outcome].push({
-                        market: abi.hex(market),
-                        user: abi.format_address(logs[i].topics[1]),
-                        price: abi.unfix(parsed[0], "string"),
-                        cost: abi.unfix(parsed[1], "string"),
-                        blockNumber: abi.hex(logs[i].blockNumber)
-                    });
-                }
-            }
-            return priceHistory;
-        }
-        var self = this;
-        this.filters.eth_getLogs(filter, function (logs) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return cb(null);
-            }
-            if (logs.error) return cb(logs);
-            var outcome, parsed, priceHistory = {};
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    outcome = abi.number(logs[i].topics[3]);
-                    if (!priceHistory[outcome]) priceHistory[outcome] = [];
-                    parsed = rpc.unmarshal(logs[i].data);
-                    priceHistory[outcome].push({
-                        market: abi.hex(market),
-                        user: abi.format_address(logs[i].topics[1]),
-                        price: abi.unfix(parsed[0], "string"),
-                        cost: abi.unfix(parsed[1], "string"),
-                        blockNumber: abi.hex(logs[i].blockNumber)
-                    });
-                }
-            }
-            cb(priceHistory);
-        });
+Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
+    var self = this;
+    if (!cb && this.utils.is_function(options)) {
+        cb = options;
+        options = null;
     }
+    options = options || {};
+    var filter = {
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
+        address: this.contracts.buyAndSellShares,
+        topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true)]
+    };
+    if (!this.utils.is_function(cb)) {
+        var logs = this.filters.eth_getLogs(filter);
+        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+            return cb(null);
+        }
+        if (logs.error) throw new Error(JSON.stringify(logs));
+        var outcome, parsed, priceHistory = {};
+        for (var i = 0, n = logs.length; i < n; ++i) {
+            if (logs[i] && logs[i].data !== undefined &&
+                logs[i].data !== null && logs[i].data !== "0x") {
+                outcome = abi.number(logs[i].topics[3]);
+                if (!priceHistory[outcome]) priceHistory[outcome] = [];
+                parsed = rpc.unmarshal(logs[i].data);
+                priceHistory[outcome].push({
+                    market: abi.hex(market),
+                    user: abi.format_address(logs[i].topics[1]),
+                    price: abi.unfix(parsed[0], "string"),
+                    cost: abi.unfix(parsed[1], "string"),
+                    blockNumber: parseInt(logs[i].blockNumber)
+                });
+            }
+        }
+        return priceHistory;
+    }
+    this.filters.eth_getLogs(filter, function (logs) {
+        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+            return cb(null);
+        }
+        if (logs.error) return cb(logs);
+        var outcome, parsed, priceHistory = {};
+        for (var i = 0, n = logs.length; i < n; ++i) {
+            if (logs[i] && logs[i].data !== undefined &&
+                logs[i].data !== null && logs[i].data !== "0x") {
+                outcome = abi.number(logs[i].topics[3]);
+                if (!priceHistory[outcome]) priceHistory[outcome] = [];
+                parsed = rpc.unmarshal(logs[i].data);
+                priceHistory[outcome].push({
+                    market: abi.hex(market),
+                    user: abi.format_address(logs[i].topics[1]),
+                    price: abi.unfix(parsed[0], "string"),
+                    cost: abi.unfix(parsed[1], "string"),
+                    blockNumber: parseInt(logs[i].blockNumber)
+                });
+            }
+        }
+        cb(priceHistory);
+    });
 };
 Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
     if (!market || !outcome) return;
@@ -1617,12 +1620,18 @@ Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
  * Market creation events (block numbers) *
  ******************************************/
 
-Augur.prototype.getCreationBlocks = function (branch, cb) {
+Augur.prototype.getCreationBlocks = function (branch, options, cb) {
     var self = this;
-    if (!branch || !this.utils.is_function(cb)) return;
+    if (!branch) return;
+    if (!cb && this.utils.is_function(options)) {
+        cb = options;
+        options = null;
+    }
+    options = options || {};
+    cb = cb || this.utils.noop;
     this.filters.eth_getLogs({
-        fromBlock: "0x1",
-        toBlock: "latest",
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
         address: this.contracts.createMarket,
         topics: [this.rpc.sha3(constants.LOGS.creationBlock)],
         timeout: 240000
@@ -1649,12 +1658,18 @@ Augur.prototype.getCreationBlocks = function (branch, cb) {
     });
 };
 
-Augur.prototype.getMarketCreationBlock = function (market, cb) {
+Augur.prototype.getMarketCreationBlock = function (market, options, cb) {
     var self = this;
-    if (!market || !this.utils.is_function(cb)) return;
+    if (!market) return;
+    if (!cb && this.utils.is_function(options)) {
+        cb = options;
+        options = null;
+    }
+    options = options || {};
+    cb = cb || this.utils.noop;
     this.filters.eth_getLogs({
-        fromBlock: "0x1",
-        toBlock: "latest",
+        fromBlock: options.fromBlock || "0x1",
+        toBlock: options.toBlock || "latest",
         address: this.contracts.createMarket,
         topics: [this.rpc.sha3(constants.LOGS.creationBlock), abi.unfork(market, true)],
         timeout: 120000
@@ -1663,11 +1678,8 @@ Augur.prototype.getMarketCreationBlock = function (market, cb) {
             return cb(null);
         }
         if (logs.error) return cb(logs);
-        var block = self.filters.search_creation_logs(logs, market);
-        if (block && block.constructor === Array && block.length &&
-            block[0].constructor === Object && block[0].blockNumber) {
-            cb(abi.number(block[0].blockNumber));
-        }
+        if (logs[0].blockNumber) return cb(parseInt(logs[0].blockNumber));
+        cb(null);
     });
 };
 
