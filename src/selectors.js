@@ -29,28 +29,6 @@ selectors.keywords = {
 	onChangeKeywords: () => {}
 };
 
-let dayMillis = 24 * 60 * 60 * 1000;
-let nowMillis = new Date().getTime();
-selectors.priceTimeSeries = [{
-		name: "outcome 1",
-		data: [
-			[nowMillis - 50 * dayMillis, 0.3],
-			[nowMillis - 40 * dayMillis, 0.1],
-			[nowMillis - 30 * dayMillis, 0.65],
-			[nowMillis - 20 * dayMillis, 0.93]
-		],
-		color: "#f00"
-	},
-	{
-		name: "outcome 2",
-		data: [
-			[nowMillis - 55 * dayMillis, 0.8],
-			[nowMillis - 45 * dayMillis, 0.7],
-			[nowMillis - 35 * dayMillis, 0.6],
-			[nowMillis - 25 * dayMillis, 0.4]
-		],
-		color: "#0f0"
-	}];
 selectors.authForm = {};
 
 selectors.transactions =  [];
@@ -179,6 +157,9 @@ function makeMarkets(numMarkets = 20) {
 	return markets;
 
 	function makeDummyMarket(index) {
+		let dayMillis = 24 * 60 * 60 * 1000;
+		let nowMillis = new Date().getTime();
+
 		var id = index.toString(),
 			m = {
 				id: id,
@@ -187,6 +168,26 @@ function makeMarkets(numMarkets = 20) {
 				endDate: { formatted: '12/12/2017' },
 				tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
 				volume: makeNumber(randomInt(0, 10000), 'Shares', true),
+				priceTimeSeries: [{
+					name: "outcome 1",
+					data: [
+						[nowMillis - 50 * dayMillis, 0.3],
+						[nowMillis - 40 * dayMillis, 0.1],
+						[nowMillis - 30 * dayMillis, 0.65],
+						[nowMillis - 20 * dayMillis, 0.93]
+					],
+					color: "#f00"
+				},
+					{
+						name: "outcome 2",
+						data: [
+							[nowMillis - 55 * dayMillis, 0.8],
+							[nowMillis - 45 * dayMillis, 0.7],
+							[nowMillis - 35 * dayMillis, 0.6],
+							[nowMillis - 25 * dayMillis, 0.4]
+						],
+						color: "#0f0"
+					}],
 				isOpen: Math.random() > 0.1,
 				isPendingReport: Math.random() < 0.5,
 				marketLink: { text: 'Trade', className: 'trade', onClick: () => module.exports.update({ activePage: M, market: m }) },

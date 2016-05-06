@@ -71,7 +71,8 @@ module.exports = React.createClass({
 
 				nodes.push(
 					<Chart
-						series={ p.priceTimeSeries } />
+						key="market-chart"
+						series={ p.market.priceTimeSeries } />
 				);
 			}
 		}

@@ -25012,85 +25012,84 @@ module.exports = _dereq_('./lib/React');
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 exports.default = function (appElement, selectors) {
-  var p = selectors,
-      node;
+    var p = selectors,
+        node;
 
-  p.siteHeader = {
-    activePage: p.activePage,
-    loginAccount: p.loginAccount,
-    positionsSummary: p.marketsTotals.positionsSummary,
-    transactionsTotals: p.transactionsTotals,
-    isTransactionsWorking: p.isTransactionsWorking,
-
-    marketsLink: p.links && p.links.marketsLink || undefined,
-    positionsLink: p.links && p.links.positionsLink || undefined,
-    transactionsLink: p.links && p.links.transactionsLink || undefined,
-    authLink: p.links && p.links.authLink || undefined
-  };
-
-  switch (p.activePage) {
-    case _authTypes.REGISTER:
-    case _authTypes.LOGIN:
-    case _authTypes.LOGOUT:
-      node = _react2.default.createElement(_authPage2.default, {
-        siteHeader: p.siteHeader,
-        authForm: p.authForm });
-      break;
-
-    case _pages.MAKE:
-      node = _react2.default.createElement(_createMarketPage2.default, {
-        siteHeader: p.siteHeader,
-        createMarketForm: p.createMarketForm });
-      break;
-
-    case _pages.POSITIONS:
-      node = _react2.default.createElement(_positionsPage2.default, {
-        siteHeader: p.siteHeader,
+    p.siteHeader = {
+        activePage: p.activePage,
+        loginAccount: p.loginAccount,
         positionsSummary: p.marketsTotals.positionsSummary,
-        markets: p.markets
-      });
-      break;
+        transactionsTotals: p.transactionsTotals,
+        isTransactionsWorking: p.isTransactionsWorking,
 
-    case _pages.TRANSACTIONS:
-      node = _react2.default.createElement(_transactionsPage2.default, {
-        siteHeader: p.siteHeader,
-        transactions: p.transactions,
-        transactionsTotals: p.transactionsTotals });
-      break;
+        marketsLink: p.links && p.links.marketsLink || undefined,
+        positionsLink: p.links && p.links.positionsLink || undefined,
+        transactionsLink: p.links && p.links.transactionsLink || undefined,
+        authLink: p.links && p.links.authLink || undefined
+    };
 
-    case _pages.M:
-      node = _react2.default.createElement(_marketPage2.default, {
-        siteHeader: p.siteHeader,
-        market: p.market,
-        priceTimeSeries: p.priceTimeSeries,
-        numPendingReports: p.marketsTotals.numPendingReports });
-      break;
+    switch (p.activePage) {
+        case _authTypes.REGISTER:
+        case _authTypes.LOGIN:
+        case _authTypes.LOGOUT:
+            node = _react2.default.createElement(_authPage2.default, {
+                siteHeader: p.siteHeader,
+                authForm: p.authForm });
+            break;
 
-    default:
-      node = _react2.default.createElement(_marketsPage2.default, {
-        siteHeader: p.siteHeader,
-        createMarketLink: (p.links || {}).createMarketLink,
-        onChangeKeywords: p.keywords.onChangeKeywords,
-        keywords: p.keywords.value,
+        case _pages.MAKE:
+            node = _react2.default.createElement(_createMarketPage2.default, {
+                siteHeader: p.siteHeader,
+                createMarketForm: p.createMarketForm });
+            break;
 
-        markets: p.markets,
-        marketsHeader: p.marketsHeader,
-        favoriteMarkets: p.favoriteMarkets,
-        filtersProps: p.filtersProps,
-        pagination: p.pagination,
+        case _pages.POSITIONS:
+            node = _react2.default.createElement(_positionsPage2.default, {
+                siteHeader: p.siteHeader,
+                positionsSummary: p.marketsTotals.positionsSummary,
+                markets: p.markets
+            });
+            break;
 
-        selectedSort: p.searchSort.selectedSort,
-        sortOptions: p.searchSort.sortOptions,
-        onChangeSort: p.searchSort.onChangeSort
-      });
-      break;
-  }
+        case _pages.TRANSACTIONS:
+            node = _react2.default.createElement(_transactionsPage2.default, {
+                siteHeader: p.siteHeader,
+                transactions: p.transactions,
+                transactionsTotals: p.transactionsTotals });
+            break;
 
-  (0, _reactDom.render)(node, appElement);
+        case _pages.M:
+            node = _react2.default.createElement(_marketPage2.default, {
+                siteHeader: p.siteHeader,
+                market: p.market,
+                numPendingReports: p.marketsTotals.numPendingReports });
+            break;
+
+        default:
+            node = _react2.default.createElement(_marketsPage2.default, {
+                siteHeader: p.siteHeader,
+                createMarketLink: (p.links || {}).createMarketLink,
+                onChangeKeywords: p.keywords.onChangeKeywords,
+                keywords: p.keywords.value,
+
+                markets: p.markets,
+                marketsHeader: p.marketsHeader,
+                favoriteMarkets: p.favoriteMarkets,
+                filtersProps: p.filtersProps,
+                pagination: p.pagination,
+
+                selectedSort: p.searchSort.selectedSort,
+                sortOptions: p.searchSort.sortOptions,
+                onChangeSort: p.searchSort.onChangeSort
+            });
+            break;
+    }
+
+    (0, _reactDom.render)(node, appElement);
 };
 
 var _react = _dereq_('react');
@@ -26912,6 +26911,10 @@ var _reactHighcharts = _dereq_('react-highcharts');
 
 var _reactHighcharts2 = _interopRequireDefault(_reactHighcharts);
 
+var _shouldComponentUpdatePure = _dereq_('../../../utils/should-component-update-pure');
+
+var _shouldComponentUpdatePure2 = _interopRequireDefault(_shouldComponentUpdatePure);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = _react2.default.createClass({
@@ -26920,6 +26923,10 @@ module.exports = _react2.default.createClass({
     propTypes: {
         series: _react2.default.PropTypes.array
     },
+
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return this.props.series.length !== nextProps.series.length;
+    // },
 
     render: function render() {
         var p = this.props;
@@ -26959,7 +26966,7 @@ module.exports = _react2.default.createClass({
     }
 });
 
-},{"react":174,"react-highcharts":45}],199:[function(_dereq_,module,exports){
+},{"../../../utils/should-component-update-pure":224,"react":174,"react-highcharts":45}],199:[function(_dereq_,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -27150,7 +27157,8 @@ module.exports = _react2.default.createClass({
 						}
 
 						nodes.push(_react2.default.createElement(_chart2.default, {
-							series: p.priceTimeSeries }));
+							key: 'market-chart',
+							series: p.market.priceTimeSeries }));
 					}
 			}
 
