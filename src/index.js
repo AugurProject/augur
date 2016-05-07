@@ -35,7 +35,6 @@ function Augur() {
     this.constants = constants;
     this.utils = require("./utilities");
     this.db = require("./client/db");
-    this.orders = require("./client/orders");
     this.connector = connector;
     this.errors = contracts.errors;
 
