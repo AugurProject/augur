@@ -27,7 +27,6 @@ module.exports = {
 
     FAUCET: "https://faucet.augur.net/faucet/",
     LOGS: {
-        updatePrice: "updatePrice(int256,int256,int256,int256,int256,int256)",
-        creationBlock: "creationBlock(int256)"
+        updatePrice: "updatePrice(int256,int256,int256,int256,int256,int256)"
     }
 };

@@ -102,34 +102,6 @@ function createMarket(done, augur) {
     });
 }
 
-describe("Creation blocks", function () {
-
-    it("getCreationBlocks(" + branch + ")", function (done) {
-        this.timeout(tools.TIMEOUT);
-        var start = (new Date()).getTime();
-        augur.getCreationBlocks(branch, function (blocks) {
-            console.log("getCreationBlocks:", ((new Date()).getTime() - start) / 1000, "seconds");
-            assert.isObject(blocks);
-            assert.property(blocks, marketId);
-            assert.isNumber(blocks[marketId]);
-            assert.isAbove(blocks[marketId], 0);
-            done();
-        });
-    });
-
-    it("getMarketCreationBlock(" + marketId + ")", function (done) {
-        this.timeout(tools.TIMEOUT);
-        var start = (new Date()).getTime();
-        augur.getMarketCreationBlock(marketId, function (blockNumber) {
-            console.log("getMarketCreationBlock:", ((new Date()).getTime() - start) / 1000, "seconds");
-            assert.isNumber(blockNumber);
-            assert.isAbove(blockNumber, 0);
-            done();
-        });
-    });
-
-});
-
 describe("Price history", function () {
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
@@ -182,29 +154,6 @@ describe("Price history", function () {
         });
     }
 
-    it("getPriceHistory(" + branch + ")", function (done) {
-        this.timeout(tools.TIMEOUT);
-        var start = (new Date()).getTime();
-        augur.getPriceHistory(branch, function (priceHistory) {
-            console.log("getPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
-            assert.notProperty(priceHistory, "error");
-            assert.isObject(priceHistory);
-            var marketIdUnforked = abi.unfork(marketId, true);
-            assert.property(priceHistory, marketIdUnforked);
-            assert.property(priceHistory[marketIdUnforked], outcome);
-            assert.isArray(priceHistory[marketIdUnforked][outcome]);
-            assert.isAbove(priceHistory[marketIdUnforked][outcome].length, 0);
-            assert.property(priceHistory[marketIdUnforked][outcome][0], "price");
-            assert.property(priceHistory[marketIdUnforked][outcome][0], "cost");
-            assert.property(priceHistory[marketIdUnforked][outcome][0], "blockNumber");
-            assert.property(priceHistory[marketIdUnforked][outcome][0], "market");
-            assert.property(priceHistory[marketIdUnforked][outcome][0], "user");
-            assert.isAbove(priceHistory[marketIdUnforked][outcome][0].market.length, 64);
-            assert.strictEqual(priceHistory[marketIdUnforked][outcome][0].user.length, 42);
-            done();
-        });
-    });
-
     if (!process.env.CONTINUOUS_INTEGRATION) {
 
         it("[async] getMarketPriceHistory(" + marketId + ")", function (done) {
@@ -252,42 +201,6 @@ describe("Price history", function () {
                     assert.isAbove(logs[0].market.length, 64);
                     assert.strictEqual(logs[0].user.length, 42);
                 }
-            }
-        });
-
-        it("[async] getOutcomePriceHistory(" + marketId + "," + outcome + ")", function (done) {
-            this.timeout(tools.TIMEOUT);
-            var start = (new Date()).getTime();
-            augur.getOutcomePriceHistory(marketId, outcome, function (logs) {
-                console.log("[sync] getOutcomePriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
-                assert.isArray(logs);
-                if (!process.env.CONTINUOUS_INTEGRATION) {
-                    assert.property(logs, "length");
-                    assert.isAbove(logs.length, 0);
-                    assert.property(logs[0], "price");
-                    assert.property(logs[0], "blockNumber");
-                    assert.property(logs[0], "market");
-                    assert.property(logs[0], "user");
-                    assert.isAbove(logs[0].market.length, 64);
-                    assert.strictEqual(logs[0].user.length, 42);
-                }
-                done();
-            });
-        });
-
-        it("[sync] getOutcomePriceHistory(" + marketId + "," + outcome + ")", function () {
-            this.timeout(tools.TIMEOUT);
-            var logs = augur.getOutcomePriceHistory(marketId, outcome);
-            assert.isArray(logs);
-            if (!process.env.CONTINUOUS_INTEGRATION) {
-                assert.property(logs, "length");
-                assert.isAbove(logs.length, 0);
-                assert.property(logs[0], "price");
-                assert.property(logs[0], "blockNumber");
-                assert.property(logs[0], "market");
-                assert.property(logs[0], "user");
-                assert.isAbove(logs[0].market.length, 64);
-                assert.strictEqual(logs[0].user.length, 42);
             }
         });
     }
@@ -740,7 +653,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             this.timeout(tools.TIMEOUT*4);
             var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.filters.start_contracts_listener(function (contracts_filter) {
-                assert.deepEqual(augur.filters.contracts_filter, contracts_filter);
+                assert.deepEqual(augur.filters.filter.contracts, contracts_filter);
 
                 // poll contracts filter
                 var listener = setInterval(function () {
@@ -767,8 +680,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
                         // tear down filter
                         augur.filters.clear_contracts_filter();
-                        assert.isNull(augur.filters.contracts_filter.id);
-                        assert.isNull(augur.filters.contracts_filter.heartbeat);
+                        assert.isNull(augur.filters.filter.contracts.id);
+                        assert.isNull(augur.filters.filter.contracts.heartbeat);
                         done();
                     });
                 }, augur.filters.PULSE);
@@ -790,22 +703,22 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     // 0x999553c632fa10f3eb2af9a2be9ab612726372721680e3f76441f75f7c879a2f
                     assert.strictEqual(blockHash.slice(0, 2), "0x");
                     assert.strictEqual(blockHash.length, 66);
-                    assert.isNull(augur.filters.contracts_filter.heartbeat);
-                    assert.isNull(augur.filters.price_filter.heartbeat);
-                    assert.isNotNull(augur.filters.block_filter.heartbeat);
-                    assert.isNull(augur.filters.contracts_filter.id);
-                    assert.isNull(augur.filters.price_filter.id);
-                    assert.isNotNull(augur.filters.block_filter.id);
+                    assert.isNull(augur.filters.filter.contracts.heartbeat);
+                    assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                    assert.isNotNull(augur.filters.filter.block.heartbeat);
+                    assert.isNull(augur.filters.filter.contracts.id);
+                    assert.isNull(augur.filters.filter.updatePrice.id);
+                    assert.isNotNull(augur.filters.filter.block.id);
 
                     // stop heartbeat and tear down filters
                     augur.filters.ignore(true, {
                         block: function () {
-                            assert.isNull(augur.filters.contracts_filter.heartbeat);
-                            assert.isNull(augur.filters.price_filter.heartbeat);
-                            assert.isNull(augur.filters.block_filter.heartbeat);
-                            assert.isNull(augur.filters.contracts_filter.id);
-                            assert.isNull(augur.filters.price_filter.id);
-                            assert.isNull(augur.filters.block_filter.id);
+                            assert.isNull(augur.filters.filter.contracts.heartbeat);
+                            assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                            assert.isNull(augur.filters.filter.block.heartbeat);
+                            assert.isNull(augur.filters.filter.contracts.id);
+                            assert.isNull(augur.filters.filter.updatePrice.id);
+                            assert.isNull(augur.filters.filter.block.id);
                             done();
                         }
                     });
@@ -850,27 +763,27 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.isArray(tx.data);
                     assert.strictEqual(tx.data.length, 2);
                     assert.isAbove(parseInt(tx.blockNumber), 0);
-                    assert.isAbove(parseInt(augur.filters.contracts_filter.id), 0);
+                    assert.isAbove(parseInt(augur.filters.filter.contracts.id), 0);
 
                     // stop heartbeat
                     augur.filters.ignore({
                         contracts: function () {
-                            assert.isNull(augur.filters.contracts_filter.heartbeat);
-                            assert.isNull(augur.filters.price_filter.heartbeat);
-                            assert.isNull(augur.filters.block_filter.heartbeat);
-                            assert.isNotNull(augur.filters.contracts_filter.id);
-                            assert.isNull(augur.filters.price_filter.id);
-                            assert.isNull(augur.filters.block_filter.id);
+                            assert.isNull(augur.filters.filter.contracts.heartbeat);
+                            assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                            assert.isNull(augur.filters.filter.block.heartbeat);
+                            assert.isNotNull(augur.filters.filter.contracts.id);
+                            assert.isNull(augur.filters.filter.updatePrice.id);
+                            assert.isNull(augur.filters.filter.block.id);
 
                             // tear down filters
                             augur.filters.ignore(true, {
                                 contracts: function () {
-                                    assert.isNull(augur.filters.contracts_filter.heartbeat);
-                                    assert.isNull(augur.filters.price_filter.heartbeat);
-                                    assert.isNull(augur.filters.block_filter.heartbeat);
-                                    assert.isNull(augur.filters.contracts_filter.id);
-                                    assert.isNull(augur.filters.price_filter.id);
-                                    assert.isNull(augur.filters.block_filter.id);
+                                    assert.isNull(augur.filters.filter.contracts.heartbeat);
+                                    assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                                    assert.isNull(augur.filters.filter.block.heartbeat);
+                                    assert.isNull(augur.filters.filter.contracts.id);
+                                    assert.isNull(augur.filters.filter.updatePrice.id);
+                                    assert.isNull(augur.filters.filter.block.id);
                                     done();
                                 }
                             });
@@ -901,23 +814,23 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.isAbove(parseInt(update.blockNumber), 0);
                     assert.strictEqual(update.outcome, outcome);
                     assert(abi.bignum(update.user).eq(abi.bignum(augur.coinbase)));
-                    assert.isAbove(parseInt(augur.filters.price_filter.id), 0);
-                    assert.isNull(augur.filters.contracts_filter.heartbeat);
-                    assert.isNotNull(augur.filters.price_filter.heartbeat);
-                    assert.isNull(augur.filters.block_filter.heartbeat);
-                    assert.isNull(augur.filters.contracts_filter.id);
-                    assert.isNotNull(augur.filters.price_filter.id);
-                    assert.isNull(augur.filters.block_filter.id);
+                    assert.isAbove(parseInt(augur.filters.filter.updatePrice.id), 0);
+                    assert.isNull(augur.filters.filter.contracts.heartbeat);
+                    assert.isNotNull(augur.filters.filter.updatePrice.heartbeat);
+                    assert.isNull(augur.filters.filter.block.heartbeat);
+                    assert.isNull(augur.filters.filter.contracts.id);
+                    assert.isNotNull(augur.filters.filter.updatePrice.id);
+                    assert.isNull(augur.filters.filter.block.id);
 
                     // stop heartbeat and tear down filters
                     augur.filters.ignore(true, {
                         price: function () {
-                            assert.isNull(augur.filters.contracts_filter.heartbeat);
-                            assert.isNull(augur.filters.price_filter.heartbeat);
-                            assert.isNull(augur.filters.block_filter.heartbeat);
-                            assert.isNull(augur.filters.contracts_filter.id);
-                            assert.isNull(augur.filters.price_filter.id);
-                            assert.isNull(augur.filters.block_filter.id);
+                            assert.isNull(augur.filters.filter.contracts.heartbeat);
+                            assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                            assert.isNull(augur.filters.filter.block.heartbeat);
+                            assert.isNull(augur.filters.filter.contracts.id);
+                            assert.isNull(augur.filters.filter.updatePrice.id);
+                            assert.isNull(augur.filters.filter.block.id);
                             done();
                         }
                     });
@@ -926,99 +839,37 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             setTimeout(function () { buyShares(done, augur); }, DELAY);
         });
 
-        it("creation filter", function (done) {
-            this.timeout(tools.TIMEOUT*12);
-            var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
-            augur.filters.listen({
-                creation: function (update) {
-                    // log: [{
-                    //   "address": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945",
-                    //   "topics": [
-                    //     "0x20a4e172725965b86bd8a626ee70f94c0e142ef8c81c890e7f538a1ce4e6dbe9",
-                    //     "0x9a45a563d24fdb20a322b24ce5fcbc9f78a71420329640b14e7ef288afd46cd2"
-                    //   ],
-                    //   "data": "0x",
-                    //   "blockNumber": "0x503e",
-                    //   "logIndex": "0x0",
-                    //   "blockHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-                    //   "transactionHash": "0x7736943bad9462461af6d9c8a1e40f38566a7ac59910c9a655424c86cc4c7754",
-                    //   "transactionIndex": "0x0"
-                    // }, ...]
-                    //
-                    // update: {
-                    //   "marketId": "-0x65ba5a9c2db024df5cdd4db31a0343608758ebdfcd69bf4eb1810d77502b932e",
-                    //   "blockNumber": "20542"
-                    // }
-                    assert.property(update, "marketId");
-                    assert.property(update, "blockNumber");
-                    assert.isAbove(parseInt(update.blockNumber), 0);
-                    assert.strictEqual(update.marketId, newMarketId);
-                    assert.isAbove(parseInt(augur.filters.creation_filter.id), 0);
-                    assert.isNull(augur.filters.contracts_filter.heartbeat);
-                    assert.isNull(augur.filters.price_filter.heartbeat);
-                    assert.isNull(augur.filters.block_filter.heartbeat);
-                    assert.isNotNull(augur.filters.creation_filter.heartbeat);
-                    assert.isNull(augur.filters.contracts_filter.id);
-                    assert.isNull(augur.filters.price_filter.id);
-                    assert.isNull(augur.filters.block_filter.id);
-                    assert.isNotNull(augur.filters.creation_filter.id);
-
-                    // stop heartbeat and tear down filters
-                    augur.filters.ignore(true, {
-                        creation: function () {
-                            assert.isNull(augur.filters.contracts_filter.heartbeat);
-                            assert.isNull(augur.filters.price_filter.heartbeat);
-                            assert.isNull(augur.filters.block_filter.heartbeat);
-                            assert.isNull(augur.filters.creation_filter.heartbeat);
-                            assert.isNull(augur.filters.contracts_filter.id);
-                            assert.isNull(augur.filters.price_filter.id);
-                            assert.isNull(augur.filters.block_filter.id);
-                            assert.isNull(augur.filters.creation_filter.id);
-                            done();
-                        }
-                    });
-                }
-            });
-            setTimeout(function () { createMarket(done, augur); }, DELAY);
-        });
-
         it("combined", function (done) {
             this.timeout(tools.TIMEOUT*6);
             var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             var setup = {
                 block: null,
                 contracts: null,
-                price: null,
-                creation: null
+                price: null
             };
             var called_teardown = {
                 block: false,
                 contracts: false,
-                price: false,
-                creation: false
+                price: false
             };
 
             // stop heartbeat and tear down filters
             function teardown(setup, done) {
-                if (setup.price && setup.contracts && setup.block && setup.creation) {
+                if (setup.price && setup.contracts && setup.block) {
                     var mutex = locks.createMutex();
                     mutex.lock(function () {
                         augur.filters.ignore(true, {
                             block: function () {
-                                assert.isNull(augur.filters.block_filter.heartbeat);
-                                assert.isNull(augur.filters.block_filter.id);
+                                assert.isNull(augur.filters.filter.block.heartbeat);
+                                assert.isNull(augur.filters.filter.block.id);
                             },
                             contracts: function () {
-                                assert.isNull(augur.filters.contracts_filter.heartbeat);
-                                assert.isNull(augur.filters.contracts_filter.id);
+                                assert.isNull(augur.filters.filter.contracts.heartbeat);
+                                assert.isNull(augur.filters.filter.contracts.id);
                             },
                             price: function () {
-                                assert.isNull(augur.filters.price_filter.heartbeat);
-                                assert.isNull(augur.filters.price_filter.id);
-                            },
-                            creation: function () {
-                                assert.isNull(augur.filters.creation_filter.heartbeat);
-                                assert.isNull(augur.filters.creation_filter.id);
+                                assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                                assert.isNull(augur.filters.filter.updatePrice.id);
                             }
                         }, function (err) {
                             mutex.unlock();
@@ -1032,8 +883,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 block: function (blockHash) {
                     assert.strictEqual(blockHash.slice(0, 2), "0x");
                     assert.strictEqual(blockHash.length, 66);
-                    assert.isNotNull(augur.filters.block_filter.heartbeat);
-                    assert.isNotNull(augur.filters.block_filter.id);
+                    assert.isNotNull(augur.filters.filter.block.heartbeat);
+                    assert.isNotNull(augur.filters.filter.block.id);
                     if (!setup.block) {
                         setup.block = true;
                         teardown(setup, done);
@@ -1049,7 +900,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.property(tx, "transactionHash");
                     assert.property(tx, "transactionIndex");
                     assert.isAbove(parseInt(tx.blockNumber), 0);
-                    assert.isAbove(parseInt(augur.filters.contracts_filter.id), 0);
+                    assert.isAbove(parseInt(augur.filters.filter.contracts.id), 0);
                     if (!setup.contracts) {
                         setup.contracts = true;
                         teardown(setup, done);
@@ -1065,24 +916,11 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                     assert.isAbove(parseInt(update.blockNumber), 0);
                     assert.strictEqual(update.outcome, outcome);
                     assert(abi.bignum(update.user).eq(abi.bignum(augur.coinbase)));
-                    assert.isAbove(parseInt(augur.filters.price_filter.id), 0);
-                    assert.isNotNull(augur.filters.price_filter.heartbeat);
-                    assert.isNotNull(augur.filters.price_filter.id);
+                    assert.isAbove(parseInt(augur.filters.filter.updatePrice.id), 0);
+                    assert.isNotNull(augur.filters.filter.updatePrice.heartbeat);
+                    assert.isNotNull(augur.filters.filter.updatePrice.id);
                     if (!setup.price) {
                         setup.price = true;
-                        teardown(setup, done);
-                    }
-                },
-                creation: function (update) {
-                    assert.property(update, "marketId");
-                    assert.property(update, "blockNumber");
-                    assert.isAbove(parseInt(update.blockNumber), 0);
-                    assert.strictEqual(update.marketId, newMarketId);
-                    assert.isAbove(parseInt(augur.filters.creation_filter.id), 0);
-                    assert.isNotNull(augur.filters.creation_filter.heartbeat);
-                    assert.isNotNull(augur.filters.creation_filter.id);
-                    if (!setup.creation) {
-                        setup.creation = true;
                         teardown(setup, done);
                     }
                 }
