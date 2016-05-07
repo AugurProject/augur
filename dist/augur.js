@@ -1164,14 +1164,148 @@ module.exports = function (network) {
             returns: "unfix"
         },
 
-        // buy&sellShares.se
+        // trades.se
+        makeTradeHash: {
+            to: contracts.trades,
+            method: "makeTradeHash",
+            signature: "iia",
+            returns: "hash"
+        },
         commitTrade: {
-            to: contracts.buyAndSellShares,
+            to: contracts.trades,
             method: "commitTrade",
+            signature: "i",
+            returns: "number",
+            send: true
+        },
+        setInitialTrade: {
+            to: contracts.trades,
+            method: "setInitialTrade",
+            signature: "i",
+            returns: "number",
+            send: true
+        },  
+        getInitialTrade: {
+            to: contracts.trades,
+            method: "getInitialTrade",
+            signature: "i",
+            returns: "hash"
+        },            
+        zeroHash: {
+            to: contracts.trades,
+            method: "zeroHash",
+            returns: "number",
+            send: true
+        },
+        checkHash: {
+            to: contracts.trades,
+            method: "checkHash",
+            signature: "i",
+            returns: "number"
+        },
+        getID: {
+            to: contracts.trades,
+            method: "getID",
+            signature: "i",
+            returns: "hash"
+        },            
+        saveTrade: {
+            to: contracts.trades,
+            method: "saveTrade",
+            signature: "iiiiiii",
+            returns: "number",
+            send: true
+        },
+        get_trade: {
+            to: contracts.trades,
+            method: "get_trade",
+            signature: "i",
+            returns: "hash[]"
+        },
+        get_amount: {
+            to: contracts.trades,
+            method: "get_amount",
+            signature: "i",
+            returns: "unfix"
+        },
+        get_price: {
+            to: contracts.trades,
+            method: "get_price",
+            signature: "i",
+            returns: "unfix"
+        },
+        update_trade: {
+            to: contracts.trades,
+            method: "update_trade",
+            signature: "ii",
+            send: true
+        },
+        remove_trade: {
+            to: contracts.trades,
+            method: "remove_trade",
+            signature: "i",
+            returns: "number",
+            send: true
+        },
+        fill_trade: {
+            to: contracts.trades,
+            method: "fill_trade",
             signature: "ii",
             returns: "number",
             send: true
         },
+
+        // buy&sellShares.se
+        cancel: {
+            to: contracts.buyAndSellShares,
+            method: "cancel",
+            signature: "i",
+            returns: "number",
+            send: true
+        },
+        buy: {
+            to: contracts.buyAndSellShares,
+            method: "buy",
+            signature: "iiii",
+            returns: "number",
+            send: true
+        },
+        sell: {
+            to: contracts.buyAndSellShares,
+            method: "sell",
+            signature: "iiii",
+            returns: "number",
+            send: true
+        },
+        short_sell: {
+            to: contracts.buyAndSellShares,
+            method: "short_sell",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        trade: {
+            to: contracts.buyAndSellShares,
+            method: "trade",
+            signature: "iia",
+            returns: "number",
+            send: true
+        },
+        buyCompleteSets: {
+            to: contracts.buyAndSellShares,
+            method: "buyCompleteSets",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        sellCompleteSets: {
+            to: contracts.buyAndSellShares,
+            method: "sellCompleteSets",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+
         buyShares: {
             to: contracts.buyAndSellShares,
             method: "buyShares",
@@ -46371,55 +46505,6 @@ Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event,
 };
 
 // markets.se
-Augur.prototype.lsLmsr = function (market, callback) {
-    if (!market) return new Error("no market input");
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var cumScale = info.cumulativeScale;
-            var alpha = new Decimal(info.alpha);
-            var numOutcomes = info.numOutcomes;
-            var sumShares = new Decimal(0);
-            for (var i = 0; i < numOutcomes; ++i) {
-                sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-            }
-            var bq = alpha.times(sumShares);
-            var sumExp = new Decimal(0);
-            for (i = 0; i < numOutcomes; ++i) {
-                sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-            }
-            return callback(bq.times(cumScale).times(sumExp.ln()).toFixed());
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    var tx = clone(this.tx.lsLmsr);
-    tx.params = market;
-    return this.fire(tx, callback);
-};
-Augur.prototype.price = function (market, outcome, callback) {
-    var self = this;
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var epsilon = new Decimal("0.0000001");
-            var a = new Decimal(self.lsLmsr(info));
-            for (var i = 0; i < info.numOutcomes; ++i) {
-                if (info.outcomes[i].id === Number(outcome)) break;
-            }
-            info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(epsilon).toFixed();
-            var b = new Decimal(self.lsLmsr(info));
-            return callback(b.minus(a).dividedBy(epsilon).toFixed());
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    var tx = clone(this.tx.price);
-    tx.params = [market, outcome];
-    return this.fire(tx, callback);
-};
 Augur.prototype.getVolume = function (market, callback) {
     var tx = clone(this.tx.getVolume);
     tx.params = market;
@@ -46637,80 +46722,155 @@ Augur.prototype.getTotalRep = function (branch, callback) {
     return this.fire(tx, callback);
 };
 
-// buy&sellShares.se
-Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
-    // market: sha256
-    // outcome: integer
-    // amount: number (convert to fixed-point)
-    // limit: max price per share (convert to fixed-point); 0=market order
-    if (market && market.constructor === Object && market.market) {
-        outcome = market.outcome;
-        amount = market.amount;
-        limit = market.limit;
-        market = market.market;
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    return this.utils.sha256([market, outcome, abi.fix(amount, "hex"), limit]);
+// trades.se
+Augur.prototype.makeTradeHash = function (max_value, max_amount, trade_ids, callback) {
+    var tx = clone(this.tx.makeTradeHash);
+    tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+    return this.fire(tx, callback);
 };
-Augur.prototype.commitTrade = function (market, hash, onSent, onSuccess, onFailed) {
+Augur.prototype.commitTrade = function (hash, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.commitTrade);
-    var unpacked = this.utils.unpack(market, this.utils.labels(this.commitTrade), arguments);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.commitTrade), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.buyShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        marketId = branchId.marketId; // sha256
-        outcome = branchId.outcome; // integer (1 or 2 for binary)
-        amount = branchId.amount;   // number -> fixed-point
-        limit = branchId.limit;
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId; // sha256
-    }
-    var tx = clone(this.tx.buyShares);
-    if (marketId && marketId.constructor === BigNumber) {
-        marketId = abi.prefix_hex(marketId.toString(16));
-    }
-    if (branchId && branchId.constructor === BigNumber) {
-        branchId = abi.prefix_hex(branchId.toString(16));
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    if (onSent) {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    }
-    tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-    return this.transact(tx);
+Augur.prototype.setInitialTrade = function (id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.setInitialTrade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.setInitialTrade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.sellShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        marketId = branchId.marketId; // sha256
-        outcome = branchId.outcome; // integer (1 or 2 for binary)
-        amount = branchId.amount;   // number -> fixed-point
-        limit = branchId.limit;
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId; // sha256
-    }
-    var tx = clone(this.tx.sellShares);
-    if (marketId && marketId.constructor === BigNumber) {
-        marketId = abi.prefix_hex(marketId.toString(16));
-    }
-    if (branchId && branchId.constructor === BigNumber) {
-        branchId = abi.prefix_hex(branchId.toString(16));
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    if (onSent) {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        this.transact(tx, onSent, onSuccess, onFailed);
-    } else {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        return this.transact(tx);
-    }
+Augur.prototype.getInitialTrade = function (id, callback) {
+    var tx = clone(this.tx.getInitialTrade);
+    tx.params = id;
+    return this.fire(tx, callback);
 };
+Augur.prototype.zeroHash = function (onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.zeroHash);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.zeroHash), arguments);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.checkHash = function (tradeHash, callback) {
+    var tx = clone(this.tx.checkHash);
+    tx.params = tradeHash;
+    return this.fire(tx, callback);
+};
+Augur.prototype.getID = function (tradeID, callback) {
+    var tx = clone(this.tx.getID);
+    tx.params = tradeID;
+    return this.fire(tx, callback);
+};
+// what is type?
+Augur.prototype.saveTrade = function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.saveTrade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.saveTrade), arguments);
+    tx.params = unpacked.params;
+    tx.params[3] = abi.fix(tx.params[3], "hex");
+    tx.params[4] = abi.fix(tx.params[4], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.get_trade = function (id, callback) {
+    var tx = clone(this.tx.get_trade);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.get_amount = function (id, callback) {
+    var tx = clone(this.tx.get_amount);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.get_price = function (id, callback) {
+    var tx = clone(this.tx.get_price);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.update_trade = function (id, price, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.update_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.update_trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.remove_trade = function (id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.remove_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.remove_trade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.fill_trade = function (id, fill, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.fill_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.fill_trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+
+// buy&sellShares.se
+Augur.prototype.cancel = function (trade_id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.cancel);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.cancel), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.buy = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.buy);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buy), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.sell = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.sell);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.sell), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.short_sell);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.short_sell), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.trade = function (max_value, max_amount, trade_ids, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.buyCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.buyCompleteSets);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buyCompleteSets), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.sellCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.sellCompleteSets);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.sellCompleteSets), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+// Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
+//     // market: sha256
+//     // outcome: integer
+//     // amount: number (convert to fixed-point)
+//     // limit: max price per share (convert to fixed-point); 0=market order
+//     if (market && market.constructor === Object && market.market) {
+//         outcome = market.outcome;
+//         amount = market.amount;
+//         limit = market.limit;
+//         market = market.market;
+//     }
+//     limit = (limit) ? abi.fix(limit, "hex") : 0;
+//     return this.utils.sha256([market, outcome, abi.fix(amount, "hex"), limit]);
+// };
 
 // createBranch.se
 Augur.prototype.createBranch = function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
@@ -47677,352 +47837,6 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
             meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
         }
         cb(meanPrices);
-    });
-};
-
-Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
-    // market: sha256 hash id
-    // outcome: integer (1 or 2 for binary events)
-    // amount: number
-    var self = this;
-    function getSimulatedBuy(marketInfo, outcome, amount) {
-        try {
-            if (amount.constructor === BigNumber) amount = abi.string(amount);
-            if (amount.constructor !== Decimal) amount = new Decimal(amount);
-        } catch (exc) {
-            return exc;
-        }
-        outcome = parseInt(outcome);
-        var info = JSON.parse(JSON.stringify(marketInfo));
-        var oldCost = new Decimal(self.lsLmsr(info));
-        var cumScale = info.cumulativeScale;
-        var alpha = new Decimal(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        for (var i = 0; i < numOutcomes; ++i) {
-            if (info.outcomes[i].id === Number(outcome)) break;
-        }
-        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(amount).toFixed();
-        var sumShares = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (newCost.lt(oldCost)) return self.errors.getSimulatedBuy["-2"];
-        return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
-    }
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            return callback(getSimulatedBuy(market, outcome, amount));
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    if (!this.utils.is_function(callback)) {
-        return getSimulatedBuy(this.getMarketInfo(market), outcome, amount);
-    }
-    this.getMarketInfo(market, function (info) {
-        callback(getSimulatedBuy(info, outcome, amount));
-    });
-};
-Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) {
-    // market: sha256 hash id
-    // outcome: integer (1 or 2 for binary events)
-    // amount: number
-    var self = this;
-    function getSimulatedSell(marketInfo, outcome, amount) {
-        try {
-            if (amount.constructor === BigNumber) amount = abi.string(amount);
-            if (amount.constructor !== Decimal) amount = new Decimal(amount);
-        } catch (exc) {
-            return exc;
-        }
-        outcome = parseInt(outcome);
-        var info = JSON.parse(JSON.stringify(marketInfo));
-        var oldCost = new Decimal(self.lsLmsr(info));
-        var cumScale = info.cumulativeScale;
-        var alpha = new Decimal(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        for (var i = 0; i < numOutcomes; ++i) {
-            if (info.outcomes[i].id === Number(outcome)) break;
-        }
-        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).minus(amount).toFixed();
-        var sumShares = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (oldCost.lt(newCost)) return self.errors.getSimulatedSell["-2"];
-        return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
-    }
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            return callback(getSimulatedSell(market, outcome, amount));
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    if (!this.utils.is_function(callback)) {
-        return getSimulatedSell(this.getMarketInfo(market), outcome, amount);
-    }
-    this.getMarketInfo(market, function (info) {
-        callback(getSimulatedSell(info, outcome, amount));
-    });
-};
-
-/**************
- * Order book *
- **************/
-
-Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
-    var currentPrice, priceMatched, trade;
-    var self = this;
-    if (cb && this.utils.is_function(cb)) {
-        cb = {nextOrder: cb};
-    }
-    cb = cb || {};
-    cb.onPriceMatched = cb.onPriceMatched || this.utils.noop;
-    cb.onMarketHash = cb.onMarketHash || this.utils.noop;
-    cb.onCommitTradeSent = cb.onCommitTradeSent || this.utils.noop;
-    cb.onCommitTradeSuccess = cb.onCommitTradeSuccess || this.utils.noop;
-    cb.onCommitTradeFailed = cb.onCommitTradeFailed || this.utils.noop;
-    cb.onTradeSent = cb.onTradeSent || this.utils.noop;
-    cb.onTradeSuccess = cb.onTradeSuccess || this.utils.noop;
-    cb.onTradeFailed = cb.onTradeFailed || this.utils.noop;
-    cb.nextOrder = cb.nextOrder || this.utils.noop;
-    currentPrice = new BigNumber(this.price(marketInfo, outcome));
-    if (order.amount.constructor !== BigNumber) {
-        order.amount = new BigNumber(order.amount);
-    }
-    if (order.price.constructor !== BigNumber) {
-        order.price = new BigNumber(order.price);
-    }
-    order.branch = marketInfo.branchId;
-    order.market = marketInfo._id;
-    order.outcome = outcome;
-    if (order.amount.gt(new BigNumber(0))) {
-        priceMatched = currentPrice.lte(order.price);
-    } else {
-        priceMatched = currentPrice.gte(order.price);
-    }
-
-    // price not matched: do not fill order
-    if (!priceMatched) return cb.nextOrder(null);
-
-    // price matched: fill order
-    cb.onPriceMatched(order);
-    if (order.cap) {
-        trade = this.orders.limit.fill(marketInfo, order);
-    } else {
-        trade = {order: order, amount: order.amount.toFixed(), filled: true};
-    }
-
-    // execute order
-    if (trade !== undefined) {
-        this.trade({
-            branch: order.branch,
-            market: order.market,
-            outcome: order.outcome,
-            amount: trade.amount,
-            callbacks: {
-                onMarketHash: cb.onMarketHash,
-                onCommitTradeSent: cb.onCommitTradeSent,
-                onCommitTradeSuccess: cb.onCommitTradeSuccess,
-                onCommitTradeFailed: cb.onCommitTradeFailed,
-                onTradeSent: function (response) {
-                    var tradeSent = {
-                        response: response,
-                        cancelled: self.orders.cancel(
-                            self.from,
-                            order.market,
-                            order.outcome,
-                            order.id
-                        ),
-                        newOrder: null,
-                        created: null
-                    };
-                    if (!trade.filled) {
-                        tradeSent.newOrder = JSON.parse(JSON.stringify(trade.order));
-                        tradeSent.newOrder.account = self.from;
-                        tradeSent.created = self.orders.create(tradeSent.newOrder);
-                    }
-                    cb.onTradeSent(tradeSent);
-                },
-                onTradeSuccess: function (response) {
-                    cb.onTradeSuccess({
-                        response: response,
-                        order: trade.order
-                    });
-                    cb.nextOrder(trade.order);
-                },
-                onTradeFailed: cb.onTradeFailed
-            }
-        });
-    }
-};
-
-Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
-    var self = this;
-    var matchedOrders = [];
-    if (cb && this.utils.is_function(cb)) {
-        cb = {nextOutcome: cb};
-    }
-    cb = cb || {};
-    cb.nextOutcome = cb.nextOutcome || this.utils.noop;
-    async.each(orderList, function (order, nextOrder) {
-        cb.nextOrder = function (matched) {
-            if (matched && !matched.error) {
-                matchedOrders.push(matched);
-                return nextOrder();
-            }
-            nextOrder();
-        };
-        self.checkOrder(marketInfo, outcome, order, cb);
-    }, function (err) {
-        if (err) return cb.onFailed(err);
-        cb.nextOutcome(matchedOrders);
-    });
-};
-
-Augur.prototype.checkOrderBook = function (market, cb) {
-    var self = this;
-    if (cb && this.utils.is_function(cb)) {
-        cb = {onSuccess: cb};
-    }
-    cb = cb || {};
-    cb.onSuccess = cb.onSuccess || this.utils.noop;
-    cb.onFailed = cb.onFailed || this.utils.noop;
-    cb.onEmpty = cb.onEmpty || this.utils.noop;
-    var orders = this.orders.get(this.from);
-    if (!market) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
-    if (!orders) return cb.onEmpty();
-    var matchedOrders = [];
-    if (market.constructor === Object && market.network && market.events) {
-        if (!orders[market._id]) return cb.onEmpty();
-        async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
-            cb.nextOutcome = function (matched) {
-                if (matched && matched.constructor === Array) {
-                    matchedOrders = matchedOrders.concat(matched);
-                    return nextOutcome();
-                }
-                nextOutcome(matched);
-            };
-            self.checkOutcomeOrderList(market, outcome, orderList, cb);
-        }, function (err) {
-            if (err) return cb.onFailed(err);
-            cb.onSuccess(matchedOrders);
-        });
-
-    // note: raw marketInfo is incompatible with processed client market!
-    } else {
-        if (!orders[market]) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
-        this.getMarketInfo(market, function (info) {
-            if (!info || info.error) return cb.onFailed(info);
-            self.checkOrderBook(info, cb);
-        });
-    }
-};
-
-/**
- * Lockstep trade sequence:
- *   1. commitTrade(market, makeMarketHash(market, outcome, amount, limit))
- *   2. buyShares(branch, market, outcome, amount, limit)
- * callbacks: {onMarketHash,
- *             onCommitTradeSent, onCommitTradeSuccess, onCommitTradeFailed,
- *             onNextBlock,
- *             onTradeSent, onTradeSuccess, onTradeFailed,
- *             onOrderCreated}
- * (All callbacks are optional.)
- */
-Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, expiration, cap, callbacks) {
-    var self = this;
-    if (branch && branch.constructor === Object && branch.branch) {
-        market = branch.market;
-        outcome = branch.outcome;
-        amount = branch.amount;
-        limit = branch.limit;
-        stop = branch.stop;
-        expiration = branch.expiration; // NYI
-        cap = branch.cap;
-        if (branch.callbacks) callbacks = clone(branch.callbacks);
-        branch = branch.branch;
-    }
-    callbacks = callbacks || {};
-    callbacks.onMarketHash = callbacks.onMarketHash || this.utils.pass;
-    callbacks.onCommitTradeSent = callbacks.onCommitTradeSent || this.utils.pass;
-    callbacks.onCommitTradeSuccess = callbacks.onCommitTradeSuccess || this.utils.pass;
-    callbacks.onCommitTradeFailed = callbacks.onCommitTradeFailed || this.utils.pass;
-    callbacks.onNextBlock = callbacks.onNextBlock || this.utils.pass;
-    callbacks.onTradeSent = callbacks.onTradeSent || this.utils.pass;
-    callbacks.onTradeSuccess = callbacks.onTradeSuccess || this.utils.pass;
-    callbacks.onTradeFailed = callbacks.onTradeFailed || this.utils.pass;
-    callbacks.onOrderCreated = callbacks.onOrderCreated || this.utils.pass;
-
-    // stop orders: send to localStorage
-    if (stop) {
-        return callbacks.onOrderCreated(this.orders.create({
-            account: this.from,
-            market: market,
-            outcome: outcome,
-            price: limit,
-            amount: amount,
-            expiration: expiration || 0,
-            cap: cap || 0
-        }));
-    }
-
-    // market orders: send to chain
-    amount = new Decimal(amount);
-    var trade = (amount.gt(new Decimal(0))) ? this.buyShares : this.sellShares;
-    amount = amount.abs().toFixed();
-    var marketHash = this.makeMarketHash({
-        market: market,
-        outcome: parseInt(outcome),
-        amount: amount,
-        limit: 0 // nonzero for "true" limit orders, 0 for stop & market orders
-    });
-    callbacks.onMarketHash(marketHash);
-    this.commitTrade({
-        market: market,
-        hash: marketHash,
-        onSent: callbacks.onCommitTradeSent,
-        onSuccess: function (res) {
-            callbacks.onCommitTradeSuccess(res);
-            self.rpc.blockNumber(function (thisBlock) {
-                thisBlock = parseInt(thisBlock);
-                (function waitForNextBlock() {
-                    self.rpc.blockNumber(function (nextBlock) {
-                        nextBlock = parseInt(nextBlock);
-                        if (thisBlock === nextBlock) {
-                            return setTimeout(waitForNextBlock, 3000);
-                        }
-                        callbacks.onNextBlock(nextBlock);
-                        trade.call(self, {
-                            branchId: branch,
-                            marketId: market,
-                            outcome: parseInt(outcome),
-                            amount: amount,
-                            limit: limit,
-                            onSent: callbacks.onTradeSent,
-                            onSuccess: callbacks.onTradeSuccess,
-                            onFailed: callbacks.onTradeFailed
-                        });
-                    });
-                })();
-            });
-        },
-        onFailed: callbacks.onCommitTradeFailed
     });
 };
 
