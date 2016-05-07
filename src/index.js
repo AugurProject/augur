@@ -808,20 +808,6 @@ Augur.prototype.sellCompleteSets = function (market, amount, onSent, onSuccess, 
     tx.params[1] = abi.fix(tx.params[1], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-// Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
-//     // market: sha256
-//     // outcome: integer
-//     // amount: number (convert to fixed-point)
-//     // limit: max price per share (convert to fixed-point); 0=market order
-//     if (market && market.constructor === Object && market.market) {
-//         outcome = market.outcome;
-//         amount = market.amount;
-//         limit = market.limit;
-//         market = market.market;
-//     }
-//     limit = (limit) ? abi.fix(limit, "hex") : 0;
-//     return this.utils.sha256([market, outcome, abi.fix(amount, "hex"), limit]);
-// };
 
 // createBranch.se
 Augur.prototype.createBranch = function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
@@ -884,8 +870,6 @@ Augur.prototype.createSubbranch = function (description, periodLength, parent, t
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
-// p2pWagers.se
-
 // sendReputation.se
 Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSuccess, onFailed) {
     // branchId: sha256
@@ -903,8 +887,6 @@ Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSucces
     tx.params = [branchId, to, abi.fix(value, "hex")];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
-
-// transferShares.se
 
 // makeReports.se
 Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
@@ -1314,25 +1296,25 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
 
         // multi-event (combinatorial) markets: batch event descriptions
         info.type = "combinatorial";
-        // if (options && options.combinatorial) {
-        //     var txList = new Array(info.numEvents);
-        //     for (i = 0; i < info.numEvents; ++i) {
-        //         txList[i] = clone(this.tx.getDescription);
-        //         txList[i].params = info.events[i].id;
-        //     }
-        //     if (this.utils.is_function(callback)) {
-        //         return rpc.batch(txList, function (response) {
-        //             for (var i = 0, len = response.length; i < len; ++i) {
-        //                 info.events[i].description = response[i];
-        //             }
-        //             callback(info);
-        //         });
-        //     }
-        //     var response = rpc.batch(txList);
-        //     for (i = 0; i < response.length; ++i) {
-        //         info.events[i].description = response[i];
-        //     }
-        // }
+        if (options && options.combinatorial) {
+            var txList = new Array(info.numEvents);
+            for (i = 0; i < info.numEvents; ++i) {
+                txList[i] = clone(this.tx.getDescription);
+                txList[i].params = info.events[i].id;
+            }
+            if (this.utils.is_function(callback)) {
+                return rpc.batch(txList, function (response) {
+                    for (var i = 0, len = response.length; i < len; ++i) {
+                        info.events[i].description = response[i];
+                    }
+                    callback(info);
+                });
+            }
+            var response = rpc.batch(txList);
+            for (i = 0; i < response.length; ++i) {
+                info.events[i].description = response[i];
+            }
+        }
     }
     if (!this.utils.is_function(callback)) return info;
     callback(info);
@@ -1358,12 +1340,6 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
     if (!callback) return marketsInfo;
     callback(marketsInfo);
 };
-Augur.prototype.checkPeriod = function (branch) {
-    var period = abi.number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(abi.number(rpc.blockNumber()) / abi.number(this.getPeriodLength(branch)));
-    var periodsBehind = currentPeriod - period - 1;
-    return periodsBehind;
-};
 Augur.prototype.getCurrentPeriod = function (branch, callback) {
     if (!callback) {
         return rpc.blockNumber() / parseInt(this.getPeriodLength(branch));
@@ -1373,23 +1349,6 @@ Augur.prototype.getCurrentPeriod = function (branch, callback) {
             callback(parseInt(blockNumber) / parseInt(periodLength));
         });
     });
-};
-Augur.prototype.getEventsRange = function (branch, vpStart, vpEnd, callback) {
-    // branch: sha256, vpStart: integer, vpEnd: integer
-    var vp_range, txlist;
-    vp_range = vpEnd - vpStart + 1; // inclusive
-    txlist = new Array(vp_range);
-    for (var i = 0; i < vp_range; ++i) {
-        txlist[i] = {
-            from: this.web.account.address || this.coinbase,
-            to: this.contracts.expiringEvents,
-            method: "getEvents",
-            signature: "ii",
-            returns: "hash[]",
-            params: [branch, i + vpStart]
-        };
-    }
-    return rpc.batch(txlist, callback);
 };
 
 /*************
