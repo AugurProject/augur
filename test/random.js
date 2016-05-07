@@ -27,7 +27,7 @@ module.exports = {
     },
     string: function (size) {
         size = size || 128;
-        return Array(size + 1).join((Math.random().toString(36) + "00000000000000000").slice(2, 18)).slice(0, size);
+        return new Array(size + 1).join((Math.random().toString(36) + "00000000000000000").slice(2, 18)).slice(0, size);
     },
     array: function (size) {
         size = size || 2;

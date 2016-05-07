@@ -9,8 +9,8 @@ var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var web3 = require("web3");
-var utils = require("../../src/utilities");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var tools = require("../tools");
+var augur = tools.setup(require("../../src"), process.argv.slice(2));
 var constants = augur.constants;
 
 web3.setProvider(new web3.providers.HttpProvider(augur.rpc.nodes.local || augur.rpc.nodes.hosted[0]));
@@ -191,12 +191,12 @@ var branchesAbi = [{
 
 describe("augur.js / web3 interoperability", function () {
     describe("market IDs should be identical", function () {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         var web3markets = web3.eth.contract(branchesAbi)
                                   .at(augur.contracts.branches)
                                   .getMarketsInBranch
                                   .call(new BigNumber(branchId));
-        augur = utils.setup(augur, process.argv.slice(2));
+        augur = tools.setup(augur, process.argv.slice(2));
         var markets = {
             augurjs: abi.hex(augur.getMarketsInBranch(branchId)),
             web3: abi.hex(web3markets)

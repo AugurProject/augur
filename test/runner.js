@@ -6,6 +6,7 @@ var abi = require("augur-abi");
 var clone = require("clone");
 var contracts = require("augur-contracts");
 var random = require("./random");
+var tools = require("./tools");
 var utils = require("../src/utilities");
 var augur = require("../src");
 augur.tx = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || "2");
@@ -131,7 +132,7 @@ var run = {
         var count = 0;
         async.whilst(
             function () {
-                return count < augur.constants.UNIT_TEST_SAMPLES;
+                return count < tools.UNIT_TEST_SAMPLES;
             },
             function (callback) {
                 ++count;
@@ -178,7 +179,7 @@ var run = {
         var count = 0;
         async.whilst(
             function () {
-                return count < augur.constants.UNIT_TEST_SAMPLES;
+                return count < tools.UNIT_TEST_SAMPLES;
             },
             function (callback) {
                 ++count;

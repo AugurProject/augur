@@ -8,7 +8,7 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var constants = require("../../src/constants");
-var utils = require("../../src/utilities");
+var tools = require("../tools");
 var runner = require("../runner");
 
 describe("Unit tests", function () {
@@ -58,7 +58,7 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var branch_id = augur.branches.dev;
     var branch_number = "0";
 

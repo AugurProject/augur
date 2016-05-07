@@ -7,8 +7,8 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
 var runner = require("../runner");
+var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
@@ -33,11 +33,11 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var constants = augur.constants;
     var branch_id = augur.branches.dev;
     var branch_number = "0";
-    var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var test_account = accounts[0];
     var markets = augur.getMarketsInBranch(branch_id);
     var market_id = markets[0];

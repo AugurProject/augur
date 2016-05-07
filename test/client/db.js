@@ -13,8 +13,9 @@ var uuid = require("node-uuid");
 var errors = require("augur-contracts").errors;
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
+var tools = require("../tools");
 var augurpath = "../../src/index";
-var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
 
 describe("Accounts", function () {
 
@@ -55,11 +56,11 @@ describe("Accounts", function () {
     };
 
     beforeEach(function () {
-        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+        augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     });
 
     it("save account", function (done) {
-        this.timeout(augur.constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         augur.db.put(userHandle, account.keystore, function (res) {
             if (res && res.error) return done(res);
             assert.isTrue(res);
@@ -101,7 +102,7 @@ describe("Accounts", function () {
     });
 
     it("remove account", function (done) {
-        this.timeout(augur.constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         var stored = augur.db.get(userHandle);
         if (stored && stored.error) return done(stored);
         assert.strictEqual(account.keystore.crypto.ciphertext, stored.crypto.ciphertext);
@@ -117,12 +118,12 @@ describe("Accounts", function () {
     describe("Persistent login", function () {
 
         it("putPersistent", function () {
-            this.timeout(augur.constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             assert.isTrue(augur.db.putPersistent(persistentAccount));
         });
 
         it("getPersistent", function () {
-            this.timeout(augur.constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             assert.isTrue(augur.db.putPersistent(persistentAccount));
             var storedPersistentAccount = augur.db.getPersistent();
             storedPersistentAccount.privateKey = abi.hex(storedPersistentAccount.privateKey, true);
@@ -130,7 +131,7 @@ describe("Accounts", function () {
         });
 
         it("removePersistent", function () {
-            this.timeout(augur.constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             assert.isTrue(augur.db.putPersistent(persistentAccount));
             var storedPersistentAccount = augur.db.getPersistent();
             storedPersistentAccount.privateKey = abi.hex(storedPersistentAccount.privateKey, true);

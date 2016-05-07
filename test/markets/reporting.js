@@ -7,7 +7,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
+var tools = require("../tools");
 var runner = require("../runner");
 
 describe("Unit tests", function () {
@@ -34,12 +34,10 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
-    var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var branchId = augur.branches.dev;
     var reporter_index = "0";
-    var ballot = [2, 2, 1, 2];
-    var salt = "1337";
 
     describe("getTotalRep(" + branchId + ")", function () {
         var test = function (r) {
@@ -67,7 +65,7 @@ describe("Integration tests", function () {
 
     describe("getRepBalance(" + branchId + ") ", function () {
         var test = function (r) {
-            utils.gteq0(r);
+            tools.gteq0(r);
         };
         it("sync", function () {
             test(augur.getRepBalance(branchId, accounts[0]));

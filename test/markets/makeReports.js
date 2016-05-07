@@ -11,6 +11,7 @@ var contracts = require("augur-contracts");
 var clone = require("clone");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
+var tools = require("../tools");
 var runner = require("../runner");
 
 var DEBUG = true;
@@ -76,10 +77,10 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
     var branchID = augur.branches.dev;
-    var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var suffix = Math.random().toString(36).substring(4);
     var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
     var periodLength = 75;
@@ -120,7 +121,7 @@ describe("Integration tests", function () {
         describe("Commit-and-reveal", function () {
 
             before(function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
 
                 var branchDescription = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
                 var tradingFee = "0.01";
@@ -229,7 +230,7 @@ describe("Integration tests", function () {
             });
 
             it("makeReports.submitReportHash", function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
                 var blockNumber = augur.rpc.blockNumber();
                 if (DEBUG) console.log("Current block:", blockNumber + "\tResidual:", blockNumber % periodLength);
                 var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
@@ -283,7 +284,7 @@ describe("Integration tests", function () {
             });
 
             it("makeReports.submitReport", function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
 
                 // fast-forward to the second half of the reporting period
                 var period = parseInt(augur.getReportPeriod(newBranchID));

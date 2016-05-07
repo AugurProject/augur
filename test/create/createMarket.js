@@ -8,7 +8,7 @@
 var async = require("async");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
+var tools = require("../tools");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
 var runner = require("../runner");
@@ -30,14 +30,14 @@ describe("Integration tests", function () {
         describe("createMarket", function () {
 
             beforeEach(function () {
-                augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+                augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             });
 
             describe("categorical", function () {
 
                 var test = function (t) {
                     it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                        this.timeout(augur.constants.TIMEOUT*2);
+                        this.timeout(tools.TIMEOUT*2);
                         augur.createEvent({
                             branchId: t.branch,
                             description: t.description,
@@ -85,13 +85,13 @@ describe("Integration tests", function () {
                                         }); // markets.getMarketEvents
                                     },
                                     onFailed: function (err) {
-                                        done(new Error(utils.pp(err)));
+                                        done(new Error(tools.pp(err)));
                                     }
                                 }); // createMarket.createMarket
 
                             },
                             onFailed: function (err) {
-                                done(new Error(utils.pp(err)));
+                                done(new Error(tools.pp(err)));
                             }
                         }); // createEvent.createEvent
                     });
@@ -100,7 +100,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
-                    expirationBlock: utils.date_to_block(augur, "1-1-2017"),
+                    expirationBlock: tools.date_to_block(augur, "1-1-2017"),
                     minValue: 1,
                     maxValue: 2,
                     numOutcomes: 3,
@@ -111,7 +111,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13? Choices: Higher, Lower, Equal",
-                    expirationBlock: utils.date_to_block(augur, "1-1-2017"),
+                    expirationBlock: tools.date_to_block(augur, "1-1-2017"),
                     minValue: 10,
                     maxValue: 20,
                     numOutcomes: 3,
@@ -122,7 +122,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Who will win the 2016 U.S. Presidential Election? Choices: Hillary Clinton, Donald Trump, Bernie Sanders, someone else",
-                    expirationBlock: utils.date_to_block(augur, "1-3-2017"),
+                    expirationBlock: tools.date_to_block(augur, "1-3-2017"),
                     minValue: 0,
                     maxValue: 1,
                     numOutcomes: 4,
@@ -145,7 +145,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
-                    expirationBlock: utils.date_to_block(augur, "1-3-2017"),
+                    expirationBlock: tools.date_to_block(augur, "1-3-2017"),
                     minValue: 10,
                     maxValue: 20,
                     numOutcomes: 4,
@@ -156,7 +156,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Which city will have the highest median single-family home price for September 2016? Choices: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, other",
-                    expirationBlock: utils.date_to_block(augur, "10-1-2016"),
+                    expirationBlock: tools.date_to_block(augur, "10-1-2016"),
                     minValue: 0,
                     maxValue: 1,
                     numOutcomes: 9,
@@ -169,7 +169,7 @@ describe("Integration tests", function () {
             describe("scalar", function () {
                 var test = function (t) {
                     it("[" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                        this.timeout(augur.constants.TIMEOUT*2);
+                        this.timeout(tools.TIMEOUT*2);
                         augur.createEvent({
                             branchId: t.branch,
                             description: t.description,
@@ -218,13 +218,13 @@ describe("Integration tests", function () {
                                         }); // markets.getMarketEvents
                                     },
                                     onFailed: function (err) {
-                                        done(new Error(utils.pp(err)));
+                                        done(new Error(tools.pp(err)));
                                     }
                                 }); // createMarket.createMarket
 
                             },
                             onFailed: function (err) {
-                                done(new Error(utils.pp(err)));
+                                done(new Error(tools.pp(err)));
                             }
                         }); // createEvent.createEvent
                     });
@@ -234,7 +234,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?",
-                    expirationBlock: utils.date_to_block(augur, "7-2-2016"),
+                    expirationBlock: tools.date_to_block(augur, "7-2-2016"),
                     minValue: 0,
                     maxValue: 120,
                     numOutcomes: 2,
@@ -245,7 +245,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "How much will it cost (in USD) to move a pound of inert cargo from Earth's surface to Low Earth Orbit by January 1, 2020?",
-                    expirationBlock: utils.date_to_block(augur, "1-2-2020"),
+                    expirationBlock: tools.date_to_block(augur, "1-2-2020"),
                     minValue: 1,
                     maxValue: 15000,
                     numOutcomes: 2,
@@ -258,7 +258,7 @@ describe("Integration tests", function () {
             describe("binary", function () {
                 var events = [[
                     "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2017?",
-                    utils.date_to_block(augur, "1-1-2018"),
+                    tools.date_to_block(augur, "1-1-2018"),
                     {
                         details: "NASA took a significant step Friday toward expanding research opportunities aboard the International Space Station with its first mission order from Hawthorne, California based-company SpaceX to launch astronauts from U.S. soil.\n\nThis is the second in a series of four guaranteed orders NASA will make under the Commercial Crew Transportation Capability (CCtCap) contracts. The Boeing Company of Houston received its first crew mission order in May.\n\n\"It's really exciting to see SpaceX and Boeing with hardware in flow for their first crew rotation missions,\" said Kathy Lueders, manager of NASA's Commercial Crew Program. \"It is important to have at least two healthy and robust capabilities from U.S. companies to deliver crew and critical scientific experiments from American soil to the space station throughout its lifespan.\"\n\nDetermination of which company will fly its mission to the station first will be made at a later time. The contracts call for orders to take place prior to certification to support the lead time necessary for missions in late 2017, provided the contractors meet readiness conditions.\n\nFull story: http://www.nasa.gov/press-release/nasa-orders-spacex-crew-mission-to-international-space-station",
                         tags: ["space", "SpaceX", "astronaut"],
@@ -273,7 +273,7 @@ describe("Integration tests", function () {
                     }
                 ], [
                     "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-                    utils.date_to_block(augur, "1-1-2019"),
+                    tools.date_to_block(augur, "1-1-2019"),
                     {
                         details: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
                         tags: ["space", "Dragon", "ISS"],
@@ -287,16 +287,16 @@ describe("Integration tests", function () {
                     }
                 ], [
                     "Will the Larsen B ice shelf collapse by November 1, 2017?",
-                    utils.date_to_block(augur, "11-2-2017")
+                    tools.date_to_block(augur, "11-2-2017")
                 ], [
                     "Will Hillary Clinton win the 2016 U.S. Presidential Election?",
-                    utils.date_to_block(augur, "1-2-2017")
+                    tools.date_to_block(augur, "1-2-2017")
                 ], [
                     "Will Bernie Sanders win the 2016 Democratic nomination for U.S. President?",
-                    utils.date_to_block(augur, "7-29-2016")
+                    tools.date_to_block(augur, "7-29-2016")
                 ]];
                 it.each(events, "%s", ["element"], function (element, next) {
-                    this.timeout(augur.constants.TIMEOUT*2);
+                    this.timeout(tools.TIMEOUT*2);
 
                     // create an event
                     var branch = augur.branches.dev;
@@ -322,7 +322,7 @@ describe("Integration tests", function () {
                             var eventID = r.callReturn;
                             var creator = augur.getCreator(eventID);
                             if (creator !== augur.coinbase) {
-                                console.log("\n  createEvent.createEvent:", utils.pp(r));
+                                console.log("\n  createEvent.createEvent:", tools.pp(r));
                             }
                             assert.strictEqual(creator, augur.coinbase);
                             assert.strictEqual(augur.getDescription(eventID), description);
@@ -349,18 +349,18 @@ describe("Integration tests", function () {
                                     metadata.marketId = marketID;
                                     var creator = augur.getCreator(marketID);
                                     if (creator !== augur.coinbase) {
-                                        console.log("\n  createMarket.createMarket:", utils.pp(res));
-                                        console.log("  getMarketInfo:", utils.pp(augur.getMarketInfo(marketID)));
-                                        console.log("  description:", utils.pp(augur.getDescription(marketID)));
+                                        console.log("\n  createMarket.createMarket:", tools.pp(res));
+                                        console.log("  getMarketInfo:", tools.pp(augur.getMarketInfo(marketID)));
+                                        console.log("  description:", tools.pp(augur.getDescription(marketID)));
                                     }
                                     assert.strictEqual(creator, augur.coinbase);
                                     assert.strictEqual(augur.getDescription(marketID), description);
 
                                     augur.getMarketEvents(marketID, function (eventList) {
                                         if (!eventList || !eventList.length) {
-                                            console.log("\n  markets.getMarketEvents:", utils.pp(eventList));
-                                            console.log("  getMarketInfo:", utils.pp(augur.getMarketInfo(marketID)));
-                                            console.log("  description:", utils.pp(augur.getDescription(marketID)));
+                                            console.log("\n  markets.getMarketEvents:", tools.pp(eventList));
+                                            console.log("  getMarketInfo:", tools.pp(augur.getMarketInfo(marketID)));
+                                            console.log("  description:", tools.pp(augur.getDescription(marketID)));
                                             next(new Error("event list"));
                                         }
                                         assert(eventList);
@@ -396,7 +396,7 @@ describe("Integration tests", function () {
 
                 var test = function (t) {
                     it(t.numEvents + "-event market", function (done) {
-                        this.timeout(augur.constants.TIMEOUT*8);
+                        this.timeout(tools.TIMEOUT*8);
                         var events = [];
                         async.eachSeries(t.events, function (event, nextEvent) {
                             augur.createEvent({
@@ -457,7 +457,7 @@ describe("Integration tests", function () {
                                     });
                                 },
                                 onFailed: function (err) {
-                                    done(new Error(utils.pp(err)));
+                                    done(new Error(tools.pp(err)));
                                 }
                             });
                         });
@@ -470,14 +470,14 @@ describe("Integration tests", function () {
                     events: [{
                         type: "scalar",
                         description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
-                        expirationBlock: utils.date_to_block(augur, "1-2-2018"),
+                        expirationBlock: tools.date_to_block(augur, "1-2-2018"),
                         minValue: 0,
                         maxValue: 1000000,
                         numOutcomes: 2
                     }, {
                         type: "scalar",
                         description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
-                        expirationBlock: utils.date_to_block(augur, "1-2-2018"),
+                        expirationBlock: tools.date_to_block(augur, "1-2-2018"),
                         minValue: 700,
                         maxValue: 5000,
                         numOutcomes: 2,
@@ -504,21 +504,21 @@ describe("Integration tests", function () {
                     events: [{
                         type: "scalar",
                         description: "How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?",
-                        expirationBlock: utils.date_to_block(augur, "1-1-2021"),
+                        expirationBlock: tools.date_to_block(augur, "1-1-2021"),
                         minValue: 0,
                         maxValue: 30,
                         numOutcomes: 2
                     }, {
                         type: "binary",
                         description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
-                        expirationBlock: utils.date_to_block(augur, "1-1-2021"),
+                        expirationBlock: tools.date_to_block(augur, "1-1-2021"),
                         minValue: 1,
                         maxValue: 2,
                         numOutcomes: 2
                     }, {
                         type: "categorical",
                         description: "What will be the number one killer in the United States by January 1, 2025? Choices: cancer, heart attacks, infectious diseases, starvation, lava, other",
-                        expirationBlock: utils.date_to_block(augur, "1-2-2025"),
+                        expirationBlock: tools.date_to_block(augur, "1-2-2025"),
                         minValue: 0,
                         maxValue: 1,
                         numOutcomes: 6

@@ -14,6 +14,7 @@ var contracts = require("augur-contracts");
 var constants = require("../../src/constants");
 var augurpath = "../../src/index";
 var runner = require("../runner");
+var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
@@ -110,27 +111,27 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+    var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     var amount = "1";
     var branchId = augur.branches.dev;
-    var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var traderIndex = "1";
     var outcome = 1;
     var markets = augur.getMarketsInBranch(branchId);
     var numMarkets = markets.length;
-    var marketId = utils.select_random(markets);
-    if (numMarkets > constants.MAX_TEST_SAMPLES) {
+    var marketId = tools.select_random(markets);
+    if (numMarkets > tools.MAX_TEST_SAMPLES) {
         var randomMarkets = [];
-        numMarkets = constants.MAX_TEST_SAMPLES;
+        numMarkets = tools.MAX_TEST_SAMPLES;
         do {
             if (randomMarkets.indexOf(marketId) === -1) {
                 randomMarkets.push(marketId);
             }
-            marketId = utils.select_random(markets);
-        } while (randomMarkets.length < constants.MAX_TEST_SAMPLES);
+            marketId = tools.select_random(markets);
+        } while (randomMarkets.length < tools.MAX_TEST_SAMPLES);
         markets = randomMarkets;
     }
-    constants.TIMEOUT *= 2;
+    tools.TIMEOUT *= 2;
 
     var errorCheck = function (output, done) {
         done = done || utils.pass;
@@ -150,19 +151,19 @@ describe("Integration tests", function () {
         }
         describe(params.toString(), function () {
             it("async", function (done) {
-                this.timeout(constants.TIMEOUT);
+                this.timeout(tools.TIMEOUT);
                 augur[method].apply(augur, params.concat(function (output) {
                     test(errorCheck(output, done));
                 }));
             });
             it("sync", function (done) {
-                this.timeout(constants.TIMEOUT);
+                this.timeout(tools.TIMEOUT);
                 var output = augur[method].apply(augur, params);
                 test(errorCheck(output, done));
             });
             if (augur.tx[method]) {
                 it("batch", function (done) {
-                    this.timeout(constants.TIMEOUT);
+                    this.timeout(tools.TIMEOUT);
                     var batch = augur.createBatch();
                     batch.add(method, params, function (output) {
                         test(errorCheck(output));
@@ -208,7 +209,7 @@ describe("Integration tests", function () {
             if (r.numEvents > 1) {
                 var txList = new Array(r.numEvents);
                 for (var i = 0; i < r.numEvents; ++i) {
-                    txList[i] = utils.copy(augur.tx.getDescription);
+                    txList[i] = tools.copy(augur.tx.getDescription);
                     txList[i].params = r.events[i].id;
                 }
                 var response = augur.rpc.batch(txList);
@@ -293,7 +294,7 @@ describe("Integration tests", function () {
 
     describe("data_api/markets", function () {
         before(function () {
-            augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+            augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
         });
         describe("getMarketInfo", function () {
             var test = function (t) {
@@ -345,7 +346,7 @@ describe("Integration tests", function () {
         });
         describe("getCurrentParticipantNumber", function () {
             var test = function (t) {
-                utils.gteq0(t.output);
+                tools.gteq0(t.output);
                 t.done();
             };
             for (var i = 0; i < numMarkets; ++i) {
@@ -363,7 +364,7 @@ describe("Integration tests", function () {
         });
         describe("getParticipantSharesPurchased", function () {
             var test = function (t) {
-                utils.gteq0(t.output);
+                tools.gteq0(t.output);
                 t.done();
             };
             for (var i = 0; i < numMarkets; ++i) {
@@ -372,7 +373,7 @@ describe("Integration tests", function () {
         });
         describe("getSharesPurchased", function () {
             var test = function (t) {
-                utils.gteq0(t.output);
+                tools.gteq0(t.output);
                 t.done();
             };
             for (var i = 0; i < numMarkets; ++i) {
@@ -390,7 +391,7 @@ describe("Integration tests", function () {
         });
         describe("getParticipantNumber", function () {
             var test = function (t) {
-                utils.gteq0(t.output);
+                tools.gteq0(t.output);
                 t.done();
             };
             for (var i = 0; i < numMarkets; ++i) {
@@ -399,7 +400,7 @@ describe("Integration tests", function () {
         });
         describe("getParticipantID", function () {
             var test = function (t) {
-                utils.gteq0(t.output);
+                tools.gteq0(t.output);
                 t.done();
             };
             for (var i = 0; i < numMarkets; ++i) {

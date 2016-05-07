@@ -9,6 +9,7 @@ var assert = require("chai").assert;
 var augur = require("../../src");
 var random = require("../random");
 var runner = require("../runner");
+var tools = require("../tools");
 
 var noop = function () {};
 
@@ -51,7 +52,7 @@ describe("Unit tests", function () {
                 noop
             );
         };
-        for (var i = 0; i < augur.constants.UNIT_TEST_SAMPLES; ++i) {
+        for (var i = 0; i < tools.UNIT_TEST_SAMPLES; ++i) {
             test({
                 description: random.string(),
                 periodLength: random.int(),

@@ -14,7 +14,8 @@ var EthUtil = require("ethereumjs-util");
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var constants = require("../../src/constants");
-var augur = utils.setup(require("../../src"), process.argv.slice(2));
+var tools = require("../tools");
+var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);
@@ -65,8 +66,8 @@ function checkAccount(augur, account) {
 describe("Register", function () {
 
     it("register account 1: " + handle + " / " + password, function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.db.get(handle, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle, password, {doNotFund: true}, function (result) {
@@ -96,8 +97,8 @@ describe("Register", function () {
     });
 
     it("register account 2: " + handle2 + " / " + password2, function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.db.get(handle2, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle2, password2, {doNotFund: true}, function (result) {
@@ -126,8 +127,8 @@ describe("Register", function () {
     });
 
     it("persistent register: " + handle3 + " / " + password3, function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.db.get(handle3, function (record) {
             assert.strictEqual(record.error, 99);
             augur.web.register(handle3, password3, {
@@ -186,8 +187,8 @@ describe("Register", function () {
 describe("Login", function () {
 
     it("login and decrypt the stored private key", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
             assert.notProperty(user, "error");
             assert.isTrue(Buffer.isBuffer(user.privateKey));
@@ -204,8 +205,8 @@ describe("Login", function () {
     });
 
     it("persistent login", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, {persist: true}, function (user) {
             assert.notProperty(user, "error");
             assert.isTrue(Buffer.isBuffer(user.privateKey));
@@ -226,8 +227,8 @@ describe("Login", function () {
     });
 
     it("login twice as the same user", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
             assert.notProperty(user, "error");
             assert.isTrue(Buffer.isBuffer(user.privateKey));
@@ -251,8 +252,8 @@ describe("Login", function () {
     });
 
     it("fail with error 403 when given an incorrect handle", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var bad_handle = utils.sha256(new Date().toString());
         augur.web.login(bad_handle, password, function (user) {
             assert.strictEqual(user.error, 403);
@@ -261,8 +262,8 @@ describe("Login", function () {
     });
 
     it("fail with error 403 when given a blank handle", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login("", password, function (user) {
             assert.strictEqual(user.error, 403);
             done();
@@ -270,8 +271,8 @@ describe("Login", function () {
     });
 
     it("fail with error 403 when given a blank password", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
@@ -279,8 +280,8 @@ describe("Login", function () {
     });
 
     it("fail with error 403 when given a blank handle and a blank password", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login("", "", function (user) {
             assert.strictEqual(user.error, 403);
             done();
@@ -288,8 +289,8 @@ describe("Login", function () {
     });
 
     it("fail with error 403 when given an incorrect password", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
         augur.web.login(handle, bad_password, function (user) {
             assert.strictEqual(user.error, 403);
@@ -298,8 +299,8 @@ describe("Login", function () {
     });
 
     it("fail with error 403 when given an incorrect handle and an incorrect password", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var bad_handle = utils.sha256(new Date().toString());
         var bad_password = utils.sha256(Math.random().toString(36).substring(4));
         augur.web.login(handle, bad_password, function (user) {
@@ -313,7 +314,7 @@ describe("Login", function () {
 describe("Persist", function () {
 
     it("use a stored (persistent) account", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         augur.web.logout();
         assert.isTrue(augur.db.removePersistent());
         assert.notProperty(augur.web.account, "handle");
@@ -349,12 +350,12 @@ describe("Persist", function () {
 describe("Logout", function () {
 
     it("logout and unset the account object", function (done) {
-        this.timeout(constants.TIMEOUT);
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(handle, password, function (user) {
             if (user.error) {
                 augur.web.logout();
-                return done(new Error(utils.pp(user)));
+                return done(new Error(tools.pp(user)));
             }
             assert.strictEqual(user.handle, handle);
             for (var i = 0; i < 2; ++i) {
@@ -375,8 +376,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     describe("Duplicate accounts", function () {
 
         it("account 1 + same password", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.register(handle, password, {doNotFund: true}, function (result) {
                 assert.strictEqual(result.error, 422);
                 assert.notProperty(result, "address");
@@ -441,8 +442,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("account 2 + different password", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
             var badPassword = password2 + "1";
             augur.web.register(handle2, badPassword, {doNotFund: true}, function (result) {
                 assert.strictEqual(result.error, 422);
@@ -508,8 +509,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         // it("account 1 + same password + full-sequence fund", function (done) {
-        //     this.timeout(constants.TIMEOUT);
-        //     var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        //     this.timeout(tools.TIMEOUT);
+        //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
         //     augur.web.register(handle, password, {
         //         onRegistered: function (account) {
         //             assert.strictEqual(account.error, 422);
@@ -554,8 +555,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         // });
 
         // it("account 1 + same password + persistence + full-sequence fund", function (done) {
-        //     this.timeout(constants.TIMEOUT);
-        //     var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        //     this.timeout(tools.TIMEOUT);
+        //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
         //     augur.web.register(handle, password, {persist: true}, {
         //         onRegistered: function (account) {
         //             assert.strictEqual(account.error, 422);
@@ -604,8 +605,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     describe("Fund new account", function () {
 
         it("funding sequence: " + handle, function (done) {
-            this.timeout(constants.TIMEOUT*2);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT*2);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
                 checkAccount(augur, account);
                 var recipient = account.address;
@@ -743,12 +744,12 @@ describe("Contract methods", function () {
         describe("Set transaction nonce", function () {
 
             it("duplicate transaction: invoke reputationFaucet twice", function (done) {
-                this.timeout(constants.TIMEOUT*2);
-                var augur = utils.setup(require("../../src"), process.argv.slice(2));
+                this.timeout(tools.TIMEOUT*2);
+                var augur = tools.setup(require("../../src"), process.argv.slice(2));
                 augur.web.login(handle, password, function (user) {
                     if (user.error) {
                         augur.web.logout();
-                        return done(new Error(utils.pp(user)));
+                        return done(new Error(tools.pp(user)));
                     }
                     assert.strictEqual(
                         user.address,
@@ -803,12 +804,12 @@ describe("Contract methods", function () {
     describe("Call", function () {
 
         it("call getBranches using web.invoke", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require("../../src"), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
-                    return done(new Error(utils.pp(user)));
+                    return done(new Error(tools.pp(user)));
                 }
                 assert.strictEqual(
                     user.address,
@@ -851,14 +852,14 @@ describe("Contract methods", function () {
         describe("Send transaction", function () {
 
             it("sign and send transaction using account 1", function (done) {
-                this.timeout(constants.TIMEOUT);
-                var augur = utils.setup(require("../../src"), process.argv.slice(2));
+                this.timeout(tools.TIMEOUT);
+                var augur = tools.setup(require("../../src"), process.argv.slice(2));
                 augur.web.login(handle, password, function (user) {
                     if (user.error) {
                         augur.web.logout();
-                        return done(new Error(utils.pp(user)));
+                        return done(new Error(tools.pp(user)));
                     }
-                    var tx = utils.copy(augur.tx.reputationFaucet);
+                    var tx = tools.copy(augur.tx.reputationFaucet);
                     tx.params = augur.branches.dev;
                     augur.web.invoke(tx, function (txhash) {
                         if (txhash.error) {
@@ -885,12 +886,12 @@ describe("Contract methods", function () {
             });
 
             it("detect logged in user and default to web.invoke", function (done) {
-                this.timeout(constants.TIMEOUT*4);
-                var augur = utils.setup(require("../../src"), process.argv.slice(2));
+                this.timeout(tools.TIMEOUT*4);
+                var augur = tools.setup(require("../../src"), process.argv.slice(2));
                 augur.web.login(handle, password, function (user) {
                     if (user.error) {
                         augur.web.logout();
-                        return done(new Error(utils.pp(user)));
+                        return done(new Error(tools.pp(user)));
                     }
                     assert.strictEqual(
                         user.address,

@@ -4,7 +4,6 @@
 
 "use strict";
 
-var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -20,24 +19,11 @@ module.exports = {
     // expected block interval
     SECONDS_PER_BLOCK: 12,
 
-    // maximum number of accounts/samples for testing
-    MAX_TEST_ACCOUNTS: 3,
-    UNIT_TEST_SAMPLES: 100,
-    MAX_TEST_SAMPLES: 3,
-
-    // unit test timeout
-    TIMEOUT: 600000,
-
     KDF: "pbkdf2",
     SCRYPT: "scrypt",
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
-
-    TOLERANCE: new Decimal("0.00000001"),
-    EPSILON: new Decimal("0.0000000000001"),
-    MAX_ITER: 250,
-    MAX_SHARES_PER_TRADE: 1000,
 
     FAUCET: "https://faucet.augur.net/faucet/",
     LOGS: {

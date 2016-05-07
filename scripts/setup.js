@@ -18,6 +18,7 @@ var abi = require("augur-abi");
 var chalk = require("chalk");
 var getopt = require("posix-getopt");
 var gethjs = require("geth");
+var tools = require("../test/tools");
 var augur = require(join(__dirname, "..", "src"));
 var constants = augur.constants;
 var utils = augur.utils;
@@ -69,7 +70,7 @@ var options = {
 };
 options.UPLOADER = join(options.AUGUR_CORE, "load_contracts.py");
 
-var accounts = utils.get_test_accounts(SYMLINK, constants.MAX_TEST_ACCOUNTS);
+var accounts = tools.get_test_accounts(SYMLINK, tools.MAX_TEST_ACCOUNTS);
 var verified_accounts = false;
 
 function mine_minimum_ether(geth, account, next) {
@@ -89,13 +90,13 @@ function mine_minimum_ether(geth, account, next) {
 
 function connect_augur() {
     if (options.CUSTOM_GOSPEL || options.RESET) {
-        augur = utils.setup(
+        augur = tools.setup(
             augur,
             ["--gospel"],
             "127.0.0.1:" + options.GETH_OPTIONS.flags.rpcport
         );
     } else {
-        augur = utils.setup(
+        augur = tools.setup(
             augur,
             null,
             "127.0.0.1:" + options.GETH_OPTIONS.flags.rpcport
@@ -110,7 +111,7 @@ function init(geth, account, callback, next, count) {
     connect_augur();
     count = count || 0;
     if (augur.connector.connected()) {
-        accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
+        accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
         verified_accounts = true;
         if (!verified_accounts && account !== accounts[0]) {
             gethjs.stop(function (err, code) {

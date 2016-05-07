@@ -10,10 +10,10 @@ var locks = require("locks");
 var chalk = require("chalk");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
+var tools = require("../tools");
 var constants = require("../../src/constants");
 var augurpath = "../../src/index";
-var augur = utils.setup(require(augurpath), process.argv.slice(2));
+var augur = tools.setup(require(augurpath), process.argv.slice(2));
 
 var DELAY = 2500;
 var branch = augur.branches.dev;
@@ -113,7 +113,7 @@ function createMarket(done, augur) {
 describe("Creation blocks", function () {
 
     it("getCreationBlocks(" + branch + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         var start = (new Date()).getTime();
         augur.getCreationBlocks(branch, function (blocks) {
             console.log("getCreationBlocks:", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -126,7 +126,7 @@ describe("Creation blocks", function () {
     });
 
     it("getMarketCreationBlock(" + marketId + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         var start = (new Date()).getTime();
         augur.getMarketCreationBlock(marketId, function (blockNumber) {
             console.log("getMarketCreationBlock:", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -142,8 +142,8 @@ describe("Price history", function () {
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
         before(function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.trade({
                 branch: branch,
                 market: marketId,
@@ -192,7 +192,7 @@ describe("Price history", function () {
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
         it("getPriceHistory(" + branch + ")", function (done) {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             var start = (new Date()).getTime();
             augur.getPriceHistory(branch, function (priceHistory) {
                 console.log("getPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -215,7 +215,7 @@ describe("Price history", function () {
         });
 
         it("[async] getMarketPriceHistory(" + marketId + ")", function (done) {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             var start = (new Date()).getTime();
             augur.getMarketPriceHistory(marketId, function (priceHistory) {
                 console.log("[async] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -240,7 +240,7 @@ describe("Price history", function () {
         });
 
         it("[sync] getMarketPriceHistory(" + marketId + ")", function () {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             var start = (new Date()).getTime();
             var priceHistory = augur.getMarketPriceHistory(marketId);
             console.log("[sync] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -263,7 +263,7 @@ describe("Price history", function () {
         });
 
         it("[async] getOutcomePriceHistory(" + marketId + "," + outcome + ")", function (done) {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             var start = (new Date()).getTime();
             augur.getOutcomePriceHistory(marketId, outcome, function (logs) {
                 console.log("[sync] getOutcomePriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
@@ -283,7 +283,7 @@ describe("Price history", function () {
         });
 
         it("[sync] getOutcomePriceHistory(" + marketId + "," + outcome + ")", function () {
-            this.timeout(constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             var logs = augur.getOutcomePriceHistory(marketId, outcome);
             assert.isArray(logs);
             if (!process.env.CONTINUOUS_INTEGRATION) {
@@ -305,7 +305,7 @@ describe("Account trade list", function () {
     var account = augur.coinbase;
 
     it("getAccountTrades(" + account + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         augur.getAccountTrades(account, function (trades) {
             for (var marketId in trades) {
                 if (!trades.hasOwnProperty(marketId)) continue;
@@ -328,7 +328,7 @@ describe("Account trade list", function () {
     });
 
     it("meanTradePrice", function () {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         var trades = {
           "0x29701b0b0e6f5ca52a67a4768fc00dbb8be71adbc8cb46227730d38b716a47c4": {
             "1": [
@@ -633,7 +633,7 @@ describe("Account trade list", function () {
     });
 
     it("getAccountMeanTradePrices(" + account + ")", function (done) {
-        this.timeout(constants.TIMEOUT);
+        this.timeout(tools.TIMEOUT);
         augur.getAccountMeanTradePrices(account, function (meanPrices) {
             for (var bs in meanPrices) {
                 if (!meanPrices.hasOwnProperty(bs)) continue;
@@ -658,8 +658,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         var listeners = [];
 
         it("should find message after buyShares", function (done) {
-            this.timeout(constants.TIMEOUT*4);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT*4);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
 
             augur.filters.start_price_listener("updatePrice(int256,int256,int256,int256,int256,int256)", function (filter_id) {
 
@@ -700,8 +700,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("should find message after sellShares", function (done) {
-            this.timeout(constants.TIMEOUT*4);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT*4);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.filters.start_price_listener("updatePrice", function (filter_id) {
 
                 listeners.push(setInterval(function () {
@@ -744,8 +744,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     describe("Contracts listener", function () {
 
         it("should find message after buyShares", function (done) {
-            this.timeout(constants.TIMEOUT*4);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT*4);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.filters.start_contracts_listener(function (contracts_filter) {
                 assert.deepEqual(augur.filters.contracts_filter, contracts_filter);
 
@@ -789,8 +789,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
     describe("listen/ignore", function () {
 
         it("block filter", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 block: function (blockHash) {
                     // example:
@@ -822,8 +822,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("contracts filter", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 contracts: function (tx) {
                     // { address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
@@ -889,8 +889,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("price filter", function (done) {
-            this.timeout(constants.TIMEOUT);
-            var augur = utils.setup(require(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 price: function (update) {
                     // { user: '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
@@ -934,8 +934,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("creation filter", function (done) {
-            this.timeout(constants.TIMEOUT*12);
-            var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT*12);
+            var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             augur.filters.listen({
                 creation: function (update) {
                     // log: [{
@@ -990,8 +990,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
         });
 
         it("combined", function (done) {
-            this.timeout(constants.TIMEOUT*6);
-            var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+            this.timeout(tools.TIMEOUT*6);
+            var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             var setup = {
                 block: null,
                 contracts: null,

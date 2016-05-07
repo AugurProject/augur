@@ -8,10 +8,10 @@
 var async = require("async");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
 var runner = require("../runner");
+var tools = require("../tools");
 
 describe("Unit tests", function () {
     runner("eth_sendTransaction", [{
@@ -23,14 +23,14 @@ describe("Unit tests", function () {
 describe("Integration tests", function () {
 
     before(function () {
-        augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+        augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     });
 
     describe("createSingleEventMarket", function () {
 
         var test = function (t) {
             it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
+                this.timeout(tools.TIMEOUT);
                 var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
                 augur.createSingleEventMarket({
                     branchId: t.branch,
@@ -73,7 +73,7 @@ describe("Integration tests", function () {
                         });
                     },
                     onFailed: function (err) {
-                        done(new Error(utils.pp(err)));
+                        done(new Error(tools.pp(err)));
                     }
                 });
             });
@@ -82,7 +82,7 @@ describe("Integration tests", function () {
         test({
             branch: augur.branches.dev,
             description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-            expirationBlock: utils.date_to_block(augur, "1-1-2019"),
+            expirationBlock: tools.date_to_block(augur, "1-1-2019"),
             minValue: 1,
             maxValue: 2,
             numOutcomes: 2,
@@ -104,7 +104,7 @@ describe("Integration tests", function () {
         test({
             branch: augur.branches.dev,
             description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
-            expirationBlock: utils.date_to_block(augur, "1-3-2017"),
+            expirationBlock: tools.date_to_block(augur, "1-3-2017"),
             minValue: 10,
             maxValue: 20,
             numOutcomes: 4,

@@ -2,9 +2,9 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
 var augur = require("../../src");
 var runner = require("../runner");
+var tools = require("../tools");
 
 describe("Unit tests", function () {
     runner("eth_sendTransaction", [{
@@ -23,13 +23,13 @@ describe("Integration tests", function () {
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
 
-        var augur = utils.setup(require("../../src"), process.argv.slice(2));
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var payment_value = 1;
         var branch = augur.branches.dev;
         var coinbase = augur.coinbase;
 
         it("cashFaucet", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             augur.cashFaucet(
                 function (r) {
                     // sent
@@ -51,7 +51,7 @@ describe("Integration tests", function () {
         });
 
         it("reputationFaucet", function (done) {
-            this.timeout(augur.constants.TIMEOUT);
+            this.timeout(tools.TIMEOUT);
             augur.reputationFaucet(
                 augur.branches.dev,
                 function (r) {

@@ -9,10 +9,10 @@ var assert = require("chai").assert;
 var async = require("async");
 var abi = require("augur-abi");
 var chalk = require("chalk");
-var utils = require("../../src/utilities");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
 var runner = require("../runner");
+var tools = require("../tools");
 
 var DEBUG = true;
 
