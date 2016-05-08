@@ -17,6 +17,8 @@ import { selectOutcomeTradeOrders } from '../../trade/selectors/trade-orders';
 import { selectTradeSummary } from '../../trade/selectors/trade-summary';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
+import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
+
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
 export default function() {
@@ -25,7 +27,8 @@ export default function() {
 }
 
 export const selectMarket = (marketID) => {
-	var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain } = store.getState(),
+	var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress,
+		blockchain, priceHistory } = store.getState(),
 		endDate;
 
 	if (!marketID || !marketsData || !marketsData[marketID] || !marketsData[marketID].description || !marketsData[marketID].eventID) {
@@ -37,6 +40,7 @@ export const selectMarket = (marketID) => {
 	return assembleMarket(
 		marketID,
 		marketsData[marketID],
+		priceHistory[marketID],
 		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
 
 		!!favorites[marketID],
@@ -60,6 +64,7 @@ export const selectMarketFromEventID = (eventID) => {
 export const assembleMarket = memoizerific(1000)(function(
 		marketID,
 		marketData,
+		marketPriceHistory,
 		isOpen,
 		isFavorite,
 		marketOutcomes,
@@ -163,6 +168,8 @@ export const assembleMarket = memoizerific(1000)(function(
 
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
+
+	o.priceTimeSeries = selectPriceTimeSeries(o.outcomes, marketPriceHistory);
 
 	o.reportableOutcomes = o.outcomes.slice();
 	o.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });

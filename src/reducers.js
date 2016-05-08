@@ -23,6 +23,7 @@ import createMarketInProgress from './modules/create-market/reducers/create-mark
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
 import selectedSort from './modules/markets/reducers/selected-sort';
+import priceHistory from './modules/markets/reducers/price-history';
 
 module.exports = {
 	blockchain,
@@ -43,6 +44,7 @@ module.exports = {
 	keywords,
 	selectedFilters,
 	selectedSort,
+	priceHistory,
 
 	tradesInProgress,
 	createMarketInProgress,
