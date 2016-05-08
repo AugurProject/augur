@@ -31,7 +31,7 @@ function serveHTTP(req, res) {
     }
 
     // static URIs
-    var re = /\/(styles\.css|splash\.css|images|fonts|build\.js|ipfs\.min\.js|augur\.min\.js)/;
+    var re = /\/(styles\.css|splash\.css|images|fonts|build\.js|augur\.min\.js)/;
 
     // route to app if not static URI
     if (!req.url.match(re)) req.url = "/index.html";
