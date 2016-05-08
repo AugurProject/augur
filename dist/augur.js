@@ -1202,32 +1202,19 @@ module.exports = function (network) {
             returns: "number",
             send: true
         },
+
+        // completeSets.se
         buyCompleteSets: {
-            to: contracts.buyAndSellShares,
+            to: contracts.completeSets,
             method: "buyCompleteSets",
             signature: "ii",
             returns: "number",
             send: true
         },
         sellCompleteSets: {
-            to: contracts.buyAndSellShares,
+            to: contracts.completeSets,
             method: "sellCompleteSets",
             signature: "ii",
-            returns: "number",
-            send: true
-        },
-
-        buyShares: {
-            to: contracts.buyAndSellShares,
-            method: "buyShares",
-            signature: "iiiii",
-            returns: "number",
-            send: true
-        },
-        sellShares: {
-            to: contracts.buyAndSellShares,
-            method: "sellShares",
-            signature: "iiiii",
             returns: "number",
             send: true
         },
@@ -34970,6 +34957,8 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onSent, onSu
     tx.params[1] = abi.fix(tx.params[1], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
+
+// completeSets.se
 Augur.prototype.buyCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.buyCompleteSets);
     var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buyCompleteSets), arguments);
@@ -35669,7 +35658,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true)]
     };
     if (!this.utils.is_function(cb)) {
-        var logs = this.filters.eth_getLogs(filter);
+        var logs = rpc.getLogs(filter);
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
@@ -35692,7 +35681,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         }
         return priceHistory;
     }
-    this.filters.eth_getLogs(filter, function (logs) {
+    rpc.getLogs(filter, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
@@ -35749,7 +35738,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
     }
     options = options || {};
     if (!account || !this.utils.is_function(cb)) return;
-    this.filters.eth_getLogs({
+    rpc.getLogs({
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
