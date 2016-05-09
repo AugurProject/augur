@@ -39,12 +39,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
     });
   };
   let fakeLoadMarket = {};
-  fakeLoadMarket.loadMarket = (marketID) => true;
+  fakeLoadMarket.loadBasicMarket = (marketID) => true;
 
   action = proxyquire('../../../src/modules/create-market/actions/submit-new-market', {
     '../../transactions/actions/add-create-market-transaction': fakeInclude,
     '../../../services/augurjs': fakeAugurJS,
-    '../../markets/actions/load-market': fakeLoadMarket
+    '../../market/actions/load-basic-market': fakeLoadMarket
   });
 
   beforeEach(() => {
@@ -117,4 +117,5 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
     // console.log(store.getActions());
     assert.deepEqual(store.getActions(), [], `Didn't properly dispatch actions for a error when creating account`);
   });
+  it(`Should be updated to use Sinon Stubs....`);
 });
