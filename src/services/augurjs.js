@@ -1,4 +1,3 @@
-import * as async from 'async';
 import augur from 'augur.js';
 import abi from 'augur-abi';
 import BigNumber from 'bignumber.js';
@@ -12,7 +11,11 @@ ex.connect = function(cb) {
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	augur.connect("http://127.0.0.1:8545", null, function (connected) {
+	var localnode = null;
+	if (document.location.protocol === "http:") {
+		localnode = "http://127.0.0.1:8545";
+	}
+	augur.connect(localnode, null, function (connected) {
 		if (!connected) return cb("could not connect to ethereum");
 		cb(null, connected);
 	});
@@ -553,52 +556,19 @@ ex.penalizeWrong = function (branchID, period, event, cb) {
 	});
 };
 
-ex.closeMarkets = function (branchID, period, cb) {
-	var self = this;
-	augur.getEvents(branchID, period, events => {
-		if (!events || events.error) {
-			console.error("getEvents:", events);
-			return cb(events || "no events found");
-		}
-		var closedMarkets = [];
-		async.eachSeries(events, (event, nextEvent) => {
-			augur.getOutcome(event, outcome => {
-				if (outcome !== "0") return nextEvent();
-				augur.getMarkets(event, markets => {
-					if (!markets || markets.error) {
-						return nextEvent(markets || "no markets found");
-					}
-					async.eachSeries(markets, (market, nextMarket) => {
-						if (closedMarkets.indexOf(market) > -1) {
-							return nextMarket();
-						}
-						self.closeMarket(branchID, market, (err, res) => {
-							closedMarkets.push(market);
-							nextMarket();
-						});
-					}, nextEvent);
-				});
-			});
-		}, err => {
-			if (err) return cb(err, closedMarkets);
-			cb(null, closedMarkets);
-		});
-	});
-};
-
 ex.closeMarket = function (branchID, marketID, cb) {
 	augur.closeMarket({
 		branch: branchID,
 		market: marketID,
 		onSent: res => {
-			console.log("closeMarket sent:", res);
+			//console.log("closeMarket sent:", res);
 		},
 		onSuccess: res => {
-			console.log("closeMarket success:", res);
+			//console.log("closeMarket success:", res);
 			cb(null, res);
 		},
 		onFailed: err => {
-			console.error("closeMarket error:", err);
+			//console.error("closeMarket error:", err);
 			cb(err);
 		}
 	});
@@ -621,11 +591,32 @@ ex.collectFees = function (branchID, cb) {
 	});
 };
 
-ex.getReportPeriod = augur.getReportPeriod.bind(augur);
+ex.incrementPeriodAfterReporting = function (branchID, cb) {
+	augur.incrementPeriodAfterReporting({
+		branch: branchID,
+		onSent: (result) => {},
+		onFailed: (err) => cb(err),
+		onSuccess: (result) => cb(null, result)
+	});
+};
+
+ex.getReportPeriod = function (branchID, cb) {
+	augur.getReportPeriod(branchID, function(res) {
+		if (res.error) {
+			return cb(res);
+		}
+		return cb(null, res);
+	});
+};
+
+
+
+ex.getOutcome = augur.getOutcome.bind(augur);
+ex.getEventIndex = augur.getEventIndex.bind(augur);
+
 ex.submitReport = augur.submitReport.bind(augur);
 ex.getEvents = augur.getEvents.bind(augur);
 ex.getReportedPeriod = augur.getReportedPeriod.bind(augur);
-ex.incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting.bind(augur);
 ex.rpc = augur.rpc;
 
 module.exports = ex;
