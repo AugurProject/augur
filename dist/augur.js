@@ -35417,7 +35417,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             info.events[i] = {
                 id: rawInfo[i*EVENTS_FIELDS + index],
                 endDate: endDate,
-                outcome: abi.string(rawInfo[i*EVENTS_FIELDS + index + 2]),
+                outcome: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 2], "string"),
                 minValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 3]),
                 maxValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 4]),
                 numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
