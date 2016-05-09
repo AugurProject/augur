@@ -17,6 +17,8 @@ describe(`modules/markets/actions/load-markets.js`, () => {
   let mockAugurJS = {};
   let mockParse = {};
   let mockReport = {};
+  let mockPenReports = {};
+  let mockClearReports = {};
 
   mockAugurJS.loadNumMarkets = sinon.stub();
   mockAugurJS.loadMarkets = sinon.stub();
@@ -32,11 +34,20 @@ describe(`modules/markets/actions/load-markets.js`, () => {
   });
   mockParse.ParseMarketsData.returnsArg(0);
   mockReport.loadReports.returnsArg(0);
+  mockPenReports.penalizeWrongReports = sinon.stub().returns({
+    type: 'PENALIZE_WRONG_REPORTS'
+  });
+  mockClearReports.closeMarkets = sinon.stub().returns({
+    type: 'CLEAR_MARKETS'
+  });
 
   action = proxyquire('../../../src/modules/markets/actions/load-markets', {
     '../../../services/augurjs': mockAugurJS,
     '../../../utils/parse-market-data': mockParse,
-    '../../reports/actions/update-reports': mockReport
+    '../../reports/actions/load-reports': mockReport,
+    '../../reports/actions/penalize-wrong-reports': mockPenReports,
+    '../../reports/actions/close-markets': mockClearReports,
+    '@noCallThru': true
   });
 
   it(`should load markets properly`, () => {
@@ -51,6 +62,10 @@ describe(`modules/markets/actions/load-markets.js`, () => {
       _id: 'test',
       test: 'info',
       example: 'test info'
+    }, {
+      type: 'PENALIZE_WRONG_REPORTS'
+    }, {
+      type: 'CLEAR_MARKETS'
     }];
 
     store.dispatch(action.loadMarkets());
@@ -60,6 +75,8 @@ describe(`modules/markets/actions/load-markets.js`, () => {
     assert(mockAugurJS.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
     assert(mockParse.ParseMarketsData.calledOnce, `ParseMarketsData wasn't called once`);
     assert(mockReport.loadReports.calledOnce, `loadReports() wasn't called once`);
+    assert(mockPenReports.penalizeWrongReports.calledOnce, `penalizeWrongReports() wsan't calledo once`);
+    assert(mockClearReports.closeMarkets.calledOnce, `closeMarkets() wasn't called once`);
   });
 
 });
