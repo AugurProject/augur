@@ -14,6 +14,10 @@ import { blockToDate } from '../../../utils/date';
 export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHistory) => {
     let { blockchain } = store.getState();
 
+    if (marketPriceHistory == null) {
+        return [];
+    }
+
     return outcomes.map((outcome) => {
         let outcomePriceHistory = marketPriceHistory[outcome.id] || [];
 
