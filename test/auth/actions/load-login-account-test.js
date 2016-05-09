@@ -11,7 +11,7 @@ import {
 } from '../../../src/modules/auth/actions/update-login-account';
 
 describe(`modules/auth/actions/load-login-account.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
@@ -86,8 +86,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
     '../../reports/actions/penalize-too-few-reports': fakePenalizeTooFew,
     '../../reports/actions/penalize-wrong-reports': fakePenalizeWrong,
     '../../reports/actions/collect-fees': fakeCollectFees,
-    '../../reports/actions/close-markets': fakeCloseMarkets,
-    '@noCallThru': true
+    '../../reports/actions/close-markets': fakeCloseMarkets
   });
 
   beforeEach(() => {

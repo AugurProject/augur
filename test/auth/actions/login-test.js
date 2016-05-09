@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe(`modules/auth/actions/login.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {};
@@ -49,8 +49,7 @@ describe(`modules/auth/actions/login.js`, () => {
     '../../../services/augurjs': fakeAugurJS,
     '../../../selectors': fakeSelectors,
     '../../auth/actions/update-login-account': updtLoginAccStub,
-    '../../auth/actions/load-login-account': ldLoginAccStub,
-    '@noCallThru': true
+    '../../auth/actions/load-login-account': ldLoginAccStub
   });
 
   beforeEach(() => {

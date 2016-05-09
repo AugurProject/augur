@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe(`modules/markets/actions/load-markets.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   let store, action, out;
@@ -46,8 +46,7 @@ describe(`modules/markets/actions/load-markets.js`, () => {
     '../../../utils/parse-market-data': mockParse,
     '../../reports/actions/load-reports': mockReport,
     '../../reports/actions/penalize-wrong-reports': mockPenReports,
-    '../../reports/actions/close-markets': mockClearReports,
-    '@noCallThru': true
+    '../../reports/actions/close-markets': mockClearReports
   });
 
   it(`should load markets properly`, () => {

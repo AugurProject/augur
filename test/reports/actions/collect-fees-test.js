@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe('modules/reports/actions/collect-fees.js', () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   let store, action, out;
@@ -24,8 +24,7 @@ describe('modules/reports/actions/collect-fees.js', () => {
 
   action = proxyquire('../../../src/modules/reports/actions/collect-fees', {
     '../../../services/augurjs': mockAugurJS,
-    '../../auth/actions/update-assets': mockUpdateAssets,
-    '@noCallThru': true
+    '../../auth/actions/update-assets': mockUpdateAssets
   });
 
   beforeEach(() => {
