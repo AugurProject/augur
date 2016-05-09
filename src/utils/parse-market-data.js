@@ -29,6 +29,8 @@ export function ParseMarketsData(marketsData) {
 		marketData.minValue = marketData.events[0].minValue;
 		marketData.maxValue = marketData.events[0].maxValue;
 		marketData.numOutcomes = marketData.events[0].numOutcomes;
+		marketData.reportedOutcome = marketData.events[0].outcome;
+
 		delete marketData.events;
 
 		o.marketsData[marketID] = marketData;

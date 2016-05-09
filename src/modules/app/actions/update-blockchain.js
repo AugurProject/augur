@@ -2,100 +2,115 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { BRANCH_ID } from '../../app/constants/network';
 
-import { autoReportSequence } from '../../reports/actions/auto-report-sequence';
+import { commitReports } from '../../reports/actions/commit-reports';
+import { penalizeTooFewReports } from '../../reports/actions/penalize-too-few-reports';
+import { collectFees } from '../../reports/actions/collect-fees';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
-export function updateBlockchain(blockNum) {
-	return function (dispatch, getState) {
+var isAlreadyUpdatingBlockchain = false;
 
-		function incrementPeriod(currentPeriod, periodLength) {
-			AugurJS.getReportPeriod(BRANCH_ID, function (reportPeriod) {
-				reportPeriod = parseInt(reportPeriod);
-				var isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
-				if (!isCurrent) {
-					var periodsBehind = currentPeriod - reportPeriod - 1;
-					console.warn("Branch", BRANCH_ID, "behind", periodsBehind, "periods, incrementing period...");
-					AugurJS.incrementPeriodAfterReporting({
-						branch: BRANCH_ID,
-						onSent: function (result) {
-							console.log("incrementPeriod sent:", result);
-						},
-						onSuccess: function (result) {
-							AugurJS.getReportPeriod(BRANCH_ID, function (reportPeriod) {
-								var reportPeriod = parseInt(reportPeriod);
-								console.debug("Incremented", BRANCH_ID, "to period", reportPeriod);
-								AugurJS.rpc.blockNumber(function (blockNumber) {
-									blockNumber = parseInt(blockNumber);
-									var currentPeriod = Math.floor(blockNumber / periodLength);
-									var isCurrent = reportPeriod < (currentPeriod - 1) ? false : true;
-									if (!isCurrent) return incrementPeriod(currentPeriod);
-									console.debug("Branch caught up!");
-									// if we've entered a new half-period, call autoReportSequence
-									var isReportConfirmationPhase = (blockNum % branch.periodLength) > (branch.periodLength / 2);
-									if (isReportConfirmationPhase !== blockchain.isReportConfirmationPhase) {
-										dispatch(autoReportSequence(isReportConfirmationPhase));
-									}
-									dispatch({
-										type: UPDATE_BLOCKCHAIN,
-										data: {
-											currentBlockNumber: blockNumber,
-											currentBlockMillisSinceEpoch: Date.now(),
-											currentPeriod: currentPeriod,
-											reportPeriod: reportPeriod,
-											isReportConfirmationPhase: (blockNumber % periodLength) > (periodLength / 2)
-										}
-									});
-								});
-							});
-						},
-						onFailed: function (err) {
-							console.error("incrementPeriod:", err);
-						}
-					});
-				} else {
-					AugurJS.rpc.blockNumber(function (blockNumber) {
-						blockNumber = parseInt(blockNumber);
+export function updateBlockchain(cb) {
+	return function(dispatch, getState) {
 
-						// if we've entered a new half-period, call autoReportSequence
-						var isReportConfirmationPhase = (blockNumber % branch.periodLength) > (branch.periodLength / 2);
-						if (isReportConfirmationPhase !== blockchain.isReportConfirmationPhase) {
-							dispatch(autoReportSequence(isReportConfirmationPhase));
-						}
-
-						dispatch({
-							type: UPDATE_BLOCKCHAIN,
-							data: {
-								currentBlockNumber: blockNumber,
-								currentBlockMillisSinceEpoch: Date.now(),
-								currentPeriod: currentPeriod,
-								reportPeriod: reportPeriod,
-								isReportConfirmationPhase: (blockNumber % periodLength) > (periodLength / 2)
-							}
-						});
-					});
-				}
-			});
+		if (isAlreadyUpdatingBlockchain) {
+			return;
 		}
 
-		var { branch, blockchain, loginAccount } = getState();
+		isAlreadyUpdatingBlockchain = true;
 
-		// if not logged in, return simple/calculated values
-		var currentPeriod = Math.floor(blockNum / branch.periodLength);
-		if (!loginAccount.id) {
-			return dispatch({
+		// load latest block number
+		AugurJS.loadCurrentBlock(currentBlockNumber => {
+			var { branch, blockchain } = getState(),
+				currentPeriod = Math.floor(currentBlockNumber / branch.periodLength),
+				isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod,
+				isReportConfirmationPhase = (currentBlockNumber % branch.periodLength) > (branch.periodLength / 2),
+				isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
+
+			if (!currentBlockNumber || currentBlockNumber !== parseInt(currentBlockNumber, 10)) {
+				return;
+			}
+
+			// update blockchain state
+			dispatch({
 				type: UPDATE_BLOCKCHAIN,
 				data: {
-					currentBlockNumber: blockNum,
+					currentBlockNumber,
 					currentBlockMillisSinceEpoch: Date.now(),
-					currentPeriod: currentPeriod,
-					reportPeriod: null,
-					isReportConfirmationPhase: (blockNum % branch.periodLength) > (branch.periodLength / 2)
+					currentPeriod,
+					isReportConfirmationPhase
 				}
 			});
+
+			// if the report *period* changed this block, do some extra stuff (also triggers the first time blockchain is being set)
+			if (isChangedCurrentPeriod) {
+				dispatch(incrementReportPeriod(() => {
+
+					// if the report *phase* changed this block, do some extra stuff
+					if (isChangedReportPhase) {
+						dispatch(commitReports());
+						dispatch(penalizeTooFewReports());
+						dispatch(collectFees());
+					}
+
+					isAlreadyUpdatingBlockchain = false;
+					return cb && cb();
+				}));
+			}
+			else {
+				isAlreadyUpdatingBlockchain = false;
+				return cb && cb();
+			}
+		});
+	};
+}
+
+export function incrementReportPeriod(cb) {
+	return function(dispatch, getState) {
+		var { blockchain } = getState(),
+			expectedReportPeriod = blockchain.currentPeriod - 1;
+
+		// if the report period is as expected, exit
+		if (blockchain.reportPeriod === expectedReportPeriod) {
+			return cb && cb();
 		}
 
-		// increment period if needed
-		incrementPeriod(currentPeriod);
+		// load report period from chain to see if that one is as expected
+		AugurJS.getReportPeriod(BRANCH_ID, (err, chainReportPeriod) => {
+			if (err) {
+				console.log('ERROR getReportPeriod1', BRANCH_ID, err);
+				return cb && cb();
+			}
+
+			chainReportPeriod = parseInt(chainReportPeriod, 10);
+
+			// if the report period on chain is up-to-date, update ours to match and exit
+			if (chainReportPeriod === expectedReportPeriod) {
+				dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod: expectedReportPeriod }});
+				return cb && cb();
+			}
+
+			// if we are the first to encounter the new period, we get the honor of incrementing it on chain for everyone
+			AugurJS.incrementPeriodAfterReporting(BRANCH_ID, (err, res) => {
+				if (err) {
+					console.error('ERROR incrementPeriodAfterReporting()', err);
+					return cb && cb();
+				}
+
+				// check if it worked out
+				AugurJS.getReportPeriod(BRANCH_ID, (err, verifyReportPeriod) => {
+					if (err) {
+						console.log('ERROR getReportPeriod2', err);
+						return cb && cb();
+					}
+					if (parseInt(verifyReportPeriod, 10) !== expectedReportPeriod) {
+						console.warn('Report period not as expected after being incremented, actual:', verifyReportPeriod, 'expected:', expectedReportPeriod);
+						return cb && cb();
+					}
+					dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod: expectedReportPeriod }});
+					return cb && cb();
+				});
+			});
+		});
 	};
 }

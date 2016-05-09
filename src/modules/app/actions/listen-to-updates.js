@@ -1,7 +1,7 @@
 import * as AugurJS from '../../../services/augurjs';
 
 import { updateAssets } from '../../auth/actions/update-assets';
-import { updateCurrentBlock } from '../../app/actions/update-current-block';
+import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { loadMarket } from '../../markets/actions/load-market';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 
@@ -12,12 +12,12 @@ export function listenToUpdates() {
 			// new block
 			(errNone, blockHash) => {
 				dispatch(updateAssets());
-				dispatch(updateCurrentBlock());
+				dispatch(updateBlockchain());
 			},
 
 			// transactions involving augur contracts
 			(errNone, filtrate) => {
-				console.log('augur contracts:', filtrate)
+				//console.log('augur contracts:', filtrate)
 			},
 
 			// outcome price update, { marketId, outcome (id), price }
@@ -28,7 +28,7 @@ export function listenToUpdates() {
 				dispatch(updateOutcomePrice(outcomePriceChange.marketId, outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
 			},
 
-			// new market, { blockNumber, marketId }
+			// new market, result = { blockNumber, marketId }
 			(errNone, result) => {
 				if (!result.marketId) {
 					return;

@@ -24,11 +24,10 @@ export function initAugur() {
 
 				dispatch(updateBranch(branch));
 
-				AugurJS.loadCurrentBlock(blockNum => {
-					dispatch(updateBlockchain(blockNum));
+				dispatch(updateBlockchain(() => {
 					dispatch(loadMarkets());
 					dispatch(listenToUpdates());
-				});
+				}));
 			});
 		});
 	};
