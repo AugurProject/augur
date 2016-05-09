@@ -14,7 +14,7 @@ export function collectFees() {
 		}
 
 		AugurJS.collectFees(branchID, (err, res) => {
-console.log('------> collectFees', err, res);
+console.log('------> collectFees result', err, res);
 			dispatch(updateAssets());
 		});
 	};
