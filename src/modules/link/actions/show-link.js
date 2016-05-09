@@ -1,8 +1,6 @@
 import { ParseURL } from '../../../utils/parse-url';
 
-import { M } from '../../app/constants/pages';
-
-import { loadPriceHistory } from '../../markets/actions/load-price-history'
+import { prepareActivePage } from '../../app/actions/active-page'
 
 export const SHOW_LINK = 'SHOW_LINK';
 
@@ -16,10 +14,7 @@ export function showLink(url, options = {}) {
     return function(dispatch, getState) {
         dispatch({ type: SHOW_LINK, parsedURL: ParseURL(url) });
 
-        let { activePage, selectedMarketID } = getState();
-        if (activePage === M) {
-            dispatch(loadPriceHistory(selectedMarketID));
-        }
+        dispatch(prepareActivePage());
 
         if (url !== window.location.pathname + window.location.search) {
             window.history.pushState(null, null, url);
