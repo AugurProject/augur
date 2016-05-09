@@ -2,7 +2,7 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
-import { loadMarket } from '../../markets/actions/load-market';
+import { loadBasicMarket } from '../../market/actions/load-basic-market';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 
 export function listenToUpdates() {
@@ -33,7 +33,7 @@ export function listenToUpdates() {
 				if (!result.marketId) {
 					return;
 				}
-				dispatch(loadMarket(result.marketId));
+				dispatch(loadBasicMarket(result.marketId));
 			}
 		);
 	};
