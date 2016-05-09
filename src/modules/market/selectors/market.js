@@ -1,3 +1,19 @@
+/*
+This is the most important and sensitive selector in the app.
+It builds the fat, heavy, rigid, hierarchical market objects, that are used to render and display many parts of the ui.
+This is the point where the shallow, light, loose, flexible, independent pieces of state come together to make each market.
+
+IMPORTANT
+The assembleMarket() function (where all the action happens) is heavily memoized, and performance sensitive.
+Doing things sub-optimally here will cause noticeable performance degradation in the app.
+The "trick" is to maximize memoization cache hits as much a spossible, and not have assembleMarket() run any more than it has to.
+
+To achieve that, we pre-process the arguments passed in to it as much as possible.
+For example, instead of passing in the entire "favorites" collection and letting the function find the one it needs for the market,
+we instead pass in !!favorites[marketID], and the market only gets re-assembled if the specific favorite it is concerned with changes.
+*/
+
+
 import memoizerific from 'memoizerific';
 import { formatNumber, formatEther, formatPercent, formatDate, makeDateFromBlock } from '../../../utils/format-number';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
