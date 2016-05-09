@@ -6,7 +6,7 @@ import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/co
 
 import AugurJS from '../../../services/augurjs';
 
-import { loadMarket } from '../../markets/actions/load-market';
+import { loadBasicMarket } from '../../market/actions/load-basic-market';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addCreateMarketTransaction } from '../../transactions/actions/add-create-market-transaction';
 import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
@@ -58,7 +58,7 @@ export function createMarket(transactionID, newMarket) {
 				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
 				if (res.status === SUCCESS) {
 					dispatch(clearMakeInProgress());
-					setTimeout(() => dispatch(loadMarket(res.marketID)), 5000);
+					setTimeout(() => dispatch(loadBasicMarket(res.marketID)), 5000);
 				}
 			}
 		});

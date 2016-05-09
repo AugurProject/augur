@@ -4,15 +4,17 @@ import { ParseMarketsData } from '../../../utils/parse-market-data';
 
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
 
-export function loadMarket(marketID) {
+export function loadBasicMarket(marketID, cb) {
 	return function(dispatch, getState) {
 		AugurJS.loadMarket(marketID, (err, marketData) => {
 			var marketDataOutcomesData;
 			if (err) {
-				return console.info("ERROR: loadMarket()", err);
+				console.info("ERROR: loadMarket()", err);
+				return cb && cb();
 			}
 			marketDataOutcomesData = ParseMarketsData({ [marketData['_id']]: marketData });
 			dispatch(updateMarketsData(marketDataOutcomesData));
+			return cb && cb();
 		});
 	};
 }
