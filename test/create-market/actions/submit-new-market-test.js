@@ -2,17 +2,28 @@ import {
   assert
 } from 'chai';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../../src/modules/markets/constants/market-types';
-import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../../../src/modules/transactions/constants/statuses';
+import {
+  BINARY,
+  CATEGORICAL,
+  SCALAR,
+  COMBINATORIAL
+} from '../../../src/modules/markets/constants/market-types';
+import {
+  PENDING,
+  SUCCESS,
+  FAILED,
+  CREATING_MARKET
+} from '../../../src/modules/transactions/constants/statuses';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  let store, action, out;
+  let store, action, out, clock;
   let state = Object.assign({}, testState);
   store = mockStore(state);
   let testData = {
@@ -28,18 +39,22 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
       status: 'pending'
     }
   };
-  let fakeInclude = {};
-  fakeInclude.addCreateMarketTransaction = (newMarket) => testData;
-  let fakeAugurJS = {};
-  fakeAugurJS.createMarket = (branch, market, cb) => {
-    cb(null, {
-      marketID: 'test123',
-      status: SUCCESS,
-      ...market
-    });
+  let fakeInclude = {
+    addCreateMarketTransaction: () => {}
   };
+
+  sinon.stub(fakeInclude, 'addCreateMarketTransaction', (newMarket) => testData);
+
+  let fakeAugurJS = {};
+
+  fakeAugurJS.createMarket = sinon.stub().yields(null, {
+    marketID: 'test123',
+    status: SUCCESS,
+  });
+  fakeAugurJS.createMarket.onCall(1).yields({message: 'error!'}, {status: FAILED});
+
   let fakeLoadMarket = {};
-  fakeLoadMarket.loadBasicMarket = (marketID) => true;
+  fakeLoadMarket.loadBasicMarket = sinon.stub().returns(true);
 
   action = proxyquire('../../../src/modules/create-market/actions/submit-new-market', {
     '../../transactions/actions/add-create-market-transaction': fakeInclude,
@@ -49,6 +64,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
   beforeEach(() => {
     store.clearActions();
+    clock = sinon.useFakeTimers();
     // Mock the window object
     global.window = {};
     global.window.performance = {
@@ -67,6 +83,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
   afterEach(() => {
     global.window = {};
+    store.clearActions();
+    clock.restore();
   });
 
   it(`should be able to submit a new market`, () => {
@@ -97,6 +115,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
       }
     }];
 
+    assert(fakeInclude.addCreateMarketTransaction.calledOnce, `addCreateMarketTransaction wasn't called once as expected`);
     assert.deepEqual(store.getActions(), out, `Didn't correctly create a new market`);
   });
 
@@ -104,18 +123,21 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
     store.dispatch(action.createMarket('trans1234', {
       type: BINARY
     }));
-    assert.deepEqual(store.getActions(), [{type: 'CLEAR_MAKE_IN_PROGRESS'}], `Didn't dispatch the right actions for a successfuly created binary market`);
+    clock.tick(20000);
+    assert.deepEqual(store.getActions(), [{
+      type: 'CLEAR_MAKE_IN_PROGRESS'
+    }, true], `Didn't dispatch the right actions for a successfuly created binary market`);
+    assert(fakeAugurJS.createMarket.calledOnce, `createMarket wasn't called one time after dispatching a createMarket action`);
+    assert(fakeLoadMarket.loadBasicMarket.calledOnce, `loadBasicMarket wasn't called once as expected`);
+
     store.clearActions();
-    fakeAugurJS.createMarket = (branch, market, cb) => {
-      cb({message: 'test'}, {
-        marketID: 'test123',
-        status: '1234',
-        ...market
-      });
-    };
-    store.dispatch(action.createMarket('trans12345', {type: BINARY}));
-    // console.log(store.getActions());
+
+    store.dispatch(action.createMarket('trans12345', {
+      type: BINARY
+    }));
+
+    assert(fakeAugurJS.createMarket.calledTwice, `createMarket wasn't called twice after dispatching a createMarket Action 2 times`);
     assert.deepEqual(store.getActions(), [], `Didn't properly dispatch actions for a error when creating account`);
   });
-  it(`Should be updated to use Sinon Stubs....`);
+  
 });
