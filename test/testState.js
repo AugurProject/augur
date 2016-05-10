@@ -54,6 +54,7 @@ const testState = {
     numPerPage: 10,
     selectedPageNum: 1
   },
+  reports: {},
   selectedFilters: {
     isOpen: true
   },
