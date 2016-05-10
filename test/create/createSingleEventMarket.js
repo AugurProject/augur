@@ -13,12 +13,12 @@ var augur = require(augurpath);
 var runner = require("../runner");
 var tools = require("../tools");
 
-describe("Unit tests", function () {
-    runner("eth_sendTransaction", [{
-        method: "createSingleEventMarket",
-        parameters: ["hash", "string", "int", "int", "int", "int", "fixed", "fixed", "fixed", "intString"]
-    }]);
-});
+// describe("Unit tests", function () {
+//     runner("eth_sendTransaction", [{
+//         method: "createSingleEventMarket",
+//         parameters: ["hash", "string", "int", "int", "int", "int", "string", "fixed", "array", "fixed", "string"]
+//     }]);
+// });
 
 describe("Integration tests", function () {
 
@@ -31,22 +31,25 @@ describe("Integration tests", function () {
         var test = function (t) {
             it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
                 this.timeout(tools.TIMEOUT);
-                var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
                 augur.createSingleEventMarket({
                     branchId: t.branch,
                     description: t.description,
-                    expirationBlock: t.expirationBlock,
+                    expDate: t.expDate,
                     minValue: t.minValue,
                     maxValue: t.maxValue,
                     numOutcomes: t.numOutcomes,
-                    alpha: t.alpha,
-                    initialLiquidity: initialLiquidity,
                     tradingFee: t.tradingFee,
+                    makerFees: t.makerFees,
+                    tags: t.tags,
+                    extraInfo: t.extraInfo,
+                    resolution: t.resolution,
                     onSent: function (r) {
+                        console.log(r)
                         assert(r.txHash);
                         assert(r.callReturn);
                     },
                     onSuccess: function (r) {
+                        console.log(r);
                         var marketID = r.callReturn;
                         assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                         assert.strictEqual(augur.getDescription(marketID), t.description);
@@ -59,14 +62,6 @@ describe("Integration tests", function () {
                                     if (info.error) return done(info);
                                     assert.isArray(info.events);
                                     assert.strictEqual(info.events.length, 1);
-                                    var metadata = t.metadata;
-                                    metadata.marketId = marketID;
-                                    augur.ramble.addMetadata(t.metadata, function (res) {
-                                        assert.strictEqual(res.callReturn, "1");
-                                    }, function (res) {
-                                        assert.strictEqual(res.callReturn, "1");
-                                        done();
-                                    }, done);
                                     done();
                                 });
                             });
@@ -82,44 +77,29 @@ describe("Integration tests", function () {
         test({
             branch: augur.branches.dev,
             description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-            expirationBlock: tools.date_to_block(augur, "1-1-2019"),
+            expDate: new Date("1/2/2019").getTime(),
             minValue: 1,
             maxValue: 2,
             numOutcomes: 2,
-            alpha: "0.0079",
             tradingFee: "0.02",
-            initialLiquidityFloor: 1000,
-            metadata: {
-                details: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
-                tags: ["space", "Dragon", "ISS"],
-                source: "generic",
-                broadcast: true,
-                links: [
-                    "http://fortune.com/2015/11/20/spacex-astronauts-international-space-station/",
-                    "http://www.spacex.com"
-                ]
-            }
+            makerFees: "0.25",
+            extraInfo: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
+            tags: ["space", "Dragon", "ISS"],
+            resolution: "generic"
         });
 
         test({
             branch: augur.branches.dev,
             description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
-            expirationBlock: tools.date_to_block(augur, "1-3-2017"),
+            expDate: new Date("1/23/2017").getTime(),
             minValue: 10,
             maxValue: 20,
             numOutcomes: 4,
-            alpha: "0.0079",
             tradingFee: "0.02",
-            initialLiquidityFloor: 1000,
-            metadata: {
-                details: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
-                tags: ["politics", "US elections", "political parties"],
-                source: "generic",
-                broadcast: true,
-                links: [
-                    "https://en.wikipedia.org/wiki/United_States_presidential_election,_2016"
-                ]
-            }
+            makerFees: "0.5",
+            extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
+            tags: ["politics", "US elections", "political parties"],
+            resolution: "generic"
         });
 
     });

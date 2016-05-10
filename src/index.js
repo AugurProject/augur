@@ -906,11 +906,6 @@ Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback
     tx.params = [branch, period, reporter];
     return this.fire(tx, callback);
 };
-Augur.prototype.getReportable = function (reportPeriod, eventID, callback) {
-    var tx = clone(this.tx.getReportable);
-    tx.params = [reportPeriod, eventID];
-    return this.fire(tx, callback);
-};
 Augur.prototype.getNumReportsActual = function (branch, reportPeriod, callback) {
     var tx = clone(this.tx.getNumReportsActual);
     tx.params = [branch, reportPeriod];
@@ -1071,47 +1066,102 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
 };
 
 // createSingleEventMarket.se
-Augur.prototype.createSingleEventMarket = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, alpha, initialLiquidity, tradingFee, forkSelection, onSent, onSuccess, onFailed) {
+Augur.prototype.createSingleEventMarket = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
-        description = branchId.description;           // string
-        expirationBlock = branchId.expirationBlock;   // integer
-        minValue = branchId.minValue;                 // integer (1 for binary)
-        maxValue = branchId.maxValue;                 // integer (2 for binary)
-        numOutcomes = branchId.numOutcomes;           // integer (2 for binary)
-        alpha = branchId.alpha;                       // number -> fixed-point
-        initialLiquidity = branchId.initialLiquidity; // number -> fixed-point
-        tradingFee = branchId.tradingFee;             // number -> fixed-point
-        forkSelection = branchId.forkSelection;       // integer
-        onSent = branchId.onSent;                     // function
-        onSuccess = branchId.onSuccess;               // function
-        onFailed = branchId.onFailed;                 // function
-        branchId = branchId.branchId;                 // sha256 hash
+        description = branchId.description;         // string
+        expDate = branchId.expDate;
+        minValue = branchId.minValue;               // integer (1 for binary)
+        maxValue = branchId.maxValue;               // integer (2 for binary)
+        numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+        resolution = branchId.resolution;
+        tradingFee = branchId.tradingFee;           // number -> fixed-point
+        tags = branchId.tags;
+        makerFees = branchId.makerFees;
+        extraInfo = branchId.extraInfo;
+        onSent = branchId.onSent;                   // function
+        onSuccess = branchId.onSuccess;             // function
+        onFailed = branchId.onFailed;               // function
+        branchId = branchId.branchId;               // sha256 hash
     }
-    var tx = clone(this.tx.createSingleEventMarket);
+    // var tx = clone(this.tx.createSingleEventMarket);
+    if (!tags || tags.constructor !== Array) tags = [];
+    if (tags.length) {
+        for (var i = 0; i < tags.length; ++i) {
+            if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                tags[i] = "0x0";
+            } else {
+                tags[i] = abi.short_string_to_int256(tags[i]);
+            }
+        }
+    }
+    while (tags.length < 3) {
+        tags.push("0x0");
+    }
+    // tx.params = [
+    //     branchId,
+    //     description,
+    //     expDate,
+    //     abi.fix(minValue, "hex"),
+    //     abi.fix(maxValue, "hex"),
+    //     numOutcomes,
+    //     resolution,
+    //     abi.fix(tradingFee, "hex"),
+    //     tags[0],
+    //     tags[1],
+    //     tags[2],
+    //     abi.fix(makerFees, "hex"),
+    //     extraInfo || ""
+    // ];
+    // rpc.gasPrice(function (gasPrice) {
+    //     tx.gasPrice = gasPrice;
+    //     gasPrice = abi.bignum(gasPrice);
+    //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    //     self.transact(tx, onSent, onSuccess, onFailed);
+    // });
+    var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
         description,
-        expirationBlock,
-        minValue,
-        maxValue,
+        expDate,
+        abi.fix(minValue, "hex"),
+        abi.fix(maxValue, "hex"),
         numOutcomes,
-        abi.fix(alpha, "hex"),
-        abi.fix(initialLiquidity, "hex"),
-        abi.fix(tradingFee, "hex"),
-        forkSelection || 1
+        resolution
     ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    this.transact(tx, function (res) {
+    }, function (res) {
+        console.log("createEvent success:", res);
+        var tx = clone(self.tx.createMarket);
+        tx.params = [
+            branchId,
+            description,
+            abi.fix(tradingFee, "hex"),
+            [res.callReturn],
+            tags[0],
+            tags[1],
+            tags[2],
+            abi.fix(makerFees, "hex"),
+            extraInfo || ""
+        ];
+        rpc.gasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            gasPrice = abi.bignum(gasPrice);
+            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+            self.transact(tx, onSent, onSuccess, onFailed);
+        });
+    }, onFailed);
 };
 
 // createEvent.se
-Augur.prototype.createEvent = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, onSent, onSuccess, onFailed) {
-    // first parameter can optionally be a transaction object
+Augur.prototype.createEvent = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
     if (branchId.constructor === Object && branchId.branchId) {
         description = branchId.description;         // string
         minValue = branchId.minValue;               // integer (1 for binary)
         maxValue = branchId.maxValue;               // integer (2 for binary)
         numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-        expirationBlock = branchId.expirationBlock; // integer
+        expDate = branchId.expDate;
+        resolution = branchId.resolution;
         onSent = branchId.onSent;                   // function
         onSuccess = branchId.onSuccess;             // function
         onFailed = branchId.onFailed;               // function
@@ -1121,46 +1171,61 @@ Augur.prototype.createEvent = function (branchId, description, expirationBlock, 
     tx.params = [
         branchId,
         description,
-        expirationBlock,
-        minValue,
-        maxValue,
-        numOutcomes
+        expDate,
+        abi.fix(minValue, "hex"),
+        abi.fix(maxValue, "hex"),
+        numOutcomes,
+        resolution
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // createMarket.se
-Augur.prototype.createMarket = function (branchId, description, alpha, initialLiquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
+Augur.prototype.createMarket = function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
-        alpha = branchId.alpha;                        // number -> fixed-point
-        description = branchId.description;            // string
-        initialLiquidity = branchId.initialLiquidity;  // number -> fixed-point
-        tradingFee = branchId.tradingFee;              // number -> fixed-point
-        events = branchId.events;                      // array [sha256, ...]
-        forkSelection = branchId.forkSelection;        // integer
-        onSent = branchId.onSent;                      // function
-        onSuccess = branchId.onSuccess;                // function
-        onFailed = branchId.onFailed;                  // function
-        branchId = branchId.branchId;                  // sha256 hash
+        description = branchId.description; // string
+        tradingFee = branchId.tradingFee;   // number -> fixed-point
+        events = branchId.events;           // array [sha256, ...]
+        tags = branchId.tags;
+        makerFees = branchId.makerFees;
+        extraInfo = branchId.extraInfo;
+        onSent = branchId.onSent;           // function
+        onSuccess = branchId.onSuccess;     // function
+        onFailed = branchId.onFailed;       // function
+        branchId = branchId.branchId;       // sha256 hash
     }
     var tx = clone(this.tx.createMarket);
-    if (events && events.length) {
-        for (var i = 0, len = events.length; i < len; ++i) {
-            if (events[i] && events[i].constructor === BigNumber) {
-                events[i] = events[i].toString(16);
+    if (!tags || tags.constructor !== Array) tags = [];
+    if (tags.length) {
+        for (var i = 0; i < tags.length; ++i) {
+            if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                tags[i] = "0x0";
+            } else {
+                tags[i] = abi.short_string_to_int256(tags[i]);
             }
         }
+    }
+    while (tags.length < 3) {
+        tags.push("0x0");
     }
     tx.params = [
         branchId,
         description,
-        abi.fix(alpha, "hex"),
-        abi.fix(initialLiquidity, "hex"),
         abi.fix(tradingFee, "hex"),
         events,
-        forkSelection || 1
+        tags[0],
+        tags[1],
+        tags[2],
+        abi.fix(makerFees, "hex"),
+        extraInfo || ""
     ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    rpc.gasPrice(function (gasPrice) {
+        tx.gasPrice = gasPrice;
+        gasPrice = abi.bignum(gasPrice);
+        tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
+        self.transact(tx, onSent, onSuccess, onFailed);
+    });
 };
 
 // closeMarket.se
@@ -1226,7 +1291,11 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             volume: abi.unfix(rawInfo[11], "string"),
             creationFee: abi.unfix(rawInfo[12], "string"),
             author: abi.format_address(rawInfo[13]),
-            tags: [rawInfo[14], rawInfo[15], rawInfo[16]],
+            tags: [
+                abi.int256_to_short_string(rawInfo[14]),
+                abi.int256_to_short_string(rawInfo[15]),
+                abi.int256_to_short_string(rawInfo[16])
+            ],
             type: null,
             endDate: null,
             participants: {},

@@ -26,9 +26,6 @@ describe("Unit tests", function () {
             method: "getReportedPeriod",
             parameters: ["hash", "int", "address"]
         }, {
-            method: "getReportable",
-            parameters: ["int", "hash"]
-        }, {
             method: "getNumReportsActual",
             parameters: ["hash", "int"]
         }, {

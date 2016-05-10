@@ -18,7 +18,7 @@ module.exports = {
 
     // maximum number of accounts/samples for testing
     MAX_TEST_ACCOUNTS: 3,
-    UNIT_TEST_SAMPLES: 100,
+    UNIT_TEST_SAMPLES: 1,
     MAX_TEST_SAMPLES: 3,
 
     // unit test timeout
@@ -72,7 +72,7 @@ module.exports = {
     },
 
     reset: function (mod) {
-        mod = path.join(__dirname, path.parse(mod).name);
+        mod = path.join(__dirname, "..", "src", path.parse(mod).name);
         delete require.cache[require.resolve(mod)];
         return require(mod);
     },
