@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_PRICE_HISTORY } from '../../markets/actions/update-market-price-history';
+import { UPDATE_MARKET_PRICE_HISTORY } from '../../market/actions/update-market-price-history';
 
 export default function(priceHistory = {}, action) {
     switch (action.type) {

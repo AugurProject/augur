@@ -1,6 +1,6 @@
 import { ParseURL } from '../../../utils/parse-url';
 
-import { prepareActivePage } from '../../app/actions/active-page'
+import { loadFullMarket } from '../../market/actions/load-full-market'
 
 export const SHOW_LINK = 'SHOW_LINK';
 
@@ -14,7 +14,10 @@ export function showLink(url, options = {}) {
     return function(dispatch, getState) {
         dispatch({ type: SHOW_LINK, parsedURL: ParseURL(url) });
 
-        dispatch(prepareActivePage());
+        let { selectedMarketID, connection } = getState();
+        if (selectedMarketID != null && connection.isConnected) {
+            dispatch(loadFullMarket(selectedMarketID));
+        }
 
         if (url !== window.location.pathname + window.location.search) {
             window.history.pushState(null, null, url);

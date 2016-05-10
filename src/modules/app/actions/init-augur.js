@@ -5,10 +5,10 @@ import { BRANCH_ID } from '../../app/constants/network';
 import { updateConnectionStatus } from '../../app/actions/update-connection';
 import { updateBranch } from '../../app/actions/update-branch';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
-import { prepareActivePage } from '../../app/actions/active-page';
 import { listenToUpdates } from '../../app/actions/listen-to-updates';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadMarkets } from '../../markets/actions/load-markets';
+import { loadFullMarket } from '../../market/actions/load-full-market';
 
 export function initAugur() {
 	return (dispatch, getState) => {
@@ -29,7 +29,12 @@ export function initAugur() {
 
 				dispatch(updateBlockchain(() => {
 					dispatch(loadMarkets());
-					dispatch(prepareActivePage());
+
+					let { selectedMarketID } = getState();
+					if (selectedMarketID != null) {
+						dispatch(loadFullMarket(selectedMarketID));
+					}
+
 					dispatch(listenToUpdates());
 				}));
 			});

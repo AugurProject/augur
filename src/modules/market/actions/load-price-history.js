@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { updateMarketPriceHistory } from './update-market-price-history';
+import { updateMarketPriceHistory } from '../../market/actions/update-market-price-history';
 
 export function loadPriceHistory(marketID) {
 	return function(dispatch, getState) {
