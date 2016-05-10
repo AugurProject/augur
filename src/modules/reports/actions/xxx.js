@@ -1,4 +1,3 @@
-import * as async from 'async';
 import * as AugurJS from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { BRANCH_ID } from '../../app/constants/network';
@@ -10,7 +9,7 @@ export function autoReportSequence(isReportConfirmationPhase) {
 
 		var { branch, blockchain, loginAccount } = getState();
 		var branchID = BRANCH_ID;
-		var prevPeriod = blockchain.reportPeriod - 1;		
+		var prevPeriod = blockchain.reportPeriod - 1;
 		var track = tracker[prevPeriod];
 		if (!track) track = {};
 		if (isReportConfirmationPhase === undefined) {

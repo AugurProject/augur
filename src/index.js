@@ -8,10 +8,10 @@ import store from './store';
 const appElement = document.getElementById('app');
 
 if (process.env.NODE_ENV === 'development') {
-    window.redux = store;
+    Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
     window.selectors = require('./selectors');
     window.App = App;
-    console.log('********************************************* \n DEVELOPMENT MODE \n window.selectors \n window.redux.getState() \n window.augurjs \n ********************************************* \n');
+    console.log('********************************************* \n DEVELOPMENT MODE \n window.selectors \n window.state \n window.augurjs \n ********************************************* \n');
 }
 
 store.dispatch(showLink(window.location.pathname + window.location.search));

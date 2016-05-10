@@ -7,6 +7,7 @@
 
 var nodeStatic = require("node-static");
 var fs = require("fs");
+var path = require('path');
 var http = require("http");
 var https = require("https");
 var chalk = require("chalk");
@@ -16,7 +17,16 @@ var ssl = {
     key: fs.readFileSync("key.pem"),
     cert: fs.readFileSync("cert.pem")
 };
-var file = new(nodeStatic.Server)("./build", {cache: 600});
+var homedir = "./build";
+var file = new(nodeStatic.Server)(homedir, {cache: 600});
+var htmlFile = 'index.html';
+
+var files = fs.readdirSync(homedir);
+for(var p in files) {
+   if(path.extname(files[p]) === ".html") {
+       htmlFile = files[p];
+   }
+}
 
 function log(str) {
     console.log(chalk.cyan.dim("[augur]"), str);
@@ -31,10 +41,10 @@ function serveHTTP(req, res) {
     }
 
     // static URIs
-    var re = /\/(styles\.css|splash\.css|images|fonts|build\.js|ipfs\.min\.js|augur\.min\.js)/;
+    var re = /\/(styles\.css|splash\.css|images|fonts|build\.js|augur\.min\.js)/;
 
     // route to app if not static URI
-    if (!req.url.match(re)) req.url = "/index.html";
+    if (!req.url.match(re)) req.url = "/" + htmlFile;
 
     file.serve(req, res, function (err, result) {
         if (err) {

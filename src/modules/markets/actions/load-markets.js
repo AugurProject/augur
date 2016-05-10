@@ -5,7 +5,9 @@ import { ParseMarketsData } from '../../../utils/parse-market-data';
 import { BRANCH_ID } from '../../app/constants/network';
 
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
-import { loadReports } from '../../reports/actions/update-reports';
+import { loadReports } from '../../reports/actions/load-reports';
+import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
+import { closeMarkets } from '../../reports/actions/close-markets';
 
 export function loadMarkets() {
 	var chunkSize = 10;
@@ -15,7 +17,7 @@ export function loadMarkets() {
 			if (err) {
 				return console.log('ERR loadNumMarkets()', err);
 			}
-//numMarkets = 70; //TEMPORARY OVERRIDE
+//numMarkets = 70; // TEMPORARY OVERRIDE
 			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (err, marketsData) => {
 				var marketsDataOutcomesData;
 
@@ -29,8 +31,12 @@ export function loadMarkets() {
 				}
 
 				marketsDataOutcomesData = ParseMarketsData(marketsData);
+
 				dispatch(updateMarketsData(marketsDataOutcomesData));
+
 				dispatch(loadReports(marketsDataOutcomesData.marketsData));
+				dispatch(penalizeWrongReports(marketsDataOutcomesData.marketsData));
+				dispatch(closeMarkets(marketsDataOutcomesData.marketsData));
 			});
 		});
 	};
