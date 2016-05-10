@@ -26,7 +26,7 @@ describe('modules/reports/actions/penalize-wrong-reports.js', () => {
     isMarketDataPreviousReportPeriod: () => {}
   };
   mockAugurJS.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
-  // AJS.penalizeWrong
+
   sinon.stub(mockIsMarketData, 'isMarketDataPreviousReportPeriod', () => false);
 
   action = proxyquire('../../../src/modules/reports/actions/penalize-wrong-reports.js', {
