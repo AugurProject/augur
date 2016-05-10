@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha --compilers js:babel-register --recursive",
+    "test": "NODE_ENV=test mocha --compilers js:babel-register --recursive",
     "test:watch": "npm test -- --watch",
     "_____": "",
     "watch": "clear; echo '* * * *  WATCH  * * * *'; NODE_ENV=development npm run -s watch:all",
