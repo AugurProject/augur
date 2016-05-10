@@ -23,7 +23,7 @@
     "build:augurjs": "browserify $npm_package_config_augurjs_entry_folder/index.js --standalone augurjs | derequire | npm run -s partial:uglify > ./build/$npm_package_version/augur.min.js -R && echo ---------AUGURJS--------`date +%r`",
     "build:css": "for file in $npm_package_config_less_entry_files; do lessc $file | cleancss --s0 | npm run -s partial:replaceAssets > ./build/$npm_package_version/$(basename $file | sed -e 's~less~css~') ; done && echo ---------CSS------------`date +%r`",
     "build:js": "npm run -s build:js:browserify | npm run -s partial:replaceAssets | npm run -s partial:uglify -- --mangle > ./build/$npm_package_version/build.js && echo ---------JS-------------`date +%r`",
-    "build:js:browserify": "browserify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge]",
+    "build:js:browserify": "browserify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 ] ] -t [envify purge]",
     "build:html": "cat ./src/index.html | npm run -s partial:replaceAssets | npm run -s build:html:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
     "build:html:inline_sources": "inline-source --compress false --root ./build -",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
@@ -32,7 +32,7 @@
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s build:assets",
     "watch:augurjs": "onchange $npm_package_config_augurjs_entry_folder/** -i -- npm run -s build:augurjs",
     "watch:css": "onchange './src/**/*.less' -i -- npm run -s build:css",
-    "watch:js": "watchify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] --debug -o 'exorcist ./build/$npm_package_version/build.js.map | npm run -s partial:replaceAssets > ./build/$npm_package_version/build.js && echo ---------WATCHIFY--------`date +%r`'",
+    "watch:js": "watchify $npm_package_config_js_entry_file --extension=.js --extension=.jsx -x 'augur.js' -t [ babelify --presets [ es2015 stage-0 ] ] -t [envify purge] --debug -o 'exorcist ./build/$npm_package_version/build.js.map | npm run -s partial:replaceAssets > ./build/$npm_package_version/build.js && echo ---------WATCHIFY--------`date +%r`'",
     "watch:html": "onchange './src/index.html' -i -- npm run -s build:html",
     "________": "",
     "clean": "rimraf ./build/* && mkdir -p ./build/$npm_package_version && mkdir -p ./build/$npm_package_version && touch $(npm run -s partial:index_filename) && echo ---------CLEAN----------`date +%r`",
@@ -43,13 +43,13 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo './build/index-$npm_package_version.html'"
   },
   "dependencies": {
-    "augur-abi": "^0.2.7",
+    "augur-abi": "^0.3.0",
     "augur-ui-react-components": "^2.0.2",
     "augur.js": "^0.19.14",
     "bignumber.js": "^2.3.0",
     "memoizerific": "^1.5.6",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.0.1",
+    "redux-thunk": "^2.1.0",
     "secure-random": "^1.1.1"
   },
   "devDependencies": {
@@ -65,7 +65,7 @@
     "exorcist": "^0.4.0",
     "firebase-tools": "^2.2.1",
     "inline-source-cli": "^1.1.1",
-    "less": "^2.7.0",
+    "less": "^2.7.1",
     "node-static": "^0.7.7",
     "npm-check-updates": "^2.6.4",
     "onchange": "^2.4.0",
