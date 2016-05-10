@@ -7,8 +7,9 @@ export default function(selectedMarketID = null, action) {
         case SHOW_LINK:
             if ([M].indexOf(PATHS_PAGES[action.parsedURL.pathArray[0]]) >= 0 && action.parsedURL.pathArray[1]) {
                 return action.parsedURL.pathArray[1].substring(1).split('_').pop();
+            } else {
+                return null;
             }
-            return selectedMarketID;
 
         default:
             return selectedMarketID;
