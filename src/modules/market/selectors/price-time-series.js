@@ -25,7 +25,7 @@ export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHisto
             name: outcome.name,
             data: outcomePriceHistory.map((priceTimePoint) => {
                 return [
-                    blockToDate(priceTimePoint.blockNumber, blockchain.currentBlockNumber).unix() * 1000,
+                    blockToDate(priceTimePoint.blockNumber, blockchain.currentBlockNumber),
                     Number(priceTimePoint.price)
                 ]
             })

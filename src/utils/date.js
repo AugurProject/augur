@@ -2,30 +2,30 @@
  * Author: priecint
  */
 
-import moment from 'moment';
-
 import constants from 'augur.js/src/constants';
 
 /**
  * 
  * @param {Number} block
  * @param {Number} currentBlock
- * @return {moment}
+ * @return {Date}
  */
 export function blockToDate(block, currentBlock) {
-    var seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
-    return moment().add(seconds, 'seconds');
+    let seconds = (block - currentBlock) * constants.SECONDS_PER_BLOCK;
+    let now = new Date();
+    now.setSeconds(now.getSeconds() + (seconds))
+    return now;
 }
 
 /**
  * 
- * @param {moment} date
+ * @param {Date} date
  * @param {Number} currentBlock
- * @return {*}
+ * @return {Number}
  */
 export function dateToBlock(date, currentBlock) {
-    var now = moment();
-    var secondsDelta = date.diff(now, 'seconds');
-    var blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);
+    let now = new Date();
+    let secondsDelta = date.getSeconds() - now.getSeconds();
+    let blockDelta = parseInt(secondsDelta / constants.SECONDS_PER_BLOCK);
     return currentBlock + blockDelta;
 }
