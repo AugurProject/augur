@@ -578,14 +578,11 @@ ex.collectFees = function (branchID, cb) {
 	augur.collectFees({
 		branch: branchID,
 		onSent: res => {
-			console.log("collectFees sent:", res);
 		},
 		onSuccess: res => {
-			console.log("collectFees success:", res);
 			cb(null, res);
 		},
 		onFailed: err => {
-			console.error("collectFees error:", err);
 			cb(err);
 		}
 	});
