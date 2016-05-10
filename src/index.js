@@ -1275,11 +1275,11 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[13] = self.Markets[marketID].tag1
         // info[14] = self.Markets[marketID].tag2
         // info[15] = self.Markets[marketID].tag3
-        var index = 16;
+        var index = 17;
         info = {
             network: this.network_id || rpc.version(),
             traderCount: parseInt(rawInfo[1]),
-            alpha: abi.unfix(rawInfo[2], "string"),
+            makerFees: abi.unfix(rawInfo[2], "string"),
             traderIndex: abi.unfix(rawInfo[3], "number"),
             numOutcomes: abi.number(rawInfo[4]),
             tradingPeriod: abi.number(rawInfo[5]),
