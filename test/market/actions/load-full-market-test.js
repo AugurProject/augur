@@ -8,28 +8,28 @@ import {
 // import testState from '../../testState';
 
 describe(`modules/market/actions/load-full-market.js`, () => {
-  // proxyquire.noPreserveCache();
+  // proxyquire.noPreserveCache().noCallThru();
   // const middlewares = [thunk];
   // const mockStore = configureMockStore(middlewares);
   // let store, action, out;
   // let state = Object.assign({}, testState);
   // store = mockStore(state);
   // let mockAugurJS = {};
-  // let mockParse = {};
-  // mockAugurJS.loadMarket = sinon.stub();
-  // mockParse.ParseMarketsData = sinon.stub();
-  // mockAugurJS.loadMarket.yields(null, {
-  //   _id: 'test',
-  //   test: 'info',
-  //   example: 'test info'
-  // });
-  // mockParse.ParseMarketsData.returnsArg(0);
-  //
+  // let mockLoadMarket = {};
+  // let mockPriceHistory= {};
+  // let mockMarketsData = {};
+  // loadBasicMarket
+  // loadPriceHistory
+  // updateMarketsData
+
   // action = proxyquire('../../../src/modules/market/actions/load-full-market', {
   //   '../../../services/augurjs': mockAugurJS,
-  //   '../../../utils/parse-market-data': mockParse
+  //   '../../market/actions/load-basic-market': mockLoadMarket,
+  //   '../../market/actions/load-price-history': mockPriceHistory,
+  //   '../../markets/actions/update-markets-data': mockMarketsData
   // });
-  it(`should load full the full market`)
+
+  it(`[UNDER CONSTRUCTION] - should load full the full market`);
   // it(`should be able to load a market given an marketID`, () => {
   //   out = [{
   //     type: 'UPDATE_MARKETS_DATA',

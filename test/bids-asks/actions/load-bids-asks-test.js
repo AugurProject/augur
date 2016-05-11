@@ -7,7 +7,7 @@ import * as action from '../../../src/modules/bids-asks/actions/load-bids-asks';
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  
+
   let thisTestState = Object.assign({}, testState);
   let store = mockStore(thisTestState);
 
@@ -15,5 +15,5 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     store.clearActions();
   });
 
-  it(`should load bids-asks for a market`);
+  it(`[UNDER CONSTRUCTION] - should load bids-asks for a market`);
 });
