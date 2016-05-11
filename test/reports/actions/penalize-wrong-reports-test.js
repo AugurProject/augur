@@ -60,7 +60,6 @@ describe('modules/reports/actions/penalize-wrong-reports.js', () => {
     clock.tick(4000);
     assert(mockAugurJS.penalizeWrong.calledThrice);
     assert(mockIsMarketData.isMarketDataPreviousReportPeriod.calledThrice);
-
   });
 
 });
