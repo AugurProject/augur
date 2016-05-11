@@ -11,6 +11,7 @@ var contracts = require("augur-contracts");
 var clone = require("clone");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
+var tools = require("../tools");
 var runner = require("../runner");
 
 var DEBUG = true;
@@ -24,9 +25,6 @@ describe("Unit tests", function () {
         }, {
             method: "getReportedPeriod",
             parameters: ["hash", "int", "address"]
-        }, {
-            method: "getReportable",
-            parameters: ["int", "hash"]
         }, {
             method: "getNumReportsActual",
             parameters: ["hash", "int"]
@@ -76,10 +74,10 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
     var branchID = augur.branches.dev;
-    var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var suffix = Math.random().toString(36).substring(4);
     var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
     var periodLength = 75;
@@ -120,7 +118,7 @@ describe("Integration tests", function () {
         describe("Commit-and-reveal", function () {
 
             before(function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
 
                 var branchDescription = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
                 var tradingFee = "0.01";
@@ -154,15 +152,16 @@ describe("Integration tests", function () {
                             onSent: utils.noop,
                             onSuccess: function (res) {
 
-                                function createEvent(newBranchID, description, expirationBlock) {
-                                    if (DEBUG) console.log("Event expiration block:", expirationBlock);
+                                function createEvent(newBranchID, description, expDate) {
+                                    if (DEBUG) console.log("Event expiration block:", expDate);
                                     augur.createEvent({
                                         branchId: newBranchID,
                                         description: description,
-                                        expirationBlock: expirationBlock,
+                                        expDate: expDate,
                                         minValue: 1,
                                         maxValue: 2,
                                         numOutcomes: 2,
+                                        resolution: "http://lmgtfy.com",
                                         onSent: utils.noop,
                                         onSuccess: function (res) {
                                             eventID = res.callReturn;
@@ -172,11 +171,11 @@ describe("Integration tests", function () {
                                             augur.createMarket({
                                                 branchId: newBranchID,
                                                 description: description,
-                                                alpha: "0.0079",
-                                                initialLiquidity: 100,
+                                                makerFees: "0.5",
                                                 tradingFee: "0.02",
+                                                tags: ["testing", "makeReports", "reporting"],
+                                                extraInfo: "Market provided courtesy of the augur.js test suite.",
                                                 events: [eventID],
-                                                forkSelection: 1,
                                                 onSent: utils.noop,
                                                 onSuccess: function (res) {
                                                     marketID = res.callReturn;
@@ -214,11 +213,11 @@ describe("Integration tests", function () {
                                     console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
                                 }
                                 if (blocksToGo > 10) {
-                                    return createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
+                                    return createEvent(newBranchID, description, new Date().getTime() + 1000);
                                 }
                                 augur.rpc.fastforward(blocksToGo, function (endBlock) {
                                     assert.notProperty(endBlock, "error");
-                                    createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
+                                    createEvent(newBranchID, description, new Date().getTime() + 1000);
                                 });
                             },
                             onFailed: done
@@ -229,7 +228,7 @@ describe("Integration tests", function () {
             });
 
             it("makeReports.submitReportHash", function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
                 var blockNumber = augur.rpc.blockNumber();
                 if (DEBUG) console.log("Current block:", blockNumber + "\tResidual:", blockNumber % periodLength);
                 var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
@@ -283,7 +282,7 @@ describe("Integration tests", function () {
             });
 
             it("makeReports.submitReport", function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
 
                 // fast-forward to the second half of the reporting period
                 var period = parseInt(augur.getReportPeriod(newBranchID));

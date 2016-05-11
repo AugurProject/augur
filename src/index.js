@@ -9,16 +9,13 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var async = require("async");
 var BigNumber = require("bignumber.js");
-var Decimal = require("decimal.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
-var request = (NODE_JS) ? require("request") : require("browser-request");
 var connector = require("ethereumjs-connect");
 var contracts = require("augur-contracts");
 var constants = require("./constants");
 
-Decimal.config({precision: 64});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 var options = {debug: {broadcast: false, fallback: false}};
@@ -35,7 +32,6 @@ function Augur() {
     this.constants = constants;
     this.utils = require("./utilities");
     this.db = require("./client/db");
-    this.orders = require("./client/orders");
     this.connector = connector;
     this.errors = contracts.errors;
 
@@ -311,9 +307,9 @@ Augur.prototype.getMinTradingFee = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
-Augur.prototype.getBranch = function (branchNumber, callback) {
+Augur.prototype.getBranchByNum = function (branchNumber, callback) {
     // branchNumber: integer
-    var tx = clone(this.tx.getBranch);
+    var tx = clone(this.tx.getBranchByNum);
     tx.params = branchNumber;
     return this.fire(tx, callback);
 };
@@ -346,20 +342,23 @@ Augur.prototype.getEventInfo = function (eventId, callback) {
     // eventId: sha256 hash id
     var self = this;
     var parse_info = function (info) {
-        // info = array(6)
-        // info[0] = self.Events[event].branch
-        // info[1] = self.Events[event].expirationDate
-        // info[2] = self.Events[event].outcome
-        // info[3] = self.Events[event].minValue
-        // info[4] = self.Events[event].maxValue
-        // info[5] = self.Events[event].numOutcomes
+        // eventinfo = string(7*32 + length)
+        // eventinfo[0] = self.Events[event].branch
+        // eventinfo[1] = self.Events[event].expirationDate 
+        // eventinfo[2] = self.Events[event].outcome
+        // eventinfo[3] = self.Events[event].minValue
+        // eventinfo[4] = self.Events[event].maxValue
+        // eventinfo[5] = self.Events[event].numOutcomes
+        // eventinfo[6] = self.Events[event].bond
+        // mcopy(eventinfo + 7*32, load(self.Events[event].resolutionSource[0], chars=length), length)
         if (info && info.length) {
             info[0] = abi.hex(info[0]);
             info[1] = abi.bignum(info[1]).toFixed();
             info[2] = abi.unfix(info[2], "string");
-            info[3] = abi.bignum(info[3]).toFixed();
-            info[4] = abi.bignum(info[4]).toFixed();
-            info[5] = abi.bignum(info[5]).toFixed();
+            info[3] = abi.unfix(info[3], "string");
+            info[4] = abi.unfix(info[4], "string");
+            info[5] = parseInt(info[5]);
+            info[6] = abi.unfix(info[6], "string");
         }
         return info;
     };
@@ -460,57 +459,18 @@ Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event,
 };
 
 // markets.se
-Augur.prototype.lsLmsr = function (market, callback) {
-    if (!market) return new Error("no market input");
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var cumScale = info.cumulativeScale;
-            var alpha = new Decimal(info.alpha);
-            var numOutcomes = info.numOutcomes;
-            var sumShares = new Decimal(0);
-            for (var i = 0; i < numOutcomes; ++i) {
-                sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-            }
-            var bq = alpha.times(sumShares);
-            var sumExp = new Decimal(0);
-            for (i = 0; i < numOutcomes; ++i) {
-                sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-            }
-            return callback(bq.times(cumScale).times(sumExp.ln()).toFixed());
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    var tx = clone(this.tx.lsLmsr);
-    tx.params = market;
-    return this.fire(tx, callback);
-};
-Augur.prototype.price = function (market, outcome, callback) {
-    var self = this;
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var epsilon = new Decimal("0.0000001");
-            var a = new Decimal(self.lsLmsr(info));
-            for (var i = 0; i < info.numOutcomes; ++i) {
-                if (info.outcomes[i].id === Number(outcome)) break;
-            }
-            info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(epsilon).toFixed();
-            var b = new Decimal(self.lsLmsr(info));
-            return callback(b.minus(a).dividedBy(epsilon).toFixed());
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    var tx = clone(this.tx.price);
-    tx.params = [market, outcome];
+Augur.prototype.get_trade_ids = function (market_id, callback) {
+    var tx = clone(this.tx.get_trade_ids);
+    tx.params = market_id;
     return this.fire(tx, callback);
 };
 Augur.prototype.getVolume = function (market, callback) {
     var tx = clone(this.tx.getVolume);
+    tx.params = market;
+    return this.fire(tx, callback);
+};
+Augur.prototype.getCreationBlock = function (market, callback) {
+    var tx = clone(this.tx.getCreationBlock);
     tx.params = market;
     return this.fire(tx, callback);
 };
@@ -599,12 +559,6 @@ Augur.prototype.getCurrentParticipantNumber = function (market, callback) {
 Augur.prototype.getMarketNumOutcomes = function (market, callback) {
     // market: sha256 hash id
     var tx = clone(this.tx.getMarketNumOutcomes);
-    tx.params = market;
-    return this.fire(tx, callback);
-};
-Augur.prototype.getAlpha = function (market, callback) {
-    // market: sha256
-    var tx = clone(this.tx.getAlpha);
     tx.params = market;
     return this.fire(tx, callback);
 };
@@ -726,79 +680,216 @@ Augur.prototype.getTotalRep = function (branch, callback) {
     return this.fire(tx, callback);
 };
 
-// buy&sellShares.se
-Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
-    // market: sha256
-    // outcome: integer
-    // amount: number (convert to fixed-point)
-    // limit: max price per share (convert to fixed-point); 0=market order
-    if (market && market.constructor === Object && market.market) {
-        outcome = market.outcome;
-        amount = market.amount;
-        limit = market.limit;
-        market = market.market;
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    return this.utils.sha256([market, outcome, abi.fix(amount, "hex"), limit]);
+// trades.se
+Augur.prototype.makeTradeHash = function (max_value, max_amount, trade_ids, callback) {
+    var tx = clone(this.tx.makeTradeHash);
+    tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+    return this.fire(tx, callback);
 };
-Augur.prototype.commitTrade = function (market, hash, onSent, onSuccess, onFailed) {
+Augur.prototype.commitTrade = function (hash, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.commitTrade);
-    var unpacked = this.utils.unpack(market, this.utils.labels(this.commitTrade), arguments);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.commitTrade), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.buyShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        marketId = branchId.marketId; // sha256
-        outcome = branchId.outcome; // integer (1 or 2 for binary)
-        amount = branchId.amount;   // number -> fixed-point
-        limit = branchId.limit;
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId; // sha256
-    }
-    var tx = clone(this.tx.buyShares);
-    if (marketId && marketId.constructor === BigNumber) {
-        marketId = abi.prefix_hex(marketId.toString(16));
-    }
-    if (branchId && branchId.constructor === BigNumber) {
-        branchId = abi.prefix_hex(branchId.toString(16));
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    if (onSent) {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    }
-    tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-    return this.transact(tx);
+Augur.prototype.setInitialTrade = function (id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.setInitialTrade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.setInitialTrade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.sellShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        marketId = branchId.marketId; // sha256
-        outcome = branchId.outcome; // integer (1 or 2 for binary)
-        amount = branchId.amount;   // number -> fixed-point
-        limit = branchId.limit;
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId; // sha256
+Augur.prototype.getInitialTrade = function (id, callback) {
+    var tx = clone(this.tx.getInitialTrade);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.zeroHash = function (onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.zeroHash);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.zeroHash), arguments);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.checkHash = function (tradeHash, sender, callback) {
+    var tx = clone(this.tx.checkHash);
+    tx.params = [tradeHash, sender];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getID = function (tradeID, callback) {
+    var tx = clone(this.tx.getID);
+    tx.params = tradeID;
+    return this.fire(tx, callback);
+};
+Augur.prototype.saveTrade = function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.saveTrade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.saveTrade), arguments);
+    tx.params = unpacked.params;
+    tx.params[3] = abi.fix(tx.params[3], "hex");
+    tx.params[4] = abi.fix(tx.params[4], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.get_trade = function (id, callback) {
+    // trade = array(9)
+    // trade[0] = self.trades[id].id
+    // trade[1] = self.trades[id].type
+    // trade[2] = self.trades[id].market
+    // trade[3] = self.trades[id].amount
+    // trade[4] = self.trades[id].price
+    // trade[5] = self.trades[id].owner
+    // trade[6] = self.trades[id].block
+    // trade[7] = self.trades[id].refhash
+    // trade[8] = self.trades[id].outcome
+    var tx = clone(this.tx.get_trade);
+    tx.params = id;
+    if (!this.utils.is_function(callback)) {
+        var trade = this.fire(tx);
+        if (!trade || trade.error) return trade;
+        return {
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            refhash: trade[7],
+            outcome: abi.string(trade[8])
+        };
     }
-    var tx = clone(this.tx.sellShares);
-    if (marketId && marketId.constructor === BigNumber) {
-        marketId = abi.prefix_hex(marketId.toString(16));
+    this.fire(tx, function (trade) {
+        if (!trade || trade.error) return callback(trade);
+        callback({
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            refhash: trade[7],
+            outcome: abi.string(trade[8])
+        });
+    });
+};
+Augur.prototype.get_amount = function (id, callback) {
+    var tx = clone(this.tx.get_amount);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.get_price = function (id, callback) {
+    var tx = clone(this.tx.get_price);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.update_trade = function (id, price, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.update_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.update_trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.remove_trade = function (id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.remove_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.remove_trade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.fill_trade = function (id, fill, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.fill_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.fill_trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+
+// buy&sellShares.se
+Augur.prototype.cancel = function (trade_id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.cancel);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.cancel), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.buy = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.buy);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buy), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.sell = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.sell);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.sell), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.short_sell);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.short_sell), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (max_value.constructor === Object && max_value.max_value) {
+        max_amount = max_value.max_amount;
+        trade_ids = max_value.trade_ids;
+        onTradeHash = max_value.onTradeHash;
+        onCommitSent = max_value.onCommitSent;
+        onCommitSuccess = max_value.onCommitSuccess;
+        onCommitFailed = max_value.onCommitFailed;
+        onNextBlock = max_value.onNextBlock;
+        onTradeSent = max_value.onTradeSent;
+        onTradeSuccess = max_value.onTradeSuccess;
+        onTradeFailed = max_value.onTradeFailed;
+        max_value = max_value.max_value;
     }
-    if (branchId && branchId.constructor === BigNumber) {
-        branchId = abi.prefix_hex(branchId.toString(16));
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    if (onSent) {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        this.transact(tx, onSent, onSuccess, onFailed);
-    } else {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        return this.transact(tx);
-    }
+    onTradeHash = onTradeHash || this.utils.noop;
+    onCommitSent = onCommitSent || this.utils.noop;
+    onCommitSuccess = onCommitSuccess || this.utils.noop;
+    onCommitFailed = onCommitFailed || this.utils.noop;
+    onNextBlock = onNextBlock || this.utils.noop;
+    onTradeSent = onTradeSent || this.utils.noop;
+    onTradeSuccess = onTradeSuccess || this.utils.noop;
+    onTradeFailed = onTradeFailed || this.utils.noop;
+    this.makeTradeHash(max_value, max_amount, trade_ids, function (tradeHash) {
+        onTradeHash(tradeHash);
+        self.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.trade);
+                    tx.params = [
+                        abi.fix(max_value, "hex"),
+                        abi.fix(max_amount, "hex"),
+                        trade_ids
+                    ];
+                    self.transact(tx, onTradeSent, onTradeSuccess, onTradeFailed);
+                });
+            },
+            onFailed: onCommitFailed
+        });
+    });
+};
+
+// completeSets.se
+Augur.prototype.buyCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.buyCompleteSets);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buyCompleteSets), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.sellCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.sellCompleteSets);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.sellCompleteSets), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
 // createBranch.se
@@ -862,8 +953,6 @@ Augur.prototype.createSubbranch = function (description, periodLength, parent, t
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
-// p2pWagers.se
-
 // sendReputation.se
 Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSuccess, onFailed) {
     // branchId: sha256
@@ -882,8 +971,6 @@ Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSucces
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
-// transferShares.se
-
 // makeReports.se
 Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
     var tx = clone(this.tx.getNumEventsToReport);
@@ -893,11 +980,6 @@ Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
 Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback) {
     var tx = clone(this.tx.getReportedPeriod);
     tx.params = [branch, period, reporter];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReportable = function (reportPeriod, eventID, callback) {
-    var tx = clone(this.tx.getReportable);
-    tx.params = [reportPeriod, eventID];
     return this.fire(tx, callback);
 };
 Augur.prototype.getNumReportsActual = function (branch, reportPeriod, callback) {
@@ -1060,47 +1142,100 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
 };
 
 // createSingleEventMarket.se
-Augur.prototype.createSingleEventMarket = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, alpha, initialLiquidity, tradingFee, forkSelection, onSent, onSuccess, onFailed) {
+Augur.prototype.createSingleEventMarket = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
-        description = branchId.description;           // string
-        expirationBlock = branchId.expirationBlock;   // integer
-        minValue = branchId.minValue;                 // integer (1 for binary)
-        maxValue = branchId.maxValue;                 // integer (2 for binary)
-        numOutcomes = branchId.numOutcomes;           // integer (2 for binary)
-        alpha = branchId.alpha;                       // number -> fixed-point
-        initialLiquidity = branchId.initialLiquidity; // number -> fixed-point
-        tradingFee = branchId.tradingFee;             // number -> fixed-point
-        forkSelection = branchId.forkSelection;       // integer
-        onSent = branchId.onSent;                     // function
-        onSuccess = branchId.onSuccess;               // function
-        onFailed = branchId.onFailed;                 // function
-        branchId = branchId.branchId;                 // sha256 hash
+        description = branchId.description;         // string
+        expDate = branchId.expDate;
+        minValue = branchId.minValue;               // integer (1 for binary)
+        maxValue = branchId.maxValue;               // integer (2 for binary)
+        numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+        resolution = branchId.resolution;
+        tradingFee = branchId.tradingFee;           // number -> fixed-point
+        tags = branchId.tags;
+        makerFees = branchId.makerFees;
+        extraInfo = branchId.extraInfo;
+        onSent = branchId.onSent;                   // function
+        onSuccess = branchId.onSuccess;             // function
+        onFailed = branchId.onFailed;               // function
+        branchId = branchId.branchId;               // sha256 hash
     }
-    var tx = clone(this.tx.createSingleEventMarket);
+    if (!tags || tags.constructor !== Array) tags = [];
+    if (tags.length) {
+        for (var i = 0; i < tags.length; ++i) {
+            if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                tags[i] = "0x0";
+            } else {
+                tags[i] = abi.short_string_to_int256(tags[i]);
+            }
+        }
+    }
+    while (tags.length < 3) {
+        tags.push("0x0");
+    }
+    // var tx = clone(this.tx.createSingleEventMarket);
+    // tx.params = [
+    //     branchId,
+    //     description,
+    //     expDate,
+    //     abi.fix(minValue, "hex"),
+    //     abi.fix(maxValue, "hex"),
+    //     numOutcomes,
+    //     resolution,
+    //     abi.fix(tradingFee, "hex"),
+    //     tags[0],
+    //     tags[1],
+    //     tags[2],
+    //     abi.fix(makerFees, "hex"),
+    //     extraInfo || ""
+    // ];
+    // rpc.gasPrice(function (gasPrice) {
+    //     tx.gasPrice = gasPrice;
+    //     gasPrice = abi.bignum(gasPrice);
+    //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    //     self.transact(tx, onSent, onSuccess, onFailed);
+    // });
+    var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
         description,
-        expirationBlock,
-        minValue,
-        maxValue,
+        expDate,
+        abi.fix(minValue, "hex"),
+        abi.fix(maxValue, "hex"),
         numOutcomes,
-        abi.fix(alpha, "hex"),
-        abi.fix(initialLiquidity, "hex"),
-        abi.fix(tradingFee, "hex"),
-        forkSelection || 1
+        resolution
     ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    this.transact(tx, this.utils.noop, function (res) {
+        var tx = clone(self.tx.createMarket);
+        tx.params = [
+            branchId,
+            description,
+            abi.fix(tradingFee, "hex"),
+            [res.callReturn],
+            tags[0],
+            tags[1],
+            tags[2],
+            abi.fix(makerFees, "hex"),
+            extraInfo || ""
+        ];
+        rpc.gasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            gasPrice = abi.bignum(gasPrice);
+            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+            self.transact(tx, onSent, onSuccess, onFailed);
+        });
+    }, onFailed);
 };
 
 // createEvent.se
-Augur.prototype.createEvent = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, onSent, onSuccess, onFailed) {
-    // first parameter can optionally be a transaction object
+Augur.prototype.createEvent = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
     if (branchId.constructor === Object && branchId.branchId) {
         description = branchId.description;         // string
         minValue = branchId.minValue;               // integer (1 for binary)
         maxValue = branchId.maxValue;               // integer (2 for binary)
         numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-        expirationBlock = branchId.expirationBlock; // integer
+        expDate = branchId.expDate;
+        resolution = branchId.resolution;
         onSent = branchId.onSent;                   // function
         onSuccess = branchId.onSuccess;             // function
         onFailed = branchId.onFailed;               // function
@@ -1110,46 +1245,61 @@ Augur.prototype.createEvent = function (branchId, description, expirationBlock, 
     tx.params = [
         branchId,
         description,
-        expirationBlock,
-        minValue,
-        maxValue,
-        numOutcomes
+        expDate,
+        abi.fix(minValue, "hex"),
+        abi.fix(maxValue, "hex"),
+        numOutcomes,
+        resolution
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // createMarket.se
-Augur.prototype.createMarket = function (branchId, description, alpha, initialLiquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
+Augur.prototype.createMarket = function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
-        alpha = branchId.alpha;                        // number -> fixed-point
-        description = branchId.description;            // string
-        initialLiquidity = branchId.initialLiquidity;  // number -> fixed-point
-        tradingFee = branchId.tradingFee;              // number -> fixed-point
-        events = branchId.events;                      // array [sha256, ...]
-        forkSelection = branchId.forkSelection;        // integer
-        onSent = branchId.onSent;                      // function
-        onSuccess = branchId.onSuccess;                // function
-        onFailed = branchId.onFailed;                  // function
-        branchId = branchId.branchId;                  // sha256 hash
+        description = branchId.description; // string
+        tradingFee = branchId.tradingFee;   // number -> fixed-point
+        events = branchId.events;           // array [sha256, ...]
+        tags = branchId.tags;
+        makerFees = branchId.makerFees;
+        extraInfo = branchId.extraInfo;
+        onSent = branchId.onSent;           // function
+        onSuccess = branchId.onSuccess;     // function
+        onFailed = branchId.onFailed;       // function
+        branchId = branchId.branchId;       // sha256 hash
     }
-    var tx = clone(this.tx.createMarket);
-    if (events && events.length) {
-        for (var i = 0, len = events.length; i < len; ++i) {
-            if (events[i] && events[i].constructor === BigNumber) {
-                events[i] = events[i].toString(16);
+    if (!tags || tags.constructor !== Array) tags = [];
+    if (tags.length) {
+        for (var i = 0; i < tags.length; ++i) {
+            if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                tags[i] = "0x0";
+            } else {
+                tags[i] = abi.short_string_to_int256(tags[i]);
             }
         }
     }
+    while (tags.length < 3) {
+        tags.push("0x0");
+    }
+    var tx = clone(this.tx.createMarket);
     tx.params = [
         branchId,
         description,
-        abi.fix(alpha, "hex"),
-        abi.fix(initialLiquidity, "hex"),
         abi.fix(tradingFee, "hex"),
         events,
-        forkSelection || 1
+        tags[0],
+        tags[1],
+        tags[2],
+        abi.fix(makerFees, "hex"),
+        extraInfo || ""
     ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    rpc.gasPrice(function (gasPrice) {
+        tx.gasPrice = gasPrice;
+        gasPrice = abi.bignum(gasPrice);
+        tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
+        self.transact(tx, onSent, onSuccess, onFailed);
+    });
 };
 
 // closeMarket.se
@@ -1176,17 +1326,21 @@ Augur.prototype.updatePeriod = function (branch) {
     this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
 };
 
+Augur.prototype.decodeTag = function (tag) {
+    return (tag && tag !== "0x0" && tag !== "0x") ?
+        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+};
+
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var EVENTS_FIELDS = 6;
-    var OUTCOMES_FIELDS = 2;
+    var OUTCOMES_FIELDS = 1;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
-    if (rawInfo && rawInfo.length > 12) {
+    if (rawInfo && rawInfo.length > 14) {
 
-        // all-inclusive except comments & price history
-        // info[0] = marketID
+        // all-inclusive except price history
         // info[1] = self.Markets[marketID].currentParticipant
-        // info[2] = self.Markets[marketID].alpha
+        // info[2] = self.Markets[marketID].makerFees
         // info[3] = participantNumber
         // info[4] = self.Markets[marketID].numOutcomes
         // info[5] = self.Markets[marketID].tradingPeriod
@@ -1194,24 +1348,34 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[7] = self.Markets[marketID].branch
         // info[8] = self.Markets[marketID].lenEvents
         // info[9] = self.Markets[marketID].cumulativeScale
-        // info[10] = self.Markets[marketID].volume
-        // info[11] = INFO.getCreationFee(marketID)
-        // info[12] = INFO.getCreator(marketID)
-        var index = 13;
+        // info[10] = self.Markets[marketID].blockNum
+        // info[11] = self.Markets[marketID].volume
+        // info[12] = INFO.getCreationFee(marketID)
+        // info[13] = INFO.getCreator(marketID)
+        // info[14] = self.Markets[marketID].tag1
+        // info[15] = self.Markets[marketID].tag2
+        // info[16] = self.Markets[marketID].tag3
+        var index = 17;
         info = {
             network: this.network_id || rpc.version(),
-            traderCount: abi.number(rawInfo[1]),
-            alpha: abi.unfix(rawInfo[2], "string"),
+            traderCount: parseInt(rawInfo[1]),
+            makerFees: abi.unfix(rawInfo[2], "string"),
             traderIndex: abi.unfix(rawInfo[3], "number"),
             numOutcomes: abi.number(rawInfo[4]),
             tradingPeriod: abi.number(rawInfo[5]),
             tradingFee: abi.unfix(rawInfo[6], "string"),
             branchId: rawInfo[7],
-            numEvents: abi.number(rawInfo[8]),
+            numEvents: parseInt(rawInfo[8]),
             cumulativeScale: abi.string(rawInfo[9]),
-            volume: abi.unfix(rawInfo[10], "string"),
-            creationFee: abi.unfix(rawInfo[11], "string"),
-            author: abi.format_address(rawInfo[12]),
+            creationBlock: parseInt(rawInfo[10]),
+            volume: abi.unfix(rawInfo[11], "string"),
+            creationFee: abi.unfix(rawInfo[12], "string"),
+            author: abi.format_address(rawInfo[13]),
+            tags: [
+                this.decodeTag(rawInfo[14]),
+                this.decodeTag(rawInfo[15]),
+                this.decodeTag(rawInfo[16])
+            ],
             type: null,
             endDate: null,
             participants: {},
@@ -1245,8 +1409,8 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
                 id: rawInfo[i*EVENTS_FIELDS + index],
                 endDate: endDate,
                 outcome: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 2], "string"),
-                minValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 3]),
-                maxValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 4]),
+                minValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 3], "string"),
+                maxValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 4], "string"),
                 numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
             };
             // market type: binary, categorical, or scalar
@@ -1263,14 +1427,17 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         }
 
         // organize outcome info
+        // eventinfo[0] = self.Events[event].branch
+        // eventinfo[1] = self.Events[event].expirationDate 
+        // eventinfo[2] = self.Events[event].outcome
+        // eventinfo[3] = self.Events[event].minValue
+        // eventinfo[4] = self.Events[event].maxValue
+        // eventinfo[5] = self.Events[event].numOutcomes
+        // eventinfo[6] = self.Events[event].bond
         index += info.numEvents*EVENTS_FIELDS;
         for (i = 0; i < info.numOutcomes; ++i) {
             info.outcomes[i].id = i + 1;
             info.outcomes[i].outstandingShares = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string");
-            info.outcomes[i].price = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string");
-            if (info.outcomes[i].id === 2) {
-                info.price = info.outcomes[i].price;
-            }
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;
         info.winningOutcomes = abi.string(
@@ -1292,25 +1459,25 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
 
         // multi-event (combinatorial) markets: batch event descriptions
         info.type = "combinatorial";
-        // if (options && options.combinatorial) {
-        //     var txList = new Array(info.numEvents);
-        //     for (i = 0; i < info.numEvents; ++i) {
-        //         txList[i] = clone(this.tx.getDescription);
-        //         txList[i].params = info.events[i].id;
-        //     }
-        //     if (this.utils.is_function(callback)) {
-        //         return rpc.batch(txList, function (response) {
-        //             for (var i = 0, len = response.length; i < len; ++i) {
-        //                 info.events[i].description = response[i];
-        //             }
-        //             callback(info);
-        //         });
-        //     }
-        //     var response = rpc.batch(txList);
-        //     for (i = 0; i < response.length; ++i) {
-        //         info.events[i].description = response[i];
-        //     }
-        // }
+        if (options && options.combinatorial) {
+            var txList = new Array(info.numEvents);
+            for (i = 0; i < info.numEvents; ++i) {
+                txList[i] = clone(this.tx.getDescription);
+                txList[i].params = info.events[i].id;
+            }
+            if (this.utils.is_function(callback)) {
+                return rpc.batch(txList, function (response) {
+                    for (var i = 0, len = response.length; i < len; ++i) {
+                        info.events[i].description = response[i];
+                    }
+                    callback(info);
+                });
+            }
+            var response = rpc.batch(txList);
+            for (i = 0; i < response.length; ++i) {
+                info.events[i].description = response[i];
+            }
+        }
     }
     if (!this.utils.is_function(callback)) return info;
     callback(info);
@@ -1336,12 +1503,6 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
     if (!callback) return marketsInfo;
     callback(marketsInfo);
 };
-Augur.prototype.checkPeriod = function (branch) {
-    var period = abi.number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(abi.number(rpc.blockNumber()) / abi.number(this.getPeriodLength(branch)));
-    var periodsBehind = currentPeriod - period - 1;
-    return periodsBehind;
-};
 Augur.prototype.getCurrentPeriod = function (branch, callback) {
     if (!callback) {
         return rpc.blockNumber() / parseInt(this.getPeriodLength(branch));
@@ -1351,23 +1512,6 @@ Augur.prototype.getCurrentPeriod = function (branch, callback) {
             callback(parseInt(blockNumber) / parseInt(periodLength));
         });
     });
-};
-Augur.prototype.getEventsRange = function (branch, vpStart, vpEnd, callback) {
-    // branch: sha256, vpStart: integer, vpEnd: integer
-    var vp_range, txlist;
-    vp_range = vpEnd - vpStart + 1; // inclusive
-    txlist = new Array(vp_range);
-    for (var i = 0; i < vp_range; ++i) {
-        txlist[i] = {
-            from: this.web.account.address || this.coinbase,
-            to: this.contracts.expiringEvents,
-            method: "getEvents",
-            signature: "ii",
-            returns: "hash[]",
-            params: [branch, i + vpStart]
-        };
-    }
-    return rpc.batch(txlist, callback);
 };
 
 /*************
@@ -1490,44 +1634,10 @@ Augur.prototype.setTotalRepReported = function (branchId, reportPeriod, repRepor
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
-/*************************************
- * Trade events (price history data) *
- *************************************/
+/**********************
+ * Price history data *
+ **********************/
 
-Augur.prototype.getPriceHistory = function (branch, cb) {
-    var self = this;
-    if (!branch || !this.utils.is_function(cb)) return;
-    this.filters.eth_getLogs({
-        fromBlock: "0x1",
-        toBlock: "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice)]
-    }, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        var market, outcome, parsed, priceHistory = {};
-        for (var i = 0, n = logs.length; i < n; ++i) {
-            if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
-                market = logs[i].topics[2];
-                outcome = abi.number(logs[i].topics[3]);
-                if (!priceHistory[market]) priceHistory[market] = {};
-                if (!priceHistory[market][outcome]) priceHistory[market][outcome] = [];
-                parsed = rpc.unmarshal(logs[i].data);
-                priceHistory[market][outcome].push({
-                    market: abi.hex(market), // re-fork
-                    user: abi.format_address(logs[i].topics[1]),
-                    price: abi.unfix(parsed[0], "string"),
-                    cost: abi.unfix(parsed[1], "string"),
-                    blockNumber: abi.hex(logs[i].blockNumber)
-                });
-            }
-        }
-        cb(priceHistory);
-    });
-};
 Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
     var self = this;
     if (!cb && this.utils.is_function(options)) {
@@ -1539,10 +1649,10 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true)]
+        topics: [this.rpc.sha3(constants.LOGS.log_price), null, abi.unfork(market, true)]
     };
     if (!this.utils.is_function(cb)) {
-        var logs = this.filters.eth_getLogs(filter);
+        var logs = rpc.getLogs(filter);
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
@@ -1565,7 +1675,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         }
         return priceHistory;
     }
-    this.filters.eth_getLogs(filter, function (logs) {
+    rpc.getLogs(filter, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
@@ -1587,99 +1697,6 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
             }
         }
         cb(priceHistory);
-    });
-};
-Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
-    if (!market || !outcome) return;
-    var filter = {
-        fromBlock: "0x1",
-        toBlock: "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true), outcome]
-    };
-    if (this.utils.is_function(cb)) {
-        var self = this;
-        this.filters.eth_getLogs(filter, function (logs) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return cb(null);
-            }
-            if (logs.error) return cb(logs);
-            cb(self.filters.search_price_logs(logs, market, outcome));
-        });
-    } else {
-        var logs = this.filters.eth_getLogs(filter);
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) throw logs;
-        return this.filters.search_price_logs(logs, market, outcome);
-    }
-};
-
-/******************************************
- * Market creation events (block numbers) *
- ******************************************/
-
-Augur.prototype.getCreationBlocks = function (branch, options, cb) {
-    var self = this;
-    if (!branch) return;
-    if (!cb && this.utils.is_function(options)) {
-        cb = options;
-        options = null;
-    }
-    options = options || {};
-    cb = cb || this.utils.noop;
-    this.filters.eth_getLogs({
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.createMarket,
-        topics: [this.rpc.sha3(constants.LOGS.creationBlock)],
-        timeout: 240000
-    }, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        self.getMarketsInBranch(branch, function (markets) {
-            if (!markets || (markets && (markets.constructor !== Array || !markets.length))) {
-                return cb(null);
-            }
-            if (markets.error) return cb(markets);
-            var block, blocks = {};
-            for (var i = 0, len = markets.length; i < len; ++i) {
-                block = self.filters.search_creation_logs(logs, markets[i]);
-                if (block && block.constructor === Array && block.length &&
-                    block[0].constructor === Object && block[0].blockNumber) {
-                    blocks[markets[i]] = abi.bignum(block[0].blockNumber).toNumber();
-                }
-            }
-            cb(blocks);
-        });
-    });
-};
-
-Augur.prototype.getMarketCreationBlock = function (market, options, cb) {
-    var self = this;
-    if (!market) return;
-    if (!cb && this.utils.is_function(options)) {
-        cb = options;
-        options = null;
-    }
-    options = options || {};
-    cb = cb || this.utils.noop;
-    this.filters.eth_getLogs({
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.createMarket,
-        topics: [this.rpc.sha3(constants.LOGS.creationBlock), abi.unfork(market, true)],
-        timeout: 120000
-    }, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        if (logs[0].blockNumber) return cb(parseInt(logs[0].blockNumber));
-        cb(null);
     });
 };
 
@@ -1715,11 +1732,11 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
     }
     options = options || {};
     if (!account || !this.utils.is_function(cb)) return;
-    this.filters.eth_getLogs({
+    rpc.getLogs({
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
+        address: this.contracts.trades,
+        topics: [this.rpc.sha3(constants.LOGS.log_price)], //, abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -1766,352 +1783,6 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
             meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
         }
         cb(meanPrices);
-    });
-};
-
-Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
-    // market: sha256 hash id
-    // outcome: integer (1 or 2 for binary events)
-    // amount: number
-    var self = this;
-    function getSimulatedBuy(marketInfo, outcome, amount) {
-        try {
-            if (amount.constructor === BigNumber) amount = abi.string(amount);
-            if (amount.constructor !== Decimal) amount = new Decimal(amount);
-        } catch (exc) {
-            return exc;
-        }
-        outcome = parseInt(outcome);
-        var info = JSON.parse(JSON.stringify(marketInfo));
-        var oldCost = new Decimal(self.lsLmsr(info));
-        var cumScale = info.cumulativeScale;
-        var alpha = new Decimal(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        for (var i = 0; i < numOutcomes; ++i) {
-            if (info.outcomes[i].id === Number(outcome)) break;
-        }
-        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(amount).toFixed();
-        var sumShares = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (newCost.lt(oldCost)) return self.errors.getSimulatedBuy["-2"];
-        return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
-    }
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            return callback(getSimulatedBuy(market, outcome, amount));
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    if (!this.utils.is_function(callback)) {
-        return getSimulatedBuy(this.getMarketInfo(market), outcome, amount);
-    }
-    this.getMarketInfo(market, function (info) {
-        callback(getSimulatedBuy(info, outcome, amount));
-    });
-};
-Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) {
-    // market: sha256 hash id
-    // outcome: integer (1 or 2 for binary events)
-    // amount: number
-    var self = this;
-    function getSimulatedSell(marketInfo, outcome, amount) {
-        try {
-            if (amount.constructor === BigNumber) amount = abi.string(amount);
-            if (amount.constructor !== Decimal) amount = new Decimal(amount);
-        } catch (exc) {
-            return exc;
-        }
-        outcome = parseInt(outcome);
-        var info = JSON.parse(JSON.stringify(marketInfo));
-        var oldCost = new Decimal(self.lsLmsr(info));
-        var cumScale = info.cumulativeScale;
-        var alpha = new Decimal(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        for (var i = 0; i < numOutcomes; ++i) {
-            if (info.outcomes[i].id === Number(outcome)) break;
-        }
-        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).minus(amount).toFixed();
-        var sumShares = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (oldCost.lt(newCost)) return self.errors.getSimulatedSell["-2"];
-        return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
-    }
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            return callback(getSimulatedSell(market, outcome, amount));
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    if (!this.utils.is_function(callback)) {
-        return getSimulatedSell(this.getMarketInfo(market), outcome, amount);
-    }
-    this.getMarketInfo(market, function (info) {
-        callback(getSimulatedSell(info, outcome, amount));
-    });
-};
-
-/**************
- * Order book *
- **************/
-
-Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
-    var currentPrice, priceMatched, trade;
-    var self = this;
-    if (cb && this.utils.is_function(cb)) {
-        cb = {nextOrder: cb};
-    }
-    cb = cb || {};
-    cb.onPriceMatched = cb.onPriceMatched || this.utils.noop;
-    cb.onMarketHash = cb.onMarketHash || this.utils.noop;
-    cb.onCommitTradeSent = cb.onCommitTradeSent || this.utils.noop;
-    cb.onCommitTradeSuccess = cb.onCommitTradeSuccess || this.utils.noop;
-    cb.onCommitTradeFailed = cb.onCommitTradeFailed || this.utils.noop;
-    cb.onTradeSent = cb.onTradeSent || this.utils.noop;
-    cb.onTradeSuccess = cb.onTradeSuccess || this.utils.noop;
-    cb.onTradeFailed = cb.onTradeFailed || this.utils.noop;
-    cb.nextOrder = cb.nextOrder || this.utils.noop;
-    currentPrice = new BigNumber(this.price(marketInfo, outcome));
-    if (order.amount.constructor !== BigNumber) {
-        order.amount = new BigNumber(order.amount);
-    }
-    if (order.price.constructor !== BigNumber) {
-        order.price = new BigNumber(order.price);
-    }
-    order.branch = marketInfo.branchId;
-    order.market = marketInfo._id;
-    order.outcome = outcome;
-    if (order.amount.gt(new BigNumber(0))) {
-        priceMatched = currentPrice.lte(order.price);
-    } else {
-        priceMatched = currentPrice.gte(order.price);
-    }
-
-    // price not matched: do not fill order
-    if (!priceMatched) return cb.nextOrder(null);
-
-    // price matched: fill order
-    cb.onPriceMatched(order);
-    if (order.cap) {
-        trade = this.orders.limit.fill(marketInfo, order);
-    } else {
-        trade = {order: order, amount: order.amount.toFixed(), filled: true};
-    }
-
-    // execute order
-    if (trade !== undefined) {
-        this.trade({
-            branch: order.branch,
-            market: order.market,
-            outcome: order.outcome,
-            amount: trade.amount,
-            callbacks: {
-                onMarketHash: cb.onMarketHash,
-                onCommitTradeSent: cb.onCommitTradeSent,
-                onCommitTradeSuccess: cb.onCommitTradeSuccess,
-                onCommitTradeFailed: cb.onCommitTradeFailed,
-                onTradeSent: function (response) {
-                    var tradeSent = {
-                        response: response,
-                        cancelled: self.orders.cancel(
-                            self.from,
-                            order.market,
-                            order.outcome,
-                            order.id
-                        ),
-                        newOrder: null,
-                        created: null
-                    };
-                    if (!trade.filled) {
-                        tradeSent.newOrder = JSON.parse(JSON.stringify(trade.order));
-                        tradeSent.newOrder.account = self.from;
-                        tradeSent.created = self.orders.create(tradeSent.newOrder);
-                    }
-                    cb.onTradeSent(tradeSent);
-                },
-                onTradeSuccess: function (response) {
-                    cb.onTradeSuccess({
-                        response: response,
-                        order: trade.order
-                    });
-                    cb.nextOrder(trade.order);
-                },
-                onTradeFailed: cb.onTradeFailed
-            }
-        });
-    }
-};
-
-Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
-    var self = this;
-    var matchedOrders = [];
-    if (cb && this.utils.is_function(cb)) {
-        cb = {nextOutcome: cb};
-    }
-    cb = cb || {};
-    cb.nextOutcome = cb.nextOutcome || this.utils.noop;
-    async.each(orderList, function (order, nextOrder) {
-        cb.nextOrder = function (matched) {
-            if (matched && !matched.error) {
-                matchedOrders.push(matched);
-                return nextOrder();
-            }
-            nextOrder();
-        };
-        self.checkOrder(marketInfo, outcome, order, cb);
-    }, function (err) {
-        if (err) return cb.onFailed(err);
-        cb.nextOutcome(matchedOrders);
-    });
-};
-
-Augur.prototype.checkOrderBook = function (market, cb) {
-    var self = this;
-    if (cb && this.utils.is_function(cb)) {
-        cb = {onSuccess: cb};
-    }
-    cb = cb || {};
-    cb.onSuccess = cb.onSuccess || this.utils.noop;
-    cb.onFailed = cb.onFailed || this.utils.noop;
-    cb.onEmpty = cb.onEmpty || this.utils.noop;
-    var orders = this.orders.get(this.from);
-    if (!market) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
-    if (!orders) return cb.onEmpty();
-    var matchedOrders = [];
-    if (market.constructor === Object && market.network && market.events) {
-        if (!orders[market._id]) return cb.onEmpty();
-        async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
-            cb.nextOutcome = function (matched) {
-                if (matched && matched.constructor === Array) {
-                    matchedOrders = matchedOrders.concat(matched);
-                    return nextOutcome();
-                }
-                nextOutcome(matched);
-            };
-            self.checkOutcomeOrderList(market, outcome, orderList, cb);
-        }, function (err) {
-            if (err) return cb.onFailed(err);
-            cb.onSuccess(matchedOrders);
-        });
-
-    // note: raw marketInfo is incompatible with processed client market!
-    } else {
-        if (!orders[market]) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
-        this.getMarketInfo(market, function (info) {
-            if (!info || info.error) return cb.onFailed(info);
-            self.checkOrderBook(info, cb);
-        });
-    }
-};
-
-/**
- * Lockstep trade sequence:
- *   1. commitTrade(market, makeMarketHash(market, outcome, amount, limit))
- *   2. buyShares(branch, market, outcome, amount, limit)
- * callbacks: {onMarketHash,
- *             onCommitTradeSent, onCommitTradeSuccess, onCommitTradeFailed,
- *             onNextBlock,
- *             onTradeSent, onTradeSuccess, onTradeFailed,
- *             onOrderCreated}
- * (All callbacks are optional.)
- */
-Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, expiration, cap, callbacks) {
-    var self = this;
-    if (branch && branch.constructor === Object && branch.branch) {
-        market = branch.market;
-        outcome = branch.outcome;
-        amount = branch.amount;
-        limit = branch.limit;
-        stop = branch.stop;
-        expiration = branch.expiration; // NYI
-        cap = branch.cap;
-        if (branch.callbacks) callbacks = clone(branch.callbacks);
-        branch = branch.branch;
-    }
-    callbacks = callbacks || {};
-    callbacks.onMarketHash = callbacks.onMarketHash || this.utils.pass;
-    callbacks.onCommitTradeSent = callbacks.onCommitTradeSent || this.utils.pass;
-    callbacks.onCommitTradeSuccess = callbacks.onCommitTradeSuccess || this.utils.pass;
-    callbacks.onCommitTradeFailed = callbacks.onCommitTradeFailed || this.utils.pass;
-    callbacks.onNextBlock = callbacks.onNextBlock || this.utils.pass;
-    callbacks.onTradeSent = callbacks.onTradeSent || this.utils.pass;
-    callbacks.onTradeSuccess = callbacks.onTradeSuccess || this.utils.pass;
-    callbacks.onTradeFailed = callbacks.onTradeFailed || this.utils.pass;
-    callbacks.onOrderCreated = callbacks.onOrderCreated || this.utils.pass;
-
-    // stop orders: send to localStorage
-    if (stop) {
-        return callbacks.onOrderCreated(this.orders.create({
-            account: this.from,
-            market: market,
-            outcome: outcome,
-            price: limit,
-            amount: amount,
-            expiration: expiration || 0,
-            cap: cap || 0
-        }));
-    }
-
-    // market orders: send to chain
-    amount = new Decimal(amount);
-    var trade = (amount.gt(new Decimal(0))) ? this.buyShares : this.sellShares;
-    amount = amount.abs().toFixed();
-    var marketHash = this.makeMarketHash({
-        market: market,
-        outcome: parseInt(outcome),
-        amount: amount,
-        limit: 0 // nonzero for "true" limit orders, 0 for stop & market orders
-    });
-    callbacks.onMarketHash(marketHash);
-    this.commitTrade({
-        market: market,
-        hash: marketHash,
-        onSent: callbacks.onCommitTradeSent,
-        onSuccess: function (res) {
-            callbacks.onCommitTradeSuccess(res);
-            self.rpc.blockNumber(function (thisBlock) {
-                thisBlock = parseInt(thisBlock);
-                (function waitForNextBlock() {
-                    self.rpc.blockNumber(function (nextBlock) {
-                        nextBlock = parseInt(nextBlock);
-                        if (thisBlock === nextBlock) {
-                            return setTimeout(waitForNextBlock, 3000);
-                        }
-                        callbacks.onNextBlock(nextBlock);
-                        trade.call(self, {
-                            branchId: branch,
-                            marketId: market,
-                            outcome: parseInt(outcome),
-                            amount: amount,
-                            limit: limit,
-                            onSent: callbacks.onTradeSent,
-                            onSuccess: callbacks.onTradeSuccess,
-                            onFailed: callbacks.onTradeFailed
-                        });
-                    });
-                })();
-            });
-        },
-        onFailed: callbacks.onCommitTradeFailed
     });
 };
 

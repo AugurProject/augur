@@ -9,14 +9,15 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
+var tools = require("../tools");
 
 require('it-each')({ testPerIteration: true });
 
-describe("utilities.linspace", function () {
+describe("tools.linspace", function () {
 
     var test = function (t) {
         it(t.inputs.a + ", " + t.inputs.b + ", " + t.inputs.n, function () {
-            var actual = utils.linspace(t.inputs.a, t.inputs.b, t.inputs.n);
+            var actual = tools.linspace(t.inputs.a, t.inputs.b, t.inputs.n);
             assert.deepEqual(actual, t.expected);
         });
     };
@@ -144,11 +145,11 @@ describe("utilities.is_function", function () {
 
 });
 
-describe("utilities.remove_duplicates", function () {
+describe("tools.remove_duplicates", function () {
 
     var test = function (t) {
         it(JSON.stringify(t.array) + " -> " + JSON.stringify(t.expected), function () {
-            assert.deepEqual(utils.remove_duplicates(t.array), t.expected);
+            assert.deepEqual(tools.remove_duplicates(t.array), t.expected);
         });
     };
 

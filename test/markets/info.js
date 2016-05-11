@@ -7,8 +7,8 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
 var runner = require("../runner");
+var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
@@ -33,138 +33,137 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var constants = augur.constants;
-    var branch_id = augur.branches.dev;
-    var branch_number = "0";
-    var accounts = utils.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
-    var test_account = accounts[0];
-    var markets = augur.getMarketsInBranch(branch_id);
-    var market_id = markets[0];
-    var market_creator_1 = test_account;
-    var market_id2 = markets[1];
-    var market_creator_2 = test_account;
-    var event_id = augur.getMarketEvents(market_id)[0];
+    var branchID = augur.branches.dev;
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
+    var testAccount = accounts[0];
+    var markets = augur.getMarketsInBranch(branchID);
+    var marketID = markets[0];
+    var market_creator_1 = testAccount;
+    var marketID2 = markets[1];
+    var market_creator_2 = testAccount;
+    var eventID = augur.getMarketEvents(marketID)[0];
 
-    function check_account(account, test_account) {
+    function check_account(account, testAccount) {
         assert.isAbove(abi.bignum(account).toNumber(), 0);
         if (augur.rpc.nodes.local && augur.rpc.version() === "10101") {
-            assert(abi.bignum(account).eq(abi.bignum(test_account)));
+            assert(abi.bignum(account).eq(abi.bignum(testAccount)));
         }
     }
 
     // info.se
     describe("info.se", function () {
-        describe("getCreator(" + event_id + ") [event]", function () {
+        describe("getCreator(" + eventID + ") [event]", function () {
             var test = function (r) {
-                check_account(r, test_account);
+                check_account(r, testAccount);
             };
             it("sync", function () {
-                test(augur.getCreator(event_id));
+                test(augur.getCreator(eventID));
             });
             it("async", function (done) {
-                augur.getCreator(event_id, function (r) {
+                augur.getCreator(eventID, function (r) {
                     test(r); done();
                 });
             });
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                batch.add("getCreator", [event_id], function (r) {
+                batch.add("getCreator", [eventID], function (r) {
                     test(r);
                 });
-                batch.add("getCreator", [event_id], function (r) {
+                batch.add("getCreator", [eventID], function (r) {
                     test(r); done();
                 });
                 batch.execute();
             });
         });
-        describe("getCreator(" + market_id + ") [market]", function () {
+        describe("getCreator(" + marketID + ") [market]", function () {
             var test = function (r) {
-                check_account(r, test_account);
+                check_account(r, testAccount);
             };
             it("sync", function () {
-                test(augur.getCreator(market_id));
+                test(augur.getCreator(marketID));
             });
             it("async", function (done) {
-                augur.getCreator(market_id, function (r) {
+                augur.getCreator(marketID, function (r) {
                     test(r); done();
                 });
             });
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                batch.add("getCreator", [market_id], function (r) {
+                batch.add("getCreator", [marketID], function (r) {
                     test(r);
                 });
-                batch.add("getCreator", [market_id], function (r) {
+                batch.add("getCreator", [marketID], function (r) {
                     test(r); done();
                 });
                 batch.execute();
             });
         });
-        describe("getCreationFee(" + event_id + ") [event]", function () {
-            var test = function (r) {
-                assert(Number(r) > 0);
-            };
-            it("sync", function () {
-                test(augur.getCreationFee(event_id));
-            });
-            it("async", function (done) {
-                augur.getCreationFee(event_id, function (r) {
-                    test(r); done();
-                });
-            });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getCreationFee", [event_id], function (r) {
-                    test(r);
-                });
-                batch.add("getCreationFee", [event_id], function (r) {
-                    test(r); done();
-                });
-                batch.execute();
-            });
-        });
-        describe("getCreationFee(" + market_id + ") [market]", function () {
+        describe("getCreationFee(" + marketID + ") [event]", function () {
             var test = function (r) {
                 assert(Number(r) > 0);
             };
             it("sync", function () {
-                test(augur.getCreationFee(market_id));
+                test(augur.getCreationFee(marketID));
             });
             it("async", function (done) {
-                augur.getCreationFee(market_id, function (r) {
+                augur.getCreationFee(marketID, function (r) {
                     test(r); done();
                 });
             });
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                batch.add("getCreationFee", [market_id], function (r) {
+                batch.add("getCreationFee", [marketID], function (r) {
                     test(r);
                 });
-                batch.add("getCreationFee", [market_id], function (r) {
+                batch.add("getCreationFee", [marketID], function (r) {
                     test(r); done();
                 });
                 batch.execute();
             });
         });
-        describe("getDescription(" + event_id + ")", function () {
+        describe("getCreationFee(" + marketID + ") [market]", function () {
+            var test = function (r) {
+                assert(Number(r) > 0);
+            };
+            it("sync", function () {
+                test(augur.getCreationFee(marketID));
+            });
+            it("async", function (done) {
+                augur.getCreationFee(marketID, function (r) {
+                    test(r); done();
+                });
+            });
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getCreationFee", [marketID], function (r) {
+                    test(r);
+                });
+                batch.add("getCreationFee", [marketID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
+            });
+        });
+        describe("getDescription(" + eventID + ")", function () {
             var test = function (r) {
                 assert.isAbove(r.length, 0);
             };
             it("sync", function () {
-                test(augur.getDescription(event_id));
+                test(augur.getDescription(eventID));
             });
             it("async", function (done) {
-                augur.getDescription(event_id, function (r) {
+                augur.getDescription(eventID, function (r) {
                     test(r); done();
                 });
             });
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                batch.add("getDescription", [event_id], function (r) {
+                batch.add("getDescription", [eventID], function (r) {
                     test(r);
                 });
-                batch.add("getDescription", [event_id], function (r) {
+                batch.add("getDescription", [eventID], function (r) {
                     test(r); done();
                 });
                 batch.execute();

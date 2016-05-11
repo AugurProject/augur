@@ -12,7 +12,8 @@ var _ = require("lodash");
 var async = require("async");
 var utils = require("../src/utilities");
 var augurpath = "../src/index";
-var augur = utils.setup(require(augurpath));
+var tools = require("../test/tools");
+var augur = tools.setup(require(augurpath));
 
 var DATAFILE = join(__dirname, "..", "data", "timing-getMarketsInfo.csv");
 var MAX_NUM_MARKETS = 100;
@@ -71,7 +72,7 @@ function createMarkets(numMarketsToCreate, callback) {
 function time_getMarketsInfo(numMarkets) {
     fs.writeFileSync(DATAFILE, "\"# markets\",\"time elapsed (seconds)\"\n");
     async.eachSeries(_.range(1, numMarkets + 1), function (sample, nextSample) {
-        augur = utils.setup(utils.reset(augurpath));
+        augur = tools.setup(tools.reset(augurpath));
         var startTime = new Date().getTime();
         augur.getMarketsInfo({
             branch: augur.branches.dev,

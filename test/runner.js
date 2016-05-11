@@ -6,6 +6,7 @@ var abi = require("augur-abi");
 var clone = require("clone");
 var contracts = require("augur-contracts");
 var random = require("./random");
+var tools = require("./tools");
 var utils = require("../src/utilities");
 var augur = require("../src");
 augur.tx = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || "2");
@@ -15,19 +16,19 @@ var noop = function () {};
 var test = {
     eth_call: function (t, next) {
         next = next || noop;
-        var expected = clone(augur.tx[t.method]);
+        var i, expected = clone(augur.tx[t.method]);
         if (t.params && t.params.length === 1) {
             expected.params = t.params[0];
         } else {
             expected.params = clone(t.params);
         }
         if (t.fixed && t.fixed.length) {
-            for (var i = 0; i < t.fixed.length; ++i) {
+            for (i = 0; i < t.fixed.length; ++i) {
                 expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
             }
         }
         if (t.ether && t.ether.length) {
-            for (var i = 0; i < t.ether.length; ++i) {
+            for (i = 0; i < t.ether.length; ++i) {
                 expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
             }
         }
@@ -50,19 +51,19 @@ var test = {
     eth_sendTransaction: {
         object: function (t, next) {
             next = next || noop;
-            var expected = clone(augur.tx[t.method]);
+            var i, expected = clone(augur.tx[t.method]);
             if (t.params && t.params.length === 1) {
                 expected.params = t.params[0];
             } else {
                 expected.params = clone(t.params);
             }
             if (t.fixed && t.fixed.length) {
-                for (var i = 0; i < t.fixed.length; ++i) {
+                for (i = 0; i < t.fixed.length; ++i) {
                     expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
                 }
             }
             if (t.ether && t.ether.length) {
-                for (var i = 0; i < t.ether.length; ++i) {
+                for (i = 0; i < t.ether.length; ++i) {
                     expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
                 }
             }
@@ -82,26 +83,26 @@ var test = {
             };
             var labels = utils.labels(augur[t.method]);
             var params = {onSent: noop, onSuccess: noop, onFailed: noop};
-            for (var i = 0; i < labels.length; ++i) {
+            for (i = 0; i < labels.length; ++i) {
                 if (params[labels[i]]) continue;
                 params[labels[i]] = t.params[i];
             }
             augur[t.method](params);
         },
         positional: function (t, next) {
-            var expected = clone(augur.tx[t.method]);
+            var i, expected = clone(augur.tx[t.method]);
             if (t.params && t.params.length === 1) {
                 expected.params = t.params[0];
             } else {
                 expected.params = clone(t.params);
             }
             if (t.fixed && t.fixed.length) {
-                for (var i = 0; i < t.fixed.length; ++i) {
+                for (i = 0; i < t.fixed.length; ++i) {
                     expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
                 }
             }
             if (t.ether && t.ether.length) {
-                for (var i = 0; i < t.ether.length; ++i) {
+                for (i = 0; i < t.ether.length; ++i) {
                     expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
                 }
             }
@@ -131,7 +132,7 @@ var run = {
         var count = 0;
         async.whilst(
             function () {
-                return count < augur.constants.UNIT_TEST_SAMPLES;
+                return count < tools.UNIT_TEST_SAMPLES;
             },
             function (callback) {
                 ++count;
@@ -178,7 +179,7 @@ var run = {
         var count = 0;
         async.whilst(
             function () {
-                return count < augur.constants.UNIT_TEST_SAMPLES;
+                return count < tools.UNIT_TEST_SAMPLES;
             },
             function (callback) {
                 ++count;

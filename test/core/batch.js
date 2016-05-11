@@ -1,4 +1,3 @@
-(function () {
 /**
  * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
@@ -7,8 +6,8 @@
 "use strict";
 
 var assert = require("chai").assert;
-var augur = require("../../src/utilities").setup(require("../../src"), process.argv.slice(2));
-var log = console.log;
+var tools = require("../tools");
+var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
 describe("Batch", function () {
 
@@ -51,5 +50,3 @@ describe("Batch", function () {
     });
 
 });
-
-})();

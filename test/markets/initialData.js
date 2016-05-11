@@ -8,8 +8,9 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var utils = require("../../src/utilities");
+var tools = require("../tools");
 var augurpath = "../../src/index";
-var augur = utils.setup(utils.reset(augurpath), process.argv.slice(2));
+var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
 
 var branchId = augur.branches.dev;
 var markets = augur.getMarketsInBranch(branchId);
@@ -58,25 +59,25 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 numMarketsToLoad: 3
             };
             it("sync", function () {
-                this.timeout(augur.constants.TIMEOUT);
+                this.timeout(tools.TIMEOUT);
                 test(augur.getMarketsInfo(params), {numMarkets: params.numMarketsToLoad});
             });
             it("sync/missing numMarketsToLoad", function () {
-                this.timeout(augur.constants.TIMEOUT);
-                var p = augur.utils.copy(params);
+                this.timeout(tools.TIMEOUT);
+                var p = tools.copy(params);
                 delete p.numMarketsToLoad;
                 test(augur.getMarketsInfo(p));
             });
             it("sync/missing numMarketsToLoad/missing offset", function () {
-                this.timeout(augur.constants.TIMEOUT);
-                var p = augur.utils.copy(params);
+                this.timeout(tools.TIMEOUT);
+                var p = tools.copy(params);
                 delete p.numMarketsToLoad;
                 delete p.offset;
                 test(augur.getMarketsInfo(p));
             });
             it("sync/combinatorial", function () {
-                this.timeout(augur.constants.TIMEOUT);
-                var p = augur.utils.copy(params);
+                this.timeout(tools.TIMEOUT);
+                var p = tools.copy(params);
                 p.combinatorial = true;
                 test(augur.getMarketsInfo(p), {
                     numMarkets: params.numMarketsToLoad,
@@ -84,7 +85,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 });
             });
             it("async", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
+                this.timeout(tools.TIMEOUT);
                 params.callback = function (info) {
                     if (info.error) return done(info);
                     test(info, {numMarkets: params.numMarketsToLoad}, done);
@@ -92,8 +93,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 augur.getMarketsInfo(params);
             });
             it("async/missing numMarketsToLoad", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                var p = augur.utils.copy(params);
+                this.timeout(tools.TIMEOUT);
+                var p = tools.copy(params);
                 delete p.numMarketsToLoad;
                 p.callback = function (info) {
                     if (info.error) return done(info);
@@ -102,8 +103,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 augur.getMarketsInfo(p);
             });
             it("async/missing numMarketsToLoad/missing offset", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                var p = augur.utils.copy(params);
+                this.timeout(tools.TIMEOUT);
+                var p = tools.copy(params);
                 delete p.numMarketsToLoad;
                 delete p.offset;
                 p.callback = function (info) {
@@ -113,7 +114,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 augur.getMarketsInfo(p);
             });
             it("async/offset=1/numMarketsToLoad=2", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
+                this.timeout(tools.TIMEOUT);
                 var numMarketsToLoad = 3;
                 augur.getMarketsInfo({
                     branch: branchId,
@@ -127,8 +128,8 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 });
             });
             it("async/combinatorial", function (done) {
-                this.timeout(augur.constants.TIMEOUT);
-                var p = augur.utils.copy(params);
+                this.timeout(tools.TIMEOUT);
+                var p = tools.copy(params);
                 p.combinatorial = true;
                 p.callback = function (info) {
                     if (info.error) return done(info);

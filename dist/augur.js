@@ -1,32 +1,3818 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+// var ethabi = new (require("ethereumjs-abi"))();
+
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
+module.exports = {
+
+    constants: {
+        ONE: (new BigNumber(2)).toPower(64),
+        MOD: new BigNumber(2).toPower(256),
+        BYTES_32: new BigNumber(2).toPower(252)
+    },
+
+    copy: function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
+
+    is_numeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
+    remove_leading_zeros: function (h) {
+        var hex = h.toString();
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
+        if (!/^0+$/.test(hex)) {
+            while (hex.slice(0, 2) === "00") {
+                hex = hex.slice(2);
+            }
+        }
+        return hex;
+    },
+
+    remove_trailing_zeros: function (h) {
+        var hex = h.toString();
+        while (hex.slice(-2) === "00") {
+            hex = hex.slice(0,-2);
+        }
+        return hex;
+    },
+
+    short_string_to_int256: function (s) {
+        return this.prefix_hex(this.pad_right(this.encode_hex(s)));
+    },
+
+    int256_to_short_string: function (n) {
+        return this.decode_hex(this.remove_trailing_zeros(n));
+    },
+
+    decode_hex: function (h, strip) {
+        var hex = h.toString();
+        var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+        // first 32 bytes = offset
+        // second 32 bytes = string length
+        if (strip) {
+            hex = hex.slice(128);
+            hex = this.remove_trailing_zeros(hex);
+        }
+        for (var i = 0, l = hex.length; i < l; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    },
+
+    // convert bytes to hex
+    encode_hex: function (str) {
+        var hexbyte, hex = '';
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
+        for (var i = 0, len = str.length; i < len; ++i) {
+            hexbyte = str.charCodeAt(i).toString(16);
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            hex += hexbyte;
+        }
+        return hex;
+    },
+
+    unfork: function (forked, prefix) {
+        if (forked !== null && forked !== undefined) {
+            var unforked = this.bignum(forked);
+            var superforked = unforked.plus(this.constants.MOD);
+            if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+                unforked = superforked;
+            }
+            if (forked.constructor === BigNumber) return unforked;
+            unforked = this.pad_left(unforked.toString(16));
+            if (prefix) unforked = this.prefix_hex(unforked);
+            return unforked;
+        }
+    },
+
+    hex: function (n, nowrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Buffer:
+                    h = n.toString("hex");
+                    break;
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.bignum(n, "hex", nowrap);
+                    break;
+                case BigNumber:
+                    h = n.toString(16);
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = n;
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", nowrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex", nowrap);
+            }
+        }
+        return this.prefix_hex(h);
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
+    strip_0x: function (str) {
+        if (str && str.constructor === String && str.length >= 2) {
+            var h = str;
+            if (h === "-0x0" || h === "0x0") {
+                return "0";
+            }
+            if (h.slice(0, 2) === "0x" && h.length > 2) {
+                h = h.slice(2);
+            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+                h = '-' + h.slice(3);
+            }
+            if (this.is_hex(h)) return h;
+        }
+        return str;
+    },
+
+    zero_prefix: function (h) {
+        if (h !== undefined && h !== null && h.constructor === String) {
+            h = this.strip_0x(h);
+            if (h.length % 2) h = "0" + h;
+            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+                if (h.slice(0,1) === '-') {
+                    h = "-0x" + h.slice(1);
+                } else {
+                    h = "0x" + h;
+                }
+            }
+        }
+        return h;
+    },
+
+    prefix_hex: function (n) {
+        if (n !== undefined && n !== null) {
+            if (n.constructor === Number || n.constructor === BigNumber) {
+                n = n.toString(16);
+            }
+            if (n.constructor === String &&
+                n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x")
+            {
+                if (n.slice(0,1) === '-') {
+                    n = "-0x" + n.slice(1);
+                } else {
+                    n = "0x" + n;
+                }
+            }
+        }
+        return n;
+    },
+
+    bignum: function (n, encoding, nowrap) {
+        var bn, len;
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+            switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Number:
+                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                        bn = new BigNumber(n);
+                    } else {
+                        n = n.toString();
+                        try {
+                            bn = new BigNumber(n);
+                        } catch (exc) {
+                            if (this.is_hex(n)) {
+                                bn = new BigNumber(n, 16);
+                            } else {
+                                return n;
+                            }
+                        }
+                    }
+                    break;
+                case String:
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
+                    }
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding, nowrap);
+                    }
+                    break;
+                default:
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (ex) {
+                        try {
+                            bn = new BigNumber(n, 16);
+                        } catch (exc) {
+                            return n;
+                        }
+                    }
+            }
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (!nowrap && bn.gte(this.constants.BYTES_32)) {
+                    bn = bn.sub(this.constants.MOD);
+                }
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.toString(16));
+                    }
+                }
+            }
+            return bn;
+        } else {
+            return n;
+        }
+    },
+
+    fix: function (n, encode) {
+        var fixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
+            if (n.constructor === Array) {
+                var len = n.length;
+                fixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = this.fix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(this.constants.ONE).round();
+                } else {
+                    fixed = this.bignum(n).mul(this.constants.ONE).round();
+                }
+                if (fixed && fixed.gte(this.constants.BYTES_32)) {
+                    fixed = fixed.sub(this.constants.MOD);
+                }
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
+                        fixed = this.prefix_hex(fixed);
+                    }
+                }
+            }
+            return fixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix: function (n, encode) {
+        var unfixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = this.unfix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(this.constants.ONE);
+                } else {
+                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+                }
+                if (unfixed && encode) {
+                    if (encode === "hex") {
+                        unfixed = this.prefix_hex(unfixed);
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            }
+            return unfixed;
+        } else {
+            return n;
+        }
+    },
+
+    string: function (n) {
+        return this.bignum(n, "string");
+    },
+
+    number: function (s) {
+        return this.bignum(s, "number");
+    },
+
+    chunk: function (total_len, chunk_len) {
+        chunk_len = chunk_len || 64;
+        return Math.ceil(total_len / chunk_len);
+    },
+
+    pad_right: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * this.chunk(s.length, chunk_len);
+        while (s.length < multiple) {
+            s += '0';
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    pad_left: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * this.chunk(s.length, chunk_len);
+        while (s.length < multiple) {
+            s = '0' + s;
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    encode_prefix: function (funcname, signature) {
+        signature = signature || "";
+        var summary = funcname + "(";
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            switch (signature[i]) {
+                case 's':
+                    summary += "bytes";
+                    break;
+                case 'b':
+                    summary += "bytes";
+                    var j = 1;
+                    while (this.is_numeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
+                    break;
+                case 'i':
+                    summary += "int256";
+                    break;
+                case 'a':
+                    summary += "int256[]";
+                    break;
+                default:
+                    summary += "weird";
+            }
+            if (i !== len - 1) summary += ",";
+        }
+        var prefix = keccak_256(summary + ")").slice(0, 8);
+        while (prefix.slice(0, 1) === '0') {
+            prefix = prefix.slice(1);
+        }
+        return this.pad_left(prefix, 8, true);
+    },
+
+    parse_signature: function (signature) {
+        var types = [];
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            if (this.is_numeric(signature[i])) {
+                types[types.length - 1] += signature[i].toString();
+            } else {
+                if (signature[i] === 's') {
+                    types.push("bytes");
+                } else if (signature[i] === 'b') {
+                    types.push("bytes");
+                } else if (signature[i] === 'a') {
+                    types.push("int256[]");
+                } else {
+                    types.push("int256");
+                }
+            }
+        }
+        return types;
+    },
+
+    parse_params: function (params) {
+        if (params !== undefined && params !== null &&
+            params !== [] && params !== "")
+        {
+            if (params.constructor === String) {
+                if (params.slice(0,1) === "[" &&
+                    params.slice(-1) === "]")
+                {
+                    params = JSON.parse(params);
+                }
+                if (params.constructor === String) {
+                    params = [params];
+                }
+            } else if (params.constructor === Number) {
+                params = [params];
+            }
+        } else {
+            params = [];
+        }
+        return params;
+    },
+
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = this.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // static parameter encoding
+
+    encode_int256: function (encoding, param) {
+        if (param !== undefined && param !== null && param !== [] && param !== "") {
+
+            // input is a javascript number
+            if (param.constructor === Number) {
+                param = this.bignum(param);
+                if (param.lt(new BigNumber(0))) {
+                    param = param.add(this.constants.MOD);
+                }
+                encoding.statics += this.encode_int(param);
+
+            // input is a string
+            } else if (param.constructor === String) {
+
+                // negative hex
+                if (param.slice(0,1) === '-') {
+                    param = this.bignum(param).add(this.constants.MOD).toFixed();
+                    encoding.statics += this.encode_int(param);
+
+                // positive hex
+                } else if (param.slice(0,2) === "0x") {
+                    encoding.statics += this.pad_left(param.slice(2));
+
+                // decimal (base-10 integer)
+                } else {
+                    encoding.statics += this.encode_int(param);
+                }
+            }
+
+            // size in multiples of 32
+            encoding.chunks += this.chunk(encoding.statics.length);
+        }
+        return encoding;
+    },
+
+    encode_bytesN: function (encoding, param) {
+        if (param !== undefined && param !== null && param !== [] && param !== "") {
+            while (param.length) {
+                encoding.statics += this.pad_right(this.encode_hex(param.slice(0, 64)));
+                param = param.slice(64);
+            }
+            encoding.chunks += this.chunk(encoding.statics.length);
+        }
+        return encoding;
+    },
+
+    // dynamic parameter encoding
+
+    // offset (in multiples of 32)
+    offset: function (len, num_params) {
+        return this.encode_int(32 * (num_params + this.chunk(len)));
+    },
+
+    encode_bytes: function (encoding, param, num_params) {
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        encoding.dynamics += this.encode_int(param.length);
+        encoding.dynamics += this.pad_right(this.encode_hex(param));
+        return encoding;
+    },
+
+    encode_int256a: function (encoding, param, num_params) {
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        var arraylen = param.length;
+        encoding.dynamics += this.encode_int(arraylen);
+        for (var j = 0; j < arraylen; ++j) {
+            if (param[j] !== undefined) {
+                if (param[j].constructor === Number) {
+                    encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                } else if (param[j].constructor === String) {
+                    if (param[j].slice(0,1) === '-') {
+                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                    } else if (param[j].slice(0,2) === "0x") {
+                        encoding.dynamics += this.pad_left(param[j].slice(2));
+                    } else {
+                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                    }
+                }
+                encoding.dynamics = this.pad_right(encoding.dynamics);
+            }
+        }
+        return encoding;
+    },
+
+    encode_data: function (itx) {
+        var tx, num_params, types, encoding;
+        tx = this.copy(itx);
+
+        // parse signature and parameter array
+        types = this.parse_signature(tx.signature);
+        num_params = tx.signature.replace(/\d+/g, '').length;
+        tx.params = this.parse_params(tx.params);
+
+        // chunks: size of the static encoding (in multiples of 32)
+        encoding = { chunks: 0, statics: '', dynamics: '' };
+
+        // encode parameters
+        if (num_params === tx.params.length) {
+            for (var i = 0; i < num_params; ++i) {
+                if (types[i] === "int256") {
+                    encoding = this.encode_int256(encoding, tx.params[i]);
+                } else if (types[i] === "bytes" || types[i] === "string") {
+                    encoding = this.encode_bytes(encoding, tx.params[i], num_params);
+                } else if (types[i] === "int256[]") {
+                    encoding = this.encode_int256a(encoding, tx.params[i], num_params);
+                } else {
+                    // var num_bytes = parseInt(types[i].replace("bytes", ''));
+                    encoding = this.encode_bytesN(encoding, tx.params[i]);
+                }
+            }
+            return encoding.statics + encoding.dynamics;
+
+        // number of parameters provided didn't match the signature
+        } else {
+            return new Error("wrong number of parameters");
+        }
+    },
+
+    // hex-encode a function's ABI data and return it
+    encode: function (tx) {
+        tx.signature = tx.signature || "";
+        return this.encode_prefix(tx.method, tx.signature) + this.encode_data(tx);
+        // return "0x" + ethabi.rawEncode(tx.method, ethabi.fromSerpent(tx.signature), tx.params).toString("hex");
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":2,"buffer":233,"js-sha3":3}],2:[function(require,module,exports){
+/*! bignumber.js v2.0.8 https://github.com/MikeMcl/bignumber.js/LICENCE */
+
+;(function (global) {
+    'use strict';
+
+    /*
+      bignumber.js v2.0.8
+      A JavaScript library for arbitrary-precision arithmetic.
+      https://github.com/MikeMcl/bignumber.js
+      Copyright (c) 2015 Michael Mclaughlin <M8ch88l@gmail.com>
+      MIT Expat Licence
+    */
+
+
+    var BigNumber, crypto, parseNumeric,
+        isNumeric = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
+        mathceil = Math.ceil,
+        mathfloor = Math.floor,
+        notBool = ' not a boolean or binary digit',
+        roundingMode = 'rounding mode',
+        tooManyDigits = 'number type has more than 15 significant digits',
+        ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',
+        BASE = 1e14,
+        LOG_BASE = 14,
+        MAX_SAFE_INTEGER = 0x1fffffffffffff,         // 2^53 - 1
+        // MAX_INT32 = 0x7fffffff,                   // 2^31 - 1
+        POWS_TEN = [1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13],
+        SQRT_BASE = 1e7,
+
+        /*
+         * The limit on the value of DECIMAL_PLACES, TO_EXP_NEG, TO_EXP_POS, MIN_EXP, MAX_EXP, and
+         * the arguments to toExponential, toFixed, toFormat, and toPrecision, beyond which an
+         * exception is thrown (if ERRORS is true).
+         */
+        MAX = 1E9;                                   // 0 to MAX_INT32
+
+
+    /*
+     * Create and return a BigNumber constructor.
+     */
+    function another(configObj) {
+        var div,
+
+            // id tracks the caller function, so its name can be included in error messages.
+            id = 0,
+            P = BigNumber.prototype,
+            ONE = new BigNumber(1),
+
+
+            /********************************* EDITABLE DEFAULTS **********************************/
+
+
+            /*
+             * The default values below must be integers within the inclusive ranges stated.
+             * The values can also be changed at run-time using BigNumber.config.
+             */
+
+            // The maximum number of decimal places for operations involving division.
+            DECIMAL_PLACES = 20,                     // 0 to MAX
+
+            /*
+             * The rounding mode used when rounding to the above decimal places, and when using
+             * toExponential, toFixed, toFormat and toPrecision, and round (default value).
+             * UP         0 Away from zero.
+             * DOWN       1 Towards zero.
+             * CEIL       2 Towards +Infinity.
+             * FLOOR      3 Towards -Infinity.
+             * HALF_UP    4 Towards nearest neighbour. If equidistant, up.
+             * HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
+             * HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
+             * HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
+             * HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
+             */
+            ROUNDING_MODE = 4,                       // 0 to 8
+
+            // EXPONENTIAL_AT : [TO_EXP_NEG , TO_EXP_POS]
+
+            // The exponent value at and beneath which toString returns exponential notation.
+            // Number type: -7
+            TO_EXP_NEG = -7,                         // 0 to -MAX
+
+            // The exponent value at and above which toString returns exponential notation.
+            // Number type: 21
+            TO_EXP_POS = 21,                         // 0 to MAX
+
+            // RANGE : [MIN_EXP, MAX_EXP]
+
+            // The minimum exponent value, beneath which underflow to zero occurs.
+            // Number type: -324  (5e-324)
+            MIN_EXP = -1e7,                          // -1 to -MAX
+
+            // The maximum exponent value, above which overflow to Infinity occurs.
+            // Number type:  308  (1.7976931348623157e+308)
+            // For MAX_EXP > 1e7, e.g. new BigNumber('1e100000000').plus(1) may be slow.
+            MAX_EXP = 1e7,                           // 1 to MAX
+
+            // Whether BigNumber Errors are ever thrown.
+            ERRORS = true,                           // true or false
+
+            // Change to intValidatorNoErrors if ERRORS is false.
+            isValidInt = intValidatorWithErrors,     // intValidatorWithErrors/intValidatorNoErrors
+
+            // Whether to use cryptographically-secure random number generation, if available.
+            CRYPTO = false,                          // true or false
+
+            /*
+             * The modulo mode used when calculating the modulus: a mod n.
+             * The quotient (q = a / n) is calculated according to the corresponding rounding mode.
+             * The remainder (r) is calculated as: r = a - n * q.
+             *
+             * UP        0 The remainder is positive if the dividend is negative, else is negative.
+             * DOWN      1 The remainder has the same sign as the dividend.
+             *             This modulo mode is commonly known as 'truncated division' and is
+             *             equivalent to (a % n) in JavaScript.
+             * FLOOR     3 The remainder has the same sign as the divisor (Python %).
+             * HALF_EVEN 6 This modulo mode implements the IEEE 754 remainder function.
+             * EUCLID    9 Euclidian division. q = sign(n) * floor(a / abs(n)).
+             *             The remainder is always positive.
+             *
+             * The truncated division, floored division, Euclidian division and IEEE 754 remainder
+             * modes are commonly used for the modulus operation.
+             * Although the other rounding modes can also be used, they may not give useful results.
+             */
+            MODULO_MODE = 1,                         // 0 to 9
+
+            // The maximum number of significant digits of the result of the toPower operation.
+            // If POW_PRECISION is 0, there will be unlimited significant digits.
+            POW_PRECISION = 100,                     // 0 to MAX
+
+            // The format specification used by the BigNumber.prototype.toFormat method.
+            FORMAT = {
+                decimalSeparator: '.',
+                groupSeparator: ',',
+                groupSize: 3,
+                secondaryGroupSize: 0,
+                fractionGroupSeparator: '\xA0',      // non-breaking space
+                fractionGroupSize: 0
+            };
+
+
+        /******************************************************************************************/
+
+
+        // CONSTRUCTOR
+
+
+        /*
+         * The BigNumber constructor and exported function.
+         * Create and return a new instance of a BigNumber object.
+         *
+         * n {number|string|BigNumber} A numeric value.
+         * [b] {number} The base of n. Integer, 2 to 64 inclusive.
+         */
+        function BigNumber( n, b ) {
+            var c, e, i, num, len, str,
+                x = this;
+
+            // Enable constructor usage without new.
+            if ( !( x instanceof BigNumber ) ) {
+
+                // 'BigNumber() constructor call without new: {n}'
+                if (ERRORS) raise( 26, 'constructor call without new', n );
+                return new BigNumber( n, b );
+            }
+
+            // 'new BigNumber() base not an integer: {b}'
+            // 'new BigNumber() base out of range: {b}'
+            if ( b == null || !isValidInt( b, 2, 64, id, 'base' ) ) {
+
+                // Duplicate.
+                if ( n instanceof BigNumber ) {
+                    x.s = n.s;
+                    x.e = n.e;
+                    x.c = ( n = n.c ) ? n.slice() : n;
+                    id = 0;
+                    return;
+                }
+
+                if ( ( num = typeof n == 'number' ) && n * 0 == 0 ) {
+                    x.s = 1 / n < 0 ? ( n = -n, -1 ) : 1;
+
+                    // Fast path for integers.
+                    if ( n === ~~n ) {
+                        for ( e = 0, i = n; i >= 10; i /= 10, e++ );
+                        x.e = e;
+                        x.c = [n];
+                        id = 0;
+                        return;
+                    }
+
+                    str = n + '';
+                } else {
+                    if ( !isNumeric.test( str = n + '' ) ) return parseNumeric( x, str, num );
+                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
+                }
+            } else {
+                b = b | 0;
+                str = n + '';
+
+                // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
+                // Allow exponential notation to be used with base 10 argument.
+                if ( b == 10 ) {
+                    x = new BigNumber( n instanceof BigNumber ? n : str );
+                    return round( x, DECIMAL_PLACES + x.e + 1, ROUNDING_MODE );
+                }
+
+                // Avoid potential interpretation of Infinity and NaN as base 44+ values.
+                // Any number in exponential form will fail due to the [Ee][+-].
+                if ( ( num = typeof n == 'number' ) && n * 0 != 0 ||
+                  !( new RegExp( '^-?' + ( c = '[' + ALPHABET.slice( 0, b ) + ']+' ) +
+                    '(?:\\.' + c + ')?$',b < 37 ? 'i' : '' ) ).test(str) ) {
+                    return parseNumeric( x, str, num, b );
+                }
+
+                if (num) {
+                    x.s = 1 / n < 0 ? ( str = str.slice(1), -1 ) : 1;
+
+                    if ( ERRORS && str.replace( /^0\.0*|\./, '' ).length > 15 ) {
+
+                        // 'new BigNumber() number type has more than 15 significant digits: {n}'
+                        raise( id, tooManyDigits, n );
+                    }
+
+                    // Prevent later check for length on converted number.
+                    num = false;
+                } else {
+                    x.s = str.charCodeAt(0) === 45 ? ( str = str.slice(1), -1 ) : 1;
+                }
+
+                str = convertBase( str, 10, b, x.s );
+            }
+
+            // Decimal point?
+            if ( ( e = str.indexOf('.') ) > -1 ) str = str.replace( '.', '' );
+
+            // Exponential form?
+            if ( ( i = str.search( /e/i ) ) > 0 ) {
+
+                // Determine exponent.
+                if ( e < 0 ) e = i;
+                e += +str.slice( i + 1 );
+                str = str.substring( 0, i );
+            } else if ( e < 0 ) {
+
+                // Integer.
+                e = str.length;
+            }
+
+            // Determine leading zeros.
+            for ( i = 0; str.charCodeAt(i) === 48; i++ );
+
+            // Determine trailing zeros.
+            for ( len = str.length; str.charCodeAt(--len) === 48; );
+            str = str.slice( i, len + 1 );
+
+            if (str) {
+                len = str.length;
+
+                // Disallow numbers with over 15 significant digits if number type.
+                // 'new BigNumber() number type has more than 15 significant digits: {n}'
+                if ( num && ERRORS && len > 15 ) raise( id, tooManyDigits, x.s * n );
+
+                e = e - i - 1;
+
+                 // Overflow?
+                if ( e > MAX_EXP ) {
+
+                    // Infinity.
+                    x.c = x.e = null;
+
+                // Underflow?
+                } else if ( e < MIN_EXP ) {
+
+                    // Zero.
+                    x.c = [ x.e = 0 ];
+                } else {
+                    x.e = e;
+                    x.c = [];
+
+                    // Transform base
+
+                    // e is the base 10 exponent.
+                    // i is where to slice str to get the first element of the coefficient array.
+                    i = ( e + 1 ) % LOG_BASE;
+                    if ( e < 0 ) i += LOG_BASE;
+
+                    if ( i < len ) {
+                        if (i) x.c.push( +str.slice( 0, i ) );
+
+                        for ( len -= LOG_BASE; i < len; ) {
+                            x.c.push( +str.slice( i, i += LOG_BASE ) );
+                        }
+
+                        str = str.slice(i);
+                        i = LOG_BASE - str.length;
+                    } else {
+                        i -= len;
+                    }
+
+                    for ( ; i--; str += '0' );
+                    x.c.push( +str );
+                }
+            } else {
+
+                // Zero.
+                x.c = [ x.e = 0 ];
+            }
+
+            id = 0;
+        }
+
+
+        // CONSTRUCTOR PROPERTIES
+
+
+        BigNumber.another = another;
+
+        BigNumber.ROUND_UP = 0;
+        BigNumber.ROUND_DOWN = 1;
+        BigNumber.ROUND_CEIL = 2;
+        BigNumber.ROUND_FLOOR = 3;
+        BigNumber.ROUND_HALF_UP = 4;
+        BigNumber.ROUND_HALF_DOWN = 5;
+        BigNumber.ROUND_HALF_EVEN = 6;
+        BigNumber.ROUND_HALF_CEIL = 7;
+        BigNumber.ROUND_HALF_FLOOR = 8;
+        BigNumber.EUCLID = 9;
+
+
+        /*
+         * Configure infrequently-changing library-wide settings.
+         *
+         * Accept an object or an argument list, with one or many of the following properties or
+         * parameters respectively:
+         *
+         *   DECIMAL_PLACES  {number}  Integer, 0 to MAX inclusive
+         *   ROUNDING_MODE   {number}  Integer, 0 to 8 inclusive
+         *   EXPONENTIAL_AT  {number|number[]}  Integer, -MAX to MAX inclusive or
+         *                                      [integer -MAX to 0 incl., 0 to MAX incl.]
+         *   RANGE           {number|number[]}  Non-zero integer, -MAX to MAX inclusive or
+         *                                      [integer -MAX to -1 incl., integer 1 to MAX incl.]
+         *   ERRORS          {boolean|number}   true, false, 1 or 0
+         *   CRYPTO          {boolean|number}   true, false, 1 or 0
+         *   MODULO_MODE     {number}           0 to 9 inclusive
+         *   POW_PRECISION   {number}           0 to MAX inclusive
+         *   FORMAT          {object}           See BigNumber.prototype.toFormat
+         *      decimalSeparator       {string}
+         *      groupSeparator         {string}
+         *      groupSize              {number}
+         *      secondaryGroupSize     {number}
+         *      fractionGroupSeparator {string}
+         *      fractionGroupSize      {number}
+         *
+         * (The values assigned to the above FORMAT object properties are not checked for validity.)
+         *
+         * E.g.
+         * BigNumber.config(20, 4) is equivalent to
+         * BigNumber.config({ DECIMAL_PLACES : 20, ROUNDING_MODE : 4 })
+         *
+         * Ignore properties/parameters set to null or undefined.
+         * Return an object with the properties current values.
+         */
+        BigNumber.config = function () {
+            var v, p,
+                i = 0,
+                r = {},
+                a = arguments,
+                o = a[0],
+                has = o && typeof o == 'object'
+                  ? function () { if ( o.hasOwnProperty(p) ) return ( v = o[p] ) != null; }
+                  : function () { if ( a.length > i ) return ( v = a[i++] ) != null; };
+
+            // DECIMAL_PLACES {number} Integer, 0 to MAX inclusive.
+            // 'config() DECIMAL_PLACES not an integer: {v}'
+            // 'config() DECIMAL_PLACES out of range: {v}'
+            if ( has( p = 'DECIMAL_PLACES' ) && isValidInt( v, 0, MAX, 2, p ) ) {
+                DECIMAL_PLACES = v | 0;
+            }
+            r[p] = DECIMAL_PLACES;
+
+            // ROUNDING_MODE {number} Integer, 0 to 8 inclusive.
+            // 'config() ROUNDING_MODE not an integer: {v}'
+            // 'config() ROUNDING_MODE out of range: {v}'
+            if ( has( p = 'ROUNDING_MODE' ) && isValidInt( v, 0, 8, 2, p ) ) {
+                ROUNDING_MODE = v | 0;
+            }
+            r[p] = ROUNDING_MODE;
+
+            // EXPONENTIAL_AT {number|number[]}
+            // Integer, -MAX to MAX inclusive or [integer -MAX to 0 inclusive, 0 to MAX inclusive].
+            // 'config() EXPONENTIAL_AT not an integer: {v}'
+            // 'config() EXPONENTIAL_AT out of range: {v}'
+            if ( has( p = 'EXPONENTIAL_AT' ) ) {
+
+                if ( isArray(v) ) {
+                    if ( isValidInt( v[0], -MAX, 0, 2, p ) && isValidInt( v[1], 0, MAX, 2, p ) ) {
+                        TO_EXP_NEG = v[0] | 0;
+                        TO_EXP_POS = v[1] | 0;
+                    }
+                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
+                    TO_EXP_NEG = -( TO_EXP_POS = ( v < 0 ? -v : v ) | 0 );
+                }
+            }
+            r[p] = [ TO_EXP_NEG, TO_EXP_POS ];
+
+            // RANGE {number|number[]} Non-zero integer, -MAX to MAX inclusive or
+            // [integer -MAX to -1 inclusive, integer 1 to MAX inclusive].
+            // 'config() RANGE not an integer: {v}'
+            // 'config() RANGE cannot be zero: {v}'
+            // 'config() RANGE out of range: {v}'
+            if ( has( p = 'RANGE' ) ) {
+
+                if ( isArray(v) ) {
+                    if ( isValidInt( v[0], -MAX, -1, 2, p ) && isValidInt( v[1], 1, MAX, 2, p ) ) {
+                        MIN_EXP = v[0] | 0;
+                        MAX_EXP = v[1] | 0;
+                    }
+                } else if ( isValidInt( v, -MAX, MAX, 2, p ) ) {
+                    if ( v | 0 ) MIN_EXP = -( MAX_EXP = ( v < 0 ? -v : v ) | 0 );
+                    else if (ERRORS) raise( 2, p + ' cannot be zero', v );
+                }
+            }
+            r[p] = [ MIN_EXP, MAX_EXP ];
+
+            // ERRORS {boolean|number} true, false, 1 or 0.
+            // 'config() ERRORS not a boolean or binary digit: {v}'
+            if ( has( p = 'ERRORS' ) ) {
+
+                if ( v === !!v || v === 1 || v === 0 ) {
+                    id = 0;
+                    isValidInt = ( ERRORS = !!v ) ? intValidatorWithErrors : intValidatorNoErrors;
+                } else if (ERRORS) {
+                    raise( 2, p + notBool, v );
+                }
+            }
+            r[p] = ERRORS;
+
+            // CRYPTO {boolean|number} true, false, 1 or 0.
+            // 'config() CRYPTO not a boolean or binary digit: {v}'
+            // 'config() crypto unavailable: {crypto}'
+            if ( has( p = 'CRYPTO' ) ) {
+
+                if ( v === !!v || v === 1 || v === 0 ) {
+                    CRYPTO = !!( v && crypto && typeof crypto == 'object' );
+                    if ( v && !CRYPTO && ERRORS ) raise( 2, 'crypto unavailable', crypto );
+                } else if (ERRORS) {
+                    raise( 2, p + notBool, v );
+                }
+            }
+            r[p] = CRYPTO;
+
+            // MODULO_MODE {number} Integer, 0 to 9 inclusive.
+            // 'config() MODULO_MODE not an integer: {v}'
+            // 'config() MODULO_MODE out of range: {v}'
+            if ( has( p = 'MODULO_MODE' ) && isValidInt( v, 0, 9, 2, p ) ) {
+                MODULO_MODE = v | 0;
+            }
+            r[p] = MODULO_MODE;
+
+            // POW_PRECISION {number} Integer, 0 to MAX inclusive.
+            // 'config() POW_PRECISION not an integer: {v}'
+            // 'config() POW_PRECISION out of range: {v}'
+            if ( has( p = 'POW_PRECISION' ) && isValidInt( v, 0, MAX, 2, p ) ) {
+                POW_PRECISION = v | 0;
+            }
+            r[p] = POW_PRECISION;
+
+            // FORMAT {object}
+            // 'config() FORMAT not an object: {v}'
+            if ( has( p = 'FORMAT' ) ) {
+
+                if ( typeof v == 'object' ) {
+                    FORMAT = v;
+                } else if (ERRORS) {
+                    raise( 2, p + ' not an object', v );
+                }
+            }
+            r[p] = FORMAT;
+
+            return r;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the maximum of the arguments.
+         *
+         * arguments {number|string|BigNumber}
+         */
+        BigNumber.max = function () { return maxOrMin( arguments, P.lt ); };
+
+
+        /*
+         * Return a new BigNumber whose value is the minimum of the arguments.
+         *
+         * arguments {number|string|BigNumber}
+         */
+        BigNumber.min = function () { return maxOrMin( arguments, P.gt ); };
+
+
+        /*
+         * Return a new BigNumber with a random value equal to or greater than 0 and less than 1,
+         * and with dp, or DECIMAL_PLACES if dp is omitted, decimal places (or less if trailing
+         * zeros are produced).
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         *
+         * 'random() decimal places not an integer: {dp}'
+         * 'random() decimal places out of range: {dp}'
+         * 'random() crypto unavailable: {crypto}'
+         */
+        BigNumber.random = (function () {
+            var pow2_53 = 0x20000000000000;
+
+            // Return a 53 bit integer n, where 0 <= n < 9007199254740992.
+            // Check if Math.random() produces more than 32 bits of randomness.
+            // If it does, assume at least 53 bits are produced, otherwise assume at least 30 bits.
+            // 0x40000000 is 2^30, 0x800000 is 2^23, 0x1fffff is 2^21 - 1.
+            var random53bitInt = (Math.random() * pow2_53) & 0x1fffff
+              ? function () { return mathfloor( Math.random() * pow2_53 ); }
+              : function () { return ((Math.random() * 0x40000000 | 0) * 0x800000) +
+                  (Math.random() * 0x800000 | 0); };
+
+            return function (dp) {
+                var a, b, e, k, v,
+                    i = 0,
+                    c = [],
+                    rand = new BigNumber(ONE);
+
+                dp = dp == null || !isValidInt( dp, 0, MAX, 14 ) ? DECIMAL_PLACES : dp | 0;
+                k = mathceil( dp / LOG_BASE );
+
+                if (CRYPTO) {
+
+                    // Browsers supporting crypto.getRandomValues.
+                    if ( crypto && crypto.getRandomValues ) {
+
+                        a = crypto.getRandomValues( new Uint32Array( k *= 2 ) );
+
+                        for ( ; i < k; ) {
+
+                            // 53 bits:
+                            // ((Math.pow(2, 32) - 1) * Math.pow(2, 21)).toString(2)
+                            // 11111 11111111 11111111 11111111 11100000 00000000 00000000
+                            // ((Math.pow(2, 32) - 1) >>> 11).toString(2)
+                            //                                     11111 11111111 11111111
+                            // 0x20000 is 2^21.
+                            v = a[i] * 0x20000 + (a[i + 1] >>> 11);
+
+                            // Rejection sampling:
+                            // 0 <= v < 9007199254740992
+                            // Probability that v >= 9e15, is
+                            // 7199254740992 / 9007199254740992 ~= 0.0008, i.e. 1 in 1251
+                            if ( v >= 9e15 ) {
+                                b = crypto.getRandomValues( new Uint32Array(2) );
+                                a[i] = b[0];
+                                a[i + 1] = b[1];
+                            } else {
+
+                                // 0 <= v <= 8999999999999999
+                                // 0 <= (v % 1e14) <= 99999999999999
+                                c.push( v % 1e14 );
+                                i += 2;
+                            }
+                        }
+                        i = k / 2;
+
+                    // Node.js supporting crypto.randomBytes.
+                    } else if ( crypto && crypto.randomBytes ) {
+
+                        // buffer
+                        a = crypto.randomBytes( k *= 7 );
+
+                        for ( ; i < k; ) {
+
+                            // 0x1000000000000 is 2^48, 0x10000000000 is 2^40
+                            // 0x100000000 is 2^32, 0x1000000 is 2^24
+                            // 11111 11111111 11111111 11111111 11111111 11111111 11111111
+                            // 0 <= v < 9007199254740992
+                            v = ( ( a[i] & 31 ) * 0x1000000000000 ) + ( a[i + 1] * 0x10000000000 ) +
+                                  ( a[i + 2] * 0x100000000 ) + ( a[i + 3] * 0x1000000 ) +
+                                  ( a[i + 4] << 16 ) + ( a[i + 5] << 8 ) + a[i + 6];
+
+                            if ( v >= 9e15 ) {
+                                crypto.randomBytes(7).copy( a, i );
+                            } else {
+
+                                // 0 <= (v % 1e14) <= 99999999999999
+                                c.push( v % 1e14 );
+                                i += 7;
+                            }
+                        }
+                        i = k / 7;
+                    } else if (ERRORS) {
+                        raise( 14, 'crypto unavailable', crypto );
+                    }
+                }
+
+                // Use Math.random: CRYPTO is false or crypto is unavailable and ERRORS is false.
+                if (!i) {
+
+                    for ( ; i < k; ) {
+                        v = random53bitInt();
+                        if ( v < 9e15 ) c[i++] = v % 1e14;
+                    }
+                }
+
+                k = c[--i];
+                dp %= LOG_BASE;
+
+                // Convert trailing digits to zeros according to dp.
+                if ( k && dp ) {
+                    v = POWS_TEN[LOG_BASE - dp];
+                    c[i] = mathfloor( k / v ) * v;
+                }
+
+                // Remove trailing elements which are zero.
+                for ( ; c[i] === 0; c.pop(), i-- );
+
+                // Zero?
+                if ( i < 0 ) {
+                    c = [ e = 0 ];
+                } else {
+
+                    // Remove leading elements which are zero and adjust exponent accordingly.
+                    for ( e = -1 ; c[0] === 0; c.shift(), e -= LOG_BASE);
+
+                    // Count the digits of the first element of c to determine leading zeros, and...
+                    for ( i = 1, v = c[0]; v >= 10; v /= 10, i++);
+
+                    // adjust the exponent accordingly.
+                    if ( i < LOG_BASE ) e -= LOG_BASE - i;
+                }
+
+                rand.e = e;
+                rand.c = c;
+                return rand;
+            };
+        })();
+
+
+        // PRIVATE FUNCTIONS
+
+
+        // Convert a numeric string of baseIn to a numeric string of baseOut.
+        function convertBase( str, baseOut, baseIn, sign ) {
+            var d, e, k, r, x, xc, y,
+                i = str.indexOf( '.' ),
+                dp = DECIMAL_PLACES,
+                rm = ROUNDING_MODE;
+
+            if ( baseIn < 37 ) str = str.toLowerCase();
+
+            // Non-integer.
+            if ( i >= 0 ) {
+                k = POW_PRECISION;
+
+                // Unlimited precision.
+                POW_PRECISION = 0;
+                str = str.replace( '.', '' );
+                y = new BigNumber(baseIn);
+                x = y.pow( str.length - i );
+                POW_PRECISION = k;
+
+                // Convert str as if an integer, then restore the fraction part by dividing the
+                // result by its base raised to a power.
+                y.c = toBaseOut( toFixedPoint( coeffToString( x.c ), x.e ), 10, baseOut );
+                y.e = y.c.length;
+            }
+
+            // Convert the number as integer.
+            xc = toBaseOut( str, baseIn, baseOut );
+            e = k = xc.length;
+
+            // Remove trailing zeros.
+            for ( ; xc[--k] == 0; xc.pop() );
+            if ( !xc[0] ) return '0';
+
+            if ( i < 0 ) {
+                --e;
+            } else {
+                x.c = xc;
+                x.e = e;
+
+                // sign is needed for correct rounding.
+                x.s = sign;
+                x = div( x, y, dp, rm, baseOut );
+                xc = x.c;
+                r = x.r;
+                e = x.e;
+            }
+
+            d = e + dp + 1;
+
+            // The rounding digit, i.e. the digit to the right of the digit that may be rounded up.
+            i = xc[d];
+            k = baseOut / 2;
+            r = r || d < 0 || xc[d + 1] != null;
+
+            r = rm < 4 ? ( i != null || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
+                       : i > k || i == k &&( rm == 4 || r || rm == 6 && xc[d - 1] & 1 ||
+                         rm == ( x.s < 0 ? 8 : 7 ) );
+
+            if ( d < 1 || !xc[0] ) {
+
+                // 1^-dp or 0.
+                str = r ? toFixedPoint( '1', -dp ) : '0';
+            } else {
+                xc.length = d;
+
+                if (r) {
+
+                    // Rounding up may mean the previous digit has to be rounded up and so on.
+                    for ( --baseOut; ++xc[--d] > baseOut; ) {
+                        xc[d] = 0;
+
+                        if ( !d ) {
+                            ++e;
+                            xc.unshift(1);
+                        }
+                    }
+                }
+
+                // Determine trailing zeros.
+                for ( k = xc.length; !xc[--k]; );
+
+                // E.g. [4, 11, 15] becomes 4bf.
+                for ( i = 0, str = ''; i <= k; str += ALPHABET.charAt( xc[i++] ) );
+                str = toFixedPoint( str, e );
+            }
+
+            // The caller will add the sign.
+            return str;
+        }
+
+
+        // Perform division in the specified base. Called by div and convertBase.
+        div = (function () {
+
+            // Assume non-zero x and k.
+            function multiply( x, k, base ) {
+                var m, temp, xlo, xhi,
+                    carry = 0,
+                    i = x.length,
+                    klo = k % SQRT_BASE,
+                    khi = k / SQRT_BASE | 0;
+
+                for ( x = x.slice(); i--; ) {
+                    xlo = x[i] % SQRT_BASE;
+                    xhi = x[i] / SQRT_BASE | 0;
+                    m = khi * xlo + xhi * klo;
+                    temp = klo * xlo + ( ( m % SQRT_BASE ) * SQRT_BASE ) + carry;
+                    carry = ( temp / base | 0 ) + ( m / SQRT_BASE | 0 ) + khi * xhi;
+                    x[i] = temp % base;
+                }
+
+                if (carry) x.unshift(carry);
+
+                return x;
+            }
+
+            function compare( a, b, aL, bL ) {
+                var i, cmp;
+
+                if ( aL != bL ) {
+                    cmp = aL > bL ? 1 : -1;
+                } else {
+
+                    for ( i = cmp = 0; i < aL; i++ ) {
+
+                        if ( a[i] != b[i] ) {
+                            cmp = a[i] > b[i] ? 1 : -1;
+                            break;
+                        }
+                    }
+                }
+                return cmp;
+            }
+
+            function subtract( a, b, aL, base ) {
+                var i = 0;
+
+                // Subtract b from a.
+                for ( ; aL--; ) {
+                    a[aL] -= i;
+                    i = a[aL] < b[aL] ? 1 : 0;
+                    a[aL] = i * base + a[aL] - b[aL];
+                }
+
+                // Remove leading zeros.
+                for ( ; !a[0] && a.length > 1; a.shift() );
+            }
+
+            // x: dividend, y: divisor.
+            return function ( x, y, dp, rm, base ) {
+                var cmp, e, i, more, n, prod, prodL, q, qc, rem, remL, rem0, xi, xL, yc0,
+                    yL, yz,
+                    s = x.s == y.s ? 1 : -1,
+                    xc = x.c,
+                    yc = y.c;
+
+                // Either NaN, Infinity or 0?
+                if ( !xc || !xc[0] || !yc || !yc[0] ) {
+
+                    return new BigNumber(
+
+                      // Return NaN if either NaN, or both Infinity or 0.
+                      !x.s || !y.s || ( xc ? yc && xc[0] == yc[0] : !yc ) ? NaN :
+
+                        // Return ±0 if x is ±0 or y is ±Infinity, or return ±Infinity as y is ±0.
+                        xc && xc[0] == 0 || !yc ? s * 0 : s / 0
+                    );
+                }
+
+                q = new BigNumber(s);
+                qc = q.c = [];
+                e = x.e - y.e;
+                s = dp + e + 1;
+
+                if ( !base ) {
+                    base = BASE;
+                    e = bitFloor( x.e / LOG_BASE ) - bitFloor( y.e / LOG_BASE );
+                    s = s / LOG_BASE | 0;
+                }
+
+                // Result exponent may be one less then the current value of e.
+                // The coefficients of the BigNumbers from convertBase may have trailing zeros.
+                for ( i = 0; yc[i] == ( xc[i] || 0 ); i++ );
+                if ( yc[i] > ( xc[i] || 0 ) ) e--;
+
+                if ( s < 0 ) {
+                    qc.push(1);
+                    more = true;
+                } else {
+                    xL = xc.length;
+                    yL = yc.length;
+                    i = 0;
+                    s += 2;
+
+                    // Normalise xc and yc so highest order digit of yc is >= base / 2.
+
+                    n = mathfloor( base / ( yc[0] + 1 ) );
+
+                    // Not necessary, but to handle odd bases where yc[0] == ( base / 2 ) - 1.
+                    // if ( n > 1 || n++ == 1 && yc[0] < base / 2 ) {
+                    if ( n > 1 ) {
+                        yc = multiply( yc, n, base );
+                        xc = multiply( xc, n, base );
+                        yL = yc.length;
+                        xL = xc.length;
+                    }
+
+                    xi = yL;
+                    rem = xc.slice( 0, yL );
+                    remL = rem.length;
+
+                    // Add zeros to make remainder as long as divisor.
+                    for ( ; remL < yL; rem[remL++] = 0 );
+                    yz = yc.slice();
+                    yz.unshift(0);
+                    yc0 = yc[0];
+                    if ( yc[1] >= base / 2 ) yc0++;
+                    // Not necessary, but to prevent trial digit n > base, when using base 3.
+                    // else if ( base == 3 && yc0 == 1 ) yc0 = 1 + 1e-15;
+
+                    do {
+                        n = 0;
+
+                        // Compare divisor and remainder.
+                        cmp = compare( yc, rem, yL, remL );
+
+                        // If divisor < remainder.
+                        if ( cmp < 0 ) {
+
+                            // Calculate trial digit, n.
+
+                            rem0 = rem[0];
+                            if ( yL != remL ) rem0 = rem0 * base + ( rem[1] || 0 );
+
+                            // n is how many times the divisor goes into the current remainder.
+                            n = mathfloor( rem0 / yc0 );
+
+                            //  Algorithm:
+                            //  1. product = divisor * trial digit (n)
+                            //  2. if product > remainder: product -= divisor, n--
+                            //  3. remainder -= product
+                            //  4. if product was < remainder at 2:
+                            //    5. compare new remainder and divisor
+                            //    6. If remainder > divisor: remainder -= divisor, n++
+
+                            if ( n > 1 ) {
+
+                                // n may be > base only when base is 3.
+                                if (n >= base) n = base - 1;
+
+                                // product = divisor * trial digit.
+                                prod = multiply( yc, n, base );
+                                prodL = prod.length;
+                                remL = rem.length;
+
+                                // Compare product and remainder.
+                                // If product > remainder.
+                                // Trial digit n too high.
+                                // n is 1 too high about 5% of the time, and is not known to have
+                                // ever been more than 1 too high.
+                                while ( compare( prod, rem, prodL, remL ) == 1 ) {
+                                    n--;
+
+                                    // Subtract divisor from product.
+                                    subtract( prod, yL < prodL ? yz : yc, prodL, base );
+                                    prodL = prod.length;
+                                    cmp = 1;
+                                }
+                            } else {
+
+                                // n is 0 or 1, cmp is -1.
+                                // If n is 0, there is no need to compare yc and rem again below,
+                                // so change cmp to 1 to avoid it.
+                                // If n is 1, leave cmp as -1, so yc and rem are compared again.
+                                if ( n == 0 ) {
+
+                                    // divisor < remainder, so n must be at least 1.
+                                    cmp = n = 1;
+                                }
+
+                                // product = divisor
+                                prod = yc.slice();
+                                prodL = prod.length;
+                            }
+
+                            if ( prodL < remL ) prod.unshift(0);
+
+                            // Subtract product from remainder.
+                            subtract( rem, prod, remL, base );
+                            remL = rem.length;
+
+                             // If product was < remainder.
+                            if ( cmp == -1 ) {
+
+                                // Compare divisor and new remainder.
+                                // If divisor < new remainder, subtract divisor from remainder.
+                                // Trial digit n too low.
+                                // n is 1 too low about 5% of the time, and very rarely 2 too low.
+                                while ( compare( yc, rem, yL, remL ) < 1 ) {
+                                    n++;
+
+                                    // Subtract divisor from remainder.
+                                    subtract( rem, yL < remL ? yz : yc, remL, base );
+                                    remL = rem.length;
+                                }
+                            }
+                        } else if ( cmp === 0 ) {
+                            n++;
+                            rem = [0];
+                        } // else cmp === 1 and n will be 0
+
+                        // Add the next digit, n, to the result array.
+                        qc[i++] = n;
+
+                        // Update the remainder.
+                        if ( rem[0] ) {
+                            rem[remL++] = xc[xi] || 0;
+                        } else {
+                            rem = [ xc[xi] ];
+                            remL = 1;
+                        }
+                    } while ( ( xi++ < xL || rem[0] != null ) && s-- );
+
+                    more = rem[0] != null;
+
+                    // Leading zero?
+                    if ( !qc[0] ) qc.shift();
+                }
+
+                if ( base == BASE ) {
+
+                    // To calculate q.e, first get the number of digits of qc[0].
+                    for ( i = 1, s = qc[0]; s >= 10; s /= 10, i++ );
+                    round( q, dp + ( q.e = i + e * LOG_BASE - 1 ) + 1, rm, more );
+
+                // Caller is convertBase.
+                } else {
+                    q.e = e;
+                    q.r = +more;
+                }
+
+                return q;
+            };
+        })();
+
+
+        /*
+         * Return a string representing the value of BigNumber n in fixed-point or exponential
+         * notation rounded to the specified decimal places or significant digits.
+         *
+         * n is a BigNumber.
+         * i is the index of the last digit required (i.e. the digit that may be rounded up).
+         * rm is the rounding mode.
+         * caller is caller id: toExponential 19, toFixed 20, toFormat 21, toPrecision 24.
+         */
+        function format( n, i, rm, caller ) {
+            var c0, e, ne, len, str;
+
+            rm = rm != null && isValidInt( rm, 0, 8, caller, roundingMode )
+              ? rm | 0 : ROUNDING_MODE;
+
+            if ( !n.c ) return n.toString();
+            c0 = n.c[0];
+            ne = n.e;
+
+            if ( i == null ) {
+                str = coeffToString( n.c );
+                str = caller == 19 || caller == 24 && ne <= TO_EXP_NEG
+                  ? toExponential( str, ne )
+                  : toFixedPoint( str, ne );
+            } else {
+                n = round( new BigNumber(n), i, rm );
+
+                // n.e may have changed if the value was rounded up.
+                e = n.e;
+
+                str = coeffToString( n.c );
+                len = str.length;
+
+                // toPrecision returns exponential notation if the number of significant digits
+                // specified is less than the number of digits necessary to represent the integer
+                // part of the value in fixed-point notation.
+
+                // Exponential notation.
+                if ( caller == 19 || caller == 24 && ( i <= e || e <= TO_EXP_NEG ) ) {
+
+                    // Append zeros?
+                    for ( ; len < i; str += '0', len++ );
+                    str = toExponential( str, e );
+
+                // Fixed-point notation.
+                } else {
+                    i -= ne;
+                    str = toFixedPoint( str, e );
+
+                    // Append zeros?
+                    if ( e + 1 > len ) {
+                        if ( --i > 0 ) for ( str += '.'; i--; str += '0' );
+                    } else {
+                        i += e - len;
+                        if ( i > 0 ) {
+                            if ( e + 1 == len ) str += '.';
+                            for ( ; i--; str += '0' );
+                        }
+                    }
+                }
+            }
+
+            return n.s < 0 && c0 ? '-' + str : str;
+        }
+
+
+        // Handle BigNumber.max and BigNumber.min.
+        function maxOrMin( args, method ) {
+            var m, n,
+                i = 0;
+
+            if ( isArray( args[0] ) ) args = args[0];
+            m = new BigNumber( args[0] );
+
+            for ( ; ++i < args.length; ) {
+                n = new BigNumber( args[i] );
+
+                // If any number is NaN, return NaN.
+                if ( !n.s ) {
+                    m = n;
+                    break;
+                } else if ( method.call( m, n ) ) {
+                    m = n;
+                }
+            }
+
+            return m;
+        }
+
+
+        /*
+         * Return true if n is an integer in range, otherwise throw.
+         * Use for argument validation when ERRORS is true.
+         */
+        function intValidatorWithErrors( n, min, max, caller, name ) {
+            if ( n < min || n > max || n != truncate(n) ) {
+                raise( caller, ( name || 'decimal places' ) +
+                  ( n < min || n > max ? ' out of range' : ' not an integer' ), n );
+            }
+
+            return true;
+        }
+
+
+        /*
+         * Strip trailing zeros, calculate base 10 exponent and check against MIN_EXP and MAX_EXP.
+         * Called by minus, plus and times.
+         */
+        function normalise( n, c, e ) {
+            var i = 1,
+                j = c.length;
+
+             // Remove trailing zeros.
+            for ( ; !c[--j]; c.pop() );
+
+            // Calculate the base 10 exponent. First get the number of digits of c[0].
+            for ( j = c[0]; j >= 10; j /= 10, i++ );
+
+            // Overflow?
+            if ( ( e = i + e * LOG_BASE - 1 ) > MAX_EXP ) {
+
+                // Infinity.
+                n.c = n.e = null;
+
+            // Underflow?
+            } else if ( e < MIN_EXP ) {
+
+                // Zero.
+                n.c = [ n.e = 0 ];
+            } else {
+                n.e = e;
+                n.c = c;
+            }
+
+            return n;
+        }
+
+
+        // Handle values that fail the validity test in BigNumber.
+        parseNumeric = (function () {
+            var basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
+                dotAfter = /^([^.]+)\.$/,
+                dotBefore = /^\.([^.]+)$/,
+                isInfinityOrNaN = /^-?(Infinity|NaN)$/,
+                whitespaceOrPlus = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
+
+            return function ( x, str, num, b ) {
+                var base,
+                    s = num ? str : str.replace( whitespaceOrPlus, '' );
+
+                // No exception on ±Infinity or NaN.
+                if ( isInfinityOrNaN.test(s) ) {
+                    x.s = isNaN(s) ? null : s < 0 ? -1 : 1;
+                } else {
+                    if ( !num ) {
+
+                        // basePrefix = /^(-?)0([xbo])(?=\w[\w.]*$)/i
+                        s = s.replace( basePrefix, function ( m, p1, p2 ) {
+                            base = ( p2 = p2.toLowerCase() ) == 'x' ? 16 : p2 == 'b' ? 2 : 8;
+                            return !b || b == base ? p1 : m;
+                        });
+
+                        if (b) {
+                            base = b;
+
+                            // E.g. '1.' to '1', '.1' to '0.1'
+                            s = s.replace( dotAfter, '$1' ).replace( dotBefore, '0.$1' );
+                        }
+
+                        if ( str != s ) return new BigNumber( s, base );
+                    }
+
+                    // 'new BigNumber() not a number: {n}'
+                    // 'new BigNumber() not a base {b} number: {n}'
+                    if (ERRORS) raise( id, 'not a' + ( b ? ' base ' + b : '' ) + ' number', str );
+                    x.s = null;
+                }
+
+                x.c = x.e = null;
+                id = 0;
+            }
+        })();
+
+
+        // Throw a BigNumber Error.
+        function raise( caller, msg, val ) {
+            var error = new Error( [
+                'new BigNumber',     // 0
+                'cmp',               // 1
+                'config',            // 2
+                'div',               // 3
+                'divToInt',          // 4
+                'eq',                // 5
+                'gt',                // 6
+                'gte',               // 7
+                'lt',                // 8
+                'lte',               // 9
+                'minus',             // 10
+                'mod',               // 11
+                'plus',              // 12
+                'precision',         // 13
+                'random',            // 14
+                'round',             // 15
+                'shift',             // 16
+                'times',             // 17
+                'toDigits',          // 18
+                'toExponential',     // 19
+                'toFixed',           // 20
+                'toFormat',          // 21
+                'toFraction',        // 22
+                'pow',               // 23
+                'toPrecision',       // 24
+                'toString',          // 25
+                'BigNumber'          // 26
+            ][caller] + '() ' + msg + ': ' + val );
+
+            error.name = 'BigNumber Error';
+            id = 0;
+            throw error;
+        }
+
+
+        /*
+         * Round x to sd significant digits using rounding mode rm. Check for over/under-flow.
+         * If r is truthy, it is known that there are more digits after the rounding digit.
+         */
+        function round( x, sd, rm, r ) {
+            var d, i, j, k, n, ni, rd,
+                xc = x.c,
+                pows10 = POWS_TEN;
+
+            // if x is not Infinity or NaN...
+            if (xc) {
+
+                // rd is the rounding digit, i.e. the digit after the digit that may be rounded up.
+                // n is a base 1e14 number, the value of the element of array x.c containing rd.
+                // ni is the index of n within x.c.
+                // d is the number of digits of n.
+                // i is the index of rd within n including leading zeros.
+                // j is the actual index of rd within n (if < 0, rd is a leading zero).
+                out: {
+
+                    // Get the number of digits of the first element of xc.
+                    for ( d = 1, k = xc[0]; k >= 10; k /= 10, d++ );
+                    i = sd - d;
+
+                    // If the rounding digit is in the first element of xc...
+                    if ( i < 0 ) {
+                        i += LOG_BASE;
+                        j = sd;
+                        n = xc[ ni = 0 ];
+
+                        // Get the rounding digit at index j of n.
+                        rd = n / pows10[ d - j - 1 ] % 10 | 0;
+                    } else {
+                        ni = mathceil( ( i + 1 ) / LOG_BASE );
+
+                        if ( ni >= xc.length ) {
+
+                            if (r) {
+
+                                // Needed by sqrt.
+                                for ( ; xc.length <= ni; xc.push(0) );
+                                n = rd = 0;
+                                d = 1;
+                                i %= LOG_BASE;
+                                j = i - LOG_BASE + 1;
+                            } else {
+                                break out;
+                            }
+                        } else {
+                            n = k = xc[ni];
+
+                            // Get the number of digits of n.
+                            for ( d = 1; k >= 10; k /= 10, d++ );
+
+                            // Get the index of rd within n.
+                            i %= LOG_BASE;
+
+                            // Get the index of rd within n, adjusted for leading zeros.
+                            // The number of leading zeros of n is given by LOG_BASE - d.
+                            j = i - LOG_BASE + d;
+
+                            // Get the rounding digit at index j of n.
+                            rd = j < 0 ? 0 : n / pows10[ d - j - 1 ] % 10 | 0;
+                        }
+                    }
+
+                    r = r || sd < 0 ||
+
+                    // Are there any non-zero digits after the rounding digit?
+                    // The expression  n % pows10[ d - j - 1 ]  returns all digits of n to the right
+                    // of the digit at j, e.g. if n is 908714 and j is 2, the expression gives 714.
+                      xc[ni + 1] != null || ( j < 0 ? n : n % pows10[ d - j - 1 ] );
+
+                    r = rm < 4
+                      ? ( rd || r ) && ( rm == 0 || rm == ( x.s < 0 ? 3 : 2 ) )
+                      : rd > 5 || rd == 5 && ( rm == 4 || r || rm == 6 &&
+
+                        // Check whether the digit to the left of the rounding digit is odd.
+                        ( ( i > 0 ? j > 0 ? n / pows10[ d - j ] : 0 : xc[ni - 1] ) % 10 ) & 1 ||
+                          rm == ( x.s < 0 ? 8 : 7 ) );
+
+                    if ( sd < 1 || !xc[0] ) {
+                        xc.length = 0;
+
+                        if (r) {
+
+                            // Convert sd to decimal places.
+                            sd -= x.e + 1;
+
+                            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
+                            xc[0] = pows10[ ( LOG_BASE - sd % LOG_BASE ) % LOG_BASE ];
+                            x.e = -sd || 0;
+                        } else {
+
+                            // Zero.
+                            xc[0] = x.e = 0;
+                        }
+
+                        return x;
+                    }
+
+                    // Remove excess digits.
+                    if ( i == 0 ) {
+                        xc.length = ni;
+                        k = 1;
+                        ni--;
+                    } else {
+                        xc.length = ni + 1;
+                        k = pows10[ LOG_BASE - i ];
+
+                        // E.g. 56700 becomes 56000 if 7 is the rounding digit.
+                        // j > 0 means i > number of leading zeros of n.
+                        xc[ni] = j > 0 ? mathfloor( n / pows10[ d - j ] % pows10[j] ) * k : 0;
+                    }
+
+                    // Round up?
+                    if (r) {
+
+                        for ( ; ; ) {
+
+                            // If the digit to be rounded up is in the first element of xc...
+                            if ( ni == 0 ) {
+
+                                // i will be the length of xc[0] before k is added.
+                                for ( i = 1, j = xc[0]; j >= 10; j /= 10, i++ );
+                                j = xc[0] += k;
+                                for ( k = 1; j >= 10; j /= 10, k++ );
+
+                                // if i != k the length has increased.
+                                if ( i != k ) {
+                                    x.e++;
+                                    if ( xc[0] == BASE ) xc[0] = 1;
+                                }
+
+                                break;
+                            } else {
+                                xc[ni] += k;
+                                if ( xc[ni] != BASE ) break;
+                                xc[ni--] = 0;
+                                k = 1;
+                            }
+                        }
+                    }
+
+                    // Remove trailing zeros.
+                    for ( i = xc.length; xc[--i] === 0; xc.pop() );
+                }
+
+                // Overflow? Infinity.
+                if ( x.e > MAX_EXP ) {
+                    x.c = x.e = null;
+
+                // Underflow? Zero.
+                } else if ( x.e < MIN_EXP ) {
+                    x.c = [ x.e = 0 ];
+                }
+            }
+
+            return x;
+        }
+
+
+        // PROTOTYPE/INSTANCE METHODS
+
+
+        /*
+         * Return a new BigNumber whose value is the absolute value of this BigNumber.
+         */
+        P.absoluteValue = P.abs = function () {
+            var x = new BigNumber(this);
+            if ( x.s < 0 ) x.s = 1;
+            return x;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a whole
+         * number in the direction of Infinity.
+         */
+        P.ceil = function () {
+            return round( new BigNumber(this), this.e + 1, 2 );
+        };
+
+
+        /*
+         * Return
+         * 1 if the value of this BigNumber is greater than the value of BigNumber(y, b),
+         * -1 if the value of this BigNumber is less than the value of BigNumber(y, b),
+         * 0 if they have the same value,
+         * or null if the value of either is NaN.
+         */
+        P.comparedTo = P.cmp = function ( y, b ) {
+            id = 1;
+            return compare( this, new BigNumber( y, b ) );
+        };
+
+
+        /*
+         * Return the number of decimal places of the value of this BigNumber, or null if the value
+         * of this BigNumber is ±Infinity or NaN.
+         */
+        P.decimalPlaces = P.dp = function () {
+            var n, v,
+                c = this.c;
+
+            if ( !c ) return null;
+            n = ( ( v = c.length - 1 ) - bitFloor( this.e / LOG_BASE ) ) * LOG_BASE;
+
+            // Subtract the number of trailing zeros of the last number.
+            if ( v = c[v] ) for ( ; v % 10 == 0; v /= 10, n-- );
+            if ( n < 0 ) n = 0;
+
+            return n;
+        };
+
+
+        /*
+         *  n / 0 = I
+         *  n / N = N
+         *  n / I = 0
+         *  0 / n = 0
+         *  0 / 0 = N
+         *  0 / N = N
+         *  0 / I = 0
+         *  N / n = N
+         *  N / 0 = N
+         *  N / N = N
+         *  N / I = N
+         *  I / n = I
+         *  I / 0 = I
+         *  I / N = N
+         *  I / I = N
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber divided by the value of
+         * BigNumber(y, b), rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+         */
+        P.dividedBy = P.div = function ( y, b ) {
+            id = 3;
+            return div( this, new BigNumber( y, b ), DECIMAL_PLACES, ROUNDING_MODE );
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the integer part of dividing the value of this
+         * BigNumber by the value of BigNumber(y, b).
+         */
+        P.dividedToIntegerBy = P.divToInt = function ( y, b ) {
+            id = 4;
+            return div( this, new BigNumber( y, b ), 0, 1 );
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is equal to the value of BigNumber(y, b),
+         * otherwise returns false.
+         */
+        P.equals = P.eq = function ( y, b ) {
+            id = 5;
+            return compare( this, new BigNumber( y, b ) ) === 0;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a whole
+         * number in the direction of -Infinity.
+         */
+        P.floor = function () {
+            return round( new BigNumber(this), this.e + 1, 3 );
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is greater than the value of BigNumber(y, b),
+         * otherwise returns false.
+         */
+        P.greaterThan = P.gt = function ( y, b ) {
+            id = 6;
+            return compare( this, new BigNumber( y, b ) ) > 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is greater than or equal to the value of
+         * BigNumber(y, b), otherwise returns false.
+         */
+        P.greaterThanOrEqualTo = P.gte = function ( y, b ) {
+            id = 7;
+            return ( b = compare( this, new BigNumber( y, b ) ) ) === 1 || b === 0;
+
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is a finite number, otherwise returns false.
+         */
+        P.isFinite = function () {
+            return !!this.c;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is an integer, otherwise return false.
+         */
+        P.isInteger = P.isInt = function () {
+            return !!this.c && bitFloor( this.e / LOG_BASE ) > this.c.length - 2;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is NaN, otherwise returns false.
+         */
+        P.isNaN = function () {
+            return !this.s;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is negative, otherwise returns false.
+         */
+        P.isNegative = P.isNeg = function () {
+            return this.s < 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is 0 or -0, otherwise returns false.
+         */
+        P.isZero = function () {
+            return !!this.c && this.c[0] == 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is less than the value of BigNumber(y, b),
+         * otherwise returns false.
+         */
+        P.lessThan = P.lt = function ( y, b ) {
+            id = 8;
+            return compare( this, new BigNumber( y, b ) ) < 0;
+        };
+
+
+        /*
+         * Return true if the value of this BigNumber is less than or equal to the value of
+         * BigNumber(y, b), otherwise returns false.
+         */
+        P.lessThanOrEqualTo = P.lte = function ( y, b ) {
+            id = 9;
+            return ( b = compare( this, new BigNumber( y, b ) ) ) === -1 || b === 0;
+        };
+
+
+        /*
+         *  n - 0 = n
+         *  n - N = N
+         *  n - I = -I
+         *  0 - n = -n
+         *  0 - 0 = 0
+         *  0 - N = N
+         *  0 - I = -I
+         *  N - n = N
+         *  N - 0 = N
+         *  N - N = N
+         *  N - I = N
+         *  I - n = I
+         *  I - 0 = I
+         *  I - N = N
+         *  I - I = N
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber minus the value of
+         * BigNumber(y, b).
+         */
+        P.minus = P.sub = function ( y, b ) {
+            var i, j, t, xLTy,
+                x = this,
+                a = x.s;
+
+            id = 10;
+            y = new BigNumber( y, b );
+            b = y.s;
+
+            // Either NaN?
+            if ( !a || !b ) return new BigNumber(NaN);
+
+            // Signs differ?
+            if ( a != b ) {
+                y.s = -b;
+                return x.plus(y);
+            }
+
+            var xe = x.e / LOG_BASE,
+                ye = y.e / LOG_BASE,
+                xc = x.c,
+                yc = y.c;
+
+            if ( !xe || !ye ) {
+
+                // Either Infinity?
+                if ( !xc || !yc ) return xc ? ( y.s = -b, y ) : new BigNumber( yc ? x : NaN );
+
+                // Either zero?
+                if ( !xc[0] || !yc[0] ) {
+
+                    // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
+                    return yc[0] ? ( y.s = -b, y ) : new BigNumber( xc[0] ? x :
+
+                      // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
+                      ROUNDING_MODE == 3 ? -0 : 0 );
+                }
+            }
+
+            xe = bitFloor(xe);
+            ye = bitFloor(ye);
+            xc = xc.slice();
+
+            // Determine which is the bigger number.
+            if ( a = xe - ye ) {
+
+                if ( xLTy = a < 0 ) {
+                    a = -a;
+                    t = xc;
+                } else {
+                    ye = xe;
+                    t = yc;
+                }
+
+                t.reverse();
+
+                // Prepend zeros to equalise exponents.
+                for ( b = a; b--; t.push(0) );
+                t.reverse();
+            } else {
+
+                // Exponents equal. Check digit by digit.
+                j = ( xLTy = ( a = xc.length ) < ( b = yc.length ) ) ? a : b;
+
+                for ( a = b = 0; b < j; b++ ) {
+
+                    if ( xc[b] != yc[b] ) {
+                        xLTy = xc[b] < yc[b];
+                        break;
+                    }
+                }
+            }
+
+            // x < y? Point xc to the array of the bigger number.
+            if (xLTy) t = xc, xc = yc, yc = t, y.s = -y.s;
+
+            b = ( j = yc.length ) - ( i = xc.length );
+
+            // Append zeros to xc if shorter.
+            // No need to add zeros to yc if shorter as subtract only needs to start at yc.length.
+            if ( b > 0 ) for ( ; b--; xc[i++] = 0 );
+            b = BASE - 1;
+
+            // Subtract yc from xc.
+            for ( ; j > a; ) {
+
+                if ( xc[--j] < yc[j] ) {
+                    for ( i = j; i && !xc[--i]; xc[i] = b );
+                    --xc[i];
+                    xc[j] += BASE;
+                }
+
+                xc[j] -= yc[j];
+            }
+
+            // Remove leading zeros and adjust exponent accordingly.
+            for ( ; xc[0] == 0; xc.shift(), --ye );
+
+            // Zero?
+            if ( !xc[0] ) {
+
+                // Following IEEE 754 (2008) 6.3,
+                // n - n = +0  but  n - n = -0  when rounding towards -Infinity.
+                y.s = ROUNDING_MODE == 3 ? -1 : 1;
+                y.c = [ y.e = 0 ];
+                return y;
+            }
+
+            // No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
+            // for finite x and y.
+            return normalise( y, xc, ye );
+        };
+
+
+        /*
+         *   n % 0 =  N
+         *   n % N =  N
+         *   n % I =  n
+         *   0 % n =  0
+         *  -0 % n = -0
+         *   0 % 0 =  N
+         *   0 % N =  N
+         *   0 % I =  0
+         *   N % n =  N
+         *   N % 0 =  N
+         *   N % N =  N
+         *   N % I =  N
+         *   I % n =  N
+         *   I % 0 =  N
+         *   I % N =  N
+         *   I % I =  N
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber modulo the value of
+         * BigNumber(y, b). The result depends on the value of MODULO_MODE.
+         */
+        P.modulo = P.mod = function ( y, b ) {
+            var q, s,
+                x = this;
+
+            id = 11;
+            y = new BigNumber( y, b );
+
+            // Return NaN if x is Infinity or NaN, or y is NaN or zero.
+            if ( !x.c || !y.s || y.c && !y.c[0] ) {
+                return new BigNumber(NaN);
+
+            // Return x if y is Infinity or x is zero.
+            } else if ( !y.c || x.c && !x.c[0] ) {
+                return new BigNumber(x);
+            }
+
+            if ( MODULO_MODE == 9 ) {
+
+                // Euclidian division: q = sign(y) * floor(x / abs(y))
+                // r = x - qy    where  0 <= r < abs(y)
+                s = y.s;
+                y.s = 1;
+                q = div( x, y, 0, 3 );
+                y.s = s;
+                q.s *= s;
+            } else {
+                q = div( x, y, 0, MODULO_MODE );
+            }
+
+            return x.minus( q.times(y) );
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber negated,
+         * i.e. multiplied by -1.
+         */
+        P.negated = P.neg = function () {
+            var x = new BigNumber(this);
+            x.s = -x.s || null;
+            return x;
+        };
+
+
+        /*
+         *  n + 0 = n
+         *  n + N = N
+         *  n + I = I
+         *  0 + n = n
+         *  0 + 0 = 0
+         *  0 + N = N
+         *  0 + I = I
+         *  N + n = N
+         *  N + 0 = N
+         *  N + N = N
+         *  N + I = N
+         *  I + n = I
+         *  I + 0 = I
+         *  I + N = N
+         *  I + I = I
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber plus the value of
+         * BigNumber(y, b).
+         */
+        P.plus = P.add = function ( y, b ) {
+            var t,
+                x = this,
+                a = x.s;
+
+            id = 12;
+            y = new BigNumber( y, b );
+            b = y.s;
+
+            // Either NaN?
+            if ( !a || !b ) return new BigNumber(NaN);
+
+            // Signs differ?
+             if ( a != b ) {
+                y.s = -b;
+                return x.minus(y);
+            }
+
+            var xe = x.e / LOG_BASE,
+                ye = y.e / LOG_BASE,
+                xc = x.c,
+                yc = y.c;
+
+            if ( !xe || !ye ) {
+
+                // Return ±Infinity if either ±Infinity.
+                if ( !xc || !yc ) return new BigNumber( a / 0 );
+
+                // Either zero?
+                // Return y if y is non-zero, x if x is non-zero, or zero if both are zero.
+                if ( !xc[0] || !yc[0] ) return yc[0] ? y : new BigNumber( xc[0] ? x : a * 0 );
+            }
+
+            xe = bitFloor(xe);
+            ye = bitFloor(ye);
+            xc = xc.slice();
+
+            // Prepend zeros to equalise exponents. Faster to use reverse then do unshifts.
+            if ( a = xe - ye ) {
+                if ( a > 0 ) {
+                    ye = xe;
+                    t = yc;
+                } else {
+                    a = -a;
+                    t = xc;
+                }
+
+                t.reverse();
+                for ( ; a--; t.push(0) );
+                t.reverse();
+            }
+
+            a = xc.length;
+            b = yc.length;
+
+            // Point xc to the longer array, and b to the shorter length.
+            if ( a - b < 0 ) t = yc, yc = xc, xc = t, b = a;
+
+            // Only start adding at yc.length - 1 as the further digits of xc can be ignored.
+            for ( a = 0; b; ) {
+                a = ( xc[--b] = xc[b] + yc[b] + a ) / BASE | 0;
+                xc[b] %= BASE;
+            }
+
+            if (a) {
+                xc.unshift(a);
+                ++ye;
+            }
+
+            // No need to check for zero, as +x + +y != 0 && -x + -y != 0
+            // ye = MAX_EXP + 1 possible
+            return normalise( y, xc, ye );
+        };
+
+
+        /*
+         * Return the number of significant digits of the value of this BigNumber.
+         *
+         * [z] {boolean|number} Whether to count integer-part trailing zeros: true, false, 1 or 0.
+         */
+        P.precision = P.sd = function (z) {
+            var n, v,
+                x = this,
+                c = x.c;
+
+            // 'precision() argument not a boolean or binary digit: {z}'
+            if ( z != null && z !== !!z && z !== 1 && z !== 0 ) {
+                if (ERRORS) raise( 13, 'argument' + notBool, z );
+                if ( z != !!z ) z = null;
+            }
+
+            if ( !c ) return null;
+            v = c.length - 1;
+            n = v * LOG_BASE + 1;
+
+            if ( v = c[v] ) {
+
+                // Subtract the number of trailing zeros of the last element.
+                for ( ; v % 10 == 0; v /= 10, n-- );
+
+                // Add the number of digits of the first element.
+                for ( v = c[0]; v >= 10; v /= 10, n++ );
+            }
+
+            if ( z && x.e + 1 > n ) n = x.e + 1;
+
+            return n;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a maximum of
+         * dp decimal places using rounding mode rm, or to 0 and ROUNDING_MODE respectively if
+         * omitted.
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'round() decimal places out of range: {dp}'
+         * 'round() decimal places not an integer: {dp}'
+         * 'round() rounding mode not an integer: {rm}'
+         * 'round() rounding mode out of range: {rm}'
+         */
+        P.round = function ( dp, rm ) {
+            var n = new BigNumber(this);
+
+            if ( dp == null || isValidInt( dp, 0, MAX, 15 ) ) {
+                round( n, ~~dp + this.e + 1, rm == null ||
+                  !isValidInt( rm, 0, 8, 15, roundingMode ) ? ROUNDING_MODE : rm | 0 );
+            }
+
+            return n;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber shifted by k places
+         * (powers of 10). Shift to the right if n > 0, and to the left if n < 0.
+         *
+         * k {number} Integer, -MAX_SAFE_INTEGER to MAX_SAFE_INTEGER inclusive.
+         *
+         * If k is out of range and ERRORS is false, the result will be ±0 if k < 0, or ±Infinity
+         * otherwise.
+         *
+         * 'shift() argument not an integer: {k}'
+         * 'shift() argument out of range: {k}'
+         */
+        P.shift = function (k) {
+            var n = this;
+            return isValidInt( k, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 16, 'argument' )
+
+              // k < 1e+21, or truncate(k) will produce exponential notation.
+              ? n.times( '1e' + truncate(k) )
+              : new BigNumber( n.c && n.c[0] && ( k < -MAX_SAFE_INTEGER || k > MAX_SAFE_INTEGER )
+                ? n.s * ( k < 0 ? 0 : 1 / 0 )
+                : n );
+        };
+
+
+        /*
+         *  sqrt(-n) =  N
+         *  sqrt( N) =  N
+         *  sqrt(-I) =  N
+         *  sqrt( I) =  I
+         *  sqrt( 0) =  0
+         *  sqrt(-0) = -0
+         *
+         * Return a new BigNumber whose value is the square root of the value of this BigNumber,
+         * rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+         */
+        P.squareRoot = P.sqrt = function () {
+            var m, n, r, rep, t,
+                x = this,
+                c = x.c,
+                s = x.s,
+                e = x.e,
+                dp = DECIMAL_PLACES + 4,
+                half = new BigNumber('0.5');
+
+            // Negative/NaN/Infinity/zero?
+            if ( s !== 1 || !c || !c[0] ) {
+                return new BigNumber( !s || s < 0 && ( !c || c[0] ) ? NaN : c ? x : 1 / 0 );
+            }
+
+            // Initial estimate.
+            s = Math.sqrt( +x );
+
+            // Math.sqrt underflow/overflow?
+            // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
+            if ( s == 0 || s == 1 / 0 ) {
+                n = coeffToString(c);
+                if ( ( n.length + e ) % 2 == 0 ) n += '0';
+                s = Math.sqrt(n);
+                e = bitFloor( ( e + 1 ) / 2 ) - ( e < 0 || e % 2 );
+
+                if ( s == 1 / 0 ) {
+                    n = '1e' + e;
+                } else {
+                    n = s.toExponential();
+                    n = n.slice( 0, n.indexOf('e') + 1 ) + e;
+                }
+
+                r = new BigNumber(n);
+            } else {
+                r = new BigNumber( s + '' );
+            }
+
+            // Check for zero.
+            // r could be zero if MIN_EXP is changed after the this value was created.
+            // This would cause a division by zero (x/t) and hence Infinity below, which would cause
+            // coeffToString to throw.
+            if ( r.c[0] ) {
+                e = r.e;
+                s = e + dp;
+                if ( s < 3 ) s = 0;
+
+                // Newton-Raphson iteration.
+                for ( ; ; ) {
+                    t = r;
+                    r = half.times( t.plus( div( x, t, dp, 1 ) ) );
+
+                    if ( coeffToString( t.c   ).slice( 0, s ) === ( n =
+                         coeffToString( r.c ) ).slice( 0, s ) ) {
+
+                        // The exponent of r may here be one less than the final result exponent,
+                        // e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust s so the rounding digits
+                        // are indexed correctly.
+                        if ( r.e < e ) --s;
+                        n = n.slice( s - 3, s + 1 );
+
+                        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits
+                        // are 9999 or 4999 (i.e. approaching a rounding boundary) continue the
+                        // iteration.
+                        if ( n == '9999' || !rep && n == '4999' ) {
+
+                            // On the first iteration only, check to see if rounding up gives the
+                            // exact result as the nines may infinitely repeat.
+                            if ( !rep ) {
+                                round( t, t.e + DECIMAL_PLACES + 2, 0 );
+
+                                if ( t.times(t).eq(x) ) {
+                                    r = t;
+                                    break;
+                                }
+                            }
+
+                            dp += 4;
+                            s += 4;
+                            rep = 1;
+                        } else {
+
+                            // If rounding digits are null, 0{0,4} or 50{0,3}, check for exact
+                            // result. If not, then there are further digits and m will be truthy.
+                            if ( !+n || !+n.slice(1) && n.charAt(0) == '5' ) {
+
+                                // Truncate to the first rounding digit.
+                                round( r, r.e + DECIMAL_PLACES + 2, 1 );
+                                m = !r.times(r).eq(x);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return round( r, r.e + DECIMAL_PLACES + 1, ROUNDING_MODE, m );
+        };
+
+
+        /*
+         *  n * 0 = 0
+         *  n * N = N
+         *  n * I = I
+         *  0 * n = 0
+         *  0 * 0 = 0
+         *  0 * N = N
+         *  0 * I = N
+         *  N * n = N
+         *  N * 0 = N
+         *  N * N = N
+         *  N * I = N
+         *  I * n = I
+         *  I * 0 = N
+         *  I * N = N
+         *  I * I = I
+         *
+         * Return a new BigNumber whose value is the value of this BigNumber times the value of
+         * BigNumber(y, b).
+         */
+        P.times = P.mul = function ( y, b ) {
+            var c, e, i, j, k, m, xcL, xlo, xhi, ycL, ylo, yhi, zc,
+                base, sqrtBase,
+                x = this,
+                xc = x.c,
+                yc = ( id = 17, y = new BigNumber( y, b ) ).c;
+
+            // Either NaN, ±Infinity or ±0?
+            if ( !xc || !yc || !xc[0] || !yc[0] ) {
+
+                // Return NaN if either is NaN, or one is 0 and the other is Infinity.
+                if ( !x.s || !y.s || xc && !xc[0] && !yc || yc && !yc[0] && !xc ) {
+                    y.c = y.e = y.s = null;
+                } else {
+                    y.s *= x.s;
+
+                    // Return ±Infinity if either is ±Infinity.
+                    if ( !xc || !yc ) {
+                        y.c = y.e = null;
+
+                    // Return ±0 if either is ±0.
+                    } else {
+                        y.c = [0];
+                        y.e = 0;
+                    }
+                }
+
+                return y;
+            }
+
+            e = bitFloor( x.e / LOG_BASE ) + bitFloor( y.e / LOG_BASE );
+            y.s *= x.s;
+            xcL = xc.length;
+            ycL = yc.length;
+
+            // Ensure xc points to longer array and xcL to its length.
+            if ( xcL < ycL ) zc = xc, xc = yc, yc = zc, i = xcL, xcL = ycL, ycL = i;
+
+            // Initialise the result array with zeros.
+            for ( i = xcL + ycL, zc = []; i--; zc.push(0) );
+
+            base = BASE;
+            sqrtBase = SQRT_BASE;
+
+            for ( i = ycL; --i >= 0; ) {
+                c = 0;
+                ylo = yc[i] % sqrtBase;
+                yhi = yc[i] / sqrtBase | 0;
+
+                for ( k = xcL, j = i + k; j > i; ) {
+                    xlo = xc[--k] % sqrtBase;
+                    xhi = xc[k] / sqrtBase | 0;
+                    m = yhi * xlo + xhi * ylo;
+                    xlo = ylo * xlo + ( ( m % sqrtBase ) * sqrtBase ) + zc[j] + c;
+                    c = ( xlo / base | 0 ) + ( m / sqrtBase | 0 ) + yhi * xhi;
+                    zc[j--] = xlo % base;
+                }
+
+                zc[j] = c;
+            }
+
+            if (c) {
+                ++e;
+            } else {
+                zc.shift();
+            }
+
+            return normalise( y, zc, e );
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber rounded to a maximum of
+         * sd significant digits using rounding mode rm, or ROUNDING_MODE if rm is omitted.
+         *
+         * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toDigits() precision out of range: {sd}'
+         * 'toDigits() precision not an integer: {sd}'
+         * 'toDigits() rounding mode not an integer: {rm}'
+         * 'toDigits() rounding mode out of range: {rm}'
+         */
+        P.toDigits = function ( sd, rm ) {
+            var n = new BigNumber(this);
+            sd = sd == null || !isValidInt( sd, 1, MAX, 18, 'precision' ) ? null : sd | 0;
+            rm = rm == null || !isValidInt( rm, 0, 8, 18, roundingMode ) ? ROUNDING_MODE : rm | 0;
+            return sd ? round( n, sd, rm ) : n;
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in exponential notation and
+         * rounded using ROUNDING_MODE to dp fixed decimal places.
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toExponential() decimal places not an integer: {dp}'
+         * 'toExponential() decimal places out of range: {dp}'
+         * 'toExponential() rounding mode not an integer: {rm}'
+         * 'toExponential() rounding mode out of range: {rm}'
+         */
+        P.toExponential = function ( dp, rm ) {
+            return format( this,
+              dp != null && isValidInt( dp, 0, MAX, 19 ) ? ~~dp + 1 : null, rm, 19 );
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in fixed-point notation rounding
+         * to dp fixed decimal places using rounding mode rm, or ROUNDING_MODE if rm is omitted.
+         *
+         * Note: as with JavaScript's number type, (-0).toFixed(0) is '0',
+         * but e.g. (-0.00001).toFixed(0) is '-0'.
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toFixed() decimal places not an integer: {dp}'
+         * 'toFixed() decimal places out of range: {dp}'
+         * 'toFixed() rounding mode not an integer: {rm}'
+         * 'toFixed() rounding mode out of range: {rm}'
+         */
+        P.toFixed = function ( dp, rm ) {
+            return format( this, dp != null && isValidInt( dp, 0, MAX, 20 )
+              ? ~~dp + this.e + 1 : null, rm, 20 );
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in fixed-point notation rounded
+         * using rm or ROUNDING_MODE to dp decimal places, and formatted according to the properties
+         * of the FORMAT object (see BigNumber.config).
+         *
+         * FORMAT = {
+         *      decimalSeparator : '.',
+         *      groupSeparator : ',',
+         *      groupSize : 3,
+         *      secondaryGroupSize : 0,
+         *      fractionGroupSeparator : '\xA0',    // non-breaking space
+         *      fractionGroupSize : 0
+         * };
+         *
+         * [dp] {number} Decimal places. Integer, 0 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toFormat() decimal places not an integer: {dp}'
+         * 'toFormat() decimal places out of range: {dp}'
+         * 'toFormat() rounding mode not an integer: {rm}'
+         * 'toFormat() rounding mode out of range: {rm}'
+         */
+        P.toFormat = function ( dp, rm ) {
+            var str = format( this, dp != null && isValidInt( dp, 0, MAX, 21 )
+              ? ~~dp + this.e + 1 : null, rm, 21 );
+
+            if ( this.c ) {
+                var i,
+                    arr = str.split('.'),
+                    g1 = +FORMAT.groupSize,
+                    g2 = +FORMAT.secondaryGroupSize,
+                    groupSeparator = FORMAT.groupSeparator,
+                    intPart = arr[0],
+                    fractionPart = arr[1],
+                    isNeg = this.s < 0,
+                    intDigits = isNeg ? intPart.slice(1) : intPart,
+                    len = intDigits.length;
+
+                if (g2) i = g1, g1 = g2, g2 = i, len -= i;
+
+                if ( g1 > 0 && len > 0 ) {
+                    i = len % g1 || g1;
+                    intPart = intDigits.substr( 0, i );
+
+                    for ( ; i < len; i += g1 ) {
+                        intPart += groupSeparator + intDigits.substr( i, g1 );
+                    }
+
+                    if ( g2 > 0 ) intPart += groupSeparator + intDigits.slice(i);
+                    if (isNeg) intPart = '-' + intPart;
+                }
+
+                str = fractionPart
+                  ? intPart + FORMAT.decimalSeparator + ( ( g2 = +FORMAT.fractionGroupSize )
+                    ? fractionPart.replace( new RegExp( '\\d{' + g2 + '}\\B', 'g' ),
+                      '$&' + FORMAT.fractionGroupSeparator )
+                    : fractionPart )
+                  : intPart;
+            }
+
+            return str;
+        };
+
+
+        /*
+         * Return a string array representing the value of this BigNumber as a simple fraction with
+         * an integer numerator and an integer denominator. The denominator will be a positive
+         * non-zero value less than or equal to the specified maximum denominator. If a maximum
+         * denominator is not specified, the denominator will be the lowest value necessary to
+         * represent the number exactly.
+         *
+         * [md] {number|string|BigNumber} Integer >= 1 and < Infinity. The maximum denominator.
+         *
+         * 'toFraction() max denominator not an integer: {md}'
+         * 'toFraction() max denominator out of range: {md}'
+         */
+        P.toFraction = function (md) {
+            var arr, d0, d2, e, exp, n, n0, q, s,
+                k = ERRORS,
+                x = this,
+                xc = x.c,
+                d = new BigNumber(ONE),
+                n1 = d0 = new BigNumber(ONE),
+                d1 = n0 = new BigNumber(ONE);
+
+            if ( md != null ) {
+                ERRORS = false;
+                n = new BigNumber(md);
+                ERRORS = k;
+
+                if ( !( k = n.isInt() ) || n.lt(ONE) ) {
+
+                    if (ERRORS) {
+                        raise( 22,
+                          'max denominator ' + ( k ? 'out of range' : 'not an integer' ), md );
+                    }
+
+                    // ERRORS is false:
+                    // If md is a finite non-integer >= 1, round it to an integer and use it.
+                    md = !k && n.c && round( n, n.e + 1, 1 ).gte(ONE) ? n : null;
+                }
+            }
+
+            if ( !xc ) return x.toString();
+            s = coeffToString(xc);
+
+            // Determine initial denominator.
+            // d is a power of 10 and the minimum max denominator that specifies the value exactly.
+            e = d.e = s.length - x.e - 1;
+            d.c[0] = POWS_TEN[ ( exp = e % LOG_BASE ) < 0 ? LOG_BASE + exp : exp ];
+            md = !md || n.cmp(d) > 0 ? ( e > 0 ? d : n1 ) : n;
+
+            exp = MAX_EXP;
+            MAX_EXP = 1 / 0;
+            n = new BigNumber(s);
+
+            // n0 = d1 = 0
+            n0.c[0] = 0;
+
+            for ( ; ; )  {
+                q = div( n, d, 0, 1 );
+                d2 = d0.plus( q.times(d1) );
+                if ( d2.cmp(md) == 1 ) break;
+                d0 = d1;
+                d1 = d2;
+                n1 = n0.plus( q.times( d2 = n1 ) );
+                n0 = d2;
+                d = n.minus( q.times( d2 = d ) );
+                n = d2;
+            }
+
+            d2 = div( md.minus(d0), d1, 0, 1 );
+            n0 = n0.plus( d2.times(n1) );
+            d0 = d0.plus( d2.times(d1) );
+            n0.s = n1.s = x.s;
+            e *= 2;
+
+            // Determine which fraction is closer to x, n0/d0 or n1/d1
+            arr = div( n1, d1, e, ROUNDING_MODE ).minus(x).abs().cmp(
+                  div( n0, d0, e, ROUNDING_MODE ).minus(x).abs() ) < 1
+                    ? [ n1.toString(), d1.toString() ]
+                    : [ n0.toString(), d0.toString() ];
+
+            MAX_EXP = exp;
+            return arr;
+        };
+
+
+        /*
+         * Return the value of this BigNumber converted to a number primitive.
+         */
+        P.toNumber = function () {
+            return +this;
+        };
+
+
+        /*
+         * Return a BigNumber whose value is the value of this BigNumber raised to the power n.
+         * If n is negative round according to DECIMAL_PLACES and ROUNDING_MODE.
+         * If POW_PRECISION is not 0, round to POW_PRECISION using ROUNDING_MODE.
+         *
+         * n {number} Integer, -9007199254740992 to 9007199254740992 inclusive.
+         * (Performs 54 loop iterations for n of 9007199254740992.)
+         *
+         * 'pow() exponent not an integer: {n}'
+         * 'pow() exponent out of range: {n}'
+         */
+        P.toPower = P.pow = function (n) {
+            var k, y,
+                i = mathfloor( n < 0 ? -n : +n ),
+                x = this;
+
+            // Pass ±Infinity to Math.pow if exponent is out of range.
+            if ( !isValidInt( n, -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER, 23, 'exponent' ) &&
+              ( !isFinite(n) || i > MAX_SAFE_INTEGER && ( n /= 0 ) ||
+                parseFloat(n) != n && !( n = NaN ) ) ) {
+                return new BigNumber( Math.pow( +x, n ) );
+            }
+
+            // Truncating each coefficient array to a length of k after each multiplication equates
+            // to truncating significant digits to POW_PRECISION + [28, 41], i.e. there will be a
+            // minimum of 28 guard digits retained. (Using + 1.5 would give [9, 21] guard digits.)
+            k = POW_PRECISION ? mathceil( POW_PRECISION / LOG_BASE + 2 ) : 0;
+            y = new BigNumber(ONE);
+
+            for ( ; ; ) {
+
+                if ( i % 2 ) {
+                    y = y.times(x);
+                    if ( !y.c ) break;
+                    if ( k && y.c.length > k ) y.c.length = k;
+                }
+
+                i = mathfloor( i / 2 );
+                if ( !i ) break;
+
+                x = x.times(x);
+                if ( k && x.c && x.c.length > k ) x.c.length = k;
+            }
+
+            if ( n < 0 ) y = ONE.div(y);
+            return k ? round( y, POW_PRECISION, ROUNDING_MODE ) : y;
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber rounded to sd significant digits
+         * using rounding mode rm or ROUNDING_MODE. If sd is less than the number of digits
+         * necessary to represent the integer part of the value in fixed-point notation, then use
+         * exponential notation.
+         *
+         * [sd] {number} Significant digits. Integer, 1 to MAX inclusive.
+         * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
+         *
+         * 'toPrecision() precision not an integer: {sd}'
+         * 'toPrecision() precision out of range: {sd}'
+         * 'toPrecision() rounding mode not an integer: {rm}'
+         * 'toPrecision() rounding mode out of range: {rm}'
+         */
+        P.toPrecision = function ( sd, rm ) {
+            return format( this, sd != null && isValidInt( sd, 1, MAX, 24, 'precision' )
+              ? sd | 0 : null, rm, 24 );
+        };
+
+
+        /*
+         * Return a string representing the value of this BigNumber in base b, or base 10 if b is
+         * omitted. If a base is specified, including base 10, round according to DECIMAL_PLACES and
+         * ROUNDING_MODE. If a base is not specified, and this BigNumber has a positive exponent
+         * that is equal to or greater than TO_EXP_POS, or a negative exponent equal to or less than
+         * TO_EXP_NEG, return exponential notation.
+         *
+         * [b] {number} Integer, 2 to 64 inclusive.
+         *
+         * 'toString() base not an integer: {b}'
+         * 'toString() base out of range: {b}'
+         */
+        P.toString = function (b) {
+            var str,
+                n = this,
+                s = n.s,
+                e = n.e;
+
+            // Infinity or NaN?
+            if ( e === null ) {
+
+                if (s) {
+                    str = 'Infinity';
+                    if ( s < 0 ) str = '-' + str;
+                } else {
+                    str = 'NaN';
+                }
+            } else {
+                str = coeffToString( n.c );
+
+                if ( b == null || !isValidInt( b, 2, 64, 25, 'base' ) ) {
+                    str = e <= TO_EXP_NEG || e >= TO_EXP_POS
+                      ? toExponential( str, e )
+                      : toFixedPoint( str, e );
+                } else {
+                    str = convertBase( toFixedPoint( str, e ), b | 0, 10, s );
+                }
+
+                if ( s < 0 && n.c[0] ) str = '-' + str;
+            }
+
+            return str;
+        };
+
+
+        /*
+         * Return a new BigNumber whose value is the value of this BigNumber truncated to a whole
+         * number.
+         */
+        P.truncated = P.trunc = function () {
+            return round( new BigNumber(this), this.e + 1, 1 );
+        };
+
+
+
+        /*
+         * Return as toString, but do not accept a base argument, and include the minus sign for
+         * negative zero.
+         */
+        P.valueOf = P.toJSON = function () {
+            var str,
+                n = this,
+                e = n.e;
+
+            if ( e === null ) return n.toString();
+
+            str = coeffToString( n.c );
+
+            str = e <= TO_EXP_NEG || e >= TO_EXP_POS
+                ? toExponential( str, e )
+                : toFixedPoint( str, e );
+
+            return n.s < 0 ? '-' + str : str;
+        };
+
+
+        // Aliases for BigDecimal methods.
+        //P.add = P.plus;         // P.add included above
+        //P.subtract = P.minus;   // P.sub included above
+        //P.multiply = P.times;   // P.mul included above
+        //P.divide = P.div;
+        //P.remainder = P.mod;
+        //P.compareTo = P.cmp;
+        //P.negate = P.neg;
+
+
+        if ( configObj != null ) BigNumber.config(configObj);
+
+        return BigNumber;
+    }
+
+
+    // PRIVATE HELPER FUNCTIONS
+
+
+    function bitFloor(n) {
+        var i = n | 0;
+        return n > 0 || n === i ? i : i - 1;
+    }
+
+
+    // Return a coefficient array as a string of base 10 digits.
+    function coeffToString(a) {
+        var s, z,
+            i = 1,
+            j = a.length,
+            r = a[0] + '';
+
+        for ( ; i < j; ) {
+            s = a[i++] + '';
+            z = LOG_BASE - s.length;
+            for ( ; z--; s = '0' + s );
+            r += s;
+        }
+
+        // Determine trailing zeros.
+        for ( j = r.length; r.charCodeAt(--j) === 48; );
+        return r.slice( 0, j + 1 || 1 );
+    }
+
+
+    // Compare the value of BigNumbers x and y.
+    function compare( x, y ) {
+        var a, b,
+            xc = x.c,
+            yc = y.c,
+            i = x.s,
+            j = y.s,
+            k = x.e,
+            l = y.e;
+
+        // Either NaN?
+        if ( !i || !j ) return null;
+
+        a = xc && !xc[0];
+        b = yc && !yc[0];
+
+        // Either zero?
+        if ( a || b ) return a ? b ? 0 : -j : i;
+
+        // Signs differ?
+        if ( i != j ) return i;
+
+        a = i < 0;
+        b = k == l;
+
+        // Either Infinity?
+        if ( !xc || !yc ) return b ? 0 : !xc ^ a ? 1 : -1;
+
+        // Compare exponents.
+        if ( !b ) return k > l ^ a ? 1 : -1;
+
+        j = ( k = xc.length ) < ( l = yc.length ) ? k : l;
+
+        // Compare digit by digit.
+        for ( i = 0; i < j; i++ ) if ( xc[i] != yc[i] ) return xc[i] > yc[i] ^ a ? 1 : -1;
+
+        // Compare lengths.
+        return k == l ? 0 : k > l ^ a ? 1 : -1;
+    }
+
+
+    /*
+     * Return true if n is a valid number in range, otherwise false.
+     * Use for argument validation when ERRORS is false.
+     * Note: parseInt('1e+1') == 1 but parseFloat('1e+1') == 10.
+     */
+    function intValidatorNoErrors( n, min, max ) {
+        return ( n = truncate(n) ) >= min && n <= max;
+    }
+
+
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) == '[object Array]';
+    }
+
+
+    /*
+     * Convert string of baseIn to an array of numbers of baseOut.
+     * Eg. convertBase('255', 10, 16) returns [15, 15].
+     * Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
+     */
+    function toBaseOut( str, baseIn, baseOut ) {
+        var j,
+            arr = [0],
+            arrL,
+            i = 0,
+            len = str.length;
+
+        for ( ; i < len; ) {
+            for ( arrL = arr.length; arrL--; arr[arrL] *= baseIn );
+            arr[ j = 0 ] += ALPHABET.indexOf( str.charAt( i++ ) );
+
+            for ( ; j < arr.length; j++ ) {
+
+                if ( arr[j] > baseOut - 1 ) {
+                    if ( arr[j + 1] == null ) arr[j + 1] = 0;
+                    arr[j + 1] += arr[j] / baseOut | 0;
+                    arr[j] %= baseOut;
+                }
+            }
+        }
+
+        return arr.reverse();
+    }
+
+
+    function toExponential( str, e ) {
+        return ( str.length > 1 ? str.charAt(0) + '.' + str.slice(1) : str ) +
+          ( e < 0 ? 'e' : 'e+' ) + e;
+    }
+
+
+    function toFixedPoint( str, e ) {
+        var len, z;
+
+        // Negative exponent?
+        if ( e < 0 ) {
+
+            // Prepend zeros.
+            for ( z = '0.'; ++e; z += '0' );
+            str = z + str;
+
+        // Positive exponent
+        } else {
+            len = str.length;
+
+            // Append zeros.
+            if ( ++e > len ) {
+                for ( z = '0', e -= len; --e; z += '0' );
+                str += z;
+            } else if ( e < len ) {
+                str = str.slice( 0, e ) + '.' + str.slice(e);
+            }
+        }
+
+        return str;
+    }
+
+
+    function truncate(n) {
+        n = parseFloat(n);
+        return n < 0 ? mathceil(n) : mathfloor(n);
+    }
+
+
+    // EXPORT
+
+
+    BigNumber = another();
+
+    // AMD.
+    if ( typeof define == 'function' && define.amd ) {
+        define( function () { return BigNumber; } );
+
+    // Node and other environments that support module.exports.
+    } else if ( typeof module != 'undefined' && module.exports ) {
+        module.exports = BigNumber;
+        if ( !crypto ) try { crypto = require('crypto'); } catch (e) {}
+
+    // Browser.
+    } else {
+        global.BigNumber = BigNumber;
+    }
+})(this);
+
+},{"crypto":16}],3:[function(require,module,exports){
+(function (global){
+/*
+ * js-sha3 v0.3.1
+ * https://github.com/emn178/js-sha3
+ *
+ * Copyright 2015, emn178@gmail.com
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+;(function(root, undefined) {
+  'use strict';
+
+  var NODE_JS = typeof(module) != 'undefined';
+  if(NODE_JS) {
+    root = global;
+    if(root.JS_SHA3_TEST) {
+      root.navigator = { userAgent: 'Chrome'};
+    }
+  }
+  var CHROME = (root.JS_SHA3_TEST || !NODE_JS) && navigator.userAgent.indexOf('Chrome') != -1;
+  var HEX_CHARS = '0123456789abcdef'.split('');
+  var KECCAK_PADDING = [1, 256, 65536, 16777216];
+  var PADDING = [6, 1536, 393216, 100663296];
+  var SHIFT = [0, 8, 16, 24];
+  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
+            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
+            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
+            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
+            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
+
+  var blocks = [], s = [];
+
+  var keccak_224 = function(message) {
+    return keccak(message, 224, KECCAK_PADDING);
+  };
+
+  var keccak_256 = function(message) {
+    return keccak(message, 256, KECCAK_PADDING);
+  };
+
+  var keccak_384 = function(message) {
+    return keccak(message, 384, KECCAK_PADDING);
+  };
+
+  var sha3_224 = function(message) {
+    return keccak(message, 224, PADDING);
+  };
+
+  var sha3_256 = function(message) {
+    return keccak(message, 256, PADDING);
+  };
+
+  var sha3_384 = function(message) {
+    return keccak(message, 384, PADDING);
+  };
+
+  var sha3_512 = function(message) {
+    return keccak(message, 512, PADDING);
+  };
+
+  var keccak = function(message, bits, padding) {
+    var notString = typeof(message) != 'string';
+    if(notString && message.constructor == root.ArrayBuffer) {
+      message = new Uint8Array(message);
+    }
+
+    if(bits === undefined) {
+      bits = 512;
+      padding = KECCAK_PADDING;
+    }
+
+    var block, code, end = false, index = 0, start = 0, length = message.length,
+        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
+        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
+        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
+        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
+    var blockCount = (1600 - bits * 2) / 32;
+    var byteCount = blockCount * 4;
+
+    for(i = 0;i < 50;++i) {
+      s[i] = 0;
+    }
+
+    block = 0;
+    do {
+      blocks[0] = block;
+      for(i = 1;i < blockCount + 1;++i) {
+        blocks[i] = 0;
+      }
+      if(notString) {
+        for (i = start;index < length && i < byteCount; ++index) {
+          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
+        }
+      } else {
+        for (i = start;index < length && i < byteCount; ++index) {
+          code = message.charCodeAt(index);
+          if (code < 0x80) {
+            blocks[i >> 2] |= code << SHIFT[i++ & 3];
+          } else if (code < 0x800) {
+            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else if (code < 0xd800 || code >= 0xe000) {
+            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          }
+        }
+      }
+      start = i - byteCount;
+      if(index == length) {
+        blocks[i >> 2] |= padding[i & 3];
+        ++index;
+      }
+      block = blocks[blockCount];
+      if(index > length && i < byteCount) {
+        blocks[blockCount - 1] |= 0x80000000;
+        end = true;
+      }
+
+      for(i = 0;i < blockCount;++i) {
+        s[i] ^= blocks[i];
+      }
+
+      for(n = 0; n < 48; n += 2) {
+        c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
+        c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
+        c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
+        c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
+        c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
+        c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
+        c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
+        c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
+        c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
+        c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
+
+        h = c8 ^ ((c2 << 1) | (c3 >>> 31));
+        l = c9 ^ ((c3 << 1) | (c2 >>> 31));
+        s[0] ^= h;
+        s[1] ^= l;
+        s[10] ^= h;
+        s[11] ^= l;
+        s[20] ^= h;
+        s[21] ^= l;
+        s[30] ^= h;
+        s[31] ^= l;
+        s[40] ^= h;
+        s[41] ^= l;
+        h = c0 ^ ((c4 << 1) | (c5 >>> 31));
+        l = c1 ^ ((c5 << 1) | (c4 >>> 31));
+        s[2] ^= h;
+        s[3] ^= l;
+        s[12] ^= h;
+        s[13] ^= l;
+        s[22] ^= h;
+        s[23] ^= l;
+        s[32] ^= h;
+        s[33] ^= l;
+        s[42] ^= h;
+        s[43] ^= l;
+        h = c2 ^ ((c6 << 1) | (c7 >>> 31));
+        l = c3 ^ ((c7 << 1) | (c6 >>> 31));
+        s[4] ^= h;
+        s[5] ^= l;
+        s[14] ^= h;
+        s[15] ^= l;
+        s[24] ^= h;
+        s[25] ^= l;
+        s[34] ^= h;
+        s[35] ^= l;
+        s[44] ^= h;
+        s[45] ^= l;
+        h = c4 ^ ((c8 << 1) | (c9 >>> 31));
+        l = c5 ^ ((c9 << 1) | (c8 >>> 31));
+        s[6] ^= h;
+        s[7] ^= l;
+        s[16] ^= h;
+        s[17] ^= l;
+        s[26] ^= h;
+        s[27] ^= l;
+        s[36] ^= h;
+        s[37] ^= l;
+        s[46] ^= h;
+        s[47] ^= l;
+        h = c6 ^ ((c0 << 1) | (c1 >>> 31));
+        l = c7 ^ ((c1 << 1) | (c0 >>> 31));
+        s[8] ^= h;
+        s[9] ^= l;
+        s[18] ^= h;
+        s[19] ^= l;
+        s[28] ^= h;
+        s[29] ^= l;
+        s[38] ^= h;
+        s[39] ^= l;
+        s[48] ^= h;
+        s[49] ^= l;
+
+        b0 = s[0];
+        b1 = s[1];
+        b32 = (s[11] << 4) | (s[10] >>> 28);
+        b33 = (s[10] << 4) | (s[11] >>> 28);
+        b14 = (s[20] << 3) | (s[21] >>> 29);
+        b15 = (s[21] << 3) | (s[20] >>> 29);
+        b46 = (s[31] << 9) | (s[30] >>> 23);
+        b47 = (s[30] << 9) | (s[31] >>> 23);
+        b28 = (s[40] << 18) | (s[41] >>> 14);
+        b29 = (s[41] << 18) | (s[40] >>> 14);
+        b20 = (s[2] << 1) | (s[3] >>> 31);
+        b21 = (s[3] << 1) | (s[2] >>> 31);
+        b2 = (s[13] << 12) | (s[12] >>> 20);
+        b3 = (s[12] << 12) | (s[13] >>> 20);
+        b34 = (s[22] << 10) | (s[23] >>> 22);
+        b35 = (s[23] << 10) | (s[22] >>> 22);
+        b16 = (s[33] << 13) | (s[32] >>> 19);
+        b17 = (s[32] << 13) | (s[33] >>> 19);
+        b48 = (s[42] << 2) | (s[43] >>> 30);
+        b49 = (s[43] << 2) | (s[42] >>> 30);
+        b40 = (s[5] << 30) | (s[4] >>> 2);
+        b41 = (s[4] << 30) | (s[5] >>> 2);
+        b22 = (s[14] << 6) | (s[15] >>> 26);
+        b23 = (s[15] << 6) | (s[14] >>> 26);
+        b4 = (s[25] << 11) | (s[24] >>> 21);
+        b5 = (s[24] << 11) | (s[25] >>> 21);
+        b36 = (s[34] << 15) | (s[35] >>> 17);
+        b37 = (s[35] << 15) | (s[34] >>> 17);
+        b18 = (s[45] << 29) | (s[44] >>> 3);
+        b19 = (s[44] << 29) | (s[45] >>> 3);
+        b10 = (s[6] << 28) | (s[7] >>> 4);
+        b11 = (s[7] << 28) | (s[6] >>> 4);
+        b42 = (s[17] << 23) | (s[16] >>> 9);
+        b43 = (s[16] << 23) | (s[17] >>> 9);
+        b24 = (s[26] << 25) | (s[27] >>> 7);
+        b25 = (s[27] << 25) | (s[26] >>> 7);
+        b6 = (s[36] << 21) | (s[37] >>> 11);
+        b7 = (s[37] << 21) | (s[36] >>> 11);
+        b38 = (s[47] << 24) | (s[46] >>> 8);
+        b39 = (s[46] << 24) | (s[47] >>> 8);
+        b30 = (s[8] << 27) | (s[9] >>> 5);
+        b31 = (s[9] << 27) | (s[8] >>> 5);
+        b12 = (s[18] << 20) | (s[19] >>> 12);
+        b13 = (s[19] << 20) | (s[18] >>> 12);
+        b44 = (s[29] << 7) | (s[28] >>> 25);
+        b45 = (s[28] << 7) | (s[29] >>> 25);
+        b26 = (s[38] << 8) | (s[39] >>> 24);
+        b27 = (s[39] << 8) | (s[38] >>> 24);
+        b8 = (s[48] << 14) | (s[49] >>> 18);
+        b9 = (s[49] << 14) | (s[48] >>> 18);
+
+        s[0] = b0 ^ (~b2 & b4);
+        s[1] = b1 ^ (~b3 & b5);
+        s[10] = b10 ^ (~b12 & b14);
+        s[11] = b11 ^ (~b13 & b15);
+        s[20] = b20 ^ (~b22 & b24);
+        s[21] = b21 ^ (~b23 & b25);
+        s[30] = b30 ^ (~b32 & b34);
+        s[31] = b31 ^ (~b33 & b35);
+        s[40] = b40 ^ (~b42 & b44);
+        s[41] = b41 ^ (~b43 & b45);
+        s[2] = b2 ^ (~b4 & b6);
+        s[3] = b3 ^ (~b5 & b7);
+        s[12] = b12 ^ (~b14 & b16);
+        s[13] = b13 ^ (~b15 & b17);
+        s[22] = b22 ^ (~b24 & b26);
+        s[23] = b23 ^ (~b25 & b27);
+        s[32] = b32 ^ (~b34 & b36);
+        s[33] = b33 ^ (~b35 & b37);
+        s[42] = b42 ^ (~b44 & b46);
+        s[43] = b43 ^ (~b45 & b47);
+        s[4] = b4 ^ (~b6 & b8);
+        s[5] = b5 ^ (~b7 & b9);
+        s[14] = b14 ^ (~b16 & b18);
+        s[15] = b15 ^ (~b17 & b19);
+        s[24] = b24 ^ (~b26 & b28);
+        s[25] = b25 ^ (~b27 & b29);
+        s[34] = b34 ^ (~b36 & b38);
+        s[35] = b35 ^ (~b37 & b39);
+        s[44] = b44 ^ (~b46 & b48);
+        s[45] = b45 ^ (~b47 & b49);
+        s[6] = b6 ^ (~b8 & b0);
+        s[7] = b7 ^ (~b9 & b1);
+        s[16] = b16 ^ (~b18 & b10);
+        s[17] = b17 ^ (~b19 & b11);
+        s[26] = b26 ^ (~b28 & b20);
+        s[27] = b27 ^ (~b29 & b21);
+        s[36] = b36 ^ (~b38 & b30);
+        s[37] = b37 ^ (~b39 & b31);
+        s[46] = b46 ^ (~b48 & b40);
+        s[47] = b47 ^ (~b49 & b41);
+        s[8] = b8 ^ (~b0 & b2);
+        s[9] = b9 ^ (~b1 & b3);
+        s[18] = b18 ^ (~b10 & b12);
+        s[19] = b19 ^ (~b11 & b13);
+        s[28] = b28 ^ (~b20 & b22);
+        s[29] = b29 ^ (~b21 & b23);
+        s[38] = b38 ^ (~b30 & b32);
+        s[39] = b39 ^ (~b31 & b33);
+        s[48] = b48 ^ (~b40 & b42);
+        s[49] = b49 ^ (~b41 & b43);
+
+        s[0] ^= RC[n];
+        s[1] ^= RC[n + 1];
+      }
+    } while(!end);
+
+    var hex = '';
+    if(CHROME) {
+      b0 = s[0];
+      b1 = s[1];
+      b2 = s[2];
+      b3 = s[3];
+      b4 = s[4];
+      b5 = s[5];
+      b6 = s[6];
+      b7 = s[7];
+      b8 = s[8];
+      b9 = s[9];
+      b10 = s[10];
+      b11 = s[11];
+      b12 = s[12];
+      b13 = s[13];
+      b14 = s[14];
+      b15 = s[15];
+      hex += HEX_CHARS[(b0 >> 4) & 0x0F] + HEX_CHARS[b0 & 0x0F] +
+             HEX_CHARS[(b0 >> 12) & 0x0F] + HEX_CHARS[(b0 >> 8) & 0x0F] +
+             HEX_CHARS[(b0 >> 20) & 0x0F] + HEX_CHARS[(b0 >> 16) & 0x0F] +
+             HEX_CHARS[(b0 >> 28) & 0x0F] + HEX_CHARS[(b0 >> 24) & 0x0F] +
+             HEX_CHARS[(b1 >> 4) & 0x0F] + HEX_CHARS[b1 & 0x0F] +
+             HEX_CHARS[(b1 >> 12) & 0x0F] + HEX_CHARS[(b1 >> 8) & 0x0F] +
+             HEX_CHARS[(b1 >> 20) & 0x0F] + HEX_CHARS[(b1 >> 16) & 0x0F] +
+             HEX_CHARS[(b1 >> 28) & 0x0F] + HEX_CHARS[(b1 >> 24) & 0x0F] +
+             HEX_CHARS[(b2 >> 4) & 0x0F] + HEX_CHARS[b2 & 0x0F] +
+             HEX_CHARS[(b2 >> 12) & 0x0F] + HEX_CHARS[(b2 >> 8) & 0x0F] +
+             HEX_CHARS[(b2 >> 20) & 0x0F] + HEX_CHARS[(b2 >> 16) & 0x0F] +
+             HEX_CHARS[(b2 >> 28) & 0x0F] + HEX_CHARS[(b2 >> 24) & 0x0F] +
+             HEX_CHARS[(b3 >> 4) & 0x0F] + HEX_CHARS[b3 & 0x0F] +
+             HEX_CHARS[(b3 >> 12) & 0x0F] + HEX_CHARS[(b3 >> 8) & 0x0F] +
+             HEX_CHARS[(b3 >> 20) & 0x0F] + HEX_CHARS[(b3 >> 16) & 0x0F] +
+             HEX_CHARS[(b3 >> 28) & 0x0F] + HEX_CHARS[(b3 >> 24) & 0x0F] +
+             HEX_CHARS[(b4 >> 4) & 0x0F] + HEX_CHARS[b4 & 0x0F] +
+             HEX_CHARS[(b4 >> 12) & 0x0F] + HEX_CHARS[(b4 >> 8) & 0x0F] +
+             HEX_CHARS[(b4 >> 20) & 0x0F] + HEX_CHARS[(b4 >> 16) & 0x0F] +
+             HEX_CHARS[(b4 >> 28) & 0x0F] + HEX_CHARS[(b4 >> 24) & 0x0F] +
+             HEX_CHARS[(b5 >> 4) & 0x0F] + HEX_CHARS[b5 & 0x0F] +
+             HEX_CHARS[(b5 >> 12) & 0x0F] + HEX_CHARS[(b5 >> 8) & 0x0F] +
+             HEX_CHARS[(b5 >> 20) & 0x0F] + HEX_CHARS[(b5 >> 16) & 0x0F] +
+             HEX_CHARS[(b5 >> 28) & 0x0F] + HEX_CHARS[(b5 >> 24) & 0x0F] +
+             HEX_CHARS[(b6 >> 4) & 0x0F] + HEX_CHARS[b6 & 0x0F] +
+             HEX_CHARS[(b6 >> 12) & 0x0F] + HEX_CHARS[(b6 >> 8) & 0x0F] +
+             HEX_CHARS[(b6 >> 20) & 0x0F] + HEX_CHARS[(b6 >> 16) & 0x0F] +
+             HEX_CHARS[(b6 >> 28) & 0x0F] + HEX_CHARS[(b6 >> 24) & 0x0F];
+
+      if(bits >= 256) {
+        hex += HEX_CHARS[(b7 >> 4) & 0x0F] + HEX_CHARS[b7 & 0x0F] +
+               HEX_CHARS[(b7 >> 12) & 0x0F] + HEX_CHARS[(b7 >> 8) & 0x0F] +
+               HEX_CHARS[(b7 >> 20) & 0x0F] + HEX_CHARS[(b7 >> 16) & 0x0F] +
+               HEX_CHARS[(b7 >> 28) & 0x0F] + HEX_CHARS[(b7 >> 24) & 0x0F];
+      }
+      if(bits >= 384) {
+        hex += HEX_CHARS[(b8 >> 4) & 0x0F] + HEX_CHARS[b8 & 0x0F] +
+               HEX_CHARS[(b8 >> 12) & 0x0F] + HEX_CHARS[(b8 >> 8) & 0x0F] +
+               HEX_CHARS[(b8 >> 20) & 0x0F] + HEX_CHARS[(b8 >> 16) & 0x0F] +
+               HEX_CHARS[(b8 >> 28) & 0x0F] + HEX_CHARS[(b8 >> 24) & 0x0F] +
+               HEX_CHARS[(b9 >> 4) & 0x0F] + HEX_CHARS[b9 & 0x0F] +
+               HEX_CHARS[(b9 >> 12) & 0x0F] + HEX_CHARS[(b9 >> 8) & 0x0F] +
+               HEX_CHARS[(b9 >> 20) & 0x0F] + HEX_CHARS[(b9 >> 16) & 0x0F] +
+               HEX_CHARS[(b9 >> 28) & 0x0F] + HEX_CHARS[(b9 >> 24) & 0x0F] +
+               HEX_CHARS[(b10 >> 4) & 0x0F] + HEX_CHARS[b10 & 0x0F] +
+               HEX_CHARS[(b10 >> 12) & 0x0F] + HEX_CHARS[(b10 >> 8) & 0x0F] +
+               HEX_CHARS[(b10 >> 20) & 0x0F] + HEX_CHARS[(b10 >> 16) & 0x0F] +
+               HEX_CHARS[(b10 >> 28) & 0x0F] + HEX_CHARS[(b10 >> 24) & 0x0F] +
+               HEX_CHARS[(b11 >> 4) & 0x0F] + HEX_CHARS[b11 & 0x0F] +
+               HEX_CHARS[(b11 >> 12) & 0x0F] + HEX_CHARS[(b11 >> 8) & 0x0F] +
+               HEX_CHARS[(b11 >> 20) & 0x0F] + HEX_CHARS[(b11 >> 16) & 0x0F] +
+               HEX_CHARS[(b11 >> 28) & 0x0F] + HEX_CHARS[(b11 >> 24) & 0x0F];
+      }
+      if(bits == 512) {
+        hex += HEX_CHARS[(b12 >> 4) & 0x0F] + HEX_CHARS[b12 & 0x0F] +
+               HEX_CHARS[(b12 >> 12) & 0x0F] + HEX_CHARS[(b12 >> 8) & 0x0F] +
+               HEX_CHARS[(b12 >> 20) & 0x0F] + HEX_CHARS[(b12 >> 16) & 0x0F] +
+               HEX_CHARS[(b12 >> 28) & 0x0F] + HEX_CHARS[(b12 >> 24) & 0x0F] +
+               HEX_CHARS[(b13 >> 4) & 0x0F] + HEX_CHARS[b13 & 0x0F] +
+               HEX_CHARS[(b13 >> 12) & 0x0F] + HEX_CHARS[(b13 >> 8) & 0x0F] +
+               HEX_CHARS[(b13 >> 20) & 0x0F] + HEX_CHARS[(b13 >> 16) & 0x0F] +
+               HEX_CHARS[(b13 >> 28) & 0x0F] + HEX_CHARS[(b13 >> 24) & 0x0F] +
+               HEX_CHARS[(b14 >> 4) & 0x0F] + HEX_CHARS[b14 & 0x0F] +
+               HEX_CHARS[(b14 >> 12) & 0x0F] + HEX_CHARS[(b14 >> 8) & 0x0F] +
+               HEX_CHARS[(b14 >> 20) & 0x0F] + HEX_CHARS[(b14 >> 16) & 0x0F] +
+               HEX_CHARS[(b14 >> 28) & 0x0F] + HEX_CHARS[(b14 >> 24) & 0x0F] +
+               HEX_CHARS[(b15 >> 4) & 0x0F] + HEX_CHARS[b15 & 0x0F] +
+               HEX_CHARS[(b15 >> 12) & 0x0F] + HEX_CHARS[(b15 >> 8) & 0x0F] +
+               HEX_CHARS[(b15 >> 20) & 0x0F] + HEX_CHARS[(b15 >> 16) & 0x0F] +
+               HEX_CHARS[(b15 >> 28) & 0x0F] + HEX_CHARS[(b15 >> 24) & 0x0F];
+      }
+    } else {
+      for(i = 0, n = bits / 32;i < n;++i) {
+        h = s[i];
+        hex += HEX_CHARS[(h >> 4) & 0x0F] + HEX_CHARS[h & 0x0F] +
+               HEX_CHARS[(h >> 12) & 0x0F] + HEX_CHARS[(h >> 8) & 0x0F] +
+               HEX_CHARS[(h >> 20) & 0x0F] + HEX_CHARS[(h >> 16) & 0x0F] +
+               HEX_CHARS[(h >> 28) & 0x0F] + HEX_CHARS[(h >> 24) & 0x0F];
+      }
+    }
+    return hex;
+  };
+  
+  if(!root.JS_SHA3_TEST && NODE_JS) {
+    module.exports = {
+      sha3_512: sha3_512,
+      sha3_384: sha3_384,
+      sha3_256: sha3_256,
+      sha3_224: sha3_224,
+      keccak_512: keccak,
+      keccak_384: keccak_384,
+      keccak_256: keccak_256,
+      keccak_224: keccak_224
+    };
+  } else if(root) {
+    root.sha3_512 = sha3_512;
+    root.sha3_384 = sha3_384;
+    root.sha3_256 = sha3_256;
+    root.sha3_224 = sha3_224;
+    root.keccak_512 = keccak;
+    root.keccak_384 = keccak_384;
+    root.keccak_256 = keccak_256;
+    root.keccak_224 = keccak_224;
+  }
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(require,module,exports){
 module.exports={
     "2": {
-        "buyAndSellShares": "0xf37626aa99f29a4afe7406e386f68cc77be2cb6e",
-        "closeMarket": "0x9973183349c7fc536041d65108431e736cbb6f7e",
-        "closeMarketEight": "0xb6e28762fef57f336014643741544d4f197cc494",
-        "closeMarketFour": "0x1665ee14c0b07448c3d758c2792d2a328acd98c5",
-        "closeMarketOne": "0x8b4cd6f60de0362237dc0c5b22be15273b099b7e",
-        "closeMarketTwo": "0x0774e46e0cbddb58f09f2d8d53d4aa8bc53df714",
-        "consensus": "0xb816c3abdbb9967485f8645bc83143bb749572e0",
-        "createBranch": "0x21b87e562066e36da0bc599b3d016efb6fe80913",
-        "createEvent": "0xfab258ae92a2fe25ae4e4ddb9e63fb1c691cc2aa",
-        "createMarket": "0x8a1bbe841ceef103221ebcb7fc50bf3e0edc7773",
-        "createSingleEventMarket": "0xd5283e4f818de5c984f2221a421983f6040961c1",
-        "eventResolution": "0x2fac411c69994858409c24ed2a5567da29c61bca",
-        "faucets": "0x895d32f2db7d01ebb50053f9e48aacf26584fe40",
-        "makeReports": "0x79a406da9ea815fd8cbe75ba8a4cb6d493dbf9b4",
-        "orderBook": "0xc8bdc68526a959fcb932b57063c97b1fc6176709",
-        "ramble": "0x42a77acc59bb566aa670d6e7639b99efa235e6f7",
-        "sendReputation": "0x6b969e428c58d81429ef13240c0ecb3529aa91bb",
-        "transferShares": "0x95ecfe0ebd855931faec81cbb671e61bfe56082e",
-        "branches": "0x513087e06ea1a05b858f6da58befb0012c775e63",
-        "cash": "0x154edcf6418038f863c6cd3b395a16a02c037ae3",
-        "events": "0x2d446b3950fc5ea3cf18804b9ab8f79357978ab9",
-        "expiringEvents": "0x0ed2d24d31ed33b658aa2f1108698d5bc3a8b622",
-        "fxpFunctions": "0xe85133772801961725debe87ace3cefaffb01533",
-        "info": "0xf68dab896ca313cbd8946aecfdb965662a61aa3c",
-        "markets": "0x4b2a8b1cc3a2f686d835bfc2ca0c20671676efb0",
-        "reporting": "0x2828a20e3ce771571177928077bfbbcdd16df764"
+        "buyAndSellShares": "0xa16ced61576483990d0d821a5fc344a3429ba755",
+        "closeMarket": "0xa7745e9a3fec3c862f75cedbdb1faea915a21b45",
+        "closeMarketEight": "0x0b4f09bee8998ff6de81a2092bf14a581196ce5e",
+        "closeMarketFour": "0xe0f1e359c85b931a1427cbbf4bc34cf35804812c",
+        "closeMarketOne": "0x8108c92235ddf27396d514c643258af6ee9cbaa8",
+        "closeMarketTwo": "0xb2234ac52a040e0e835caf0a2a7b58e27a2e2681",
+        "collectFees": "0x3f06970cdbe56ea26d227b174b5fca39e5c188c8",
+        "completeSets": "0x3eb691ebc786d06eb97954d84e6528f72c4be74a",
+        "consensus": "0x4883a41286afec5a0c0fa3dfce51e2ddbb71c959",
+        "createBranch": "0xaabd61114918a6d62f0ca1fd42bbb3ced3d32da9",
+        "createMarket": "0x24b051c19bd981a59f6c459c128a285bcd8d66bc",
+        "eventResolution": "0x3c6d7fb87c7fd80a1d5e9e9266136a307bad122b",
+        "faucets": "0xa684ef338ed581655549e1f114e12dcee49836eb",
+        "makeReports": "0xccde4927f92ded2dd8fb97ccb103f5adff14399b",
+        "penalizeNotEnoughReports": "0x188446aec40a9b1fab26429cc6a1d5192d687a78",
+        "roundTwo": "0xc05067f9a7d7935e9f7a0f30041546431e5bbd6f",
+        "sendReputation": "0x4e3ff108d78014d5ae5be169291d6038d3a81753",
+        "slashRep": "0x179e4e177644b275f8958b1ecbfc4c7cec14e6fb",
+        "trade": "0xb44cd937904ba0e309204ffc1413e094f2a84ee5",
+        "backstops": "0xa1d562dcd70cefa76703dddd77b06503c1b098a5",
+        "branches": "0x9424d456e50d16318333c01b79dfe1a57aaccef6",
+        "cash": "0x0756706e67c05525ed2f18580f76e8d352fe1c76",
+        "events": "0x7799183cbd9c8226a56d51f50b8a1072508b5547",
+        "expiringEvents": "0xe7f18babbdb1f8b0f8cd3e8466bc9f3bfbd9b8e8",
+        "fxpFunctions": "0x7be1ecbfa18a1f19d71edf256ba361b2aecaa7e9",
+        "info": "0x43b527ac2dd3cc3bb85383640125833e16a2d021",
+        "markets": "0xa574c37b091657928df06abd30b3179b3c15a2ae",
+        "reporting": "0x1ae5c82c3ad5b87bb991375991751d863541a7c4",
+        "trades": "0xdc159ef16f15bbf6d43d40ffc644a25e4cf02076"
+    },
+    "10101": {
+        "buyAndSellShares": "0x4862bd943c1afd0a783f817787dca92e5b17fad1",
+        "closeMarket": "0x1b946ef74add6dd796da8474db6786216bfd42a9",
+        "closeMarketEight": "0x967ec28d79f2641528da323e2d3ff00189a52501",
+        "closeMarketFour": "0xafd0e137f7d7639d9eeb3de060c30274308c0525",
+        "closeMarketOne": "0x991b9c0a666fa7d04e8546862c27c0dd2b313274",
+        "closeMarketTwo": "0x1de42e82b38a9ddb1840321498725302f8fc263c",
+        "collectFees": "0x4472317bdb8f0c23df3e492f26594a935095c227",
+        "completeSets": "0x9bdb3bf31fa503f38c68b8ebf1cf2fb0b7950bec",
+        "consensus": "0xfdef354a1feb391bcaf6598bfa2a6b31ed7afb49",
+        "createBranch": "0xd6888d5f914c775807b90c239a41110c18700fd7",
+        "createEvent": "0x12054fe707275b987ec754913eb55bccedb421c0",
+        "createMarket": "0x224165e871b332d45c50ad089d7d98bbe5787908",
+        "createSingleEventMarket": "0x592f6b0341c4dbe3915aad8df8af308b2a75283c",
+        "eventResolution": "0x5858941e8ef133e547e6483d45dff63c87016999",
+        "faucets": "0x53dde58daced9e3a7bf3577ac7228547eabded77",
+        "makeReports": "0x621fea4c7b5626ebac9fec748283070b2b30c00a",
+        "penalizeNotEnoughReports": "0xb6218544835eb946bb30d84cbc8622f8628e5d4d",
+        "roundTwo": "0x74c3ecd32a4134ac59e5518b7b2ff08d3ea50b78",
+        "sendReputation": "0x3bc15fc93b2f646f9916aee3f8c12a7261a8ff8e",
+        "slashRep": "0x215af0bf164138b90f418e19d25c89a95bc6a2a2",
+        "trade": "0xfb306122b2113664de24a34bb25f3f072187e0a2",
+        "backstops": "0x123afcad1bfcdd63274eca3e09110228a7ab1b36",
+        "branches": "0xbd48e61312b2757ed6555f0bc919439fa3d19567",
+        "cash": "0xc15c4d0478440291ef56a6934c031d1effa7c996",
+        "events": "0x2fd2953f436d16a6eb0e5624bbe9c8920513bff7",
+        "expiringEvents": "0xcf3c8d2953b8f02bea0bff3db9929361962aba06",
+        "fxpFunctions": "0xcb0c565165a1cca856da55036214d42e9726e201",
+        "info": "0x24db29b9b923d2e480fb8d633dc72f718e88165e",
+        "markets": "0x337b3d3f4cd75776e591a8aa91236d1329f4d6de",
+        "reporting": "0xa832bea402b452123d0a931618b24b199b1c4694",
+        "trades": "0x0250e15301e71fa05cd4bdd4cf49ef71f98f090c"
     },
     "errors": {
         "0x": "no response or bad input",
@@ -37,10 +3823,6 @@ module.exports={
             "-4": "Outcome .5 once, pushback and retry",
             "-6": "bonded pushed forward market not ready to be resolved",
             "-7": "event not reportable >.99"
-        },
-        "claimProceeds": {
-            "0": "reporting not done",
-            "-1": "trader doesn't exist"
         },
         "submitReportHash": {
             "0": "could not set report hash",
@@ -112,9 +3894,22 @@ module.exports={
             "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
             "-2": "Receiving address doesn't exist"
         },
-        "WHISPER_POST_FAILED": {
-            "error": 65,
-            "message": "could not post message to whisper"
+        "buy": {
+            "-1": "amount/price bad or no market",
+            "-2": "oracle-only branch",
+            "-4": "not enough money or shares"
+        },
+        "sell": {
+            "-1": "amount/price bad or no market",
+            "-2": "oracle only branch",
+            "-4": "not enough money or shares"
+        },
+        "trade": {
+            "-1": "oracle only branch",
+            "-2": "bad trade hash",
+            "-3": "trader doesn't exist / own shares in this market",
+            "-4": "must buy at least .00000001 in value",
+            "10": "insufficient balance"
         },
         "DB_DELETE_FAILED": {
             "error": 97,
@@ -223,15 +4018,11 @@ module.exports={
         "ROOT_NOT_FOUND": {
             "error": 700,
             "message": "no LS-LMSR objectve function solution found"
-        },
-        "CHECK_ORDER_BOOK_FAILED": {
-            "error": 710,
-            "message": "could not check order book using current prices"
         }
     }
 }
 
-},{}],2:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports={
     "0x": "no response or bad input",
     "getSimulatedBuy": {
@@ -473,14 +4264,14 @@ module.exports={
     }
 }
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var contracts = require("./contracts");
 contracts.errors = require("./errors");
 contracts.Tx = require("./tx");
 
 module.exports = contracts;
 
-},{"./contracts":1,"./errors":2,"./tx":4}],4:[function(require,module,exports){
+},{"./contracts":4,"./errors":5,"./tx":7}],7:[function(require,module,exports){
 /**
  * Augur transactions
  */
@@ -512,15 +4303,6 @@ module.exports = function (network) {
             method: "fundNewAccount",
             signature: "i",
             returns: "number",
-            send: true
-        },
-
-        // createSingleEventMarket.se
-        createSingleEventMarket: {
-            to: contracts.createSingleEventMarket,
-            method: "createSingleEventMarket",
-            signature: "isiiiiiiii",
-            returns: "hash",
             send: true
         },
 
@@ -672,9 +4454,9 @@ module.exports = function (network) {
             method: "getNumBranches",
             returns: "number"
         },
-        getBranch: {
+        getBranchByNum: {
             to: contracts.branches,
-            method: "getBranch",
+            method: "getBranchByNum",
             signature: "i",
             returns: "hash"
         },
@@ -694,6 +4476,51 @@ module.exports = function (network) {
         },
 
         // consensus.se
+        // def getFeesCollected(branch, address, period):
+        getFeesCollected: {
+            to: contracts.consensus,
+            method: "getFeesCollected",
+            signature: "iii",
+            returns: "number"
+        },
+        // def setFeesCollected(branch, address, period):
+        setFeesCollected: {
+            to: contracts.consensus,
+            method: "setFeesCollected",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        // def setNotEnoughPenalized(branch, address, period):
+        setNotEnoughPenalized: {
+            to: contracts.consensus,
+            method: "setNotEnoughPenalized",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },            
+        // def getNotEnoughPenalized(branch, address, period):
+        getNotEnoughPenalized: {
+            to: contracts.consensus,
+            method: "getNotEnoughPenalized",
+            signature: "iii",
+            returns: "number"
+        },
+        // def getBaseReportersLastPeriod(branch):
+        getBaseReportersLastPeriod: {
+            to: contracts.consensus,
+            method: "getBaseReportersLastPeriod",
+            signature: "i",
+            returns: "number"
+        },
+        // def initialPenalizedSetting(branch, reporter, upto):
+        initialPenalizedSetting: {
+            to: contracts.consensus,
+            method: "initialPenalizedSetting",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
         proportionCorrect: {
             to: contracts.consensus,
             method: "proportionCorrect",
@@ -707,16 +4534,9 @@ module.exports = function (network) {
             returns: "number",
             send: true
         },
-        penalizeNotEnoughReports: {
+        penalizationCatchup: {
             to: contracts.consensus,
-            method: "penalizeNotEnoughReports",
-            signature: "i",
-            returns: "number",
-            send: true
-        },
-        collectFees: {
-            to: contracts.consensus,
-            method: "collectFees",
+            method: "penalizationCatchup",
             signature: "i",
             returns: "number",
             send: true
@@ -728,15 +4548,29 @@ module.exports = function (network) {
             returns: "number",
             send: true
         },
-        penalizationCatchup: {
-            to: contracts.consensus,
-            method: "penalizationCatchup",
+
+        // penalizeNotEnoughReports.se
+        penalizeNotEnoughReports: {
+            to: contracts.penalizeNotEnoughReports,
+            method: "penalizeNotEnoughReports",
             signature: "i",
             returns: "number",
             send: true
         },
+
+        // collectFees.se
+        collectFees: {
+            to: contracts.collectFees,
+            method: "collectFees",
+            signature: "i",
+            returns: "number",
+            send: true
+        },
+
+        // slashRep.se
+        // def slashRep(branch, salt, report, reporter, eventID):
         slashRep: {
-            to: contracts.consensus,
+            to: contracts.slashRep,
             method: "slashRep",
             signature: "iiiii",
             returns: "number",
@@ -819,6 +4653,12 @@ module.exports = function (network) {
         },
 
         // expiringEvents.se
+        getReportedPeriod: {
+            to: contracts.expiringEvents,
+            method: "getReportedPeriod",
+            signature: "iii",
+            returns: "number"
+        },
         getEventIndex: {
             to: contracts.expiringEvents,
             method: "getEventIndex",
@@ -875,17 +4715,12 @@ module.exports = function (network) {
         },
 
         // markets.se
-        price: {
+        get_trade_ids: {
             to: contracts.markets,
-            method: "price",
-            signature: "ii",
-            returns: "unfix"
-        },
-        lsLmsr: {
-            to: contracts.markets,
-            method: "lsLmsr",
+            method: "get_trade_ids",
             signature: "i",
-            returns: "unfix"
+            returns: "hash[]",
+            gas: "0x9184e729fff"
         },
         getMarketInfo: {
             to: contracts.markets,
@@ -979,12 +4814,6 @@ module.exports = function (network) {
             signature: "ii",
             returns: "address"
         },
-        getAlpha: {
-            to: contracts.markets,
-            method: "getAlpha",
-            signature: "i",
-            returns: "unfix"
-        },
         getCumScale: {
             to: contracts.markets,
             method: "getCumScale",
@@ -1032,47 +4861,195 @@ module.exports = function (network) {
         },
 
         // reporting.se
-        getRepBalance: {
+        // def checkWhitelist(address):
+        checkWhitelist: {
             to: contracts.reporting,
-            method: "getRepBalance",
-            signature: "ii",
+            method: "checkWhitelist",
+            signature: "i"
+        },
+        // def getActiveRep(branch):
+        getActiveRep: {
+            to: contracts.reporting,
+            method: "getActiveRep",
+            signature: "i",
             returns: "unfix"
         },
+        // def adjustActiveRep(branch, amount):
+        adjustActiveRep: {
+            to: contracts.reporting,
+            method: "adjustActiveRep",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def setFork(branch):
+        setFork: {
+            to: contracts.reporting,
+            method: "setFork",
+            signature: "i",
+            returns: "number",
+            send: true
+        },
+        // def getFork(branch):
+        getFork: {
+            to: contracts.reporting,
+            method: "getFork",
+            signature: "i",
+            returns: "number"
+        },
+        // def checkContractWhitelist(contract, address):
+        checkContractWhitelist: {
+            to: contracts.reporting,
+            method: "checkContractWhitelist",
+            signature: "ii"
+        },
+        // def setWhitelist(contract, addresses:arr):
+        setWhitelist: {
+            to: contracts.reporting,
+            method: "setWhitelist",
+            signature: "ia",
+            returns: "string",
+            send: true
+        },
+        // def getRepByIndex(branch, repIndex):
         getRepByIndex: {
             to: contracts.reporting,
             method: "getRepByIndex",
             signature: "ii",
             returns: "unfix"
         },
+        // def getRepBalance(branch, address):
+        getRepBalance: {
+            to: contracts.reporting,
+            method: "getRepBalance",
+            signature: "ii",
+            returns: "unfix"
+        },
+        // def getDormantRepByIndex(branch, repIndex):
+        getDormantRepByIndex: {
+            to: contracts.reporting,
+            method: "getDormantRepByIndex",
+            signature: "ii",
+            returns: "unfix"
+        },
+        // def balanceOf(branch, address):
+        balanceOf: {
+            to: contracts.reporting,
+            method: "balanceOf",
+            signature: "ii",
+            returns: "unfix"
+        },
+        // def totalSupply(branch):
+        totalSupply: {
+            to: contracts.reporting,
+            method: "totalSupply",
+            signature: "i",
+            returns: "unfix"
+        },
+        // def getReporterID(branch, index):
         getReporterID: {
             to: contracts.reporting,
             method: "getReporterID",
             signature: "ii",
             returns: "address"
         },
+        // def getTotalRep(branch):
+        getTotalRep: {
+            to: contracts.reporting,
+            method: "getTotalRep",
+            signature: "i",
+            returns: "unfix"
+        },
+        // def getReputation(address):
         getReputation: {
             to: contracts.reporting,
             method: "getReputation",
             signature: "i",
-            returns: "number[]"
+            returns: "hash[]"
         },
+        // def getNumberReporters(branch):
         getNumberReporters: {
             to: contracts.reporting,
             method: "getNumberReporters",
             signature: "i",
             returns: "number"
         },
+        // def repIDToIndex(branch, repID):
         repIDToIndex: {
             to: contracts.reporting,
             method: "repIDToIndex",
             signature: "ii",
             returns: "number"
         },
-        getTotalRep: {
+        // def hashReport(report: arr, salt):
+        hashReport: {
             to: contracts.reporting,
-            method: "getTotalRep",
-            signature: "i",
-            returns: "unfix"
+            method: "hashReport",
+            signature: "ai"
+        },
+        // def setInitialReporters(parent, branchID):
+        setInitialReporters: {
+            to: contracts.reporting,
+            method: "setInitialReporters",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def addReporter(branch, sender):
+        addReporter: {
+            to: contracts.reporting,
+            method: "addReporter",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def addRep(branch, index, value):
+        addRep: {
+            to: contracts.reporting,
+            method: "addRep",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        // def subtractRep(branch, index, value):
+        subtractRep: {
+            to: contracts.reporting,
+            method: "subtractRep",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        // def setRep(branch, index, newRep):
+        setRep: {
+            to: contracts.reporting,
+            method: "setRep",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        // def addDormantRep(branch, index, value):
+        addDormantRep: {
+            to: contracts.reporting,
+            method: "addDormantRep",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        // def subtractDormantRep(branch, index, value):
+        subtractDormantRep: {
+            to: contracts.reporting,
+            method: "subtractDormantRep",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+        // def setSaleDistribution(addresses: arr, balances: arr, branchID):
+        setSaleDistribution: {
+            to: contracts.reporting,
+            method: "setSaleDistribution",
+            signature: "aai",
+            returns: "number",
+            send: true
         },
 
         // trades.se
@@ -1111,7 +5088,7 @@ module.exports = function (network) {
         checkHash: {
             to: contracts.trades,
             method: "checkHash",
-            signature: "i",
+            signature: "ii",
             returns: "number"
         },
         getID: {
@@ -1178,14 +5155,14 @@ module.exports = function (network) {
             to: contracts.buyAndSellShares,
             method: "buy",
             signature: "iiii",
-            returns: "number",
+            returns: "hash",
             send: true
         },
         sell: {
             to: contracts.buyAndSellShares,
             method: "sell",
             signature: "iiii",
-            returns: "number",
+            returns: "hash",
             send: true
         },
         short_sell: {
@@ -1195,8 +5172,10 @@ module.exports = function (network) {
             returns: "number",
             send: true
         },
+
+        // trade.se
         trade: {
-            to: contracts.buyAndSellShares,
+            to: contracts.trade,
             method: "trade",
             signature: "iia",
             returns: "number",
@@ -1241,18 +5220,6 @@ module.exports = function (network) {
         getNumEventsToReport: {
             to: contracts.makeReports,
             method: "getNumEventsToReport",
-            signature: "ii",
-            returns: "number"
-        },
-        getReportedPeriod: {
-            to: contracts.makeReports,
-            method: "getReportedPeriod",
-            signature: "iii",
-            returns: "number"
-        },
-        getReportable: {
-            to: contracts.makeReports,
-            method: "getReportable",
             signature: "ii",
             returns: "number"
         },
@@ -1336,19 +5303,24 @@ module.exports = function (network) {
             returns: "number"
         },
 
-        // createEvent.se
+        // createMarket.se
         createEvent: {
-            to: contracts.createEvent,
+            to: contracts.createMarket,
             method: "createEvent",
-            signature: "isiiii",
+            signature: "isiiiis",
             send: true
         },
-
-        // createMarket.se
         createMarket: {
             to: contracts.createMarket,
             method: "createMarket",
-            signature: "isiiiai",
+            signature: "isiaiiiis",
+            send: true
+        },
+        createSingleEventMarket: {
+            to: contracts.createMarket,
+            method: "createSingleEventMarket",
+            signature: "isiiiisiiiiis",
+            returns: "hash",
             send: true
         },
 
@@ -1368,24 +5340,131 @@ module.exports = function (network) {
             send: true
         },
 
-        // dispatch.se
-        dispatch: {
-            to: contracts.dispatch,
-            method: "dispatch",
+        // roundTwo.se
+        // def roundTwoPostBond(branch, event, eventIndex, votePeriod):
+        roundTwoPostBond: {
+            to: contracts.roundTwo,
+            method: "roundTwoPostBond",
+            signature: "iiii",
+            returns: "number",
+            send: true
+        },
+        // def roundTwoResolve(branch, event, eventIndex, votePeriod):
+        roundTwoResolve: {
+            to: contracts.roundTwo,
+            method: "roundTwoResolve",
+            signature: "iiii",
+            returns: "number",
+            send: true
+        },
+        // def resolve(branch, event, sender):
+        resolve: {
+            to: contracts.roundTwo,
+            method: "resolve",
+            signature: "iii",
+            returns: "number",
+            send: true
+        },
+
+        // backstops.se
+        // def getRoundTwo(event):
+        getRoundTwo: {
+            to: contracts.backstops,
+            method: "getRoundTwo",
+            signature: "i"
+        },
+        // def setRoundTwo(event, roundTwo):
+        setRoundTwo: {
+            to: contracts.backstops,
+            method: "setRoundTwo",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def getBondPoster(event):
+        getBondPoster: {
+            to: contracts.backstops,
+            method: "getBondPoster",
+            signature: "i",
+            returns: "address"
+        },  
+        // def setBondPoster(event, bondPoster):
+        setBondPoster: {
+            to: contracts.backstops,
+            method: "setBondPoster",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def getFinal(event):
+        getFinal: {
+            to: contracts.backstops,
+            method: "getFinal",
+            signature: "i"
+        },
+        // def setFinal(event):
+        setFinal: {
+            to: contracts.backstops,
+            method: "setFinal",
+            signature: "i",
+            returns: "number",
+            send: true
+        },
+        // def getOriginalOutcome(event):
+        getOriginalOutcome: {
+            to: contracts.backstops,
+            method: "getOriginalOutcome",
+            signature: "i"
+        },
+        // def setOriginalOutcome(event, originalOutcome):
+        setOriginalOutcome: {
+            to: contracts.backstops,
+            method: "setOriginalOutcome",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def getOriginalEthicality(event):
+        getOriginalEthicality: {
+            to: contracts.backstops,
+            method: "getOriginalEthicality",
+            signature: "i"
+        },
+        // def setOriginalEthicality(event, ethicality):
+        setOriginalEthicality: {
+            to: contracts.backstops,
+            method: "setOriginalEthicality",
+            signature: "ii",
+            returns: "number",
+            send: true
+        },
+        // def getOriginalVotePeriod(event):
+        getOriginalVotePeriod: {
+            to: contracts.backstops,
+            method: "getOriginalVotePeriod",
             signature: "i",
             returns: "number"
+        },
+        // def setOriginalVotePeriod(event, period):
+        setOriginalVotePeriod: {
+            to: contracts.backstops,
+            method: "setOriginalVotePeriod",
+            signature: "ii",
+            returns: "number",
+            send: true
         }
+
     };
 
 };
 
-},{"./contracts":1}],5:[function(require,module,exports){
+},{"./contracts":4}],8:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":323}],6:[function(require,module,exports){
+},{"./src/index":313}],9:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -2654,1052 +6733,7 @@ global.augur = augur;
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":211}],7:[function(require,module,exports){
-(function (Buffer){
-/**
- * Ethereum contract ABI data serialization.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var keccak_256 = require("js-sha3").keccak_256;
-
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
-
-module.exports = {
-
-    constants: {
-        ONE: (new BigNumber(2)).toPower(64),
-        MOD: new BigNumber(2).toPower(256),
-        BYTES_32: new BigNumber(2).toPower(252)
-    },
-
-    copy: function (obj) {
-        if (null === obj || "object" !== typeof obj) return obj;
-        var copy = obj.constructor();
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-        }
-        return copy;
-    },
-
-    is_numeric: function (n) {
-        return Number(parseFloat(n)) == n;
-    },
-
-    remove_leading_zeros: function (h) {
-        var hex = h.toString();
-        if (hex.slice(0, 2) === "0x") {
-            hex = hex.slice(2);
-        }
-        if (!/^0+$/.test(hex)) {
-            while (hex.slice(0, 2) === "00") {
-                hex = hex.slice(2);
-            }
-        }
-        return hex;
-    },
-
-    remove_trailing_zeros: function (h) {
-        var hex = h.toString();
-        while (hex.slice(-2) === "00") {
-            hex = hex.slice(0,-2);
-        }
-        return hex;
-    },
-
-    decode_hex: function (h, strip) {
-        var hex = h.toString();
-        var str = '';
-        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
-        // first 32 bytes = offset
-        // second 32 bytes = string length
-        if (strip) {
-            hex = hex.slice(128);
-            hex = this.remove_trailing_zeros(hex);
-        }
-        for (var i = 0, l = hex.length; i < l; i += 2) {
-            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-        }
-        return str;
-    },
-
-    // convert bytes to hex
-    encode_hex: function (str) {
-        var hexbyte, hex = '';
-        if (str && str.constructor === Object || str.constructor === Array) {
-            str = JSON.stringify(str);
-        }
-        for (var i = 0, len = str.length; i < len; ++i) {
-            hexbyte = str.charCodeAt(i).toString(16);
-            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
-            hex += hexbyte;
-        }
-        return hex;
-    },
-
-    unfork: function (forked, prefix) {
-        if (forked !== null && forked !== undefined) {
-            var unforked = this.bignum(forked);
-            var superforked = unforked.plus(this.constants.MOD);
-            if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
-                unforked = superforked;
-            }
-            if (forked.constructor === BigNumber) return unforked;
-            unforked = this.pad_left(unforked.toString(16));
-            if (prefix) unforked = this.prefix_hex(unforked);
-            return unforked;
-        }
-    },
-
-    hex: function (n, nowrap) {
-        var h;
-        if (n !== undefined && n !== null && n.constructor) {
-            switch (n.constructor) {
-                case Buffer:
-                    h = n.toString("hex");
-                    break;
-                case Object:
-                    h = this.encode_hex(JSON.stringify(n));
-                    break;
-                case Array:
-                    h = this.bignum(n, "hex", nowrap);
-                    break;
-                case BigNumber:
-                    h = n.toString(16);
-                    break;
-                case String:
-                    if (n === "-0x0") {
-                        h = "0x0";
-                    } else if (n === "-0") {
-                        h = "0";
-                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
-                        h = n;
-                    } else {
-                        if (isFinite(n)) {
-                            h = this.bignum(n, "hex", nowrap);
-                        } else {
-                            h = this.encode_hex(n);
-                        }
-                    }
-                    break;
-                case Boolean:
-                    h = (n) ? "0x1" : "0x0";
-                    break;
-                default:
-                    h = this.bignum(n, "hex", nowrap);
-            }
-        }
-        return this.prefix_hex(h);
-    },
-
-    is_hex: function (str) {
-        if (str && str.constructor === String) {
-            if (str.slice(0, 1) === '-' && str.length > 1) {
-                return /^[0-9A-F]+$/i.test(str.slice(1));
-            }
-            return /^[0-9A-F]+$/i.test(str);
-        }
-        return false;
-    },
-
-    format_address: function (addr) {
-        if (addr && addr.constructor === String) {
-            addr = this.strip_0x(addr);
-            while (addr.length > 40 && addr.slice(0, 1) === "0") {
-                addr = addr.slice(1);
-            }
-            while (addr.length < 40) {
-                addr = "0" + addr;
-            }
-            return this.prefix_hex(addr);
-        }
-    },
-
-    strip_0x: function (str) {
-        if (str && str.constructor === String && str.length >= 2) {
-            var h = str;
-            if (h === "-0x0" || h === "0x0") {
-                return "0";
-            }
-            if (h.slice(0, 2) === "0x" && h.length > 2) {
-                h = h.slice(2);
-            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
-                h = '-' + h.slice(3);
-            }
-            if (this.is_hex(h)) return h;
-        }
-        return str;
-    },
-
-    zero_prefix: function (h) {
-        if (h !== undefined && h !== null && h.constructor === String) {
-            h = this.strip_0x(h);
-            if (h.length % 2) h = "0" + h;
-            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
-                if (h.slice(0,1) === '-') {
-                    h = "-0x" + h.slice(1);
-                } else {
-                    h = "0x" + h;
-                }
-            }
-        }
-        return h;
-    },
-
-    prefix_hex: function (n) {
-        if (n !== undefined && n !== null) {
-            if (n.constructor === Number || n.constructor === BigNumber) {
-                n = n.toString(16);
-            }
-            if (n.constructor === String &&
-                n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x")
-            {
-                if (n.slice(0,1) === '-') {
-                    n = "-0x" + n.slice(1);
-                } else {
-                    n = "0x" + n;
-                }
-            }
-        }
-        return n;
-    },
-
-    bignum: function (n, encoding, nowrap) {
-        var bn, len;
-        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
-            switch (n.constructor) {
-                case BigNumber:
-                    bn = n;
-                    break;
-                case Number:
-                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
-                        bn = new BigNumber(n);
-                    } else {
-                        n = n.toString();
-                        try {
-                            bn = new BigNumber(n);
-                        } catch (exc) {
-                            if (this.is_hex(n)) {
-                                bn = new BigNumber(n, 16);
-                            } else {
-                                return n;
-                            }
-                        }
-                    }
-                    break;
-                case String:
-                    try {
-                        bn = new BigNumber(n);
-                    } catch (exc) {
-                        if (this.is_hex(n)) {
-                            bn = new BigNumber(n, 16);
-                        } else {
-                            return n;
-                        }
-                    }
-                    break;
-                case Array:
-                    len = n.length;
-                    bn = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        bn[i] = this.bignum(n[i], encoding, nowrap);
-                    }
-                    break;
-                default:
-                    try {
-                        bn = new BigNumber(n);
-                    } catch (ex) {
-                        try {
-                            bn = new BigNumber(n, 16);
-                        } catch (exc) {
-                            return n;
-                        }
-                    }
-            }
-            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
-                if (!nowrap && bn.gte(this.constants.BYTES_32)) {
-                    bn = bn.sub(this.constants.MOD);
-                }
-                if (encoding) {
-                    if (encoding === "number") {
-                        bn = bn.toNumber();
-                    } else if (encoding === "string") {
-                        bn = bn.toFixed();
-                    } else if (encoding === "hex") {
-                        bn = this.prefix_hex(bn.toString(16));
-                    }
-                }
-            }
-            return bn;
-        } else {
-            return n;
-        }
-    },
-
-    fix: function (n, encode) {
-        var fixed;
-        if (n && n !== "0x" && !n.error && !n.message) {
-            if (encode && n.constructor === String) {
-                encode = encode.toLowerCase();
-            }
-            if (n.constructor === Array) {
-                var len = n.length;
-                fixed = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    fixed[i] = this.fix(n[i], encode);
-                }
-            } else {
-                if (n.constructor === BigNumber) {
-                    fixed = n.mul(this.constants.ONE).round();
-                } else {
-                    fixed = this.bignum(n).mul(this.constants.ONE).round();
-                }
-                if (fixed && fixed.gte(this.constants.BYTES_32)) {
-                    fixed = fixed.sub(this.constants.MOD);
-                }
-                if (encode) {
-                    if (encode === "string") {
-                        fixed = fixed.toFixed();
-                    } else if (encode === "hex") {
-                        if (fixed.constructor === BigNumber) {
-                            fixed = fixed.toString(16);
-                        }
-                        fixed = this.prefix_hex(fixed);
-                    }
-                }
-            }
-            return fixed;
-        } else {
-            return n;
-        }
-    },
-
-    unfix: function (n, encode) {
-        var unfixed;
-        if (n && n !== "0x" && !n.error && !n.message) {
-            if (encode) encode = encode.toLowerCase();
-            if (n.constructor === Array) {
-                var len = n.length;
-                unfixed = new Array(len);
-                for (var i = 0; i < len; ++i) {
-                    unfixed[i] = this.unfix(n[i], encode);
-                }
-            } else {
-                if (n.constructor === BigNumber) {
-                    unfixed = n.dividedBy(this.constants.ONE);
-                } else {
-                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
-                }
-                if (unfixed && encode) {
-                    if (encode === "hex") {
-                        unfixed = this.prefix_hex(unfixed);
-                    } else if (encode === "string") {
-                        unfixed = unfixed.toFixed();
-                    } else if (encode === "number") {
-                        unfixed = unfixed.toNumber();
-                    }
-                }
-            }
-            return unfixed;
-        } else {
-            return n;
-        }
-    },
-
-    string: function (n) {
-        return this.bignum(n, "string");
-    },
-
-    number: function (s) {
-        return this.bignum(s, "number");
-    },
-
-    chunk: function (total_len, chunk_len) {
-        chunk_len = chunk_len || 64;
-        return Math.ceil(total_len / chunk_len);
-    },
-
-    pad_right: function (s, chunk_len, prefix) {
-        chunk_len = chunk_len || 64;
-        s = this.strip_0x(s);
-        var multiple = chunk_len * this.chunk(s.length, chunk_len);
-        while (s.length < multiple) {
-            s += '0';
-        }
-        if (prefix) s = this.prefix_hex(s);
-        return s;
-    },
-
-    pad_left: function (s, chunk_len, prefix) {
-        chunk_len = chunk_len || 64;
-        s = this.strip_0x(s);
-        var multiple = chunk_len * this.chunk(s.length, chunk_len);
-        while (s.length < multiple) {
-            s = '0' + s;
-        }
-        if (prefix) s = this.prefix_hex(s);
-        return s;
-    },
-
-    encode_prefix: function (funcname, signature) {
-        signature = signature || "";
-        var summary = funcname + "(";
-        for (var i = 0, len = signature.length; i < len; ++i) {
-            switch (signature[i]) {
-                case 's':
-                    summary += "bytes";
-                    break;
-                case 'b':
-                    summary += "bytes";
-                    var j = 1;
-                    while (this.is_numeric(signature[i+j])) {
-                        summary += signature[i+j].toString();
-                        j++;
-                    }
-                    i += j;
-                    break;
-                case 'i':
-                    summary += "int256";
-                    break;
-                case 'a':
-                    summary += "int256[]";
-                    break;
-                default:
-                    summary += "weird";
-            }
-            if (i !== len - 1) summary += ",";
-        }
-        var prefix = keccak_256(summary + ")").slice(0, 8);
-        while (prefix.slice(0, 1) === '0') {
-            prefix = prefix.slice(1);
-        }
-        return "0x" + prefix;
-    },
-
-    parse_signature: function (signature) {
-        var types = [];
-        for (var i = 0, len = signature.length; i < len; ++i) {
-            if (this.is_numeric(signature[i])) {
-                types[types.length - 1] += signature[i].toString();
-            } else {
-                if (signature[i] === 's') {
-                    types.push("bytes");
-                } else if (signature[i] === 'b') {
-                    types.push("bytes");
-                } else if (signature[i] === 'a') {
-                    types.push("int256[]");
-                } else {
-                    types.push("int256");
-                }
-            }
-        }
-        return types;
-    },
-
-    parse_params: function (params) {
-        if (params !== undefined && params !== null &&
-            params !== [] && params !== "")
-        {
-            if (params.constructor === String) {
-                if (params.slice(0,1) === "[" &&
-                    params.slice(-1) === "]")
-                {
-                    params = JSON.parse(params);
-                }
-                if (params.constructor === String) {
-                    params = [params];
-                }
-            } else if (params.constructor === Number) {
-                params = [params];
-            }
-        } else {
-            params = [];
-        }
-        return params;
-    },
-
-    encode_int: function (value) {
-        var cs, x, output;
-        cs = [];
-        x = new BigNumber(value);
-        while (x.gt(new BigNumber(0))) {
-            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
-            x = x.dividedBy(new BigNumber(256)).floor();
-        }
-        output = this.encode_hex((cs.reverse()).join(''));
-        while (output.length < 64) {
-            output = '0' + output;
-        }
-        return output;
-    },
-
-    // static parameter encoding
-
-    encode_int256: function (encoding, param) {
-        if (param !== undefined && param !== null && param !== [] && param !== "") {
-
-            // input is a javascript number
-            if (param.constructor === Number) {
-                param = this.bignum(param);
-                if (param.lt(new BigNumber(0))) {
-                    param = param.add(this.constants.MOD);
-                }
-                encoding.statics += this.encode_int(param);
-
-            // input is a string
-            } else if (param.constructor === String) {
-
-                // negative hex
-                if (param.slice(0,1) === '-') {
-                    param = this.bignum(param).add(this.constants.MOD).toFixed();
-                    encoding.statics += this.encode_int(param);
-
-                // positive hex
-                } else if (param.slice(0,2) === "0x") {
-                    encoding.statics += this.pad_left(param.slice(2));
-
-                // decimal (base-10 integer)
-                } else {
-                    encoding.statics += this.encode_int(param);
-                }
-            }
-
-            // size in multiples of 32
-            encoding.chunks += this.chunk(encoding.statics.length);
-        }
-        return encoding;
-    },
-
-    encode_bytesN: function (encoding, param) {
-        if (param !== undefined && param !== null && param !== [] && param !== "") {
-            while (param.length) {
-                encoding.statics += this.pad_right(this.encode_hex(param.slice(0, 64)));
-                param = param.slice(64);
-            }
-            encoding.chunks += this.chunk(encoding.statics.length);
-        }
-        return encoding;
-    },
-
-    // dynamic parameter encoding
-
-    // offset (in multiples of 32)
-    offset: function (len, num_params) {
-        return this.encode_int(32 * (num_params + this.chunk(len)));
-    },
-
-    encode_bytes: function (encoding, param, num_params) {
-        encoding.statics += this.offset(encoding.dynamics.length, num_params);
-        encoding.dynamics += this.encode_int(param.length);
-        encoding.dynamics += this.pad_right(this.encode_hex(param));
-        return encoding;
-    },
-
-    encode_int256a: function (encoding, param, num_params) {
-        encoding.statics += this.offset(encoding.dynamics.length, num_params);
-        var arraylen = param.length;
-        encoding.dynamics += this.encode_int(arraylen);
-        for (var j = 0; j < arraylen; ++j) {
-            if (param[j] !== undefined) {
-                if (param[j].constructor === Number) {
-                    encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
-                } else if (param[j].constructor === String) {
-                    if (param[j].slice(0,1) === '-') {
-                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
-                    } else if (param[j].slice(0,2) === "0x") {
-                        encoding.dynamics += this.pad_left(param[j].slice(2));
-                    } else {
-                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
-                    }
-                }
-                encoding.dynamics = this.pad_right(encoding.dynamics);
-            }
-        }
-        return encoding;
-    },
-
-    encode_data: function (itx) {
-        var tx, num_params, types, encoding;
-        tx = this.copy(itx);
-        
-        // parse signature and parameter array
-        types = this.parse_signature(tx.signature);
-        num_params = tx.signature.replace(/\d+/g, '').length;
-        tx.params = this.parse_params(tx.params);
-
-        // chunks: size of the static encoding (in multiples of 32)
-        encoding = { chunks: 0, statics: '', dynamics: '' };
-
-        // encode parameters
-        if (num_params === tx.params.length) {
-            for (var i = 0; i < num_params; ++i) {
-                if (types[i] === "int256") {
-                    encoding = this.encode_int256(encoding, tx.params[i]);
-                } else if (types[i] === "bytes" || types[i] === "string") {
-                    encoding = this.encode_bytes(encoding, tx.params[i], num_params);
-                } else if (types[i] === "int256[]") {
-                    encoding = this.encode_int256a(encoding, tx.params[i], num_params);
-                } else {
-                    // var num_bytes = parseInt(types[i].replace("bytes", ''));
-                    encoding = this.encode_bytesN(encoding, tx.params[i]);
-                }
-            }
-            return encoding.statics + encoding.dynamics;
-
-        // number of parameters provided didn't match the signature
-        } else {
-            return new Error("wrong number of parameters");
-        }
-    },
-
-    // hex-encode a function's ABI data and return it
-    encode: function (tx) {
-        tx.signature = tx.signature || "";
-        return this.encode_prefix(tx.method, tx.signature) + this.encode_data(tx);
-    }
-};
-
-}).call(this,require("buffer").Buffer)
-},{"bignumber.js":9,"buffer":232,"js-sha3":8}],8:[function(require,module,exports){
-(function (global){
-/*
- * js-sha3 v0.3.1
- * https://github.com/emn178/js-sha3
- *
- * Copyright 2015, emn178@gmail.com
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
- */
-;(function(root, undefined) {
-  'use strict';
-
-  var NODE_JS = typeof(module) != 'undefined';
-  if(NODE_JS) {
-    root = global;
-    if(root.JS_SHA3_TEST) {
-      root.navigator = { userAgent: 'Chrome'};
-    }
-  }
-  var CHROME = (root.JS_SHA3_TEST || !NODE_JS) && navigator.userAgent.indexOf('Chrome') != -1;
-  var HEX_CHARS = '0123456789abcdef'.split('');
-  var KECCAK_PADDING = [1, 256, 65536, 16777216];
-  var PADDING = [6, 1536, 393216, 100663296];
-  var SHIFT = [0, 8, 16, 24];
-  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
-            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
-            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
-
-  var blocks = [], s = [];
-
-  var keccak_224 = function(message) {
-    return keccak(message, 224, KECCAK_PADDING);
-  };
-
-  var keccak_256 = function(message) {
-    return keccak(message, 256, KECCAK_PADDING);
-  };
-
-  var keccak_384 = function(message) {
-    return keccak(message, 384, KECCAK_PADDING);
-  };
-
-  var sha3_224 = function(message) {
-    return keccak(message, 224, PADDING);
-  };
-
-  var sha3_256 = function(message) {
-    return keccak(message, 256, PADDING);
-  };
-
-  var sha3_384 = function(message) {
-    return keccak(message, 384, PADDING);
-  };
-
-  var sha3_512 = function(message) {
-    return keccak(message, 512, PADDING);
-  };
-
-  var keccak = function(message, bits, padding) {
-    var notString = typeof(message) != 'string';
-    if(notString && message.constructor == root.ArrayBuffer) {
-      message = new Uint8Array(message);
-    }
-
-    if(bits === undefined) {
-      bits = 512;
-      padding = KECCAK_PADDING;
-    }
-
-    var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
-        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
-    var blockCount = (1600 - bits * 2) / 32;
-    var byteCount = blockCount * 4;
-
-    for(i = 0;i < 50;++i) {
-      s[i] = 0;
-    }
-
-    block = 0;
-    do {
-      blocks[0] = block;
-      for(i = 1;i < blockCount + 1;++i) {
-        blocks[i] = 0;
-      }
-      if(notString) {
-        for (i = start;index < length && i < byteCount; ++index) {
-          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
-        }
-      } else {
-        for (i = start;index < length && i < byteCount; ++index) {
-          code = message.charCodeAt(index);
-          if (code < 0x80) {
-            blocks[i >> 2] |= code << SHIFT[i++ & 3];
-          } else if (code < 0x800) {
-            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else if (code < 0xd800 || code >= 0xe000) {
-            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else {
-            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          }
-        }
-      }
-      start = i - byteCount;
-      if(index == length) {
-        blocks[i >> 2] |= padding[i & 3];
-        ++index;
-      }
-      block = blocks[blockCount];
-      if(index > length && i < byteCount) {
-        blocks[blockCount - 1] |= 0x80000000;
-        end = true;
-      }
-
-      for(i = 0;i < blockCount;++i) {
-        s[i] ^= blocks[i];
-      }
-
-      for(n = 0; n < 48; n += 2) {
-        c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
-        c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
-        c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
-        c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
-        c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
-        c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
-        c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
-        c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
-        c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
-        c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
-
-        h = c8 ^ ((c2 << 1) | (c3 >>> 31));
-        l = c9 ^ ((c3 << 1) | (c2 >>> 31));
-        s[0] ^= h;
-        s[1] ^= l;
-        s[10] ^= h;
-        s[11] ^= l;
-        s[20] ^= h;
-        s[21] ^= l;
-        s[30] ^= h;
-        s[31] ^= l;
-        s[40] ^= h;
-        s[41] ^= l;
-        h = c0 ^ ((c4 << 1) | (c5 >>> 31));
-        l = c1 ^ ((c5 << 1) | (c4 >>> 31));
-        s[2] ^= h;
-        s[3] ^= l;
-        s[12] ^= h;
-        s[13] ^= l;
-        s[22] ^= h;
-        s[23] ^= l;
-        s[32] ^= h;
-        s[33] ^= l;
-        s[42] ^= h;
-        s[43] ^= l;
-        h = c2 ^ ((c6 << 1) | (c7 >>> 31));
-        l = c3 ^ ((c7 << 1) | (c6 >>> 31));
-        s[4] ^= h;
-        s[5] ^= l;
-        s[14] ^= h;
-        s[15] ^= l;
-        s[24] ^= h;
-        s[25] ^= l;
-        s[34] ^= h;
-        s[35] ^= l;
-        s[44] ^= h;
-        s[45] ^= l;
-        h = c4 ^ ((c8 << 1) | (c9 >>> 31));
-        l = c5 ^ ((c9 << 1) | (c8 >>> 31));
-        s[6] ^= h;
-        s[7] ^= l;
-        s[16] ^= h;
-        s[17] ^= l;
-        s[26] ^= h;
-        s[27] ^= l;
-        s[36] ^= h;
-        s[37] ^= l;
-        s[46] ^= h;
-        s[47] ^= l;
-        h = c6 ^ ((c0 << 1) | (c1 >>> 31));
-        l = c7 ^ ((c1 << 1) | (c0 >>> 31));
-        s[8] ^= h;
-        s[9] ^= l;
-        s[18] ^= h;
-        s[19] ^= l;
-        s[28] ^= h;
-        s[29] ^= l;
-        s[38] ^= h;
-        s[39] ^= l;
-        s[48] ^= h;
-        s[49] ^= l;
-
-        b0 = s[0];
-        b1 = s[1];
-        b32 = (s[11] << 4) | (s[10] >>> 28);
-        b33 = (s[10] << 4) | (s[11] >>> 28);
-        b14 = (s[20] << 3) | (s[21] >>> 29);
-        b15 = (s[21] << 3) | (s[20] >>> 29);
-        b46 = (s[31] << 9) | (s[30] >>> 23);
-        b47 = (s[30] << 9) | (s[31] >>> 23);
-        b28 = (s[40] << 18) | (s[41] >>> 14);
-        b29 = (s[41] << 18) | (s[40] >>> 14);
-        b20 = (s[2] << 1) | (s[3] >>> 31);
-        b21 = (s[3] << 1) | (s[2] >>> 31);
-        b2 = (s[13] << 12) | (s[12] >>> 20);
-        b3 = (s[12] << 12) | (s[13] >>> 20);
-        b34 = (s[22] << 10) | (s[23] >>> 22);
-        b35 = (s[23] << 10) | (s[22] >>> 22);
-        b16 = (s[33] << 13) | (s[32] >>> 19);
-        b17 = (s[32] << 13) | (s[33] >>> 19);
-        b48 = (s[42] << 2) | (s[43] >>> 30);
-        b49 = (s[43] << 2) | (s[42] >>> 30);
-        b40 = (s[5] << 30) | (s[4] >>> 2);
-        b41 = (s[4] << 30) | (s[5] >>> 2);
-        b22 = (s[14] << 6) | (s[15] >>> 26);
-        b23 = (s[15] << 6) | (s[14] >>> 26);
-        b4 = (s[25] << 11) | (s[24] >>> 21);
-        b5 = (s[24] << 11) | (s[25] >>> 21);
-        b36 = (s[34] << 15) | (s[35] >>> 17);
-        b37 = (s[35] << 15) | (s[34] >>> 17);
-        b18 = (s[45] << 29) | (s[44] >>> 3);
-        b19 = (s[44] << 29) | (s[45] >>> 3);
-        b10 = (s[6] << 28) | (s[7] >>> 4);
-        b11 = (s[7] << 28) | (s[6] >>> 4);
-        b42 = (s[17] << 23) | (s[16] >>> 9);
-        b43 = (s[16] << 23) | (s[17] >>> 9);
-        b24 = (s[26] << 25) | (s[27] >>> 7);
-        b25 = (s[27] << 25) | (s[26] >>> 7);
-        b6 = (s[36] << 21) | (s[37] >>> 11);
-        b7 = (s[37] << 21) | (s[36] >>> 11);
-        b38 = (s[47] << 24) | (s[46] >>> 8);
-        b39 = (s[46] << 24) | (s[47] >>> 8);
-        b30 = (s[8] << 27) | (s[9] >>> 5);
-        b31 = (s[9] << 27) | (s[8] >>> 5);
-        b12 = (s[18] << 20) | (s[19] >>> 12);
-        b13 = (s[19] << 20) | (s[18] >>> 12);
-        b44 = (s[29] << 7) | (s[28] >>> 25);
-        b45 = (s[28] << 7) | (s[29] >>> 25);
-        b26 = (s[38] << 8) | (s[39] >>> 24);
-        b27 = (s[39] << 8) | (s[38] >>> 24);
-        b8 = (s[48] << 14) | (s[49] >>> 18);
-        b9 = (s[49] << 14) | (s[48] >>> 18);
-
-        s[0] = b0 ^ (~b2 & b4);
-        s[1] = b1 ^ (~b3 & b5);
-        s[10] = b10 ^ (~b12 & b14);
-        s[11] = b11 ^ (~b13 & b15);
-        s[20] = b20 ^ (~b22 & b24);
-        s[21] = b21 ^ (~b23 & b25);
-        s[30] = b30 ^ (~b32 & b34);
-        s[31] = b31 ^ (~b33 & b35);
-        s[40] = b40 ^ (~b42 & b44);
-        s[41] = b41 ^ (~b43 & b45);
-        s[2] = b2 ^ (~b4 & b6);
-        s[3] = b3 ^ (~b5 & b7);
-        s[12] = b12 ^ (~b14 & b16);
-        s[13] = b13 ^ (~b15 & b17);
-        s[22] = b22 ^ (~b24 & b26);
-        s[23] = b23 ^ (~b25 & b27);
-        s[32] = b32 ^ (~b34 & b36);
-        s[33] = b33 ^ (~b35 & b37);
-        s[42] = b42 ^ (~b44 & b46);
-        s[43] = b43 ^ (~b45 & b47);
-        s[4] = b4 ^ (~b6 & b8);
-        s[5] = b5 ^ (~b7 & b9);
-        s[14] = b14 ^ (~b16 & b18);
-        s[15] = b15 ^ (~b17 & b19);
-        s[24] = b24 ^ (~b26 & b28);
-        s[25] = b25 ^ (~b27 & b29);
-        s[34] = b34 ^ (~b36 & b38);
-        s[35] = b35 ^ (~b37 & b39);
-        s[44] = b44 ^ (~b46 & b48);
-        s[45] = b45 ^ (~b47 & b49);
-        s[6] = b6 ^ (~b8 & b0);
-        s[7] = b7 ^ (~b9 & b1);
-        s[16] = b16 ^ (~b18 & b10);
-        s[17] = b17 ^ (~b19 & b11);
-        s[26] = b26 ^ (~b28 & b20);
-        s[27] = b27 ^ (~b29 & b21);
-        s[36] = b36 ^ (~b38 & b30);
-        s[37] = b37 ^ (~b39 & b31);
-        s[46] = b46 ^ (~b48 & b40);
-        s[47] = b47 ^ (~b49 & b41);
-        s[8] = b8 ^ (~b0 & b2);
-        s[9] = b9 ^ (~b1 & b3);
-        s[18] = b18 ^ (~b10 & b12);
-        s[19] = b19 ^ (~b11 & b13);
-        s[28] = b28 ^ (~b20 & b22);
-        s[29] = b29 ^ (~b21 & b23);
-        s[38] = b38 ^ (~b30 & b32);
-        s[39] = b39 ^ (~b31 & b33);
-        s[48] = b48 ^ (~b40 & b42);
-        s[49] = b49 ^ (~b41 & b43);
-
-        s[0] ^= RC[n];
-        s[1] ^= RC[n + 1];
-      }
-    } while(!end);
-
-    var hex = '';
-    if(CHROME) {
-      b0 = s[0];
-      b1 = s[1];
-      b2 = s[2];
-      b3 = s[3];
-      b4 = s[4];
-      b5 = s[5];
-      b6 = s[6];
-      b7 = s[7];
-      b8 = s[8];
-      b9 = s[9];
-      b10 = s[10];
-      b11 = s[11];
-      b12 = s[12];
-      b13 = s[13];
-      b14 = s[14];
-      b15 = s[15];
-      hex += HEX_CHARS[(b0 >> 4) & 0x0F] + HEX_CHARS[b0 & 0x0F] +
-             HEX_CHARS[(b0 >> 12) & 0x0F] + HEX_CHARS[(b0 >> 8) & 0x0F] +
-             HEX_CHARS[(b0 >> 20) & 0x0F] + HEX_CHARS[(b0 >> 16) & 0x0F] +
-             HEX_CHARS[(b0 >> 28) & 0x0F] + HEX_CHARS[(b0 >> 24) & 0x0F] +
-             HEX_CHARS[(b1 >> 4) & 0x0F] + HEX_CHARS[b1 & 0x0F] +
-             HEX_CHARS[(b1 >> 12) & 0x0F] + HEX_CHARS[(b1 >> 8) & 0x0F] +
-             HEX_CHARS[(b1 >> 20) & 0x0F] + HEX_CHARS[(b1 >> 16) & 0x0F] +
-             HEX_CHARS[(b1 >> 28) & 0x0F] + HEX_CHARS[(b1 >> 24) & 0x0F] +
-             HEX_CHARS[(b2 >> 4) & 0x0F] + HEX_CHARS[b2 & 0x0F] +
-             HEX_CHARS[(b2 >> 12) & 0x0F] + HEX_CHARS[(b2 >> 8) & 0x0F] +
-             HEX_CHARS[(b2 >> 20) & 0x0F] + HEX_CHARS[(b2 >> 16) & 0x0F] +
-             HEX_CHARS[(b2 >> 28) & 0x0F] + HEX_CHARS[(b2 >> 24) & 0x0F] +
-             HEX_CHARS[(b3 >> 4) & 0x0F] + HEX_CHARS[b3 & 0x0F] +
-             HEX_CHARS[(b3 >> 12) & 0x0F] + HEX_CHARS[(b3 >> 8) & 0x0F] +
-             HEX_CHARS[(b3 >> 20) & 0x0F] + HEX_CHARS[(b3 >> 16) & 0x0F] +
-             HEX_CHARS[(b3 >> 28) & 0x0F] + HEX_CHARS[(b3 >> 24) & 0x0F] +
-             HEX_CHARS[(b4 >> 4) & 0x0F] + HEX_CHARS[b4 & 0x0F] +
-             HEX_CHARS[(b4 >> 12) & 0x0F] + HEX_CHARS[(b4 >> 8) & 0x0F] +
-             HEX_CHARS[(b4 >> 20) & 0x0F] + HEX_CHARS[(b4 >> 16) & 0x0F] +
-             HEX_CHARS[(b4 >> 28) & 0x0F] + HEX_CHARS[(b4 >> 24) & 0x0F] +
-             HEX_CHARS[(b5 >> 4) & 0x0F] + HEX_CHARS[b5 & 0x0F] +
-             HEX_CHARS[(b5 >> 12) & 0x0F] + HEX_CHARS[(b5 >> 8) & 0x0F] +
-             HEX_CHARS[(b5 >> 20) & 0x0F] + HEX_CHARS[(b5 >> 16) & 0x0F] +
-             HEX_CHARS[(b5 >> 28) & 0x0F] + HEX_CHARS[(b5 >> 24) & 0x0F] +
-             HEX_CHARS[(b6 >> 4) & 0x0F] + HEX_CHARS[b6 & 0x0F] +
-             HEX_CHARS[(b6 >> 12) & 0x0F] + HEX_CHARS[(b6 >> 8) & 0x0F] +
-             HEX_CHARS[(b6 >> 20) & 0x0F] + HEX_CHARS[(b6 >> 16) & 0x0F] +
-             HEX_CHARS[(b6 >> 28) & 0x0F] + HEX_CHARS[(b6 >> 24) & 0x0F];
-
-      if(bits >= 256) {
-        hex += HEX_CHARS[(b7 >> 4) & 0x0F] + HEX_CHARS[b7 & 0x0F] +
-               HEX_CHARS[(b7 >> 12) & 0x0F] + HEX_CHARS[(b7 >> 8) & 0x0F] +
-               HEX_CHARS[(b7 >> 20) & 0x0F] + HEX_CHARS[(b7 >> 16) & 0x0F] +
-               HEX_CHARS[(b7 >> 28) & 0x0F] + HEX_CHARS[(b7 >> 24) & 0x0F];
-      }
-      if(bits >= 384) {
-        hex += HEX_CHARS[(b8 >> 4) & 0x0F] + HEX_CHARS[b8 & 0x0F] +
-               HEX_CHARS[(b8 >> 12) & 0x0F] + HEX_CHARS[(b8 >> 8) & 0x0F] +
-               HEX_CHARS[(b8 >> 20) & 0x0F] + HEX_CHARS[(b8 >> 16) & 0x0F] +
-               HEX_CHARS[(b8 >> 28) & 0x0F] + HEX_CHARS[(b8 >> 24) & 0x0F] +
-               HEX_CHARS[(b9 >> 4) & 0x0F] + HEX_CHARS[b9 & 0x0F] +
-               HEX_CHARS[(b9 >> 12) & 0x0F] + HEX_CHARS[(b9 >> 8) & 0x0F] +
-               HEX_CHARS[(b9 >> 20) & 0x0F] + HEX_CHARS[(b9 >> 16) & 0x0F] +
-               HEX_CHARS[(b9 >> 28) & 0x0F] + HEX_CHARS[(b9 >> 24) & 0x0F] +
-               HEX_CHARS[(b10 >> 4) & 0x0F] + HEX_CHARS[b10 & 0x0F] +
-               HEX_CHARS[(b10 >> 12) & 0x0F] + HEX_CHARS[(b10 >> 8) & 0x0F] +
-               HEX_CHARS[(b10 >> 20) & 0x0F] + HEX_CHARS[(b10 >> 16) & 0x0F] +
-               HEX_CHARS[(b10 >> 28) & 0x0F] + HEX_CHARS[(b10 >> 24) & 0x0F] +
-               HEX_CHARS[(b11 >> 4) & 0x0F] + HEX_CHARS[b11 & 0x0F] +
-               HEX_CHARS[(b11 >> 12) & 0x0F] + HEX_CHARS[(b11 >> 8) & 0x0F] +
-               HEX_CHARS[(b11 >> 20) & 0x0F] + HEX_CHARS[(b11 >> 16) & 0x0F] +
-               HEX_CHARS[(b11 >> 28) & 0x0F] + HEX_CHARS[(b11 >> 24) & 0x0F];
-      }
-      if(bits == 512) {
-        hex += HEX_CHARS[(b12 >> 4) & 0x0F] + HEX_CHARS[b12 & 0x0F] +
-               HEX_CHARS[(b12 >> 12) & 0x0F] + HEX_CHARS[(b12 >> 8) & 0x0F] +
-               HEX_CHARS[(b12 >> 20) & 0x0F] + HEX_CHARS[(b12 >> 16) & 0x0F] +
-               HEX_CHARS[(b12 >> 28) & 0x0F] + HEX_CHARS[(b12 >> 24) & 0x0F] +
-               HEX_CHARS[(b13 >> 4) & 0x0F] + HEX_CHARS[b13 & 0x0F] +
-               HEX_CHARS[(b13 >> 12) & 0x0F] + HEX_CHARS[(b13 >> 8) & 0x0F] +
-               HEX_CHARS[(b13 >> 20) & 0x0F] + HEX_CHARS[(b13 >> 16) & 0x0F] +
-               HEX_CHARS[(b13 >> 28) & 0x0F] + HEX_CHARS[(b13 >> 24) & 0x0F] +
-               HEX_CHARS[(b14 >> 4) & 0x0F] + HEX_CHARS[b14 & 0x0F] +
-               HEX_CHARS[(b14 >> 12) & 0x0F] + HEX_CHARS[(b14 >> 8) & 0x0F] +
-               HEX_CHARS[(b14 >> 20) & 0x0F] + HEX_CHARS[(b14 >> 16) & 0x0F] +
-               HEX_CHARS[(b14 >> 28) & 0x0F] + HEX_CHARS[(b14 >> 24) & 0x0F] +
-               HEX_CHARS[(b15 >> 4) & 0x0F] + HEX_CHARS[b15 & 0x0F] +
-               HEX_CHARS[(b15 >> 12) & 0x0F] + HEX_CHARS[(b15 >> 8) & 0x0F] +
-               HEX_CHARS[(b15 >> 20) & 0x0F] + HEX_CHARS[(b15 >> 16) & 0x0F] +
-               HEX_CHARS[(b15 >> 28) & 0x0F] + HEX_CHARS[(b15 >> 24) & 0x0F];
-      }
-    } else {
-      for(i = 0, n = bits / 32;i < n;++i) {
-        h = s[i];
-        hex += HEX_CHARS[(h >> 4) & 0x0F] + HEX_CHARS[h & 0x0F] +
-               HEX_CHARS[(h >> 12) & 0x0F] + HEX_CHARS[(h >> 8) & 0x0F] +
-               HEX_CHARS[(h >> 20) & 0x0F] + HEX_CHARS[(h >> 16) & 0x0F] +
-               HEX_CHARS[(h >> 28) & 0x0F] + HEX_CHARS[(h >> 24) & 0x0F];
-      }
-    }
-    return hex;
-  };
-  
-  if(!root.JS_SHA3_TEST && NODE_JS) {
-    module.exports = {
-      sha3_512: sha3_512,
-      sha3_384: sha3_384,
-      sha3_256: sha3_256,
-      sha3_224: sha3_224,
-      keccak_512: keccak,
-      keccak_384: keccak_384,
-      keccak_256: keccak_256,
-      keccak_224: keccak_224
-    };
-  } else if(root) {
-    root.sha3_512 = sha3_512;
-    root.sha3_384 = sha3_384;
-    root.sha3_256 = sha3_256;
-    root.sha3_224 = sha3_224;
-    root.keccak_512 = keccak;
-    root.keccak_384 = keccak_384;
-    root.keccak_256 = keccak_256;
-    root.keccak_224 = keccak_224;
-  }
-}(this));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{"_process":212}],10:[function(require,module,exports){
 /*! bignumber.js v2.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -6434,7 +9468,7 @@ module.exports = {
     }
 })(this);
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -6930,9 +9964,9 @@ function b64_enc (data) {
 }));
 //UMD FOOTER END
 
-},{}],11:[function(require,module,exports){
-
 },{}],12:[function(require,module,exports){
+
+},{}],13:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -7293,9 +10327,9 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":229}],13:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],14:[function(require,module,exports){
+},{"util/":230}],14:[function(require,module,exports){
+arguments[4][12][0].apply(exports,arguments)
+},{"dup":12}],15:[function(require,module,exports){
 module.exports={
   "O_RDONLY": 0,
   "O_WRONLY": 1,
@@ -7506,7 +10540,7 @@ module.exports={
   "UV_UDP_REUSEADDR": 4
 }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -7585,7 +10619,7 @@ var publicEncrypt = require('public-encrypt')
   }
 })
 
-},{"browserify-cipher":16,"browserify-sign":46,"browserify-sign/algos":45,"create-ecdh":113,"create-hash":139,"create-hmac":152,"diffie-hellman":153,"pbkdf2":160,"public-encrypt":161,"randombytes":206}],16:[function(require,module,exports){
+},{"browserify-cipher":17,"browserify-sign":47,"browserify-sign/algos":46,"create-ecdh":114,"create-hash":140,"create-hmac":153,"diffie-hellman":154,"pbkdf2":161,"public-encrypt":162,"randombytes":207}],17:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -7660,7 +10694,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":19,"browserify-aes/modes":23,"browserify-des":34,"browserify-des/modes":35,"evp_bytestokey":44}],17:[function(require,module,exports){
+},{"browserify-aes/browser":20,"browserify-aes/modes":24,"browserify-des":35,"browserify-des/modes":36,"evp_bytestokey":45}],18:[function(require,module,exports){
 (function (Buffer){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
@@ -7841,7 +10875,7 @@ AES.prototype._doCryptBlock = function (M, keySchedule, SUB_MIX, SBOX) {
 exports.AES = AES
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],18:[function(require,module,exports){
+},{"buffer":233}],19:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -7942,7 +10976,7 @@ function xorTest (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":17,"./ghash":22,"buffer":232,"buffer-xor":31,"cipher-base":32,"inherits":208}],19:[function(require,module,exports){
+},{"./aes":18,"./ghash":23,"buffer":233,"buffer-xor":32,"cipher-base":33,"inherits":209}],20:[function(require,module,exports){
 var ciphers = require('./encrypter')
 exports.createCipher = exports.Cipher = ciphers.createCipher
 exports.createCipheriv = exports.Cipheriv = ciphers.createCipheriv
@@ -7955,7 +10989,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":20,"./encrypter":21,"./modes":23}],20:[function(require,module,exports){
+},{"./decrypter":21,"./encrypter":22,"./modes":24}],21:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -8096,7 +11130,7 @@ exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":17,"./authCipher":18,"./modes":23,"./modes/cbc":24,"./modes/cfb":25,"./modes/cfb1":26,"./modes/cfb8":27,"./modes/ctr":28,"./modes/ecb":29,"./modes/ofb":30,"./streamCipher":33,"buffer":232,"cipher-base":32,"evp_bytestokey":44,"inherits":208}],21:[function(require,module,exports){
+},{"./aes":18,"./authCipher":19,"./modes":24,"./modes/cbc":25,"./modes/cfb":26,"./modes/cfb1":27,"./modes/cfb8":28,"./modes/ctr":29,"./modes/ecb":30,"./modes/ofb":31,"./streamCipher":34,"buffer":233,"cipher-base":33,"evp_bytestokey":45,"inherits":209}],22:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -8222,7 +11256,7 @@ exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":17,"./authCipher":18,"./modes":23,"./modes/cbc":24,"./modes/cfb":25,"./modes/cfb1":26,"./modes/cfb8":27,"./modes/ctr":28,"./modes/ecb":29,"./modes/ofb":30,"./streamCipher":33,"buffer":232,"cipher-base":32,"evp_bytestokey":44,"inherits":208}],22:[function(require,module,exports){
+},{"./aes":18,"./authCipher":19,"./modes":24,"./modes/cbc":25,"./modes/cfb":26,"./modes/cfb1":27,"./modes/cfb8":28,"./modes/ctr":29,"./modes/ecb":30,"./modes/ofb":31,"./streamCipher":34,"buffer":233,"cipher-base":33,"evp_bytestokey":45,"inherits":209}],23:[function(require,module,exports){
 (function (Buffer){
 var zeros = new Buffer(16)
 zeros.fill(0)
@@ -8324,7 +11358,7 @@ function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],23:[function(require,module,exports){
+},{"buffer":233}],24:[function(require,module,exports){
 exports['aes-128-ecb'] = {
   cipher: 'AES',
   key: 128,
@@ -8497,7 +11531,7 @@ exports['aes-256-gcm'] = {
   type: 'auth'
 }
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -8516,7 +11550,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":31}],25:[function(require,module,exports){
+},{"buffer-xor":32}],26:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -8551,7 +11585,7 @@ function encryptStart (self, data, decrypt) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"buffer-xor":31}],26:[function(require,module,exports){
+},{"buffer":233,"buffer-xor":32}],27:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad
@@ -8589,7 +11623,7 @@ function shiftIn (buffer, value) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],27:[function(require,module,exports){
+},{"buffer":233}],28:[function(require,module,exports){
 (function (Buffer){
 function encryptByte (self, byteParam, decrypt) {
   var pad = self._cipher.encryptBlock(self._prev)
@@ -8608,7 +11642,7 @@ exports.encrypt = function (self, chunk, decrypt) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],28:[function(require,module,exports){
+},{"buffer":233}],29:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -8643,7 +11677,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"buffer-xor":31}],29:[function(require,module,exports){
+},{"buffer":233,"buffer-xor":32}],30:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -8651,7 +11685,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -8671,7 +11705,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"buffer-xor":31}],31:[function(require,module,exports){
+},{"buffer":233,"buffer-xor":32}],32:[function(require,module,exports){
 (function (Buffer){
 module.exports = function xor (a, b) {
   var length = Math.min(a.length, b.length)
@@ -8685,7 +11719,7 @@ module.exports = function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],32:[function(require,module,exports){
+},{"buffer":233}],33:[function(require,module,exports){
 (function (Buffer){
 var Transform = require('stream').Transform
 var inherits = require('inherits')
@@ -8779,7 +11813,7 @@ CipherBase.prototype._toString = function (value, enc, final) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"inherits":208,"stream":226,"string_decoder":227}],33:[function(require,module,exports){
+},{"buffer":233,"inherits":209,"stream":227,"string_decoder":228}],34:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -8808,7 +11842,7 @@ StreamCipher.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":17,"buffer":232,"cipher-base":32,"inherits":208}],34:[function(require,module,exports){
+},{"./aes":18,"buffer":233,"cipher-base":33,"inherits":209}],35:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -8855,7 +11889,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"cipher-base":36,"des.js":37,"inherits":208}],35:[function(require,module,exports){
+},{"buffer":233,"cipher-base":37,"des.js":38,"inherits":209}],36:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -8881,9 +11915,9 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],36:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"buffer":232,"dup":32,"inherits":208,"stream":226,"string_decoder":227}],37:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"buffer":233,"dup":33,"inherits":209,"stream":227,"string_decoder":228}],38:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -8892,7 +11926,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":38,"./des/cipher":39,"./des/des":40,"./des/ede":41,"./des/utils":42}],38:[function(require,module,exports){
+},{"./des/cbc":39,"./des/cipher":40,"./des/des":41,"./des/ede":42,"./des/utils":43}],39:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -8959,7 +11993,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":208,"minimalistic-assert":43}],39:[function(require,module,exports){
+},{"inherits":209,"minimalistic-assert":44}],40:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -9102,7 +12136,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":43}],40:[function(require,module,exports){
+},{"minimalistic-assert":44}],41:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -9247,7 +12281,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":37,"inherits":208,"minimalistic-assert":43}],41:[function(require,module,exports){
+},{"../des":38,"inherits":209,"minimalistic-assert":44}],42:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -9304,7 +12338,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":37,"inherits":208,"minimalistic-assert":43}],42:[function(require,module,exports){
+},{"../des":38,"inherits":209,"minimalistic-assert":44}],43:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -9562,7 +12596,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -9575,7 +12609,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (Buffer){
 var md5 = require('create-hash/md5')
 module.exports = EVP_BytesToKey
@@ -9647,7 +12681,7 @@ function EVP_BytesToKey (password, salt, keyLen, ivLen) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"create-hash/md5":141}],45:[function(require,module,exports){
+},{"buffer":233,"create-hash/md5":142}],46:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 exports['RSA-SHA224'] = exports.sha224WithRSAEncryption = {
@@ -9723,7 +12757,7 @@ exports['RSA-MD5'] = exports.md5WithRSAEncryption = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],46:[function(require,module,exports){
+},{"buffer":233}],47:[function(require,module,exports){
 (function (Buffer){
 var _algos = require('./algos')
 var createHash = require('create-hash')
@@ -9830,7 +12864,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algos":45,"./sign":111,"./verify":112,"buffer":232,"create-hash":139,"inherits":208,"stream":226}],47:[function(require,module,exports){
+},{"./algos":46,"./sign":112,"./verify":113,"buffer":233,"create-hash":140,"inherits":209,"stream":227}],48:[function(require,module,exports){
 'use strict'
 exports['1.3.132.0.10'] = 'secp256k1'
 
@@ -9844,7 +12878,7 @@ exports['1.3.132.0.34'] = 'p384'
 
 exports['1.3.132.0.35'] = 'p521'
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -13265,7 +16299,7 @@ exports['1.3.132.0.35'] = 'p521'
   };
 })(typeof module === 'undefined' || module, this);
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 var randomBytes = require('randombytes');
@@ -13309,7 +16343,7 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":48,"buffer":232,"randombytes":206}],50:[function(require,module,exports){
+},{"bn.js":49,"buffer":233,"randombytes":207}],51:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -13325,7 +16359,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":73,"./elliptic/curve":53,"./elliptic/curves":56,"./elliptic/ec":57,"./elliptic/eddsa":60,"./elliptic/hmac-drbg":63,"./elliptic/utils":65,"brorand":66}],51:[function(require,module,exports){
+},{"../package.json":74,"./elliptic/curve":54,"./elliptic/curves":57,"./elliptic/ec":58,"./elliptic/eddsa":61,"./elliptic/hmac-drbg":64,"./elliptic/utils":66,"brorand":67}],52:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -13678,7 +16712,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":50,"bn.js":48}],52:[function(require,module,exports){
+},{"../../elliptic":51,"bn.js":49}],53:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -14090,7 +17124,7 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":50,"../curve":53,"bn.js":48,"inherits":208}],53:[function(require,module,exports){
+},{"../../elliptic":51,"../curve":54,"bn.js":49,"inherits":209}],54:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -14100,7 +17134,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":51,"./edwards":52,"./mont":54,"./short":55}],54:[function(require,module,exports){
+},{"./base":52,"./edwards":53,"./mont":55,"./short":56}],55:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -14278,7 +17312,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":50,"../curve":53,"bn.js":48,"inherits":208}],55:[function(require,module,exports){
+},{"../../elliptic":51,"../curve":54,"bn.js":49,"inherits":209}],56:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -15189,7 +18223,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":50,"../curve":53,"bn.js":48,"inherits":208}],56:[function(require,module,exports){
+},{"../../elliptic":51,"../curve":54,"bn.js":49,"inherits":209}],57:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -15396,7 +18430,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":50,"./precomputed/secp256k1":64,"hash.js":67}],57:[function(require,module,exports){
+},{"../elliptic":51,"./precomputed/secp256k1":65,"hash.js":68}],58:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -15620,7 +18654,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":50,"./key":58,"./signature":59,"bn.js":48}],58:[function(require,module,exports){
+},{"../../elliptic":51,"./key":59,"./signature":60,"bn.js":49}],59:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -15729,7 +18763,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":48}],59:[function(require,module,exports){
+},{"bn.js":49}],60:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -15866,7 +18900,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":50,"bn.js":48}],60:[function(require,module,exports){
+},{"../../elliptic":51,"bn.js":49}],61:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -15986,7 +19020,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":50,"./key":61,"./signature":62,"hash.js":67}],61:[function(require,module,exports){
+},{"../../elliptic":51,"./key":62,"./signature":63,"hash.js":68}],62:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -16084,7 +19118,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":50}],62:[function(require,module,exports){
+},{"../../elliptic":51}],63:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -16152,7 +19186,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":50,"bn.js":48}],63:[function(require,module,exports){
+},{"../../elliptic":51,"bn.js":49}],64:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -16268,7 +19302,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"../elliptic":50,"hash.js":67}],64:[function(require,module,exports){
+},{"../elliptic":51,"hash.js":68}],65:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -17050,7 +20084,7 @@ module.exports = {
   }
 };
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -17225,7 +20259,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":48}],66:[function(require,module,exports){
+},{"bn.js":49}],67:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -17284,7 +20318,7 @@ if (typeof window === 'object') {
   }
 }
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -17301,7 +20335,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":68,"./hash/hmac":69,"./hash/ripemd":70,"./hash/sha":71,"./hash/utils":72}],68:[function(require,module,exports){
+},{"./hash/common":69,"./hash/hmac":70,"./hash/ripemd":71,"./hash/sha":72,"./hash/utils":73}],69:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 var assert = utils.assert;
@@ -17394,7 +20428,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"../hash":67}],69:[function(require,module,exports){
+},{"../hash":68}],70:[function(require,module,exports){
 var hmac = exports;
 
 var hash = require('../hash');
@@ -17444,7 +20478,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"../hash":67}],70:[function(require,module,exports){
+},{"../hash":68}],71:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 
@@ -17590,7 +20624,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"../hash":67}],71:[function(require,module,exports){
+},{"../hash":68}],72:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 var assert = utils.assert;
@@ -18156,7 +21190,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../hash":67}],72:[function(require,module,exports){
+},{"../hash":68}],73:[function(require,module,exports){
 var utils = exports;
 var inherits = require('inherits');
 
@@ -18415,7 +21449,7 @@ function shr64_lo(ah, al, num) {
 };
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":208}],73:[function(require,module,exports){
+},{"inherits":209}],74:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.2.3",
@@ -18490,7 +21524,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -18504,7 +21538,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 
@@ -18623,7 +21657,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"asn1.js":78}],76:[function(require,module,exports){
+},{"asn1.js":79}],77:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\r?\nDEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\r?\n\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n/m
@@ -18657,7 +21691,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":95,"buffer":232,"evp_bytestokey":110}],77:[function(require,module,exports){
+},{"browserify-aes":96,"buffer":233,"evp_bytestokey":111}],78:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -18762,7 +21796,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":74,"./asn1":75,"./fixProc":76,"browserify-aes":95,"buffer":232,"pbkdf2":160}],78:[function(require,module,exports){
+},{"./aesid.json":75,"./asn1":76,"./fixProc":77,"browserify-aes":96,"buffer":233,"pbkdf2":161}],79:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -18773,7 +21807,7 @@ asn1.constants = require('./asn1/constants');
 asn1.decoders = require('./asn1/decoders');
 asn1.encoders = require('./asn1/encoders');
 
-},{"./asn1/api":79,"./asn1/base":81,"./asn1/constants":85,"./asn1/decoders":87,"./asn1/encoders":90,"bn.js":48}],79:[function(require,module,exports){
+},{"./asn1/api":80,"./asn1/base":82,"./asn1/constants":86,"./asn1/decoders":88,"./asn1/encoders":91,"bn.js":49}],80:[function(require,module,exports){
 var asn1 = require('../asn1');
 var inherits = require('inherits');
 
@@ -18836,7 +21870,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":78,"inherits":208,"vm":230}],80:[function(require,module,exports){
+},{"../asn1":79,"inherits":209,"vm":231}],81:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -18954,7 +21988,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":81,"buffer":232,"inherits":208}],81:[function(require,module,exports){
+},{"../base":82,"buffer":233,"inherits":209}],82:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -18962,7 +21996,7 @@ base.DecoderBuffer = require('./buffer').DecoderBuffer;
 base.EncoderBuffer = require('./buffer').EncoderBuffer;
 base.Node = require('./node');
 
-},{"./buffer":80,"./node":82,"./reporter":83}],82:[function(require,module,exports){
+},{"./buffer":81,"./node":83,"./reporter":84}],83:[function(require,module,exports){
 var Reporter = require('../base').Reporter;
 var EncoderBuffer = require('../base').EncoderBuffer;
 var DecoderBuffer = require('../base').DecoderBuffer;
@@ -19579,7 +22613,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":81,"minimalistic-assert":92}],83:[function(require,module,exports){
+},{"../base":82,"minimalistic-assert":93}],84:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -19683,7 +22717,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":208}],84:[function(require,module,exports){
+},{"inherits":209}],85:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -19727,7 +22761,7 @@ exports.tag = {
 };
 exports.tagByName = constants._reverse(exports.tag);
 
-},{"../constants":85}],85:[function(require,module,exports){
+},{"../constants":86}],86:[function(require,module,exports){
 var constants = exports;
 
 // Helper
@@ -19748,7 +22782,7 @@ constants._reverse = function reverse(map) {
 
 constants.der = require('./der');
 
-},{"./der":84}],86:[function(require,module,exports){
+},{"./der":85}],87:[function(require,module,exports){
 var inherits = require('inherits');
 
 var asn1 = require('../../asn1');
@@ -20071,13 +23105,13 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":78,"inherits":208}],87:[function(require,module,exports){
+},{"../../asn1":79,"inherits":209}],88:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
 decoders.pem = require('./pem');
 
-},{"./der":86,"./pem":88}],88:[function(require,module,exports){
+},{"./der":87,"./pem":89}],89:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -20128,7 +23162,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":86,"buffer":232,"inherits":208}],89:[function(require,module,exports){
+},{"./der":87,"buffer":233,"inherits":209}],90:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -20423,13 +23457,13 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":78,"buffer":232,"inherits":208}],90:[function(require,module,exports){
+},{"../../asn1":79,"buffer":233,"inherits":209}],91:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
 encoders.pem = require('./pem');
 
-},{"./der":89,"./pem":91}],91:[function(require,module,exports){
+},{"./der":90,"./pem":92}],92:[function(require,module,exports){
 var inherits = require('inherits');
 
 var DEREncoder = require('./der');
@@ -20452,45 +23486,45 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":89,"inherits":208}],92:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"dup":43}],93:[function(require,module,exports){
-arguments[4][17][0].apply(exports,arguments)
-},{"buffer":232,"dup":17}],94:[function(require,module,exports){
-arguments[4][18][0].apply(exports,arguments)
-},{"./aes":93,"./ghash":98,"buffer":232,"buffer-xor":107,"cipher-base":108,"dup":18,"inherits":208}],95:[function(require,module,exports){
-arguments[4][19][0].apply(exports,arguments)
-},{"./decrypter":96,"./encrypter":97,"./modes":99,"dup":19}],96:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"./aes":93,"./authCipher":94,"./modes":99,"./modes/cbc":100,"./modes/cfb":101,"./modes/cfb1":102,"./modes/cfb8":103,"./modes/ctr":104,"./modes/ecb":105,"./modes/ofb":106,"./streamCipher":109,"buffer":232,"cipher-base":108,"dup":20,"evp_bytestokey":110,"inherits":208}],97:[function(require,module,exports){
-arguments[4][21][0].apply(exports,arguments)
-},{"./aes":93,"./authCipher":94,"./modes":99,"./modes/cbc":100,"./modes/cfb":101,"./modes/cfb1":102,"./modes/cfb8":103,"./modes/ctr":104,"./modes/ecb":105,"./modes/ofb":106,"./streamCipher":109,"buffer":232,"cipher-base":108,"dup":21,"evp_bytestokey":110,"inherits":208}],98:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"buffer":232,"dup":22}],99:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],100:[function(require,module,exports){
-arguments[4][24][0].apply(exports,arguments)
-},{"buffer-xor":107,"dup":24}],101:[function(require,module,exports){
-arguments[4][25][0].apply(exports,arguments)
-},{"buffer":232,"buffer-xor":107,"dup":25}],102:[function(require,module,exports){
-arguments[4][26][0].apply(exports,arguments)
-},{"buffer":232,"dup":26}],103:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"buffer":232,"dup":27}],104:[function(require,module,exports){
-arguments[4][28][0].apply(exports,arguments)
-},{"buffer":232,"buffer-xor":107,"dup":28}],105:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"dup":29}],106:[function(require,module,exports){
-arguments[4][30][0].apply(exports,arguments)
-},{"buffer":232,"buffer-xor":107,"dup":30}],107:[function(require,module,exports){
-arguments[4][31][0].apply(exports,arguments)
-},{"buffer":232,"dup":31}],108:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"buffer":232,"dup":32,"inherits":208,"stream":226,"string_decoder":227}],109:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"./aes":93,"buffer":232,"cipher-base":108,"dup":33,"inherits":208}],110:[function(require,module,exports){
+},{"./der":90,"inherits":209}],93:[function(require,module,exports){
 arguments[4][44][0].apply(exports,arguments)
-},{"buffer":232,"create-hash/md5":141,"dup":44}],111:[function(require,module,exports){
+},{"dup":44}],94:[function(require,module,exports){
+arguments[4][18][0].apply(exports,arguments)
+},{"buffer":233,"dup":18}],95:[function(require,module,exports){
+arguments[4][19][0].apply(exports,arguments)
+},{"./aes":94,"./ghash":99,"buffer":233,"buffer-xor":108,"cipher-base":109,"dup":19,"inherits":209}],96:[function(require,module,exports){
+arguments[4][20][0].apply(exports,arguments)
+},{"./decrypter":97,"./encrypter":98,"./modes":100,"dup":20}],97:[function(require,module,exports){
+arguments[4][21][0].apply(exports,arguments)
+},{"./aes":94,"./authCipher":95,"./modes":100,"./modes/cbc":101,"./modes/cfb":102,"./modes/cfb1":103,"./modes/cfb8":104,"./modes/ctr":105,"./modes/ecb":106,"./modes/ofb":107,"./streamCipher":110,"buffer":233,"cipher-base":109,"dup":21,"evp_bytestokey":111,"inherits":209}],98:[function(require,module,exports){
+arguments[4][22][0].apply(exports,arguments)
+},{"./aes":94,"./authCipher":95,"./modes":100,"./modes/cbc":101,"./modes/cfb":102,"./modes/cfb1":103,"./modes/cfb8":104,"./modes/ctr":105,"./modes/ecb":106,"./modes/ofb":107,"./streamCipher":110,"buffer":233,"cipher-base":109,"dup":22,"evp_bytestokey":111,"inherits":209}],99:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"buffer":233,"dup":23}],100:[function(require,module,exports){
+arguments[4][24][0].apply(exports,arguments)
+},{"dup":24}],101:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"buffer-xor":108,"dup":25}],102:[function(require,module,exports){
+arguments[4][26][0].apply(exports,arguments)
+},{"buffer":233,"buffer-xor":108,"dup":26}],103:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"buffer":233,"dup":27}],104:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"buffer":233,"dup":28}],105:[function(require,module,exports){
+arguments[4][29][0].apply(exports,arguments)
+},{"buffer":233,"buffer-xor":108,"dup":29}],106:[function(require,module,exports){
+arguments[4][30][0].apply(exports,arguments)
+},{"dup":30}],107:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"buffer":233,"buffer-xor":108,"dup":31}],108:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"buffer":233,"dup":32}],109:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"buffer":233,"dup":33,"inherits":209,"stream":227,"string_decoder":228}],110:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"./aes":94,"buffer":233,"cipher-base":109,"dup":34,"inherits":209}],111:[function(require,module,exports){
+arguments[4][45][0].apply(exports,arguments)
+},{"buffer":233,"create-hash/md5":142,"dup":45}],112:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -20679,7 +23713,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":47,"bn.js":48,"browserify-rsa":49,"buffer":232,"create-hmac":152,"elliptic":50,"parse-asn1":77}],112:[function(require,module,exports){
+},{"./curves":48,"bn.js":49,"browserify-rsa":50,"buffer":233,"create-hmac":153,"elliptic":51,"parse-asn1":78}],113:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var curves = require('./curves')
@@ -20786,7 +23820,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":47,"bn.js":48,"buffer":232,"elliptic":50,"parse-asn1":77}],113:[function(require,module,exports){
+},{"./curves":48,"bn.js":49,"buffer":233,"elliptic":51,"parse-asn1":78}],114:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -20912,57 +23946,57 @@ function formatReturnValue(bn, enc, len) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":114,"buffer":232,"elliptic":115}],114:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"dup":48}],115:[function(require,module,exports){
-arguments[4][50][0].apply(exports,arguments)
-},{"../package.json":138,"./elliptic/curve":118,"./elliptic/curves":121,"./elliptic/ec":122,"./elliptic/eddsa":125,"./elliptic/hmac-drbg":128,"./elliptic/utils":130,"brorand":131,"dup":50}],116:[function(require,module,exports){
+},{"bn.js":115,"buffer":233,"elliptic":116}],115:[function(require,module,exports){
+arguments[4][49][0].apply(exports,arguments)
+},{"dup":49}],116:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
-},{"../../elliptic":115,"bn.js":114,"dup":51}],117:[function(require,module,exports){
+},{"../package.json":139,"./elliptic/curve":119,"./elliptic/curves":122,"./elliptic/ec":123,"./elliptic/eddsa":126,"./elliptic/hmac-drbg":129,"./elliptic/utils":131,"brorand":132,"dup":51}],117:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"../../elliptic":115,"../curve":118,"bn.js":114,"dup":52,"inherits":208}],118:[function(require,module,exports){
+},{"../../elliptic":116,"bn.js":115,"dup":52}],118:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"./base":116,"./edwards":117,"./mont":119,"./short":120,"dup":53}],119:[function(require,module,exports){
+},{"../../elliptic":116,"../curve":119,"bn.js":115,"dup":53,"inherits":209}],119:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"../../elliptic":115,"../curve":118,"bn.js":114,"dup":54,"inherits":208}],120:[function(require,module,exports){
+},{"./base":117,"./edwards":118,"./mont":120,"./short":121,"dup":54}],120:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"../../elliptic":115,"../curve":118,"bn.js":114,"dup":55,"inherits":208}],121:[function(require,module,exports){
+},{"../../elliptic":116,"../curve":119,"bn.js":115,"dup":55,"inherits":209}],121:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"../elliptic":115,"./precomputed/secp256k1":129,"dup":56,"hash.js":132}],122:[function(require,module,exports){
+},{"../../elliptic":116,"../curve":119,"bn.js":115,"dup":56,"inherits":209}],122:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"../../elliptic":115,"./key":123,"./signature":124,"bn.js":114,"dup":57}],123:[function(require,module,exports){
+},{"../elliptic":116,"./precomputed/secp256k1":130,"dup":57,"hash.js":133}],123:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"bn.js":114,"dup":58}],124:[function(require,module,exports){
+},{"../../elliptic":116,"./key":124,"./signature":125,"bn.js":115,"dup":58}],124:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"../../elliptic":115,"bn.js":114,"dup":59}],125:[function(require,module,exports){
+},{"bn.js":115,"dup":59}],125:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../../elliptic":115,"./key":126,"./signature":127,"dup":60,"hash.js":132}],126:[function(require,module,exports){
+},{"../../elliptic":116,"bn.js":115,"dup":60}],126:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../../elliptic":115,"dup":61}],127:[function(require,module,exports){
+},{"../../elliptic":116,"./key":127,"./signature":128,"dup":61,"hash.js":133}],127:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../elliptic":115,"bn.js":114,"dup":62}],128:[function(require,module,exports){
+},{"../../elliptic":116,"dup":62}],128:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"../elliptic":115,"dup":63,"hash.js":132}],129:[function(require,module,exports){
+},{"../../elliptic":116,"bn.js":115,"dup":63}],129:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"dup":64}],130:[function(require,module,exports){
+},{"../elliptic":116,"dup":64,"hash.js":133}],130:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"bn.js":114,"dup":65}],131:[function(require,module,exports){
+},{"dup":65}],131:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],132:[function(require,module,exports){
+},{"bn.js":115,"dup":66}],132:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
-},{"./hash/common":133,"./hash/hmac":134,"./hash/ripemd":135,"./hash/sha":136,"./hash/utils":137,"dup":67}],133:[function(require,module,exports){
+},{"dup":67}],133:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"../hash":132,"dup":68}],134:[function(require,module,exports){
+},{"./hash/common":134,"./hash/hmac":135,"./hash/ripemd":136,"./hash/sha":137,"./hash/utils":138,"dup":68}],134:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"../hash":132,"dup":69}],135:[function(require,module,exports){
+},{"../hash":133,"dup":69}],135:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../hash":132,"dup":70}],136:[function(require,module,exports){
+},{"../hash":133,"dup":70}],136:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../hash":132,"dup":71}],137:[function(require,module,exports){
+},{"../hash":133,"dup":71}],137:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"dup":72,"inherits":208}],138:[function(require,module,exports){
+},{"../hash":133,"dup":72}],138:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"dup":73}],139:[function(require,module,exports){
+},{"dup":73,"inherits":209}],139:[function(require,module,exports){
+arguments[4][74][0].apply(exports,arguments)
+},{"dup":74}],140:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var inherits = require('inherits')
@@ -21018,7 +24052,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":141,"buffer":232,"cipher-base":142,"inherits":208,"ripemd160":143,"sha.js":145}],140:[function(require,module,exports){
+},{"./md5":142,"buffer":233,"cipher-base":143,"inherits":209,"ripemd160":144,"sha.js":146}],141:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var intSize = 4;
@@ -21055,7 +24089,7 @@ function hash(buf, fn, hashSize, bigEndian) {
 }
 exports.hash = hash;
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],141:[function(require,module,exports){
+},{"buffer":233}],142:[function(require,module,exports){
 'use strict';
 /*
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
@@ -21212,9 +24246,9 @@ function bit_rol(num, cnt)
 module.exports = function md5(buf) {
   return helpers.hash(buf, core_md5, 16);
 };
-},{"./helpers":140}],142:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"buffer":232,"dup":32,"inherits":208,"stream":226,"string_decoder":227}],143:[function(require,module,exports){
+},{"./helpers":141}],143:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"buffer":233,"dup":33,"inherits":209,"stream":227,"string_decoder":228}],144:[function(require,module,exports){
 (function (Buffer){
 /*
 CryptoJS v3.1.2
@@ -21428,7 +24462,7 @@ function ripemd160 (message) {
 module.exports = ripemd160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],144:[function(require,module,exports){
+},{"buffer":233}],145:[function(require,module,exports){
 (function (Buffer){
 // prototype class for hash functions
 function Hash (blockSize, finalSize) {
@@ -21501,7 +24535,7 @@ Hash.prototype._update = function () {
 module.exports = Hash
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],145:[function(require,module,exports){
+},{"buffer":233}],146:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -21518,7 +24552,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":146,"./sha1":147,"./sha224":148,"./sha256":149,"./sha384":150,"./sha512":151}],146:[function(require,module,exports){
+},{"./sha":147,"./sha1":148,"./sha224":149,"./sha256":150,"./sha384":151,"./sha512":152}],147:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
@@ -21615,7 +24649,7 @@ Sha.prototype._hash = function () {
 module.exports = Sha
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":144,"buffer":232,"inherits":208}],147:[function(require,module,exports){
+},{"./hash":145,"buffer":233,"inherits":209}],148:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -21717,7 +24751,7 @@ Sha1.prototype._hash = function () {
 module.exports = Sha1
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":144,"buffer":232,"inherits":208}],148:[function(require,module,exports){
+},{"./hash":145,"buffer":233,"inherits":209}],149:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -21773,7 +24807,7 @@ Sha224.prototype._hash = function () {
 module.exports = Sha224
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":144,"./sha256":149,"buffer":232,"inherits":208}],149:[function(require,module,exports){
+},{"./hash":145,"./sha256":150,"buffer":233,"inherits":209}],150:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -21911,7 +24945,7 @@ Sha256.prototype._hash = function () {
 module.exports = Sha256
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":144,"buffer":232,"inherits":208}],150:[function(require,module,exports){
+},{"./hash":145,"buffer":233,"inherits":209}],151:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
@@ -21971,7 +25005,7 @@ Sha384.prototype._hash = function () {
 module.exports = Sha384
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":144,"./sha512":151,"buffer":232,"inherits":208}],151:[function(require,module,exports){
+},{"./hash":145,"./sha512":152,"buffer":233,"inherits":209}],152:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var Hash = require('./hash')
@@ -22234,7 +25268,7 @@ Sha512.prototype._hash = function () {
 module.exports = Sha512
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":144,"buffer":232,"inherits":208}],152:[function(require,module,exports){
+},{"./hash":145,"buffer":233,"inherits":209}],153:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var createHash = require('create-hash/browser');
@@ -22306,7 +25340,7 @@ module.exports = function createHmac(alg, key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"create-hash/browser":139,"inherits":208,"stream":226}],153:[function(require,module,exports){
+},{"buffer":233,"create-hash/browser":140,"inherits":209,"stream":227}],154:[function(require,module,exports){
 (function (Buffer){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -22352,7 +25386,7 @@ exports.DiffieHellmanGroup = exports.createDiffieHellmanGroup = exports.getDiffi
 exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/dh":154,"./lib/generatePrime":155,"./lib/primes.json":156,"buffer":232}],154:[function(require,module,exports){
+},{"./lib/dh":155,"./lib/generatePrime":156,"./lib/primes.json":157,"buffer":233}],155:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -22520,7 +25554,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":155,"bn.js":157,"buffer":232,"miller-rabin":158,"randombytes":206}],155:[function(require,module,exports){
+},{"./generatePrime":156,"bn.js":158,"buffer":233,"miller-rabin":159,"randombytes":207}],156:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -22627,7 +25661,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":157,"miller-rabin":158,"randombytes":206}],156:[function(require,module,exports){
+},{"bn.js":158,"miller-rabin":159,"randombytes":207}],157:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -22662,9 +25696,9 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],157:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"dup":48}],158:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
+arguments[4][49][0].apply(exports,arguments)
+},{"dup":49}],159:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -22779,9 +25813,9 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":157,"brorand":159}],159:[function(require,module,exports){
-arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],160:[function(require,module,exports){
+},{"bn.js":158,"brorand":160}],160:[function(require,module,exports){
+arguments[4][67][0].apply(exports,arguments)
+},{"dup":67}],161:[function(require,module,exports){
 (function (Buffer){
 var createHmac = require('create-hmac')
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
@@ -22865,7 +25899,7 @@ function pbkdf2Sync (password, salt, iterations, keylen, digest) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"create-hmac":152}],161:[function(require,module,exports){
+},{"buffer":233,"create-hmac":153}],162:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -22876,7 +25910,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":202,"./publicEncrypt":203}],162:[function(require,module,exports){
+},{"./privateDecrypt":203,"./publicEncrypt":204}],163:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -22895,85 +25929,85 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"create-hash":139}],163:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"dup":48}],164:[function(require,module,exports){
+},{"buffer":233,"create-hash":140}],164:[function(require,module,exports){
 arguments[4][49][0].apply(exports,arguments)
-},{"bn.js":163,"buffer":232,"dup":49,"randombytes":206}],165:[function(require,module,exports){
-arguments[4][74][0].apply(exports,arguments)
-},{"dup":74}],166:[function(require,module,exports){
+},{"dup":49}],165:[function(require,module,exports){
+arguments[4][50][0].apply(exports,arguments)
+},{"bn.js":164,"buffer":233,"dup":50,"randombytes":207}],166:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
-},{"asn1.js":169,"dup":75}],167:[function(require,module,exports){
+},{"dup":75}],167:[function(require,module,exports){
 arguments[4][76][0].apply(exports,arguments)
-},{"browserify-aes":186,"buffer":232,"dup":76,"evp_bytestokey":201}],168:[function(require,module,exports){
+},{"asn1.js":170,"dup":76}],168:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"./aesid.json":165,"./asn1":166,"./fixProc":167,"browserify-aes":186,"buffer":232,"dup":77,"pbkdf2":160}],169:[function(require,module,exports){
+},{"browserify-aes":187,"buffer":233,"dup":77,"evp_bytestokey":202}],169:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"./asn1/api":170,"./asn1/base":172,"./asn1/constants":176,"./asn1/decoders":178,"./asn1/encoders":181,"bn.js":163,"dup":78}],170:[function(require,module,exports){
+},{"./aesid.json":166,"./asn1":167,"./fixProc":168,"browserify-aes":187,"buffer":233,"dup":78,"pbkdf2":161}],170:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"../asn1":169,"dup":79,"inherits":208,"vm":230}],171:[function(require,module,exports){
+},{"./asn1/api":171,"./asn1/base":173,"./asn1/constants":177,"./asn1/decoders":179,"./asn1/encoders":182,"bn.js":164,"dup":79}],171:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"../base":172,"buffer":232,"dup":80,"inherits":208}],172:[function(require,module,exports){
+},{"../asn1":170,"dup":80,"inherits":209,"vm":231}],172:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"./buffer":171,"./node":173,"./reporter":174,"dup":81}],173:[function(require,module,exports){
+},{"../base":173,"buffer":233,"dup":81,"inherits":209}],173:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"../base":172,"dup":82,"minimalistic-assert":183}],174:[function(require,module,exports){
+},{"./buffer":172,"./node":174,"./reporter":175,"dup":82}],174:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"dup":83,"inherits":208}],175:[function(require,module,exports){
+},{"../base":173,"dup":83,"minimalistic-assert":184}],175:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"../constants":176,"dup":84}],176:[function(require,module,exports){
+},{"dup":84,"inherits":209}],176:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"./der":175,"dup":85}],177:[function(require,module,exports){
+},{"../constants":177,"dup":85}],177:[function(require,module,exports){
 arguments[4][86][0].apply(exports,arguments)
-},{"../../asn1":169,"dup":86,"inherits":208}],178:[function(require,module,exports){
+},{"./der":176,"dup":86}],178:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"./der":177,"./pem":179,"dup":87}],179:[function(require,module,exports){
+},{"../../asn1":170,"dup":87,"inherits":209}],179:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"./der":177,"buffer":232,"dup":88,"inherits":208}],180:[function(require,module,exports){
+},{"./der":178,"./pem":180,"dup":88}],180:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"../../asn1":169,"buffer":232,"dup":89,"inherits":208}],181:[function(require,module,exports){
+},{"./der":178,"buffer":233,"dup":89,"inherits":209}],181:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"./der":180,"./pem":182,"dup":90}],182:[function(require,module,exports){
+},{"../../asn1":170,"buffer":233,"dup":90,"inherits":209}],182:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"./der":180,"dup":91,"inherits":208}],183:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"dup":43}],184:[function(require,module,exports){
-arguments[4][17][0].apply(exports,arguments)
-},{"buffer":232,"dup":17}],185:[function(require,module,exports){
-arguments[4][18][0].apply(exports,arguments)
-},{"./aes":184,"./ghash":189,"buffer":232,"buffer-xor":198,"cipher-base":199,"dup":18,"inherits":208}],186:[function(require,module,exports){
-arguments[4][19][0].apply(exports,arguments)
-},{"./decrypter":187,"./encrypter":188,"./modes":190,"dup":19}],187:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"./aes":184,"./authCipher":185,"./modes":190,"./modes/cbc":191,"./modes/cfb":192,"./modes/cfb1":193,"./modes/cfb8":194,"./modes/ctr":195,"./modes/ecb":196,"./modes/ofb":197,"./streamCipher":200,"buffer":232,"cipher-base":199,"dup":20,"evp_bytestokey":201,"inherits":208}],188:[function(require,module,exports){
-arguments[4][21][0].apply(exports,arguments)
-},{"./aes":184,"./authCipher":185,"./modes":190,"./modes/cbc":191,"./modes/cfb":192,"./modes/cfb1":193,"./modes/cfb8":194,"./modes/ctr":195,"./modes/ecb":196,"./modes/ofb":197,"./streamCipher":200,"buffer":232,"cipher-base":199,"dup":21,"evp_bytestokey":201,"inherits":208}],189:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"buffer":232,"dup":22}],190:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],191:[function(require,module,exports){
-arguments[4][24][0].apply(exports,arguments)
-},{"buffer-xor":198,"dup":24}],192:[function(require,module,exports){
-arguments[4][25][0].apply(exports,arguments)
-},{"buffer":232,"buffer-xor":198,"dup":25}],193:[function(require,module,exports){
-arguments[4][26][0].apply(exports,arguments)
-},{"buffer":232,"dup":26}],194:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"buffer":232,"dup":27}],195:[function(require,module,exports){
-arguments[4][28][0].apply(exports,arguments)
-},{"buffer":232,"buffer-xor":198,"dup":28}],196:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"dup":29}],197:[function(require,module,exports){
-arguments[4][30][0].apply(exports,arguments)
-},{"buffer":232,"buffer-xor":198,"dup":30}],198:[function(require,module,exports){
-arguments[4][31][0].apply(exports,arguments)
-},{"buffer":232,"dup":31}],199:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"buffer":232,"dup":32,"inherits":208,"stream":226,"string_decoder":227}],200:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"./aes":184,"buffer":232,"cipher-base":199,"dup":33,"inherits":208}],201:[function(require,module,exports){
+},{"./der":181,"./pem":183,"dup":91}],183:[function(require,module,exports){
+arguments[4][92][0].apply(exports,arguments)
+},{"./der":181,"dup":92,"inherits":209}],184:[function(require,module,exports){
 arguments[4][44][0].apply(exports,arguments)
-},{"buffer":232,"create-hash/md5":141,"dup":44}],202:[function(require,module,exports){
+},{"dup":44}],185:[function(require,module,exports){
+arguments[4][18][0].apply(exports,arguments)
+},{"buffer":233,"dup":18}],186:[function(require,module,exports){
+arguments[4][19][0].apply(exports,arguments)
+},{"./aes":185,"./ghash":190,"buffer":233,"buffer-xor":199,"cipher-base":200,"dup":19,"inherits":209}],187:[function(require,module,exports){
+arguments[4][20][0].apply(exports,arguments)
+},{"./decrypter":188,"./encrypter":189,"./modes":191,"dup":20}],188:[function(require,module,exports){
+arguments[4][21][0].apply(exports,arguments)
+},{"./aes":185,"./authCipher":186,"./modes":191,"./modes/cbc":192,"./modes/cfb":193,"./modes/cfb1":194,"./modes/cfb8":195,"./modes/ctr":196,"./modes/ecb":197,"./modes/ofb":198,"./streamCipher":201,"buffer":233,"cipher-base":200,"dup":21,"evp_bytestokey":202,"inherits":209}],189:[function(require,module,exports){
+arguments[4][22][0].apply(exports,arguments)
+},{"./aes":185,"./authCipher":186,"./modes":191,"./modes/cbc":192,"./modes/cfb":193,"./modes/cfb1":194,"./modes/cfb8":195,"./modes/ctr":196,"./modes/ecb":197,"./modes/ofb":198,"./streamCipher":201,"buffer":233,"cipher-base":200,"dup":22,"evp_bytestokey":202,"inherits":209}],190:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"buffer":233,"dup":23}],191:[function(require,module,exports){
+arguments[4][24][0].apply(exports,arguments)
+},{"dup":24}],192:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"buffer-xor":199,"dup":25}],193:[function(require,module,exports){
+arguments[4][26][0].apply(exports,arguments)
+},{"buffer":233,"buffer-xor":199,"dup":26}],194:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"buffer":233,"dup":27}],195:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"buffer":233,"dup":28}],196:[function(require,module,exports){
+arguments[4][29][0].apply(exports,arguments)
+},{"buffer":233,"buffer-xor":199,"dup":29}],197:[function(require,module,exports){
+arguments[4][30][0].apply(exports,arguments)
+},{"dup":30}],198:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"buffer":233,"buffer-xor":199,"dup":31}],199:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"buffer":233,"dup":32}],200:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"buffer":233,"dup":33,"inherits":209,"stream":227,"string_decoder":228}],201:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"./aes":185,"buffer":233,"cipher-base":200,"dup":34,"inherits":209}],202:[function(require,module,exports){
+arguments[4][45][0].apply(exports,arguments)
+},{"buffer":233,"create-hash/md5":142,"dup":45}],203:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -23084,7 +26118,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":162,"./withPublic":204,"./xor":205,"bn.js":163,"browserify-rsa":164,"buffer":232,"create-hash":139,"parse-asn1":168}],203:[function(require,module,exports){
+},{"./mgf":163,"./withPublic":205,"./xor":206,"bn.js":164,"browserify-rsa":165,"buffer":233,"create-hash":140,"parse-asn1":169}],204:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -23182,7 +26216,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":162,"./withPublic":204,"./xor":205,"bn.js":163,"browserify-rsa":164,"buffer":232,"create-hash":139,"parse-asn1":168,"randombytes":206}],204:[function(require,module,exports){
+},{"./mgf":163,"./withPublic":205,"./xor":206,"bn.js":164,"browserify-rsa":165,"buffer":233,"create-hash":140,"parse-asn1":169,"randombytes":207}],205:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -23195,7 +26229,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":163,"buffer":232}],205:[function(require,module,exports){
+},{"bn.js":164,"buffer":233}],206:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -23204,7 +26238,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],206:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 (function (process,global,Buffer){
 'use strict'
 
@@ -23244,7 +26278,7 @@ function randomBytes (size, cb) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":211,"buffer":232}],207:[function(require,module,exports){
+},{"_process":212,"buffer":233}],208:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -23544,7 +26578,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],208:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -23569,7 +26603,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],209:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 /**
  * Determine if an object is Buffer
  *
@@ -23588,7 +26622,7 @@ module.exports = function (obj) {
     ))
 }
 
-},{}],210:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -23816,7 +26850,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":211}],211:[function(require,module,exports){
+},{"_process":212}],212:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -23909,10 +26943,10 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],212:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":213}],213:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":214}],214:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -23988,7 +27022,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":215,"./_stream_writable":217,"core-util-is":218,"inherits":208,"process-nextick-args":220}],214:[function(require,module,exports){
+},{"./_stream_readable":216,"./_stream_writable":218,"core-util-is":219,"inherits":209,"process-nextick-args":221}],215:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -24015,7 +27049,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":216,"core-util-is":218,"inherits":208}],215:[function(require,module,exports){
+},{"./_stream_transform":217,"core-util-is":219,"inherits":209}],216:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -24898,7 +27932,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":213,"_process":211,"buffer":232,"core-util-is":218,"events":207,"inherits":208,"isarray":219,"process-nextick-args":220,"string_decoder/":227,"util":13}],216:[function(require,module,exports){
+},{"./_stream_duplex":214,"_process":212,"buffer":233,"core-util-is":219,"events":208,"inherits":209,"isarray":220,"process-nextick-args":221,"string_decoder/":228,"util":14}],217:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -25079,7 +28113,7 @@ function done(stream, er) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":213,"core-util-is":218,"inherits":208}],217:[function(require,module,exports){
+},{"./_stream_duplex":214,"core-util-is":219,"inherits":209}],218:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -25598,7 +28632,7 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":213,"_process":211,"buffer":232,"core-util-is":218,"events":207,"inherits":208,"process-nextick-args":220,"util-deprecate":221}],218:[function(require,module,exports){
+},{"./_stream_duplex":214,"_process":212,"buffer":233,"core-util-is":219,"events":208,"inherits":209,"process-nextick-args":221,"util-deprecate":222}],219:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -25709,14 +28743,14 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../../../insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../insert-module-globals/node_modules/is-buffer/index.js":209}],219:[function(require,module,exports){
+},{"../../../../insert-module-globals/node_modules/is-buffer/index.js":210}],220:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],220:[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -25763,7 +28797,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":211}],221:[function(require,module,exports){
+},{"_process":212}],222:[function(require,module,exports){
 (function (global){
 
 /**
@@ -25834,10 +28868,10 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],222:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":214}],223:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":215}],224:[function(require,module,exports){
 (function (process){
 var Stream = (function (){
   try {
@@ -25857,13 +28891,13 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":213,"./lib/_stream_passthrough.js":214,"./lib/_stream_readable.js":215,"./lib/_stream_transform.js":216,"./lib/_stream_writable.js":217,"_process":211}],224:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":214,"./lib/_stream_passthrough.js":215,"./lib/_stream_readable.js":216,"./lib/_stream_transform.js":217,"./lib/_stream_writable.js":218,"_process":212}],225:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":216}],225:[function(require,module,exports){
+},{"./lib/_stream_transform.js":217}],226:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":217}],226:[function(require,module,exports){
+},{"./lib/_stream_writable.js":218}],227:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -25992,7 +29026,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":207,"inherits":208,"readable-stream/duplex.js":212,"readable-stream/passthrough.js":222,"readable-stream/readable.js":223,"readable-stream/transform.js":224,"readable-stream/writable.js":225}],227:[function(require,module,exports){
+},{"events":208,"inherits":209,"readable-stream/duplex.js":213,"readable-stream/passthrough.js":223,"readable-stream/readable.js":224,"readable-stream/transform.js":225,"readable-stream/writable.js":226}],228:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -26215,14 +29249,14 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":232}],228:[function(require,module,exports){
+},{"buffer":233}],229:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],229:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -26812,7 +29846,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":228,"_process":211,"inherits":208}],230:[function(require,module,exports){
+},{"./support/isBuffer":229,"_process":212,"inherits":209}],231:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -26952,7 +29986,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":231}],231:[function(require,module,exports){
+},{"indexof":232}],232:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -26963,7 +29997,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],232:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -28515,7 +31549,7 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":233,"ieee754":234,"isarray":235}],233:[function(require,module,exports){
+},{"base64-js":234,"ieee754":235,"isarray":236}],234:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -28641,7 +31675,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],234:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -28727,285 +31761,9 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],235:[function(require,module,exports){
-arguments[4][219][0].apply(exports,arguments)
-},{"dup":219}],236:[function(require,module,exports){
-(function (process){
-'use strict';
-var escapeStringRegexp = require('escape-string-regexp');
-var ansiStyles = require('ansi-styles');
-var stripAnsi = require('strip-ansi');
-var hasAnsi = require('has-ansi');
-var supportsColor = require('supports-color');
-var defineProps = Object.defineProperties;
-var isSimpleWindowsTerm = process.platform === 'win32' && !/^xterm/i.test(process.env.TERM);
-
-function Chalk(options) {
-	// detect mode if not set manually
-	this.enabled = !options || options.enabled === undefined ? supportsColor : options.enabled;
-}
-
-// use bright blue on Windows as the normal blue color is illegible
-if (isSimpleWindowsTerm) {
-	ansiStyles.blue.open = '\u001b[94m';
-}
-
-var styles = (function () {
-	var ret = {};
-
-	Object.keys(ansiStyles).forEach(function (key) {
-		ansiStyles[key].closeRe = new RegExp(escapeStringRegexp(ansiStyles[key].close), 'g');
-
-		ret[key] = {
-			get: function () {
-				return build.call(this, this._styles.concat(key));
-			}
-		};
-	});
-
-	return ret;
-})();
-
-var proto = defineProps(function chalk() {}, styles);
-
-function build(_styles) {
-	var builder = function () {
-		return applyStyle.apply(builder, arguments);
-	};
-
-	builder._styles = _styles;
-	builder.enabled = this.enabled;
-	// __proto__ is used because we must return a function, but there is
-	// no way to create a function with a different prototype.
-	/* eslint-disable no-proto */
-	builder.__proto__ = proto;
-
-	return builder;
-}
-
-function applyStyle() {
-	// support varags, but simply cast to string in case there's only one arg
-	var args = arguments;
-	var argsLen = args.length;
-	var str = argsLen !== 0 && String(arguments[0]);
-
-	if (argsLen > 1) {
-		// don't slice `arguments`, it prevents v8 optimizations
-		for (var a = 1; a < argsLen; a++) {
-			str += ' ' + args[a];
-		}
-	}
-
-	if (!this.enabled || !str) {
-		return str;
-	}
-
-	var nestedStyles = this._styles;
-	var i = nestedStyles.length;
-
-	// Turns out that on Windows dimmed gray text becomes invisible in cmd.exe,
-	// see https://github.com/chalk/chalk/issues/58
-	// If we're on Windows and we're dealing with a gray color, temporarily make 'dim' a noop.
-	var originalDim = ansiStyles.dim.open;
-	if (isSimpleWindowsTerm && (nestedStyles.indexOf('gray') !== -1 || nestedStyles.indexOf('grey') !== -1)) {
-		ansiStyles.dim.open = '';
-	}
-
-	while (i--) {
-		var code = ansiStyles[nestedStyles[i]];
-
-		// Replace any instances already present with a re-opening code
-		// otherwise only the part of the string until said closing code
-		// will be colored, and the rest will simply be 'plain'.
-		str = code.open + str.replace(code.closeRe, code.open) + code.close;
-	}
-
-	// Reset the original 'dim' if we changed it to work around the Windows dimmed gray issue.
-	ansiStyles.dim.open = originalDim;
-
-	return str;
-}
-
-function init() {
-	var ret = {};
-
-	Object.keys(styles).forEach(function (name) {
-		ret[name] = {
-			get: function () {
-				return build.call(this, [name]);
-			}
-		};
-	});
-
-	return ret;
-}
-
-defineProps(Chalk.prototype, init());
-
-module.exports = new Chalk();
-module.exports.styles = ansiStyles;
-module.exports.hasColor = hasAnsi;
-module.exports.stripColor = stripAnsi;
-module.exports.supportsColor = supportsColor;
-
-}).call(this,require('_process'))
-},{"_process":211,"ansi-styles":237,"escape-string-regexp":238,"has-ansi":239,"strip-ansi":241,"supports-color":243}],237:[function(require,module,exports){
-'use strict';
-
-function assembleStyles () {
-	var styles = {
-		modifiers: {
-			reset: [0, 0],
-			bold: [1, 22], // 21 isn't widely supported and 22 does the same thing
-			dim: [2, 22],
-			italic: [3, 23],
-			underline: [4, 24],
-			inverse: [7, 27],
-			hidden: [8, 28],
-			strikethrough: [9, 29]
-		},
-		colors: {
-			black: [30, 39],
-			red: [31, 39],
-			green: [32, 39],
-			yellow: [33, 39],
-			blue: [34, 39],
-			magenta: [35, 39],
-			cyan: [36, 39],
-			white: [37, 39],
-			gray: [90, 39]
-		},
-		bgColors: {
-			bgBlack: [40, 49],
-			bgRed: [41, 49],
-			bgGreen: [42, 49],
-			bgYellow: [43, 49],
-			bgBlue: [44, 49],
-			bgMagenta: [45, 49],
-			bgCyan: [46, 49],
-			bgWhite: [47, 49]
-		}
-	};
-
-	// fix humans
-	styles.colors.grey = styles.colors.gray;
-
-	Object.keys(styles).forEach(function (groupName) {
-		var group = styles[groupName];
-
-		Object.keys(group).forEach(function (styleName) {
-			var style = group[styleName];
-
-			styles[styleName] = group[styleName] = {
-				open: '\u001b[' + style[0] + 'm',
-				close: '\u001b[' + style[1] + 'm'
-			};
-		});
-
-		Object.defineProperty(styles, groupName, {
-			value: group,
-			enumerable: false
-		});
-	});
-
-	return styles;
-}
-
-Object.defineProperty(module, 'exports', {
-	enumerable: true,
-	get: assembleStyles
-});
-
-},{}],238:[function(require,module,exports){
-'use strict';
-
-var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
-
-module.exports = function (str) {
-	if (typeof str !== 'string') {
-		throw new TypeError('Expected a string');
-	}
-
-	return str.replace(matchOperatorsRe, '\\$&');
-};
-
-},{}],239:[function(require,module,exports){
-'use strict';
-var ansiRegex = require('ansi-regex');
-var re = new RegExp(ansiRegex().source); // remove the `g` flag
-module.exports = re.test.bind(re);
-
-},{"ansi-regex":240}],240:[function(require,module,exports){
-'use strict';
-module.exports = function () {
-	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
-};
-
-},{}],241:[function(require,module,exports){
-'use strict';
-var ansiRegex = require('ansi-regex')();
-
-module.exports = function (str) {
-	return typeof str === 'string' ? str.replace(ansiRegex, '') : str;
-};
-
-},{"ansi-regex":242}],242:[function(require,module,exports){
-arguments[4][240][0].apply(exports,arguments)
-},{"dup":240}],243:[function(require,module,exports){
-(function (process){
-'use strict';
-var argv = process.argv;
-
-var terminator = argv.indexOf('--');
-var hasFlag = function (flag) {
-	flag = '--' + flag;
-	var pos = argv.indexOf(flag);
-	return pos !== -1 && (terminator !== -1 ? pos < terminator : true);
-};
-
-module.exports = (function () {
-	if ('FORCE_COLOR' in process.env) {
-		return true;
-	}
-
-	if (hasFlag('no-color') ||
-		hasFlag('no-colors') ||
-		hasFlag('color=false')) {
-		return false;
-	}
-
-	if (hasFlag('color') ||
-		hasFlag('colors') ||
-		hasFlag('color=true') ||
-		hasFlag('color=always')) {
-		return true;
-	}
-
-	if (process.stdout && !process.stdout.isTTY) {
-		return false;
-	}
-
-	if (process.platform === 'win32') {
-		return true;
-	}
-
-	if ('COLORTERM' in process.env) {
-		return true;
-	}
-
-	if (process.env.TERM === 'dumb') {
-		return false;
-	}
-
-	if (/^screen|^xterm|^vt100|color|ansi|cygwin|linux/i.test(process.env.TERM)) {
-		return true;
-	}
-
-	return false;
-})();
-
-}).call(this,require('_process'))
-},{"_process":211}],244:[function(require,module,exports){
+},{}],236:[function(require,module,exports){
+arguments[4][220][0].apply(exports,arguments)
+},{"dup":220}],237:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -29169,5030 +31927,7 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],245:[function(require,module,exports){
-/*! decimal.js v5.0.8 https://github.com/MikeMcl/decimal.js/LICENCE */
-;(function (globalScope) {
-  'use strict';
-
-
-  /*
-   *  decimal.js v5.0.8
-   *  An arbitrary-precision Decimal type for JavaScript.
-   *  https://github.com/MikeMcl/decimal.js
-   *  Copyright (c) 2016 Michael Mclaughlin <M8ch88l@gmail.com>
-   *  MIT Expat Licence
-   */
-
-
-  // -----------------------------------  EDITABLE DEFAULTS  ------------------------------------ //
-
-
-    // The maximum exponent magnitude.
-    // The limit on the value of `toExpNeg`, `toExpPos`, `minE` and `maxE`.
-  var EXP_LIMIT = 9e15,                      // 0 to 9e15
-
-    // The limit on the value of `precision`, and on the value of the first argument to
-    // `toDecimalPlaces`, `toExponential`, `toFixed`, `toPrecision` and `toSignificantDigits`.
-    MAX_DIGITS = 1e9,                        // 0 to 1e9
-
-    // The base 88 alphabet used by `toJSON` and `fromJSON`.
-    // 7 printable ASCII characters omitted (space) \ " & ' < >
-    NUMERALS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~',
-
-    // The natural logarithm of 10 (1025 digits).
-    LN10 = '2.3025850929940456840179914546843642076011014886287729760333279009675726096773524802359972050895982983419677840422862486334095254650828067566662873690987816894829072083255546808437998948262331985283935053089653777326288461633662222876982198867465436674744042432743651550489343149393914796194044002221051017141748003688084012647080685567743216228355220114804663715659121373450747856947683463616792101806445070648000277502684916746550586856935673420670581136429224554405758925724208241314695689016758940256776311356919292033376587141660230105703089634572075440370847469940168269282808481184289314848524948644871927809676271275775397027668605952496716674183485704422507197965004714951050492214776567636938662976979522110718264549734772662425709429322582798502585509785265383207606726317164309505995087807523710333101197857547331541421808427543863591778117054309827482385045648019095610299291824318237525357709750539565187697510374970888692180205189339507238539205144634197265287286965110862571492198849978748873771345686209167058',
-
-    // Pi (1025 digits).
-    PI = '3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632789',
-
-
-    // The initial configuration properties of the Decimal constructor.
-    Decimal = {
-
-      // These values must be integers within the stated ranges (inclusive).
-      // Most of these values can be changed during run-time using `Decimal.config`.
-
-      // The maximum number of significant digits of the result of a calculation or base conversion.
-      // E.g. `Decimal.config({ precision: 20 });`
-      precision: 20,                         // 1 to MAX_DIGITS
-
-      // The rounding mode used when rounding to `precision`.
-      //
-      // ROUND_UP         0 Away from zero.
-      // ROUND_DOWN       1 Towards zero.
-      // ROUND_CEIL       2 Towards +Infinity.
-      // ROUND_FLOOR      3 Towards -Infinity.
-      // ROUND_HALF_UP    4 Towards nearest neighbour. If equidistant, up.
-      // ROUND_HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
-      // ROUND_HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
-      // ROUND_HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
-      // ROUND_HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
-      //
-      // E.g.
-      // `Decimal.rounding = 4;`
-      // `Decimal.rounding = Decimal.ROUND_HALF_UP;`
-      rounding: 4,                           // 0 to 8
-
-      // The modulo mode used when calculating the modulus: a mod n.
-      // The quotient (q = a / n) is calculated according to the corresponding rounding mode.
-      // The remainder (r) is calculated as: r = a - n * q.
-      //
-      // UP         0 The remainder is positive if the dividend is negative, else is negative.
-      // DOWN       1 The remainder has the same sign as the dividend (JavaScript %).
-      // FLOOR      3 The remainder has the same sign as the divisor (Python %).
-      // HALF_EVEN  6 The IEEE 754 remainder function.
-      // EUCLID     9 Euclidian division. q = sign(n) * floor(a / abs(n)). Always positive.
-      //
-      // Truncated division (1), floored division (3), the IEEE 754 remainder (6), and Euclidian
-      // division (9) are commonly used for the modulus operation. The other rounding modes can also
-      // be used, but they may not give useful results.
-      modulo: 1,                             // 0 to 9
-
-      // The exponent value at and beneath which `toString` returns exponential notation.
-      // JavaScript numbers: -7
-      toExpNeg: -7,                          // 0 to -EXP_LIMIT
-
-      // The exponent value at and above which `toString` returns exponential notation.
-      // JavaScript numbers: 21
-      toExpPos:  21,                         // 0 to EXP_LIMIT
-
-      // The minimum exponent value, beneath which underflow to zero occurs.
-      // JavaScript numbers: -324  (5e-324)
-      minE: -EXP_LIMIT,                      // -1 to -EXP_LIMIT
-
-      // The maximum exponent value, above which overflow to Infinity occurs.
-      // JavaScript numbers: 308  (1.7976931348623157e+308)
-      maxE: EXP_LIMIT,                       // 1 to EXP_LIMIT
-
-      // Whether to use cryptographically-secure random number generation, if available.
-      crypto: void 0                         // true/false/undefined
-    },
-
-
-  // ----------------------------------- END OF EDITABLE DEFAULTS ------------------------------- //
-
-
-    inexact, noConflict, quadrant,
-    cryptoObject = typeof crypto != 'undefined' ? crypto : null,
-    external = true,
-
-    decimalError = '[DecimalError] ',
-    invalidArgument = decimalError + 'Invalid argument: ',
-    precisionLimitExceeded = decimalError + 'Precision limit exceeded',
-
-    mathfloor = Math.floor,
-    mathpow = Math.pow,
-
-    isBinary = /^0b([01]+(\.[01]*)?|\.[01]+)(p[+-]?\d+)?$/i,
-    isHex = /^0x([0-9a-f]+(\.[0-9a-f]*)?|\.[0-9a-f]+)(p[+-]?\d+)?$/i,
-    isOctal = /^0o([0-7]+(\.[0-7]*)?|\.[0-7]+)(p[+-]?\d+)?$/i,
-    isDecimal = /^(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
-
-    BASE = 1e7,
-    LOG_BASE = 7,
-    MAX_SAFE_INTEGER = 9007199254740991,
-
-    LN10_PRECISION = LN10.length - 1,
-    PI_PRECISION = PI.length - 1,
-
-    // Decimal.prototype object
-    P = {};
-
-
-  // Decimal prototype methods
-
-
-  /*
-   *  absoluteValue             abs
-   *  ceil
-   *  comparedTo                cmp
-   *  cosine                    cos
-   *  cubeRoot                  cbrt
-   *  decimalPlaces             dp
-   *  dividedBy                 div
-   *  dividedToIntegerBy        divToInt
-   *  equals                    eq
-   *  floor
-   *  greaterThan               gt
-   *  greaterThanOrEqualTo      gte
-   *  hyperbolicCosine          cosh
-   *  hyperbolicSine            sinh
-   *  hyperbolicTangent         tanh
-   *  inverseCosine             acos
-   *  inverseHyperbolicCosine   acosh
-   *  inverseHyperbolicSine     asinh
-   *  inverseHyperbolicTangent  atanh
-   *  inverseSine               asin
-   *  inverseTangent            atan
-   *  isFinite
-   *  isInteger                 isInt
-   *  isNaN
-   *  isNegative                isNeg
-   *  isPositive                isPos
-   *  isZero
-   *  lessThan                  lt
-   *  lessThanOrEqualTo         lte
-   *  logarithm                 log
-   *  [maximum]                 [max]
-   *  [minimum]                 [min]
-   *  minus                     sub
-   *  modulo                    mod
-   *  naturalExponential        exp
-   *  naturalLogarithm          ln
-   *  negated                   neg
-   *  plus                      add
-   *  precision                 sd
-   *  round
-   *  sine                      sin
-   *  squareRoot                sqrt
-   *  tangent                   tan
-   *  times                     mul
-   *  toBinary
-   *  toDecimalPlaces           toDP
-   *  toExponential
-   *  toFixed
-   *  toFraction
-   *  toHexadecimal             toHex
-   *  toJSON
-   *  toNearest
-   *  toNumber
-   *  toOctal
-   *  toPower                   pow
-   *  toPrecision
-   *  toSignificantDigits       toSD
-   *  toString
-   *  truncated                 trunc
-   *  valueOf
-   */
-
-
-  /*
-   * Return a new Decimal whose value is the absolute value of this Decimal.
-   *
-   */
-  P.absoluteValue = P.abs = function () {
-    var x = new this.constructor(this);
-    if (x.s < 0) x.s = 1;
-    return finalise(x);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number in the
-   * direction of positive Infinity.
-   *
-   */
-  P.ceil = function () {
-    return finalise(new this.constructor(this), this.e + 1, 2);
-  };
-
-
-  /*
-   * Return
-   *   1    if the value of this Decimal is greater than the value of `y`,
-   *  -1    if the value of this Decimal is less than the value of `y`,
-   *   0    if they have the same value,
-   *   NaN  if the value of either Decimal is NaN.
-   *
-   */
-  P.comparedTo = P.cmp = function (y) {
-    var i, j, xdL, ydL,
-      x = this,
-      xd = x.d,
-      yd = (y = new x.constructor(y)).d,
-      xs = x.s,
-      ys = y.s;
-
-    // Either NaN or ±Infinity?
-    if (!xd || !yd) {
-      return !xs || !ys ? NaN : xs !== ys ? xs : xd === yd ? 0 : !xd ^ xs < 0 ? 1 : -1;
-    }
-
-    // Either zero?
-    if (!xd[0] || !yd[0]) return xd[0] ? xs : yd[0] ? -ys : 0;
-
-    // Signs differ?
-    if (xs !== ys) return xs;
-
-    // Compare exponents.
-    if (x.e !== y.e) return x.e > y.e ^ xs < 0 ? 1 : -1;
-
-    xdL = xd.length;
-    ydL = yd.length;
-
-    // Compare digit by digit.
-    for (i = 0, j = xdL < ydL ? xdL : ydL; i < j; ++i) {
-      if (xd[i] !== yd[i]) return xd[i] > yd[i] ^ xs < 0 ? 1 : -1;
-    }
-
-    // Compare lengths.
-    return xdL === ydL ? 0 : xdL > ydL ^ xs < 0 ? 1 : -1;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the cosine of the value in radians of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-1, 1]
-   *
-   * cos(0)         = 1
-   * cos(-0)        = 1
-   * cos(Infinity)  = NaN
-   * cos(-Infinity) = NaN
-   * cos(NaN)       = NaN
-   *
-   */
-  P.cosine = P.cos = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.d) return new Ctor(NaN);
-
-    // cos(0) = cos(-0) = 1
-    if (!x.d[0]) return new Ctor(1);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
-    Ctor.rounding = 1;
-
-    x = cosine(Ctor, toLessThanHalfPi(Ctor, x));
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(quadrant == 2 || quadrant == 3 ? x.neg() : x, pr, rm, true);
-  };
-
-
-  /*
-   *
-   * Return a new Decimal whose value is the cube root of the value of this Decimal, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   *  cbrt(0)  =  0
-   *  cbrt(-0) = -0
-   *  cbrt(1)  =  1
-   *  cbrt(-1) = -1
-   *  cbrt(N)  =  N
-   *  cbrt(-I) = -I
-   *  cbrt(I)  =  I
-   *
-   * Math.cbrt(x) = (x < 0 ? -Math.pow(-x, 1/3) : Math.pow(x, 1/3))
-   *
-   */
-  P.cubeRoot = P.cbrt = function () {
-    var e, m, n, r, rep, s, sd, t, t3, t3plusx,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite() || x.isZero()) return new Ctor(x);
-    external = false;
-
-    // Initial estimate.
-    s = x.s * Math.pow(x.s * x, 1 / 3);
-
-     // Math.cbrt underflow/overflow?
-     // Pass x to Math.pow as integer, then adjust the exponent of the result.
-    if (!s || Math.abs(s) == 1 / 0) {
-      n = digitsToString(x.d);
-      e = x.e;
-
-      // Adjust n exponent so it is a multiple of 3 away from x exponent.
-      if (s = (e - n.length + 1) % 3) n += (s == 1 || s == -2 ? '0' : '00');
-      s = Math.pow(n, 1 / 3);
-
-      // Rarely, e may be one less than the result exponent value.
-      e = mathfloor((e + 1) / 3) - (e % 3 == (e < 0 ? -1 : 2));
-
-      if (s == 1 / 0) {
-        n = '5e' + e;
-      } else {
-        n = s.toExponential();
-        n = n.slice(0, n.indexOf('e') + 1) + e;
-      }
-
-      r = new Ctor(n);
-      r.s = x.s;
-    } else {
-      r = new Ctor(s.toString());
-    }
-
-    sd = (e = Ctor.precision) + 3;
-
-    // Halley's method.
-    // TODO? Compare Newton's method.
-    for (;;) {
-      t = r;
-      t3 = t.times(t).times(t);
-      t3plusx = t3.plus(x);
-      r = divide(t3plusx.plus(x).times(t), t3plusx.plus(t3), sd + 2, 1);
-
-      // TODO? Replace with for-loop and checkRoundingDigits.
-      if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
-        n = n.slice(sd - 3, sd + 1);
-
-        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits are 9999 or 4999
-        // , i.e. approaching a rounding boundary, continue the iteration.
-        if (n == '9999' || !rep && n == '4999') {
-
-          // On the first iteration only, check to see if rounding up gives the exact result as the
-          // nines may infinitely repeat.
-          if (!rep) {
-            finalise(t, e + 1, 0);
-
-            if (t.times(t).times(t).eq(x)) {
-              r = t;
-              break;
-            }
-          }
-
-          sd += 4;
-          rep = 1;
-        } else {
-
-          // If the rounding digits are null, 0{0,4} or 50{0,3}, check for an exact result.
-          // If not, then there are further digits and m will be truthy.
-          if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
-
-            // Truncate to the first rounding digit.
-            finalise(r, e + 1, 1);
-            m = !r.times(r).times(r).eq(x);
-          }
-
-          break;
-        }
-      }
-    }
-
-    external = true;
-
-    return finalise(r, e, Ctor.rounding, m);
-  };
-
-
-  /*
-   * Return the number of decimal places of the value of this Decimal.
-   *
-   */
-  P.decimalPlaces = P.dp = function () {
-    var w,
-      d = this.d,
-      n = NaN;
-
-    if (d) {
-      w = d.length - 1;
-      n = (w - mathfloor(this.e / LOG_BASE)) * LOG_BASE;
-
-      // Subtract the number of trailing zeros of the last word.
-      w = d[w];
-      if (w) for (; w % 10 == 0; w /= 10) n--;
-      if (n < 0) n = 0;
-    }
-
-    return n;
-  };
-
-
-  /*
-   *  n / 0 = I
-   *  n / N = N
-   *  n / I = 0
-   *  0 / n = 0
-   *  0 / 0 = N
-   *  0 / N = N
-   *  0 / I = 0
-   *  N / n = N
-   *  N / 0 = N
-   *  N / N = N
-   *  N / I = N
-   *  I / n = I
-   *  I / 0 = I
-   *  I / N = N
-   *  I / I = N
-   *
-   * Return a new Decimal whose value is the value of this Decimal divided by `y`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   */
-  P.dividedBy = P.div = function (y) {
-    return divide(this, new this.constructor(y));
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the integer part of dividing the value of this Decimal
-   * by the value of `y`, rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   */
-  P.dividedToIntegerBy = P.divToInt = function (y) {
-    var x = this,
-      Ctor = x.constructor;
-    return finalise(divide(x, new Ctor(y), 0, 1, 1), Ctor.precision, Ctor.rounding);
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is equal to the value of `y`, otherwise return false.
-   *
-   */
-  P.equals = P.eq = function (y) {
-    return this.cmp(y) === 0;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number in the
-   * direction of negative Infinity.
-   *
-   */
-  P.floor = function () {
-    return finalise(new this.constructor(this), this.e + 1, 3);
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is greater than the value of `y`, otherwise return
-   * false.
-   *
-   */
-  P.greaterThan = P.gt = function (y) {
-    return this.cmp(y) > 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is greater than or equal to the value of `y`,
-   * otherwise return false.
-   *
-   */
-  P.greaterThanOrEqualTo = P.gte = function (y) {
-    var k = this.cmp(y);
-    return k == 1 || k === 0;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic cosine of the value in radians of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [1, Infinity]
-   *
-   * cosh(x) = 1 + x^2/2! + x^4/4! + x^6/6! + ...
-   *
-   * cosh(0)         = 1
-   * cosh(-0)        = 1
-   * cosh(Infinity)  = Infinity
-   * cosh(-Infinity) = Infinity
-   * cosh(NaN)       = NaN
-   *
-   *  x        time taken (ms)   result
-   * 1000      9                 9.8503555700852349694e+433
-   * 10000     25                4.4034091128314607936e+4342
-   * 100000    171               1.4033316802130615897e+43429
-   * 1000000   3817              1.5166076984010437725e+434294
-   * 10000000  abandoned after 2 minute wait
-   *
-   * TODO? Compare performance of cosh(x) = 0.5 * (exp(x) + exp(-x))
-   *
-   */
-  P.hyperbolicCosine = P.cosh = function () {
-    var k, n, pr, rm, len,
-      x = this,
-      Ctor = x.constructor,
-      one = new Ctor(1);
-
-    if (!x.isFinite()) return new Ctor(x.s ? 1 / 0 : NaN);
-    if (x.isZero()) return one;
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
-    Ctor.rounding = 1;
-    len = x.d.length;
-
-    // Argument reduction: cos(4x) = 1 - 8cos^2(x) + 8cos^4(x) + 1
-    // i.e. cos(x) = 1 - cos^2(x/4)(8 - 8cos^2(x/4))
-
-    // Estimate the optimum number of times to use the argument reduction.
-    // TODO? Estimation reused from cosine() and may not be optimal here.
-    if (len < 32) {
-      k = Math.ceil(len / 3);
-      n = Math.pow(4, -k).toString();
-    } else {
-      k = 16;
-      n = '2.3283064365386962890625e-10';
-    }
-
-    x = taylorSeries(Ctor, 1, x.times(n), new Ctor(1), true);
-
-    // Reverse argument reduction
-    var cosh2_x,
-      i = k,
-      d8 = new Ctor(8);
-    for (; i--;) {
-      cosh2_x = x.times(x);
-      x = one.minus(cosh2_x.times(d8.minus(cosh2_x.times(d8))));
-    }
-
-    return finalise(x, Ctor.precision = pr, Ctor.rounding = rm, true);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic sine of the value in radians of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-Infinity, Infinity]
-   *
-   * sinh(x) = x + x^3/3! + x^5/5! + x^7/7! + ...
-   *
-   * sinh(0)         = 0
-   * sinh(-0)        = -0
-   * sinh(Infinity)  = Infinity
-   * sinh(-Infinity) = -Infinity
-   * sinh(NaN)       = NaN
-   *
-   * x        time taken (ms)
-   * 10       2 ms
-   * 100      5 ms
-   * 1000     14 ms
-   * 10000    82 ms
-   * 100000   886 ms            1.4033316802130615897e+43429
-   * 200000   2613 ms
-   * 300000   5407 ms
-   * 400000   8824 ms
-   * 500000   13026 ms          8.7080643612718084129e+217146
-   * 1000000  48543 ms
-   *
-   * TODO? Compare performance of sinh(x) = 0.5 * (exp(x) - exp(-x))
-   *
-   */
-  P.hyperbolicSine = P.sinh = function () {
-    var k, pr, rm, len,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite() || x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
-    Ctor.rounding = 1;
-    len = x.d.length;
-
-    if (len < 3) {
-      x = taylorSeries(Ctor, 2, x, x, true);
-    } else {
-
-      // Alternative argument reduction: sinh(3x) = sinh(x)(3 + 4sinh^2(x))
-      // i.e. sinh(x) = sinh(x/3)(3 + 4sinh^2(x/3))
-      // 3 multiplications and 1 addition
-
-      // Argument reduction: sinh(5x) = sinh(x)(5 + sinh^2(x)(20 + 16sinh^2(x)))
-      // i.e. sinh(x) = sinh(x/5)(5 + sinh^2(x/5)(20 + 16sinh^2(x/5)))
-      // 4 multiplications and 2 additions
-
-      // Estimate the optimum number of times to use the argument reduction.
-      k = 1.4 * Math.sqrt(len);
-      k = k > 16 ? 16 : k | 0;
-
-      x = x.times(Math.pow(5, -k));
-
-      x = taylorSeries(Ctor, 2, x, x, true);
-
-      // Reverse argument reduction
-      var sinh2_x,
-        d5 = new Ctor(5),
-        d16 = new Ctor(16),
-        d20 = new Ctor(20);
-      for (; k--;) {
-        sinh2_x = x.times(x);
-        x = x.times(d5.plus(sinh2_x.times(d16.times(sinh2_x).plus(d20))));
-      }
-    }
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(x, pr, rm, true);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic tangent of the value in radians of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-1, 1]
-   *
-   * tanh(x) = sinh(x) / cosh(x)
-   *
-   * tanh(0)         = 0
-   * tanh(-0)        = -0
-   * tanh(Infinity)  = 1
-   * tanh(-Infinity) = -1
-   * tanh(NaN)       = NaN
-   *
-   */
-  P.hyperbolicTangent = P.tanh = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(x.s);
-    if (x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + 7;
-    Ctor.rounding = 1;
-
-    return divide(x.sinh(), x.cosh(), Ctor.precision = pr, Ctor.rounding = rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the arccosine (inverse cosine) in radians of the value of
-   * this Decimal.
-   *
-   * Domain: [-1, 1]
-   * Range: [0, pi]
-   *
-   * acos(x) = pi/2 - asin(x)
-   *
-   * acos(0)       = pi/2
-   * acos(-0)      = pi/2
-   * acos(1)       = 0
-   * acos(-1)      = pi
-   * acos(1/2)     = pi/3
-   * acos(-1/2)    = 2*pi/3
-   * acos(|x| > 1) = NaN
-   * acos(NaN)     = NaN
-   *
-   */
-  P.inverseCosine = P.acos = function () {
-    var halfPi,
-      x = this,
-      Ctor = x.constructor,
-      k = x.abs().cmp(1),
-      pr = Ctor.precision,
-      rm = Ctor.rounding;
-
-    if (k !== -1) {
-      return k === 0
-        // |x| is 1
-        ? x.isNeg() ? getPi(Ctor, pr, rm) : new Ctor(0)
-        // |x| > 1 or x is NaN
-        : new Ctor(NaN);
-    }
-
-    if (x.isZero()) return getPi(Ctor, pr + 4, rm).times(0.5);
-
-    // TODO? Special case acos(0.5) = pi/3 and acos(-0.5) = 2*pi/3
-
-    Ctor.precision = pr + 6;
-    Ctor.rounding = 1;
-
-    x = x.asin();
-    halfPi = getPi(Ctor, pr + 4, rm).times(0.5);
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return halfPi.minus(x);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic cosine in radians of the
-   * value of this Decimal.
-   *
-   * Domain: [1, Infinity]
-   * Range: [0, Infinity]
-   *
-   * acosh(x) = ln(x + sqrt(x^2 - 1))
-   *
-   * acosh(x < 1)     = NaN
-   * acosh(NaN)       = NaN
-   * acosh(Infinity)  = Infinity
-   * acosh(-Infinity) = NaN
-   * acosh(0)         = NaN
-   * acosh(-0)        = NaN
-   * acosh(1)         = 0
-   * acosh(-1)        = NaN
-   *
-   */
-  P.inverseHyperbolicCosine = P.acosh = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (x.lte(1)) return new Ctor(x.eq(1) ? 0 : NaN);
-    if (!x.isFinite()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(Math.abs(x.e), x.sd()) + 4;
-    Ctor.rounding = 1;
-    external = false;
-
-    x = x.times(x).minus(1).sqrt().plus(x);
-
-    external = true;
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.ln();
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic sine in radians of the value
-   * of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-Infinity, Infinity]
-   *
-   * asinh(x) = ln(x + sqrt(x^2 + 1))
-   *
-   * asinh(NaN)       = NaN
-   * asinh(Infinity)  = Infinity
-   * asinh(-Infinity) = -Infinity
-   * asinh(0)         = 0
-   * asinh(-0)        = -0
-   *
-   */
-  P.inverseHyperbolicSine = P.asinh = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite() || x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + 2 * Math.max(Math.abs(x.e), x.sd()) + 6;
-    Ctor.rounding = 1;
-    external = false;
-
-    x = x.times(x).plus(1).sqrt().plus(x);
-
-    external = true;
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.ln();
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic tangent in radians of the
-   * value of this Decimal.
-   *
-   * Domain: [-1, 1]
-   * Range: [-Infinity, Infinity]
-   *
-   * atanh(x) = 0.5 * ln((1 + x) / (1 - x))
-   *
-   * atanh(|x| > 1)   = NaN
-   * atanh(NaN)       = NaN
-   * atanh(Infinity)  = NaN
-   * atanh(-Infinity) = NaN
-   * atanh(0)         = 0
-   * atanh(-0)        = -0
-   * atanh(1)         = Infinity
-   * atanh(-1)        = -Infinity
-   *
-   */
-  P.inverseHyperbolicTangent = P.atanh = function () {
-    var pr, rm, wpr, xsd,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(NaN);
-    if (x.e >= 0) return new Ctor(x.abs().eq(1) ? x.s / 0 : x.isZero() ? x : NaN);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    xsd = x.sd();
-
-    if (Math.max(xsd, pr) < 2 * -x.e - 1) return finalise(new Ctor(x), pr, rm, true);
-
-    Ctor.precision = wpr = xsd - x.e;
-
-    x = divide(x.plus(1), new Ctor(1).minus(x), wpr + pr, 1);
-
-    Ctor.precision = pr + 4;
-    Ctor.rounding = 1;
-
-    x = x.ln();
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.times(0.5);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the arcsine (inverse sine) in radians of the value of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-pi/2, pi/2]
-   *
-   * asin(x) = 2*atan(x/(1 + sqrt(1 - x^2)))
-   *
-   * asin(0)       = 0
-   * asin(-0)      = -0
-   * asin(1/2)     = pi/6
-   * asin(-1/2)    = -pi/6
-   * asin(1)       = pi/2
-   * asin(-1)      = -pi/2
-   * asin(|x| > 1) = NaN
-   * asin(NaN)     = NaN
-   *
-   * TODO? Compare performance of Taylor series.
-   *
-   */
-  P.inverseSine = P.asin = function () {
-    var halfPi, k,
-      pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (x.isZero()) return new Ctor(x);
-
-    k = x.abs().cmp(1);
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    if (k !== -1) {
-
-      // |x| is 1
-      if (k === 0) {
-        halfPi = getPi(Ctor, pr + 4, rm).times(0.5);
-        halfPi.s = x.s;
-        return halfPi;
-      }
-
-      // |x| > 1 or x is NaN
-      return new Ctor(NaN);
-    }
-
-    // TODO? Special case asin(1/2) = pi/6 and asin(-1/2) = -pi/6
-
-    Ctor.precision = pr + 6;
-    Ctor.rounding = 1;
-
-    x = x.div(new Ctor(1).minus(x.times(x)).sqrt().plus(1)).atan();
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.times(2);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the arctangent (inverse tangent) in radians of the value
-   * of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-pi/2, pi/2]
-   *
-   * atan(x) = x - x^3/3 + x^5/5 - x^7/7 + ...
-   *
-   * atan(0)         = 0
-   * atan(-0)        = -0
-   * atan(1)         = pi/4
-   * atan(-1)        = -pi/4
-   * atan(Infinity)  = pi/2
-   * atan(-Infinity) = -pi/2
-   * atan(NaN)       = NaN
-   *
-   */
-  P.inverseTangent = P.atan = function () {
-    var i, j, k, n, px, t, r, wpr, x2,
-      x = this,
-      Ctor = x.constructor,
-      pr = Ctor.precision,
-      rm = Ctor.rounding;
-
-    if (!x.isFinite()) {
-      if (!x.s) return new Ctor(NaN);
-      if (pr + 4 <= PI_PRECISION) {
-        r = getPi(Ctor, pr + 4, rm).times(0.5);
-        r.s = x.s;
-        return r;
-      }
-    } else if (x.isZero()) {
-      return new Ctor(x);
-    } else if (x.abs().eq(1) && pr + 4 <= PI_PRECISION) {
-      r = getPi(Ctor, pr + 4, rm).times(0.25);
-      r.s = x.s;
-      return r;
-    }
-
-    Ctor.precision = wpr = pr + 10;
-    Ctor.rounding = 1;
-
-    // TODO? if (x >= 1 && pr <= PI_PRECISION) atan(x) = halfPi * x.s - atan(1 / x);
-
-    // Argument reduction
-    // Ensure |x| < 0.42
-    // atan(x) = 2 * atan(x / (1 + sqrt(1 + x^2)))
-
-    k = Math.min(28, wpr / LOG_BASE + 2 | 0);
-
-    for (i = k; i; --i) x = x.div(x.times(x).plus(1).sqrt().plus(1));
-
-    external = false;
-
-    j = Math.ceil(wpr / LOG_BASE);
-    n = 1;
-    x2 = x.times(x);
-    r = new Ctor(x);
-    px = x;
-
-    // atan(x) = x - x^3/3 + x^5/5 - x^7/7 + ...
-    for (; i !== -1;) {
-      px = px.times(x2);
-      t = r.minus(px.div(n += 2));
-
-      px = px.times(x2);
-      r = t.plus(px.div(n += 2));
-
-      if (r.d[j] !== void 0) for (i = j; r.d[i] === t.d[i] && i--;);
-    }
-
-    if (k) r = r.times(2 << (k - 1));
-
-    external = true;
-
-    return finalise(r, Ctor.precision = pr, Ctor.rounding = rm, true);
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is a finite number, otherwise return false.
-   *
-   */
-  P.isFinite = function () {
-    return !!this.d;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is an integer, otherwise return false.
-   *
-   */
-  P.isInteger = P.isInt = function () {
-    return !!this.d && mathfloor(this.e / LOG_BASE) > this.d.length - 2;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is NaN, otherwise return false.
-   *
-   */
-  P.isNaN = function () {
-    return !this.s;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is negative, otherwise return false.
-   *
-   */
-  P.isNegative = P.isNeg = function () {
-    return this.s < 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is positive, otherwise return false.
-   *
-   */
-  P.isPositive = P.isPos = function () {
-    return this.s > 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is 0 or -0, otherwise return false.
-   *
-   */
-  P.isZero = function () {
-    return !!this.d && this.d[0] === 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is less than `y`, otherwise return false.
-   *
-   */
-  P.lessThan = P.lt = function (y) {
-    return this.cmp(y) < 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is less than or equal to `y`, otherwise return false.
-   *
-   */
-  P.lessThanOrEqualTo = P.lte = function (y) {
-    return this.cmp(y) < 1;
-  };
-
-
-  /*
-   * Return the logarithm of the value of this Decimal to the specified base, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * If no base is specified, return log[10](arg).
-   *
-   * log[base](arg) = ln(arg) / ln(base)
-   *
-   * The result will always be correctly rounded if the base of the log is 10, and 'almost always'
-   * otherwise:
-   *
-   * Depending on the rounding mode, the result may be incorrectly rounded if the first fifteen
-   * rounding digits are [49]99999999999999 or [50]00000000000000. In that case, the maximum error
-   * between the result and the correctly rounded result will be one ulp (unit in the last place).
-   *
-   * log[-b](a)       = NaN
-   * log[0](a)        = NaN
-   * log[1](a)        = NaN
-   * log[NaN](a)      = NaN
-   * log[Infinity](a) = NaN
-   * log[b](0)        = -Infinity
-   * log[b](-0)       = -Infinity
-   * log[b](-a)       = NaN
-   * log[b](1)        = 0
-   * log[b](Infinity) = Infinity
-   * log[b](NaN)      = NaN
-   *
-   * [base] {number|string|Decimal} The base of the logarithm.
-   *
-   */
-  P.logarithm = P.log = function (base) {
-    var isBase10, d, denominator, k, inf, num, sd, r,
-      arg = this,
-      Ctor = arg.constructor,
-      pr = Ctor.precision,
-      rm = Ctor.rounding,
-      guard = 5;
-
-    // Default base is 10.
-    if (base == null) {
-      base = new Ctor(10);
-      isBase10 = true;
-    } else {
-      base = new Ctor(base);
-      d = base.d;
-
-      // Return NaN if base is negative, or non-finite, or is 0 or 1.
-      if (base.s < 0 || !d || !d[0] || base.eq(1)) return new Ctor(NaN);
-
-      isBase10 = base.eq(10);
-    }
-
-    d = arg.d;
-
-    // Is arg negative, non-finite, 0 or 1?
-    if (arg.s < 0 || !d || !d[0] || arg.eq(1)) {
-      return new Ctor(d && !d[0] ? -1 / 0 : arg.s != 1 ? NaN : d ? 0 : 1 / 0);
-    }
-
-    // The result will have a non-terminating decimal expansion if base is 10 and arg is not an
-    // integer power of 10.
-    if (isBase10) {
-      if (d.length > 1) {
-        inf = true;
-      } else {
-        for (k = d[0]; k % 10 === 0;) k /= 10;
-        inf = k !== 1;
-      }
-    }
-
-    external = false;
-    sd = pr + guard;
-    num = naturalLogarithm(arg, sd);
-    denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
-
-    // The result will have 5 rounding digits.
-    r = divide(num, denominator, sd, 1);
-
-    // If at a rounding boundary, i.e. the result's rounding digits are [49]9999 or [50]0000,
-    // calculate 10 further digits.
-    //
-    // If the result is known to have an infinite decimal expansion, repeat this until it is clear
-    // that the result is above or below the boundary. Otherwise, if after calculating the 10
-    // further digits, the last 14 are nines, round up and assume the result is exact.
-    // Also assume the result is exact if the last 14 are zero.
-    //
-    // Example of a result that will be incorrectly rounded:
-    // log[1048576](4503599627370502) = 2.60000000000000009610279511444746...
-    // The above result correctly rounded using ROUND_CEIL to 1 decimal place should be 2.7, but it
-    // will be given as 2.6 as there are 15 zeros immediately after the requested decimal place, so
-    // the exact result would be assumed to be 2.6, which rounded using ROUND_CEIL to 1 decimal
-    // place is still 2.6.
-    if (checkRoundingDigits(r.d, k = pr, rm)) {
-
-      do {
-        sd += 10;
-        num = naturalLogarithm(arg, sd);
-        denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
-        r = divide(num, denominator, sd, 1);
-
-        if (!inf) {
-
-          // Check for 14 nines from the 2nd rounding digit, as the first may be 4.
-          if (+digitsToString(r.d).slice(k + 1, k + 15) + 1 == 1e14) {
-            r = finalise(r, pr + 1, 0);
-          }
-
-          break;
-        }
-      } while (checkRoundingDigits(r.d, k += 10, rm));
-    }
-
-    external = true;
-
-    return finalise(r, pr, rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the maximum of the arguments and the value of this Decimal.
-   *
-   * arguments {number|string|Decimal}
-   *
-  P.max = function () {
-    Array.prototype.push.call(arguments, this);
-    return maxOrMin(this.constructor, arguments, 'lt');
-  };
-   */
-
-
-  /*
-   * Return a new Decimal whose value is the minimum of the arguments and the value of this Decimal.
-   *
-   * arguments {number|string|Decimal}
-   *
-  P.min = function () {
-    Array.prototype.push.call(arguments, this);
-    return maxOrMin(this.constructor, arguments, 'gt');
-  };
-   */
-
-
-  /*
-   *  n - 0 = n
-   *  n - N = N
-   *  n - I = -I
-   *  0 - n = -n
-   *  0 - 0 = 0
-   *  0 - N = N
-   *  0 - I = -I
-   *  N - n = N
-   *  N - 0 = N
-   *  N - N = N
-   *  N - I = N
-   *  I - n = I
-   *  I - 0 = I
-   *  I - N = N
-   *  I - I = N
-   *
-   * Return a new Decimal whose value is the value of this Decimal minus `y`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   */
-  P.minus = P.sub = function (y) {
-    var d, e, i, j, k, len, pr, rm, xd, xe, xLTy, yd,
-      x = this,
-      Ctor = x.constructor;
-
-    y = new Ctor(y);
-
-    // If either is not finite...
-    if (!x.d || !y.d) {
-
-      // Return NaN if either is NaN.
-      if (!x.s || !y.s) y = new Ctor(NaN);
-
-      // Return y negated if x is finite and y is ±Infinity.
-      else if (x.d) y.s = -y.s;
-
-      // Return x if y is finite and x is ±Infinity.
-      // Return x if both are ±Infinity with different signs.
-      // Return NaN if both are ±Infinity with the same sign.
-      else y = new Ctor(y.d || x.s !== y.s ? x : NaN);
-
-      return y;
-    }
-
-    // If signs differ...
-    if (x.s != y.s) {
-      y.s = -y.s;
-      return x.plus(y);
-    }
-
-    xd = x.d;
-    yd = y.d;
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    // If either is zero...
-    if (!xd[0] || !yd[0]) {
-
-      // Return y negated if x is zero and y is non-zero.
-      if (yd[0]) y.s = -y.s;
-
-      // Return x if y is zero and x is non-zero.
-      else if (xd[0]) y = new Ctor(x);
-
-      // Return zero if both are zero.
-      // From IEEE 754 (2008) 6.3: 0 - 0 = -0 - -0 = -0 when rounding to -Infinity.
-      else return new Ctor(rm === 3 ? -0 : 0);
-
-      return external ? finalise(y, pr, rm) : y;
-    }
-
-    // x and y are finite, non-zero numbers with the same sign.
-
-    // Calculate base 1e7 exponents.
-    e = mathfloor(y.e / LOG_BASE);
-    xe = mathfloor(x.e / LOG_BASE);
-
-    xd = xd.slice();
-    k = xe - e;
-
-    // If base 1e7 exponents differ...
-    if (k) {
-      xLTy = k < 0;
-
-      if (xLTy) {
-        d = xd;
-        k = -k;
-        len = yd.length;
-      } else {
-        d = yd;
-        e = xe;
-        len = xd.length;
-      }
-
-      // Numbers with massively different exponents would result in a very high number of
-      // zeros needing to be prepended, but this can be avoided while still ensuring correct
-      // rounding by limiting the number of zeros to `Math.ceil(pr / LOG_BASE) + 2`.
-      i = Math.max(Math.ceil(pr / LOG_BASE), len) + 2;
-
-      if (k > i) {
-        k = i;
-        d.length = 1;
-      }
-
-      // Prepend zeros to equalise exponents.
-      d.reverse();
-      for (i = k; i--;) d.push(0);
-      d.reverse();
-
-    // Base 1e7 exponents equal.
-    } else {
-
-      // Check digits to determine which is the bigger number.
-
-      i = xd.length;
-      len = yd.length;
-      xLTy = i < len;
-      if (xLTy) len = i;
-
-      for (i = 0; i < len; i++) {
-        if (xd[i] != yd[i]) {
-          xLTy = xd[i] < yd[i];
-          break;
-        }
-      }
-
-      k = 0;
-    }
-
-    if (xLTy) {
-      d = xd;
-      xd = yd;
-      yd = d;
-      y.s = -y.s;
-    }
-
-    len = xd.length;
-
-    // Append zeros to `xd` if shorter.
-    // Don't add zeros to `yd` if shorter as subtraction only needs to start at `yd` length.
-    for (i = yd.length - len; i > 0; --i) xd[len++] = 0;
-
-    // Subtract yd from xd.
-    for (i = yd.length; i > k;) {
-
-      if (xd[--i] < yd[i]) {
-        for (j = i; j && xd[--j] === 0;) xd[j] = BASE - 1;
-        --xd[j];
-        xd[i] += BASE;
-      }
-
-      xd[i] -= yd[i];
-    }
-
-    // Remove trailing zeros.
-    for (; xd[--len] === 0;) xd.pop();
-
-    // Remove leading zeros and adjust exponent accordingly.
-    for (; xd[0] === 0; xd.shift()) --e;
-
-    // Zero?
-    if (!xd[0]) return new Ctor(rm === 3 ? -0 : 0);
-
-    y.d = xd;
-    y.e = getBase10Exponent(xd, e);
-
-    return external ? finalise(y, pr, rm) : y;
-  };
-
-
-  /*
-   *   n % 0 =  N
-   *   n % N =  N
-   *   n % I =  n
-   *   0 % n =  0
-   *  -0 % n = -0
-   *   0 % 0 =  N
-   *   0 % N =  N
-   *   0 % I =  0
-   *   N % n =  N
-   *   N % 0 =  N
-   *   N % N =  N
-   *   N % I =  N
-   *   I % n =  N
-   *   I % 0 =  N
-   *   I % N =  N
-   *   I % I =  N
-   *
-   * Return a new Decimal whose value is the value of this Decimal modulo `y`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * The result depends on the modulo mode.
-   *
-   */
-  P.modulo = P.mod = function (y) {
-    var q,
-      x = this,
-      Ctor = x.constructor;
-
-    y = new Ctor(y);
-
-    // Return NaN if x is ±Infinity or NaN, or y is NaN or ±0.
-    if (!x.d || !y.s || y.d && !y.d[0]) return new Ctor(NaN);
-
-    // Return x if y is ±Infinity or x is ±0.
-    if (!y.d || x.d && !x.d[0]) {
-      return finalise(new Ctor(x), Ctor.precision, Ctor.rounding);
-    }
-
-    // Prevent rounding of intermediate calculations.
-    external = false;
-
-    if (Ctor.modulo == 9) {
-
-      // Euclidian division: q = sign(y) * floor(x / abs(y))
-      // result = x - q * y    where  0 <= result < abs(y)
-      q = divide(x, y.abs(), 0, 3, 1);
-      q.s *= y.s;
-    } else {
-      q = divide(x, y, 0, Ctor.modulo, 1);
-    }
-
-    q = q.times(y);
-
-    external = true;
-
-    return x.minus(q);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the natural exponential of the value of this Decimal,
-   * i.e. the base e raised to the power the value of this Decimal, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   */
-  P.naturalExponential = P.exp = function () {
-    return naturalExponential(this);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the natural logarithm of the value of this Decimal,
-   * rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   */
-  P.naturalLogarithm = P.ln = function () {
-    return naturalLogarithm(this);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal negated, i.e. as if multiplied by
-   * -1.
-   *
-   */
-  P.negated = P.neg = function () {
-    var x = new this.constructor(this);
-    x.s = -x.s;
-    return finalise(x);
-  };
-
-
-  /*
-   *  n + 0 = n
-   *  n + N = N
-   *  n + I = I
-   *  0 + n = n
-   *  0 + 0 = 0
-   *  0 + N = N
-   *  0 + I = I
-   *  N + n = N
-   *  N + 0 = N
-   *  N + N = N
-   *  N + I = N
-   *  I + n = I
-   *  I + 0 = I
-   *  I + N = N
-   *  I + I = I
-   *
-   * Return a new Decimal whose value is the value of this Decimal plus `y`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   */
-  P.plus = P.add = function (y) {
-    var carry, d, e, i, k, len, pr, rm, xd, yd,
-      x = this,
-      Ctor = x.constructor;
-
-    y = new Ctor(y);
-
-    // If either is not finite...
-    if (!x.d || !y.d) {
-
-      // Return NaN if either is NaN.
-      if (!x.s || !y.s) y = new Ctor(NaN);
-
-      // Return x if y is finite and x is ±Infinity.
-      // Return x if both are ±Infinity with the same sign.
-      // Return NaN if both are ±Infinity with different signs.
-      // Return y if x is finite and y is ±Infinity.
-      else if (!x.d) y = new Ctor(y.d || x.s === y.s ? x : NaN);
-
-      return y;
-    }
-
-     // If signs differ...
-    if (x.s != y.s) {
-      y.s = -y.s;
-      return x.minus(y);
-    }
-
-    xd = x.d;
-    yd = y.d;
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    // If either is zero...
-    if (!xd[0] || !yd[0]) {
-
-      // Return x if y is zero.
-      // Return y if y is non-zero.
-      if (!yd[0]) y = new Ctor(x);
-
-      return external ? finalise(y, pr, rm) : y;
-    }
-
-    // x and y are finite, non-zero numbers with the same sign.
-
-    // Calculate base 1e7 exponents.
-    k = mathfloor(x.e / LOG_BASE);
-    e = mathfloor(y.e / LOG_BASE);
-
-    xd = xd.slice();
-    i = k - e;
-
-    // If base 1e7 exponents differ...
-    if (i) {
-
-      if (i < 0) {
-        d = xd;
-        i = -i;
-        len = yd.length;
-      } else {
-        d = yd;
-        e = k;
-        len = xd.length;
-      }
-
-      // Limit number of zeros prepended to max(ceil(pr / LOG_BASE), len) + 1.
-      k = Math.ceil(pr / LOG_BASE);
-      len = k > len ? k + 1 : len + 1;
-
-      if (i > len) {
-        i = len;
-        d.length = 1;
-      }
-
-      // Prepend zeros to equalise exponents. Note: Faster to use reverse then do unshifts.
-      d.reverse();
-      for (; i--;) d.push(0);
-      d.reverse();
-    }
-
-    len = xd.length;
-    i = yd.length;
-
-    // If yd is longer than xd, swap xd and yd so xd points to the longer array.
-    if (len - i < 0) {
-      i = len;
-      d = yd;
-      yd = xd;
-      xd = d;
-    }
-
-    // Only start adding at yd.length - 1 as the further digits of xd can be left as they are.
-    for (carry = 0; i;) {
-      carry = (xd[--i] = xd[i] + yd[i] + carry) / BASE | 0;
-      xd[i] %= BASE;
-    }
-
-    if (carry) {
-      xd.unshift(carry);
-      ++e;
-    }
-
-    // Remove trailing zeros.
-    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
-    for (len = xd.length; xd[--len] == 0;) xd.pop();
-
-    y.d = xd;
-    y.e = getBase10Exponent(xd, e);
-
-    return external ? finalise(y, pr, rm) : y;
-  };
-
-
-  /*
-   * Return the number of significant digits of the value of this Decimal.
-   *
-   * [z] {boolean|number} Whether to count integer-part trailing zeros: true, false, 1 or 0.
-   *
-   */
-  P.precision = P.sd = function (z) {
-    var k,
-      x = this;
-
-    if (z !== void 0 && z !== !!z && z !== 1 && z !== 0) throw Error(invalidArgument + z);
-
-    if (x.d) {
-      k = getPrecision(x.d);
-      if (z && x.e + 1 > k) k = x.e + 1;
-    } else {
-      k = NaN;
-    }
-
-    return k;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number using
-   * rounding mode `rounding`.
-   *
-   */
-  P.round = function () {
-    var x = this,
-      Ctor = x.constructor;
-
-    return finalise(new Ctor(x), x.e + 1, Ctor.rounding);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the sine of the value in radians of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-1, 1]
-   *
-   * sin(x) = x - x^3/3! + x^5/5! - ...
-   *
-   * sin(0)         = 0
-   * sin(-0)        = -0
-   * sin(Infinity)  = NaN
-   * sin(-Infinity) = NaN
-   * sin(NaN)       = NaN
-   *
-   */
-  P.sine = P.sin = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(NaN);
-    if (x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
-    Ctor.rounding = 1;
-
-    x = sine(Ctor, toLessThanHalfPi(Ctor, x));
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(quadrant > 2 ? x.neg() : x, pr, rm, true);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the square root of this Decimal, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   *  sqrt(-n) =  N
-   *  sqrt(N)  =  N
-   *  sqrt(-I) =  N
-   *  sqrt(I)  =  I
-   *  sqrt(0)  =  0
-   *  sqrt(-0) = -0
-   *
-   */
-  P.squareRoot = P.sqrt = function () {
-    var m, n, sd, r, rep, t,
-      x = this,
-      d = x.d,
-      e = x.e,
-      s = x.s,
-      Ctor = x.constructor;
-
-    // Negative/NaN/Infinity/zero?
-    if (s !== 1 || !d || !d[0]) {
-      return new Ctor(!s || s < 0 && (!d || d[0]) ? NaN : d ? x : 1 / 0);
-    }
-
-    external = false;
-
-    // Initial estimate.
-    s = Math.sqrt(+x);
-
-    // Math.sqrt underflow/overflow?
-    // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
-    if (s == 0 || s == 1 / 0) {
-      n = digitsToString(d);
-
-      if ((n.length + e) % 2 == 0) n += '0';
-      s = Math.sqrt(n);
-      e = mathfloor((e + 1) / 2) - (e < 0 || e % 2);
-
-      if (s == 1 / 0) {
-        n = '1e' + e;
-      } else {
-        n = s.toExponential();
-        n = n.slice(0, n.indexOf('e') + 1) + e;
-      }
-
-      r = new Ctor(n);
-    } else {
-      r = new Ctor(s.toString());
-    }
-
-    sd = (e = Ctor.precision) + 3;
-
-    // Newton-Raphson iteration.
-    for (;;) {
-      t = r;
-      r = t.plus(divide(x, t, sd + 2, 1)).times(0.5);
-
-      // TODO? Replace with for-loop and checkRoundingDigits.
-      if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
-        n = n.slice(sd - 3, sd + 1);
-
-        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits are 9999 or
-        // 4999, i.e. approaching a rounding boundary, continue the iteration.
-        if (n == '9999' || !rep && n == '4999') {
-
-          // On the first iteration only, check to see if rounding up gives the exact result as the
-          // nines may infinitely repeat.
-          if (!rep) {
-            finalise(t, e + 1, 0);
-
-            if (t.times(t).eq(x)) {
-              r = t;
-              break;
-            }
-          }
-
-          sd += 4;
-          rep = 1;
-        } else {
-
-          // If the rounding digits are null, 0{0,4} or 50{0,3}, check for an exact result.
-          // If not, then there are further digits and m will be truthy.
-          if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
-
-            // Truncate to the first rounding digit.
-            finalise(r, e + 1, 1);
-            m = !r.times(r).eq(x);
-          }
-
-          break;
-        }
-      }
-    }
-
-    external = true;
-
-    return finalise(r, e, Ctor.rounding, m);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the tangent of the value in radians of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-Infinity, Infinity]
-   *
-   * tan(0)         = 0
-   * tan(-0)        = -0
-   * tan(Infinity)  = NaN
-   * tan(-Infinity) = NaN
-   * tan(NaN)       = NaN
-   *
-   */
-  P.tangent = P.tan = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(NaN);
-    if (x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + 10;
-    Ctor.rounding = 1;
-
-    x = x.sin();
-    x.s = 1;
-    x = divide(x, new Ctor(1).minus(x.times(x)).sqrt(), pr + 10, 0);
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(quadrant == 2 || quadrant == 4 ? x.neg() : x, pr, rm, true);
-  };
-
-
-  /*
-   *  n * 0 = 0
-   *  n * N = N
-   *  n * I = I
-   *  0 * n = 0
-   *  0 * 0 = 0
-   *  0 * N = N
-   *  0 * I = N
-   *  N * n = N
-   *  N * 0 = N
-   *  N * N = N
-   *  N * I = N
-   *  I * n = I
-   *  I * 0 = N
-   *  I * N = N
-   *  I * I = I
-   *
-   * Return a new Decimal whose value is this Decimal times `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   */
-  P.times = P.mul = function (y) {
-    var carry, e, i, k, r, rL, t, xdL, ydL,
-      x = this,
-      Ctor = x.constructor,
-      xd = x.d,
-      yd = (y = new Ctor(y)).d;
-
-    y.s *= x.s;
-
-     // If either is NaN, ±Infinity or ±0...
-    if (!xd || !xd[0] || !yd || !yd[0]) {
-
-      return new Ctor(!y.s || xd && !xd[0] && !yd || yd && !yd[0] && !xd
-
-        // Return NaN if either is NaN.
-        // Return NaN if x is ±0 and y is ±Infinity, or y is ±0 and x is ±Infinity.
-        ? NaN
-
-        // Return ±Infinity if either is ±Infinity.
-        // Return ±0 if either is ±0.
-        : !xd || !yd ? y.s / 0 : y.s * 0);
-    }
-
-    e = mathfloor(x.e / LOG_BASE) + mathfloor(y.e / LOG_BASE);
-    xdL = xd.length;
-    ydL = yd.length;
-
-    // Ensure xd points to the longer array.
-    if (xdL < ydL) {
-      r = xd;
-      xd = yd;
-      yd = r;
-      rL = xdL;
-      xdL = ydL;
-      ydL = rL;
-    }
-
-    // Initialise the result array with zeros.
-    r = [];
-    rL = xdL + ydL;
-    for (i = rL; i--;) r.push(0);
-
-    // Multiply!
-    for (i = ydL; --i >= 0;) {
-      carry = 0;
-      for (k = xdL + i; k > i;) {
-        t = r[k] + yd[i] * xd[k - i - 1] + carry;
-        r[k--] = t % BASE | 0;
-        carry = t / BASE | 0;
-      }
-
-      r[k] = (r[k] + carry) % BASE | 0;
-    }
-
-    // Remove trailing zeros.
-    for (; !r[--rL];) r.pop();
-
-    if (carry) ++e;
-    else r.shift();
-
-    // Remove trailing zeros.
-    for (i = r.length; !r[--i];) r.pop();
-
-    y.d = r;
-    y.e = getBase10Exponent(r, e);
-
-    return external ? finalise(y, Ctor.precision, Ctor.rounding) : y;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in base 2, round to `sd` significant
-   * digits using rounding mode `rm`.
-   *
-   * If the optional `sd` argument is present then return binary exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toBinary = function (sd, rm) {
-    return toStringBinary(this, 2, sd, rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a maximum of `dp`
-   * decimal places using rounding mode `rm` or `rounding` if `rm` is omitted.
-   *
-   * If `dp` is omitted, return a new Decimal whose value is the value of this Decimal.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toDecimalPlaces = P.toDP = function (dp, rm) {
-    var x = this,
-      Ctor = x.constructor;
-
-    x = new Ctor(x);
-    if (dp === void 0) return x;
-
-    checkInt32(dp, 0, MAX_DIGITS);
-
-    if (rm === void 0) rm = Ctor.rounding;
-    else checkInt32(rm, 0, 8);
-
-    return finalise(x, dp + x.e + 1, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in exponential notation rounded to
-   * `dp` fixed decimal places using rounding mode `rounding`.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toExponential = function (dp, rm) {
-    var str,
-      x = this,
-      Ctor = x.constructor;
-
-    if (dp === void 0) {
-      str = finiteToString(x, true);
-    } else {
-      checkInt32(dp, 0, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-
-      x = finalise(new Ctor(x), dp + 1, rm);
-      str = finiteToString(x, true, dp + 1);
-    }
-
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in normal (fixed-point) notation to
-   * `dp` fixed decimal places and rounded using rounding mode `rm` or `rounding` if `rm` is
-   * omitted.
-   *
-   * As with JavaScript numbers, (-0).toFixed(0) is '0', but e.g. (-0.00001).toFixed(0) is '-0'.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * (-0).toFixed(0) is '0', but (-0.1).toFixed(0) is '-0'.
-   * (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
-   * (-0).toFixed(3) is '0.000'.
-   * (-0.5).toFixed(0) is '-0'.
-   *
-   */
-  P.toFixed = function (dp, rm) {
-    var str, y,
-      x = this,
-      Ctor = x.constructor;
-
-    if (dp === void 0) {
-      str = finiteToString(x);
-    } else {
-      checkInt32(dp, 0, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-
-      y = finalise(new Ctor(x), dp + x.e + 1, rm);
-      str = finiteToString(y, false, dp + y.e + 1);
-    }
-
-    // To determine whether to add the minus sign look at the value before it was rounded,
-    // i.e. look at `x` rather than `y`.
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return an array representing the value of this Decimal as a simple fraction with an integer
-   * numerator and an integer denominator.
-   *
-   * The denominator will be a positive non-zero value less than or equal to the specified maximum
-   * denominator. If a maximum denominator is not specified, the denominator will be the lowest
-   * value necessary to represent the number exactly.
-   *
-   * [maxD] {number|string|Decimal} Maximum denominator. Integer >= 1 and < Infinity.
-   *
-   */
-  P.toFraction = function (maxD) {
-    var d, d0, d1, d2, e, k, n, n0, n1, pr, q, r,
-      x = this,
-      xd = x.d,
-      Ctor = x.constructor;
-
-    if (!xd) return new Ctor(x);
-
-    n1 = d0 = new Ctor(1);
-    d1 = n0 = new Ctor(0);
-
-    d = new Ctor(d1);
-    e = d.e = getPrecision(xd) - x.e - 1;
-    k = e % LOG_BASE;
-    d.d[0] = mathpow(10, k < 0 ? LOG_BASE + k : k);
-
-    if (maxD == null) {
-
-      // d is 10**e, the minimum max-denominator needed.
-      maxD = e > 0 ? d : n1;
-    } else {
-      n = new Ctor(maxD);
-      if (!n.isInt() || n.lt(n1)) throw Error(invalidArgument + n);
-      maxD = n.gt(d) ? (e > 0 ? d : n1) : n;
-    }
-
-    external = false;
-    n = new Ctor(digitsToString(xd));
-    pr = Ctor.precision;
-    Ctor.precision = e = xd.length * LOG_BASE * 2;
-
-    for (;;)  {
-      q = divide(n, d, 0, 1, 1);
-      d2 = d0.plus(q.times(d1));
-      if (d2.cmp(maxD) == 1) break;
-      d0 = d1;
-      d1 = d2;
-      d2 = n1;
-      n1 = n0.plus(q.times(d2));
-      n0 = d2;
-      d2 = d;
-      d = n.minus(q.times(d2));
-      n = d2;
-    }
-
-    d2 = divide(maxD.minus(d0), d1, 0, 1, 1);
-    n0 = n0.plus(d2.times(n1));
-    d0 = d0.plus(d2.times(d1));
-    n0.s = n1.s = x.s;
-
-    // Determine which fraction is closer to x, n0/d0 or n1/d1?
-    r = divide(n1, d1, e, 1).minus(x).abs().cmp(divide(n0, d0, e, 1).minus(x).abs()) < 1
-        ? [n1, d1] : [n0, d0];
-
-    Ctor.precision = pr;
-    external = true;
-
-    return r;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in base 16, round to `sd` significant
-   * digits using rounding mode `rm`.
-   *
-   * If the optional `sd` argument is present then return binary exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toHexadecimal = P.toHex = function (sd, rm) {
-    return toStringBinary(this, 16, sd, rm);
-  };
-
-
-  /*
-   * Return a string representing the exact value of this Decimal in a compact base-88 based format.
-   *
-   * The number of characters of the string will always be equal to or less than the number of
-   * characters returned by `toString` or `toExponential` - usually just over half as many.
-   *
-   * The original Decimal value can be recreated by passing the string to `Decimal.fromJSON`.
-   *
-   * Base 88 alphabet:
-   * 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~
-   *
-   * The following 7 printable ASCII characters are not used
-   * (space) \ " & ' < >
-   * so the return value is safe for strings, HTML, JSON, and XML.
-   *
-   *     0   0     g  16    w  32    M  48    $  64    ]  80
-   *     1   1     h  17    x  33    N  49    %  65    ^  81
-   *     2   2     i  18    y  34    O  50    (  66    _  82
-   *     3   3     j  19    z  35    P  51    )  67    `  83
-   *     4   4     k  20    A  36    Q  52    *  68    {  84
-   *     5   5     l  21    B  37    R  53    +  69    |  85
-   *     6   6     m  22    C  38    S  54    ,  70    }  86
-   *     7   7     n  23    D  39    T  55    -  71    ~  87
-   *     8   8     o  24    E  40    U  56    .  72
-   *     9   9     p  25    F  41    V  57    /  73
-   *     a  10     q  26    G  42    W  58    :  74
-   *     b  11     r  27    H  43    X  59    ;  75
-   *     c  12     s  28    I  44    Y  60    =  76
-   *     d  13     t  29    J  45    Z  61    ?  77
-   *     e  14     u  30    K  46    !  62    @  78
-   *     f  15     v  31    L  47    #  63    [  79
-   *
-   * If the return value is just one character, it represents:
-   * 0-81  [[0, 40][-0, -40]]
-   * 82    -Infinity
-   * 83    +Infinity
-   * 84    NaN
-   * 85-87 free
-   *
-   *   64 32 16  8  4  2  1
-   *    1  0  1  0  1  1  1 = 87
-   *
-   */
-   P.toJSON = function () {
-    var arr, e, i, k, len, n, r, str,
-      x = this,
-      isNeg = x.s < 0;
-
-    // -Infinity/Infinity/NaN.
-    if (!x.d) return NUMERALS.charAt(x.s ? isNeg ? 82 : 83 : 84);
-    e = x.e;
-
-    // Small integer.
-    if (x.d.length === 1 && e < 4 && e >= 0) {
-      n = x.d[0];
-
-      if (n < 2857) {
-
-        // One character.
-        // [[0, 40][-0, -40]]
-        if (n < 41) return NUMERALS.charAt(isNeg ? n + 41 : n);
-
-        // Two characters. High bit of first character unset.
-        // 0XXXXXX
-        // 63*88 + 87 = 5631 = 5632 values, 5632/2 = 2816
-        // [[0, 2815][2816, 5631]]  (2816 * 2 = 5632 values)
-        // [[0, 2815][-0, -2815]]
-        // [[41, 2856][-41, -2856]]
-        n -= 41;
-        if (isNeg) n += 2816;
-        k = n / 88 | 0;
-
-        return NUMERALS.charAt(k) + NUMERALS.charAt(n - k * 88);
-      }
-    }
-
-    str = digitsToString(x.d);
-    r = '';
-
-    // Values with a small exponent. Set high bit.
-    // Positive value: 100XXXX
-    // 1 0 0 {exponent [0, 15] -> [-7, 8]}
-    if (!isNeg && e <= 8 && e >= -7) {
-      k = 64 + e + 7;
-
-    // Negative value: 1010XXX
-    // 1 0 1 0 {exponent [0, 7] -> [-3, 4]}
-    } else if (isNeg && e <= 4 && e >= -3) {
-      k = 64 + 16 + e + 3;
-
-    // Integer without trailing zeros: 0X00000
-    // 0 {is negative} 0 0 0 0 0
-    } else if (str.length === e + 1) {
-      k = 32 * isNeg;
-
-    // All remaining values: 0XXXXXX
-    // Result will have at least 3 characters.
-    // 0 {is negative} {is exponent negative} {exponent character count [1, 15]}
-    } else {
-      k = 32 * isNeg + 16 * (e < 0);
-      e = Math.abs(e);
-
-      // One character to represent the exponent.
-      if (e < 88)  {
-        k += 1;
-        r = NUMERALS.charAt(e);
-
-      // Two characters to represent the exponent.
-      // 87*88 + 87 = 7743
-      } else if (e < 7744) {
-        k += 2;
-        n = e / 88 | 0;
-        r = NUMERALS.charAt(n) + NUMERALS.charAt(e - n * 88);
-
-      // More than two characters to represent the exponent.
-      } else {
-        arr = convertBase(String(e), 10, 88);
-        len = arr.length;
-        k += len;
-        for (i = 0; i < len; i++) r += NUMERALS.charAt(arr[i]);
-      }
-    }
-
-    // At this point r contains the characters in base 88 representing the exponent value.
-    // Prepend the first character, which describes the sign, the exponent sign, and the number of
-    // characters that follow which represent the exponent value.
-    r = NUMERALS.charAt(k) + r;
-    arr = convertBase(str, 10, 88);
-    len = arr.length;
-
-    // Add the base 88 characters that represent the significand.
-    for (i = 0; i < len; i++) r += NUMERALS.charAt(arr[i]);
-
-    return r;
-  };
-
-
-  /*
-   * Returns a new Decimal whose value is the nearest multiple of the magnitude of `y` to the value
-   * of this Decimal.
-   *
-   * If the value of this Decimal is equidistant from two multiples of `y`, the rounding mode `rm`,
-   * or `Decimal.rounding` if `rm` is omitted, determines the direction of the nearest multiple.
-   *
-   * In the context of this method, rounding mode 4 (ROUND_HALF_UP) is the same as rounding mode 0
-   * (ROUND_UP), and so on.
-   *
-   * The return value will always have the same sign as this Decimal, unless either this Decimal
-   * or `y` is NaN, in which case the return value will be also be NaN.
-   *
-   * The return value is not affected by the value of `precision`.
-   *
-   * y {number|string|Decimal} The magnitude to round to a multiple of.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * 'toNearest() rounding mode not an integer: {rm}'
-   * 'toNearest() rounding mode out of range: {rm}'
-   *
-   */
-  P.toNearest = function (y, rm) {
-    var x = this,
-      Ctor = x.constructor;
-
-    x = new Ctor(x);
-
-    if (y == null) {
-
-      // If x is not finite, return x.
-      if (!x.d) return x;
-
-      y = new Ctor(1);
-      rm = Ctor.rounding;
-    } else {
-      y = new Ctor(y);
-      if (rm !== void 0) checkInt32(rm, 0, 8);
-
-      // If x is not finite, return x if y is not NaN, else NaN.
-      if (!x.d) return y.s ? x : y;
-
-      // If y is not finite, return Infinity with the sign of x if y is Infinity, else NaN.
-      if (!y.d) {
-        if (y.s) y.s = x.s;
-        return y;
-      }
-    }
-
-    // If y is not zero, calculate the nearest multiple of y to x.
-    if (y.d[0]) {
-      external = false;
-      if (rm < 4) rm = [4, 5, 7, 8][rm];
-      x = divide(x, y, 0, rm, 1).times(y);
-      external = true;
-      finalise(x);
-
-    // If y is zero, return zero with the sign of x.
-    } else {
-      y.s = x.s;
-      x = y;
-    }
-
-    return x;
-  };
-
-
-  /*
-   * Return the value of this Decimal converted to a number primitive.
-   * Zero keeps its sign.
-   *
-   */
-  P.toNumber = function () {
-    return +this;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in base 8, round to `sd` significant
-   * digits using rounding mode `rm`.
-   *
-   * If the optional `sd` argument is present then return binary exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toOctal = function (sd, rm) {
-    return toStringBinary(this, 8, sd, rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal raised to the power `y`, rounded
-   * to `precision` significant digits using rounding mode `rounding`.
-   *
-   * ECMAScript compliant.
-   *
-   *   pow(x, NaN)                           = NaN
-   *   pow(x, ±0)                            = 1
-
-   *   pow(NaN, non-zero)                    = NaN
-   *   pow(abs(x) > 1, +Infinity)            = +Infinity
-   *   pow(abs(x) > 1, -Infinity)            = +0
-   *   pow(abs(x) == 1, ±Infinity)           = NaN
-   *   pow(abs(x) < 1, +Infinity)            = +0
-   *   pow(abs(x) < 1, -Infinity)            = +Infinity
-   *   pow(+Infinity, y > 0)                 = +Infinity
-   *   pow(+Infinity, y < 0)                 = +0
-   *   pow(-Infinity, odd integer > 0)       = -Infinity
-   *   pow(-Infinity, even integer > 0)      = +Infinity
-   *   pow(-Infinity, odd integer < 0)       = -0
-   *   pow(-Infinity, even integer < 0)      = +0
-   *   pow(+0, y > 0)                        = +0
-   *   pow(+0, y < 0)                        = +Infinity
-   *   pow(-0, odd integer > 0)              = -0
-   *   pow(-0, even integer > 0)             = +0
-   *   pow(-0, odd integer < 0)              = -Infinity
-   *   pow(-0, even integer < 0)             = +Infinity
-   *   pow(finite x < 0, finite non-integer) = NaN
-   *
-   * For non-integer or very large exponents pow(x, y) is calculated using
-   *
-   *   x^y = exp(y*ln(x))
-   *
-   * Assuming the first 15 rounding digits are each equally likely to be any digit 0-9, the
-   * probability of an incorrectly rounded result
-   * P([49]9{14} | [50]0{14}) = 2 * 0.2 * 10^-14 = 4e-15 = 1/2.5e+14
-   * i.e. 1 in 250,000,000,000,000
-   *
-   * If a result is incorrectly rounded the maximum error will be 1 ulp (unit in last place).
-   *
-   * y {number|string|Decimal} The power to which to raise this Decimal.
-   *
-   */
-  P.toPower = P.pow = function (y) {
-    var e, k, pr, r, rm, sign, yIsInt,
-      x = this,
-      Ctor = x.constructor,
-      yn = +(y = new Ctor(y));
-
-    // Either ±Infinity, NaN or ±0?
-    if (!x.d || !y.d || !x.d[0] || !y.d[0]) return  new Ctor(mathpow(+x, yn));
-
-    x = new Ctor(x);
-
-    if (x.eq(1)) return x;
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    if (y.eq(1)) return finalise(x, pr, rm);
-
-    e = mathfloor(y.e / LOG_BASE);
-    k = y.d.length - 1;
-    yIsInt = e >= k;
-    sign = x.s;
-
-    if (!yIsInt) {
-      if (sign < 0) return new Ctor(NaN);
-
-    // If y is a small integer use the 'exponentiation by squaring' algorithm.
-    } else if ((k = yn < 0 ? -yn : yn) <= MAX_SAFE_INTEGER) {
-      r = intPow(Ctor, x, k, pr);
-      return y.s < 0 ? new Ctor(1).div(r) : finalise(r, pr, rm);
-    }
-
-    // Result is negative if x is negative and the last digit of integer y is odd.
-    sign = sign < 0 && y.d[Math.max(e, k)] & 1 ? -1 : 1;
-
-    // Estimate result exponent.
-    // x^y = 10^e,  where e = y * log10(x)
-    // log10(x) = log10(x_significand) + x_exponent
-    // log10(x_significand) = ln(x_significand) / ln(10)
-    k = mathpow(+x, yn);
-    e = k == 0 || !isFinite(k)
-      ? mathfloor(yn * (Math.log('0.' + digitsToString(x.d)) / Math.LN10 + x.e + 1))
-      : new Ctor(k + '').e;
-
-    // Estimate may be incorrect e.g. x: 0.999999999999999999, y: 2.29, e: 0, r.e: -1.
-
-    // Overflow/underflow?
-    if (e > Ctor.maxE + 1 || e < Ctor.minE - 1) return new Ctor(e > 0 ? sign / 0 : 0);
-
-    external = false;
-    Ctor.rounding = x.s = 1;
-
-    // Estimate the extra guard digits needed to ensure five correct rounding digits from
-    // naturalLogarithm(x). Example of failure without these extra digits (precision: 10):
-    // new Decimal(2.32456).pow('2087987436534566.46411')
-    // should be 1.162377823e+764914905173815, but is 1.162355823e+764914905173815
-    k = Math.min(12, (e + '').length);
-
-    // r = x^y = exp(y*ln(x))
-    r = naturalExponential(y.times(naturalLogarithm(x, pr + k)), pr);
-
-    // Truncate to the required precision plus five rounding digits.
-    r = finalise(r, pr + 5, 1);
-
-    // If the rounding digits are [49]9999 or [50]0000 increase the precision by 10 and recalculate
-    // the result.
-    if (checkRoundingDigits(r.d, pr, rm)) {
-      e = pr + 10;
-
-      // Truncate to the increased precision plus five rounding digits.
-      r = finalise(naturalExponential(y.times(naturalLogarithm(x, e + k)), e), e + 5, 1);
-
-      // Check for 14 nines from the 2nd rounding digit (the first rounding digit may be 4 or 9).
-      if (+digitsToString(r.d).slice(pr + 1, pr + 15) + 1 == 1e14) {
-        r = finalise(r, pr + 1, 0);
-      }
-    }
-
-    r.s = sign;
-    external = true;
-    Ctor.rounding = rm;
-
-    return finalise(r, pr, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal rounded to `sd` significant digits
-   * using rounding mode `rounding`.
-   *
-   * Return exponential notation if `sd` is less than the number of digits necessary to represent
-   * the integer part of the value in normal notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toPrecision = function (sd, rm) {
-    var str,
-      x = this,
-      Ctor = x.constructor;
-
-    if (sd === void 0) {
-      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
-    } else {
-      checkInt32(sd, 1, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-
-      x = finalise(new Ctor(x), sd, rm);
-      str = finiteToString(x, sd <= x.e || x.e <= Ctor.toExpNeg, sd);
-    }
-
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a maximum of `sd`
-   * significant digits using rounding mode `rm`, or to `precision` and `rounding` respectively if
-   * omitted.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * 'toSD() digits out of range: {sd}'
-   * 'toSD() digits not an integer: {sd}'
-   * 'toSD() rounding mode not an integer: {rm}'
-   * 'toSD() rounding mode out of range: {rm}'
-   *
-   */
-  P.toSignificantDigits = P.toSD = function (sd, rm) {
-    var x = this,
-      Ctor = x.constructor;
-
-    if (sd === void 0) {
-      sd = Ctor.precision;
-      rm = Ctor.rounding;
-    } else {
-      checkInt32(sd, 1, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-    }
-
-    return finalise(new Ctor(x), sd, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal.
-   *
-   * Return exponential notation if this Decimal has a positive exponent equal to or greater than
-   * `toExpPos`, or a negative exponent equal to or less than `toExpNeg`.
-   *
-   */
-  P.toString = function () {
-    var x = this,
-      Ctor = x.constructor,
-      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
-
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal truncated to a whole number.
-   *
-   */
-  P.truncated = P.trunc = function () {
-    return finalise(new this.constructor(this), this.e + 1, 1);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal.
-   * Unlike `toString`, negative zero will include the minus sign.
-   *
-   */
-  P.valueOf = function () {
-    var x = this,
-      Ctor = x.constructor,
-      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
-
-    return x.isNeg() ? '-' + str : str;
-  };
-
-
-  /*
-  // Add aliases to match BigDecimal method names.
-  // P.add = P.plus;
-  P.subtract = P.minus;
-  P.multiply = P.times;
-  P.divide = P.div;
-  P.remainder = P.mod;
-  P.compareTo = P.cmp;
-  P.negate = P.neg;
-   */
-
-
-  // Helper functions for Decimal.prototype (P) and/or Decimal methods, and their callers.
-
-
-  /*
-   *  digitsToString           P.cubeRoot, P.logarithm, P.squareRoot, P.toFraction, P.toJSON,
-   *                           P.toPower, finiteToString, naturalExponential, naturalLogarithm
-   *  checkInt32               P.toDecimalPlaces, P.toExponential, P.toFixed, P.toNearest,
-   *                           P.toPrecision, P.toSignificantDigits, toStringBinary, random
-   *  checkRoundingDigits      P.logarithm, P.toPower, naturalExponential, naturalLogarithm
-   *  convertBase              P.toJSON, toStringBinary, fromJSON, parseOther
-   *  cos                      P.cos
-   *  divide                   P.atanh, P.cubeRoot, P.dividedBy, P.dividedToIntegerBy,
-   *                           P.logarithm, P.modulo, P.squareRoot, P.tan, P.tanh, P.toFraction,
-   *                           P.toNearest, toStringBinary, naturalExponential, naturalLogarithm,
-   *                           taylorSeries, atan2, parseOther
-   *  finalise                 P.absoluteValue, P.atan, P.atanh, P.ceil, P.cos, P.cosh,
-   *                           P.cubeRoot, P.dividedToIntegerBy, P.floor, P.logarithm, P.minus,
-   *                           P.modulo, P.negated, P.plus, P.round, P.sin, P.sinh, P.squareRoot,
-   *                           P.tan, P.times, P.toDecimalPlaces, P.toExponential, P.toFixed,
-   *                           P.toNearest, P.toPower, P.toPrecision, P.toSignificantDigits,
-   *                           P.truncated, divide, getLn10, getPi, naturalExponential,
-   *                           naturalLogarithm, ceil, floor, round, trunc
-   *  finiteToString           P.toExponential, P.toFixed, P.toPrecision, P.toString, P.valueOf,
-   *                           toStringBinary
-   *  getBase10Exponent        P.minus, P.plus, P.times, parseOther
-   *  getLn10                  P.logarithm, naturalLogarithm
-   *  getPi                    P.acos, P.asin, P.atan, toLessThanHalfPi, atan2
-   *  getPrecision             P.precision, P.toFraction
-   *  getZeroString            digitsToString, finiteToString
-   *  intPow                   P.toPower, parseOther
-   *  isOdd                    toLessThanHalfPi
-   *  maxOrMin                 max, min
-   *  naturalExponential       P.naturalExponential, P.toPower
-   *  naturalLogarithm         P.acosh, P.asinh, P.atanh, P.logarithm, P.naturalLogarithm,
-   *                           P.toPower, naturalExponential
-   *  nonFiniteToString        finiteToString, toStringBinary
-   *  parseDecimal             Decimal
-   *  parseOther               Decimal
-   *  sin                      P.sin
-   *  taylorSeries             P.cosh, P.sinh, cos, sin
-   *  toLessThanHalfPi         P.cos, P.sin
-   *  toStringBinary           P.toBinary, P.toHexadecimal, P.toOctal
-   *  truncate                 intPow
-   *
-   *  Throws:                  P.logarithm, P.precision, P.toFraction, checkInt32, getLn10, getPi,
-   *                           naturalLogarithm, config, fromJSON, parseOther, random, Decimal           *
-   */
-
-
-  function digitsToString(d) {
-    var i, k, ws,
-      indexOfLastWord = d.length - 1,
-      str = '',
-      w = d[0];
-
-    if (indexOfLastWord > 0) {
-      str += w;
-      for (i = 1; i < indexOfLastWord; i++) {
-        ws = d[i] + '';
-        k = LOG_BASE - ws.length;
-        if (k) str += getZeroString(k);
-        str += ws;
-      }
-
-      w = d[i];
-      ws = w + '';
-      k = LOG_BASE - ws.length;
-      if (k) str += getZeroString(k);
-    } else if (w === 0) {
-      return '0';
-    }
-
-    // Remove trailing zeros of last w.
-    for (; w % 10 === 0;) w /= 10;
-
-    return str + w;
-  }
-
-
-  function checkInt32(i, min, max) {
-    if (i !== ~~i || i < min || i > max) {
-      throw Error(invalidArgument + i);
-    }
-  }
-
-
-  /*
-   * Check 5 rounding digits if `repeating` is null, 4 otherwise.
-   * `repeating == null` if caller is `log` or `pow`,
-   * `repeating != null` if caller is `naturalLogarithm` or `naturalExponential`.
-   */
-  function checkRoundingDigits(d, i, rm, repeating) {
-    var di, k, r, rd;
-
-    // Get the length of the first word of the array d.
-    for (k = d[0]; k >= 10; k /= 10) --i;
-
-    // Is the rounding digit in the first word of d?
-    if (--i < 0) {
-      i += LOG_BASE;
-      di = 0;
-    } else {
-      di = Math.ceil((i + 1) / LOG_BASE);
-      i %= LOG_BASE;
-    }
-
-    // i is the index (0 - 6) of the rounding digit.
-    // E.g. if within the word 3487563 the first rounding digit is 5,
-    // then i = 4, k = 1000, rd = 3487563 % 1000 = 563
-    k = mathpow(10, LOG_BASE - i);
-    rd = d[di] % k | 0;
-
-    if (repeating == null) {
-      if (i < 3) {
-        if (i == 0) rd = rd / 100 | 0;
-        else if (i == 1) rd = rd / 10 | 0;
-        r = rm < 4 && rd == 99999 || rm > 3 && rd == 49999 || rd == 50000 || rd == 0;
-      } else {
-        r = (rm < 4 && rd + 1 == k || rm > 3 && rd + 1 == k / 2) &&
-          (d[di + 1] / k / 100 | 0) == mathpow(10, i - 2) - 1 ||
-            (rd == k / 2 || rd == 0) && (d[di + 1] / k / 100 | 0) == 0;
-      }
-    } else {
-      if (i < 4) {
-        if (i == 0) rd = rd / 1000 | 0;
-        else if (i == 1) rd = rd / 100 | 0;
-        else if (i == 2) rd = rd / 10 | 0;
-        r = (repeating || rm < 4) && rd == 9999 || !repeating && rm > 3 && rd == 4999;
-      } else {
-        r = ((repeating || rm < 4) && rd + 1 == k ||
-        (!repeating && rm > 3) && rd + 1 == k / 2) &&
-          (d[di + 1] / k / 1000 | 0) == mathpow(10, i - 3) - 1;
-      }
-    }
-
-    return r;
-  }
-
-
-  // Convert string of `baseIn` to an array of numbers of `baseOut`.
-  // Eg. convertBase('255', 10, 16) returns [15, 15].
-  // Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
-  function convertBase(str, baseIn, baseOut) {
-    var j,
-      arr = [0],
-      arrL,
-      i = 0,
-      strL = str.length;
-
-    for (; i < strL;) {
-      for (arrL = arr.length; arrL--;) arr[arrL] *= baseIn;
-      arr[0] += NUMERALS.indexOf(str.charAt(i++));
-      for (j = 0; j < arr.length; j++) {
-        if (arr[j] > baseOut - 1) {
-          if (arr[j + 1] === void 0) arr[j + 1] = 0;
-          arr[j + 1] += arr[j] / baseOut | 0;
-          arr[j] %= baseOut;
-        }
-      }
-    }
-
-    return arr.reverse();
-  }
-
-
-  /*
-   * cos(x) = 1 - x^2/2! + x^4/4! - ...
-   * |x| < pi/2
-   *
-   */
-  function cosine(Ctor, x) {
-    var k, y,
-      len = x.d.length;
-
-    // Argument reduction: cos(4x) = 8*(cos^4(x) - cos^2(x)) + 1
-    // i.e. cos(x) = 8*(cos^4(x/4) - cos^2(x/4)) + 1
-
-    // Estimate the optimum number of times to use the argument reduction.
-    if (len < 32) {
-      k = Math.ceil(len / 3);
-      y = Math.pow(4, -k).toString();
-    } else {
-      k = 16;
-      y = '2.3283064365386962890625e-10';
-    }
-
-    Ctor.precision += k;
-
-    x = taylorSeries(Ctor, 1, x.times(y), new Ctor(1));
-
-    // Reverse argument reduction
-    for (var i = k; i--;) {
-      var cos2x = x.times(x);
-      x = cos2x.times(cos2x).minus(cos2x).times(8).plus(1);
-    }
-
-    Ctor.precision -= k;
-
-    return x;
-  }
-
-
-  /*
-   * Perform division in the specified base.
-   */
-  var divide = (function () {
-
-    // Assumes non-zero x and k, and hence non-zero result.
-    function multiplyInteger(x, k, base) {
-      var temp,
-        carry = 0,
-        i = x.length;
-
-      for (x = x.slice(); i--;) {
-        temp = x[i] * k + carry;
-        x[i] = temp % base | 0;
-        carry = temp / base | 0;
-      }
-
-      if (carry) x.unshift(carry);
-
-      return x;
-    }
-
-    function compare(a, b, aL, bL) {
-      var i, r;
-
-      if (aL != bL) {
-        r = aL > bL ? 1 : -1;
-      } else {
-        for (i = r = 0; i < aL; i++) {
-          if (a[i] != b[i]) {
-            r = a[i] > b[i] ? 1 : -1;
-            break;
-          }
-        }
-      }
-
-      return r;
-    }
-
-    function subtract(a, b, aL, base) {
-      var i = 0;
-
-      // Subtract b from a.
-      for (; aL--;) {
-        a[aL] -= i;
-        i = a[aL] < b[aL] ? 1 : 0;
-        a[aL] = i * base + a[aL] - b[aL];
-      }
-
-      // Remove leading zeros.
-      for (; !a[0] && a.length > 1;) a.shift();
-    }
-
-    return function (x, y, pr, rm, dp, base) {
-      var cmp, e, i, k, logBase, more, prod, prodL, q, qd, rem, remL, rem0, sd, t, xi, xL, yd0,
-        yL, yz,
-        Ctor = x.constructor,
-        sign = x.s == y.s ? 1 : -1,
-        xd = x.d,
-        yd = y.d;
-
-      // Either NaN, Infinity or 0?
-      if (!xd || !xd[0] || !yd || !yd[0]) {
-
-        return new Ctor(// Return NaN if either NaN, or both Infinity or 0.
-          !x.s || !y.s || (xd ? yd && xd[0] == yd[0] : !yd) ? NaN :
-
-          // Return ±0 if x is 0 or y is ±Infinity, or return ±Infinity as y is 0.
-          xd && xd[0] == 0 || !yd ? sign * 0 : sign / 0);
-      }
-
-      if (base) {
-        logBase = 1;
-        e = x.e - y.e;
-      } else {
-        base = BASE;
-        logBase = LOG_BASE;
-        e = mathfloor(x.e / logBase) - mathfloor(y.e / logBase);
-      }
-
-      yL = yd.length;
-      xL = xd.length;
-      q = new Ctor(sign);
-      qd = q.d = [];
-
-      // Result exponent may be one less than e.
-      // The digit array of a Decimal from toStringBinary may have trailing zeros.
-      for (i = 0; yd[i] == (xd[i] || 0); i++);
-
-      if (yd[i] > (xd[i] || 0)) e--;
-
-      if (pr == null) {
-        sd = pr = Ctor.precision;
-        rm = Ctor.rounding;
-      } else if (dp) {
-        sd = pr + (x.e - y.e) + 1;
-      } else {
-        sd = pr;
-      }
-
-      if (sd < 0) {
-        qd.push(1);
-        more = true;
-      } else {
-
-        // Convert precision in number of base 10 digits to base 1e7 digits.
-        sd = sd / logBase + 2 | 0;
-        i = 0;
-
-        // divisor < 1e7
-        if (yL == 1) {
-          k = 0;
-          yd = yd[0];
-          sd++;
-
-          // k is the carry.
-          for (; (i < xL || k) && sd--; i++) {
-            t = k * base + (xd[i] || 0);
-            qd[i] = t / yd | 0;
-            k = t % yd | 0;
-          }
-
-          more = k || i < xL;
-
-        // divisor >= 1e7
-        } else {
-
-          // Normalise xd and yd so highest order digit of yd is >= base/2
-          k = base / (yd[0] + 1) | 0;
-
-          if (k > 1) {
-            yd = multiplyInteger(yd, k, base);
-            xd = multiplyInteger(xd, k, base);
-            yL = yd.length;
-            xL = xd.length;
-          }
-
-          xi = yL;
-          rem = xd.slice(0, yL);
-          remL = rem.length;
-
-          // Add zeros to make remainder as long as divisor.
-          for (; remL < yL;) rem[remL++] = 0;
-
-          yz = yd.slice();
-          yz.unshift(0);
-          yd0 = yd[0];
-
-          if (yd[1] >= base / 2) ++yd0;
-
-          do {
-            k = 0;
-
-            // Compare divisor and remainder.
-            cmp = compare(yd, rem, yL, remL);
-
-            // If divisor < remainder.
-            if (cmp < 0) {
-
-              // Calculate trial digit, k.
-              rem0 = rem[0];
-              if (yL != remL) rem0 = rem0 * base + (rem[1] || 0);
-
-              // k will be how many times the divisor goes into the current remainder.
-              k = rem0 / yd0 | 0;
-
-              //  Algorithm:
-              //  1. product = divisor * trial digit (k)
-              //  2. if product > remainder: product -= divisor, k--
-              //  3. remainder -= product
-              //  4. if product was < remainder at 2:
-              //    5. compare new remainder and divisor
-              //    6. If remainder > divisor: remainder -= divisor, k++
-
-              if (k > 1) {
-                if (k >= base) k = base - 1;
-
-                // product = divisor * trial digit.
-                prod = multiplyInteger(yd, k, base);
-                prodL = prod.length;
-                remL = rem.length;
-
-                // Compare product and remainder.
-                cmp = compare(prod, rem, prodL, remL);
-
-                // product > remainder.
-                if (cmp == 1) {
-                  k--;
-
-                  // Subtract divisor from product.
-                  subtract(prod, yL < prodL ? yz : yd, prodL, base);
-                }
-              } else {
-
-                // cmp is -1.
-                // If k is 0, there is no need to compare yd and rem again below, so change cmp to 1
-                // to avoid it. If k is 1 there is a need to compare yd and rem again below.
-                if (k == 0) cmp = k = 1;
-                prod = yd.slice();
-              }
-
-              prodL = prod.length;
-              if (prodL < remL) prod.unshift(0);
-
-              // Subtract product from remainder.
-              subtract(rem, prod, remL, base);
-
-              // If product was < previous remainder.
-              if (cmp == -1) {
-                remL = rem.length;
-
-                // Compare divisor and new remainder.
-                cmp = compare(yd, rem, yL, remL);
-
-                // If divisor < new remainder, subtract divisor from remainder.
-                if (cmp < 1) {
-                  k++;
-
-                  // Subtract divisor from remainder.
-                  subtract(rem, yL < remL ? yz : yd, remL, base);
-                }
-              }
-
-              remL = rem.length;
-            } else if (cmp === 0) {
-              k++;
-              rem = [0];
-            }    // if cmp === 1, k will be 0
-
-            // Add the next digit, k, to the result array.
-            qd[i++] = k;
-
-            // Update the remainder.
-            if (cmp && rem[0]) {
-              rem[remL++] = xd[xi] || 0;
-            } else {
-              rem = [xd[xi]];
-              remL = 1;
-            }
-
-          } while ((xi++ < xL || rem[0] !== void 0) && sd--);
-
-          more = rem[0] !== void 0;
-        }
-
-        // Leading zero?
-        if (!qd[0]) qd.shift();
-      }
-
-      // logBase is 1 when divide is being used for base conversion.
-      if (logBase == 1) {
-        q.e = e;
-        inexact = more;
-      } else {
-
-        // To calculate q.e, first get the number of digits of qd[0].
-        for (i = 1, k = qd[0]; k >= 10; k /= 10) i++;
-        q.e = i + e * logBase - 1;
-
-        finalise(q, dp ? pr + q.e + 1 : pr, rm, more);
-      }
-
-      return q;
-    };
-  })();
-
-
-  /*
-   * Round `x` to `sd` significant digits using rounding mode `rm`.
-   * Check for over/under-flow.
-   */
-   function finalise(x, sd, rm, isTruncated) {
-    var digits, i, j, k, rd, roundUp, w, xd, xdi,
-      Ctor = x.constructor;
-
-    // Don't round if sd is null or undefined.
-    out: if (sd != null) {
-      xd = x.d;
-
-      // Infinity/NaN.
-      if (!xd) return x;
-
-      // rd: the rounding digit, i.e. the digit after the digit that may be rounded up.
-      // w: the word of xd containing rd, a base 1e7 number.
-      // xdi: the index of w within xd.
-      // digits: the number of digits of w.
-      // i: what would be the index of rd within w if all the numbers were 7 digits long (i.e. if
-      // they had leading zeros)
-      // j: if > 0, the actual index of rd within w (if < 0, rd is a leading zero).
-
-      // Get the length of the first word of the digits array xd.
-      for (digits = 1, k = xd[0]; k >= 10; k /= 10) digits++;
-      i = sd - digits;
-
-      // Is the rounding digit in the first word of xd?
-      if (i < 0) {
-        i += LOG_BASE;
-        j = sd;
-        w = xd[xdi = 0];
-
-        // Get the rounding digit at index j of w.
-        rd = w / mathpow(10, digits - j - 1) % 10 | 0;
-      } else {
-        xdi = Math.ceil((i + 1) / LOG_BASE);
-        k = xd.length;
-        if (xdi >= k) {
-          if (isTruncated) {
-
-            // Needed by `naturalExponential`, `naturalLogarithm` and `squareRoot`.
-            for (; k++ <= xdi;) xd.push(0);
-            w = rd = 0;
-            digits = 1;
-            i %= LOG_BASE;
-            j = i - LOG_BASE + 1;
-          } else {
-            break out;
-          }
-        } else {
-          w = k = xd[xdi];
-
-          // Get the number of digits of w.
-          for (digits = 1; k >= 10; k /= 10) digits++;
-
-          // Get the index of rd within w.
-          i %= LOG_BASE;
-
-          // Get the index of rd within w, adjusted for leading zeros.
-          // The number of leading zeros of w is given by LOG_BASE - digits.
-          j = i - LOG_BASE + digits;
-
-          // Get the rounding digit at index j of w.
-          rd = j < 0 ? 0 : w / mathpow(10, digits - j - 1) % 10 | 0;
-        }
-      }
-
-      // Are there any non-zero digits after the rounding digit?
-      isTruncated = isTruncated || sd < 0 ||
-        xd[xdi + 1] !== void 0 || (j < 0 ? w : w % mathpow(10, digits - j - 1));
-
-      // The expression `w % mathpow(10, digits - j - 1)` returns all the digits of w to the right
-      // of the digit at (left-to-right) index j, e.g. if w is 908714 and j is 2, the expression
-      // will give 714.
-
-      roundUp = rm < 4
-        ? (rd || isTruncated) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
-        : rd > 5 || rd == 5 && (rm == 4 || isTruncated || rm == 6 &&
-
-          // Check whether the digit to the left of the rounding digit is odd.
-          ((i > 0 ? j > 0 ? w / mathpow(10, digits - j) : 0 : xd[xdi - 1]) % 10) & 1 ||
-            rm == (x.s < 0 ? 8 : 7));
-
-      if (sd < 1 || !xd[0]) {
-        xd.length = 0;
-        if (roundUp) {
-
-          // Convert sd to decimal places.
-          sd -= x.e + 1;
-
-          // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-          xd[0] = mathpow(10, (LOG_BASE - sd % LOG_BASE) % LOG_BASE);
-          x.e = -sd || 0;
-        } else {
-
-          // Zero.
-          xd[0] = x.e = 0;
-        }
-
-        return x;
-      }
-
-      // Remove excess digits.
-      if (i == 0) {
-        xd.length = xdi;
-        k = 1;
-        xdi--;
-      } else {
-        xd.length = xdi + 1;
-        k = mathpow(10, LOG_BASE - i);
-
-        // E.g. 56700 becomes 56000 if 7 is the rounding digit.
-        // j > 0 means i > number of leading zeros of w.
-        xd[xdi] = j > 0 ? (w / mathpow(10, digits - j) % mathpow(10, j) | 0) * k : 0;
-      }
-
-      if (roundUp) {
-        for (;;) {
-
-          // Is the digit to be rounded up in the first word of xd?
-          if (xdi == 0) {
-
-            // i will be the length of xd[0] before k is added.
-            for (i = 1, j = xd[0]; j >= 10; j /= 10) i++;
-            j = xd[0] += k;
-            for (k = 1; j >= 10; j /= 10) k++;
-
-            // if i != k the length has increased.
-            if (i != k) {
-              x.e++;
-              if (xd[0] == BASE) xd[0] = 1;
-            }
-
-            break;
-          } else {
-            xd[xdi] += k;
-            if (xd[xdi] != BASE) break;
-            xd[xdi--] = 0;
-            k = 1;
-          }
-        }
-      }
-
-      // Remove trailing zeros.
-      for (i = xd.length; xd[--i] === 0;) xd.pop();
-    }
-
-    if (external) {
-
-      // Overflow?
-      if (x.e > Ctor.maxE) {
-
-        // Infinity.
-        x.d = null;
-        x.e = NaN;
-
-      // Underflow?
-      } else if (x.e < Ctor.minE) {
-
-        // Zero.
-        x.e = 0;
-        x.d = [0];
-        // Ctor.underflow = true;
-      } // else Ctor.underflow = false;
-    }
-
-    return x;
-  }
-
-
-  function finiteToString(x, isExp, sd) {
-    if (!x.isFinite()) return nonFiniteToString(x);
-    var k,
-      e = x.e,
-      str = digitsToString(x.d),
-      len = str.length;
-
-    if (isExp) {
-      if (sd && (k = sd - len) > 0) {
-        str = str.charAt(0) + '.' + str.slice(1) + getZeroString(k);
-      } else if (len > 1) {
-        str = str.charAt(0) + '.' + str.slice(1);
-      }
-
-      str = str + (x.e < 0 ? 'e' : 'e+') + x.e;
-    } else if (e < 0) {
-      str = '0.' + getZeroString(-e - 1) + str;
-      if (sd && (k = sd - len) > 0) str += getZeroString(k);
-    } else if (e >= len) {
-      str += getZeroString(e + 1 - len);
-      if (sd && (k = sd - e - 1) > 0) str = str + '.' + getZeroString(k);
-    } else {
-      if ((k = e + 1) < len) str = str.slice(0, k) + '.' + str.slice(k);
-      if (sd && (k = sd - len) > 0) {
-        if (e + 1 === len) str += '.';
-        str += getZeroString(k);
-      }
-    }
-
-    return str;
-  }
-
-
-  // Calculate the base 10 exponent from the base 1e7 exponent.
-  function getBase10Exponent(digits, e) {
-
-    // First get the number of digits of the first word of the digits array.
-    for (var i = 1, w = digits[0]; w >= 10; w /= 10) i++;
-    return i + e * LOG_BASE - 1;
-  }
-
-
-   function getLn10(Ctor, sd, pr) {
-    if (sd > LN10_PRECISION) {
-
-      // Reset global state in case the exception is caught.
-      external = true;
-      if (pr) Ctor.precision = pr;
-      throw Error(precisionLimitExceeded);
-    }
-    return finalise(new Ctor(LN10), sd, 1, true);
-  }
-
-
-  function getPi(Ctor, sd, rm) {
-    if (sd > PI_PRECISION) throw Error(precisionLimitExceeded);
-    return finalise(new Ctor(PI), sd, rm, true);
-  }
-
-
-  function getPrecision(digits) {
-    var w = digits.length - 1,
-      len = w * LOG_BASE + 1;
-
-    w = digits[w];
-
-    // If non-zero...
-    if (w) {
-
-      // Subtract the number of trailing zeros of the last word.
-      for (; w % 10 == 0; w /= 10) len--;
-
-      // Add the number of digits of the first word.
-      for (w = digits[0]; w >= 10; w /= 10) len++;
-    }
-
-    return len;
-  }
-
-
-  function getZeroString(k) {
-    var zs = '';
-    for (; k--;) zs += '0';
-    return zs;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the value of Decimal `x` to the power `n`, where `n` is an
-   * integer of type number.
-   *
-   * Implements 'exponentiation by squaring'. Called by `pow` and `parseOther`.
-   *
-   */
-  function intPow(Ctor, x, n, pr) {
-    var isTruncated,
-      r = new Ctor(1),
-
-      // Max n of 9007199254740991 takes 53 loop iterations.
-      // Maximum digits array length; leaves [28, 34] guard digits.
-      k = Math.ceil(pr / LOG_BASE + 4);
-
-    external = false;
-
-    for (;;) {
-      if (n % 2) {
-        r = r.times(x);
-        if (truncate(r.d, k)) isTruncated = true;
-      }
-
-      n = mathfloor(n / 2);
-      if (n === 0) {
-
-        // To ensure correct rounding when r.d is truncated, increment the last word if it is zero.
-        n = r.d.length - 1;
-        if (isTruncated && r.d[n] === 0) ++r.d[n];
-        break;
-      }
-
-      x = x.times(x);
-      truncate(x.d, k);
-    }
-
-    external = true;
-
-    return r;
-  }
-
-
-  function isOdd(n) {
-    return n.d[n.d.length - 1] & 1;
-  }
-
-
-  /*
-   * Handle `max` and `min`. `ltgt` is 'lt' or 'gt'.
-   */
-  function maxOrMin(Ctor, args, ltgt) {
-    var y,
-      x = new Ctor(args[0]),
-      i = 0;
-
-    for (; ++i < args.length;) {
-      y = new Ctor(args[i]);
-      if (!y.s) {
-        x = y;
-        break;
-      } else if (x[ltgt](y)) {
-        x = y;
-      }
-    }
-
-    return x;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural exponential of `x` rounded to `sd` significant
-   * digits.
-   *
-   * Taylor/Maclaurin series.
-   *
-   * exp(x) = x^0/0! + x^1/1! + x^2/2! + x^3/3! + ...
-   *
-   * Argument reduction:
-   *   Repeat x = x / 32, k += 5, until |x| < 0.1
-   *   exp(x) = exp(x / 2^k)^(2^k)
-   *
-   * Previously, the argument was initially reduced by
-   * exp(x) = exp(r) * 10^k  where r = x - k * ln10, k = floor(x / ln10)
-   * to first put r in the range [0, ln10], before dividing by 32 until |x| < 0.1, but this was
-   * found to be slower than just dividing repeatedly by 32 as above.
-   *
-   * Max integer argument: exp('20723265836946413') = 6.3e+9000000000000000
-   * Min integer argument: exp('-20723265836946411') = 1.2e-9000000000000000
-   * (Math object integer min/max: Math.exp(709) = 8.2e+307, Math.exp(-745) = 5e-324)
-   *
-   *  exp(Infinity)  = Infinity
-   *  exp(-Infinity) = 0
-   *  exp(NaN)       = NaN
-   *  exp(±0)        = 1
-   *
-   *  exp(x) is non-terminating for any finite, non-zero x.
-   *
-   *  The result will always be correctly rounded.
-   *
-   */
-  function naturalExponential(x, sd) {
-    var denominator, guard, j, pow, sum, t, wpr,
-      rep = 0,
-      i = 0,
-      k = 0,
-      Ctor = x.constructor,
-      rm = Ctor.rounding,
-      pr = Ctor.precision;
-
-    // 0/NaN/Infinity?
-    if (!x.d || !x.d[0] || x.e > 17) {
-
-      return new Ctor(x.d
-        ? !x.d[0] ? 1 : x.s < 0 ? 0 : 1 / 0
-        : x.s ? x.s < 0 ? 0 : x : 0 / 0);
-    }
-
-    if (sd == null) {
-      external = false;
-      wpr = pr;
-    } else {
-      wpr = sd;
-    }
-
-    t = new Ctor(0.03125);
-
-    // while abs(x) >= 0.1
-    while (x.e > -2) {
-
-      // x = x / 2^5
-      x = x.times(t);
-      k += 5;
-    }
-
-    // Use 2 * log10(2^k) + 5 (empirically derived) to estimate the increase in precision
-    // necessary to ensure the first 4 rounding digits are correct.
-    guard = Math.log(mathpow(2, k)) / Math.LN10 * 2 + 5 | 0;
-    wpr += guard;
-    denominator = pow = sum = new Ctor(1);
-    Ctor.precision = wpr;
-
-    for (;;) {
-      pow = finalise(pow.times(x), wpr, 1);
-      denominator = denominator.times(++i);
-      t = sum.plus(divide(pow, denominator, wpr, 1));
-
-      if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
-        j = k;
-        while (j--) sum = finalise(sum.times(sum), wpr, 1);
-
-        // Check to see if the first 4 rounding digits are [49]999.
-        // If so, repeat the summation with a higher precision, otherwise
-        // e.g. with precision: 18, rounding: 1
-        // exp(18.404272462595034083567793919843761) = 98372560.1229999999 (should be 98372560.123)
-        // `wpr - guard` is the index of first rounding digit.
-        if (sd == null) {
-
-          if (rep < 3 && checkRoundingDigits(sum.d, wpr - guard, rm, rep)) {
-            Ctor.precision = wpr += 10;
-            denominator = pow = t = new Ctor(1);
-            i = 0;
-            rep++;
-          } else {
-            return finalise(sum, Ctor.precision = pr, rm, external = true);
-          }
-        } else {
-          Ctor.precision = pr;
-          return sum;
-        }
-      }
-
-      sum = t;
-    }
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural logarithm of `x` rounded to `sd` significant
-   * digits.
-   *
-   *  ln(-n)        = NaN
-   *  ln(0)         = -Infinity
-   *  ln(-0)        = -Infinity
-   *  ln(1)         = 0
-   *  ln(Infinity)  = Infinity
-   *  ln(-Infinity) = NaN
-   *  ln(NaN)       = NaN
-   *
-   *  ln(n) (n != 1) is non-terminating.
-   *
-   */
-  function naturalLogarithm(y, sd) {
-    var c, c0, denominator, e, numerator, rep, sum, t, wpr, x1, x2,
-      n = 1,
-      guard = 10,
-      x = y,
-      xd = x.d,
-      Ctor = x.constructor,
-      rm = Ctor.rounding,
-      pr = Ctor.precision;
-
-    // Is x negative or Infinity, NaN, 0 or 1?
-    if (x.s < 0 || !xd || !xd[0] || !x.e && xd[0] == 1 && xd.length == 1) {
-      return new Ctor(xd && !xd[0] ? -1 / 0 : x.s != 1 ? NaN : xd ? 0 : x);
-    }
-
-    if (sd == null) {
-      external = false;
-      wpr = pr;
-    } else {
-      wpr = sd;
-    }
-
-    Ctor.precision = wpr += guard;
-    c = digitsToString(xd);
-    c0 = c.charAt(0);
-
-    if (Math.abs(e = x.e) < 1.5e15) {
-
-      // Argument reduction.
-      // The series converges faster the closer the argument is to 1, so using
-      // ln(a^b) = b * ln(a),   ln(a) = ln(a^b) / b
-      // multiply the argument by itself until the leading digits of the significand are 7, 8, 9,
-      // 10, 11, 12 or 13, recording the number of multiplications so the sum of the series can
-      // later be divided by this number, then separate out the power of 10 using
-      // ln(a*10^b) = ln(a) + b*ln(10).
-
-      // max n is 21 (gives 0.9, 1.0 or 1.1) (9e15 / 21 = 4.2e14).
-      //while (c0 < 9 && c0 != 1 || c0 == 1 && c.charAt(1) > 1) {
-      // max n is 6 (gives 0.7 - 1.3)
-      while (c0 < 7 && c0 != 1 || c0 == 1 && c.charAt(1) > 3) {
-        x = x.times(y);
-        c = digitsToString(x.d);
-        c0 = c.charAt(0);
-        n++;
-      }
-
-      e = x.e;
-
-      if (c0 > 1) {
-        x = new Ctor('0.' + c);
-        e++;
-      } else {
-        x = new Ctor(c0 + '.' + c.slice(1));
-      }
-    } else {
-
-      // The argument reduction method above may result in overflow if the argument y is a massive
-      // number with exponent >= 1500000000000000 (9e15 / 6 = 1.5e15), so instead recall this
-      // function using ln(x*10^e) = ln(x) + e*ln(10).
-      t = getLn10(Ctor, wpr + 2, pr).times(e + '');
-      x = naturalLogarithm(new Ctor(c0 + '.' + c.slice(1)), wpr - guard).plus(t);
-      Ctor.precision = pr;
-
-      return sd == null ? finalise(x, pr, rm, external = true) : x;
-    }
-
-    // x1 is x reduced to a value near 1.
-    x1 = x;
-
-    // Taylor series.
-    // ln(y) = ln((1 + x)/(1 - x)) = 2(x + x^3/3 + x^5/5 + x^7/7 + ...)
-    // where x = (y - 1)/(y + 1)    (|x| < 1)
-    sum = numerator = x = divide(x.minus(1), x.plus(1), wpr, 1);
-    x2 = finalise(x.times(x), wpr, 1);
-    denominator = 3;
-
-    for (;;) {
-      numerator = finalise(numerator.times(x2), wpr, 1);
-      t = sum.plus(divide(numerator, new Ctor(denominator), wpr, 1));
-
-      if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
-        sum = sum.times(2);
-
-        // Reverse the argument reduction. Check that e is not 0 because, besides preventing an
-        // unnecessary calculation, -0 + 0 = +0 and to ensure correct rounding -0 needs to stay -0.
-        if (e !== 0) sum = sum.plus(getLn10(Ctor, wpr + 2, pr).times(e + ''));
-        sum = divide(sum, new Ctor(n), wpr, 1);
-
-        // Is rm > 3 and the first 4 rounding digits 4999, or rm < 4 (or the summation has
-        // been repeated previously) and the first 4 rounding digits 9999?
-        // If so, restart the summation with a higher precision, otherwise
-        // e.g. with precision: 12, rounding: 1
-        // ln(135520028.6126091714265381533) = 18.7246299999 when it should be 18.72463.
-        // `wpr - guard` is the index of first rounding digit.
-        if (sd == null) {
-          if (checkRoundingDigits(sum.d, wpr - guard, rm, rep)) {
-            Ctor.precision = wpr += guard;
-            t = numerator = x = divide(x1.minus(1), x1.plus(1), wpr, 1);
-            x2 = finalise(x.times(x), wpr, 1);
-            denominator = rep = 1;
-          } else {
-            return finalise(sum, Ctor.precision = pr, rm, external = true);
-          }
-        } else {
-          Ctor.precision = pr;
-          return sum;
-        }
-      }
-
-      sum = t;
-      denominator += 2;
-    }
-  }
-
-
-  // ±Infinity, NaN.
-  function nonFiniteToString(x) {
-    // Unsigned.
-    return String(x.s * x.s / 0);
-  }
-
-
-  /*
-   * Parse the value of a new Decimal `x` from string `str`.
-   */
-  function parseDecimal(x, str) {
-    var e, i, len;
-
-    // Decimal point?
-    if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
-
-    // Exponential form?
-    if ((i = str.search(/e/i)) > 0) {
-
-      // Determine exponent.
-      if (e < 0) e = i;
-      e += +str.slice(i + 1);
-      str = str.substring(0, i);
-    } else if (e < 0) {
-
-      // Integer.
-      e = str.length;
-    }
-
-    // Determine leading zeros.
-    for (i = 0; str.charCodeAt(i) === 48; i++);
-
-    // Determine trailing zeros.
-    for (len = str.length; str.charCodeAt(len - 1) === 48; --len);
-    str = str.slice(i, len);
-
-    if (str) {
-      len -= i;
-      x.e = e = e - i - 1;
-      x.d = [];
-
-      // Transform base
-
-      // e is the base 10 exponent.
-      // i is where to slice str to get the first word of the digits array.
-      i = (e + 1) % LOG_BASE;
-      if (e < 0) i += LOG_BASE;
-
-      if (i < len) {
-        if (i) x.d.push(+str.slice(0, i));
-        for (len -= LOG_BASE; i < len;) x.d.push(+str.slice(i, i += LOG_BASE));
-        str = str.slice(i);
-        i = LOG_BASE - str.length;
-      } else {
-        i -= len;
-      }
-
-      for (; i--;) str += '0';
-      x.d.push(+str);
-
-      if (external) {
-
-        // Overflow?
-        if (x.e > x.constructor.maxE) {
-
-          // Infinity.
-          x.d = null;
-          x.e = NaN;
-
-        // Underflow?
-        } else if (x.e < x.constructor.minE) {
-
-          // Zero.
-          x.e = 0;
-          x.d = [0];
-          // x.constructor.underflow = true;
-        } // else x.constructor.underflow = false;
-      }
-    } else {
-
-      // Zero.
-      x.e = 0;
-      x.d = [0];
-    }
-
-    return x;
-  }
-
-
-  /*
-   * Parse the value of a new Decimal `x` from a string `str`, which is not a decimal value.
-   */
-  function parseOther(x, str) {
-    var base, Ctor, divisor, i, isFloat, len, p, xd, xe;
-
-    if (str === 'Infinity' || str === 'NaN') {
-      if (!+str) x.s = NaN;
-      x.e = NaN;
-      x.d = null;
-      return x;
-    }
-
-    if (isHex.test(str))  {
-      base = 16;
-      str = str.toLowerCase();
-    } else if (isBinary.test(str))  {
-      base = 2;
-    } else if (isOctal.test(str))  {
-      base = 8;
-    } else {
-      throw Error(invalidArgument + str);
-    }
-
-    // Is there a binary exponent part?
-    i = str.search(/p/i);
-
-    if (i > 0) {
-      p = +str.slice(i + 1);
-      str = str.substring(2, i);
-    } else {
-      str = str.slice(2);
-    }
-
-    // Convert `str` as an integer then divide the result by `base` raised to a power such that the
-    // fraction part will be restored.
-    i = str.indexOf('.');
-    isFloat = i >= 0;
-    Ctor = x.constructor;
-
-    if (isFloat) {
-      str = str.replace('.', '');
-      len = str.length;
-      i = len - i;
-
-      // log[10](16) = 1.2041... , log[10](88) = 1.9444....
-      divisor = intPow(Ctor, new Ctor(base), i, i * 2);
-    }
-
-    xd = convertBase(str, base, BASE);
-    xe = xd.length - 1;
-
-    // Remove trailing zeros.
-    for (i = xe; xd[i] === 0; --i) xd.pop();
-    if (i < 0) return new Ctor(x.s * 0);
-    x.e = getBase10Exponent(xd, xe);
-    x.d = xd;
-    external = false;
-
-    // At what precision to perform the division to ensure exact conversion?
-    // maxDecimalIntegerPartDigitCount = ceil(log[10](b) * otherBaseIntegerPartDigitCount)
-    // log[10](2) = 0.30103, log[10](8) = 0.90309, log[10](16) = 1.20412
-    // E.g. ceil(1.2 * 3) = 4, so up to 4 decimal digits are needed to represent 3 hex int digits.
-    // maxDecimalFractionPartDigitCount = {Hex:4|Oct:3|Bin:1} * otherBaseFractionPartDigitCount
-    // Therefore using 4 * the number of digits of str will always be enough.
-    if (isFloat) x = divide(x, divisor, len * 4);
-
-    // Multiply by the binary exponent part if present.
-    if (p) x = x.times(Math.abs(p) < 54 ? Math.pow(2, p) : Decimal.pow(2, p));
-    external = true;
-
-    return x;
-  }
-
-
-  /*
-   * sin(x) = x - x^3/3! + x^5/5! - ...
-   * |x| < pi/2
-   *
-   */
-  function sine(Ctor, x) {
-    var k,
-      len = x.d.length;
-
-    if (len < 3) return taylorSeries(Ctor, 2, x, x);
-
-    // Argument reduction: sin(5x) = 16*sin^5(x) - 20*sin^3(x) + 5*sin(x)
-    // i.e. sin(x) = 16*sin^5(x/5) - 20*sin^3(x/5) + 5*sin(x/5)
-    // and  sin(x) = sin(x/5)(5 + sin^2(x/5)(16sin^2(x/5) - 20))
-
-    // Estimate the optimum number of times to use the argument reduction.
-    k = 1.4 * Math.sqrt(len);
-    k = k > 16 ? 16 : k | 0;
-
-    // Max k before Math.pow precision loss is 22
-    x = x.times(Math.pow(5, -k));
-    x = taylorSeries(Ctor, 2, x, x);
-
-    // Reverse argument reduction
-    var sin2_x,
-      d5 = new Ctor(5),
-      d16 = new Ctor(16),
-      d20 = new Ctor(20);
-    for (; k--;) {
-      sin2_x = x.times(x);
-      x = x.times(d5.plus(sin2_x.times(d16.times(sin2_x).minus(d20))));
-    }
-
-    return x;
-  }
-
-
-  // Calculate Taylor series for `cos`, `cosh`, `sin` and `sinh`.
-  function taylorSeries(Ctor, n, x, y, isHyperbolic) {
-    var j, t, u, x2,
-      i = 1,
-      pr = Ctor.precision,
-      k = Math.ceil(pr / LOG_BASE);
-
-    external = false;
-    x2 = x.times(x);
-    u = new Ctor(y);
-
-    for (;;) {
-      t = divide(u.times(x2), new Ctor(n++ * n++), pr, 1);
-      u = isHyperbolic ? y.plus(t) : y.minus(t);
-      y = divide(t.times(x2), new Ctor(n++ * n++), pr, 1);
-      t = u.plus(y);
-
-      if (t.d[k] !== void 0) {
-        for (j = k; t.d[j] === u.d[j] && j--;);
-        if (j == -1) break;
-      }
-
-      j = u;
-      u = y;
-      y = t;
-      t = j;
-      i++;
-    }
-
-    external = true;
-    t.d.length = k + 1;
-
-    return t;
-  }
-
-
-  // Return the absolute value of `x` reduced to less than or equal to half pi.
-  function toLessThanHalfPi(Ctor, x) {
-    var t,
-      isNeg = x.s < 0,
-      pi = getPi(Ctor, Ctor.precision, 1),
-      halfPi = pi.times(0.5);
-
-    x = x.abs();
-
-    if (x.lte(halfPi)) {
-      quadrant = isNeg ? 4 : 1;
-      return x;
-    }
-
-    t = x.divToInt(pi);
-
-    if (t.isZero()) {
-      quadrant = isNeg ? 3 : 2;
-    } else {
-      x = x.minus(t.times(pi));
-
-      // 0 <= x < pi
-      if (x.lte(halfPi)) {
-        quadrant = isOdd(t) ? (isNeg ? 2 : 3) : (isNeg ? 4 : 1);
-        return x;
-      }
-
-      quadrant = isOdd(t) ? (isNeg ? 1 : 4) : (isNeg ? 3 : 2);
-    }
-
-    return x.minus(pi).abs();
-  }
-
-
-  /*
-   * Return the value of Decimal `x` as a string in base `baseOut`.
-   *
-   * If the optional `sd` argument is present include a binary exponent suffix.
-   */
-  function toStringBinary(x, baseOut, sd, rm) {
-    var base, e, i, k, len, roundUp, str, xd, y,
-      Ctor = x.constructor,
-      isExp = sd !== void 0;
-
-    if (isExp) {
-      checkInt32(sd, 1, MAX_DIGITS);
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-    } else {
-      sd = Ctor.precision;
-      rm = Ctor.rounding;
-    }
-
-    if (!x.isFinite()) {
-      str = nonFiniteToString(x);
-    } else {
-      str = finiteToString(x);
-      i = str.indexOf('.');
-
-      // Use exponential notation according to `toExpPos` and `toExpNeg`? No, but if required:
-      // maxBinaryExponent = floor((decimalExponent + 1) * log[2](10))
-      // minBinaryExponent = floor(decimalExponent * log[2](10))
-      // log[2](10) = 3.321928094887362347870319429489390175864
-
-      if (isExp) {
-        base = 2;
-        if (baseOut == 16) {
-          sd = sd * 4 - 3;
-        } else if (baseOut == 8) {
-          sd = sd * 3 - 2;
-        }
-      } else {
-        base = baseOut;
-      }
-
-      // Convert the number as an integer then divide the result by its base raised to a power such
-      // that the fraction part will be restored.
-
-      // Non-integer.
-      if (i >= 0) {
-        str = str.replace('.', '');
-        y = new Ctor(1);
-        y.e = str.length - i;
-        y.d = convertBase(finiteToString(y), 10, base);
-        y.e = y.d.length;
-      }
-
-      xd = convertBase(str, 10, base);
-      e = len = xd.length;
-
-      // Remove trailing zeros.
-      for (; xd[--len] == 0;) xd.pop();
-
-      if (!xd[0]) {
-        str = isExp ? '0p+0' : '0';
-      } else {
-        if (i < 0) {
-          e--;
-        } else {
-          x = new Ctor(x);
-          x.d = xd;
-          x.e = e;
-          x = divide(x, y, sd, rm, 0, base);
-          xd = x.d;
-          e = x.e;
-          roundUp = inexact;
-        }
-
-        // The rounding digit, i.e. the digit after the digit that may be rounded up.
-        i = xd[sd];
-        k = base / 2;
-        roundUp = roundUp || xd[sd + 1] !== void 0;
-
-        roundUp = rm < 4
-          ? (i !== void 0 || roundUp) && (rm === 0 || rm === (x.s < 0 ? 3 : 2))
-          : i > k || i === k && (rm === 4 || roundUp || rm === 6 && xd[sd - 1] & 1 ||
-            rm === (x.s < 0 ? 8 : 7));
-
-        xd.length = sd;
-
-        if (roundUp) {
-
-          // Rounding up may mean the previous digit has to be rounded up and so on.
-          for (; ++xd[--sd] > base - 1;) {
-            xd[sd] = 0;
-            if (!sd) {
-              ++e;
-              xd.unshift(1);
-            }
-          }
-        }
-
-        // Determine trailing zeros.
-        for (len = xd.length; !xd[len - 1]; --len);
-
-        // E.g. [4, 11, 15] becomes 4bf.
-        for (i = 0, str = ''; i < len; i++) str += NUMERALS.charAt(xd[i]);
-
-        // Add binary exponent suffix?
-        if (isExp) {
-          if (len > 1) {
-            if (baseOut == 16 || baseOut == 8) {
-              i = baseOut == 16 ? 4 : 3;
-              for (--len; len % i; len++) str += '0';
-              xd = convertBase(str, base, baseOut);
-              for (len = xd.length; !xd[len - 1]; --len);
-
-              // xd[0] will always be be 1
-              for (i = 1, str = '1.'; i < len; i++) str += NUMERALS.charAt(xd[i]);
-            } else {
-              str = str.charAt(0) + '.' + str.slice(1);
-            }
-          }
-
-          str =  str + (e < 0 ? 'p' : 'p+') + e;
-        } else if (e < 0) {
-          for (; ++e;) str = '0' + str;
-          str = '0.' + str;
-        } else {
-          if (++e > len) for (e -= len; e-- ;) str += '0';
-          else if (e < len) str = str.slice(0, e) + '.' + str.slice(e);
-        }
-      }
-
-      str = (baseOut == 16 ? '0x' : baseOut == 2 ? '0b' : baseOut == 8 ? '0o' : '') + str;
-    }
-
-    return x.s < 0 ? '-' + str : str;
-  }
-
-
-  // Does not strip trailing zeros.
-  function truncate(arr, len) {
-    if (arr.length > len) {
-      arr.length = len;
-      return true;
-    }
-  }
-
-
-  // Decimal methods
-
-
-  /*
-   *  abs
-   *  acos
-   *  acosh
-   *  add
-   *  asin
-   *  asinh
-   *  atan
-   *  atanh
-   *  atan2
-   *  cbrt
-   *  ceil
-   *  clone
-   *  config
-   *  cos
-   *  cosh
-   *  div
-   *  exp
-   *  floor
-   *  fromJSON
-   *  hypot
-   *  ln
-   *  log
-   *  log2
-   *  log10
-   *  max
-   *  min
-   *  mod
-   *  mul
-   *  pow
-   *  random
-   *  round
-   *  sign
-   *  sin
-   *  sinh
-   *  sqrt
-   *  sub
-   *  tan
-   *  tanh
-   *  trunc
-   */
-
-
-  /*
-   * Return a new Decimal whose value is the absolute value of `x`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function abs(x) {
-    return new this(x).abs();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arccosine in radians of `x`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function acos(x) {
-    return new this(x).acos();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic cosine of `x`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function acosh(x) {
-    return new this(x).acosh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the sum of `x` and `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function add(x, y) {
-    return new this(x).plus(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arcsine in radians of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function asin(x) {
-    return new this(x).asin();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic sine of `x`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function asinh(x) {
-    return new this(x).asinh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arctangent in radians of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function atan(x) {
-    return new this(x).atan();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic tangent of `x`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function atanh(x) {
-    return new this(x).atanh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arctangent in radians of `y/x` in the range -pi to pi
-   * (inclusive), rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-pi, pi]
-   *
-   * y {number|string|Decimal} The y-coordinate.
-   * x {number|string|Decimal} The x-coordinate.
-   *
-   * atan2(±0, -0)               = ±pi
-   * atan2(±0, +0)               = ±0
-   * atan2(±0, -x)               = ±pi for x > 0
-   * atan2(±0, x)                = ±0 for x > 0
-   * atan2(-y, ±0)               = -pi/2 for y > 0
-   * atan2(y, ±0)                = pi/2 for y > 0
-   * atan2(±y, -Infinity)        = ±pi for finite y > 0
-   * atan2(±y, +Infinity)        = ±0 for finite y > 0
-   * atan2(±Infinity, x)         = ±pi/2 for finite x
-   * atan2(±Infinity, -Infinity) = ±3*pi/4
-   * atan2(±Infinity, +Infinity) = ±pi/4
-   * atan2(NaN, x) = NaN
-   * atan2(y, NaN) = NaN
-   *
-   */
-  function atan2(y, x) {
-    y = new this(y);
-    x = new this(x);
-    var r,
-      pr = this.precision,
-      rm = this.rounding,
-      wpr = pr + 4;
-
-    // Either NaN
-    if (!y.s || !x.s) {
-      r = new this(NaN);
-
-    // Both ±Infinity
-    } else if (!y.d && !x.d) {
-      r = getPi(this, wpr, 1).times(x.s > 0 ? 0.25 : 0.75);
-      r.s = y.s;
-
-    // x is ±Infinity or y is ±0
-    } else if (!x.d || y.isZero()) {
-      r = x.s < 0 ? getPi(this, pr, rm) : new this(0);
-      r.s = y.s;
-
-    // y is ±Infinity or x is ±0
-    } else if (!y.d || x.isZero()) {
-      r = getPi(this, wpr, 1).times(0.5);
-      r.s = y.s;
-
-    // Both non-zero and finite
-    } else if (x.s < 0) {
-      this.precision = wpr;
-      this.rounding = 1;
-      r = this.atan(divide(y, x, wpr, 1));
-      x = getPi(this, wpr, 1);
-      this.precision = pr;
-      this.rounding = rm;
-      r = y.s < 0 ? r.minus(x) : r.plus(x);
-    } else {
-      r = this.atan(divide(y, x, wpr, 1));
-    }
-
-    return r;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the cube root of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function cbrt(x) {
-    return new this(x).cbrt();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` rounded to an integer using `ROUND_CEIL`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function ceil(x) {
-    return finalise(x = new this(x), x.e + 1, 2);
-  }
-
-
-  /*
-   * Configure global settings for a Decimal constructor.
-   *
-   * `obj` is an object with one or more of the following properties,
-   *
-   *   precision  {number}
-   *   rounding   {number}
-   *   toExpNeg   {number}
-   *   toExpPos   {number}
-   *   maxE       {number}
-   *   minE       {number}
-   *   modulo     {number}
-   *   crypto     {boolean|number|undefined}
-   *
-   * E.g. Decimal.config({ precision: 20, rounding: 4 })
-   *
-   */
-  function config(obj) {
-    if (!obj || typeof obj !== 'object') throw Error(decimalError + 'Object expected');
-    var i, p, v,
-      ps = [
-        'precision', 1, MAX_DIGITS,
-        'rounding', 0, 8,
-        'toExpNeg', -EXP_LIMIT, 0,
-        'toExpPos', 0, EXP_LIMIT,
-        'maxE', 0, EXP_LIMIT,
-        'minE', -EXP_LIMIT, 0,
-        'modulo', 0, 9
-      ];
-
-    for (i = 0; i < ps.length; i += 3) {
-      if ((v = obj[p = ps[i]]) !== void 0) {
-        if (mathfloor(v) === v && v >= ps[i + 1] && v <= ps[i + 2]) this[p] = v;
-        else throw Error(invalidArgument + p + ': ' + v);
-      }
-    }
-
-    if (obj.hasOwnProperty(p = 'crypto')) {
-      if ((v = obj[p]) === void 0) {
-        this[p] = v;
-      } else if (v === true || v === false || v === 0 || v === 1) {
-        this[p] = !!(v && cryptoObject &&
-            (cryptoObject.getRandomValues || cryptoObject.randomBytes));
-      } else {
-        throw Error(invalidArgument + p + ': ' + v);
-      }
-    }
-
-    return this;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the cosine of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function cos(x) {
-    return new this(x).cos();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic cosine of `x`, rounded to precision
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function cosh(x) {
-    return new this(x).cosh();
-  }
-
-
-  /*
-   * Create and return a Decimal constructor with the same configuration properties as this Decimal
-   * constructor.
-   *
-   */
-  function clone(obj) {
-    var i, p, ps;
-
-    /*
-     * The Decimal constructor and exported function.
-     * Return a new Decimal instance.
-     *
-     * v {number|string|Decimal} A numeric value.
-     *
-     */
-    function Decimal(v) {
-      var e, i, t,
-        x = this;
-
-      // Decimal called without new.
-      if (!(x instanceof Decimal)) return new Decimal(v);
-
-      // Retain a reference to this Decimal constructor, and shadow Decimal.prototype.constructor
-      // which points to Object.
-      x.constructor = Decimal;
-
-      // Duplicate.
-      if (v instanceof Decimal) {
-        x.s = v.s;
-        x.e = v.e;
-        x.d = (v = v.d) ? v.slice() : v;
-        return;
-      }
-
-      t = typeof v;
-
-      if (t === 'number') {
-        if (v === 0) {
-          x.s = 1 / v < 0 ? -1 : 1;
-          x.e = 0;
-          x.d = [0];
-          return;
-        }
-
-        if (v < 0) {
-          v = -v;
-          x.s = -1;
-        } else {
-          x.s = 1;
-        }
-
-        // Fast path for small integers.
-        if (v === ~~v && v < 1e7) {
-          for (e = 0, i = v; i >= 10; i /= 10) e++;
-          x.e = e;
-          x.d = [v];
-          return;
-
-        // Infinity, NaN.
-        } else if (v * 0 !== 0) {
-          if (!v) x.s = NaN;
-          x.e = NaN;
-          x.d = null;
-          return;
-        }
-
-        return parseDecimal(x, v.toString());
-
-      } else if (t !== 'string') {
-        throw Error(invalidArgument + v);
-      }
-
-      // Minus sign?
-      if (v.charCodeAt(0) === 45) {
-        v = v.slice(1);
-        x.s = -1;
-      } else {
-        x.s = 1;
-      }
-
-      return isDecimal.test(v) ? parseDecimal(x, v) : parseOther(x, v);
-    }
-
-    Decimal.prototype = P;
-
-    Decimal.ROUND_UP = 0;
-    Decimal.ROUND_DOWN = 1;
-    Decimal.ROUND_CEIL = 2;
-    Decimal.ROUND_FLOOR = 3;
-    Decimal.ROUND_HALF_UP = 4;
-    Decimal.ROUND_HALF_DOWN = 5;
-    Decimal.ROUND_HALF_EVEN = 6;
-    Decimal.ROUND_HALF_CEIL = 7;
-    Decimal.ROUND_HALF_FLOOR = 8;
-    Decimal.EUCLID = 9;
-
-    Decimal.config = config;
-    Decimal.clone = clone;
-
-    Decimal.abs = abs;
-    Decimal.acos = acos;
-    Decimal.acosh = acosh;        // ES6
-    Decimal.add = add;
-    Decimal.asin = asin;
-    Decimal.asinh = asinh;        // ES6
-    Decimal.atan = atan;
-    Decimal.atanh = atanh;        // ES6
-    Decimal.atan2 = atan2;
-    Decimal.cbrt = cbrt;          // ES6
-    Decimal.ceil = ceil;
-    Decimal.cos = cos;
-    Decimal.cosh = cosh;          // ES6
-    Decimal.div = div;
-    Decimal.exp = exp;
-    Decimal.floor = floor;
-    Decimal.fromJSON = fromJSON;
-    Decimal.hypot = hypot;        // ES6
-    Decimal.ln = ln;
-    Decimal.log = log;
-    Decimal.log10 = log10;        // ES6
-    Decimal.log2 = log2;          // ES6
-    Decimal.max = max;
-    Decimal.min = min;
-    Decimal.mod = mod;
-    Decimal.mul = mul;
-    Decimal.pow = pow;
-    Decimal.random = random;
-    Decimal.round = round;
-    Decimal.sign = sign;          // ES6
-    Decimal.sin = sin;
-    Decimal.sinh = sinh;          // ES6
-    Decimal.sqrt = sqrt;
-    Decimal.sub = sub;
-    Decimal.tan = tan;
-    Decimal.tanh = tanh;          // ES6
-    Decimal.trunc = trunc;        // ES6
-
-    if (obj === void 0) obj = {};
-    if (obj) {
-      ps = ['precision', 'rounding', 'toExpNeg', 'toExpPos', 'maxE', 'minE', 'modulo', 'crypto'];
-      for (i = 0; i < ps.length;) if (!obj.hasOwnProperty(p = ps[i++])) obj[p] = this[p];
-    }
-
-    Decimal.config(obj);
-
-    return Decimal;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` divided by `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function div(x, y) {
-    return new this(x).div(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural exponential of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} The power to which to raise the base of the natural log.
-   *
-   */
-  function exp(x) {
-    return new this(x).exp();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` round to an integer using `ROUND_FLOOR`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function floor(x) {
-    return finalise(x = new this(x), x.e + 1, 3);
-  }
-
-
-  /*
-   * Return a new Decimal from `str`, a string value created by `toJSON`.
-   *
-   * Base 88 alphabet:
-   * 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~
-   *
-   * If `str` is just one character:
-   * 0-81  [[0, 40][-0, -40]]
-   * 82    -Infinity
-   * 83    +Infinity
-   * 84    NaN
-   *
-   *   64 32 16  8  4  2  1
-   *    1  0  1  0  1  1  1 = 87
-   *
-   */
-  function fromJSON(str) {
-    var e, isNeg, k, n;
-
-    if (typeof str !== 'string' || !str) throw Error(invalidArgument + str);
-    k = str.length;
-    n = NUMERALS.indexOf(str.charAt(0));
-
-    //  [0, 81] -> [[0, 40][-0, -40]]
-    if (k === 1) {
-      return new this(n > 81 ? [-1 / 0, 1 / 0, 0 / 0][n - 82] : n > 40 ? -(n - 41) : n);
-    } else if (n & 64) {
-      isNeg = n & 16;
-
-      // e = isNeg ? [-3, 4] : [-7, 8]
-      e = isNeg ? (n & 7) - 3 : (n & 15) - 7;
-      k = 1;
-    } else if (k === 2) {
-      n = n * 88 + NUMERALS.indexOf(str.charAt(1));
-
-      // [0, 5631] -> [[0, 2815][-0, -2815]] -> [[41, 2856][-41, -2856]]
-      return new this(n >= 2816 ? -(n - 2816) - 41 : n + 41);
-    } else {
-
-      // 0XXXXXX
-      // 0 {is negative} {is exponent negative} {exponent digit count [0, 15]}
-      isNeg = n & 32;
-
-      // Has an exponent been specified?
-      if (n & 31) {
-        e = n & 15;    // Exponent character count [1, 15]
-        k = e + 1;     // Index of first character of the significand.
-
-        if (e === 1)  {
-          e = NUMERALS.indexOf(str.charAt(1));
-        } else if (e === 2) {
-          e = NUMERALS.indexOf(str.charAt(1)) * 88 +
-            NUMERALS.indexOf(str.charAt(2));
-        } else {
-          e = +convertBase(str.slice(1, k), 88, 10).join('');
-        }
-
-        // Negative exponent?
-        if (n & 16) e = -e;
-      } else {
-
-        // Integer without trailing zeros.
-        // 0X00000
-        // 0 {is negative} 0 0 0 0 0
-        str = convertBase(str.slice(1), 88, 10).join('');
-        return new this(isNeg ? '-' + str : str);
-      }
-    }
-
-    str = convertBase(str.slice(k), 88, 10).join('');
-    e = e - str.length + 1;
-    str = str + 'e' + e;
-
-    return new this(isNeg ? '-' + str : str);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the square root of the sum of the squares of the arguments,
-   * rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   * hypot(a, b, ...) = sqrt(a^2 + b^2 + ...)
-   *
-   */
-  function hypot() {
-    var i, n,
-      t = new this(0);
-
-    external = false;
-
-    for (i = 0; i < arguments.length;) {
-      n = new this(arguments[i++]);
-      if (!n.d) {
-        if (n.s) {
-          external = true;
-          return new this(1 / 0);
-        }
-        t = n;
-      } else if (t.d) {
-        t = t.plus(n.times(n));
-      }
-    }
-
-    external = true;
-
-    return t.sqrt();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural logarithm of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function ln(x) {
-    return new this(x).ln();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the log of `x` to the base `y`, or to base 10 if no base
-   * is specified, rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   * log[y](x)
-   *
-   * x {number|string|Decimal} The argument of the logarithm.
-   * y {number|string|Decimal} The base of the logarithm.
-   *
-   */
-  function log(x, y) {
-    return new this(x).log(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the base 2 logarithm of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function log2(x) {
-    return new this(x).log(2);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the base 10 logarithm of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function log10(x) {
-    return new this(x).log(10);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the maximum of the arguments.
-   *
-   * arguments {number|string|Decimal}
-   *
-   */
-  function max() {
-    return maxOrMin(this, arguments, 'lt');
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the minimum of the arguments.
-   *
-   * arguments {number|string|Decimal}
-   *
-   */
-  function min() {
-    return maxOrMin(this, arguments, 'gt');
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` modulo `y`, rounded to `precision` significant digits
-   * using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function mod(x, y) {
-    return new this(x).mod(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` multiplied by `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function mul(x, y) {
-    return new this(x).mul(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` raised to the power `y`, rounded to precision
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} The base.
-   * y {number|string|Decimal} The exponent.
-   *
-   */
-  function pow(x, y) {
-    return new this(x).pow(y);
-  }
-
-
-  /*
-   * Returns a new Decimal with a random value equal to or greater than 0 and less than 1, and with
-   * `sd`, or `Decimal.precision` if `sd` is omitted, significant digits (or less if trailing zeros
-   * are produced).
-   *
-   * [sd] {number} Significant digits. Integer, 0 to MAX_DIGITS inclusive.
-   *
-   */
-  function random(sd) {
-    var d, e, k, n,
-      i = 0,
-      r = new this(1),
-      rd = [];
-
-    if (sd === void 0) sd = this.precision;
-    else checkInt32(sd, 1, MAX_DIGITS);
-
-    k = Math.ceil(sd / LOG_BASE);
-
-    if (this.crypto === false) {
-      for (; i < k;) rd[i++] = Math.random() * 1e7 | 0;
-
-    // Browsers supporting crypto.getRandomValues.
-    } else if (cryptoObject && cryptoObject.getRandomValues) {
-      d = cryptoObject.getRandomValues(new Uint32Array(k));
-
-      for (; i < k;) {
-        n = d[i];
-
-        // 0 <= n < 4294967296
-        // Probability n >= 4.29e9, is 4967296 / 4294967296 = 0.00116 (1 in 865).
-        if (n >= 4.29e9) {
-          d[i] = cryptoObject.getRandomValues(new Uint32Array(1))[0];
-        } else {
-
-          // 0 <= n <= 4289999999
-          // 0 <= (n % 1e7) <= 9999999
-          rd[i++] = n % 1e7;
-        }
-      }
-
-    // Node.js supporting crypto.randomBytes.
-    } else if (cryptoObject && cryptoObject.randomBytes) {
-
-      // buffer
-      d = cryptoObject.randomBytes(k *= 4);
-
-      for (; i < k;) {
-
-        // 0 <= n < 2147483648
-        n = d[i] + (d[i + 1] << 8) + (d[i + 2] << 16) + ((d[i + 3] & 0x7f) << 24);
-
-        // Probability n >= 2.14e9, is 7483648 / 2147483648 = 0.0035 (1 in 286).
-        if (n >= 2.14e9) {
-          cryptoObject.randomBytes(4).copy(d, i);
-        } else {
-
-          // 0 <= n <= 2139999999
-          // 0 <= (n % 1e7) <= 9999999
-          rd.push(n % 1e7);
-          i += 4;
-        }
-      }
-
-      i = k / 4;
-    } else if (this.crypto) {
-      throw Error(decimalError + 'crypto unavailable');
-    } else {
-      for (; i < k;) rd[i++] = Math.random() * 1e7 | 0;
-    }
-
-    k = rd[--i];
-    sd %= LOG_BASE;
-
-    // Convert trailing digits to zeros according to sd.
-    if (k && sd) {
-      n = mathpow(10, LOG_BASE - sd);
-      rd[i] = (k / n | 0) * n;
-    }
-
-    // Remove trailing words which are zero.
-    for (; rd[i] === 0; i--) rd.pop();
-
-    // Zero?
-    if (i < 0) {
-      e = 0;
-      rd = [0];
-    } else {
-      e = -1;
-
-      // Remove leading words which are zero and adjust exponent accordingly.
-      for (; rd[0] === 0; e -= LOG_BASE) rd.shift();
-
-      // Count the digits of the first word of rd to determine leading zeros.
-      for (k = 1, n = rd[0]; n >= 10; n /= 10) k++;
-
-      // Adjust the exponent for leading zeros of the first word of rd.
-      if (k < LOG_BASE) e -= LOG_BASE - k;
-    }
-
-    r.e = e;
-    r.d = rd;
-
-    return r;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` rounded to an integer using rounding mode `rounding`.
-   *
-   * To emulate `Math.round`, set rounding to 7 (ROUND_HALF_CEIL).
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function round(x) {
-    return finalise(x = new this(x), x.e + 1, this.rounding);
-  }
-
-
-  /*
-   * Return
-   *   1    if x > 0,
-   *  -1    if x < 0,
-   *   0    if x is 0,
-   *  -0    if x is -0,
-   *   NaN  otherwise
-   *
-   */
-  function sign(x) {
-    x = new this(x);
-    return x.d ? (x.d[0] ? x.s : 0 * x.s) : x.s || NaN;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the sine of `x`, rounded to `precision` significant digits
-   * using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function sin(x) {
-    return new this(x).sin();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic sine of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function sinh(x) {
-    return new this(x).sinh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the square root of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function sqrt(x) {
-    return new this(x).sqrt();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` minus `y`, rounded to `precision` significant digits
-   * using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function sub(x, y) {
-    return new this(x).sub(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the tangent of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function tan(x) {
-    return new this(x).tan();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic tangent of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function tanh(x) {
-    return new this(x).tanh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` truncated to an integer.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function trunc(x) {
-    return finalise(x = new this(x), x.e + 1, 1);
-  }
-
-
-  // Create and configure initial Decimal constructor.
-  Decimal = clone(Decimal);
-
-  // Create the internal constants from their string values.
-  LN10 = new Decimal(LN10);
-  PI = new Decimal(PI);
-
-
-  // Export.
-
-
-  // AMD.
-  if (typeof define == 'function' && define.amd) {
-    define(function () {
-      return Decimal;
-    });
-
-  // Node and other environments that support module.exports.
-  } else if (typeof module != 'undefined' && module.exports) {
-    module.exports = Decimal;
-
-    if (!cryptoObject) {
-      try {
-        cryptoObject = require('cry' + 'pto');
-      } catch (e) {
-        // Ignore.
-      }
-    }
-
-  // Browser.
-  } else {
-    if (!globalScope) {
-      globalScope = typeof self != 'undefined' && self && self.self == self
-        ? self : Function('return this')();
-    }
-
-    noConflict = globalScope.Decimal;
-    Decimal.noConflict = function () {
-      globalScope.Decimal = noConflict;
-      return Decimal;
-    };
-
-    globalScope.Decimal = Decimal;
-  }
-})(this);
-
-},{}],246:[function(require,module,exports){
+},{"buffer":233}],238:[function(require,module,exports){
 (function (global,Buffer){
 const ethUtil = require('ethereumjs-util')
 const fees = require('ethereum-common/params')
@@ -34452,7 +32187,7 @@ Transaction.prototype.validate = function (stringError) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"buffer":232,"ethereum-common/params":248,"ethereumjs-util":249}],247:[function(require,module,exports){
+},{"buffer":233,"ethereum-common/params":240,"ethereumjs-util":241}],239:[function(require,module,exports){
 module.exports={
   "genesisGasLimit": {
     "v": 5000,
@@ -34685,10 +32420,10 @@ module.exports={
   }
 }
 
-},{}],248:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 module.exports = require('./params.json')
 
-},{"./params.json":247}],249:[function(require,module,exports){
+},{"./params.json":239}],241:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -35357,12 +33092,12 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":12,"bn.js":250,"buffer":232,"crypto":15,"keccakjs":251,"rlp":254,"secp256k1":255}],250:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"dup":48}],251:[function(require,module,exports){
+},{"assert":13,"bn.js":242,"buffer":233,"crypto":16,"keccakjs":243,"rlp":246,"secp256k1":247}],242:[function(require,module,exports){
+arguments[4][49][0].apply(exports,arguments)
+},{"dup":49}],243:[function(require,module,exports){
 module.exports = require('browserify-sha3').SHA3Hash
 
-},{"browserify-sha3":252}],252:[function(require,module,exports){
+},{"browserify-sha3":244}],244:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -35400,9 +33135,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"js-sha3":253}],253:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],254:[function(require,module,exports){
+},{"buffer":233,"js-sha3":245}],245:[function(require,module,exports){
+arguments[4][3][0].apply(exports,arguments)
+},{"dup":3}],246:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -35635,11 +33370,11 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":12,"buffer":232}],255:[function(require,module,exports){
+},{"assert":13,"buffer":233}],247:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
-},{"./lib":258,"./lib/elliptic":257}],256:[function(require,module,exports){
+},{"./lib":250,"./lib/elliptic":249}],248:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -35687,7 +33422,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":209}],257:[function(require,module,exports){
+},{"../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":210}],249:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -35938,7 +33673,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../messages.json":259,"bn.js":250,"buffer":232,"create-hash":261,"elliptic":275}],258:[function(require,module,exports){
+},{"../messages.json":251,"bn.js":242,"buffer":233,"create-hash":253,"elliptic":267}],250:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var bip66 = require('bip66')
@@ -36258,7 +33993,7 @@ module.exports = function (secp256k1) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./assert":256,"./messages.json":259,"bip66":260,"buffer":232}],259:[function(require,module,exports){
+},{"./assert":248,"./messages.json":251,"bip66":252,"buffer":233}],251:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -36296,7 +34031,7 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],260:[function(require,module,exports){
+},{}],252:[function(require,module,exports){
 (function (Buffer){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
 // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
@@ -36411,83 +34146,83 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232}],261:[function(require,module,exports){
-arguments[4][139][0].apply(exports,arguments)
-},{"./md5":263,"buffer":232,"cipher-base":264,"dup":139,"inherits":265,"ripemd160":266,"sha.js":268}],262:[function(require,module,exports){
+},{"buffer":233}],253:[function(require,module,exports){
 arguments[4][140][0].apply(exports,arguments)
-},{"buffer":232,"dup":140}],263:[function(require,module,exports){
+},{"./md5":255,"buffer":233,"cipher-base":256,"dup":140,"inherits":257,"ripemd160":258,"sha.js":260}],254:[function(require,module,exports){
 arguments[4][141][0].apply(exports,arguments)
-},{"./helpers":262,"dup":141}],264:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"buffer":232,"dup":32,"inherits":265,"stream":226,"string_decoder":227}],265:[function(require,module,exports){
-arguments[4][208][0].apply(exports,arguments)
-},{"dup":208}],266:[function(require,module,exports){
-arguments[4][143][0].apply(exports,arguments)
-},{"buffer":232,"dup":143}],267:[function(require,module,exports){
+},{"buffer":233,"dup":141}],255:[function(require,module,exports){
+arguments[4][142][0].apply(exports,arguments)
+},{"./helpers":254,"dup":142}],256:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"buffer":233,"dup":33,"inherits":257,"stream":227,"string_decoder":228}],257:[function(require,module,exports){
+arguments[4][209][0].apply(exports,arguments)
+},{"dup":209}],258:[function(require,module,exports){
 arguments[4][144][0].apply(exports,arguments)
-},{"buffer":232,"dup":144}],268:[function(require,module,exports){
+},{"buffer":233,"dup":144}],259:[function(require,module,exports){
 arguments[4][145][0].apply(exports,arguments)
-},{"./sha":269,"./sha1":270,"./sha224":271,"./sha256":272,"./sha384":273,"./sha512":274,"dup":145}],269:[function(require,module,exports){
+},{"buffer":233,"dup":145}],260:[function(require,module,exports){
 arguments[4][146][0].apply(exports,arguments)
-},{"./hash":267,"buffer":232,"dup":146,"inherits":265}],270:[function(require,module,exports){
+},{"./sha":261,"./sha1":262,"./sha224":263,"./sha256":264,"./sha384":265,"./sha512":266,"dup":146}],261:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
-},{"./hash":267,"buffer":232,"dup":147,"inherits":265}],271:[function(require,module,exports){
+},{"./hash":259,"buffer":233,"dup":147,"inherits":257}],262:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"./hash":267,"./sha256":272,"buffer":232,"dup":148,"inherits":265}],272:[function(require,module,exports){
+},{"./hash":259,"buffer":233,"dup":148,"inherits":257}],263:[function(require,module,exports){
 arguments[4][149][0].apply(exports,arguments)
-},{"./hash":267,"buffer":232,"dup":149,"inherits":265}],273:[function(require,module,exports){
+},{"./hash":259,"./sha256":264,"buffer":233,"dup":149,"inherits":257}],264:[function(require,module,exports){
 arguments[4][150][0].apply(exports,arguments)
-},{"./hash":267,"./sha512":274,"buffer":232,"dup":150,"inherits":265}],274:[function(require,module,exports){
+},{"./hash":259,"buffer":233,"dup":150,"inherits":257}],265:[function(require,module,exports){
 arguments[4][151][0].apply(exports,arguments)
-},{"./hash":267,"buffer":232,"dup":151,"inherits":265}],275:[function(require,module,exports){
-arguments[4][50][0].apply(exports,arguments)
-},{"../package.json":299,"./elliptic/curve":278,"./elliptic/curves":281,"./elliptic/ec":282,"./elliptic/eddsa":285,"./elliptic/hmac-drbg":288,"./elliptic/utils":290,"brorand":291,"dup":50}],276:[function(require,module,exports){
+},{"./hash":259,"./sha512":266,"buffer":233,"dup":151,"inherits":257}],266:[function(require,module,exports){
+arguments[4][152][0].apply(exports,arguments)
+},{"./hash":259,"buffer":233,"dup":152,"inherits":257}],267:[function(require,module,exports){
 arguments[4][51][0].apply(exports,arguments)
-},{"../../elliptic":275,"bn.js":250,"dup":51}],277:[function(require,module,exports){
+},{"../package.json":291,"./elliptic/curve":270,"./elliptic/curves":273,"./elliptic/ec":274,"./elliptic/eddsa":277,"./elliptic/hmac-drbg":280,"./elliptic/utils":282,"brorand":283,"dup":51}],268:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"../../elliptic":275,"../curve":278,"bn.js":250,"dup":52,"inherits":298}],278:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":242,"dup":52}],269:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"./base":276,"./edwards":277,"./mont":279,"./short":280,"dup":53}],279:[function(require,module,exports){
+},{"../../elliptic":267,"../curve":270,"bn.js":242,"dup":53,"inherits":290}],270:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"../../elliptic":275,"../curve":278,"bn.js":250,"dup":54,"inherits":298}],280:[function(require,module,exports){
+},{"./base":268,"./edwards":269,"./mont":271,"./short":272,"dup":54}],271:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"../../elliptic":275,"../curve":278,"bn.js":250,"dup":55,"inherits":298}],281:[function(require,module,exports){
+},{"../../elliptic":267,"../curve":270,"bn.js":242,"dup":55,"inherits":290}],272:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"../elliptic":275,"./precomputed/secp256k1":289,"dup":56,"hash.js":292}],282:[function(require,module,exports){
+},{"../../elliptic":267,"../curve":270,"bn.js":242,"dup":56,"inherits":290}],273:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"../../elliptic":275,"./key":283,"./signature":284,"bn.js":250,"dup":57}],283:[function(require,module,exports){
+},{"../elliptic":267,"./precomputed/secp256k1":281,"dup":57,"hash.js":284}],274:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"bn.js":250,"dup":58}],284:[function(require,module,exports){
+},{"../../elliptic":267,"./key":275,"./signature":276,"bn.js":242,"dup":58}],275:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"../../elliptic":275,"bn.js":250,"dup":59}],285:[function(require,module,exports){
+},{"bn.js":242,"dup":59}],276:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"../../elliptic":275,"./key":286,"./signature":287,"dup":60,"hash.js":292}],286:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":242,"dup":60}],277:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../../elliptic":275,"dup":61}],287:[function(require,module,exports){
+},{"../../elliptic":267,"./key":278,"./signature":279,"dup":61,"hash.js":284}],278:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../elliptic":275,"bn.js":250,"dup":62}],288:[function(require,module,exports){
+},{"../../elliptic":267,"dup":62}],279:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"../elliptic":275,"dup":63,"hash.js":292}],289:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":242,"dup":63}],280:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"dup":64}],290:[function(require,module,exports){
+},{"../elliptic":267,"dup":64,"hash.js":284}],281:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"bn.js":250,"dup":65}],291:[function(require,module,exports){
+},{"dup":65}],282:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],292:[function(require,module,exports){
+},{"bn.js":242,"dup":66}],283:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
-},{"./hash/common":293,"./hash/hmac":294,"./hash/ripemd":295,"./hash/sha":296,"./hash/utils":297,"dup":67}],293:[function(require,module,exports){
+},{"dup":67}],284:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"../hash":292,"dup":68}],294:[function(require,module,exports){
+},{"./hash/common":285,"./hash/hmac":286,"./hash/ripemd":287,"./hash/sha":288,"./hash/utils":289,"dup":68}],285:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"../hash":292,"dup":69}],295:[function(require,module,exports){
+},{"../hash":284,"dup":69}],286:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../hash":292,"dup":70}],296:[function(require,module,exports){
+},{"../hash":284,"dup":70}],287:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../hash":292,"dup":71}],297:[function(require,module,exports){
+},{"../hash":284,"dup":71}],288:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"dup":72,"inherits":298}],298:[function(require,module,exports){
-arguments[4][208][0].apply(exports,arguments)
-},{"dup":208}],299:[function(require,module,exports){
+},{"../hash":284,"dup":72}],289:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73,"inherits":290}],290:[function(require,module,exports){
+arguments[4][209][0].apply(exports,arguments)
+},{"dup":209}],291:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.2.3",
@@ -36562,7 +34297,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],300:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 var Semaphore = require('./lib/Semaphore');
 var CondVariable = require('./lib/CondVariable');
 var Mutex = require('./lib/Mutex');
@@ -36591,7 +34326,7 @@ exports.createReadWriteLock = function () {
 	return new ReadWriteLock();
 };
 
-},{"./lib/CondVariable":301,"./lib/Mutex":302,"./lib/ReadWriteLock":303,"./lib/Semaphore":304}],301:[function(require,module,exports){
+},{"./lib/CondVariable":293,"./lib/Mutex":294,"./lib/ReadWriteLock":295,"./lib/Semaphore":296}],293:[function(require,module,exports){
 function CondVariable(initialValue) {
 	this._value = initialValue;
 	this._waiting = [];
@@ -36651,7 +34386,7 @@ CondVariable.prototype.set = function (value) {
 	}
 };
 
-},{}],302:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 function Mutex() {
 	this.isLocked = false;
 	this._waiting = [];
@@ -36723,7 +34458,7 @@ Mutex.prototype.unlock = function () {
 	}
 };
 
-},{}],303:[function(require,module,exports){
+},{}],295:[function(require,module,exports){
 function ReadWriteLock() {
 	this.isLocked = false;
 	this._readLocks = 0;
@@ -36880,7 +34615,7 @@ ReadWriteLock.prototype.unlock = function () {
 	}
 };
 
-},{}],304:[function(require,module,exports){
+},{}],296:[function(require,module,exports){
 function Semaphore(initialCount) {
 	this._count = initialCount || 1;
 	this._waiting = [];
@@ -36911,4048 +34646,7 @@ Semaphore.prototype.signal = function () {
 	}
 };
 
-},{}],305:[function(require,module,exports){
-//! moment.js
-//! version : 2.13.0
-//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-//! license : MIT
-//! momentjs.com
-
-;(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
-}(this, function () { 'use strict';
-
-    var hookCallback;
-
-    function utils_hooks__hooks () {
-        return hookCallback.apply(null, arguments);
-    }
-
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback (callback) {
-        hookCallback = callback;
-    }
-
-    function isArray(input) {
-        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
-    }
-
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
-    }
-
-    function map(arr, fn) {
-        var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
-            res.push(fn(arr[i], i));
-        }
-        return res;
-    }
-
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
-
-    function extend(a, b) {
-        for (var i in b) {
-            if (hasOwnProp(b, i)) {
-                a[i] = b[i];
-            }
-        }
-
-        if (hasOwnProp(b, 'toString')) {
-            a.toString = b.toString;
-        }
-
-        if (hasOwnProp(b, 'valueOf')) {
-            a.valueOf = b.valueOf;
-        }
-
-        return a;
-    }
-
-    function create_utc__createUTC (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false,
-            parsedDateParts : [],
-            meridiem        : null
-        };
-    }
-
-    function getParsingFlags(m) {
-        if (m._pf == null) {
-            m._pf = defaultParsingFlags();
-        }
-        return m._pf;
-    }
-
-    var some;
-    if (Array.prototype.some) {
-        some = Array.prototype.some;
-    } else {
-        some = function (fun) {
-            var t = Object(this);
-            var len = t.length >>> 0;
-
-            for (var i = 0; i < len; i++) {
-                if (i in t && fun.call(this, t[i], i, t)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-
-    function valid__isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m);
-            var parsedParts = some.call(flags.parsedDateParts, function (i) {
-                return i != null;
-            });
-            m._isValid = !isNaN(m._d.getTime()) &&
-                flags.overflow < 0 &&
-                !flags.empty &&
-                !flags.invalidMonth &&
-                !flags.invalidWeekday &&
-                !flags.nullInput &&
-                !flags.invalidFormat &&
-                !flags.userInvalidated &&
-                (!flags.meridiem || (flags.meridiem && parsedParts));
-
-            if (m._strict) {
-                m._isValid = m._isValid &&
-                    flags.charsLeftOver === 0 &&
-                    flags.unusedTokens.length === 0 &&
-                    flags.bigHour === undefined;
-            }
-        }
-        return m._isValid;
-    }
-
-    function valid__createInvalid (flags) {
-        var m = create_utc__createUTC(NaN);
-        if (flags != null) {
-            extend(getParsingFlags(m), flags);
-        }
-        else {
-            getParsingFlags(m).userInvalidated = true;
-        }
-
-        return m;
-    }
-
-    function isUndefined(input) {
-        return input === void 0;
-    }
-
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
-    var momentProperties = utils_hooks__hooks.momentProperties = [];
-
-    function copyConfig(to, from) {
-        var i, prop, val;
-
-        if (!isUndefined(from._isAMomentObject)) {
-            to._isAMomentObject = from._isAMomentObject;
-        }
-        if (!isUndefined(from._i)) {
-            to._i = from._i;
-        }
-        if (!isUndefined(from._f)) {
-            to._f = from._f;
-        }
-        if (!isUndefined(from._l)) {
-            to._l = from._l;
-        }
-        if (!isUndefined(from._strict)) {
-            to._strict = from._strict;
-        }
-        if (!isUndefined(from._tzm)) {
-            to._tzm = from._tzm;
-        }
-        if (!isUndefined(from._isUTC)) {
-            to._isUTC = from._isUTC;
-        }
-        if (!isUndefined(from._offset)) {
-            to._offset = from._offset;
-        }
-        if (!isUndefined(from._pf)) {
-            to._pf = getParsingFlags(from);
-        }
-        if (!isUndefined(from._locale)) {
-            to._locale = from._locale;
-        }
-
-        if (momentProperties.length > 0) {
-            for (i in momentProperties) {
-                prop = momentProperties[i];
-                val = from[prop];
-                if (!isUndefined(val)) {
-                    to[prop] = val;
-                }
-            }
-        }
-
-        return to;
-    }
-
-    var updateInProgress = false;
-
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            utils_hooks__hooks.updateOffset(this);
-            updateInProgress = false;
-        }
-    }
-
-    function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
-    }
-
-    function absFloor (number) {
-        if (number < 0) {
-            return Math.ceil(number);
-        } else {
-            return Math.floor(number);
-        }
-    }
-
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion,
-            value = 0;
-
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            value = absFloor(coercedNumber);
-        }
-
-        return value;
-    }
-
-    // compare two arrays, return the number of differences
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length),
-            lengthDiff = Math.abs(array1.length - array2.length),
-            diffs = 0,
-            i;
-        for (i = 0; i < len; i++) {
-            if ((dontConvert && array1[i] !== array2[i]) ||
-                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
-                diffs++;
-            }
-        }
-        return diffs + lengthDiff;
-    }
-
-    function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
-                (typeof console !==  'undefined') && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
-
-    function deprecate(msg, fn) {
-        var firstTime = true;
-
-        return extend(function () {
-            if (utils_hooks__hooks.deprecationHandler != null) {
-                utils_hooks__hooks.deprecationHandler(null, msg);
-            }
-            if (firstTime) {
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(arguments).join(', ') + '\n' + (new Error()).stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (utils_hooks__hooks.deprecationHandler != null) {
-            utils_hooks__hooks.deprecationHandler(name, msg);
-        }
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    utils_hooks__hooks.suppressDeprecationWarnings = false;
-    utils_hooks__hooks.deprecationHandler = null;
-
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-
-    function isObject(input) {
-        return Object.prototype.toString.call(input) === '[object Object]';
-    }
-
-    function locale_set__set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (isFunction(prop)) {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        this._config = config;
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
-    }
-
-    function mergeConfigs(parentConfig, childConfig) {
-        var res = extend({}, parentConfig), prop;
-        for (prop in childConfig) {
-            if (hasOwnProp(childConfig, prop)) {
-                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-                    res[prop] = {};
-                    extend(res[prop], parentConfig[prop]);
-                    extend(res[prop], childConfig[prop]);
-                } else if (childConfig[prop] != null) {
-                    res[prop] = childConfig[prop];
-                } else {
-                    delete res[prop];
-                }
-            }
-        }
-        return res;
-    }
-
-    function Locale(config) {
-        if (config != null) {
-            this.set(config);
-        }
-    }
-
-    var keys;
-
-    if (Object.keys) {
-        keys = Object.keys;
-    } else {
-        keys = function (obj) {
-            var i, res = [];
-            for (i in obj) {
-                if (hasOwnProp(obj, i)) {
-                    res.push(i);
-                }
-            }
-            return res;
-        };
-    }
-
-    // internal storage for locale config files
-    var locales = {};
-    var globalLocale;
-
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
-
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
-
-        while (i < names.length) {
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while (j > 0) {
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) {
-                    return locale;
-                }
-                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
-                    break;
-                }
-                j--;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    function loadLocale(name) {
-        var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && (typeof module !== 'undefined') &&
-                module && module.exports) {
-            try {
-                oldLocale = globalLocale._abbr;
-                require('./locale/' + name);
-                // because defineLocale currently also sets the global locale, we
-                // want to undo that for lazy loaded locales
-                locale_locales__getSetGlobalLocale(oldLocale);
-            } catch (e) { }
-        }
-        return locales[name];
-    }
-
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function locale_locales__getSetGlobalLocale (key, values) {
-        var data;
-        if (key) {
-            if (isUndefined(values)) {
-                data = locale_locales__getLocale(key);
-            }
-            else {
-                data = defineLocale(key, values);
-            }
-
-            if (data) {
-                // moment.duration._locale = moment._locale = data;
-                globalLocale = data;
-            }
-        }
-
-        return globalLocale._abbr;
-    }
-
-    function defineLocale (name, config) {
-        if (config !== null) {
-            config.abbr = name;
-            if (locales[name] != null) {
-                deprecateSimple('defineLocaleOverride',
-                        'use moment.updateLocale(localeName, config) to change ' +
-                        'an existing locale. moment.defineLocale(localeName, ' +
-                        'config) should only be used for creating a new locale');
-                config = mergeConfigs(locales[name]._config, config);
-            } else if (config.parentLocale != null) {
-                if (locales[config.parentLocale] != null) {
-                    config = mergeConfigs(locales[config.parentLocale]._config, config);
-                } else {
-                    // treat as if there is no base config
-                    deprecateSimple('parentLocaleUndefined',
-                            'specified parentLocale is not defined yet');
-                }
-            }
-            locales[name] = new Locale(config);
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-
-    function updateLocale(name, config) {
-        if (config != null) {
-            var locale;
-            if (locales[name] != null) {
-                config = mergeConfigs(locales[name]._config, config);
-            }
-            locale = new Locale(config);
-            locale.parentLocale = locales[name];
-            locales[name] = locale;
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-        } else {
-            // pass null for config to unupdate, useful for tests
-            if (locales[name] != null) {
-                if (locales[name].parentLocale != null) {
-                    locales[name] = locales[name].parentLocale;
-                } else if (locales[name] != null) {
-                    delete locales[name];
-                }
-            }
-        }
-        return locales[name];
-    }
-
-    // returns locale data
-    function locale_locales__getLocale (key) {
-        var locale;
-
-        if (key && key._locale && key._locale._abbr) {
-            key = key._locale._abbr;
-        }
-
-        if (!key) {
-            return globalLocale;
-        }
-
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
-            if (locale) {
-                return locale;
-            }
-            key = [key];
-        }
-
-        return chooseLocale(key);
-    }
-
-    function locale_locales__listLocales() {
-        return keys(locales);
-    }
-
-    var aliases = {};
-
-    function addUnitAlias (unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {},
-            normalizedProp,
-            prop;
-
-        for (prop in inputObject) {
-            if (hasOwnProp(inputObject, prop)) {
-                normalizedProp = normalizeUnits(prop);
-                if (normalizedProp) {
-                    normalizedInput[normalizedProp] = inputObject[prop];
-                }
-            }
-        }
-
-        return normalizedInput;
-    }
-
-    function makeGetSet (unit, keepTime) {
-        return function (value) {
-            if (value != null) {
-                get_set__set(this, unit, value);
-                utils_hooks__hooks.updateOffset(this, keepTime);
-                return this;
-            } else {
-                return get_set__get(this, unit);
-            }
-        };
-    }
-
-    function get_set__get (mom, unit) {
-        return mom.isValid() ?
-            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-    }
-
-    function get_set__set (mom, unit, value) {
-        if (mom.isValid()) {
-            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-        }
-    }
-
-    // MOMENTS
-
-    function getSet (units, value) {
-        var unit;
-        if (typeof units === 'object') {
-            for (unit in units) {
-                this.set(unit, units[unit]);
-            }
-        } else {
-            units = normalizeUnits(units);
-            if (isFunction(this[units])) {
-                return this[units](value);
-            }
-        }
-        return this;
-    }
-
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number),
-            zerosToFill = targetLength - absNumber.length,
-            sign = number >= 0;
-        return (sign ? (forceSign ? '+' : '') : '-') +
-            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
-
-    var formatFunctions = {};
-
-    var formatTokenFunctions = {};
-
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken (token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') {
-            func = function () {
-                return this[callback]();
-            };
-        }
-        if (token) {
-            formatTokenFunctions[token] = func;
-        }
-        if (padded) {
-            formatTokenFunctions[padded[0]] = function () {
-                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-            };
-        }
-        if (ordinal) {
-            formatTokenFunctions[ordinal] = function () {
-                return this.localeData().ordinal(func.apply(this, arguments), token);
-            };
-        }
-    }
-
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) {
-            return input.replace(/^\[|\]$/g, '');
-        }
-        return input.replace(/\\/g, '');
-    }
-
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-
-        for (i = 0, length = array.length; i < length; i++) {
-            if (formatTokenFunctions[array[i]]) {
-                array[i] = formatTokenFunctions[array[i]];
-            } else {
-                array[i] = removeFormattingTokens(array[i]);
-            }
-        }
-
-        return function (mom) {
-            var output = '', i;
-            for (i = 0; i < length; i++) {
-                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
-            }
-            return output;
-        };
-    }
-
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) {
-            return m.localeData().invalidDate();
-        }
-
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-
-        return formatFunctions[format](m);
-    }
-
-    function expandFormat(format, locale) {
-        var i = 5;
-
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-
-        localFormattingTokens.lastIndex = 0;
-        while (i >= 0 && localFormattingTokens.test(format)) {
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-
-        return format;
-    }
-
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
-    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
-
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
-
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
-
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
-
-    // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
-    var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
-
-
-    var regexes = {};
-
-    function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
-            return (isStrict && strictRegex) ? strictRegex : regex;
-        };
-    }
-
-    function getParseRegexForToken (token, config) {
-        if (!hasOwnProp(regexes, token)) {
-            return new RegExp(unescapeFormat(token));
-        }
-
-        return regexes[token](config._strict, config._locale);
-    }
-
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }));
-    }
-
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
-
-    var tokens = {};
-
-    function addParseToken (token, callback) {
-        var i, func = callback;
-        if (typeof token === 'string') {
-            token = [token];
-        }
-        if (typeof callback === 'number') {
-            func = function (input, array) {
-                array[callback] = toInt(input);
-            };
-        }
-        for (i = 0; i < token.length; i++) {
-            tokens[token[i]] = func;
-        }
-    }
-
-    function addWeekParseToken (token, callback) {
-        addParseToken(token, function (input, array, config, token) {
-            config._w = config._w || {};
-            callback(input, config._w, config, token);
-        });
-    }
-
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) {
-            tokens[token](input, config._a, config, token);
-        }
-    }
-
-    var YEAR = 0;
-    var MONTH = 1;
-    var DATE = 2;
-    var HOUR = 3;
-    var MINUTE = 4;
-    var SECOND = 5;
-    var MILLISECOND = 6;
-    var WEEK = 7;
-    var WEEKDAY = 8;
-
-    var indexOf;
-
-    if (Array.prototype.indexOf) {
-        indexOf = Array.prototype.indexOf;
-    } else {
-        indexOf = function (o) {
-            // I know
-            var i;
-            for (i = 0; i < this.length; ++i) {
-                if (this[i] === o) {
-                    return i;
-                }
-            }
-            return -1;
-        };
-    }
-
-    function daysInMonth(year, month) {
-        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-    }
-
-    // FORMATTING
-
-    addFormatToken('M', ['MM', 2], 'Mo', function () {
-        return this.month() + 1;
-    });
-
-    addFormatToken('MMM', 0, 0, function (format) {
-        return this.localeData().monthsShort(this, format);
-    });
-
-    addFormatToken('MMMM', 0, 0, function (format) {
-        return this.localeData().months(this, format);
-    });
-
-    // ALIASES
-
-    addUnitAlias('month', 'M');
-
-    // PARSING
-
-    addRegexToken('M',    match1to2);
-    addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  function (isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function (isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
-
-    addParseToken(['M', 'MM'], function (input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-
-    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) {
-            array[MONTH] = month;
-        } else {
-            getParsingFlags(config).invalidMonth = input;
-        }
-    });
-
-    // LOCALES
-
-    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m, format) {
-        return isArray(this._months) ? this._months[m.month()] :
-            this._months[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
-
-    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m, format) {
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
-            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
-
-    function units_month__handleStrictParse(monthName, format, strict) {
-        var i, ii, mom, llc = monthName.toLocaleLowerCase();
-        if (!this._monthsParse) {
-            // this is not used
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-            for (i = 0; i < 12; ++i) {
-                mom = create_utc__createUTC([2000, i]);
-                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
-                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
-            }
-        }
-
-        if (strict) {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-
-    function localeMonthsParse (monthName, format, strict) {
-        var i, mom, regex;
-
-        if (this._monthsParseExact) {
-            return units_month__handleStrictParse.call(this, monthName, format, strict);
-        }
-
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-
-        // TODO: add sorting
-        // Sorting makes sure if one month (or abbr) is a prefix of another
-        // see sorting in computeMonthsParse
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (!strict && this._monthsParse[i].test(monthName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function setMonth (mom, value) {
-        var dayOfMonth;
-
-        if (!mom.isValid()) {
-            // No op
-            return mom;
-        }
-
-        if (typeof value === 'string') {
-            if (/^\d+$/.test(value)) {
-                value = toInt(value);
-            } else {
-                value = mom.localeData().monthsParse(value);
-                // TODO: Another silent failure?
-                if (typeof value !== 'number') {
-                    return mom;
-                }
-            }
-        }
-
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
-        return mom;
-    }
-
-    function getSetMonth (value) {
-        if (value != null) {
-            setMonth(this, value);
-            utils_hooks__hooks.updateOffset(this, true);
-            return this;
-        } else {
-            return get_set__get(this, 'Month');
-        }
-    }
-
-    function getDaysInMonth () {
-        return daysInMonth(this.year(), this.month());
-    }
-
-    var defaultMonthsShortRegex = matchWord;
-    function monthsShortRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsShortStrictRegex;
-            } else {
-                return this._monthsShortRegex;
-            }
-        } else {
-            return this._monthsShortStrictRegex && isStrict ?
-                this._monthsShortStrictRegex : this._monthsShortRegex;
-        }
-    }
-
-    var defaultMonthsRegex = matchWord;
-    function monthsRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsStrictRegex;
-            } else {
-                return this._monthsRegex;
-            }
-        } else {
-            return this._monthsStrictRegex && isStrict ?
-                this._monthsStrictRegex : this._monthsRegex;
-        }
-    }
-
-    function computeMonthsParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom;
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 12; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-    }
-
-    function checkOverflow (m) {
-        var overflow;
-        var a = m._a;
-
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow =
-                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
-                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
-                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
-                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
-                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
-                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
-                -1;
-
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-                overflow = DATE;
-            }
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-                overflow = WEEK;
-            }
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-                overflow = WEEKDAY;
-            }
-
-            getParsingFlags(m).overflow = overflow;
-        }
-
-        return m;
-    }
-
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-
-    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
-
-    var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
-        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
-        ['YYYY-DDD', /\d{4}-\d{3}/],
-        ['YYYY-MM', /\d{4}-\d\d/, false],
-        ['YYYYYYMMDD', /[+-]\d{10}/],
-        ['YYYYMMDD', /\d{8}/],
-        // YYYYMM is NOT allowed by the standard
-        ['GGGG[W]WWE', /\d{4}W\d{3}/],
-        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
-        ['YYYYDDD', /\d{7}/]
-    ];
-
-    // iso time formats and regexes
-    var isoTimes = [
-        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
-        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
-        ['HH:mm', /\d\d:\d\d/],
-        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
-        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
-        ['HHmmss', /\d\d\d\d\d\d/],
-        ['HHmm', /\d\d\d\d/],
-        ['HH', /\d\d/]
-    ];
-
-    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
-
-    // date from iso format
-    function configFromISO(config) {
-        var i, l,
-            string = config._i,
-            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            allowTime, dateFormat, timeFormat, tzFormat;
-
-        if (match) {
-            getParsingFlags(config).iso = true;
-
-            for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(match[1])) {
-                    dateFormat = isoDates[i][0];
-                    allowTime = isoDates[i][2] !== false;
-                    break;
-                }
-            }
-            if (dateFormat == null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[3]) {
-                for (i = 0, l = isoTimes.length; i < l; i++) {
-                    if (isoTimes[i][1].exec(match[3])) {
-                        // match[2] should be 'T' or space
-                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                        break;
-                    }
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) {
-                    tzFormat = 'Z';
-                } else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
-            configFromStringAndFormat(config);
-        } else {
-            config._isValid = false;
-        }
-    }
-
-    // date from iso format or fallback
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
-            return;
-        }
-
-        configFromISO(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    utils_hooks__hooks.createFromInputFallback = deprecate(
-        'moment construction falls back to js Date. This is ' +
-        'discouraged and will be removed in upcoming major ' +
-        'release. Please refer to ' +
-        'https://github.com/moment/moment/issues/1407 for more info.',
-        function (config) {
-            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-        }
-    );
-
-    function createDate (y, m, d, h, M, s, ms) {
-        //can't just apply() to create a date:
-        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
-        var date = new Date(y, m, d, h, M, s, ms);
-
-        //the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
-            date.setFullYear(y);
-        }
-        return date;
-    }
-
-    function createUTCDate (y) {
-        var date = new Date(Date.UTC.apply(null, arguments));
-
-        //the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
-            date.setUTCFullYear(y);
-        }
-        return date;
-    }
-
-    // FORMATTING
-
-    addFormatToken('Y', 0, 0, function () {
-        var y = this.year();
-        return y <= 9999 ? '' + y : '+' + y;
-    });
-
-    addFormatToken(0, ['YY', 2], 0, function () {
-        return this.year() % 100;
-    });
-
-    addFormatToken(0, ['YYYY',   4],       0, 'year');
-    addFormatToken(0, ['YYYYY',  5],       0, 'year');
-    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
-
-    // ALIASES
-
-    addUnitAlias('year', 'y');
-
-    // PARSING
-
-    addRegexToken('Y',      matchSigned);
-    addRegexToken('YY',     match1to2, match2);
-    addRegexToken('YYYY',   match1to4, match4);
-    addRegexToken('YYYYY',  match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
-
-    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-    addParseToken('YYYY', function (input, array) {
-        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function (input, array) {
-        array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-    addParseToken('Y', function (input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
-
-    // HELPERS
-
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
-    }
-
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    }
-
-    // HOOKS
-
-    utils_hooks__hooks.parseTwoDigitYear = function (input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
-    };
-
-    // MOMENTS
-
-    var getSetYear = makeGetSet('FullYear', true);
-
-    function getIsLeapYear () {
-        return isLeapYear(this.year());
-    }
-
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-            fwd = 7 + dow - doy,
-            // first-week day local weekday -- which local weekday is fwd
-            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-
-        return -fwdlw + fwd - 1;
-    }
-
-    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7,
-            weekOffset = firstWeekOffset(year, dow, doy),
-            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
-            resYear, resDayOfYear;
-
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
-        }
-
-        return {
-            year: resYear,
-            dayOfYear: resDayOfYear
-        };
-    }
-
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
-            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
-            resWeek, resYear;
-
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy),
-            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-    }
-
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) {
-            return a;
-        }
-        if (b != null) {
-            return b;
-        }
-        return c;
-    }
-
-    function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(utils_hooks__hooks.now());
-        if (config._useUTC) {
-            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
-        }
-        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-    }
-
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray (config) {
-        var i, date, input = [], currentDate, yearToUse;
-
-        if (config._d) {
-            return;
-        }
-
-        currentDate = currentDateArray(config);
-
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-            dayOfYearFromWeekInfo(config);
-        }
-
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-            if (config._dayOfYear > daysInYear(yearToUse)) {
-                getParsingFlags(config)._overflowDayOfYear = true;
-            }
-
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
-        }
-
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
-            config._a[i] = input[i] = currentDate[i];
-        }
-
-        // Zero out whatever was not defaulted, including time
-        for (; i < 7; i++) {
-            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-        }
-
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 &&
-                config._a[MINUTE] === 0 &&
-                config._a[SECOND] === 0 &&
-                config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) {
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        }
-
-        if (config._nextDay) {
-            config._a[HOUR] = 24;
-        }
-    }
-
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
-
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
-
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) {
-                weekdayOverflow = true;
-            }
-        } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-
-            weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(local__createLocal(), dow, doy).year);
-            week = defaults(w.w, 1);
-
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < 0 || weekday > 6) {
-                    weekdayOverflow = true;
-                }
-            } else if (w.e != null) {
-                // local weekday -- counting starts from begining of week
-                weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) {
-                    weekdayOverflow = true;
-                }
-            } else {
-                // default to begining of week
-                weekday = dow;
-            }
-        }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-            getParsingFlags(config)._overflowWeeks = true;
-        } else if (weekdayOverflow != null) {
-            getParsingFlags(config)._overflowWeekday = true;
-        } else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
-        }
-    }
-
-    // constant that refers to the ISO standard
-    utils_hooks__hooks.ISO_8601 = function () {};
-
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === utils_hooks__hooks.ISO_8601) {
-            configFromISO(config);
-            return;
-        }
-
-        config._a = [];
-        getParsingFlags(config).empty = true;
-
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i,
-            i, parsedInput, tokens, token, skipped,
-            stringLength = string.length,
-            totalParsedInputLength = 0;
-
-        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-
-        for (i = 0; i < tokens.length; i++) {
-            token = tokens[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            // console.log('token', token, 'parsedInput', parsedInput,
-            //         'regex', getParseRegexForToken(token, config));
-            if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) {
-                    getParsingFlags(config).unusedInput.push(skipped);
-                }
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
-            }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) {
-                    getParsingFlags(config).empty = false;
-                }
-                else {
-                    getParsingFlags(config).unusedTokens.push(token);
-                }
-                addTimeToArrayFromToken(token, parsedInput, config);
-            }
-            else if (config._strict && !parsedInput) {
-                getParsingFlags(config).unusedTokens.push(token);
-            }
-        }
-
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) {
-            getParsingFlags(config).unusedInput.push(string);
-        }
-
-        // clear _12h flag if hour is <= 12
-        if (getParsingFlags(config).bigHour === true &&
-                config._a[HOUR] <= 12 &&
-                config._a[HOUR] > 0) {
-            getParsingFlags(config).bigHour = undefined;
-        }
-
-        getParsingFlags(config).parsedDateParts = config._a.slice(0);
-        getParsingFlags(config).meridiem = config._meridiem;
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-
-        configFromArray(config);
-        checkOverflow(config);
-    }
-
-
-    function meridiemFixWrap (locale, hour, meridiem) {
-        var isPm;
-
-        if (meridiem == null) {
-            // nothing to do
-            return hour;
-        }
-        if (locale.meridiemHour != null) {
-            return locale.meridiemHour(hour, meridiem);
-        } else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem);
-            if (isPm && hour < 12) {
-                hour += 12;
-            }
-            if (!isPm && hour === 12) {
-                hour = 0;
-            }
-            return hour;
-        } else {
-            // this is not supposed to happen
-            return hour;
-        }
-    }
-
-    // date from string and array of format strings
-    function configFromStringAndArray(config) {
-        var tempConfig,
-            bestMoment,
-
-            scoreToBeat,
-            i,
-            currentScore;
-
-        if (config._f.length === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-
-        for (i = 0; i < config._f.length; i++) {
-            currentScore = 0;
-            tempConfig = copyConfig({}, config);
-            if (config._useUTC != null) {
-                tempConfig._useUTC = config._useUTC;
-            }
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-
-            if (!valid__isValid(tempConfig)) {
-                continue;
-            }
-
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-
-            getParsingFlags(tempConfig).score = currentScore;
-
-            if (scoreToBeat == null || currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-
-        extend(config, bestMoment || tempConfig);
-    }
-
-    function configFromObject(config) {
-        if (config._d) {
-            return;
-        }
-
-        var i = normalizeObjectUnits(config._i);
-        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
-            return obj && parseInt(obj, 10);
-        });
-
-        configFromArray(config);
-    }
-
-    function createFromConfig (config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
-
-        return res;
-    }
-
-    function prepareConfig (config) {
-        var input = config._i,
-            format = config._f;
-
-        config._locale = config._locale || locale_locales__getLocale(config._l);
-
-        if (input === null || (format === undefined && input === '')) {
-            return valid__createInvalid({nullInput: true});
-        }
-
-        if (typeof input === 'string') {
-            config._i = input = config._locale.preparse(input);
-        }
-
-        if (isMoment(input)) {
-            return new Moment(checkOverflow(input));
-        } else if (isArray(format)) {
-            configFromStringAndArray(config);
-        } else if (format) {
-            configFromStringAndFormat(config);
-        } else if (isDate(input)) {
-            config._d = input;
-        } else {
-            configFromInput(config);
-        }
-
-        if (!valid__isValid(config)) {
-            config._d = null;
-        }
-
-        return config;
-    }
-
-    function configFromInput(config) {
-        var input = config._i;
-        if (input === undefined) {
-            config._d = new Date(utils_hooks__hooks.now());
-        } else if (isDate(input)) {
-            config._d = new Date(input.valueOf());
-        } else if (typeof input === 'string') {
-            configFromString(config);
-        } else if (isArray(input)) {
-            config._a = map(input.slice(0), function (obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (typeof(input) === 'object') {
-            configFromObject(config);
-        } else if (typeof(input) === 'number') {
-            // from milliseconds
-            config._d = new Date(input);
-        } else {
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    function createLocalOrUTC (input, format, locale, strict, isUTC) {
-        var c = {};
-
-        if (typeof(locale) === 'boolean') {
-            strict = locale;
-            locale = undefined;
-        }
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-
-        return createFromConfig(c);
-    }
-
-    function local__createLocal (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-
-    var prototypeMin = deprecate(
-         'moment().min is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
-         function () {
-             var other = local__createLocal.apply(null, arguments);
-             if (this.isValid() && other.isValid()) {
-                 return other < this ? this : other;
-             } else {
-                 return valid__createInvalid();
-             }
-         }
-     );
-
-    var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other > this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
-        }
-    );
-
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) {
-            moments = moments[0];
-        }
-        if (!moments.length) {
-            return local__createLocal();
-        }
-        res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
-            if (!moments[i].isValid() || moments[i][fn](res)) {
-                res = moments[i];
-            }
-        }
-        return res;
-    }
-
-    // TODO: Use [].sort instead?
-    function min () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isBefore', args);
-    }
-
-    function max () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isAfter', args);
-    }
-
-    var now = function () {
-        return Date.now ? Date.now() : +(new Date());
-    };
-
-    function Duration (duration) {
-        var normalizedInput = normalizeObjectUnits(duration),
-            years = normalizedInput.year || 0,
-            quarters = normalizedInput.quarter || 0,
-            months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || 0,
-            days = normalizedInput.day || 0,
-            hours = normalizedInput.hour || 0,
-            minutes = normalizedInput.minute || 0,
-            seconds = normalizedInput.second || 0,
-            milliseconds = normalizedInput.millisecond || 0;
-
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds +
-            seconds * 1e3 + // 1000
-            minutes * 6e4 + // 1000 * 60
-            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days +
-            weeks * 7;
-        // It is impossible translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months +
-            quarters * 3 +
-            years * 12;
-
-        this._data = {};
-
-        this._locale = locale_locales__getLocale();
-
-        this._bubble();
-    }
-
-    function isDuration (obj) {
-        return obj instanceof Duration;
-    }
-
-    // FORMATTING
-
-    function offset (token, separator) {
-        addFormatToken(token, 0, 0, function () {
-            var offset = this.utcOffset();
-            var sign = '+';
-            if (offset < 0) {
-                offset = -offset;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
-        });
-    }
-
-    offset('Z', ':');
-    offset('ZZ', '');
-
-    // PARSING
-
-    addRegexToken('Z',  matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
-    addParseToken(['Z', 'ZZ'], function (input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
-    });
-
-    // HELPERS
-
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-
-    function offsetFromString(matcher, string) {
-        var matches = ((string || '').match(matcher) || []);
-        var chunk   = matches[matches.length - 1] || [];
-        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
-        var minutes = +(parts[1] * 60) + toInt(parts[2]);
-
-        return parts[0] === '+' ? minutes : -minutes;
-    }
-
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? input.valueOf() : local__createLocal(input).valueOf()) - res.valueOf();
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(res._d.valueOf() + diff);
-            utils_hooks__hooks.updateOffset(res, false);
-            return res;
-        } else {
-            return local__createLocal(input).local();
-        }
-    }
-
-    function getDateOffset (m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
-    }
-
-    // HOOKS
-
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    utils_hooks__hooks.updateOffset = function () {};
-
-    // MOMENTS
-
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset (input, keepLocalTime) {
-        var offset = this._offset || 0,
-            localAdjust;
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-            } else if (Math.abs(input) < 16) {
-                input = input * 60;
-            }
-            if (!this._isUTC && keepLocalTime) {
-                localAdjust = getDateOffset(this);
-            }
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) {
-                this.add(localAdjust, 'm');
-            }
-            if (offset !== input) {
-                if (!keepLocalTime || this._changeInProgress) {
-                    add_subtract__addSubtract(this, create__createDuration(input - offset, 'm'), 1, false);
-                } else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    utils_hooks__hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
-        } else {
-            return this._isUTC ? offset : getDateOffset(this);
-        }
-    }
-
-    function getSetZone (input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') {
-                input = -input;
-            }
-
-            this.utcOffset(input, keepLocalTime);
-
-            return this;
-        } else {
-            return -this.utcOffset();
-        }
-    }
-
-    function setOffsetToUTC (keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-
-    function setOffsetToLocal (keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-
-            if (keepLocalTime) {
-                this.subtract(getDateOffset(this), 'm');
-            }
-        }
-        return this;
-    }
-
-    function setOffsetToParsedOffset () {
-        if (this._tzm) {
-            this.utcOffset(this._tzm);
-        } else if (typeof this._i === 'string') {
-            this.utcOffset(offsetFromString(matchOffset, this._i));
-        }
-        return this;
-    }
-
-    function hasAlignedHourOffset (input) {
-        if (!this.isValid()) {
-            return false;
-        }
-        input = input ? local__createLocal(input).utcOffset() : 0;
-
-        return (this.utcOffset() - input) % 60 === 0;
-    }
-
-    function isDaylightSavingTime () {
-        return (
-            this.utcOffset() > this.clone().month(0).utcOffset() ||
-            this.utcOffset() > this.clone().month(5).utcOffset()
-        );
-    }
-
-    function isDaylightSavingTimeShifted () {
-        if (!isUndefined(this._isDSTShifted)) {
-            return this._isDSTShifted;
-        }
-
-        var c = {};
-
-        copyConfig(c, this);
-        c = prepareConfig(c);
-
-        if (c._a) {
-            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
-            this._isDSTShifted = this.isValid() &&
-                compareArrays(c._a, other.toArray()) > 0;
-        } else {
-            this._isDSTShifted = false;
-        }
-
-        return this._isDSTShifted;
-    }
-
-    function isLocal () {
-        return this.isValid() ? !this._isUTC : false;
-    }
-
-    function isUtcOffset () {
-        return this.isValid() ? this._isUTC : false;
-    }
-
-    function isUtc () {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
-    }
-
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
-
-    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    // and further modified to allow for strings containing both week and day
-    var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
-
-    function create__createDuration (input, key) {
-        var duration = input,
-            // matching against regexp is expensive, do it on demand
-            match = null,
-            sign,
-            ret,
-            diffRes;
-
-        if (isDuration(input)) {
-            duration = {
-                ms : input._milliseconds,
-                d  : input._days,
-                M  : input._months
-            };
-        } else if (typeof input === 'number') {
-            duration = {};
-            if (key) {
-                duration[key] = input;
-            } else {
-                duration.milliseconds = input;
-            }
-        } else if (!!(match = aspNetRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y  : 0,
-                d  : toInt(match[DATE])        * sign,
-                h  : toInt(match[HOUR])        * sign,
-                m  : toInt(match[MINUTE])      * sign,
-                s  : toInt(match[SECOND])      * sign,
-                ms : toInt(match[MILLISECOND]) * sign
-            };
-        } else if (!!(match = isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y : parseIso(match[2], sign),
-                M : parseIso(match[3], sign),
-                w : parseIso(match[4], sign),
-                d : parseIso(match[5], sign),
-                h : parseIso(match[6], sign),
-                m : parseIso(match[7], sign),
-                s : parseIso(match[8], sign)
-            };
-        } else if (duration == null) {// checks for null or undefined
-            duration = {};
-        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(local__createLocal(duration.from), local__createLocal(duration.to));
-
-            duration = {};
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
-
-        ret = new Duration(duration);
-
-        if (isDuration(input) && hasOwnProp(input, '_locale')) {
-            ret._locale = input._locale;
-        }
-
-        return ret;
-    }
-
-    create__createDuration.fn = Duration.prototype;
-
-    function parseIso (inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-
-    function positiveMomentsDifference(base, other) {
-        var res = {milliseconds: 0, months: 0};
-
-        res.months = other.month() - base.month() +
-            (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
-        }
-
-        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-
-        return res;
-    }
-
-    function momentsDifference(base, other) {
-        var res;
-        if (!(base.isValid() && other.isValid())) {
-            return {milliseconds: 0, months: 0};
-        }
-
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) {
-            res = positiveMomentsDifference(base, other);
-        } else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-
-        return res;
-    }
-
-    function absRound (number) {
-        if (number < 0) {
-            return Math.round(-1 * number) * -1;
-        } else {
-            return Math.round(number);
-        }
-    }
-
-    // TODO: remove 'name' arg after deprecation is removed
-    function createAdder(direction, name) {
-        return function (val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period).');
-                tmp = val; val = period; period = tmp;
-            }
-
-            val = typeof val === 'string' ? +val : val;
-            dur = create__createDuration(val, period);
-            add_subtract__addSubtract(this, dur, direction);
-            return this;
-        };
-    }
-
-    function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds,
-            days = absRound(duration._days),
-            months = absRound(duration._months);
-
-        if (!mom.isValid()) {
-            // No op
-            return;
-        }
-
-        updateOffset = updateOffset == null ? true : updateOffset;
-
-        if (milliseconds) {
-            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
-        }
-        if (days) {
-            get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
-        }
-        if (months) {
-            setMonth(mom, get_set__get(mom, 'Month') + months * isAdding);
-        }
-        if (updateOffset) {
-            utils_hooks__hooks.updateOffset(mom, days || months);
-        }
-    }
-
-    var add_subtract__add      = createAdder(1, 'add');
-    var add_subtract__subtract = createAdder(-1, 'subtract');
-
-    function moment_calendar__calendar (time, formats) {
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now = time || local__createLocal(),
-            sod = cloneWithOffset(now, this).startOf('day'),
-            diff = this.diff(sod, 'days', true),
-            format = diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
-
-        var output = formats && (isFunction(formats[format]) ? formats[format]() : formats[format]);
-
-        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
-    }
-
-    function clone () {
-        return new Moment(this);
-    }
-
-    function isAfter (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() > localInput.valueOf();
-        } else {
-            return localInput.valueOf() < this.clone().startOf(units).valueOf();
-        }
-    }
-
-    function isBefore (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() < localInput.valueOf();
-        } else {
-            return this.clone().endOf(units).valueOf() < localInput.valueOf();
-        }
-    }
-
-    function isBetween (from, to, units, inclusivity) {
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
-    }
-
-    function isSame (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input),
-            inputMs;
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units || 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() === localInput.valueOf();
-        } else {
-            inputMs = localInput.valueOf();
-            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-        }
-    }
-
-    function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input,units);
-    }
-
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
-    }
-
-    function diff (input, units, asFloat) {
-        var that,
-            zoneDelta,
-            delta, output;
-
-        if (!this.isValid()) {
-            return NaN;
-        }
-
-        that = cloneWithOffset(input, this);
-
-        if (!that.isValid()) {
-            return NaN;
-        }
-
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
-
-        units = normalizeUnits(units);
-
-        if (units === 'year' || units === 'month' || units === 'quarter') {
-            output = monthDiff(this, that);
-            if (units === 'quarter') {
-                output = output / 3;
-            } else if (units === 'year') {
-                output = output / 12;
-            }
-        } else {
-            delta = this - that;
-            output = units === 'second' ? delta / 1e3 : // 1000
-                units === 'minute' ? delta / 6e4 : // 1000 * 60
-                units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
-                units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-                units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-                delta;
-        }
-        return asFloat ? output : absFloor(output);
-    }
-
-    function monthDiff (a, b) {
-        // difference in months
-        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-            // b is in (anchor - 1 month, anchor + 1 month)
-            anchor = a.clone().add(wholeMonthDiff, 'months'),
-            anchor2, adjust;
-
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-
-        //check for negative zero, return zero if negative zero
-        return -(wholeMonthDiff + adjust) || 0;
-    }
-
-    utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-    utils_hooks__hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
-
-    function toString () {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
-
-    function moment_format__toISOString () {
-        var m = this.clone().utc();
-        if (0 < m.year() && m.year() <= 9999) {
-            if (isFunction(Date.prototype.toISOString)) {
-                // native implementation is ~50x faster, use it when we can
-                return this.toDate().toISOString();
-            } else {
-                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-            }
-        } else {
-            return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-        }
-    }
-
-    function format (inputString) {
-        if (!inputString) {
-            inputString = this.isUtc() ? utils_hooks__hooks.defaultFormatUtc : utils_hooks__hooks.defaultFormat;
-        }
-        var output = formatMoment(this, inputString);
-        return this.localeData().postformat(output);
-    }
-
-    function from (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function fromNow (withoutSuffix) {
-        return this.from(local__createLocal(), withoutSuffix);
-    }
-
-    function to (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function toNow (withoutSuffix) {
-        return this.to(local__createLocal(), withoutSuffix);
-    }
-
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
-    function locale (key) {
-        var newLocaleData;
-
-        if (key === undefined) {
-            return this._locale._abbr;
-        } else {
-            newLocaleData = locale_locales__getLocale(key);
-            if (newLocaleData != null) {
-                this._locale = newLocaleData;
-            }
-            return this;
-        }
-    }
-
-    var lang = deprecate(
-        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-        function (key) {
-            if (key === undefined) {
-                return this.localeData();
-            } else {
-                return this.locale(key);
-            }
-        }
-    );
-
-    function localeData () {
-        return this._locale;
-    }
-
-    function startOf (units) {
-        units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
-        switch (units) {
-        case 'year':
-            this.month(0);
-            /* falls through */
-        case 'quarter':
-        case 'month':
-            this.date(1);
-            /* falls through */
-        case 'week':
-        case 'isoWeek':
-        case 'day':
-        case 'date':
-            this.hours(0);
-            /* falls through */
-        case 'hour':
-            this.minutes(0);
-            /* falls through */
-        case 'minute':
-            this.seconds(0);
-            /* falls through */
-        case 'second':
-            this.milliseconds(0);
-        }
-
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
-        if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
-        }
-
-        return this;
-    }
-
-    function endOf (units) {
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
-            return this;
-        }
-
-        // 'date' is an alias for 'day', so it should be considered as such.
-        if (units === 'date') {
-            units = 'day';
-        }
-
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
-    }
-
-    function to_type__valueOf () {
-        return this._d.valueOf() - ((this._offset || 0) * 60000);
-    }
-
-    function unix () {
-        return Math.floor(this.valueOf() / 1000);
-    }
-
-    function toDate () {
-        return this._offset ? new Date(this.valueOf()) : this._d;
-    }
-
-    function toArray () {
-        var m = this;
-        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
-    }
-
-    function toObject () {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-
-    function toJSON () {
-        // new Date(NaN).toJSON() === null
-        return this.isValid() ? this.toISOString() : null;
-    }
-
-    function moment_valid__isValid () {
-        return valid__isValid(this);
-    }
-
-    function parsingFlags () {
-        return extend({}, getParsingFlags(this));
-    }
-
-    function invalidAt () {
-        return getParsingFlags(this).overflow;
-    }
-
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-
-    // FORMATTING
-
-    addFormatToken(0, ['gg', 2], 0, function () {
-        return this.weekYear() % 100;
-    });
-
-    addFormatToken(0, ['GG', 2], 0, function () {
-        return this.isoWeekYear() % 100;
-    });
-
-    function addWeekYearFormatToken (token, getter) {
-        addFormatToken(0, [token, token.length], 0, getter);
-    }
-
-    addWeekYearFormatToken('gggg',     'weekYear');
-    addWeekYearFormatToken('ggggg',    'weekYear');
-    addWeekYearFormatToken('GGGG',  'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-
-    // ALIASES
-
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-
-    // PARSING
-
-    addRegexToken('G',      matchSigned);
-    addRegexToken('g',      matchSigned);
-    addRegexToken('GG',     match1to2, match2);
-    addRegexToken('gg',     match1to2, match2);
-    addRegexToken('GGGG',   match1to4, match4);
-    addRegexToken('gggg',   match1to4, match4);
-    addRegexToken('GGGGG',  match1to6, match6);
-    addRegexToken('ggggg',  match1to6, match6);
-
-    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-
-    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
-        week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-
-    // MOMENTS
-
-    function getSetWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input,
-                this.week(),
-                this.weekday(),
-                this.localeData()._week.dow,
-                this.localeData()._week.doy);
-    }
-
-    function getSetISOWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input, this.isoWeek(), this.isoWeekday(), 1, 4);
-    }
-
-    function getISOWeeksInYear () {
-        return weeksInYear(this.year(), 1, 4);
-    }
-
-    function getWeeksInYear () {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) {
-            return weekOfYear(this, dow, doy).year;
-        } else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) {
-                week = weeksTarget;
-            }
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
-        }
-    }
-
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
-        return this;
-    }
-
-    // FORMATTING
-
-    addFormatToken('Q', 0, 'Qo', 'quarter');
-
-    // ALIASES
-
-    addUnitAlias('quarter', 'Q');
-
-    // PARSING
-
-    addRegexToken('Q', match1);
-    addParseToken('Q', function (input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-
-    // MOMENTS
-
-    function getSetQuarter (input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-    }
-
-    // FORMATTING
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
-    };
-
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
-    }
-
-    function localeFirstDayOfYear () {
-        return this._week.doy;
-    }
-
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    // FORMATTING
-
-    addFormatToken('D', ['DD', 2], 'Do', 'date');
-
-    // ALIASES
-
-    addUnitAlias('date', 'D');
-
-    // PARSING
-
-    addRegexToken('D',  match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function (isStrict, locale) {
-        return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
-    });
-
-    addParseToken(['D', 'DD'], DATE);
-    addParseToken('Do', function (input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0], 10);
-    });
-
-    // MOMENTS
-
-    var getSetDayOfMonth = makeGetSet('Date', true);
-
-    // FORMATTING
-
-    addFormatToken('d', 0, 'do', 'day');
-
-    addFormatToken('dd', 0, 0, function (format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-
-    addFormatToken('ddd', 0, 0, function (format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-
-    addFormatToken('dddd', 0, 0, function (format) {
-        return this.localeData().weekdays(this, format);
-    });
-
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-
-    // ALIASES
-
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-
-    // PARSING
-
-    addRegexToken('d',    match1to2);
-    addRegexToken('e',    match1to2);
-    addRegexToken('E',    match1to2);
-    addRegexToken('dd',   function (isStrict, locale) {
-        return locale.weekdaysMinRegex(isStrict);
-    });
-    addRegexToken('ddd',   function (isStrict, locale) {
-        return locale.weekdaysShortRegex(isStrict);
-    });
-    addRegexToken('dddd',   function (isStrict, locale) {
-        return locale.weekdaysRegex(isStrict);
-    });
-
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) {
-            week.d = weekday;
-        } else {
-            getParsingFlags(config).invalidWeekday = input;
-        }
-    });
-
-    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
-        week[token] = toInt(input);
-    });
-
-    // HELPERS
-
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') {
-            return input;
-        }
-
-        if (!isNaN(input)) {
-            return parseInt(input, 10);
-        }
-
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') {
-            return input;
-        }
-
-        return null;
-    }
-
-    // LOCALES
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
-    }
-
-    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
-    function localeWeekdaysShort (m) {
-        return this._weekdaysShort[m.day()];
-    }
-
-    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
-    function localeWeekdaysMin (m) {
-        return this._weekdaysMin[m.day()];
-    }
-
-    function day_of_week__handleStrictParse(weekdayName, format, strict) {
-        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._minWeekdaysParse = [];
-
-            for (i = 0; i < 7; ++i) {
-                mom = create_utc__createUTC([2000, 1]).day(i);
-                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
-                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
-                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
-            }
-        }
-
-        if (strict) {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-
-    function localeWeekdaysParse (weekdayName, format, strict) {
-        var i, mom, regex;
-
-        if (this._weekdaysParseExact) {
-            return day_of_week__handleStrictParse.call(this, weekdayName, format, strict);
-        }
-
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
-
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
-            }
-            if (!this._weekdaysParse[i]) {
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function getSetDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
-        } else {
-            return day;
-        }
-    }
-
-    function getSetLocaleDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-
-    function getSetISODayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-        return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
-    }
-
-    var defaultWeekdaysRegex = matchWord;
-    function weekdaysRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysStrictRegex;
-            } else {
-                return this._weekdaysRegex;
-            }
-        } else {
-            return this._weekdaysStrictRegex && isStrict ?
-                this._weekdaysStrictRegex : this._weekdaysRegex;
-        }
-    }
-
-    var defaultWeekdaysShortRegex = matchWord;
-    function weekdaysShortRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysShortStrictRegex;
-            } else {
-                return this._weekdaysShortRegex;
-            }
-        } else {
-            return this._weekdaysShortStrictRegex && isStrict ?
-                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-        }
-    }
-
-    var defaultWeekdaysMinRegex = matchWord;
-    function weekdaysMinRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysMinStrictRegex;
-            } else {
-                return this._weekdaysMinRegex;
-            }
-        } else {
-            return this._weekdaysMinStrictRegex && isStrict ?
-                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-        }
-    }
-
-
-    function computeWeekdaysParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom, minp, shortp, longp;
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            minp = this.weekdaysMin(mom, '');
-            shortp = this.weekdaysShort(mom, '');
-            longp = this.weekdays(mom, '');
-            minPieces.push(minp);
-            shortPieces.push(shortp);
-            longPieces.push(longp);
-            mixedPieces.push(minp);
-            mixedPieces.push(shortp);
-            mixedPieces.push(longp);
-        }
-        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
-        // will match the longer piece.
-        minPieces.sort(cmpLenRev);
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 7; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._weekdaysShortRegex = this._weekdaysRegex;
-        this._weekdaysMinRegex = this._weekdaysRegex;
-
-        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
-    }
-
-    // FORMATTING
-
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
-
-    // ALIASES
-
-    addUnitAlias('dayOfYear', 'DDD');
-
-    // PARSING
-
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-
-    // HELPERS
-
-    // MOMENTS
-
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
-    }
-
-    // FORMATTING
-
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
-
-    function kFormat() {
-        return this.hours() || 24;
-    }
-
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, hFormat);
-    addFormatToken('k', ['kk', 2], 0, kFormat);
-
-    addFormatToken('hmm', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('hmmss', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    addFormatToken('Hmm', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('Hmmss', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    function meridiem (token, lowercase) {
-        addFormatToken(token, 0, 0, function () {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
-    }
-
-    meridiem('a', true);
-    meridiem('A', false);
-
-    // ALIASES
-
-    addUnitAlias('hour', 'h');
-
-    // PARSING
-
-    function matchMeridiem (isStrict, locale) {
-        return locale._meridiemParse;
-    }
-
-    addRegexToken('a',  matchMeridiem);
-    addRegexToken('A',  matchMeridiem);
-    addRegexToken('H',  match1to2);
-    addRegexToken('h',  match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-
-    addParseToken(['H', 'HH'], HOUR);
-    addParseToken(['a', 'A'], function (input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken(['h', 'hh'], function (input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-    });
-
-    // LOCALES
-
-    function localeIsPM (input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return ((input + '').toLowerCase().charAt(0) === 'p');
-    }
-
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
-    function localeMeridiem (hours, minutes, isLower) {
-        if (hours > 11) {
-            return isLower ? 'pm' : 'PM';
-        } else {
-            return isLower ? 'am' : 'AM';
-        }
-    }
-
-
-    // MOMENTS
-
-    // Setting the hour should keep the time, because the user explicitly
-    // specified which hour he wants. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    var getSetHour = makeGetSet('Hours', true);
-
-    // FORMATTING
-
-    addFormatToken('m', ['mm', 2], 0, 'minute');
-
-    // ALIASES
-
-    addUnitAlias('minute', 'm');
-
-    // PARSING
-
-    addRegexToken('m',  match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken(['m', 'mm'], MINUTE);
-
-    // MOMENTS
-
-    var getSetMinute = makeGetSet('Minutes', false);
-
-    // FORMATTING
-
-    addFormatToken('s', ['ss', 2], 0, 'second');
-
-    // ALIASES
-
-    addUnitAlias('second', 's');
-
-    // PARSING
-
-    addRegexToken('s',  match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken(['s', 'ss'], SECOND);
-
-    // MOMENTS
-
-    var getSetSecond = makeGetSet('Seconds', false);
-
-    // FORMATTING
-
-    addFormatToken('S', 0, 0, function () {
-        return ~~(this.millisecond() / 100);
-    });
-
-    addFormatToken(0, ['SS', 2], 0, function () {
-        return ~~(this.millisecond() / 10);
-    });
-
-    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
-    addFormatToken(0, ['SSSS', 4], 0, function () {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, ['SSSSS', 5], 0, function () {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, ['SSSSSS', 6], 0, function () {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
-        return this.millisecond() * 1000000;
-    });
-
-
-    // ALIASES
-
-    addUnitAlias('millisecond', 'ms');
-
-    // PARSING
-
-    addRegexToken('S',    match1to3, match1);
-    addRegexToken('SS',   match1to3, match2);
-    addRegexToken('SSS',  match1to3, match3);
-
-    var token;
-    for (token = 'SSSS'; token.length <= 9; token += 'S') {
-        addRegexToken(token, matchUnsigned);
-    }
-
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    }
-
-    for (token = 'S'; token.length <= 9; token += 'S') {
-        addParseToken(token, parseMs);
-    }
-    // MOMENTS
-
-    var getSetMillisecond = makeGetSet('Milliseconds', false);
-
-    // FORMATTING
-
-    addFormatToken('z',  0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-
-    // MOMENTS
-
-    function getZoneAbbr () {
-        return this._isUTC ? 'UTC' : '';
-    }
-
-    function getZoneName () {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-
-    var momentPrototype__proto = Moment.prototype;
-
-    momentPrototype__proto.add               = add_subtract__add;
-    momentPrototype__proto.calendar          = moment_calendar__calendar;
-    momentPrototype__proto.clone             = clone;
-    momentPrototype__proto.diff              = diff;
-    momentPrototype__proto.endOf             = endOf;
-    momentPrototype__proto.format            = format;
-    momentPrototype__proto.from              = from;
-    momentPrototype__proto.fromNow           = fromNow;
-    momentPrototype__proto.to                = to;
-    momentPrototype__proto.toNow             = toNow;
-    momentPrototype__proto.get               = getSet;
-    momentPrototype__proto.invalidAt         = invalidAt;
-    momentPrototype__proto.isAfter           = isAfter;
-    momentPrototype__proto.isBefore          = isBefore;
-    momentPrototype__proto.isBetween         = isBetween;
-    momentPrototype__proto.isSame            = isSame;
-    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
-    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
-    momentPrototype__proto.isValid           = moment_valid__isValid;
-    momentPrototype__proto.lang              = lang;
-    momentPrototype__proto.locale            = locale;
-    momentPrototype__proto.localeData        = localeData;
-    momentPrototype__proto.max               = prototypeMax;
-    momentPrototype__proto.min               = prototypeMin;
-    momentPrototype__proto.parsingFlags      = parsingFlags;
-    momentPrototype__proto.set               = getSet;
-    momentPrototype__proto.startOf           = startOf;
-    momentPrototype__proto.subtract          = add_subtract__subtract;
-    momentPrototype__proto.toArray           = toArray;
-    momentPrototype__proto.toObject          = toObject;
-    momentPrototype__proto.toDate            = toDate;
-    momentPrototype__proto.toISOString       = moment_format__toISOString;
-    momentPrototype__proto.toJSON            = toJSON;
-    momentPrototype__proto.toString          = toString;
-    momentPrototype__proto.unix              = unix;
-    momentPrototype__proto.valueOf           = to_type__valueOf;
-    momentPrototype__proto.creationData      = creationData;
-
-    // Year
-    momentPrototype__proto.year       = getSetYear;
-    momentPrototype__proto.isLeapYear = getIsLeapYear;
-
-    // Week Year
-    momentPrototype__proto.weekYear    = getSetWeekYear;
-    momentPrototype__proto.isoWeekYear = getSetISOWeekYear;
-
-    // Quarter
-    momentPrototype__proto.quarter = momentPrototype__proto.quarters = getSetQuarter;
-
-    // Month
-    momentPrototype__proto.month       = getSetMonth;
-    momentPrototype__proto.daysInMonth = getDaysInMonth;
-
-    // Week
-    momentPrototype__proto.week           = momentPrototype__proto.weeks        = getSetWeek;
-    momentPrototype__proto.isoWeek        = momentPrototype__proto.isoWeeks     = getSetISOWeek;
-    momentPrototype__proto.weeksInYear    = getWeeksInYear;
-    momentPrototype__proto.isoWeeksInYear = getISOWeeksInYear;
-
-    // Day
-    momentPrototype__proto.date       = getSetDayOfMonth;
-    momentPrototype__proto.day        = momentPrototype__proto.days             = getSetDayOfWeek;
-    momentPrototype__proto.weekday    = getSetLocaleDayOfWeek;
-    momentPrototype__proto.isoWeekday = getSetISODayOfWeek;
-    momentPrototype__proto.dayOfYear  = getSetDayOfYear;
-
-    // Hour
-    momentPrototype__proto.hour = momentPrototype__proto.hours = getSetHour;
-
-    // Minute
-    momentPrototype__proto.minute = momentPrototype__proto.minutes = getSetMinute;
-
-    // Second
-    momentPrototype__proto.second = momentPrototype__proto.seconds = getSetSecond;
-
-    // Millisecond
-    momentPrototype__proto.millisecond = momentPrototype__proto.milliseconds = getSetMillisecond;
-
-    // Offset
-    momentPrototype__proto.utcOffset            = getSetOffset;
-    momentPrototype__proto.utc                  = setOffsetToUTC;
-    momentPrototype__proto.local                = setOffsetToLocal;
-    momentPrototype__proto.parseZone            = setOffsetToParsedOffset;
-    momentPrototype__proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    momentPrototype__proto.isDST                = isDaylightSavingTime;
-    momentPrototype__proto.isDSTShifted         = isDaylightSavingTimeShifted;
-    momentPrototype__proto.isLocal              = isLocal;
-    momentPrototype__proto.isUtcOffset          = isUtcOffset;
-    momentPrototype__proto.isUtc                = isUtc;
-    momentPrototype__proto.isUTC                = isUtc;
-
-    // Timezone
-    momentPrototype__proto.zoneAbbr = getZoneAbbr;
-    momentPrototype__proto.zoneName = getZoneName;
-
-    // Deprecations
-    momentPrototype__proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    momentPrototype__proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    momentPrototype__proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    momentPrototype__proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. https://github.com/moment/moment/issues/1779', getSetZone);
-
-    var momentPrototype = momentPrototype__proto;
-
-    function moment__createUnix (input) {
-        return local__createLocal(input * 1000);
-    }
-
-    function moment__createInZone () {
-        return local__createLocal.apply(null, arguments).parseZone();
-    }
-
-    var defaultCalendar = {
-        sameDay : '[Today at] LT',
-        nextDay : '[Tomorrow at] LT',
-        nextWeek : 'dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        lastWeek : '[Last] dddd [at] LT',
-        sameElse : 'L'
-    };
-
-    function locale_calendar__calendar (key, mom, now) {
-        var output = this._calendar[key];
-        return isFunction(output) ? output.call(mom, now) : output;
-    }
-
-    var defaultLongDateFormat = {
-        LTS  : 'h:mm:ss A',
-        LT   : 'h:mm A',
-        L    : 'MM/DD/YYYY',
-        LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY h:mm A',
-        LLLL : 'dddd, MMMM D, YYYY h:mm A'
-    };
-
-    function longDateFormat (key) {
-        var format = this._longDateFormat[key],
-            formatUpper = this._longDateFormat[key.toUpperCase()];
-
-        if (format || !formatUpper) {
-            return format;
-        }
-
-        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
-            return val.slice(1);
-        });
-
-        return this._longDateFormat[key];
-    }
-
-    var defaultInvalidDate = 'Invalid date';
-
-    function invalidDate () {
-        return this._invalidDate;
-    }
-
-    var defaultOrdinal = '%d';
-    var defaultOrdinalParse = /\d{1,2}/;
-
-    function ordinal (number) {
-        return this._ordinal.replace('%d', number);
-    }
-
-    function preParsePostFormat (string) {
-        return string;
-    }
-
-    var defaultRelativeTime = {
-        future : 'in %s',
-        past   : '%s ago',
-        s  : 'a few seconds',
-        m  : 'a minute',
-        mm : '%d minutes',
-        h  : 'an hour',
-        hh : '%d hours',
-        d  : 'a day',
-        dd : '%d days',
-        M  : 'a month',
-        MM : '%d months',
-        y  : 'a year',
-        yy : '%d years'
-    };
-
-    function relative__relativeTime (number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return (isFunction(output)) ?
-            output(number, withoutSuffix, string, isFuture) :
-            output.replace(/%d/i, number);
-    }
-
-    function pastFuture (diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
-    }
-
-    var prototype__proto = Locale.prototype;
-
-    prototype__proto._calendar       = defaultCalendar;
-    prototype__proto.calendar        = locale_calendar__calendar;
-    prototype__proto._longDateFormat = defaultLongDateFormat;
-    prototype__proto.longDateFormat  = longDateFormat;
-    prototype__proto._invalidDate    = defaultInvalidDate;
-    prototype__proto.invalidDate     = invalidDate;
-    prototype__proto._ordinal        = defaultOrdinal;
-    prototype__proto.ordinal         = ordinal;
-    prototype__proto._ordinalParse   = defaultOrdinalParse;
-    prototype__proto.preparse        = preParsePostFormat;
-    prototype__proto.postformat      = preParsePostFormat;
-    prototype__proto._relativeTime   = defaultRelativeTime;
-    prototype__proto.relativeTime    = relative__relativeTime;
-    prototype__proto.pastFuture      = pastFuture;
-    prototype__proto.set             = locale_set__set;
-
-    // Month
-    prototype__proto.months            =        localeMonths;
-    prototype__proto._months           = defaultLocaleMonths;
-    prototype__proto.monthsShort       =        localeMonthsShort;
-    prototype__proto._monthsShort      = defaultLocaleMonthsShort;
-    prototype__proto.monthsParse       =        localeMonthsParse;
-    prototype__proto._monthsRegex      = defaultMonthsRegex;
-    prototype__proto.monthsRegex       = monthsRegex;
-    prototype__proto._monthsShortRegex = defaultMonthsShortRegex;
-    prototype__proto.monthsShortRegex  = monthsShortRegex;
-
-    // Week
-    prototype__proto.week = localeWeek;
-    prototype__proto._week = defaultLocaleWeek;
-    prototype__proto.firstDayOfYear = localeFirstDayOfYear;
-    prototype__proto.firstDayOfWeek = localeFirstDayOfWeek;
-
-    // Day of Week
-    prototype__proto.weekdays       =        localeWeekdays;
-    prototype__proto._weekdays      = defaultLocaleWeekdays;
-    prototype__proto.weekdaysMin    =        localeWeekdaysMin;
-    prototype__proto._weekdaysMin   = defaultLocaleWeekdaysMin;
-    prototype__proto.weekdaysShort  =        localeWeekdaysShort;
-    prototype__proto._weekdaysShort = defaultLocaleWeekdaysShort;
-    prototype__proto.weekdaysParse  =        localeWeekdaysParse;
-
-    prototype__proto._weekdaysRegex      = defaultWeekdaysRegex;
-    prototype__proto.weekdaysRegex       =        weekdaysRegex;
-    prototype__proto._weekdaysShortRegex = defaultWeekdaysShortRegex;
-    prototype__proto.weekdaysShortRegex  =        weekdaysShortRegex;
-    prototype__proto._weekdaysMinRegex   = defaultWeekdaysMinRegex;
-    prototype__proto.weekdaysMinRegex    =        weekdaysMinRegex;
-
-    // Hours
-    prototype__proto.isPM = localeIsPM;
-    prototype__proto._meridiemParse = defaultLocaleMeridiemParse;
-    prototype__proto.meridiem = localeMeridiem;
-
-    function lists__get (format, index, field, setter) {
-        var locale = locale_locales__getLocale();
-        var utc = create_utc__createUTC().set(setter, index);
-        return locale[field](utc, format);
-    }
-
-    function listMonthsImpl (format, index, field) {
-        if (typeof format === 'number') {
-            index = format;
-            format = undefined;
-        }
-
-        format = format || '';
-
-        if (index != null) {
-            return lists__get(format, index, field, 'month');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 12; i++) {
-            out[i] = lists__get(format, i, field, 'month');
-        }
-        return out;
-    }
-
-    // ()
-    // (5)
-    // (fmt, 5)
-    // (fmt)
-    // (true)
-    // (true, 5)
-    // (true, fmt, 5)
-    // (true, fmt)
-    function listWeekdaysImpl (localeSorted, format, index, field) {
-        if (typeof localeSorted === 'boolean') {
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        } else {
-            format = localeSorted;
-            index = format;
-            localeSorted = false;
-
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        }
-
-        var locale = locale_locales__getLocale(),
-            shift = localeSorted ? locale._week.dow : 0;
-
-        if (index != null) {
-            return lists__get(format, (index + shift) % 7, field, 'day');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 7; i++) {
-            out[i] = lists__get(format, (i + shift) % 7, field, 'day');
-        }
-        return out;
-    }
-
-    function lists__listMonths (format, index) {
-        return listMonthsImpl(format, index, 'months');
-    }
-
-    function lists__listMonthsShort (format, index) {
-        return listMonthsImpl(format, index, 'monthsShort');
-    }
-
-    function lists__listWeekdays (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
-    }
-
-    function lists__listWeekdaysShort (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
-    }
-
-    function lists__listWeekdaysMin (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
-    }
-
-    locale_locales__getSetGlobalLocale('en', {
-        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal : function (number) {
-            var b = number % 10,
-                output = (toInt(number % 100 / 10) === 1) ? 'th' :
-                (b === 1) ? 'st' :
-                (b === 2) ? 'nd' :
-                (b === 3) ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-
-    // Side effect imports
-    utils_hooks__hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', locale_locales__getSetGlobalLocale);
-    utils_hooks__hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', locale_locales__getLocale);
-
-    var mathAbs = Math.abs;
-
-    function duration_abs__abs () {
-        var data           = this._data;
-
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days         = mathAbs(this._days);
-        this._months       = mathAbs(this._months);
-
-        data.milliseconds  = mathAbs(data.milliseconds);
-        data.seconds       = mathAbs(data.seconds);
-        data.minutes       = mathAbs(data.minutes);
-        data.hours         = mathAbs(data.hours);
-        data.months        = mathAbs(data.months);
-        data.years         = mathAbs(data.years);
-
-        return this;
-    }
-
-    function duration_add_subtract__addSubtract (duration, input, value, direction) {
-        var other = create__createDuration(input, value);
-
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days         += direction * other._days;
-        duration._months       += direction * other._months;
-
-        return duration._bubble();
-    }
-
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function duration_add_subtract__add (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, 1);
-    }
-
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function duration_add_subtract__subtract (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, -1);
-    }
-
-    function absCeil (number) {
-        if (number < 0) {
-            return Math.floor(number);
-        } else {
-            return Math.ceil(number);
-        }
-    }
-
-    function bubble () {
-        var milliseconds = this._milliseconds;
-        var days         = this._days;
-        var months       = this._months;
-        var data         = this._data;
-        var seconds, minutes, hours, years, monthsFromDays;
-
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
-                (milliseconds <= 0 && days <= 0 && months <= 0))) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
-            days = 0;
-            months = 0;
-        }
-
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-
-        seconds           = absFloor(milliseconds / 1000);
-        data.seconds      = seconds % 60;
-
-        minutes           = absFloor(seconds / 60);
-        data.minutes      = minutes % 60;
-
-        hours             = absFloor(minutes / 60);
-        data.hours        = hours % 24;
-
-        days += absFloor(hours / 24);
-
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-
-        data.days   = days;
-        data.months = months;
-        data.years  = years;
-
-        return this;
-    }
-
-    function daysToMonths (days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-
-    function monthsToDays (months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-
-    function as (units) {
-        var days;
-        var months;
-        var milliseconds = this._milliseconds;
-
-        units = normalizeUnits(units);
-
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch (units) {
-                case 'week'   : return days / 7     + milliseconds / 6048e5;
-                case 'day'    : return days         + milliseconds / 864e5;
-                case 'hour'   : return days * 24    + milliseconds / 36e5;
-                case 'minute' : return days * 1440  + milliseconds / 6e4;
-                case 'second' : return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
-                default: throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-
-    // TODO: Use this.as('ms')?
-    function duration_as__valueOf () {
-        return (
-            this._milliseconds +
-            this._days * 864e5 +
-            (this._months % 12) * 2592e6 +
-            toInt(this._months / 12) * 31536e6
-        );
-    }
-
-    function makeAs (alias) {
-        return function () {
-            return this.as(alias);
-        };
-    }
-
-    var asMilliseconds = makeAs('ms');
-    var asSeconds      = makeAs('s');
-    var asMinutes      = makeAs('m');
-    var asHours        = makeAs('h');
-    var asDays         = makeAs('d');
-    var asWeeks        = makeAs('w');
-    var asMonths       = makeAs('M');
-    var asYears        = makeAs('y');
-
-    function duration_get__get (units) {
-        units = normalizeUnits(units);
-        return this[units + 's']();
-    }
-
-    function makeGetter(name) {
-        return function () {
-            return this._data[name];
-        };
-    }
-
-    var milliseconds = makeGetter('milliseconds');
-    var seconds      = makeGetter('seconds');
-    var minutes      = makeGetter('minutes');
-    var hours        = makeGetter('hours');
-    var days         = makeGetter('days');
-    var months       = makeGetter('months');
-    var years        = makeGetter('years');
-
-    function weeks () {
-        return absFloor(this.days() / 7);
-    }
-
-    var round = Math.round;
-    var thresholds = {
-        s: 45,  // seconds to minute
-        m: 45,  // minutes to hour
-        h: 22,  // hours to day
-        d: 26,  // days to month
-        M: 11   // months to year
-    };
-
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
-    }
-
-    function duration_humanize__relativeTime (posNegDuration, withoutSuffix, locale) {
-        var duration = create__createDuration(posNegDuration).abs();
-        var seconds  = round(duration.as('s'));
-        var minutes  = round(duration.as('m'));
-        var hours    = round(duration.as('h'));
-        var days     = round(duration.as('d'));
-        var months   = round(duration.as('M'));
-        var years    = round(duration.as('y'));
-
-        var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes <= 1           && ['m']           ||
-                minutes < thresholds.m && ['mm', minutes] ||
-                hours   <= 1           && ['h']           ||
-                hours   < thresholds.h && ['hh', hours]   ||
-                days    <= 1           && ['d']           ||
-                days    < thresholds.d && ['dd', days]    ||
-                months  <= 1           && ['M']           ||
-                months  < thresholds.M && ['MM', months]  ||
-                years   <= 1           && ['y']           || ['yy', years];
-
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale;
-        return substituteTimeAgo.apply(null, a);
-    }
-
-    // This function allows you to set a threshold for relative time strings
-    function duration_humanize__getSetRelativeTimeThreshold (threshold, limit) {
-        if (thresholds[threshold] === undefined) {
-            return false;
-        }
-        if (limit === undefined) {
-            return thresholds[threshold];
-        }
-        thresholds[threshold] = limit;
-        return true;
-    }
-
-    function humanize (withSuffix) {
-        var locale = this.localeData();
-        var output = duration_humanize__relativeTime(this, !withSuffix, locale);
-
-        if (withSuffix) {
-            output = locale.pastFuture(+this, output);
-        }
-
-        return locale.postformat(output);
-    }
-
-    var iso_string__abs = Math.abs;
-
-    function iso_string__toISOString() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        var seconds = iso_string__abs(this._milliseconds) / 1000;
-        var days         = iso_string__abs(this._days);
-        var months       = iso_string__abs(this._months);
-        var minutes, hours, years;
-
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes           = absFloor(seconds / 60);
-        hours             = absFloor(minutes / 60);
-        seconds %= 60;
-        minutes %= 60;
-
-        // 12 months -> 1 year
-        years  = absFloor(months / 12);
-        months %= 12;
-
-
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = years;
-        var M = months;
-        var D = days;
-        var h = hours;
-        var m = minutes;
-        var s = seconds;
-        var total = this.asSeconds();
-
-        if (!total) {
-            // this is the same as C#'s (Noda) and python (isodate)...
-            // but not other JS (goog.date)
-            return 'P0D';
-        }
-
-        return (total < 0 ? '-' : '') +
-            'P' +
-            (Y ? Y + 'Y' : '') +
-            (M ? M + 'M' : '') +
-            (D ? D + 'D' : '') +
-            ((h || m || s) ? 'T' : '') +
-            (h ? h + 'H' : '') +
-            (m ? m + 'M' : '') +
-            (s ? s + 'S' : '');
-    }
-
-    var duration_prototype__proto = Duration.prototype;
-
-    duration_prototype__proto.abs            = duration_abs__abs;
-    duration_prototype__proto.add            = duration_add_subtract__add;
-    duration_prototype__proto.subtract       = duration_add_subtract__subtract;
-    duration_prototype__proto.as             = as;
-    duration_prototype__proto.asMilliseconds = asMilliseconds;
-    duration_prototype__proto.asSeconds      = asSeconds;
-    duration_prototype__proto.asMinutes      = asMinutes;
-    duration_prototype__proto.asHours        = asHours;
-    duration_prototype__proto.asDays         = asDays;
-    duration_prototype__proto.asWeeks        = asWeeks;
-    duration_prototype__proto.asMonths       = asMonths;
-    duration_prototype__proto.asYears        = asYears;
-    duration_prototype__proto.valueOf        = duration_as__valueOf;
-    duration_prototype__proto._bubble        = bubble;
-    duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = milliseconds;
-    duration_prototype__proto.seconds        = seconds;
-    duration_prototype__proto.minutes        = minutes;
-    duration_prototype__proto.hours          = hours;
-    duration_prototype__proto.days           = days;
-    duration_prototype__proto.weeks          = weeks;
-    duration_prototype__proto.months         = months;
-    duration_prototype__proto.years          = years;
-    duration_prototype__proto.humanize       = humanize;
-    duration_prototype__proto.toISOString    = iso_string__toISOString;
-    duration_prototype__proto.toString       = iso_string__toISOString;
-    duration_prototype__proto.toJSON         = iso_string__toISOString;
-    duration_prototype__proto.locale         = locale;
-    duration_prototype__proto.localeData     = localeData;
-
-    // Deprecations
-    duration_prototype__proto.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', iso_string__toISOString);
-    duration_prototype__proto.lang = lang;
-
-    // Side effect imports
-
-    // FORMATTING
-
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
-
-    // PARSING
-
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function (input, array, config) {
-        config._d = new Date(parseFloat(input, 10) * 1000);
-    });
-    addParseToken('x', function (input, array, config) {
-        config._d = new Date(toInt(input));
-    });
-
-    // Side effect imports
-
-
-    utils_hooks__hooks.version = '2.13.0';
-
-    setHookCallback(local__createLocal);
-
-    utils_hooks__hooks.fn                    = momentPrototype;
-    utils_hooks__hooks.min                   = min;
-    utils_hooks__hooks.max                   = max;
-    utils_hooks__hooks.now                   = now;
-    utils_hooks__hooks.utc                   = create_utc__createUTC;
-    utils_hooks__hooks.unix                  = moment__createUnix;
-    utils_hooks__hooks.months                = lists__listMonths;
-    utils_hooks__hooks.isDate                = isDate;
-    utils_hooks__hooks.locale                = locale_locales__getSetGlobalLocale;
-    utils_hooks__hooks.invalid               = valid__createInvalid;
-    utils_hooks__hooks.duration              = create__createDuration;
-    utils_hooks__hooks.isMoment              = isMoment;
-    utils_hooks__hooks.weekdays              = lists__listWeekdays;
-    utils_hooks__hooks.parseZone             = moment__createInZone;
-    utils_hooks__hooks.localeData            = locale_locales__getLocale;
-    utils_hooks__hooks.isDuration            = isDuration;
-    utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
-    utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
-    utils_hooks__hooks.defineLocale          = defineLocale;
-    utils_hooks__hooks.updateLocale          = updateLocale;
-    utils_hooks__hooks.locales               = locale_locales__listLocales;
-    utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
-    utils_hooks__hooks.normalizeUnits        = normalizeUnits;
-    utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
-    utils_hooks__hooks.prototype             = momentPrototype;
-
-    var _moment = utils_hooks__hooks;
-
-    return _moment;
-
-}));
-},{}],306:[function(require,module,exports){
+},{}],297:[function(require,module,exports){
 (function (process){
 // Generated by CoffeeScript 1.10.0
 (function() {
@@ -41262,7 +34956,7 @@ Semaphore.prototype.signal = function () {
 }).call(this);
 
 }).call(this,require('_process'))
-},{"_process":211,"events":207,"fs":11,"path":210,"write-file-atomic":307}],307:[function(require,module,exports){
+},{"_process":212,"events":208,"fs":12,"path":211,"write-file-atomic":298}],298:[function(require,module,exports){
 (function (process,__filename){
 'use strict'
 var fs = require('graceful-fs')
@@ -41310,7 +35004,7 @@ module.exports.sync = function writeFileSync (filename, data, options) {
 }
 
 }).call(this,require('_process'),"/node_modules/node-localstorage/node_modules/write-file-atomic/index.js")
-},{"_process":211,"graceful-fs":309,"imurmurhash":312,"slide":316}],308:[function(require,module,exports){
+},{"_process":212,"graceful-fs":300,"imurmurhash":303,"slide":307}],299:[function(require,module,exports){
 'use strict'
 
 var fs = require('fs')
@@ -41333,7 +35027,7 @@ function clone (obj) {
   return copy
 }
 
-},{"fs":11}],309:[function(require,module,exports){
+},{"fs":12}],300:[function(require,module,exports){
 (function (process){
 var fs = require('fs')
 var polyfills = require('./polyfills.js')
@@ -41590,7 +35284,7 @@ function retry () {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":308,"./legacy-streams.js":310,"./polyfills.js":311,"_process":211,"assert":12,"fs":11,"util":229}],310:[function(require,module,exports){
+},{"./fs.js":299,"./legacy-streams.js":301,"./polyfills.js":302,"_process":212,"assert":13,"fs":12,"util":230}],301:[function(require,module,exports){
 (function (process){
 var Stream = require('stream').Stream
 
@@ -41712,7 +35406,7 @@ function legacy (fs) {
 }
 
 }).call(this,require('_process'))
-},{"_process":211,"stream":226}],311:[function(require,module,exports){
+},{"_process":212,"stream":227}],302:[function(require,module,exports){
 (function (process){
 var fs = require('./fs.js')
 var constants = require('constants')
@@ -41968,7 +35662,7 @@ function chownErOk (er) {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":308,"_process":211,"constants":14}],312:[function(require,module,exports){
+},{"./fs.js":299,"_process":212,"constants":15}],303:[function(require,module,exports){
 /**
  * @preserve
  * JS Implementation of incremental MurmurHash3 (r150) (as of May 10, 2013)
@@ -42108,7 +35802,7 @@ function chownErOk (er) {
     }
 }());
 
-},{}],313:[function(require,module,exports){
+},{}],304:[function(require,module,exports){
 (function (process){
 
 /*
@@ -42166,7 +35860,7 @@ function asyncMap () {
 }
 
 }).call(this,require('_process'))
-},{"_process":211}],314:[function(require,module,exports){
+},{"_process":212}],305:[function(require,module,exports){
 module.exports = bindActor
 function bindActor () {
   var args = 
@@ -42184,7 +35878,7 @@ function bindActor () {
     fn.apply(obj, args.concat(cb)) }
 }
 
-},{}],315:[function(require,module,exports){
+},{}],306:[function(require,module,exports){
 module.exports = chain
 var bindActor = require("./bind-actor.js")
 chain.first = {} ; chain.last = {}
@@ -42206,12 +35900,12 @@ function chain (things, cb) {
     })
   })(0, things.length) }
 
-},{"./bind-actor.js":314}],316:[function(require,module,exports){
+},{"./bind-actor.js":305}],307:[function(require,module,exports){
 exports.asyncMap = require("./async-map")
 exports.bindActor = require("./bind-actor")
 exports.chain = require("./chain")
 
-},{"./async-map":313,"./bind-actor":314,"./chain":315}],317:[function(require,module,exports){
+},{"./async-map":304,"./bind-actor":305,"./chain":306}],308:[function(require,module,exports){
 (function (Buffer){
 //     uuid.js
 //
@@ -42487,7 +36181,7 @@ exports.chain = require("./chain")
 })('undefined' !== typeof window ? window : null);
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"crypto":15}],318:[function(require,module,exports){
+},{"buffer":233,"crypto":16}],309:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * Client-side accounts
@@ -42840,7 +36534,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../constants":321,"../utilities":324,"_process":211,"augur-abi":7,"augur-contracts":3,"bignumber.js":9,"browser-request":10,"buffer":232,"clone":244,"ethereumjs-tx":246,"keythereum":336,"locks":300,"node-uuid":317,"request":13}],319:[function(require,module,exports){
+},{"../constants":311,"../utilities":314,"_process":212,"augur-abi":1,"augur-contracts":6,"bignumber.js":10,"browser-request":11,"buffer":233,"clone":237,"ethereumjs-tx":238,"keythereum":324,"locks":292,"node-uuid":308,"request":14}],310:[function(require,module,exports){
 (function (process,Buffer){
 /* global localStorage:true */
 /**
@@ -42958,206 +36652,13 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../constants":321,"../utilities":324,"_process":211,"augur-abi":7,"augur-contracts":3,"buffer":232,"clone":244,"keythereum":336,"node-localstorage":306}],320:[function(require,module,exports){
-(function (process){
-/* global localStorage:true */
-/**
- * Locally stored order book.
- */
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var fzero = require("fzero");
-var Decimal = require("decimal.js");
-var abi = require("augur-abi");
-if (typeof localStorage === "undefined" || localStorage === null) {
-    var LocalStorage = require("node-localstorage").LocalStorage;
-    localStorage = new LocalStorage("./scratch");
-}
-var errors = require("augur-contracts").errors;
-var constants = require("../constants");
-var utils = require("../utilities");
-
-Decimal.config({precision: 64});
-
-module.exports = {
-
-    limit: {
-
-        fill: function (marketInfo, order) {
-            var amount, filled;
-            var q = new Array(marketInfo.numOutcomes);
-            order.amount = utils.toDecimal(order.amount);
-            var alpha = marketInfo.alpha.toFixed();
-            for (var i = 0; i < marketInfo.numOutcomes; ++i) {
-                q[i] = utils.toDecimal(marketInfo.outcomes[i].outstandingShares);
-            }
-            order.outcome = parseInt(order.outcome);
-            var isBuy = order.amount.gt(new Decimal(0));
-            var n = this.sharesToTrade(q, order.outcome-1, alpha, order.cap.toString(), isBuy);
-            if (n !== undefined && n !== null) {
-                n = new Decimal(n);
-
-                // if |n| >= |amount|, this is a stop order
-                if (n.abs().gte(order.amount.abs())) {
-                    amount = order.amount.toFixed();
-                    filled = true;
-
-                // otherwise, trade n shares (amount - n shares remain open)
-                } else {
-                    amount = n.toFixed();
-                    order.amount = order.amount.minus(n).toFixed();
-                    filled = false;
-                }
-                return {amount: amount, order: order, filled: filled};
-            }
-        },
-
-        sharesToTrade: function (q, i, a, cap, isBuy) {
-            var self = this;
-            q = utils.toDecimal(q);
-            a = utils.toDecimal(a);
-            cap = utils.toDecimal(cap);
-            var bounds = (isBuy) ?
-                [1e-12, constants.MAX_SHARES_PER_TRADE] :
-                [-constants.MAX_SHARES_PER_TRADE, -1e-12];
-            var soln;
-            try {
-                soln = fzero(function (n) {
-                    return self.f(n, q, i, a, cap);
-                }, bounds, {verbose: false});
-                if (soln.code !== 1) console.warn("fzero:", soln);
-                return soln.solution;
-            } catch (exc) {
-                console.warn("limit.sharesToTrade:", exc);
-                try {
-                    bounds[1] = (isBuy) ? constants.MAX_SHARES_PER_TRADE*100 :
-                        -constants.MAX_SHARES_PER_TRADE*100;
-                    soln = fzero(function (n) {
-                        return self.f(n, q, i, a, cap);
-                    }, bounds, {verbose: false});
-                    if (soln.code !== 1) console.warn("fzero:", soln);
-                    return soln.solution;
-                } catch (ex) {
-                    console.error("limit.sharesToTrade:", ex);
-                    return constants.MAX_SHARES_PER_TRADE;
-                }
-            }
-        },
-
-        // LS-LMSR objective function (optimize n)
-        f: function (n, q, i, a, cap) {
-            n = utils.toDecimal(n);
-            var numOutcomes = q.length;
-            var qj = new Array(numOutcomes);
-            var sum_q = new Decimal(0);
-            for (var j = 0; j < numOutcomes; ++j) {
-                qj[j] = q[j];
-                sum_q = sum_q.plus(q[j]);
-            }
-            qj.splice(i, 1);
-            var q_plus_n = n.plus(sum_q);
-            var b = a.times(q_plus_n);
-            var exp_qi = q[i].plus(n).dividedBy(b).exp();
-            var exp_qj = new Array(numOutcomes);
-            var sum_qj = new Decimal(0);
-            var sum_exp_qj = new Decimal(0);
-            var sum_qj_x_expqj = new Decimal(0);
-            for (j = 0; j < numOutcomes - 1; ++j) {
-                sum_qj = sum_qj.plus(qj[j]);
-                exp_qj[j] = qj[j].dividedBy(b).exp();
-                sum_exp_qj = sum_exp_qj.plus(exp_qj[j]);
-                sum_qj_x_expqj = sum_qj_x_expqj.plus(q[j].times(exp_qj[j]));
-            }
-            return a.times(q[i].plus(n).dividedBy(b).exp().plus(sum_exp_qj).ln()).plus(
-                exp_qi.times(sum_qj).minus(sum_qj_x_expqj).dividedBy(
-                    q_plus_n.times(exp_qi.plus(sum_exp_qj))
-                ).minus(cap)
-            );
-        }
-
-    },
-
-    get: function (account, cb) {
-        cb = cb || utils.pass;
-        if (!account) return cb(errors.DB_READ_FAILED);
-        try {
-            return JSON.parse(localStorage.getItem(account));
-        } catch (ex) {
-            return cb(ex);
-        }
-    },
-
-    // TODO add a "sync my orders" button that sends to IPFS
-    // order: {account, market, outcome, price, amount, expiration, cap}
-    create: function (order, cb) {
-        cb = cb || utils.pass;
-        if (order && order.account && order.market && order.outcome &&
-            order.price !== null && order.price !== undefined &&
-            order.amount !== null && order.amount !== undefined) {
-            var orders = this.get(order.account);
-            if (!orders) orders = {};
-            if (!orders[order.market]) orders[order.market] = {};
-            if (!orders[order.market][order.outcome]) {
-                orders[order.market][order.outcome] = [];
-            }
-            var details = {
-                price: order.price,
-                amount: order.amount,
-                expiration: order.expiration,
-                cap: order.cap,
-                timestamp: new Date().getTime()
-            };
-            details.id = utils.sha256([
-                details.price.toString(),
-                details.expiration.toString(),
-                details.cap.toString(),
-                details.timestamp.toString()
-            ]);
-            orders[order.market][order.outcome].push(details);
-            localStorage.setItem(order.account, JSON.stringify(orders));
-            return cb(orders);
-        }
-        return cb(errors.DB_WRITE_FAILED);
-    },
-
-    cancel: function (account, market, outcome, orderId, cb) {
-        cb = cb || utils.pass;
-        if (!orderId) return cb(errors.DB_DELETE_FAILED);
-        var orders = this.get(account);
-        if (!orders || !orders[market] || !orders[market][outcome]) {
-            return cb(errors.DB_DELETE_FAILED);
-        }
-        for (var i = orders[market][outcome].length - 1; i >= 0; i--) {
-            if (orders[market][outcome][i].id === orderId) {
-                orders[market][outcome].splice(i, 1);
-                localStorage.setItem(account, JSON.stringify(orders));
-                return cb(orders);
-            }
-        }
-        return cb(errors.DB_DELETE_FAILED);
-    },
-
-    reset: function (account, cb) {
-        cb = cb || utils.pass;
-        if (account !== null && account !== undefined && account !== "") {
-            localStorage.removeItem(account);
-            return cb(true);
-        }
-        return cb(errors.DB_DELETE_FAILED);
-    }
-
-};
-
-}).call(this,require('_process'))
-},{"../constants":321,"../utilities":324,"_process":211,"augur-abi":7,"augur-contracts":3,"decimal.js":245,"fzero":334,"node-localstorage":306}],321:[function(require,module,exports){
+},{"../constants":311,"../utilities":314,"_process":212,"augur-abi":1,"augur-contracts":6,"buffer":233,"clone":237,"keythereum":324,"node-localstorage":297}],311:[function(require,module,exports){
 /** 
  * augur.js constants
  */
 
 "use strict";
 
-var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -43173,41 +36674,35 @@ module.exports = {
     // expected block interval
     SECONDS_PER_BLOCK: 12,
 
-    // maximum number of accounts/samples for testing
-    MAX_TEST_ACCOUNTS: 3,
-    UNIT_TEST_SAMPLES: 100,
-    MAX_TEST_SAMPLES: 3,
-
-    // unit test timeout
-    TIMEOUT: 600000,
-
     KDF: "pbkdf2",
     SCRYPT: "scrypt",
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
 
-    TOLERANCE: new Decimal("0.00000001"),
-    EPSILON: new Decimal("0.0000000000001"),
-    MAX_ITER: 250,
-    MAX_SHARES_PER_TRADE: 1000,
-
     FAUCET: "https://faucet.augur.net/faucet/",
     LOGS: {
-        updatePrice: "updatePrice(int256,int256,int256,int256,int256,int256)",
-        creationBlock: "creationBlock(int256)"
+        // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
+        log_price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
+        
+        // event log_add_tx(market:indexed, sender, type, price, amount, outcome, tradeid)
+        log_add_tx: "log_add_tx(int256,int256,int256,int256,int256,int256,int256)",
+        
+        // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
+        log_fill_tx: "log_fill_fx(int256,int256,int256,int256,int256,int256,int256,int256)",
+        
+        // event log_cancel(market:indexed, sender, price, amount, tradeid, outcome, type)
+        log_cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)"
     }
 };
 
-},{"bignumber.js":9,"decimal.js":245}],322:[function(require,module,exports){
-(function (process){
+},{"bignumber.js":10}],312:[function(require,module,exports){
 /**
  * Filters / logging
  */
 
 "use strict";
 
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var async = require("async");
 var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
@@ -43222,94 +36717,27 @@ module.exports = function () {
 
         PULSE: constants.SECONDS_PER_BLOCK * 500,
 
-        price_filter: { id: null, heartbeat: null },
-
-        contracts_filter: { id: null, heartbeat: null },
-
-        block_filter: { id: null, heartbeat: null },
-
-        creation_filter: { id: null, heartbeat: null },        
-
-        eth_newFilter: function (params, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newFilter", params), f);
+        filter: {
+            block: {id: null, heartbeat: null},
+            contracts: {id: null, heartbeat: null},
+            log_price: {id: null, heartbeat: null}
         },
 
-        eth_newBlockFilter: function (f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newBlockFilter"), f);
-        },
-
-        eth_newPendingTransactionFilter: function (f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("newPendingTransactionFilter"), f);
-        },
-
-        eth_getFilterChanges: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getFilterChanges", filter), f);
-        },
-
-        eth_getFilterLogs: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getFilterLogs", filter), f);
-        },
-
-        eth_getLogs: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("getLogs", filter), f);
-        },
-
-        eth_uninstallFilter: function (filter, f) {
-            return augur.rpc.broadcast(augur.rpc.marshal("uninstallFilter", filter), f);
-        },
-
-        search_price_logs: function (logs, market_id, outcome_id) {
-            // topics: [label, user, unadjusted marketid, outcome]
-            // array data: [price, cost]
-            if (!logs || !market_id || !outcome_id) return;
-            var parsed, price_logs, market, marketplus;
-            market_id = abi.bignum(market_id);
-            outcome_id = abi.bignum(outcome_id);
-            price_logs = [];
-            for (var i = 0, len = logs.length; i < len; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x")
-                {
-                    parsed = augur.rpc.unmarshal(logs[i].data);
-                    market = abi.bignum(logs[i].topics[2]);
-                    marketplus = market.plus(abi.constants.MOD);
-                    if (marketplus.lt(abi.constants.BYTES_32)) {
-                        market = marketplus;
-                    }
-                    if (market.eq(market_id) &&
-                        abi.bignum(logs[i].topics[3]).eq(outcome_id))
-                    {
-                        price_logs.push({
-                            market: abi.hex(market_id),
-                            user: abi.format_address(logs[i].topics[1]),
-                            price: abi.unfix(parsed[0], "string"),
-                            cost: abi.unfix(parsed[1], "string"),
-                            blockNumber: abi.hex(logs[i].blockNumber)
-                        });
-                    }
-                }
-            }
-            return price_logs;
-        },
-
-        search_creation_logs: function (logs, market_id) {
-            // topics: [?, user, unadjusted marketid, outcome]
-            // array data: [price, cost]
-            if (!logs || !market_id) return;
-            var creation_logs, market;
-            creation_logs = [];
-            market_id = abi.bignum(market_id);
-            for (var i = 0, len = logs.length; i < len; ++i) {
-                if (logs[i] && logs[i].topics && logs[i].topics.length > 1) {
-                    market = abi.bignum(logs[i].topics[1]);
-                    if (market.eq(market_id)) {
-                        creation_logs.push({
-                            blockNumber: abi.hex(logs[i].blockNumber)
-                        });
-                    }
-                }
-            }
-            return creation_logs;
+        createMarketMessage: function (data, blockNumber, onMessage) {
+            var tx = {
+                to: augur.contracts.createMarket,
+                from: augur.from,
+                data: data,
+                gas: augur.rpc.DEFAULT_GAS
+            };
+            if (!utils.is_function(onMessage)) return augur.rpc.call(tx);
+            augur.rpc.call(tx, function (callReturn) {
+                onMessage({
+                    label: "createMarket",
+                    marketId: callReturn,
+                    creationBlock: blockNumber
+                });
+            });
         },
 
         sift: function (filtrate, onMessage) {
@@ -43335,8 +36763,14 @@ module.exports = function () {
             for (var i = 0, len = filtrate.length; i < len; ++i) {
                 try {
                     if (filtrate[i]) {
-                        if (filtrate[i].constructor === Object && filtrate[i].data) {
-                            filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                        if (filtrate[i].constructor === Object) {
+                            if (filtrate.address === augur.contracts.createMarket) {
+                                this.createMarketMessage(filtrate[i].data, filtrate[i].blockNumber);
+                            } else {
+                                if (filtrate[i].data) {
+                                    filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                                }
+                            }
                         }
                         if (onMessage) onMessage(filtrate[i]);
                         messages.push(filtrate[i]);
@@ -43352,7 +36786,7 @@ module.exports = function () {
         poll_contracts_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
                 var self = this;
-                this.eth_getFilterChanges(this.contracts_filter.id, function (filtrate) {
+                augur.rpc.getFilterChanges(this.filter.contracts.id, function (filtrate) {
                     // example: [
                     //     "0xd92826bcb659b0b01c94930ca200d2abfddcaddce567d02f39ca48533db4086c",
                     //     "0x0591cdaa9178ed34d1f148f57ca463d7c50c93401329e7c501682a8f5b747f75",
@@ -43378,7 +36812,7 @@ module.exports = function () {
 
         poll_block_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
-                this.eth_getFilterChanges(this.block_filter.id, function (filtrate) {
+                augur.rpc.getFilterChanges(this.filter.block.id, function (filtrate) {
                     if (filtrate && filtrate.length && filtrate.constructor === Array) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
                             onMessage(filtrate[i]);
@@ -43389,8 +36823,8 @@ module.exports = function () {
         },
 
         poll_price_listener: function (onMessage) {
-            if (this.price_filter) {
-                this.eth_getFilterChanges(this.price_filter.id, function (filtrate) {
+            if (this.filter.log_price) {
+                augur.rpc.getFilterChanges(this.filter.log_price.id, function (filtrate) {
                     var data_array, market, marketplus, outcome;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
@@ -43418,38 +36852,9 @@ module.exports = function () {
                                         });
                                     }
                                 } catch (exc) {
-                                    console.error("updatePrice filter:", exc);
+                                    console.error("log_price filter:", exc);
                                     console.log(i, filtrate[i]);
                                 }
-                            }
-                        }
-                    }
-                }); // eth_getFilterChanges
-            }
-        },
-
-        poll_creation_listener: function (onMessage) {
-            if (this.creation_filter) {
-                this.eth_getFilterChanges(this.creation_filter.id, function (filtrate) {
-                    // console.log("creation filtrate:", filtrate);
-                    var market, marketplus;
-                    if (filtrate && filtrate.length) {
-                        for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            try {
-                                if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 1) {
-                                    market = abi.bignum(filtrate[i].topics[1]);
-                                    marketplus = market.plus(abi.constants.MOD);
-                                    if (marketplus.lt(abi.constants.BYTES_32)) {
-                                        market = marketplus;
-                                    }
-                                    onMessage({
-                                        marketId: abi.hex(market),
-                                        blockNumber: abi.string(filtrate[i].blockNumber)
-                                    });
-                                }
-                            } catch (exc) {
-                                console.error("creationBlock filter:", exc);
-                                console.log(i, filtrate[i]);
                             }
                         }
                     }
@@ -43462,13 +36867,13 @@ module.exports = function () {
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                this.eth_uninstallFilter(this.price_filter.id, function (uninst) {
-                    self.price_filter.id = null;
+                augur.rpc.uninstallFilter(this.filter.log_price.id, function (uninst) {
+                    self.filter.log_price.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = this.eth_uninstallFilter(this.price_filter.id);
-                this.price_filter.id = null;
+                var uninst = augur.rpc.uninstallFilter(this.filter.log_price.id);
+                this.filter.log_price.id = null;
                 return uninst;
             }
         },
@@ -43476,13 +36881,13 @@ module.exports = function () {
         clear_contracts_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                this.eth_uninstallFilter(this.contracts_filter.id, function (uninst) {
-                    self.contracts_filter.id = null;
+                augur.rpc.uninstallFilter(this.filter.contracts.id, function (uninst) {
+                    self.filter.contracts.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = this.eth_uninstallFilter(this.contracts_filter.id);
-                this.contracts_filter.id = null;
+                var uninst = augur.rpc.uninstallFilter(this.filter.contracts.id);
+                this.filter.contracts.id = null;
                 return uninst;
             }
         },
@@ -43490,27 +36895,13 @@ module.exports = function () {
         clear_block_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                this.eth_uninstallFilter(this.block_filter.id, function (uninst) {
-                    self.block_filter.id = null;
+                augur.rpc.uninstallFilter(this.filter.block.id, function (uninst) {
+                    self.filter.block.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = this.eth_uninstallFilter(this.block_filter.id);
-                this.block_filter.id = null;
-                return uninst;
-            }
-        },
-
-        clear_creation_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.eth_uninstallFilter(this.creation_filter.id, function (uninst) {
-                    self.creation_filter.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.eth_uninstallFilter(this.creation_filter.id);
-                this.creation_filter.id = null;
+                var uninst = augur.rpc.uninstallFilter(this.filter.block.id);
+                this.filter.block.id = null;
                 return uninst;
             }
         },
@@ -43518,7 +36909,7 @@ module.exports = function () {
         // set up filters
 
         setup_price_filter: function (label, f) {
-            return this.eth_newFilter({
+            return augur.rpc.newFilter({
                 address: augur.contracts.buyAndSellShares,
                 topics: [augur.rpc.sha3(label)]
             }, f);
@@ -43537,53 +36928,46 @@ module.exports = function () {
                 toBlock: "latest"
             };
             if (!utils.is_function(f)) {
-                this.contracts_filter = {
-                    id: this.eth_newFilter(params),
+                this.filter.contracts = {
+                    id: augur.rpc.newFilter(params),
                     heartbeat: null
                 };
-                return this.contracts_filter;
+                return this.filter.contracts;
             }
-            this.eth_newFilter(params, function (filter_id) {
-                self.contracts_filter = {
+            augur.rpc.newFilter(params, function (filter_id) {
+                self.filter.contracts = {
                     id: filter_id,
                     heartbeat: null
                 };
-                f(self.contracts_filter);
+                f(self.filter.contracts);
             });
         },
 
         setup_block_filter: function (f) {
             var self = this;
             if (!utils.is_function(f)) {
-                this.block_filter = {
-                    id: this.eth_newBlockFilter(),
+                this.filter.block = {
+                    id: augur.rpc.newBlockFilter(),
                     heartbeat: null
                 };
-                return this.block_filter;
+                return this.filter.block;
             }
-            this.eth_newBlockFilter(function (filter_id) {
-                self.block_filter = {
+            augur.rpc.newBlockFilter(function (filter_id) {
+                self.filter.block = {
                     id: filter_id,
                     heartbeat: null
                 };
-                f(self.block_filter);
+                f(self.filter.block);
             });
-        },
-
-        setup_creation_filter: function (f) {
-            return this.eth_newFilter({
-                address: augur.contracts.createMarket,
-                topics: [augur.rpc.sha3(constants.LOGS.creationBlock)]
-            }, f);
         },
 
         // start listeners
 
         start_price_listener: function (filter_name, cb) {
             var self = this;
-            if (this.price_filter && this.price_filter.id) {
-                if (!utils.is_function(cb)) return this.price_filter.id;
-                return cb(this.price_filter.id);
+            if (this.filter.log_price && this.filter.log_price.id) {
+                if (!utils.is_function(cb)) return this.filter.log_price.id;
+                return cb(this.filter.log_price.id);
             }
             if (!utils.is_function(cb)) {
                 var filter_id = this.setup_price_filter(filter_name);
@@ -43591,7 +36975,7 @@ module.exports = function () {
                     return errors.FILTER_NOT_CREATED;
                 }
                 if (filter_id.error) return filter_id;
-                self.price_filter = {
+                self.filter.log_price = {
                     id: filter_id,
                     heartbeat: null
                 };
@@ -43602,7 +36986,7 @@ module.exports = function () {
                     return cb(errors.FILTER_NOT_CREATED);
                 }
                 if (filter_id.error) return cb(filter_id);
-                self.price_filter = {
+                self.filter.log_price = {
                     id: filter_id,
                     heartbeat: null
                 };
@@ -43611,7 +36995,7 @@ module.exports = function () {
         },
 
         start_contracts_listener: function (cb) {
-            if (this.contracts_filter.id === null) {
+            if (this.filter.contracts.id === null) {
                 if (utils.is_function(cb)) {
                     this.setup_contracts_filter(cb);
                 } else {
@@ -43621,34 +37005,13 @@ module.exports = function () {
         },
 
         start_block_listener: function (cb) {
-            if (this.block_filter.id === null) {
+            if (this.filter.block.id === null) {
                 if (utils.is_function(cb)) {
                     this.setup_block_filter(cb);
                 } else {
                     return this.setup_block_filter();
                 }
             }
-        },
-
-        start_creation_listener: function (cb) {
-            var self = this;
-            cb = cb || utils.pass;
-            if (this.creation_filter && this.creation_filter.id) {
-                if (utils.is_function(cb)) return cb(this.creation_filter.id);
-                return this.creation_filter.id;
-            }
-            this.setup_creation_filter(function (filter_id) {
-                if (!filter_id || filter_id === "0x") {
-                    return cb(errors.FILTER_NOT_CREATED);
-                } else if (filter_id && filter_id.error) {
-                    return cb(filter_id);
-                }
-                self.creation_filter = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                cb(filter_id);
-            });
         },
 
         // start/stop polling
@@ -43658,26 +37021,20 @@ module.exports = function () {
             if (cb && cb.constructor === Object) {
                 if (utils.is_function(cb.contracts)) {
                     this.poll_contracts_listener(cb.contracts);
-                    this.contracts_filter.heartbeat = setInterval(function () {
+                    this.filter.contracts.heartbeat = setInterval(function () {
                         self.poll_contracts_listener(cb.contracts);
                     }, this.PULSE);
                 }
                 if (utils.is_function(cb.price)) {
                     this.poll_price_listener(cb.price);
-                    this.price_filter.heartbeat = setInterval(function () {
+                    this.filter.log_price.heartbeat = setInterval(function () {
                         self.poll_price_listener(cb.price);
                     }, this.PULSE);
                 }
                 if (utils.is_function(cb.block)) {
                     this.poll_block_listener(cb.block);
-                    this.block_filter.heartbeat = setInterval(function () {
+                    this.filter.block.heartbeat = setInterval(function () {
                         self.poll_block_listener(cb.block);
-                    }, this.PULSE);
-                }
-                if (utils.is_function(cb.creation)) {
-                    this.poll_creation_listener(cb.creation);
-                    this.creation_filter.heartbeat = setInterval(function () {
-                        self.poll_creation_listener(cb.creation);
                     }, this.PULSE);
                 }
             }
@@ -43688,10 +37045,10 @@ module.exports = function () {
             if (utils.is_function(setup_complete)) {
                 async.parallel([
                     function (callback) {
-                        if (this.contracts_filter.id === null && cb.contracts) {
+                        if (this.filter.contracts.id === null && cb.contracts) {
                             this.start_contracts_listener(function () {
                                 self.pacemaker({contracts: cb.contracts});
-                                callback(null, ["contracts", self.contracts_filter.id]);
+                                callback(null, ["contracts", self.filter.contracts.id]);
                             });
                         } else {
                             callback();
@@ -43699,31 +37056,20 @@ module.exports = function () {
                     }.bind(this),
                     function (callback) {
                         var self = this;
-                        if (this.price_filter.id === null && cb.price) {
-                            this.start_price_listener(constants.LOGS.updatePrice, function () {
+                        if (this.filter.log_price.id === null && cb.price) {
+                            this.start_price_listener(constants.LOGS.log_price, function () {
                                 self.pacemaker({price: cb.price});
-                                callback(null, ["price", self.price_filter.id]);
+                                callback(null, ["price", self.filter.log_price.id]);
                             });
                         } else {
                             callback();
                         }
                     }.bind(this),
                     function (callback) {
-                        if (this.block_filter.id === null && cb.block) {
+                        if (this.filter.block.id === null && cb.block) {
                             this.start_block_listener(function () {
                                 self.pacemaker({block: cb.block});
-                                callback(null, ["block", self.block_filter.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this),
-                    function (callback) {
-                        var self = this;
-                        if (this.creation_filter.id === null && cb.creation) {
-                            this.start_creation_listener(function () {
-                                self.pacemaker({creation: cb.creation});
-                                callback(null, ["creation", self.creation_filter.id]);
+                                callback(null, ["block", self.filter.block.id]);
                             });
                         } else {
                             callback();
@@ -43746,38 +37092,31 @@ module.exports = function () {
                 });
             }
             else {
-                if (this.contracts_filter.id === null && cb.contracts) {
+                if (this.filter.contracts.id === null && cb.contracts) {
                     this.start_contracts_listener(function () {
-                        self.pacemaker({ contracts: cb.contracts });
+                        self.pacemaker({contracts: cb.contracts});
                     });
                 }
-                if (this.price_filter.id === null && cb.price) {
-                    this.start_price_listener("updatePrice", function () {
-                        self.pacemaker({ price: cb.price });
+                if (this.filter.log_price.id === null && cb.price) {
+                    this.start_price_listener("log_price", function () {
+                        self.pacemaker({price: cb.price});
                     });
                 }
-                if (this.block_filter.id === null && cb.block) {
+                if (this.filter.block.id === null && cb.block) {
                     this.start_block_listener(function () {
-                        self.pacemaker({ block: cb.block });
-                    });
-                }
-                if (this.creation_filter.id === null && cb.creation) {
-                    this.start_creation_listener(function () {
-                        self.pacemaker({ creation: cb.creation });
+                        self.pacemaker({block: cb.block});
                     });
                 }
             }
         },
 
         all_filters_removed: function () {
-            return this.price_filter.heartbeat === null &&
-                this.contracts_filter.heartbeat === null &&
-                this.block_filter.heartbeat === null &&
-                this.creation_filter.heartbeat === null &&
-                this.price_filter.id === null &&
-                this.contracts_filter.id === null &&
-                this.block_filter.id === null &&
-                this.creation_filter.id === null;
+            return this.filter.log_price.heartbeat === null &&
+                this.filter.contracts.heartbeat === null &&
+                this.filter.block.heartbeat === null &&
+                this.filter.log_price.id === null &&
+                this.filter.contracts.id === null &&
+                this.filter.block.id === null;
         },
 
         ignore: function (uninstall, cb, complete) {
@@ -43806,68 +37145,51 @@ module.exports = function () {
                 if (utils.is_function(uninstall.block)) {
                     cb.block = uninstall.block;
                 }
-                if (utils.is_function(uninstall.creation)) {
-                    cb.creation = uninstall.creation;
-                }
                 uninstall = false;
             }
             cb = cb || {}; // individual filter removal callbacks
             cb.price = utils.is_function(cb.price) ? cb.price : utils.noop;
             cb.contracts = utils.is_function(cb.contracts) ? cb.contracts : utils.noop;
             cb.block = utils.is_function(cb.block) ? cb.block : utils.noop;
-            cb.creation = utils.is_function(cb.creation) ? cb.creation : utils.noop;
             complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
-            if (this.price_filter.heartbeat !== null) {
-                clearInterval(this.price_filter.heartbeat);
-                this.price_filter.heartbeat = null;
+            if (this.filter.log_price.heartbeat !== null) {
+                clearInterval(this.filter.log_price.heartbeat);
+                this.filter.log_price.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.price)) {
                     cb.price();
                     if (this.all_filters_removed()) complete();
                 }
             }
-            if (this.contracts_filter.heartbeat !== null) {
-                clearInterval(this.contracts_filter.heartbeat);
-                this.contracts_filter.heartbeat = null;
+            if (this.filter.contracts.heartbeat !== null) {
+                clearInterval(this.filter.contracts.heartbeat);
+                this.filter.contracts.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.contracts)) {
                     cb.contracts();
                     if (this.all_filters_removed()) complete();
                 }
             }
-            if (this.block_filter.heartbeat !== null) {
-                clearInterval(this.block_filter.heartbeat);
-                this.block_filter.heartbeat = null;
+            if (this.filter.block.heartbeat !== null) {
+                clearInterval(this.filter.block.heartbeat);
+                this.filter.block.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.block)) {
                     cb.block();
                     if (this.all_filters_removed()) complete();
                 }
             }
-            if (this.creation_filter.heartbeat !== null) {
-                clearInterval(this.creation_filter.heartbeat);
-                this.creation_filter.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.creation)) {
-                    cb.creation();
-                    if (this.all_filters_removed()) complete();
-                }
-            }
             if (uninstall) {
-                if (this.price_filter.id !== null) {
+                if (this.filter.log_price.id !== null) {
                     this.clear_price_filter(function (uninst) {
                         cleared(uninst, cb.price, complete);
                     });
                 }
-                if (this.contracts_filter.id !== null) {
+                if (this.filter.contracts.id !== null) {
                     this.clear_contracts_filter(function (uninst) {
                         cleared(uninst, cb.contracts, complete);
                     });
                 }
-                if (this.block_filter.id !== null) {
+                if (this.filter.block.id !== null) {
                     this.clear_block_filter(function (uninst) {
                         cleared(uninst, cb.block, complete);
-                    });
-                }
-                if (this.creation_filter.id !== null) {
-                    this.clear_creation_filter(function (uninst) {
-                        cleared(uninst, cb.creation, complete);
                     });
                 }
             }
@@ -43876,8 +37198,7 @@ module.exports = function () {
     };
 };
 
-}).call(this,require('_process'))
-},{"./constants":321,"./utilities":324,"_process":211,"async":6,"augur-abi":7,"augur-contracts":3}],323:[function(require,module,exports){
+},{"./constants":311,"./utilities":314,"async":9,"augur-abi":1,"augur-contracts":6}],313:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -43890,16 +37211,13 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var async = require("async");
 var BigNumber = require("bignumber.js");
-var Decimal = require("decimal.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
-var request = (NODE_JS) ? require("request") : require("browser-request");
 var connector = require("ethereumjs-connect");
 var contracts = require("augur-contracts");
 var constants = require("./constants");
 
-Decimal.config({precision: 64});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 var options = {debug: {broadcast: false, fallback: false}};
@@ -43916,7 +37234,6 @@ function Augur() {
     this.constants = constants;
     this.utils = require("./utilities");
     this.db = require("./client/db");
-    this.orders = require("./client/orders");
     this.connector = connector;
     this.errors = contracts.errors;
 
@@ -44192,9 +37509,9 @@ Augur.prototype.getMinTradingFee = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
-Augur.prototype.getBranch = function (branchNumber, callback) {
+Augur.prototype.getBranchByNum = function (branchNumber, callback) {
     // branchNumber: integer
-    var tx = clone(this.tx.getBranch);
+    var tx = clone(this.tx.getBranchByNum);
     tx.params = branchNumber;
     return this.fire(tx, callback);
 };
@@ -44227,20 +37544,23 @@ Augur.prototype.getEventInfo = function (eventId, callback) {
     // eventId: sha256 hash id
     var self = this;
     var parse_info = function (info) {
-        // info = array(6)
-        // info[0] = self.Events[event].branch
-        // info[1] = self.Events[event].expirationDate
-        // info[2] = self.Events[event].outcome
-        // info[3] = self.Events[event].minValue
-        // info[4] = self.Events[event].maxValue
-        // info[5] = self.Events[event].numOutcomes
+        // eventinfo = string(7*32 + length)
+        // eventinfo[0] = self.Events[event].branch
+        // eventinfo[1] = self.Events[event].expirationDate 
+        // eventinfo[2] = self.Events[event].outcome
+        // eventinfo[3] = self.Events[event].minValue
+        // eventinfo[4] = self.Events[event].maxValue
+        // eventinfo[5] = self.Events[event].numOutcomes
+        // eventinfo[6] = self.Events[event].bond
+        // mcopy(eventinfo + 7*32, load(self.Events[event].resolutionSource[0], chars=length), length)
         if (info && info.length) {
             info[0] = abi.hex(info[0]);
             info[1] = abi.bignum(info[1]).toFixed();
             info[2] = abi.unfix(info[2], "string");
-            info[3] = abi.bignum(info[3]).toFixed();
-            info[4] = abi.bignum(info[4]).toFixed();
-            info[5] = abi.bignum(info[5]).toFixed();
+            info[3] = abi.unfix(info[3], "string");
+            info[4] = abi.unfix(info[4], "string");
+            info[5] = parseInt(info[5]);
+            info[6] = abi.unfix(info[6], "string");
         }
         return info;
     };
@@ -44341,57 +37661,18 @@ Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event,
 };
 
 // markets.se
-Augur.prototype.lsLmsr = function (market, callback) {
-    if (!market) return new Error("no market input");
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var cumScale = info.cumulativeScale;
-            var alpha = new Decimal(info.alpha);
-            var numOutcomes = info.numOutcomes;
-            var sumShares = new Decimal(0);
-            for (var i = 0; i < numOutcomes; ++i) {
-                sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-            }
-            var bq = alpha.times(sumShares);
-            var sumExp = new Decimal(0);
-            for (i = 0; i < numOutcomes; ++i) {
-                sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-            }
-            return callback(bq.times(cumScale).times(sumExp.ln()).toFixed());
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    var tx = clone(this.tx.lsLmsr);
-    tx.params = market;
-    return this.fire(tx, callback);
-};
-Augur.prototype.price = function (market, outcome, callback) {
-    var self = this;
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            var info = JSON.parse(JSON.stringify(market));
-            var epsilon = new Decimal("0.0000001");
-            var a = new Decimal(self.lsLmsr(info));
-            for (var i = 0; i < info.numOutcomes; ++i) {
-                if (info.outcomes[i].id === Number(outcome)) break;
-            }
-            info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(epsilon).toFixed();
-            var b = new Decimal(self.lsLmsr(info));
-            return callback(b.minus(a).dividedBy(epsilon).toFixed());
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    var tx = clone(this.tx.price);
-    tx.params = [market, outcome];
+Augur.prototype.get_trade_ids = function (market_id, callback) {
+    var tx = clone(this.tx.get_trade_ids);
+    tx.params = market_id;
     return this.fire(tx, callback);
 };
 Augur.prototype.getVolume = function (market, callback) {
     var tx = clone(this.tx.getVolume);
+    tx.params = market;
+    return this.fire(tx, callback);
+};
+Augur.prototype.getCreationBlock = function (market, callback) {
+    var tx = clone(this.tx.getCreationBlock);
     tx.params = market;
     return this.fire(tx, callback);
 };
@@ -44480,12 +37761,6 @@ Augur.prototype.getCurrentParticipantNumber = function (market, callback) {
 Augur.prototype.getMarketNumOutcomes = function (market, callback) {
     // market: sha256 hash id
     var tx = clone(this.tx.getMarketNumOutcomes);
-    tx.params = market;
-    return this.fire(tx, callback);
-};
-Augur.prototype.getAlpha = function (market, callback) {
-    // market: sha256
-    var tx = clone(this.tx.getAlpha);
     tx.params = market;
     return this.fire(tx, callback);
 };
@@ -44607,79 +37882,216 @@ Augur.prototype.getTotalRep = function (branch, callback) {
     return this.fire(tx, callback);
 };
 
-// buy&sellShares.se
-Augur.prototype.makeMarketHash = function (market, outcome, amount, limit) {
-    // market: sha256
-    // outcome: integer
-    // amount: number (convert to fixed-point)
-    // limit: max price per share (convert to fixed-point); 0=market order
-    if (market && market.constructor === Object && market.market) {
-        outcome = market.outcome;
-        amount = market.amount;
-        limit = market.limit;
-        market = market.market;
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    return this.utils.sha256([market, outcome, abi.fix(amount, "hex"), limit]);
+// trades.se
+Augur.prototype.makeTradeHash = function (max_value, max_amount, trade_ids, callback) {
+    var tx = clone(this.tx.makeTradeHash);
+    tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+    return this.fire(tx, callback);
 };
-Augur.prototype.commitTrade = function (market, hash, onSent, onSuccess, onFailed) {
+Augur.prototype.commitTrade = function (hash, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.commitTrade);
-    var unpacked = this.utils.unpack(market, this.utils.labels(this.commitTrade), arguments);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.commitTrade), arguments);
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.buyShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        marketId = branchId.marketId; // sha256
-        outcome = branchId.outcome; // integer (1 or 2 for binary)
-        amount = branchId.amount;   // number -> fixed-point
-        limit = branchId.limit;
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId; // sha256
-    }
-    var tx = clone(this.tx.buyShares);
-    if (marketId && marketId.constructor === BigNumber) {
-        marketId = abi.prefix_hex(marketId.toString(16));
-    }
-    if (branchId && branchId.constructor === BigNumber) {
-        branchId = abi.prefix_hex(branchId.toString(16));
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    if (onSent) {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    }
-    tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-    return this.transact(tx);
+Augur.prototype.setInitialTrade = function (id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.setInitialTrade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.setInitialTrade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.sellShares = function (branchId, marketId, outcome, amount, limit, onSent, onSuccess, onFailed) {
-    if (branchId && branchId.constructor === Object && branchId.branchId) {
-        marketId = branchId.marketId; // sha256
-        outcome = branchId.outcome; // integer (1 or 2 for binary)
-        amount = branchId.amount;   // number -> fixed-point
-        limit = branchId.limit;
-        if (branchId.onSent) onSent = branchId.onSent;
-        if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-        if (branchId.onFailed) onFailed = branchId.onFailed;
-        branchId = branchId.branchId; // sha256
+Augur.prototype.getInitialTrade = function (id, callback) {
+    var tx = clone(this.tx.getInitialTrade);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.zeroHash = function (onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.zeroHash);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.zeroHash), arguments);
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.checkHash = function (tradeHash, sender, callback) {
+    var tx = clone(this.tx.checkHash);
+    tx.params = [tradeHash, sender];
+    return this.fire(tx, callback);
+};
+Augur.prototype.getID = function (tradeID, callback) {
+    var tx = clone(this.tx.getID);
+    tx.params = tradeID;
+    return this.fire(tx, callback);
+};
+Augur.prototype.saveTrade = function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.saveTrade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.saveTrade), arguments);
+    tx.params = unpacked.params;
+    tx.params[3] = abi.fix(tx.params[3], "hex");
+    tx.params[4] = abi.fix(tx.params[4], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.get_trade = function (id, callback) {
+    // trade = array(9)
+    // trade[0] = self.trades[id].id
+    // trade[1] = self.trades[id].type
+    // trade[2] = self.trades[id].market
+    // trade[3] = self.trades[id].amount
+    // trade[4] = self.trades[id].price
+    // trade[5] = self.trades[id].owner
+    // trade[6] = self.trades[id].block
+    // trade[7] = self.trades[id].refhash
+    // trade[8] = self.trades[id].outcome
+    var tx = clone(this.tx.get_trade);
+    tx.params = id;
+    if (!this.utils.is_function(callback)) {
+        var trade = this.fire(tx);
+        if (!trade || trade.error) return trade;
+        return {
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            refhash: trade[7],
+            outcome: abi.string(trade[8])
+        };
     }
-    var tx = clone(this.tx.sellShares);
-    if (marketId && marketId.constructor === BigNumber) {
-        marketId = abi.prefix_hex(marketId.toString(16));
+    this.fire(tx, function (trade) {
+        if (!trade || trade.error) return callback(trade);
+        callback({
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            refhash: trade[7],
+            outcome: abi.string(trade[8])
+        });
+    });
+};
+Augur.prototype.get_amount = function (id, callback) {
+    var tx = clone(this.tx.get_amount);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.get_price = function (id, callback) {
+    var tx = clone(this.tx.get_price);
+    tx.params = id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.update_trade = function (id, price, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.update_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.update_trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.remove_trade = function (id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.remove_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.remove_trade), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.fill_trade = function (id, fill, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.fill_trade);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.fill_trade), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+
+// buy&sellShares.se
+Augur.prototype.cancel = function (trade_id, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.cancel);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.cancel), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.buy = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.buy);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buy), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.sell = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.sell);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.sell), arguments);
+    tx.params = unpacked.params;
+    tx.params[0] = abi.fix(tx.params[0], "hex");
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.short_sell);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.short_sell), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (max_value.constructor === Object && max_value.max_value) {
+        max_amount = max_value.max_amount;
+        trade_ids = max_value.trade_ids;
+        onTradeHash = max_value.onTradeHash;
+        onCommitSent = max_value.onCommitSent;
+        onCommitSuccess = max_value.onCommitSuccess;
+        onCommitFailed = max_value.onCommitFailed;
+        onNextBlock = max_value.onNextBlock;
+        onTradeSent = max_value.onTradeSent;
+        onTradeSuccess = max_value.onTradeSuccess;
+        onTradeFailed = max_value.onTradeFailed;
+        max_value = max_value.max_value;
     }
-    if (branchId && branchId.constructor === BigNumber) {
-        branchId = abi.prefix_hex(branchId.toString(16));
-    }
-    limit = (limit) ? abi.fix(limit, "hex") : 0;
-    if (onSent) {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        this.transact(tx, onSent, onSuccess, onFailed);
-    } else {
-        tx.params = [branchId, marketId, outcome, abi.fix(amount, "hex"), limit];
-        return this.transact(tx);
-    }
+    onTradeHash = onTradeHash || this.utils.noop;
+    onCommitSent = onCommitSent || this.utils.noop;
+    onCommitSuccess = onCommitSuccess || this.utils.noop;
+    onCommitFailed = onCommitFailed || this.utils.noop;
+    onNextBlock = onNextBlock || this.utils.noop;
+    onTradeSent = onTradeSent || this.utils.noop;
+    onTradeSuccess = onTradeSuccess || this.utils.noop;
+    onTradeFailed = onTradeFailed || this.utils.noop;
+    this.makeTradeHash(max_value, max_amount, trade_ids, function (tradeHash) {
+        onTradeHash(tradeHash);
+        self.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.trade);
+                    tx.params = [
+                        abi.fix(max_value, "hex"),
+                        abi.fix(max_amount, "hex"),
+                        trade_ids
+                    ];
+                    self.transact(tx, onTradeSent, onTradeSuccess, onTradeFailed);
+                });
+            },
+            onFailed: onCommitFailed
+        });
+    });
+};
+
+// completeSets.se
+Augur.prototype.buyCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.buyCompleteSets);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buyCompleteSets), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.sellCompleteSets = function (market, amount, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.sellCompleteSets);
+    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.sellCompleteSets), arguments);
+    tx.params = unpacked.params;
+    tx.params[1] = abi.fix(tx.params[1], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
 // createBranch.se
@@ -44743,8 +38155,6 @@ Augur.prototype.createSubbranch = function (description, periodLength, parent, t
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
-// p2pWagers.se
-
 // sendReputation.se
 Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSuccess, onFailed) {
     // branchId: sha256
@@ -44763,8 +38173,6 @@ Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSucces
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
-// transferShares.se
-
 // makeReports.se
 Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
     var tx = clone(this.tx.getNumEventsToReport);
@@ -44774,11 +38182,6 @@ Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
 Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback) {
     var tx = clone(this.tx.getReportedPeriod);
     tx.params = [branch, period, reporter];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReportable = function (reportPeriod, eventID, callback) {
-    var tx = clone(this.tx.getReportable);
-    tx.params = [reportPeriod, eventID];
     return this.fire(tx, callback);
 };
 Augur.prototype.getNumReportsActual = function (branch, reportPeriod, callback) {
@@ -44941,47 +38344,100 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
 };
 
 // createSingleEventMarket.se
-Augur.prototype.createSingleEventMarket = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, alpha, initialLiquidity, tradingFee, forkSelection, onSent, onSuccess, onFailed) {
+Augur.prototype.createSingleEventMarket = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
-        description = branchId.description;           // string
-        expirationBlock = branchId.expirationBlock;   // integer
-        minValue = branchId.minValue;                 // integer (1 for binary)
-        maxValue = branchId.maxValue;                 // integer (2 for binary)
-        numOutcomes = branchId.numOutcomes;           // integer (2 for binary)
-        alpha = branchId.alpha;                       // number -> fixed-point
-        initialLiquidity = branchId.initialLiquidity; // number -> fixed-point
-        tradingFee = branchId.tradingFee;             // number -> fixed-point
-        forkSelection = branchId.forkSelection;       // integer
-        onSent = branchId.onSent;                     // function
-        onSuccess = branchId.onSuccess;               // function
-        onFailed = branchId.onFailed;                 // function
-        branchId = branchId.branchId;                 // sha256 hash
+        description = branchId.description;         // string
+        expDate = branchId.expDate;
+        minValue = branchId.minValue;               // integer (1 for binary)
+        maxValue = branchId.maxValue;               // integer (2 for binary)
+        numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+        resolution = branchId.resolution;
+        tradingFee = branchId.tradingFee;           // number -> fixed-point
+        tags = branchId.tags;
+        makerFees = branchId.makerFees;
+        extraInfo = branchId.extraInfo;
+        onSent = branchId.onSent;                   // function
+        onSuccess = branchId.onSuccess;             // function
+        onFailed = branchId.onFailed;               // function
+        branchId = branchId.branchId;               // sha256 hash
     }
-    var tx = clone(this.tx.createSingleEventMarket);
+    if (!tags || tags.constructor !== Array) tags = [];
+    if (tags.length) {
+        for (var i = 0; i < tags.length; ++i) {
+            if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                tags[i] = "0x0";
+            } else {
+                tags[i] = abi.short_string_to_int256(tags[i]);
+            }
+        }
+    }
+    while (tags.length < 3) {
+        tags.push("0x0");
+    }
+    // var tx = clone(this.tx.createSingleEventMarket);
+    // tx.params = [
+    //     branchId,
+    //     description,
+    //     expDate,
+    //     abi.fix(minValue, "hex"),
+    //     abi.fix(maxValue, "hex"),
+    //     numOutcomes,
+    //     resolution,
+    //     abi.fix(tradingFee, "hex"),
+    //     tags[0],
+    //     tags[1],
+    //     tags[2],
+    //     abi.fix(makerFees, "hex"),
+    //     extraInfo || ""
+    // ];
+    // rpc.gasPrice(function (gasPrice) {
+    //     tx.gasPrice = gasPrice;
+    //     gasPrice = abi.bignum(gasPrice);
+    //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    //     self.transact(tx, onSent, onSuccess, onFailed);
+    // });
+    var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
         description,
-        expirationBlock,
-        minValue,
-        maxValue,
+        expDate,
+        abi.fix(minValue, "hex"),
+        abi.fix(maxValue, "hex"),
         numOutcomes,
-        abi.fix(alpha, "hex"),
-        abi.fix(initialLiquidity, "hex"),
-        abi.fix(tradingFee, "hex"),
-        forkSelection || 1
+        resolution
     ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    this.transact(tx, this.utils.noop, function (res) {
+        var tx = clone(self.tx.createMarket);
+        tx.params = [
+            branchId,
+            description,
+            abi.fix(tradingFee, "hex"),
+            [res.callReturn],
+            tags[0],
+            tags[1],
+            tags[2],
+            abi.fix(makerFees, "hex"),
+            extraInfo || ""
+        ];
+        rpc.gasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            gasPrice = abi.bignum(gasPrice);
+            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+            self.transact(tx, onSent, onSuccess, onFailed);
+        });
+    }, onFailed);
 };
 
 // createEvent.se
-Augur.prototype.createEvent = function (branchId, description, expirationBlock, minValue, maxValue, numOutcomes, onSent, onSuccess, onFailed) {
-    // first parameter can optionally be a transaction object
+Augur.prototype.createEvent = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
     if (branchId.constructor === Object && branchId.branchId) {
         description = branchId.description;         // string
         minValue = branchId.minValue;               // integer (1 for binary)
         maxValue = branchId.maxValue;               // integer (2 for binary)
         numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-        expirationBlock = branchId.expirationBlock; // integer
+        expDate = branchId.expDate;
+        resolution = branchId.resolution;
         onSent = branchId.onSent;                   // function
         onSuccess = branchId.onSuccess;             // function
         onFailed = branchId.onFailed;               // function
@@ -44991,46 +38447,61 @@ Augur.prototype.createEvent = function (branchId, description, expirationBlock, 
     tx.params = [
         branchId,
         description,
-        expirationBlock,
-        minValue,
-        maxValue,
-        numOutcomes
+        expDate,
+        abi.fix(minValue, "hex"),
+        abi.fix(maxValue, "hex"),
+        numOutcomes,
+        resolution
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
 
 // createMarket.se
-Augur.prototype.createMarket = function (branchId, description, alpha, initialLiquidity, tradingFee, events, forkSelection, onSent, onSuccess, onFailed) {
+Augur.prototype.createMarket = function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
-        alpha = branchId.alpha;                        // number -> fixed-point
-        description = branchId.description;            // string
-        initialLiquidity = branchId.initialLiquidity;  // number -> fixed-point
-        tradingFee = branchId.tradingFee;              // number -> fixed-point
-        events = branchId.events;                      // array [sha256, ...]
-        forkSelection = branchId.forkSelection;        // integer
-        onSent = branchId.onSent;                      // function
-        onSuccess = branchId.onSuccess;                // function
-        onFailed = branchId.onFailed;                  // function
-        branchId = branchId.branchId;                  // sha256 hash
+        description = branchId.description; // string
+        tradingFee = branchId.tradingFee;   // number -> fixed-point
+        events = branchId.events;           // array [sha256, ...]
+        tags = branchId.tags;
+        makerFees = branchId.makerFees;
+        extraInfo = branchId.extraInfo;
+        onSent = branchId.onSent;           // function
+        onSuccess = branchId.onSuccess;     // function
+        onFailed = branchId.onFailed;       // function
+        branchId = branchId.branchId;       // sha256 hash
     }
-    var tx = clone(this.tx.createMarket);
-    if (events && events.length) {
-        for (var i = 0, len = events.length; i < len; ++i) {
-            if (events[i] && events[i].constructor === BigNumber) {
-                events[i] = events[i].toString(16);
+    if (!tags || tags.constructor !== Array) tags = [];
+    if (tags.length) {
+        for (var i = 0; i < tags.length; ++i) {
+            if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                tags[i] = "0x0";
+            } else {
+                tags[i] = abi.short_string_to_int256(tags[i]);
             }
         }
     }
+    while (tags.length < 3) {
+        tags.push("0x0");
+    }
+    var tx = clone(this.tx.createMarket);
     tx.params = [
         branchId,
         description,
-        abi.fix(alpha, "hex"),
-        abi.fix(initialLiquidity, "hex"),
         abi.fix(tradingFee, "hex"),
         events,
-        forkSelection || 1
+        tags[0],
+        tags[1],
+        tags[2],
+        abi.fix(makerFees, "hex"),
+        extraInfo || ""
     ];
-    return this.transact(tx, onSent, onSuccess, onFailed);
+    rpc.gasPrice(function (gasPrice) {
+        tx.gasPrice = gasPrice;
+        gasPrice = abi.bignum(gasPrice);
+        tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
+        self.transact(tx, onSent, onSuccess, onFailed);
+    });
 };
 
 // closeMarket.se
@@ -45057,17 +38528,21 @@ Augur.prototype.updatePeriod = function (branch) {
     this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
 };
 
+Augur.prototype.decodeTag = function (tag) {
+    return (tag && tag !== "0x0" && tag !== "0x") ?
+        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+};
+
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var EVENTS_FIELDS = 6;
-    var OUTCOMES_FIELDS = 2;
+    var OUTCOMES_FIELDS = 1;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
-    if (rawInfo && rawInfo.length > 12) {
+    if (rawInfo && rawInfo.length > 14) {
 
-        // all-inclusive except comments & price history
-        // info[0] = marketID
+        // all-inclusive except price history
         // info[1] = self.Markets[marketID].currentParticipant
-        // info[2] = self.Markets[marketID].alpha
+        // info[2] = self.Markets[marketID].makerFees
         // info[3] = participantNumber
         // info[4] = self.Markets[marketID].numOutcomes
         // info[5] = self.Markets[marketID].tradingPeriod
@@ -45075,24 +38550,34 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[7] = self.Markets[marketID].branch
         // info[8] = self.Markets[marketID].lenEvents
         // info[9] = self.Markets[marketID].cumulativeScale
-        // info[10] = self.Markets[marketID].volume
-        // info[11] = INFO.getCreationFee(marketID)
-        // info[12] = INFO.getCreator(marketID)
-        var index = 13;
+        // info[10] = self.Markets[marketID].blockNum
+        // info[11] = self.Markets[marketID].volume
+        // info[12] = INFO.getCreationFee(marketID)
+        // info[13] = INFO.getCreator(marketID)
+        // info[14] = self.Markets[marketID].tag1
+        // info[15] = self.Markets[marketID].tag2
+        // info[16] = self.Markets[marketID].tag3
+        var index = 17;
         info = {
             network: this.network_id || rpc.version(),
-            traderCount: abi.number(rawInfo[1]),
-            alpha: abi.unfix(rawInfo[2], "string"),
+            traderCount: parseInt(rawInfo[1]),
+            makerFees: abi.unfix(rawInfo[2], "string"),
             traderIndex: abi.unfix(rawInfo[3], "number"),
             numOutcomes: abi.number(rawInfo[4]),
             tradingPeriod: abi.number(rawInfo[5]),
             tradingFee: abi.unfix(rawInfo[6], "string"),
             branchId: rawInfo[7],
-            numEvents: abi.number(rawInfo[8]),
+            numEvents: parseInt(rawInfo[8]),
             cumulativeScale: abi.string(rawInfo[9]),
-            volume: abi.unfix(rawInfo[10], "string"),
-            creationFee: abi.unfix(rawInfo[11], "string"),
-            author: abi.format_address(rawInfo[12]),
+            creationBlock: parseInt(rawInfo[10]),
+            volume: abi.unfix(rawInfo[11], "string"),
+            creationFee: abi.unfix(rawInfo[12], "string"),
+            author: abi.format_address(rawInfo[13]),
+            tags: [
+                this.decodeTag(rawInfo[14]),
+                this.decodeTag(rawInfo[15]),
+                this.decodeTag(rawInfo[16])
+            ],
             type: null,
             endDate: null,
             participants: {},
@@ -45126,8 +38611,8 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
                 id: rawInfo[i*EVENTS_FIELDS + index],
                 endDate: endDate,
                 outcome: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 2], "string"),
-                minValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 3]),
-                maxValue: abi.string(rawInfo[i*EVENTS_FIELDS + index + 4]),
+                minValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 3], "string"),
+                maxValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 4], "string"),
                 numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
             };
             // market type: binary, categorical, or scalar
@@ -45144,14 +38629,17 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         }
 
         // organize outcome info
+        // eventinfo[0] = self.Events[event].branch
+        // eventinfo[1] = self.Events[event].expirationDate 
+        // eventinfo[2] = self.Events[event].outcome
+        // eventinfo[3] = self.Events[event].minValue
+        // eventinfo[4] = self.Events[event].maxValue
+        // eventinfo[5] = self.Events[event].numOutcomes
+        // eventinfo[6] = self.Events[event].bond
         index += info.numEvents*EVENTS_FIELDS;
         for (i = 0; i < info.numOutcomes; ++i) {
             info.outcomes[i].id = i + 1;
             info.outcomes[i].outstandingShares = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string");
-            info.outcomes[i].price = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string");
-            if (info.outcomes[i].id === 2) {
-                info.price = info.outcomes[i].price;
-            }
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;
         info.winningOutcomes = abi.string(
@@ -45173,25 +38661,25 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
 
         // multi-event (combinatorial) markets: batch event descriptions
         info.type = "combinatorial";
-        // if (options && options.combinatorial) {
-        //     var txList = new Array(info.numEvents);
-        //     for (i = 0; i < info.numEvents; ++i) {
-        //         txList[i] = clone(this.tx.getDescription);
-        //         txList[i].params = info.events[i].id;
-        //     }
-        //     if (this.utils.is_function(callback)) {
-        //         return rpc.batch(txList, function (response) {
-        //             for (var i = 0, len = response.length; i < len; ++i) {
-        //                 info.events[i].description = response[i];
-        //             }
-        //             callback(info);
-        //         });
-        //     }
-        //     var response = rpc.batch(txList);
-        //     for (i = 0; i < response.length; ++i) {
-        //         info.events[i].description = response[i];
-        //     }
-        // }
+        if (options && options.combinatorial) {
+            var txList = new Array(info.numEvents);
+            for (i = 0; i < info.numEvents; ++i) {
+                txList[i] = clone(this.tx.getDescription);
+                txList[i].params = info.events[i].id;
+            }
+            if (this.utils.is_function(callback)) {
+                return rpc.batch(txList, function (response) {
+                    for (var i = 0, len = response.length; i < len; ++i) {
+                        info.events[i].description = response[i];
+                    }
+                    callback(info);
+                });
+            }
+            var response = rpc.batch(txList);
+            for (i = 0; i < response.length; ++i) {
+                info.events[i].description = response[i];
+            }
+        }
     }
     if (!this.utils.is_function(callback)) return info;
     callback(info);
@@ -45217,12 +38705,6 @@ Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
     if (!callback) return marketsInfo;
     callback(marketsInfo);
 };
-Augur.prototype.checkPeriod = function (branch) {
-    var period = abi.number(this.getVotePeriod(branch));
-    var currentPeriod = Math.floor(abi.number(rpc.blockNumber()) / abi.number(this.getPeriodLength(branch)));
-    var periodsBehind = currentPeriod - period - 1;
-    return periodsBehind;
-};
 Augur.prototype.getCurrentPeriod = function (branch, callback) {
     if (!callback) {
         return rpc.blockNumber() / parseInt(this.getPeriodLength(branch));
@@ -45232,23 +38714,6 @@ Augur.prototype.getCurrentPeriod = function (branch, callback) {
             callback(parseInt(blockNumber) / parseInt(periodLength));
         });
     });
-};
-Augur.prototype.getEventsRange = function (branch, vpStart, vpEnd, callback) {
-    // branch: sha256, vpStart: integer, vpEnd: integer
-    var vp_range, txlist;
-    vp_range = vpEnd - vpStart + 1; // inclusive
-    txlist = new Array(vp_range);
-    for (var i = 0; i < vp_range; ++i) {
-        txlist[i] = {
-            from: this.web.account.address || this.coinbase,
-            to: this.contracts.expiringEvents,
-            method: "getEvents",
-            signature: "ii",
-            returns: "hash[]",
-            params: [branch, i + vpStart]
-        };
-    }
-    return rpc.batch(txlist, callback);
 };
 
 /*************
@@ -45371,44 +38836,10 @@ Augur.prototype.setTotalRepReported = function (branchId, reportPeriod, repRepor
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
-/*************************************
- * Trade events (price history data) *
- *************************************/
+/**********************
+ * Price history data *
+ **********************/
 
-Augur.prototype.getPriceHistory = function (branch, cb) {
-    var self = this;
-    if (!branch || !this.utils.is_function(cb)) return;
-    this.filters.eth_getLogs({
-        fromBlock: "0x1",
-        toBlock: "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice)]
-    }, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        var market, outcome, parsed, priceHistory = {};
-        for (var i = 0, n = logs.length; i < n; ++i) {
-            if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
-                market = logs[i].topics[2];
-                outcome = abi.number(logs[i].topics[3]);
-                if (!priceHistory[market]) priceHistory[market] = {};
-                if (!priceHistory[market][outcome]) priceHistory[market][outcome] = [];
-                parsed = rpc.unmarshal(logs[i].data);
-                priceHistory[market][outcome].push({
-                    market: abi.hex(market), // re-fork
-                    user: abi.format_address(logs[i].topics[1]),
-                    price: abi.unfix(parsed[0], "string"),
-                    cost: abi.unfix(parsed[1], "string"),
-                    blockNumber: abi.hex(logs[i].blockNumber)
-                });
-            }
-        }
-        cb(priceHistory);
-    });
-};
 Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
     var self = this;
     if (!cb && this.utils.is_function(options)) {
@@ -45420,10 +38851,10 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true)]
+        topics: [this.rpc.sha3(constants.LOGS.log_price), null, abi.unfork(market, true)]
     };
     if (!this.utils.is_function(cb)) {
-        var logs = this.filters.eth_getLogs(filter);
+        var logs = rpc.getLogs(filter);
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
@@ -45446,7 +38877,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         }
         return priceHistory;
     }
-    this.filters.eth_getLogs(filter, function (logs) {
+    rpc.getLogs(filter, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
@@ -45468,99 +38899,6 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
             }
         }
         cb(priceHistory);
-    });
-};
-Augur.prototype.getOutcomePriceHistory = function (market, outcome, cb) {
-    if (!market || !outcome) return;
-    var filter = {
-        fromBlock: "0x1",
-        toBlock: "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), null, abi.unfork(market, true), outcome]
-    };
-    if (this.utils.is_function(cb)) {
-        var self = this;
-        this.filters.eth_getLogs(filter, function (logs) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return cb(null);
-            }
-            if (logs.error) return cb(logs);
-            cb(self.filters.search_price_logs(logs, market, outcome));
-        });
-    } else {
-        var logs = this.filters.eth_getLogs(filter);
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) throw logs;
-        return this.filters.search_price_logs(logs, market, outcome);
-    }
-};
-
-/******************************************
- * Market creation events (block numbers) *
- ******************************************/
-
-Augur.prototype.getCreationBlocks = function (branch, options, cb) {
-    var self = this;
-    if (!branch) return;
-    if (!cb && this.utils.is_function(options)) {
-        cb = options;
-        options = null;
-    }
-    options = options || {};
-    cb = cb || this.utils.noop;
-    this.filters.eth_getLogs({
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.createMarket,
-        topics: [this.rpc.sha3(constants.LOGS.creationBlock)],
-        timeout: 240000
-    }, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        self.getMarketsInBranch(branch, function (markets) {
-            if (!markets || (markets && (markets.constructor !== Array || !markets.length))) {
-                return cb(null);
-            }
-            if (markets.error) return cb(markets);
-            var block, blocks = {};
-            for (var i = 0, len = markets.length; i < len; ++i) {
-                block = self.filters.search_creation_logs(logs, markets[i]);
-                if (block && block.constructor === Array && block.length &&
-                    block[0].constructor === Object && block[0].blockNumber) {
-                    blocks[markets[i]] = abi.bignum(block[0].blockNumber).toNumber();
-                }
-            }
-            cb(blocks);
-        });
-    });
-};
-
-Augur.prototype.getMarketCreationBlock = function (market, options, cb) {
-    var self = this;
-    if (!market) return;
-    if (!cb && this.utils.is_function(options)) {
-        cb = options;
-        options = null;
-    }
-    options = options || {};
-    cb = cb || this.utils.noop;
-    this.filters.eth_getLogs({
-        fromBlock: options.fromBlock || "0x1",
-        toBlock: options.toBlock || "latest",
-        address: this.contracts.createMarket,
-        topics: [this.rpc.sha3(constants.LOGS.creationBlock), abi.unfork(market, true)],
-        timeout: 120000
-    }, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        if (logs[0].blockNumber) return cb(parseInt(logs[0].blockNumber));
-        cb(null);
     });
 };
 
@@ -45596,11 +38934,11 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
     }
     options = options || {};
     if (!account || !this.utils.is_function(cb)) return;
-    this.filters.eth_getLogs({
+    rpc.getLogs({
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.updatePrice), abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
+        address: this.contracts.trades,
+        topics: [this.rpc.sha3(constants.LOGS.log_price)], //, abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
@@ -45650,352 +38988,6 @@ Augur.prototype.getAccountMeanTradePrices = function (account, cb) {
     });
 };
 
-Augur.prototype.getSimulatedBuy = function (market, outcome, amount, callback) {
-    // market: sha256 hash id
-    // outcome: integer (1 or 2 for binary events)
-    // amount: number
-    var self = this;
-    function getSimulatedBuy(marketInfo, outcome, amount) {
-        try {
-            if (amount.constructor === BigNumber) amount = abi.string(amount);
-            if (amount.constructor !== Decimal) amount = new Decimal(amount);
-        } catch (exc) {
-            return exc;
-        }
-        outcome = parseInt(outcome);
-        var info = JSON.parse(JSON.stringify(marketInfo));
-        var oldCost = new Decimal(self.lsLmsr(info));
-        var cumScale = info.cumulativeScale;
-        var alpha = new Decimal(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        for (var i = 0; i < numOutcomes; ++i) {
-            if (info.outcomes[i].id === Number(outcome)) break;
-        }
-        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).plus(amount).toFixed();
-        var sumShares = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (newCost.lt(oldCost)) return self.errors.getSimulatedBuy["-2"];
-        return [newCost.minus(oldCost).toFixed(), self.price(info, outcome)];
-    }
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            return callback(getSimulatedBuy(market, outcome, amount));
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    if (!this.utils.is_function(callback)) {
-        return getSimulatedBuy(this.getMarketInfo(market), outcome, amount);
-    }
-    this.getMarketInfo(market, function (info) {
-        callback(getSimulatedBuy(info, outcome, amount));
-    });
-};
-Augur.prototype.getSimulatedSell = function (market, outcome, amount, callback) {
-    // market: sha256 hash id
-    // outcome: integer (1 or 2 for binary events)
-    // amount: number
-    var self = this;
-    function getSimulatedSell(marketInfo, outcome, amount) {
-        try {
-            if (amount.constructor === BigNumber) amount = abi.string(amount);
-            if (amount.constructor !== Decimal) amount = new Decimal(amount);
-        } catch (exc) {
-            return exc;
-        }
-        outcome = parseInt(outcome);
-        var info = JSON.parse(JSON.stringify(marketInfo));
-        var oldCost = new Decimal(self.lsLmsr(info));
-        var cumScale = info.cumulativeScale;
-        var alpha = new Decimal(info.alpha);
-        var numOutcomes = info.numOutcomes;
-        for (var i = 0; i < numOutcomes; ++i) {
-            if (info.outcomes[i].id === Number(outcome)) break;
-        }
-        info.outcomes[i].outstandingShares = new Decimal(info.outcomes[i].outstandingShares).minus(amount).toFixed();
-        var sumShares = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumShares = sumShares.plus(new Decimal(info.outcomes[i].outstandingShares));
-        }
-        var bq = alpha.times(sumShares);
-        var sumExp = new Decimal(0);
-        for (i = 0; i < numOutcomes; ++i) {
-            sumExp = sumExp.plus(new Decimal(info.outcomes[i].outstandingShares).dividedBy(bq).exp());
-        }
-        var newCost = bq.times(cumScale).times(sumExp.ln());
-        if (oldCost.lt(newCost)) return self.errors.getSimulatedSell["-2"];
-        return [oldCost.minus(newCost).toFixed(), self.price(info, outcome)];
-    }
-    if (market.constructor === Object) {
-        if (market.network && market.events) {
-            callback = callback || this.utils.pass;
-            return callback(getSimulatedSell(market, outcome, amount));
-        } else if (market._id) {
-            market = market._id;
-        }
-    }
-    if (!this.utils.is_function(callback)) {
-        return getSimulatedSell(this.getMarketInfo(market), outcome, amount);
-    }
-    this.getMarketInfo(market, function (info) {
-        callback(getSimulatedSell(info, outcome, amount));
-    });
-};
-
-/**************
- * Order book *
- **************/
-
-Augur.prototype.checkOrder = function (marketInfo, outcome, order, cb) {
-    var currentPrice, priceMatched, trade;
-    var self = this;
-    if (cb && this.utils.is_function(cb)) {
-        cb = {nextOrder: cb};
-    }
-    cb = cb || {};
-    cb.onPriceMatched = cb.onPriceMatched || this.utils.noop;
-    cb.onMarketHash = cb.onMarketHash || this.utils.noop;
-    cb.onCommitTradeSent = cb.onCommitTradeSent || this.utils.noop;
-    cb.onCommitTradeSuccess = cb.onCommitTradeSuccess || this.utils.noop;
-    cb.onCommitTradeFailed = cb.onCommitTradeFailed || this.utils.noop;
-    cb.onTradeSent = cb.onTradeSent || this.utils.noop;
-    cb.onTradeSuccess = cb.onTradeSuccess || this.utils.noop;
-    cb.onTradeFailed = cb.onTradeFailed || this.utils.noop;
-    cb.nextOrder = cb.nextOrder || this.utils.noop;
-    currentPrice = new BigNumber(this.price(marketInfo, outcome));
-    if (order.amount.constructor !== BigNumber) {
-        order.amount = new BigNumber(order.amount);
-    }
-    if (order.price.constructor !== BigNumber) {
-        order.price = new BigNumber(order.price);
-    }
-    order.branch = marketInfo.branchId;
-    order.market = marketInfo._id;
-    order.outcome = outcome;
-    if (order.amount.gt(new BigNumber(0))) {
-        priceMatched = currentPrice.lte(order.price);
-    } else {
-        priceMatched = currentPrice.gte(order.price);
-    }
-
-    // price not matched: do not fill order
-    if (!priceMatched) return cb.nextOrder(null);
-
-    // price matched: fill order
-    cb.onPriceMatched(order);
-    if (order.cap) {
-        trade = this.orders.limit.fill(marketInfo, order);
-    } else {
-        trade = {order: order, amount: order.amount.toFixed(), filled: true};
-    }
-
-    // execute order
-    if (trade !== undefined) {
-        this.trade({
-            branch: order.branch,
-            market: order.market,
-            outcome: order.outcome,
-            amount: trade.amount,
-            callbacks: {
-                onMarketHash: cb.onMarketHash,
-                onCommitTradeSent: cb.onCommitTradeSent,
-                onCommitTradeSuccess: cb.onCommitTradeSuccess,
-                onCommitTradeFailed: cb.onCommitTradeFailed,
-                onTradeSent: function (response) {
-                    var tradeSent = {
-                        response: response,
-                        cancelled: self.orders.cancel(
-                            self.from,
-                            order.market,
-                            order.outcome,
-                            order.id
-                        ),
-                        newOrder: null,
-                        created: null
-                    };
-                    if (!trade.filled) {
-                        tradeSent.newOrder = JSON.parse(JSON.stringify(trade.order));
-                        tradeSent.newOrder.account = self.from;
-                        tradeSent.created = self.orders.create(tradeSent.newOrder);
-                    }
-                    cb.onTradeSent(tradeSent);
-                },
-                onTradeSuccess: function (response) {
-                    cb.onTradeSuccess({
-                        response: response,
-                        order: trade.order
-                    });
-                    cb.nextOrder(trade.order);
-                },
-                onTradeFailed: cb.onTradeFailed
-            }
-        });
-    }
-};
-
-Augur.prototype.checkOutcomeOrderList = function (marketInfo, outcome, orderList, cb) {
-    var self = this;
-    var matchedOrders = [];
-    if (cb && this.utils.is_function(cb)) {
-        cb = {nextOutcome: cb};
-    }
-    cb = cb || {};
-    cb.nextOutcome = cb.nextOutcome || this.utils.noop;
-    async.each(orderList, function (order, nextOrder) {
-        cb.nextOrder = function (matched) {
-            if (matched && !matched.error) {
-                matchedOrders.push(matched);
-                return nextOrder();
-            }
-            nextOrder();
-        };
-        self.checkOrder(marketInfo, outcome, order, cb);
-    }, function (err) {
-        if (err) return cb.onFailed(err);
-        cb.nextOutcome(matchedOrders);
-    });
-};
-
-Augur.prototype.checkOrderBook = function (market, cb) {
-    var self = this;
-    if (cb && this.utils.is_function(cb)) {
-        cb = {onSuccess: cb};
-    }
-    cb = cb || {};
-    cb.onSuccess = cb.onSuccess || this.utils.noop;
-    cb.onFailed = cb.onFailed || this.utils.noop;
-    cb.onEmpty = cb.onEmpty || this.utils.noop;
-    var orders = this.orders.get(this.from);
-    if (!market) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
-    if (!orders) return cb.onEmpty();
-    var matchedOrders = [];
-    if (market.constructor === Object && market.network && market.events) {
-        if (!orders[market._id]) return cb.onEmpty();
-        async.forEachOf(orders[market._id], function (orderList, outcome, nextOutcome) {
-            cb.nextOutcome = function (matched) {
-                if (matched && matched.constructor === Array) {
-                    matchedOrders = matchedOrders.concat(matched);
-                    return nextOutcome();
-                }
-                nextOutcome(matched);
-            };
-            self.checkOutcomeOrderList(market, outcome, orderList, cb);
-        }, function (err) {
-            if (err) return cb.onFailed(err);
-            cb.onSuccess(matchedOrders);
-        });
-
-    // note: raw marketInfo is incompatible with processed client market!
-    } else {
-        if (!orders[market]) return cb.onFailed(this.errors.CHECK_ORDER_BOOK_FAILED);
-        this.getMarketInfo(market, function (info) {
-            if (!info || info.error) return cb.onFailed(info);
-            self.checkOrderBook(info, cb);
-        });
-    }
-};
-
-/**
- * Lockstep trade sequence:
- *   1. commitTrade(market, makeMarketHash(market, outcome, amount, limit))
- *   2. buyShares(branch, market, outcome, amount, limit)
- * callbacks: {onMarketHash,
- *             onCommitTradeSent, onCommitTradeSuccess, onCommitTradeFailed,
- *             onNextBlock,
- *             onTradeSent, onTradeSuccess, onTradeFailed,
- *             onOrderCreated}
- * (All callbacks are optional.)
- */
-Augur.prototype.trade = function (branch, market, outcome, amount, limit, stop, expiration, cap, callbacks) {
-    var self = this;
-    if (branch && branch.constructor === Object && branch.branch) {
-        market = branch.market;
-        outcome = branch.outcome;
-        amount = branch.amount;
-        limit = branch.limit;
-        stop = branch.stop;
-        expiration = branch.expiration; // NYI
-        cap = branch.cap;
-        if (branch.callbacks) callbacks = clone(branch.callbacks);
-        branch = branch.branch;
-    }
-    callbacks = callbacks || {};
-    callbacks.onMarketHash = callbacks.onMarketHash || this.utils.pass;
-    callbacks.onCommitTradeSent = callbacks.onCommitTradeSent || this.utils.pass;
-    callbacks.onCommitTradeSuccess = callbacks.onCommitTradeSuccess || this.utils.pass;
-    callbacks.onCommitTradeFailed = callbacks.onCommitTradeFailed || this.utils.pass;
-    callbacks.onNextBlock = callbacks.onNextBlock || this.utils.pass;
-    callbacks.onTradeSent = callbacks.onTradeSent || this.utils.pass;
-    callbacks.onTradeSuccess = callbacks.onTradeSuccess || this.utils.pass;
-    callbacks.onTradeFailed = callbacks.onTradeFailed || this.utils.pass;
-    callbacks.onOrderCreated = callbacks.onOrderCreated || this.utils.pass;
-
-    // stop orders: send to localStorage
-    if (stop) {
-        return callbacks.onOrderCreated(this.orders.create({
-            account: this.from,
-            market: market,
-            outcome: outcome,
-            price: limit,
-            amount: amount,
-            expiration: expiration || 0,
-            cap: cap || 0
-        }));
-    }
-
-    // market orders: send to chain
-    amount = new Decimal(amount);
-    var trade = (amount.gt(new Decimal(0))) ? this.buyShares : this.sellShares;
-    amount = amount.abs().toFixed();
-    var marketHash = this.makeMarketHash({
-        market: market,
-        outcome: parseInt(outcome),
-        amount: amount,
-        limit: 0 // nonzero for "true" limit orders, 0 for stop & market orders
-    });
-    callbacks.onMarketHash(marketHash);
-    this.commitTrade({
-        market: market,
-        hash: marketHash,
-        onSent: callbacks.onCommitTradeSent,
-        onSuccess: function (res) {
-            callbacks.onCommitTradeSuccess(res);
-            self.rpc.blockNumber(function (thisBlock) {
-                thisBlock = parseInt(thisBlock);
-                (function waitForNextBlock() {
-                    self.rpc.blockNumber(function (nextBlock) {
-                        nextBlock = parseInt(nextBlock);
-                        if (thisBlock === nextBlock) {
-                            return setTimeout(waitForNextBlock, 3000);
-                        }
-                        callbacks.onNextBlock(nextBlock);
-                        trade.call(self, {
-                            branchId: branch,
-                            marketId: market,
-                            outcome: parseInt(outcome),
-                            amount: amount,
-                            limit: limit,
-                            onSent: callbacks.onTradeSent,
-                            onSuccess: callbacks.onTradeSuccess,
-                            onFailed: callbacks.onTradeFailed
-                        });
-                    });
-                })();
-            });
-        },
-        onFailed: callbacks.onCommitTradeFailed
-    });
-};
-
 /**
  * Batch interface:
  * var b = augur.createBatch();
@@ -46028,26 +39020,19 @@ Augur.prototype.createBatch = function createBatch () {
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./client/accounts":318,"./client/db":319,"./client/orders":320,"./constants":321,"./filters":322,"./utilities":324,"_process":211,"async":6,"augur-abi":7,"augur-contracts":3,"bignumber.js":9,"browser-request":10,"clone":244,"decimal.js":245,"ethereumjs-connect":325,"ethrpc":327,"request":13}],324:[function(require,module,exports){
-(function (process,Buffer,__dirname){
+},{"./client/accounts":309,"./client/db":310,"./constants":311,"./filters":312,"./utilities":314,"_process":212,"async":9,"augur-abi":1,"augur-contracts":6,"bignumber.js":10,"clone":237,"ethereumjs-connect":315,"ethrpc":317}],314:[function(require,module,exports){
+(function (process,Buffer){
 "use strict";
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
-var fs = (NODE_JS) ? require("fs") : null;
-var path = (NODE_JS) ? require("path") : null;
-var assert = (NODE_JS) ? require("assert") : console.assert;
 var crypto = require("crypto");
-var Decimal = require("decimal.js");
 var BigNumber = require("bignumber.js");
-var moment = require("moment");
 var clone = require("clone");
-var chalk = require("chalk");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
-Decimal.config({precision: 64});
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
@@ -46057,20 +39042,6 @@ module.exports = {
 
     is_function: function (f) {
         return Object.prototype.toString.call(f) === "[object Function]";
-    },
-
-    pp: function (obj, indent) {
-        var o = this.copy(obj);
-        for (var k in o) {
-            if (!o.hasOwnProperty(k)) continue;
-            if (o[k] && o[k].constructor === Function) {
-                o[k] = o[k].toString();
-                if (o[k].length > 64) {
-                    o[k] = o[k].match(/function (\w*)/).slice(0, 1).join('');
-                }
-            }
-        }
-        return chalk.green(JSON.stringify(o, null, indent || 4));
     },
 
     STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
@@ -46089,8 +39060,7 @@ module.exports = {
 
         // unpack object argument
         if (o !== undefined && o !== null && o.constructor === Object &&
-            labels && labels.constructor === Array && labels.length)
-        {
+            labels && labels.constructor === Array && labels.length) {
             for (var i = 0, len = labels.length; i < len; ++i) {
                 if (o[labels[i]] !== undefined) {
                     if (o[labels[i]].constructor === Function) {
@@ -46115,160 +39085,6 @@ module.exports = {
         }
 
         return { params: params, cb: cb };
-    },
-
-    linspace: function (a, b, n) {
-        if (typeof n === "undefined") n = Math.max(Math.round(b - a) + 1, 1);
-        if (n < 2) return (n === 1) ? [a] : [];
-        var i, ret = new Array(n);
-        n--;
-        for (i = n; i >= 0; i--) {
-            ret[i] = (i*b + (n - i)*a) / n;
-        }
-        return ret;
-    },
-
-    toDecimal: function (x) {
-        if (!x) return null;
-        if (x.constructor === Array) {
-            for (var i = 0, n = x.length; i < n; ++i) {
-                x[i] = this.toDecimal(x[i]);
-            }
-        } else if (x.constructor !== Decimal) {
-            if (x.toFixed && x.toFixed.constructor === Function) {
-                x = x.toFixed();
-            }
-            if (x.toString && x.toString.constructor === Function) {
-                x = x.toString();
-            }
-            x = new Decimal(x);
-        }
-        return x;
-    },
-
-    select_random: function (arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    },
-
-    // calculate date from block number
-    block_to_date: function (augur, block) {
-        var current_block = augur.rpc.blockNumber();
-        var seconds = (block - current_block) * constants.SECONDS_PER_BLOCK;
-        var date = moment().add(seconds, 'seconds');
-        return date;
-    },
-
-    // calculate block number from date
-    date_to_block: function (augur, date) {
-        date = moment(new Date(date));
-        var current_block = augur.rpc.blockNumber();
-        var now = moment();
-        var seconds_delta = date.diff(now, 'seconds');
-        var block_delta = parseInt(seconds_delta / constants.SECONDS_PER_BLOCK);
-        return current_block + block_delta;
-    },
-
-    has_value: function (o, v) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (o[p] === v) return p;
-            }
-        }
-    },
-
-    remove_duplicates: function (arr) {
-        return arr.filter(function (element, position, array) {
-            return array.indexOf(element) === position;
-        });
-    },
-
-    print_nodes: function (nodes) {
-        var node;
-        process.stdout.write(chalk.green.bold("hosts: "));
-        for (var i = 0, len = nodes.length; i < len; ++i) {
-            node = nodes[i];
-            node = (i === 0) ? chalk.green(node) : chalk.gray(node);
-            process.stdout.write(node + ' ');
-            if (i === len - 1) process.stdout.write('\n');
-        }
-    },
-
-    setup: function (augur, args, rpcinfo) {
-        var defaulthost, ipcpath;
-        if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
-            defaulthost = "http://127.0.0.1:8545";
-            // ipcpath = path.join(process.env.HOME, ".ethereum", "geth.ipc");
-        }
-        if (process.env.CONTINUOUS_INTEGRATION) {
-            augur.constants.TIMEOUT = 131072;
-        }
-        if (defaulthost) augur.rpc.setLocalNode(defaulthost);
-        if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
-            if (augur.options.debug.broadcast || augur.options.debug.fallback) {
-                console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
-                this.print_nodes(augur.rpc.nodes.hosted);
-                console.log("coinbase:", chalk.green(augur.coinbase));
-                console.log("from:    ", chalk.green(augur.from));
-            }
-            augur.nodes = augur.rpc.nodes.hosted;
-        }
-        return augur;
-    },
-
-    reset: function (mod) {
-        mod = path.join(__dirname, path.parse(mod).name);
-        delete require.cache[require.resolve(mod)];
-        return require(mod);
-    },
-
-    gteq0: function (n) { return (new BigNumber(n)).toNumber() >= 0; },
-
-    print_matrix: function (m) {
-        for (var i = 0, rows = m.length; i < rows; ++i) {
-            process.stdout.write("\t");
-            for (var j = 0, cols = m[0].length; j < cols; ++j) {
-                process.stdout.write(chalk.cyan(m[i][j] + "\t"));
-            }
-            process.stdout.write("\n");
-        }
-    },
-
-    wait: function (seconds) {
-        var start, delay;
-        start = new Date();
-        delay = seconds * 1000;
-        while ((new Date()) - start <= delay) {}
-        return true;
-    },
-
-    get_test_accounts: function (augur, max_accounts) {
-        var accounts;
-        if (augur) {
-            if (typeof augur === "object") {
-                accounts = augur.rpc.accounts();
-            } else if (typeof augur === "string") {
-                accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
-                for (var i = 0, len = accounts.length; i < len; ++i) {
-                    accounts[i] = abi.prefix_hex(accounts[i]);
-                }
-            }
-            if (max_accounts && accounts && accounts.length > max_accounts) {
-                accounts = accounts.slice(0, max_accounts);
-            }
-            return accounts;
-        }
-    },
-
-    get_balances: function (augur, account, branch) {
-        if (augur) {
-            branch = branch || augur.branches.dev;
-            account = account || augur.coinbase;
-            return {
-                cash: augur.getCashBalance(account),
-                reputation: augur.getRepBalance(branch || augur.branches.dev, account),
-                ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
-            };
-        }
     },
 
     sha256: function (hashable) {
@@ -46313,37 +39129,12 @@ module.exports = {
             return abi.hex(digest, true);
         }
         return crypto.createHash("sha256").update(x).digest("hex");
-    },
-
-    copy: function (obj) {
-        if (null === obj || "object" !== typeof obj) return obj;
-        var copy = obj.constructor();
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-        }
-        return copy;
-    },
-
-    fold: function (arr, num_cols) {
-        var i, j, folded, num_rows, row;
-        folded = [];
-        num_cols = parseInt(num_cols);
-        num_rows = arr.length / num_cols;
-        num_rows = parseInt(num_rows);
-        for (i = 0; i < parseInt(num_rows); ++i) {
-            row = [];
-            for (j = 0; j < num_cols; ++j) {
-                row.push(arr[i*num_cols + j]);
-            }
-            folded.push(row);
-        }
-        return folded;
     }
 
 };
 
-}).call(this,require('_process'),require("buffer").Buffer,"/src")
-},{"./constants":321,"_process":211,"assert":12,"augur-abi":7,"bignumber.js":9,"buffer":232,"chalk":236,"clone":244,"crypto":15,"decimal.js":245,"fs":11,"moment":305,"path":210}],325:[function(require,module,exports){
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"./constants":311,"_process":212,"augur-abi":1,"bignumber.js":10,"buffer":233,"clone":237,"crypto":16}],315:[function(require,module,exports){
 (function (process){
 /**
  * Basic Ethereum connection tasks.
@@ -46689,9 +39480,9 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":211,"async":326,"augur-contracts":3,"ethrpc":327}],326:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"_process":211,"dup":6}],327:[function(require,module,exports){
+},{"_process":212,"async":316,"augur-contracts":6,"ethrpc":317}],316:[function(require,module,exports){
+arguments[4][9][0].apply(exports,arguments)
+},{"_process":212,"dup":9}],317:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -47962,7 +40753,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":211,"async":328,"augur-abi":329,"augur-contracts":3,"bignumber.js":331,"browser-request":332,"js-sha3":333,"net":11,"request":13,"sync-request":13}],328:[function(require,module,exports){
+},{"_process":212,"async":318,"augur-abi":319,"augur-contracts":6,"bignumber.js":321,"browser-request":322,"js-sha3":323,"net":12,"request":14,"sync-request":14}],318:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -49230,11 +42021,618 @@ module.exports = {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":211}],329:[function(require,module,exports){
-arguments[4][7][0].apply(exports,arguments)
-},{"bignumber.js":331,"buffer":232,"dup":7,"js-sha3":330}],330:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],331:[function(require,module,exports){
+},{"_process":212}],319:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+
+BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+
+module.exports = {
+
+    constants: {
+        ONE: (new BigNumber(2)).toPower(64),
+        MOD: new BigNumber(2).toPower(256),
+        BYTES_32: new BigNumber(2).toPower(252)
+    },
+
+    copy: function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
+
+    is_numeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
+    remove_leading_zeros: function (h) {
+        var hex = h.toString();
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
+        if (!/^0+$/.test(hex)) {
+            while (hex.slice(0, 2) === "00") {
+                hex = hex.slice(2);
+            }
+        }
+        return hex;
+    },
+
+    remove_trailing_zeros: function (h) {
+        var hex = h.toString();
+        while (hex.slice(-2) === "00") {
+            hex = hex.slice(0,-2);
+        }
+        return hex;
+    },
+
+    decode_hex: function (h, strip) {
+        var hex = h.toString();
+        var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+        // first 32 bytes = offset
+        // second 32 bytes = string length
+        if (strip) {
+            hex = hex.slice(128);
+            hex = this.remove_trailing_zeros(hex);
+        }
+        for (var i = 0, l = hex.length; i < l; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    },
+
+    // convert bytes to hex
+    encode_hex: function (str) {
+        var hexbyte, hex = '';
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
+        for (var i = 0, len = str.length; i < len; ++i) {
+            hexbyte = str.charCodeAt(i).toString(16);
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            hex += hexbyte;
+        }
+        return hex;
+    },
+
+    unfork: function (forked, prefix) {
+        if (forked !== null && forked !== undefined) {
+            var unforked = this.bignum(forked);
+            var superforked = unforked.plus(this.constants.MOD);
+            if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+                unforked = superforked;
+            }
+            if (forked.constructor === BigNumber) return unforked;
+            unforked = this.pad_left(unforked.toString(16));
+            if (prefix) unforked = this.prefix_hex(unforked);
+            return unforked;
+        }
+    },
+
+    hex: function (n, nowrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Buffer:
+                    h = n.toString("hex");
+                    break;
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.bignum(n, "hex", nowrap);
+                    break;
+                case BigNumber:
+                    h = n.toString(16);
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = n;
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", nowrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex", nowrap);
+            }
+        }
+        return this.prefix_hex(h);
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
+    strip_0x: function (str) {
+        if (str && str.constructor === String && str.length >= 2) {
+            var h = str;
+            if (h === "-0x0" || h === "0x0") {
+                return "0";
+            }
+            if (h.slice(0, 2) === "0x" && h.length > 2) {
+                h = h.slice(2);
+            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+                h = '-' + h.slice(3);
+            }
+            if (this.is_hex(h)) return h;
+        }
+        return str;
+    },
+
+    zero_prefix: function (h) {
+        if (h !== undefined && h !== null && h.constructor === String) {
+            h = this.strip_0x(h);
+            if (h.length % 2) h = "0" + h;
+            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+                if (h.slice(0,1) === '-') {
+                    h = "-0x" + h.slice(1);
+                } else {
+                    h = "0x" + h;
+                }
+            }
+        }
+        return h;
+    },
+
+    prefix_hex: function (n) {
+        if (n !== undefined && n !== null) {
+            if (n.constructor === Number || n.constructor === BigNumber) {
+                n = n.toString(16);
+            }
+            if (n.constructor === String &&
+                n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x")
+            {
+                if (n.slice(0,1) === '-') {
+                    n = "-0x" + n.slice(1);
+                } else {
+                    n = "0x" + n;
+                }
+            }
+        }
+        return n;
+    },
+
+    bignum: function (n, encoding, nowrap) {
+        var bn, len;
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+            switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Number:
+                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                        bn = new BigNumber(n);
+                    } else {
+                        n = n.toString();
+                        try {
+                            bn = new BigNumber(n);
+                        } catch (exc) {
+                            if (this.is_hex(n)) {
+                                bn = new BigNumber(n, 16);
+                            } else {
+                                return n;
+                            }
+                        }
+                    }
+                    break;
+                case String:
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
+                    }
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding, nowrap);
+                    }
+                    break;
+                default:
+                    try {
+                        bn = new BigNumber(n);
+                    } catch (ex) {
+                        try {
+                            bn = new BigNumber(n, 16);
+                        } catch (exc) {
+                            return n;
+                        }
+                    }
+            }
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (!nowrap && bn.gte(this.constants.BYTES_32)) {
+                    bn = bn.sub(this.constants.MOD);
+                }
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.toString(16));
+                    }
+                }
+            }
+            return bn;
+        } else {
+            return n;
+        }
+    },
+
+    fix: function (n, encode) {
+        var fixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
+            if (n.constructor === Array) {
+                var len = n.length;
+                fixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = this.fix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(this.constants.ONE).round();
+                } else {
+                    fixed = this.bignum(n).mul(this.constants.ONE).round();
+                }
+                if (fixed && fixed.gte(this.constants.BYTES_32)) {
+                    fixed = fixed.sub(this.constants.MOD);
+                }
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
+                        fixed = this.prefix_hex(fixed);
+                    }
+                }
+            }
+            return fixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix: function (n, encode) {
+        var unfixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = this.unfix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(this.constants.ONE);
+                } else {
+                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+                }
+                if (unfixed && encode) {
+                    if (encode === "hex") {
+                        unfixed = this.prefix_hex(unfixed);
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            }
+            return unfixed;
+        } else {
+            return n;
+        }
+    },
+
+    string: function (n) {
+        return this.bignum(n, "string");
+    },
+
+    number: function (s) {
+        return this.bignum(s, "number");
+    },
+
+    chunk: function (total_len, chunk_len) {
+        chunk_len = chunk_len || 64;
+        return Math.ceil(total_len / chunk_len);
+    },
+
+    pad_right: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * this.chunk(s.length, chunk_len);
+        while (s.length < multiple) {
+            s += '0';
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    pad_left: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * this.chunk(s.length, chunk_len);
+        while (s.length < multiple) {
+            s = '0' + s;
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    encode_prefix: function (funcname, signature) {
+        signature = signature || "";
+        var summary = funcname + "(";
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            switch (signature[i]) {
+                case 's':
+                    summary += "bytes";
+                    break;
+                case 'b':
+                    summary += "bytes";
+                    var j = 1;
+                    while (this.is_numeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
+                    break;
+                case 'i':
+                    summary += "int256";
+                    break;
+                case 'a':
+                    summary += "int256[]";
+                    break;
+                default:
+                    summary += "weird";
+            }
+            if (i !== len - 1) summary += ",";
+        }
+        var prefix = keccak_256(summary + ")").slice(0, 8);
+        while (prefix.slice(0, 1) === '0') {
+            prefix = prefix.slice(1);
+        }
+        return "0x" + prefix;
+    },
+
+    parse_signature: function (signature) {
+        var types = [];
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            if (this.is_numeric(signature[i])) {
+                types[types.length - 1] += signature[i].toString();
+            } else {
+                if (signature[i] === 's') {
+                    types.push("bytes");
+                } else if (signature[i] === 'b') {
+                    types.push("bytes");
+                } else if (signature[i] === 'a') {
+                    types.push("int256[]");
+                } else {
+                    types.push("int256");
+                }
+            }
+        }
+        return types;
+    },
+
+    parse_params: function (params) {
+        if (params !== undefined && params !== null &&
+            params !== [] && params !== "")
+        {
+            if (params.constructor === String) {
+                if (params.slice(0,1) === "[" &&
+                    params.slice(-1) === "]")
+                {
+                    params = JSON.parse(params);
+                }
+                if (params.constructor === String) {
+                    params = [params];
+                }
+            } else if (params.constructor === Number) {
+                params = [params];
+            }
+        } else {
+            params = [];
+        }
+        return params;
+    },
+
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = this.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // static parameter encoding
+
+    encode_int256: function (encoding, param) {
+        if (param !== undefined && param !== null && param !== [] && param !== "") {
+
+            // input is a javascript number
+            if (param.constructor === Number) {
+                param = this.bignum(param);
+                if (param.lt(new BigNumber(0))) {
+                    param = param.add(this.constants.MOD);
+                }
+                encoding.statics += this.encode_int(param);
+
+            // input is a string
+            } else if (param.constructor === String) {
+
+                // negative hex
+                if (param.slice(0,1) === '-') {
+                    param = this.bignum(param).add(this.constants.MOD).toFixed();
+                    encoding.statics += this.encode_int(param);
+
+                // positive hex
+                } else if (param.slice(0,2) === "0x") {
+                    encoding.statics += this.pad_left(param.slice(2));
+
+                // decimal (base-10 integer)
+                } else {
+                    encoding.statics += this.encode_int(param);
+                }
+            }
+
+            // size in multiples of 32
+            encoding.chunks += this.chunk(encoding.statics.length);
+        }
+        return encoding;
+    },
+
+    encode_bytesN: function (encoding, param) {
+        if (param !== undefined && param !== null && param !== [] && param !== "") {
+            while (param.length) {
+                encoding.statics += this.pad_right(this.encode_hex(param.slice(0, 64)));
+                param = param.slice(64);
+            }
+            encoding.chunks += this.chunk(encoding.statics.length);
+        }
+        return encoding;
+    },
+
+    // dynamic parameter encoding
+
+    // offset (in multiples of 32)
+    offset: function (len, num_params) {
+        return this.encode_int(32 * (num_params + this.chunk(len)));
+    },
+
+    encode_bytes: function (encoding, param, num_params) {
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        encoding.dynamics += this.encode_int(param.length);
+        encoding.dynamics += this.pad_right(this.encode_hex(param));
+        return encoding;
+    },
+
+    encode_int256a: function (encoding, param, num_params) {
+        encoding.statics += this.offset(encoding.dynamics.length, num_params);
+        var arraylen = param.length;
+        encoding.dynamics += this.encode_int(arraylen);
+        for (var j = 0; j < arraylen; ++j) {
+            if (param[j] !== undefined) {
+                if (param[j].constructor === Number) {
+                    encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                } else if (param[j].constructor === String) {
+                    if (param[j].slice(0,1) === '-') {
+                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                    } else if (param[j].slice(0,2) === "0x") {
+                        encoding.dynamics += this.pad_left(param[j].slice(2));
+                    } else {
+                        encoding.dynamics += this.encode_int(this.bignum(param[j]).mod(this.constants.MOD).toFixed());
+                    }
+                }
+                encoding.dynamics = this.pad_right(encoding.dynamics);
+            }
+        }
+        return encoding;
+    },
+
+    encode_data: function (itx) {
+        var tx, num_params, types, encoding;
+        tx = this.copy(itx);
+        
+        // parse signature and parameter array
+        types = this.parse_signature(tx.signature);
+        num_params = tx.signature.replace(/\d+/g, '').length;
+        tx.params = this.parse_params(tx.params);
+
+        // chunks: size of the static encoding (in multiples of 32)
+        encoding = { chunks: 0, statics: '', dynamics: '' };
+
+        // encode parameters
+        if (num_params === tx.params.length) {
+            for (var i = 0; i < num_params; ++i) {
+                if (types[i] === "int256") {
+                    encoding = this.encode_int256(encoding, tx.params[i]);
+                } else if (types[i] === "bytes" || types[i] === "string") {
+                    encoding = this.encode_bytes(encoding, tx.params[i], num_params);
+                } else if (types[i] === "int256[]") {
+                    encoding = this.encode_int256a(encoding, tx.params[i], num_params);
+                } else {
+                    // var num_bytes = parseInt(types[i].replace("bytes", ''));
+                    encoding = this.encode_bytesN(encoding, tx.params[i]);
+                }
+            }
+            return encoding.statics + encoding.dynamics;
+
+        // number of parameters provided didn't match the signature
+        } else {
+            return new Error("wrong number of parameters");
+        }
+    },
+
+    // hex-encode a function's ABI data and return it
+    encode: function (tx) {
+        tx.signature = tx.signature || "";
+        return this.encode_prefix(tx.method, tx.signature) + this.encode_data(tx);
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":321,"buffer":233,"js-sha3":320}],320:[function(require,module,exports){
+arguments[4][3][0].apply(exports,arguments)
+},{"dup":3}],321:[function(require,module,exports){
 /*! bignumber.js v2.1.3 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -51932,9 +45330,9 @@ arguments[4][8][0].apply(exports,arguments)
     }
 })(this);
 
-},{}],332:[function(require,module,exports){
-arguments[4][10][0].apply(exports,arguments)
-},{"dup":10}],333:[function(require,module,exports){
+},{}],322:[function(require,module,exports){
+arguments[4][11][0].apply(exports,arguments)
+},{"dup":11}],323:[function(require,module,exports){
 (function (global){
 /*
  * js-sha3 v0.5.1
@@ -52411,5387 +45809,7 @@ arguments[4][10][0].apply(exports,arguments)
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],334:[function(require,module,exports){
-/**
- * Find a zero of a univariate function.
- *
- * This is essentially the ACM algorithm 748: Enclosing Zeros of
- * Continuous Functions due to Alefeld, Potra and Shi, ACM Transactions
- * on Mathematical Software, Vol. 21, No. 3, September 1995. Although
- * the workflow should be the same, the structure of the algorithm has
- * been transformed non-trivially; instead of the authors' approach of
- * sequentially calling building blocks subprograms we implement here a
- * FSM version using one interior point determination and one bracketing
- * per iteration, thus reducing the number of temporary variables and
- * simplifying the algorithm structure. Further, this approach reduces
- * the need for external functions and error handling. The algorithm has
- * also been slightly modified.
- *
- * (This is a port of Octave's fzero implementation, by Jaroslav Hajek.)
- *
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var Decimal = require("decimal.js");
-
-function unique(arr) {
-    var u = {}, a = [];
-    for (var i = 0, l = arr.length; i < l; ++i) {
-        if (u.hasOwnProperty(arr[i])) continue;
-        a.push(arr[i]);
-        u[arr[i]] = 1;
-    }
-    return a;
-}
-
-function toDecimal(x) {
-    if (x && x.constructor !== Decimal) {
-        if (x.toFixed && x.toFixed.constructor === Function) x = x.toFixed();
-        x = new Decimal(x);
-    }
-    return x;
-}
-
-module.exports = function (f, bounds, options) {
-    options = options || {};
-    var mu = toDecimal(options.mu) || new Decimal("0.5");
-    var eps = toDecimal(options.eps) || new Decimal("0.001");
-    var tolx = toDecimal(options.tolx) || new Decimal(0);
-    var maxiter = options.maxiter || 100;
-    var maxfev = options.maxfev || maxiter;
-    var verbose = options.verbose;
-
-    // The default exit flag if exceeded number of iterations.
-    var code = 0;
-    var niter = 0;
-    var nfev = 0;
-
-    var x = new Decimal(NaN);
-    var fval = new Decimal(NaN);
-    var a = new Decimal(NaN);
-    var fa = new Decimal(NaN);
-    var b = new Decimal(NaN);
-    var fb = new Decimal(NaN);
-
-    // Prepare...
-    if (bounds === null || bounds === undefined) {
-        throw new Error("Initial guess required");
-    }
-    if (bounds.constructor === Array && bounds.length) {
-        a = new Decimal(bounds[0].toString());
-    } else {
-        a = new Decimal(bounds.toString());
-    }
-    fa = toDecimal(f(a.toString()));
-    nfev = 1;
-    if (bounds.constructor === Array && bounds.length > 1) {
-        b = new Decimal(bounds[1].toString());
-        fb = toDecimal(f(b.toString()));
-        nfev += 1;
-    } else {
-        // Try to get b.
-        if (verbose) {
-            console.log("Search for an interval around", a.toString(), "containing a sign change:");
-            console.log("count\ta\t\tf(a)\t\t\t\tb\t\tf(b)");
-        }
-        var bracketed, blist;
-        var aa = (a.eq(new Decimal(0))) ? new Decimal(1) : a;
-        var tries = 0;
-        do {
-            blist = [
-                aa.times(new Decimal("0.9")),
-                aa.times(new Decimal("1.1")),
-                aa.minus(new Decimal(1)),
-                aa.plus(new Decimal(1)),
-                aa.times(new Decimal("0.5")),
-                aa.times(new Decimal("1.5")),
-                aa.neg(),
-                aa.times(new Decimal(2)),
-                aa.times(new Decimal(10)).neg(),
-                aa.times(new Decimal(10))
-            ];
-            for (var j = 0, len = blist.length; j < len; ++j) {
-                b = blist[j];
-                fb = toDecimal(f(b.toString()));
-                if (verbose) {
-                    console.log(nfev + "\t\t" + aa + "\t\t" + fa + "\t\t" + b + "\t\t" + fb);
-                }
-                nfev += 1;
-                if (fa.s * fb.s <= 0) {
-                    a = aa;
-                    bracketed = true;
-                    break;
-                }
-            }
-            if (!options.randomize) break;
-            aa = aa.times(new Decimal(Math.random().toString())).plus(new Decimal((Math.random() - 0.5).toString()));
-            fa = toDecimal(f(aa.toString()));
-        } while (!bracketed && ++tries < maxiter);
-    }
-
-    var u, fu;
-    if (b.lt(a)) {
-        u = a;
-        a = b;
-        b = u;
-        fu = fa;
-        fa = fb;
-        fb = fu;
-    }
-    if (fa.s * fb.s > 0) {
-        throw new Error("Invalid initial bracketing");
-    }
-
-    var slope0 = fb.minus(fa).dividedBy(b.minus(a));
-    if (fa.eq(new Decimal(0))) {
-        b = a;
-        fb = fa;
-    } else if (fb.eq(new Decimal(0))) {
-        a = b;
-        fa = fb;
-    }
-    var itype = 1;
-    if (fa.abs().lt(fb.abs())) {
-        u = a;
-        fu = fa;
-    } else {
-        u = b;
-        fu = fb;
-    }
-    var d = u;
-    var e = u;
-    var fd = fu;
-    var fe = fu;
-    var mba = mu.times(b.minus(a));
-    var c, fc, df, procedure;
-    if (verbose) {
-        console.log("Search for a zero in the interval [" + a.toString() + ", " + b.toString() + "]:");
-        console.log("count\tx\t\t\tf(x)\t\t\tprocedure");
-        console.log(nfev + "\t\t" + a.toFixed(18) + "\t" + fa.toFixed(18) + "\tinitial lower");
-        console.log(nfev + "\t\t" + b.toFixed(18) + "\t" + fb.toFixed(18) + "\tinitial upper");
-    }
-    while (niter < maxiter && nfev < maxfev) {
-        switch (itype) {
-        case 1:
-            // The initial test.
-            if (b.minus(a).lte(u.abs().times(eps).times(new Decimal(2)).plus(tolx).times(new Decimal(2)))) {
-                x = u;
-                fval = fu;
-                code = 1;
-            } else {
-                if (fa.abs().lte(fb.abs().times(new Decimal(1000))) && (fb.abs().lte(fa.abs().times(new Decimal(1000))))) {
-                    // Secant step.
-                    c = u.minus(a.minus(b).dividedBy(fa.minus(fb)).times(fu));
-                    procedure = "secant";
-                } else {
-                    // Bisection step.
-                    c = a.plus(b).dividedBy(new Decimal(2));
-                    procedure = "bisection";
-                }
-                d = u;
-                df = fu;
-                itype = 5;
-            }
-            break;
-        case 2:
-        case 3:
-            var l = unique([fa, fb, fd, fe]).length;
-            if (l === 4) {
-                // Inverse cubic interpolation.
-                var q11 = d.minus(e).times(fd).dividedBy(fe.minus(fd));
-                var q21 = b.minus(d).times(fb).dividedBy(fd.minus(fb));
-                var q31 = a.minus(b).times(fa).dividedBy(fb.minus(fa));
-                var d21 = b.minus(d).times(fd).dividedBy(fd.minus(fb));
-                var d31 = a.minus(b).times(fb).dividedBy(fb.minus(fa));
-                var q22 = d21.minus(q11).times(fb).dividedBy(fe.minus(fb));
-                var q32 = d31.minus(q21).times(fa).dividedBy(fd.minus(fa));
-                var d32 = d31.minus(q21).times(fd).dividedBy(fd.minus(fa));
-                var q33 = d32.minus(q22).times(fa).dividedBy(fe.minus(fa));
-                c = a.plus(q31).plus(q32).plus(q33);
-                procedure = "interpolation (cubic)";
-            }
-            if (l < 4 || c.minus(a).s * c.minus(b).s < 0) {
-                // Quadratic interpolation + Newton.
-                var a0 = fa;
-                var a1 = fb.minus(fa).dividedBy(b.minus(a));
-                var a2 = (fd.minus(fb).dividedBy(d.minus(b)).minus(a1)).dividedBy(d.minus(a));
-                // Modification 1
-                c = a.minus(a0.dividedBy(a1));
-                if (!a2.eq(new Decimal(0))) {
-                    c = a.minus(a0.dividedBy(a1));
-                    var pc, pdc;
-                    for (var k = 0; k < itype; ++k) {
-                        pc = a0.plus(a1.plus(a2.times(c.minus(b)).times(c.minus(a))));
-                        pdc = a1.plus(a2.times(c.times(new Decimal(2)).minus(a).minus(b)));
-                        if (pdc.eq(new Decimal(0))) {
-                            c = a.minus(a0.dividedBy(a1));
-                        } else {
-                            c = c.minus(pc.dividedBy(pdc));
-                        }
-                    }
-                }
-                procedure = "interpolation (quadratic)";
-            }
-            itype++;
-            break;
-        case 4:
-            // Double secant step.
-            c = u.minus(b.minus(a).times(new Decimal(2)).dividedBy(fb.minus(fa)).times(fu));
-            if (c.minus(u).abs().gt(b.minus(a).dividedBy(new Decimal(2)))) {
-                c = b.plus(a).dividedBy(new Decimal(2));
-            }
-            itype = 5;
-            break;
-        case 5:
-            // Bisection step.
-            c = b.plus(a).dividedBy(new Decimal(2));
-            procedure = "bisection";
-            itype = 2;
-        }
-
-        // Don't let c come too close to a or b.
-        var delta = u.abs().times(eps).plus(tolx).times(new Decimal("0.14"));
-        if (b.minus(a).lte(delta.times(new Decimal(2)))) {
-            c = a.plus(b).dividedBy(new Decimal(2));
-        } else {
-            var s;
-            if (b.minus(delta).lt(c)) {
-                s = b.minus(delta);
-            } else {
-                s = c;
-            }
-            if (a.plus(delta).gt(s)) {
-                c = a.plus(delta);
-            } else {
-                c = s;
-            }
-        }
-
-        // Calculate new point.
-        x = c;
-        fval = toDecimal(f(c.toString()));
-        fc = fval;
-        niter++;
-        nfev++;
-        if (verbose) {
-            console.log(nfev + "\t\t" + x.toFixed(18) + "\t" + fval.toFixed(18) + "\t" + procedure);
-        }
-
-        // Modification 2: skip inverse cubic interpolation if non-monotonicity
-        // is detected.
-        if (fc.minus(fa).s * fc.minus(fb).s >= 0) {
-            // The new point broke monotonicity; disable inverse cubic.
-            fe = fc;
-        } else {
-            e = d;
-            fe = fd;
-        }
-
-        // Bracketing
-        if (fa.s * fc.s < 0) {
-            d = b;
-            fd = fb;
-            b = c;
-            fb = fc;
-        } else if (fb.s * fc.s < 0) {
-            d = a;
-            fd = fa;
-            a = c;
-            fa = fc;
-        } else if (fc.eq(new Decimal(0))) {
-            b = c;
-            a = b;
-            fb = fc;
-            fa = fb;
-            code = 1;
-        } else {
-            // This should never happen.
-            throw new Error("Zero point is not bracketed");
-        }
-
-        if (fa.abs().lt(fb.abs())) {
-            u = a;
-            fu = fa;
-        } else {
-            u = b;
-            fu = fb;
-        }
-        if (b.minus(a).lte(u.abs().times(eps).times(new Decimal(2)).plus(tolx))) {
-            code = 1;
-        }
-
-        // Skip bisection step if successful reduction.
-        if (itype === 5 && b.minus(a).lte(mba)) {
-            itype = 2;
-        }
-        if (itype === 2) {
-            mba = mu.times(b.minus(a));
-        }
-
-    } // while
-
-    // Check solution for a singularity by examining slope.
-    if (code === 1) {
-        var m;
-        if (new Decimal(1e6).gt(new Decimal("0.5").dividedBy(eps.plus(tolx)))) {
-            m = new Decimal(1e6);
-        } else {
-            m = new Decimal("0.5").dividedBy(eps.plus(tolx));
-        }
-        if (!b.minus(a).eq(new Decimal(0)) && fb.minus(fa).dividedBy(b.minus(a)).dividedBy(slope0).gt(m)) {
-            code = -5;
-        }
-    }
-
-    return {
-        solution: x.toFixed(),
-        fval: fval.toString(),
-        code: code,
-        diagnostic: {
-            iterations: niter,
-            functionEvals: nfev,
-            bracketx: [a.toFixed(), b.toFixed()],
-            brackety: [fa.toString(), fb.toString()]
-        }
-    };
-};
-
-},{"decimal.js":335}],335:[function(require,module,exports){
-/*! decimal.js v5.0.3 https://github.com/MikeMcl/decimal.js/LICENCE */
-;(function (globalScope) {
-  'use strict';
-
-
-  /*
-   *  decimal.js v5.0.3
-   *  An arbitrary-precision Decimal type for JavaScript.
-   *  https://github.com/MikeMcl/decimal.js
-   *  Copyright (c) 2016 Michael Mclaughlin <M8ch88l@gmail.com>
-   *  MIT Expat Licence
-   */
-
-
-  // -----------------------------------  EDITABLE DEFAULTS  ------------------------------------ //
-
-
-    // The maximum exponent magnitude.
-    // The limit on the value of `toExpNeg`, `toExpPos`, `minE` and `maxE`.
-  var EXP_LIMIT = 9e15,                      // 0 to 9e15
-
-    // The limit on the value of `precision`, and on the value of the first argument to
-    // `toDecimalPlaces`, `toExponential`, `toFixed`, `toPrecision` and `toSignificantDigits`.
-    MAX_DIGITS = 1e9,                        // 0 to 1e9
-
-    // The base 88 alphabet used by `toJSON` and `fromJSON`.
-    // 7 printable ASCII characters omitted (space) \ " & ' < >
-    NUMERALS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~',
-
-    // The natural logarithm of 10 (1025 digits).
-    LN10 = '2.3025850929940456840179914546843642076011014886287729760333279009675726096773524802359972050895982983419677840422862486334095254650828067566662873690987816894829072083255546808437998948262331985283935053089653777326288461633662222876982198867465436674744042432743651550489343149393914796194044002221051017141748003688084012647080685567743216228355220114804663715659121373450747856947683463616792101806445070648000277502684916746550586856935673420670581136429224554405758925724208241314695689016758940256776311356919292033376587141660230105703089634572075440370847469940168269282808481184289314848524948644871927809676271275775397027668605952496716674183485704422507197965004714951050492214776567636938662976979522110718264549734772662425709429322582798502585509785265383207606726317164309505995087807523710333101197857547331541421808427543863591778117054309827482385045648019095610299291824318237525357709750539565187697510374970888692180205189339507238539205144634197265287286965110862571492198849978748873771345686209167058',
-
-    // Pi (1025 digits).
-    PI = '3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989380952572010654858632789',
-
-
-    // The initial configuration properties of the Decimal constructor.
-    Decimal = {
-
-      // These values must be integers within the stated ranges (inclusive).
-      // Most of these values can be changed during run-time using `Decimal.config`.
-
-      // The maximum number of significant digits of the result of a calculation or base conversion.
-      // E.g. `Decimal.config({ precision: 20 });`
-      precision: 20,                         // 1 to MAX_DIGITS
-
-      // The rounding mode used when rounding to `precision`.
-      //
-      // ROUND_UP         0 Away from zero.
-      // ROUND_DOWN       1 Towards zero.
-      // ROUND_CEIL       2 Towards +Infinity.
-      // ROUND_FLOOR      3 Towards -Infinity.
-      // ROUND_HALF_UP    4 Towards nearest neighbour. If equidistant, up.
-      // ROUND_HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
-      // ROUND_HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
-      // ROUND_HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
-      // ROUND_HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
-      //
-      // E.g.
-      // `Decimal.rounding = 4;`
-      // `Decimal.rounding = Decimal.ROUND_HALF_UP;`
-      rounding: 4,                           // 0 to 8
-
-      // The modulo mode used when calculating the modulus: a mod n.
-      // The quotient (q = a / n) is calculated according to the corresponding rounding mode.
-      // The remainder (r) is calculated as: r = a - n * q.
-      //
-      // UP         0 The remainder is positive if the dividend is negative, else is negative.
-      // DOWN       1 The remainder has the same sign as the dividend (JavaScript %).
-      // FLOOR      3 The remainder has the same sign as the divisor (Python %).
-      // HALF_EVEN  6 The IEEE 754 remainder function.
-      // EUCLID     9 Euclidian division. q = sign(n) * floor(a / abs(n)). Always positive.
-      //
-      // Truncated division (1), floored division (3), the IEEE 754 remainder (6), and Euclidian
-      // division (9) are commonly used for the modulus operation. The other rounding modes can also
-      // be used, but they may not give useful results.
-      modulo: 1,                             // 0 to 9
-
-      // The exponent value at and beneath which `toString` returns exponential notation.
-      // JavaScript numbers: -7
-      toExpNeg: -7,                          // 0 to -EXP_LIMIT
-
-      // The exponent value at and above which `toString` returns exponential notation.
-      // JavaScript numbers: 21
-      toExpPos:  21,                         // 0 to EXP_LIMIT
-
-      // The minimum exponent value, beneath which underflow to zero occurs.
-      // JavaScript numbers: -324  (5e-324)
-      minE: -EXP_LIMIT,                      // -1 to -EXP_LIMIT
-
-      // The maximum exponent value, above which overflow to Infinity occurs.
-      // JavaScript numbers: 308  (1.7976931348623157e+308)
-      maxE: EXP_LIMIT,                       // 1 to EXP_LIMIT
-
-      // Whether to use cryptographically-secure random number generation, if available.
-      crypto: void 0                         // true/false/undefined
-    },
-
-
-  // ----------------------------------- END OF EDITABLE DEFAULTS ------------------------------- //
-
-
-    inexact, noConflict, quadrant, HALF, ONE,
-    cryptoObject = typeof crypto != 'undefined' ? crypto : null,
-    external = true,
-
-    decimalError = '[DecimalError] ',
-    invalidArgument = decimalError + 'Invalid argument: ',
-    precisionLimitExceeded = decimalError + 'Precision limit exceeded',
-
-    mathfloor = Math.floor,
-    mathpow = Math.pow,
-
-    isBinary = /^0b([01]+(\.[01]*)?|\.[01]+)(p[+-]?\d+)?$/i,
-    isHex = /^0x([0-9a-f]+(\.[0-9a-f]*)?|\.[0-9a-f]+)(p[+-]?\d+)?$/i,
-    isOctal = /^0o([0-7]+(\.[0-7]*)?|\.[0-7]+)(p[+-]?\d+)?$/i,
-    isDecimal = /^(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
-
-    BASE = 1e7,
-    LOG_BASE = 7,
-    MAX_SAFE_INTEGER = 9007199254740991,
-
-    LN10_PRECISION = LN10.length - 1,
-    PI_PRECISION = PI.length - 1,
-
-    // Decimal.prototype object
-    P = {};
-
-
-  // Decimal prototype methods
-
-
-  /*
-   *  absoluteValue             abs
-   *  ceil
-   *  comparedTo                cmp
-   *  cosine                    cos
-   *  cubeRoot                  cbrt
-   *  decimalPlaces             dp
-   *  dividedBy                 div
-   *  dividedToIntegerBy        divToInt
-   *  equals                    eq
-   *  floor
-   *  greaterThan               gt
-   *  greaterThanOrEqualTo      gte
-   *  hyperbolicCosine          cosh
-   *  hyperbolicSine            sinh
-   *  hyperbolicTangent         tanh
-   *  inverseCosine             acos
-   *  inverseHyperbolicCosine   acosh
-   *  inverseHyperbolicSine     asinh
-   *  inverseHyperbolicTangent  atanh
-   *  inverseSine               asin
-   *  inverseTangent            atan
-   *  isFinite
-   *  isInteger                 isInt
-   *  isNaN
-   *  isNegative                isNeg
-   *  isPositive                isPos
-   *  isZero
-   *  lessThan                  lt
-   *  lessThanOrEqualTo         lte
-   *  logarithm                 log
-   *  [maximum]                 [max]
-   *  [minimum]                 [min]
-   *  minus                     sub
-   *  modulo                    mod
-   *  naturalExponential        exp
-   *  naturalLogarithm          ln
-   *  negated                   neg
-   *  plus                      add
-   *  precision                 sd
-   *  round
-   *  sine                      sin
-   *  squareRoot                sqrt
-   *  tangent                   tan
-   *  times                     mul
-   *  toBinary
-   *  toDecimalPlaces           toDP
-   *  toExponential
-   *  toFixed
-   *  toFraction
-   *  toHexadecimal             toHex
-   *  toJSON
-   *  toNearest
-   *  toNumber
-   *  toOctal
-   *  toPower                   pow
-   *  toPrecision
-   *  toSignificantDigits       toSD
-   *  toString
-   *  truncated                 trunc
-   *  valueOf
-   */
-
-
-  /*
-   * Return a new Decimal whose value is the absolute value of this Decimal.
-   *
-   */
-  P.absoluteValue = P.abs = function () {
-    var x = new this.constructor(this);
-    if (x.s < 0) x.s = 1;
-    return finalise(x);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number in the
-   * direction of positive Infinity.
-   *
-   */
-  P.ceil = function () {
-    return finalise(new this.constructor(this), this.e + 1, 2);
-  };
-
-
-  /*
-   * Return
-   *   1    if the value of this Decimal is greater than the value of `y`,
-   *  -1    if the value of this Decimal is less than the value of `y`,
-   *   0    if they have the same value,
-   *   NaN  if the value of either Decimal is NaN.
-   *
-   */
-  P.comparedTo = P.cmp = function (y) {
-    var i, j, xdL, ydL,
-      x = this,
-      xd = x.d,
-      yd = (y = new x.constructor(y)).d,
-      xs = x.s,
-      ys = y.s;
-
-    // Either NaN or ±Infinity?
-    if (!xd || !yd) {
-      return !xs || !ys ? NaN : xs !== ys ? xs : xd === yd ? 0 : !xd ^ xs < 0 ? 1 : -1;
-    }
-
-    // Either zero?
-    if (!xd[0] || !yd[0]) return xd[0] ? xs : yd[0] ? -ys : 0;
-
-    // Signs differ?
-    if (xs !== ys) return xs;
-
-    // Compare exponents.
-    if (x.e !== y.e) return x.e > y.e ^ xs < 0 ? 1 : -1;
-
-    xdL = xd.length;
-    ydL = yd.length;
-
-    // Compare digit by digit.
-    for (i = 0, j = xdL < ydL ? xdL : ydL; i < j; ++i) {
-      if (xd[i] !== yd[i]) return xd[i] > yd[i] ^ xs < 0 ? 1 : -1;
-    }
-
-    // Compare lengths.
-    return xdL === ydL ? 0 : xdL > ydL ^ xs < 0 ? 1 : -1;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the cosine of the value in radians of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-1, 1]
-   *
-   * cos(0)         = 1
-   * cos(-0)        = 1
-   * cos(Infinity)  = NaN
-   * cos(-Infinity) = NaN
-   * cos(NaN)       = NaN
-   *
-   */
-  P.cosine = P.cos = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.d) return new Ctor(NaN);
-
-    // cos(0) = cos(-0) = 1
-    if (!x.d[0]) return new Ctor(ONE);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
-    Ctor.rounding = 1;
-
-    x = cosine(Ctor, toLessThanHalfPi(Ctor, x));
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(quadrant == 2 || quadrant == 3 ? x.neg() : x, pr, rm, true);
-  };
-
-
-  /*
-   *
-   * Return a new Decimal whose value is the cube root of the value of this Decimal, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   *  cbrt(0)  =  0
-   *  cbrt(-0) = -0
-   *  cbrt(1)  =  1
-   *  cbrt(-1) = -1
-   *  cbrt(N)  =  N
-   *  cbrt(-I) = -I
-   *  cbrt(I)  =  I
-   *
-   * Math.cbrt(x) = (x < 0 ? -Math.pow(-x, 1/3) : Math.pow(x, 1/3))
-   *
-   */
-  P.cubeRoot = P.cbrt = function () {
-    var e, m, n, r, rep, s, sd, t, t3, t3plusx,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite() || x.isZero()) return new Ctor(x);
-    external = false;
-
-    // Initial estimate.
-    s = x.s * Math.pow(x.s * x, 1 / 3);
-
-     // Math.cbrt underflow/overflow?
-     // Pass x to Math.pow as integer, then adjust the exponent of the result.
-    if (!s || Math.abs(s) == 1 / 0) {
-      n = digitsToString(x.d);
-      e = x.e;
-
-      // Adjust n exponent so it is a multiple of 3 away from x exponent.
-      if (s = (e - n.length + 1) % 3) n += (s == 1 || s == -2 ? '0' : '00');
-      s = Math.pow(n, 1 / 3);
-
-      // Rarely, e may be one less than the result exponent value.
-      e = mathfloor((e + 1) / 3) - (e % 3 == (e < 0 ? -1 : 2));
-
-      if (s == 1 / 0) {
-        n = '5e' + e;
-      } else {
-        n = s.toExponential();
-        n = n.slice(0, n.indexOf('e') + 1) + e;
-      }
-
-      r = new Ctor(n);
-      r.s = x.s;
-    } else {
-      r = new Ctor(s.toString());
-    }
-
-    sd = (e = Ctor.precision) + 3;
-
-    // Halley's method.
-    // TODO? Compare Newton's method.
-    for (;;) {
-      t = r;
-      t3 = t.times(t).times(t);
-      t3plusx = t3.plus(x);
-      r = divide(t3plusx.plus(x).times(t), t3plusx.plus(t3), sd + 2, 1);
-
-      // TODO? Replace with for-loop and checkRoundingDigits.
-      if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
-        n = n.slice(sd - 3, sd + 1);
-
-        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits are 9999 or 4999
-        // , i.e. approaching a rounding boundary, continue the iteration.
-        if (n == '9999' || !rep && n == '4999') {
-
-          // On the first iteration only, check to see if rounding up gives the exact result as the
-          // nines may infinitely repeat.
-          if (!rep) {
-            finalise(t, e + 1, 0);
-
-            if (t.times(t).times(t).eq(x)) {
-              r = t;
-              break;
-            }
-          }
-
-          sd += 4;
-          rep = 1;
-        } else {
-
-          // If the rounding digits are null, 0{0,4} or 50{0,3}, check for an exact result.
-          // If not, then there are further digits and m will be truthy.
-          if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
-
-            // Truncate to the first rounding digit.
-            finalise(r, e + 1, 1);
-            m = !r.times(r).times(r).eq(x);
-          }
-
-          break;
-        }
-      }
-    }
-
-    external = true;
-
-    return finalise(r, e, Ctor.rounding, m);
-  };
-
-
-  /*
-   * Return the number of decimal places of the value of this Decimal.
-   *
-   */
-  P.decimalPlaces = P.dp = function () {
-    var w,
-      d = this.d,
-      n = NaN;
-
-    if (d) {
-      w = d.length - 1;
-      n = (w - mathfloor(this.e / LOG_BASE)) * LOG_BASE;
-
-      // Subtract the number of trailing zeros of the last word.
-      w = d[w];
-      if (w) for (; w % 10 == 0; w /= 10) n--;
-      if (n < 0) n = 0;
-    }
-
-    return n;
-  };
-
-
-  /*
-   *  n / 0 = I
-   *  n / N = N
-   *  n / I = 0
-   *  0 / n = 0
-   *  0 / 0 = N
-   *  0 / N = N
-   *  0 / I = 0
-   *  N / n = N
-   *  N / 0 = N
-   *  N / N = N
-   *  N / I = N
-   *  I / n = I
-   *  I / 0 = I
-   *  I / N = N
-   *  I / I = N
-   *
-   * Return a new Decimal whose value is the value of this Decimal divided by `y`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   */
-  P.dividedBy = P.div = function (y) {
-    return divide(this, new this.constructor(y));
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the integer part of dividing the value of this Decimal
-   * by the value of `y`, rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   */
-  P.dividedToIntegerBy = P.divToInt = function (y) {
-    var x = this,
-      Ctor = x.constructor;
-    return finalise(divide(x, new Ctor(y), 0, 1, 1), Ctor.precision, Ctor.rounding);
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is equal to the value of `y`, otherwise return false.
-   *
-   */
-  P.equals = P.eq = function (y) {
-    return this.cmp(y) === 0;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number in the
-   * direction of negative Infinity.
-   *
-   */
-  P.floor = function () {
-    return finalise(new this.constructor(this), this.e + 1, 3);
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is greater than the value of `y`, otherwise return
-   * false.
-   *
-   */
-  P.greaterThan = P.gt = function (y) {
-    return this.cmp(y) > 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is greater than or equal to the value of `y`,
-   * otherwise return false.
-   *
-   */
-  P.greaterThanOrEqualTo = P.gte = function (y) {
-    var k = this.cmp(y);
-    return k == 1 || k === 0;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic cosine of the value in radians of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [1, Infinity]
-   *
-   * cosh(x) = 1 + x^2/2! + x^4/4! + x^6/6! + ...
-   *
-   * cosh(0)         = 1
-   * cosh(-0)        = 1
-   * cosh(Infinity)  = Infinity
-   * cosh(-Infinity) = Infinity
-   * cosh(NaN)       = NaN
-   *
-   *  x        time taken (ms)   result
-   * 1000      9                 9.8503555700852349694e+433
-   * 10000     25                4.4034091128314607936e+4342
-   * 100000    171               1.4033316802130615897e+43429
-   * 1000000   3817              1.5166076984010437725e+434294
-   * 10000000  abandoned after 2 minute wait
-   *
-   * TODO? Compare performance of cosh(x) = 0.5 * (exp(x) + exp(-x))
-   *
-   */
-  P.hyperbolicCosine = P.cosh = function () {
-    var k, n, pr, rm, len,
-      x = this,
-      Ctor = x.constructor,
-      one = new Ctor(ONE);
-
-    if (!x.isFinite()) return new Ctor(x.s ? 1 / 0 : NaN);
-    if (x.isZero()) return one;
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
-    Ctor.rounding = 1;
-    len = x.d.length;
-
-    // Argument reduction: cos(4x) = 1 - 8cos^2(x) + 8cos^4(x) + 1
-    // i.e. cos(x) = 1 - cos^2(x/4)(8 - 8cos^2(x/4))
-
-    // Estimate the optimum number of times to use the argument reduction.
-    // TODO? Estimation reused from cosine() and may not be optimal here.
-    if (len < 32) {
-      k = Math.ceil(len / 3);
-      n = Math.pow(4, -k).toString();
-    } else {
-      k = 16;
-      n = '2.3283064365386962890625e-10';
-    }
-
-    x = taylorSeries(Ctor, 1, x.times(n), new Ctor(ONE), true);
-
-    // Reverse argument reduction
-    var cosh2_x,
-      i = k,
-      d8 = new Ctor(8);
-    for (; i--;) {
-      cosh2_x = x.times(x);
-      x = one.minus(cosh2_x.times(d8.minus(cosh2_x.times(d8))));
-    }
-
-    return finalise(x, Ctor.precision = pr, Ctor.rounding = rm, true);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic sine of the value in radians of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-Infinity, Infinity]
-   *
-   * sinh(x) = x + x^3/3! + x^5/5! + x^7/7! + ...
-   *
-   * sinh(0)         = 0
-   * sinh(-0)        = -0
-   * sinh(Infinity)  = Infinity
-   * sinh(-Infinity) = -Infinity
-   * sinh(NaN)       = NaN
-   *
-   * x        time taken (ms)
-   * 10       2 ms
-   * 100      5 ms
-   * 1000     14 ms
-   * 10000    82 ms
-   * 100000   886 ms            1.4033316802130615897e+43429
-   * 200000   2613 ms
-   * 300000   5407 ms
-   * 400000   8824 ms
-   * 500000   13026 ms          8.7080643612718084129e+217146
-   * 1000000  48543 ms
-   *
-   * TODO? Compare performance of sinh(x) = 0.5 * (exp(x) - exp(-x))
-   *
-   */
-  P.hyperbolicSine = P.sinh = function () {
-    var k, pr, rm, len,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite() || x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + 4;
-    Ctor.rounding = 1;
-    len = x.d.length;
-
-    if (len < 3) {
-      x = taylorSeries(Ctor, 2, x, x, true);
-    } else {
-
-      // Alternative argument reduction: sinh(3x) = sinh(x)(3 + 4sinh^2(x))
-      // i.e. sinh(x) = sinh(x/3)(3 + 4sinh^2(x/3))
-      // 3 multiplications and 1 addition
-
-      // Argument reduction: sinh(5x) = sinh(x)(5 + sinh^2(x)(20 + 16sinh^2(x)))
-      // i.e. sinh(x) = sinh(x/5)(5 + sinh^2(x/5)(20 + 16sinh^2(x/5)))
-      // 4 multiplications and 2 additions
-
-      // Estimate the optimum number of times to use the argument reduction.
-      k = 1.4 * Math.sqrt(len);
-      k = k > 16 ? 16 : k | 0;
-
-      x = x.times(Math.pow(5, -k));
-
-      x = taylorSeries(Ctor, 2, x, x, true);
-
-      // Reverse argument reduction
-      var sinh2_x,
-        d5 = new Ctor(5),
-        d16 = new Ctor(16),
-        d20 = new Ctor(20);
-      for (; k--;) {
-        sinh2_x = x.times(x);
-        x = x.times(d5.plus(sinh2_x.times(d16.times(sinh2_x).plus(d20))));
-      }
-    }
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(x, pr, rm, true);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic tangent of the value in radians of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-1, 1]
-   *
-   * tanh(x) = sinh(x) / cosh(x)
-   *
-   * tanh(0)         = 0
-   * tanh(-0)        = -0
-   * tanh(Infinity)  = 1
-   * tanh(-Infinity) = -1
-   * tanh(NaN)       = NaN
-   *
-   */
-  P.hyperbolicTangent = P.tanh = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(x.s);
-    if (x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + 7;
-    Ctor.rounding = 1;
-
-    return divide(x.sinh(), x.cosh(), Ctor.precision = pr, Ctor.rounding = rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the arccosine (inverse cosine) in radians of the value of
-   * this Decimal.
-   *
-   * Domain: [-1, 1]
-   * Range: [0, pi]
-   *
-   * acos(x) = pi/2 - asin(x)
-   *
-   * acos(0)       = pi/2
-   * acos(-0)      = pi/2
-   * acos(1)       = 0
-   * acos(-1)      = pi
-   * acos(1/2)     = pi/3
-   * acos(-1/2)    = 2*pi/3
-   * acos(|x| > 1) = NaN
-   * acos(NaN)     = NaN
-   *
-   */
-  P.inverseCosine = P.acos = function () {
-    var halfPi,
-      x = this,
-      Ctor = x.constructor,
-      k = x.abs().cmp(ONE),
-      pr = Ctor.precision,
-      rm = Ctor.rounding;
-
-    if (k !== -1) {
-      return k === 0
-        // |x| is 1
-        ? x.isNeg() ? getPi(Ctor, pr, rm) : new Ctor(0)
-        // |x| > 1 or x is NaN
-        : new Ctor(NaN);
-    }
-
-    if (x.isZero()) return getPi(Ctor, pr + 4, rm).times(HALF);
-
-    // TODO? Special case acos(0.5) = pi/3 and acos(-0.5) = 2*pi/3
-
-    Ctor.precision = pr + 6;
-    Ctor.rounding = 1;
-
-    x = x.asin();
-    halfPi = getPi(Ctor, pr + 4, rm).times(HALF);
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return halfPi.minus(x);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic cosine in radians of the
-   * value of this Decimal.
-   *
-   * Domain: [1, Infinity]
-   * Range: [0, Infinity]
-   *
-   * acosh(x) = ln(x + sqrt(x^2 - 1))
-   *
-   * acosh(x < 1)     = NaN
-   * acosh(NaN)       = NaN
-   * acosh(Infinity)  = Infinity
-   * acosh(-Infinity) = NaN
-   * acosh(0)         = NaN
-   * acosh(-0)        = NaN
-   * acosh(1)         = 0
-   * acosh(-1)        = NaN
-   *
-   */
-  P.inverseHyperbolicCosine = P.acosh = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (x.lte(ONE)) return new Ctor(x.eq(ONE) ? 0 : NaN);
-    if (!x.isFinite()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(Math.abs(x.e), x.sd()) + 4;
-    Ctor.rounding = 1;
-    external = false;
-
-    x = x.times(x).minus(ONE).sqrt().plus(x);
-
-    external = true;
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.ln();
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic sine in radians of the value
-   * of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-Infinity, Infinity]
-   *
-   * asinh(x) = ln(x + sqrt(x^2 + 1))
-   *
-   * asinh(NaN)       = NaN
-   * asinh(Infinity)  = Infinity
-   * asinh(-Infinity) = -Infinity
-   * asinh(0)         = 0
-   * asinh(-0)        = -0
-   *
-   */
-  P.inverseHyperbolicSine = P.asinh = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite() || x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + 2 * Math.max(Math.abs(x.e), x.sd()) + 6;
-    Ctor.rounding = 1;
-    external = false;
-
-    x = x.times(x).plus(ONE).sqrt().plus(x);
-
-    external = true;
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.ln();
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic tangent in radians of the
-   * value of this Decimal.
-   *
-   * Domain: [-1, 1]
-   * Range: [-Infinity, Infinity]
-   *
-   * atanh(x) = 0.5 * ln((1 + x) / (1 - x))
-   *
-   * atanh(|x| > 1)   = NaN
-   * atanh(NaN)       = NaN
-   * atanh(Infinity)  = NaN
-   * atanh(-Infinity) = NaN
-   * atanh(0)         = 0
-   * atanh(-0)        = -0
-   * atanh(1)         = Infinity
-   * atanh(-1)        = -Infinity
-   *
-   */
-  P.inverseHyperbolicTangent = P.atanh = function () {
-    var pr, rm, wpr, xsd,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(NaN);
-    if (x.e >= 0) return new Ctor(x.abs().eq(ONE) ? x.s / 0 : x.isZero() ? x : NaN);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    xsd = x.sd();
-
-    if (Math.max(xsd, pr) < 2 * -x.e - 1) return finalise(new Ctor(x), pr, rm, true);
-
-    Ctor.precision = wpr = xsd - x.e;
-
-    x = divide(x.plus(ONE), ONE.minus(x), wpr + pr, 1);
-
-    Ctor.precision = pr + 4;
-    Ctor.rounding = 1;
-
-    x = x.ln();
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.times(HALF);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the arcsine (inverse sine) in radians of the value of this
-   * Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-pi/2, pi/2]
-   *
-   * asin(x) = 2*atan(x/(1 + sqrt(1 - x^2)))
-   *
-   * asin(0)       = 0
-   * asin(-0)      = -0
-   * asin(1/2)     = pi/6
-   * asin(-1/2)    = -pi/6
-   * asin(1)       = pi/2
-   * asin(-1)      = -pi/2
-   * asin(|x| > 1) = NaN
-   * asin(NaN)     = NaN
-   *
-   * TODO? Compare performance of Taylor series.
-   *
-   */
-  P.inverseSine = P.asin = function () {
-    var halfPi, k,
-      pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (x.isZero()) return new Ctor(x);
-
-    k = x.abs().cmp(ONE);
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    if (k !== -1) {
-
-      // |x| is 1
-      if (k === 0) {
-        halfPi = getPi(Ctor, pr + 4, rm).times(HALF);
-        halfPi.s = x.s;
-        return halfPi;
-      }
-
-      // |x| > 1 or x is NaN
-      return new Ctor(NaN);
-    }
-
-    // TODO? Special case asin(1/2) = pi/6 and asin(-1/2) = -pi/6
-
-    Ctor.precision = pr + 6;
-    Ctor.rounding = 1;
-
-    x = x.div(ONE.plus(Ctor.sqrt(ONE.minus(x.times(x))))).atan();
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return x.times(2);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the arctangent (inverse tangent) in radians of the value
-   * of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-pi/2, pi/2]
-   *
-   * atan(x) = x - x^3/3 + x^5/5 - x^7/7 + ...
-   *
-   * atan(0)         = 0
-   * atan(-0)        = -0
-   * atan(1)         = pi/4
-   * atan(-1)        = -pi/4
-   * atan(Infinity)  = pi/2
-   * atan(-Infinity) = -pi/2
-   * atan(NaN)       = NaN
-   *
-   */
-  P.inverseTangent = P.atan = function () {
-    var i, j, k, n, px, t, r, wpr, x2,
-      x = this,
-      Ctor = x.constructor,
-      pr = Ctor.precision,
-      rm = Ctor.rounding;
-
-    if (!x.isFinite()) {
-      if (!x.s) return new Ctor(NaN);
-      if (pr + 4 <= PI_PRECISION) {
-        r = getPi(Ctor, pr + 4, rm).times(HALF);
-        r.s = x.s;
-        return r;
-      }
-    } else if (x.isZero()) {
-      return new Ctor(x);
-    } else if (x.abs().eq(ONE) && pr + 4 <= PI_PRECISION) {
-      r = getPi(Ctor, pr + 4, rm).times(0.25);
-      r.s = x.s;
-      return r;
-    }
-
-    Ctor.precision = wpr = pr + 10;
-    Ctor.rounding = 1;
-
-    // TODO? if (x >= 1 && pr <= PI_PRECISION) atan(x) = halfPi * x.s - atan(1 / x);
-
-    // Argument reduction
-    // Ensure |x| < 0.42
-    // atan(x) = 2 * atan(x / (1 + sqrt(1 + x^2)))
-
-    k = Math.min(28, wpr / LOG_BASE + 2 | 0);
-
-    for (i = k; i; --i) x = x.div(x.times(x).plus(ONE).sqrt().plus(ONE));
-
-    external = false;
-
-    j = Math.ceil(wpr / LOG_BASE);
-    n = 1;
-    x2 = x.times(x);
-    r = new Ctor(x);
-    px = x;
-
-    // atan(x) = x - x^3/3 + x^5/5 - x^7/7 + ...
-    for (; i !== -1;) {
-      px = px.times(x2);
-      t = r.minus(px.div(n += 2));
-
-      px = px.times(x2);
-      r = t.plus(px.div(n += 2));
-
-      if (r.d[j] !== void 0) for (i = j; r.d[i] === t.d[i] && i--;);
-    }
-
-    if (k) r = r.times(2 << (k - 1));
-
-    external = true;
-
-    return finalise(r, Ctor.precision = pr, Ctor.rounding = rm, true);
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is a finite number, otherwise return false.
-   *
-   */
-  P.isFinite = function () {
-    return !!this.d;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is an integer, otherwise return false.
-   *
-   */
-  P.isInteger = P.isInt = function () {
-    return !!this.d && mathfloor(this.e / LOG_BASE) > this.d.length - 2;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is NaN, otherwise return false.
-   *
-   */
-  P.isNaN = function () {
-    return !this.s;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is negative, otherwise return false.
-   *
-   */
-  P.isNegative = P.isNeg = function () {
-    return this.s < 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is positive, otherwise return false.
-   *
-   */
-  P.isPositive = P.isPos = function () {
-    return this.s > 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is 0 or -0, otherwise return false.
-   *
-   */
-  P.isZero = function () {
-    return !!this.d && this.d[0] === 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is less than `y`, otherwise return false.
-   *
-   */
-  P.lessThan = P.lt = function (y) {
-    return this.cmp(y) < 0;
-  };
-
-
-  /*
-   * Return true if the value of this Decimal is less than or equal to `y`, otherwise return false.
-   *
-   */
-  P.lessThanOrEqualTo = P.lte = function (y) {
-    return this.cmp(y) < 1;
-  };
-
-
-  /*
-   * Return the logarithm of the value of this Decimal to the specified base, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * If no base is specified, return log[10](arg).
-   *
-   * log[base](arg) = ln(arg) / ln(base)
-   *
-   * The result will always be correctly rounded if the base of the log is 10, and 'almost always'
-   * otherwise:
-   *
-   * Depending on the rounding mode, the result may be incorrectly rounded if the first fifteen
-   * rounding digits are [49]99999999999999 or [50]00000000000000. In that case, the maximum error
-   * between the result and the correctly rounded result will be one ulp (unit in the last place).
-   *
-   * log[-b](a)       = NaN
-   * log[0](a)        = NaN
-   * log[1](a)        = NaN
-   * log[NaN](a)      = NaN
-   * log[Infinity](a) = NaN
-   * log[b](0)        = -Infinity
-   * log[b](-0)       = -Infinity
-   * log[b](-a)       = NaN
-   * log[b](1)        = 0
-   * log[b](Infinity) = Infinity
-   * log[b](NaN)      = NaN
-   *
-   * [base] {number|string|Decimal} The base of the logarithm.
-   *
-   */
-  P.logarithm = P.log = function (base) {
-    var isBase10, d, denominator, k, inf, num, sd, r,
-      arg = this,
-      Ctor = arg.constructor,
-      pr = Ctor.precision,
-      rm = Ctor.rounding,
-      guard = 5;
-
-    // Default base is 10.
-    if (base == null) {
-      base = new Ctor(10);
-      isBase10 = true;
-    } else {
-      base = new Ctor(base);
-      d = base.d;
-
-      // Return NaN if base is negative, or non-finite, or is 0 or 1.
-      if (base.s < 0 || !d || !d[0] || base.eq(ONE)) return new Ctor(NaN);
-
-      isBase10 = base.eq(10);
-    }
-
-    d = arg.d;
-
-    // Is arg negative, non-finite, 0 or 1?
-    if (arg.s < 0 || !d || !d[0] || arg.eq(ONE)) {
-      return new Ctor(d && !d[0] ? -1 / 0 : arg.s != 1 ? NaN : d ? 0 : 1 / 0);
-    }
-
-    // The result will have a non-terminating decimal expansion if base is 10 and arg is not an
-    // integer power of 10.
-    if (isBase10) {
-      if (d.length > 1) {
-        inf = true;
-      } else {
-        for (k = d[0]; k % 10 === 0;) k /= 10;
-        inf = k !== 1;
-      }
-    }
-
-    external = false;
-    sd = pr + guard;
-    num = naturalLogarithm(arg, sd);
-    denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
-
-    // The result will have 5 rounding digits.
-    r = divide(num, denominator, sd, 1);
-
-    // If at a rounding boundary, i.e. the result's rounding digits are [49]9999 or [50]0000,
-    // calculate 10 further digits.
-    //
-    // If the result is known to have an infinite decimal expansion, repeat this until it is clear
-    // that the result is above or below the boundary. Otherwise, if after calculating the 10
-    // further digits, the last 14 are nines, round up and assume the result is exact.
-    // Also assume the result is exact if the last 14 are zero.
-    //
-    // Example of a result that will be incorrectly rounded:
-    // log[1048576](4503599627370502) = 2.60000000000000009610279511444746...
-    // The above result correctly rounded using ROUND_CEIL to 1 decimal place should be 2.7, but it
-    // will be given as 2.6 as there are 15 zeros immediately after the requested decimal place, so
-    // the exact result would be assumed to be 2.6, which rounded using ROUND_CEIL to 1 decimal
-    // place is still 2.6.
-    if (checkRoundingDigits(r.d, k = pr, rm)) {
-
-      do {
-        sd += 10;
-        num = naturalLogarithm(arg, sd);
-        denominator = isBase10 ? getLn10(Ctor, sd + 10) : naturalLogarithm(base, sd);
-        r = divide(num, denominator, sd, 1);
-
-        if (!inf) {
-
-          // Check for 14 nines from the 2nd rounding digit, as the first may be 4.
-          if (+digitsToString(r.d).slice(k + 1, k + 15) + 1 == 1e14) {
-            r = finalise(r, pr + 1, 0);
-          }
-
-          break;
-        }
-      } while (checkRoundingDigits(r.d, k += 10, rm));
-    }
-
-    external = true;
-
-    return finalise(r, pr, rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the maximum of the arguments and the value of this Decimal.
-   *
-   * arguments {number|string|Decimal}
-   *
-  P.max = function () {
-    Array.prototype.push.call(arguments, this);
-    return maxOrMin(this.constructor, arguments, 'lt');
-  };
-   */
-
-
-  /*
-   * Return a new Decimal whose value is the minimum of the arguments and the value of this Decimal.
-   *
-   * arguments {number|string|Decimal}
-   *
-  P.min = function () {
-    Array.prototype.push.call(arguments, this);
-    return maxOrMin(this.constructor, arguments, 'gt');
-  };
-   */
-
-
-  /*
-   *  n - 0 = n
-   *  n - N = N
-   *  n - I = -I
-   *  0 - n = -n
-   *  0 - 0 = 0
-   *  0 - N = N
-   *  0 - I = -I
-   *  N - n = N
-   *  N - 0 = N
-   *  N - N = N
-   *  N - I = N
-   *  I - n = I
-   *  I - 0 = I
-   *  I - N = N
-   *  I - I = N
-   *
-   * Return a new Decimal whose value is the value of this Decimal minus `y`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   */
-  P.minus = P.sub = function (y) {
-    var d, e, i, j, k, len, pr, rm, xd, xe, xLTy, yd,
-      x = this,
-      Ctor = x.constructor;
-
-    y = new Ctor(y);
-
-    // If either is not finite...
-    if (!x.d || !y.d) {
-
-      // Return NaN if either is NaN.
-      if (!x.s || !y.s) y = new Ctor(NaN);
-
-      // Return y negated if x is finite and y is ±Infinity.
-      else if (x.d) y.s = -y.s;
-
-      // Return x if y is finite and x is ±Infinity.
-      // Return x if both are ±Infinity with different signs.
-      // Return NaN if both are ±Infinity with the same sign.
-      else y = new Ctor(y.d || x.s !== y.s ? x : NaN);
-
-      return y;
-    }
-
-    // If signs differ...
-    if (x.s != y.s) {
-      y.s = -y.s;
-      return x.plus(y);
-    }
-
-    xd = x.d;
-    yd = y.d;
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    // If either is zero...
-    if (!xd[0] || !yd[0]) {
-
-      // Return y negated if x is zero and y is non-zero.
-      if (yd[0]) y.s = -y.s;
-
-      // Return x if y is zero and x is non-zero.
-      else if (xd[0]) y = new Ctor(x);
-
-      // Return zero if both are zero.
-      // From IEEE 754 (2008) 6.3: 0 - 0 = -0 - -0 = -0 when rounding to -Infinity.
-      else return new Ctor(rm === 3 ? -0 : 0);
-
-      return external ? finalise(y, pr, rm) : y;
-    }
-
-    // x and y are finite, non-zero numbers with the same sign.
-
-    // Calculate base 1e7 exponents.
-    e = mathfloor(y.e / LOG_BASE);
-    xe = mathfloor(x.e / LOG_BASE);
-
-    xd = xd.slice();
-    k = xe - e;
-
-    // If base 1e7 exponents differ...
-    if (k) {
-      xLTy = k < 0;
-
-      if (xLTy) {
-        d = xd;
-        k = -k;
-        len = yd.length;
-      } else {
-        d = yd;
-        e = xe;
-        len = xd.length;
-      }
-
-      // Numbers with massively different exponents would result in a very high number of
-      // zeros needing to be prepended, but this can be avoided while still ensuring correct
-      // rounding by limiting the number of zeros to `Math.ceil(pr / LOG_BASE) + 2`.
-      i = Math.max(Math.ceil(pr / LOG_BASE), len) + 2;
-
-      if (k > i) {
-        k = i;
-        d.length = 1;
-      }
-
-      // Prepend zeros to equalise exponents.
-      d.reverse();
-      for (i = k; i--;) d.push(0);
-      d.reverse();
-
-    // Base 1e7 exponents equal.
-    } else {
-
-      // Check digits to determine which is the bigger number.
-
-      i = xd.length;
-      len = yd.length;
-      xLTy = i < len;
-      if (xLTy) len = i;
-
-      for (i = 0; i < len; i++) {
-        if (xd[i] != yd[i]) {
-          xLTy = xd[i] < yd[i];
-          break;
-        }
-      }
-
-      k = 0;
-    }
-
-    if (xLTy) {
-      d = xd;
-      xd = yd;
-      yd = d;
-      y.s = -y.s;
-    }
-
-    len = xd.length;
-
-    // Append zeros to `xd` if shorter.
-    // Don't add zeros to `yd` if shorter as subtraction only needs to start at `yd` length.
-    for (i = yd.length - len; i > 0; --i) xd[len++] = 0;
-
-    // Subtract yd from xd.
-    for (i = yd.length; i > k;) {
-
-      if (xd[--i] < yd[i]) {
-        for (j = i; j && xd[--j] === 0;) xd[j] = BASE - 1;
-        --xd[j];
-        xd[i] += BASE;
-      }
-
-      xd[i] -= yd[i];
-    }
-
-    // Remove trailing zeros.
-    for (; xd[--len] === 0;) xd.pop();
-
-    // Remove leading zeros and adjust exponent accordingly.
-    for (; xd[0] === 0; xd.shift()) --e;
-
-    // Zero?
-    if (!xd[0]) return new Ctor(rm === 3 ? -0 : 0);
-
-    y.d = xd;
-    y.e = getBase10Exponent(xd, e);
-
-    return external ? finalise(y, pr, rm) : y;
-  };
-
-
-  /*
-   *   n % 0 =  N
-   *   n % N =  N
-   *   n % I =  n
-   *   0 % n =  0
-   *  -0 % n = -0
-   *   0 % 0 =  N
-   *   0 % N =  N
-   *   0 % I =  0
-   *   N % n =  N
-   *   N % 0 =  N
-   *   N % N =  N
-   *   N % I =  N
-   *   I % n =  N
-   *   I % 0 =  N
-   *   I % N =  N
-   *   I % I =  N
-   *
-   * Return a new Decimal whose value is the value of this Decimal modulo `y`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * The result depends on the modulo mode.
-   *
-   */
-  P.modulo = P.mod = function (y) {
-    var q,
-      x = this,
-      Ctor = x.constructor;
-
-    y = new Ctor(y);
-
-    // Return NaN if x is ±Infinity or NaN, or y is NaN or ±0.
-    if (!x.d || !y.s || y.d && !y.d[0]) return new Ctor(NaN);
-
-    // Return x if y is ±Infinity or x is ±0.
-    if (!y.d || x.d && !x.d[0]) {
-      return finalise(new Ctor(x), Ctor.precision, Ctor.rounding);
-    }
-
-    // Prevent rounding of intermediate calculations.
-    external = false;
-
-    if (Ctor.modulo == 9) {
-
-      // Euclidian division: q = sign(y) * floor(x / abs(y))
-      // result = x - q * y    where  0 <= result < abs(y)
-      q = divide(x, y.abs(), 0, 3, 1);
-      q.s *= y.s;
-    } else {
-      q = divide(x, y, 0, Ctor.modulo, 1);
-    }
-
-    q = q.times(y);
-
-    external = true;
-
-    return x.minus(q);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the natural exponential of the value of this Decimal,
-   * i.e. the base e raised to the power the value of this Decimal, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   */
-  P.naturalExponential = P.exp = function () {
-    return naturalExponential(this);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the natural logarithm of the value of this Decimal,
-   * rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   */
-  P.naturalLogarithm = P.ln = function () {
-    return naturalLogarithm(this);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal negated, i.e. as if multiplied by
-   * -1.
-   *
-   */
-  P.negated = P.neg = function () {
-    var x = new this.constructor(this);
-    x.s = -x.s;
-    return finalise(x);
-  };
-
-
-  /*
-   *  n + 0 = n
-   *  n + N = N
-   *  n + I = I
-   *  0 + n = n
-   *  0 + 0 = 0
-   *  0 + N = N
-   *  0 + I = I
-   *  N + n = N
-   *  N + 0 = N
-   *  N + N = N
-   *  N + I = N
-   *  I + n = I
-   *  I + 0 = I
-   *  I + N = N
-   *  I + I = I
-   *
-   * Return a new Decimal whose value is the value of this Decimal plus `y`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   */
-  P.plus = P.add = function (y) {
-    var carry, d, e, i, k, len, pr, rm, xd, yd,
-      x = this,
-      Ctor = x.constructor;
-
-    y = new Ctor(y);
-
-    // If either is not finite...
-    if (!x.d || !y.d) {
-
-      // Return NaN if either is NaN.
-      if (!x.s || !y.s) y = new Ctor(NaN);
-
-      // Return x if y is finite and x is ±Infinity.
-      // Return x if both are ±Infinity with the same sign.
-      // Return NaN if both are ±Infinity with different signs.
-      // Return y if x is finite and y is ±Infinity.
-      else if (!x.d) y = new Ctor(y.d || x.s === y.s ? x : NaN);
-
-      return y;
-    }
-
-     // If signs differ...
-    if (x.s != y.s) {
-      y.s = -y.s;
-      return x.minus(y);
-    }
-
-    xd = x.d;
-    yd = y.d;
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    // If either is zero...
-    if (!xd[0] || !yd[0]) {
-
-      // Return x if y is zero.
-      // Return y if y is non-zero.
-      if (!yd[0]) y = new Ctor(x);
-
-      return external ? finalise(y, pr, rm) : y;
-    }
-
-    // x and y are finite, non-zero numbers with the same sign.
-
-    // Calculate base 1e7 exponents.
-    k = mathfloor(x.e / LOG_BASE);
-    e = mathfloor(y.e / LOG_BASE);
-
-    xd = xd.slice();
-    i = k - e;
-
-    // If base 1e7 exponents differ...
-    if (i) {
-
-      if (i < 0) {
-        d = xd;
-        i = -i;
-        len = yd.length;
-      } else {
-        d = yd;
-        e = k;
-        len = xd.length;
-      }
-
-      // Limit number of zeros prepended to max(ceil(pr / LOG_BASE), len) + 1.
-      k = Math.ceil(pr / LOG_BASE);
-      len = k > len ? k + 1 : len + 1;
-
-      if (i > len) {
-        i = len;
-        d.length = 1;
-      }
-
-      // Prepend zeros to equalise exponents. Note: Faster to use reverse then do unshifts.
-      d.reverse();
-      for (; i--;) d.push(0);
-      d.reverse();
-    }
-
-    len = xd.length;
-    i = yd.length;
-
-    // If yd is longer than xd, swap xd and yd so xd points to the longer array.
-    if (len - i < 0) {
-      i = len;
-      d = yd;
-      yd = xd;
-      xd = d;
-    }
-
-    // Only start adding at yd.length - 1 as the further digits of xd can be left as they are.
-    for (carry = 0; i;) {
-      carry = (xd[--i] = xd[i] + yd[i] + carry) / BASE | 0;
-      xd[i] %= BASE;
-    }
-
-    if (carry) {
-      xd.unshift(carry);
-      ++e;
-    }
-
-    // Remove trailing zeros.
-    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
-    for (len = xd.length; xd[--len] == 0;) xd.pop();
-
-    y.d = xd;
-    y.e = getBase10Exponent(xd, e);
-
-    return external ? finalise(y, pr, rm) : y;
-  };
-
-
-  /*
-   * Return the number of significant digits of the value of this Decimal.
-   *
-   * [z] {boolean|number} Whether to count integer-part trailing zeros: true, false, 1 or 0.
-   *
-   */
-  P.precision = P.sd = function (z) {
-    var k,
-      x = this;
-
-    if (z !== void 0 && z !== !!z && z !== 1 && z !== 0) throw Error(invalidArgument + z);
-
-    if (x.d) {
-      k = getPrecision(x.d);
-      if (z && x.e + 1 > k) k = x.e + 1;
-    } else {
-      k = NaN;
-    }
-
-    return k;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a whole number using
-   * rounding mode `rounding`.
-   *
-   */
-  P.round = function () {
-    var x = this,
-      Ctor = x.constructor;
-
-    return finalise(new Ctor(x), x.e + 1, Ctor.rounding);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the sine of the value in radians of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-1, 1]
-   *
-   * sin(x) = x - x^3/3! + x^5/5! - ...
-   *
-   * sin(0)         = 0
-   * sin(-0)        = -0
-   * sin(Infinity)  = NaN
-   * sin(-Infinity) = NaN
-   * sin(NaN)       = NaN
-   *
-   */
-  P.sine = P.sin = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(NaN);
-    if (x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + Math.max(x.e, x.sd()) + LOG_BASE;
-    Ctor.rounding = 1;
-
-    x = sine(Ctor, toLessThanHalfPi(Ctor, x));
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(quadrant > 2 ? x.neg() : x, pr, rm, true);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the square root of this Decimal, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   *  sqrt(-n) =  N
-   *  sqrt(N)  =  N
-   *  sqrt(-I) =  N
-   *  sqrt(I)  =  I
-   *  sqrt(0)  =  0
-   *  sqrt(-0) = -0
-   *
-   */
-  P.squareRoot = P.sqrt = function () {
-    var m, n, sd, r, rep, t,
-      x = this,
-      d = x.d,
-      e = x.e,
-      s = x.s,
-      Ctor = x.constructor;
-
-    // Negative/NaN/Infinity/zero?
-    if (s !== 1 || !d || !d[0]) {
-      return new Ctor(!s || s < 0 && (!d || d[0]) ? NaN : d ? x : 1 / 0);
-    }
-
-    external = false;
-
-    // Initial estimate.
-    s = Math.sqrt(+x);
-
-    // Math.sqrt underflow/overflow?
-    // Pass x to Math.sqrt as integer, then adjust the exponent of the result.
-    if (s == 0 || s == 1 / 0) {
-      n = digitsToString(d);
-
-      if ((n.length + e) % 2 == 0) n += '0';
-      s = Math.sqrt(n);
-      e = mathfloor((e + 1) / 2) - (e < 0 || e % 2);
-
-      if (s == 1 / 0) {
-        n = '1e' + e;
-      } else {
-        n = s.toExponential();
-        n = n.slice(0, n.indexOf('e') + 1) + e;
-      }
-
-      r = new Ctor(n);
-    } else {
-      r = new Ctor(s.toString());
-    }
-
-    sd = (e = Ctor.precision) + 3;
-
-    // Newton-Raphson iteration.
-    for (;;) {
-      t = r;
-      r = t.plus(divide(x, t, sd + 2, 1)).times(HALF);
-
-      // TODO? Replace with for-loop and checkRoundingDigits.
-      if (digitsToString(t.d).slice(0, sd) === (n = digitsToString(r.d)).slice(0, sd)) {
-        n = n.slice(sd - 3, sd + 1);
-
-        // The 4th rounding digit may be in error by -1 so if the 4 rounding digits are 9999 or
-        // 4999, i.e. approaching a rounding boundary, continue the iteration.
-        if (n == '9999' || !rep && n == '4999') {
-
-          // On the first iteration only, check to see if rounding up gives the exact result as the
-          // nines may infinitely repeat.
-          if (!rep) {
-            finalise(t, e + 1, 0);
-
-            if (t.times(t).eq(x)) {
-              r = t;
-              break;
-            }
-          }
-
-          sd += 4;
-          rep = 1;
-        } else {
-
-          // If the rounding digits are null, 0{0,4} or 50{0,3}, check for an exact result.
-          // If not, then there are further digits and m will be truthy.
-          if (!+n || !+n.slice(1) && n.charAt(0) == '5') {
-
-            // Truncate to the first rounding digit.
-            finalise(r, e + 1, 1);
-            m = !r.times(r).eq(x);
-          }
-
-          break;
-        }
-      }
-    }
-
-    external = true;
-
-    return finalise(r, e, Ctor.rounding, m);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the tangent of the value in radians of this Decimal.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-Infinity, Infinity]
-   *
-   * tan(0)         = 0
-   * tan(-0)        = -0
-   * tan(Infinity)  = NaN
-   * tan(-Infinity) = NaN
-   * tan(NaN)       = NaN
-   *
-   */
-  P.tangent = P.tan = function () {
-    var pr, rm,
-      x = this,
-      Ctor = x.constructor;
-
-    if (!x.isFinite()) return new Ctor(NaN);
-    if (x.isZero()) return new Ctor(x);
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-    Ctor.precision = pr + 10;
-    Ctor.rounding = 1;
-
-    x = x.sin();
-    x.s = 1;
-    x = divide(x, ONE.minus(x.times(x)).sqrt(), pr + 10, 0);
-
-    Ctor.precision = pr;
-    Ctor.rounding = rm;
-
-    return finalise(quadrant == 2 || quadrant == 4 ? x.neg() : x, pr, rm, true);
-  };
-
-
-  /*
-   *  n * 0 = 0
-   *  n * N = N
-   *  n * I = I
-   *  0 * n = 0
-   *  0 * 0 = 0
-   *  0 * N = N
-   *  0 * I = N
-   *  N * n = N
-   *  N * 0 = N
-   *  N * N = N
-   *  N * I = N
-   *  I * n = I
-   *  I * 0 = N
-   *  I * N = N
-   *  I * I = I
-   *
-   * Return a new Decimal whose value is this Decimal times `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   */
-  P.times = P.mul = function (y) {
-    var carry, e, i, k, r, rL, t, xdL, ydL,
-      x = this,
-      Ctor = x.constructor,
-      xd = x.d,
-      yd = (y = new Ctor(y)).d;
-
-    y.s *= x.s;
-
-     // If either is NaN, ±Infinity or ±0...
-    if (!xd || !xd[0] || !yd || !yd[0]) {
-
-      return new Ctor(!y.s || xd && !xd[0] && !yd || yd && !yd[0] && !xd
-
-        // Return NaN if either is NaN.
-        // Return NaN if x is ±0 and y is ±Infinity, or y is ±0 and x is ±Infinity.
-        ? NaN
-
-        // Return ±Infinity if either is ±Infinity.
-        // Return ±0 if either is ±0.
-        : !xd || !yd ? y.s / 0 : y.s * 0);
-    }
-
-    e = mathfloor(x.e / LOG_BASE) + mathfloor(y.e / LOG_BASE);
-    xdL = xd.length;
-    ydL = yd.length;
-
-    // Ensure xd points to the longer array.
-    if (xdL < ydL) {
-      r = xd;
-      xd = yd;
-      yd = r;
-      rL = xdL;
-      xdL = ydL;
-      ydL = rL;
-    }
-
-    // Initialise the result array with zeros.
-    r = [];
-    rL = xdL + ydL;
-    for (i = rL; i--;) r.push(0);
-
-    // Multiply!
-    for (i = ydL; --i >= 0;) {
-      carry = 0;
-      for (k = xdL + i; k > i;) {
-        t = r[k] + yd[i] * xd[k - i - 1] + carry;
-        r[k--] = t % BASE | 0;
-        carry = t / BASE | 0;
-      }
-
-      r[k] = (r[k] + carry) % BASE | 0;
-    }
-
-    // Remove trailing zeros.
-    for (; !r[--rL];) r.pop();
-
-    if (carry) ++e;
-    else r.shift();
-
-    // Remove trailing zeros.
-    for (i = r.length; !r[--i];) r.pop();
-
-    y.d = r;
-    y.e = getBase10Exponent(r, e);
-
-    return external ? finalise(y, Ctor.precision, Ctor.rounding) : y;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in base 2, round to `sd` significant
-   * digits using rounding mode `rm`.
-   *
-   * If the optional `sd` argument is present then return binary exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toBinary = function (sd, rm) {
-    return toStringBinary(this, 2, sd, rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a maximum of `dp`
-   * decimal places using rounding mode `rm` or `rounding` if `rm` is omitted.
-   *
-   * If `dp` is omitted, return a new Decimal whose value is the value of this Decimal.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toDecimalPlaces = P.toDP = function (dp, rm) {
-    var x = this,
-      Ctor = x.constructor;
-
-    x = new Ctor(x);
-    if (dp === void 0) return x;
-
-    checkInt32(dp, 0, MAX_DIGITS);
-
-    if (rm === void 0) rm = Ctor.rounding;
-    else checkInt32(rm, 0, 8);
-
-    return finalise(x, dp + x.e + 1, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in exponential notation rounded to
-   * `dp` fixed decimal places using rounding mode `rounding`.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toExponential = function (dp, rm) {
-    var str,
-      x = this,
-      Ctor = x.constructor;
-
-    if (dp === void 0) {
-      str = finiteToString(x, true);
-    } else {
-      checkInt32(dp, 0, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-
-      x = finalise(new Ctor(x), dp + 1, rm);
-      str = finiteToString(x, true, dp + 1);
-    }
-
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in normal (fixed-point) notation to
-   * `dp` fixed decimal places and rounded using rounding mode `rm` or `rounding` if `rm` is
-   * omitted.
-   *
-   * As with JavaScript numbers, (-0).toFixed(0) is '0', but e.g. (-0.00001).toFixed(0) is '-0'.
-   *
-   * [dp] {number} Decimal places. Integer, 0 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * (-0).toFixed(0) is '0', but (-0.1).toFixed(0) is '-0'.
-   * (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
-   * (-0).toFixed(3) is '0.000'.
-   * (-0.5).toFixed(0) is '-0'.
-   *
-   */
-  P.toFixed = function (dp, rm) {
-    var str, y,
-      x = this,
-      Ctor = x.constructor;
-
-    if (dp === void 0) {
-      str = finiteToString(x);
-    } else {
-      checkInt32(dp, 0, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-
-      y = finalise(new Ctor(x), dp + x.e + 1, rm);
-      str = finiteToString(y, false, dp + y.e + 1);
-    }
-
-    // To determine whether to add the minus sign look at the value before it was rounded,
-    // i.e. look at `x` rather than `y`.
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return an array representing the value of this Decimal as a simple fraction with an integer
-   * numerator and an integer denominator.
-   *
-   * The denominator will be a positive non-zero value less than or equal to the specified maximum
-   * denominator. If a maximum denominator is not specified, the denominator will be the lowest
-   * value necessary to represent the number exactly.
-   *
-   * [maxD] {number|string|Decimal} Maximum denominator. Integer >= 1 and < Infinity.
-   *
-   */
-  P.toFraction = function (maxD) {
-    var d, d0, d1, d2, e, k, n, n0, n1, pr, q, r,
-      x = this,
-      xd = x.d,
-      Ctor = x.constructor;
-
-    if (!xd) return new Ctor(x);
-
-    n1 = d0 = new Ctor(ONE);
-    d1 = n0 = new Ctor(0);
-
-    d = new Ctor(d1);
-    e = d.e = getPrecision(xd) - x.e - 1;
-    k = e % LOG_BASE;
-    d.d[0] = mathpow(10, k < 0 ? LOG_BASE + k : k);
-
-    if (maxD == null) {
-
-      // d is 10**e, the minimum max-denominator needed.
-      maxD = e > 0 ? d : n1;
-    } else {
-      n = new Ctor(maxD);
-      if (!n.isInt() || n.lt(n1)) throw Error(invalidArgument + n);
-      maxD = n.gt(d) ? (e > 0 ? d : n1) : n;
-    }
-
-    external = false;
-    n = new Ctor(digitsToString(xd));
-    pr = Ctor.precision;
-    Ctor.precision = e = xd.length * LOG_BASE * 2;
-
-    for (;;)  {
-      q = divide(n, d, 0, 1, 1);
-      d2 = d0.plus(q.times(d1));
-      if (d2.cmp(maxD) == 1) break;
-      d0 = d1;
-      d1 = d2;
-      d2 = n1;
-      n1 = n0.plus(q.times(d2));
-      n0 = d2;
-      d2 = d;
-      d = n.minus(q.times(d2));
-      n = d2;
-    }
-
-    d2 = divide(maxD.minus(d0), d1, 0, 1, 1);
-    n0 = n0.plus(d2.times(n1));
-    d0 = d0.plus(d2.times(d1));
-    n0.s = n1.s = x.s;
-
-    // Determine which fraction is closer to x, n0/d0 or n1/d1?
-    r = divide(n1, d1, e, 1).minus(x).abs().cmp(divide(n0, d0, e, 1).minus(x).abs()) < 1
-        ? [n1, d1] : [n0, d0];
-
-    Ctor.precision = pr;
-    external = true;
-
-    return r;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in base 16, round to `sd` significant
-   * digits using rounding mode `rm`.
-   *
-   * If the optional `sd` argument is present then return binary exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toHexadecimal = P.toHex = function (sd, rm) {
-    return toStringBinary(this, 16, sd, rm);
-  };
-
-
-  /*
-   * Return a string representing the exact value of this Decimal in a compact base-88 based format.
-   *
-   * The number of characters of the string will always be equal to or less than the number of
-   * characters returned by `toString` or `toExponential` - usually just over half as many.
-   *
-   * The original Decimal value can be recreated by passing the string to `Decimal.fromJSON`.
-   *
-   * Base 88 alphabet:
-   * 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~
-   *
-   * The following 7 printable ASCII characters are not used
-   * (space) \ " & ' < >
-   * so the return value is safe for strings, HTML, JSON, and XML.
-   *
-   *     0   0     g  16    w  32    M  48    $  64    ]  80
-   *     1   1     h  17    x  33    N  49    %  65    ^  81
-   *     2   2     i  18    y  34    O  50    (  66    _  82
-   *     3   3     j  19    z  35    P  51    )  67    `  83
-   *     4   4     k  20    A  36    Q  52    *  68    {  84
-   *     5   5     l  21    B  37    R  53    +  69    |  85
-   *     6   6     m  22    C  38    S  54    ,  70    }  86
-   *     7   7     n  23    D  39    T  55    -  71    ~  87
-   *     8   8     o  24    E  40    U  56    .  72
-   *     9   9     p  25    F  41    V  57    /  73
-   *     a  10     q  26    G  42    W  58    :  74
-   *     b  11     r  27    H  43    X  59    ;  75
-   *     c  12     s  28    I  44    Y  60    =  76
-   *     d  13     t  29    J  45    Z  61    ?  77
-   *     e  14     u  30    K  46    !  62    @  78
-   *     f  15     v  31    L  47    #  63    [  79
-   *
-   * If the return value is just one character, it represents:
-   * 0-81  [[0, 40][-0, -40]]
-   * 82    -Infinity
-   * 83    +Infinity
-   * 84    NaN
-   * 85-87 free
-   *
-   *   64 32 16  8  4  2  1
-   *    1  0  1  0  1  1  1 = 87
-   *
-   */
-   P.toJSON = function () {
-    var arr, e, i, k, len, n, r, str,
-      x = this,
-      isNeg = x.s < 0;
-
-    // -Infinity/Infinity/NaN.
-    if (!x.d) return NUMERALS.charAt(x.s ? isNeg ? 82 : 83 : 84);
-    e = x.e;
-
-    // Small integer.
-    if (x.d.length === 1 && e < 4 && e >= 0) {
-      n = x.d[0];
-
-      if (n < 2857) {
-
-        // One character.
-        // [[0, 40][-0, -40]]
-        if (n < 41) return NUMERALS.charAt(isNeg ? n + 41 : n);
-
-        // Two characters. High bit of first character unset.
-        // 0XXXXXX
-        // 63*88 + 87 = 5631 = 5632 values, 5632/2 = 2816
-        // [[0, 2815][2816, 5631]]  (2816 * 2 = 5632 values)
-        // [[0, 2815][-0, -2815]]
-        // [[41, 2856][-41, -2856]]
-        n -= 41;
-        if (isNeg) n += 2816;
-        k = n / 88 | 0;
-
-        return NUMERALS.charAt(k) + NUMERALS.charAt(n - k * 88);
-      }
-    }
-
-    str = digitsToString(x.d);
-    r = '';
-
-    // Values with a small exponent. Set high bit.
-    // Positive value: 100XXXX
-    // 1 0 0 {exponent [0, 15] -> [-7, 8]}
-    if (!isNeg && e <= 8 && e >= -7) {
-      k = 64 + e + 7;
-
-    // Negative value: 1010XXX
-    // 1 0 1 0 {exponent [0, 7] -> [-3, 4]}
-    } else if (isNeg && e <= 4 && e >= -3) {
-      k = 64 + 16 + e + 3;
-
-    // Integer without trailing zeros: 0X00000
-    // 0 {is negative} 0 0 0 0 0
-    } else if (str.length === e + 1) {
-      k = 32 * isNeg;
-
-    // All remaining values: 0XXXXXX
-    // Result will have at least 3 characters.
-    // 0 {is negative} {is exponent negative} {exponent character count [1, 15]}
-    } else {
-      k = 32 * isNeg + 16 * (e < 0);
-      e = Math.abs(e);
-
-      // One character to represent the exponent.
-      if (e < 88)  {
-        k += 1;
-        r = NUMERALS.charAt(e);
-
-      // Two characters to represent the exponent.
-      // 87*88 + 87 = 7743
-      } else if (e < 7744) {
-        k += 2;
-        n = e / 88 | 0;
-        r = NUMERALS.charAt(n) + NUMERALS.charAt(e - n * 88);
-
-      // More than two characters to represent the exponent.
-      } else {
-        arr = convertBase(String(e), 10, 88);
-        len = arr.length;
-        k += len;
-        for (i = 0; i < len; i++) r += NUMERALS.charAt(arr[i]);
-      }
-    }
-
-    // At this point r contains the characters in base 88 representing the exponent value.
-    // Prepend the first character, which describes the sign, the exponent sign, and the number of
-    // characters that follow which represent the exponent value.
-    r = NUMERALS.charAt(k) + r;
-    arr = convertBase(str, 10, 88);
-    len = arr.length;
-
-    // Add the base 88 characters that represent the significand.
-    for (i = 0; i < len; i++) r += NUMERALS.charAt(arr[i]);
-
-    return r;
-  };
-
-
-  /*
-   * Returns a new Decimal whose value is the nearest multiple of the magnitude of `y` to the value
-   * of this Decimal.
-   *
-   * If the value of this Decimal is equidistant from two multiples of `y`, the rounding mode `rm`,
-   * or `Decimal.rounding` if `rm` is omitted, determines the direction of the nearest multiple.
-   *
-   * In the context of this method, rounding mode 4 (ROUND_HALF_UP) is the same as rounding mode 0
-   * (ROUND_UP), and so on.
-   *
-   * The return value will always have the same sign as this Decimal, unless either this Decimal
-   * or `y` is NaN, in which case the return value will be also be NaN.
-   *
-   * The return value is not affected by the value of `precision`.
-   *
-   * y {number|string|Decimal} The magnitude to round to a multiple of.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * 'toNearest() rounding mode not an integer: {rm}'
-   * 'toNearest() rounding mode out of range: {rm}'
-   *
-   */
-  P.toNearest = function (y, rm) {
-    var x = this,
-      Ctor = x.constructor;
-
-    x = new Ctor(x);
-
-    if (y == null) {
-
-      // If x is not finite, return x.
-      if (!x.d) return x;
-
-      y = new Ctor(ONE);
-      rm = Ctor.rounding;
-    } else {
-      y = new Ctor(y);
-      if (rm !== void 0) checkInt32(rm, 0, 8);
-
-      // If x is not finite, return x if y is not NaN, else NaN.
-      if (!x.d) return y.s ? x : y;
-
-      // If y is not finite, return Infinity with the sign of x if y is Infinity, else NaN.
-      if (!y.d) {
-        if (y.s) y.s = x.s;
-        return y;
-      }
-    }
-
-    // If y is not zero, calculate the nearest multiple of y to x.
-    if (y.d[0]) {
-      external = false;
-      if (rm < 4) rm = [4, 5, 7, 8][rm];
-      x = divide(x, y, 0, rm, 1).times(y);
-      external = true;
-      finalise(x);
-
-    // If y is zero, return zero with the sign of x.
-    } else {
-      y.s = x.s;
-      x = y;
-    }
-
-    return x;
-  };
-
-
-  /*
-   * Return the value of this Decimal converted to a number primitive.
-   * Zero keeps its sign.
-   *
-   */
-  P.toNumber = function () {
-    return +this;
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal in base 8, round to `sd` significant
-   * digits using rounding mode `rm`.
-   *
-   * If the optional `sd` argument is present then return binary exponential notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toOctal = function (sd, rm) {
-    return toStringBinary(this, 8, sd, rm);
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal raised to the power `y`, rounded
-   * to `precision` significant digits using rounding mode `rounding`.
-   *
-   * ECMAScript compliant.
-   *
-   *   pow(x, NaN)                           = NaN
-   *   pow(x, ±0)                            = 1
-
-   *   pow(NaN, non-zero)                    = NaN
-   *   pow(abs(x) > 1, +Infinity)            = +Infinity
-   *   pow(abs(x) > 1, -Infinity)            = +0
-   *   pow(abs(x) == 1, ±Infinity)           = NaN
-   *   pow(abs(x) < 1, +Infinity)            = +0
-   *   pow(abs(x) < 1, -Infinity)            = +Infinity
-   *   pow(+Infinity, y > 0)                 = +Infinity
-   *   pow(+Infinity, y < 0)                 = +0
-   *   pow(-Infinity, odd integer > 0)       = -Infinity
-   *   pow(-Infinity, even integer > 0)      = +Infinity
-   *   pow(-Infinity, odd integer < 0)       = -0
-   *   pow(-Infinity, even integer < 0)      = +0
-   *   pow(+0, y > 0)                        = +0
-   *   pow(+0, y < 0)                        = +Infinity
-   *   pow(-0, odd integer > 0)              = -0
-   *   pow(-0, even integer > 0)             = +0
-   *   pow(-0, odd integer < 0)              = -Infinity
-   *   pow(-0, even integer < 0)             = +Infinity
-   *   pow(finite x < 0, finite non-integer) = NaN
-   *
-   * For non-integer or very large exponents pow(x, y) is calculated using
-   *
-   *   x^y = exp(y*ln(x))
-   *
-   * Assuming the first 15 rounding digits are each equally likely to be any digit 0-9, the
-   * probability of an incorrectly rounded result
-   * P([49]9{14} | [50]0{14}) = 2 * 0.2 * 10^-14 = 4e-15 = 1/2.5e+14
-   * i.e. 1 in 250,000,000,000,000
-   *
-   * If a result is incorrectly rounded the maximum error will be 1 ulp (unit in last place).
-   *
-   * y {number|string|Decimal} The power to which to raise this Decimal.
-   *
-   */
-  P.toPower = P.pow = function (y) {
-    var e, k, pr, r, rm, sign, yIsInt,
-      x = this,
-      Ctor = x.constructor,
-      yn = +(y = new Ctor(y));
-
-    // Either ±Infinity, NaN or ±0?
-    if (!x.d || !y.d || !x.d[0] || !y.d[0]) return  new Ctor(mathpow(+x, yn));
-
-    x = new Ctor(x);
-
-    if (x.eq(ONE)) return x;
-
-    pr = Ctor.precision;
-    rm = Ctor.rounding;
-
-    if (y.eq(ONE)) return finalise(x, pr, rm);
-
-    e = mathfloor(y.e / LOG_BASE);
-    k = y.d.length - 1;
-    yIsInt = e >= k;
-    sign = x.s;
-
-    if (!yIsInt) {
-      if (sign < 0) return new Ctor(NaN);
-
-    // If y is a small integer use the 'exponentiation by squaring' algorithm.
-    } else if ((k = yn < 0 ? -yn : yn) <= MAX_SAFE_INTEGER) {
-      r = intPow(Ctor, x, k, pr);
-      return y.s < 0 ? new Ctor(ONE).div(r) : finalise(r, pr, rm);
-    }
-
-    // Result is negative if x is negative and the last digit of integer y is odd.
-    sign = sign < 0 && y.d[Math.max(e, k)] & 1 ? -1 : 1;
-
-    // Estimate result exponent.
-    // x^y = 10^e,  where e = y * log10(x)
-    // log10(x) = log10(x_significand) + x_exponent
-    // log10(x_significand) = ln(x_significand) / ln(10)
-    k = mathpow(+x, yn);
-    e = k == 0 || !isFinite(k)
-      ? mathfloor(yn * (Math.log('0.' + digitsToString(x.d)) / Math.LN10 + x.e + 1))
-      : new Ctor(k + '').e;
-
-    // Estimate may be incorrect e.g. x: 0.999999999999999999, y: 2.29, e: 0, r.e: -1.
-
-    // Overflow/underflow?
-    if (e > Ctor.maxE + 1 || e < Ctor.minE - 1) return new Ctor(e > 0 ? sign / 0 : 0);
-
-    external = false;
-    Ctor.rounding = x.s = 1;
-
-    // Estimate the extra guard digits needed to ensure five correct rounding digits from
-    // naturalLogarithm(x). Example of failure without these extra digits (precision: 10):
-    // new Decimal(2.32456).pow('2087987436534566.46411')
-    // should be 1.162377823e+764914905173815, but is 1.162355823e+764914905173815
-    k = Math.min(12, (e + '').length);
-
-    // r = x^y = exp(y*ln(x))
-    r = naturalExponential(y.times(naturalLogarithm(x, pr + k)), pr);
-
-    // Truncate to the required precision plus five rounding digits.
-    r = finalise(r, pr + 5, 1);
-
-    // If the rounding digits are [49]9999 or [50]0000 increase the precision by 10 and recalculate
-    // the result.
-    if (checkRoundingDigits(r.d, pr, rm)) {
-      e = pr + 10;
-
-      // Truncate to the increased precision plus five rounding digits.
-      r = finalise(naturalExponential(y.times(naturalLogarithm(x, e + k)), e), e + 5, 1);
-
-      // Check for 14 nines from the 2nd rounding digit (the first rounding digit may be 4 or 9).
-      if (+digitsToString(r.d).slice(pr + 1, pr + 15) + 1 == 1e14) {
-        r = finalise(r, pr + 1, 0);
-      }
-    }
-
-    r.s = sign;
-    external = true;
-    Ctor.rounding = rm;
-
-    return finalise(r, pr, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal rounded to `sd` significant digits
-   * using rounding mode `rounding`.
-   *
-   * Return exponential notation if `sd` is less than the number of digits necessary to represent
-   * the integer part of the value in normal notation.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   */
-  P.toPrecision = function (sd, rm) {
-    var str,
-      x = this,
-      Ctor = x.constructor;
-
-    if (sd === void 0) {
-      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
-    } else {
-      checkInt32(sd, 1, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-
-      x = finalise(new Ctor(x), sd, rm);
-      str = finiteToString(x, sd <= x.e || x.e <= Ctor.toExpNeg, sd);
-    }
-
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal rounded to a maximum of `sd`
-   * significant digits using rounding mode `rm`, or to `precision` and `rounding` respectively if
-   * omitted.
-   *
-   * [sd] {number} Significant digits. Integer, 1 to MAX_DIGITS inclusive.
-   * [rm] {number} Rounding mode. Integer, 0 to 8 inclusive.
-   *
-   * 'toSD() digits out of range: {sd}'
-   * 'toSD() digits not an integer: {sd}'
-   * 'toSD() rounding mode not an integer: {rm}'
-   * 'toSD() rounding mode out of range: {rm}'
-   *
-   */
-  P.toSignificantDigits = P.toSD = function (sd, rm) {
-    var x = this,
-      Ctor = x.constructor;
-
-    if (sd === void 0) {
-      sd = Ctor.precision;
-      rm = Ctor.rounding;
-    } else {
-      checkInt32(sd, 1, MAX_DIGITS);
-
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-    }
-
-    return finalise(new Ctor(x), sd, rm);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal.
-   *
-   * Return exponential notation if this Decimal has a positive exponent equal to or greater than
-   * `toExpPos`, or a negative exponent equal to or less than `toExpNeg`.
-   *
-   */
-  P.toString = function () {
-    var x = this,
-      Ctor = x.constructor,
-      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
-
-    return x.isNeg() && !x.isZero() ? '-' + str : str;
-  };
-
-
-  /*
-   * Return a new Decimal whose value is the value of this Decimal truncated to a whole number.
-   *
-   */
-  P.truncated = P.trunc = function () {
-    return finalise(new this.constructor(this), this.e + 1, 1);
-  };
-
-
-  /*
-   * Return a string representing the value of this Decimal.
-   * Unlike `toString`, negative zero will include the minus sign.
-   *
-   */
-  P.valueOf = function () {
-    var x = this,
-      Ctor = x.constructor,
-      str = finiteToString(x, x.e <= Ctor.toExpNeg || x.e >= Ctor.toExpPos);
-
-    return x.isNeg() ? '-' + str : str;
-  };
-
-
-  /*
-  // Add aliases to match BigDecimal method names.
-  // P.add = P.plus;
-  P.subtract = P.minus;
-  P.multiply = P.times;
-  P.divide = P.div;
-  P.remainder = P.mod;
-  P.compareTo = P.cmp;
-  P.negate = P.neg;
-   */
-
-
-  // Helper functions for Decimal.prototype (P) and/or Decimal methods, and their callers.
-
-
-  /*
-   *  digitsToString           P.cubeRoot, P.logarithm, P.squareRoot, P.toFraction, P.toJSON,
-   *                           P.toPower, finiteToString, naturalExponential, naturalLogarithm
-   *  checkInt32               P.toDecimalPlaces, P.toExponential, P.toFixed, P.toNearest,
-   *                           P.toPrecision, P.toSignificantDigits, toStringBinary, random
-   *  checkRoundingDigits      P.logarithm, P.toPower, naturalExponential, naturalLogarithm
-   *  convertBase              P.toJSON, toStringBinary, fromJSON, parseOther
-   *  cos                      P.cos
-   *  divide                   P.atanh, P.cubeRoot, P.dividedBy, P.dividedToIntegerBy,
-   *                           P.logarithm, P.modulo, P.squareRoot, P.tan, P.tanh, P.toFraction,
-   *                           P.toNearest, toStringBinary, naturalExponential, naturalLogarithm,
-   *                           taylorSeries, atan2, parseOther
-   *  finalise                 P.absoluteValue, P.atan, P.atanh, P.ceil, P.cos, P.cosh,
-   *                           P.cubeRoot, P.dividedToIntegerBy, P.floor, P.logarithm, P.minus,
-   *                           P.modulo, P.negated, P.plus, P.round, P.sin, P.sinh, P.squareRoot,
-   *                           P.tan, P.times, P.toDecimalPlaces, P.toExponential, P.toFixed,
-   *                           P.toNearest, P.toPower, P.toPrecision, P.toSignificantDigits,
-   *                           P.truncated, divide, getLn10, getPi, naturalExponential,
-   *                           naturalLogarithm, ceil, floor, round, trunc
-   *  finiteToString           P.toExponential, P.toFixed, P.toPrecision, P.toString, P.valueOf,
-   *                           toStringBinary
-   *  getBase10Exponent        P.minus, P.plus, P.times, parseOther
-   *  getLn10                  P.logarithm, naturalLogarithm
-   *  getPi                    P.acos, P.asin, P.atan, toLessThanHalfPi, atan2
-   *  getPrecision             P.precision, P.toFraction
-   *  getZeroString            digitsToString, finiteToString
-   *  intPow                   P.toPower, parseOther
-   *  isOdd                    toLessThanHalfPi
-   *  maxOrMin                 max, min
-   *  naturalExponential       P.naturalExponential, P.toPower
-   *  naturalLogarithm         P.acosh, P.asinh, P.atanh, P.logarithm, P.naturalLogarithm,
-   *                           P.toPower, naturalExponential
-   *  nonFiniteToString        finiteToString, toStringBinary
-   *  parseDecimal             Decimal
-   *  parseOther               Decimal
-   *  sin                      P.sin
-   *  taylorSeries             P.cosh, P.sinh, cos, sin
-   *  toLessThanHalfPi         P.cos, P.sin
-   *  toStringBinary           P.toBinary, P.toHexadecimal, P.toOctal
-   *  truncate                 intPow
-   *
-   *  Throws:                  P.logarithm, P.precision, P.toFraction, checkInt32, getLn10, getPi,
-   *                           naturalLogarithm, config, fromJSON, parseOther, random, Decimal           *
-   */
-
-
-  function digitsToString(d) {
-    var i, k, ws,
-      indexOfLastWord = d.length - 1,
-      str = '',
-      w = d[0];
-
-    if (indexOfLastWord > 0) {
-      str += w;
-      for (i = 1; i < indexOfLastWord; i++) {
-        ws = d[i] + '';
-        k = LOG_BASE - ws.length;
-        if (k) str += getZeroString(k);
-        str += ws;
-      }
-
-      w = d[i];
-      ws = w + '';
-      k = LOG_BASE - ws.length;
-      if (k) str += getZeroString(k);
-    } else if (w === 0) {
-      return '0';
-    }
-
-    // Remove trailing zeros of last w.
-    for (; w % 10 === 0;) w /= 10;
-
-    return str + w;
-  }
-
-
-  function checkInt32(i, min, max) {
-    if (i !== ~~i || i < min || i > max) {
-      throw Error(invalidArgument + i);
-    }
-  }
-
-
-  /*
-   * Check 5 rounding digits if `repeating` is null, 4 otherwise.
-   * `repeating == null` if caller is `log` or `pow`,
-   * `repeating != null` if caller is `naturalLogarithm` or `naturalExponential`.
-   */
-  function checkRoundingDigits(d, i, rm, repeating) {
-    var di, k, r, rd;
-
-    // Get the length of the first word of the array d.
-    for (k = d[0]; k >= 10; k /= 10) --i;
-
-    // Is the rounding digit in the first word of d?
-    if (--i < 0) {
-      i += LOG_BASE;
-      di = 0;
-    } else {
-      di = Math.ceil((i + 1) / LOG_BASE);
-      i %= LOG_BASE;
-    }
-
-    // i is the index (0 - 6) of the rounding digit.
-    // E.g. if within the word 3487563 the first rounding digit is 5,
-    // then i = 4, k = 1000, rd = 3487563 % 1000 = 563
-    k = mathpow(10, LOG_BASE - i);
-    rd = d[di] % k | 0;
-
-    if (repeating == null) {
-      if (i < 3) {
-        if (i == 0) rd = rd / 100 | 0;
-        else if (i == 1) rd = rd / 10 | 0;
-        r = rm < 4 && rd == 99999 || rm > 3 && rd == 49999 || rd == 50000 || rd == 0;
-      } else {
-        r = (rm < 4 && rd + 1 == k || rm > 3 && rd + 1 == k / 2) &&
-          (d[di + 1] / k / 100 | 0) == mathpow(10, i - 2) - 1 ||
-            (rd == k / 2 || rd == 0) && (d[di + 1] / k / 100 | 0) == 0;
-      }
-    } else {
-      if (i < 4) {
-        if (i == 0) rd = rd / 1000 | 0;
-        else if (i == 1) rd = rd / 100 | 0;
-        else if (i == 2) rd = rd / 10 | 0;
-        r = (repeating || rm < 4) && rd == 9999 || !repeating && rm > 3 && rd == 4999;
-      } else {
-        r = ((repeating || rm < 4) && rd + 1 == k ||
-        (!repeating && rm > 3) && rd + 1 == k / 2) &&
-          (d[di + 1] / k / 1000 | 0) == mathpow(10, i - 3) - 1;
-      }
-    }
-
-    return r;
-  }
-
-
-  // Convert string of `baseIn` to an array of numbers of `baseOut`.
-  // Eg. convertBase('255', 10, 16) returns [15, 15].
-  // Eg. convertBase('ff', 16, 10) returns [2, 5, 5].
-  function convertBase(str, baseIn, baseOut) {
-    var j,
-      arr = [0],
-      arrL,
-      i = 0,
-      strL = str.length;
-
-    for (; i < strL;) {
-      for (arrL = arr.length; arrL--;) arr[arrL] *= baseIn;
-      arr[0] += NUMERALS.indexOf(str.charAt(i++));
-      for (j = 0; j < arr.length; j++) {
-        if (arr[j] > baseOut - 1) {
-          if (arr[j + 1] === void 0) arr[j + 1] = 0;
-          arr[j + 1] += arr[j] / baseOut | 0;
-          arr[j] %= baseOut;
-        }
-      }
-    }
-
-    return arr.reverse();
-  }
-
-
-  /*
-   * cos(x) = 1 - x^2/2! + x^4/4! - ...
-   * |x| < pi/2
-   *
-   */
-  function cosine(Ctor, x) {
-    var k, y,
-      len = x.d.length;
-
-    // Argument reduction: cos(4x) = 8*(cos^4(x) - cos^2(x)) + 1
-    // i.e. cos(x) = 8*(cos^4(x/4) - cos^2(x/4)) + 1
-
-    // Estimate the optimum number of times to use the argument reduction.
-    if (len < 32) {
-      k = Math.ceil(len / 3);
-      y = Math.pow(4, -k).toString();
-    } else {
-      k = 16;
-      y = '2.3283064365386962890625e-10';
-    }
-
-    Ctor.precision += k;
-
-    x = taylorSeries(Ctor, 1, x.times(y), new Ctor(ONE));
-
-    // Reverse argument reduction
-    for (var i = k; i--;) {
-      var cos2x = x.times(x);
-      x = cos2x.times(cos2x).minus(cos2x).times(8).plus(ONE);
-    }
-
-    Ctor.precision -= k;
-
-    return x;
-  }
-
-
-  /*
-   * Perform division in the specified base.
-   */
-  var divide = (function () {
-
-    // Assumes non-zero x and k, and hence non-zero result.
-    function multiplyInteger(x, k, base) {
-      var temp,
-        carry = 0,
-        i = x.length;
-
-      for (x = x.slice(); i--;) {
-        temp = x[i] * k + carry;
-        x[i] = temp % base | 0;
-        carry = temp / base | 0;
-      }
-
-      if (carry) x.unshift(carry);
-
-      return x;
-    }
-
-    function compare(a, b, aL, bL) {
-      var i, r;
-
-      if (aL != bL) {
-        r = aL > bL ? 1 : -1;
-      } else {
-        for (i = r = 0; i < aL; i++) {
-          if (a[i] != b[i]) {
-            r = a[i] > b[i] ? 1 : -1;
-            break;
-          }
-        }
-      }
-
-      return r;
-    }
-
-    function subtract(a, b, aL, base) {
-      var i = 0;
-
-      // Subtract b from a.
-      for (; aL--;) {
-        a[aL] -= i;
-        i = a[aL] < b[aL] ? 1 : 0;
-        a[aL] = i * base + a[aL] - b[aL];
-      }
-
-      // Remove leading zeros.
-      for (; !a[0] && a.length > 1;) a.shift();
-    }
-
-    return function (x, y, pr, rm, dp, base) {
-      var cmp, e, i, k, logBase, more, prod, prodL, q, qd, rem, remL, rem0, sd, t, xi, xL, yd0,
-        yL, yz,
-        Ctor = x.constructor,
-        sign = x.s == y.s ? 1 : -1,
-        xd = x.d,
-        yd = y.d;
-
-      // Either NaN, Infinity or 0?
-      if (!xd || !xd[0] || !yd || !yd[0]) {
-
-        return new Ctor(// Return NaN if either NaN, or both Infinity or 0.
-          !x.s || !y.s || (xd ? yd && xd[0] == yd[0] : !yd) ? NaN :
-
-          // Return ±0 if x is 0 or y is ±Infinity, or return ±Infinity as y is 0.
-          xd && xd[0] == 0 || !yd ? sign * 0 : sign / 0);
-      }
-
-      if (base) {
-        logBase = 1;
-        e = x.e - y.e;
-      } else {
-        base = BASE;
-        logBase = LOG_BASE;
-        e = mathfloor(x.e / logBase) - mathfloor(y.e / logBase);
-      }
-
-      yL = yd.length;
-      xL = xd.length;
-      q = new Ctor(sign);
-      qd = q.d = [];
-
-      // Result exponent may be one less than e.
-      // The digit array of a Decimal from toStringBinary may have trailing zeros.
-      for (i = 0; yd[i] == (xd[i] || 0); i++);
-
-      if (yd[i] > (xd[i] || 0)) e--;
-
-      if (pr == null) {
-        sd = pr = Ctor.precision;
-        rm = Ctor.rounding;
-      } else if (dp) {
-        sd = pr + (x.e - y.e) + 1;
-      } else {
-        sd = pr;
-      }
-
-      if (sd < 0) {
-        qd.push(1);
-        more = true;
-      } else {
-
-        // Convert precision in number of base 10 digits to base 1e7 digits.
-        sd = sd / logBase + 2 | 0;
-        i = 0;
-
-        // divisor < 1e7
-        if (yL == 1) {
-          k = 0;
-          yd = yd[0];
-          sd++;
-
-          // k is the carry.
-          for (; (i < xL || k) && sd--; i++) {
-            t = k * base + (xd[i] || 0);
-            qd[i] = t / yd | 0;
-            k = t % yd | 0;
-          }
-
-          more = k || i < xL;
-
-        // divisor >= 1e7
-        } else {
-
-          // Normalise xd and yd so highest order digit of yd is >= base/2
-          k = base / (yd[0] + 1) | 0;
-
-          if (k > 1) {
-            yd = multiplyInteger(yd, k, base);
-            xd = multiplyInteger(xd, k, base);
-            yL = yd.length;
-            xL = xd.length;
-          }
-
-          xi = yL;
-          rem = xd.slice(0, yL);
-          remL = rem.length;
-
-          // Add zeros to make remainder as long as divisor.
-          for (; remL < yL;) rem[remL++] = 0;
-
-          yz = yd.slice();
-          yz.unshift(0);
-          yd0 = yd[0];
-
-          if (yd[1] >= base / 2) ++yd0;
-
-          do {
-            k = 0;
-
-            // Compare divisor and remainder.
-            cmp = compare(yd, rem, yL, remL);
-
-            // If divisor < remainder.
-            if (cmp < 0) {
-
-              // Calculate trial digit, k.
-              rem0 = rem[0];
-              if (yL != remL) rem0 = rem0 * base + (rem[1] || 0);
-
-              // k will be how many times the divisor goes into the current remainder.
-              k = rem0 / yd0 | 0;
-
-              //  Algorithm:
-              //  1. product = divisor * trial digit (k)
-              //  2. if product > remainder: product -= divisor, k--
-              //  3. remainder -= product
-              //  4. if product was < remainder at 2:
-              //    5. compare new remainder and divisor
-              //    6. If remainder > divisor: remainder -= divisor, k++
-
-              if (k > 1) {
-                if (k >= base) k = base - 1;
-
-                // product = divisor * trial digit.
-                prod = multiplyInteger(yd, k, base);
-                prodL = prod.length;
-                remL = rem.length;
-
-                // Compare product and remainder.
-                cmp = compare(prod, rem, prodL, remL);
-
-                // product > remainder.
-                if (cmp == 1) {
-                  k--;
-
-                  // Subtract divisor from product.
-                  subtract(prod, yL < prodL ? yz : yd, prodL, base);
-                }
-              } else {
-
-                // cmp is -1.
-                // If k is 0, there is no need to compare yd and rem again below, so change cmp to 1
-                // to avoid it. If k is 1 there is a need to compare yd and rem again below.
-                if (k == 0) cmp = k = 1;
-                prod = yd.slice();
-              }
-
-              prodL = prod.length;
-              if (prodL < remL) prod.unshift(0);
-
-              // Subtract product from remainder.
-              subtract(rem, prod, remL, base);
-
-              // If product was < previous remainder.
-              if (cmp == -1) {
-                remL = rem.length;
-
-                // Compare divisor and new remainder.
-                cmp = compare(yd, rem, yL, remL);
-
-                // If divisor < new remainder, subtract divisor from remainder.
-                if (cmp < 1) {
-                  k++;
-
-                  // Subtract divisor from remainder.
-                  subtract(rem, yL < remL ? yz : yd, remL, base);
-                }
-              }
-
-              remL = rem.length;
-            } else if (cmp === 0) {
-              k++;
-              rem = [0];
-            }    // if cmp === 1, k will be 0
-
-            // Add the next digit, k, to the result array.
-            qd[i++] = k;
-
-            // Update the remainder.
-            if (cmp && rem[0]) {
-              rem[remL++] = xd[xi] || 0;
-            } else {
-              rem = [xd[xi]];
-              remL = 1;
-            }
-
-          } while ((xi++ < xL || rem[0] !== void 0) && sd--);
-
-          more = rem[0] !== void 0;
-        }
-
-        // Leading zero?
-        if (!qd[0]) qd.shift();
-      }
-
-      // logBase is 1 when divide is being used for base conversion.
-      if (logBase == 1) {
-        q.e = e;
-        inexact = more;
-      } else {
-
-        // To calculate q.e, first get the number of digits of qd[0].
-        for (i = 1, k = qd[0]; k >= 10; k /= 10) i++;
-        q.e = i + e * logBase - 1;
-
-        finalise(q, dp ? pr + q.e + 1 : pr, rm, more);
-      }
-
-      return q;
-    };
-  })();
-
-
-  /*
-   * Round `x` to `sd` significant digits using rounding mode `rm`.
-   * Check for over/under-flow.
-   */
-   function finalise(x, sd, rm, isTruncated) {
-    var digits, i, j, k, rd, roundUp, w, xd, xdi,
-      Ctor = x.constructor;
-
-    // Don't round if sd is null or undefined.
-    out: if (sd != null) {
-      xd = x.d;
-
-      // Infinity/NaN.
-      if (!xd) return x;
-
-      // rd: the rounding digit, i.e. the digit after the digit that may be rounded up.
-      // w: the word of xd containing rd, a base 1e7 number.
-      // xdi: the index of w within xd.
-      // digits: the number of digits of w.
-      // i: what would be the index of rd within w if all the numbers were 7 digits long (i.e. if
-      // they had leading zeros)
-      // j: if > 0, the actual index of rd within w (if < 0, rd is a leading zero).
-
-      // Get the length of the first word of the digits array xd.
-      for (digits = 1, k = xd[0]; k >= 10; k /= 10) digits++;
-      i = sd - digits;
-
-      // Is the rounding digit in the first word of xd?
-      if (i < 0) {
-        i += LOG_BASE;
-        j = sd;
-        w = xd[xdi = 0];
-
-        // Get the rounding digit at index j of w.
-        rd = w / mathpow(10, digits - j - 1) % 10 | 0;
-      } else {
-        xdi = Math.ceil((i + 1) / LOG_BASE);
-        k = xd.length;
-        if (xdi >= k) {
-          if (isTruncated) {
-
-            // Needed by `naturalExponential`, `naturalLogarithm` and `squareRoot`.
-            for (; k++ <= xdi;) xd.push(0);
-            w = rd = 0;
-            digits = 1;
-            i %= LOG_BASE;
-            j = i - LOG_BASE + 1;
-          } else {
-            break out;
-          }
-        } else {
-          w = k = xd[xdi];
-
-          // Get the number of digits of w.
-          for (digits = 1; k >= 10; k /= 10) digits++;
-
-          // Get the index of rd within w.
-          i %= LOG_BASE;
-
-          // Get the index of rd within w, adjusted for leading zeros.
-          // The number of leading zeros of w is given by LOG_BASE - digits.
-          j = i - LOG_BASE + digits;
-
-          // Get the rounding digit at index j of w.
-          // Floor using Math.floor instead of | 0 as rd may be outside int range.
-          rd = j < 0 ? 0 : mathfloor(w / mathpow(10, digits - j - 1) % 10);
-        }
-      }
-
-      // Are there any non-zero digits after the rounding digit?
-      isTruncated = isTruncated || sd < 0 ||
-        xd[xdi + 1] !== void 0 || (j < 0 ? w : w % mathpow(10, digits - j - 1));
-
-      // The expression `w % mathpow(10, digits - j - 1)` returns all the digits of w to the right
-      // of the digit at (left-to-right) index j, e.g. if w is 908714 and j is 2, the expression
-      // will give 714.
-
-      roundUp = rm < 4
-        ? (rd || isTruncated) && (rm == 0 || rm == (x.s < 0 ? 3 : 2))
-        : rd > 5 || rd == 5 && (rm == 4 || isTruncated || rm == 6 &&
-
-          // Check whether the digit to the left of the rounding digit is odd.
-          ((i > 0 ? j > 0 ? w / mathpow(10, digits - j) : 0 : xd[xdi - 1]) % 10) & 1 ||
-            rm == (x.s < 0 ? 8 : 7));
-
-      if (sd < 1 || !xd[0]) {
-        xd.length = 0;
-        if (roundUp) {
-
-          // Convert sd to decimal places.
-          sd -= x.e + 1;
-
-          // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-          xd[0] = mathpow(10, (LOG_BASE - sd % LOG_BASE) % LOG_BASE);
-          x.e = -sd || 0;
-        } else {
-
-          // Zero.
-          xd[0] = x.e = 0;
-        }
-
-        return x;
-      }
-
-      // Remove excess digits.
-      if (i == 0) {
-        xd.length = xdi;
-        k = 1;
-        xdi--;
-      } else {
-        xd.length = xdi + 1;
-        k = mathpow(10, LOG_BASE - i);
-
-        // E.g. 56700 becomes 56000 if 7 is the rounding digit.
-        // j > 0 means i > number of leading zeros of w.
-        xd[xdi] = j > 0 ? (w / mathpow(10, digits - j) % mathpow(10, j) | 0) * k : 0;
-      }
-
-      if (roundUp) {
-        for (;;) {
-
-          // Is the digit to be rounded up in the first word of xd?
-          if (xdi == 0) {
-
-            // i will be the length of xd[0] before k is added.
-            for (i = 1, j = xd[0]; j >= 10; j /= 10) i++;
-            j = xd[0] += k;
-            for (k = 1; j >= 10; j /= 10) k++;
-
-            // if i != k the length has increased.
-            if (i != k) {
-              x.e++;
-              if (xd[0] == BASE) xd[0] = 1;
-            }
-
-            break;
-          } else {
-            xd[xdi] += k;
-            if (xd[xdi] != BASE) break;
-            xd[xdi--] = 0;
-            k = 1;
-          }
-        }
-      }
-
-      // Remove trailing zeros.
-      for (i = xd.length; xd[--i] === 0;) xd.pop();
-    }
-
-    if (external) {
-
-      // Overflow?
-      if (x.e > Ctor.maxE) {
-
-        // Infinity.
-        x.d = null;
-        x.e = NaN;
-
-      // Underflow?
-      } else if (x.e < Ctor.minE) {
-
-        // Zero.
-        x.e = 0;
-        x.d = [0];
-        // Ctor.underflow = true;
-      } // else Ctor.underflow = false;
-    }
-
-    return x;
-  }
-
-
-  function finiteToString(x, isExp, sd) {
-    if (!x.isFinite()) return nonFiniteToString(x);
-    var k,
-      e = x.e,
-      str = digitsToString(x.d),
-      len = str.length;
-
-    if (isExp) {
-      if (sd && (k = sd - len) > 0) {
-        str = str.charAt(0) + '.' + str.slice(1) + getZeroString(k);
-      } else if (len > 1) {
-        str = str.charAt(0) + '.' + str.slice(1);
-      }
-
-      str = str + (x.e < 0 ? 'e' : 'e+') + x.e;
-    } else if (e < 0) {
-      str = '0.' + getZeroString(-e - 1) + str;
-      if (sd && (k = sd - len) > 0) str += getZeroString(k);
-    } else if (e >= len) {
-      str += getZeroString(e + 1 - len);
-      if (sd && (k = sd - e - 1) > 0) str = str + '.' + getZeroString(k);
-    } else {
-      if ((k = e + 1) < len) str = str.slice(0, k) + '.' + str.slice(k);
-      if (sd && (k = sd - len) > 0) {
-        if (e + 1 === len) str += '.';
-        str += getZeroString(k);
-      }
-    }
-
-    return str;
-  }
-
-
-  // Calculate the base 10 exponent from the base 1e7 exponent.
-  function getBase10Exponent(digits, e) {
-
-    // First get the number of digits of the first word of the digits array.
-    for (var i = 1, w = digits[0]; w >= 10; w /= 10) i++;
-    return i + e * LOG_BASE - 1;
-  }
-
-
-   function getLn10(Ctor, sd, pr) {
-    if (sd > LN10_PRECISION) {
-
-      // Reset global state in case the exception is caught.
-      external = true;
-      if (pr) Ctor.precision = pr;
-      throw Error(precisionLimitExceeded);
-    }
-    return finalise(new Ctor(LN10), sd, 1, true);
-  }
-
-
-  function getPi(Ctor, sd, rm) {
-    if (sd > PI_PRECISION) throw Error(precisionLimitExceeded);
-    return finalise(new Ctor(PI), sd, rm, true);
-  }
-
-
-  function getPrecision(digits) {
-    var w = digits.length - 1,
-      len = w * LOG_BASE + 1;
-
-    w = digits[w];
-
-    // If non-zero...
-    if (w) {
-
-      // Subtract the number of trailing zeros of the last word.
-      for (; w % 10 == 0; w /= 10) len--;
-
-      // Add the number of digits of the first word.
-      for (w = digits[0]; w >= 10; w /= 10) len++;
-    }
-
-    return len;
-  }
-
-
-  function getZeroString(k) {
-    var zs = '';
-    for (; k--;) zs += '0';
-    return zs;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the value of Decimal `x` to the power `n`, where `n` is an
-   * integer of type number.
-   *
-   * Implements 'exponentiation by squaring'. Called by `pow` and `parseOther`.
-   *
-   */
-  function intPow(Ctor, x, n, pr) {
-    var isTruncated,
-      r = new Ctor(ONE),
-
-      // Max n of 9007199254740991 takes 53 loop iterations.
-      // Maximum digits array length; leaves [28, 34] guard digits.
-      k = Math.ceil(pr / LOG_BASE + 4);
-
-    external = false;
-
-    for (;;) {
-      if (n % 2) {
-        r = r.times(x);
-        if (truncate(r.d, k)) isTruncated = true;
-      }
-
-      n = mathfloor(n / 2);
-      if (n === 0) {
-
-        // To ensure correct rounding when r.d is truncated, increment the last word if it is zero.
-        n = r.d.length - 1;
-        if (isTruncated && r.d[n] === 0) ++r.d[n];
-        break;
-      }
-
-      x = x.times(x);
-      truncate(x.d, k);
-    }
-
-    external = true;
-
-    return r;
-  }
-
-
-  function isOdd(n) {
-    return n.d[n.d.length - 1] & 1;
-  }
-
-
-  /*
-   * Handle `max` and `min`. `ltgt` is 'lt' or 'gt'.
-   */
-  function maxOrMin(Ctor, args, ltgt) {
-    var y,
-      x = new Ctor(args[0]),
-      i = 0;
-
-    for (; ++i < args.length;) {
-      y = new Ctor(args[i]);
-      if (!y.s) {
-        x = y;
-        break;
-      } else if (x[ltgt](y)) {
-        x = y;
-      }
-    }
-
-    return x;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural exponential of `x` rounded to `sd` significant
-   * digits.
-   *
-   * Taylor/Maclaurin series.
-   *
-   * exp(x) = x^0/0! + x^1/1! + x^2/2! + x^3/3! + ...
-   *
-   * Argument reduction:
-   *   Repeat x = x / 32, k += 5, until |x| < 0.1
-   *   exp(x) = exp(x / 2^k)^(2^k)
-   *
-   * Previously, the argument was initially reduced by
-   * exp(x) = exp(r) * 10^k  where r = x - k * ln10, k = floor(x / ln10)
-   * to first put r in the range [0, ln10], before dividing by 32 until |x| < 0.1, but this was
-   * found to be slower than just dividing repeatedly by 32 as above.
-   *
-   * Max integer argument: exp('20723265836946413') = 6.3e+9000000000000000
-   * Min integer argument: exp('-20723265836946411') = 1.2e-9000000000000000
-   * (Math object integer min/max: Math.exp(709) = 8.2e+307, Math.exp(-745) = 5e-324)
-   *
-   *  exp(Infinity)  = Infinity
-   *  exp(-Infinity) = 0
-   *  exp(NaN)       = NaN
-   *  exp(±0)        = 1
-   *
-   *  exp(x) is non-terminating for any finite, non-zero x.
-   *
-   *  The result will always be correctly rounded.
-   *
-   */
-  function naturalExponential(x, sd) {
-    var denominator, guard, j, pow, sum, t, wpr,
-      rep = 0,
-      i = 0,
-      k = 0,
-      Ctor = x.constructor,
-      rm = Ctor.rounding,
-      pr = Ctor.precision;
-
-    // 0/NaN/Infinity?
-    if (!x.d || !x.d[0] || x.e > 17) {
-
-      return new Ctor(x.d
-        ? !x.d[0] ? ONE : x.s < 0 ? 0 : 1 / 0
-        : x.s ? x.s < 0 ? 0 : x : 0 / 0);
-    }
-
-    if (sd == null) {
-      external = false;
-      wpr = pr;
-    } else {
-      wpr = sd;
-    }
-
-    t = new Ctor(0.03125);
-
-    // while abs(x) >= 0.1
-    while (x.e > -2) {
-
-      // x = x / 2^5
-      x = x.times(t);
-      k += 5;
-    }
-
-    // Use 2 * log10(2^k) + 5 (empirically derived) to estimate the increase in precision
-    // necessary to ensure the first 4 rounding digits are correct.
-    guard = Math.log(mathpow(2, k)) / Math.LN10 * 2 + 5 | 0;
-    wpr += guard;
-    denominator = pow = sum = new Ctor(ONE);
-    Ctor.precision = wpr;
-
-    for (;;) {
-      pow = finalise(pow.times(x), wpr, 1);
-      denominator = denominator.times(++i);
-      t = sum.plus(divide(pow, denominator, wpr, 1));
-
-      if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
-        j = k;
-        while (j--) sum = finalise(sum.times(sum), wpr, 1);
-
-        // Check to see if the first 4 rounding digits are [49]999.
-        // If so, repeat the summation with a higher precision, otherwise
-        // e.g. with precision: 18, rounding: 1
-        // exp(18.404272462595034083567793919843761) = 98372560.1229999999 (should be 98372560.123)
-        // `wpr - guard` is the index of first rounding digit.
-        if (sd == null) {
-
-          if (rep < 3 && checkRoundingDigits(sum.d, wpr - guard, rm, rep)) {
-            Ctor.precision = wpr += 10;
-            denominator = pow = t = new Ctor(ONE);
-            i = 0;
-            rep++;
-          } else {
-            return finalise(sum, Ctor.precision = pr, rm, external = true);
-          }
-        } else {
-          Ctor.precision = pr;
-          return sum;
-        }
-      }
-
-      sum = t;
-    }
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural logarithm of `x` rounded to `sd` significant
-   * digits.
-   *
-   *  ln(-n)        = NaN
-   *  ln(0)         = -Infinity
-   *  ln(-0)        = -Infinity
-   *  ln(1)         = 0
-   *  ln(Infinity)  = Infinity
-   *  ln(-Infinity) = NaN
-   *  ln(NaN)       = NaN
-   *
-   *  ln(n) (n != 1) is non-terminating.
-   *
-   */
-  function naturalLogarithm(y, sd) {
-    var c, c0, denominator, e, numerator, rep, sum, t, wpr, x1, x2,
-      n = 1,
-      guard = 10,
-      x = y,
-      xd = x.d,
-      Ctor = x.constructor,
-      rm = Ctor.rounding,
-      pr = Ctor.precision;
-
-    // Is x negative or Infinity, NaN, 0 or 1?
-    if (x.s < 0 || !xd || !xd[0] || !x.e && xd[0] == 1 && xd.length == 1) {
-      return new Ctor(xd && !xd[0] ? -1 / 0 : x.s != 1 ? NaN : xd ? 0 : x);
-    }
-
-    if (sd == null) {
-      external = false;
-      wpr = pr;
-    } else {
-      wpr = sd;
-    }
-
-    Ctor.precision = wpr += guard;
-    c = digitsToString(xd);
-    c0 = c.charAt(0);
-
-    if (Math.abs(e = x.e) < 1.5e15) {
-
-      // Argument reduction.
-      // The series converges faster the closer the argument is to 1, so using
-      // ln(a^b) = b * ln(a),   ln(a) = ln(a^b) / b
-      // multiply the argument by itself until the leading digits of the significand are 7, 8, 9,
-      // 10, 11, 12 or 13, recording the number of multiplications so the sum of the series can
-      // later be divided by this number, then separate out the power of 10 using
-      // ln(a*10^b) = ln(a) + b*ln(10).
-
-      // max n is 21 (gives 0.9, 1.0 or 1.1) (9e15 / 21 = 4.2e14).
-      //while (c0 < 9 && c0 != 1 || c0 == 1 && c.charAt(1) > 1) {
-      // max n is 6 (gives 0.7 - 1.3)
-      while (c0 < 7 && c0 != 1 || c0 == 1 && c.charAt(1) > 3) {
-        x = x.times(y);
-        c = digitsToString(x.d);
-        c0 = c.charAt(0);
-        n++;
-      }
-
-      e = x.e;
-
-      if (c0 > 1) {
-        x = new Ctor('0.' + c);
-        e++;
-      } else {
-        x = new Ctor(c0 + '.' + c.slice(1));
-      }
-    } else {
-
-      // The argument reduction method above may result in overflow if the argument y is a massive
-      // number with exponent >= 1500000000000000 (9e15 / 6 = 1.5e15), so instead recall this
-      // function using ln(x*10^e) = ln(x) + e*ln(10).
-      t = getLn10(Ctor, wpr + 2, pr).times(e + '');
-      x = naturalLogarithm(new Ctor(c0 + '.' + c.slice(1)), wpr - guard).plus(t);
-      Ctor.precision = pr;
-
-      return sd == null ? finalise(x, pr, rm, external = true) : x;
-    }
-
-    // x1 is x reduced to a value near 1.
-    x1 = x;
-
-    // Taylor series.
-    // ln(y) = ln((1 + x)/(1 - x)) = 2(x + x^3/3 + x^5/5 + x^7/7 + ...)
-    // where x = (y - 1)/(y + 1)    (|x| < 1)
-    sum = numerator = x = divide(x.minus(ONE), x.plus(ONE), wpr, 1);
-    x2 = finalise(x.times(x), wpr, 1);
-    denominator = 3;
-
-    for (;;) {
-      numerator = finalise(numerator.times(x2), wpr, 1);
-      t = sum.plus(divide(numerator, new Ctor(denominator), wpr, 1));
-
-      if (digitsToString(t.d).slice(0, wpr) === digitsToString(sum.d).slice(0, wpr)) {
-        sum = sum.times(2);
-
-        // Reverse the argument reduction. Check that e is not 0 because, besides preventing an
-        // unnecessary calculation, -0 + 0 = +0 and to ensure correct rounding -0 needs to stay -0.
-        if (e !== 0) sum = sum.plus(getLn10(Ctor, wpr + 2, pr).times(e + ''));
-        sum = divide(sum, new Ctor(n), wpr, 1);
-
-        // Is rm > 3 and the first 4 rounding digits 4999, or rm < 4 (or the summation has
-        // been repeated previously) and the first 4 rounding digits 9999?
-        // If so, restart the summation with a higher precision, otherwise
-        // e.g. with precision: 12, rounding: 1
-        // ln(135520028.6126091714265381533) = 18.7246299999 when it should be 18.72463.
-        // `wpr - guard` is the index of first rounding digit.
-        if (sd == null) {
-          if (checkRoundingDigits(sum.d, wpr - guard, rm, rep)) {
-            Ctor.precision = wpr += guard;
-            t = numerator = x = divide(x1.minus(ONE), x1.plus(ONE), wpr, 1);
-            x2 = finalise(x.times(x), wpr, 1);
-            denominator = rep = 1;
-          } else {
-            return finalise(sum, Ctor.precision = pr, rm, external = true);
-          }
-        } else {
-          Ctor.precision = pr;
-          return sum;
-        }
-      }
-
-      sum = t;
-      denominator += 2;
-    }
-  }
-
-
-  // ±Infinity, NaN.
-  function nonFiniteToString(x) {
-    // Unsigned.
-    return String(x.s * x.s / 0);
-  }
-
-
-  /*
-   * Parse the value of a new Decimal `x` from string `str`.
-   */
-  function parseDecimal(x, str) {
-    var e, i, len;
-
-    // Decimal point?
-    if ((e = str.indexOf('.')) > -1) str = str.replace('.', '');
-
-    // Exponential form?
-    if ((i = str.search(/e/i)) > 0) {
-
-      // Determine exponent.
-      if (e < 0) e = i;
-      e += +str.slice(i + 1);
-      str = str.substring(0, i);
-    } else if (e < 0) {
-
-      // Integer.
-      e = str.length;
-    }
-
-    // Determine leading zeros.
-    for (i = 0; str.charCodeAt(i) === 48; i++);
-
-    // Determine trailing zeros.
-    for (len = str.length; str.charCodeAt(len - 1) === 48; --len);
-    str = str.slice(i, len);
-
-    if (str) {
-      len -= i;
-      x.e = e = e - i - 1;
-      x.d = [];
-
-      // Transform base
-
-      // e is the base 10 exponent.
-      // i is where to slice str to get the first word of the digits array.
-      i = (e + 1) % LOG_BASE;
-      if (e < 0) i += LOG_BASE;
-
-      if (i < len) {
-        if (i) x.d.push(+str.slice(0, i));
-        for (len -= LOG_BASE; i < len;) x.d.push(+str.slice(i, i += LOG_BASE));
-        str = str.slice(i);
-        i = LOG_BASE - str.length;
-      } else {
-        i -= len;
-      }
-
-      for (; i--;) str += '0';
-      x.d.push(+str);
-
-      if (external) {
-
-        // Overflow?
-        if (x.e > x.constructor.maxE) {
-
-          // Infinity.
-          x.d = null;
-          x.e = NaN;
-
-        // Underflow?
-        } else if (x.e < x.constructor.minE) {
-
-          // Zero.
-          x.e = 0;
-          x.d = [0];
-          // x.constructor.underflow = true;
-        } // else x.constructor.underflow = false;
-      }
-    } else {
-
-      // Zero.
-      x.e = 0;
-      x.d = [0];
-    }
-
-    return x;
-  }
-
-
-  /*
-   * Parse the value of a new Decimal `x` from a string `str`, which is not a decimal value.
-   */
-  function parseOther(x, str) {
-    var base, Ctor, divisor, i, isFloat, len, p, xd, xe;
-
-    if (str === 'Infinity' || str === 'NaN') {
-      if (!+str) x.s = NaN;
-      x.e = NaN;
-      x.d = null;
-      return x;
-    }
-
-    if (isHex.test(str))  {
-      base = 16;
-      str = str.toLowerCase();
-    } else if (isBinary.test(str))  {
-      base = 2;
-    } else if (isOctal.test(str))  {
-      base = 8;
-    } else {
-      throw Error(invalidArgument + str);
-    }
-
-    // Is there a binary exponent part?
-    i = str.search(/p/i);
-
-    if (i > 0) {
-      p = +str.slice(i + 1);
-      str = str.substring(2, i);
-    } else {
-      str = str.slice(2);
-    }
-
-    // Convert `str` as an integer then divide the result by `base` raised to a power such that the
-    // fraction part will be restored.
-    i = str.indexOf('.');
-    isFloat = i >= 0;
-    Ctor = x.constructor;
-
-    if (isFloat) {
-      str = str.replace('.', '');
-      len = str.length;
-      i = len - i;
-
-      // log[10](16) = 1.2041... , log[10](88) = 1.9444....
-      divisor = intPow(Ctor, new Ctor(base), i, i * 2);
-    }
-
-    xd = convertBase(str, base, BASE);
-    xe = xd.length - 1;
-
-    // Remove trailing zeros.
-    for (i = xe; xd[i] === 0; --i) xd.pop();
-    if (i < 0) return new Ctor(x.s * 0);
-    x.e = getBase10Exponent(xd, xe);
-    x.d = xd;
-    external = false;
-
-    // At what precision to perform the division to ensure exact conversion?
-    // maxDecimalIntegerPartDigitCount = ceil(log[10](b) * otherBaseIntegerPartDigitCount)
-    // log[10](2) = 0.30103, log[10](8) = 0.90309, log[10](16) = 1.20412
-    // E.g. ceil(1.2 * 3) = 4, so up to 4 decimal digits are needed to represent 3 hex int digits.
-    // maxDecimalFractionPartDigitCount = {Hex:4|Oct:3|Bin:1} * otherBaseFractionPartDigitCount
-    // Therefore using 4 * the number of digits of str will always be enough.
-    if (isFloat) x = divide(x, divisor, len * 4);
-
-    // Multiply by the binary exponent part if present.
-    if (p) x = x.times(Math.abs(p) < 54 ? Math.pow(2, p) : Decimal.pow(2, p));
-    external = true;
-
-    return x;
-  }
-
-
-  /*
-   * sin(x) = x - x^3/3! + x^5/5! - ...
-   * |x| < pi/2
-   *
-   */
-  function sine(Ctor, x) {
-    var k,
-      len = x.d.length;
-
-    if (len < 3) return taylorSeries(Ctor, 2, x, x);
-
-    // Argument reduction: sin(5x) = 16*sin^5(x) - 20*sin^3(x) + 5*sin(x)
-    // i.e. sin(x) = 16*sin^5(x/5) - 20*sin^3(x/5) + 5*sin(x/5)
-    // and  sin(x) = sin(x/5)(5 + sin^2(x/5)(16sin^2(x/5) - 20))
-
-    // Estimate the optimum number of times to use the argument reduction.
-    k = 1.4 * Math.sqrt(len);
-    k = k > 16 ? 16 : k | 0;
-
-    // Max k before Math.pow precision loss is 22
-    x = x.times(Math.pow(5, -k));
-    x = taylorSeries(Ctor, 2, x, x);
-
-    // Reverse argument reduction
-    var sin2_x,
-      d5 = new Ctor(5),
-      d16 = new Ctor(16),
-      d20 = new Ctor(20);
-    for (; k--;) {
-      sin2_x = x.times(x);
-      x = x.times(d5.plus(sin2_x.times(d16.times(sin2_x).minus(d20))));
-    }
-
-    return x;
-  }
-
-
-  // Calculate Taylor series for `cos`, `cosh`, `sin` and `sinh`.
-  function taylorSeries(Ctor, n, x, y, isHyperbolic) {
-    var j, t, u, x2,
-      i = 1,
-      pr = Ctor.precision,
-      k = Math.ceil(pr / LOG_BASE);
-
-    external = false;
-    x2 = x.times(x);
-    u = new Ctor(y);
-
-    for (;;) {
-      t = divide(u.times(x2), new Ctor(n++ * n++), pr, 1);
-      u = isHyperbolic ? y.plus(t) : y.minus(t);
-      y = divide(t.times(x2), new Ctor(n++ * n++), pr, 1);
-      t = u.plus(y);
-
-      if (t.d[k] !== void 0) {
-        for (j = k; t.d[j] === u.d[j] && j--;);
-        if (j == -1) break;
-      }
-
-      j = u;
-      u = y;
-      y = t;
-      t = j;
-      i++;
-    }
-
-    external = true;
-    t.d.length = k + 1;
-
-    return t;
-  }
-
-
-  // Return the absolute value of `x` reduced to less than or equal to half pi.
-  function toLessThanHalfPi(Ctor, x) {
-    var t,
-      isNeg = x.s < 0,
-      pi = getPi(Ctor, Ctor.precision, 1),
-      halfPi = pi.times(HALF);
-
-    x = x.abs();
-
-    if (x.lte(halfPi)) {
-      quadrant = isNeg ? 4 : 1;
-      return x;
-    }
-
-    t = x.divToInt(pi);
-
-    if (t.isZero()) {
-      quadrant = isNeg ? 3 : 2;
-    } else {
-      x = x.minus(t.times(pi));
-
-      // 0 <= x < pi
-      if (x.lte(halfPi)) {
-        quadrant = isOdd(t) ? (isNeg ? 2 : 3) : (isNeg ? 4 : 1);
-        return x;
-      }
-
-      quadrant = isOdd(t) ? (isNeg ? 1 : 4) : (isNeg ? 3 : 2);
-    }
-
-    return x.minus(pi).abs();
-  }
-
-
-  /*
-   * Return the value of Decimal `x` as a string in base `baseOut`.
-   *
-   * If the optional `sd` argument is present include a binary exponent suffix.
-   */
-  function toStringBinary(x, baseOut, sd, rm) {
-    var base, e, i, k, len, roundUp, str, xd, y,
-      Ctor = x.constructor,
-      isExp = sd !== void 0;
-
-    if (isExp) {
-      checkInt32(sd, 1, MAX_DIGITS);
-      if (rm === void 0) rm = Ctor.rounding;
-      else checkInt32(rm, 0, 8);
-    } else {
-      sd = Ctor.precision;
-      rm = Ctor.rounding;
-    }
-
-    if (!x.isFinite()) {
-      str = nonFiniteToString(x);
-    } else {
-      str = finiteToString(x);
-      i = str.indexOf('.');
-
-      // Use exponential notation according to `toExpPos` and `toExpNeg`? No, but if required:
-      // maxBinaryExponent = floor((decimalExponent + 1) * log[2](10))
-      // minBinaryExponent = floor(decimalExponent * log[2](10))
-      // log[2](10) = 3.321928094887362347870319429489390175864
-
-      if (isExp) {
-        base = 2;
-        if (baseOut == 16) {
-          sd = sd * 4 - 3;
-        } else if (baseOut == 8) {
-          sd = sd * 3 - 2;
-        }
-      } else {
-        base = baseOut;
-      }
-
-      // Convert the number as an integer then divide the result by its base raised to a power such
-      // that the fraction part will be restored.
-
-      // Non-integer.
-      if (i >= 0) {
-        str = str.replace('.', '');
-        y = new Ctor(ONE);
-        y.e = str.length - i;
-        y.d = convertBase(finiteToString(y), 10, base);
-        y.e = y.d.length;
-      }
-
-      xd = convertBase(str, 10, base);
-      e = len = xd.length;
-
-      // Remove trailing zeros.
-      for (; xd[--len] == 0;) xd.pop();
-
-      if (!xd[0]) {
-        str = isExp ? '0p+0' : '0';
-      } else {
-        if (i < 0) {
-          e--;
-        } else {
-          x = new Ctor(x);
-          x.d = xd;
-          x.e = e;
-          x = divide(x, y, sd, rm, 0, base);
-          xd = x.d;
-          e = x.e;
-          roundUp = inexact;
-        }
-
-        // The rounding digit, i.e. the digit after the digit that may be rounded up.
-        i = xd[sd];
-        k = base / 2;
-        roundUp = roundUp || xd[sd + 1] !== void 0;
-
-        roundUp = rm < 4
-          ? (i !== void 0 || roundUp) && (rm === 0 || rm === (x.s < 0 ? 3 : 2))
-          : i > k || i === k && (rm === 4 || roundUp || rm === 6 && xd[sd - 1] & 1 ||
-            rm === (x.s < 0 ? 8 : 7));
-
-        xd.length = sd;
-
-        if (roundUp) {
-
-          // Rounding up may mean the previous digit has to be rounded up and so on.
-          for (; ++xd[--sd] > base - 1;) {
-            xd[sd] = 0;
-            if (!sd) {
-              ++e;
-              xd.unshift(1);
-            }
-          }
-        }
-
-        // Determine trailing zeros.
-        for (len = xd.length; !xd[len - 1]; --len);
-
-        // E.g. [4, 11, 15] becomes 4bf.
-        for (i = 0, str = ''; i < len; i++) str += NUMERALS.charAt(xd[i]);
-
-        // Add binary exponent suffix?
-        if (isExp) {
-          if (len > 1) {
-            if (baseOut == 16 || baseOut == 8) {
-              i = baseOut == 16 ? 4 : 3;
-              for (--len; len % i; len++) str += '0';
-              xd = convertBase(str, base, baseOut);
-              for (len = xd.length; !xd[len - 1]; --len);
-
-              // xd[0] will always be be 1
-              for (i = 1, str = '1.'; i < len; i++) str += NUMERALS.charAt(xd[i]);
-            } else {
-              str = str.charAt(0) + '.' + str.slice(1);
-            }
-          }
-
-          str =  str + (e < 0 ? 'p' : 'p+') + e;
-        } else if (e < 0) {
-          for (; ++e;) str = '0' + str;
-          str = '0.' + str;
-        } else {
-          if (++e > len) for (e -= len; e-- ;) str += '0';
-          else if (e < len) str = str.slice(0, e) + '.' + str.slice(e);
-        }
-      }
-
-      str = (baseOut == 16 ? '0x' : baseOut == 2 ? '0b' : baseOut == 8 ? '0o' : '') + str;
-    }
-
-    return x.s < 0 ? '-' + str : str;
-  }
-
-
-  // Does not strip trailing zeros.
-  function truncate(arr, len) {
-    if (arr.length > len) {
-      arr.length = len;
-      return true;
-    }
-  }
-
-
-  // Decimal methods
-
-
-  /*
-   *  abs
-   *  acos
-   *  acosh
-   *  add
-   *  asin
-   *  asinh
-   *  atan
-   *  atanh
-   *  atan2
-   *  cbrt
-   *  ceil
-   *  clone
-   *  config
-   *  cos
-   *  cosh
-   *  div
-   *  exp
-   *  floor
-   *  fromJSON
-   *  hypot
-   *  ln
-   *  log
-   *  log2
-   *  log10
-   *  max
-   *  min
-   *  mod
-   *  mul
-   *  pow
-   *  random
-   *  round
-   *  sign
-   *  sin
-   *  sinh
-   *  sqrt
-   *  sub
-   *  tan
-   *  tanh
-   *  trunc
-   */
-
-
-  /*
-   * Return a new Decimal whose value is the absolute value of `x`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function abs(x) {
-    return new this(x).abs();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arccosine in radians of `x`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function acos(x) {
-    return new this(x).acos();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic cosine of `x`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function acosh(x) {
-    return new this(x).acosh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the sum of `x` and `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function add(x, y) {
-    return new this(x).plus(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arcsine in radians of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function asin(x) {
-    return new this(x).asin();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic sine of `x`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function asinh(x) {
-    return new this(x).asinh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arctangent in radians of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function atan(x) {
-    return new this(x).atan();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the inverse of the hyperbolic tangent of `x`, rounded to
-   * `precision` significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function atanh(x) {
-    return new this(x).atanh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the arctangent in radians of `y/x` in the range -pi to pi
-   * (inclusive), rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   * Domain: [-Infinity, Infinity]
-   * Range: [-pi, pi]
-   *
-   * y {number|string|Decimal} The y-coordinate.
-   * x {number|string|Decimal} The x-coordinate.
-   *
-   * atan2(±0, -0)               = ±pi
-   * atan2(±0, +0)               = ±0
-   * atan2(±0, -x)               = ±pi for x > 0
-   * atan2(±0, x)                = ±0 for x > 0
-   * atan2(-y, ±0)               = -pi/2 for y > 0
-   * atan2(y, ±0)                = pi/2 for y > 0
-   * atan2(±y, -Infinity)        = ±pi for finite y > 0
-   * atan2(±y, +Infinity)        = ±0 for finite y > 0
-   * atan2(±Infinity, x)         = ±pi/2 for finite x
-   * atan2(±Infinity, -Infinity) = ±3*pi/4
-   * atan2(±Infinity, +Infinity) = ±pi/4
-   * atan2(NaN, x) = NaN
-   * atan2(y, NaN) = NaN
-   *
-   */
-  function atan2(y, x) {
-    y = new this(y);
-    x = new this(x);
-    var r,
-      pr = this.precision,
-      rm = this.rounding,
-      wpr = pr + 4;
-
-    // Either NaN
-    if (!y.s || !x.s) {
-      r = new this(NaN);
-
-    // Both ±Infinity
-    } else if (!y.d && !x.d) {
-      r = getPi(this, wpr, 1).times(x.s > 0 ? 0.25 : 0.75);
-      r.s = y.s;
-
-    // x is ±Infinity or y is ±0
-    } else if (!x.d || y.isZero()) {
-      r = x.s < 0 ? getPi(this, pr, rm) : new this(0);
-      r.s = y.s;
-
-    // y is ±Infinity or x is ±0
-    } else if (!y.d || x.isZero()) {
-      r = getPi(this, wpr, 1).times(HALF);
-      r.s = y.s;
-
-    // Both non-zero and finite
-    } else if (x.s < 0) {
-      this.precision = wpr;
-      this.rounding = 1;
-      r = this.atan(divide(y, x, wpr, 1));
-      x = getPi(this, wpr, 1);
-      this.precision = pr;
-      this.rounding = rm;
-      r = y.s < 0 ? r.minus(x) : r.plus(x);
-    } else {
-      r = this.atan(divide(y, x, wpr, 1));
-    }
-
-    return r;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the cube root of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function cbrt(x) {
-    return new this(x).cbrt();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` rounded to an integer using `ROUND_CEIL`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function ceil(x) {
-    return finalise(x = new this(x), x.e + 1, 2);
-  }
-
-
-  /*
-   * Configure global settings for a Decimal constructor.
-   *
-   * `obj` is an object with one or more of the following properties,
-   *
-   *   precision  {number}
-   *   rounding   {number}
-   *   toExpNeg   {number}
-   *   toExpPos   {number}
-   *   maxE       {number}
-   *   minE       {number}
-   *   modulo     {number}
-   *   crypto     {boolean|number|undefined}
-   *
-   * E.g. Decimal.config({ precision: 20, rounding: 4 })
-   *
-   */
-  function config(obj) {
-    if (!obj || typeof obj !== 'object') throw Error(decimalError + 'Object expected');
-    var i, p, v,
-      ps = [
-        'precision', 1, MAX_DIGITS,
-        'rounding', 0, 8,
-        'toExpNeg', -EXP_LIMIT, 0,
-        'toExpPos', 0, EXP_LIMIT,
-        'maxE', 0, EXP_LIMIT,
-        'minE', -EXP_LIMIT, 0,
-        'modulo', 0, 9
-      ];
-
-    for (i = 0; i < ps.length; i += 3) {
-      if ((v = obj[p = ps[i]]) !== void 0) {
-        if (mathfloor(v) === v && v >= ps[i + 1] && v <= ps[i + 2]) this[p] = v;
-        else throw Error(invalidArgument + p + ': ' + v);
-      }
-    }
-
-    if (obj.hasOwnProperty(p = 'crypto')) {
-      if ((v = obj[p]) === void 0) {
-        this[p] = v;
-      } else if (v === true || v === false || v === 0 || v === 1) {
-        this[p] = !!(v && cryptoObject &&
-            (cryptoObject.getRandomValues || cryptoObject.randomBytes));
-      } else {
-        throw Error(invalidArgument + p + ': ' + v);
-      }
-    }
-
-    return this;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the cosine of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function cos(x) {
-    return new this(x).cos();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic cosine of `x`, rounded to precision
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function cosh(x) {
-    return new this(x).cosh();
-  }
-
-
-  /*
-   * Create and return a Decimal constructor with the same configuration properties as this Decimal
-   * constructor.
-   *
-   */
-  function clone(obj) {
-
-    /*
-     * The Decimal constructor and exported function.
-     * Return a new Decimal instance.
-     *
-     * v {number|string|Decimal} A numeric value.
-     *
-     */
-    function Decimal(v) {
-      var e, i, t,
-        x = this;
-
-      // Decimal called without new.
-      if (!(x instanceof Decimal)) return new Decimal(v);
-
-      // Retain a reference to this Decimal constructor, and shadow Decimal.prototype.constructor
-      // which points to Object.
-      x.constructor = Decimal;
-
-      // Duplicate.
-      if (v instanceof Decimal) {
-        x.s = v.s;
-        x.e = v.e;
-        x.d = (v = v.d) ? v.slice() : v;
-        return;
-      }
-
-      t = typeof v;
-
-      if (t === 'number') {
-        if (v === 0) {
-          x.s = 1 / v < 0 ? -1 : 1;
-          x.e = 0;
-          x.d = [0];
-          return;
-        }
-
-        if (v < 0) {
-          v = -v;
-          x.s = -1;
-        } else {
-          x.s = 1;
-        }
-
-        // Fast path for small integers.
-        if (v === ~~v && v < 1e7) {
-          for (e = 0, i = v; i >= 10; i /= 10) e++;
-          x.e = e;
-          x.d = [v];
-          return;
-
-        // Infinity, NaN.
-        } else if (v * 0 !== 0) {
-          if (!v) x.s = NaN;
-          x.e = NaN;
-          x.d = null;
-          return;
-        }
-
-        return parseDecimal(x, v.toString());
-
-      } else if (t !== 'string') {
-        throw Error(invalidArgument + v);
-      }
-
-      // Minus sign?
-      if (v.charCodeAt(0) === 45) {
-        v = v.slice(1);
-        x.s = -1;
-      } else {
-        x.s = 1;
-      }
-
-      return isDecimal.test(v) ? parseDecimal(x, v) : parseOther(x, v);
-    }
-
-    Decimal.prototype = P;
-
-    Decimal.ROUND_UP = 0;
-    Decimal.ROUND_DOWN = 1;
-    Decimal.ROUND_CEIL = 2;
-    Decimal.ROUND_FLOOR = 3;
-    Decimal.ROUND_HALF_UP = 4;
-    Decimal.ROUND_HALF_DOWN = 5;
-    Decimal.ROUND_HALF_EVEN = 6;
-    Decimal.ROUND_HALF_CEIL = 7;
-    Decimal.ROUND_HALF_FLOOR = 8;
-    Decimal.EUCLID = 9;
-
-    Decimal.config = config;
-    Decimal.clone = clone;
-
-    Decimal.abs = abs;
-    Decimal.acos = acos;
-    Decimal.acosh = acosh;        // ES6
-    Decimal.add = add;
-    Decimal.asin = asin;
-    Decimal.asinh = asinh;        // ES6
-    Decimal.atan = atan;
-    Decimal.atanh = atanh;        // ES6
-    Decimal.atan2 = atan2;
-    Decimal.cbrt = cbrt;          // ES6
-    Decimal.ceil = ceil;
-    Decimal.cos = cos;
-    Decimal.cosh = cosh;          // ES6
-    Decimal.div = div;
-    Decimal.exp = exp;
-    Decimal.floor = floor;
-    Decimal.fromJSON = fromJSON;
-    Decimal.hypot = hypot;        // ES6
-    Decimal.ln = ln;
-    Decimal.log = log;
-    Decimal.log10 = log10;        // ES6
-    Decimal.log2 = log2;          // ES6
-    Decimal.max = max;
-    Decimal.min = min;
-    Decimal.mod = mod;
-    Decimal.mul = mul;
-    Decimal.pow = pow;
-    Decimal.random = random;
-    Decimal.round = round;
-    Decimal.sign = sign;          // ES6
-    Decimal.sin = sin;
-    Decimal.sinh = sinh;          // ES6
-    Decimal.sqrt = sqrt;
-    Decimal.sub = sub;
-    Decimal.tan = tan;
-    Decimal.tanh = tanh;          // ES6
-    Decimal.trunc = trunc;        // ES6
-
-    if (obj === void 0) {
-      obj = this;
-      obj = {
-        precision: obj.precision,
-        rounding: obj.rounding,
-        modulo: obj.modulo,
-        toExpNeg: obj.toExpNeg,
-        toExpPos: obj.toExpPos,
-        minE: obj.minE,
-        maxE: obj.maxE,
-        crypto: obj.crypto
-      };
-    }
-
-    Decimal.config(obj);
-
-    return Decimal;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` divided by `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function div(x, y) {
-    return new this(x).div(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural exponential of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} The power to which to raise the base of the natural log.
-   *
-   */
-  function exp(x) {
-    return new this(x).exp();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` round to an integer using `ROUND_FLOOR`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function floor(x) {
-    return finalise(x = new this(x), x.e + 1, 3);
-  }
-
-
-  /*
-   * Return a new Decimal from `str`, a string value created by `toJSON`.
-   *
-   * Base 88 alphabet:
-   * 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%()*+,-./:;=?@[]^_`{|}~
-   *
-   * If `str` is just one character:
-   * 0-81  [[0, 40][-0, -40]]
-   * 82    -Infinity
-   * 83    +Infinity
-   * 84    NaN
-   *
-   *   64 32 16  8  4  2  1
-   *    1  0  1  0  1  1  1 = 87
-   *
-   */
-  function fromJSON(str) {
-    var e, isNeg, k, n;
-
-    if (typeof str !== 'string' || !str) throw Error(invalidArgument + str);
-    k = str.length;
-    n = NUMERALS.indexOf(str.charAt(0));
-
-    //  [0, 81] -> [[0, 40][-0, -40]]
-    if (k === 1) {
-      return new this(n > 81 ? [-1 / 0, 1 / 0, 0 / 0][n - 82] : n > 40 ? -(n - 41) : n);
-    } else if (n & 64) {
-      isNeg = n & 16;
-
-      // e = isNeg ? [-3, 4] : [-7, 8]
-      e = isNeg ? (n & 7) - 3 : (n & 15) - 7;
-      k = 1;
-    } else if (k === 2) {
-      n = n * 88 + NUMERALS.indexOf(str.charAt(1));
-
-      // [0, 5631] -> [[0, 2815][-0, -2815]] -> [[41, 2856][-41, -2856]]
-      return new this(n >= 2816 ? -(n - 2816) - 41 : n + 41);
-    } else {
-
-      // 0XXXXXX
-      // 0 {is negative} {is exponent negative} {exponent digit count [0, 15]}
-      isNeg = n & 32;
-
-      // Has an exponent been specified?
-      if (n & 31) {
-        e = n & 15;    // Exponent character count [1, 15]
-        k = e + 1;     // Index of first character of the significand.
-
-        if (e === 1)  {
-          e = NUMERALS.indexOf(str.charAt(1));
-        } else if (e === 2) {
-          e = NUMERALS.indexOf(str.charAt(1)) * 88 +
-            NUMERALS.indexOf(str.charAt(2));
-        } else {
-          e = +convertBase(str.slice(1, k), 88, 10).join('');
-        }
-
-        // Negative exponent?
-        if (n & 16) e = -e;
-      } else {
-
-        // Integer without trailing zeros.
-        // 0X00000
-        // 0 {is negative} 0 0 0 0 0
-        str = convertBase(str.slice(1), 88, 10).join('');
-        return new this(isNeg ? '-' + str : str);
-      }
-    }
-
-    str = convertBase(str.slice(k), 88, 10).join('');
-    e = e - str.length + 1;
-    str = str + 'e' + e;
-
-    return new this(isNeg ? '-' + str : str);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the square root of the sum of the squares of the arguments,
-   * rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   * hypot(a, b, ...) = sqrt(a^2 + b^2 + ...)
-   *
-   */
-  function hypot() {
-    var i, n,
-      t = new this(0);
-
-    external = false;
-
-    for (i = 0; i < arguments.length;) {
-      n = new this(arguments[i++]);
-      if (!n.d) {
-        if (n.s) {
-          external = true;
-          return new this(1 / 0);
-        }
-        t = n;
-      } else if (t.d) {
-        t = t.plus(n.times(n));
-      }
-    }
-
-    external = true;
-
-    return t.sqrt();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the natural logarithm of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function ln(x) {
-    return new this(x).ln();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the log of `x` to the base `y`, or to base 10 if no base
-   * is specified, rounded to `precision` significant digits using rounding mode `rounding`.
-   *
-   * log[y](x)
-   *
-   * x {number|string|Decimal} The argument of the logarithm.
-   * y {number|string|Decimal} The base of the logarithm.
-   *
-   */
-  function log(x, y) {
-    return new this(x).log(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the base 2 logarithm of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function log2(x) {
-    return new this(x).log(2);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the base 10 logarithm of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function log10(x) {
-    return new this(x).log(10);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the maximum of the arguments.
-   *
-   * arguments {number|string|Decimal}
-   *
-   */
-  function max() {
-    return maxOrMin(this, arguments, 'lt');
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the minimum of the arguments.
-   *
-   * arguments {number|string|Decimal}
-   *
-   */
-  function min() {
-    return maxOrMin(this, arguments, 'gt');
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` modulo `y`, rounded to `precision` significant digits
-   * using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function mod(x, y) {
-    return new this(x).mod(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` multiplied by `y`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function mul(x, y) {
-    return new this(x).mul(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` raised to the power `y`, rounded to precision
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} The base.
-   * y {number|string|Decimal} The exponent.
-   *
-   */
-  function pow(x, y) {
-    return new this(x).pow(y);
-  }
-
-
-  /*
-   * Returns a new Decimal with a random value equal to or greater than 0 and less than 1, and with
-   * `sd`, or `Decimal.precision` if `sd` is omitted, significant digits (or less if trailing zeros
-   * are produced).
-   *
-   * [sd] {number} Significant digits. Integer, 0 to MAX_DIGITS inclusive.
-   *
-   */
-  function random(sd) {
-    var d, e, k, n,
-      i = 0,
-      r = new this(ONE),
-      rd = [];
-
-    if (sd === void 0) sd = this.precision;
-    else checkInt32(sd, 1, MAX_DIGITS);
-
-    k = Math.ceil(sd / LOG_BASE);
-
-    if (this.crypto === false) {
-      for (; i < k;) rd[i++] = Math.random() * 1e7 | 0;
-
-    // Browsers supporting crypto.getRandomValues.
-    } else if (cryptoObject && cryptoObject.getRandomValues) {
-      d = cryptoObject.getRandomValues(new Uint32Array(k));
-
-      for (; i < k;) {
-        n = d[i];
-
-        // 0 <= n < 4294967296
-        // Probability n >= 4.29e9, is 4967296 / 4294967296 = 0.00116 (1 in 865).
-        if (n >= 4.29e9) {
-          d[i] = cryptoObject.getRandomValues(new Uint32Array(1))[0];
-        } else {
-
-          // 0 <= n <= 4289999999
-          // 0 <= (n % 1e7) <= 9999999
-          rd[i++] = n % 1e7;
-        }
-      }
-
-    // Node.js supporting crypto.randomBytes.
-    } else if (cryptoObject && cryptoObject.randomBytes) {
-
-      // buffer
-      d = cryptoObject.randomBytes(k *= 4);
-
-      for (; i < k;) {
-
-        // 0 <= n < 2147483648
-        n = d[i] + (d[i + 1] << 8) + (d[i + 2] << 16) + ((d[i + 3] & 0x7f) << 24);
-
-        // Probability n >= 2.14e9, is 7483648 / 2147483648 = 0.0035 (1 in 286).
-        if (n >= 2.14e9) {
-          cryptoObject.randomBytes(4).copy(d, i);
-        } else {
-
-          // 0 <= n <= 2139999999
-          // 0 <= (n % 1e7) <= 9999999
-          rd.push(n % 1e7);
-          i += 4;
-        }
-      }
-
-      i = k / 4;
-    } else if (this.crypto) {
-      throw Error(decimalError + 'crypto unavailable');
-    } else {
-      for (; i < k;) rd[i++] = Math.random() * 1e7 | 0;
-    }
-
-    k = rd[--i];
-    sd %= LOG_BASE;
-
-    // Convert trailing digits to zeros according to sd.
-    if (k && sd) {
-      n = mathpow(10, LOG_BASE - sd);
-      rd[i] = (k / n | 0) * n;
-    }
-
-    // Remove trailing words which are zero.
-    for (; rd[i] === 0; i--) rd.pop();
-
-    // Zero?
-    if (i < 0) {
-      e = 0;
-      rd = [0];
-    } else {
-      e = -1;
-
-      // Remove leading words which are zero and adjust exponent accordingly.
-      for (; rd[0] === 0; e -= LOG_BASE) rd.shift();
-
-      // Count the digits of the first word of rd to determine leading zeros.
-      for (k = 1, n = rd[0]; n >= 10; n /= 10) k++;
-
-      // Adjust the exponent for leading zeros of the first word of rd.
-      if (k < LOG_BASE) e -= LOG_BASE - k;
-    }
-
-    r.e = e;
-    r.d = rd;
-
-    return r;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` rounded to an integer using rounding mode `rounding`.
-   *
-   * To emulate `Math.round`, set rounding to 7 (ROUND_HALF_CEIL).
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function round(x) {
-    return finalise(x = new this(x), x.e + 1, this.rounding);
-  }
-
-
-  /*
-   * Return
-   *   1    if x > 0,
-   *  -1    if x < 0,
-   *   0    if x is 0,
-   *  -0    if x is -0,
-   *   NaN  otherwise
-   *
-   */
-  function sign(x) {
-    x = new this(x);
-    return x.d ? (x.d[0] ? x.s : 0 * x.s) : x.s || NaN;
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the sine of `x`, rounded to `precision` significant digits
-   * using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function sin(x) {
-    return new this(x).sin();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic sine of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function sinh(x) {
-    return new this(x).sinh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the square root of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function sqrt(x) {
-    return new this(x).sqrt();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` minus `y`, rounded to `precision` significant digits
-   * using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal}
-   * y {number|string|Decimal}
-   *
-   */
-  function sub(x, y) {
-    return new this(x).sub(y);
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the tangent of `x`, rounded to `precision` significant
-   * digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function tan(x) {
-    return new this(x).tan();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is the hyperbolic tangent of `x`, rounded to `precision`
-   * significant digits using rounding mode `rounding`.
-   *
-   * x {number|string|Decimal} A value in radians.
-   *
-   */
-  function tanh(x) {
-    return new this(x).tanh();
-  }
-
-
-  /*
-   * Return a new Decimal whose value is `x` truncated to an integer.
-   *
-   * x {number|string|Decimal}
-   *
-   */
-  function trunc(x) {
-    return finalise(x = new this(x), x.e + 1, 1);
-  }
-
-
-  // Create and configure initial Decimal constructor.
-  Decimal = clone(Decimal);
-
-  // Internal constants.
-  HALF = new Decimal(0.5);
-  ONE = new Decimal(1);
-  LN10 = new Decimal(LN10);
-  PI = new Decimal(PI);
-
-
-  // Export.
-
-
-  // AMD.
-  if (typeof define == 'function' && define.amd) {
-    define(function () {
-      return Decimal;
-    });
-
-  // Node and other environments that support module.exports.
-  } else if (typeof module != 'undefined' && module.exports) {
-    module.exports = Decimal;
-
-    if (!cryptoObject) {
-      try {
-        cryptoObject = require('cry' + 'pto');
-      } catch (e) {
-        // Ignore.
-      }
-    }
-
-  // Browser.
-  } else {
-    if (!globalScope) {
-      globalScope = typeof self != 'undefined' && self && self.self == self
-        ? self : Function('return this')();
-    }
-
-    noConflict = globalScope.Decimal;
-    Decimal.noConflict = function () {
-      globalScope.Decimal = noConflict;
-      return Decimal;
-    };
-
-    globalScope.Decimal = Decimal;
-  }
-})(this);
-
-},{}],336:[function(require,module,exports){
+},{}],324:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -58397,7 +46415,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":337,"./lib/scrypt":338,"_process":211,"buffer":232,"crypto":15,"elliptic":339,"ethereumjs-util":365,"fs":11,"node-uuid":370,"path":210,"validator":372}],337:[function(require,module,exports){
+},{"./lib/keccak":325,"./lib/scrypt":326,"_process":212,"buffer":233,"crypto":16,"elliptic":327,"ethereumjs-util":353,"fs":12,"node-uuid":358,"path":211,"validator":360}],325:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -58591,7 +46609,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],338:[function(require,module,exports){
+},{}],326:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -70312,9 +58330,9 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":211,"fs":11,"path":210}],339:[function(require,module,exports){
-arguments[4][50][0].apply(exports,arguments)
-},{"../package.json":364,"./elliptic/curve":342,"./elliptic/curves":345,"./elliptic/ec":346,"./elliptic/eddsa":349,"./elliptic/hmac-drbg":352,"./elliptic/utils":354,"brorand":356,"dup":50}],340:[function(require,module,exports){
+},{"_process":212,"fs":12,"path":211}],327:[function(require,module,exports){
+arguments[4][51][0].apply(exports,arguments)
+},{"../package.json":352,"./elliptic/curve":330,"./elliptic/curves":333,"./elliptic/ec":334,"./elliptic/eddsa":337,"./elliptic/hmac-drbg":340,"./elliptic/utils":342,"brorand":344,"dup":51}],328:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -70667,7 +58685,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":339,"bn.js":355}],341:[function(require,module,exports){
+},{"../../elliptic":327,"bn.js":343}],329:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -71075,9 +59093,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":339,"../curve":342,"bn.js":355,"inherits":363}],342:[function(require,module,exports){
-arguments[4][53][0].apply(exports,arguments)
-},{"./base":340,"./edwards":341,"./mont":343,"./short":344,"dup":53}],343:[function(require,module,exports){
+},{"../../elliptic":327,"../curve":330,"bn.js":343,"inherits":351}],330:[function(require,module,exports){
+arguments[4][54][0].apply(exports,arguments)
+},{"./base":328,"./edwards":329,"./mont":331,"./short":332,"dup":54}],331:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -71255,7 +59273,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":339,"../curve":342,"bn.js":355,"inherits":363}],344:[function(require,module,exports){
+},{"../../elliptic":327,"../curve":330,"bn.js":343,"inherits":351}],332:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -72164,9 +60182,9 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":339,"../curve":342,"bn.js":355,"inherits":363}],345:[function(require,module,exports){
-arguments[4][56][0].apply(exports,arguments)
-},{"../elliptic":339,"./precomputed/secp256k1":353,"dup":56,"hash.js":357}],346:[function(require,module,exports){
+},{"../../elliptic":327,"../curve":330,"bn.js":343,"inherits":351}],333:[function(require,module,exports){
+arguments[4][57][0].apply(exports,arguments)
+},{"../elliptic":327,"./precomputed/secp256k1":341,"dup":57,"hash.js":345}],334:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -72378,7 +60396,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":339,"./key":347,"./signature":348,"bn.js":355}],347:[function(require,module,exports){
+},{"../../elliptic":327,"./key":335,"./signature":336,"bn.js":343}],335:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -72487,7 +60505,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":355}],348:[function(require,module,exports){
+},{"bn.js":343}],336:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -72624,11 +60642,11 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":339,"bn.js":355}],349:[function(require,module,exports){
-arguments[4][60][0].apply(exports,arguments)
-},{"../../elliptic":339,"./key":350,"./signature":351,"dup":60,"hash.js":357}],350:[function(require,module,exports){
+},{"../../elliptic":327,"bn.js":343}],337:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../../elliptic":339,"dup":61}],351:[function(require,module,exports){
+},{"../../elliptic":327,"./key":338,"./signature":339,"dup":61,"hash.js":345}],338:[function(require,module,exports){
+arguments[4][62][0].apply(exports,arguments)
+},{"../../elliptic":327,"dup":62}],339:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -72696,11 +60714,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":339,"bn.js":355}],352:[function(require,module,exports){
-arguments[4][63][0].apply(exports,arguments)
-},{"../elliptic":339,"dup":63,"hash.js":357}],353:[function(require,module,exports){
+},{"../../elliptic":327,"bn.js":343}],340:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"dup":64}],354:[function(require,module,exports){
+},{"../elliptic":327,"dup":64,"hash.js":345}],341:[function(require,module,exports){
+arguments[4][65][0].apply(exports,arguments)
+},{"dup":65}],342:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -72875,7 +60893,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":355}],355:[function(require,module,exports){
+},{"bn.js":343}],343:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -75324,23 +63342,23 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],356:[function(require,module,exports){
-arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],357:[function(require,module,exports){
+},{}],344:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
-},{"./hash/common":358,"./hash/hmac":359,"./hash/ripemd":360,"./hash/sha":361,"./hash/utils":362,"dup":67}],358:[function(require,module,exports){
+},{"dup":67}],345:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"../hash":357,"dup":68}],359:[function(require,module,exports){
+},{"./hash/common":346,"./hash/hmac":347,"./hash/ripemd":348,"./hash/sha":349,"./hash/utils":350,"dup":68}],346:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"../hash":357,"dup":69}],360:[function(require,module,exports){
+},{"../hash":345,"dup":69}],347:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../hash":357,"dup":70}],361:[function(require,module,exports){
+},{"../hash":345,"dup":70}],348:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../hash":357,"dup":71}],362:[function(require,module,exports){
+},{"../hash":345,"dup":71}],349:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"dup":72,"inherits":363}],363:[function(require,module,exports){
-arguments[4][208][0].apply(exports,arguments)
-},{"dup":208}],364:[function(require,module,exports){
+},{"../hash":345,"dup":72}],350:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73,"inherits":351}],351:[function(require,module,exports){
+arguments[4][209][0].apply(exports,arguments)
+},{"dup":209}],352:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "5.2.1",
@@ -75409,7 +63427,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],365:[function(require,module,exports){
+},{}],353:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -75786,9 +63804,9 @@ function padToEven (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":12,"bn.js":366,"buffer":232,"elliptic":339,"rlp":369,"sha3":367}],366:[function(require,module,exports){
-arguments[4][355][0].apply(exports,arguments)
-},{"dup":355}],367:[function(require,module,exports){
+},{"assert":13,"bn.js":354,"buffer":233,"elliptic":327,"rlp":357,"sha3":355}],354:[function(require,module,exports){
+arguments[4][343][0].apply(exports,arguments)
+},{"dup":343}],355:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -75814,9 +63832,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":232,"js-sha3":368}],368:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],369:[function(require,module,exports){
+},{"buffer":233,"js-sha3":356}],356:[function(require,module,exports){
+arguments[4][3][0].apply(exports,arguments)
+},{"dup":3}],357:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -76045,9 +64063,9 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":12,"buffer":232}],370:[function(require,module,exports){
-arguments[4][317][0].apply(exports,arguments)
-},{"buffer":232,"crypto":15,"dup":317}],371:[function(require,module,exports){
+},{"assert":13,"buffer":233}],358:[function(require,module,exports){
+arguments[4][308][0].apply(exports,arguments)
+},{"buffer":233,"crypto":16,"dup":308}],359:[function(require,module,exports){
 /*!
  * depd
  * Copyright(c) 2015 Douglas Christopher Wilson
@@ -76128,7 +64146,7 @@ function wrapproperty(obj, prop, message) {
   return
 }
 
-},{}],372:[function(require,module,exports){
+},{}],360:[function(require,module,exports){
 (function (process){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
@@ -77113,4 +65131,4 @@ function wrapproperty(obj, prop, message) {
 });
 
 }).call(this,require('_process'))
-},{"_process":211,"depd":371}]},{},[5]);
+},{"_process":212,"depd":359}]},{},[8]);

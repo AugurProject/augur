@@ -7,8 +7,8 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../src/utilities");
 var runner = require("../runner");
+var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
@@ -57,7 +57,7 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var amount = "1";
     var branchID = augur.branches.dev;
     var markets = augur.getMarketsInBranch(branchID);
@@ -91,8 +91,9 @@ describe("Integration tests", function () {
     });
     describe("getEventInfo(" + eventID + ")", function () {
         var test = function (res) {
+            // console.log(res)
+            assert.strictEqual(res.length, 7);
             assert(abi.bignum(res[0]).eq(abi.bignum(branchID)));
-            assert.strictEqual(res.length, 6);
         };
         it("sync", function () {
             test(augur.getEventInfo(eventID));

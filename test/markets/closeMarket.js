@@ -10,6 +10,7 @@ var abi = require("augur-abi");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
 var runner = require("../runner");
+var tools = require("../tools");
 
 var DEBUG = true;
 
@@ -22,9 +23,9 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = utils.setup(require("../../src"), process.argv.slice(2));
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var branchID = augur.branches.dev;
-    var accounts = utils.get_test_accounts(augur, augur.constants.MAX_TEST_ACCOUNTS);
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var suffix = Math.random().toString(36).substring(4);
     var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
     var periodLength = 75;
@@ -35,7 +36,7 @@ describe("Integration tests", function () {
     if (!process.env.CONTINUOUS_INTEGRATION) {
 
         before(function (done) {
-            this.timeout(augur.constants.TIMEOUT*100);
+            this.timeout(tools.TIMEOUT*100);
 
             var branchDescription = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
             var tradingFee = "0.01";
@@ -274,7 +275,7 @@ describe("Integration tests", function () {
 
         describe("Close market", function () {
             it("closeMarket", function (done) {
-                this.timeout(augur.constants.TIMEOUT*100);
+                this.timeout(tools.TIMEOUT*100);
 
                 // fast-forward to the next reporting period
                 var period = parseInt(augur.getReportPeriod(newBranchID));
