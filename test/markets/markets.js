@@ -43,9 +43,6 @@ describe("Unit tests", function () {
             method: "getMarketNumOutcomes",
             parameters: ["hash"]
         }, {
-            method: "getAlpha",
-            parameters: ["hash"]
-        }, {
             method: "getCumScale",
             parameters: ["hash"]
         }, {
@@ -177,26 +174,6 @@ describe("Integration tests", function () {
         });
     };
 
-    describe("price", function () {
-        var test = function (t) {
-            assert.isNumber(abi.number(t.output));
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i], outcome);
-        }
-    });
-    describe("lsLmsr", function () {
-        var test = function (t) {
-            var output = t.output;
-            assert.isAbove(abi.number(output), 0);
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i]);
-        }
-    });
-
     var testMarketInfo = function (info) {
         var r;
         assert(info.constructor === Array || info.constructor === Object);
@@ -228,8 +205,10 @@ describe("Integration tests", function () {
         assert.property(r, "traderCount");
         assert.isAbove(r.traderIndex, -1);
         assert.strictEqual(parseInt(augur.getCurrentParticipantNumber(market)), r.traderCount);
-        assert.property(r, "alpha");
-        assert.isNotNull(r.alpha);
+        assert.property(r, "makerFees");
+        assert.isNotNull(r.makerFees);
+        assert.property(r, "tags");
+        assert.isNotNull(r.tags);
         assert.property(r, "traderIndex");
         assert.isAbove(r.traderIndex, -1);
         assert.property(r, "numOutcomes");
@@ -263,10 +242,6 @@ describe("Integration tests", function () {
             assert.property(r.outcomes[i], "outstandingShares");
             assert(abi.number(r.outcomes[i].outstandingShares) >= 0);
             assert.property(r.outcomes[i], "price");
-            assert.strictEqual(
-                abi.number(r.outcomes[i].price).toFixed(4),
-                abi.number(augur.price(market, i + 1)).toFixed(4)
-            );
             assert.property(r.outcomes[i], "shares");
             assert.isObject(r.outcomes[i].shares);
         }
@@ -405,15 +380,6 @@ describe("Integration tests", function () {
             };
             for (var i = 0; i < numMarkets; ++i) {
                 runtests(this.title, test, markets[i], traderIndex);
-            }
-        });
-        describe("getAlpha", function () {
-            var test = function (t) {
-                assert.strictEqual(abi.number(t.output).toFixed(4), "0.0079");
-                t.done();
-            };
-            for (var i = 0; i < numMarkets; ++i) {
-                runtests(this.title, test, markets[i]);
             }
         });
         describe("getCumScale", function () {

@@ -152,15 +152,16 @@ describe("Integration tests", function () {
                             onSent: utils.noop,
                             onSuccess: function (res) {
 
-                                function createEvent(newBranchID, description, expirationBlock) {
-                                    if (DEBUG) console.log("Event expiration block:", expirationBlock);
+                                function createEvent(newBranchID, description, expDate) {
+                                    if (DEBUG) console.log("Event expiration block:", expDate);
                                     augur.createEvent({
                                         branchId: newBranchID,
                                         description: description,
-                                        expirationBlock: expirationBlock,
+                                        expDate: expDate,
                                         minValue: 1,
                                         maxValue: 2,
                                         numOutcomes: 2,
+                                        resolution: "http://lmgtfy.com",
                                         onSent: utils.noop,
                                         onSuccess: function (res) {
                                             eventID = res.callReturn;
@@ -170,11 +171,11 @@ describe("Integration tests", function () {
                                             augur.createMarket({
                                                 branchId: newBranchID,
                                                 description: description,
-                                                alpha: "0.0079",
-                                                initialLiquidity: 100,
+                                                makerFees: "0.5",
                                                 tradingFee: "0.02",
+                                                tags: ["testing", "makeReports", "reporting"],
+                                                extraInfo: "Market provided courtesy of the augur.js test suite.",
                                                 events: [eventID],
-                                                forkSelection: 1,
                                                 onSent: utils.noop,
                                                 onSuccess: function (res) {
                                                     marketID = res.callReturn;
@@ -212,11 +213,11 @@ describe("Integration tests", function () {
                                     console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
                                 }
                                 if (blocksToGo > 10) {
-                                    return createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
+                                    return createEvent(newBranchID, description, new Date().getTime() + 1000);
                                 }
                                 augur.rpc.fastforward(blocksToGo, function (endBlock) {
                                     assert.notProperty(endBlock, "error");
-                                    createEvent(newBranchID, description, augur.rpc.blockNumber() + 10);
+                                    createEvent(newBranchID, description, new Date().getTime() + 1000);
                                 });
                             },
                             onFailed: done

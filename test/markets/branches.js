@@ -41,7 +41,7 @@ describe("Unit tests", function () {
             method: "getMinTradingFee",
             parameters: ["hash"]
         }, {
-            method: "getBranch",
+            method: "getBranchByNum",
             parameters: ["int"]
         }]);
     });
@@ -59,14 +59,14 @@ describe("Unit tests", function () {
 describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
-    var branch_id = augur.branches.dev;
-    var branch_number = "0";
+    var branchID = augur.branches.dev;
+    var branchNumber = "0";
 
     describe("getBranches", function () {
         var test = function (r) {
             assert.isArray(r);
             assert.isAbove(r.length, 0);
-            assert(abi.bignum(r[0]).eq(abi.bignum(branch_id)));
+            assert(abi.bignum(r[0]).eq(abi.bignum(branchID)));
         };
         it("sync", function () {
             test(augur.getBranches());
@@ -87,118 +87,118 @@ describe("Integration tests", function () {
             batch.execute();
         });
     });
-    describe("getMarketsInBranch(" + branch_id + ")", function () {
+    describe("getMarketsInBranch(" + branchID + ")", function () {
         var test = function (r) {
             assert.isArray(r);
             assert.isAbove(r.length, 1);
         };
         it("sync", function () {
-            test(augur.getMarketsInBranch(branch_id));
+            test(augur.getMarketsInBranch(branchID));
         });
         it("async", function (done) {
-            augur.getMarketsInBranch(branch_id, function (r) {
+            augur.getMarketsInBranch(branchID, function (r) {
                 test(r); done();
             });
         });
         it("batched-async", function (done) {
             var batch = augur.createBatch();
-            batch.add("getMarketsInBranch", [branch_id], function (r) {
+            batch.add("getMarketsInBranch", [branchID], function (r) {
                 test(r);
             });
-            batch.add("getMarketsInBranch", [branch_id], function (r) {
+            batch.add("getMarketsInBranch", [branchID], function (r) {
                 test(r); done();
             });
             batch.execute();
         });
     });
-    describe("getPeriodLength(" + branch_id + ") == '40000'", function () {
+    describe("getPeriodLength(" + branchID + ") == '15'", function () {
         var test = function (r) {
-            assert.strictEqual(r, "40000");
+            assert.strictEqual(r, "15");
         };
         it("sync", function () {
-            test(augur.getPeriodLength(branch_id));
+            test(augur.getPeriodLength(branchID));
         });
         it("async", function (done) {
-            augur.getPeriodLength(branch_id, function (r) {
+            augur.getPeriodLength(branchID, function (r) {
                 test(r); done();
             });
         });
         it("batched-async", function (done) {
             var batch = augur.createBatch();
-            batch.add("getPeriodLength", [branch_id], function (r) {
+            batch.add("getPeriodLength", [branchID], function (r) {
                 test(r);
             });
-            batch.add("getPeriodLength", [branch_id], function (r) {
+            batch.add("getPeriodLength", [branchID], function (r) {
                 test(r); done();
             });
             batch.execute();
         });
     });
-    describe("getVotePeriod(" + branch_id + ") >= -1", function () {
+    describe("getVotePeriod(" + branchID + ") >= -1", function () {
         var test = function (r) {
             assert(parseInt(r) >= -1);
         };
         it("sync", function () {
-            test(augur.getVotePeriod(branch_id));
+            test(augur.getVotePeriod(branchID));
         });
         it("async", function (done) {
-            augur.getVotePeriod(branch_id, function (r) {
+            augur.getVotePeriod(branchID, function (r) {
                 test(r); done();
             });
         });
         it("batched-async", function (done) {
             var batch = augur.createBatch();
-            batch.add("getVotePeriod", [branch_id], function (r) {
+            batch.add("getVotePeriod", [branchID], function (r) {
                 test(r);
             });
-            batch.add("getVotePeriod", [branch_id], function (r) {
+            batch.add("getVotePeriod", [branchID], function (r) {
                 test(r); done();
             });
             batch.execute();
         });
     });
-    describe("getNumMarketsBranch(" + branch_id + ") >= 1", function () {
+    describe("getNumMarketsBranch(" + branchID + ") >= 1", function () {
         var test = function (r) {
             assert(parseInt(r) >= 1);
         };
         it("sync", function () {
-            test(augur.getNumMarketsBranch(branch_id));
+            test(augur.getNumMarketsBranch(branchID));
         });
         it("async", function (done) {
-            augur.getNumMarketsBranch(branch_id, function (r) {
+            augur.getNumMarketsBranch(branchID, function (r) {
                 test(r); done();
             });
         });
         it("batched-async", function (done) {
             var batch = augur.createBatch();
-            batch.add("getNumMarketsBranch", [branch_id], function (r) {
+            batch.add("getNumMarketsBranch", [branchID], function (r) {
                 test(r);
             });
-            batch.add("getNumMarketsBranch", [branch_id], function (r) {
+            batch.add("getNumMarketsBranch", [branchID], function (r) {
                 test(r); done();
             });
             batch.execute();
         });
     });
-    describe("getMinTradingFee(" + branch_id + ")", function () {
+    describe("getMinTradingFee(" + branchID + ")", function () {
         var test = function (r) {
             assert(Number(r) >= 0.0);
             assert(Number(r) <= 1.0);
         };
         it("sync", function () {
-            test(augur.getMinTradingFee(branch_id));
+            test(augur.getMinTradingFee(branchID));
         });
         it("async", function (done) {
-            augur.getMinTradingFee(branch_id, function (r) {
+            augur.getMinTradingFee(branchID, function (r) {
                 test(r); done();
             });
         });
         it("batched-async", function (done) {
             var batch = augur.createBatch();
-            batch.add("getMinTradingFee", [branch_id], function (r) {
+            batch.add("getMinTradingFee", [branchID], function (r) {
                 test(r);
             });
-            batch.add("getMinTradingFee", [branch_id], function (r) {
+            batch.add("getMinTradingFee", [branchID], function (r) {
                 test(r); done();
             });
             batch.execute();
@@ -227,24 +227,24 @@ describe("Integration tests", function () {
             batch.execute();
         });
     });
-    describe("getBranch(" + branch_number + ")", function () {
+    describe("getBranchByNum(" + branchNumber + ")", function () {
         var test = function (r) {
-            assert(abi.bignum(r).eq(abi.bignum(branch_id)));
+            assert(abi.bignum(r).eq(abi.bignum(branchID)));
         };
         it("sync", function () {
-            test(augur.getBranch(branch_number));
+            test(augur.getBranchByNum(branchNumber));
         });
         it("async", function (done) {
-            augur.getBranch(branch_number, function (r) {
+            augur.getBranchByNum(branchNumber, function (r) {
                 test(r); done();
             });
         });
         it("batched-async", function (done) {
             var batch = augur.createBatch();
-            batch.add("getBranch", [branch_number], function (r) {
+            batch.add("getBranchByNum", [branchNumber], function (r) {
                 test(r);
             });
-            batch.add("getBranch", [branch_number], function (r) {
+            batch.add("getBranchByNum", [branchNumber], function (r) {
                 test(r); done();
             });
             batch.execute();

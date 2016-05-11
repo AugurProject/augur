@@ -20,8 +20,8 @@ describe("Read contracts", function () {
     };
 
     var contract_list = [];
-    for (var c in contracts["7"]) {
-        if (!contracts["7"].hasOwnProperty(c)) continue;
+    for (var c in contracts["2"]) {
+        if (!contracts["2"].hasOwnProperty(c)) continue;
         if (c === "namereg") continue;
         contract_list.push(c);
     }

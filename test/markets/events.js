@@ -91,8 +91,9 @@ describe("Integration tests", function () {
     });
     describe("getEventInfo(" + eventID + ")", function () {
         var test = function (res) {
+            // console.log(res)
+            assert.strictEqual(res.length, 7);
             assert(abi.bignum(res[0]).eq(abi.bignum(branchID)));
-            assert.strictEqual(res.length, 6);
         };
         it("sync", function () {
             test(augur.getEventInfo(eventID));

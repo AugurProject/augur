@@ -15,7 +15,7 @@ require('it-each')({ testPerIteration: true });
 describe("Unit tests", function () {
     runner("eth_sendTransaction", [{
         method: "createEvent",
-        parameters: ["hash", "string", "int", "int", "int", "int", "string"]
+        parameters: ["hash", "string", "int", "fixed", "fixed", "int", "string"]
     }]);
 });
 

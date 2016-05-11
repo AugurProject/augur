@@ -47,12 +47,12 @@ describe("Integration tests", function () {
                             numOutcomes: t.numOutcomes,
                             resolution: t.resolution,
                             onSent: function (r) {
-                                console.log("createEvent:", r);
+                                // console.log("createEvent:", r);
                                 assert(r.txHash);
                                 assert(r.callReturn);
                             },
                             onSuccess: function (r) {
-                                console.log("createEvent success:", r);
+                                // console.log("createEvent success:", r);
                                 var eventID = r.callReturn;
                                 // assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
                                 // assert.strictEqual(augur.getDescription(eventID), t.description);
@@ -66,12 +66,12 @@ describe("Integration tests", function () {
                                     extraInfo: t.extraInfo,
                                     events: events,
                                     onSent: function (res) {
-                                        console.log("createMarket sent:", res);
+                                        // console.log("createMarket sent:", res);
                                         assert(res.txHash);
                                         assert(res.callReturn);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("createMarket success:", res);
+                                        // console.log("createMarket success:", res);
                                         var marketID = res.callReturn;
                                         assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                                         assert.strictEqual(augur.getDescription(marketID), t.description);

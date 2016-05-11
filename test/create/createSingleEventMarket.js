@@ -44,12 +44,12 @@ describe("Integration tests", function () {
                     extraInfo: t.extraInfo,
                     resolution: t.resolution,
                     onSent: function (r) {
-                        console.log(r)
+                        // console.log(r)
                         assert(r.txHash);
                         assert(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        console.log(r);
+                        // console.log(r);
                         var marketID = r.callReturn;
                         assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                         assert.strictEqual(augur.getDescription(marketID), t.description);

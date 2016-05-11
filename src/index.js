@@ -307,9 +307,9 @@ Augur.prototype.getMinTradingFee = function (branch, callback) {
     tx.params = branch;
     return this.fire(tx, callback);
 };
-Augur.prototype.getBranch = function (branchNumber, callback) {
+Augur.prototype.getBranchByNum = function (branchNumber, callback) {
     // branchNumber: integer
-    var tx = clone(this.tx.getBranch);
+    var tx = clone(this.tx.getBranchByNum);
     tx.params = branchNumber;
     return this.fire(tx, callback);
 };
@@ -342,20 +342,23 @@ Augur.prototype.getEventInfo = function (eventId, callback) {
     // eventId: sha256 hash id
     var self = this;
     var parse_info = function (info) {
-        // info = array(6)
-        // info[0] = self.Events[event].branch
-        // info[1] = self.Events[event].expirationDate
-        // info[2] = self.Events[event].outcome
-        // info[3] = self.Events[event].minValue
-        // info[4] = self.Events[event].maxValue
-        // info[5] = self.Events[event].numOutcomes
+        // eventinfo = string(7*32 + length)
+        // eventinfo[0] = self.Events[event].branch
+        // eventinfo[1] = self.Events[event].expirationDate 
+        // eventinfo[2] = self.Events[event].outcome
+        // eventinfo[3] = self.Events[event].minValue
+        // eventinfo[4] = self.Events[event].maxValue
+        // eventinfo[5] = self.Events[event].numOutcomes
+        // eventinfo[6] = self.Events[event].bond
+        // mcopy(eventinfo + 7*32, load(self.Events[event].resolutionSource[0], chars=length), length)
         if (info && info.length) {
             info[0] = abi.hex(info[0]);
             info[1] = abi.bignum(info[1]).toFixed();
             info[2] = abi.unfix(info[2], "string");
-            info[3] = abi.bignum(info[3]).toFixed();
-            info[4] = abi.bignum(info[4]).toFixed();
-            info[5] = abi.bignum(info[5]).toFixed();
+            info[3] = abi.unfix(info[3], "string");
+            info[4] = abi.unfix(info[4], "string");
+            info[5] = parseInt(info[5]);
+            info[6] = abi.unfix(info[6], "string");
         }
         return info;
     };
@@ -554,12 +557,6 @@ Augur.prototype.getMarketNumOutcomes = function (market, callback) {
     tx.params = market;
     return this.fire(tx, callback);
 };
-Augur.prototype.getAlpha = function (market, callback) {
-    // market: sha256
-    var tx = clone(this.tx.getAlpha);
-    tx.params = market;
-    return this.fire(tx, callback);
-};
 Augur.prototype.getCumScale = function (market, callback) {
     // market: sha256
     var tx = clone(this.tx.getCumScale);
@@ -716,7 +713,6 @@ Augur.prototype.getID = function (tradeID, callback) {
     tx.params = tradeID;
     return this.fire(tx, callback);
 };
-// what is type?
 Augur.prototype.saveTrade = function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.saveTrade);
     var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.saveTrade), arguments);
@@ -1084,7 +1080,6 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
         onFailed = branchId.onFailed;               // function
         branchId = branchId.branchId;               // sha256 hash
     }
-    // var tx = clone(this.tx.createSingleEventMarket);
     if (!tags || tags.constructor !== Array) tags = [];
     if (tags.length) {
         for (var i = 0; i < tags.length; ++i) {
@@ -1098,6 +1093,7 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
     while (tags.length < 3) {
         tags.push("0x0");
     }
+    // var tx = clone(this.tx.createSingleEventMarket);
     // tx.params = [
     //     branchId,
     //     description,
@@ -1129,9 +1125,7 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
         numOutcomes,
         resolution
     ];
-    this.transact(tx, function (res) {
-    }, function (res) {
-        console.log("createEvent success:", res);
+    this.transact(tx, this.utils.noop, function (res) {
         var tx = clone(self.tx.createMarket);
         tx.params = [
             branchId,
@@ -1195,7 +1189,6 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
         onFailed = branchId.onFailed;       // function
         branchId = branchId.branchId;       // sha256 hash
     }
-    var tx = clone(this.tx.createMarket);
     if (!tags || tags.constructor !== Array) tags = [];
     if (tags.length) {
         for (var i = 0; i < tags.length; ++i) {
@@ -1209,6 +1202,7 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
     while (tags.length < 3) {
         tags.push("0x0");
     }
+    var tx = clone(this.tx.createMarket);
     tx.params = [
         branchId,
         description,
@@ -1252,12 +1246,17 @@ Augur.prototype.updatePeriod = function (branch) {
     this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
 };
 
+Augur.prototype.decodeTag = function (tag) {
+    return (tag && tag !== "0x0" && tag !== "0x") ?
+        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+};
+
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var EVENTS_FIELDS = 6;
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
-    if (rawInfo && rawInfo.length > 12) {
+    if (rawInfo && rawInfo.length > 14) {
 
         // all-inclusive except price history
         // info[1] = self.Markets[marketID].currentParticipant
@@ -1270,11 +1269,12 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[8] = self.Markets[marketID].lenEvents
         // info[9] = self.Markets[marketID].cumulativeScale
         // info[10] = self.Markets[marketID].blockNum
-        // info[11] = INFO.getCreationFee(marketID)
-        // info[12] = INFO.getCreator(marketID)
-        // info[13] = self.Markets[marketID].tag1
-        // info[14] = self.Markets[marketID].tag2
-        // info[15] = self.Markets[marketID].tag3
+        // info[11] = self.Markets[marketID].volume
+        // info[12] = INFO.getCreationFee(marketID)
+        // info[13] = INFO.getCreator(marketID)
+        // info[14] = self.Markets[marketID].tag1
+        // info[15] = self.Markets[marketID].tag2
+        // info[16] = self.Markets[marketID].tag3
         var index = 17;
         info = {
             network: this.network_id || rpc.version(),
@@ -1292,9 +1292,9 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             creationFee: abi.unfix(rawInfo[12], "string"),
             author: abi.format_address(rawInfo[13]),
             tags: [
-                abi.int256_to_short_string(rawInfo[14]),
-                abi.int256_to_short_string(rawInfo[15]),
-                abi.int256_to_short_string(rawInfo[16])
+                this.decodeTag(rawInfo[14]),
+                this.decodeTag(rawInfo[15]),
+                this.decodeTag(rawInfo[16])
             ],
             type: null,
             endDate: null,
