@@ -172,4 +172,47 @@ describe("Integration tests", function () {
         });
     });
 
+    describe("cancel", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                this.timeout(tools.TIMEOUT);
+                augur.buyCompleteSets({
+                    market: t.market,
+                    amount: t.amount,
+                    onSent: function (r) {},
+                    onSuccess: function (r) {
+                        augur.sell({
+                            amount: t.amount,
+                            price: t.price,
+                            market: t.market,
+                            outcome: t.outcome,
+                            onSent: function (r) {
+                                console.log("sell sent:", r);
+                            },
+                            onSuccess: function (r) {
+                                console.log("sell success:", r);
+                                augur.get_trade_ids(t.market, function (trade_ids) {
+                                    augur.cancel(trade_ids[0], function (r) {
+                                        console.log("cancel sent:", r);
+                                    }, function (r) {
+                                        console.log("cancel success:", r);
+                                        done();
+                                    }, done);
+                                });
+                            },
+                            onFailed: done
+                        });
+                    },
+                    onFailed: done
+                });
+            });
+        };
+        test({
+            market: markets[markets.length - 1],
+            amount: 1,
+            price: "0.5",
+            outcome: "1"
+        });
+    });
+
 });

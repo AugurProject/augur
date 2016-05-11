@@ -37932,16 +37932,6 @@ Augur.prototype.get_trade = function (id, callback) {
     // trade[6] = self.trades[id].block
     // trade[7] = self.trades[id].refhash
     // trade[8] = self.trades[id].outcome
-    // example:
-    // [ '-0x22daf7fdff22ff716fd8108c011d1c0e69a7ab4a2b087f65dda2fc77ea044ba1',
-    //   '0x2',
-    //   '-0xb196c4ce182399271e6ed434eb3f2210ae5e427c8ac0604c2cb2261694951d9',
-    //   '0x10000000000000000',
-    //   '0x8000000000000000',
-    //   '0x15f6400a88fb320822b689607d425272bea2175f',
-    //   '0xe0d71',
-    //   '-0x6489ea153782b05c74a7ea4389036db78133e773c4ad895c0c7041d0b0d98fc4',
-    //   '0x1' ]
     var tx = clone(this.tx.get_trade);
     tx.params = id;
     if (!this.utils.is_function(callback)) {
