@@ -105,7 +105,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
-                    expDate: new Date("1-8-2017").getTime(),
+                    expDate: new Date("1-9-2017").getTime(),
                     minValue: 1,
                     maxValue: 2,
                     numOutcomes: 3,
@@ -118,7 +118,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13? Choices: Higher, Lower, Equal",
-                    expDate: new Date("1-1-2017").getTime(),
+                    expDate: new Date("1-2-2017").getTime(),
                     minValue: 10,
                     maxValue: 20,
                     numOutcomes: 3,
@@ -129,7 +129,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Who will win the 2016 U.S. Presidential Election? Choices: Hillary Clinton, Donald Trump, Bernie Sanders, someone else",
-                    expDate: new Date("1-20-2017").getTime(),
+                    expDate: new Date("1-11-2017").getTime(),
                     minValue: 0,
                     maxValue: 1,
                     numOutcomes: 4,
@@ -142,7 +142,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
-                    expDate: new Date("1-3-2017").getTime(),
+                    expDate: new Date("1-4-2017").getTime(),
                     minValue: 10,
                     maxValue: 20,
                     numOutcomes: 4,
@@ -153,7 +153,7 @@ describe("Integration tests", function () {
                 test({
                     branch: augur.branches.dev,
                     description: "Which city will have the highest median single-family home price for September 2016? Choices: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, other",
-                    expDate: new Date("10-1-2016").getTime(),
+                    expDate: new Date("10-2-2016").getTime(),
                     minValue: 0,
                     maxValue: 1,
                     numOutcomes: 8,

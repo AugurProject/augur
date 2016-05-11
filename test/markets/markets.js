@@ -19,6 +19,9 @@ var tools = require("../tools");
 describe("Unit tests", function () {
     describe("eth_call", function () {
         runner(this.title, [{
+            method: "get_trade_ids",
+            parameters: ["hash"]
+        }, {
             method: "getVolume",
             parameters: ["hash"]
         }, {

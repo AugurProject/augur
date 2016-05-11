@@ -21,7 +21,7 @@ module.exports = function () {
         filter: {
             block: {id: null, heartbeat: null},
             contracts: {id: null, heartbeat: null},
-            updatePrice: {id: null, heartbeat: null}
+            log_price: {id: null, heartbeat: null}
         },
 
         createMarketMessage: function (data, blockNumber, onMessage) {
@@ -124,8 +124,8 @@ module.exports = function () {
         },
 
         poll_price_listener: function (onMessage) {
-            if (this.filter.updatePrice) {
-                augur.rpc.getFilterChanges(this.filter.updatePrice.id, function (filtrate) {
+            if (this.filter.log_price) {
+                augur.rpc.getFilterChanges(this.filter.log_price.id, function (filtrate) {
                     var data_array, market, marketplus, outcome;
                     if (filtrate && filtrate.length) {
                         for (var i = 0, len = filtrate.length; i < len; ++i) {
@@ -153,7 +153,7 @@ module.exports = function () {
                                         });
                                     }
                                 } catch (exc) {
-                                    console.error("updatePrice filter:", exc);
+                                    console.error("log_price filter:", exc);
                                     console.log(i, filtrate[i]);
                                 }
                             }
@@ -168,13 +168,13 @@ module.exports = function () {
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.updatePrice.id, function (uninst) {
-                    self.filter.updatePrice.id = null;
+                augur.rpc.uninstallFilter(this.filter.log_price.id, function (uninst) {
+                    self.filter.log_price.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.updatePrice.id);
-                this.filter.updatePrice.id = null;
+                var uninst = augur.rpc.uninstallFilter(this.filter.log_price.id);
+                this.filter.log_price.id = null;
                 return uninst;
             }
         },
@@ -266,9 +266,9 @@ module.exports = function () {
 
         start_price_listener: function (filter_name, cb) {
             var self = this;
-            if (this.filter.updatePrice && this.filter.updatePrice.id) {
-                if (!utils.is_function(cb)) return this.filter.updatePrice.id;
-                return cb(this.filter.updatePrice.id);
+            if (this.filter.log_price && this.filter.log_price.id) {
+                if (!utils.is_function(cb)) return this.filter.log_price.id;
+                return cb(this.filter.log_price.id);
             }
             if (!utils.is_function(cb)) {
                 var filter_id = this.setup_price_filter(filter_name);
@@ -276,7 +276,7 @@ module.exports = function () {
                     return errors.FILTER_NOT_CREATED;
                 }
                 if (filter_id.error) return filter_id;
-                self.filter.updatePrice = {
+                self.filter.log_price = {
                     id: filter_id,
                     heartbeat: null
                 };
@@ -287,7 +287,7 @@ module.exports = function () {
                     return cb(errors.FILTER_NOT_CREATED);
                 }
                 if (filter_id.error) return cb(filter_id);
-                self.filter.updatePrice = {
+                self.filter.log_price = {
                     id: filter_id,
                     heartbeat: null
                 };
@@ -328,7 +328,7 @@ module.exports = function () {
                 }
                 if (utils.is_function(cb.price)) {
                     this.poll_price_listener(cb.price);
-                    this.filter.updatePrice.heartbeat = setInterval(function () {
+                    this.filter.log_price.heartbeat = setInterval(function () {
                         self.poll_price_listener(cb.price);
                     }, this.PULSE);
                 }
@@ -357,10 +357,10 @@ module.exports = function () {
                     }.bind(this),
                     function (callback) {
                         var self = this;
-                        if (this.filter.updatePrice.id === null && cb.price) {
-                            this.start_price_listener(constants.LOGS.updatePrice, function () {
+                        if (this.filter.log_price.id === null && cb.price) {
+                            this.start_price_listener(constants.LOGS.log_price, function () {
                                 self.pacemaker({price: cb.price});
-                                callback(null, ["price", self.filter.updatePrice.id]);
+                                callback(null, ["price", self.filter.log_price.id]);
                             });
                         } else {
                             callback();
@@ -398,8 +398,8 @@ module.exports = function () {
                         self.pacemaker({contracts: cb.contracts});
                     });
                 }
-                if (this.filter.updatePrice.id === null && cb.price) {
-                    this.start_price_listener("updatePrice", function () {
+                if (this.filter.log_price.id === null && cb.price) {
+                    this.start_price_listener("log_price", function () {
                         self.pacemaker({price: cb.price});
                     });
                 }
@@ -412,10 +412,10 @@ module.exports = function () {
         },
 
         all_filters_removed: function () {
-            return this.filter.updatePrice.heartbeat === null &&
+            return this.filter.log_price.heartbeat === null &&
                 this.filter.contracts.heartbeat === null &&
                 this.filter.block.heartbeat === null &&
-                this.filter.updatePrice.id === null &&
+                this.filter.log_price.id === null &&
                 this.filter.contracts.id === null &&
                 this.filter.block.id === null;
         },
@@ -453,9 +453,9 @@ module.exports = function () {
             cb.contracts = utils.is_function(cb.contracts) ? cb.contracts : utils.noop;
             cb.block = utils.is_function(cb.block) ? cb.block : utils.noop;
             complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
-            if (this.filter.updatePrice.heartbeat !== null) {
-                clearInterval(this.filter.updatePrice.heartbeat);
-                this.filter.updatePrice.heartbeat = null;
+            if (this.filter.log_price.heartbeat !== null) {
+                clearInterval(this.filter.log_price.heartbeat);
+                this.filter.log_price.heartbeat = null;
                 if (!uninstall && utils.is_function(cb.price)) {
                     cb.price();
                     if (this.all_filters_removed()) complete();
@@ -478,7 +478,7 @@ module.exports = function () {
                 }
             }
             if (uninstall) {
-                if (this.filter.updatePrice.id !== null) {
+                if (this.filter.log_price.id !== null) {
                     this.clear_price_filter(function (uninst) {
                         cleared(uninst, cb.price, complete);
                     });
