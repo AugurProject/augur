@@ -32,7 +32,7 @@ const testState = {
   },
   branch: {
     description: 'root branch',
-    periodLength: "40000"
+    periodLength: 4000
   },
   createMarketInProgress: {},
   favorites: {},
