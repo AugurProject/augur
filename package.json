@@ -41,7 +41,7 @@
     "partial:replaceAssets": "sed 's~${build_folder}~'$npm_package_version'~g'",
     "partial:uglify": "[ $NODE_ENV != production ] && cat || uglifyjs --compress drop_console,unused=true --screw-ie8",
     "partial:uglify:do": "uglifyjs --compress drop_console,unused=true --screw-ie8",
-    "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo './build/index-$npm_package_version.html'"
+    "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
     "augur-abi": "^0.3.0",
