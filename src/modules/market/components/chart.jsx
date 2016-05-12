@@ -7,6 +7,41 @@ module.exports = React.createClass({
         series: React.PropTypes.array
     },
 
+    /**
+     * Update when series are not of same length or if last values are not the same.
+     * Inspired by code from old develop branch
+     *
+     * @param {Object} nextProps
+     * @param {Object} nextState
+     * @return {boolean}
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        var thisSeries = this.props.series;
+        var nextSeries = nextProps.series;
+
+        if (thisSeries === nextSeries) {
+            return false;
+        }
+
+        if (thisSeries && nextSeries) {
+            if (nextSeries.length !== thisSeries.length) return true;
+            var thisDataLength, nextDataLength;
+            for (var i = 0, len = thisSeries.length; i < len; ++i) {
+                thisDataLength = thisSeries[i].data.length;
+                nextDataLength = nextSeries[i].data.length;
+                if (thisDataLength !== nextDataLength) {
+                    return true;
+                }
+
+                if (thisSeries[i].data[thisDataLength-1].price !== nextSeries[i].data[nextDataLength-1].price) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    },
+
     render: function() {
         var p = this.props;
         let config = {
