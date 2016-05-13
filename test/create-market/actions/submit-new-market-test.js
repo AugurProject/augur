@@ -20,7 +20,7 @@ import {
 } from '../../../src/modules/transactions/constants/statuses';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   let store, action, out, clock;
@@ -139,5 +139,5 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
     assert(fakeAugurJS.createMarket.calledTwice, `createMarket wasn't called twice after dispatching a createMarket Action 2 times`);
     assert.deepEqual(store.getActions(), [], `Didn't properly dispatch actions for a error when creating account`);
   });
-  
+
 });
