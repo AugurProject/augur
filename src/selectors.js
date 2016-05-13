@@ -1,18 +1,14 @@
+import loginAccount from './selectors/login-account';
+
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_REPORT } from './modules/transactions/constants/types';
 
-var selectors = {};
+var selectors = {
+	loginAccount
+};
 
 selectors.activePage = MARKETS;
-
-selectors.loginAccount = {
-	id: '123',
-	handle: 'Johnny',
-	rep: emptyNumber('rep'),
-	ether: emptyNumber('eth'),
-	realEther: emptyNumber('eth')
-};
 
 selectors.links = {
 	authLink: { href: '', onClick: () => module.exports.update({ activePage: LOGIN }) },
@@ -127,18 +123,6 @@ function makeNumber(num, denomination, omitSign) {
 	o.full = o.formatted + o.denomination;
 
 	return o;
-}
-
-function emptyNumber(denomination) {
-	return {
-		value: 0,
-		formattedValue: 0,
-		formatted: '-',
-		rounded: '-',
-		minimized: '-',
-		full: '-',
-		denomination: denomination || ''
-	};
 }
 
 function makeMarkets(numMarkets = 20) {
