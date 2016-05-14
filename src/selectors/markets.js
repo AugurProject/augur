@@ -1,8 +1,7 @@
 import { makeNumber } from '../utils/make-number';
 
 import { M } from '../modules/site/constants/pages';
-
-import selectors from '../selectors';
+import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_REPORT } from '../modules/transactions/constants/types';
 
 module.exports = makeMarkets();
 
@@ -28,7 +27,7 @@ function makeMarkets(numMarkets = 20) {
 				volume: makeNumber(randomInt(0, 10000), 'Shares', true),
 				isOpen: Math.random() > 0.1,
 				isPendingReport: Math.random() < 0.5,
-				marketLink: { text: 'Trade', className: 'trade', onClick: () => module.exports.update({ activePage: M, market: m }) },
+				marketLink: { text: 'Trade', className: 'trade', onClick: () => require('../selectors').update({ activePage: M, market: m }) },
 			};
 
 		m.outcomes = [
@@ -58,7 +57,7 @@ function makeMarkets(numMarkets = 20) {
 						m.outcomes[0].trade.limitPrice = limitPrice;
 						m.outcomes[0].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
 						console.log(m.outcomes[0].trade);
-						selectors.update();
+						require('../selectors').update();
 					}
 				}
 			},
@@ -87,7 +86,7 @@ function makeMarkets(numMarkets = 20) {
 						m.outcomes[1].trade.numShares = numShares;
 						m.outcomes[1].trade.limitPrice = limitPrice;
 						m.outcomes[1].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
-						selectors.update();
+						require('../selectors').update();
 					}
 				}
 			},
@@ -107,7 +106,7 @@ function makeMarkets(numMarkets = 20) {
 						m.outcomes[2].trade.numShares = numShares;
 						m.outcomes[2].trade.limitPrice = limitPrice;
 						m.outcomes[2].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
-						selectors.update();
+						require('../selectors').update();
 					}
 				}
 			}
