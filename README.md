@@ -45,3 +45,15 @@ Documentation
 -------------
 
 [http://docs.augur.net](http://docs.augur.net)
+
+Development Tips
+-------------
+
+**#1: Search the project filenames for whatever you are looking for before thinking about it too much.**
+
+Since our code is structured in many small files that are named the same as the state/functionality they represent, rather than try to follow and reverse engineer code paths, just blindly search all filenames for whatever it is you are looking for. More often than not, you will find what you need.
+
+Want to know where the css for pagination is? Don't bother tracing where/how they're included, just search your files for `pag` >>>and `pagination.less` will pop up.
+
+Want to see how the login account gets updated? Search the files for `login` >>> and `update-login-account.js` will appear.
+
