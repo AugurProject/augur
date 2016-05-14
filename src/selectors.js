@@ -55,7 +55,10 @@ selectors.marketsTotals = {
 };
 
 selectors.filtersProps =  {};
-selectors.keywordsChangeHandler =  () => {};
+selectors.keywords = {
+	value: '',
+	onChangeKeywords: () => {}
+};
 selectors.onChangeSort = (prop, isDesc) => {
 	if (isDesc !== false && isDesc !== true) {
 		isDesc = selectors.searchSort.selectedSort.isDesc;
