@@ -5,7 +5,7 @@ import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_
 
 module.exports = makeMarkets();
 
-function makeMarkets(numMarkets = 20) {
+function makeMarkets(numMarkets = 5) {
 	var markets = [],
 		types = ['binary', 'categorical', 'scalar'],
 		i;

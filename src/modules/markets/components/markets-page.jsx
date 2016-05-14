@@ -3,6 +3,7 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
+import SearchSort from '../../markets/components/search-sort';
 import Markets from '../../markets/components/markets';
 
 module.exports = React.createClass({
@@ -45,9 +46,16 @@ module.exports = React.createClass({
 				</header>
 
 				<div className="page-content">
-					<div className="l-container">
-						<Markets { ...p } />
-					</div>
+					<SearchSort
+						keywords={ p.keywords }
+
+						selectedSort={ p.selectedSort }
+						sortOptions={ p.sortOptions }
+
+						onChangeKeywords={ p.onChangeKeywords }
+						onChangeSort={ p.onChangeSort }	/>
+
+					<Markets className="page-content markets-content" { ...p } />
 				</div>
 
 				<SiteFooter />
