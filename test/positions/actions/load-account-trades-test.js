@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe(`modules/positions/actions/load-account-trades.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   let store, action, out;

@@ -59,7 +59,7 @@ const testState = {
     isOpen: true
   },
   selectedMarketId: null,
-  selectedMarketsHeader: null,
+  selectedMarketsHeader: 'testMarketHeader',
   selectedSort: {
     isDesc: true,
     prop: 'volume'
