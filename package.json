@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "augur-abi": "^0.3.0",
-    "augur-ui-react-components": "^2.0.2",
+    "augur-ui-react-components": "^2.0.5",
     "augur.js": "^1.0.0",
     "bignumber.js": "^2.3.0",
     "memoizerific": "^1.5.6",
