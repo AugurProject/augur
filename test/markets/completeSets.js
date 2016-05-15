@@ -102,5 +102,5 @@ describe("Integration tests", function () {
                 amount: "0.01"
             });
         });
-    });
+    }
 });
