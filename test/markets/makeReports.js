@@ -88,25 +88,28 @@ describe("Integration tests", function () {
     describe("makeHash", function () {
         var test = function (t) {
             it("salt=" + t.salt + ", report=" + t.report + ", eventID=" + t.eventID, function () {
-                var localHash = augur.makeHash(t.salt, t.report, t.eventID, null, t.isScalar);
-                var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.isScalar);
+                var localHash = augur.makeHash(t.salt, t.report, t.eventID, t.sender, null, t.isScalar);
+                var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.sender, null, t.isScalar);
                 assert.strictEqual(localHash, contractHash);
             });
         };
         test({
             salt: salt,
             report: report,
+            sender: augur.from,
             eventID: "-0xab47f3b71bdf6b7765c73d0073c8b9862159c628a55f0c6949e84a98abfc182"
         });
         for (var i = 0; i < 10; ++i) {
             test({
                 salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
                 report: Math.round(Math.random() * 50),
+                sender: augur.from,
                 eventID: abi.prefix_hex(utils.sha256(Math.random().toString()))
             });
             test({
                 salt: abi.prefix_hex(utils.sha256(Math.random().toString())),
                 report: Math.round(Math.random() * 50),
+                sender: augur.from,
                 eventID: abi.prefix_hex(utils.sha256(Math.random().toString())),
                 isScalar: true
             });

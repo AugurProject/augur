@@ -5273,7 +5273,7 @@ module.exports = function (network) {
         makeHash: {
             to: contracts.makeReports,
             method: "makeHash",
-            signature: "iii",
+            signature: "iiii",
             returns: "hash"
         },
         calculateReportingThreshold: {
@@ -38236,7 +38236,7 @@ Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, i
         event
     ]));
 };
-Augur.prototype.makeHash_contract = function (salt, report, event, indeterminate, isScalar, callback) {
+Augur.prototype.makeHash_contract = function (salt, report, event, sender, indeterminate, isScalar, callback) {
     if (salt.constructor === Object && salt.salt) {
         report = salt.report;
         event = salt.event;
@@ -38250,7 +38250,7 @@ Augur.prototype.makeHash_contract = function (salt, report, event, indeterminate
         fixedReport = abi.fix(report, "hex");
     }
     var tx = clone(this.tx.makeHash);
-    tx.params = [abi.hex(salt), fixedReport, event];
+    tx.params = [abi.hex(salt), fixedReport, event, sender];
     return this.fire(tx, callback);
 };
 Augur.prototype.calculateReportingThreshold = function (branch, eventID, reportPeriod, callback) {
