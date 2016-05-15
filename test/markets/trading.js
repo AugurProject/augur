@@ -79,198 +79,200 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = tools.setup(require("../../src"), process.argv.slice(2));
-    var branchID = augur.branches.dev;
-    var markets = augur.getMarketsInBranch(branchID);
-    
-    describe("buy", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                augur.buy({
-                    amount: t.amount,
-                    price: t.price,
-                    market: t.market,
-                    outcome: t.outcome,
-                    onSent: function (r) {
-                        console.log("buy sent:", r);
-                    },
-                    onSuccess: function (r) {
-                        console.log("buy success:", r);
-                        augur.get_trade_ids(t.market, function (tradeIds) {
-                            console.log("trade IDs:", tradeIds);
-                            assert.isArray(tradeIds);
-                            assert.isAbove(tradeIds.length, 0);
-                            done();
-                        });
-                    },
-                    onFailed: done
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
+        var branchID = augur.branches.dev;
+        var markets = augur.getMarketsInBranch(branchID);
+        
+        describe("buy", function () {
+            var test = function (t) {
+                it(JSON.stringify(t), function (done) {
+                    this.timeout(tools.TIMEOUT);
+                    augur.buy({
+                        amount: t.amount,
+                        price: t.price,
+                        market: t.market,
+                        outcome: t.outcome,
+                        onSent: function (r) {
+                            console.log("buy sent:", r);
+                        },
+                        onSuccess: function (r) {
+                            console.log("buy success:", r);
+                            augur.get_trade_ids(t.market, function (tradeIds) {
+                                console.log("trade IDs:", tradeIds);
+                                assert.isArray(tradeIds);
+                                assert.isAbove(tradeIds.length, 0);
+                                done();
+                            });
+                        },
+                        onFailed: done
+                    });
                 });
+            };
+            test({
+                market: markets[markets.length - 1],
+                amount: 1,
+                price: "0.5",
+                outcome: "1"
             });
-        };
-        test({
-            market: markets[markets.length - 1],
-            amount: 1,
-            price: "0.5",
-            outcome: "1"
-        });
-        test({
-            market: markets[markets.length - 1],
-            amount: "0.25",
-            price: "0.52",
-            outcome: "1"
-        });
-    });
-
-    describe("sell", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                augur.buyCompleteSets({
-                    market: t.market,
-                    amount: t.amount,
-                    onSent: function (r) {},
-                    onSuccess: function (r) {
-                        augur.sell({
-                            amount: t.amount,
-                            price: t.price,
-                            market: t.market,
-                            outcome: t.outcome,
-                            onSent: function (r) {
-                                console.log("sell sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("sell success:", r);
-                                augur.get_trade_ids(t.market, function (tradeIds) {
-                                    console.log("trade IDs:", tradeIds);
-                                    assert.isArray(tradeIds);
-                                    assert.isAbove(tradeIds.length, 0);
-                                    done();
-                                });
-                            },
-                            onFailed: done
-                        });
-                    },
-                    onFailed: done
-                });
+            test({
+                market: markets[markets.length - 1],
+                amount: "0.25",
+                price: "0.52",
+                outcome: "1"
             });
-        };
-        test({
-            market: markets[markets.length - 1],
-            amount: 1,
-            price: "0.5",
-            outcome: "1"
         });
-        test({
-            market: markets[markets.length - 1],
-            amount: "0.25",
-            price: "0.52",
-            outcome: "1"
-        });
-    });
 
-    describe("trade", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                augur.buyCompleteSets({
-                    market: t.market,
-                    amount: t.amount,
-                    onSent: function (r) {},
-                    onSuccess: function (r) {
-                        augur.sell({
-                            amount: t.amount,
-                            price: t.price,
-                            market: t.market,
-                            outcome: t.outcome,
-                            onSent: function (r) {
-                                console.log("sell sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("sell success:", r);
-                                augur.get_trade_ids(t.market, function (trade_ids) {
-                                    augur.trade({
-                                        max_value: t.max_value,
-                                        max_amount: 0,
-                                        trade_ids: [trade_ids[0]],
-                                        onTradeHash: function (r) {
-
-                                        },
-                                        onCommitSent: function (r) {
-
-                                        },
-                                        onCommitSuccess: function (r) {
-
-                                        },
-                                        onCommitFailed: done,
-                                        onTradeSent: function (r) {
-                                            console.log("trade sent:", r);
-                                        },
-                                        onTradeSuccess: function (r) {
-                                            console.log("trade success:", r);
-                                            done();
-                                        },
-                                        onTradeFailed: done
-                                    });
-                                });
-                            },
-                            onFailed: done
-                        });
-                    },
-                    onFailed: done
-                });
-            });
-        };
-        test({
-            market: markets[markets.length - 1],
-            amount: 1,
-            price: "0.5",
-            outcome: "1",
-            max_value: 1
-        });
-    });
-
-    describe("cancel", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT);
-                augur.buyCompleteSets({
-                    market: t.market,
-                    amount: t.amount,
-                    onSent: function (r) {},
-                    onSuccess: function (r) {
-                        augur.sell({
-                            amount: t.amount,
-                            price: t.price,
-                            market: t.market,
-                            outcome: t.outcome,
-                            onSent: function (r) {
-                                console.log("sell sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("sell success:", r);
-                                augur.get_trade_ids(t.market, function (trade_ids) {
-                                    augur.cancel(trade_ids[0], function (r) {
-                                        console.log("cancel sent:", r);
-                                    }, function (r) {
-                                        console.log("cancel success:", r);
+        describe("sell", function () {
+            var test = function (t) {
+                it(JSON.stringify(t), function (done) {
+                    this.timeout(tools.TIMEOUT);
+                    augur.buyCompleteSets({
+                        market: t.market,
+                        amount: t.amount,
+                        onSent: function (r) {},
+                        onSuccess: function (r) {
+                            augur.sell({
+                                amount: t.amount,
+                                price: t.price,
+                                market: t.market,
+                                outcome: t.outcome,
+                                onSent: function (r) {
+                                    console.log("sell sent:", r);
+                                },
+                                onSuccess: function (r) {
+                                    console.log("sell success:", r);
+                                    augur.get_trade_ids(t.market, function (tradeIds) {
+                                        console.log("trade IDs:", tradeIds);
+                                        assert.isArray(tradeIds);
+                                        assert.isAbove(tradeIds.length, 0);
                                         done();
-                                    }, done);
-                                });
-                            },
-                            onFailed: done
-                        });
-                    },
-                    onFailed: done
+                                    });
+                                },
+                                onFailed: done
+                            });
+                        },
+                        onFailed: done
+                    });
                 });
+            };
+            test({
+                market: markets[markets.length - 1],
+                amount: 1,
+                price: "0.5",
+                outcome: "1"
             });
-        };
-        test({
-            market: markets[markets.length - 1],
-            amount: 1,
-            price: "0.5",
-            outcome: "1"
+            test({
+                market: markets[markets.length - 1],
+                amount: "0.25",
+                price: "0.52",
+                outcome: "1"
+            });
         });
-    });
 
+        describe("trade", function () {
+            var test = function (t) {
+                it(JSON.stringify(t), function (done) {
+                    this.timeout(tools.TIMEOUT);
+                    augur.buyCompleteSets({
+                        market: t.market,
+                        amount: t.amount,
+                        onSent: function (r) {},
+                        onSuccess: function (r) {
+                            augur.sell({
+                                amount: t.amount,
+                                price: t.price,
+                                market: t.market,
+                                outcome: t.outcome,
+                                onSent: function (r) {
+                                    console.log("sell sent:", r);
+                                },
+                                onSuccess: function (r) {
+                                    console.log("sell success:", r);
+                                    augur.get_trade_ids(t.market, function (trade_ids) {
+                                        augur.trade({
+                                            max_value: t.max_value,
+                                            max_amount: 0,
+                                            trade_ids: [trade_ids[0]],
+                                            onTradeHash: function (r) {
+
+                                            },
+                                            onCommitSent: function (r) {
+
+                                            },
+                                            onCommitSuccess: function (r) {
+
+                                            },
+                                            onCommitFailed: done,
+                                            onTradeSent: function (r) {
+                                                console.log("trade sent:", r);
+                                            },
+                                            onTradeSuccess: function (r) {
+                                                console.log("trade success:", r);
+                                                done();
+                                            },
+                                            onTradeFailed: done
+                                        });
+                                    });
+                                },
+                                onFailed: done
+                            });
+                        },
+                        onFailed: done
+                    });
+                });
+            };
+            test({
+                market: markets[markets.length - 1],
+                amount: 1,
+                price: "0.5",
+                outcome: "1",
+                max_value: 1
+            });
+        });
+
+        describe("cancel", function () {
+            var test = function (t) {
+                it(JSON.stringify(t), function (done) {
+                    this.timeout(tools.TIMEOUT);
+                    augur.buyCompleteSets({
+                        market: t.market,
+                        amount: t.amount,
+                        onSent: function (r) {},
+                        onSuccess: function (r) {
+                            augur.sell({
+                                amount: t.amount,
+                                price: t.price,
+                                market: t.market,
+                                outcome: t.outcome,
+                                onSent: function (r) {
+                                    console.log("sell sent:", r);
+                                },
+                                onSuccess: function (r) {
+                                    console.log("sell success:", r);
+                                    augur.get_trade_ids(t.market, function (trade_ids) {
+                                        augur.cancel(trade_ids[0], function (r) {
+                                            console.log("cancel sent:", r);
+                                        }, function (r) {
+                                            console.log("cancel success:", r);
+                                            done();
+                                        }, done);
+                                    });
+                                },
+                                onFailed: done
+                            });
+                        },
+                        onFailed: done
+                    });
+                });
+            };
+            test({
+                market: markets[markets.length - 1],
+                amount: 1,
+                price: "0.5",
+                outcome: "1"
+            });
+        });
+    }
 });
