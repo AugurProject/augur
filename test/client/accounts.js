@@ -507,99 +507,6 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                 });
             });
         });
-
-        // it("account 1 + same password + full-sequence fund", function (done) {
-        //     this.timeout(tools.TIMEOUT);
-        //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        //     augur.web.register(handle, password, {
-        //         onRegistered: function (account) {
-        //             assert.strictEqual(account.error, 422);
-        //             assert.notProperty(account, "address");
-        //             assert.notProperty(account, "privateKey");
-        //             assert.notProperty(account, "keystore");
-        //             assert.notProperty(account, "handle");
-        //             assert.notProperty(augur.web.account, "address");
-        //             assert.notProperty(augur.web.account, "privateKey");
-        //             assert.notProperty(augur.web.account, "keystore");
-        //             assert.notProperty(augur.web.account, "handle");
-        //             augur.db.get(handle, function (record) {
-        //                 assert.isObject(record);
-        //                 assert.notProperty(record, "error");
-
-        //                 // verify login with correct password still works
-        //                 augur.web.login(handle, password, function (user) {
-        //                     checkAccount(augur, user);
-        //                     augur.web.logout();
-
-        //                     // verify login with bad password does not work
-        //                     augur.web.login(handle, password + "1", function (user) {
-        //                         assert.strictEqual(user.error, 403);
-        //                         assert.notProperty(user, "address");
-        //                         assert.notProperty(user, "privateKey");
-        //                         assert.notProperty(user, "keystore");
-        //                         assert.notProperty(user, "handle");
-        //                         assert.notProperty(augur.web.account, "address");
-        //                         assert.notProperty(augur.web.account, "privateKey");
-        //                         assert.notProperty(augur.web.account, "keystore");
-        //                         assert.notProperty(augur.web.account, "handle");
-        //                         done();
-        //                     });
-        //                 });
-        //             });
-        //         },
-        //         onSendEther: done,
-        //         onSent: done,
-        //         onSuccess: done,
-        //         onFailed: done
-        //     });
-        // });
-
-        // it("account 1 + same password + persistence + full-sequence fund", function (done) {
-        //     this.timeout(tools.TIMEOUT);
-        //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        //     augur.web.register(handle, password, {persist: true}, {
-        //         onRegistered: function (account) {
-        //             assert.strictEqual(account.error, 422);
-        //             assert.notProperty(account, "address");
-        //             assert.notProperty(account, "privateKey");
-        //             assert.notProperty(account, "keystore");
-        //             assert.notProperty(account, "handle");
-        //             assert.notProperty(augur.web.account, "address");
-        //             assert.notProperty(augur.web.account, "privateKey");
-        //             assert.notProperty(augur.web.account, "keystore");
-        //             assert.notProperty(augur.web.account, "handle");
-        //             augur.db.get(handle, function (record) {
-        //                 assert.isObject(record);
-        //                 assert.notProperty(record, "error");
-
-        //                 // verify login with correct password still works
-        //                 augur.web.login(handle, password, function (user) {
-        //                     checkAccount(augur, user);
-        //                     augur.web.logout();
-
-        //                     // verify login with bad password does not work
-        //                     augur.web.login(handle, password + "1", function (user) {
-        //                         assert.strictEqual(user.error, 403);
-        //                         assert.notProperty(user, "address");
-        //                         assert.notProperty(user, "privateKey");
-        //                         assert.notProperty(user, "keystore");
-        //                         assert.notProperty(user, "handle");
-        //                         assert.notProperty(augur.web.account, "address");
-        //                         assert.notProperty(augur.web.account, "privateKey");
-        //                         assert.notProperty(augur.web.account, "keystore");
-        //                         assert.notProperty(augur.web.account, "handle");
-        //                         done();
-        //                     });
-        //                 });
-        //             });
-        //         },
-        //         onSendEther: done,
-        //         onSendEther: done,
-        //         onSent: done,
-        //         onSuccess: done,
-        //         onFailed: done
-        //     });
-        // });
     });
 
     describe("Fund new account", function () {
@@ -623,7 +530,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                             .bignum(augur.rpc.balance(recipient))
                             .dividedBy(constants.ETHER);
                         var delta = final_balance.sub(initial_balance).toNumber();
-                        assert.isAbove(Math.abs(delta), 4);
+                        assert.isAbove(Math.abs(delta), 0);
                     },
                     onSend: function (res) {
                         assert.notProperty(res, "error");

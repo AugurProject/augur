@@ -309,9 +309,9 @@ module.exports = function () {
                                 err.bubble = res;
                                 err.packaged = packaged;
                                 return cb(err);
-                            } else if (res.message.indexOf("Nonce too low") > -1) {
-                                console.warn(res);
-                                console.log(packaged);
+                            } else if (res.message.indexOf("Nonce too low") > -1 ||
+                                res.message.indexOf("Known transaction") > -1) {
+                                console.log("Increment nonce:", packaged);
                                 ++packaged.nonce;
                                 return self.submitTx(packaged, cb);
                             } else {
