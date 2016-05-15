@@ -63,12 +63,12 @@ var options = {
             rpcapi: "eth,net,web3",
             ipcapi: "admin,db,eth,debug,miner,net,shh,txpool,personal,web3",
             mine: null,
-            minerthreads: 2,
-            genesis: join(__dirname, "..", "data", "genesis-10101.json")
+            minerthreads: 2
         }
     }
 };
 options.UPLOADER = join(options.AUGUR_CORE, "load_contracts.py");
+options.GENESIS_BLOCK = join(__dirname, "..", "data", "genesis-10101.json");
 
 var accounts = tools.get_test_accounts(SYMLINK, tools.MAX_TEST_ACCOUNTS);
 var verified_accounts = false;
@@ -170,7 +170,6 @@ function faucets(geth) {
         onSuccess: function (r) {
             var rep_balance = augur.getRepBalance(branch, coinbase);
             var cash_balance = augur.getCashBalance(coinbase);
-            // assert.strictEqual(rep_balance, "47");
             augur.sendCash({
                 value: 0,
                 to: augur.contracts.cash,
@@ -379,7 +378,7 @@ while ( (option = parser.getopt()) !== undefined) {
         break;
     case 'n':
         options.GETH_OPTIONS.flags.networkid = option.optarg;
-        options.GETH_OPTIONS.flags.genesis = join(__dirname, "..", "data", "genesis-" + option.optarg + ".json");
+        options.GENESIS_BLOCK = join(__dirname, "..", "data", "genesis-" + option.optarg + ".json");
         break;
     default:
         assert.strictEqual('?', option.option);

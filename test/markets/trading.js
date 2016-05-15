@@ -180,43 +180,50 @@ describe("Integration tests", function () {
                         amount: t.amount,
                         onSent: function (r) {},
                         onSuccess: function (r) {
-                            augur.sell({
-                                amount: t.amount,
-                                price: t.price,
-                                market: t.market,
-                                outcome: t.outcome,
-                                onSent: function (r) {
-                                    console.log("sell sent:", r);
-                                },
-                                onSuccess: function (r) {
-                                    console.log("sell success:", r);
-                                    augur.get_trade_ids(t.market, function (trade_ids) {
+                            augur.get_trade_ids(t.market, function (trade_ids) {
+                                async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
+                                    augur.get_trade(thisTrade, function (tradeInfo) {
+                                        // { id: '0x63d33bdc658dfc0e33e73dc77048a6ff5ec3609c3f55f70404506dc128ce33e',
+                                        //   type: 'buy',
+                                        //   market: '-0x60573eff58c22ec05955bb1df4dce40e0374ce6f10d52326bed17564c360f7e0',
+                                        //   amount: '0.25',
+                                        //   price: '0.51999999999999999998',
+                                        //   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+                                        //   block: 945487,
+                                        //   refhash: '0x1',
+                                        //   outcome: undefined }
+                                        if (!tradeInfo) return nextTrade("no trade info found");
+                                        if (tradeInfo.owner === augur.from) return nextTrade();
+                                        console.log("using trade:", tradeInfo);
                                         augur.trade({
                                             max_value: t.max_value,
                                             max_amount: 0,
                                             trade_ids: [trade_ids[0]],
                                             onTradeHash: function (r) {
-
+                                                assert.notProperty(r, "error");
+                                                assert.isString(r);
                                             },
                                             onCommitSent: function (r) {
-
+                                                assert.strictEqual(r.callReturn, "1");
                                             },
                                             onCommitSuccess: function (r) {
-
+                                                assert.strictEqual(r.callReturn, "1");
                                             },
-                                            onCommitFailed: done,
+                                            onCommitFailed: nextTrade,
                                             onTradeSent: function (r) {
                                                 console.log("trade sent:", r);
                                             },
                                             onTradeSuccess: function (r) {
                                                 console.log("trade success:", r);
-                                                done();
+                                                nextTrade(r);
                                             },
-                                            onTradeFailed: done
+                                            onTradeFailed: nextTrade
                                         });
                                     });
-                                },
-                                onFailed: done
+                                }, function (x) {
+                                    if (x && x.callReturn) return done();
+                                    done(x);
+                                });
                             });
                         },
                         onFailed: done
@@ -225,7 +232,7 @@ describe("Integration tests", function () {
             };
             test({
                 market: markets[markets.length - 1],
-                amount: 1,
+                amount: 0.1,
                 price: "0.5",
                 outcome: "1",
                 max_value: 1
