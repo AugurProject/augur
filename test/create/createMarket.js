@@ -16,13 +16,6 @@ require('it-each')({ testPerIteration: true });
 
 var EXPIRING = false;
 
-// describe("Unit tests", function () {
-//     runner("eth_sendTransaction", [{
-//         method: "createMarket",
-//         parameters: ["hash", "string", "fixed", "hashArray", "int", "int", "int", "fixed", "string"]
-//     }]);
-// });
-
 describe("Integration tests", function () {
 
     if (!process.env.CONTINUOUS_INTEGRATION) {
@@ -33,135 +26,135 @@ describe("Integration tests", function () {
                 augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             });
 
-            // describe("categorical", function () {
+            describe("categorical", function () {
 
-            //     var test = function (t) {
-            //         it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
-            //             this.timeout(tools.TIMEOUT*2);
-            //             augur.createEvent({
-            //                 branchId: t.branch,
-            //                 description: t.description,
-            //                 expDate: t.expDate,
-            //                 minValue: t.minValue,
-            //                 maxValue: t.maxValue,
-            //                 numOutcomes: t.numOutcomes,
-            //                 resolution: t.resolution,
-            //                 onSent: function (r) {
-            //                     // console.log("createEvent:", r);
-            //                     assert(r.txHash);
-            //                     assert(r.callReturn);
-            //                 },
-            //                 onSuccess: function (r) {
-            //                     // console.log("createEvent success:", r);
-            //                     var eventID = r.callReturn;
-            //                     // assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
-            //                     // assert.strictEqual(augur.getDescription(eventID), t.description);
-            //                     var events = [eventID];
-            //                     augur.createMarket({
-            //                         branchId: t.branch,
-            //                         description: t.description,
-            //                         tradingFee: t.tradingFee,
-            //                         tags: t.tags,
-            //                         makerFees: t.makerFees,
-            //                         extraInfo: t.extraInfo,
-            //                         events: events,
-            //                         onSent: function (res) {
-            //                             // console.log("createMarket sent:", res);
-            //                             assert(res.txHash);
-            //                             assert(res.callReturn);
-            //                         },
-            //                         onSuccess: function (res) {
-            //                             // console.log("createMarket success:", res);
-            //                             var marketID = res.callReturn;
-            //                             assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-            //                             assert.strictEqual(augur.getDescription(marketID), t.description);
-            //                             augur.getMarketEvents(marketID, function (eventList) {
-            //                                 assert.isArray(eventList);
-            //                                 assert.strictEqual(eventList.length, 1);
-            //                                 assert.strictEqual(eventList[0], eventID);
-            //                                 augur.getMarketInfo(marketID, function (info) {
-            //                                     if (info.error) return done(info);
-            //                                     assert.isArray(info.events);
-            //                                     assert.strictEqual(info.events.length, 1);
-            //                                     assert.strictEqual(info.events[0].type, "categorical");
-            //                                     assert.strictEqual(info.type, "categorical");
-            //                                     done();
-            //                                 });
-            //                             }); // markets.getMarketEvents
-            //                         },
-            //                         onFailed: function (err) {
-            //                             done(new Error(tools.pp(err)));
-            //                         }
-            //                     }); // createMarket.createMarket
+                var test = function (t) {
+                    it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
+                        this.timeout(tools.TIMEOUT*2);
+                        augur.createEvent({
+                            branchId: t.branch,
+                            description: t.description,
+                            expDate: t.expDate,
+                            minValue: t.minValue,
+                            maxValue: t.maxValue,
+                            numOutcomes: t.numOutcomes,
+                            resolution: t.resolution,
+                            onSent: function (r) {
+                                // console.log("createEvent:", r);
+                                assert(r.txHash);
+                                assert(r.callReturn);
+                            },
+                            onSuccess: function (r) {
+                                // console.log("createEvent success:", r);
+                                var eventID = r.callReturn;
+                                // assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
+                                // assert.strictEqual(augur.getDescription(eventID), t.description);
+                                var events = [eventID];
+                                augur.createMarket({
+                                    branchId: t.branch,
+                                    description: t.description,
+                                    tradingFee: t.tradingFee,
+                                    tags: t.tags,
+                                    makerFees: t.makerFees,
+                                    extraInfo: t.extraInfo,
+                                    events: events,
+                                    onSent: function (res) {
+                                        // console.log("createMarket sent:", res);
+                                        assert(res.txHash);
+                                        assert(res.callReturn);
+                                    },
+                                    onSuccess: function (res) {
+                                        // console.log("createMarket success:", res);
+                                        var marketID = res.callReturn;
+                                        assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+                                        assert.strictEqual(augur.getDescription(marketID), t.description);
+                                        augur.getMarketEvents(marketID, function (eventList) {
+                                            assert.isArray(eventList);
+                                            assert.strictEqual(eventList.length, 1);
+                                            assert.strictEqual(eventList[0], eventID);
+                                            augur.getMarketInfo(marketID, function (info) {
+                                                if (info.error) return done(info);
+                                                assert.isArray(info.events);
+                                                assert.strictEqual(info.events.length, 1);
+                                                assert.strictEqual(info.events[0].type, "categorical");
+                                                assert.strictEqual(info.type, "categorical");
+                                                done();
+                                            });
+                                        }); // markets.getMarketEvents
+                                    },
+                                    onFailed: function (err) {
+                                        done(new Error(tools.pp(err)));
+                                    }
+                                }); // createMarket.createMarket
 
-            //                 },
-            //                 onFailed: function (err) {
-            //                     done(new Error(tools.pp(err)));
-            //                 }
-            //             }); // createEvent.createEvent
-            //         });
-            //     };
+                            },
+                            onFailed: function (err) {
+                                done(new Error(tools.pp(err)));
+                            }
+                        }); // createEvent.createEvent
+                    });
+                };
 
-            //     test({
-            //         branch: augur.branches.dev,
-            //         description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
-            //         expDate: new Date("1-9-2017").getTime(),
-            //         minValue: 1,
-            //         maxValue: 2,
-            //         numOutcomes: 3,
-            //         tradingFee: "0.02",
-            //         makerFees: "0.5",
-            //         resolution: "http://www.weather.com",
-            //         tags: ["weather", "temperature", "climate change"],
-            //         extraInfo: "Hello world!  Are you getting hotter?"
-            //     });
-            //     test({
-            //         branch: augur.branches.dev,
-            //         description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13? Choices: Higher, Lower, Equal",
-            //         expDate: new Date("1-2-2017").getTime(),
-            //         minValue: 10,
-            //         maxValue: 20,
-            //         numOutcomes: 3,
-            //         tradingFee: "0.02",
-            //         makerFees: "0.5",
-            //         resolution: "http://finance.google.com"
-            //     });
-            //     test({
-            //         branch: augur.branches.dev,
-            //         description: "Who will win the 2016 U.S. Presidential Election? Choices: Hillary Clinton, Donald Trump, Bernie Sanders, someone else",
-            //         expDate: new Date("1-11-2017").getTime(),
-            //         minValue: 0,
-            //         maxValue: 1,
-            //         numOutcomes: 4,
-            //         tradingFee: "0.02",
-            //         makerFees: "0.5",
-            //         extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
-            //         tags: ["politics", "US elections", "president"],
-            //         resolution: "generic"
-            //     });
-            //     test({
-            //         branch: augur.branches.dev,
-            //         description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
-            //         expDate: new Date("1-4-2017").getTime(),
-            //         minValue: 10,
-            //         maxValue: 20,
-            //         numOutcomes: 4,
-            //         tradingFee: "0.02",
-            //         makerFees: "0.5",
-            //         resolution: "generic"
-            //     });
-            //     test({
-            //         branch: augur.branches.dev,
-            //         description: "Which city will have the highest median single-family home price for September 2016? Choices: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, other",
-            //         expDate: new Date("10-2-2016").getTime(),
-            //         minValue: 0,
-            //         maxValue: 1,
-            //         numOutcomes: 8,
-            //         tradingFee: "0.03",
-            //         makerFees: "0.5",
-            //         resolution: "generic"
-            //     });
-            // });
+                test({
+                    branch: augur.branches.dev,
+                    description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
+                    expDate: new Date("1-9-2017").getTime(),
+                    minValue: 1,
+                    maxValue: 2,
+                    numOutcomes: 3,
+                    tradingFee: "0.02",
+                    makerFees: "0.5",
+                    resolution: "http://www.weather.com",
+                    tags: ["weather", "temperature", "climate change"],
+                    extraInfo: "Hello world!  Are you getting hotter?"
+                });
+                test({
+                    branch: augur.branches.dev,
+                    description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13? Choices: Higher, Lower, Equal",
+                    expDate: new Date("1-2-2017").getTime(),
+                    minValue: 10,
+                    maxValue: 20,
+                    numOutcomes: 3,
+                    tradingFee: "0.02",
+                    makerFees: "0.5",
+                    resolution: "http://finance.google.com"
+                });
+                test({
+                    branch: augur.branches.dev,
+                    description: "Who will win the 2016 U.S. Presidential Election? Choices: Hillary Clinton, Donald Trump, Bernie Sanders, someone else",
+                    expDate: new Date("1-11-2017").getTime(),
+                    minValue: 0,
+                    maxValue: 1,
+                    numOutcomes: 4,
+                    tradingFee: "0.02",
+                    makerFees: "0.5",
+                    extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
+                    tags: ["politics", "US elections", "president"],
+                    resolution: "generic"
+                });
+                test({
+                    branch: augur.branches.dev,
+                    description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
+                    expDate: new Date("1-4-2017").getTime(),
+                    minValue: 10,
+                    maxValue: 20,
+                    numOutcomes: 4,
+                    tradingFee: "0.02",
+                    makerFees: "0.5",
+                    resolution: "generic"
+                });
+                test({
+                    branch: augur.branches.dev,
+                    description: "Which city will have the highest median single-family home price for September 2016? Choices: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, other",
+                    expDate: new Date("10-2-2016").getTime(),
+                    minValue: 0,
+                    maxValue: 1,
+                    numOutcomes: 8,
+                    tradingFee: "0.03",
+                    makerFees: "0.5",
+                    resolution: "generic"
+                });
+            });
 
             describe("scalar", function () {
                 var test = function (t) {
