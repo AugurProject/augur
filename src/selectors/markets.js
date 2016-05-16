@@ -5,18 +5,18 @@ import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID_SHARES, ASK_SHARES, SUBMIT_
 
 module.exports = makeMarkets();
 
-function makeMarkets(numMarkets = 5) {
+function makeMarkets(numMarkets = 25) {
 	var markets = [],
 		types = ['binary', 'categorical', 'scalar'],
 		i;
 
 	for (i = 0; i < numMarkets; i++) {
-		markets.push(makeDummyMarket(i));
+		markets.push(makeMarket(i));
 	}
 
 	return markets;
 
-	function makeDummyMarket(index) {
+	function makeMarket(index) {
 		var id = index.toString(),
 			m = {
 				id: id,
@@ -30,10 +30,90 @@ function makeMarkets(numMarkets = 5) {
 				marketLink: { text: 'Trade', className: 'trade', onClick: () => require('../selectors').update({ activePage: M, market: m }) },
 			};
 
-		m.outcomes = [
-			{
-				id: '1',
-				name: 'YES',
+		// tags
+		m.tags = makeTags();
+		function makeTags() {
+			var randomNum = randomInt(1, 100),
+				numTags,
+				allTags = {
+					'Politics': {
+						'USA': {
+							'Presedential': true,
+							'State Politics': true
+						},
+
+						'Canada': {
+							'Prime Minister': true,
+							'Quebec': true
+						}
+					},
+
+					'Sports': {
+						'Football (American)': {
+							'2016 Season': true,
+							'Superbowl': true
+						},
+						'Football/Soccer (European)': {
+							'World Cup': true,
+							'Manchester': true,
+							'Euro 2016': true
+						},
+						'Tennis': {
+							'Wimbledon': true,
+							'US Open': true,
+							'Women': true
+						}
+					},
+
+					'Finance': {
+						'Equities': {
+							'Tech': true,
+							'Google': true
+						},
+						'Commodities': {
+							'Oil': true,
+							'Crude Oil': true,
+							'Corn': true
+						},
+						'Real-Estate': {
+							'London': true,
+							'Global': true
+						}
+					}
+				},
+				currentTier = allTags,
+				finalTags = [];
+
+			// randomly choose num tags with more weight towards having all 3
+			if (randomNum >= 95) {
+				numTags = 0;
+			}
+			else if (randomNum >= 85) {
+				numTags = 1;
+			}
+			else if (randomNum >= 65) {
+				numTags = 2;
+			}
+			else {
+				numTags = 3;
+			}
+
+			for (var i = 0; i < numTags; i++) {
+				let keysCurrentTier = Object.keys(currentTier);
+				let randomTag = keysCurrentTier[randomInt(0, keysCurrentTier.length - 1)];
+				finalTags.push(randomTag);
+				currentTier = currentTier[randomTag];
+			}
+
+			return finalTags;
+		}
+
+		// outcomes
+		m.outcomes = [makeOutcome(1, 'YES'), makeOutcome(2, 'NO'), makeOutcome(3, 'MAYBE')];
+		function makeOutcome(index, name) {
+			return {
+				id: index.toString(),
+				name: name,
 				lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
 				lastPricePercent: makeNumber(randomInt(50, 100), '%'),
 				position: {
@@ -53,65 +133,17 @@ function makeMarkets(numMarkets = 5) {
 					},
 					onChangeTrade: (numShares, limitPrice) => {
 						limitPrice = m.outcomes[0].lastPrice.value;
-						m.outcomes[0].trade.numShares = numShares;
-						m.outcomes[0].trade.limitPrice = limitPrice;
-						m.outcomes[0].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
-						console.log(m.outcomes[0].trade);
+						m.outcomes[index].trade.numShares = numShares;
+						m.outcomes[index].trade.limitPrice = limitPrice;
+						m.outcomes[index].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
+						console.log(m.outcomes[index].trade);
 						require('../selectors').update();
 					}
 				}
-			},
-			{
-				id: '2',
-				name: 'NO',
-				lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
-				lastPricePercent: makeNumber(randomInt(20, 50), '%'),
-				position: {
-					qtyShares: makeNumber(455, 'Shares'),
-					totalValue: makeNumber(776, 'eth'),
-					gainPercent: makeNumber(-6, '%'),
-					purchasePrice: makeNumber(0.6, 'eth'),
-					shareChange: makeNumber(0.5, 'eth'),
-					totalCost: makeNumber(980, 'eth'),
-					netChange: makeNumber(230, 'eth')
-				},
-				trade: {
-					numShares: 0,
-					limitPrice: 0,
-					tradeSummary: {
-						totalEther: makeNumber(0)
-					},
-					onChangeTrade: (numShares, limitPrice) => {
-						limitPrice = m.outcomes[0].lastPrice.value;
-						m.outcomes[1].trade.numShares = numShares;
-						m.outcomes[1].trade.limitPrice = limitPrice;
-						m.outcomes[1].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
-						require('../selectors').update();
-					}
-				}
-			},
-			{
-				id: '3',
-				name: 'MAYBE',
-				lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
-				lastPricePercent: makeNumber(randomInt(0, 30), '%'),
-				trade: {
-					numShares: 0,
-					limitPrice: 0,
-					tradeSummary: {
-						totalEther: makeNumber(0)
-					},
-					onChangeTrade: (numShares, limitPrice) => {
-						limitPrice = m.outcomes[0].lastPrice.value;
-						m.outcomes[2].trade.numShares = numShares;
-						m.outcomes[2].trade.limitPrice = limitPrice;
-						m.outcomes[2].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
-						require('../selectors').update();
-					}
-				}
-			}
-		];
+			};
+		}
 
+		// reportable outcomes
 		m.reportableOutcomes = m.outcomes.slice();
 		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
 
