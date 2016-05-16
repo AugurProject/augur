@@ -69,8 +69,8 @@ export default function(appElement, selectors) {
     		node = <MarketsPage
     					siteHeader={ p.siteHeader }
     					createMarketLink={ (p.links || {}).createMarketLink }
-    					onChangeKeywords={ p.keywords.onChangeKeywords }
-						keywords={ p.keywords.value }
+						keywords={ p.keywords && p.keywords.value }
+    					onChangeKeywords={ p.keywords && p.keywords.onChangeKeywords }
 
     					markets={ p.markets }
     					marketsHeader={ p.marketsHeader }
