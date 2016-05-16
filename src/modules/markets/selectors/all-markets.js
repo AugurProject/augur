@@ -62,7 +62,7 @@ console.time('selectMarkets');
 */
 	return Object.keys(marketsData)
     	.map(marketID => {
-    		var endDate = makeDateFromBlock(marketsData[marketID].endDate, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch); // this is here for performance reasons not to trigger memoization on every block
+    		var endDate = new Date(marketsData[marketID].endDate); // this is here for performance reasons not to trigger memoization on every block
     		return assembleMarket(
 	    		marketID,
 				marketsData[marketID],
