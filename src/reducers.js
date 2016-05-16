@@ -1,5 +1,6 @@
 import blockchain from './modules/app/reducers/blockchain';
 import branch from './modules/app/reducers/branch';
+import connection from './modules/app/reducers/connection';
 
 import auth from './modules/auth/reducers/auth';
 import loginAccount from './modules/auth/reducers/login-account';
@@ -23,10 +24,12 @@ import createMarketInProgress from './modules/create-market/reducers/create-mark
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
 import selectedSort from './modules/markets/reducers/selected-sort';
+import priceHistory from './modules/markets/reducers/price-history';
 
 module.exports = {
 	blockchain,
 	branch,
+	connection,
 
 	auth,
 	loginAccount,
@@ -43,6 +46,7 @@ module.exports = {
 	keywords,
 	selectedFilters,
 	selectedSort,
+	priceHistory,
 
 	tradesInProgress,
 	createMarketInProgress,
