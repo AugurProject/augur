@@ -7,7 +7,6 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-import Chart from '../../market/components/chart';
 
 module.exports = React.createClass({
     propTypes: {
@@ -68,12 +67,6 @@ module.exports = React.createClass({
 							/>
 					);
 				}
-
-				nodes.push(
-					<Chart
-						key="market-chart"
-						series={ p.market.priceTimeSeries } />
-				);
 			}
 		}
 
