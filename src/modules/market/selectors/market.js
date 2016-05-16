@@ -51,7 +51,7 @@ export const selectMarket = (marketID) => {
 		return {};
 	}
 
-	endDate = makeDateFromBlock(marketsData[marketID].endDate, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch);
+	endDate = new Date(marketsData[marketID].endDate);
 
 	return assembleMarket(
 		marketID,
