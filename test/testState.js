@@ -55,6 +55,7 @@ const testState = {
     numPerPage: 10,
     selectedPageNum: 1
   },
+  priceHistory: {},
   reports: {},
   selectedFilters: {
     isOpen: true
