@@ -42,9 +42,10 @@ describe('modules/markets/actions/update-selected-sort', () => {
       parsedURL: {
         pathArray: ['/'],
         searchParams: {
-          isOpen: 'true'
+          isOpen: 'true',
+          search: 'test testtag'
         },
-        url: '/?isOpen=true'
+        url: '/?isOpen=true&search=test%20testtag'
       }
     }];
 

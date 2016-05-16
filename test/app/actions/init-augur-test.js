@@ -56,6 +56,11 @@ describe(`modules/app/actions/init-augur.js`, () => {
 
   it(`should initiate the augur app`, () => {
     out = [{
+      isConnected: {
+        connect: 'test'
+      },
+      type: 'UPDATE_CONNECTION_STATUS'
+    }, {
       type: 'LOAD_LOGIN_ACCOUNT'
     }, {
       type: 'UPDATE_BRANCH',

@@ -2,6 +2,7 @@
 // Goal: To help keep these unit tests as DRY as possible.
 const testState = {
   accountTrades: {},
+  activePage: 'markets',
   auth: {
     err: null,
     selectedAuthType: 'register'
@@ -47,7 +48,7 @@ const testState = {
       id: '0xtest123'
     }
   },
-  keywords: '',
+  keywords: 'test testtag',
   marketsData: {},
   outcomes: { testMarketID: { id: 'testMarketID'}, test: {id: 'test'} },
   pagination: {
