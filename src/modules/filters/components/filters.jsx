@@ -13,7 +13,7 @@ module.exports = React.createClass({
         return (
             <aside className="filters">
                 { p.filters.map(filter =>
-                    <div className="filters-group">
+                    <div key={ filter.title } className="filters-group">
                         <span className="title">{ filter.title }</span>
                         { filter.options.map(option =>
                             <Checkbox key={ option.value } className="filter" text={ option.name } isChecked={ option.isSelected } onClick={ option.onClick } />
