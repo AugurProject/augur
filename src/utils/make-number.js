@@ -1,4 +1,5 @@
 export function makeNumber(num, denomination, omitSign) {
+	if (num > 1) num = Math.round(num);
 	var o = {
 		value: num,
 

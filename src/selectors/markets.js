@@ -112,20 +112,29 @@ function makeMarkets(numMarkets = 25) {
 		m.outcomes = makeOutcomes();
 		function makeOutcomes() {
 			var numOutcomes = randomInt(2, 8),
-				outcomes = [];
+				outcomes = [],
+				outcome,
+				percentLeft = 100;
 
 			for (var i = 1; i <= numOutcomes; i++) {
-				outcomes.push(makeOutcome(i));
+				outcome = makeOutcome(i, percentLeft);
+				percentLeft = percentLeft - outcome.lastPricePercent.value;
+				outcomes.push(outcome);
 			}
 
-			return outcomes;
+			let finalLastPrice = (outcome.lastPricePercent.value + percentLeft) / 100;
+			outcome.lastPrice= makeNumber(finalLastPrice, 'eth');
+			outcome.lastPricePercent = makeNumber(finalLastPrice * 100, '%');
 
-			function makeOutcome(index) {
+			return outcomes.sort((a, b) => b.lastPrice.value - a.lastPrice.value);
+
+			function makeOutcome(index, percentLeft) {
+				var lastPrice = randomInt(0, percentLeft) / 100;
 				return {
 					id: index.toString(),
 					name: makeName(index),
-					lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
-					lastPricePercent: makeNumber(randomInt(50, 100), '%'),
+					lastPrice: makeNumber(lastPrice, 'eth'),
+					lastPricePercent: makeNumber(lastPrice * 100, '%'),
 					position: {
 						qtyShares: makeNumber(16898, 'Shares'),
 						totalValue: makeNumber(14877, 'eth'),
