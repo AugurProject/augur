@@ -77,7 +77,6 @@ export const selectMarketsLink = memoizerific(1)(function(keywords, selectedFilt
 
     let href = makeUrl([PAGES_PATHS[MARKETS]], params).url;
 
-console.log('------->', href);
 	return {
 		href,
 		onClick: () => dispatch(showLink(href))
