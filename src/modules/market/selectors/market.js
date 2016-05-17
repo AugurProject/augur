@@ -190,6 +190,7 @@ export const assembleMarket = memoizerific(1000)(function(
 	o.reportableOutcomes = o.outcomes.slice();
 	o.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
+	o.tags = marketData.tags.filter((tag) => tag != null);
 	o.tradeSummary = selectTradeSummary(tradeOrders);
 	o.positionsSummary = selectPositionsSummary(positions.list.length, positions.qtyShares, positions.totalValue, positions.totalCost);
 	o.positionOutcomes = positions.list;
