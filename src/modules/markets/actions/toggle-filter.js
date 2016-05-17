@@ -7,6 +7,6 @@ export function toggleFilter(filterID) {
 	return (dispatch, getState) => {
 		dispatch({type: TOGGLE_FILTER, filterID});
 
-		dispatch(showLink(prepareUrl(getState())));
+		dispatch(showLink(prepareUrl(getState()), { preventScrollTop: true }));
 	}
 }
