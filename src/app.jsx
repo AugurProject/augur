@@ -75,7 +75,7 @@ export default function(appElement, selectors) {
     					markets={ p.markets }
     					marketsHeader={ p.marketsHeader }
     					favoriteMarkets={ p.favoriteMarkets }
-    					filtersProps={ p.filtersProps }
+    					filters={ p.filters }
     					pagination={ p.pagination }
 
     					selectedSort={ p.searchSort.selectedSort }

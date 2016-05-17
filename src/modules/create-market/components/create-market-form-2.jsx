@@ -1,11 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 
 import Form2Categorical from './create-market-form-2-categorical';
 import Form2Scalar from './create-market-form-2-scalar';
-import Form2Combinatorial from './create-market-form-2-combinatorial';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 
 import Input from '../../common/components/input';
@@ -40,10 +39,6 @@ module.exports = React.createClass({
 
 			case SCALAR:
 				typeSpecific = <Form2Scalar { ...p } />;
-				break;
-
-			case COMBINATORIAL:
-				typeSpecific = <Form2Combinatorial { ...p } />;
 				break;
 		}
 

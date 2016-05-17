@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 
 module.exports = React.createClass({
 	propTypes: {

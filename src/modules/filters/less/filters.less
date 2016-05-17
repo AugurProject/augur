@@ -1,0 +1,49 @@
+.markets {
+	.page-content {
+		.filters {
+			position: relative; z-index: 2;
+			width: @filters-width; height: 100%;
+			margin: 1vmin 0 0 0;
+			padding: 0 0 3rem 0;
+			color: @color-dark-normal;
+			background: white;
+			border-radius: 1px;
+			font-size: 1.4rem;
+
+			.title {
+				display: block;
+				margin: 2.5rem 1rem 1rem 4rem;
+				font-size: 1.5rem;
+				font-weight: 700;
+			}
+
+			.filter {
+				display: block;
+				margin: 0.5rem 1rem 0.5rem 4rem;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: @media-small-width) {
+	.markets {
+		.page-content {
+			.filters {
+				flex: 2;
+				width: 100%;
+				margin: 1vmin 0 0 0;
+				padding: 0 1em 1em 1em;
+
+				.filters-group {
+				    display: inline-block;
+				    min-width: 31%;
+				    vertical-align: top;
+
+					.title {
+						margin: 1em;
+					}
+				}
+			}
+		}
+	}
+}

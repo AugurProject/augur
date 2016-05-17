@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import MarketsHeader from '../../markets/components/markets-header';
-import Filters from '../../markets/components/filters';
+import Filters from '../../filters/components/filters';
 import MarketItem from '../../market/components/market-item';
 import Link from '../../link/components/link';
 
@@ -12,7 +12,7 @@ module.exports = React.createClass({
 
 		marketsHeader: React.PropTypes.object,
 		markets: React.PropTypes.array,
-		filtersProps: React.PropTypes.object,
+		filters: React.PropTypes.array,
 		pagination: React.PropTypes.object,
 
 		sortOptions: React.PropTypes.array
@@ -27,7 +27,7 @@ module.exports = React.createClass({
                     <MarketsHeader { ...p.marketsHeader } />
                 </div>
 
-                <Filters { ...p.filtersProps } />
+                <Filters filters={ p.filters } />
 
                 <div className="markets-list">
                     { (p.markets || []).map(market =>

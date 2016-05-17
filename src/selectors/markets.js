@@ -109,38 +109,62 @@ function makeMarkets(numMarkets = 25) {
 		}
 
 		// outcomes
-		m.outcomes = [makeOutcome(1, 'YES'), makeOutcome(2, 'NO'), makeOutcome(3, 'MAYBE')];
-		function makeOutcome(index, name) {
-			return {
-				id: index.toString(),
-				name: name,
-				lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
-				lastPricePercent: makeNumber(randomInt(50, 100), '%'),
-				position: {
-					qtyShares: makeNumber(16898, 'Shares'),
-					totalValue: makeNumber(14877, 'eth'),
-					gainPercent: makeNumber(14, '%'),
-					purchasePrice: makeNumber(0.77, 'eth'),
-					shareChange: makeNumber(0.107, 'eth'),
-					totalCost: makeNumber(12555, 'eth'),
-					netChange: makeNumber(3344, 'eth')
-				},
-				trade: {
-					numShares: 0,
-					limitPrice: 0,
-					tradeSummary: {
-						totalEther: makeNumber(0)
+		m.outcomes = makeOutcomes();
+		function makeOutcomes() {
+			var numOutcomes = randomInt(2, 8),
+				outcomes = [];
+
+			for (var i = 1; i <= numOutcomes; i++) {
+				outcomes.push(makeOutcome(i));
+			}
+
+			return outcomes;
+
+			function makeOutcome(index) {
+				return {
+					id: index.toString(),
+					name: makeName(index),
+					lastPrice: makeNumber(Math.round(Math.random() * 100) / 100, 'eth'),
+					lastPricePercent: makeNumber(randomInt(50, 100), '%'),
+					position: {
+						qtyShares: makeNumber(16898, 'Shares'),
+						totalValue: makeNumber(14877, 'eth'),
+						gainPercent: makeNumber(14, '%'),
+						purchasePrice: makeNumber(0.77, 'eth'),
+						shareChange: makeNumber(0.107, 'eth'),
+						totalCost: makeNumber(12555, 'eth'),
+						netChange: makeNumber(3344, 'eth')
 					},
-					onChangeTrade: (numShares, limitPrice) => {
-						limitPrice = m.outcomes[0].lastPrice.value;
-						m.outcomes[index].trade.numShares = numShares;
-						m.outcomes[index].trade.limitPrice = limitPrice;
-						m.outcomes[index].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
-						console.log(m.outcomes[index].trade);
-						require('../selectors').update();
+					trade: {
+						numShares: 0,
+						limitPrice: 0,
+						tradeSummary: {
+							totalEther: makeNumber(0)
+						},
+						onChangeTrade: (numShares, limitPrice) => {
+							limitPrice = m.outcomes[0].lastPrice.value;
+							m.outcomes[index].trade.numShares = numShares;
+							m.outcomes[index].trade.limitPrice = limitPrice;
+							m.outcomes[index].trade.totalCost = makeNumber(Math.round(numShares * limitPrice * -100) / 100);
+							console.log(m.outcomes[index].trade);
+							require('../selectors').update();
+						}
+					}
+				};
+
+				function makeName(index) {
+					switch(index) {
+						case 1: return 'One';
+						case 2: return 'Two';
+						case 3: return 'Three';
+						case 4: return 'Four';
+						case 5: return 'Five';
+						case 6: return 'Six';
+						case 7: return 'Seven';
+						case 8: return 'Eight';
 					}
 				}
-			};
+			}
 		}
 
 		// reportable outcomes

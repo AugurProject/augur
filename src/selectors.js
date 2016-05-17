@@ -1,5 +1,6 @@
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
+import filters from './selectors/filters';
 
 import { makeNumber } from './utils/make-number';
 
@@ -13,7 +14,8 @@ var selectors = {
 		selectors.render();
 	},
 	loginAccount,
-	markets
+	markets,
+	filters
 };
 
 selectors.activePage = MARKETS;
@@ -59,7 +61,6 @@ selectors.marketsTotals = {
 	numPendingReports: 19
 };
 
-selectors.filtersProps =  {};
 selectors.keywords = {
 	value: '',
 	onChangeKeywords: () => {}

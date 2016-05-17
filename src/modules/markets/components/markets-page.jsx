@@ -18,7 +18,7 @@ module.exports = React.createClass({
 
 		marketsHeader: React.PropTypes.object,
 		keywords: React.PropTypes.string,
-		filtersProps: React.PropTypes.object,
+		filters: React.PropTypes.array,
 		pagination: React.PropTypes.object,
 
 		selectedSort: React.PropTypes.object,
