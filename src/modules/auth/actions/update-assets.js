@@ -1,7 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
-
 import { BRANCH_ID } from '../../app/constants/network';
-
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 
 export function updateAssets() {
