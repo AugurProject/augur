@@ -1,4 +1,8 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import {
+	createStore,
+	combineReducers,
+	applyMiddleware
+} from 'redux';
 import thunk from 'redux-thunk';
 
 import reducers from './reducers';
@@ -24,18 +28,19 @@ const localStorageMiddleware = store => next => action => {
 		return;
 	}
 
-	windowRef.localStorage && windowRef.localStorage.setItem && windowRef.localStorage.setItem(state.loginAccount.id, JSON.stringify({
-		favorites: state.favorites,
-		transactionsData: state.transactionsData,
-		accountTrades: state.accountTrades
-	}));
+	if (windowRef.localStorage && windowRef.localStorage.setItem) {
+		windowRef.localStorage.setItem(state.loginAccount.id, JSON.stringify({
+			favorites: state.favorites,
+			transactionsData: state.transactionsData,
+			accountTrades: state.accountTrades
+		}));
+	}
 };
 
 // middleware
 if (process.env.NODE_ENV !== 'production') {
 	middleWare = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
-}
-else {
+} else {
 	middleWare = applyMiddleware(thunk, localStorageMiddleware);
 }
 

@@ -9,7 +9,7 @@
     "debug": false,
     "devel": true,
     "esnext": true,
-    "strict": true,
+    "strict": false,
     "boss": false,
     "laxbreak": false,
     "eqeqeq": false,

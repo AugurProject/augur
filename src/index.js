@@ -19,7 +19,7 @@ store.dispatch(initAugur());
 
 //store.dispatch(MarketsActions.listenToMarkets());
 
-store.subscribe(() => App(appElement, selectors));
+store.subscribe(() => new App(appElement, selectors));
 
 window.onpopstate = function(e) {
 	store.dispatch(showLink(window.location.pathname + window.location.search));

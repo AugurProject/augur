@@ -31,7 +31,7 @@ export function initAugur() {
 					dispatch(loadMarkets());
 
 					let { selectedMarketID } = getState();
-					if (selectedMarketID != null) {
+					if (selectedMarketID !== null) {
 						dispatch(loadFullMarket(selectedMarketID));
 					}
 
