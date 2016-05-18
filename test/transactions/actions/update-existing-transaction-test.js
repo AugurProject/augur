@@ -1,5 +1,5 @@
 import {
-  assert
+	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -8,63 +8,65 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe(`modules/transactions/actions/update-existing-transaction.js`, () => {
-  proxyquire.noPreserveCache();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-  let store, action, out, test;
-  let state = Object.assign({}, testState);
-  store = mockStore(state);
-  let mockUpdateTransData = {};
-  let mockUpdateAssets = {};
-  let mockFunc = () => {
-    return {
-      type: 'UPDATE_TRANSACTION_DATA'
-    };
-  };
+	proxyquire.noPreserveCache().noCallThru();
+	const middlewares = [thunk];
+	const mockStore = configureMockStore(middlewares);
+	let store, action, out, test;
+	let state = Object.assign({}, testState);
+	store = mockStore(state);
+	let mockUpdateTransData = {};
+	let mockUpdateAssets = {};
+	let mockFunc = () => {
+		return {
+			type: 'UPDATE_TRANSACTION_DATA'
+		};
+	};
 
-  mockUpdateTransData.updateTransactionsData = sinon.stub().returns(mockFunc());
-  mockUpdateAssets.updateAssets = sinon.stub().returns({
-    type: 'UPDATE_ASSETS'
-  });
+	mockUpdateTransData.updateTransactionsData = sinon.stub().returns(mockFunc());
+	mockUpdateAssets.updateAssets = sinon.stub().returns({
+		type: 'UPDATE_ASSETS'
+	});
 
-  action = proxyquire('../../../src/modules/transactions/actions/update-existing-transaction', {
-    '../../transactions/actions/update-transactions-data': mockUpdateTransData,
-    '../../auth/actions/update-assets': mockUpdateAssets
-  });
+	action = proxyquire('../../../src/modules/transactions/actions/update-existing-transaction', {
+		'../../transactions/actions/update-transactions-data': mockUpdateTransData,
+		'../../auth/actions/update-assets': mockUpdateAssets
+	});
 
-  beforeEach(() => {
-    store.clearActions();
-  });
+	beforeEach(() => {
+		store.clearActions();
+	});
 
-  afterEach(() => {
-    store.clearActions();
-  });
+	afterEach(() => {
+		store.clearActions();
+	});
 
-  it(`should update an existing transaction`, () => {
-    test = {
-      id: 'testtransaction12345',
-      message: 'test message!',
-      status: 'success',
-      type: 'register'
-    };
+	it(`should update an existing transaction`, () => {
+		test = {
+			id: 'testtransaction12345',
+			message: 'test message!',
+			status: 'success',
+			type: 'register'
+		};
 
-    out = [{
-      type: 'UPDATE_TRANSACTION_DATA'
-    }, {
-      type: 'UPDATE_ASSETS'
-    }];
+		out = [{
+			type: 'UPDATE_TRANSACTION_DATA'
+		}, {
+			type: 'UPDATE_ASSETS'
+		}];
 
-    store.dispatch(action.updateExistingTransaction(test.id, test));
+		store.dispatch(action.updateExistingTransaction(test.id, test));
 
-    assert(mockUpdateTransData.updateTransactionsData.calledOnce);
-    assert(mockUpdateAssets.updateAssets.calledOnce);
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-  });
+		assert(mockUpdateTransData.updateTransactionsData.calledOnce);
+		assert(mockUpdateAssets.updateAssets.calledOnce);
+		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
+	});
 
-  it(`shouldn't dispatch actions if there is no transaction data to update`, () => {
-    test = {id: 'test'};
-    state.transactionsData = {};
-    store.dispatch(action.updateExistingTransaction(test.id, test));
-    assert(store.getActions(), [], `Dispatched actions when it shouldn't have.`);
-  });
+	it(`shouldn't dispatch actions if there is no transaction data to update`, () => {
+		test = {
+			id: 'test'
+		};
+		state.transactionsData = {};
+		store.dispatch(action.updateExistingTransaction(test.id, test));
+		assert(store.getActions(), [], `Dispatched actions when it shouldn't have.`);
+	});
 });
