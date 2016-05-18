@@ -16,7 +16,7 @@
     "test": "NODE_ENV=test mocha",
     "test:watch": "npm test -- --watch",
     "lint": "jshint ./src/*.js && jshint ./src/modules/** && jshint ./src/utils/*.js && jshint ./src/services/*.js",
-    "eslint": "eslint *.js src",
+    "eslint": "eslint src",
     "coverage": "istanbul cover _mocha",
     "_____": "",
     "watch": "clear; echo '* * * *  WATCH  * * * *'; NODE_ENV=development npm run -s watch:all",
