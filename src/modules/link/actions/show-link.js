@@ -22,7 +22,7 @@ export function showLink(url, options = {}) {
         if (url !== window.location.pathname + window.location.search) {
             window.history.pushState(null, null, url);
         }
-        if (!options.preventScroll) {
+        if (!options.preventScrollTop) {
 			window.scrollTo(0, 0);
         }
     };

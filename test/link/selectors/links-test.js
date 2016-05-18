@@ -63,7 +63,7 @@ describe(`modules/link/selectors/links.js`, () => {
         onClick: test.createMarketLink.onClick
       },
       marketsLink: {
-        href: '/',
+        href: '/?isOpen=true',
         onClick: test.marketsLink.onClick
       },
       positionsLink: {

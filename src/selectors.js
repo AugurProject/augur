@@ -12,7 +12,7 @@ import pagination from './modules/markets/selectors/pagination';
 
 import market from './modules/market/selectors/market';
 
-import filtersProps from './modules/markets/selectors/filters-props';
+import filters from './modules/markets/selectors/filters';
 import searchSort from './modules/markets/selectors/search-sort';
 import keywords from './modules/markets/selectors/keywords';
 
@@ -38,7 +38,7 @@ var selectors = {
 
 	market,
 
-	filtersProps,
+	filters,
 	searchSort,
 	keywords,
 

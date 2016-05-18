@@ -42,10 +42,9 @@ describe(`modules/markets/actions/toggle-fiter.js`, () => {
       parsedURL: {
         pathArray: ['/'],
         searchParams: {
-          isOpen: 'true',
-          search: 'test testtag'
+          isOpen: 'true'
         },
-        url: '/?isOpen=true&search=test%20testtag'
+        url: '/?isOpen=true'
       }
     }];
 
