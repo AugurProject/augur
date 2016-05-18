@@ -1,6 +1,7 @@
 Augur
 =====
-https://travis-ci.org/AugurProject/augur.svg?branch=master
+[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=master)](https://travis-ci.org/AugurProject/augur)
+
 
 Augur is a decentralized prediction market platform built on Ethereum.
 This is the reference client.
