@@ -17,8 +17,63 @@ import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-repor
 import { collectFees } from '../../reports/actions/collect-fees';
 import { closeMarkets } from '../../reports/actions/close-markets';
 
-export function loadLoginAccount() {
+export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
+		const { marketsData } = getState();
+
+		// dispatch(loadMeanTradePrices());
+		dispatch(updateAssets());
+		dispatch(loadAccountTrades());
+
+		// clear and load reports for any markets that have been loaded
+		// (partly to handle signing out of one account and into another)
+		dispatch(clearReports());
+		dispatch(loadReports(marketsData));
+
+		dispatch(commitReports());
+		dispatch(penalizeTooFewReports());
+		dispatch(collectFees());
+		dispatch(penalizeWrongReports(marketsData));
+		dispatch(closeMarkets(marketsData));
+	};
+}
+
+export function loadLoginAccountLocalStorage(accountID) {
+	return (dispatch) => {
+		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+
+
+		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
+			return;
+		}
+
+		const localState = JSON.parse(localStorageRef.getItem(accountID));
+
+		if (!localState) {
+			return;
+		}
+
+		if (localState.favorites) {
+			dispatch(updateFavorites(localState.favorites));
+		}
+		if (localState.accountTrades) {
+			dispatch(updateAccountTradesData(localState.accountTrades));
+		}
+		if (localState.transactionsData) {
+			Object.keys(localState.transactionsData).forEach(key => {
+				if ([SUCCESS, FAILED, PENDING, INTERRUPTED]
+						.indexOf(localState.transactionsData[key].status) < 0) {
+					localState.transactionsData[key].status = INTERRUPTED;
+					localState.transactionsData[key].message = 'unknown if completed';
+				}
+			});
+			dispatch(updateTransactionsData(localState.transactionsData));
+		}
+	};
+}
+
+export function loadLoginAccount() {
+	return (dispatch) => {
 		AugurJS.loadLoginAccount(true, (err, loginAccount) => {
 			if (err) {
 				return console.error('ERR loadLoginAccount():', err);
@@ -33,57 +88,4 @@ export function loadLoginAccount() {
 			return;
 		});
 	};
-}
-
-export function loadLoginAccountDependents() {
-	return (dispatch, getState) => {
-		var { marketsData } = getState();
-
-		//dispatch(loadMeanTradePrices());
-		dispatch(updateAssets());
-		dispatch(loadAccountTrades());
-
-		// clear and load reports for any markets that have been loaded (partly to handle signing out of one account and into another)
-		dispatch(clearReports());
-		dispatch(loadReports(marketsData));
-
-		dispatch(commitReports());
-		dispatch(penalizeTooFewReports());
-		dispatch(collectFees());
-		dispatch(penalizeWrongReports(marketsData));
-		dispatch(closeMarkets(marketsData));
-	};
-}
-
-export function loadLoginAccountLocalStorage(accountID) {
-	return (dispatch, getState) => {
-		var localStorageRef = typeof window !== 'undefined' && window.localStorage,
-			localState;
-
-		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
-			return;
-		}
-
-		localState = JSON.parse(localStorageRef.getItem(accountID));
-
-		if (!localState) {
-			return;
-		}
-
-		if (localState.favorites) {
-			dispatch(updateFavorites(localState.favorites));
-		}
-		if (localState.accountTrades) {
-			dispatch(updateAccountTradesData(localState.accountTrades));
-		}
-		if (localState.transactionsData) {
-			Object.keys(localState.transactionsData).forEach(key => {
-				if ([SUCCESS, FAILED, PENDING, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
-					localState.transactionsData[key].status = INTERRUPTED;
-					localState.transactionsData[key].message = 'unknown if completed';
-				}
-			});
-			dispatch(updateTransactionsData(localState.transactionsData));
-		}
-	}
 }
