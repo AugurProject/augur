@@ -84,7 +84,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 3',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test', 'test2']
 		}, {
 			id: 'test4',
 			isFavorite: false,
@@ -110,7 +110,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 5',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test1']
 		}, {
 			id: 'test6',
 			isFavorite: false,
@@ -173,7 +173,13 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				qtyShares: 35,
 				totalValue: 140,
 				totalCost: 297
-			}
+			},
+			tagsTotals: [
+				{ name: 'testtag', num: 6 },
+				{ name: 'test', num: 5 },
+				{ name: 'test2', num: 1 },
+				{ name: 'test1', num: 1 }
+			]
 		};
 
 		assert(mockMarkets.selectUnpaginated.calledOnce, `Didn't call selectUnpaginated once as expected`);
