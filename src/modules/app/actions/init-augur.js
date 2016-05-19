@@ -12,7 +12,7 @@ import { loadFullMarket } from '../../market/actions/load-full-market';
 
 export function initAugur() {
 	return (dispatch, getState) => {
-		AugurJS.connect(function (err, connected) {
+		AugurJS.connect((err, connected) => {
 			if (err) {
 				return console.error('connect failure:', err);
 			}
@@ -20,9 +20,9 @@ export function initAugur() {
 			dispatch(updateConnectionStatus(connected));
 			dispatch(loadLoginAccount());
 
-			AugurJS.loadBranch(BRANCH_ID, (err, branch) => {
-				if (err) {
-					return console.log('ERROR loadBranch', err);
+			AugurJS.loadBranch(BRANCH_ID, (error, branch) => {
+				if (error) {
+					return console.log('ERROR loadBranch', error);
 				}
 
 				dispatch(updateBranch(branch));
@@ -30,7 +30,7 @@ export function initAugur() {
 				dispatch(updateBlockchain(() => {
 					dispatch(loadMarkets());
 
-					let { selectedMarketID } = getState();
+					const { selectedMarketID } = getState();
 					if (selectedMarketID !== null) {
 						dispatch(loadFullMarket(selectedMarketID));
 					}

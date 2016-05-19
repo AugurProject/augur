@@ -1,14 +1,14 @@
-import {UPDATE_BLOCKCHAIN} from '../../app/actions/update-blockchain';
+import { UPDATE_BLOCKCHAIN } from '../../app/actions/update-blockchain';
 
-export default function(blockchain = {}, action) {
+export default function (blockchain = {}, action) {
 	switch (action.type) {
-		case UPDATE_BLOCKCHAIN:
-			return {
-				...blockchain,
-				...action.data
-			};
+	case UPDATE_BLOCKCHAIN:
+		return {
+			...blockchain,
+			...action.data
+		};
 
-		default:
-			return blockchain;
+	default:
+		return blockchain;
 	}
 }

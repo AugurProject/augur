@@ -7,5 +7,6 @@
     "no-eq-null": 0,
     "no-console": 0,
     "indent": ["error", "tab"],
+    "consistent-return": 0,
   }
 }
