@@ -39,7 +39,7 @@ export function ParseMarketsData(marketsData) {
 		if (marketData.description && (marketData.type === CATEGORICAL || marketData.type === BINARY)) {
 			categoricalOutcomeNames = ParseCategoricalOutcomeNamesFromDescription(marketData);
 		}
-
+console.log('***', outcomes);
 		// reduce array-of-outcomes to object-of-outcomes, with outcome ids as the object keys
 		o.outcomesData[marketID] = outcomes.reduce((p, outcome, i) => {
 			p[outcome.id] = {

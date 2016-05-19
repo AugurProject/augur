@@ -157,8 +157,8 @@ export const assembleMarket = memoizerific(1000)(function(
 	        ...outcomeData,
 	        id: outcomeID,
 	        marketID,
-	        lastPrice: formatEther(outcomeData.price, { positiveSign: false }),
-	        lastPricePercent: formatPercent(outcomeData.price * 100, { positiveSign: false })
+	        lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
+	        lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
 		};
 
 		outcomeTradeOrders = selectOutcomeTradeOrders(o, outcome, outcomeTradeInProgress, dispatch);
