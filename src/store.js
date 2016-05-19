@@ -33,14 +33,11 @@ const localStorageMiddleware = store => next => action => {
 		}));
 	}
 };
-
+let middleWare;
+if (process.env.NODE_ENV !== 'production') {
+	middleWare = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
+} else {
+	middleWare = applyMiddleware(thunk, localStorageMiddleware);
+}
 // middleware
-export default () => {
-	let middleWare;
-	if (process.env.NODE_ENV !== 'production') {
-		middleWare = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
-	} else {
-		middleWare = applyMiddleware(thunk, localStorageMiddleware);
-	}
-	createStore(combineReducers(reducers), middleWare);
-};
+export default createStore(combineReducers(reducers), middleWare);
