@@ -22,7 +22,7 @@ import isTransactionsWorking from './modules/transactions/selectors/is-transacti
 
 import createMarketForm from './modules/create-market/selectors/create-market-form';
 
-var selectors = {
+const selectors = {
 	activePage,
 	loginAccount,
 	links,
@@ -49,8 +49,8 @@ var selectors = {
 
 module.exports = {};
 
-Object.keys(selectors).forEach(selectorKey => Object.defineProperty(module.exports, selectorKey, { get: selectors[selectorKey], enumerable: true }));
-
-
-
-
+Object.keys(selectors).forEach(selectorKey =>
+ Object.defineProperty(module.exports,
+		selectorKey,
+		{ get: selectors[selectorKey], enumerable: true }
+));

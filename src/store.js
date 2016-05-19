@@ -7,9 +7,7 @@ import thunk from 'redux-thunk';
 
 import reducers from './reducers';
 
-var windowRef = typeof window === 'undefined' ? {} : window,
-	middleWare;
-
+const windowRef = typeof window === 'undefined' ? {} : window;
 // console log middleware
 const consoleLog = store => next => action => {
 	if (typeof action !== 'function') {
@@ -20,9 +18,8 @@ const consoleLog = store => next => action => {
 
 // local storage middleware
 const localStorageMiddleware = store => next => action => {
-	var state;
 	next(action);
-	state = store.getState();
+	const state = store.getState();
 
 	if (!state || !state.loginAccount || !state.loginAccount.id) {
 		return;
@@ -38,12 +35,12 @@ const localStorageMiddleware = store => next => action => {
 };
 
 // middleware
-if (process.env.NODE_ENV !== 'production') {
-	middleWare = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
-} else {
-	middleWare = applyMiddleware(thunk, localStorageMiddleware);
-}
-
-export default createStore(
-	combineReducers(reducers),
-	middleWare);
+export default () => {
+	let middleWare;
+	if (process.env.NODE_ENV !== 'production') {
+		middleWare = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
+	} else {
+		middleWare = applyMiddleware(thunk, localStorageMiddleware);
+	}
+	createStore(combineReducers(reducers), middleWare);
+};
