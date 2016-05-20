@@ -8,4 +8,3 @@ export function updateMarketsData(marketsOutcomesData) {
 export function updateMarketData(marketData) {
 	return { type: UPDATE_MARKET_DATA, marketData };
 }
-

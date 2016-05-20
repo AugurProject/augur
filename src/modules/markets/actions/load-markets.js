@@ -10,19 +10,17 @@ import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-repor
 import { closeMarkets } from '../../reports/actions/close-markets';
 
 export function loadMarkets() {
-	var chunkSize = 10;
+	const chunkSize = 10;
 
 	return (dispatch, getState) => {
 		AugurJS.loadNumMarkets(BRANCH_ID, (err, numMarkets) => {
 			if (err) {
 				return console.log('ERR loadNumMarkets()', err);
 			}
-//numMarkets = 70; // TEMPORARY OVERRIDE
-			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (err, marketsData) => {
-				var marketsDataOutcomesData;
-
-				if (err) {
-					console.log('ERROR loadMarkets()', err);
+// numMarkets = 70; // TEMPORARY OVERRIDE
+			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (error, marketsData) => {
+				if (error) {
+					console.log('ERROR loadMarkets()', error);
 					return;
 				}
 				if (!marketsData) {
@@ -30,7 +28,7 @@ export function loadMarkets() {
 					return;
 				}
 
-				marketsDataOutcomesData = ParseMarketsData(marketsData);
+				const marketsDataOutcomesData = new ParseMarketsData(marketsData);
 
 				dispatch(updateMarketsData(marketsDataOutcomesData));
 
