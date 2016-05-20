@@ -16,7 +16,7 @@
     "test": "NODE_ENV=test mocha --compilers js:babel-register --recursive",
     "test:watch": "npm test -- --watch",
     "_____": "",
-    "watch": "clear; echo '* * * *  WATCH  * * * *'; NODE_ENV=development npm run -s watch:all",
+    "watch": "clear; echo '* CLEAN * HTML * ASSETS * CSS * AUGURJS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "build": "clear; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "______": "",
     "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:augurjs & npm run -s build:js) && npm run -s build:html && npm run -s build:finish",
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "augur-abi": "^0.3.0",
-    "augur-ui-react-components": "^2.0.6",
+    "augur-ui-react-components": "^2.2.1",
     "augur.js": "^1.0.3",
     "bignumber.js": "^2.3.0",
     "memoizerific": "^1.8.3",
@@ -94,7 +94,7 @@
   "config": {
     "js_entry_file": "./src/index.js",
     "less_entry_files": "./src/less/*.less",
-    "assets_folder": "./node_modules/augur-ui-react-components/dist/assets/**",
+    "assets_folder": "./node_modules/augur-ui-react-components/build/assets/**",
     "augurjs_entry_folder": "./node_modules/augur.js/src"
   }
 }
