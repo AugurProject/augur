@@ -39,7 +39,7 @@ export function loadLoginAccountDependents() {
 }
 
 export function loadLoginAccountLocalStorage(accountID) {
-	return (dispatch) => {
+	return (dispatch, getState) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
 

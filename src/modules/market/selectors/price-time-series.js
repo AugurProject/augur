@@ -12,23 +12,24 @@ import { blockToDate } from '../../../utils/date';
  * @return {Array}
  */
 export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHistory) => {
-    let { blockchain } = store.getState();
+	const { blockchain } = store.getState();
 
-    if (marketPriceHistory == null) {
-        return [];
-    }
+	if (marketPriceHistory == null) {
+		return [];
+	}
 
-    return outcomes.map((outcome) => {
-        let outcomePriceHistory = marketPriceHistory[outcome.id] || [];
+	return outcomes.map((outcome) => {
+		const outcomePriceHistory = marketPriceHistory[outcome.id] || [];
 
-        return {
-            name: outcome.name,
-            data: outcomePriceHistory.map((priceTimePoint) => {
-                return [
-                    blockToDate(priceTimePoint.blockNumber, blockchain.currentBlockNumber),
-                    Number(priceTimePoint.price)
-                ]
-            })
-        };
-    });
+		return {
+			name: outcome.name,
+			data: outcomePriceHistory.map((priceTimePoint) =>
+				[
+					blockToDate(priceTimePoint.blockNumber,
+					blockchain.currentBlockNumber),
+					Number(priceTimePoint.price)
+				]
+			)
+		};
+	});
 });

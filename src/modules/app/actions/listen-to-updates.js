@@ -6,7 +6,7 @@ import { loadBasicMarket } from '../../market/actions/load-basic-market';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 
 export function listenToUpdates() {
-	return (dispatch) => {
+	return (dispatch, getState) => {
 		AugurJS.listenToUpdates(
 
 			// new block

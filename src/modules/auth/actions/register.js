@@ -17,7 +17,7 @@ import { makeTransactionID } from '../../transactions/actions/add-transactions';
 
 
 export function register(username, password, password2) {
-	return (dispatch) => {
+	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const transactionID = makeTransactionID();
 		let numAssetsLoaded = -1;
@@ -49,8 +49,9 @@ export function register(username, password, password2) {
 				if (numAssetsLoaded === -1) {
 					dispatch(authError(err));
 				} else {
-					dispatch(updateExistingTransaction(transactionID,
-{ status: FAILED, message: err.message }));
+					dispatch(updateExistingTransaction(
+						transactionID,
+						{ status: FAILED, message: err.message }));
 				}
 				return;
 			}

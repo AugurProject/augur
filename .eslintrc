@@ -11,5 +11,6 @@
     "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
     "no-param-reassign": ["error", { "props": false }],
     "global-require": 0,
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }]
   }
 }

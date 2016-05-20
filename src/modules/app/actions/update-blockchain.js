@@ -36,7 +36,7 @@ export function incrementReportPeriod(cb) {
 
 			// if we are the first to encounter the new period, we get the
 			// honor of incrementing it on chain for everyone
-			AugurJS.incrementPeriodAfterReporting(BRANCH_ID, (err) => {
+			AugurJS.incrementPeriodAfterReporting(BRANCH_ID, (err, res) => {
 				if (err) {
 					console.error('ERROR incrementPeriodAfterReporting()', err);
 					return cb && cb();

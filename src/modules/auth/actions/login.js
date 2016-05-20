@@ -8,7 +8,7 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
 
 export function login(username, password) {
-	return (dispatch) => {
+	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		AugurJS.login(username, password, true, (err, loginAccount) => {
 			if (err) {

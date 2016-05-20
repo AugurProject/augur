@@ -1,5 +1,5 @@
-export default function(categoricalOutcomes) {
-	var errors = null;
+export default function (categoricalOutcomes) {
+	let errors = null;
 
 	if (!categoricalOutcomes || !categoricalOutcomes.length) {
 		return [];
@@ -9,7 +9,7 @@ export default function(categoricalOutcomes) {
 	errors.fill('');
 
 	categoricalOutcomes.forEach((outcome, i) => {
-		if (!outcome.length ) {
+		if (!outcome.length) {
 			errors[i] = 'Answer cannot be blank';
 		}
 	});
