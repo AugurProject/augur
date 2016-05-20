@@ -20,8 +20,8 @@ optargs=""
 
 if [ "${network}" = "2" ]; then
     optargs="--testnet"
-    # address="0x15f6400a88fb320822b689607d425272bea2175f"
-    address="0x7c0d52faab596c08f484e3478aebc6205f3f5d8c"
+    address="0x15f6400a88fb320822b689607d425272bea2175f"
+    # address="0x7c0d52faab596c08f484e3478aebc6205f3f5d8c"
 elif [ "${network}" = "1" ]; then
     address="0x63524e3fe4791aefce1e932bbfb3fdf375bfad89"
 elif [ "${network}" = "10101" ]; then
