@@ -5,6 +5,8 @@
 
 "use strict";
 
+var fs = require("fs");
+var join = require("path").join;
 var assert = require("chai").assert;
 var async = require("async");
 var abi = require("augur-abi");
@@ -13,6 +15,7 @@ var augurpath = "../../src/index";
 var augur = require(augurpath);
 var runner = require("../runner");
 var tools = require("../tools");
+var rpc = augur.rpc;
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
@@ -84,29 +87,34 @@ describe("Integration tests", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var branchID = augur.branches.dev;
         var markets = augur.getMarketsInBranch(branchID);
+        var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
+        var accounts = rpc.personal("listAccounts");
         
         describe("buy", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT);
-                    augur.buy({
-                        amount: t.amount,
-                        price: t.price,
-                        market: t.market,
-                        outcome: t.outcome,
-                        onSent: function (r) {
-                            console.log("buy sent:", r);
-                        },
-                        onSuccess: function (r) {
-                            console.log("buy success:", r);
-                            augur.get_trade_ids(t.market, function (tradeIds) {
-                                console.log("trade IDs:", tradeIds);
-                                assert.isArray(tradeIds);
-                                assert.isAbove(tradeIds.length, 0);
-                                done();
-                            });
-                        },
-                        onFailed: done
+                    augur.get_total_trades(t.market, function (initialTotalTrades) {
+                        initialTotalTrades = parseInt(initialTotalTrades);
+                        rpc.personal("unlockAccount", [augur.from, password]);
+                        augur.buy({
+                            amount: t.amount,
+                            price: t.price,
+                            market: t.market,
+                            outcome: t.outcome,
+                            onSent: function (r) {
+                                assert(r.txHash);
+                                assert(r.callReturn);
+                            },
+                            onSuccess: function (r) {
+                                augur.get_total_trades(t.market, function (totalTrades) {
+                                    assert.strictEqual(parseInt(totalTrades), initialTotalTrades + 1);
+                                    rpc.personal("lockAccount", [augur.from]);
+                                    done();
+                                });
+                            },
+                            onFailed: done
+                        });
                     });
                 });
             };
@@ -128,29 +136,32 @@ describe("Integration tests", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT);
+                    rpc.personal("unlockAccount", [augur.from, password]);
                     augur.buyCompleteSets({
                         market: t.market,
                         amount: t.amount,
                         onSent: function (r) {},
                         onSuccess: function (r) {
-                            augur.sell({
-                                amount: t.amount,
-                                price: t.price,
-                                market: t.market,
-                                outcome: t.outcome,
-                                onSent: function (r) {
-                                    console.log("sell sent:", r);
-                                },
-                                onSuccess: function (r) {
-                                    console.log("sell success:", r);
-                                    augur.get_trade_ids(t.market, function (tradeIds) {
-                                        console.log("trade IDs:", tradeIds);
-                                        assert.isArray(tradeIds);
-                                        assert.isAbove(tradeIds.length, 0);
-                                        done();
-                                    });
-                                },
-                                onFailed: done
+                            augur.get_total_trades(t.market, function (initialTotalTrades) {
+                                initialTotalTrades = parseInt(initialTotalTrades);
+                                augur.sell({
+                                    amount: t.amount,
+                                    price: t.price,
+                                    market: t.market,
+                                    outcome: t.outcome,
+                                    onSent: function (r) {
+                                        assert(r.txHash);
+                                        assert(r.callReturn);
+                                    },
+                                    onSuccess: function (r) {
+                                        augur.get_total_trades(t.market, function (totalTrades) {
+                                            assert.strictEqual(parseInt(totalTrades), initialTotalTrades + 1);
+                                            rpc.personal("lockAccount", [augur.from]);
+                                            done();
+                                        });
+                                    },
+                                    onFailed: done
+                                });
                             });
                         },
                         onFailed: done
@@ -171,78 +182,11 @@ describe("Integration tests", function () {
             });
         });
 
-        describe("trade", function () {
-            var test = function (t) {
-                it(JSON.stringify(t), function (done) {
-                    this.timeout(tools.TIMEOUT);
-                    augur.buyCompleteSets({
-                        market: t.market,
-                        amount: t.amount,
-                        onSent: function (r) {},
-                        onSuccess: function (r) {
-                            augur.get_trade_ids(t.market, function (trade_ids) {
-                                async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
-                                    augur.get_trade(thisTrade, function (tradeInfo) {
-                                        // { id: '0x63d33bdc658dfc0e33e73dc77048a6ff5ec3609c3f55f70404506dc128ce33e',
-                                        //   type: 'buy',
-                                        //   market: '-0x60573eff58c22ec05955bb1df4dce40e0374ce6f10d52326bed17564c360f7e0',
-                                        //   amount: '0.25',
-                                        //   price: '0.51999999999999999998',
-                                        //   owner: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
-                                        //   block: 945487,
-                                        //   refhash: '0x1',
-                                        //   outcome: undefined }
-                                        if (!tradeInfo) return nextTrade("no trade info found");
-                                        if (tradeInfo.owner === augur.from) return nextTrade();
-                                        console.log("using trade:", tradeInfo);
-                                        augur.trade({
-                                            max_value: t.max_value,
-                                            max_amount: 0,
-                                            trade_ids: [trade_ids[0]],
-                                            onTradeHash: function (r) {
-                                                assert.notProperty(r, "error");
-                                                assert.isString(r);
-                                            },
-                                            onCommitSent: function (r) {
-                                                assert.strictEqual(r.callReturn, "1");
-                                            },
-                                            onCommitSuccess: function (r) {
-                                                assert.strictEqual(r.callReturn, "1");
-                                            },
-                                            onCommitFailed: nextTrade,
-                                            onTradeSent: function (r) {
-                                                console.log("trade sent:", r);
-                                            },
-                                            onTradeSuccess: function (r) {
-                                                console.log("trade success:", r);
-                                                nextTrade(r);
-                                            },
-                                            onTradeFailed: nextTrade
-                                        });
-                                    });
-                                }, function (x) {
-                                    if (x && x.callReturn) return done();
-                                    done(x);
-                                });
-                            });
-                        },
-                        onFailed: done
-                    });
-                });
-            };
-            test({
-                market: markets[markets.length - 1],
-                amount: 0.1,
-                price: "0.5",
-                outcome: "1",
-                max_value: 1
-            });
-        });
-
         describe("cancel", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT);
+                    rpc.personal("unlockAccount", [augur.from, password]);
                     augur.buyCompleteSets({
                         market: t.market,
                         amount: t.amount,
@@ -263,6 +207,7 @@ describe("Integration tests", function () {
                                             console.log("cancel sent:", r);
                                         }, function (r) {
                                             console.log("cancel success:", r);
+                                            rpc.personal("lockAccount", [augur.from]);
                                             done();
                                         }, done);
                                     });
@@ -279,6 +224,111 @@ describe("Integration tests", function () {
                 amount: 1,
                 price: "0.5",
                 outcome: "1"
+            });
+        });
+
+        describe("trade", function () {
+            var test = function (t) {
+                it(JSON.stringify(t), function (done) {
+                    this.timeout(tools.TIMEOUT*4);
+                    rpc.miner("start", 1);
+                    rpc.personal("unlockAccount", [accounts[0], password]);
+                    augur.from = accounts[0];
+                    augur.connector.from_field_tx(accounts[0]);
+                    augur.sync(augur.connector);
+                    var initialTotalTrades = parseInt(augur.get_total_trades(t.market));
+                    augur.buyCompleteSets({
+                        market: t.market,
+                        amount: 4,
+                        onSent: function (r) {},
+                        onSuccess: function (r) {
+                            augur.sell({
+                                amount: 1,
+                                price: "0.01",
+                                market: t.market,
+                                outcome: t.outcome,
+                                onSent: function (r) {
+                                    // console.log(r)
+                                    rpc.personal("lockAccount", accounts[0]);
+                                },
+                                onSuccess: function (r) {
+                                    // console.log(r)
+                                    rpc.miner("stop");
+                                    augur.from = accounts[1];
+                                    augur.connector.from_field_tx(accounts[1]);
+                                    augur.sync(augur.connector);
+                                    augur.get_trade_ids(t.market, function (trade_ids) {
+                                        async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
+                                            augur.get_trade(thisTrade, function (tradeInfo) {
+                                                if (!tradeInfo) return nextTrade("no trade info found");
+                                                if (tradeInfo.owner === augur.from) return nextTrade();
+                                                if (tradeInfo.type === "buy") return nextTrade();
+                                                console.log("matched trade:", thisTrade, tradeInfo);
+                                                rpc.miner("start", 1);
+                                                rpc.personal("unlockAccount", [accounts[1], password]);
+                                                augur.trade({
+                                                    max_value: t.max_value,
+                                                    max_amount: 0,
+                                                    trade_ids: [thisTrade],
+                                                    onTradeHash: function (r) {
+                                                        // console.log(r)
+                                                        assert.notProperty(r, "error");
+                                                        assert.isString(r);
+                                                    },
+                                                    onCommitSent: function (r) {
+                                                        // console.log(r)
+                                                        assert.strictEqual(r.callReturn, "1");
+                                                    },
+                                                    onCommitSuccess: function (r) {
+                                                        // console.log(r)
+                                                        assert.strictEqual(r.callReturn, "1");
+                                                    },
+                                                    onCommitFailed: nextTrade,
+                                                    onTradeSent: function (r) {
+                                                        console.log("trade sent:", r)
+                                                        // assert.strictEqual(r.callReturn, "1");
+                                                    },
+                                                    onTradeSuccess: function (r) {
+                                                        console.log("trade success:", r)
+                                                        // assert.strictEqual(r.callReturn, "1");
+                                                        console.log(r.callReturn);
+                                                        var totalTrades = parseInt(augur.get_total_trades(t.market));
+                                                        console.log("total trades:", totalTrades);
+                                                        console.log("initial:", initialTotalTrades);
+                                                        assert((totalTrades === initialTotalTrades - 1)
+                                                            || (totalTrades === initialTotalTrades));
+                                                        var tradeIds = augur.get_trade_ids(t.market);
+                                                        console.log("trade IDs:", tradeIds);
+                                                        console.log("thisTrade.id:", thisTrade);
+                                                        console.log("indexOf:", tradeIds.indexOf(thisTrade));
+                                                        assert.strictEqual(tradeIds.indexOf(thisTrade), -1);
+                                                        nextTrade(r);
+                                                    },
+                                                    onTradeFailed: nextTrade
+                                                });
+                                            });
+                                        }, function (x) {
+                                            // rpc.miner("stop");
+                                            rpc.personal("lockAccount", accounts[0]);
+                                            rpc.personal("lockAccount", accounts[1]);
+                                            if (x && x.callReturn) return done();
+                                            done(x);
+                                        });
+                                    });
+                                },
+                                onFailed: done
+                            });
+                        },
+                        onFailed: done
+                    });
+                });
+            };
+            test({
+                market: markets[markets.length - 1],
+                amount: 1,
+                price: "0.5",
+                outcome: "1",
+                max_value: 1
             });
         });
     }

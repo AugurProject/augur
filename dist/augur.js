@@ -3751,68 +3751,68 @@ module.exports = {
 },{}],4:[function(require,module,exports){
 module.exports={
     "2": {
-        "buyAndSellShares": "0x1af0d76463bd04d61acaa3ecce2dd76d888f2a62",
-        "closeMarket": "0xfc9a1aa49c4f8bf8a8a62d2108230c88dd694abf",
-        "closeMarketEight": "0x5e87ce160a0bd6f9118a8f6d302be3996cc548a0",
-        "closeMarketFour": "0x925a58dd604aedae13ec38e52656951196f0972c",
-        "closeMarketOne": "0xdbe8554632236a1227b3ae6ad0ed845a24ab14b5",
-        "closeMarketTwo": "0xb7b2ea922576589775ed6dd16259f5b2be412db8",
-        "collectFees": "0x444551cb9f366a6dcb2a2ea8195b6cd23b9254b9",
-        "completeSets": "0xbbfaca17af649355b495bd1d9d1a868f79e1db1c",
-        "consensus": "0xeb485fadd10929db477a2178c1dcf0c316d192f2",
-        "createBranch": "0xdfe3a8d15b961ba390432efda62b803eb8c9236e",
-        "createMarket": "0x4653bdc46f1440707a2dbfa89a1b3d22c55342cb",
-        "eventResolution": "0xf07c65ef2543dec8e3b75cf5d1866a967e76340a",
-        "faucets": "0x532c107ac97b2fc48503c16a0e9931baccfe3149",
-        "forking": "0xadf25ff2a60ad2ab876f7bcc212a29098404bc20",
-        "makeReports": "0xff4bc011564a6ab00f5b795ea86533b31a7c0ea2",
-        "penalizeNotEnoughReports": "0x342c5f401271a97b9f488859a6ce51b64ba8e0e7",
-        "roundTwo": "0xedcedb82bcf01a4472cf14e379e9c200a3c78560",
-        "sendReputation": "0xb74e159ecead0f4a666b920b27388a810f9c12c5",
-        "slashRep": "0x15187fb1e21c9c808cf888c457f8e25a00d6c42a",
-        "trade": "0x53a30c5d96d11e061ab8f7754545b2f0e930b319",
-        "backstops": "0x243a5bb4903fdc52da6c001ca1ff4a7d55e78ef4",
-        "branches": "0xe556780b7365bdf861c2366854410b6a61fbf39d",
-        "cash": "0x042951544933052a6316c127cb9c770a791a073d",
-        "events": "0xc77fff92edb265cdb713d2bbb1ff48f4aa2f0b09",
-        "expiringEvents": "0x578f98a81bcd1701b145ffe14b7d3b1ba92f1925",
-        "fxpFunctions": "0x22f8fdeb1156cad0ade3e1f7d1565eabd2496a1d",
-        "info": "0xa14ce93ffc862143ed1a0e688cbb813362b0b075",
-        "markets": "0x0acaff246f8fa04024ce25b8befa1f3a41277250",
-        "reporting": "0x275b6a226c734ca4c710e24b051e9ec1a8b03bcf",
-        "trades": "0x2a03116b60f75545581731b784df4b838a723a67"
+        "buyAndSellShares": "0x0ec86e163e8830af8cca9e800ee563aeff6ab309",
+        "closeMarket": "0xca6dff1ff01818b3eed850ee062165db6bd9914e",
+        "closeMarketEight": "0xa71724d6cd5e6d133ac93c82816c94eff00d0d55",
+        "closeMarketFour": "0x18557450f11188c584424e94a471f7456b7375e0",
+        "closeMarketOne": "0xc942cf4f115e4e95b2c0c82a605ca209921b61ca",
+        "closeMarketTwo": "0x0ec1fa68ec4b572933e02555af6b9c82f01d6b11",
+        "collectFees": "0x9757f7a9f874b8726d71e53e2f3d48297f15eddb",
+        "completeSets": "0x24e6f63ba4f786d451ed64dd3e7ac09b93f44952",
+        "consensus": "0x2647a36978244df1c13ed5e0be54a6a1d35d0408",
+        "createBranch": "0xf68f3978e24ace6fb135eef629f80c1516e29a40",
+        "createMarket": "0xbabaa6512b45b1e0f86efe96a95f1cc9590afdf0",
+        "eventResolution": "0x672b1bbfb9adb47fb61f27fbbf42d79db0048769",
+        "faucets": "0x1f2523916a713015cac8920637e745185f91e6c7",
+        "forking": "0x0a23aecb634c1fb0ef75912b2ad36da9d668e1e8",
+        "makeReports": "0xda46521f629d0392413fa50e163ca3610ffa466d",
+        "penalizeNotEnoughReports": "0x67bf48769a5779be21874b05ac07953644093f22",
+        "roundTwo": "0x5b0a8bf950f06860581257b418c57d59203bfb06",
+        "sendReputation": "0x28f0252e62cf074dff6eda0394bed6e26e8b5f7b",
+        "slashRep": "0x3ef10686a3c77052ccc63d76e944ce41f12c0eb8",
+        "trade": "0xd3d0e40ee1aee11c61421b9fb601ee8000feaab9",
+        "backstops": "0xdcd5a4fb262b90d8e26015f7d3c201f965e9333d",
+        "branches": "0x835cd5532e7388f6aa46556787d7fa40584fc587",
+        "cash": "0x9019de9fcc25961830bf341d3aef75bf07df906f",
+        "events": "0x607b593f8c79b12320589f488b9725fb30c6db8e",
+        "expiringEvents": "0xc4f7a8b2254103e163d7092192d680714cac9ea2",
+        "fxpFunctions": "0xa671b773913cdd2d9b734451fc5e920531b70b1a",
+        "info": "0xb6380a3161ee463ddaa0e1e7596190237ff52b80",
+        "markets": "0x71acf422272bb293b1f55167df08d4b603bcdbdc",
+        "reporting": "0x287fffe98fb1ff1dd916fb94ce20b159a0271b25",
+        "trades": "0xc45bf3c05e04204f43ab2cbae3952c6a71f7f60b"
     },
     "10101": {
-        "buyAndSellShares": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3",
-        "closeMarket": "0x7d4b581a0868204b7481c316b430a97fd292a2fb",
-        "closeMarketEight": "0x81a7621e9a286d061b3dea040888a51c96693b1c",
-        "closeMarketFour": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e",
-        "closeMarketOne": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd",
-        "closeMarketTwo": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6",
-        "collectFees": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79",
-        "completeSets": "0x5069d883e31429c6dd1325d961f443007747c7a2",
-        "consensus": "0x35152caa07026203a1add680771afb690d872d7d",
-        "createBranch": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7",
-        "createMarket": "0xcd6c7bc634257f82903b182142aae7156d72a200",
-        "eventResolution": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893",
-        "faucets": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2",
-        "forking": "0x8c19616de17acdfbc933b99d9f529a689d22098f",
-        "makeReports": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7",
-        "penalizeNotEnoughReports": "0x3f3276849a878a176b2f02dd48a483e8182a49e4",
-        "roundTwo": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df",
-        "sendReputation": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68",
-        "slashRep": "0x482c57abdce592b39434e3f619ffc3db62ab6d01",
-        "trade": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d",
-        "backstops": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea",
-        "branches": "0x708fdfe18bf28afe861a69e95419d183ace003eb",
-        "cash": "0x8a4e2993a9972ee035453bb5674816fc3a698718",
-        "events": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2",
-        "expiringEvents": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55",
-        "fxpFunctions": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c",
-        "info": "0xe4714fcbdcdba49629bc408183ef40d120700b8d",
-        "markets": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667",
-        "reporting": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7",
-        "trades": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645"
+        "buyAndSellShares": "0x2be98c7c03546964a8a9d0fc5aadfd914dc114bd",
+        "closeMarket": "0x0869aeb0abee951ffc4cc451f49ffd82f7b2a505",
+        "closeMarketEight": "0x80aeb8c1406126cac7249f01aff7965da26e2db5",
+        "closeMarketFour": "0xd9e37e7b5d464e3d6082ba943abdc0b653e2d649",
+        "closeMarketOne": "0x9945188496f220e92059d398cd8caaf6a0d7d7b7",
+        "closeMarketTwo": "0xb1f966e5019b581c87d46ca75efb810ee075c054",
+        "collectFees": "0x06038f669b3af72ec94065a95df22d130ffdee5a",
+        "completeSets": "0x750893693f57b4f64b27ea06945ef83ab93fab2b",
+        "consensus": "0x678f39ac82f2384c38340fbe7ebb8482f4c33093",
+        "createBranch": "0xb4b849f86d4b1bfe8973d9eeeb49560f557fe54d",
+        "createMarket": "0x625d3288e1884434e40c968782165532ba361a5b",
+        "eventResolution": "0xdf85e05a45219d78de67c60c07f5f2c99caf08c2",
+        "faucets": "0xe156e04160ce914d8ca968db5d7cf4d8681c2f66",
+        "forking": "0x4d917d7d0b06bae9dec7d96318f07a4806ba7ecc",
+        "makeReports": "0xf383bdfe79a434fae18897ac8333fa1aa5ada720",
+        "penalizeNotEnoughReports": "0xcf3c27e7e232140d99b7ab335d30b44086194a80",
+        "roundTwo": "0x28163b3464fc522458d0e725005bc29bdfc17863",
+        "sendReputation": "0x376b44194ed1be2273e82cc84aab1f29e765514e",
+        "slashRep": "0x9c2625449ca57a81cfade24a835cd99dd45c9ef5",
+        "trade": "0x788d54b2feac910d12fb193c597dbd7111f5d7b1",
+        "backstops": "0x2a0a27bfb4e9c75db6bfd4849c01f091a369eaf4",
+        "branches": "0x06f1a2441a1bc0faa6216f51e361b0ed6e2d87c3",
+        "cash": "0x526e2e29ae51e9161ec27407e1626c1666efad28",
+        "events": "0x46e690f00623b3eaf033bff914d9e7166c3de5df",
+        "expiringEvents": "0xa3b4059c86b899c7f0b51301cb1ce2bfbd0f334f",
+        "fxpFunctions": "0x3c2c06a91035e8eb9684e0c7131f2405768b31aa",
+        "info": "0x7eb5dab10be0aaab4ac9991baf9595239b6e6663",
+        "markets": "0x2fa7c3e9fd724e3852aadff7ccf476079a0a0f94",
+        "reporting": "0xf3063911c342bf57728fabd594c1dd05d6c5f962",
+        "trades": "0x76329729d283bbc11a92fdf291901dec2dfd43cf"
     },
     "errors": {
         "0x": "no response or bad input",
@@ -4715,6 +4715,19 @@ module.exports = function (network) {
         },
 
         // markets.se
+        get_total_trades: {
+            to: contracts.markets,
+            method: "get_total_trades",
+            signature: "i",
+            returns: "number"
+        },
+        getOrderBook: {
+            to: contracts.markets,
+            method: "getOrderBook",
+            signature: "i",
+            returns: "hash[]",
+            gas: "0x9184e729fff"
+        },
         get_trade_ids: {
             to: contracts.markets,
             method: "get_trade_ids",
@@ -4784,9 +4797,9 @@ module.exports = function (network) {
             signature: "i",
             returns: "hash"
         },
-        getCreationBlock: {
+        getCreationTime: {
             to: contracts.markets,
-            method: "getCreationBlock",
+            method: "getCreationTime",
             signature: "i",
             returns: "number"
         },
@@ -5178,7 +5191,7 @@ module.exports = function (network) {
             to: contracts.trade,
             method: "trade",
             signature: "iia",
-            returns: "number",
+            returns: "hash[]",
             send: true
         },
 
@@ -37661,6 +37674,39 @@ Augur.prototype.getReportHash = function (branch, reportPeriod, reporter, event,
 };
 
 // markets.se
+Augur.prototype.get_total_trades = function (market_id, callback) {
+    var tx = clone(this.tx.get_total_trades);
+    tx.params = market_id;
+    return this.fire(tx, callback);
+};
+Augur.prototype.getOrderBook = function (marketID, callback) {
+    var tx = clone(this.tx.getOrderBook);
+    tx.params = marketID;
+    if (!this.utils.is_function(callback)) {
+        var orderArray = this.fire(tx);
+        if (!orderArray || orderArray.error) return orderArray;
+        var numOrders = orderArray.length / 8;
+        var orders, orderBook = {};
+        for (var i = 0; i < numOrders; ++i) {
+            orders = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+            if (!orderBook[orders.type]) orderBook[orders.type] = [];
+            orderBook[orders.type].push(orders);
+        }
+        return orderBook;
+    }
+    var self = this;
+    this.fire(tx, function (orderArray) {
+        if (!orderArray || orderArray.error) return callback(orderArray);
+        var numOrders = orderArray.length / 8;
+        var orders, orderBook = {};
+        for (var i = 0; i < numOrders; ++i) {
+            orders = self.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+            if (!orderBook[orders.type]) orderBook[orders.type] = [];
+            orderBook[orders.type].push(orders);
+        }
+        callback(orderBook);
+    });
+};
 Augur.prototype.get_trade_ids = function (market_id, callback) {
     var tx = clone(this.tx.get_trade_ids);
     tx.params = market_id;
@@ -37671,8 +37717,8 @@ Augur.prototype.getVolume = function (market, callback) {
     tx.params = market;
     return this.fire(tx, callback);
 };
-Augur.prototype.getCreationBlock = function (market, callback) {
-    var tx = clone(this.tx.getCreationBlock);
+Augur.prototype.getCreationTime = function (market, callback) {
+    var tx = clone(this.tx.getCreationTime);
     tx.params = market;
     return this.fire(tx, callback);
 };
@@ -37937,38 +37983,18 @@ Augur.prototype.get_trade = function (id, callback) {
     // trade[4] = self.trades[id].price
     // trade[5] = self.trades[id].owner
     // trade[6] = self.trades[id].block
-    // trade[7] = self.trades[id].refhash
-    // trade[8] = self.trades[id].outcome
+    // trade[7] = self.trades[id].outcome
+    var self = this;
     var tx = clone(this.tx.get_trade);
     tx.params = id;
     if (!this.utils.is_function(callback)) {
         var trade = this.fire(tx);
         if (!trade || trade.error) return trade;
-        return {
-            id: trade[0],
-            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
-            market: trade[2],
-            amount: abi.unfix(trade[3], "string"),
-            price: abi.unfix(trade[4], "string"),
-            owner: abi.format_address(trade[5], true),
-            block: parseInt(trade[6]),
-            refhash: trade[7],
-            outcome: abi.string(trade[8])
-        };
+        return this.parseTradeInfo(trade);
     }
     this.fire(tx, function (trade) {
         if (!trade || trade.error) return callback(trade);
-        callback({
-            id: trade[0],
-            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
-            market: trade[2],
-            amount: abi.unfix(trade[3], "string"),
-            price: abi.unfix(trade[4], "string"),
-            owner: abi.format_address(trade[5], true),
-            block: parseInt(trade[6]),
-            refhash: trade[7],
-            outcome: abi.string(trade[8])
-        });
+        callback(self.parseTradeInfo(trade));
     });
 };
 Augur.prototype.get_amount = function (id, callback) {
@@ -38009,6 +38035,7 @@ Augur.prototype.cancel = function (trade_id, onSent, onSuccess, onFailed) {
     tx.params = unpacked.params;
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
+// TODO: buy and sell should return trade IDs
 Augur.prototype.buy = function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.buy);
     var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.buy), arguments);
@@ -38528,14 +38555,25 @@ Augur.prototype.updatePeriod = function (branch) {
     this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
 };
 
+Augur.prototype.parseTradeInfo = function (trade) {
+    return {
+        id: trade[0],
+        type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+        market: trade[2],
+        amount: abi.unfix(trade[3], "string"),
+        price: abi.unfix(trade[4], "string"),
+        owner: abi.format_address(trade[5], true),
+        block: parseInt(trade[6]),
+        outcome: abi.string(trade[7])
+    };
+};
 Augur.prototype.decodeTag = function (tag) {
     return (tag && tag !== "0x0" && tag !== "0x") ?
         abi.int256_to_short_string(abi.unfork(tag, true)) : null;
 };
-
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var EVENTS_FIELDS = 6;
-    var OUTCOMES_FIELDS = 1;
+    var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
     if (rawInfo && rawInfo.length > 14) {
@@ -38568,8 +38606,8 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             tradingFee: abi.unfix(rawInfo[6], "string"),
             branchId: rawInfo[7],
             numEvents: parseInt(rawInfo[8]),
-            cumulativeScale: abi.string(rawInfo[9]),
-            creationBlock: parseInt(rawInfo[10]),
+            cumulativeScale: abi.unfix(rawInfo[9], "string"),
+            creationTime: parseInt(rawInfo[10]),
             volume: abi.unfix(rawInfo[11], "string"),
             creationFee: abi.unfix(rawInfo[12], "string"),
             author: abi.format_address(rawInfo[13]),
@@ -38580,33 +38618,23 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             ],
             type: null,
             endDate: null,
-            participants: {},
             winningOutcomes: [],
             description: null
         };
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
-        var traderFields = info.numOutcomes + 1;
+        // var traderFields = info.numOutcomes + 1;
 
         // organize trader info
         for (var i = 0; i < info.numOutcomes; ++i) {
             info.outcomes[i] = {shares: {}};
         }
-        var addr;
-        for (i = 0; i < info.traderCount; ++i) {
-            addr = abi.format_address(rawInfo[i*traderFields + index]);
-            info.participants[addr] = i;
-            for (var j = 0; j < info.numOutcomes; ++j) {
-                info.outcomes[j].shares[addr] = abi.unfix(rawInfo[i*traderFields + index + j + 1], "string");
-            }
-        }
 
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
         var endDate;
-        index += info.traderCount*traderFields;
         for (i = 0; i < info.numEvents; ++i) {
-            endDate = abi.number(rawInfo[i*EVENTS_FIELDS + index + 1]);
+            endDate = parseInt(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {
                 id: rawInfo[i*EVENTS_FIELDS + index],
                 endDate: endDate,
@@ -38640,6 +38668,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         for (i = 0; i < info.numOutcomes; ++i) {
             info.outcomes[i].id = i + 1;
             info.outcomes[i].outstandingShares = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string");
+            info.outcomes[i].price = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string");
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;
         info.winningOutcomes = abi.string(
@@ -39680,7 +39709,6 @@ module.exports = {
 
                 // no result or error field
                 } else {
-                    console.log("LEL")
                     err = errors.NO_RESPONSE;
                     err.bubble = response;
                     if (isFunction(callback)) return callback(err);
@@ -40026,6 +40054,22 @@ module.exports = {
         return this.broadcast(this.marshal(command, params, "shh_"), f);
     },
 
+    miner: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "miner_"), f);
+    },
+
+    admin: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "admin_"), f);
+    },
+
+    personal: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "personal_"), f);
+    },
+
+    txpool: function (command, params, f) {
+        return this.broadcast(this.marshal(command, params, "txpool_"), f);
+    },
+
     sha3: function (data, isHex) {
         if (isHex) data = abi.decode_hex(data);
         return abi.prefix_hex(keccak_256(data));
@@ -40240,19 +40284,31 @@ module.exports = {
     },
 
     // Fast-forward a specified number of blocks
-    fastforward: function (blocks, callback) {
+    fastforward: function (blocks, mine, callback) {
         var startBlock, endBlock, self = this;
-        (function fastforward() {
+        function fastforward() {
             self.blockNumber(function (blockNumber) {
                 blockNumber = parseInt(blockNumber);
                 if (startBlock === undefined) {
                     startBlock = blockNumber;
                     endBlock = blockNumber + parseInt(blocks);
                 }
-                if (blockNumber >= endBlock) return callback(endBlock);
-                setTimeout(fastforward, 500);
+                if (blockNumber >= endBlock) {
+                    if (!mine) return callback(endBlock);
+                    self.miner("stop", [], function () {
+                        callback(endBlock);
+                    });
+                } else {
+                    setTimeout(fastforward, 500);
+                }
             });
-        })();
+        }
+        if (!callback && isFunction(mine)) {
+            callback = mine;
+            mine = null;
+        }
+        if (!mine) return fastforward();
+        this.miner("start", [], fastforward);
     },
 
     // Ethereum node status checks

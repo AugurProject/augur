@@ -19,9 +19,9 @@ describe("Unit tests", function () {
     }]);
 });
 
-describe("Integration tests", function () {
+if (!process.env.CONTINUOUS_INTEGRATION) {
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    describe("Integration tests", function () {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var payment_value = 1;
@@ -72,5 +72,5 @@ describe("Integration tests", function () {
                 done
             );
         });
-    }
-});
+    });
+}

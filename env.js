@@ -27,11 +27,15 @@ GLOBAL.comments = augur.comments;
 augur.rpc.setLocalNode("http://127.0.0.1:8545");
 GLOBAL.b = augur.branches.dev;
 GLOBAL.log = console.log;
+GLOBAL.rpc = augur.rpc;
+try {
+    GLOBAL.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
+    GLOBAL.accounts = rpc.personal("listAccounts");
+} catch (exc) {
+    console.log(exc);
+}
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.AUGUR_HOST));
-
-GLOBAL.accounts = tools.get_test_accounts(augur, constants.MAX_TEST_ACCOUNTS);
-GLOBAL.c = augur.coinbase;
 
 GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     account = account || augur.from;

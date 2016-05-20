@@ -53,7 +53,7 @@ module.exports = {
         var defaulthost, ipcpath;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
-            // ipcpath = path.join(process.env.HOME, ".ethereum", "testnet", "geth.ipc");
+            ipcpath = process.env.GETH_IPC;
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
