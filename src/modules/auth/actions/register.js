@@ -14,11 +14,11 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { makeTransactionID } from '../../transactions/actions/add-transactions';
-import selectors from '../../../selectors';
+
 
 export function register(username, password, password2) {
 	return (dispatch) => {
-		const { links } = selectors;
+		const { links } = require('../../../selectors');
 		const transactionID = makeTransactionID();
 		let numAssetsLoaded = -1;
 

@@ -11,7 +11,6 @@ import store from '../../../store';
 import { register } from '../../auth/actions/register';
 import { login } from '../../auth/actions/login';
 import { selectAuthLink } from '../../link/selectors/links';
-import selectors from '../../../selectors';
 
 export const selectErrMsg = (err) => {
 	if (!err) {
@@ -99,6 +98,6 @@ export const selectAuthForm = memoizerific(1)((auth, link, dispatch) => {
 
 export default function () {
 	const { auth } = store.getState();
-	const { links } = selectors;
+	const { links } = require('../../../selectors');
 	return selectAuthForm(auth, links, store.dispatch);
 }
