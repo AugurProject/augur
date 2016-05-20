@@ -8,6 +8,7 @@
     "no-console": 0,
     "indent": ["error", "tab"],
     "consistent-return": 0,
-    "no-unused-vars": ["error", { "vars": "all", "args": "none" }]
+    "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
+    "no-param-reassign": ["error", { "props": false }]
   }
 }
