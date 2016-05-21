@@ -2,41 +2,45 @@ import { UPDATE_SELECTED_PAGE_NUM } from '../../markets/actions/update-selected-
 import { UPDATE_SELECTED_SORT } from '../../markets/actions/update-selected-sort';
 import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
-import { UPDATED_SELECTED_MARKETS_HEADER } from '../../markets/actions/update-selected-markets-header';
+import {
+	UPDATED_SELECTED_MARKETS_HEADER
+} from '../../markets/actions/update-selected-markets-header';
 import { PAGE_PARAM_NAME } from '../../markets/constants/param-names';
 import { DEFAULT_PAGE } from '../../markets/constants/pagination';
 
 import { SHOW_LINK } from '../../link/actions/show-link';
 
-export default function(pagination = { selectedPageNum: DEFAULT_PAGE, numPerPage: 10 }, action) {
-    switch (action.type) {
-        case UPDATE_SELECTED_PAGE_NUM:
-            return {
-                ...pagination,
-                selectedPageNum: action.selectedPageNum
-            };
+export default function (pagination = { selectedPageNum: DEFAULT_PAGE, numPerPage: 10 }, action) {
+	let params;
+	let newPageNum;
+	switch (action.type) {
+	case UPDATE_SELECTED_PAGE_NUM:
+		return {
+			...pagination,
+			selectedPageNum: action.selectedPageNum
+		};
 
-        case UPDATE_SELECTED_SORT:
-        case UPDATE_KEYWORDS:
-        case TOGGLE_FILTER:
-        case UPDATED_SELECTED_MARKETS_HEADER:
-            return {
-                ...pagination,
-                selectedPageNum: DEFAULT_PAGE
-            };
-        case SHOW_LINK:
-            let params = action.parsedURL.searchParams;
-            let newPageNum = params[PAGE_PARAM_NAME];
-            if (newPageNum != null && newPageNum !== '' && parseInt(newPageNum, 10) != DEFAULT_PAGE) {
-                return {
-                    ...pagination,
-                    selectedPageNum: parseInt(newPageNum, 10)
-                };
-            }
+	case UPDATE_SELECTED_SORT:
+	case UPDATE_KEYWORDS:
+	case TOGGLE_FILTER:
+	case UPDATED_SELECTED_MARKETS_HEADER:
+		return {
+			...pagination,
+			selectedPageNum: DEFAULT_PAGE
+		};
+	case SHOW_LINK:
+		params = action.parsedURL.searchParams;
+		newPageNum = params[PAGE_PARAM_NAME];
+		if (newPageNum != null && newPageNum !== '' && parseInt(newPageNum, 10) !== DEFAULT_PAGE) {
+			return {
+				...pagination,
+				selectedPageNum: parseInt(newPageNum, 10)
+			};
+		}
 
-            return pagination;
+		return pagination;
 
-        default:
-            return pagination;
-    }
+	default:
+		return pagination;
+	}
 }

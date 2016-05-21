@@ -4,28 +4,32 @@ import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants
 
 import { UPDATE_SELECTED_SORT } from '../../markets/actions/update-selected-sort';
 
-export default function(selectedSort = { prop: DEFAULT_SORT_PROP, isDesc: DEFAULT_IS_SORT_DESC }, action) {
-    switch (action.type) {
-        case UPDATE_SELECTED_SORT:
-            return {
-                ...selectedSort,
-                ...action.selectedSort
-            };
+export default function (selectedSort = {
+	prop: DEFAULT_SORT_PROP,
+	isDesc: DEFAULT_IS_SORT_DESC
+}, action) {
+	let params;
+	switch (action.type) {
+	case UPDATE_SELECTED_SORT:
+		return {
+			...selectedSort,
+			...action.selectedSort
+		};
 
-        case SHOW_LINK:
-            let params = action.parsedURL.searchParams;
-            if (params[SORT_PARAM_NAME] != null && params[SORT_PARAM_NAME] !== "") {
-                let sortSplit = params[SORT_PARAM_NAME].split("|");
-                return {
-                    ...selectedSort,
-                    prop: sortSplit[0],
-                    isDesc: sortSplit[1] === "true"
-                };
-            }
+	case SHOW_LINK:
+		params = action.parsedURL.searchParams;
+		if (params[SORT_PARAM_NAME] != null && params[SORT_PARAM_NAME] !== '') {
+			const sortSplit = params[SORT_PARAM_NAME].split('|');
+			return {
+				...selectedSort,
+				prop: sortSplit[0],
+				isDesc: sortSplit[1] === 'true'
+			};
+		}
 
-            return selectedSort;
+		return selectedSort;
 
-        default:
-            return selectedSort;
-    }
+	default:
+		return selectedSort;
+	}
 }
