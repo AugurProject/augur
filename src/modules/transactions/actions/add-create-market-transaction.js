@@ -1,20 +1,25 @@
 import { CREATE_MARKET } from '../../transactions/constants/types';
-
 import { createMarket } from '../../create-market/actions/submit-new-market';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
-export const addCreateMarketTransaction = function(marketData, gas, etherWithoutGas) {
-    return function(dispatch, getState) {
-        dispatch(addTransaction(makeCreateMarketTransaction(marketData, gas, etherWithoutGas, dispatch)));
-    };
+export const makeCreateMarketTransaction = (marketData, gas, etherWithoutGas, dispatch) => {
+	const obj = {
+		type: CREATE_MARKET,
+		gas,
+		ether: etherWithoutGas,
+		data: marketData,
+		action: (transactionID) => dispatch(createMarket(transactionID, marketData))
+	};
+	return obj;
 };
 
-export const makeCreateMarketTransaction = function(marketData, gas, etherWithoutGas, dispatch) {
-    return {
-        type: CREATE_MARKET,
-        gas,
-        ether: etherWithoutGas,
-        data: marketData,
-        action: (transactionID) => dispatch(createMarket(transactionID, marketData))
-    };
-};
+export const addCreateMarketTransaction = (marketData, gas, etherWithoutGas) =>
+    (dispatch, getState) =>
+        dispatch(
+					addTransaction(
+						makeCreateMarketTransaction(
+							marketData, gas,
+							etherWithoutGas, dispatch
+						)
+					)
+				);
