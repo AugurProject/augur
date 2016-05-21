@@ -198,15 +198,19 @@ describe("Integration tests", function () {
                                 market: t.market,
                                 outcome: t.outcome,
                                 onSent: function (r) {
-                                    console.log("sell sent:", r);
+                                    assert(r.txHash);
+                                    assert(r.callReturn);
                                 },
                                 onSuccess: function (r) {
-                                    console.log("sell success:", r);
+                                    assert(r.txHash);
+                                    assert(r.callReturn);
                                     augur.get_trade_ids(t.market, function (trade_ids) {
                                         augur.cancel(trade_ids[0], function (r) {
-                                            console.log("cancel sent:", r);
+                                            assert(r.txHash);
+                                            assert.strictEqual(r.callReturn, "1");
                                         }, function (r) {
-                                            console.log("cancel success:", r);
+                                            assert(r.txHash);
+                                            assert.strictEqual(r.callReturn, "1");
                                             rpc.personal("lockAccount", [augur.from]);
                                             done();
                                         }, done);
@@ -248,11 +252,9 @@ describe("Integration tests", function () {
                                 market: t.market,
                                 outcome: t.outcome,
                                 onSent: function (r) {
-                                    // console.log(r)
                                     rpc.personal("lockAccount", accounts[0]);
                                 },
                                 onSuccess: function (r) {
-                                    // console.log(r)
                                     rpc.miner("stop");
                                     augur.from = accounts[1];
                                     augur.connector.from_field_tx(accounts[1]);
@@ -271,36 +273,25 @@ describe("Integration tests", function () {
                                                     max_amount: 0,
                                                     trade_ids: [thisTrade],
                                                     onTradeHash: function (r) {
-                                                        // console.log(r)
                                                         assert.notProperty(r, "error");
                                                         assert.isString(r);
                                                     },
                                                     onCommitSent: function (r) {
-                                                        // console.log(r)
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitSuccess: function (r) {
-                                                        // console.log(r)
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitFailed: nextTrade,
                                                     onTradeSent: function (r) {
                                                         console.log("trade sent:", r)
-                                                        // assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onTradeSuccess: function (r) {
                                                         console.log("trade success:", r)
-                                                        // assert.strictEqual(r.callReturn, "1");
-                                                        console.log(r.callReturn);
                                                         var totalTrades = parseInt(augur.get_total_trades(t.market));
-                                                        console.log("total trades:", totalTrades);
-                                                        console.log("initial:", initialTotalTrades);
                                                         assert((totalTrades === initialTotalTrades - 1)
                                                             || (totalTrades === initialTotalTrades));
                                                         var tradeIds = augur.get_trade_ids(t.market);
-                                                        console.log("trade IDs:", tradeIds);
-                                                        console.log("thisTrade.id:", thisTrade);
-                                                        console.log("indexOf:", tradeIds.indexOf(thisTrade));
                                                         assert.strictEqual(tradeIds.indexOf(thisTrade), -1);
                                                         nextTrade(r);
                                                     },
