@@ -52,6 +52,9 @@ export const selectBidsAsksByPrice = (marketID, s, dispatch) => {
 	}
 
 	const outcomes = selectOutcomes(marketID, s, dispatch);
+	const aggregateShares = (priceCollection) =>
+		Object.keys(priceCollection).reduce((numShares, accountID) =>
+		numShares + parseFloat(priceCollection[accountID]), 0);
 
 	if (!outcomes || !outcomes.length) {
 		return asks;
@@ -86,10 +89,6 @@ export const selectBidsAsksByPrice = (marketID, s, dispatch) => {
 
 		asks.push(o);
 	});
-
-	const aggregateShares = (priceCollection) =>
-		Object.keys(priceCollection).reduce((numShares, accountID) =>
-		numShares + parseFloat(priceCollection[accountID]), 0);
 
 	return asks;
 };
