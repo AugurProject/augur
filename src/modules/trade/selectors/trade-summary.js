@@ -1,14 +1,14 @@
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther } from '../../../utils/format-number';
 
-export const selectTradeSummary = memoizerific(5)(function(tradeOrders) {
-	var shares,
-		ether,
-		gas,
-		totals = { shares: 0, ether: 0, gas: 0 },
-		tradeOrder,
-		len = tradeOrders && tradeOrders.length || 0,
-		i;
+export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
+	const totals = { shares: 0, ether: 0, gas: 0 };
+	const len = tradeOrders && tradeOrders.length || 0;
+	let shares;
+	let	ether;
+	let	gas;
+	let tradeOrder;
+	let i;
 
 	for (i = 0; i < len; i++) {
 		tradeOrder = tradeOrders[i];
