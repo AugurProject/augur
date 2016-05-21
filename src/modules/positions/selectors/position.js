@@ -1,12 +1,11 @@
 import memoizerific from 'memoizerific';
-
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
-export const selectPositionFromOutcomeAccountTrades = memoizerific(100)(function(outcomeAccountTrades, lastPrice) {
-	var qtyShares = 0,
-		totalValue = 0,
-		totalCost = 0,
-		position;
+export const selectPositionFromOutcomeAccountTrades = memoizerific(100)(
+(outcomeAccountTrades, lastPrice) => {
+	let qtyShares = 0;
+	let	totalValue = 0;
+	let	totalCost = 0;
 
 	if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
 		return null;
@@ -18,7 +17,10 @@ export const selectPositionFromOutcomeAccountTrades = memoizerific(100)(function
 		totalValue += outcomeAccountTrade.qtyShares * lastPrice;
 	});
 
-	position = selectPositionsSummary(outcomeAccountTrades.length, qtyShares, totalValue, totalCost);
+	const position = selectPositionsSummary(
+		outcomeAccountTrades.length,
+		qtyShares,
+		totalValue,
+		totalCost);
 	return position;
 });
-

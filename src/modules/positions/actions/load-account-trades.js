@@ -13,24 +13,24 @@ export function loadAccountTrades() {
 				return;
 			}
 
-			var trades = Object.keys(accountTrades).reduce((p, accountTradeID) => {
-					Object.keys(accountTrades[accountTradeID]).forEach(outcomeID => {
-						accountTrades[accountTradeID][outcomeID].forEach(trade => {
-							if (!p[trade.market]) {
-								p[trade.market] = {};
-							}
-							if (!p[trade.market][outcomeID]) {
-								p[trade.market][outcomeID] = [];
-							}
+			const trades = Object.keys(accountTrades).reduce((p, accountTradeID) => {
+				Object.keys(accountTrades[accountTradeID]).forEach(outcomeID => {
+					accountTrades[accountTradeID][outcomeID].forEach(trade => {
+						if (!p[trade.market]) {
+							p[trade.market] = {};
+						}
+						if (!p[trade.market][outcomeID]) {
+							p[trade.market][outcomeID] = [];
+						}
 
-							p[trade.market][outcomeID].push({
-								qtyShares: parseFloat(trade.shares),
-								purchasePrice: Math.abs(trade.cost)
-							});
+						p[trade.market][outcomeID].push({
+							qtyShares: parseFloat(trade.shares),
+							purchasePrice: Math.abs(trade.cost)
 						});
 					});
-					return p;
-				}, {});
+				});
+				return p;
+			}, {});
 
 			dispatch(updateAccountTradesData(trades));
 		});

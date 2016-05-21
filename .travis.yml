@@ -21,6 +21,6 @@ before_script:
   - npm install eslint
 
 script:
-  - npm run lint
+  - npm run lint:all
   - npm run test
   - npm run coverage
