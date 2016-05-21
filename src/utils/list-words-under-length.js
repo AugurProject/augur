@@ -1,26 +1,25 @@
 export function ListWordsUnderLength(str, maxLength) {
-	var currentLength = 0,
-		wordsList = [];
+	const	wordsList = [];
+	let currentLength = 0;
 
 	if (!str || !str.length) {
 		return wordsList;
 	}
 
 	str.toString().split(' ').some(word => {
-		word = word.replace(/[^a-zA-Z0-9\-]/ig, '');
+		const cleanWord = word.replace(/[^a-zA-Z0-9\-]/ig, '');
 
-		if (!word || !word.length) {
+		if (!cleanWord || !cleanWord.length) {
 			return false;
 		}
 
-		currentLength += word.length;
+		currentLength += cleanWord.length;
 
 		if (currentLength <= maxLength) {
-			wordsList.push(word);
+			wordsList.push(cleanWord);
 		}
-		else {
-			return true;
-		}
+
+		return true;
 	});
 
 	return wordsList;
