@@ -21,13 +21,6 @@ module.exports = React.createClass({
 		var p = this.props;
 		return (
 			<section className="basics">
-				{ !!p.tags && !!p.tags.length &&
-					<ul className="tags">
-						{ p.tags.map(tag => (
-							<li key={ tag.name } className="tag" onClick={ tag.onClick }>{ tag.name }</li>
-						))}
-					</ul>
-				}
 
 				<span className="description">{ p.description }</span>
 
