@@ -204,7 +204,6 @@ ex.listenToUpdates = function(cbBlock, cbContracts, cbPrice, cbCreation) {
 };
 
 ex.loadAccountTrades = function(accountID, cb) {
-	console.log("loading trades for account:", accountID);
 	augur.getAccountTrades(accountID, null, function(accountTrades) {
 		if (!accountTrades) {
 			return cb();

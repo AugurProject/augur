@@ -1,5 +1,6 @@
 import { SHOW_LINK } from '../../link/actions/show-link';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
+import { FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 
 export default function(selectedFilters = { 'isOpen': true }, action) {
     let newSelectedFilters;
@@ -18,33 +19,13 @@ export default function(selectedFilters = { 'isOpen': true }, action) {
             return newSelectedFilters;
 
         case SHOW_LINK:
-            newSelectedFilters = {
-                ...selectedFilters
-            };
-
-            let params = action.parsedURL.searchParams;
-            if (params['isOpen'] === "true") {
-                newSelectedFilters.isOpen = true;
+            if (!action.parsedURL.searchParams[FILTERS_PARAM_NAME]) {
+                return {};
             }
-            if (params['isExpired'] === "true") {
-                newSelectedFilters.isExpired = true;
-            }
-            if (params['isPendingReport'] === "true") {
-                newSelectedFilters.isPendingReport = true;
-            }
-            if (params['isMissedOrReported'] === "true") {
-                newSelectedFilters.isMissedOrReported = true;
-            }
-            if (params['isBinary'] === "true") {
-                newSelectedFilters.isBinary = true;
-            }
-            if (params['isCategorical'] === "true") {
-                newSelectedFilters.isCategorical = true;
-            }
-            if (params['isScalar'] === "true") {
-                newSelectedFilters.isScalar = true;
-            }
-            return newSelectedFilters;
+            return action.parsedURL.searchParams[FILTERS_PARAM_NAME].split(',').reduce((p, param) => {
+                p[param] = true;
+                return p;
+            }, { ...selectedFilters });
 
         default:
             return selectedFilters;

@@ -1,16 +1,23 @@
 /*
-This is the most important and sensitive selector in the app.
-It builds the fat, heavy, rigid, hierarchical market objects, that are used to render and display many parts of the ui.
-This is the point where the shallow, light, loose, flexible, independent pieces of state come together to make each market.
+This is one of the most important and sensitive selectors in the app.
+It builds the fat, heavy, rigid, hierarchical market objects,
+that are used to render and display many parts of the ui.
+This is the point where the shallow, light, loose, flexible, independent
+pieces of state come together to make each market.
 
 IMPORTANT
 The assembleMarket() function (where all the action happens) is heavily memoized, and performance sensitive.
 Doing things sub-optimally here will cause noticeable performance degradation in the app.
-The "trick" is to maximize memoization cache hits as much a spossible, and not have assembleMarket() run any more than it has to.
+The "trick" is to maximize memoization cache hits as much a spossible, and not have assembleMarket()
+run any more than it has to.
 
-To achieve that, we pre-process the arguments passed in to it as much as possible.
-For example, instead of passing in the entire "favorites" collection and letting the function find the one it needs for the market,
-we instead pass in !!favorites[marketID], and the market only gets re-assembled if the specific favorite it is concerned with changes.
+To achieve that, we pass in the minimum number of the shallowest arguments possible.
+For example, instead of passing in the entire `favorites` collection and letting the
+function find the one it needs for the market, we instead find the specific fvorite
+for that market in advance, and only pass in a boolean: `!!favorites[marketID]`
+That way the market only gets re-assembled when that specific favorite changes.
+
+This is true for all selectors, but especially important for this one.
 */
 
 
@@ -190,7 +197,6 @@ export const assembleMarket = memoizerific(1000)(function(
 	o.reportableOutcomes = o.outcomes.slice();
 	o.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
-	o.tags = (marketData.tags || []).filter(tag => tag != null);
 	o.tradeSummary = selectTradeSummary(tradeOrders);
 	o.positionsSummary = selectPositionsSummary(positions.list.length, positions.qtyShares, positions.totalValue, positions.totalCost);
 	o.positionOutcomes = positions.list;
