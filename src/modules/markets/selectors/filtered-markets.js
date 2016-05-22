@@ -1,10 +1,10 @@
 import memoizerific from 'memoizerific';
-import { CleanKeywordsArray } from '../../../utils/clean-keywords';
+import { cleanKeywordsArray } from '../../../utils/clean-keywords';
 // import store from '../../../store';
 
 export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedFilters) => {
 	function isMatchKeywords(mark, keys) {
-		const keywordsArray = new CleanKeywordsArray(keys);
+		const keywordsArray = cleanKeywordsArray(keys);
 		if (!keywordsArray.length) {
 			return true;
 		}

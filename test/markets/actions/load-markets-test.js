@@ -22,7 +22,7 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 
 	mockAugurJS.loadNumMarkets = sinon.stub();
 	mockAugurJS.loadMarkets = sinon.stub();
-	mockParse.ParseMarketsData = sinon.stub();
+	mockParse.parseMarketsData = sinon.stub();
 	mockReport.loadReports = sinon.stub();
 	mockAugurJS.loadNumMarkets.yields(null, 1);
 	mockAugurJS.loadMarkets.yields(null, {
@@ -32,7 +32,7 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 			example: 'test info'
 		}
 	});
-	mockParse.ParseMarketsData.returnsArg(0);
+	mockParse.parseMarketsData.returnsArg(0);
 	mockReport.loadReports.returnsArg(0);
 	mockPenReports.penalizeWrongReports = sinon.stub().returns({
 		type: 'PENALIZE_WRONG_REPORTS'
@@ -72,7 +72,7 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 		assert(mockAugurJS.loadNumMarkets.calledOnce, `AugurJS.loadNumMarkets() wasn't called once`);
 		assert(mockAugurJS.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
-		assert(mockParse.ParseMarketsData.calledOnce, `ParseMarketsData wasn't called once`);
+		assert(mockParse.parseMarketsData.calledOnce, `ParseMarketsData wasn't called once`);
 		assert(mockReport.loadReports.calledOnce, `loadReports() wasn't called once`);
 		assert(mockPenReports.penalizeWrongReports.calledOnce, `penalizeWrongReports() wsan't calledo once`);
 		assert(mockClearReports.closeMarkets.calledOnce, `closeMarkets() wasn't called once`);

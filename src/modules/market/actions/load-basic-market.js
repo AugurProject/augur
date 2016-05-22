@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { ParseMarketsData } from '../../../utils/parse-market-data';
+import { parseMarketsData } from '../../../utils/parse-market-data';
 
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
 
@@ -11,7 +11,7 @@ export function loadBasicMarket(marketID, cb) {
 				console.info('ERROR: loadMarket()', err);
 				return cb && cb();
 			}
-			const marketDataOutcomesData = new ParseMarketsData(
+			const marketDataOutcomesData = parseMarketsData(
 							{ [marketData._id]: marketData }
 				);
 			dispatch(updateMarketsData(marketDataOutcomesData));

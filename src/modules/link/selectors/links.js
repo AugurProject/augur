@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
-import { ListWordsUnderLength } from '../../../utils/list-words-under-length';
-import { MakeLocation as makeUrl } from '../../../utils/parse-url';
+import { listWordsUnderLength } from '../../../utils/list-words-under-length';
+import { makeLocation } from '../../../utils/parse-url';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
 import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
@@ -75,7 +75,7 @@ export const selectMarketsLink = memoizerific(1)(
 
 		const params = Object.assign({}, filtersParams, sortParams, searchParam, paginationParams);
 
-		const href = makeUrl([PAGES_PATHS[MARKETS]], params).url;
+		const href = makeLocation([PAGES_PATHS[MARKETS]], params).url;
 
 		return {
 			href,
@@ -84,7 +84,7 @@ export const selectMarketsLink = memoizerific(1)(
 	});
 
 export const selectMarketLink = memoizerific(1)((market, dispatch) => {
-	const href = `${PAGES_PATHS[M]}/${new ListWordsUnderLength(
+	const href = `${PAGES_PATHS[M]}/${listWordsUnderLength(
 									market.description,
 									300).map(word => encodeURIComponent(word))
 										.join('_')

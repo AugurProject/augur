@@ -20,7 +20,7 @@ describe(`modules/market/actions/load-basic-market.js`, () => {
 		_id: 'test1',
 		data: 'testing123'
 	});
-	mockParse.ParseMarketsData = sinon.stub().returnsArg(0);
+	mockParse.parseMarketsData = sinon.stub().returnsArg(0);
 
 	action = proxyquire('../../../src/modules/market/actions/load-basic-market.js', {
 		'../../../services/augurjs': mockAugurJS,
@@ -53,7 +53,7 @@ describe(`modules/market/actions/load-basic-market.js`, () => {
 		store.dispatch(action.loadBasicMarket('test1', cb));
 
 		assert(mockAugurJS.loadMarket.calledOnce, `AugurJS.loadMarket wasn't called only once as expected`);
-		assert(mockParse.ParseMarketsData.calledOnce, `ParseMarketsData wasn't called only once as expected`);
+		assert(mockParse.parseMarketsData.calledOnce, `ParseMarketsData wasn't called only once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});
 

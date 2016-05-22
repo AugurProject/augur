@@ -1,4 +1,4 @@
-import { ParseURL } from '../../../utils/parse-url';
+import { parseURL } from '../../../utils/parse-url';
 
 import { loadFullMarket } from '../../market/actions/load-full-market';
 
@@ -11,7 +11,7 @@ export const SHOW_LINK = 'SHOW_LINK';
  */
 export function showLink(url, options = {}) {
 	return (dispatch, getState) => {
-		dispatch({ type: SHOW_LINK, parsedURL: new ParseURL(url) });
+		dispatch({ type: SHOW_LINK, parsedURL: parseURL(url) });
 
 		const { selectedMarketID, connection } = getState();
 		if (selectedMarketID != null && connection.isConnected) {
@@ -29,7 +29,7 @@ export function showLink(url, options = {}) {
 
 export function showPreviousLink(url) {
 	return (dispatch) => {
-		dispatch({ type: SHOW_LINK, parsedURL: new ParseURL(url) });
+		dispatch({ type: SHOW_LINK, parsedURL: parseURL(url) });
 		window.scrollTo(0, 0);
 	};
 }

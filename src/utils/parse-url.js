@@ -3,7 +3,7 @@
  * @param {Object} searchParams
  * @return {{pathArray: Array, searchParams: Object, url: String}}
  */
-export function MakeLocation(pathArray = [], searchParams = {}) {
+export function makeLocation(pathArray = [], searchParams = {}) {
 	const search = searchParams && Object.keys(searchParams).map(key =>
 		`${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`
 		).join('&') || '';
@@ -56,7 +56,7 @@ function parseSearch(searchString) {
  * @param {String} url
  * @return {{pathArray: Array, searchParams: Object, url: String}}
  */
-export function ParseURL(url) {
+export function parseURL(url) {
 	const splitURL = url.split('?');
 	const parsed = {};
 
@@ -67,5 +67,5 @@ export function ParseURL(url) {
 		parsed.searchParams = parseSearch(splitURL[1]);
 	}
 
-	return new MakeLocation(parsed.pathArray, parsed.searchParams);
+	return makeLocation(parsed.pathArray, parsed.searchParams);
 }

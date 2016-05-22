@@ -15,7 +15,7 @@ const CATEGORICAL_CHOICE_SEPARATOR = '|';
 const CATEGORICAL_CHOICES_SEPARATOR2 = 'Choices:';
 const CATEGORICAL_CHOICE_SEPARATOR2 = ',';
 
-export function ParseCategoricalOutcomeNamesFromDescription(marketData) {
+export function parseCategoricalOutcomeNamesFromDescription(marketData) {
 	let splitDescription;
 	let categoricalOutcomeNames;
 
@@ -34,7 +34,7 @@ export function ParseCategoricalOutcomeNamesFromDescription(marketData) {
 	return categoricalOutcomeNames.map(name => name.trim());
 }
 
-export function ParseMarketsData(marketsData) {
+export function parseMarketsData(marketsData) {
 	const o = {
 		marketsData: {},
 		outcomesData: {}
@@ -65,7 +65,7 @@ export function ParseMarketsData(marketsData) {
 		// get outcomes embedded in market description for categorical
 		if (marketData.description && (marketData.type === CATEGORICAL || marketData.type === BINARY)) {
 			categoricalOutcomeNames =
-				new ParseCategoricalOutcomeNamesFromDescription(marketData);
+				parseCategoricalOutcomeNamesFromDescription(marketData);
 		}
 		console.log('***', outcomes);
 		// reduce array-of-outcomes to object-of-outcomes, with outcome ids as the object keys
@@ -117,7 +117,7 @@ export function ParseMarketsData(marketsData) {
 	return o;
 }
 
-export function MakeDescriptionFromCategoricalOutcomeNames(market) {
+export function makeDescriptionFromCategoricalOutcomeNames(market) {
 	const description = market.description +
 		CATEGORICAL_CHOICES_SEPARATOR +
 		market.outcomes.map(outcome =>

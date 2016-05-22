@@ -1,4 +1,4 @@
-export function ListWordsUnderLength(str, maxLength) {
+export function listWordsUnderLength(str, maxLength) {
 	const	wordsList = [];
 	let currentLength = 0;
 
