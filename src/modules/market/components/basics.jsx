@@ -24,7 +24,7 @@ module.exports = React.createClass({
 				{ !!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{ p.tags.map(tag => (
-							<li key={ tag } className="tag">{ tag }</li>
+							<li key={ tag.name } className="tag" onClick={ tag.onClick }>{ tag.name }</li>
 						))}
 					</ul>
 				}

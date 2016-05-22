@@ -37,6 +37,7 @@ module.exports = React.createClass({
 			<article className="market-item">
 				<div className="basics-container">
 					<Basics { ...p } />
+
 					{ !!p.marketLink &&
 						<div className="buttons">
 							<Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>

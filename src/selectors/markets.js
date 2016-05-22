@@ -101,7 +101,10 @@ function makeMarkets(numMarkets = 25) {
 			for (var i = 0; i < numTags; i++) {
 				let keysCurrentTier = Object.keys(currentTier);
 				let randomTag = keysCurrentTier[randomInt(0, keysCurrentTier.length - 1)];
-				finalTags.push(randomTag);
+				finalTags.push({
+					name: randomTag,
+					onClick: () => console.log('on clickity')
+				});
 				currentTier = currentTier[randomTag];
 			}
 
