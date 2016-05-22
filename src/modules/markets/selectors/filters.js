@@ -36,8 +36,8 @@ export const selectFilters = memoizerific(1)(function(markets, selectedFilters, 
 		market.isScalar && basicCounts.isScalar++;
 
 		market.tags.forEach(tag => {
-			tagCounts[tag] = tagCounts[tag] || 0;
-			tagCounts[tag]++;
+			tagCounts[tag.name] = tagCounts[tag.name] || 0;
+			tagCounts[tag.name]++;
 		});
 	});
 

@@ -57,7 +57,6 @@ export const selectMarketsLink = memoizerific(1)(function(keywords, selectedFilt
 		params[SORT_PARAM_NAME] = `${selectedSort.prop}|${selectedSort.isDesc}`;
 	}
 
-
 	// pagination
 	if (selectedPageNum > 1) {
 		params[PAGE_PARAM_NAME] = selectedPageNum;

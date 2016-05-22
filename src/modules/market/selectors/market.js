@@ -32,6 +32,7 @@ import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
 import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';
+import { toggleTag } from '../../markets/actions/toggle-tag';
 
 import store from '../../../store';
 
@@ -161,11 +162,11 @@ export const assembleMarket = memoizerific(1000)(function(
 			outcome;
 
 		outcome = {
-	        ...outcomeData,
-	        id: outcomeID,
-	        marketID,
-	        lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
-	        lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
+			...outcomeData,
+			id: outcomeID,
+			marketID,
+			lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
+			lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
 		};
 
 		outcomeTradeOrders = selectOutcomeTradeOrders(o, outcome, outcomeTradeInProgress, dispatch);
@@ -191,6 +192,13 @@ export const assembleMarket = memoizerific(1000)(function(
 
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
+
+	o.tags = o.tags.map(tag => {
+		return {
+			name: tag,
+			onClick: () => dispatch(toggleTag(tag))
+		};
+	});
 
 	o.priceTimeSeries = selectPriceTimeSeries(o.outcomes, marketPriceHistory);
 

@@ -30,7 +30,7 @@ export function ParseMarketsData(marketsData) {
 		marketData.maxValue = marketData.events[0].maxValue;
 		marketData.numOutcomes = marketData.events[0].numOutcomes;
 		marketData.reportedOutcome = marketData.events[0].outcome;
-		marketData.tags = (marketData.tags || []).map(tag => tag && tag.toLowerCase().trim()). filter(tag => !!tag);
+		marketData.tags = (marketData.tags || []).map(tag => tag && tag.toLowerCase().trim()).filter(tag => !!tag);
 
 		delete marketData.events;
 
