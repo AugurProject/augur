@@ -156,7 +156,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		'../../../store': store,
 		'../../../selectors': mockSelectors,
 		'../../markets/selectors/markets': mockMarkets,
-		'../../markets/selectors/filtered-markets': mockFiltered,
+		'../../markets/selectors/markets-filtered': mockFiltered,
 		'../../positions/selectors/positions-summary': mockPositions
 	});
 

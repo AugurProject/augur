@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe(`modules/markets/selectors/all-markets.js`, () => {
+describe(`modules/markets/selectors/markets-all.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -85,7 +85,7 @@ describe(`modules/markets/selectors/all-markets.js`, () => {
 		return market;
 	});
 
-	selector = proxyquire('../../../src/modules/markets/selectors/all-markets.js', {
+	selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {
 		'../../market/selectors/market': mockMarket,
 		'../../../store': store
 	});
