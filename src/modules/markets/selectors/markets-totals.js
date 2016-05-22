@@ -8,7 +8,7 @@ export const selectMarketsTotals = memoizerific(1)(
 (allMarkets, activePage, selectedMarketsHeader, keywords, selectedFilters) => {
 	const positions = { numPositions: 0, qtyShares: 0, totalValue: 0, totalCost: 0 };
 	const filteredMarkets = selectFilteredMarkets(allMarkets, keywords, selectedFilters);
-
+	const tagsTotals = {};
 	const totals = allMarkets.reduce((p, market) => {
 		p.numAll++;
 		if (market.isPendingReport) {
@@ -23,6 +23,16 @@ export const selectMarketsTotals = memoizerific(1)(
 			positions.totalCost += market.positionsSummary.totalCost.value || 0;
 		}
 
+		(market.tags || []).forEach(tag => {
+			if (tag == null) {
+				return;
+			}
+			if (!tagsTotals[tag]) {
+				tagsTotals[tag] = 0;
+			}
+			tagsTotals[tag]++;
+		});
+
 		return p;
 	}, {
 		numAll: 0,
@@ -36,8 +46,21 @@ export const selectMarketsTotals = memoizerific(1)(
 	selectedMarketsHeader, keywords, selectedFilters).length;
 	totals.numFiltered = filteredMarkets.length;
 	totals.numFavorites = selectFavorites(filteredMarkets).length;
-	totals.positionsSummary = selectPositionsSummary(positions.numPositions,
-	positions.qtyShares, positions.totalValue, positions.totalCost);
+	totals.positionsSummary =
+		selectPositionsSummary(
+			positions.numPositions,
+			positions.qtyShares,
+			positions.totalValue,
+			positions.totalCost)
+		;
+	totals.tagsTotals = Object.keys(tagsTotals).sort((a, b) =>
+		tagsTotals[b] - tagsTotals[a]).map(tag => {
+			const obj = {
+				name: tag,
+				num: tagsTotals[tag]
+			};
+			return obj;
+		});
 
 	return totals;
 });

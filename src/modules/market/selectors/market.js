@@ -142,8 +142,8 @@ export const assembleMarket = memoizerific(1000)((
 			...outcomeData,
 			id: outcomeID,
 			marketID,
-			lastPrice: formatEther(outcomeData.price, { positiveSign: false }),
-			lastPricePercent: formatPercent(outcomeData.price * 100, { positiveSign: false })
+			lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
+			lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
 		};
 
 		const outcomeTradeOrders = selectOutcomeTradeOrders(
@@ -185,7 +185,7 @@ export const assembleMarket = memoizerific(1000)((
 	o.reportableOutcomes = o.outcomes.slice();
 	o.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
-	o.tags = marketData.tags.filter((tag) => tag != null);
+	o.tags = (marketData.tags || []).filter(tag => tag != null);
 	o.tradeSummary = selectTradeSummary(tradeOrders);
 	o.positionsSummary = selectPositionsSummary(
 		positions.list.length,

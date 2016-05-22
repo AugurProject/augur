@@ -67,7 +67,7 @@ export function ParseMarketsData(marketsData) {
 			categoricalOutcomeNames =
 				new ParseCategoricalOutcomeNamesFromDescription(marketData);
 		}
-
+		console.log('***', outcomes);
 		// reduce array-of-outcomes to object-of-outcomes, with outcome ids as the object keys
 		o.outcomesData[marketID] = outcomes.reduce((p, outcome, i) => {
 			p[outcome.id] = {
