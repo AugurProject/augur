@@ -68,7 +68,7 @@
     "derequire": "^2.0.3",
     "envify": "^3.4.0",
     "exorcist": "^0.4.0",
-    "firebase-tools": "^3.0.0",
+    "firebase-tools": "2.x.x",
     "inline-source-cli": "^1.1.1",
     "less": "^2.7.1",
     "mocha": "^2.4.5",
