@@ -40,9 +40,9 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 			parsedURL: {
 				pathArray: ['/'],
 				searchParams: {
-					isOpen: 'true'
+					filters: 'isOpen'
 				},
-				url: '/?isOpen=true'
+				url: '/?filters=isOpen'
 			}
 		}, {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
@@ -52,9 +52,9 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 			parsedURL: {
 				pathArray: ['/'],
 				searchParams: {
-					isOpen: 'true'
+					filters: 'isOpen'
 				},
-				url: '/?isOpen=true'
+				url: '/?filters=isOpen'
 			}
 		}];
 		store.dispatch(action.updateSelectedPageNum(2));
