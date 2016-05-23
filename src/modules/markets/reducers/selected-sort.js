@@ -1,5 +1,5 @@
 import { SHOW_LINK } from '../../link/actions/show-link';
-import { SORT_PARAM_NAME } from '../../markets/constants/param-names';
+import { SORT_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
 
 import { UPDATE_SELECTED_SORT } from '../../markets/actions/update-selected-sort';

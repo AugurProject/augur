@@ -23,6 +23,7 @@ import tradesInProgress from './modules/trade/reducers/trades-in-progress';
 import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
 import keywords from './modules/markets/reducers/keywords';
 import selectedFilters from './modules/markets/reducers/selected-filters';
+import selectedTags from './modules/markets/reducers/selected-tags';
 import selectedSort from './modules/markets/reducers/selected-sort';
 import priceHistory from './modules/markets/reducers/price-history';
 
@@ -45,6 +46,7 @@ module.exports = {
 	selectedMarketsHeader,
 	keywords,
 	selectedFilters,
+	selectedTags,
 	selectedSort,
 	priceHistory,
 

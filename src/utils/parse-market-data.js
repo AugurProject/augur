@@ -57,6 +57,9 @@ export function parseMarketsData(marketsData) {
 		marketData.maxValue = marketData.events[0].maxValue;
 		marketData.numOutcomes = marketData.events[0].numOutcomes;
 		marketData.reportedOutcome = marketData.events[0].outcome;
+		marketData.tags =
+			(marketData.tags || []).map(tag =>
+				tag && tag.toLowerCase().trim()).filter(tag => !!tag);
 
 		delete marketData.events;
 
@@ -67,7 +70,7 @@ export function parseMarketsData(marketsData) {
 			categoricalOutcomeNames =
 				parseCategoricalOutcomeNamesFromDescription(marketData);
 		}
-		console.log('***', outcomes);
+
 		// reduce array-of-outcomes to object-of-outcomes, with outcome ids as the object keys
 		o.outcomesData[marketID] = outcomes.reduce((p, outcome, i) => {
 			p[outcome.id] = {

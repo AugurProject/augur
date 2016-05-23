@@ -94,7 +94,7 @@ describe(`modules/markets/selectors/markets.js`, () => {
 
 	selector = proxyquire('../../../src/modules/markets/selectors/markets.js', {
 		'../../../store': store,
-		'../../markets/selectors/filtered-markets': mockMarkets,
+		'../../markets/selectors/markets-filtered': mockMarkets,
 		'../../../selectors': mockSelectors
 	});
 

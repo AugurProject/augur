@@ -22,5 +22,6 @@ export const selectPositionFromOutcomeAccountTrades = memoizerific(100)(
 		qtyShares,
 		totalValue,
 		totalCost);
+
 	return position;
 });

@@ -2,10 +2,11 @@ import { UPDATE_SELECTED_PAGE_NUM } from '../../markets/actions/update-selected-
 import { UPDATE_SELECTED_SORT } from '../../markets/actions/update-selected-sort';
 import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
+import { TOGGLE_TAG } from '../../markets/actions/toggle-tag';
 import {
 	UPDATED_SELECTED_MARKETS_HEADER
 } from '../../markets/actions/update-selected-markets-header';
-import { PAGE_PARAM_NAME } from '../../markets/constants/param-names';
+import { PAGE_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_PAGE } from '../../markets/constants/pagination';
 
 import { SHOW_LINK } from '../../link/actions/show-link';
@@ -23,11 +24,13 @@ export default function (pagination = { selectedPageNum: DEFAULT_PAGE, numPerPag
 	case UPDATE_SELECTED_SORT:
 	case UPDATE_KEYWORDS:
 	case TOGGLE_FILTER:
+	case TOGGLE_TAG:
 	case UPDATED_SELECTED_MARKETS_HEADER:
 		return {
 			...pagination,
 			selectedPageNum: DEFAULT_PAGE
 		};
+
 	case SHOW_LINK:
 		params = action.parsedURL.searchParams;
 		newPageNum = params[PAGE_PARAM_NAME];

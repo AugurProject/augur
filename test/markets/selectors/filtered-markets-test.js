@@ -1,9 +1,9 @@
 import {
 	assert
 } from 'chai';
-import * as selector from '../../../src/modules/markets/selectors/filtered-markets';
+import * as selector from '../../../src/modules/markets/selectors/markets-filtered';
 
-describe(`modules/markets/selectors/filtered-markets.js`, () => {
+describe(`modules/markets/selectors/markets-filtered.js`, () => {
 
 	it(`should be able to select the correct filtered markets`, () => {
 		let keywords = 'test tag testtag';
