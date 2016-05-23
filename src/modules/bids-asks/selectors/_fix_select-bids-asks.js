@@ -3,94 +3,92 @@ import { formatShares, formatEther } from '../../../utils/format-number';
 
 import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
 
-import { selectOutcomes } from '../../markets/selectors/select-outcomes';
+// import { selectOutcomes } from '../../markets/selectors/select-outcomes';
+export const selectOutcomeBidsAsks = memoizerific(100)((outcomeBidsOrAsks, isSortDesc) => {
+	const o = [];
 
-export const selectOutcomeBids = function(marketID, outcomeID, bidsAsks) {
-    return selectOutcomeBidsAsks(bidsAsks && bidsAsks[marketID] && bidsAsks[marketID][outcomeID] && bidsAsks[marketID][outcomeID][BID], true);
-};
+	if (!outcomeBidsOrAsks) {
+		return o;
+	}
 
-export const selectOutcomeAsks = function(marketID, outcomeID, bidsAsks) {
-    return selectOutcomeBidsAsks(bidsAsks && bidsAsks[marketID] && bidsAsks[marketID][outcomeID] && bidsAsks[marketID][outcomeID][ASK]);
-};
+	const prices = Object.keys(outcomeBidsOrAsks);
 
-export const selectBidsAsksByPrice = function(marketID, s, dispatch) {
-    var { bidsAsks } = s,
-        marketBidsAsks = bidsAsks && bidsAsks[marketID],
-        outcomes,
-        bidKeys,
-        askKeys,
-        o,
-        a = [];
+	if (isSortDesc) {
+		prices.sort((a, b) => b - a);
+	} else {
+		prices.sort();
+	}
 
-    if (!marketBidsAsks) {
-        return a;
-    }
+	prices.forEach(price => Object.keys(outcomeBidsOrAsks[price]).forEach(accountID => {
+		o.push({
+			accountID,
+			price: parseFloat(price) || 0,
+			numShares: outcomeBidsOrAsks[price][accountID]
+		});
+	}));
 
-    outcomes = selectOutcomes(marketID, s, dispatch);
-
-    if (!outcomes || !outcomes.length) {
-        return a;
-    }
-
-    outcomes.forEach(outcome => {
-        o = {
-            ...outcome,
-            outcomeID: outcome.id,
-            bids: [],
-            asks: []
-        };
-
-        bidKeys = Object.keys(marketBidsAsks[outcome.id] && marketBidsAsks[outcome.id][BID] || {}).sort((a, b) => b - a);
-        askKeys = Object.keys(marketBidsAsks[outcome.id] && marketBidsAsks[outcome.id][ASK] || {}).sort();
-
-        bidKeys.forEach(price => {
-            o.bids.push({
-                price: formatEther(price),
-                shares: formatShares(aggregateShares(marketBidsAsks[outcome.id][BID][price]))
-            });
-        });
-
-        askKeys.forEach(price => {
-            o.asks.push({
-                price: formatEther(price),
-                shares: formatShares(aggregateShares(marketBidsAsks[outcome.id][ASK][price]))
-            });
-        });
-
-        a.push(o);
-    });
-
-    function aggregateShares(priceCollection) {
-        return Object.keys(priceCollection).reduce((numShares, accountID) => numShares + parseFloat(priceCollection[accountID]), 0);
-    }
-
-    return a;
-};
-
-export const selectOutcomeBidsAsks = memoizerific(100)(function(outcomeBidsOrAsks, isSortDesc) {
-    var prices,
-        o = [];
-
-    if (!outcomeBidsOrAsks) {
-        return o;
-    }
-
-    prices = Object.keys(outcomeBidsOrAsks);
-
-    if (isSortDesc) {
-        prices.sort((a, b) => b - a);
-    }
-    else {
-        prices.sort();
-    }
-
-    prices.forEach(price => Object.keys(outcomeBidsOrAsks[price]).forEach(accountID => {
-        o.push({
-            accountID,
-            price: parseFloat(price) || 0,
-            numShares: outcomeBidsOrAsks[price][accountID]
-        });
-    }));
-
-    return o;
+	return o;
 });
+
+export const selectOutcomeBids = (marketID, outcomeID, bidsAsks) =>
+selectOutcomeBidsAsks(bidsAsks	&& bidsAsks[marketID]
+	&& bidsAsks[marketID][outcomeID]
+	&& bidsAsks[marketID][outcomeID][BID], true);
+
+export const selectOutcomeAsks = (marketID, outcomeID, bidsAsks) =>
+selectOutcomeBidsAsks(bidsAsks && bidsAsks[marketID] &&
+bidsAsks[marketID][outcomeID] && bidsAsks[marketID][outcomeID][ASK]);
+
+export const selectBidsAsksByPrice = (marketID, s, dispatch) => {
+	const { bidsAsks } = s;
+	const marketBidsAsks = bidsAsks && bidsAsks[marketID];
+	let bidKeys;
+	let askKeys;
+	let o;
+	const asks = [];
+
+	if (!marketBidsAsks) {
+		return asks;
+	}
+
+	const outcomes = selectOutcomes(marketID, s, dispatch);
+	const aggregateShares = (priceCollection) =>
+		Object.keys(priceCollection).reduce((numShares, accountID) =>
+		numShares + parseFloat(priceCollection[accountID]), 0);
+
+	if (!outcomes || !outcomes.length) {
+		return asks;
+	}
+
+	outcomes.forEach(outcome => {
+		o = {
+			...outcome,
+			outcomeID: outcome.id,
+			bids: [],
+			asks: []
+		};
+
+		bidKeys = Object.keys(marketBidsAsks[outcome.id] &&
+		marketBidsAsks[outcome.id][BID] || {}).sort((a, b) => b - a);
+		askKeys = Object.keys(marketBidsAsks[outcome.id] &&
+		marketBidsAsks[outcome.id][ASK] || {}).sort();
+
+		bidKeys.forEach(price => {
+			o.bids.push({
+				price: formatEther(price),
+				shares: formatShares(aggregateShares(marketBidsAsks[outcome.id][BID][price]))
+			});
+		});
+
+		askKeys.forEach(price => {
+			o.asks.push({
+				price: formatEther(price),
+				shares: formatShares(aggregateShares(marketBidsAsks[outcome.id][ASK][price]))
+			});
+		});
+
+		asks.push(o);
+	});
+
+	return asks;
+};

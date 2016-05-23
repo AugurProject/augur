@@ -1,18 +1,19 @@
 import memoizerific from 'memoizerific';
 
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../../app/constants/pages';
+import { POSITIONS } from '../../app/constants/pages';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import store from '../../../store';
 
-export default function() {
-	var { activePage, selectedMarketsHeader } = store.getState(),
-		{ allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
+export const selectPendingReports = memoizerific(1)((markets) =>
+markets.filter(market => !!market.isPendingReport));
 
-	return selectUnpaginatedMarkets(allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader);
-}
+export const selectPositions = memoizerific(1)((markets) =>
+markets.filter(market =>
+		market.positionsSummary && market.positionsSummary.qtyShares.value));
 
-export const selectUnpaginatedMarkets = memoizerific(1)(function(allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader) {
+export const selectUnpaginatedMarkets = memoizerific(1)(
+(allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader) => {
 	if (activePage === POSITIONS) {
 		return selectPositions(allMarkets);
 	}
@@ -28,11 +29,15 @@ export const selectUnpaginatedMarkets = memoizerific(1)(function(allMarkets, fil
 	return filteredMarkets;
 });
 
-export const selectPendingReports = memoizerific(1)(function(markets) {
-	return markets.filter(market => !!market.isPendingReport);
-});
+export default function () {
+	const { activePage, selectedMarketsHeader } = store.getState();
+	const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
 
-export const selectPositions = memoizerific(1)(function(markets) {
-	return markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value);
-});
-
+	return selectUnpaginatedMarkets(
+		allMarkets,
+		filteredMarkets,
+		favoriteMarkets,
+		activePage,
+		selectedMarketsHeader
+	);
+}

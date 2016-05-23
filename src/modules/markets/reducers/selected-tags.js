@@ -2,16 +2,16 @@ import { SHOW_LINK } from '../../link/actions/show-link';
 import { TOGGLE_TAG } from '../../markets/actions/toggle-tag';
 import { TAGS_PARAM_NAME } from '../../link/constants/param-names';
 
-export default function(selectedTags = {}, action) {
+export default function (selectedTags = {}, action) {
+	let newSelectedTags;
 	switch (action.type) {
 	case TOGGLE_TAG:
-		let newSelectedTags = {
+		newSelectedTags = {
 			...selectedTags
 		};
 		if (newSelectedTags[action.filterID]) {
 			delete newSelectedTags[action.filterID];
-		}
-		else {
+		} else {
 			newSelectedTags[action.filterID] = true;
 		}
 		return newSelectedTags;

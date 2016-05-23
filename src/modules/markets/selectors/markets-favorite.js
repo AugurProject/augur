@@ -1,13 +1,9 @@
 import memoizerific from 'memoizerific';
 
-import store from '../../../store';
+export const selectFavoriteMarkets = memoizerific(1)((markets) =>
+	markets.filter(market => !!market.isFavorite));
 
-export default function() {
-	var { filteredMarkets } = require('../../../selectors');
+export default function () {
+	const { filteredMarkets } = require('../../../selectors');
 	return selectFavoriteMarkets(filteredMarkets);
 }
-
-export const selectFavoriteMarkets = memoizerific(1)(function(markets) {
-	return markets.filter(market => !!market.isFavorite);
-});
-

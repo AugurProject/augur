@@ -1,0 +1,9 @@
+node_modules
+build
+coverage
+.git
+scratch
+src/modules/bids-asks/actions/load-bids-asks.js
+src/modules/bids-asks/selectors/_fix_select-bids-asks.js
+src/modules/reports/actions/xxx.js
+src/services/augurjs.js

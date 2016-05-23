@@ -1,8 +1,8 @@
-export function CleanKeywords(keywords) {
+export function cleanKeywords(keywords) {
 	return (keywords || '').replace(/\s+/g, ' ').trim();
 }
 
-export function CleanKeywordsArray(keywords) {
-    var cleanKeywords = CleanKeywords(keywords).toLowerCase();
-	return cleanKeywords ? cleanKeywords.split(' ').sort() : [];
+export function cleanKeywordsArray(keywords) {
+	const CleanKeywords = cleanKeywords(keywords).toLowerCase();
+	return CleanKeywords ? CleanKeywords.split(' ').sort() : [];
 }

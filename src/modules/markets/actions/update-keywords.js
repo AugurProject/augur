@@ -4,8 +4,8 @@ export const UPDATE_KEYWORDS = 'UPDATE_KEYWORDS';
 
 export function updateKeywords(keywords) {
 	return (dispatch, getState) => {
-		dispatch({ type: UPDATE_KEYWORDS, keywords});
-		let { links } = require('../../../selectors');
+		dispatch({ type: UPDATE_KEYWORDS, keywords });
+		const { links } = require('../../../selectors');
 		dispatch(showLink(links.marketsLink.href, { preventScrollTop: true }));
 	};
 }

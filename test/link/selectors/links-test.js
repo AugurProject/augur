@@ -64,7 +64,7 @@ describe(`modules/link/selectors/links.js`, () => {
 				onClick: test.createMarketLink.onClick
 			},
 			marketsLink: {
-				href: '/?isOpen=true&search=test%20testtag',
+				href: '/?search=test%20testtag&filters=isOpen&tags=testtag%2Ctag',
 				onClick: test.marketsLink.onClick
 			},
 			positionsLink: {

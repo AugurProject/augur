@@ -1,25 +1,18 @@
 import memoizerific from 'memoizerific';
-
-import store from '../../../store';
-
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
-export default function() {
-	const { allMarkets, filteredMarkets, unpaginatedMarkets, favoriteMarkets } = require('../../../selectors');
-	return selectMarketsTotals(allMarkets, filteredMarkets.length, unpaginatedMarkets.length, favoriteMarkets.length);
-}
+export const selectMarketsTotals = memoizerific(1)(
+(allMarkets, filteredMarketsLength, unpaginatedMarketsLength, favoriteMarketsLength) => {
+	const positions = { numPositions: 0, qtyShares: 0, totalValue: 0, totalCost: 0 };
 
-export const selectMarketsTotals = memoizerific(1)((allMarkets, filteredMarketsLength, unpaginatedMarketsLength, favoriteMarketsLength) => {
-	let positions = { numPositions: 0, qtyShares: 0, totalValue: 0, totalCost: 0 },
-		totals;
-
-	totals = allMarkets.reduce((p, market) => {
+	const totals = allMarkets.reduce((p, market) => {
 		p.numAll++;
 		if (market.isPendingReport) {
 			p.numPendingReports++;
 		}
 
-		if (market.positionsSummary && market.positionsSummary.qtyShares && market.positionsSummary.qtyShares.value) {
+		if (market.positionsSummary && market.positionsSummary.qtyShares
+				&& market.positionsSummary.qtyShares.value) {
 			positions.numPositions += market.positionsSummary.numPositions.value;
 			positions.qtyShares += market.positionsSummary.qtyShares.value;
 			positions.totalValue += market.positionsSummary.totalValue.value || 0;
@@ -38,7 +31,27 @@ export const selectMarketsTotals = memoizerific(1)((allMarkets, filteredMarketsL
 	totals.numUnpaginated = unpaginatedMarketsLength;
 	totals.numFiltered = filteredMarketsLength;
 	totals.numFavorites = favoriteMarketsLength;
-	totals.positionsSummary = selectPositionsSummary(positions.numPositions, positions.qtyShares, positions.totalValue, positions.totalCost);
+	totals.positionsSummary = selectPositionsSummary(
+		positions.numPositions,
+		positions.qtyShares,
+		positions.totalValue,
+		positions.totalCost
+	);
 
 	return totals;
 });
+
+export default function () {
+	const {
+		allMarkets,
+		filteredMarkets,
+		unpaginatedMarkets,
+		favoriteMarkets
+	} = require('../../../selectors');
+	return selectMarketsTotals(
+		allMarkets,
+		filteredMarkets.length,
+		unpaginatedMarkets.length,
+		favoriteMarkets.length
+	);
+}

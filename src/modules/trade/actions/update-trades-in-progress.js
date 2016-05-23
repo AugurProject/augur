@@ -4,21 +4,20 @@ export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 
 export function updateTradesInProgress(marketID, outcomeID, numShares, limitPrice) {
-	return function(dispatch, getState) {
-		var tradesInProgress = getState().tradesInProgress,
-			simulation;
+	return (dispatch, getState) => {
+		const tradesInProgress = getState().tradesInProgress;
+		let	simulation;
 
 		if (tradesInProgress[marketID] &&
 			tradesInProgress[marketID][outcomeID] &&
 			tradesInProgress[marketID][outcomeID].numShares === numShares &&
 			tradesInProgress[marketID][outcomeID].limitPrice === limitPrice) {
-				return;
+			return;
 		}
 
 		if (numShares >= 0) {
 			simulation = AugurJS.getSimulatedBuy(marketID, outcomeID, numShares);
-		}
-		else {
+		} else {
 			simulation = AugurJS.getSimulatedSell(marketID, outcomeID, Math.abs(numShares));
 		}
 
@@ -31,7 +30,7 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 				totalCost: simulation[0],
 				newPrice: simulation[1]
 			}
-		}});
+		} });
 	};
 }
 

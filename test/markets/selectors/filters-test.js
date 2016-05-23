@@ -17,16 +17,25 @@ describe(`modules/markets/selectors/filters.js`, () => {
 	let mockFilter = {
 		toggleFilter: () => {}
 	};
+	let mockTag = { toggleTag: () => {}};
 	sinon.stub(mockFilter, 'toggleFilter', (arg) => {
 		return {
 			type: 'TOGGLE_FILTER',
 			filter: arg
 		}
 	});
+	sinon.stub(mockTag, 'toggleTag', (arg) => {
+		const obj = {
+			type: 'TOGGLE_TAG',
+			tag: arg
+		};
+		return obj;
+	});
 
 	selector = proxyquire('../../../src/modules/markets/selectors/filters.js', {
 		'../../../store': store,
-		'../../markets/actions/toggle-filter': mockFilter
+		'../../markets/actions/toggle-filter': mockFilter,
+		'../../markets/actions/toggle-tag': mockTag
 	});
 
 	it(`should adjust and return filters props`, () => {
@@ -34,43 +43,45 @@ describe(`modules/markets/selectors/filters.js`, () => {
 
 		out = [{
 			title: 'Status',
+			className: 'status',
 			options: [{
 				name: 'Open',
 				value: 'Open',
-				numMatched: 1,
+				numMatched: 0,
 				isSelected: true,
 				onClick: test[0].options[0].onClick
 			}, {
 				name: 'Expired',
 				value: 'Expired',
-				numMatched: 1,
+				numMatched: 0,
 				isSelected: false,
 				onClick: test[0].options[1].onClick
 			}, {
 				name: 'Reported / Missed',
 				value: 'Reported / Missed',
-				numMatched: 1,
+				numMatched: 0,
 				isSelected: false,
 				onClick: test[0].options[2].onClick
 			}]
 		}, {
 			title: 'Type',
+			className: 'type',
 			options: [{
 				name: 'Yes / No',
 				value: 'Yes / No',
-				numMatched: 145,
+				numMatched: 0,
 				isSelected: false,
 				onClick: test[1].options[0].onClick
 			}, {
 				name: 'Categorical',
 				value: 'Categorical',
-				numMatched: 124,
+				numMatched: 0,
 				isSelected: false,
 				onClick: test[1].options[1].onClick
 			}, {
 				name: 'Numerical',
 				value: 'Numerical',
-				numMatched: 70,
+				numMatched: 0,
 				isSelected: false,
 				onClick: test[1].options[2].onClick
 			}]

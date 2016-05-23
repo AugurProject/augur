@@ -1,25 +1,23 @@
-import memoizerific from 'memoizerific';
-
+// import memoizerific from 'memoizerific';
 import { updateSelectedPageNum } from '../../markets/actions/update-selected-page-num';
-
 import store from '../../../store';
 
-export default function() {
-	var { pagination } = store.getState(),
-		{ marketsTotals } = require('../../../selectors'),
-		o;
+export default function () {
+	const { pagination } = store.getState();
+	const { marketsTotals } = require('../../../selectors');
 
 	if (!pagination || !marketsTotals.numUnpaginated) {
 		return {};
 	}
 
-	o = {
+	const o = {
 		numUnpaginated: marketsTotals.numUnpaginated,
 		selectedPageNum: pagination.selectedPageNum,
 		numPerPage: pagination.numPerPage,
 		numPages: Math.ceil(marketsTotals.numUnpaginated / pagination.numPerPage),
 		startItemNum: ((pagination.selectedPageNum - 1) * pagination.numPerPage) + 1,
-		endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage, marketsTotals.numUnpaginated),
+		endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage,
+			marketsTotals.numUnpaginated),
 		onUpdateSelectedPageNum: (pageNum) => store.dispatch(updateSelectedPageNum(pageNum))
 	};
 

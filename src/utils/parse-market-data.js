@@ -1,20 +1,47 @@
-import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../modules/markets/constants/market-types';
-import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME, YES, NO } from '../modules/markets/constants/market-outcomes';
-
+import {
+	BINARY,
+	CATEGORICAL,
+	SCALAR,
+	COMBINATORIAL
+} from '../modules/markets/constants/market-types';
+import {
+	INDETERMINATE_OUTCOME_ID,
+	INDETERMINATE_OUTCOME_NAME,
+	// YES,
+	NO
+} from '../modules/markets/constants/market-outcomes';
 const CATEGORICAL_CHOICES_SEPARATOR = '~|>';
 const CATEGORICAL_CHOICE_SEPARATOR = '|';
-
 const CATEGORICAL_CHOICES_SEPARATOR2 = 'Choices:';
 const CATEGORICAL_CHOICE_SEPARATOR2 = ',';
 
-export function ParseMarketsData(marketsData) {
-	var o = {
-			marketsData: {},
-			outcomesData: {}
-		},
-		marketData,
-		outcomes,
-		categoricalOutcomeNames;
+export function parseCategoricalOutcomeNamesFromDescription(marketData) {
+	let splitDescription;
+	let categoricalOutcomeNames;
+
+	if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR) >= 0) {
+		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR);
+		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR);
+	} else if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR2) >= 0) {
+		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR2);
+		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR2);
+	} else {
+		return [];
+	}
+
+	marketData.description = splitDescription.join('').trim();
+
+	return categoricalOutcomeNames.map(name => name.trim());
+}
+
+export function parseMarketsData(marketsData) {
+	const o = {
+		marketsData: {},
+		outcomesData: {}
+	};
+	let marketData;
+	let outcomes;
+	let categoricalOutcomeNames;
 
 	Object.keys(marketsData).forEach(marketID => {
 		marketData = marketsData[marketID];
@@ -30,7 +57,9 @@ export function ParseMarketsData(marketsData) {
 		marketData.maxValue = marketData.events[0].maxValue;
 		marketData.numOutcomes = marketData.events[0].numOutcomes;
 		marketData.reportedOutcome = marketData.events[0].outcome;
-		marketData.tags = (marketData.tags || []).map(tag => tag && tag.toLowerCase().trim()).filter(tag => !!tag);
+		marketData.tags =
+			(marketData.tags || []).map(tag =>
+				tag && tag.toLowerCase().trim()).filter(tag => !!tag);
 
 		delete marketData.events;
 
@@ -38,7 +67,8 @@ export function ParseMarketsData(marketsData) {
 
 		// get outcomes embedded in market description for categorical
 		if (marketData.description && (marketData.type === CATEGORICAL || marketData.type === BINARY)) {
-			categoricalOutcomeNames = ParseCategoricalOutcomeNamesFromDescription(marketData);
+			categoricalOutcomeNames =
+				parseCategoricalOutcomeNamesFromDescription(marketData);
 		}
 
 		// reduce array-of-outcomes to object-of-outcomes, with outcome ids as the object keys
@@ -54,33 +84,35 @@ export function ParseMarketsData(marketsData) {
 			}
 
 			switch (marketData.type) {
-				case BINARY:
-					if (categoricalOutcomeNames) {
-						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || (parseInt(outcome.id, 10) === NO ? 'No' : 'Yes');
-					} else {
-						p[outcome.id].name = parseInt(outcome.id, 10) === NO ? 'No' : 'Yes';
-					}
-					return p;
+			case BINARY:
+				if (categoricalOutcomeNames) {
+					p[outcome.id].name = categoricalOutcomeNames[i] &&
+					categoricalOutcomeNames[i].trim() ||
+					(parseInt(outcome.id, 10) === NO ? 'No' : 'Yes');
+				} else {
+					p[outcome.id].name = parseInt(outcome.id, 10) === NO ? 'No' : 'Yes';
+				}
+				return p;
 
-				case CATEGORICAL:
-					if (categoricalOutcomeNames) {
-						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || outcome.id.toString();
-					}
-					else {
-						p[outcome.id].name = outcome.id.toString();
-					}
-					return p;
+			case CATEGORICAL:
+				if (categoricalOutcomeNames) {
+					p[outcome.id].name = categoricalOutcomeNames[i] &&
+					categoricalOutcomeNames[i].trim() || outcome.id.toString();
+				} else {
+					p[outcome.id].name = outcome.id.toString();
+				}
+				return p;
 
-				case SCALAR:
-					p[outcome.id].name = parseInt(outcome.id, 10) === NO ? '⇩' : '⇧';
-					return p;
+			case SCALAR:
+				p[outcome.id].name = parseInt(outcome.id, 10) === NO ? '⇩' : '⇧';
+				return p;
 
-				case COMBINATORIAL:
-					return p;
+			case COMBINATORIAL:
+				return p;
 
-				default:
-					console.info("Unknown type:", marketData.type, marketData);
-					return p;
+			default:
+				console.info('Unknown type:', marketData.type, marketData);
+				return p;
 			}
 		}, {});
 	});
@@ -88,29 +120,11 @@ export function ParseMarketsData(marketsData) {
 	return o;
 }
 
-export function ParseCategoricalOutcomeNamesFromDescription(marketData) {
-	var splitDescription,
-		categoricalOutcomeNames;
-
-	if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR) >= 0) {
-		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR),
-		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR);
-	}
-	else if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR2) >= 0) {
-		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR2),
-		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR2);
-	}
-	else {
-		return [];
-	}
-
-	marketData.description = splitDescription.join('').trim();
-
-	return categoricalOutcomeNames.map(name => name.trim());
-}
-
-export function MakeDescriptionFromCategoricalOutcomeNames(market) {
-	var description = market.description + CATEGORICAL_CHOICES_SEPARATOR + market.outcomes.map(outcome => outcome.name).join(CATEGORICAL_CHOICE_SEPARATOR);
+export function makeDescriptionFromCategoricalOutcomeNames(market) {
+	const description = market.description +
+		CATEGORICAL_CHOICES_SEPARATOR +
+		market.outcomes.map(outcome =>
+			outcome.name).join(CATEGORICAL_CHOICE_SEPARATOR);
 	return description;
 }
 

@@ -1,19 +1,21 @@
 import * as AugurJS from '../../../services/augurjs';
 
 import { BRANCH_ID } from '../../app/constants/network';
-import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
-
+import {
+	// PENDING,
+	// SUCCESS,
+	FAILED
+} from '../../transactions/constants/statuses';
 import { addTransactions } from '../../transactions/actions/add-transactions';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
-
 import { selectMarket } from '../../market/selectors/market';
 import { selectTransactionsLink } from '../../link/selectors/links';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		var market = selectMarket(marketID);
+		const market = selectMarket(marketID);
 		dispatch(addTransactions(market.tradeSummary.tradeOrders));
 		dispatch(clearTradeInProgress(marketID));
 		selectTransactionsLink(dispatch).onClick();

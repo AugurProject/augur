@@ -2,11 +2,14 @@ import { updateTransactionsData } from '../../transactions/actions/update-transa
 import { updateAssets } from '../../auth/actions/update-assets';
 
 export function updateExistingTransaction(transactionID, newTransactionData) {
-	return function(dispatch, getState) {
-		var { transactionsData } = getState();
+	return (dispatch, getState) => {
+		const { transactionsData } = getState();
 
-		// if the transaction doesn't already exist, probably/perhaps because user logged out while a transaction was running and it just completed now, do not update, ignore it
-		if (!transactionID || !newTransactionData || !transactionsData || !transactionsData[transactionID]) {
+		// if the transaction doesn't already exist, probably/perhaps because user
+		// logged out while a transaction was running and it just completed now,
+		// do not update, ignore it
+		if (!transactionID || !newTransactionData ||
+		!transactionsData || !transactionsData[transactionID]) {
 			return;
 		}
 

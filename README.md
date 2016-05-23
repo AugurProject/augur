@@ -1,5 +1,7 @@
 Augur
 =====
+[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=master)](https://travis-ci.org/AugurProject/augur)
+[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur?branch=master)
 
 Augur is a decentralized prediction market platform built on Ethereum.
 This is the reference client.
@@ -56,4 +58,3 @@ Since our code is structured in many small files that are named the same as the 
 Want to know where the css for pagination is? Don't bother tracing where/how they're included, just search your files for `pag` >>>and `pagination.less` will pop up.
 
 Want to see how the login account gets updated? Search the files for `login` >>> and `update-login-account.js` will appear.
-

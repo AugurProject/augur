@@ -8,8 +8,8 @@
     "undef": true,
     "debug": false,
     "devel": true,
-    "esnext": true,
-    "strict": true,
+    "esversion": 6,
+    "strict": false,
     "boss": false,
     "laxbreak": false,
     "eqeqeq": false,
@@ -32,5 +32,6 @@
     "newcap": true,
     "onevar": true,
     "asi": false,
-    "eqnull": false
+    "eqnull": false,
+    "-W138": false
 }

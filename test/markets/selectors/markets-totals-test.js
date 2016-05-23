@@ -14,13 +14,6 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 	let store, selector, out, test;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
-	let mockMarkets = {
-		selectUnpaginated: () => {},
-		selectFavorites: () => {}
-	};
-	let mockFiltered = {
-		selectFilteredMarkets: () => {}
-	};
 	let mockPositions = {
 		selectPositionsSummary: () => {}
 	};
@@ -44,7 +37,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 1',
-			tags: ['testtag', 'test']
+			tags: [{name: 'testtag'}, {name: 'test'}]
 		}, {
 			id: 'test2',
 			isFavorite: false,
@@ -64,7 +57,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 2',
-			tags: ['testtag', 'test']
+			tags: [{name: 'testtag'}, {name: 'test'}]
 		}, {
 			id: 'test3',
 			isFavorite: true,
@@ -84,13 +77,13 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 3',
-			tags: ['testtag', 'test', 'test2']
+			tags: [{name: 'testtag'}, {name: 'test'}, {name: 'test2'}]
 		}, {
 			id: 'test4',
 			isFavorite: false,
 			isPendingReport: true,
 			description: 'test 4',
-			tags: ['testtag', 'test']
+			tags: [{name: 'testtag'}, {name: 'test'}]
 		}, {
 			id: 'test5',
 			isFavorite: true,
@@ -110,7 +103,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 5',
-			tags: ['testtag', 'test1']
+			tags: [{name: 'testtag'}, {name: 'test1'}]
 		}, {
 			id: 'test6',
 			isFavorite: false,
@@ -130,19 +123,13 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				}
 			},
 			description: 'test 6',
-			tags: ['testtag', 'test']
-		}]
+			tags: [{name: 'testtag'}, {name: 'test'}]
+		}],
+		filteredMarkets: '7length',
+		unpaginatedMarkets: 'testing',
+		favoriteMarkets: 'test'
 	};
 
-	sinon.stub(mockMarkets, `selectUnpaginated`, (allMarkets, activePage, selectedMarketsHeader, keywords, selectedFilters) => {
-		return allMarkets.slice((1 - 1) * 10, 1 * 10)
-	});
-	sinon.stub(mockMarkets, `selectFavorites`, (filteredMarkets) => {
-		return filteredMarkets.filter(market => market.isFavorite)
-	});
-	sinon.stub(mockFiltered, `selectFilteredMarkets`, (allMarkets, keywords, selectedFilters) => {
-		return allMarkets
-	});
 	sinon.stub(mockPositions, 'selectPositionsSummary', (numPosition, qtyShares, totalValue, totalCost) => {
 		return {
 			numPosition,
@@ -155,8 +142,6 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 	selector = proxyquire('../../../src/modules/markets/selectors/markets-totals.js', {
 		'../../../store': store,
 		'../../../selectors': mockSelectors,
-		'../../markets/selectors/markets': mockMarkets,
-		'../../markets/selectors/markets-filtered': mockFiltered,
 		'../../positions/selectors/positions-summary': mockPositions
 	});
 
@@ -164,27 +149,18 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		test = selector.default();
 		out = {
 			numAll: 6,
-			numFavorites: 3,
+			numFavorites: 4,
 			numPendingReports: 3,
-			numUnpaginated: 6,
-			numFiltered: 6,
+			numUnpaginated: 7,
+			numFiltered: 7,
 			positionsSummary: {
 				numPosition: 70,
 				qtyShares: 35,
 				totalValue: 140,
 				totalCost: 297
-			},
-			tagsTotals: [
-				{ name: 'testtag', num: 6 },
-				{ name: 'test', num: 5 },
-				{ name: 'test2', num: 1 },
-				{ name: 'test1', num: 1 }
-			]
+			}
 		};
 
-		assert(mockMarkets.selectUnpaginated.calledOnce, `Didn't call selectUnpaginated once as expected`);
-		assert(mockMarkets.selectFavorites.calledOnce, `Didn't call selectFavorites once as expected`);
-		assert(mockFiltered.selectFilteredMarkets.calledOnce, `Didn't selectFilteredMarkets call once as expected`);
 		assert(mockPositions.selectPositionsSummary.calledOnce, `Didn't selectPositionsSummary call once as expected`);
 
 		assert.deepEqual(test, out, `Didn't output the expected Totals`);

@@ -1,20 +1,60 @@
-import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatNumber } from '../../../utils/format-number';
-
-import store from '../../../store';
-
-//import { selectOutcomeBids, selectOutcomeAsks } from '../../bids-asks/selectors/select-bids-asks';
+// import memoizerific from 'memoizerific';
+import {
+	formatShares,
+	formatEther,
+	// formatNumber
+} from '../../../utils/format-number';
+// import store from '../../../store';
+// import {
+// 	selectOutcomeBids,
+// 	selectOutcomeAsks
+// } from '../../bids-asks/selectors/select-bids-asks';
 import { makeTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 
-export const selectTradeOrders = function(market, marketTradeInProgress, dispatch) {
-	var orders = [];
+export const selectOutcomeTradeOrders =
+(market, outcome, outcomeTradeInProgress, dispatch) => {
+	const orders = [];
+
+	if (!outcomeTradeInProgress || !outcomeTradeInProgress.numShares) {
+		return orders;
+	}
+
+	const numShares = outcomeTradeInProgress.numShares;
+	const	totalCost = outcomeTradeInProgress.totalCost;
+	const	tradeTransaction = makeTradeTransaction(
+			numShares < 0,
+			market,
+			outcome,
+			numShares,
+			totalCost,
+			0.9,
+			-0.3,
+			dispatch
+		);
+
+
+	tradeTransaction.gas = formatEther(tradeTransaction.gas);
+	tradeTransaction.ether = formatEther(tradeTransaction.ether);
+	tradeTransaction.shares = formatShares(tradeTransaction.shares);
+
+	orders.push(tradeTransaction);
+
+	return orders;
+};
+
+
+export const selectTradeOrders = (market, marketTradeInProgress, dispatch) => {
+	const orders = [];
 
 	if (!market || !marketTradeInProgress || !market.outcomes.length) {
 		return orders;
 	}
 
 	market.outcomes.forEach(outcome => {
-		orders.concat(selectOutcomeTradeOrders(market, outcome, marketTradeInProgress[outcome.id], dispatch));
+		orders.concat(
+			selectOutcomeTradeOrders(
+					market, outcome,
+					marketTradeInProgress[outcome.id], dispatch));
 	});
 
 	return orders;
@@ -37,39 +77,9 @@ export const selectTradeOrders = function(market, marketTradeInProgress, dispatc
 	});
 */
 };
-
-export const selectOutcomeTradeOrders = function(market, outcome, outcomeTradeInProgress, dispatch) {
-	var orders = [];
-
-	if (!outcomeTradeInProgress || !outcomeTradeInProgress.numShares) {
-		return orders;
-	}
-
-	var numShares = outcomeTradeInProgress.numShares,
-		totalCost = outcomeTradeInProgress.totalCost,
-		tradeTransaction = makeTradeTransaction(
-			numShares < 0,
-			market,
-			outcome,
-			numShares,
-			totalCost,
-			0.9,
-			-0.3,
-			dispatch
-		);
-
-
-	tradeTransaction.gas = formatEther(tradeTransaction.gas);
-	tradeTransaction.ether = formatEther(tradeTransaction.ether);
-	tradeTransaction.shares = formatShares(tradeTransaction.shares);
-
-	orders.push(tradeTransaction);
-
-	return orders;
-};
-
 /*
-export const selectOutcomeTransactions = memoizerific(5)(function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispatch) {
+export const selectOutcomeTransactions = memoizerific(5)(
+function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispatch) {
 	var isSell = numShares < 0,
 		outcomeBidsOrAsks = !isSell ? outcomeAsks : outcomeBids,
 		o = {
@@ -91,7 +101,9 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 			return true;
 		}
 
-		sharesToTrade = outcomeBidOrAsk.numShares - Math.max(0, outcomeBidOrAsk.numShares - o.sharesRemaining);
+		sharesToTrade = outcomeBidOrAsk.numShares - Math.max(
+			0,
+			outcomeBidOrAsk.numShares - o.sharesRemaining);
 
 		if (!isSell) {
 			if (!limitPrice || outcomeBidOrAsk.price <= limitPrice) {
@@ -128,7 +140,10 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 				avgPrice: formatEther(Math.abs(o.ether / o.shares)),
 				feeToPay: formatEther(o.feeToPay)
 			},
-			(transactionID) => dispatch(tradeShares(transactionID, market.id, outcome.id, o.shares, limitPrice, null))
+			(transactionID) => dispatch(tradeShares(
+				transactionID, market.id,
+				outcome.id, o.shares,
+				limitPrice, null))
 		));
 	}
 
@@ -149,7 +164,9 @@ export const selectOutcomeTransactions = memoizerific(5)(function(market, outcom
 				avgPrice: formatEther(limitPrice),
 				feeToPay: formatNumber(0, { zero: true }) // no fee for market-making
 			},
-			(transactionID) => dispatch(tradeShares(transactionID, market.id, outcome.id, o.sharesRemaining, limitPrice, null))
+			(transactionID) => dispatch(tradeShares(
+				transactionID, market.id, outcome.id,
+				o.sharesRemaining, limitPrice, null))
 		));
 	}
 

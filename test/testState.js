@@ -73,6 +73,7 @@ const testState = {
 		isDesc: true,
 		prop: 'volume'
 	},
+	selectedTags: {testtag: {name: 'testtag'}, tag: {name: 'tag'}},
 	tradesInProgress: {},
 	transactionsData: {
 		testtransaction12345: {

@@ -2,15 +2,14 @@ import * as AugurJS from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { BRANCH_ID } from '../../app/constants/network';
 
-var tracker = {};
+const tracker = {};
 
 export function autoReportSequence(isReportConfirmationPhase) {
-	return function (dispatch, getState) {
-
-		var { branch, blockchain, loginAccount } = getState();
-		var branchID = BRANCH_ID;
-		var prevPeriod = blockchain.reportPeriod - 1;
-		var track = tracker[prevPeriod];
+	return (dispatch, getState) => {
+		const { blockchain, loginAccount } = getState();
+		const branchID = BRANCH_ID;
+		const prevPeriod = blockchain.reportPeriod - 1;
+		let track = tracker[prevPeriod];
 		if (!track) track = {};
 		if (isReportConfirmationPhase === undefined) {
 			isReportConfirmationPhase = blockchain.isReportConfirmationPhase;
@@ -18,13 +17,12 @@ export function autoReportSequence(isReportConfirmationPhase) {
 
 		// if we're in the first half of the reporting period
 		if (!isReportConfirmationPhase) {
-
 			// close any markets that are ready to be closed
 			if (loginAccount.ether && !track.calledCloseMarkets) {
 				AugurJS.closeMarkets(branchID, prevPeriod, (err, closedMarkets) => {
-					if (err) console.error("closeMarkets:", err);
+					if (err) console.error('closeMarkets:', err);
 					track.calledCloseMarkets = true;
-					console.log("Closed markets:", closedMarkets);
+					console.log('Closed markets:', closedMarkets);
 				});
 			}
 
@@ -32,19 +30,16 @@ export function autoReportSequence(isReportConfirmationPhase) {
 			if (loginAccount.rep) {
 				if (!track.calledPenalizeNotEnoughReports && !track.calledPenalizationCatchup) {
 					AugurJS.getReportedPeriod(branchID, prevPeriod, loginAccount, reported => {
-
 						// if the reporter submitted a report during the previous period,
 						// penalize if they did not submit enough reports.
-						if (reported === "1") {
+						if (reported === '1') {
 							AugurJS.penalizeNotEnoughReports(branchID, (err, res) => {
 								track.calledPenalizeNotEnoughReports = true;
 								dispatch(updateAssets());
 							});
-						}
-
-						// if the reporter did not submit a report during the previous period,
-						// dock 10% for each report-less period.
-						else {
+						} else {
+							// if the reporter did not submit a report during the previous period,
+							// dock 10% for each report-less period.
 							AugurJS.penalizationCatchup(branchID, (err, res) => {
 								track.calledPenalizationCatchup = true;
 								dispatch(updateAssets());
@@ -55,7 +50,7 @@ export function autoReportSequence(isReportConfirmationPhase) {
 				// number-of-reports penalties applied; now penalize wrong answers.
 				} else {
 					AugurJS.getEvents(branchID, prevPeriod, events => {
-						if (!events || events.error) return console.error("getEvents:", events);
+						if (!events || events.error) return console.error('getEvents:', events);
 						async.eachSeries(events, (event, nextEvent) => {
 							if (track.calledPenalizeWrong && track.calledPenalizeWrong[event]) {
 								return nextEvent();
@@ -75,17 +70,15 @@ export function autoReportSequence(isReportConfirmationPhase) {
 							});
 						}, err => {
 							if (err) {
-								return console.error("penalizeWrong series error:", err);
+								return console.error('penalizeWrong series error:', err);
 							}
-							console.log("penalizeWrong series completed");
+							console.log('penalizeWrong series completed');
 						});
 					});
 				}
 			}
-
 		// if we're in the second half of the reporting period
 		} else {
-
 			// if this user has reputation
 			if (loginAccount.rep) {
 				// TODO
@@ -93,7 +86,6 @@ export function autoReportSequence(isReportConfirmationPhase) {
 				//  AugurJS.submitReport(...);
 				//
 			}
-
 			// trade and rep redistribution payouts
 			AugurJS.collectFees(branchID, (err, res) => {
 				dispatch(updateAssets());

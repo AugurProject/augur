@@ -1,21 +1,25 @@
 import memoizerific from 'memoizerific';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
-import { makeDateFromBlock } from '../../../utils/format-number';
+// import { makeDateFromBlock } from '../../../utils/format-number';
 
 import store from '../../../store';
 
 import { assembleMarket } from '../../market/selectors/market';
 
-export default function() {
-    var { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory } = store.getState();
-
-    return selectMarkets(
-		marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain,
-		selectedSort, priceHistory, store.dispatch
-	);
+function cleanSortVal(val) {
+	if (val) {
+		if (val.value || val.value === 0) {
+			return val.value;
+		} else if (val.toLowerCase) {
+			return val.toLowerCase();
+		}
+	}
+	return val;
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports,
+	outcomes, accountTrades, tradesInProgress,
+	blockchain, selectedSort, priceHistory, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -41,7 +45,8 @@ console.time('selectMarkets');
 			reports[marketsData[marketKeys[i]].eventID],
 			accountTrades[marketKeys[i]],
 			tradesInProgress[marketKeys[i]],
-			formatBlockToDate(marketsData[marketKeys[i]].endDate, blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch),
+			formatBlockToDate(marketsData[marketKeys[i]].endDate,
+ 	blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch),
 			blockchain && blockchain.isReportConfirmationPhase,
 			dispatch));
 	}
@@ -61,10 +66,11 @@ console.time('selectMarkets');
 	});
 */
 	return Object.keys(marketsData)
-    	.map(marketID => {
-    		var endDate = new Date(marketsData[marketID].endDate); // this is here for performance reasons not to trigger memoization on every block
-    		return assembleMarket(
-	    		marketID,
+		.map(marketID => {
+			const endDate = new Date(marketsData[marketID].endDate);
+			// this is here for performance reasons not to trigger memoization on every block
+			return assembleMarket(
+				marketID,
 				marketsData[marketID],
 				priceHistory[marketID],
 				isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
@@ -80,30 +86,28 @@ console.time('selectMarkets');
 				endDate.getDate(),
 				blockchain && blockchain.isReportConfirmationPhase,
 				dispatch);
-    	})
-    	.sort((a, b) => {
-			var aVal = cleanSortVal(a[selectedSort.prop]),
-				bVal = cleanSortVal(b[selectedSort.prop]);
+		})
+		.sort((a, b) => {
+			const aVal = cleanSortVal(a[selectedSort.prop]);
+			const bVal = cleanSortVal(b[selectedSort.prop]);
 
 			if (bVal < aVal) {
 				return selectedSort.isDesc ? -1 : 1;
-			}
-			else if (bVal > aVal) {
+			} else if (bVal > aVal) {
 				return selectedSort.isDesc ? 1 : -1;
 			}
-
 			return a.id < b.id ? -1 : 1;
 		});
 });
 
-function cleanSortVal(val) {
-	if (val) {
-		if (val.value || val.value === 0) {
-			return val.value;
-		}
-		else if (val.toLowerCase) {
-			return val.toLowerCase();
-		}
-	}
-	return val;
+export default function () {
+	const { marketsData, favorites, reports,
+					outcomes, accountTrades, tradesInProgress,
+					blockchain, selectedSort, priceHistory } = store.getState();
+
+	return selectMarkets(
+		marketsData, favorites, reports,
+		outcomes, accountTrades, tradesInProgress,
+		blockchain, selectedSort, priceHistory, store.dispatch
+	);
 }

@@ -4,19 +4,22 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 
 export function updateAssets() {
 	return (dispatch, getState) => {
-		var { loginAccount } = getState();
+		const { loginAccount } = getState();
 		if (!loginAccount.id) {
-			return dispatch(updateLoginAccount({ ether: undefined, realEther: undefined, rep: undefined }));
+			return dispatch(updateLoginAccount({
+				ether: undefined,
+				realEther: undefined,
+				rep: undefined }));
 		}
 		AugurJS.loadAssets(BRANCH_ID, loginAccount.id,
 			(err, ether) => {
-				var { loginAccount } = getState();
+				// const { loginAccount } = getState();
 				if (err) {
 					console.info('!! ERROR updateAssets() ether', err);
 					return;
 				}
 
-				if (!loginAccount.ether || loginAccount.ether.value !==  ether) {
+				if (!loginAccount.ether || loginAccount.ether.value !== ether) {
 					return dispatch(updateLoginAccount({ ether }));
 				}
 			},
