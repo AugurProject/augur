@@ -3,6 +3,13 @@ import { toggleFilter } from '../../markets/actions/toggle-filter';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 import store from '../../../store';
 
+export default function () {
+	const { selectedFilters, selectedTags } = store.getState();
+	const { filteredMarkets } = require('../../../selectors');
+
+	return selectFilters(filteredMarkets, selectedFilters, selectedTags, store.dispatch);
+}
+
 export const selectFilters = memoizerific(1)(
 (markets, selectedFilters, selectedTags, dispatch) => {
 	const basicCounts = {
@@ -113,10 +120,3 @@ export const selectFilters = memoizerific(1)(
 
 	return filters;
 });
-
-export default function () {
-	const { selectedFilters, selectedTags } = store.getState();
-	const { filteredMarkets } = require('../../../selectors');
-
-	return selectFilters(filteredMarkets, selectedFilters, selectedTags, store.dispatch);
-}

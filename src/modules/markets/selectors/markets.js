@@ -4,9 +4,6 @@ import { PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import store from '../../../store';
 
-export const selectPaginated = memoizerific(1)(
-(markets, pageNum, numPerPage) => markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage));
-
 export default function () {
 	const { activePage, selectedMarketsHeader, pagination } = store.getState();
 	const { unpaginatedMarkets } = require('../../../selectors');
@@ -16,3 +13,6 @@ export default function () {
 	}
 	return unpaginatedMarkets;
 }
+
+export const selectPaginated = memoizerific(1)(
+(markets, pageNum, numPerPage) => markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage));

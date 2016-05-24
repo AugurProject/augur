@@ -5,6 +5,19 @@ import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-head
 
 import store from '../../../store';
 
+export default function () {
+	const { activePage, selectedMarketsHeader } = store.getState();
+	const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
+
+	return selectUnpaginatedMarkets(
+		allMarkets,
+		filteredMarkets,
+		favoriteMarkets,
+		activePage,
+		selectedMarketsHeader
+	);
+}
+
 export const selectPendingReports = memoizerific(1)((markets) =>
 markets.filter(market => !!market.isPendingReport));
 
@@ -28,16 +41,3 @@ export const selectUnpaginatedMarkets = memoizerific(1)(
 
 	return filteredMarkets;
 });
-
-export default function () {
-	const { activePage, selectedMarketsHeader } = store.getState();
-	const { allMarkets, filteredMarkets, favoriteMarkets } = require('../../../selectors');
-
-	return selectUnpaginatedMarkets(
-		allMarkets,
-		filteredMarkets,
-		favoriteMarkets,
-		activePage,
-		selectedMarketsHeader
-	);
-}

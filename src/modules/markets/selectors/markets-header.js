@@ -3,6 +3,17 @@ import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-head
 import store from '../../../store';
 import { updateSelectedMarketsHeader } from '../../markets/actions/update-selected-markets-header';
 
+export default function () {
+	const { selectedMarketsHeader } = store.getState();
+	const { marketsTotals } = require('../../../selectors');
+	return selectMarketsHeader(
+		selectedMarketsHeader,
+		marketsTotals.numFiltered,
+		marketsTotals.numFavorites,
+		marketsTotals.numPendingReports,
+		store.dispatch);
+}
+
 export const selectMarketsHeader = memoizerific(1)(
 (selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) => {
 	const obj = {
@@ -16,14 +27,3 @@ export const selectMarketsHeader = memoizerific(1)(
 	};
 	return obj;
 });
-
-export default function () {
-	const { selectedMarketsHeader } = store.getState();
-	const { marketsTotals } = require('../../../selectors');
-	return selectMarketsHeader(
-		selectedMarketsHeader,
-		marketsTotals.numFiltered,
-		marketsTotals.numFavorites,
-		marketsTotals.numPendingReports,
-		store.dispatch);
-}

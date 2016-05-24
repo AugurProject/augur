@@ -17,6 +17,21 @@ import validateScalarSmallNum from '../../../market/validators/validate-scalar-s
 import validateScalarBigNum from '../../../market/validators/validate-scalar-big-num';
 import validateCategoricalOutcomes from '../../../market/validators/validate-categorical-outcomes';
 
+export const select = (formState) => {
+	switch (formState.type) {
+	case BINARY:
+		return selectBinary(formState);
+	case CATEGORICAL:
+		return selectCategorical(formState);
+	case SCALAR:
+		return selectScalar(formState);
+	case COMBINATORIAL:
+		return selectCombinatorial(formState);
+	default:
+		break;
+	}
+};
+
 export const selectBinary = (formState) => {
 	const obj = {
 		descriptionPlaceholder: 'Will "Batman v Superman: Dawn of Justice" take more'
@@ -126,19 +141,4 @@ export const errors = (formState) => {
 	}
 
 	return errs;
-};
-
-export const select = (formState) => {
-	switch (formState.type) {
-	case BINARY:
-		return selectBinary(formState);
-	case CATEGORICAL:
-		return selectCategorical(formState);
-	case SCALAR:
-		return selectScalar(formState);
-	case COMBINATORIAL:
-		return selectCombinatorial(formState);
-	default:
-		break;
-	}
 };

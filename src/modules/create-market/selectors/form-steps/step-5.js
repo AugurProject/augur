@@ -11,34 +11,6 @@ import {
 submitNewMarket
 } from '../../../create-market/actions/submit-new-market';
 
-export const selectEndBlockFromEndDate = (
-	endDateMillisSinceEpoch,
-	currentBlockNumber,
-	currentBlockMillisSinceEpoch) =>
-		currentBlockNumber + Math.ceil((endDateMillisSinceEpoch
-		- currentBlockMillisSinceEpoch) / MILLIS_PER_BLOCK);
-
-
-export const selectOutcomesFromForm = (
-	type,
-	categoricalOutcomes,
-	scalarSmallNum,
-	scalarBigNum) => {
-	switch (type) {
-	case BINARY:
-		return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
-	case CATEGORICAL:
-		return categoricalOutcomes.map((outcome, i) => {
-			const obj = { id: i, name: outcome };
-			return obj;
-		});
-	case SCALAR:
-		return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
-	default:
-		break;
-	}
-};
-
 export const select = (
 	formState,
 	currentBlockNumber,
@@ -69,4 +41,32 @@ export const select = (
 	o.onSubmit = () => dispatch(submitNewMarket(o));
 
 	return o;
+};
+
+export const selectEndBlockFromEndDate = (
+	endDateMillisSinceEpoch,
+	currentBlockNumber,
+	currentBlockMillisSinceEpoch) =>
+		currentBlockNumber + Math.ceil((endDateMillisSinceEpoch
+		- currentBlockMillisSinceEpoch) / MILLIS_PER_BLOCK);
+
+
+export const selectOutcomesFromForm = (
+	type,
+	categoricalOutcomes,
+	scalarSmallNum,
+	scalarBigNum) => {
+	switch (type) {
+	case BINARY:
+		return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
+	case CATEGORICAL:
+		return categoricalOutcomes.map((outcome, i) => {
+			const obj = { id: i, name: outcome };
+			return obj;
+		});
+	case SCALAR:
+		return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
+	default:
+		break;
+	}
 };

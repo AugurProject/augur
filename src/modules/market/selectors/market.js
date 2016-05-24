@@ -54,6 +54,11 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
+export default function () {
+	const { selectedMarketID } = store.getState();
+	return selectMarket(selectedMarketID);
+}
+
 export const assembleMarket = memoizerific(1000)((
 		marketID,
 		marketData,
@@ -241,8 +246,3 @@ export const selectMarketFromEventID = (eventID) => {
 	return selectMarket(Object.keys(marketsData).find(marketID =>
 		marketsData[marketID].eventID === eventID));
 };
-
-export default function () {
-	const { selectedMarketID } = store.getState();
-	return selectMarket(selectedMarketID);
-}

@@ -21,6 +21,23 @@ import { logout } from '../../auth/actions/logout';
 import store from '../../../store';
 // import * as selectors from '../../../selectors';
 
+export default function () {
+	const { keywords, selectedFilters, selectedSort,
+		selectedTags, pagination, loginAccount } = store.getState();
+	const { market } = require('../../../selectors');
+
+	return {
+		authLink: selectAuthLink(loginAccount.id ? LOGIN : REGISTER, !!loginAccount.id, store.dispatch),
+		createMarketLink: selectCreateMarketLink(store.dispatch),
+		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort,
+			selectedTags, pagination.selectedPageNum, store.dispatch),
+		positionsLink: selectPositionsLink(store.dispatch),
+		transactionsLink: selectTransactionsLink(store.dispatch),
+		marketLink: selectMarketLink(market, store.dispatch),
+		previousLink: selectPreviousLink(store.dispatch)
+	};
+}
+
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
 	const obj = {
 		href: PAGES_PATHS[MARKETS],
@@ -136,20 +153,3 @@ export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
 		onClick: () => dispatch(showLink(href))
 	};
 });
-
-export default function () {
-	const { keywords, selectedFilters, selectedSort,
-		selectedTags, pagination, loginAccount } = store.getState();
-	const { market } = require('../../../selectors');
-
-	return {
-		authLink: selectAuthLink(loginAccount.id ? LOGIN : REGISTER, !!loginAccount.id, store.dispatch),
-		createMarketLink: selectCreateMarketLink(store.dispatch),
-		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort,
-			selectedTags, pagination.selectedPageNum, store.dispatch),
-		positionsLink: selectPositionsLink(store.dispatch),
-		transactionsLink: selectTransactionsLink(store.dispatch),
-		marketLink: selectMarketLink(market, store.dispatch),
-		previousLink: selectPreviousLink(store.dispatch)
-	};
-}
