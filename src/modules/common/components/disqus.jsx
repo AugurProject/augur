@@ -15,8 +15,6 @@ module.exports = React.createClass({
     },
 
     render: function(){
-        let p = this.props
-
         return (
             <div className='disqus-container' >
                 <div id="disqus_thread" />
