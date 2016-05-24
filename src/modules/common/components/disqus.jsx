@@ -15,12 +15,7 @@ module.exports = React.createClass({
     },
 
     render: function(){
-        return (
-            <div className='disqus-container' >
-                <div id="disqus_thread" />
-                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-            </div>
-        )
+        return <div id="disqus_thread" className="disqus-container"/>
     },
 
     loadDisqus(){
