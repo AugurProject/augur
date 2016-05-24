@@ -40,7 +40,7 @@ module.exports = React.createClass({
 
             SCRIPT.async = true
             SCRIPT.type = 'text/javascript'
-            SCRIPT.src = '//augur.disqus.com/embed.js'
+            SCRIPT.src = '//augur-markets.disqus.com/embed.js'
 
             document.body.appendChild(SCRIPT)
         }
