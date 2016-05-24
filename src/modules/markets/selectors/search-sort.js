@@ -2,6 +2,15 @@ import memoizerific from 'memoizerific';
 import { updateSelectedSort } from '../../markets/actions/update-selected-sort';
 import store from '../../../store';
 
+export default function () {
+	const { selectedSort } = store.getState();
+	return {
+		selectedSort,
+		sortOptions: selectSortOptions(selectedSort),
+		onChangeSort: selectOnChangeSort(store.dispatch)
+	};
+}
+
 export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
 	const creationSortOrder = {
 		label: 'Newest Market',
@@ -53,12 +62,3 @@ export const selectOnChangeSort = memoizerific(1)((dispatch) =>
 		dispatch(updateSelectedSort(o));
 	}
 );
-
-export default function () {
-	const { selectedSort } = store.getState();
-	return {
-		selectedSort,
-		sortOptions: selectSortOptions(selectedSort),
-		onChangeSort: selectOnChangeSort(store.dispatch)
-	};
-}

@@ -12,6 +12,12 @@ import { register } from '../../auth/actions/register';
 import { login } from '../../auth/actions/login';
 import { selectAuthLink } from '../../link/selectors/links';
 
+export default function () {
+	const { auth } = store.getState();
+	const { links } = require('../../../selectors');
+	return selectAuthForm(auth, links, store.dispatch);
+}
+
 export const selectErrMsg = (err) => {
 	if (!err) {
 		return null;
@@ -95,9 +101,3 @@ export const selectAuthForm = memoizerific(1)((auth, link, dispatch) => {
 	};
 	return obj;
 });
-
-export default function () {
-	const { auth } = store.getState();
-	const { links } = require('../../../selectors');
-	return selectAuthForm(auth, links, store.dispatch);
-}

@@ -6,6 +6,18 @@ import store from '../../../store';
 
 import { assembleMarket } from '../../market/selectors/market';
 
+export default function () {
+	const { marketsData, favorites, reports,
+					outcomes, accountTrades, tradesInProgress,
+					blockchain, selectedSort, priceHistory } = store.getState();
+
+	return selectMarkets(
+		marketsData, favorites, reports,
+		outcomes, accountTrades, tradesInProgress,
+		blockchain, selectedSort, priceHistory, store.dispatch
+	);
+}
+
 function cleanSortVal(val) {
 	if (val) {
 		if (val.value || val.value === 0) {
@@ -99,15 +111,3 @@ console.time('selectMarkets');
 			return a.id < b.id ? -1 : 1;
 		});
 });
-
-export default function () {
-	const { marketsData, favorites, reports,
-					outcomes, accountTrades, tradesInProgress,
-					blockchain, selectedSort, priceHistory } = store.getState();
-
-	return selectMarkets(
-		marketsData, favorites, reports,
-		outcomes, accountTrades, tradesInProgress,
-		blockchain, selectedSort, priceHistory, store.dispatch
-	);
-}

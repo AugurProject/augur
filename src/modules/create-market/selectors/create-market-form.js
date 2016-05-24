@@ -11,6 +11,15 @@ import * as Step3 from '../../create-market/selectors/form-steps/step-3';
 import * as Step4 from '../../create-market/selectors/form-steps/step-4';
 import * as Step5 from '../../create-market/selectors/form-steps/step-5';
 
+export default function () {
+	const { createMarketInProgress, blockchain } = store.getState();
+	return selectCreateMarketForm(
+		createMarketInProgress,
+		blockchain.currentBlockNumber,
+		blockchain.currentBlockMillisSinceEpoch,
+		store.dispatch);
+}
+
 export const selectCreateMarketForm =
 	memoizerific(1)((
 	createMarketInProgress,
@@ -89,12 +98,3 @@ export const selectCreateMarketForm =
 			step: 5
 		};
 	});
-
-export default function () {
-	const { createMarketInProgress, blockchain } = store.getState();
-	return selectCreateMarketForm(
-		createMarketInProgress,
-		blockchain.currentBlockNumber,
-		blockchain.currentBlockMillisSinceEpoch,
-		store.dispatch);
-}

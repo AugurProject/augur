@@ -5,10 +5,6 @@ import memoizerific from 'memoizerific';
 import { updateKeywords } from '../../markets/actions/update-keywords';
 import store from '../../../store';
 
-export const selectOnChangeKeywords = memoizerific(1)((dispatch) =>
-	(keywords) => dispatch(updateKeywords(keywords))
-);
-
 export default function () {
 	const { keywords } = store.getState();
 	return {
@@ -16,3 +12,7 @@ export default function () {
 		onChangeKeywords: selectOnChangeKeywords(store.dispatch)
 	};
 }
+
+export const selectOnChangeKeywords = memoizerific(1)((dispatch) =>
+	(keywords) => dispatch(updateKeywords(keywords))
+);

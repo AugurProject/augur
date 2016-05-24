@@ -1,6 +1,11 @@
 import memoizerific from 'memoizerific';
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
+export default function () {
+	const { transactions } = require('../../../selectors');
+	return selectTransactionsTotals(transactions);
+}
+
 export const selectTransactionsTotals = memoizerific(1)((transactions) => {
 	const o = {
 		numWorking: 0,
@@ -35,8 +40,3 @@ export const selectTransactionsTotals = memoizerific(1)((transactions) => {
 
 	return o;
 });
-
-export default function () {
-	const { transactions } = require('../../../selectors');
-	return selectTransactionsTotals(transactions);
-}

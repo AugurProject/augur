@@ -3,6 +3,11 @@ import { formatShares, formatEther, formatRep } from '../../../utils/format-numb
 // import { PENDING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import store from '../../../store';
 
+export default function () {
+	const { transactionsData } = store.getState();
+	return selectTransactions(transactionsData);
+}
+
 export const selectTransactions = memoizerific(1)((transactionsData) =>
 	Object.keys(transactionsData || {})
 		.sort((a, b) => parseFloat(b) - parseFloat(a))
@@ -19,8 +24,3 @@ export const selectTransactions = memoizerific(1)((transactionsData) =>
 			return obj;
 		})
 );
-
-export default function () {
-	const { transactionsData } = store.getState();
-	return selectTransactions(transactionsData);
-}

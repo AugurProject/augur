@@ -1,6 +1,21 @@
 import memoizerific from 'memoizerific';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
+export default function () {
+	const {
+		allMarkets,
+		filteredMarkets,
+		unpaginatedMarkets,
+		favoriteMarkets
+	} = require('../../../selectors');
+	return selectMarketsTotals(
+		allMarkets,
+		filteredMarkets.length,
+		unpaginatedMarkets.length,
+		favoriteMarkets.length
+	);
+}
+
 export const selectMarketsTotals = memoizerific(1)(
 (allMarkets, filteredMarketsLength, unpaginatedMarketsLength, favoriteMarketsLength) => {
 	const positions = { numPositions: 0, qtyShares: 0, totalValue: 0, totalCost: 0 };
@@ -40,18 +55,3 @@ export const selectMarketsTotals = memoizerific(1)(
 
 	return totals;
 });
-
-export default function () {
-	const {
-		allMarkets,
-		filteredMarkets,
-		unpaginatedMarkets,
-		favoriteMarkets
-	} = require('../../../selectors');
-	return selectMarketsTotals(
-		allMarkets,
-		filteredMarkets.length,
-		unpaginatedMarkets.length,
-		favoriteMarkets.length
-	);
-}
