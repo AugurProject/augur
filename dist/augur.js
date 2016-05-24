@@ -38483,7 +38483,7 @@ Augur.prototype.decodeTag = function (tag) {
         return (tag && tag !== "0x0" && tag !== "0x") ?
             abi.int256_to_short_string(abi.unfork(tag, true)) : null;
     } catch (exc) {
-        if (options.debug.broadcast) console.error(exc, tag);
+        if (this.options.debug.broadcast) console.error(exc, tag);
         return null;
     }
 };
@@ -38595,7 +38595,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         try {
             info.description = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - parseInt(rawInfo[index])));
         } catch (exc) {
-            if (options.debug.broadcast) console.error(exc, rawInfo);
+            if (this.options.debug.broadcast) console.error(exc, rawInfo);
             info.description = "";
         }
 
