@@ -24,6 +24,7 @@ function Augur() {
     var self = this;
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
+    this.abi = abi;
 
     this.connection = null;
     this.coinbase = null;
