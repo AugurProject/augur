@@ -242,16 +242,15 @@ module.exports = function () {
 
             // parse and serialize transaction parameters
             tx = clone(itx);
-            if (tx.params !== undefined) {
-                if (tx.params.constructor === Array) {
-                    for (var i = 0, len = tx.params.length; i < len; ++i) {
-                        if (tx.params[i] !== undefined &&
-                            tx.params[i].constructor === BigNumber) {
-                            tx.params[i] = abi.hex(tx.params[i]);
-                        }
-                    }
-                } else if (tx.params.constructor === BigNumber) {
-                    tx.params = abi.hex(tx.params);
+            if (tx.params === undefined || tx.params === null) {
+                tx.params = [];
+            } else if (tx.params.constructor !== Array) {
+                tx.params = [tx.params];
+            }
+            for (var j = 0; j < tx.params.length; ++j) {
+                if (tx.params[j] !== undefined && tx.params[j] !== null &&
+                    tx.params[j].constructor === Number) {
+                    tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
                 }
             }
             if (tx.to) tx.to = abi.prefix_hex(tx.to);
