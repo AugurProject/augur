@@ -1,5 +1,5 @@
 import React from 'react'
-import Disqus from 'disqus'
+import DISQUS from 'disqus'
 
 module.exports = React.createClass({
     propTypes: {
@@ -22,7 +22,7 @@ module.exports = React.createClass({
     configureDisqus(){
         let p = this.props
 
-        Disqus.reset({
+        DISQUS.reset({
             reload: true,
             config: function(){
                 this.page.identifier = p.identifier
