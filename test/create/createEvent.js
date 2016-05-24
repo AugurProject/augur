@@ -37,7 +37,8 @@ describe("Integration tests", function () {
             var events = [];
             it.each(_.range(0, numEvents), "create event %s", ['element'], function (element, next) {
                 this.timeout(tools.TIMEOUT);
-                var description = Math.random().toString(36).substring(4);
+                var description = "€" + Math.random().toString(36).substring(4);
+                console.log("description:", description);
                 augur.createEvent({
                     branchId: branch,
                     description: description,
@@ -47,10 +48,12 @@ describe("Integration tests", function () {
                     numOutcomes: numOutcomes,
                     resolution: resolution,
                     onSent: function (r) {
+                        console.log("sent:", r);
                         assert(r.txHash);
                         assert(r.callReturn);
                     },
                     onSuccess: function (r) {
+                        console.log("success:", r);
                         var eventID = r.callReturn;
                         assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
                         assert.strictEqual(augur.getDescription(eventID), description);

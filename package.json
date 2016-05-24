@@ -1,18 +1,18 @@
 {
   "name": "augur.js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
-    "test": "scripts/runtests.sh --core --compat --create --markets --client",
+    "test": "scripts/runtests.sh --core --create --markets --client",
     "lint": "scripts/runtests.sh",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "testnet": "scripts/runtests.sh --core --compat --markets --client",
+    "testnet": "scripts/runtests.sh --core --markets --client",
     "setup": "scripts/setup.js --reset --faucets"
   },
   "dependencies": {
     "async": "^1.3.0",
-    "augur-abi": "^0.3.0",
+    "augur-abi": "^0.3.1",
     "augur-contracts": "AugurProject/augur-contracts",
     "bignumber.js": "^2.0.7",
     "browser-request": "^0.3.3",
@@ -22,7 +22,7 @@
     "ethereumjs-connect": "^0.2.3",
     "ethereumjs-tx": "^1.1.1",
     "ethereumjs-util": "^4.3.0",
-    "ethrpc": "^0.7.5",
+    "ethrpc": "^0.7.6",
     "keythereum": "^0.2.6",
     "locks": "^0.2.2",
     "node-localstorage": "^1.1.2",

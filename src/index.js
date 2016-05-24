@@ -1353,8 +1353,13 @@ Augur.prototype.parseTradeInfo = function (trade) {
     };
 };
 Augur.prototype.decodeTag = function (tag) {
-    return (tag && tag !== "0x0" && tag !== "0x") ?
-        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+    try {
+        return (tag && tag !== "0x0" && tag !== "0x") ?
+            abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+    } catch (exc) {
+        if (options.debug.broadcast) console.error(exc, tag);
+        return null;
+    }
 };
 Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var EVENTS_FIELDS = 6;
@@ -1408,7 +1413,6 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         };
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
-        // var traderFields = info.numOutcomes + 1;
 
         // organize trader info
         for (var i = 0; i < info.numOutcomes; ++i) {
@@ -1461,10 +1465,13 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         );
         index += WINNING_OUTCOMES_FIELDS;
 
-        // convert description byte array to ASCII
-        info.description = String.fromCharCode.apply(null, rawInfo.slice(
-            rawInfo.length - parseInt(rawInfo[index])
-        ));
+        // convert description byte array to unicode
+        try {
+            info.description = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - parseInt(rawInfo[index])));
+        } catch (exc) {
+            if (options.debug.broadcast) console.error(exc, rawInfo);
+            info.description = "";
+        }
 
         // market types: binary, categorical, scalar, combinatorial
         if (info.numEvents === 1) {
@@ -1752,7 +1759,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.trades,
-        topics: [this.rpc.sha3(constants.LOGS.log_price)], //, abi.prefix_hex(abi.pad_left(abi.strip_0x(account))), null, null],
+        topics: [this.rpc.sha3(constants.LOGS.log_price)],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {

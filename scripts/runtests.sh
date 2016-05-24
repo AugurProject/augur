@@ -26,7 +26,6 @@ core=0
 create=0
 markets=0
 consensus=0
-compat=0
 client=0
 
 for arg in "$@"; do
@@ -40,12 +39,11 @@ for arg in "$@"; do
         "--consensus") set -- "$@" "-s" ;;
         "--client") set -- "$@" "-l" ;;
         "--spec") set -- "$@" "-k" ;;
-        "--compat") set -- "$@" "-a" ;;
         *) set -- "$@" "$arg"
     esac
 done
 OPTIND=1
-while getopts "gvocrmsalk" opt; do
+while getopts "gvocrmslk" opt; do
     case "$opt" in
         g) gospel="--gospel" ;;
         v) coverage=1 ;;
@@ -53,7 +51,6 @@ while getopts "gvocrmsalk" opt; do
         r) create=1 ;;
         m) markets=1 ;;
         s) consensus=1 ;;
-        a) compat=1 ;;
         l) client=1 ;;
         k) reporter="spec" ;;
     esac
@@ -69,7 +66,6 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${core}" == "1" ] && runtest "core"
 [ "${client}" == "1" ] && runtest "client"
 [ "${consensus}" == "1" ] && runtest "consensus"
-[ "${compat}" == "1" ] && runtest "compat"
 
 echo -e " ${TEAL}jshint${NC}\n"
 

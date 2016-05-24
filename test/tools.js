@@ -24,6 +24,32 @@ module.exports = {
     // unit test timeout
     TIMEOUT: 600000,
 
+    chunk32: function (string, stride, offset) {
+        var elements, chunked, position;
+        if (string.length >= 66) {
+            stride = stride || 64;
+            if (offset) {
+                elements = Math.ceil(string.slice(offset).length / stride) + 1;
+            } else {
+                elements = Math.ceil(string.length / stride);
+            }
+            chunked = new Array(elements);
+            position = 0;
+            for (var i = 0; i < elements; ++i) {
+                if (offset && i === 0) {
+                    chunked[i] = string.slice(position, position + offset);
+                    position += offset;
+                } else {
+                    chunked[i] = string.slice(position, position + stride);
+                    position += stride;
+                }
+            }
+            return chunked;
+        } else {
+            return string;
+        }
+    },
+
     pp: function (obj, indent) {
         var o = this.copy(obj);
         for (var k in o) {
