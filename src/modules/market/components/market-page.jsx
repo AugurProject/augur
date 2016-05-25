@@ -6,7 +6,8 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-// import BidsAsks from '../../bids-asks/components/bids-asks';
+import Disqus from '../../common/components/disqus';
+import Chart from '../../market/components/chart';
 
 export default class MarketPage extends Component {
 	static propTypes = {
@@ -71,12 +72,21 @@ export default class MarketPage extends Component {
 					);
 				}
 
-				// nodes.push(
-				// 	<BidsAsks
-				// 		key="order-books"
-				// 		market={p.market}
-				// 	/>
-				// );
+				// Discussion
+				nodes.push(
+					<Disqus
+						identifier={ p.market.id }
+						title={ p.market.description }
+					/>
+				);
+
+				// chart
+				nodes.push(
+					<Chart
+						key="chart"
+						series={ p.market.priceTimeSeries }
+					/>
+				);
 			}
 		}
 
