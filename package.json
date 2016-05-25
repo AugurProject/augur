@@ -16,6 +16,7 @@
     "start": "http-server ./demo -c-1 -p $PORT",
     "test": "NODE_ENV=test mocha",
     "test:watch": "npm test -- --watch",
+		"hello": "echo HELLO WORLD LOLOLOLOL",
     "_____": "",
     "watch": "clear; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development npm run -s watch:all",
     "build": "clear; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",

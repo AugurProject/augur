@@ -1,7 +1,15 @@
 import {assert} from 'chai';
-import selectors from '../src/selectors';
-
+import * as cp from 'child_process';
+import path from 'path';
+const selectorsLocation =
+process.env.selectorsLoc ? process.env.selectorsLoc : '../src/selectors';
+const selectors = require(selectorsLocation);
+console.log(selectorsLocation);
 describe(`Selector shape tests. Selector...`, () => {
+
+	// let test = cp.fork(`${__dirname}`);
+	console.log(`${path.join(__dirname, '../src')}`);
+	// console.log(test);
 	// update: [Function: update],
 	it(`should contain a update function`, () => {
 		let actual = selectors.update;
