@@ -10,6 +10,11 @@ import loginAccount from './auth/selectors/login-account-test';
 import links from './link/selectors/links-test';
 import authForm from './auth/selectors/auth-form-test';
 import marketsHeader from './markets/selectors/markets-header-test';
+import markets from './markets/selectors/markets-test';
+import allMarkets from './markets/selectors/all-markets-test';
+import favoriteMarkets from './markets/selectors/markets-favorite-test';
+import filteredMarkets from './markets/selectors/markets-filtered-test';
+import unpaginatedMarkets from './markets/selectors/markets-unpaginated-test';
 
 let selectors;
 describe('ui tests', () => {
@@ -25,7 +30,12 @@ describe('ui tests', () => {
 		'./modules/auth/selectors/login-account': loginAccount,
 		'./modules/link/selectors/links': links,
 		'./modules/auth/selectors/auth-form': authForm,
-		'./modules/markets/selectors/markets-header': marketsHeader
+		'./modules/markets/selectors/markets-header': marketsHeader,
+		'./modules/markets/selectors/markets': markets,
+		'./modules/markets/selectors/markets-all': allMarkets,
+		'./modules/markets/selectors/markets-favorite': favoriteMarkets,
+		'./modules/markets/selectors/markets-filtered': filteredMarkets,
+		'./modules/markets/selectors/markets-unpaginated': unpaginatedMarkets
 	});
 
 	it(`should do some stuff`, () => {
@@ -34,6 +44,11 @@ describe('ui tests', () => {
 		console.log(selectors.links);
 		console.log(selectors.authForm);
 		console.log(selectors.marketsHeader);
+		console.log(selectors.markets);
+		console.log(selectors.allMarkets);
+		console.log(selectors.favoriteMarkets);
+		console.log(selectors.filteredMarkets);
+		console.log(selectors.unpaginatedMarkets);
 	});
 });
 

@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let allMarkets;
 describe(`modules/markets/selectors/markets-all.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -90,6 +91,8 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 		'../../../store': store
 	});
 
+	allMarkets = selector.default;
+
 	it(`should return the correct selectedMarket function`, () => {
 		test = selector.default();
 		out = [{
@@ -125,3 +128,5 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 		assert.deepEqual(test, out, `Didn't produce all markets as expected and sorted`);
 	});
 });
+
+export default allMarkets;

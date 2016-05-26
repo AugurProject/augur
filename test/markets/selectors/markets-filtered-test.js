@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 // import * as selector from '../../../src/modules/markets/selectors/markets-filtered';
+let filteredMarkets;
 
 describe(`modules/markets/selectors/markets-filtered.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -40,6 +41,8 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
+	filteredMarkets = selector.default;
+
 	it(`should be able to select the correct filtered markets`, () => {
 		test = selector.default();
 
@@ -67,3 +70,5 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 	});
 
 });
+
+export default filteredMarkets;
