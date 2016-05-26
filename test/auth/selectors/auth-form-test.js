@@ -13,6 +13,8 @@ import {
 	USERNAME_TAKEN
 } from '../../../src/modules/auth/constants/form-errors';
 
+let authForm;
+
 describe(`modules/auth/selectors/auth-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -24,6 +26,8 @@ describe(`modules/auth/selectors/auth-form.js`, () => {
 	selector = proxyquire('../../../src/modules/auth/selectors/auth-form', {
 		'../../../store': store
 	});
+
+	authForm = selector.default;
 
 	it(`should select the correct auth form`, () => {
 		out = {
@@ -137,3 +141,5 @@ describe(`modules/auth/selectors/auth-form.js`, () => {
 	});
 
 });
+
+export default authForm;

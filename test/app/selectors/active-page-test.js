@@ -11,3 +11,5 @@ describe(`modules/app/selectors/active-page.js`, () => {
 	});
 
 });
+let activePage = selector;
+export default activePage;

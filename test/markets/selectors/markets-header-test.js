@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let marketsHeader;
 describe(`modules/markets/selectors/markets-header.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -36,6 +37,8 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 		'../../markets/actions/update-selected-markets-header': mockHeader
 	});
 
+	marketsHeader = selector.default;
+
 	it(`should select the correct Markets Header`, () => {
 		test = selector.default();
 		out = [{
@@ -60,3 +63,5 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects from onclick events`);
 	});
 });
+
+export default marketsHeader;

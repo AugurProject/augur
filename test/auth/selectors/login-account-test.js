@@ -6,6 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let loginAccount;
 describe(`modules/auth/selectors/login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -69,8 +70,11 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 		'../../../store': store
 	});
 
+	loginAccount = selector.default;
 	it(`should login an account`, () => {
-
+		
 		assert.deepEqual(selector.default(), out, `Didn't properly update account information`);
 	});
 });
+
+export default loginAccount;

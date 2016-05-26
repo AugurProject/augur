@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 // import selector from '../../../src/modules/link/selectors/links';
-
+let links;
 describe(`modules/link/selectors/links.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -18,6 +18,8 @@ describe(`modules/link/selectors/links.js`, () => {
 	selector = proxyquire('../../../src/modules/link/selectors/links', {
 		'../../../store': store
 	});
+
+	links = selector.default;
 
 	beforeEach(() => {
 		store.clearActions();
@@ -91,3 +93,5 @@ describe(`modules/link/selectors/links.js`, () => {
 	});
 
 });
+
+export default links;
