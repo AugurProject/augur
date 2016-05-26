@@ -21,9 +21,7 @@ describe(`seletors.keywords tests:`, () => {
 		});
 	} else {
 		console.log(`
-	*******************************************************************
-	| - selectors.keywords isn't defined. skipping keywords tests.    |
-	*******************************************************************
-	`);
+- selectors.keywords isn't defined.
+	- skipping keywords tests.`);
 	}
 });

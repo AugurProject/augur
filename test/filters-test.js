@@ -115,10 +115,8 @@ describe(`selector.filters tests:`, () => {
 		});
 	} else {
 		console.log(`
-	*****************************************************************
-	| - selectors.filters isn't defined. skipping filters tests.    |
-	*****************************************************************
-	`);
+- selectors.filters isn't defined.
+	- skipping filters tests.`);
 	}
 
 });

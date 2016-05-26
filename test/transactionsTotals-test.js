@@ -16,10 +16,7 @@ describe(`selectors.transactionsTotals tests:`, () => {
 		});
 	} else {
 		console.log(`
-	****************************************************************
-	selectors.transactionsTotals isn't defined.
-	skipping transactionsTotals tests.
-	****************************************************************
-	`);
+- selectors.transactionsTotals isn't defined.
+	- skipping transactionsTotals tests.`);
 	}
 });

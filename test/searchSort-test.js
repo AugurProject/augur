@@ -42,9 +42,7 @@ describe(`selectors.searchSort tests:`, () => {
 		});
 	} else {
 		console.log(`
-	***********************************************************************
-	selectors.searchSort isn't defined. skipping searchSort tests.
-	***********************************************************************
-	`);
+- selectors.searchSort isn't defined.
+	- skipping searchSort tests.`);
 	}
 });

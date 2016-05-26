@@ -14,9 +14,7 @@ describe(`selector.activePage tests:`, () => {
 		});
 	} else {
 		console.log(`
-	***********************************************************************
-	| - selectors.activePage isn't defined. skipping activePage tests.    |
-	***********************************************************************
-	`);
+- selectors.activePage isn't defined.
+	- skipping activePage tests.`);
 	}
 });

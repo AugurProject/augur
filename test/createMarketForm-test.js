@@ -14,10 +14,7 @@ describe(`Selector shape tests. Selector...`, () => {
 		});
 	} else {
 		console.log(`
-	**************************************************************
-	selectors.createMarketForm isn't defined.
-	skipping createMarketForm tests.
-	**************************************************************
-	`);
+- selectors.createMarketForm isn't defined.
+	- skipping createMarketForm tests.`);
 	}
 });

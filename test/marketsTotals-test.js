@@ -89,9 +89,7 @@ describe(`selectors.marketsTotals tests:`, () => {
 		});
 	} else {
 		console.log(`
-	***********************************************************************
-	selectors.marketsTotals isn't defined. skipping marketsTotals tests.
-	***********************************************************************
-	`);
+- selectors.marketsTotals isn't defined.
+	- skipping marketsTotals tests.`);
 	}
 });

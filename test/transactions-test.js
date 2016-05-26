@@ -14,9 +14,7 @@ describe(`selectors.transactions tests:`, () => {
 		});
 	} else {
 		console.log(`
-	***************************************************************************
-	| - selectors.transactions isn't defined. skipping transactions tests.    |
-	***************************************************************************
-	`);
+- selectors.transactions isn't defined.
+	- skipping transactions tests.`);
 	}
 });

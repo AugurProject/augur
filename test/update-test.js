@@ -15,9 +15,7 @@ describe(`selectors.update tests:`, () => {
 		});
 	} else {
 		console.log(`
-	*******************************************************
-	| - selectors.update isn't defined. skipping test.    |
-	*******************************************************
-	`);
+- selectors.update isn't defined.
+	- skipping update test.`);
 	}
 });

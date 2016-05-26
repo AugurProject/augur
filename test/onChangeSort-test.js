@@ -14,9 +14,7 @@ describe(`selectors.onChangeSort`, () => {
 		});
 	} else {
 		console.log(`
-	************************************************************************
-	| - selectors.onChangeSort isn't defined. skipping onChangeSort tests. |
-	************************************************************************
-	`);
+- selectors.onChangeSort isn't defined.
+	- skipping onChangeSort tests.`);
 	}
 });

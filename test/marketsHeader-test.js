@@ -14,9 +14,7 @@ describe(`selectors.marketsHeader tests:`, () => {
 		});
 	} else {
 		console.log(`
-	***********************************************************************
-	selectors.marketsHeader isn't defined. skipping marketsHeader tests.
-	***********************************************************************
-	`);
+- selectors.marketsHeader isn't defined.
+	- skipping marketsHeader tests.`);
 	}
 });

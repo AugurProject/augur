@@ -50,9 +50,7 @@ describe(`selectors.pagination tests:`, () => {
 		});
 	} else {
 		console.log(`
-	********************************************************************
-	| - selectors.pagination isn't defined. skipping pagination tests. |
-	********************************************************************
-	`);
+- selectors.pagination isn't defined.
+	- skipping pagination tests.`);
 	}
 });

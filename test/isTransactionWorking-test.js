@@ -14,10 +14,7 @@ describe(`selectors.isTransactionsWorking tests:`, () => {
 		});
 	} else {
 		console.log(`
-	***********************************************************************
-	selectors.isTransactionsWorking isn't defined.
-	skipping isTransactionsWorking tests.
-	***********************************************************************
-	`);
+- selectors.isTransactionsWorking isn't defined.
+	- skipping isTransactionsWorking tests.`);
 	}
 });

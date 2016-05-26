@@ -181,9 +181,7 @@ describe(`selectors.markets[0] (single market) tests:`, () => {
 
 	} else {
 		console.log(`
-	************************************************************************
-	| - selectors.markets[market] isn't defined. skipping market tests.    |
-	************************************************************************
-	`);
+- selectors.markets[market] isn't defined.
+	- skipping market tests.`);
 	}
 });

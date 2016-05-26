@@ -14,9 +14,7 @@ describe(`selectors.authForm tests:`, () => {
 		});
 	} else {
 		console.log(`
-	*******************************************************************
-	| - selectors.authForm isn't defined. skipping authForm tests.    |
-	*******************************************************************
-	`);
+- selectors.authForm isn't defined.
+	- skipping authForm tests.`);
 	}
 });

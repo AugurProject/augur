@@ -77,9 +77,7 @@ describe(`selectors.links tests:`, () => {
 		});
 	} else {
 		console.log(`
-	*************************************************************
-	| - selectors.links isn't defined. skipping links tests.    |
-	*************************************************************
-	`);
+- selectors.links isn't defined.
+	- skipping links tests.`);
 	}
 });

@@ -15,9 +15,7 @@ describe(`selectors.markets tests:`, () => {
 		});
 	} else {
 		console.log(`
-	****************************************************************
-	| - selectors.markets isn't defined. skipping markets test.    |
-	****************************************************************
-	`);
+- selectors.markets isn't defined.
+	- skipping markets test.`);
 	}
 });

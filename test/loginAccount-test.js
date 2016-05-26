@@ -106,8 +106,7 @@ describe(`selectors.loginAccount tests:`, () => {
 		});
 	} else {
 		console.log(`
-	*************************************************************************
-	selectors.loginAccount isn't defined. Skipping loginAccount test.
-	*************************************************************************`);
+- selectors.loginAccount isn't defined.
+	- skipping loginAccount test.`);
 	}
 });
