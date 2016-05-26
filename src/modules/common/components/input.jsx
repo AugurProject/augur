@@ -20,7 +20,7 @@ module.exports = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-    	if (nextProps.value && nextProps.value !== this.state.value && nextProps.value !== this.props.value) {
+    	if ((nextProps.value || nextProps.value === 0) && nextProps.value !== this.state.value && nextProps.value !== this.props.value) {
     		this.setState({ value: nextProps.value });
     	}
     },
