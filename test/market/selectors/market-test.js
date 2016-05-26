@@ -175,7 +175,11 @@ describe(`modules/market/selectors/market.js`, () => {
 			isBinary: false,
 			isCategorical: false,
 			isScalar: true,
-			endBlock: NaN,
+			endDate: {
+				"formatted": "Jan 1, 3000",
+				"full": "3000-01-01T00:00:00.000Z",
+				"value": new Date('01/01/3000')
+			},
 			isOpen: false,
 			isExpired: true,
 			isFavorite: true,

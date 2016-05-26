@@ -35,7 +35,7 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 		let actions = [{
 			type: 'UPDATE_SELECTED_SORT',
 			value: {
-				prop: 'endBlock',
+				prop: 'endDate',
 				isDesc: false
 			}
 		}];
@@ -50,7 +50,7 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 				isDesc: true
 			}, {
 				label: 'Soonest Expiry',
-				value: 'endBlock',
+				value: 'endDate',
 				isDesc: false
 			}, {
 				label: 'Most Volume',
@@ -64,7 +64,7 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 			onChangeSort: test.onChangeSort
 		};
 
-		test.onChangeSort('endBlock', false);
+		test.onChangeSort('endDate', false);
 
 		assert(mockSort.updateSelectedSort.calledOnce, `updateSelectedSort wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), actions, `Didn't dispatch the expected action object when onChangeSort was called from output selector object`);
