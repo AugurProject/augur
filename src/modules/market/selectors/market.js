@@ -59,6 +59,48 @@ export default function () {
 	return selectMarket(selectedMarketID);
 }
 
+export const selectMarket = (marketID) => {
+	const { marketsData, favorites,
+					reports, outcomes,
+					accountTrades, tradesInProgress,
+					blockchain, priceHistory } = store.getState();
+
+	if (!marketID || !marketsData || !marketsData[marketID] ||
+		!marketsData[marketID].description || !marketsData[marketID].eventID) {
+		return {};
+	}
+
+	const endDate = new Date(marketsData[marketID].endDate);
+
+	return assembleMarket(
+		marketID,
+		marketsData[marketID],
+		priceHistory[marketID],
+		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+
+		!!favorites[marketID],
+		outcomes[marketID],
+
+		reports[marketsData[marketID].eventID],
+		accountTrades[marketID],
+		tradesInProgress[marketID],
+
+		// the reason we pass in the date parts broken up like this, is because otherwise the new date object will always trigger re-assembly, and never hit the memoization cache
+		endDate.getFullYear(),
+		endDate.getMonth(),
+		endDate.getDate(),
+
+		blockchain && blockchain.isReportConfirmationPhase,
+		store.dispatch);
+};
+
+export const selectMarketFromEventID = (eventID) => {
+	const { marketsData } = store.getState();
+	return selectMarket(Object.keys(marketsData).find(marketID =>
+		marketsData[marketID].eventID === eventID)
+	);
+};
+
 export const assembleMarket = memoizerific(1000)((
 		marketID,
 		marketData,
@@ -101,10 +143,7 @@ export const assembleMarket = memoizerific(1000)((
 	default:
 		break;
 	}
-
-	o.endBlock = parseInt(marketData.endDate, 10);
-	o.endDate = endDateYear && endDateMonth && endDateDay
-			&& formatDate(new Date(endDateYear, endDateMonth, endDateDay));
+	o.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	o.isOpen = isOpen;
 	o.isExpired = !isOpen;
 
@@ -115,15 +154,13 @@ export const assembleMarket = memoizerific(1000)((
 
 	o.isRequiredToReportByAccount = !!marketReport;
 	// was the user chosen to report on this market
-	o.isPendingReport = o.isRequiredToReportByAccount && !marketReport.reportHash
-	&& !isReportConfirmationPhase;
+	o.isPendingReport = o.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase;
 	// account is required to report on this unreported market during reporting phase
 	o.isReportSubmitted = o.isRequiredToReportByAccount && !!marketReport.reportHash;
 	// the user submitted a report that is not yet confirmed (reportHash === true)
 	o.isReported = o.isReportSubmitted && !!marketReport.reportHash.length;
 	// the user fully reported on this market (reportHash === [string])
-	o.isMissedReport = o.isRequiredToReportByAccount && !o.isReported
-		&& !o.isReportSubmitted && isReportConfirmationPhase;
+	o.isMissedReport = o.isRequiredToReportByAccount && !o.isReported && !o.isReportSubmitted && isReportConfirmationPhase;
 	// the user submitted a report that is not yet confirmed
 	o.isMissedOrReported = o.isMissedReport || o.isReported;
 
@@ -208,41 +245,3 @@ export const assembleMarket = memoizerific(1000)((
 
 	return o;
 });
-
-export const selectMarket = (marketID) => {
-	const { marketsData, favorites,
-					reports, outcomes,
-					accountTrades, tradesInProgress,
-					blockchain, priceHistory } = store.getState();
-
-	if (!marketID || !marketsData || !marketsData[marketID] ||
-		!marketsData[marketID].description || !marketsData[marketID].eventID) {
-		return {};
-	}
-
-	const endDate = new Date(marketsData[marketID].endDate);
-
-	return assembleMarket(
-		marketID,
-		marketsData[marketID],
-		priceHistory[marketID],
-		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
-
-		!!favorites[marketID],
-		outcomes[marketID],
-
-		reports[marketsData[marketID].eventID],
-		accountTrades[marketID],
-		tradesInProgress[marketID],
-		endDate.getFullYear(),
-		endDate.getMonth(),
-		endDate.getDate(),
-		blockchain && blockchain.isReportConfirmationPhase,
-		store.dispatch);
-};
-
-export const selectMarketFromEventID = (eventID) => {
-	const { marketsData } = store.getState();
-	return selectMarket(Object.keys(marketsData).find(marketID =>
-		marketsData[marketID].eventID === eventID));
-};
