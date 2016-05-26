@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-module.exports = React.createClass({
+const ValueDenomination = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
 		value: React.PropTypes.number,
@@ -27,3 +27,5 @@ module.exports = React.createClass({
 		);
 	}
 });
+
+module.exports = ValueDenomination;
