@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -60,6 +61,8 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		'../../create-market/selectors/form-steps/step-4': step4,
 		'../../create-market/selectors/form-steps/step-5': step5
 	});
+
+	createMarketForm = selector.default;
 
 	it(`should init the formState correctly`, () => {
 		test = selector.default();
@@ -166,3 +169,5 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	});
 
 });
+
+export default createMarketForm;

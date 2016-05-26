@@ -10,6 +10,7 @@ import {
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
 
+let transactionsTotals;
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	let test, out, mockSelector, selectors;
@@ -33,6 +34,8 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 	mockSelector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
 		'../../../selectors': selectors
 	});
+
+	transactionsTotals = selector.default;
 
 	it(`should return the transaction totals for a blank state`, () => {
 		test = selector.default();
@@ -64,3 +67,5 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 		assert.deepEqual(test, out, `Didn't return total info on transactions`);
 	})
 });
+
+export default transactionsTotals;

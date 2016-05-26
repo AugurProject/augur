@@ -6,6 +6,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let transactions;
+
 describe(`modules/transactions/selectors/transactions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -30,6 +32,8 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 	selector = proxyquire('../../../src/modules/transactions/selectors/transactions', {
 		'../../../store': store
 	});
+
+	transactions = selector.default;
 
 	it(`should return data on all transactions`, () => {
 		test = selector.default();
@@ -87,3 +91,5 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 	});
 
 });
+
+export default transactions;

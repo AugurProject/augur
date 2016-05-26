@@ -21,6 +21,9 @@ import market from './market/selectors/market-test';
 import filters from './markets/selectors/filters-test';
 import searchSort from './markets/selectors/search-sort-test';
 import keywords from './markets/selectors/keywords-test';
+import transactions from './transactions/selectors/transactions-test';
+import transactionsTotals from './transactions/selectors/transactions-totals-test';
+import createMarketForm from './create-market/selectors/create-market-form-test';
 
 let selectors;
 describe('ui tests', () => {
@@ -47,7 +50,10 @@ describe('ui tests', () => {
 		'./modules/market/selectors/market': market,
 		'./modules/markets/selectors/filters': filters,
 		'./modules/markets/selectors/search-sort': searchSort,
-		'./modules/markets/selectors/keywords': keywords
+		'./modules/markets/selectors/keywords': keywords,
+		'./modules/transactions/selectors/transactions': transactions,
+		'./modules/transactions/selectors/transactions-totals': transactionsTotals,
+		'./modules/create-market/selectors/create-market-form': createMarketForm
 	});
 
 	it(`should do some stuff`, () => {
@@ -69,6 +75,8 @@ describe('ui tests', () => {
 		console.log(selectors.keywords);
 		console.log(selectors.transactions);
 		console.log(selectors.transactionsTotals);
+		// isTransactionsWorking is a boolean so we don't need to bring in the test
+		// version
 		console.log(selectors.isTransactionsWorking);
 		console.log(selectors.createMarketForm);
 	});
