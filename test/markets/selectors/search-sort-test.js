@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let searchSort;
 describe(`modules/markets/selectors/search-sort.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -29,6 +30,8 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 		'../../../store': store,
 		'../../markets/actions/update-selected-sort': mockSort
 	});
+
+	searchSort = selector.default;
 
 	it(`should return information about the sorting filters in search`, () => {
 		test = selector.default();
@@ -71,3 +74,5 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 		assert.deepEqual(test, out, `Didn't produce the expected output object`);
 	});
 });
+
+export default searchSort;

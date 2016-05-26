@@ -15,6 +15,12 @@ import allMarkets from './markets/selectors/all-markets-test';
 import favoriteMarkets from './markets/selectors/markets-favorite-test';
 import filteredMarkets from './markets/selectors/markets-filtered-test';
 import unpaginatedMarkets from './markets/selectors/markets-unpaginated-test';
+import marketsTotals from './markets/selectors/markets-totals-test';
+import pagination from './markets/selectors/pagination-test';
+import market from './market/selectors/market-test';
+import filters from './markets/selectors/filters-test';
+import searchSort from './markets/selectors/search-sort-test';
+import keywords from './markets/selectors/keywords-test';
 
 let selectors;
 describe('ui tests', () => {
@@ -35,7 +41,13 @@ describe('ui tests', () => {
 		'./modules/markets/selectors/markets-all': allMarkets,
 		'./modules/markets/selectors/markets-favorite': favoriteMarkets,
 		'./modules/markets/selectors/markets-filtered': filteredMarkets,
-		'./modules/markets/selectors/markets-unpaginated': unpaginatedMarkets
+		'./modules/markets/selectors/markets-unpaginated': unpaginatedMarkets,
+		'./modules/markets/selectors/markets-totals': marketsTotals,
+		'./modules/markets/selectors/pagination': pagination,
+		'./modules/market/selectors/market': market,
+		'./modules/markets/selectors/filters': filters,
+		'./modules/markets/selectors/search-sort': searchSort,
+		'./modules/markets/selectors/keywords': keywords
 	});
 
 	it(`should do some stuff`, () => {
@@ -49,6 +61,16 @@ describe('ui tests', () => {
 		console.log(selectors.favoriteMarkets);
 		console.log(selectors.filteredMarkets);
 		console.log(selectors.unpaginatedMarkets);
+		console.log(selectors.marketsTotals);
+		console.log(selectors.pagination);
+		console.log(selectors.market);
+		console.log(selectors.filters);
+		console.log(selectors.searchSort);
+		console.log(selectors.keywords);
+		console.log(selectors.transactions);
+		console.log(selectors.transactionsTotals);
+		console.log(selectors.isTransactionsWorking);
+		console.log(selectors.createMarketForm);
 	});
 });
 

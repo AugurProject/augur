@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let filters;
 describe(`modules/markets/selectors/filters.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -37,6 +38,8 @@ describe(`modules/markets/selectors/filters.js`, () => {
 		'../../markets/actions/toggle-filter': mockFilter,
 		'../../markets/actions/toggle-tag': mockTag
 	});
+
+	filters = selector.default;
 
 	it(`should adjust and return filters props`, () => {
 		test = selector.default();
@@ -119,3 +122,5 @@ describe(`modules/markets/selectors/filters.js`, () => {
 		assert.deepEqual(store.getActions(), outActions, `Didn't dispatch the expected action objects`);
 	});
 });
+
+export default filters;

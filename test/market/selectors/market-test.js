@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let market;
 describe(`modules/market/selectors/market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -133,6 +134,8 @@ describe(`modules/market/selectors/market.js`, () => {
 		'../../market/selectors/price-time-series': mockPriceTime,
 		'../../positions/selectors/position': mockPosition
 	});
+
+	market = selector.default;
 
 	beforeEach(() => {
 		store.clearActions();
@@ -282,3 +285,5 @@ describe(`modules/market/selectors/market.js`, () => {
 		assert.deepEqual(actual, expected, `Didn't produce the expected object`);
 	});
 });
+
+export default market;

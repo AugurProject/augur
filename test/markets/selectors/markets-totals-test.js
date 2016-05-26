@@ -7,6 +7,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let marketsTotals;
+
 describe(`modules/markets/selectors/markets-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -145,6 +147,8 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		'../../positions/selectors/positions-summary': mockPositions
 	});
 
+	marketsTotals = selector.default;
+
 	it(`should return the market totals for selected market`, () => {
 		test = selector.default();
 		out = {
@@ -166,3 +170,5 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		assert.deepEqual(test, out, `Didn't output the expected Totals`);
 	});
 });
+
+export default marketsTotals;
