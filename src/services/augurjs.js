@@ -336,6 +336,10 @@ ex.get_trade_ids = function (marketID, cb) {
 	augur.get_trade_ids(marketID, cb);
 };
 
+ex.get_trade = function (orderID, cb) {
+	augur.get_trade(orderID, cb);
+};
+
 ex.createMarket = function createMarket(branchID, newMarket, cb) {
 	augur.createSingleEventMarket({
 		branchId: branchID,

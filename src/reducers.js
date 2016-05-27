@@ -14,6 +14,7 @@ import reports from './modules/reports/reducers/reports';
 
 import outcomes from './modules/markets/reducers/outcomes';
 import orderIds from './modules/bids-asks/reducers/order-ids';
+import bidsAsks from './modules/bids-asks/reducers/bids-asks';
 import accountTrades from './modules/positions/reducers/account-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
@@ -55,6 +56,7 @@ module.exports = {
 
 	outcomes,
 	orderIds,
+	bidsAsks,
 	accountTrades,
 	transactionsData
 };

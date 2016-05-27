@@ -3,8 +3,8 @@ import {
 } from 'chai';
 import testState from '../../testState';
 import {
-	UPDATE_BIDSASKS_DATA
-} from '../../../src/modules/bids-asks/actions/update-bids-asks';
+	UPDATE_ORDER
+} from '../../../src/modules/bids-asks/actions/update-order';
 import reducer from '../../../src/modules/bids-asks/reducers/bids-asks';
 
 describe(`modules/bids-asks/reducers/bids-asks.js`, () => {
@@ -13,7 +13,7 @@ describe(`modules/bids-asks/reducers/bids-asks.js`, () => {
 
 	it(`Should execute a bid for 100 shares`, () => {
 		action = {
-			type: UPDATE_BIDSASKS_DATA,
+			type: UPDATE_ORDER,
 			bidsAsksData: {
 				test: {
 					id: 'test',
@@ -73,7 +73,7 @@ describe(`modules/bids-asks/reducers/bids-asks.js`, () => {
 
 	it(`Should execute a ask for 100 shares`, () => {
 		action = {
-			type: UPDATE_BIDSASKS_DATA,
+			type: UPDATE_ORDER,
 			bidsAsksData: {
 				test: {
 					id: 'test',

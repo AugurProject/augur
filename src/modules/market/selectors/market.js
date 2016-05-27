@@ -54,6 +54,8 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
+import { selectOrderBook } from '../../bids-asks/selectors/select-order-book';
+
 export default function () {
 	const { selectedMarketID } = store.getState();
 	return selectMarket(selectedMarketID);
@@ -63,7 +65,7 @@ export const selectMarket = (marketID) => {
 	const { marketsData, favorites,
 					reports, outcomes,
 					accountTrades, tradesInProgress,
-					blockchain, priceHistory } = store.getState();
+					blockchain, priceHistory, orderIds, bidsAsks } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID] ||
 		!marketsData[marketID].description || !marketsData[marketID].eventID) {
@@ -91,6 +93,9 @@ export const selectMarket = (marketID) => {
 		endDate.getDate(),
 
 		blockchain && blockchain.isReportConfirmationPhase,
+
+		orderIds[marketID],
+		bidsAsks,
 		store.dispatch);
 };
 
@@ -115,6 +120,8 @@ export const assembleMarket = memoizerific(1000)((
 		endDateMonth,
 		endDateDay,
 		isReportConfirmationPhase,
+		marketOrderIds,
+		bidsAsks,
 		dispatch) => { // console.log('>>assembleMarket<<');
 	const o = {
 		...marketData,
@@ -216,6 +223,8 @@ export const assembleMarket = memoizerific(1000)((
 				positions.list.push(outcome);
 			}
 		}
+
+		outcome.orderBook = selectOrderBook(outcome.id, marketOrderIds, bidsAsks);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 

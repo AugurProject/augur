@@ -9,18 +9,18 @@ import { assembleMarket } from '../../market/selectors/market';
 export default function () {
 	const { marketsData, favorites, reports,
 					outcomes, accountTrades, tradesInProgress,
-					blockchain, selectedSort, priceHistory } = store.getState();
+					blockchain, selectedSort, priceHistory, orderIds, bidsAsks } = store.getState();
 
 	return selectMarkets(
 		marketsData, favorites, reports,
 		outcomes, accountTrades, tradesInProgress,
-		blockchain, selectedSort, priceHistory, store.dispatch
+		blockchain, selectedSort, priceHistory, orderIds, bidsAsks, store.dispatch
 	);
 }
 
 export const selectMarkets = memoizerific(1)((marketsData, favorites, reports,
 	outcomes, accountTrades, tradesInProgress,
-	blockchain, selectedSort, priceHistory, dispatch) => {
+	blockchain, selectedSort, priceHistory, orderIds, bidsAsks, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -86,12 +86,14 @@ console.time('selectMarkets');
 				endDate.getMonth(),
 				endDate.getDate(),
 				blockchain && blockchain.isReportConfirmationPhase,
+				orderIds[marketID],
+				bidsAsks,
 				dispatch);
 		})
 		.sort((a, b) => {
 			const aVal = cleanSortVal(a[selectedSort.prop]);
 			const bVal = cleanSortVal(b[selectedSort.prop]);
-console.log(aVal, bVal, bVal < aVal);
+
 			if (bVal < aVal) {
 				return selectedSort.isDesc ? -1 : 1;
 			}

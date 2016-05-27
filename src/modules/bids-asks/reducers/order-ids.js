@@ -2,7 +2,7 @@
  * Author: priecint
  */
 
-import { UPDATE_ORDER_IDS } from '../../bids-asks/actions/update-order-ids';
+import { UPDATE_ORDER_IDS } from '../../bids-asks/actions/update-order';
 
 /**
  * 
