@@ -5,12 +5,10 @@
 	text-align: center;
 	font-size: 1.7vmin;
 
-	.bids-asks-group {
-		flex: 2;
-		display: inline-block;
-		min-width: 33.5em;
+	.order-book {
+		flex: 0 1;
+		min-width: 400px;
 		margin: 0.25rem;
-		padding: 2rem;
 		background: white;
 		border-radius: 1px;
 
@@ -45,45 +43,31 @@
 
 		.bids {
 			display: inline-block;
-			padding-right: 2em;
+			padding-right: 0.5em;
 			vertical-align: top;
 			text-align: right;
 			border-right: 1px solid @color-border;
 
 			.bid {
-				> *:not(:first-child) {
-					display: inline-block;
-					min-width: 8em;
+				.value-denomination.price {
 					margin-left: 1em;
-				}
-				.price {
-					min-width: 4em;
 				}
 			}
 		}
 
 		.asks {
 			display: inline-block;
-			min-width: 8em;
-			padding-left: 2em;
+			padding-left: 0.5em;
 			vertical-align: top;
 			text-align: left;
 			border-left: 1px solid @color-border;
 
 			.ask {
-				> *:not(:last-child) {
-					display: inline-block;
-					min-width: 8em;
+				.value-denomination.price {
 					margin-right: 1em;
-				}
-				.price {
-					min-width: 4em;
 				}
 			}
 		}
 
-		.bid-ask {
-			min-width: 13em;
-		}
 	}
 }
