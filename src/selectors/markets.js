@@ -267,10 +267,10 @@ function makeMarkets(numMarkets = 25) {
 							require('../selectors').update();
 						}
 					},
-					orderBook: selectOrderBook(),
-					topBid: outcome.orderBook.bids[0].price,
-					topAsk: outcome.orderBook.asks[0].price
+					orderBook: selectOrderBook()
 				};
+				outcome.topBid = outcome.orderBook.bids[0].price;
+				outcome.topAsk = outcome.orderBook.asks[0].price;
 				return outcome;
 
 				function makeName(index) {
