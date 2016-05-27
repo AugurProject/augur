@@ -48253,13 +48253,14 @@ if (NODE_JS) {
     request = require("browser-request");
 }
 var async = require("async");
+var W3CWebSocket = (NODE_JS) ? require("websocket").w3cwebsocket : WebSocket;
 var BigNumber = require("bignumber.js");
 var keccak_256 = require("js-sha3").keccak_256;
 var contracts = require("augur-contracts");
 var abi = require("augur-abi");
 var errors = contracts.errors;
 
-BigNumber.config({ MODULO_MODE: BigNumber.EUCLID });
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function RPCError(err) {
     this.name = err.error || err.name;
@@ -48286,8 +48287,22 @@ module.exports = {
         logs: false
     },
 
-    // use IPC (only available on Node + Linux/OSX)
+    // use IPC (only available on Node)
     ipcpath: null,
+
+    // geth websocket endpoint
+    wsUrl: "wss://ws.augur.net",
+
+    // initial value 0
+    // if connection fails: -1
+    // if connection succeeds: 1
+    wsStatus: 0,
+
+    // null or WebSocketClient instance
+    wsClient: null,
+
+    // active websocket (if connected)
+    websocket: null,
 
     // local ethereum node address
     localnode: "http://127.0.0.1:8545",
@@ -48460,6 +48475,41 @@ module.exports = {
         return returns;
     },
 
+    wsRequests: {},
+
+    wsConnect: function (callback) {
+        var self = this;
+        this.websocket = new W3CWebSocket(this.wsUrl);
+        this.websocket.onerror = function () {
+            self.wsStatus = -1;
+        };
+        this.websocket.onclose = function () {
+            self.wsStatus = 0;
+        };
+        this.websocket.onmessage = function (msg) {
+            if (msg && msg.data && typeof msg.data === "string") {
+                var res = JSON.parse(msg.data);
+                if (res.id !== undefined && res.id !== null) {
+                    var req = self.wsRequests[res.id];
+                    delete self.wsRequests[res.id];
+                    self.parse(msg.data, req.returns, req.callback);
+                }
+            }
+        };
+        this.websocket.onopen = function () {
+            self.wsStatus = 1;
+            callback(true);
+        };
+    },
+
+    wsSend: function (command, returns, callback) {
+        console.log("broadcast:", JSON.stringify(command), returns);
+        this.wsRequests[command.id] = {returns: returns, callback: callback};
+        if (this.websocket.readyState === this.websocket.OPEN) {
+            this.websocket.send(JSON.stringify(command));
+        }
+    },
+
     postSync: function (rpcUrl, command, returns) {
         var timeout, req = null;
         if (command.timeout) {
@@ -48587,8 +48637,7 @@ module.exports = {
 
         // if we're on Node, use IPC if available and ipcpath is specified
         if (NODE_JS && this.ipcpath && command.method &&
-            command.method.indexOf("Filter") === -1)
-        {
+            command.method.indexOf("Filter") === -1) {
             var loopback = this.nodes.local && (
                 (this.nodes.local.indexOf("127.0.0.1") > -1 ||
                 this.nodes.local.indexOf("localhost") > -1)
@@ -48630,34 +48679,54 @@ module.exports = {
 
         // asynchronous request if callback exists
         if (isFunction(callback)) {
-            async.eachSeries(nodes, function (node, nextNode) {
-                if (!completed) {
-                    if (self.debug.logs) {
-                        console.log("nodes:", JSON.stringify(nodes));
-                        console.log("post", command.method, "to:", node);
-                    }
-                    self.post(node, command, returns, function (res) {
+
+            // use websocket if available
+            if (!this.wsUrl) this.wsStatus = -1;
+            switch (this.wsStatus) {
+
+            // [0] websocket closed / not connected: try to connect
+            case 0:
+                this.wsConnect(function (connected) {
+                    if (!connected) return self.broadcast(command, callback);
+                    self.wsSend(command, returns, callback);
+                });
+                break;
+
+            // [1] websocket connected
+            case 1:
+                this.wsSend(command, returns, callback);
+                break;
+
+            // [-1] websocket errored or unavailable: fallback to HTTP RPC
+            default:
+                async.eachSeries(nodes, function (node, nextNode) {
+                    if (!completed) {
                         if (self.debug.logs) {
-                            if (res && res.constructor === BigNumber) {
-                                console.log(node, "response:", abi.string(res));
-                            } else {
-                                console.log(node, "response:", res);
+                            console.log("nodes:", JSON.stringify(nodes));
+                            console.log("post", command.method, "to:", node);
+                        }
+                        self.post(node, command, returns, function (res) {
+                            if (self.debug.logs) {
+                                if (res && res.constructor === BigNumber) {
+                                    console.log(node, "response:", abi.string(res));
+                                } else {
+                                    console.log(node, "response:", res);
+                                }
                             }
-                        }
-                        if (node === nodes[nodes.length - 1] ||
-                            (res !== undefined && res !== null &&
-                            !res.error && res !== "0x"))
-                        {
-                            completed = true;
-                            return nextNode({ output: res });
-                        }
-                        nextNode();
-                    });
-                }
-            }, function (res) {
-                if (!res && res.output === undefined) return callback();
-                callback(res.output);
-            });
+                            if (node === nodes[nodes.length - 1] ||
+                                (res !== undefined && res !== null &&
+                                !res.error && res !== "0x")) {
+                                completed = true;
+                                return nextNode({output: res});
+                            }
+                            nextNode();
+                        });
+                    }
+                }, function (res) {
+                    if (!res && res.output === undefined) return callback();
+                    callback(res.output);
+                });
+            }
 
         // use synchronous http if no callback provided
         } else {
@@ -49524,7 +49593,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":212,"async":374,"augur-abi":1,"augur-contracts":6,"bignumber.js":375,"browser-request":376,"buffer":233,"js-sha3":377,"net":12,"request":14,"sync-request":14}],374:[function(require,module,exports){
+},{"_process":212,"async":374,"augur-abi":1,"augur-contracts":6,"bignumber.js":375,"browser-request":376,"buffer":233,"js-sha3":377,"net":12,"request":14,"sync-request":14,"websocket":14}],374:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
