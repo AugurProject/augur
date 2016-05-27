@@ -7,7 +7,6 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-//import Disqus from '../../common/components/disqus';
 
 module.exports = React.createClass({
     propTypes: {
@@ -68,22 +67,13 @@ module.exports = React.createClass({
 							/>
 					);
 				}
-
-				// Discussion
-				/*
-				nodes.push(
-					<Disqus
-						identifier={ p.market.id }
-						title={ p.market.description }
-					/>
-				)
-				*/
 			}
 		}
 
 		return (
 			<main className="page market">
 				<SiteHeader { ...p.siteHeader } />
+
 				<article className="page-content">
 					<div className="l-container">
 						{ nodes }
