@@ -70,12 +70,14 @@ module.exports = React.createClass({
 				}
 
 				// Discussion
+				/*
 				nodes.push(
 					<Disqus
 						identifier={ p.market.id }
 						title={ p.market.description }
 					/>
 				)
+				*/
 			}
 		}
 
