@@ -1,18 +1,16 @@
 import React from 'react';
-import classnames from 'classnames';
 
 import OrderBook from './order-book';
 
 const BidsAsks = React.createClass({
 	propTypes: {
-		className: React.PropTypes.string,
-		market: React.PropTypes.array
+		market: React.PropTypes.object
 	},
 
 	render: function () {
 		var p = this.props;
 		return (
-			<div className={ p.className }>
+			<div className="bids-asks">
 				{
 					p.market.outcomes.map(outcome => {
 						return (
