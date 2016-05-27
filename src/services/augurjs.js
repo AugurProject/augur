@@ -332,6 +332,10 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
+ex.get_trade_ids = function (marketID, cb) {
+	augur.get_trade_ids(marketID, cb);
+};
+
 ex.createMarket = function createMarket(branchID, newMarket, cb) {
 	augur.createSingleEventMarket({
 		branchId: branchID,
