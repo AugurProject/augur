@@ -19,9 +19,6 @@ module.exports = React.createClass({
 		tradingFeePercent: React.PropTypes.object,
 		volume: React.PropTypes.object,
 
-		endBlock: React.PropTypes.number,
-		matured: React.PropTypes.bool,
-
 		tags: React.PropTypes.array,
 
 		marketLink: React.PropTypes.object,
