@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import OrderBook from './order-book';
 
-const OrderBooks = React.createClass({
+const BidsAsks = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
 		market: React.PropTypes.array
@@ -31,4 +31,4 @@ const OrderBooks = React.createClass({
 	}
 });
 
-module.exports = OrderBooks;
+module.exports = BidsAsks;

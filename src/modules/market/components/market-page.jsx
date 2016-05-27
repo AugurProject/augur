@@ -8,7 +8,7 @@ import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
 import Disqus from '../../common/components/disqus';
-import OrderBooks from '../../bids-asks/components/bids-asks';
+import BidsAsks from '../../bids-asks/components/bids-asks';
 
 const MarketPage = React.createClass({
 	propTypes: {
@@ -71,7 +71,7 @@ const MarketPage = React.createClass({
 				}
 
 				nodes.push(
-					<OrderBooks
+					<BidsAsks
 						key="order-books"
 						market={p.market}
 					/>
