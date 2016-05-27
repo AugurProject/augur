@@ -6,7 +6,6 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-import Disqus from '../../common/components/disqus';
 import Chart from '../../market/components/chart';
 
 export default class MarketPage extends Component {
@@ -71,14 +70,6 @@ export default class MarketPage extends Component {
 						/>
 					);
 				}
-
-				// Discussion
-				nodes.push(
-					<Disqus
-						identifier={ p.market.id }
-						title={ p.market.description }
-					/>
-				);
 
 				// chart
 				nodes.push(
