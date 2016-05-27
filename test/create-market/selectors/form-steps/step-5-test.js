@@ -45,7 +45,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		out = {
 			type: 'scalar',
 			endDate: {
-				date: new Date('3000-01-01T06:00:00.000Z'),
+				value: new Date('3000-01-01T06:00:00.000Z'),
 				formatted: 'Jan 1, 3000',
 				full: '3000-01-01T06:00:00.000Z'
 			},
