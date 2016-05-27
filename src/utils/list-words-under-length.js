@@ -1,5 +1,5 @@
 export function listWordsUnderLength(str, maxLength) {
-	const	wordsList = [];
+	const wordsList = [];
 	let currentLength = 0;
 
 	if (!str || !str.length) {
@@ -18,8 +18,9 @@ export function listWordsUnderLength(str, maxLength) {
 		if (currentLength <= maxLength) {
 			wordsList.push(cleanWord);
 		}
-
-		return true;
+		else {
+			return true;
+		}
 	});
 
 	return wordsList;

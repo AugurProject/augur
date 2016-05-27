@@ -66,40 +66,39 @@ console.time('selectMarkets');
 		return a.id < b.id ? -1 : 1;
 	});
 */
-	return Object.keys(marketsData)
-		.map(marketID => {
-			const endDate = new Date(marketsData[marketID].endDate);
-			// this is here for performance reasons not to trigger memoization on every block
-			return assembleMarket(
-				marketID,
-				marketsData[marketID],
-				priceHistory[marketID],
-				isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+	return Object.keys(marketsData).map(marketID => {
+		// this is here for performance reasons not to trigger memoization on every block
+		const endDate = new Date(marketsData[marketID].endDate);
+		return assembleMarket(
+			marketID,
+			marketsData[marketID],
+			priceHistory[marketID],
+			isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
 
-				!!favorites[marketID],
-				outcomes[marketID],
+			!!favorites[marketID],
+			outcomes[marketID],
 
-				reports[marketsData[marketID].eventID],
-				accountTrades[marketID],
-				tradesInProgress[marketID],
-				endDate.getFullYear(),
-				endDate.getMonth(),
-				endDate.getDate(),
-				blockchain && blockchain.isReportConfirmationPhase,
-				dispatch);
-		})
-		.sort((a, b) => {
-			const aVal = cleanSortVal(a[selectedSort.prop]);
-			const bVal = cleanSortVal(b[selectedSort.prop]);
-console.log(aVal, bVal, bVal < aVal);
-			if (bVal < aVal) {
-				return selectedSort.isDesc ? -1 : 1;
-			}
-			else if (bVal > aVal) {
-				return selectedSort.isDesc ? 1 : -1;
-			}
-			return a.id < b.id ? -1 : 1;
-		});
+			reports[marketsData[marketID].eventID],
+			accountTrades[marketID],
+			tradesInProgress[marketID],
+			endDate.getFullYear(),
+			endDate.getMonth(),
+			endDate.getDate(),
+			blockchain && blockchain.isReportConfirmationPhase,
+			dispatch);
+
+	}).sort((a, b) => {
+		const aVal = cleanSortVal(a[selectedSort.prop]);
+		const bVal = cleanSortVal(b[selectedSort.prop]);
+
+		if (bVal < aVal) {
+			return selectedSort.isDesc ? -1 : 1;
+		}
+		else if (bVal > aVal) {
+			return selectedSort.isDesc ? 1 : -1;
+		}
+		return a.id < b.id ? -1 : 1;
+	});
 });
 
 function cleanSortVal(val) {

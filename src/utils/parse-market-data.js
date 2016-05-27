@@ -15,25 +15,6 @@ const CATEGORICAL_CHOICE_SEPARATOR = '|';
 const CATEGORICAL_CHOICES_SEPARATOR2 = 'Choices:';
 const CATEGORICAL_CHOICE_SEPARATOR2 = ',';
 
-export function parseCategoricalOutcomeNamesFromDescription(marketData) {
-	let splitDescription;
-	let categoricalOutcomeNames;
-
-	if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR) >= 0) {
-		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR);
-		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR);
-	} else if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR2) >= 0) {
-		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR2);
-		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR2);
-	} else {
-		return [];
-	}
-
-	marketData.description = splitDescription.join('').trim();
-
-	return categoricalOutcomeNames.map(name => name.trim());
-}
-
 export function parseMarketsData(marketsData) {
 	const o = {
 		marketsData: {},
@@ -48,7 +29,7 @@ export function parseMarketsData(marketsData) {
 		outcomes = marketData.outcomes;
 		delete marketData.outcomes;
 
-		if (!outcomes || !outcomes.length || !marketData.events || !marketData.events.length) {
+		if (!outcomes || !outcomes.length || !marketData.description || !marketData.description.length || !marketData.events || !marketData.events.length) {
 			return;
 		}
 
@@ -118,6 +99,25 @@ export function parseMarketsData(marketsData) {
 	});
 
 	return o;
+}
+
+export function parseCategoricalOutcomeNamesFromDescription(marketData) {
+	let splitDescription;
+	let categoricalOutcomeNames;
+
+	if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR) >= 0) {
+		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR);
+		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR);
+	} else if (marketData.description.indexOf(CATEGORICAL_CHOICES_SEPARATOR2) >= 0) {
+		splitDescription = marketData.description.split(CATEGORICAL_CHOICES_SEPARATOR2);
+		categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_CHOICE_SEPARATOR2);
+	} else {
+		return [];
+	}
+
+	marketData.description = splitDescription.join('').trim();
+
+	return categoricalOutcomeNames.map(name => name.trim());
 }
 
 export function makeDescriptionFromCategoricalOutcomeNames(market) {

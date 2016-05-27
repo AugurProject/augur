@@ -60,13 +60,9 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites,
-					reports, outcomes,
-					accountTrades, tradesInProgress,
-					blockchain, priceHistory } = store.getState();
+	const { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, priceHistory } = store.getState();
 
-	if (!marketID || !marketsData || !marketsData[marketID] ||
-		!marketsData[marketID].description || !marketsData[marketID].eventID) {
+	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
 	}
 
