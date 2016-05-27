@@ -4,7 +4,6 @@ import { updateMarketPriceHistory } from '../../market/actions/update-market-pri
 
 export function loadPriceHistory(marketID) {
 	return (dispatch, getState) => {
-		// todo: caching
 		AugurJS.loadPriceHistory(marketID, (err, priceHistory) => {
 			if (err) {
 				return console.info('ERROR: loadPriceHistory()', err);
