@@ -29,7 +29,7 @@ export function parseMarketsData(marketsData) {
 		outcomes = marketData.outcomes;
 		delete marketData.outcomes;
 
-		if (!outcomes || !outcomes.length || !marketData.description || !marketData.description.length || !marketData.events || !marketData.events.length) {
+		if (!outcomes || !outcomes.length || !marketData.events || !marketData.events.length) {
 			return;
 		}
 
