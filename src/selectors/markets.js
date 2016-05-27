@@ -1,4 +1,5 @@
-import {makeNumber} from '../utils/make-number';
+import { makeNumber } from '../utils/make-number';
+import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
 import {M} from '../modules/site/constants/pages';
 import {
@@ -266,44 +267,7 @@ function makeMarkets(numMarkets = 25) {
 							require('../selectors').update();
 						}
 					},
-					orderBook: {
-						bids: [
-							{
-								shares: makeNumber(10, 'Shares'),
-								price: makeNumber(.5, 'eth')
-							},
-							{
-								shares: makeNumber(20, 'Shares'),
-								price: makeNumber(.45, 'eth')
-							},
-							{
-								shares: makeNumber(30, 'Shares'),
-								price: makeNumber(.35, 'eth')
-							},
-							{
-								shares: makeNumber(40, 'Shares'),
-								price: makeNumber(.25, 'eth')
-							}
-						],
-						asks: [
-							{
-								shares: makeNumber(10, 'Shares'),
-								price: makeNumber(.6, 'eth')
-							},
-							{
-								shares: makeNumber(20, 'Shares'),
-								price: makeNumber(.7, 'eth')
-							},
-							{
-								shares: makeNumber(30, 'Shares'),
-								price: makeNumber(.8, 'eth')
-							},
-							{
-								shares: makeNumber(40, 'Shares'),
-								price: makeNumber(.9, 'eth')
-							}
-						]
-					},
+					orderBook: selectOrderBook(),
 					topBid: outcome.orderBook.bids[0].price,
 					topAsk: outcome.orderBook.asks[0].price
 				};
