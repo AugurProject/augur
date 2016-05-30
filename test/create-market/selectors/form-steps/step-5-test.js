@@ -66,7 +66,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			},
 			scalarSmallNum: 5,
 			scalarBigNum: 50,
-			endBlock: 2587660618,
+			endBlock: test.endBlock,
 			tradingFee: 0.05,
 			volume: {
 				value: 0,
