@@ -2,7 +2,8 @@ import {assert} from 'chai';
 
 const selectorsLocation =
 process.env.selectors ? process.env.selectors : '../src/selectors';
-const selectors = require(selectorsLocation);
+let selectors = require(selectorsLocation);
+process.env.selectors ? selectors = selectors.default : selectors;
 
 describe(`selectors.markets[0] (single market) tests:`, () => {
 	if (selectors.markets && selectors.markets[0]) {
@@ -27,7 +28,7 @@ describe(`selectors.markets[0] (single market) tests:`, () => {
 		// 	]
 		it(`should contain a market with the expected shape`, () => {
 			let actual = selectors.markets[0];
-
+			console.log(actual);
 			if (assert.isDefined(actual, `markets is empty.`)) {
 				assert.isObject(actual, `markets[0] (market) isn't an object`);
 

@@ -2,7 +2,8 @@ import {assert} from 'chai';
 
 const selectorsLocation =
 process.env.selectors ? process.env.selectors : '../src/selectors';
-const selectors = require(selectorsLocation);
+let selectors = require(selectorsLocation);
+process.env.selectors ? selectors = selectors.default : selectors;
 
 describe(`selector.filters tests:`, () => {
 	if (selectors.filters) {
@@ -10,9 +11,9 @@ describe(`selector.filters tests:`, () => {
 		// [ { title: 'Status', options: [ Object, ... ] },
 		// 	{ title: 'Type', options: [ Object, ... ] },
 		// 	{ title: 'Tags', options: [ Object, ... ] } ],
-		it(`should contain a filteres array with the correct shape`, () => {
+		it(`should contain a filters array with the correct shape`, () => {
 			let actual = selectors.filters;
-
+			console.log(actual);
 			assert.isDefined(actual, `filters isn't defined`);
 			assert.isArray(actual, `filters isn't an array`);
 			assert.equal(actual.length, 3, `filters array isn't the expected length`);

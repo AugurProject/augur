@@ -2,7 +2,8 @@ import {assert} from 'chai';
 
 const selectorsLocation =
 process.env.selectors ? process.env.selectors : '../src/selectors';
-const selectors = require(selectorsLocation);
+let selectors = require(selectorsLocation);
+process.env.selectors ? selectors = selectors.default : selectors;
 
 describe(`selectors.pagination tests:`, () => {
 	if (selectors.pagination) {

@@ -2,7 +2,8 @@ import {assert} from 'chai';
 
 const selectorsLocation =
 process.env.selectors ? process.env.selectors : '../src/selectors';
-const selectors = require(selectorsLocation);
+let selectors = require(selectorsLocation);
+process.env.selectors ? selectors = selectors.default : selectors;
 
 describe(`seletors.keywords tests:`, () => {
 	if (selectors.keywords) {
@@ -12,6 +13,7 @@ describe(`seletors.keywords tests:`, () => {
 		// },
 		it(`should contain a keywords object with the correct shape`, () => {
 			let actual = selectors.keywords;
+			console.log(actual);
 			assert.isDefined(actual, `keywords isn't defined`);
 			assert.isObject(actual, `keywords isn't an object`);
 			assert.isDefined(actual.value, `keywords.value isn't defined`);

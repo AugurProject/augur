@@ -2,10 +2,11 @@ import {assert} from 'chai';
 
 const selectorsLocation =
 process.env.selectors ? process.env.selectors : '../src/selectors';
-const selectors = require(selectorsLocation);
+let selectors = require(selectorsLocation);
+process.env.selectors ? selectors = selectors.default : selectors;
 
 describe(`selector.activePage tests:`, () => {
-	if (selectors.activePage) {
+	if (selectors.activePage !== '') {
 		// activePage: String,
 		it(`should contain a activePage string`, () => {
 			let actual = selectors.activePage;
