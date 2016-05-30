@@ -847,6 +847,53 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
     tx.params[1] = abi.fix(tx.params[1], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
+Augur.prototype.multiTrade = function (marketId, marketOrderBook, tradeOrders, onTradeHash, onCommitSent, onCommitSuccess,
+                                         onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    tradeOrders.forEach(function (tradeOrder) {
+        if (tradeOrder.type === "buy_shares") {
+            augur.buy(tradeOrder.shares.value, tradeOrder.ether.value, marketId, tradeOrder.data.outcomeID,
+                // onSent(data) = {
+                // 	callReturn: "0x0"
+                // 	txHash: "0xd9a88bad08c2f7f9772c7757ca07e192409d689df4f13f994ec77f3a0aebb383"
+                // }
+                function onSent(data) {
+                    return console.log("augurjs.js: trade: buy: onSent: %o", data);
+                },
+                // onSuccess(data) = {
+                // 	blockHash: "0x89525191547c3a2df939c02de4a75ea3c8522e4a203122e1b962321604a4bdfe"
+                // 	blockNumber: "0xfe172"
+                // 	callReturn: "0x0"
+                // 	from: "0xcb829a51c357d6ac1114a810d4cdb527b82eec27"
+                // 	gas: "0x2fd618"
+                // 	gasPrice: "0x4a817c800"
+                // 	input: "0x3651cae40000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001051eb851eb851eb83794c5c2aea59887a98119dec4f268f7e852f3b84529f2c16be64490492443070000000000000000000000000000000000000000000000000000000000000003"
+                // 	nonce: "0x100001"
+                // 	to: "0x01eec1eed6b5d224f33917b4ec14cdf5baeff780"
+                // 	transactionIndex: "0x0"
+                // 	txHash: "0xd9a88bad08c2f7f9772c7757ca07e192409d689df4f13f994ec77f3a0aebb383"
+                // 	value: "0x0"
+                // }
+                function onSuccess(data) {
+                    console.log("augurjs.js: trade: buy: onSuccess: %o", data)
+                },
+                function onFailure(data) {
+                    console.log("augurjs.js: trade: buy: onFail: %o", data)
+                })
+        } else {
+            augur.sell(tradeOrder.shares.value, tradeOrder.ether.value, marketId, tradeOrder.data.outcomeID,
+                function (data) {
+                    console.log("augurjs.js: trade: sell: onSent: %o", data);
+                },
+                function (data) {
+                    console.log("augurjs.js: trade: sell: onSuccess: %o", data);
+                },
+                function (data) {
+                    console.log("augurjs.js: trade: sell: onFail: %o", data);
+                });
+        }
+    });
+};
+
 Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
     var self = this;
     if (max_value.constructor === Object && max_value.max_value) {
