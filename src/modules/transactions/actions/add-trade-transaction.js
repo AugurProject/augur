@@ -5,7 +5,8 @@ SELL_SHARES,
 // BID_SHARES,
 // ASK_SHARES
 } from '../../transactions/constants/types';
-import { tradeShares } from '../../trade/actions/place-trade';
+import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const makeTradeTransaction =
@@ -23,14 +24,11 @@ export const makeTradeTransaction =
 			avgPrice: formatEther(totalCostWithoutFeeEther / numShares),
 			feeToPay: formatEther(feeEther)
 		},
-		action: (transactionID) =>
-			dispatch(
-				tradeShares(
-					transactionID, market.id,
-					outcome.id, numShares,
-					null, null
-				)
-			)
+		action: (transactionID) => {
+			dispatch(updateExistingTransaction({
+				[transactionID]: { status: 'sending...' }
+			}));
+		}
 	};
 	return obj;
 };

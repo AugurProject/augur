@@ -140,7 +140,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 				avgPrice: formatEther(Math.abs(o.ether / o.shares)),
 				feeToPay: formatEther(o.feeToPay)
 			},
-			(transactionID) => dispatch(tradeShares(
+			(transactionID) => dispatch(trade(
 				transactionID, market.id,
 				outcome.id, o.shares,
 				limitPrice, null))
@@ -164,7 +164,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 				avgPrice: formatEther(limitPrice),
 				feeToPay: formatNumber(0, { zero: true }) // no fee for market-making
 			},
-			(transactionID) => dispatch(tradeShares(
+			(transactionID) => dispatch(trade(
 				transactionID, market.id, outcome.id,
 				o.sharesRemaining, limitPrice, null))
 		));

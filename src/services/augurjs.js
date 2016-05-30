@@ -6,6 +6,7 @@ import {
 	SUCCESS,
 	CREATING_MARKET
 } from '../modules/transactions/constants/statuses';
+import { BUY_SHARES } from "../modules/transactions/constants/types";
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
@@ -289,6 +290,12 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
+ex.trade = function (marketId, marketOrderBook, tradeOrders, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
+					 onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+	augur.multiTrade(marketId, marketOrderBook, tradeOrders, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
+		onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed);
+};
+
 ex.tradeShares = function tradeShares(branchID, marketID, outcomeID, numShares, limit, cap, cb) {
 	augur.trade({
 		branch: branchID,
@@ -334,6 +341,10 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 
 ex.get_trade_ids = function (marketID, cb) {
 	augur.get_trade_ids(marketID, cb);
+};
+
+ex.getOrderBook = function (marketID, cb) {
+	augur.getOrderBook(marketID, cb);
 };
 
 ex.get_trade = function (orderID, cb) {
