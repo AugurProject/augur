@@ -86,15 +86,13 @@ console.time('selectMarkets');
 			endDate.getDate(),
 			blockchain && blockchain.isReportConfirmationPhase,
 			dispatch);
-
 	}).sort((a, b) => {
 		const aVal = cleanSortVal(a[selectedSort.prop]);
 		const bVal = cleanSortVal(b[selectedSort.prop]);
 
 		if (bVal < aVal) {
 			return selectedSort.isDesc ? -1 : 1;
-		}
-		else if (bVal > aVal) {
+		} else if (bVal > aVal) {
 			return selectedSort.isDesc ? 1 : -1;
 		}
 		return a.id < b.id ? -1 : 1;
@@ -110,10 +108,8 @@ function cleanSortVal(val) {
 	// if this is a formatted number object, with a `value` prop, use that for sorting
 	if (val.value || val.value === 0) {
 		return val.value;
-	}
-
+	} else if (val.toLowerCase) {
 	// if the val is a simple prop, that can be lowercased, use that
-	else if (val.toLowerCase) {
 		return val.toLowerCase();
 	}
 }

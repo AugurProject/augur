@@ -17,10 +17,9 @@ export function listWordsUnderLength(str, maxLength) {
 
 		if (currentLength <= maxLength) {
 			wordsList.push(cleanWord);
+			return false;
 		}
-		else {
-			return true;
-		}
+		return true;
 	});
 
 	return wordsList;
