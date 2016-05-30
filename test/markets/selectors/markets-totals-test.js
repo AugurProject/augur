@@ -132,9 +132,9 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		favoriteMarkets: 'test'
 	};
 
-	sinon.stub(mockPositions, 'selectPositionsSummary', (numPosition, qtyShares, totalValue, totalCost) => {
+	sinon.stub(mockPositions, 'selectPositionsSummary', (numPositions, qtyShares, totalValue, totalCost) => {
 		return {
-			numPosition,
+			numPositions,
 			qtyShares,
 			totalValue,
 			totalCost
@@ -158,7 +158,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 			numUnpaginated: 7,
 			numFiltered: 7,
 			positionsSummary: {
-				numPosition: 70,
+				numPositions: 70,
 				qtyShares: 35,
 				totalValue: 140,
 				totalCost: 297
