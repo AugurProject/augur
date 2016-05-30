@@ -97,12 +97,6 @@ describe("Unit tests", function () {
     });
     describe("eth_sendTransaction", function () {
         runner(this.title, [{
-            method: "initialLiquiditySetup",
-            parameters: ["hash", "fixed", "fixed", "int"]
-        }, {
-            method: "initializeMarket",
-            parameters: ["hash", "hashArray", "int", "fixed", "hash"]
-        }, {
             method: "modifyShares",
             parameters: ["hash", "int", "fixed"]
         }]);
