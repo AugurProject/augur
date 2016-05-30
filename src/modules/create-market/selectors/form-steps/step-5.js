@@ -2,20 +2,11 @@ import { formatNumber, formatPercent, formatDate } from '../../../../utils/forma
 
 import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../markets/constants/market-types';
-import {
-	EXPIRY_SOURCE_SPECIFIC
-}
-from '../../../create-market/constants/market-values-constraints';
+import { EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
 
-import {
-submitNewMarket
-} from '../../../create-market/actions/submit-new-market';
+import { submitNewMarket } from '../../../create-market/actions/submit-new-market';
 
-export const select = (
-	formState,
-	currentBlockNumber,
-	currentBlockMillisSinceEpoch,
-	dispatch) => {
+export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpoch, dispatch) => {
 	const o = { ...formState };
 
 	o.type = formState.type;
@@ -28,8 +19,7 @@ export const select = (
 	o.tradingFee = formState.tradingFeePercent / 100;
 	o.tradingFeePercent = formatPercent(formState.tradingFeePercent);
 	o.volume = formatNumber(0);
-	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ?
-		formState.expirySourceUrl : formState.expirySource;
+	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
 	o.outcomes = selectOutcomesFromForm(
 		formState.type,

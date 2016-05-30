@@ -6,13 +6,7 @@ import { PAGES_PATHS } from '../../link/constants/paths';
 import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 
-import {
-	SEARCH_PARAM_NAME,
-	SORT_PARAM_NAME,
-	PAGE_PARAM_NAME,
-	TAGS_PARAM_NAME,
-	FILTERS_PARAM_NAME
-} from '../../link/constants/param-names';
+import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
 
 import { showLink, showPreviousLink } from '../../link/actions/show-link';
@@ -22,15 +16,13 @@ import store from '../../../store';
 // import * as selectors from '../../../selectors';
 
 export default function () {
-	const { keywords, selectedFilters, selectedSort,
-		selectedTags, pagination, loginAccount } = store.getState();
+	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount } = store.getState();
 	const { market } = require('../../../selectors');
 
 	return {
 		authLink: selectAuthLink(loginAccount.id ? LOGIN : REGISTER, !!loginAccount.id, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
-		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort,
-			selectedTags, pagination.selectedPageNum, store.dispatch),
+		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort, selectedTags, pagination.selectedPageNum, store.dispatch),
 		positionsLink: selectPositionsLink(store.dispatch),
 		transactionsLink: selectTransactionsLink(store.dispatch),
 		marketLink: selectMarketLink(market, store.dispatch),
@@ -59,8 +51,7 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
 	};
 });
 
-export const selectMarketsLink = memoizerific(1)(
-(keywords, selectedFilters, selectedSort, selectedTags, selectedPageNum, dispatch) => {
+export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, selectedSort, selectedTags, selectedPageNum, dispatch) => {
 	const params = {};
 
 	// search
@@ -100,12 +91,9 @@ export const selectMarketsLink = memoizerific(1)(
 });
 
 export const selectMarketLink = memoizerific(1)((market, dispatch) => {
-	const href = `${PAGES_PATHS[M]}/${listWordsUnderLength(
-									market.description,
-									300).map(word => encodeURIComponent(word))
-										.join('_')
-										.concat(`_${market.id}`)}`;
-	const	link = {
+	const words = listWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_');
+	const href = `${PAGES_PATHS[M]}/${words}_${market.id}`;
+	const link = {
 		href,
 		onClick: () => dispatch(showLink(href))
 	};

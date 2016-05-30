@@ -12,27 +12,19 @@ export default function () {
 }
 
 export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
-	const creationSortOrder = {
-		label: 'Newest Market',
-		value: 'creationSortOrder',
-		isDesc: true
-	};
-	const endBlock = { label: 'Soonest Expiry', value: 'endBlock', isDesc: false };
+	const creationSortOrder = { label: 'Newest Market', value: 'creationSortOrder', isDesc: true };
+	const endDate = { label: 'Soonest Expiry', value: 'endDate', isDesc: false };
 	const volume = { label: 'Most Volume', value: 'volume', isDesc: true };
-	const tradingFeePercent = {
-		label: 'Lowest Fee',
-		value: 'tradingFeePercent',
-		isDesc: false
-	};
+	const tradingFeePercent = { label: 'Lowest Fee', value: 'tradingFeePercent', isDesc: false };
 
 	switch (selectedSort.prop) {
 	case creationSortOrder.value:
 		creationSortOrder.label = selectedSort.isDesc ? 'Newest Market' : 'Oldest Market';
 		creationSortOrder.isDesc = selectedSort.isDesc;
 		break;
-	case endBlock.value:
-		endBlock.label = selectedSort.isDesc ? 'Furthest Expiry' : 'Soonest Expiry';
-		endBlock.isDesc = selectedSort.isDesc;
+	case endDate.value:
+		endDate.label = selectedSort.isDesc ? 'Furthest Expiry' : 'Soonest Expiry';
+		endDate.isDesc = selectedSort.isDesc;
 		break;
 	case volume.value:
 		volume.label = selectedSort.isDesc ? 'Most Volume' : 'Least Volume';
@@ -46,19 +38,18 @@ export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
 		break;
 	}
 
-	return [creationSortOrder, endBlock, volume, tradingFeePercent];
+	return [creationSortOrder, endDate, volume, tradingFeePercent];
 });
 
-export const selectOnChangeSort = memoizerific(1)((dispatch) =>
-	(prop, isDesc) => {
-		const o = {};
-		if (prop) {
-			o.prop = prop;
-		}
-		if (isDesc || isDesc === false) {
-			o.isDesc = isDesc;
-		}
+export const selectOnChangeSort = memoizerific(1)((dispatch) => (prop, isDesc) => {
+	const o = {};
 
-		dispatch(updateSelectedSort(o));
+	if (prop) {
+		o.prop = prop;
 	}
-);
+	if (isDesc || isDesc === false) {
+		o.isDesc = isDesc;
+	}
+
+	dispatch(updateSelectedSort(o));
+});

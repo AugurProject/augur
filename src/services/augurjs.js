@@ -350,17 +350,7 @@ ex.createMarket = function createMarket(branchID, newMarket, cb) {
 };
 
 ex.createMarketMetadata = function createMarketMetadata(newMarket, cb) {
-	console.log(
-		'--createMarketMetadata',
-		newMarket.id,
-		' --- ',
-		newMarket.detailsText,
-		' --- ',
-		newMarket.tags,
-		' --- ',
-		newMarket.resources,
-		' --- ',
-		newMarket.expirySource);
+	console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);
 	let tag1;
 	let tag2;
 	let tag3;

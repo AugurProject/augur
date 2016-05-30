@@ -146,7 +146,7 @@ export function formatDate(d) {
 	];
 	const date = (d instanceof Date) ? d : new Date(0);
 	return {
-		date,
+		value: date,
 		formatted: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`,
 		full: d.toISOString()
 	};
