@@ -12,6 +12,7 @@ var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var utf8 = require("utf8");
 var connector = require("ethereumjs-connect");
 var contracts = require("augur-contracts");
 var constants = require("./constants");
@@ -550,20 +551,21 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
     var tx = clone(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
     tx.timeout = 240000;
-    if (!callback) {
-        return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
-    }
-    var count = 0;
-    var cb = function (marketsArray) {
-        if (typeof marketsArray === "object" &&
-            marketsArray.error === 500 && ++count < 4) {
-            return self.fire(tx, cb);
-        } else if (marketsArray.error) {
-            return callback(marketsArray);
-        }        
-        self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
-    };
-    this.fire(tx, cb);
+    return this.fire(tx, callback);
+    // if (!callback) {
+    //     return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
+    // }
+    // var count = 0;
+    // var cb = function (marketsArray) {
+    //     if (typeof marketsArray === "object" &&
+    //         marketsArray.error === 500 && ++count < 4) {
+    //         return self.fire(tx, cb);
+    //     } else if (marketsArray.error) {
+    //         return callback(marketsArray);
+    //     }        
+    //     self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
+    // };
+    // this.fire(tx, cb);
 };
 Augur.prototype.getMarketEvents = function (market, callback) {
     // market: sha256 hash id
@@ -1188,28 +1190,7 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
     while (tags.length < 3) {
         tags.push("0x0");
     }
-    // var tx = clone(this.tx.createSingleEventMarket);
-    // tx.params = [
-    //     branchId,
-    //     description,
-    //     expDate,
-    //     abi.fix(minValue, "hex"),
-    //     abi.fix(maxValue, "hex"),
-    //     numOutcomes,
-    //     resolution,
-    //     abi.fix(tradingFee, "hex"),
-    //     tags[0],
-    //     tags[1],
-    //     tags[2],
-    //     abi.fix(makerFees, "hex"),
-    //     extraInfo || ""
-    // ];
-    // rpc.gasPrice(function (gasPrice) {
-    //     tx.gasPrice = gasPrice;
-    //     gasPrice = abi.bignum(gasPrice);
-    //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-    //     self.transact(tx, onSent, onSuccess, onFailed);
-    // });
+    description = description.trim();
     var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
@@ -1237,7 +1218,26 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
             tx.gasPrice = gasPrice;
             gasPrice = abi.bignum(gasPrice);
             tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-            self.transact(tx, onSent, onSuccess, onFailed);
+            self.getPeriodLength(branchId, function (periodLength) {
+                self.transact(tx, onSent, function (res) {
+                    var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                    rpc.getBlock(res.blockNumber, false, function (block) {
+                        var utf8description = utf8.encode(description);
+                        res.marketID = self.utils.sha3([
+                            tradingPeriod,
+                            abi.fix(tradingFee, "hex"),
+                            block.timestamp,
+                            tags[0],
+                            tags[1],
+                            tags[2],
+                            expDate,
+                            new Buffer(utf8description, "utf8").length,
+                            utf8description
+                        ]);
+                        onSuccess(res);
+                    });
+                }, onFailed);
+            });
         });
     }, onFailed);
 };
@@ -1259,7 +1259,7 @@ Augur.prototype.createEvent = function (branchId, description, expDate, minValue
     var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
-        description,
+        description.trim(),
         expDate,
         abi.fix(minValue, "hex"),
         abi.fix(maxValue, "hex"),
@@ -1298,6 +1298,7 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
         tags.push("0x0");
     }
     var tx = clone(this.tx.createMarket);
+    description = description.trim();
     tx.params = [
         branchId,
         description,
@@ -1313,7 +1314,29 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
         tx.gasPrice = gasPrice;
         gasPrice = abi.bignum(gasPrice);
         tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
-        self.transact(tx, onSent, onSuccess, onFailed);
+        self.getPeriodLength(branchId, function (periodLength) {
+            self.transact(tx, onSent, function (res) {
+                self.getExpiration(events[0], function (expDate) {
+                    expDate = parseInt(expDate);
+                    var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                    rpc.getBlock(res.blockNumber, false, function (block) {
+                        var utf8description = utf8.encode(description);
+                        res.marketID = self.utils.sha3([
+                            tradingPeriod,
+                            abi.fix(tradingFee, "hex"),
+                            block.timestamp,
+                            tags[0],
+                            tags[1],
+                            tags[2],
+                            expDate,
+                            new Buffer(utf8description, "utf8").length,
+                            utf8description
+                        ]);
+                        onSuccess(res);
+                    });
+                });
+            }, onFailed);
+        });
     });
 };
 
@@ -1340,7 +1363,6 @@ Augur.prototype.updatePeriod = function (branch) {
     this.incrementPeriod(branch);
     this.moveEventsToCurrentPeriod(branch, this.getVotePeriod(branch), currentPeriod);
 };
-
 Augur.prototype.parseTradeInfo = function (trade) {
     return {
         id: trade[0],
@@ -1610,26 +1632,11 @@ Augur.prototype.setInfo = function (id, description, creator, fee, onSent, onSuc
     tx.params[3] = abi.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.initialLiquiditySetup = function (marketID, alpha, cumulativeScale, numOutcomes, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.initialLiquiditySetup);
-    var unpacked = this.utils.unpack(marketID, this.utils.labels(this.initialLiquiditySetup), arguments);
-    tx.params = unpacked.params;
-    tx.params[1] = abi.fix(tx.params[1], "hex");
-    tx.params[2] = abi.fix(tx.params[2], "hex");
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
 Augur.prototype.modifyShares = function (marketID, outcome, amount, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.modifyShares);
     var unpacked = this.utils.unpack(marketID, this.utils.labels(this.modifyShares), arguments);
     tx.params = unpacked.params;
     tx.params[2] = abi.fix(tx.params[2], "hex");
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
-};
-Augur.prototype.initializeMarket = function (marketID, events, tradingPeriod, tradingFee, branch, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.initializeMarket);
-    var unpacked = this.utils.unpack(marketID, this.utils.labels(this.initializeMarket), arguments);
-    tx.params = unpacked.params;
-    tx.params[3] = abi.fix(tx.params[3], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 Augur.prototype.incrementPeriod = function (branchId, onSent, onSuccess, onFailed) {
@@ -1678,7 +1685,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
     if (!this.utils.is_function(cb)) {
         var logs = rpc.getLogs(filter);
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
+            return null;
         }
         if (logs.error) throw new Error(JSON.stringify(logs));
         var outcome, parsed, priceHistory = {};

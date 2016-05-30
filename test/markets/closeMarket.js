@@ -23,17 +23,17 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    var augur = tools.setup(require("../../src"), process.argv.slice(2));
-    var branchID = augur.branches.dev;
-    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
-    var suffix = Math.random().toString(36).substring(4);
-    var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
-    var periodLength = 75;
-    var report = 1;
-    var salt = "1337";
-    var eventID, newBranchID, marketID;
-
     if (!process.env.CONTINUOUS_INTEGRATION) {
+
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
+        var branchID = augur.branches.dev;
+        var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
+        var suffix = Math.random().toString(36).substring(4);
+        var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+        var periodLength = 75;
+        var report = 1;
+        var salt = "1337";
+        var eventID, newBranchID, marketID;
 
         before(function (done) {
             this.timeout(tools.TIMEOUT*100);

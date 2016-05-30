@@ -6,6 +6,7 @@ var crypto = require("crypto");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
+var utf8 = require("utf8");
 var constants = require("./constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -74,7 +75,7 @@ module.exports = {
                     // (base-10 numbers)
                     if (x[i].constructor === Number) {
                         x[i] = abi.bignum(x[i]);
-                        if (x[i].lt(new BigNumber(0))) {
+                        if (x[i].lt(constants.ZERO)) {
                             x[i] = x[i].add(abi.constants.MOD);
                         }
                         cat += abi.encode_int(x[i]);
@@ -93,18 +94,65 @@ module.exports = {
 
                         // text string
                         } else {
-                            cat += abi.encode_hex(x[i]);
+                            cat += new Buffer(x[i], "utf8").toString("hex");
                         }
                     }
                 }
             }
             digest = new BigNumber(this.sha256(new Buffer(cat, "hex")), 16);
             if (digest.gt(new BigNumber(2).toPower(255))) {
-                return abi.hex(digest.sub(abi.constants.MOD), true);
+                return abi.hex(digest.sub(abi.constants.MOD));
             }
-            return abi.hex(digest, true);
+            return abi.hex(digest);
         }
         return crypto.createHash("sha256").update(x).digest("hex");
+    },
+
+    sha3: function (hashable) {
+        var x = clone(hashable);
+        if (x && x.constructor === Array) {
+            var digest, cat = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                if (x[i] !== null && x[i] !== undefined) {
+
+                    // array element is a javascript number
+                    // (base-10 numbers)
+                    if (x[i].constructor === Number) {
+                        x[i] = abi.bignum(x[i]);
+                        if (x[i].lt(constants.ZERO)) {
+                            x[i] = x[i].add(abi.constants.MOD);
+                        }
+                        cat += abi.encode_int(x[i]);
+
+                    // array element is a string: text or hex
+                    } else if (x[i].constructor === String) {
+
+                        // negative hex
+                        if (x[i].slice(0,1) === '-') {
+                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
+                            cat += abi.encode_int(x[i]);
+
+                        // positive hex
+                        } else if (x[i].slice(0,2) === "0x") {
+                            cat += abi.pad_left(x[i].slice(2));
+
+                        // text string
+                        } else {
+                            cat += new Buffer(x[i], "utf8").toString("hex");
+                            // cat += new Buffer(utf8.encode(new Buffer(x[i], "hex").toString("utf8")), "utf8").toString("hex");
+                        }
+                    }
+                }
+            }
+            console.log("cat:", cat);
+            return abi.prefix_hex(this.sha3(cat));
+            // digest = new BigNumber(this.sha3(cat), 16);
+            // if (digest.gt(new BigNumber(2).toPower(255))) {
+            //     return abi.hex(digest.sub(abi.constants.MOD));
+            // }
+            // return abi.hex(digest);
+        }
+        return abi.sha3(hashable);
     }
 
 };

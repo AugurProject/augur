@@ -10,6 +10,7 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    ZERO: new BigNumber(0),
     ONE: new BigNumber(2).toPower(64),
     ETHER: new BigNumber(10).toPower(18),
 

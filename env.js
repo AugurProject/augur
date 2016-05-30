@@ -13,6 +13,7 @@ GLOBAL.moment = require("moment");
 GLOBAL.EthTx = require("ethereumjs-tx");
 GLOBAL.EthUtil = require("ethereumjs-util");
 GLOBAL.web3 = require("web3");
+GLOBAL.utf8 = require("utf8");
 GLOBAL.contracts = require("augur-contracts");
 GLOBAL.abi = require("augur-abi");
 GLOBAL.request = require("request");

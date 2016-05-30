@@ -576,3 +576,133 @@ describe("utilities.sha256", function () {
         digest: "-0x5627db537a9449dfb609e836c32728d30bac7db248deb0d405c5585017db524c"
     });
 });
+
+describe("utilities.sha3", function () {
+    var test = function (t) {
+        it(JSON.stringify(t.hashable) + " -> " + t.digest, function () {
+            assert.strictEqual(utils.sha3(t.hashable), t.digest);
+        });
+    };
+    test({
+        hashable: [1, 2, 3],
+        digest: "0x6e0c627900b24bd432fe7b1f713f1b0744091a646a9fe4a65a18dfed21f2949c"
+    });
+    test({
+        hashable: [1, 0, 1, 0, 1, 0, 1],
+        digest: "0x1c9ace216ac502aa2f386dcce536fe05590090d2cd93768cf21f865677c2da96"
+    });
+    test({
+        hashable: [7],
+        digest: "-0x599336d74a1247d50642b66dd6abeaa5484f6bd96b415b31bb99e26578c93978"
+    });
+    test({
+        hashable: [0, 0, 0, 0],
+        digest: "0x12893657d8eb2efad4de0a91bcd0e39ad9837745dec3ea923737ea803fc8e3d"
+    });
+    test({
+        hashable: [17, 100, 2],
+        digest: "0x72f4bbc5353724cebd20d6f15e3d2bd10e75ed59cec54724ab5a6d5ad9955d3"
+    });
+    test({
+        hashable: [17, 1000, 2],
+        digest: "-0xfa1338534aa300ca79cf8b1123ed99a9634b1f9e475b24ea0c7a659ae701378"
+    });
+    test({
+        hashable: ["0x01", "0x11"],
+        digest: "0x17bc176d2408558f6e4111feebc3cab4e16b63e967be91cde721f4c8a488b552"
+    });
+    test({
+        hashable: ["0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b", "0x0f69b5", "0x041e"],
+        digest: "0x74d1c32fb4ba921c884e82504171fcc503c4488680dcd68f61af2e4732daa191"
+    });    
+    test({
+        hashable: [
+            0,
+            "0xf69b5", // branch
+            1898028, // expiration block
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
+        ],
+        digest: "-0xec24e44d7005689c9e1ccbfecfcedb2665abe2940e585659600fcb896574dc7",
+    });
+    test({
+        hashable: [
+            0,
+            "0xf69b5", // branch
+            1898028, // expiration block
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
+            abi.fix(42, "hex"), // creation fee
+            0, // minimum value
+            120, // maximum value
+            2 // number of outcomes
+        ],
+        digest: "-0x6a4e63db92ef93c72f58d31f4087133f9f6bd5dde2fb7121e0e7f0367129487a"
+    });
+    test({
+        hashable: ["0x7400000000000000000000000000000000000000000000000000000000000000"],
+        digest: "-0x1cf1192d502c2567785a27e617208c466a1fad592636b17ee99448dec3784481"
+    });
+    test({
+        hashable: [
+            0,
+            "0xf69b5", // branch
+            1898028, // expiration block
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
+            abi.fix(42, "hex"), // creation fee
+            0, // minimum value
+            120, // maximum value
+            2, // number of outcomes
+            "test"
+        ],
+        digest: "-0x3b420ea3067eaf07e2bb780e883ecbe5bb297175825d9cac35a2e5887b4f3b6c"
+    });
+    test({
+        hashable: [
+            0,
+            "0xf69b5", // branch
+            1898028, // expiration block
+            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
+            abi.fix(42, "hex"), // creation fee
+            0, // minimum value
+            120, // maximum value
+            2, // number of outcomes
+            "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
+        ],
+        digest: "0x3306d0657ca9c8be885b642db527f7f7058edf01e723a3a38162745132326866"
+    });
+    test({
+        hashable: ["为什么那么认真？"],
+        digest: "-0x19f33f90843772d67526450f0e0cf15ab06020001a2ae7c6437fcbee24257d6e"
+    });
+    test({
+        hashable: ["なぜそんなに真剣なんだ？ €☃..."],
+        digest: "0x2f77daf73854def6e1ed2edc9ed222f94387e1f2438f960720e96e902a6b20d2"
+    });
+    test({
+        hashable: [
+            "0x1708aec800",
+            "0x51eb851eb851eb8",
+            "0x574aad9e",
+            "0x7765617468657200000000000000000000000000000000000000000000000000",
+            "0x74656d7065726174757265000000000000000000000000000000000000000000",
+            "0x636c696d617465206368616e6765000000000000000000000000000000000000",
+            "0x159823db800",
+            "0x18",
+            "为什么那么认真？"
+        ],
+        digest: "0x2e7cf821ee4c26d268ed5a11a187efa9baa417544159759c1ab310868b5a4dfb"
+    });
+    test({
+        hashable: [
+            "0x1708aec800",
+            "0x51eb851eb851eb8",
+            "0x574aad9e",
+            "0x7765617468657200000000000000000000000000000000000000000000000000",
+            "0x74656d7065726174757265000000000000000000000000000000000000000000",
+            "0x636c696d617465206368616e6765000000000000000000000000000000000000",
+            "0x159823db800",
+            "0x2e",
+            "なぜそんなに真剣なんだ？ €☃..."
+        ],
+        digest: "0x2901f3d513d2259272700e2487c075e50c206a24069a3c83eb19de1738439508"
+    });
+});
