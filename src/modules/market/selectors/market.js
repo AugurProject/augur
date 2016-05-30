@@ -65,7 +65,7 @@ export const selectMarket = (marketID) => {
 	const { marketsData, favorites,
 					reports, outcomes,
 					accountTrades, tradesInProgress,
-					blockchain, priceHistory, orderIds, bidsAsks } = store.getState();
+					blockchain, priceHistory, marketOrderBooks } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID] ||
 		!marketsData[marketID].description || !marketsData[marketID].eventID) {
@@ -94,8 +94,7 @@ export const selectMarket = (marketID) => {
 
 		blockchain && blockchain.isReportConfirmationPhase,
 
-		orderIds[marketID],
-		bidsAsks,
+		marketOrderBooks[marketID],
 		store.dispatch);
 };
 
@@ -120,8 +119,7 @@ export const assembleMarket = memoizerific(1000)((
 		endDateMonth,
 		endDateDay,
 		isReportConfirmationPhase,
-		marketOrderIds,
-		bidsAsks,
+		marketOrderBooks,
 		dispatch) => { // console.log('>>assembleMarket<<');
 	const o = {
 		...marketData,
@@ -205,11 +203,11 @@ export const assembleMarket = memoizerific(1000)((
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			onChangeTrade: (numShares, limitPrice) =>
+			updateTradeOrder: (outcomeId, shares, limitPrice) =>
 				dispatch(updateTradesInProgress(
 					marketID,
 					outcome.id,
-					numShares,
+					shares,
 					limitPrice))
 		};
 
@@ -224,7 +222,7 @@ export const assembleMarket = memoizerific(1000)((
 			}
 		}
 
-		outcome.orderBook = selectOrderBook(outcome.id, marketOrderIds, bidsAsks);
+		outcome.orderBook = selectOrderBook(outcome.id, marketOrderBooks);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 
@@ -232,11 +230,10 @@ export const assembleMarket = memoizerific(1000)((
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
 	o.tags = o.tags.map(tag => {
-		const obj = {
+		return {
 			name: tag,
 			onClick: () => dispatch(toggleTag(tag))
 		};
-		return obj;
 	});
 
 	o.priceTimeSeries = selectPriceTimeSeries(o.outcomes, marketPriceHistory);

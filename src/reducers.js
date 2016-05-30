@@ -13,8 +13,7 @@ import pagination from './modules/markets/reducers/pagination';
 import reports from './modules/reports/reducers/reports';
 
 import outcomes from './modules/markets/reducers/outcomes';
-import orderIds from './modules/bids-asks/reducers/order-ids';
-import bidsAsks from './modules/bids-asks/reducers/bids-asks';
+import marketOrderBooks from './modules/bids-asks/reducers/market-order-books';
 import accountTrades from './modules/positions/reducers/account-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
@@ -55,8 +54,7 @@ module.exports = {
 	createMarketInProgress,
 
 	outcomes,
-	orderIds,
-	bidsAsks,
+	marketOrderBooks,
 	accountTrades,
 	transactionsData
 };

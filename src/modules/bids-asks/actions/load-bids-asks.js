@@ -1,25 +1,14 @@
 import * as AugurJS from '../../../services/augurjs';
-import { updateOrderIds, updateOrder } from "./update-order";
+import { updateMarketOrderBook } from "./update-order";
 
 export function loadBidsAsks(marketID) {
 	return (dispatch, getState) => {
-		AugurJS.get_trade_ids(marketID, (orderIds) => {
-			if (orderIds == null || orderIds.error != null) {
-				return console.error(`load-bids-asks.js: get_trade_ids(${marketID}) error: %o`, orderIds);
+		AugurJS.getOrderBook(marketID, (marketOrderBook) => {
+			if (marketOrderBook == null || marketOrderBook.error != null) {
+				return console.error(`load-bids-asks.js: getOrderBook(${marketID}) error: %o`, marketOrderBook);
 				// todo: how do we handle failures in UI? retry ???
 			}
-			dispatch(updateOrderIds(marketID, orderIds));
-
-			// todo: dispatch update action per each order or batch it? What if one call times-out? Can this be fetched
-			// by one call?
-			orderIds.forEach(orderId => {
-				AugurJS.get_trade(orderId, order => {
-					if (order == null || order.error) {
-						return console.error(`load-bids-asks.js: get_trade(${orderId}) error: %o`, order);
-					}
-					dispatch(updateOrder(orderId, order));
-				});
-			});
+			dispatch(updateMarketOrderBook(marketID, marketOrderBook));
 		});
 	};
 }

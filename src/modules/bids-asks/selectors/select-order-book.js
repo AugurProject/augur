@@ -2,16 +2,15 @@ import memoizerific from 'memoizerific';
 
 import { formatShares, formatEther } from '../../../utils/format-number';
 
-export const selectOrderBook = memoizerific(100)((outcomeId, orderIds, orders) => {
-	if (orderIds == null || orders == null) {
+export const selectOrderBook = memoizerific(100)((outcomeId, marketOrderBook) => {
+	if (marketOrderBook == null) {
 		return {
 			bids: [],
 			asks: []
 		};
 	}
 
-	const outcomeBidsAsks = orderIds
-		.map(orderId => orders[orderId])
+	const outcomeBidsAsks = marketOrderBook.buy.concat(marketOrderBook.sell)
 		.filter(order => order != null && order.outcome === outcomeId);
 	return {
 		bids: outcomeBidsAsks

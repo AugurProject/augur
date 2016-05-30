@@ -1,5 +1,6 @@
 import { UPDATE_ORDER } from '../actions/update-order';
 
+// todo: delete this
 export default function (bidsAsks = {}, action) {
 	let newBidsAsks;
 	switch (action.type) {
