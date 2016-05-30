@@ -8,6 +8,7 @@ GLOBAL.scrypt = require("./lib/scrypt");
 GLOBAL.keccak = require("./lib/keccak");
 GLOBAL.uuid = require("node-uuid");
 GLOBAL._ = require("lodash");
+GLOBAL.assert = require("chai").assert;
 GLOBAL.chalk = require("chalk");
 GLOBAL.moment = require("moment");
 GLOBAL.EthTx = require("ethereumjs-tx");
