@@ -31,7 +31,6 @@ describe("Integration tests", function () {
                 var test = function (t) {
                     it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
                         this.timeout(tools.TIMEOUT*2);
-                        console.log("expDate event:", t.expDate);
                         augur.createEvent({
                             branchId: t.branch,
                             description: t.description,
@@ -41,12 +40,11 @@ describe("Integration tests", function () {
                             numOutcomes: t.numOutcomes,
                             resolution: t.resolution,
                             onSent: function (r) {
-                                console.log("createEvent:", r);
                                 assert(r.txHash);
                                 assert(r.callReturn);
                             },
                             onSuccess: function (r) {
-                                console.log("createEvent success:", r);
+                                // console.log("createEvent success:", r);
                                 var eventID = r.callReturn;
                                 assert.strictEqual(augur.getCreator(eventID), augur.from);
                                 assert.strictEqual(augur.getDescription(eventID), t.description);
@@ -60,12 +58,11 @@ describe("Integration tests", function () {
                                     extraInfo: t.extraInfo,
                                     events: events,
                                     onSent: function (res) {
-                                        console.log("createMarket sent:", res);
                                         assert(res.txHash);
                                         assert(res.callReturn);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("createMarket success:", res);
+                                        // console.log("createMarket success:", res);
                                         var marketID = res.marketID;
                                         assert.strictEqual(augur.getCreator(marketID), augur.from);
                                         assert.strictEqual(augur.getDescription(marketID), t.description);
@@ -74,7 +71,6 @@ describe("Integration tests", function () {
                                             assert.strictEqual(eventList.length, 1);
                                             assert.strictEqual(eventList[0], eventID);
                                             augur.getMarketInfo(marketID, function (info) {
-                                                console.log("info:", info);
                                                 if (info.error) return done(info);
                                                 assert.isArray(info.events);
                                                 assert.strictEqual(info.events.length, 1);

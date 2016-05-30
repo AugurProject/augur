@@ -72,7 +72,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             test({
                 branch: augur.branches.dev,
                 description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
-                expDate: new Date("1/2/2019").getTime(),
+                expDate: new Date("1/1/2019").getTime() / 1000,
                 minValue: 1,
                 maxValue: 2,
                 numOutcomes: 2,
@@ -86,7 +86,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
             test({
                 branch: augur.branches.dev,
                 description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
-                expDate: new Date("1/23/2017").getTime(),
+                expDate: new Date("1/2/2017").getTime() / 1000,
                 minValue: 10,
                 maxValue: 20,
                 numOutcomes: 4,

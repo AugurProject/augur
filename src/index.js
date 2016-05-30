@@ -75,7 +75,14 @@ Augur.prototype.sync = function (connector) {
     }
     return false;
 };
-
+Augur.prototype.updateContracts = function (newContracts) {
+    if (this.connector && this.connector.constructor === Object) {
+        this.connector.contracts = clone(newContracts);
+        this.connector.update_contracts();
+        return this.sync(this.connector);
+    }
+    return false;
+};
 Augur.prototype.connect = function (rpcinfo, ipcpath, cb) {
     if (!this.utils.is_function(cb)) {
         var connected = connector.connect(rpcinfo, ipcpath);
@@ -101,7 +108,6 @@ Augur.prototype.fire = function (tx, callback) {
     }
     return rpc.fire(tx, callback);
 };
-
 Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
     if (this.web && this.web.account && this.web.account.address) {
         tx.from = this.web.account.address;

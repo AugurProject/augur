@@ -139,18 +139,11 @@ module.exports = {
                         // text string
                         } else {
                             cat += new Buffer(x[i], "utf8").toString("hex");
-                            // cat += new Buffer(utf8.encode(new Buffer(x[i], "hex").toString("utf8")), "utf8").toString("hex");
                         }
                     }
                 }
             }
-            console.log("cat:", cat);
             return abi.prefix_hex(this.sha3(cat));
-            // digest = new BigNumber(this.sha3(cat), 16);
-            // if (digest.gt(new BigNumber(2).toPower(255))) {
-            //     return abi.hex(digest.sub(abi.constants.MOD));
-            // }
-            // return abi.hex(digest);
         }
         return abi.sha3(hashable);
     }
