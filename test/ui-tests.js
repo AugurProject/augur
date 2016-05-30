@@ -26,7 +26,7 @@ import transactionsTotals from './transactions/selectors/transactions-totals-tes
 import createMarketForm from './create-market/selectors/create-market-form-test';
 
 let selectors;
-describe('ui tests', () => {
+// describe('ui tests', () => {
 	proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -56,30 +56,30 @@ describe('ui tests', () => {
 		'./modules/create-market/selectors/create-market-form': createMarketForm
 	});
 
-	it(`should do some stuff`, () => {
-		console.log(selectors.activePage);
-		console.log(selectors.loginAccount);
-		console.log(selectors.links);
-		console.log(selectors.authForm);
-		console.log(selectors.marketsHeader);
-		console.log(selectors.markets);
-		console.log(selectors.allMarkets);
-		console.log(selectors.favoriteMarkets);
-		console.log(selectors.filteredMarkets);
-		console.log(selectors.unpaginatedMarkets);
-		console.log(selectors.marketsTotals);
-		console.log(selectors.pagination);
-		console.log(selectors.market);
-		console.log(selectors.filters);
-		console.log(selectors.searchSort);
-		console.log(selectors.keywords);
-		console.log(selectors.transactions);
-		console.log(selectors.transactionsTotals);
-		// isTransactionsWorking is a boolean so we don't need to bring in the test
-		// version
-		console.log(selectors.isTransactionsWorking);
-		console.log(selectors.createMarketForm);
-	});
-});
+	// it(`should do some stuff`, () => {
+	// 	console.log(selectors.activePage);
+	// 	console.log(selectors.loginAccount);
+	// 	console.log(selectors.links);
+	// 	console.log(selectors.authForm);
+	// 	console.log(selectors.marketsHeader);
+	// 	console.log(selectors.markets);
+	// 	console.log(selectors.allMarkets);
+	// 	console.log(selectors.favoriteMarkets);
+	// 	console.log(selectors.filteredMarkets);
+	// 	console.log(selectors.unpaginatedMarkets);
+	// 	console.log(selectors.marketsTotals);
+	// 	console.log(selectors.pagination);
+	// 	console.log(selectors.market);
+	// 	console.log(selectors.filters);
+	// 	console.log(selectors.searchSort);
+	// 	console.log(selectors.keywords);
+	// 	console.log(selectors.transactions);
+	// 	console.log(selectors.transactionsTotals);
+	// 	// isTransactionsWorking is a boolean so we don't need to bring in the test
+	// 	// version
+	// 	console.log(selectors.isTransactionsWorking);
+	// 	console.log(selectors.createMarketForm);
+	// });
+// });
 
 export default selectors;
