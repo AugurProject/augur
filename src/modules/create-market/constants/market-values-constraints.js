@@ -17,6 +17,7 @@ export const EXPIRY_SOURCE_SPECIFIC = 'specific';
 export const TRADING_FEE_MIN = 1;
 export const TRADING_FEE_MAX = 12.5;
 export const TRADING_FEE_DEFAULT = 2;
+export const MAKER_FEE_DEFAULT = 0.5;
 
 export const INITIAL_LIQUIDITY_MIN = 50;
 export const INITIAL_LIQUIDITY_DEFAULT = 500;

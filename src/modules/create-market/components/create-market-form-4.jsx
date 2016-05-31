@@ -6,8 +6,9 @@ import Input from '../../common/components/input';
 
 module.exports = React.createClass({
 	propTypes: {
-		tradingFeePercent: React.PropTypes.any,
-		initialLiquidity: React.PropTypes.any,
+		tradingFeePercent: React.PropTypes.number,
+		makerFeePercent: React.PropTypes.number,
+		initialLiquidity: React.PropTypes.number,
 
 		errors: React.PropTypes.object,
 
@@ -27,7 +28,7 @@ module.exports = React.createClass({
 					</p>
 
 					<Input
-						type="text"
+						type="number"
 						value={ p.tradingFeePercent }
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ tradingFeePercent: value }) } />
@@ -36,6 +37,24 @@ module.exports = React.createClass({
 
 					{ p.errors.tradingFeePercent &&
 						<span className="error-message">{ p.errors.tradingFeePercent }</span>
+					}
+				</div>
+				<div className="fee">
+					<h4>Set the maker's share of the trading fee</h4>
+					<p>
+						The Maker Fee is the percentage split the 'Maker' of an order must pay of the trading fee with the remaining percentage being paid by the 'Taker'.
+					</p>
+
+					<Input
+						type="number"
+						value = { p.makerFeePercent }
+						isClearable={ false }
+						onChange={ (value) => p.onValuesUpdated({ makerFeePercent: value }) }
+					/>
+					<span className="denomination">%</span>
+
+					{ p.errors.makerFeePercent &&
+						<span className="error-message">{ p.errors.makerFeePercent }</span>
 					}
 				</div>
 				<div className="liquidity">
@@ -48,7 +67,7 @@ module.exports = React.createClass({
 						Maker from selling shares).
 					</p>
 					<Input
-						type="text"
+						type="number"
 						value={ p.initialLiquidity }
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ initialLiquidity: value }) } />
