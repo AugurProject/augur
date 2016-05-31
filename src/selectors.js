@@ -111,7 +111,8 @@ selectors.createMarketForm =  {
 			...selectors.createMarketForm,
 			...newValues
 		}
-	})
+	}),
+	isValid: true
 };
 
 module.exports = selectors;
