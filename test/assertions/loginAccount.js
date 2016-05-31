@@ -1,4 +1,4 @@
-import {assert} from 'chai';
+var assert = require('chai').assert;
 // loginAccount:
 //  { id: String,
 //    handle: String,
@@ -26,7 +26,7 @@ import {assert} from 'chai';
 //       minimized: String,
 //       full: String,
 //       denomination: 'eth' } },
-const loginAccountAssertion = (actual) => {
+function loginAccountAssertion(actual) {
 	// loginAccount overall
 	assert.isDefined(actual, `loginAccount isn't defined`);
 	assert.isObject(actual, `loginAccount isn't an object`);
@@ -97,4 +97,4 @@ const loginAccountAssertion = (actual) => {
 	// assert.equal(actual.realEther.denomination, 'eth', `loginAccount.realEther.denomination isn't 'eth'`);
 }
 
-export default loginAccountAssertion;
+module.exports = loginAccountAssertion;

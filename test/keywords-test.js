@@ -1,29 +1,14 @@
-import {assert} from 'chai';
+import selectors from '../src/selectors';
+import keywordsAssertion from './assertions/keywords';
 
-const selectorsLocation =
-process.env.selectors ? process.env.selectors : '../src/selectors';
-let selectors = require(selectorsLocation);
-process.env.selectors ? selectors = selectors.default : selectors;
-
-describe(`seletors.keywords tests:`, () => {
-	if (selectors.keywords) {
-		// keywords: {
-		// 		value: String,
-		// 		onChangeKeywords: [Function: onChangeKeywords]
-		// },
-		it(`should contain a keywords object with the correct shape`, () => {
-			let actual = selectors.keywords;
-			console.log(actual);
-			assert.isDefined(actual, `keywords isn't defined`);
-			assert.isObject(actual, `keywords isn't an object`);
-			assert.isDefined(actual.value, `keywords.value isn't defined`);
-			assert.isString(actual.value, `keywords.value isn't a string`);
-			assert.isDefined(actual.onChangeKeywords, `keywords.onChangeKeywords isn't defined`);
-			assert.isFunction(actual.onChangeKeywords, `keywords.onChangeKeywords isn't a function`);
-		});
-	} else {
-		console.log(`
-- selectors.keywords isn't defined.
-	- skipping keywords tests.`);
-	}
+describe(`selectors.keywords tests:`, () => {
+	// keywords: {
+	// 		value: String,
+	// 		onChangeKeywords: [Function: onChangeKeywords]
+	// },
+	it(`should contain a keywords object with the correct shape`, () => {
+		let actual = selectors.keywords;
+		keywordsAssertion(actual);
+		// console.log(actual);
+	});
 });
