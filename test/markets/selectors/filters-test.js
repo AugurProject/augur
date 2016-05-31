@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import filteredMarkets from './markets-filtered-test';
 
 let filters;
 describe(`modules/markets/selectors/filters.js`, () => {
@@ -18,7 +19,9 @@ describe(`modules/markets/selectors/filters.js`, () => {
 	let mockFilter = {
 		toggleFilter: () => {}
 	};
-	let mockTag = { toggleTag: () => {}};
+	let mockTag = {
+		toggleTag: () => {}
+	};
 	sinon.stub(mockFilter, 'toggleFilter', (arg) => {
 		return {
 			type: 'TOGGLE_FILTER',
@@ -32,11 +35,16 @@ describe(`modules/markets/selectors/filters.js`, () => {
 		};
 		return obj;
 	});
+	let markets = filteredMarkets();
+	let mockSelector = {
+		filteredMarkets: markets
+	};
 
 	selector = proxyquire('../../../src/modules/markets/selectors/filters.js', {
 		'../../../store': store,
 		'../../markets/actions/toggle-filter': mockFilter,
-		'../../markets/actions/toggle-tag': mockTag
+		'../../markets/actions/toggle-tag': mockTag,
+		'../../../selectors': mockSelector
 	});
 
 	filters = selector.default;
@@ -50,19 +58,19 @@ describe(`modules/markets/selectors/filters.js`, () => {
 			options: [{
 				name: 'Open',
 				value: 'Open',
-				numMatched: 0,
+				numMatched: 2,
 				isSelected: true,
 				onClick: test[0].options[0].onClick
 			}, {
 				name: 'Expired',
 				value: 'Expired',
-				numMatched: 0,
+				numMatched: 2,
 				isSelected: false,
 				onClick: test[0].options[1].onClick
 			}, {
 				name: 'Reported / Missed',
 				value: 'Reported / Missed',
-				numMatched: 0,
+				numMatched: 2,
 				isSelected: false,
 				onClick: test[0].options[2].onClick
 			}]
@@ -87,6 +95,22 @@ describe(`modules/markets/selectors/filters.js`, () => {
 				numMatched: 0,
 				isSelected: false,
 				onClick: test[1].options[2].onClick
+			}]
+		}, {
+			className: 'tags',
+			title: 'Tags',
+			options: [{
+				isSelected: true,
+				name: 'tag',
+				numMatched: 2,
+				onClick: test[2].options[0].onClick,
+				value: 'tag'
+			}, {
+				isSelected: true,
+				name: 'testtag',
+				numMatched: 2,
+				onClick: test[2].options[1].onClick,
+				value: 'testtag'
 			}]
 		}];
 

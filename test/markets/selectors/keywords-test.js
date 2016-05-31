@@ -14,7 +14,7 @@ describe('modules/markets/selectors/keywords.js', () => {
 	const mockStore = configureMockStore(middlewares);
 	let store, selector, out, test;
 	let state = Object.assign({}, testState, {
-		keywords: ['test', 'example', 'foobar']
+		keywords: `test, example`
 	});
 	store = mockStore(state);
 	let mockUpdate = {
