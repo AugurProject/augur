@@ -16,10 +16,6 @@ module.exports = React.createClass({
 		tagsMaxNum: React.PropTypes.number,
 		tagMaxLength: React.PropTypes.number,
 
-		resources: React.PropTypes.array,
-		resourcesMaxNum: React.PropTypes.number,
-		resourceMaxLength: React.PropTypes.number,
-
 		description: React.PropTypes.string,
 		detailsText: React.PropTypes.string,
 
@@ -98,24 +94,6 @@ module.exports = React.createClass({
 						placeholder="Optional: enter a more detailed description of your market."
 						onChange={ (value) => p.onValuesUpdated({ detailsText: value }) } />
 				</div>
-
-				<div className="resources">
-					<h4>Are there any helpful links you want to add? (optional)</h4>
-					<p>
-						For example, if your question is about an election you could link to polling information or
-						the webpages of candidates.
-					</p>
-
-					<InputList className="resources-list"
-						list={ p.resources }
-						errors={ p.errors && p.errors.resources }
-
-						listMaxElements={ p.resourcesMaxNum }
-						itemMaxLength={ p.resourceMaxLength }
-
-						onChange={ (newResources) => p.onValuesUpdated({ resources: newResources }) } />
-				</div>
-
 
 				<FormButtons
 					disabled={ !p.isValid }
