@@ -540,7 +540,7 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     return marketInfo;
 };
 Augur.prototype.getMarketsInfo = function (options, callback) {
-    // options: {branch, offset, numMarketsToLoad, combinatorial, callback}
+    // options: {branch, offset, numMarketsToLoad, callback}
     var self = this;
     if (this.utils.is_function(options) && !callback) {
         callback = options;
@@ -553,25 +553,15 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
     if (!callback && this.utils.is_function(options.callback)) {
         callback = options.callback;
     }
-    var parseMarketsOptions = {combinatorial: options.combinatorial};
     var tx = clone(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
     tx.timeout = 240000;
-    return this.fire(tx, callback);
-    // if (!callback) {
-    //     return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
-    // }
-    // var count = 0;
-    // var cb = function (marketsArray) {
-    //     if (typeof marketsArray === "object" &&
-    //         marketsArray.error === 500 && ++count < 4) {
-    //         return self.fire(tx, cb);
-    //     } else if (marketsArray.error) {
-    //         return callback(marketsArray);
-    //     }        
-    //     self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
-    // };
-    // this.fire(tx, cb);
+    if (!this.utils.is_function(callback)) {
+        return this.parseMarketsArray(this.fire(tx));
+    }
+    this.fire(tx, function (marketsArray) {
+        callback(self.parseMarketsArray(marketsArray));
+    });
 };
 Augur.prototype.getMarketEvents = function (market, callback) {
     // market: sha256 hash id
@@ -1534,26 +1524,37 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     if (!this.utils.is_function(callback)) return info;
     callback(info);
 };
-Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
-    var numMarkets, marketsInfo, totalLen, i, len, shift, rawInfo, marketID;
+Augur.prototype.parseMarketsArray = function (marketsArray) {
+    var numMarkets, marketsInfo, totalLen, len, shift, rawInfo, marketID;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
         return marketsArray;
     }
     numMarkets = parseInt(marketsArray.shift());
     marketsInfo = {};
     totalLen = 0;
-    for (i = 0; i < numMarkets; ++i) {
-        len = parseInt(marketsArray[i]);
-        shift = numMarkets + totalLen;
+    for (var i = 0; i < numMarkets; ++i) {
+        len = parseInt(marketsArray[totalLen]);
+        shift = totalLen + 1;
         rawInfo = marketsArray.slice(shift, shift + len);
         marketID = marketsArray[shift];
-        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options || {});
-        marketsInfo[marketID]._id = marketID;
-        marketsInfo[marketID].sortOrder = i;
+        marketsInfo[marketID] = {
+            _id: marketID,
+            sortOrder: i,
+            tradingPeriod: parseInt(marketsArray[shift + 1]),
+            tradingFee: abi.unfix(marketsArray[shift + 2], "string"),
+            creationTime: parseInt(marketsArray[shift + 3]),
+            volume: abi.unfix(marketsArray[shift + 4], "string"),
+            tags: [
+                this.decodeTag(marketsArray[shift + 5]),
+                this.decodeTag(marketsArray[shift + 6]),
+                this.decodeTag(marketsArray[shift + 7])
+            ],
+            endDate: parseInt(marketsArray[shift + 8]),
+            description: abi.bytes_to_utf16(marketsArray.slice(shift + 9, shift + len - 1))
+        };
         totalLen += len;
     }
-    if (!callback) return marketsInfo;
-    callback(marketsInfo);
+    return marketsInfo;
 };
 Augur.prototype.getCurrentPeriod = function (branch, callback) {
     if (!callback) {
