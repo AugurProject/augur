@@ -300,8 +300,8 @@ describe("Integration tests", function () {
                                             });
                                         }, function (x) {
                                             // rpc.miner("stop");
-                                            rpc.personal("lockAccount", accounts[0]);
-                                            rpc.personal("lockAccount", accounts[1]);
+                                            // rpc.personal("lockAccount", accounts[0]);
+                                            // rpc.personal("lockAccount", accounts[1]);
                                             if (x && x.callReturn) return done();
                                             done(x);
                                         });

@@ -927,7 +927,7 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
         oracleOnly: oracleOnly,
         onSent: onSent,
         onSuccess: function (response) {
-            response.branchID = self.utils.sha256([
+            response.branchID = self.utils.sha3([
                 0,
                 response.from,
                 "0x2f0000000000000000",
@@ -936,7 +936,7 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
                 abi.hex(parent),
                 parseInt(abi.fix(tradingFee, "hex")),
                 oracleOnly,
-                description
+                utf8.encode(description)
             ]);
             onSuccess(response);
         },
@@ -1040,7 +1040,7 @@ Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, i
     } else {
         fixedReport = abi.fix(report, "hex");
     }
-    return abi.hex(this.utils.sha256([
+    return abi.hex(this.utils.sha3([
         from || this.from,
         abi.hex(salt),
         fixedReport,
