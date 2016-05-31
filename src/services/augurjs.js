@@ -153,7 +153,6 @@ function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, c
 			return marketsData[key].creationSortOrder;
 		});
 
-
 		chunkCB(null, marketsData);
 
 		if (isDesc && startIndex > 0) {
