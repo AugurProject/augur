@@ -16,92 +16,92 @@ var augurpath = "../../src/index";
 var runner = require("../runner");
 var tools = require("../tools");
 
-// describe("Unit tests", function () {
-//     describe("eth_call", function () {
-//         runner(this.title, [{
-//             method: "get_trade_ids",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getVolume",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getForkSelection",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getMarketInfo",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getMarketEvents",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getNumEvents",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getBranchID",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getCurrentParticipantNumber",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getMarketNumOutcomes",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getCumScale",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getTradingPeriod",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getTradingFee",
-//             parameters: ["hash"]
-//         }, {
-//             method: "getWinningOutcomes",
-//             parameters: ["hash"]
-//         }, {
-//             method: "initialLiquidityAmount",
-//             parameters: ["hash", "int"]
-//         }, {
-//             method: "initialLiquidityAmount",
-//             parameters: ["hash", "intString"]
-//         }, {
-//             method: "initialLiquidityAmount",
-//             parameters: ["hash", "intHexString"]
-//         }, {
-//             method: "getSharesPurchased",
-//             parameters: ["hash", "int"]
-//         }, {
-//             method: "getSharesPurchased",
-//             parameters: ["hash", "intString"]
-//         }, {
-//             method: "getSharesPurchased",
-//             parameters: ["hash", "intHexString"]
-//         }, {
-//             method: "getParticipantSharesPurchased",
-//             parameters: ["hash", "int", "int"]
-//         }, {
-//             method: "getParticipantSharesPurchased",
-//             parameters: ["hash", "intString", "intString"]
-//         }, {
-//             method: "getParticipantSharesPurchased",
-//             parameters: ["hash", "intHexString", "intHexString"]
-//         }, {
-//             method: "getParticipantID",
-//             parameters: ["hash", "int"]
-//         }, {
-//             method: "getParticipantID",
-//             parameters: ["hash", "intString"]
-//         }, {
-//             method: "getParticipantID",
-//             parameters: ["hash", "intHexString"]
-//         }]);
-//     });
-//     describe("eth_sendTransaction", function () {
-//         runner(this.title, [{
-//             method: "modifyShares",
-//             parameters: ["hash", "int", "fixed"]
-//         }]);
-//     });
-// });
+describe("Unit tests", function () {
+    describe("eth_call", function () {
+        runner(this.title, [{
+            method: "get_trade_ids",
+            parameters: ["hash"]
+        }, {
+            method: "getVolume",
+            parameters: ["hash"]
+        }, {
+            method: "getForkSelection",
+            parameters: ["hash"]
+        }, {
+            method: "getMarketInfo",
+            parameters: ["hash"]
+        }, {
+            method: "getMarketEvents",
+            parameters: ["hash"]
+        }, {
+            method: "getNumEvents",
+            parameters: ["hash"]
+        }, {
+            method: "getBranchID",
+            parameters: ["hash"]
+        }, {
+            method: "getCurrentParticipantNumber",
+            parameters: ["hash"]
+        }, {
+            method: "getMarketNumOutcomes",
+            parameters: ["hash"]
+        }, {
+            method: "getCumScale",
+            parameters: ["hash"]
+        }, {
+            method: "getTradingPeriod",
+            parameters: ["hash"]
+        }, {
+            method: "getTradingFee",
+            parameters: ["hash"]
+        }, {
+            method: "getWinningOutcomes",
+            parameters: ["hash"]
+        }, {
+            method: "initialLiquidityAmount",
+            parameters: ["hash", "int"]
+        }, {
+            method: "initialLiquidityAmount",
+            parameters: ["hash", "intString"]
+        }, {
+            method: "initialLiquidityAmount",
+            parameters: ["hash", "intHexString"]
+        }, {
+            method: "getSharesPurchased",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getSharesPurchased",
+            parameters: ["hash", "intString"]
+        }, {
+            method: "getSharesPurchased",
+            parameters: ["hash", "intHexString"]
+        }, {
+            method: "getParticipantSharesPurchased",
+            parameters: ["hash", "int", "int"]
+        }, {
+            method: "getParticipantSharesPurchased",
+            parameters: ["hash", "intString", "intString"]
+        }, {
+            method: "getParticipantSharesPurchased",
+            parameters: ["hash", "intHexString", "intHexString"]
+        }, {
+            method: "getParticipantID",
+            parameters: ["hash", "int"]
+        }, {
+            method: "getParticipantID",
+            parameters: ["hash", "intString"]
+        }, {
+            method: "getParticipantID",
+            parameters: ["hash", "intHexString"]
+        }]);
+    });
+    describe("eth_sendTransaction", function () {
+        runner(this.title, [{
+            method: "modifyShares",
+            parameters: ["hash", "int", "fixed"]
+        }]);
+    });
+});
 
 describe("Integration tests", function () {
 
@@ -155,19 +155,19 @@ describe("Integration tests", function () {
                 var output = augur[method].apply(augur, params);
                 test(errorCheck(output, done));
             });
-            // if (augur.tx[method]) {
-            //     it("batch", function (done) {
-            //         this.timeout(tools.TIMEOUT);
-            //         var batch = augur.createBatch();
-            //         batch.add(method, params, function (output) {
-            //             test(errorCheck(output));
-            //         });
-            //         batch.add(method, params, function (output) {
-            //             test(errorCheck(output, done));
-            //         });
-            //         batch.execute();
-            //     });
-            // }
+            if (augur.tx[method] && !augur.rpc.wsUrl) {
+                it("batch", function (done) {
+                    this.timeout(tools.TIMEOUT);
+                    var batch = augur.createBatch();
+                    batch.add(method, params, function (output) {
+                        test(errorCheck(output));
+                    });
+                    batch.add(method, params, function (output) {
+                        test(errorCheck(output, done));
+                    });
+                    batch.execute();
+                });
+            }
         });
     };
 
@@ -264,153 +264,153 @@ describe("Integration tests", function () {
     before(function () {
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     });
-    // describe("getMarketInfo", function () {
-    //     var test = function (t) {
-    //         testMarketInfo(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getOrderBook", function () {
-    //     var test = function (t) {
-    //         assert.isObject(t.output);
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getMarketEvents", function () {
-    //     var test = function (t) {
-    //         assert.isArray(t.output);
-    //         assert.isAbove(t.output.length, 0);
-    //         assert.isBelow(t.output.length, 4);
-    //         async.each(t.output, function (event, nextEvent) {
-    //             augur.getDescription(event, function (desc) {
-    //                 if (desc.error) return nextEvent(desc);
-    //                 assert.isString(desc);
-    //                 assert.isAbove(desc.length, 0);
-    //                 nextEvent();
-    //             });
-    //         }, t.done);
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getNumEvents", function () {
-    //     var test = function (t) {
-    //         var output = parseInt(t.output);
-    //         assert.isNumber(output);
-    //         assert.isAbove(output, 0);
-    //         assert.isBelow(output, 4);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getBranchID", function () {
-    //     var test = function (t) {
-    //         assert.strictEqual(abi.hex(t.output), abi.hex(augur.branches.dev));
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getCurrentParticipantNumber", function () {
-    //     var test = function (t) {
-    //         tools.gteq0(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getMarketNumOutcomes", function () {
-    //     var test = function (t) {
-    //         assert.isAbove(parseInt(t.output), 1);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getParticipantSharesPurchased", function () {
-    //     var test = function (t) {
-    //         tools.gteq0(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i], traderIndex, outcome);
-    //     }
-    // });
-    // describe("getSharesPurchased", function () {
-    //     var test = function (t) {
-    //         tools.gteq0(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i], outcome);
-    //     }
-    // });
-    // describe("getWinningOutcomes", function () {
-    //     var test = function (t) {
-    //         assert.isArray(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getParticipantNumber", function () {
-    //     var test = function (t) {
-    //         tools.gteq0(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i], accounts[0]);
-    //     }
-    // });
-    // describe("getParticipantID", function () {
-    //     var test = function (t) {
-    //         tools.gteq0(t.output);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i], traderIndex);
-    //     }
-    // });
-    // describe("getCumScale", function () {
-    //     var test = function (t) {
-    //         assert.isAbove(abi.number(t.output), 0);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getTradingPeriod", function () {
-    //     var test = function (t) {
-    //         assert.isAbove(abi.number(t.output), -2);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
-    // describe("getTradingFee", function () {
-    //     var test = function (t) {
-    //         var output = t.output;
-    //         assert.isAbove(abi.number(output), 0);
-    //         t.done();
-    //     };
-    //     for (var i = 0; i < numMarkets; ++i) {
-    //         runtests(this.title, test, markets[i]);
-    //     }
-    // });
+    describe("getMarketInfo", function () {
+        var test = function (t) {
+            testMarketInfo(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getOrderBook", function () {
+        var test = function (t) {
+            assert.isObject(t.output);
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getMarketEvents", function () {
+        var test = function (t) {
+            assert.isArray(t.output);
+            assert.isAbove(t.output.length, 0);
+            assert.isBelow(t.output.length, 4);
+            async.each(t.output, function (event, nextEvent) {
+                augur.getDescription(event, function (desc) {
+                    if (desc.error) return nextEvent(desc);
+                    assert.isString(desc);
+                    assert.isAbove(desc.length, 0);
+                    nextEvent();
+                });
+            }, t.done);
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getNumEvents", function () {
+        var test = function (t) {
+            var output = parseInt(t.output);
+            assert.isNumber(output);
+            assert.isAbove(output, 0);
+            assert.isBelow(output, 4);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getBranchID", function () {
+        var test = function (t) {
+            assert.strictEqual(abi.hex(t.output), abi.hex(augur.branches.dev));
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getCurrentParticipantNumber", function () {
+        var test = function (t) {
+            tools.gteq0(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getMarketNumOutcomes", function () {
+        var test = function (t) {
+            assert.isAbove(parseInt(t.output), 1);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getParticipantSharesPurchased", function () {
+        var test = function (t) {
+            tools.gteq0(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i], traderIndex, outcome);
+        }
+    });
+    describe("getSharesPurchased", function () {
+        var test = function (t) {
+            tools.gteq0(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i], outcome);
+        }
+    });
+    describe("getWinningOutcomes", function () {
+        var test = function (t) {
+            assert.isArray(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getParticipantNumber", function () {
+        var test = function (t) {
+            tools.gteq0(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i], accounts[0]);
+        }
+    });
+    describe("getParticipantID", function () {
+        var test = function (t) {
+            tools.gteq0(t.output);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i], traderIndex);
+        }
+    });
+    describe("getCumScale", function () {
+        var test = function (t) {
+            assert.isAbove(abi.number(t.output), 0);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getTradingPeriod", function () {
+        var test = function (t) {
+            assert.isAbove(abi.number(t.output), -2);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
+    describe("getTradingFee", function () {
+        var test = function (t) {
+            var output = t.output;
+            assert.isAbove(abi.number(output), 0);
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
     describe("getMarketsInfo", function () {
         var test = function (info, options, done) {
             if (utils.is_function(options) && !done) {

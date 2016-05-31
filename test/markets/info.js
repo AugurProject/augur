@@ -66,16 +66,18 @@ describe("Integration tests", function () {
                     test(r); done();
                 });
             });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getCreator", [eventID], function (r) {
-                    test(r);
+            if (!augur.rpc.wsUrl) {
+                it("batched-async", function (done) {
+                    var batch = augur.createBatch();
+                    batch.add("getCreator", [eventID], function (r) {
+                        test(r);
+                    });
+                    batch.add("getCreator", [eventID], function (r) {
+                        test(r); done();
+                    });
+                    batch.execute();
                 });
-                batch.add("getCreator", [eventID], function (r) {
-                    test(r); done();
-                });
-                batch.execute();
-            });
+            }
         });
         describe("getCreator(" + marketID + ") [market]", function () {
             var test = function (r) {
@@ -89,16 +91,18 @@ describe("Integration tests", function () {
                     test(r); done();
                 });
             });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getCreator", [marketID], function (r) {
-                    test(r);
+            if (!augur.rpc.wsUrl) {
+                it("batched-async", function (done) {
+                    var batch = augur.createBatch();
+                    batch.add("getCreator", [marketID], function (r) {
+                        test(r);
+                    });
+                    batch.add("getCreator", [marketID], function (r) {
+                        test(r); done();
+                    });
+                    batch.execute();
                 });
-                batch.add("getCreator", [marketID], function (r) {
-                    test(r); done();
-                });
-                batch.execute();
-            });
+            }
         });
         describe("getCreationFee(" + marketID + ") [event]", function () {
             var test = function (r) {
@@ -112,16 +116,18 @@ describe("Integration tests", function () {
                     test(r); done();
                 });
             });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getCreationFee", [marketID], function (r) {
-                    test(r);
+            if (!augur.rpc.wsUrl) {
+                it("batched-async", function (done) {
+                    var batch = augur.createBatch();
+                    batch.add("getCreationFee", [marketID], function (r) {
+                        test(r);
+                    });
+                    batch.add("getCreationFee", [marketID], function (r) {
+                        test(r); done();
+                    });
+                    batch.execute();
                 });
-                batch.add("getCreationFee", [marketID], function (r) {
-                    test(r); done();
-                });
-                batch.execute();
-            });
+            }
         });
         describe("getCreationFee(" + marketID + ") [market]", function () {
             var test = function (r) {
@@ -135,16 +141,18 @@ describe("Integration tests", function () {
                     test(r); done();
                 });
             });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getCreationFee", [marketID], function (r) {
-                    test(r);
+            if (!augur.rpc.wsUrl) {
+                it("batched-async", function (done) {
+                    var batch = augur.createBatch();
+                    batch.add("getCreationFee", [marketID], function (r) {
+                        test(r);
+                    });
+                    batch.add("getCreationFee", [marketID], function (r) {
+                        test(r); done();
+                    });
+                    batch.execute();
                 });
-                batch.add("getCreationFee", [marketID], function (r) {
-                    test(r); done();
-                });
-                batch.execute();
-            });
+            }
         });
         describe("getDescription(" + eventID + ")", function () {
             var test = function (r) {
@@ -158,16 +166,18 @@ describe("Integration tests", function () {
                     test(r); done();
                 });
             });
-            it("batched-async", function (done) {
-                var batch = augur.createBatch();
-                batch.add("getDescription", [eventID], function (r) {
-                    test(r);
+            if (!augur.rpc.wsUrl) {
+                it("batched-async", function (done) {
+                    var batch = augur.createBatch();
+                    batch.add("getDescription", [eventID], function (r) {
+                        test(r);
+                    });
+                    batch.add("getDescription", [eventID], function (r) {
+                        test(r); done();
+                    });
+                    batch.execute();
                 });
-                batch.add("getDescription", [eventID], function (r) {
-                    test(r); done();
-                });
-                batch.execute();
-            });
+            }
         });
     });
 
