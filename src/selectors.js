@@ -103,6 +103,15 @@ selectors.pagination = {
 	})
 };
 
-selectors.createMarketForm =  {};
+selectors.createMarketForm =  {
+	step: 1,
+	errors: {},
+	onValuesUpdated: (newValues) => module.exports.update({
+		createMarketForm: {
+			...selectors.createMarketForm,
+			...newValues
+		}
+	})
+};
 
 module.exports = selectors;
