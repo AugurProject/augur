@@ -13,7 +13,7 @@ describe(`selector.filters tests:`, () => {
 		// 	{ title: 'Tags', options: [ Object, ... ] } ],
 		it(`should contain a filters array with the correct shape`, () => {
 			let actual = selectors.filters;
-			console.log(actual);
+			// console.log(actual);
 			assert.isDefined(actual, `filters isn't defined`);
 			assert.isArray(actual, `filters isn't an array`);
 			assert.equal(actual.length, 3, `filters array isn't the expected length`);
@@ -63,25 +63,25 @@ describe(`selector.filters tests:`, () => {
 			assert.equal(actual.title, 'Type', `filters[1].title should equal 'Status'`);
 			assert.isDefined(actual.options, `filters[1].options isn't defined`);
 			assert.isArray(actual.options, `filters[1].options isn't an array`);
-			assert.isDefined(actual.options[1], `filters[1].options[1] isn't defined`);
-			assert.isObject(actual.options[1], `filters[1].options[1] isn't an object`);
+			assert.isDefined(actual.options[0], `filters[1].options[0] isn't defined`);
+			assert.isObject(actual.options[0], `filters[1].options[0] isn't an object`);
 		});
 
-		it(`filters[1].options[1] should be the correct shape`, () => {
-			let actual = selectors.filters[1].options[1];
+		it(`filters[1].options[0] should be the correct shape`, () => {
+			let actual = selectors.filters[1].options[0];
 
-			assert.isDefined(actual, `[1].options[1] isn't defined`);
-			assert.isObject(actual, `[1].options[1] isn't a object`);
-			assert.isDefined(actual.name, `[1].options[1].name isn't defined`);
-			assert.isString(actual.name, `[1].options[1].name isn't a string`);
-			assert.isDefined(actual.value, `[1].options[1].value isn't defined`);
-			assert.isString(actual.value, `[1].options[1].value isn't a string`);
-			assert.isDefined(actual.numMatched, `[1].options[1].numMatched isn't defined`);
-			assert.isNumber(actual.numMatched, `[1].options[1].numMatched isn't a number`);
-			assert.isDefined(actual.isSelected, `[1].options[1].isSelected isn't defined`);
-			assert.isBoolean(actual.isSelected, `[1].options[1].isSelected isn't a boolean`);
-			assert.isDefined(actual.onClick, `[1].options[1].onClick isn't defined`);
-			assert.isFunction(actual.onClick, `[1].options[1].onClick isn't a function`);
+			assert.isDefined(actual, `[1].options[0] isn't defined`);
+			assert.isObject(actual, `[1].options[0] isn't a object`);
+			assert.isDefined(actual.name, `[1].options[0].name isn't defined`);
+			assert.isString(actual.name, `[1].options[0].name isn't a string`);
+			assert.isDefined(actual.value, `[1].options[0].value isn't defined`);
+			assert.isString(actual.value, `[1].options[0].value isn't a string`);
+			assert.isDefined(actual.numMatched, `[1].options[0].numMatched isn't defined`);
+			assert.isNumber(actual.numMatched, `[1].options[0].numMatched isn't a number`);
+			assert.isDefined(actual.isSelected, `[1].options[0].isSelected isn't defined`);
+			assert.isBoolean(actual.isSelected, `[1].options[0].isSelected isn't a boolean`);
+			assert.isDefined(actual.onClick, `[1].options[0].onClick isn't defined`);
+			assert.isFunction(actual.onClick, `[1].options[0].onClick isn't a function`);
 		});
 
 		it(`filters should contain a Tags object with correct shape`, () => {
@@ -94,25 +94,25 @@ describe(`selector.filters tests:`, () => {
 			assert.equal(actual.title, 'Tags', `filters[2].title should equal 'Status'`);
 			assert.isDefined(actual.options, `filters[2].options isn't defined`);
 			assert.isArray(actual.options, `filters[2].options isn't an array`);
-			assert.isDefined(actual.options[2], `filters[2].options[2] isn't defined`);
-			assert.isObject(actual.options[2], `filters[2].options[2] isn't an object`);
+			assert.isDefined(actual.options[0], `filters[2].options[0] isn't defined`);
+			assert.isObject(actual.options[0], `filters[2].options[0] isn't an object`);
 		});
 
-		it(`filters[2].options[2] should be the correct shape`, () => {
-			let actual = selectors.filters[2].options[2];
+		it(`filters[2].options[0] should be the correct shape`, () => {
+			let actual = selectors.filters[2].options[0];
 
-			assert.isDefined(actual, `[2].options[2] isn't defined`);
-			assert.isObject(actual, `[2].options[2] isn't a object`);
-			assert.isDefined(actual.name, `[2].options[2].name isn't defined`);
-			assert.isString(actual.name, `[2].options[2].name isn't a string`);
-			assert.isDefined(actual.value, `[2].options[2].value isn't defined`);
-			assert.isString(actual.value, `[2].options[2].value isn't a string`);
-			assert.isDefined(actual.numMatched, `[2].options[2].numMatched isn't defined`);
-			assert.isNumber(actual.numMatched, `[2].options[2].numMatched isn't a number`);
-			assert.isDefined(actual.isSelected, `[2].options[2].isSelected isn't defined`);
-			assert.isBoolean(actual.isSelected, `[2].options[2].isSelected isn't a boolean`);
-			assert.isDefined(actual.onClick, `[2].options[2].onClick isn't defined`);
-			assert.isFunction(actual.onClick, `[2].options[2].onClick isn't a function`);
+			assert.isDefined(actual, `[2].options[0] isn't defined`);
+			assert.isObject(actual, `[2].options[0] isn't a object`);
+			assert.isDefined(actual.name, `[2].options[0].name isn't defined`);
+			assert.isString(actual.name, `[2].options[0].name isn't a string`);
+			assert.isDefined(actual.value, `[2].options[0].value isn't defined`);
+			assert.isString(actual.value, `[2].options[0].value isn't a string`);
+			assert.isDefined(actual.numMatched, `[2].options[0].numMatched isn't defined`);
+			assert.isNumber(actual.numMatched, `[2].options[0].numMatched isn't a number`);
+			assert.isDefined(actual.isSelected, `[2].options[0].isSelected isn't defined`);
+			assert.isBoolean(actual.isSelected, `[2].options[0].isSelected isn't a boolean`);
+			assert.isDefined(actual.onClick, `[2].options[0].onClick isn't defined`);
+			assert.isFunction(actual.onClick, `[2].options[0].onClick isn't a function`);
 		});
 	} else {
 		console.log(`
