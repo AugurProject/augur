@@ -1,3 +1,5 @@
+// NOTE -- This file is no longer used.
+
 import { PENDING, SUCCESS, FAILED, CREATING_MARKET } from '../modules/transactions/constants/statuses';
 
 var ex = {},
