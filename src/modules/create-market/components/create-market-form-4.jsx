@@ -136,6 +136,8 @@ module.exports = React.createClass({
 
 	renderFairPriceInputs: (p) => {
 		let inputs = [],
+			binaryLabels = ['Yes', 'No'],
+			scalarLabels = ['⇧', '⇩'],
 			baseInput = i => <Input
 								type="number"
 								value={ p.initialFairPrice[i] }
@@ -151,11 +153,12 @@ module.exports = React.createClass({
 
 		switch(p.type){
 			case BINARY:
+			case SCALAR:
 				for(let i = 0; i <= 1; i++)
 					inputs.push(
 						<div key={`initialFairPrice${i}`} >
 							{ baseInput(i) }
-							<span className="denomination">{ !!!i ? 'Yes' : 'No' }</span>
+							<span className="denomination">{ p.type === BINARY ? binaryLabels[i] : scalarLabels[i] }</span>
 						</div>
 					)
 
@@ -170,8 +173,6 @@ module.exports = React.createClass({
 					)
 				})
 
-				break
-			case SCALAR:
 				break
 		}
 
