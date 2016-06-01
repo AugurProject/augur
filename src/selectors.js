@@ -7,6 +7,14 @@ import { makeNumber } from './utils/make-number';
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 
+import {
+	INITIAL_FAIR_PRICE_DEFAULT,
+	SHARES_PER_ORDER_DEFAULT,
+	SIZE_OF_BEST_DEFAULT,
+	PRICE_WIDTH_DEFAULT,
+	DISTANCE_DEFAULT
+} from './modules/create-market/constants/market-values-constraints'
+
 var selectors = {
 	update: (newState = {}) => {
 		console.log('*** update', newState);
@@ -104,15 +112,26 @@ selectors.pagination = {
 };
 
 selectors.createMarketForm =  {
-	step: 1,
-	errors: {},
 	onValuesUpdated: (newValues) => module.exports.update({
 		createMarketForm: {
 			...selectors.createMarketForm,
 			...newValues
 		}
 	}),
-	isValid: true
+
+	step: 1,
+	errors: {},
+
+	isValid: true,
+
+	// Advanced Market Creation
+	defaultFairPrice: INITIAL_FAIR_PRICE_DEFAULT,
+
+	initialFairPrice: [],
+	sharesPerOrder: SHARES_PER_ORDER_DEFAULT,
+	sizeOfBest: SIZE_OF_BEST_DEFAULT,
+	priceWidth: PRICE_WIDTH_DEFAULT,
+	distance: DISTANCE_DEFAULT
 };
 
 module.exports = selectors;
