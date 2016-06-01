@@ -36,7 +36,7 @@ module.exports = React.createClass({
 				<div className="important-message">
 					<h4>Important:</h4>
 					<p>
-						There is a $30.00 bond charged to your account when you create a new market. If the
+						There is a 30.00 ETH bond charged to your account when you create a new market. If the
 						outcome of your market cannot be determined (and the market cannot be expired as a result)
 						or if your market is ruled unethical, this bond will be forfeited. If your market is expired the
 						bond will be returned to you in full.
