@@ -119,20 +119,17 @@ module.exports = React.createClass({
 
 		switch(p.type){
 			case BINARY:
-				for(let i = 0; i <= 1; i++){
+			case SCALAR:
+				for(let i = 0; i <= 1; i++)
 					prices[i] = p.defaultFairPrice
-				}
-
-				p.onValuesUpdated({ initialFairPrice: prices })
 
 				break
 			case CATEGORICAL:
 				console.log('CATEGORICAL')
 				break
-			case SCALAR:
-				console.log('SCALAR')
-				break
 		}
+
+		p.onValuesUpdated({ initialFairPrice: prices })
 	},
 
 	renderFairPriceInputs: (p) => {
@@ -159,12 +156,8 @@ module.exports = React.createClass({
 							<span className="denomination">{ !!!i ? 'Yes' : 'No' }</span>
 						</div>
 					)
-				
-				return (
-					<div>
-						{ inputs }
-					</div>
-				)
+
+				break;
 			case CATEGORICAL:
 				return (
 					<h1>Fair Price Fields -- CATEGORICAL</h1>
@@ -174,5 +167,7 @@ module.exports = React.createClass({
 					<h1>Fair Price Fields -- SCALAR</h1>
 				)
 		}
+
+		return <div> { inputs } </div>
 	}
 });
