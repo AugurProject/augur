@@ -20,7 +20,7 @@ export function placeTrade(marketID) {
 
 		dispatch(addTransactions(market.tradeSummary.tradeOrders));
 
-		dispatch(trade(marketID, marketOrderBooks[marketID], market.tradeSummary.tradeOrders));
+		dispatch(trade(marketID, marketOrderBooks[marketID], market.tradeSummary.tradeOrders, market.positionsSummary));
 
 		dispatch(clearTradeInProgress(marketID));
 
@@ -28,10 +28,10 @@ export function placeTrade(marketID) {
 	};
 }
 
-export function trade(marketId, marketOrderBook, tradeOrders) {
+export function trade(marketId, marketOrderBook, tradeOrders, positionsSummary) {
 	return (dispatch, getState) => {
 		AugurJS.trade(
-			marketId, marketOrderBook, tradeOrders,
+			marketId, marketOrderBook, tradeOrders, positionsSummary,
 			(data)=> console.log("onTradeHash %o", data),
 			(data)=> console.log("onCommitSent %o", data),
 			(data)=> console.log("onCommitSuccess %o", data),

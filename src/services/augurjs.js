@@ -313,9 +313,9 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
-ex.trade = function (marketId, marketOrderBook, tradeOrders, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
+ex.trade = function (marketId, marketOrderBook, tradeOrders, positionsSummary, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
 					 onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-	augur.multiTrade(marketId, marketOrderBook, tradeOrders, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
+	augur.multiTrade(marketId, marketOrderBook, tradeOrders, positionsSummary, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
 		onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed);
 };
 
