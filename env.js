@@ -8,6 +8,7 @@ GLOBAL.scrypt = require("./lib/scrypt");
 GLOBAL.keccak = require("./lib/keccak");
 GLOBAL.uuid = require("node-uuid");
 GLOBAL._ = require("lodash");
+GLOBAL.assert = require("chai").assert;
 GLOBAL.chalk = require("chalk");
 GLOBAL.moment = require("moment");
 GLOBAL.EthTx = require("ethereumjs-tx");
@@ -48,6 +49,10 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     console.log(balances);
     return balances;
 })();
+GLOBAL.markets = augur.getMarketsInBranch(augur.branches.dev);
+if (markets && markets.constructor === Array && markets.length) {
+    GLOBAL.market = markets[markets.length - 1];
+}
 
 console.log(chalk.cyan("Network"), chalk.green(augur.network_id));
 

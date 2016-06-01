@@ -29,15 +29,15 @@ module.exports = {
     FAUCET: "https://faucet.augur.net/faucet/",
     LOGS: {
         // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
-        log_price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
+        price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
         
         // event log_add_tx(market:indexed, sender, type, price, amount, outcome, tradeid)
-        log_add_tx: "log_add_tx(int256,int256,int256,int256,int256,int256,int256)",
+        add_tx: "log_add_tx(int256,int256,int256,int256,int256,int256,int256)",
         
         // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
-        log_fill_tx: "log_fill_fx(int256,int256,int256,int256,int256,int256,int256,int256)",
+        fill_tx: "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)",
         
         // event log_cancel(market:indexed, sender, price, amount, tradeid, outcome, type)
-        log_cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)"
+        cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)"
     }
 };

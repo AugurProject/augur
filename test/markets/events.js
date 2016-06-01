@@ -78,16 +78,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getMarkets", [eventID], function (r) {
-                test(abi.hex(r));
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getMarkets", [eventID], function (r) {
+                    test(abi.hex(r));
+                });
+                batch.add("getMarkets", [eventID], function (r) {
+                    test(abi.hex(r)); done();
+                });
+                batch.execute();
             });
-            batch.add("getMarkets", [eventID], function (r) {
-                test(abi.hex(r)); done();
-            });
-            batch.execute();
-        });
+        }
     });
     describe("getEventInfo(" + eventID + ")", function () {
         var test = function (res) {
@@ -103,16 +105,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getEventInfo", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getEventInfo", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getEventInfo", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getEventInfo", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
 
     describe("getEventBranch(" + eventID + ")", function () {
@@ -127,16 +131,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getEventBranch", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getEventBranch", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getEventBranch", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getEventBranch", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
     describe("getExpiration(" + eventID + ")", function () {
         var test = function (r) {
@@ -150,16 +156,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getExpiration", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getExpiration", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getExpiration", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getExpiration", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
     describe("getOutcome(" + eventID + ")", function () {
         var test = function (r) {
@@ -173,16 +181,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getOutcome", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getOutcome", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getOutcome", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getOutcome", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
     describe("getMinValue(" + eventID + ")", function () {
         var test = function (r) {
@@ -196,16 +206,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getMinValue", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getMinValue", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getMinValue", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getMinValue", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
     describe("getMaxValue(" + eventID + ")", function () {
         var test = function (r) {
@@ -219,16 +231,18 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getMaxValue", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getMaxValue", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getMaxValue", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getMaxValue", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
     describe("getNumOutcomes(" + eventID + ")", function () {
         var test = function (r) {
@@ -242,15 +256,17 @@ describe("Integration tests", function () {
                 test(r); done();
             });
         });
-        it("batched-async", function (done) {
-            var batch = augur.createBatch();
-            batch.add("getNumOutcomes", [eventID], function (r) {
-                test(r);
+        if (!augur.rpc.wsUrl) {
+            it("batched-async", function (done) {
+                var batch = augur.createBatch();
+                batch.add("getNumOutcomes", [eventID], function (r) {
+                    test(r);
+                });
+                batch.add("getNumOutcomes", [eventID], function (r) {
+                    test(r); done();
+                });
+                batch.execute();
             });
-            batch.add("getNumOutcomes", [eventID], function (r) {
-                test(r); done();
-            });
-            batch.execute();
-        });
+        }
     });
 });

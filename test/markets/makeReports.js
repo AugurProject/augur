@@ -97,7 +97,7 @@ describe("Integration tests", function () {
             salt: salt,
             report: report,
             sender: augur.from,
-            eventID: "-0xab47f3b71bdf6b7765c73d0073c8b9862159c628a55f0c6949e84a98abfc182"
+            eventID: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e"
         });
         for (var i = 0; i < 10; ++i) {
             test({

@@ -23,6 +23,8 @@ var options = {debug: {broadcast: false, fallback: false}};
 
 function Augur() {
     var self = this;
+
+    this.version = "1.1.7";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -75,7 +77,14 @@ Augur.prototype.sync = function (connector) {
     }
     return false;
 };
-
+Augur.prototype.updateContracts = function (newContracts) {
+    if (this.connector && this.connector.constructor === Object) {
+        this.connector.contracts = clone(newContracts);
+        this.connector.update_contracts();
+        return this.sync(this.connector);
+    }
+    return false;
+};
 Augur.prototype.connect = function (rpcinfo, ipcpath, cb) {
     if (!this.utils.is_function(cb)) {
         var connected = connector.connect(rpcinfo, ipcpath);
@@ -101,7 +110,6 @@ Augur.prototype.fire = function (tx, callback) {
     }
     return rpc.fire(tx, callback);
 };
-
 Augur.prototype.transact = function (tx, onSent, onSuccess, onFailed) {
     if (this.web && this.web.account && this.web.account.address) {
         tx.from = this.web.account.address;
@@ -533,8 +541,32 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     if (marketInfo) marketInfo._id = market;
     return marketInfo;
 };
+Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
+    var len, shift, rawInfo, marketID, self = this;
+    var tx = clone(this.tx.batchGetMarketInfo);
+    tx.params = [marketIDs];
+    var marketsArray = this.fire(tx);
+    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+        return marketsArray;
+    }
+    var numMarkets = marketIDs.length;
+    var marketsInfo = {};
+    var totalLen = 0;
+    for (var i = 0; i < numMarkets; ++i) {
+        len = parseInt(marketsArray[totalLen]);
+        shift = totalLen + 1;
+        rawInfo = marketsArray.slice(shift, shift + len - 1);
+        marketID = marketsArray[shift];
+        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, {combinatorial: true});
+        marketsInfo[marketID]._id = marketID;
+        marketsInfo[marketID].sortOrder = i;
+        totalLen += len;
+    }
+    if (!this.utils.is_function(callback)) return marketsInfo;
+    callback(marketsInfo);
+};
 Augur.prototype.getMarketsInfo = function (options, callback) {
-    // options: {branch, offset, numMarketsToLoad, combinatorial, callback}
+    // options: {branch, offset, numMarketsToLoad, callback}
     var self = this;
     if (this.utils.is_function(options) && !callback) {
         callback = options;
@@ -547,25 +579,15 @@ Augur.prototype.getMarketsInfo = function (options, callback) {
     if (!callback && this.utils.is_function(options.callback)) {
         callback = options.callback;
     }
-    var parseMarketsOptions = {combinatorial: options.combinatorial};
     var tx = clone(this.tx.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad];
     tx.timeout = 240000;
-    return this.fire(tx, callback);
-    // if (!callback) {
-    //     return this.parseMarketsArray(this.fire(tx), parseMarketsOptions);
-    // }
-    // var count = 0;
-    // var cb = function (marketsArray) {
-    //     if (typeof marketsArray === "object" &&
-    //         marketsArray.error === 500 && ++count < 4) {
-    //         return self.fire(tx, cb);
-    //     } else if (marketsArray.error) {
-    //         return callback(marketsArray);
-    //     }        
-    //     self.parseMarketsArray(marketsArray, parseMarketsOptions, callback);
-    // };
-    // this.fire(tx, cb);
+    if (!this.utils.is_function(callback)) {
+        return this.parseMarketsArray(this.fire(tx));
+    }
+    this.fire(tx, function (marketsArray) {
+        callback(self.parseMarketsArray(marketsArray));
+    });
 };
 Augur.prototype.getMarketEvents = function (market, callback) {
     // market: sha256 hash id
@@ -978,7 +1000,7 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
         oracleOnly: oracleOnly,
         onSent: onSent,
         onSuccess: function (response) {
-            response.branchID = self.utils.sha256([
+            response.branchID = self.utils.sha3([
                 0,
                 response.from,
                 "0x2f0000000000000000",
@@ -987,7 +1009,7 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
                 abi.hex(parent),
                 parseInt(abi.fix(tradingFee, "hex")),
                 oracleOnly,
-                description
+                utf8.encode(description)
             ]);
             onSuccess(response);
         },
@@ -1091,7 +1113,7 @@ Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, i
     } else {
         fixedReport = abi.fix(report, "hex");
     }
-    return abi.hex(this.utils.sha256([
+    return abi.hex(this.utils.sha3([
         from || this.from,
         abi.hex(salt),
         fixedReport,
@@ -1575,26 +1597,37 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     if (!this.utils.is_function(callback)) return info;
     callback(info);
 };
-Augur.prototype.parseMarketsArray = function (marketsArray, options, callback) {
-    var numMarkets, marketsInfo, totalLen, i, len, shift, rawInfo, marketID;
+Augur.prototype.parseMarketsArray = function (marketsArray) {
+    var numMarkets, marketsInfo, totalLen, len, shift, rawInfo, marketID;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
         return marketsArray;
     }
     numMarkets = parseInt(marketsArray.shift());
     marketsInfo = {};
     totalLen = 0;
-    for (i = 0; i < numMarkets; ++i) {
-        len = parseInt(marketsArray[i]);
-        shift = numMarkets + totalLen;
+    for (var i = 0; i < numMarkets; ++i) {
+        len = parseInt(marketsArray[totalLen]);
+        shift = totalLen + 1;
         rawInfo = marketsArray.slice(shift, shift + len);
         marketID = marketsArray[shift];
-        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, options || {});
-        marketsInfo[marketID]._id = marketID;
-        marketsInfo[marketID].sortOrder = i;
+        marketsInfo[marketID] = {
+            _id: marketID,
+            sortOrder: i,
+            tradingPeriod: parseInt(marketsArray[shift + 1]),
+            tradingFee: abi.unfix(marketsArray[shift + 2], "string"),
+            creationTime: parseInt(marketsArray[shift + 3]),
+            volume: abi.unfix(marketsArray[shift + 4], "string"),
+            tags: [
+                this.decodeTag(marketsArray[shift + 5]),
+                this.decodeTag(marketsArray[shift + 6]),
+                this.decodeTag(marketsArray[shift + 7])
+            ],
+            endDate: parseInt(marketsArray[shift + 8]),
+            description: abi.bytes_to_utf16(marketsArray.slice(shift + 9, shift + len - 1))
+        };
         totalLen += len;
     }
-    if (!callback) return marketsInfo;
-    callback(marketsInfo);
+    return marketsInfo;
 };
 Augur.prototype.getCurrentPeriod = function (branch, callback) {
     if (!callback) {
@@ -1726,8 +1759,8 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
     var filter = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.log_price), null, abi.unfork(market, true)]
+        address: this.contracts.trade,
+        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price)), null, abi.unfork(market, true)]
     };
     if (!this.utils.is_function(cb)) {
         var logs = rpc.getLogs(filter);
@@ -1813,8 +1846,8 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
     rpc.getLogs({
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: this.contracts.trades,
-        topics: [this.rpc.sha3(constants.LOGS.log_price)],
+        address: this.contracts.trade,
+        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price))],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {

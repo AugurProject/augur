@@ -9,6 +9,9 @@ var assert = require("chai").assert;
 var tools = require("../tools");
 var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
+var wsUrl = augur.rpc.wsUrl;
+augur.rpc.wsUrl = null;
+
 describe("Batch", function () {
 
     it("batch(depositEther, reputationFaucet)", function (done) {
@@ -50,3 +53,5 @@ describe("Batch", function () {
     });
 
 });
+
+after(function () { augur.rpc.wsUrl = wsUrl; });
