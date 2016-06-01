@@ -212,7 +212,7 @@ module.exports = function () {
         setup_price_filter: function (label, f) {
             return augur.rpc.newFilter({
                 address: augur.contracts.trade,
-                topics: [augur.rpc.sha3(label)]
+                // topics: [abi.prefix_hex(abi.keccak_256(label))]
             }, f);
         },
 

@@ -24,7 +24,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.1.5";
+    this.version = "1.1.6";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -1713,7 +1713,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.buyAndSellShares,
-        topics: [this.rpc.sha3(constants.LOGS.log_price), null, abi.unfork(market, true)]
+        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.log_price)), null, abi.unfork(market, true)]
     };
     if (!this.utils.is_function(cb)) {
         var logs = rpc.getLogs(filter);
@@ -1799,8 +1799,8 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
     rpc.getLogs({
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: this.contracts.trades,
-        topics: [this.rpc.sha3(constants.LOGS.log_price)],
+        address: this.contracts.trade,
+        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.log_price))],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
