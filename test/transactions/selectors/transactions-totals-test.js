@@ -9,6 +9,7 @@ import {
 	FAILED,
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
+import transactionsTotalsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/transactionsTotals';
 
 let transactionsTotals;
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
@@ -64,6 +65,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			transactions: undefined,
 			shortTitle: '1 Working'
 		};
+		transactionsTotalsAssertion(test);
 		assert.deepEqual(test, out, `Didn't return total info on transactions`);
 	})
 });

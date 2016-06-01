@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/marketsTotals';
 
 let marketsTotals;
 
@@ -164,6 +165,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 				totalCost: 297
 			}
 		};
+		assertions.marketsTotalsAssertion(test);
 
 		assert(mockPositions.selectPositionsSummary.calledOnce, `Didn't selectPositionsSummary call once as expected`);
 

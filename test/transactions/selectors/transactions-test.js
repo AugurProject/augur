@@ -5,6 +5,7 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import transactionsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/transactions';
 
 let transactions;
 
@@ -87,6 +88,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 				full: '+100Rep'
 			}
 		}];
+		transactionsAssertion(test);
 		assert.deepEqual(test, out, `Didn't return the correct information`);
 	});
 

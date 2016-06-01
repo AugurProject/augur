@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import marketsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/markets';
 
 let allMarkets;
 describe(`modules/markets/selectors/markets-all.js`, () => {
@@ -95,6 +96,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 
 	it(`should return the correct selectedMarket function`, () => {
 		test = selector.default();
+		marketsAssertion(test);
 		out = [{
 			endDate: new Date('01/01/3000'),
 			outcomes: {

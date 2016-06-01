@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import paginationAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/pagination';
 
 let pagination;
 describe(`modules/markets/selectors/pagination.js`, () => {
@@ -63,7 +64,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 			nextItemNum: 51,
 			previousItemNum: 31
 		};
-
+		paginationAssertion(test);
 		test.onUpdateSelectedPageNum(4);
 
 		assert.deepEqual(test, out, `Didn't return the expected object`);

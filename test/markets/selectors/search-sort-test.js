@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/searchSort';
 
 let searchSort;
 describe(`modules/markets/selectors/search-sort.js`, () => {
@@ -42,6 +43,11 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 				isDesc: false
 			}
 		}];
+
+		assertions.searchSortAssertion(test);
+		assertions.selectedSortAssertion(test.selectedSort);
+		assertions.sortOptionsAssertion(test.sortOptions);
+
 		out = {
 			selectedSort: {
 				isDesc: true,

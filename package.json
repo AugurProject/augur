@@ -17,7 +17,6 @@
     "build": "clear; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "test": "NODE_ENV=test mocha",
     "test:watch": "npm test -- --watch",
-    "test:ui": "selectors=../../../test/ui-tests.js npm explore augur-ui-react-components -- npm run test",
     "lint": "echo begin linting... && eslint src/*.js src/services/* src/utils/* src/modules/* && echo linting complete.",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "_____": "",

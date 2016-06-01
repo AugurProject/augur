@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import marketsHeaderAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/marketsHeader';
 
 let marketsHeader;
 describe(`modules/markets/selectors/markets-header.js`, () => {
@@ -51,6 +52,8 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			type: 'UPDATE_SELECTED_MARKETS_HEADER',
 			header: 'pending reports'
 		}];
+
+		marketsHeaderAssertion(test);
 
 		test.onClickAllMarkets();
 		test.onClickFavorites();
