@@ -125,7 +125,9 @@ module.exports = React.createClass({
 
 				break
 			case CATEGORICAL:
-				console.log('CATEGORICAL')
+				p.categoricalOutcomes.forEach((val, i) => {
+					prices[i] = p.defaultFairPrice
+				})
 				break
 		}
 
@@ -157,15 +159,20 @@ module.exports = React.createClass({
 						</div>
 					)
 
-				break;
+				break
 			case CATEGORICAL:
-				return (
-					<h1>Fair Price Fields -- CATEGORICAL</h1>
-				)
+				p.categoricalOutcomes.forEach((val, i) => {
+					inputs.push(
+						<div key={`initialFairPrice${i}`} >
+							{ baseInput(i) }
+							<span className="denomination">{ val }</span>
+						</div>
+					)
+				})
+
+				break
 			case SCALAR:
-				return (
-					<h1>Fair Price Fields -- SCALAR</h1>
-				)
+				break
 		}
 
 		return <div> { inputs } </div>
