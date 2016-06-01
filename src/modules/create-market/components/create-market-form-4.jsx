@@ -108,8 +108,8 @@ module.exports = React.createClass({
 				<FormButtons
 					disabled={ !p.isValid }
 					nextLabel="review"
-					onNext={ () => p.onValuesUpdated({ step: this.props.step + 1 }) }
-					onPrev={ () => p.onValuesUpdated({ step: this.props.step - 1 }) } />
+					onNext={ () => p.onValuesUpdated({ step: p.step + 1 }) }
+					onPrev={ () => p.onValuesUpdated({ step: p.step - 1 }) } />
 			</div>
 		);
 	},
