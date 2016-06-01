@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
@@ -10,6 +10,8 @@ module.exports = React.createClass({
 		makerFeePercent: React.PropTypes.number,
 		initialLiquidity: React.PropTypes.number,
 
+		showAdvancedMarketParams: React.PropTypes.bool,
+
 		errors: React.PropTypes.object,
 
 		onValuesUpdated: React.PropTypes.func
@@ -17,6 +19,9 @@ module.exports = React.createClass({
 
 	render: function() {
 		var p = this.props;
+
+		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼'
+
 		return (
 			<div className="step-4">
 				<div className="fee">
@@ -76,6 +81,15 @@ module.exports = React.createClass({
 					{ p.errors.initialLiquidity &&
 						<span className="error-message">{ p.errors.initialLiquidity }</span>
 					}
+				</div>
+
+				<div
+					className="advanced-market-params"
+				>
+					<h6 className="horizontal-divider" onClick={() => {p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams })}}><span>{ advancedParamsArrow }</span> Advanced <span>{ advancedParamsArrow }</span></h6>
+					<div className={ classNames({ 'displayNone': !!!p.showAdvancedMarketParams }) }>
+						<span>Advanced Market Params</span>
+					</div>
 				</div>
 
 				<FormButtons
