@@ -136,15 +136,8 @@ module.exports = React.createClass({
 	},
 
 	renderFairPriceInputs: (p) => {
-		let inputs = [];
-
-		switch(p.type){
-			case BINARY:
-				for(let i = 0; i <= 1; i++)
-					inputs.push(
-						<div>
-							<Input
-								key={`initialFairPrice${i}`}
+		let inputs = [],
+			baseInput = i => <Input
 								type="number"
 								value={ p.initialFairPrice[i] }
 								isClearable={ false }
@@ -156,6 +149,13 @@ module.exports = React.createClass({
 										p.onValuesUpdated({ initialFairPrice: prices })
 									}
 								} />
+
+		switch(p.type){
+			case BINARY:
+				for(let i = 0; i <= 1; i++)
+					inputs.push(
+						<div key={`initialFairPrice${i}`} >
+							{ baseInput(i) }
 							<span className="denomination">{ !!!i ? 'Yes' : 'No' }</span>
 						</div>
 					)
