@@ -49,6 +49,10 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     console.log(balances);
     return balances;
 })();
+GLOBAL.markets = augur.getMarketsInBranch(augur.branches.dev);
+if (markets && markets.constructor === Array && markets.length) {
+    GLOBAL.market = markets[markets.length - 1];
+}
 
 console.log(chalk.cyan("Network"), chalk.green(augur.network_id));
 
