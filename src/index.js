@@ -869,51 +869,107 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
     tx.params[1] = abi.fix(tx.params[1], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.multiTrade = function (marketId, marketOrderBook, tradeOrders, onTradeHash, onCommitSent, onCommitSuccess,
+/**
+ * Logic here is:
+ *
+ * 1/ iterate trade orders and find IDs of open orders that can match user's trade orders:
+ *      1a/ for buy order: find all asks in order book for that outcome which have less or equal price (user doesn't want
+ * to pay more than he specified)
+ *      1b/ for sell order: find all bids in order book for that outcome which have greater or equal price (user doesn't
+ * want to sell at lower price than he specified)
+ *
+ * 2/ now we have orders IDs so we can trade:
+ *      2a/ if user's trade was fully filled that's all
+ *      2b/ if user's trade was partially filled we place bid/ask on order book
+ *
+ * @param marketId On what market trading occurs
+ * @param marketOrderBook Bids and asks for market (mixed for all outcomes)
+ * @param userTradeOrders Trade orders which user want to execute (one per outcome)
+ * @param positionsSummary Current user positions
+ * @param onTradeHash
+ * @param onCommitSent
+ * @param onCommitSuccess
+ * @param onCommitFailed
+ * @param onNextBlock
+ * @param onTradeSent
+ * @param onTradeSuccess
+ * @param onTradeFailed
+ */
+Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrders, positionsSummary, onTradeHash, onCommitSent, onCommitSuccess,
                                          onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-    tradeOrders.forEach(function (tradeOrder) {
-        if (tradeOrder.type === "buy_shares") {
-            augur.buy(tradeOrder.shares.value, tradeOrder.ether.value, marketId, tradeOrder.data.outcomeID,
-                // onSent(data) = {
-                // 	callReturn: "0x0"
-                // 	txHash: "0xd9a88bad08c2f7f9772c7757ca07e192409d689df4f13f994ec77f3a0aebb383"
-                // }
-                function onSent(data) {
-                    return console.log("augurjs.js: trade: buy: onSent: %o", data);
-                },
-                // onSuccess(data) = {
-                // 	blockHash: "0x89525191547c3a2df939c02de4a75ea3c8522e4a203122e1b962321604a4bdfe"
-                // 	blockNumber: "0xfe172"
-                // 	callReturn: "0x0"
-                // 	from: "0xcb829a51c357d6ac1114a810d4cdb527b82eec27"
-                // 	gas: "0x2fd618"
-                // 	gasPrice: "0x4a817c800"
-                // 	input: "0x3651cae40000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001051eb851eb851eb83794c5c2aea59887a98119dec4f268f7e852f3b84529f2c16be64490492443070000000000000000000000000000000000000000000000000000000000000003"
-                // 	nonce: "0x100001"
-                // 	to: "0x01eec1eed6b5d224f33917b4ec14cdf5baeff780"
-                // 	transactionIndex: "0x0"
-                // 	txHash: "0xd9a88bad08c2f7f9772c7757ca07e192409d689df4f13f994ec77f3a0aebb383"
-                // 	value: "0x0"
-                // }
-                function onSuccess(data) {
-                    console.log("augurjs.js: trade: buy: onSuccess: %o", data)
-                },
-                function onFailure(data) {
-                    console.log("augurjs.js: trade: buy: onFail: %o", data)
-                })
-        } else {
-            augur.sell(tradeOrder.shares.value, tradeOrder.ether.value, marketId, tradeOrder.data.outcomeID,
-                function (data) {
-                    console.log("augurjs.js: trade: sell: onSent: %o", data);
-                },
-                function (data) {
-                    console.log("augurjs.js: trade: sell: onSuccess: %o", data);
-                },
-                function (data) {
-                    console.log("augurjs.js: trade: sell: onFail: %o", data);
+    userTradeOrders.forEach(function (userTradeOrder) {
+        if (userTradeOrder.type === "buy_shares") {
+            var matchingAsksIds = marketOrderBook.sell
+                .filter(function (ask) {
+                    return ask.outcome === userTradeOrder.data.outcomeID &&
+                            parseFloat(ask.price) <= userTradeOrder.limitPrice;
+                }, this)
+                .map(function (ask) {
+                    return ask.id;
                 });
+
+            var amountOfMoneyNotFilled = this.trade(userTradeOrder.ether, userTradeOrder.shares, matchingAsksIds,
+                onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess,
+                onTradeFailed);
+
+            if (amountOfMoneyNotFilled > 0) {
+                this.buy(amountOfMoneyNotFilled, userTradeOrder.ether.value, marketId, userTradeOrder.data.outcomeID,
+                    function onSent(data) {
+                        // data = {
+                        // 	callReturn: "0x0"
+                        // 	txHash: "0xd9a88bad08c2f7f9772c7757ca07e192409d689df4f13f994ec77f3a0aebb383"
+                        // }
+                        return console.log("augurjs.js: trade: buy: onSent: %o", data);
+                    },
+                    function onSuccess(data) {
+                        // data = {
+                        // 	blockHash: "0x89525191547c3a2df939c02de4a75ea3c8522e4a203122e1b962321604a4bdfe"
+                        // 	blockNumber: "0xfe172"
+                        // 	callReturn: "0x0"
+                        // 	from: "0xcb829a51c357d6ac1114a810d4cdb527b82eec27"
+                        // 	gas: "0x2fd618"
+                        // 	gasPrice: "0x4a817c800"
+                        // 	input: "0x3651cae40000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001051eb851eb851eb83794c5c2aea59887a98119dec4f268f7e852f3b84529f2c16be64490492443070000000000000000000000000000000000000000000000000000000000000003"
+                        // 	nonce: "0x100001"
+                        // 	to: "0x01eec1eed6b5d224f33917b4ec14cdf5baeff780"
+                        // 	transactionIndex: "0x0"
+                        // 	txHash: "0xd9a88bad08c2f7f9772c7757ca07e192409d689df4f13f994ec77f3a0aebb383"
+                        // 	value: "0x0"
+                        // }
+                        console.log("augurjs.js: trade: buy: onSuccess: %o", data)
+                    },
+                    function onFailure(data) {
+                        console.log("augurjs.js: trade: buy: onFail: %o", data)
+                    });
+            }
+        } else {
+            var matchingBidsIds = marketOrderBook.buy
+                .filter(function (bid) {
+                    return bid.outcome === userTradeOrder.data.outcomeID &&
+                        parseFloat(bid.price) >= userTradeOrder.limitPrice;
+                })
+                .map(function (bid) {
+                    return bid.id;
+                });
+
+            amountOfMoneyNotFilled = this.trade(userTradeOrder.ether, userTradeOrder.shares, matchingBidsIds,
+                onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess,
+                onTradeFailed);
+
+            if (amountOfMoneyNotFilled > 0) {
+                this.sell(amountOfMoneyNotFilled, userTradeOrder.ether.value, marketId, userTradeOrder.data.outcomeID,
+                    function (data) {
+                        console.log("augurjs.js: trade: sell: onSent: %o", data);
+                    },
+                    function (data) {
+                        console.log("augurjs.js: trade: sell: onSuccess: %o", data);
+                    },
+                    function (data) {
+                        console.log("augurjs.js: trade: sell: onFail: %o", data);
+                    });
+            }
         }
-    });
+    }, this);
 };
 
 Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
