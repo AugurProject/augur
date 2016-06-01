@@ -19,7 +19,7 @@ describe(`modules/market/selectors/market.js`, () => {
 				eventID: 'testEventID',
 				name: 'testMarket',
 				description: 'some test description',
-				endDate: new Date('01/01/3000'),
+				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
 				type: 'scalar',
 				tradingFee: 5,
 				volume: 500,
@@ -176,9 +176,9 @@ describe(`modules/market/selectors/market.js`, () => {
 			isCategorical: false,
 			isScalar: true,
 			endDate: {
-				"formatted": "Jan 1, 3000",
-				"full": "3000-01-01T00:00:00.000Z",
-				"value": new Date('01/01/3000')
+				formatted: 'Jan 1, 3000',
+				full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString(),
+				value: new Date(3000, 0, 1, 0, 0, 0, 0)
 			},
 			isOpen: false,
 			isExpired: true,

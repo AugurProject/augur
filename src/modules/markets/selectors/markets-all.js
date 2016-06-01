@@ -66,18 +66,17 @@ console.time('selectMarkets');
 		return a.id < b.id ? -1 : 1;
 	});
 */
-	return Object.keys(marketsData)
-		.map(marketID => {
-			const endDate = new Date(marketsData[marketID].endDate);
-			// this is here for performance reasons not to trigger memoization on every block
-			return assembleMarket(
-				marketID,
-				marketsData[marketID],
-				priceHistory[marketID],
-				isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+	return Object.keys(marketsData).map(marketID => {
+		// this is here for performance reasons not to trigger memoization on every block
+		const endDate = new Date(marketsData[marketID].endDate);
+		return assembleMarket(
+			marketID,
+			marketsData[marketID],
+			priceHistory[marketID],
+			isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
 
-				!!favorites[marketID],
-				outcomes[marketID],
+			!!favorites[marketID],
+			outcomes[marketID],
 
 				reports[marketsData[marketID].eventID],
 				accountTrades[marketID],
@@ -112,10 +111,8 @@ function cleanSortVal(val) {
 	// if this is a formatted number object, with a `value` prop, use that for sorting
 	if (val.value || val.value === 0) {
 		return val.value;
-	}
-
+	} else if (val.toLowerCase) {
 	// if the val is a simple prop, that can be lowercased, use that
-	else if (val.toLowerCase) {
 		return val.toLowerCase();
 	}
 }

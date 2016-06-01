@@ -27,7 +27,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 	it('should return a new market', () => {
 		formState = {
 			type: 'scalar',
-			endDate: new Date('3000-01-01T06:00:00.000Z'),
+			endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
 			tradingFeePercent: 5,
 			expirySource: 'test',
 			categoricalOutcomes: {
@@ -45,9 +45,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		out = {
 			type: 'scalar',
 			endDate: {
-				value: new Date('3000-01-01T06:00:00.000Z'),
+				value: new Date(3000, 0, 1, 0, 0, 0, 0),
 				formatted: 'Jan 1, 3000',
-				full: '3000-01-01T06:00:00.000Z'
+				full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
 			},
 			tradingFeePercent: {
 				value: 5,
@@ -66,7 +66,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			},
 			scalarSmallNum: 5,
 			scalarBigNum: 50,
-			endBlock: 2587660618,
+			endBlock: test.endBlock,
 			tradingFee: 0.05,
 			volume: {
 				value: 0,

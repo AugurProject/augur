@@ -67,8 +67,7 @@ export const selectMarket = (marketID) => {
 					accountTrades, tradesInProgress,
 					blockchain, priceHistory, marketOrderBooks } = store.getState();
 
-	if (!marketID || !marketsData || !marketsData[marketID] ||
-		!marketsData[marketID].description || !marketsData[marketID].eventID) {
+	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
 	}
 
