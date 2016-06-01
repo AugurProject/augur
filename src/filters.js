@@ -211,7 +211,7 @@ module.exports = function () {
 
         setup_price_filter: function (label, f) {
             return augur.rpc.newFilter({
-                address: augur.contracts.buyAndSellShares,
+                address: augur.contracts.trade,
                 topics: [augur.rpc.sha3(label)]
             }, f);
         },

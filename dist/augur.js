@@ -37133,7 +37133,7 @@ module.exports = function () {
 
         setup_price_filter: function (label, f) {
             return augur.rpc.newFilter({
-                address: augur.contracts.buyAndSellShares,
+                address: augur.contracts.trade,
                 topics: [augur.rpc.sha3(label)]
             }, f);
         },
@@ -37449,7 +37449,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.1.3";
+    this.version = "1.1.5";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;

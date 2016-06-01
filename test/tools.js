@@ -79,7 +79,7 @@ module.exports = {
         var defaulthost, ipcpath;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
-            // ipcpath = process.env.GETH_IPC;
+            ipcpath = process.env.GETH_IPC;
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
