@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+
 module.exports = React.createClass({
 	propTypes: {
 		tradingFeePercent: React.PropTypes.number,
@@ -15,6 +17,10 @@ module.exports = React.createClass({
 		errors: React.PropTypes.object,
 
 		onValuesUpdated: React.PropTypes.func
+	},
+
+	componentWillMount: function(){
+		this.setInitialFairPriceValues(this.props)
 	},
 
 	render: function() {
@@ -83,14 +89,21 @@ module.exports = React.createClass({
 					}
 				</div>
 
-				<div
-					className="advanced-market-params"
-				>
+
+				<div className="advanced-market-params" >
 					<h6 className="horizontal-divider" onClick={() => {p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams })}}><span>{ advancedParamsArrow }</span> Advanced <span>{ advancedParamsArrow }</span></h6>
+
 					<div className={ classNames({ 'displayNone': !!!p.showAdvancedMarketParams }) }>
-						<span>Advanced Market Params</span>
+						<div>
+							<h4>Initial Fair Price</h4>
+							<p>
+								This establishes the initial price for each respective outcome.
+							</p>
+							{ this.renderFairPriceInputs(p) }
+						</div>
 					</div>
 				</div>
+
 
 				<FormButtons
 					disabled={ !p.isValid }
@@ -99,5 +112,67 @@ module.exports = React.createClass({
 					onPrev={ () => p.onValuesUpdated({ step: this.props.step - 1 }) } />
 			</div>
 		);
+	},
+
+	setInitialFairPriceValues: (p) => {
+		let prices = []
+
+		switch(p.type){
+			case BINARY:
+				for(let i = 0; i <= 1; i++){
+					prices[i] = p.defaultFairPrice
+				}
+
+				p.onValuesUpdated({ initialFairPrice: prices })
+
+				break
+			case CATEGORICAL:
+				console.log('CATEGORICAL')
+				break
+			case SCALAR:
+				console.log('SCALAR')
+				break
+		}
+	},
+
+	renderFairPriceInputs: (p) => {
+		let inputs = [];
+
+		switch(p.type){
+			case BINARY:
+				for(let i = 0; i <= 1; i++)
+					inputs.push(
+						<div>
+							<Input
+								key={`initialFairPrice${i}`}
+								type="number"
+								value={ p.initialFairPrice[i] }
+								isClearable={ false }
+								onChange={
+									(value) => {
+										let prices = p.initialFairPrice
+										prices[i] = parseFloat(value)
+
+										p.onValuesUpdated({ initialFairPrice: prices })
+									}
+								} />
+							<span className="denomination">{ !!!i ? 'Yes' : 'No' }</span>
+						</div>
+					)
+				
+				return (
+					<div>
+						{ inputs }
+					</div>
+				)
+			case CATEGORICAL:
+				return (
+					<h1>Fair Price Fields -- CATEGORICAL</h1>
+				)
+			case SCALAR:
+				return (
+					<h1>Fair Price Fields -- SCALAR</h1>
+				)
+		}
 	}
 });
