@@ -10,10 +10,11 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const makeTradeTransaction =
-(isSell, market, outcome, numShares, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
+(isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
 	const obj = {
 		type: !isSell ? BUY_SHARES : SELL_SHARES,
 		shares: numShares,
+		limitPrice: limitPrice,
 		ether: totalCostWithoutFeeEther + feeEther,
 		gas,
 		data: {
