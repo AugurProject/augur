@@ -12,7 +12,7 @@ import {
 	SHARES_PER_ORDER_DEFAULT,
 	SIZE_OF_BEST_DEFAULT,
 	PRICE_WIDTH_DEFAULT,
-	DISTANCE_DEFAULT
+	SEPARATION_DEFAULT
 } from './modules/create-market/constants/market-values-constraints'
 
 var selectors = {
