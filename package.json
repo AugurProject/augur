@@ -20,8 +20,6 @@
     "_____": "",
     "watch": "clear; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development npm run -s watch:all",
     "build": "clear; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
-    "start": "http-server ./demo -c-1 -p $PORT",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "publish_to_npm": "clear; echo \"* * * *  PUBLISH  * * * *\"; NODE_ENV=production npm run -s build:all && git add --all && git commit -m 'build for publish' && npm version patch && git push && git push --tags && npm publish",
     "deploy:demo": "firebase deploy -f augur-ui",
     "______": "",
