@@ -10,15 +10,21 @@ import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-type
 
 module.exports = React.createClass({
 	propTypes: {
-		tradingFeePercent: React.PropTypes.number,
-		makerFeePercent: React.PropTypes.number,
-		initialLiquidity: React.PropTypes.number,
+		onValuesUpdated: React.PropTypes.func,
+		errors: React.PropTypes.object,
+		isValid: React.PropTypes.bool,
+
+		tradingFeePercent: React.PropTypes.any,
+		makerFeePercent: React.PropTypes.any,
+		initialLiquidity: React.PropTypes.any,
 
 		showAdvancedMarketParams: React.PropTypes.bool,
 
-		errors: React.PropTypes.object,
-
-		onValuesUpdated: React.PropTypes.func
+		initialFairPrice: React.PropTypes.any,
+		sharesPerOrder: React.PropTypes.any,
+		sizeOfBest: React.PropTypes.any,
+		priceWidth: React.PropTypes.any,
+		separation: React.PropTypes.any
 	},
 
 	componentWillMount: function(){
@@ -41,7 +47,7 @@ module.exports = React.createClass({
 					</p>
 
 					<Input
-						type="number"
+						type="text"
 						value={ p.tradingFeePercent }
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ tradingFeePercent: value }) } />
@@ -59,7 +65,7 @@ module.exports = React.createClass({
 					</p>
 
 					<Input
-						type="number"
+						type="text"
 						value = { p.makerFeePercent }
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ makerFeePercent: value }) }
@@ -80,7 +86,7 @@ module.exports = React.createClass({
 						Maker from selling shares).
 					</p>
 					<Input
-						type="number"
+						type="text"
 						value={ p.initialLiquidity }
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ initialLiquidity: value }) } />
@@ -112,10 +118,10 @@ module.exports = React.createClass({
 							</p>
 
 							<Input
-								type="number"
+								type="text"
 								value = { p.sharesPerOrder }
 								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ sharesPerOrder: parseFloat(value) }) }
+								onChange={ (value) => p.onValuesUpdated({ sharesPerOrder: value }) }
 							/>
 
 							{ p.errors.sharesPerOrder &&
@@ -130,10 +136,10 @@ module.exports = React.createClass({
 							</p>
 
 							<Input
-								type="number"
+								type="text"
 								value = { p.sizeOfBest }
 								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ sizeOfBest: parseFloat(value) }) }
+								onChange={ (value) => p.onValuesUpdated({ sizeOfBest: value }) }
 							/>
 
 							{ p.errors.sizeOfBest &&
@@ -148,10 +154,10 @@ module.exports = React.createClass({
 							</p>
 
 							<Input
-								type="number"
+								type="text"
 								value = { p.priceWidth }
 								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ priceWidth: parseFloat(value) }) }
+								onChange={ (value) => p.onValuesUpdated({ priceWidth: value }) }
 							/>
 
 							{ p.errors.priceWidth &&
@@ -166,10 +172,10 @@ module.exports = React.createClass({
 							</p>
 
 							<Input
-								type="number"
+								type="text"
 								value = { p.separation }
 								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ separation: parseFloat(value) }) }
+								onChange={ (value) => p.onValuesUpdated({ separation: value }) }
 							/>
 
 							{ p.errors.separation &&
@@ -214,7 +220,7 @@ module.exports = React.createClass({
 			binaryLabels = ['Yes', 'No'],
 			scalarLabels = ['⇧', '⇩'],
 			baseInput = i => <Input
-								type="number"
+								type="text"
 								value={ p.initialFairPrice[i] }
 								isClearable={ false }
 								onChange={
