@@ -25,7 +25,7 @@ function createMarketForm(){
         separation: SEPARATION_DEFAULT,
 
         onValuesUpdated: newValues => updateForm(newValues)
-    }
+    };
 
     return form
 
@@ -33,9 +33,9 @@ function createMarketForm(){
         form = {
             ...form,
             ...newValues
-        }
+        };
 
-        require('../selectors').update({ createMarketForm: form })
+        require('../selectors').update({ createMarketForm: form });
     }
 }
 
