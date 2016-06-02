@@ -85,7 +85,7 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
 
             test({
                 branch: augur.branches.dev,
-                description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
+                description: "Which political party's candidate will win the 2016 U.S. Presidential Election?~|>Democratic|Republican|Libertarian|other",
                 expDate: new Date("1/2/2017").getTime() / 1000,
                 minValue: 10,
                 maxValue: 20,

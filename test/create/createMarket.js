@@ -95,7 +95,7 @@ describe("Integration tests", function () {
 
                 test({
                     branch: augur.branches.dev,
-                    description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015? Choices: Higher, Lower, Unchanged",
+                    description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015?~|> Higher|Lower|Unchanged",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
@@ -108,7 +108,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "为什么有这么严重吗？",
+                    description: "为什么有这么严重吗？~|>€|☃|:D",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
@@ -121,7 +121,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "なぜこれほど深刻な？ €☃...",
+                    description: "なぜこれほど深刻な？ €☃...~|>D:|€|☃",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
@@ -134,7 +134,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13? Choices: Higher, Lower, Equal",
+                    description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13?~|>Higher|Lower|Equal",
                     expDate: new Date("1-2-2017").getTime() / 1000,
                     minValue: 10,
                     maxValue: 20,
@@ -145,7 +145,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "Who will win the 2016 U.S. Presidential Election? Choices: Hillary Clinton, Donald Trump, Bernie Sanders, someone else",
+                    description: "Who will win the 2016 U.S. Presidential Election?~|>Hillary Clinton|Donald Trump|Bernie Sanders|someone else",
                     expDate: new Date("1-11-2017").getTime() / 1000,
                     minValue: 0,
                     maxValue: 1,
@@ -158,7 +158,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "Which political party's candidate will win the 2016 U.S. Presidential Election? Choices: Democratic, Republican, Libertarian, other",
+                    description: "Which political party's candidate will win the 2016 U.S. Presidential Election?~|>Democratic|Republican|Libertarian|other",
                     expDate: new Date("1-4-2017").getTime() / 1000,
                     minValue: 10,
                     maxValue: 20,
@@ -169,7 +169,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "Which city will have the highest median single-family home price for September 2016? Choices: London, New York, Los Angeles, San Francisco, Tokyo, Palo Alto, Hong Kong, Paris, other",
+                    description: "Which city will have the highest median single-family home price for September 2016?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|Paris|other",
                     expDate: new Date("10-2-2016").getTime() / 1000,
                     minValue: 0,
                     maxValue: 1,
@@ -516,7 +516,7 @@ describe("Integration tests", function () {
             //             numOutcomes: 2
             //         }, {
             //             type: "categorical",
-            //             description: "What will be the number one killer in the United States by January 1, 2025? Choices: cancer, heart attacks, infectious diseases, starvation, lava, other",
+            //             description: "What will be the number one killer in the United States by January 1, 2025? ~|> cancer, heart attacks, infectious diseases, starvation, lava, other",
             //             expDate: new Date("1/2/2025").getTime() / 1000,
             //             minValue: 0,
             //             maxValue: 1,
