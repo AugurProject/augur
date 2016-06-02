@@ -44,55 +44,36 @@ module.exports = function () {
             });
         },
 
-        sift: function (filtrate, onMessage) {
-            /**
-             * filtrate example (array):
-             * [{
-             *   address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
-             *   topics: [
-             *      '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
-             *      '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
-             *      '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
-             *      '0x0000000000000000000000000000000000000000000000000000000000000001'
-             *   ],
-             *   data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
-             *   blockNumber: '0x11db',
-             *   logIndex: '0x0',
-             *   blockHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-             *   transactionHash: '0x2d3dc5dea7fe6b14e034acb3b95d3d40bd45392dcd2e8030c2d15df3ddbd0594',
-             *   transactionIndex: '0x0'
-             * }, ...]
-             */
+        parse_contracts_message: function (message, onMessage) {
             var messages = [];
-            for (var i = 0, len = filtrate.length; i < len; ++i) {
+            for (var i = 0, len = message.length; i < len; ++i) {
                 try {
-                    if (filtrate[i]) {
-                        if (filtrate[i].constructor === Object) {
-                            if (filtrate.address === augur.contracts.createMarket) {
-                                this.createMarketMessage(filtrate[i].data, filtrate[i].blockNumber);
+                    if (message[i]) {
+                        if (message[i].constructor === Object) {
+                            if (message.address === augur.contracts.createMarket) {
+                                this.createMarketMessage(message[i].data, message[i].blockNumber);
                             } else {
-                                if (filtrate[i].data) {
-                                    filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                                if (message[i].data) {
+                                    message[i].data = augur.rpc.unmarshal(message[i].data);
                                 }
                             }
                         }
-                        if (onMessage) onMessage(filtrate[i]);
-                        messages.push(filtrate[i]);
+                        if (onMessage) onMessage(message[i]);
+                        messages.push(message[i]);
                     }
                 } catch (exc) {
-                    console.error("contracts filter:", exc);
-                    console.log(i, filtrate[i]);
+                    console.error("parse_contracts_message:", exc);
+                    console.log(i, message[i]);
                 }
             }
-            if (messages.length) return messages;
         },
 
         poll_contracts_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
                 var self = this;
-                augur.rpc.getFilterChanges(this.filter.contracts.id, function (filtrate) {
-                    if (filtrate && filtrate.length && filtrate.constructor === Array) {
-                        self.sift(filtrate, onMessage);
+                augur.rpc.getFilterChanges(this.filter.contracts.id, function (message) {
+                    if (message && message.length && message.constructor === Array) {
+                        self.parse_contracts_message(message, onMessage);
                     }
                 });
             }
@@ -100,46 +81,51 @@ module.exports = function () {
 
         poll_block_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
-                augur.rpc.getFilterChanges(this.filter.block.id, function (filtrate) {
-                    if (filtrate && filtrate.length && filtrate.constructor === Array) {
-                        for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            onMessage(filtrate[i]);
+                augur.rpc.getFilterChanges(this.filter.block.id, function (message) {
+                    if (message && message.length && message.constructor === Array) {
+                        for (var i = 0, len = message.length; i < len; ++i) {
+                            onMessage(message[i]);
                         }
                     }
                 });
             }
         },
 
-        poll_price_listener: function (onMessage) {
-            if (this.filter.price) {
-                augur.rpc.getFilterChanges(this.filter.price.id, function (filtrate) {
-                    var data_array, market, marketplus, outcome;
-                    if (filtrate && filtrate.length) {
-                        for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {
-                                try {
-                                    data_array = augur.rpc.unmarshal(filtrate[i].data);
-                                    if (data_array && data_array.constructor === Array &&
-                                        data_array.length > 1) {
-                                        onMessage({
-                                            marketId: filtrate[i].topics[1],
-                                            trader: abi.format_address(filtrate[i].topics[2]),
-                                            type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
-                                            price: abi.unfix(data_array[1], "string"),
-                                            amount: abi.unfix(data_array[2], "string"),
-                                            timestamp: parseInt(data_array[3]),
-                                            outcome: abi.string(data_array[4]),
-                                            blockNumber: filtrate[i].blockNumber
-                                        });
-                                    }
-                                } catch (exc) {
-                                    console.error("price filter:", exc);
-                                    console.log(i, filtrate[i]);
-                                }
+        parse_price_message: function (message, onMessage) {
+            var data_array, market, marketplus, outcome;
+            if (message && message.length) {
+                for (var i = 0, len = message.length; i < len; ++i) {
+                    if (message[i] && message[i].topics && message[i].topics.length > 3) {
+                        try {
+                            data_array = augur.rpc.unmarshal(message[i].data);
+                            if (data_array && data_array.constructor === Array &&
+                                data_array.length > 1) {
+                                onMessage({
+                                    marketId: message[i].topics[1],
+                                    trader: abi.format_address(message[i].topics[2]),
+                                    type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
+                                    price: abi.unfix(data_array[1], "string"),
+                                    amount: abi.unfix(data_array[2], "string"),
+                                    timestamp: parseInt(data_array[3]),
+                                    outcome: abi.string(data_array[4]),
+                                    blockNumber: message[i].blockNumber
+                                });
                             }
+                        } catch (exc) {
+                            console.error("parse_price_message:", exc);
+                            console.log(i, message[i]);
                         }
                     }
-                }); // eth_getFilterChanges
+                }
+            }
+        },
+
+        poll_price_listener: function (onMessage) {
+            var self = this;
+            if (this.filter.price) {
+                augur.rpc.getFilterChanges(this.filter.price.id, function (message) {
+                    self.parse_price_message(message, onMessage);
+                });
             }
         },
 
@@ -166,12 +152,12 @@ module.exports = function () {
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.price.id, function (uninst) {
+                this.unsubscribe(this.filter.price.id, function (uninst) {
                     self.filter.price.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.price.id);
+                var uninst = this.unsubscribe(this.filter.price.id);
                 this.filter.price.id = null;
                 return uninst;
             }
@@ -180,12 +166,12 @@ module.exports = function () {
         clear_fill_tx_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.fill_tx.id, function (uninst) {
+                this.unsubscribe(this.filter.fill_tx.id, function (uninst) {
                     self.filter.fill_tx.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.fill_tx.id);
+                var uninst = this.unsubscribe(this.filter.fill_tx.id);
                 this.filter.fill_tx.id = null;
                 return uninst;
             }
@@ -194,12 +180,12 @@ module.exports = function () {
         clear_add_tx_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.add_tx.id, function (uninst) {
+                this.unsubscribe(this.filter.add_tx.id, function (uninst) {
                     self.filter.add_tx.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.add_tx.id);
+                var uninst = this.unsubscribe(this.filter.add_tx.id);
                 this.filter.add_tx.id = null;
                 return uninst;
             }
@@ -208,12 +194,12 @@ module.exports = function () {
         clear_cancel_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.cancel.id, function (uninst) {
+                this.unsubscribe(this.filter.cancel.id, function (uninst) {
                     self.filter.cancel.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.cancel.id);
+                var uninst = this.unsubscribe(this.filter.cancel.id);
                 this.filter.cancel.id = null;
                 return uninst;
             }
@@ -222,12 +208,12 @@ module.exports = function () {
         clear_contracts_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.contracts.id, function (uninst) {
+                this.unsubscribe(this.filter.contracts.id, function (uninst) {
                     self.filter.contracts.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.contracts.id);
+                var uninst = this.unsubscribe(this.filter.contracts.id);
                 this.filter.contracts.id = null;
                 return uninst;
             }
@@ -236,12 +222,12 @@ module.exports = function () {
         clear_block_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.block.id, function (uninst) {
+                this.unsubscribe(this.filter.block.id, function (uninst) {
                     self.filter.block.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.block.id);
+                var uninst = this.unsubscribe(this.filter.block.id);
                 this.filter.block.id = null;
                 return uninst;
             }
@@ -250,7 +236,7 @@ module.exports = function () {
         // set up filters
 
         setup_trade_filter: function (contract, label, f) {
-            return augur.rpc.newFilter({
+            return this.subscribeLogs({
                 address: augur.contracts[contract],
                 topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS[label]))]
             }, f);
@@ -270,12 +256,12 @@ module.exports = function () {
             };
             if (!utils.is_function(f)) {
                 this.filter.contracts = {
-                    id: augur.rpc.newFilter(params),
+                    id: this.subscribeLogs(params),
                     heartbeat: null
                 };
                 return this.filter.contracts;
             }
-            augur.rpc.newFilter(params, function (filter_id) {
+            this.subscribeLogs(params, function (filter_id) {
                 self.filter.contracts = {
                     id: filter_id,
                     heartbeat: null
@@ -288,16 +274,13 @@ module.exports = function () {
             var self = this;
             if (!utils.is_function(f)) {
                 this.filter.block = {
-                    id: augur.rpc.newBlockFilter(),
+                    id: this.subscribeNewBlocks(),
                     heartbeat: null
                 };
                 return this.filter.block;
             }
-            augur.rpc.newBlockFilter(function (filter_id) {
-                self.filter.block = {
-                    id: filter_id,
-                    heartbeat: null
-                };
+            this.subscribeNewBlocks(function (filter_id) {
+                self.filter.block = {id: filter_id, heartbeat: null};
                 f(self.filter.block);
             });
         },
@@ -326,7 +309,6 @@ module.exports = function () {
                 if (!filter_id || filter_id === "0x") {
                     return cb(errors.FILTER_NOT_CREATED);
                 }
-                console.log(contract, filter_name, filter_id);
                 if (filter_id.error) return cb(filter_id);
                 self.filter[filter_name] = {
                     id: filter_id,
@@ -360,7 +342,14 @@ module.exports = function () {
 
         pacemaker: function (cb) {
             var self = this;
-            if (cb && cb.constructor === Object) {
+            if (!cb || cb.constructor !== Object) return;
+            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                if (utils.is_function(cb.block)) {
+                    this.poll_block_listener(cb.block);
+                    this.filter.block.heartbeat = setInterval(function () {
+                        self.poll_block_listener(cb.block);
+                    }, this.PULSE);
+                }
                 if (utils.is_function(cb.contracts)) {
                     this.poll_contracts_listener(cb.contracts);
                     this.filter.contracts.heartbeat = setInterval(function () {
@@ -391,19 +380,49 @@ module.exports = function () {
                         self.poll_cancel_listener(cb.cancel);
                     }, this.PULSE);
                 }
+            } else {
                 if (utils.is_function(cb.block)) {
-                    this.poll_block_listener(cb.block);
-                    this.filter.block.heartbeat = setInterval(function () {
-                        self.poll_block_listener(cb.block);
-                    }, this.PULSE);
+                    augur.rpc.registerSubscriptionCallback(this.filter.block.id, function (msg) {
+                        cb.block(msg.hash);
+                    });
+                }
+                if (utils.is_function(cb.contracts)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.contracts.id, function (msg) {
+                        self.parse_contracts_message(msg, cb.contracts);
+                    });
+                }
+                if (utils.is_function(cb.price)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.price.id, function (msg) {
+                        self.parse_price_message(msg, cb.price);
+                    });
+                }
+                if (utils.is_function(cb.fill_tx)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.fill_tx.id, cb.fill_tx);
+                }
+                if (utils.is_function(cb.add_tx)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.add_tx.id, cb.add_tx);
+                }
+                if (utils.is_function(cb.cancel)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.cancel.id, cb.cancel);
                 }
             }
         },
 
         listen: function (cb, setup_complete) {
-            var self = this;
+            var run, self = this;
+            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+                run = async.parallel;
+            } else {
+                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+                run = async.series;
+            }
             if (utils.is_function(setup_complete)) {
-                async.parallel([
+                run([
                     function (callback) {
                         if (this.filter.contracts.id === null && cb.contracts) {
                             this.start_contracts_listener(function () {
@@ -441,6 +460,8 @@ module.exports = function () {
                                 self.pacemaker({add_tx: cb.add_tx});
                                 callback(null, ["add_tx", self.filter.add_tx.id]);
                             });
+                        } else {
+                            callback();
                         }
                     }.bind(this),
                     function (callback) {
@@ -449,6 +470,8 @@ module.exports = function () {
                                 self.pacemaker({cancel: cb.cancel});
                                 callback(null, ["cancel", self.filter.cancel.id]);
                             });
+                        } else {
+                            callback();
                         }
                     }.bind(this),
                     function (callback) {
@@ -483,22 +506,22 @@ module.exports = function () {
                     });
                 }
                 if (this.filter.price.id === null && cb.price) {
-                    this.start_trade_listener("trade", constants.LOGS.price, function () {
+                    this.start_trade_listener("trade", "price", function () {
                         self.pacemaker({price: cb.price});
                     });
                 }
                 if (this.filter.fill_tx.id === null && cb.fill_tx) {
-                    this.start_trade_listener("trade", constants.LOGS.fill_tx, function () {
+                    this.start_trade_listener("trade", "fill_tx", function () {
                         self.pacemaker({fill_tx: cb.fill_tx});
                     });
                 }
                 if (this.filter.add_tx.id === null && cb.add_tx) {
-                    this.start_trade_listener("buyAndSellShares", constants.LOGS.add_tx, function () {
+                    this.start_trade_listener("buyAndSellShares", "add_tx", function () {
                         self.pacemaker({add_tx: cb.add_tx});
                     });
                 }
                 if (this.filter.cancel.id === null && cb.cancel) {
-                    this.start_trade_listener("buyAndSellShares", constants.LOGS.cancel, function () {
+                    this.start_trade_listener("buyAndSellShares", "cancel", function () {
                         self.pacemaker({cancel: cb.cancel});
                     });
                 }

@@ -3716,7 +3716,7 @@ module.exports = {
 },{}],4:[function(require,module,exports){
 module.exports={
     "2": {
-        "buyAndSellShares": "0x47be35dcdd588ffcd30d6aaee5ed95630fecf918",
+        "buyAndSellShares": "0x6738507f217ffd6decf639793f7d0a57216c5ace",
         "closeMarket": "0xb50a2e85c68c0d4fe04759e4dc3f1f119e765707",
         "closeMarketEight": "0xf1b39ec03b64b7c839f551413c0e68c72bdc0131",
         "closeMarketFour": "0x9489d1c57cbe9d305540f7c40922b8283f9be089",
@@ -3739,7 +3739,7 @@ module.exports={
         "roundTwoPenalize": "0xc9a545fafdd2c6849c2186bab01aa2a5e27e7c70",
         "sendReputation": "0x7d82274b758b015867fc12325ff3629302c4187b",
         "slashRep": "0xb02033249eddd36a8b86a1cdaa8a18414f97e7a9",
-        "trade": "0x5827c3f05226f0934e67050b3b89f8e22f03f8f4",
+        "trade": "0x53e758fd531a82410ecdde4b69f8fdc52bac9810",
         "backstops": "0xc7da2eafd342f597d4434673b14f14ae3f41d942",
         "branches": "0x9678efb1b05634a3968c0c1d642eef4635ef371e",
         "cash": "0xaf9c171a9e906d3231d8cf1b765fd774bfb1d3c9",
@@ -5140,13 +5140,6 @@ module.exports = function (network) {
             returns: "hash",
             send: true
         },
-        short_sell: {
-            to: contracts.buyAndSellShares,
-            method: "short_sell",
-            signature: "ii",
-            returns: "number",
-            send: true
-        },
 
         // trade.se
         trade: {
@@ -5154,6 +5147,13 @@ module.exports = function (network) {
             method: "trade",
             signature: "iia",
             returns: "hash[]",
+            send: true
+        },
+        short_sell: {
+            to: contracts.trade,
+            method: "short_sell",
+            signature: "ii",
+            returns: "number",
             send: true
         },
 
@@ -36966,55 +36966,36 @@ module.exports = function () {
             });
         },
 
-        sift: function (filtrate, onMessage) {
-            /**
-             * filtrate example (array):
-             * [{
-             *   address: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
-             *   topics: [
-             *      '0x1a653a04916ffd3d6f74d5966492bda358e560be296ecf5307c2e2c2fdedd35a',
-             *      '0x00000000000000000000000005ae1d0ca6206c6168b42efcd1fbe0ed144e821b',
-             *      '0x4fe60eb31b13f1c0afdb7735111513f27cbecf312170c6e68e3c7c1f8a1239f8',
-             *      '0x0000000000000000000000000000000000000000000000000000000000000001'
-             *   ],
-             *   data: '0x000000000000000000000000000000000000000000000000ffffffffffffd570ffffffffffffffffffffffffffffffffffffffffffffffff00000000000002f7',
-             *   blockNumber: '0x11db',
-             *   logIndex: '0x0',
-             *   blockHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-             *   transactionHash: '0x2d3dc5dea7fe6b14e034acb3b95d3d40bd45392dcd2e8030c2d15df3ddbd0594',
-             *   transactionIndex: '0x0'
-             * }, ...]
-             */
+        parse_contracts_message: function (message, onMessage) {
             var messages = [];
-            for (var i = 0, len = filtrate.length; i < len; ++i) {
+            for (var i = 0, len = message.length; i < len; ++i) {
                 try {
-                    if (filtrate[i]) {
-                        if (filtrate[i].constructor === Object) {
-                            if (filtrate.address === augur.contracts.createMarket) {
-                                this.createMarketMessage(filtrate[i].data, filtrate[i].blockNumber);
+                    if (message[i]) {
+                        if (message[i].constructor === Object) {
+                            if (message.address === augur.contracts.createMarket) {
+                                this.createMarketMessage(message[i].data, message[i].blockNumber);
                             } else {
-                                if (filtrate[i].data) {
-                                    filtrate[i].data = augur.rpc.unmarshal(filtrate[i].data);
+                                if (message[i].data) {
+                                    message[i].data = augur.rpc.unmarshal(message[i].data);
                                 }
                             }
                         }
-                        if (onMessage) onMessage(filtrate[i]);
-                        messages.push(filtrate[i]);
+                        if (onMessage) onMessage(message[i]);
+                        messages.push(message[i]);
                     }
                 } catch (exc) {
-                    console.error("contracts filter:", exc);
-                    console.log(i, filtrate[i]);
+                    console.error("parse_contracts_message:", exc);
+                    console.log(i, message[i]);
                 }
             }
-            if (messages.length) return messages;
         },
 
         poll_contracts_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
                 var self = this;
-                augur.rpc.getFilterChanges(this.filter.contracts.id, function (filtrate) {
-                    if (filtrate && filtrate.length && filtrate.constructor === Array) {
-                        self.sift(filtrate, onMessage);
+                augur.rpc.getFilterChanges(this.filter.contracts.id, function (message) {
+                    if (message && message.length && message.constructor === Array) {
+                        self.parse_contracts_message(message, onMessage);
                     }
                 });
             }
@@ -37022,46 +37003,51 @@ module.exports = function () {
 
         poll_block_listener: function (onMessage) {
             if (utils.is_function(onMessage)) {
-                augur.rpc.getFilterChanges(this.filter.block.id, function (filtrate) {
-                    if (filtrate && filtrate.length && filtrate.constructor === Array) {
-                        for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            onMessage(filtrate[i]);
+                augur.rpc.getFilterChanges(this.filter.block.id, function (message) {
+                    if (message && message.length && message.constructor === Array) {
+                        for (var i = 0, len = message.length; i < len; ++i) {
+                            onMessage(message[i]);
                         }
                     }
                 });
             }
         },
 
-        poll_price_listener: function (onMessage) {
-            if (this.filter.price) {
-                augur.rpc.getFilterChanges(this.filter.price.id, function (filtrate) {
-                    var data_array, market, marketplus, outcome;
-                    if (filtrate && filtrate.length) {
-                        for (var i = 0, len = filtrate.length; i < len; ++i) {
-                            if (filtrate[i] && filtrate[i].topics && filtrate[i].topics.length > 3) {
-                                try {
-                                    data_array = augur.rpc.unmarshal(filtrate[i].data);
-                                    if (data_array && data_array.constructor === Array &&
-                                        data_array.length > 1) {
-                                        onMessage({
-                                            marketId: filtrate[i].topics[1],
-                                            trader: abi.format_address(filtrate[i].topics[2]),
-                                            type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
-                                            price: abi.unfix(data_array[1], "string"),
-                                            amount: abi.unfix(data_array[2], "string"),
-                                            timestamp: parseInt(data_array[3]),
-                                            outcome: abi.string(data_array[4]),
-                                            blockNumber: filtrate[i].blockNumber
-                                        });
-                                    }
-                                } catch (exc) {
-                                    console.error("price filter:", exc);
-                                    console.log(i, filtrate[i]);
-                                }
+        parse_price_message: function (message, onMessage) {
+            var data_array, market, marketplus, outcome;
+            if (message && message.length) {
+                for (var i = 0, len = message.length; i < len; ++i) {
+                    if (message[i] && message[i].topics && message[i].topics.length > 3) {
+                        try {
+                            data_array = augur.rpc.unmarshal(message[i].data);
+                            if (data_array && data_array.constructor === Array &&
+                                data_array.length > 1) {
+                                onMessage({
+                                    marketId: message[i].topics[1],
+                                    trader: abi.format_address(message[i].topics[2]),
+                                    type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
+                                    price: abi.unfix(data_array[1], "string"),
+                                    amount: abi.unfix(data_array[2], "string"),
+                                    timestamp: parseInt(data_array[3]),
+                                    outcome: abi.string(data_array[4]),
+                                    blockNumber: message[i].blockNumber
+                                });
                             }
+                        } catch (exc) {
+                            console.error("parse_price_message:", exc);
+                            console.log(i, message[i]);
                         }
                     }
-                }); // eth_getFilterChanges
+                }
+            }
+        },
+
+        poll_price_listener: function (onMessage) {
+            var self = this;
+            if (this.filter.price) {
+                augur.rpc.getFilterChanges(this.filter.price.id, function (message) {
+                    self.parse_price_message(message, onMessage);
+                });
             }
         },
 
@@ -37088,12 +37074,12 @@ module.exports = function () {
         clear_price_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.price.id, function (uninst) {
+                this.unsubscribe(this.filter.price.id, function (uninst) {
                     self.filter.price.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.price.id);
+                var uninst = this.unsubscribe(this.filter.price.id);
                 this.filter.price.id = null;
                 return uninst;
             }
@@ -37102,12 +37088,12 @@ module.exports = function () {
         clear_fill_tx_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.fill_tx.id, function (uninst) {
+                this.unsubscribe(this.filter.fill_tx.id, function (uninst) {
                     self.filter.fill_tx.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.fill_tx.id);
+                var uninst = this.unsubscribe(this.filter.fill_tx.id);
                 this.filter.fill_tx.id = null;
                 return uninst;
             }
@@ -37116,12 +37102,12 @@ module.exports = function () {
         clear_add_tx_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.add_tx.id, function (uninst) {
+                this.unsubscribe(this.filter.add_tx.id, function (uninst) {
                     self.filter.add_tx.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.add_tx.id);
+                var uninst = this.unsubscribe(this.filter.add_tx.id);
                 this.filter.add_tx.id = null;
                 return uninst;
             }
@@ -37130,12 +37116,12 @@ module.exports = function () {
         clear_cancel_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.cancel.id, function (uninst) {
+                this.unsubscribe(this.filter.cancel.id, function (uninst) {
                     self.filter.cancel.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.cancel.id);
+                var uninst = this.unsubscribe(this.filter.cancel.id);
                 this.filter.cancel.id = null;
                 return uninst;
             }
@@ -37144,12 +37130,12 @@ module.exports = function () {
         clear_contracts_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.contracts.id, function (uninst) {
+                this.unsubscribe(this.filter.contracts.id, function (uninst) {
                     self.filter.contracts.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.contracts.id);
+                var uninst = this.unsubscribe(this.filter.contracts.id);
                 this.filter.contracts.id = null;
                 return uninst;
             }
@@ -37158,12 +37144,12 @@ module.exports = function () {
         clear_block_filter: function (cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                augur.rpc.uninstallFilter(this.filter.block.id, function (uninst) {
+                this.unsubscribe(this.filter.block.id, function (uninst) {
                     self.filter.block.id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = augur.rpc.uninstallFilter(this.filter.block.id);
+                var uninst = this.unsubscribe(this.filter.block.id);
                 this.filter.block.id = null;
                 return uninst;
             }
@@ -37172,7 +37158,7 @@ module.exports = function () {
         // set up filters
 
         setup_trade_filter: function (contract, label, f) {
-            return augur.rpc.newFilter({
+            return this.subscribeLogs({
                 address: augur.contracts[contract],
                 topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS[label]))]
             }, f);
@@ -37192,12 +37178,12 @@ module.exports = function () {
             };
             if (!utils.is_function(f)) {
                 this.filter.contracts = {
-                    id: augur.rpc.newFilter(params),
+                    id: this.subscribeLogs(params),
                     heartbeat: null
                 };
                 return this.filter.contracts;
             }
-            augur.rpc.newFilter(params, function (filter_id) {
+            this.subscribeLogs(params, function (filter_id) {
                 self.filter.contracts = {
                     id: filter_id,
                     heartbeat: null
@@ -37210,16 +37196,13 @@ module.exports = function () {
             var self = this;
             if (!utils.is_function(f)) {
                 this.filter.block = {
-                    id: augur.rpc.newBlockFilter(),
+                    id: this.subscribeNewBlocks(),
                     heartbeat: null
                 };
                 return this.filter.block;
             }
-            augur.rpc.newBlockFilter(function (filter_id) {
-                self.filter.block = {
-                    id: filter_id,
-                    heartbeat: null
-                };
+            this.subscribeNewBlocks(function (filter_id) {
+                self.filter.block = {id: filter_id, heartbeat: null};
                 f(self.filter.block);
             });
         },
@@ -37248,7 +37231,6 @@ module.exports = function () {
                 if (!filter_id || filter_id === "0x") {
                     return cb(errors.FILTER_NOT_CREATED);
                 }
-                console.log(contract, filter_name, filter_id);
                 if (filter_id.error) return cb(filter_id);
                 self.filter[filter_name] = {
                     id: filter_id,
@@ -37282,7 +37264,14 @@ module.exports = function () {
 
         pacemaker: function (cb) {
             var self = this;
-            if (cb && cb.constructor === Object) {
+            if (!cb || cb.constructor !== Object) return;
+            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                if (utils.is_function(cb.block)) {
+                    this.poll_block_listener(cb.block);
+                    this.filter.block.heartbeat = setInterval(function () {
+                        self.poll_block_listener(cb.block);
+                    }, this.PULSE);
+                }
                 if (utils.is_function(cb.contracts)) {
                     this.poll_contracts_listener(cb.contracts);
                     this.filter.contracts.heartbeat = setInterval(function () {
@@ -37313,19 +37302,49 @@ module.exports = function () {
                         self.poll_cancel_listener(cb.cancel);
                     }, this.PULSE);
                 }
+            } else {
                 if (utils.is_function(cb.block)) {
-                    this.poll_block_listener(cb.block);
-                    this.filter.block.heartbeat = setInterval(function () {
-                        self.poll_block_listener(cb.block);
-                    }, this.PULSE);
+                    augur.rpc.registerSubscriptionCallback(this.filter.block.id, function (msg) {
+                        cb.block(msg.hash);
+                    });
+                }
+                if (utils.is_function(cb.contracts)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.contracts.id, function (msg) {
+                        self.parse_contracts_message(msg, cb.contracts);
+                    });
+                }
+                if (utils.is_function(cb.price)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.price.id, function (msg) {
+                        self.parse_price_message(msg, cb.price);
+                    });
+                }
+                if (utils.is_function(cb.fill_tx)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.fill_tx.id, cb.fill_tx);
+                }
+                if (utils.is_function(cb.add_tx)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.add_tx.id, cb.add_tx);
+                }
+                if (utils.is_function(cb.cancel)) {
+                    augur.rpc.registerSubscriptionCallback(this.filter.cancel.id, cb.cancel);
                 }
             }
         },
 
         listen: function (cb, setup_complete) {
-            var self = this;
+            var run, self = this;
+            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+                run = async.parallel;
+            } else {
+                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+                run = async.series;
+            }
             if (utils.is_function(setup_complete)) {
-                async.parallel([
+                run([
                     function (callback) {
                         if (this.filter.contracts.id === null && cb.contracts) {
                             this.start_contracts_listener(function () {
@@ -37363,6 +37382,8 @@ module.exports = function () {
                                 self.pacemaker({add_tx: cb.add_tx});
                                 callback(null, ["add_tx", self.filter.add_tx.id]);
                             });
+                        } else {
+                            callback();
                         }
                     }.bind(this),
                     function (callback) {
@@ -37371,6 +37392,8 @@ module.exports = function () {
                                 self.pacemaker({cancel: cb.cancel});
                                 callback(null, ["cancel", self.filter.cancel.id]);
                             });
+                        } else {
+                            callback();
                         }
                     }.bind(this),
                     function (callback) {
@@ -37405,22 +37428,22 @@ module.exports = function () {
                     });
                 }
                 if (this.filter.price.id === null && cb.price) {
-                    this.start_trade_listener("trade", constants.LOGS.price, function () {
+                    this.start_trade_listener("trade", "price", function () {
                         self.pacemaker({price: cb.price});
                     });
                 }
                 if (this.filter.fill_tx.id === null && cb.fill_tx) {
-                    this.start_trade_listener("trade", constants.LOGS.fill_tx, function () {
+                    this.start_trade_listener("trade", "fill_tx", function () {
                         self.pacemaker({fill_tx: cb.fill_tx});
                     });
                 }
                 if (this.filter.add_tx.id === null && cb.add_tx) {
-                    this.start_trade_listener("buyAndSellShares", constants.LOGS.add_tx, function () {
+                    this.start_trade_listener("buyAndSellShares", "add_tx", function () {
                         self.pacemaker({add_tx: cb.add_tx});
                     });
                 }
                 if (this.filter.cancel.id === null && cb.cancel) {
-                    this.start_trade_listener("buyAndSellShares", constants.LOGS.cancel, function () {
+                    this.start_trade_listener("buyAndSellShares", "cancel", function () {
                         self.pacemaker({cancel: cb.cancel});
                     });
                 }
@@ -37605,7 +37628,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.1.7";
+    this.version = "1.1.9";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -38488,7 +38511,33 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, onTradeSent, onTradeSuccess, onTradeFailed);
+                    // [parseInt(SUCCESS), unfix(max_value), unfix(max_amount)]
+                    self.transact(tx, function (res) {
+                        var cr = res.callReturn;
+                        console.log(cr);
+                        if (cr && cr.constructor === Array) {
+                            cr[0] = parseInt(cr[0]);
+                            if (cr[0] === 1 && cr.length === 3) {
+                                cr[1] = abi.unfix(cr[1], "string");
+                                cr[2] = abi.unfix(cr[2], "string");
+                            }
+                        }
+                        console.log("cr:", cr);
+                        console.log("res.callReturn:", res.callReturn);
+                        onTradeSent(res);
+                    }, function (res) {
+                        var cr = res.callReturn;
+                        if (cr && cr.constructor === Array) {
+                            cr[0] = parseInt(cr[0]);
+                            if (cr[0] === 1 && cr.length === 3) {
+                                cr[1] = abi.unfix(cr[1], "string");
+                                cr[2] = abi.unfix(cr[2], "string");
+                            }
+                        }
+                        console.log("cr:", cr);
+                        console.log("res.callReturn:", res.callReturn);
+                        onTradeSuccess(res);
+                    }, onTradeFailed);
                 });
             },
             onFailed: onCommitFailed
@@ -48953,19 +49002,18 @@ module.exports = {
         logs: false
     },
 
-    // use IPC (only available on Node)
+    // geth IPC endpoint (Node-only)
     ipcpath: null,
+    socket: null,
 
     // geth websocket endpoint
-    wsUrl: "wss://ws.augur.net",
+    wsUrl: process.env.GETH_WEBSOCKET_URL || "wss://ws.augur.net",
 
     // initial value 0
     // if connection fails: -1
     // if connection succeeds: 1
+    ipcStatus: 0,
     wsStatus: 0,
-
-    // null or WebSocketClient instance
-    wsClient: null,
 
     // active websocket (if connected)
     websocket: null,
@@ -49141,7 +49189,53 @@ module.exports = {
         return returns;
     },
 
+    subscriptions: {},
+
+    registerSubscriptionCallback: function (id, callback) {
+        this.subscriptions[id] = callback;
+    },
+
+    ipcRequests: {},
     wsRequests: {},
+
+    ipcConnect: function (callback) {
+        var self = this;
+        var received = "";
+        this.socket = new net.Socket();
+        this.socket.setEncoding("utf8");
+        this.socket.on("data", function (data) {
+            received += data;
+            try {
+                data = JSON.parse(received);
+                if (data.id !== undefined && data.id !== null) {
+                    var req = self.ipcRequests[data.id];
+                    delete self.ipcRequests[data.id];
+                    self.parse(received, req.returns, req.callback);
+                } else if (data.method === "eth_subscription" && data.params &&
+                    data.params.subscription && data.params.result) {
+                    self.subscriptions[data.params.subscription](data.params.result);
+                }
+                received = "";
+            } catch (exc) {
+                if (self.debug.broadcast) console.debug(exc);
+            }
+        });
+        this.socket.on("end", function () { received = ""; });
+        this.socket.on("error", function (err) {
+            console.error("IPC socket error:", err);
+            self.ipcStatus = -1;
+            self.socket.destroy();
+            received = "";
+        });
+        this.socket.on("close", function (err) {
+            self.ipcStatus = (err) ? -1 : 0;
+            received = "";
+        });
+        this.socket.connect({path: this.ipcpath}, function () {
+            self.ipcStatus = 1;
+            callback(true);
+        });
+    },
 
     wsConnect: function (callback) {
         var self = this;
@@ -49159,6 +49253,9 @@ module.exports = {
                     var req = self.wsRequests[res.id];
                     delete self.wsRequests[res.id];
                     self.parse(msg.data, req.returns, req.callback);
+                } else if (res.method === "eth_subscription" && res.params &&
+                    res.params.subscription && res.params.result) {
+                    self.subscriptions[res.params.subscription](res.params.result);
                 }
             }
         };
@@ -49166,6 +49263,11 @@ module.exports = {
             self.wsStatus = 1;
             callback(true);
         };
+    },
+
+    ipcSend: function (command, returns, callback) {
+        this.ipcRequests[command.id] = {returns: returns, callback: callback};
+        if (this.ipcStatus === 1) this.socket.write(JSON.stringify(command));
     },
 
     wsSend: function (command, returns, callback) {
@@ -49188,7 +49290,6 @@ module.exports = {
             var response = req.getBody().toString();
             return this.parse(response, returns);
         }
-        // console.warn("[ethrpc] synchronous RPC request to " + rpcUrl + ":", command);
         if (window.XMLHttpRequest) {
             req = new window.XMLHttpRequest();
         } else {
@@ -49245,11 +49346,16 @@ module.exports = {
     // Post JSON-RPC command to all Ethereum nodes
     broadcast: function (command, callback) {
         var nodes, numCommands, returns, result, completed, self = this;
-
         if (!command || (command.constructor === Object && !command.method) ||
             (command.constructor === Array && !command.length)) {
             if (!callback) return null;
             return callback(null);
+        }
+
+        // make sure the ethereum node list isn't empty
+        if (!this.nodes.local && !this.nodes.hosted.length && !this.ipcpath && !this.wsUrl) {
+            if (isFunction(callback)) return callback(errors.ETHEREUM_NOT_FOUND);
+            throw new this.Error(errors.ETHEREUM_NOT_FOUND);
         }
 
         // parse batched commands and strip "returns" and "invocation" fields
@@ -49266,42 +49372,29 @@ module.exports = {
         }
 
         // if we're on Node, use IPC if available and ipcpath is specified
-        if (NODE_JS && this.ipcpath && command.method &&
-            command.method.indexOf("Filter") === -1) {
+        if (NODE_JS && this.ipcpath && command.method) {
             var loopback = this.nodes.local && (
                 (this.nodes.local.indexOf("127.0.0.1") > -1 ||
-                this.nodes.local.indexOf("localhost") > -1)
-            );
+                this.nodes.local.indexOf("localhost") > -1));
             if (!isFunction(callback) && !loopback) {
                 throw new this.Error(errors.LOOPBACK_NOT_FOUND);
             }
             if (isFunction(callback) && command.constructor !== Array) {
-                var received = '';
-                var socket = new net.Socket();
-                socket.setEncoding("utf8");
-                socket.connect({path: this.ipcpath}, function () {
-                    socket.write(JSON.stringify(command));
-                });
-                socket.on("data", function (data) {
-                    received += data;
-                    self.parse(received, returns, function (parsed) {
-                        if (parsed && parsed.error === 409) return;
-                        socket.destroy();
-                        callback(parsed);
-                    });
-                });
-                socket.on("error", function (err) {
-                    socket.destroy();
-                    callback(err);
-                });
-                return;
-            }
-        }
+                if (!this.ipcpath) this.ipcStatus = -1;
+                switch (this.ipcStatus) {
 
-        // make sure the ethereum node list isn't empty
-        if (!this.nodes.local && !this.nodes.hosted.length && !this.ipcpath) {
-            if (isFunction(callback)) return callback(errors.ETHEREUM_NOT_FOUND);
-            throw new this.Error(errors.ETHEREUM_NOT_FOUND);
+                // [0] IPC socket closed / not connected: try to connect
+                case 0:
+                    return this.ipcConnect(function (connected) {
+                        if (!connected) return self.broadcast(command, callback);
+                        self.ipcSend(command, returns, callback);
+                    });
+
+                // [1] IPC socket connected
+                case 1:
+                    return this.ipcSend(command, returns, callback);
+                }
+            }
         }
 
         // select local / hosted node(s) to receive RPC
@@ -49662,6 +49755,30 @@ module.exports = {
 
     compileLLL: function (code, f) {
         return this.broadcast(this.marshal("compileLLL", code), f);
+    },
+
+    subscribe: function (label, options, f) {
+        return this.broadcast(this.marshal("subscribe", [label, options]), f);
+    },
+
+    subscribeLogs: function (options, f) {
+        console.log(JSON.stringify(this.marshal("subscribe", ["logs", options])));
+        return this.broadcast(this.marshal("subscribe", ["logs", options]), f);
+    },
+
+    subscribeNewBlocks: function (options, f) {
+        if (!f && isFunction(options)) {
+            f = options;
+            options = null;
+        }
+        return this.broadcast(this.marshal("subscribe", ["newBlocks", options || {
+            includeTransactions: false,
+            transactionDetails: false
+        }]), f);
+    },    
+
+    unsubscribe: function (label, f) {
+        return this.broadcast(this.marshal("unsubscribe", label), f);
     },
 
     newFilter: function (params, f) {

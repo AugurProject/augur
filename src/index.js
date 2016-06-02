@@ -24,7 +24,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.1.7";
+    this.version = "1.1.9";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -907,7 +907,33 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, onTradeSent, onTradeSuccess, onTradeFailed);
+                    // [parseInt(SUCCESS), unfix(max_value), unfix(max_amount)]
+                    self.transact(tx, function (res) {
+                        var cr = res.callReturn;
+                        console.log(cr);
+                        if (cr && cr.constructor === Array) {
+                            cr[0] = parseInt(cr[0]);
+                            if (cr[0] === 1 && cr.length === 3) {
+                                cr[1] = abi.unfix(cr[1], "string");
+                                cr[2] = abi.unfix(cr[2], "string");
+                            }
+                        }
+                        console.log("cr:", cr);
+                        console.log("res.callReturn:", res.callReturn);
+                        onTradeSent(res);
+                    }, function (res) {
+                        var cr = res.callReturn;
+                        if (cr && cr.constructor === Array) {
+                            cr[0] = parseInt(cr[0]);
+                            if (cr[0] === 1 && cr.length === 3) {
+                                cr[1] = abi.unfix(cr[1], "string");
+                                cr[2] = abi.unfix(cr[2], "string");
+                            }
+                        }
+                        console.log("cr:", cr);
+                        console.log("res.callReturn:", res.callReturn);
+                        onTradeSuccess(res);
+                    }, onTradeFailed);
                 });
             },
             onFailed: onCommitFailed
