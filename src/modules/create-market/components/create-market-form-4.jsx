@@ -149,7 +149,8 @@ module.exports = React.createClass({
 
 										p.onValuesUpdated({ initialFairPrice: prices })
 									}
-								} />
+								} />,
+			baseError = i => <span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
 
 		switch(p.type){
 			case BINARY:
@@ -159,6 +160,7 @@ module.exports = React.createClass({
 						<div key={`initialFairPrice${i}`} >
 							{ baseInput(i) }
 							<span className="denomination">{ p.type === BINARY ? binaryLabels[i] : scalarLabels[i] }</span>
+							{ p.errors.initialFairPrice[`${i}`] && baseError(i) }
 						</div>
 					)
 
@@ -169,6 +171,7 @@ module.exports = React.createClass({
 						<div key={`initialFairPrice${i}`} >
 							{ baseInput(i) }
 							<span className="denomination">{ val }</span>
+							{ p.errors.initialFairPrice[`${i}`] && baseError(i) }
 						</div>
 					)
 				})
