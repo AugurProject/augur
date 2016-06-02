@@ -1,6 +1,7 @@
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
 import filters from './selectors/filters';
+import createMarketForm from './selectors/create-market-form'
 
 import { makeNumber } from './utils/make-number';
 
@@ -23,7 +24,8 @@ var selectors = {
 	},
 	loginAccount,
 	markets,
-	filters
+	filters,
+	createMarketForm
 };
 
 selectors.activePage = MARKETS;
@@ -109,29 +111,6 @@ selectors.pagination = {
 			previousItemNum: ((selectedPageNum - 2) * 10) + 1
 		}
 	})
-};
-
-selectors.createMarketForm =  {
-	onValuesUpdated: (newValues) => module.exports.update({
-		createMarketForm: {
-			...selectors.createMarketForm,
-			...newValues
-		}
-	}),
-
-	step: 1,
-	errors: {},
-
-	isValid: true,
-
-	// Advanced Market Creation
-	defaultFairPrice: INITIAL_FAIR_PRICE_DEFAULT,
-
-	initialFairPrice: [],
-	sharesPerOrder: SHARES_PER_ORDER_DEFAULT,
-	sizeOfBest: SIZE_OF_BEST_DEFAULT,
-	priceWidth: PRICE_WIDTH_DEFAULT,
-	separation: SEPARATION_DEFAULT
 };
 
 module.exports = selectors;
