@@ -9,6 +9,8 @@ import {
     SEPARATION_DEFAULT
 } from '../modules/create-market/constants/market-values-constraints'
 
+import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
+
 import { makeNumber } from '../utils/make-number'
 
 module.exports = createMarketForm();
@@ -39,7 +41,25 @@ function createMarketForm(){
     return form
 
     function updateForm(newValues){
-        if(form.step === 5 || newValues.step === 5){
+        if(newValues.step === 4){
+            form.initialFairPrice = []
+
+            switch(form.type){
+                case BINARY:
+                case SCALAR:
+                    for(let i = 0; i <= 1; i++)
+                        form.initialFairPrice[i] = form.defaultFairPrice
+
+                    break
+                case CATEGORICAL:
+                    form.categoricalOutcomes.forEach((val, i) => {
+                        form.initialFairPrice[i] = form.defaultFairPrice
+                    })
+                    break
+            }
+        }
+
+        if(newValues.step === 5){
             form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%')
             form.volume = makeNumber(0)
         }

@@ -27,10 +27,6 @@ module.exports = React.createClass({
 		separation: React.PropTypes.any
 	},
 
-	componentWillMount: function(){
-		this.setInitialFairPriceValues(this.props)
-	},
-
 	render: function() {
 		var p = this.props;
 
@@ -193,26 +189,6 @@ module.exports = React.createClass({
 					onPrev={ () => p.onValuesUpdated({ step: p.step - 1 }) } />
 			</div>
 		);
-	},
-
-	setInitialFairPriceValues: (p) => {
-		let prices = []
-
-		switch(p.type){
-			case BINARY:
-			case SCALAR:
-				for(let i = 0; i <= 1; i++)
-					prices[i] = p.defaultFairPrice
-
-				break
-			case CATEGORICAL:
-				p.categoricalOutcomes.forEach((val, i) => {
-					prices[i] = p.defaultFairPrice
-				})
-				break
-		}
-
-		p.onValuesUpdated({ initialFairPrice: prices })
 	},
 
 	renderFairPriceInputs: (p) => {
