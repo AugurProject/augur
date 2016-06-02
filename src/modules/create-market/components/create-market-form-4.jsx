@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import _ from 'lodash'
+
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
@@ -101,6 +103,24 @@ module.exports = React.createClass({
 							</p>
 							{ this.renderFairPriceInputs(p) }
 						</div>
+
+						<div>
+							<h4>Shares Per Order</h4>
+							<p>
+								This is the number of shares in each order.
+							</p>
+
+							<Input
+								type="number"
+								value = { p.sharesPerOrder }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ sharesPerOrder: parseFloat(value) }) }
+							/>
+
+							{ p.errors.sharesPerOrder &&
+								<span className="error-message">{ p.errors.sharesPerOrder }</span>
+							}
+						</div>
 					</div>
 				</div>
 
@@ -150,7 +170,10 @@ module.exports = React.createClass({
 										p.onValuesUpdated({ initialFairPrice: prices })
 									}
 								} />,
-			baseError = i => <span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
+			baseError = i => {
+				if (!!_.get(p.errors, `initialFairPrice[${i}]`))
+					return <span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
+			}
 
 		switch(p.type){
 			case BINARY:
@@ -160,7 +183,7 @@ module.exports = React.createClass({
 						<div key={`initialFairPrice${i}`} >
 							{ baseInput(i) }
 							<span className="denomination">{ p.type === BINARY ? binaryLabels[i] : scalarLabels[i] }</span>
-							{ p.errors.initialFairPrice[`${i}`] && baseError(i) }
+							{ baseError(i) }
 						</div>
 					)
 
@@ -171,7 +194,7 @@ module.exports = React.createClass({
 						<div key={`initialFairPrice${i}`} >
 							{ baseInput(i) }
 							<span className="denomination">{ val }</span>
-							{ p.errors.initialFairPrice[`${i}`] && baseError(i) }
+							{ baseError(i) }
 						</div>
 					)
 				})
