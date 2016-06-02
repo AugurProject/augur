@@ -40,9 +40,8 @@ function createMarketForm(){
 
     function updateForm(newValues){
         if(form.step === 5 || newValues.step === 5){
-            console.log('heading to 5...')
-
             form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%')
+            form.volume = makeNumber(0)
         }
 
         form = {
