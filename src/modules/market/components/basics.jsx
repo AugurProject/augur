@@ -7,9 +7,6 @@ module.exports = React.createClass({
 	propTypes: {
 		description: React.PropTypes.string,
 
-		endBlock: React.PropTypes.number,
-		matured: React.PropTypes.bool,
-
 		endDate: React.PropTypes.object,
 		tradingFeePercent: React.PropTypes.object,
 		volume: React.PropTypes.object,
@@ -34,7 +31,7 @@ module.exports = React.createClass({
 				<ul className="properties">
 					{ !!p.endDate &&
 						<li className="property end-date">
-							<span className="property-label">{ (p.endBlock != null && p.matured) ? 'ended': 'ends' }</span>
+							<span className="property-label">{ (p.endDate && p.endDate.value < new Date()) ? 'ended': 'ends' }</span>
 							<ValueDenomination className="property-value" { ...p.endDate } />
 						</li>
 					}
