@@ -7,6 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let markets;
 describe(`modules/markets/selectors/markets.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -90,6 +91,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
+	markets = selector.default;
+
 	it(`should return unpaginatedMarkets if selectedMarketsHeader is PENDING_REPORTS`, () => {
 		test = selector.default();
 		assert.deepEqual(test, mockSelectors.unpaginatedMarkets, `Didn't return the expected markets`);
@@ -160,3 +163,5 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		assert.deepEqual(test, out, `Didn't return only markets that are pending reports`);
 	});
 });
+
+export default markets;

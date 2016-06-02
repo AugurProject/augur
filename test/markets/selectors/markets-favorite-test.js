@@ -3,6 +3,7 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 
+let favoriteMarkets;
 describe(`modules/markets/selectors/markets-favorite.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	let selector, out, test;
@@ -75,9 +76,13 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
+	favoriteMarkets = selector.default;
+
 	it(`should return only favorite markets`, () => {
 		test = selector.default();
 		out = mockSelectors.filteredMarkets.filter(market => market.isFavorite);
 		assert.deepEqual(test, out, `Didn't return the expected markets`);
 	});
 });
+
+export default favoriteMarkets;

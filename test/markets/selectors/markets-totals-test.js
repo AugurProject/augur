@@ -6,6 +6,9 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/marketsTotals';
+
+let marketsTotals;
 
 describe(`modules/markets/selectors/markets-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -130,9 +133,9 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		favoriteMarkets: 'test'
 	};
 
-	sinon.stub(mockPositions, 'selectPositionsSummary', (numPosition, qtyShares, totalValue, totalCost) => {
+	sinon.stub(mockPositions, 'selectPositionsSummary', (numPositions, qtyShares, totalValue, totalCost) => {
 		return {
-			numPosition,
+			numPositions,
 			qtyShares,
 			totalValue,
 			totalCost
@@ -145,6 +148,8 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 		'../../positions/selectors/positions-summary': mockPositions
 	});
 
+	marketsTotals = selector.default;
+
 	it(`should return the market totals for selected market`, () => {
 		test = selector.default();
 		out = {
@@ -154,15 +159,18 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 			numUnpaginated: 7,
 			numFiltered: 7,
 			positionsSummary: {
-				numPosition: 70,
+				numPositions: 70,
 				qtyShares: 35,
 				totalValue: 140,
 				totalCost: 297
 			}
 		};
+		assertions.marketsTotalsAssertion(test);
 
 		assert(mockPositions.selectPositionsSummary.calledOnce, `Didn't selectPositionsSummary call once as expected`);
 
 		assert.deepEqual(test, out, `Didn't output the expected Totals`);
 	});
 });
+
+export default marketsTotals;

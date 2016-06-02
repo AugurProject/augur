@@ -6,7 +6,9 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/searchSort';
 
+let searchSort;
 describe(`modules/markets/selectors/search-sort.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -30,6 +32,8 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 		'../../markets/actions/update-selected-sort': mockSort
 	});
 
+	searchSort = selector.default;
+
 	it(`should return information about the sorting filters in search`, () => {
 		test = selector.default();
 		let actions = [{
@@ -39,6 +43,11 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 				isDesc: false
 			}
 		}];
+
+		assertions.searchSortAssertion(test);
+		assertions.selectedSortAssertion(test.selectedSort);
+		assertions.sortOptionsAssertion(test.sortOptions);
+
 		out = {
 			selectedSort: {
 				isDesc: true,
@@ -71,3 +80,5 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 		assert.deepEqual(test, out, `Didn't produce the expected output object`);
 	});
 });
+
+export default searchSort;
