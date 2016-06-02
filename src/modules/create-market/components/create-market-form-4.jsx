@@ -158,6 +158,24 @@ module.exports = React.createClass({
 								<span className="error-message">{ p.errors.priceWidth }</span>
 							}
 						</div>
+
+						<div>
+							<h4>Order Separation</h4>
+							<p>
+								This defines the price distance between all initial bids and asks.
+							</p>
+
+							<Input
+								type="number"
+								value = { p.separation }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ separation: parseFloat(value) }) }
+							/>
+
+							{ p.errors.separation &&
+								<span className="error-message">{ p.errors.separation }</span>
+							}
+						</div>
 					</div>
 				</div>
 

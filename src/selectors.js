@@ -131,7 +131,7 @@ selectors.createMarketForm =  {
 	sharesPerOrder: SHARES_PER_ORDER_DEFAULT,
 	sizeOfBest: SIZE_OF_BEST_DEFAULT,
 	priceWidth: PRICE_WIDTH_DEFAULT,
-	distance: DISTANCE_DEFAULT
+	separation: SEPARATION_DEFAULT
 };
 
 module.exports = selectors;

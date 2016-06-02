@@ -25,7 +25,7 @@ export const INITIAL_FAIR_PRICE_DEFAULT = 46.5;
 export const SHARES_PER_ORDER_DEFAULT = 25;
 export const SIZE_OF_BEST_DEFAULT = 35;
 export const PRICE_WIDTH_DEFAULT = 4;
-export const DISTANCE_DEFAULT = 0.5;
+export const SEPARATION_DEFAULT = 0.5;
 
 export const INITIAL_LIQUIDITY_MIN = 50;
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
