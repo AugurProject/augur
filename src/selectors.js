@@ -106,5 +106,3 @@ selectors.pagination = {
 selectors.createMarketForm =  {};
 
 module.exports = selectors;
-
-
