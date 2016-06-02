@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import _ from 'lodash'
+import { get } from '../../../utils/get'
 
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
@@ -232,7 +232,7 @@ module.exports = React.createClass({
 									}
 								} />,
 			baseError = i => {
-				if (!!_.get(p.errors, `initialFairPrice[${i}]`))
+				if (!!get(p.errors, `initialFairPrice.${i}`))
 					return <span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
 			}
 
