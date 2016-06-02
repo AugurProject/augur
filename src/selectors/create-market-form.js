@@ -9,6 +9,8 @@ import {
     SEPARATION_DEFAULT
 } from '../modules/create-market/constants/market-values-constraints'
 
+import { makeNumber } from '../utils/make-number'
+
 module.exports = createMarketForm();
 
 function createMarketForm(){
@@ -37,6 +39,12 @@ function createMarketForm(){
     return form
 
     function updateForm(newValues){
+        if(form.step === 5 || newValues.step === 5){
+            console.log('heading to 5...')
+
+            form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%')
+        }
+
         form = {
             ...form,
             ...newValues
