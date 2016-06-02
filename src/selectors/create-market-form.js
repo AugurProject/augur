@@ -1,4 +1,7 @@
 import {
+    TRADING_FEE_DEFAULT,
+    MAKER_FEE_DEFAULT,
+    INITIAL_LIQUIDITY_DEFAULT,
     INITIAL_FAIR_PRICE_DEFAULT,
     SHARES_PER_ORDER_DEFAULT,
     SIZE_OF_BEST_DEFAULT,
@@ -14,6 +17,10 @@ function createMarketForm(){
         errors: {},
 
         isValid: true,
+
+        tradingFeePercent: TRADING_FEE_DEFAULT,
+        makerFeePercent: MAKER_FEE_DEFAULT,
+        initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 
         // Advanced Market Creation
         defaultFairPrice: INITIAL_FAIR_PRICE_DEFAULT,
@@ -38,4 +45,3 @@ function createMarketForm(){
         require('../selectors').update({ createMarketForm: form });
     }
 }
-
