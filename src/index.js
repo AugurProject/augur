@@ -895,7 +895,8 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
  *
  * @param {String} marketId On what market trading occurs
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
- * @param {Object} userTradeOrdersPerOutcome Trade orders which user want to execute (one per outcome)
+ * @param {Object} userTradeOrdersPerOutcome Trade orders to execute (one per outcome), come from UI. important
+ *      fields are: userTradeOrder.shares, userTradeOrder.ether (total cost + fees), userTradeOrder.limitPrice
  * @param {Object} positionsPerOutcome User's positions per outcome
  * @param {Function} onTradeHash
  * @param {Function} onCommitSent
