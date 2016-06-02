@@ -42,20 +42,36 @@ function createMarketForm(){
 
     function updateForm(newValues){
         if(newValues.step === 4){
-            form.initialFairPrice = []
+            form.initialFairPriceLabels = [];
 
             switch(form.type){
                 case BINARY:
-                case SCALAR:
-                    for(let i = 0; i <= 1; i++)
-                        form.initialFairPrice[i] = form.defaultFairPrice
+                    form.initialFairPriceLabels = ['Yes', 'No'];
 
-                    break
+                    setInitialFairPrice(2)
+
+                    break;
+                case SCALAR:
+                    form.initialFairPriceLabels = ['⇧', '⇩'];
+
+                    setInitialFairPrice(2)
+
+                    break;
                 case CATEGORICAL:
                     form.categoricalOutcomes.forEach((val, i) => {
-                        form.initialFairPrice[i] = form.defaultFairPrice
-                    })
-                    break
+                        form.initialFairPriceLabels[i] = val;
+                    });
+
+                    setInitialFairPrice(form.categoricalOutcomes.length)
+
+                    break;
+            }
+
+            function setInitialFairPrice(c){
+                form.initialFairPrice = [];
+
+                for(let i = 0; i < c; i++)
+                    form.initialFairPrice[i] = form.defaultFairPrice;
             }
         }
 

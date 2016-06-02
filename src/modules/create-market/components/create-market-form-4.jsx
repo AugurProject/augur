@@ -193,8 +193,6 @@ module.exports = React.createClass({
 
 	renderFairPriceInputs: (p) => {
 		let inputs = [],
-			binaryLabels = ['Yes', 'No'],
-			scalarLabels = ['⇧', '⇩'],
 			baseInput = i => <Input
 								type="text"
 								value={ p.initialFairPrice[i] }
@@ -219,7 +217,7 @@ module.exports = React.createClass({
 					inputs.push(
 						<div key={`initialFairPrice${i}`} >
 							{ baseInput(i) }
-							<span className="denomination">{ p.type === BINARY ? binaryLabels[i] : scalarLabels[i] }</span>
+							<span className="denomination">{ p.initialFairPriceLabels[i] }</span>
 							{ baseError(i) }
 						</div>
 					)
