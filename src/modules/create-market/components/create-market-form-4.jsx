@@ -96,6 +96,7 @@ module.exports = React.createClass({
 					<h6 className="horizontal-divider" onClick={() => {p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams })}}><span>{ advancedParamsArrow }</span> Advanced <span>{ advancedParamsArrow }</span></h6>
 
 					<div className={ classNames({ 'displayNone': !!!p.showAdvancedMarketParams }) }>
+
 						<div>
 							<h4>Initial Fair Price</h4>
 							<p>
@@ -119,6 +120,24 @@ module.exports = React.createClass({
 
 							{ p.errors.sharesPerOrder &&
 								<span className="error-message">{ p.errors.sharesPerOrder }</span>
+							}
+						</div>
+
+						<div>
+							<h4>Size of best bid/ask</h4>
+							<p>
+								This defines the number of shares applied to the best bid and ask orders.
+							</p>
+
+							<Input
+								type="number"
+								value = { p.sizeOfBest }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ sizeOfBest: parseFloat(value) }) }
+							/>
+
+							{ p.errors.sizeOfBest &&
+								<span className="error-message">{ p.errors.sizeOfBest }</span>
 							}
 						</div>
 					</div>
