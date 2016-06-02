@@ -140,6 +140,24 @@ module.exports = React.createClass({
 								<span className="error-message">{ p.errors.sizeOfBest }</span>
 							}
 						</div>
+
+						<div>
+							<h4>Price Width</h4>
+							<p>
+								This defines the spread between the initial best bid and ask orders.
+							</p>
+
+							<Input
+								type="number"
+								value = { p.priceWidth }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ priceWidth: parseFloat(value) }) }
+							/>
+
+							{ p.errors.priceWidth &&
+								<span className="error-message">{ p.errors.priceWidth }</span>
+							}
+						</div>
 					</div>
 				</div>
 
