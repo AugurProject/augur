@@ -8,7 +8,12 @@ import {
 	INITIAL_LIQUIDITY_MIN,
 	MAKER_FEE_DEFAULT,
 	MAKER_FEE_MIN,
-	MAKER_FEE_MAX
+	MAKER_FEE_MAX,
+	INITIAL_FAIR_PRICE_DEFAULT,
+	SHARES_PER_ORDER_DEFAULT,
+	SIZE_OF_BEST_DEFAULT,
+	PRICE_WIDTH_DEFAULT,
+	SEPARATION_DEFAULT
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
@@ -16,10 +21,18 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
+		initialFairPrice: formState.initialFairPrice || [],
+		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
+		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
+		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
+		separation: formState.separation || SEPARATION_DEFAULT
 	};
 	return obj;
 };
 
+
+
+// Validators
 export const validateTradingFee = (tradingFeePercent) => {
 	const parsed = parseFloat(tradingFeePercent);
 	if (!tradingFeePercent) {
