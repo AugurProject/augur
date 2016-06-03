@@ -18,21 +18,13 @@ import {
 	INITIAL_LIQUIDITY_MIN,
 	MAKER_FEE_DEFAULT,
 	MAKER_FEE_MIN,
-	MAKER_FEE_MAX,
-	STARTING_QUANTITY_DEFAULT,
-	STARTING_QUANTITY_MIN,
-	BEST_STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_MIN,
-	PRICE_WIDTH_DEFAULT,
-	PRICE_WIDTH_MIN,
-	PRICE_DEPTH_DEFAULT,
-	IS_SIMULATION
+	MAKER_FEE_MAX
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
 	const obj = {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
-		makerFee: formState.makerFee || MAKER_FEE_DEFAULT,
+		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
@@ -101,28 +93,23 @@ export const validateTradingFee = (tradingFeePercent) => {
 			}`;
 };
 
-export const validateMakerFee = (makerFee) => {
-	const parsed = parseFloat(makerFee);
+export const validateMakerFee = (makerFeePercent) => {
+	const parsed = parseFloat(makerFeePercent);
 
-	if(!makerFee)
+	if(!makerFeePercent)
 		return 'Please specify a maker fee %';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	if(parsed !== makerFeePercent)
 		return 'Maker fee must be as number';
 	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
-		return `Maker fee must be between ${
-				formatPercent(MAKER_FEE_MIN, true).full
+		return `Maker fee must be between 
+			${formatPercent(MAKER_FEE_MIN, true).full
 			} and ${
-				formatPercent(MAKER_FEE_MAX, true).full
-			}`;
+			formatPercent(MAKER_FEE_MAX, true).full}`
 };
 
-export const validateInitialLiquidity = (type, liquidity, start, best, halfWidth, scalarMin, scalarMax) => {
-	const 	parsed = parseFloat(liquidity),
-			priceDepth = type === SCALAR ?
-				(parseFloat(start) * (parseFloat(scalarMin) + parseFloat(scalarMax) - halfWidth)) / (parseFloat(liquidity) - ( 2 * parseFloat(best))) :
-				(parseFloat(start) * (1 - halfWidth)) / (parseFloat(liquidity) - ( 2 * parseFloat(best)));
-
-	if(!liquidity)
+export const validateMarketInvestment = (initialLiquidity) => {
+	const parsed = parseFloat(initialLiquidity);
+	if (!initialLiquidity) {
 		return 'Please provide some initial liquidity';
 	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Initial liquidity must be numeric';
