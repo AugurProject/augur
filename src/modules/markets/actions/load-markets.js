@@ -29,7 +29,7 @@ export function loadMarkets() {
 				}
 
 				const marketsDataOutcomesData = parseMarketsData(marketsData);
-console.log(marketsData);
+
 				dispatch(updateMarketsData(marketsDataOutcomesData));
 
 				dispatch(loadReports(marketsDataOutcomesData.marketsData));
