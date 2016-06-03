@@ -37,7 +37,7 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.values || ...initialFairPrices(formState),
+		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState)},
 		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
 		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
@@ -48,8 +48,6 @@ export const select = (formState) => {
 };
 
 export const initialFairPrices = (formState) => {
-	// console.log('initialFairPrices -- ', formState);
-
 	const setInitialFairPrices = (labels) => {
 		let values = [];
 
