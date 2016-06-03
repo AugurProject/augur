@@ -18,7 +18,12 @@ import {
 	INITIAL_LIQUIDITY_MIN,
 	MAKER_FEE_DEFAULT,
 	MAKER_FEE_MIN,
-	MAKER_FEE_MAX
+	MAKER_FEE_MAX,
+	INITIAL_FAIR_PRICE_DEFAULT,
+	SHARES_PER_ORDER_DEFAULT,
+	SIZE_OF_BEST_DEFAULT,
+	PRICE_WIDTH_DEFAULT,
+	SEPARATION_DEFAULT
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
@@ -26,51 +31,17 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
-		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
-		bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
+		initialFairPrice: formState.initialFairPrice || [],
+		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
+		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-		priceDepth: PRICE_DEPTH_DEFAULT,
-		isSimulation: formState.isSimulation || IS_SIMULATION
+		separation: formState.separation || SEPARATION_DEFAULT
 	};
 
 	return obj;
 };
 
-export const initialFairPrices = (formState) => {
-	const setInitialFairPrices = (labels) => {
-		let values = [],
-			raw = [];
 
-		labels.map((cV, i) => {
-			values[i] = {
-				label: cV,
-				value: INITIAL_FAIR_PRICE_DEFAULT
-			};
-			raw[i] = INITIAL_FAIR_PRICE_DEFAULT;
-		})
-
-		return { values, raw }
-	};
-
-	switch(formState.type){
-		case BINARY:
-			return setInitialFairPrices(['Yes', 'No']);
-		case SCALAR:
-			return setInitialFairPrices(['⇧', '⇩']);
-		case CATEGORICAL:
-			let labels = [];
-
-			formState.categoricalOutcomes.map((val, i) => {
-				labels[i] = val;
-			});
-
-			return setInitialFairPrices(labels);
-
-		default:
-			break;
-	}
-};
 
 // Validators
 export const validateTradingFee = (tradingFeePercent) => {
