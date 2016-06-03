@@ -18,9 +18,9 @@ export function loadMarkets() {
 				return console.log('ERR loadNumMarkets()', err);
 			}
 // numMarkets = 70; // TEMPORARY OVERRIDE
-			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (error, marketsData) => {
-				if (error) {
-					console.log('ERROR loadMarkets()', error);
+			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (err, marketsData) => {
+				if (err) {
+					console.log('ERROR loadMarkets()', err);
 					return;
 				}
 				if (!marketsData) {
@@ -29,7 +29,7 @@ export function loadMarkets() {
 				}
 
 				const marketsDataOutcomesData = parseMarketsData(marketsData);
-
+console.log(marketsData);
 				dispatch(updateMarketsData(marketsDataOutcomesData));
 
 				dispatch(loadReports(marketsDataOutcomesData.marketsData));

@@ -160,48 +160,48 @@ ex.loadNumMarkets = function loadNumMarkets(branchID, cb) {
 	});
 };
 
-function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, chunkCB) {
-	augur.getMarketsInfo({
-		branch: branchID,
-		offset: startIndex,
-		numMarketsToLoad: chunkSize
-	}, marketsData => {
-		const now = 0 - (Date.now() + window.performance.now());
-
-		if (!marketsData || marketsData.error) {
-			return chunkCB(marketsData);
-		}
-		// had to change this to return something, doesn't seem to break anything.
-		Object.keys(marketsData).forEach((key, i) => {
-			marketsData[key].creationSortOrder = now + i;
-			return marketsData[key].creationSortOrder;
-		});
-
-		chunkCB(null, marketsData);
-
-		if (isDesc && startIndex > 0) {
-			setTimeout(() => getMarketsInfo(
-				branchID,
-				startIndex - chunkSize,
-				chunkSize,
-				totalMarkets,
-				isDesc
-			), TIMEOUT_MILLIS);
-		} else if (!isDesc && startIndex < totalMarkets) {
-			setTimeout(() => getMarketsInfo(
-				branchID,
-				startIndex + chunkSize,
-				chunkSize,
-				totalMarkets,
-				isDesc
-			), TIMEOUT_MILLIS);
-		}
-	});
-}
-
 ex.loadMarkets = function loadMarkets(branchID, chunkSize, totalMarkets, isDesc, chunkCB) {
 	const firstStartIndex = isDesc ? totalMarkets - chunkSize + 1 : 0;
 	getMarketsInfo(branchID, firstStartIndex, chunkSize, totalMarkets, isDesc, chunkCB);
+
+	function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, chunkCB) {
+		augur.getMarketsInfo({
+			branch: branchID,
+			offset: startIndex,
+			numMarketsToLoad: chunkSize
+		}, marketsData => {
+			const now = 0 - (Date.now() + window.performance.now());
+
+			if (!marketsData || marketsData.error) {
+				return chunkCB(marketsData);
+			}
+			// had to change this to return something, doesn't seem to break anything.
+			Object.keys(marketsData).forEach((key, i) => {
+				marketsData[key].creationSortOrder = now + i;
+				return marketsData[key].creationSortOrder;
+			});
+
+			chunkCB(null, marketsData);
+
+			if (isDesc && startIndex > 0) {
+				setTimeout(() => getMarketsInfo(
+					branchID,
+					startIndex - chunkSize,
+					chunkSize,
+					totalMarkets,
+					isDesc
+				), TIMEOUT_MILLIS);
+			} else if (!isDesc && startIndex < totalMarkets) {
+				setTimeout(() => getMarketsInfo(
+					branchID,
+					startIndex + chunkSize,
+					chunkSize,
+					totalMarkets,
+					isDesc
+				), TIMEOUT_MILLIS);
+			}
+		});
+	}
 };
 
 ex.loadMarket = function loadMarket(marketID, cb) {
