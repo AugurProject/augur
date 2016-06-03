@@ -37628,7 +37628,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.2.0";
+    this.version = "1.2.1";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -38490,14 +38490,14 @@ Augur.prototype.generateOrderBook = function (p, cb) {
         }
         var numSellOrders = new BigNumber(maxValue).minus(sellPrice).dividedBy(priceDepth).floor();
         var numBuyOrders = new BigNumber(buyPrice).minus(minValue).dividedBy(priceDepth).floor();
-        var totalSharesNeeded = bestStartingQuantity.plus(startingQuantity.times(numSellOrders));
+        var sharesOnBook = bestStartingQuantity.plus(startingQuantity.times(numSellOrders));
         var totalCashNeeded = bestStartingQuantity.plus(startingQuantity.times(numBuyOrders));
         var sharesToBuy = liquidity.minus(totalCashNeeded);
         numSellOrders = numSellOrders.toNumber();
         numBuyOrders = numBuyOrders.toNumber();
         if (p.isSimulation) {
             return onSimulate({
-                totalSharesNeeded: totalSharesNeeded.toFixed(),
+                sharesOnBook: sharesOnBook.toFixed(),
                 sharesToBuy: sharesToBuy.toFixed(),
                 numBuyOrders: numBuyOrders + 1,
                 numSellOrders: numSellOrders + 1,
