@@ -42,36 +42,36 @@ function createMarketForm(){
 
     function updateForm(newValues){
         if(newValues.step === 4){
-            form.initialFairPriceLabels = [];
-
             switch(form.type){
                 case BINARY:
-                    form.initialFairPriceLabels = ['Yes', 'No'];
-
-                    setInitialFairPrice(2)
+                    setInitialFairPrice(['Yes', 'No']);
 
                     break;
                 case SCALAR:
-                    form.initialFairPriceLabels = ['⇧', '⇩'];
-
-                    setInitialFairPrice(2)
+                    setInitialFairPrice(['⇧', '⇩']);
 
                     break;
                 case CATEGORICAL:
-                    form.categoricalOutcomes.forEach((val, i) => {
-                        form.initialFairPriceLabels[i] = val;
+                    let labels = [];
+
+                    form.categoricalOutcomes.map((val, i) => {
+                        labels[i] = val;
                     });
 
-                    setInitialFairPrice(form.categoricalOutcomes.length)
+                    setInitialFairPrice(labels)
 
                     break;
             }
 
-            function setInitialFairPrice(c){
+            function setInitialFairPrice(labels){
                 form.initialFairPrice = [];
 
-                for(let i = 0; i < c; i++)
-                    form.initialFairPrice[i] = form.defaultFairPrice;
+                labels.map((cV, i) => {
+                    form.initialFairPrice[i] = {
+                        label: cV,
+                        value: form.defaultFairPrice
+                    }
+                })
             }
         }
 

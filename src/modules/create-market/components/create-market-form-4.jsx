@@ -6,8 +6,6 @@ import { get } from '../../../utils/get'
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-
 module.exports = React.createClass({
 	propTypes: {
 		onValuesUpdated: React.PropTypes.func,
@@ -104,7 +102,29 @@ module.exports = React.createClass({
 							<p>
 								This establishes the initial price for each respective outcome.
 							</p>
-							{ this.renderFairPriceInputs(p) }
+							{ p.initialFairPrice.map((cV, i) => {
+								return (
+									<div key={`initialFairPrice${i}`} >
+										<Input
+											type="text"
+											value={ p.initialFairPrice[i].value }
+											isClearable={ false }
+											onChange={
+												(onChangeValue) => {
+													let prices = p.initialFairPrice
+													prices[i].value = onChangeValue
+
+													p.onValuesUpdated({ initialFairPrice: prices })
+												}
+											} />
+										<span className="denomination">{ cV.label }</span>
+										{ !!get(p.errors, `initialFairPrice.${i}`) &&
+											<span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
+										}
+									</div>
+								)
+							})}
+
 						</div>
 
 						<div>
@@ -189,54 +209,5 @@ module.exports = React.createClass({
 					onPrev={ () => p.onValuesUpdated({ step: p.step - 1 }) } />
 			</div>
 		);
-	},
-
-	renderFairPriceInputs: (p) => {
-		let inputs = [],
-			baseInput = i => <Input
-								type="text"
-								value={ p.initialFairPrice[i] }
-								isClearable={ false }
-								onChange={
-									(value) => {
-										let prices = p.initialFairPrice
-										prices[i] = parseFloat(value)
-
-										p.onValuesUpdated({ initialFairPrice: prices })
-									}
-								} />,
-			baseError = i => {
-				if (!!get(p.errors, `initialFairPrice.${i}`))
-					return <span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
-			}
-
-		switch(p.type){
-			case BINARY:
-			case SCALAR:
-				for(let i = 0; i <= 1; i++)
-					inputs.push(
-						<div key={`initialFairPrice${i}`} >
-							{ baseInput(i) }
-							<span className="denomination">{ p.initialFairPriceLabels[i] }</span>
-							{ baseError(i) }
-						</div>
-					)
-
-				break
-			case CATEGORICAL:
-				p.categoricalOutcomes.forEach((val, i) => {
-					inputs.push(
-						<div key={`initialFairPrice${i}`} >
-							{ baseInput(i) }
-							<span className="denomination">{ val }</span>
-							{ baseError(i) }
-						</div>
-					)
-				})
-
-				break
-		}
-
-		return <div> { inputs } </div>
 	}
 });
