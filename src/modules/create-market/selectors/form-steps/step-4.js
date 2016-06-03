@@ -27,7 +27,7 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState)},
+		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
 		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
@@ -117,13 +117,10 @@ export const validateMarketInvestment = (initialLiquidity) => {
 };
 
 export const isValid = (formState) => {
-	if (validateTradingFee(formState.tradingFeePercent)) {
+	if(	validateTradingFee(formState.tradingFeePercent) ||
+		validateMakerFee(formState.makerFeePercent) ||
+		validateMarketInvestment(formState.initialLiquidity))
 		return false;
-	}
-
-	if (validateMarketInvestment(formState.initialLiquidity)) {
-		return false;
-	}
 
 	return true;
 };
