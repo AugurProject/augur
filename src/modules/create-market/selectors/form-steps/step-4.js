@@ -22,7 +22,8 @@ import {
 	INITIAL_FAIR_PRICE_DEFAULT,
 	STARTING_QUANTITY_DEFAULT,
 	STARTING_QUANTITY_MIN,
-	SIZE_OF_BEST_DEFAULT,
+	BEST_STARTING_QUANTITY_DEFAULT,
+	BEST_STARTING_QUANTITY_MIN,
 	PRICE_WIDTH_DEFAULT,
 	PRICE_DEPTH_DEFAULT
 } from '../../../create-market/constants/market-values-constraints';
@@ -34,7 +35,7 @@ export const select = (formState) => {
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
-		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
+		bestStartingQuantity: formState.bestStartingQuanity || BEST_STARTING_QUANTITY_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
 		priceDepth: formState.priceDepth || PRICE_DEPTH_DEFAULT
 	};
@@ -118,21 +119,32 @@ export const validateMarketInvestment = (initialLiquidity) => {
 		}`;
 };
 
-export const validateStartingQuantity = (startingQuanity) => {
-	const parsed = parseFloat(startingQuanity)
-	if(!startingQuanity)
+export const validateStartingQuantity = (startingQuantity) => {
+	const parsed = parseFloat(startingQuantity);
+	if(!startingQuantity)
 		return 'Please provide a starting quantity';
-	if(parsed !== startingQuanity)
+	if(parsed !== startingQuantity)
 		return 'Starting quantity must be numeric';
 	if(parsed < STARTING_QUANTITY_MIN)
 		return `Starting quantity must be at least ${formatShares(STARTING_QUANTITY_MIN).full}`;
-}
+};
+
+export const validateBestStartingQuantity = (bestStartingQuantity) => {
+	const parsed = parseFloat(bestStartingQuantity)
+	if(!bestStartingQuantity)
+		return 'Please provide a best starting quantity';
+	if(parsed !== bestStartingQuanity)
+		return 'Best starting quantity must be numeric';
+	if(parsed < BEST_STARTING_QUANTITY_MIN)
+		return `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
+};
 
 export const isValid = (formState) => {
 	if(	validateTradingFee(formState.tradingFeePercent) 		||
 		validateMakerFee(formState.makerFeePercent) 			||
 		validateMarketInvestment(formState.initialLiquidity)	||
-		validateStartingQuantity(formState.startingQuantity))
+		validateStartingQuantity(formState.startingQuantity)	||
+		validateBestStartingQuantity(formState.bestStartingQuantity))
 		return false;
 
 	return true;
