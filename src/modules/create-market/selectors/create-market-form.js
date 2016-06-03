@@ -49,6 +49,7 @@ export const selectCreateMarketForm =
 		// step 2
 		formState = {
 			...formState,
+			...Step2.initialFairPrices(formState),
 			...Step2.select(formState)
 		};
 		formState.isValid = Step2.isValid(formState);
