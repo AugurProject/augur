@@ -11,12 +11,6 @@ import {
 } from '../../../markets/constants/market-types';
 
 import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR
-} from '../../../markets/constants/market-types';
-
-import {
 	TRADING_FEE_DEFAULT,
 	TRADING_FEE_MIN,
 	TRADING_FEE_MAX,
@@ -26,7 +20,8 @@ import {
 	MAKER_FEE_MIN,
 	MAKER_FEE_MAX,
 	INITIAL_FAIR_PRICE_DEFAULT,
-	SHARES_PER_ORDER_DEFAULT,
+	STARTING_QUANTITY_DEFAULT,
+	STARTING_QUANTITY_MIN,
 	SIZE_OF_BEST_DEFAULT,
 	PRICE_WIDTH_DEFAULT,
 	PRICE_DEPTH_DEFAULT
@@ -38,7 +33,7 @@ export const select = (formState) => {
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
-		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
+		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
 		priceDepth: formState.priceDepth || PRICE_DEPTH_DEFAULT
@@ -123,10 +118,21 @@ export const validateMarketInvestment = (initialLiquidity) => {
 		}`;
 };
 
+export const validateStartingQuantity = (startingQuanity) => {
+	const parsed = parseFloat(startingQuanity)
+	if(!startingQuanity)
+		return 'Please provide a starting quantity';
+	if(parsed !== startingQuanity)
+		return 'Starting quantity must be numeric';
+	if(parsed < STARTING_QUANTITY_MIN)
+		return `Starting quantity must be at least ${formatShares(STARTING_QUANTITY_MIN).full}`;
+}
+
 export const isValid = (formState) => {
-	if(	validateTradingFee(formState.tradingFeePercent) ||
-		validateMakerFee(formState.makerFeePercent) ||
-		validateMarketInvestment(formState.initialLiquidity))
+	if(	validateTradingFee(formState.tradingFeePercent) 		||
+		validateMakerFee(formState.makerFeePercent) 			||
+		validateMarketInvestment(formState.initialLiquidity)	||
+		validateStartingQuantity(formState.startingQuantity))
 		return false;
 
 	return true;
