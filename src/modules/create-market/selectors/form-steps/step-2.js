@@ -19,16 +19,16 @@ import validateCategoricalOutcomes from '../../../market/validators/validate-cat
 
 export const select = (formState) => {
 	switch (formState.type) {
-	case BINARY:
-		return selectBinary(formState);
-	case CATEGORICAL:
-		return selectCategorical(formState);
-	case SCALAR:
-		return selectScalar(formState);
-	case COMBINATORIAL:
-		return selectCombinatorial(formState);
-	default:
-		break;
+		case BINARY:
+			return selectBinary(formState);
+		case CATEGORICAL:
+			return selectCategorical(formState);
+		case SCALAR:
+			return selectScalar(formState);
+		case COMBINATORIAL:
+			return selectCombinatorial(formState);
+		default:
+			break;
 	}
 };
 
