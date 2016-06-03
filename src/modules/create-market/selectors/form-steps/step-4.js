@@ -37,7 +37,7 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState)},
+		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
 		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
@@ -124,94 +124,10 @@ export const validateMarketInvestment = (initialLiquidity) => {
 		}`;
 };
 
-export const validateInitialFairPrices = (type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) => {
-	// -- Constraints --
-	// 	Binary + Categorical:
-	//		min: priceWidth / 2
-	//  	max: 1 - (priceWidth / 2)
-	// 	Scalar:
-	// 		min: scalarMin + (priceWidth / 2)
-	// 		max: scalarMax - (priceWidth / 2)
-
-	const 	max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth,
-			min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
-
-	let fairPriceErrors = {};
-
-	initialFairPrices.map((cV, i) => {
-		const parsed = parseFloat(cV)
-
-		if(!cV)
-			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity';
-		if(Number.isNaN(parsed) && !Number.isFinite(parsed))
-			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric';
-		if(cV < min || cV > max)
-			fairPriceErrors[`${i}`] = `Initial prices must be between ${min} - ${max} based on the price width of ${width}`
-	});
-
-	if(!!Object.keys(fairPriceErrors).length)
-		return fairPriceErrors
-};
-
-export const validateBestStartingQuantity = (bestStartingQuantity) => {
-	const parsed = parseFloat(bestStartingQuantity);
-
-	if(!bestStartingQuantity)
-		return 'Please provide a best starting quantity';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
-		return 'Best starting quantity must be numeric';
-	if(parsed < BEST_STARTING_QUANTITY_MIN)
-		return `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
-};
-
-export const validateStartingQuantity = (startingQuantity) => {
-	const parsed = parseFloat(startingQuantity);
-
-	if(!startingQuantity)
-		return 'Please provide a starting quantity';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
-		return 'Starting quantity must be numeric';
-	if(parsed < STARTING_QUANTITY_MIN)
-		return `Starting quantity must be at least ${
-			formatShares(STARTING_QUANTITY_MIN).full
-		}`;
-};
-
-export const validatePriceWidth = (priceWidth) => {
-	const parsed = parseFloat(priceWidth);
-
-	if (!priceWidth)
-		return 'Please provide a price width';
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
-		return 'Price width must be numeric';
-	if (parsed < PRICE_WIDTH_MIN) {
-		return `Price width must be at least ${formatEther(PRICE_WIDTH_MIN).full}`;
-	}
-};
-
 export const isValid = (formState) => {
-	if(	validateTradingFee(formState.tradingFeePercent) 				||
-		validateMakerFee(formState.makerFee) 							||
-		validateInitialLiquidity(
-			formState.type,
-			formState.initialLiquidity,
-			formState.startingQuantity,
-			formState.bestStartingQuantity,
-			formState.halfPriceWidth,
-			formState.scalarSmallNum,
-			formState.scalarBigNum
-		)																||
-		validateInitialFairPrices(
-			formState.type,
-			formState.initialFairPrices.raw,
-			formState.priceWidth,
-			formState.halfPriceWidth,
-			formState.scalarSmallNum,
-			formState.scalarBigNum
-		)																||
-		validateBestStartingQuantity(formState.bestStartingQuantity)	||
-		validateStartingQuantity(formState.startingQuantity)			||
-		validatePriceWidth(formState.priceWidth))
+	if(	validateTradingFee(formState.tradingFeePercent) ||
+		validateMakerFee(formState.makerFeePercent) ||
+		validateMarketInvestment(formState.initialLiquidity))
 		return false;
 
 	return true;
