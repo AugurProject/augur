@@ -11,6 +11,12 @@ import {
 } from '../../../markets/constants/market-types';
 
 import {
+	BINARY,
+	CATEGORICAL,
+	SCALAR
+} from '../../../markets/constants/market-types';
+
+import {
 	TRADING_FEE_DEFAULT,
 	TRADING_FEE_MIN,
 	TRADING_FEE_MAX,
@@ -23,7 +29,7 @@ import {
 	SHARES_PER_ORDER_DEFAULT,
 	SIZE_OF_BEST_DEFAULT,
 	PRICE_WIDTH_DEFAULT,
-	SEPARATION_DEFAULT
+	PRICE_DEPTH_DEFAULT
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
@@ -31,17 +37,50 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrice: formState.initialFairPrice || [],
+		initialFairPrices: !!formState.initialFairPrices.values || ...initialFairPrices(formState),
 		sharesPerOrder: formState.sharesPerOrder || SHARES_PER_ORDER_DEFAULT,
 		sizeOfBest: formState.sizeOfBest || SIZE_OF_BEST_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-		separation: formState.separation || SEPARATION_DEFAULT
+		priceDepth: formState.priceDepth || PRICE_DEPTH_DEFAULT
 	};
 
 	return obj;
 };
 
+export const initialFairPrices = (formState) => {
+	// console.log('initialFairPrices -- ', formState);
 
+	const setInitialFairPrices = (labels) => {
+		let values = [];
+
+		labels.map((cV, i) => {
+			values[i] = {
+				label: cV,
+				value: INITIAL_FAIR_PRICE_DEFAULT
+			}
+		})
+
+		return { values }
+	};
+
+	switch(formState.type){
+		case BINARY:
+			return setInitialFairPrices(['Yes', 'No']);
+		case SCALAR:
+			return setInitialFairPrices(['⇧', '⇩']);
+		case CATEGORICAL:
+			let labels = [];
+
+			formState.categoricalOutcomes.map((val, i) => {
+				labels[i] = val;
+			});
+
+			return setInitialFairPrices(labels);
+
+		default:
+			break;
+	}
+};
 
 // Validators
 export const validateTradingFee = (tradingFeePercent) => {
