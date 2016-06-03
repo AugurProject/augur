@@ -16,25 +16,15 @@ import {
 	TRADING_FEE_MAX,
 	INITIAL_LIQUIDITY_DEFAULT,
 	INITIAL_LIQUIDITY_MIN,
-	MAKER_FEES_DEFAULT,
-	MAKER_FEES_MIN,
-	MAKER_FEES_MAX,
-	INITIAL_FAIR_PRICE_DEFAULT,
-	INITIAL_FAIR_PRICE_MIN,
-	STARTING_QUANTITY_DEFAULT,
-	STARTING_QUANTITY_MIN,
-	BEST_STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_MIN,
-	PRICE_WIDTH_DEFAULT,
-	PRICE_WIDTH_MIN,
-	PRICE_DEPTH_DEFAULT,
-	IS_SIMULATION
+	MAKER_FEE_DEFAULT,
+	MAKER_FEE_MIN,
+	MAKER_FEE_MAX
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
 	const obj = {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
-		makerFees: formState.makerFees || MAKER_FEES_DEFAULT,
+		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
@@ -98,22 +88,21 @@ export const validateTradingFee = (tradingFeePercent) => {
 			}`;
 };
 
-export const validateMakerFees = (makerFees) => {
-	const parsed = parseFloat(makerFees);
+export const validateMakerFee = (makerFeePercent) => {
+	const parsed = parseFloat(makerFeePercent);
 
-	if(!makerFees)
+	if(!makerFeePercent)
 		return 'Please specify a maker fee %';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	if(parsed !== makerFeePercent)
 		return 'Maker fee must be as number';
-	if(parsed < MAKER_FEES_MIN || parsed > MAKER_FEES_MAX)
-		return `Maker fee must be between ${
-				formatPercent(MAKER_FEES_MIN, true).full
+	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
+		return `Maker fee must be between 
+			${formatPercent(MAKER_FEE_MIN, true).full
 			} and ${
-				formatPercent(MAKER_FEES_MAX, true).full
-			}`;
+			formatPercent(MAKER_FEE_MAX, true).full}`
 };
 
-export const validateInitialLiquidity = (initialLiquidity) => {
+export const validateMarketInvestment = (initialLiquidity) => {
 	const parsed = parseFloat(initialLiquidity);
 
 	if (!initialLiquidity)
