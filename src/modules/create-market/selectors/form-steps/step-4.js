@@ -1,14 +1,20 @@
 import { formatEther, formatPercent } from '../../../../utils/format-number';
 
 import {
-	TRADING_FEE_MIN, TRADING_FEE_MAX,
-	INITIAL_LIQUIDITY_MIN, TRADING_FEE_DEFAULT,
-	INITIAL_LIQUIDITY_DEFAULT
+	TRADING_FEE_DEFAULT,
+	TRADING_FEE_MIN,
+	TRADING_FEE_MAX,
+	INITIAL_LIQUIDITY_DEFAULT,
+	INITIAL_LIQUIDITY_MIN,
+	MAKER_FEE_DEFAULT,
+	MAKER_FEE_MIN,
+	MAKER_FEE_MAX
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
 	const obj = {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
+		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 	};
 	return obj;
@@ -29,6 +35,20 @@ export const validateTradingFee = (tradingFeePercent) => {
 			true).full
 		} and ${formatPercent(TRADING_FEE_MAX, true).full}`;
 	}
+};
+
+export const validateMakerFee = (makerFeePercent) => {
+	const parsed = parseFloat(makerFeePercent);
+
+	if(!makerFeePercent)
+		return 'Please specify a maker fee %';
+	if(parsed !== makerFeePercent)
+		return 'Maker fee must be as number';
+	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
+		return `Maker fee must be between 
+			${formatPercent(MAKER_FEE_MIN, true).full
+			} and ${
+			formatPercent(MAKER_FEE_MAX, true).full}`
 };
 
 export const validateMarketInvestment = (initialLiquidity) => {
