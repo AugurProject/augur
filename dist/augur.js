@@ -3753,41 +3753,41 @@ module.exports={
         "trades": "0x10552e258ba9b287a89c4e9917a9a359a864e666"
     },
     "10101": {
-        "buyAndSellShares": "0xc7ef1cdfcae05c9c778e3a3220193f5c052e9550",
-        "closeMarket": "0x6fb0df83b9031eb15dc265b96b069d131daedb4f",
-        "closeMarketEight": "0xc3861b66ac4b788dc1894766ff7b9911b2e5f71a",
-        "closeMarketFour": "0xf8dd783865db45a516f337a593a963fb48521e9f",
-        "closeMarketOne": "0xec7f828b36932375e002ef8fd89836ca0f89cd02",
-        "closeMarketTwo": "0x7ba9727bd11556abe84d577da769c3c654485b91",
-        "collectFees": "0xa9d19963a10b6cd6c4ccf93990aa27d09269e704",
-        "completeSets": "0x470f9a8742c7ae216a61cd7c5c639495929c42cb",
-        "compositeGetters": "0x049899ffa5d91e07bd17ddd778afaa2ba06215b5",
-        "consensus": "0xd5e6b60100f91a7b193e1eb99229cb6ad053b589",
-        "createBranch": "0xcfe7ff3615e407b03aee9be253575e690bc80a17",
-        "createMarket": "0xfa0b869cc786e0c25ce1f718c49b942ca5a55817",
-        "eventResolution": "0x5d33ae07b32e421d0edaebf248e981d642eb445e",
-        "faucets": "0x383a68ff0e60deed20c552ea4490e39ca41aa56a",
-        "forkPenalize": "0x3f28e883ea95a17bea09f90c14275ce1f25f645b",
-        "forking": "0x405b11e09ee3123ccadae39d64042b79643eed5c",
-        "makeReports": "0x817d292f4dae36886c2a1a34c1dd79db621d8210",
-        "penalizationCatchup": "0x880717a38207a7f0bd69f2ca6c3ae6da45016ae7",
-        "penalizeNotEnoughReports": "0x1862d9df4def8c3acbc67df7ac9188bac91dcd24",
-        "roundTwo": "0xa8b773abb39c61a4f831a8b6b2059fda4ccfb8e1",
-        "roundTwoPenalize": "0x6d627faf0e57f1aa91a33c87ec755974a1814edc",
-        "sendReputation": "0x34a58e5132485549db47b308e195794c7b782dda",
-        "slashRep": "0x3aafcfc9768794e8e4a49bf1111a2a2606b0b155",
-        "trade": "0x9f986a05073a7ab803de685ecf6264592b624c67",
-        "backstops": "0x19488cee1798884ceda5fac78bc317e6008d5ea9",
-        "branches": "0xb5f19caa51984535ee5a27ef2645a5b03dd41d4f",
-        "cash": "0xeaa0b868f9c774867f298ccd47aec3b6ed458ad7",
-        "consensusData": "0xfda81d2eed91ca7fed78200ae3d7fdff94a15741",
-        "events": "0x9089ab1c84eb78a1272f8582c1ddc7b3d758f386",
-        "expiringEvents": "0x9ef6af92e1c5aa2bc8631b6eb2dfb356d6e32036",
-        "fxpFunctions": "0x5fb9570ee96d23a081c5b722097e4d753cb84e4d",
-        "info": "0x8073fc32cce0f13e04703fac0c89464ba0a268bb",
-        "markets": "0xc5a1a957bb9c00becd097fe9b639d0dacf26939b",
-        "reporting": "0x34b774f33438f79963c0a454f314189430bbfeaf",
-        "trades": "0x20c6925451f3b69424bc9383482ff070850046d5"
+        "buyAndSellShares": "0xb2efa5b1050d231eff6ddac06476bc1156e988ae",
+        "closeMarket": "0xdb713bb3802a10bb478b3ccaeea764b2887ac4f1",
+        "closeMarketEight": "0xa1c4b5d3b5dddf099268984482ed7e6e0f8e34ab",
+        "closeMarketFour": "0xa3909bcb11f090d352e6d5c58ce5df42bd8e3944",
+        "closeMarketOne": "0x505578eef1bc7720ee607c93efcf3ef7865d60a1",
+        "closeMarketTwo": "0xb502a04c3fa1c80f3ee3bf2b376192dafd2c80d3",
+        "collectFees": "0xd9067bc7551c25e0632e7740e37b67399c5ce408",
+        "completeSets": "0x6311a51b3d4aeb1d71e9171542b591d39b6fb214",
+        "compositeGetters": "0x00a74476ee1968ad81434f63da8587a09e2d3339",
+        "consensus": "0xdb2ce37e43ab3019a832793e7f215fc8163a06b8",
+        "createBranch": "0x29a0001fb9562974d295b0838908187a4f348cd0",
+        "createMarket": "0xf6196bb01a7aaf65999800d493346ff95577945b",
+        "eventResolution": "0x1f86052ed260f0b8832fec3acc9929dc6f8cc400",
+        "faucets": "0xd2bafee5e0d12090c4297003eedc7cc4b9a6e774",
+        "forkPenalize": "0x7a34bb45753073eac61bbb1fbc9953f01c28ac05",
+        "forking": "0xa7975468988dc876d1d364afe6c83e85e1fdf26a",
+        "makeReports": "0xeca8a5e335e4cd86fda1b1787b42eae1964d1709",
+        "penalizationCatchup": "0x85bffcda96d053ed6a3719d4aa27864bafaed038",
+        "penalizeNotEnoughReports": "0x997678bb7cf90471745ac5cbe0eb398e8fd3820c",
+        "roundTwo": "0x18f2c3b75d9cb1cfe9e7e46f95a16f034b9df45e",
+        "roundTwoPenalize": "0x63afe6dbb9f6f1416ae754a3bf108f5a4f70bc42",
+        "sendReputation": "0x552268338b28a14ddfd8ba47ee3904eb0f35f748",
+        "slashRep": "0xf7a5d22161673287649ad71581e49ca6d9e8ea59",
+        "trade": "0xfbe502c87e70a1e19d15af53c7f86e4b51b2849d",
+        "backstops": "0xf7848fe6c3dae57825c320558ce9d49872f68d44",
+        "branches": "0xe0e96a1cc6fc6f6763af56e2a47c0f01994c2ad5",
+        "cash": "0x6701dc2286b781e4474f471f9cb7e530b379cfb0",
+        "consensusData": "0x736df7f626d1f14ceac44888af5fa8671078a7db",
+        "events": "0xdda18a741106738a06c9581ce11242c5d5aafa91",
+        "expiringEvents": "0xaa27c85e2f0307f235d1cd255bc892c254670d6e",
+        "fxpFunctions": "0x9852a44630e218fecc3da5f46203571f7ff90e91",
+        "info": "0x3cea6d50ebb0a593660f4425a3cbcc811578b62f",
+        "markets": "0xf9cd70a392cdf58813dcf01e3a8f949c94532f0c",
+        "reporting": "0x1cc99b620a4d6e36aa9272f02f86815ecbcd03fd",
+        "trades": "0x35d126b322749739bb8a124f6197d701dbefc2ad"
     },
     "errors": {
         "0x": "no response or bad input",
@@ -37628,7 +37628,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.1.9";
+    this.version = "1.2.0";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -38442,6 +38442,233 @@ Augur.prototype.fill_trade = function (id, fill, onSent, onSuccess, onFailed) {
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
+/**
+ * @param {Object} p
+ *     market: market ID
+ *     liquidity: initial cash to be placed on the order book
+ *     initialFairPrice: midpoint used for bid/offer prices when the market opens
+ *     startingQuantity: number of shares in each order
+ *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
+ *     priceWidth: spread between best bid/offer
+ *     priceDepth: difference in price between orders on the same side of the order book
+ *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
+ * @param {Object} cb
+ *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
+ */
+Augur.prototype.generateOrderBook = function (p, cb) {
+    var self = this;
+    var liquidity = new BigNumber(p.liquidity);
+    var initialFairPrice = new BigNumber(p.initialFairPrice);
+    var startingQuantity = new BigNumber(p.startingQuantity);
+    var bestStartingQuantity = new BigNumber(p.bestStartingQuantity || p.startingQuantity);
+    var halfPriceWidth = new BigNumber(p.priceWidth).dividedBy(new BigNumber(2));
+    var priceDepth = new BigNumber(p.priceDepth);
+    var buyPrice = initialFairPrice.minus(halfPriceWidth);
+    var sellPrice = initialFairPrice.plus(halfPriceWidth);
+    // console.log("initialFairPrice:", initialFairPrice.toFixed());
+    // console.log("startingQuantity:", startingQuantity.toFixed());
+    // console.log("bestStartingQuantity:", bestStartingQuantity.toFixed());
+    // console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+    // console.log("priceDepth:", priceDepth.toFixed());
+    // console.log("sellPrice:", sellPrice.toFixed());
+    // console.log("buyPrice:", buyPrice.toFixed());
+    cb = cb || {};
+    var onSimulate = cb.onSimulate || this.utils.noop;
+    var onBuyCompleteSets = cb.onBuyCompleteSets || this.utils.noop;
+    var onSetupOutcome = cb.onSetupOutcome || this.utils.noop;
+    var onSetupOrder = cb.onSetupOrder || this.utils.noop;
+    var onSuccess = cb.onSuccess || this.utils.noop;
+    var onFailed = cb.onFailed || this.utils.noop;
+    this.getMarketInfo(p.market, function (marketInfo) {
+        var minValue, maxValue;
+        if (marketInfo.type === "scalar") {
+            minValue = marketInfo.events[0].minValue;
+            maxValue = marketInfo.events[0].maxValue;
+        } else {
+            minValue = 0;
+            maxValue = 1;
+        }
+        var numSellOrders = new BigNumber(maxValue).minus(sellPrice).dividedBy(priceDepth).floor();
+        var numBuyOrders = new BigNumber(buyPrice).minus(minValue).dividedBy(priceDepth).floor();
+        var totalSharesNeeded = bestStartingQuantity.plus(startingQuantity.times(numSellOrders));
+        var totalCashNeeded = bestStartingQuantity.plus(startingQuantity.times(numBuyOrders));
+        var sharesToBuy = liquidity.minus(totalCashNeeded);
+        numSellOrders = numSellOrders.toNumber();
+        numBuyOrders = numBuyOrders.toNumber();
+        if (p.isSimulation) {
+            return onSimulate({
+                totalSharesNeeded: totalSharesNeeded.toFixed(),
+                sharesToBuy: sharesToBuy.toFixed(),
+                numBuyOrders: numBuyOrders + 1,
+                numSellOrders: numSellOrders + 1,
+                numTransactions: numBuyOrders + numSellOrders + 3
+            });
+        }
+        self.buyCompleteSets({
+            market: p.market,
+            amount: abi.hex(sharesToBuy),
+            onSent: function (res) {
+                // console.log("generateOrderBook.buyCompleteSets sent:", res);
+            },
+            onSuccess: function (res) {
+                // console.log("generateOrderBook.buyCompleteSets success:", res);
+                onBuyCompleteSets(res);
+                async.each(marketInfo.outcomes, function (outcome, nextOutcome) {
+                    var buyPrice = initialFairPrice.minus(halfPriceWidth);
+                    var sellPrice = initialFairPrice.plus(halfPriceWidth);
+                    async.parallel([
+                        function (done) {
+                            self.buy({
+                                amount: abi.hex(bestStartingQuantity),
+                                price: abi.hex(buyPrice),
+                                market: p.market,
+                                outcome: outcome.id,
+                                onSent: function (res) {
+                                    // console.log("generateOrderBook.buy", bestStartingQuantity.toFixed(), buyPrice.toFixed(), outcome.id, "sent:", res);
+                                },
+                                onSuccess: function (res) {
+                                    // console.log("generateOrderBook.buy", bestStartingQuantity.toFixed(), buyPrice.toFixed(), outcome.id, "success:", res);
+                                    onSetupOrder({
+                                        market: p.market,
+                                        outcome: outcome.id,
+                                        amount: bestStartingQuantity.toFixed(),
+                                        buyPrice: buyPrice.toFixed()
+                                    });
+                                    done();
+                                },
+                                onFailed: function (err) {
+                                    // console.error("generateOrderBook.buy", bestStartingQuantity.toFixed(), buyPrice.toFixed(), outcome.id, "failed:", err);
+                                    done(err);
+                                }
+                            });
+                        },
+                        function (done) {
+                            self.sell({
+                                amount: abi.hex(bestStartingQuantity),
+                                price: abi.hex(sellPrice),
+                                market: p.market,
+                                outcome: outcome.id,
+                                onSent: function (res) {
+                                    // console.log("generateOrderBook.sell", bestStartingQuantity.toFixed(), sellPrice.toFixed(), outcome.id, "sent:", res);
+                                },
+                                onSuccess: function (res) {
+                                    // console.log("generateOrderBook.sell", bestStartingQuantity.toFixed(), sellPrice.toFixed(), outcome.id, "success:", res);
+                                    onSetupOrder({
+                                        market: p.market,
+                                        outcome: outcome.id,
+                                        amount: bestStartingQuantity.toFixed(),
+                                        sellPrice: sellPrice.toFixed()
+                                    });
+                                    done();
+                                },
+                                onFailed: function (err) {
+                                    // console.error("generateOrderBook.sell", bestStartingQuantity.toFixed(), sellPrice.toFixed(), outcome.id, "failed:", err);
+                                    done(err);
+                                }
+                            });
+                        }
+                    ], function (err) {
+                        if (err) console.error("best buy/sell:", err);
+                        async.parallel([
+                            function (done) {
+                                var buyPriceIndex = 0;
+                                async.whilst(
+                                    function () { return buyPriceIndex < numBuyOrders; },
+                                    function (callback) {
+                                        buyPriceIndex++;
+                                        buyPrice = buyPrice.minus(priceDepth);
+                                        if (buyPrice.lte(constants.ZERO)) {
+                                            buyPrice = priceDepth.dividedBy(new BigNumber(10));
+                                        }
+                                        self.buy({
+                                            amount: abi.hex(startingQuantity),
+                                            price: abi.hex(buyPrice),
+                                            market: p.market,
+                                            outcome: outcome.id,
+                                            onSent: function (res) {
+                                                // console.log("generateOrderBook.buy", startingQuantity.toFixed(), buyPrice.toFixed(), outcome.id, "sent:", res);
+                                            },
+                                            onSuccess: function (res) {
+                                                // console.log("generateOrderBook.buy", startingQuantity.toFixed(), buyPrice.toFixed(), outcome.id, "success:", res);
+                                                onSetupOrder({
+                                                    market: p.market,
+                                                    outcome: outcome.id,
+                                                    amount: startingQuantity.toFixed(),
+                                                    buyPrice: buyPrice.toFixed()
+                                                });
+                                                callback(null, buyPriceIndex);
+                                            },
+                                            onFailed: function (err) {
+                                                // console.error("generateOrderBook.buy", startingQuantity.toFixed(), buyPrice.toFixed(), outcome.id, "failed:", err);
+                                                callback(err, buyPriceIndex);
+                                            }
+                                        });
+                                    },
+                                    function (err, lastBuyPriceIndex) {
+                                        if (err) console.error("buyPrice loop failed:", err, lastBuyPriceIndex);
+                                        done(err);
+                                    }
+                                );
+                            },
+                            function (done) {
+                                var sellPriceIndex = 0;
+                                async.whilst(
+                                    function () { return sellPriceIndex < numSellOrders; },
+                                    function (callback) {
+                                        sellPriceIndex++;
+                                        sellPrice = sellPrice.plus(priceDepth);
+                                        if (sellPrice.gte(new BigNumber(1))) {
+                                            sellPrice = new BigNumber(1).minus(priceDepth.dividedBy(new BigNumber(10)));
+                                        }
+                                        self.sell({
+                                            amount: abi.hex(startingQuantity),
+                                            price: abi.hex(sellPrice),
+                                            market: p.market,
+                                            outcome: outcome.id,
+                                            onSent: function (res) {
+                                                // console.log("generateOrderBook.sell", startingQuantity.toFixed(), sellPrice.toFixed(), outcome.id, "sent:", res);
+                                            },
+                                            onSuccess: function (res) {
+                                                // console.log("generateOrderBook.sell", startingQuantity.toFixed(), sellPrice.toFixed(), outcome.id, "success:", res);
+                                                onSetupOrder({
+                                                    market: p.market,
+                                                    outcome: outcome.id,
+                                                    amount: startingQuantity.toFixed(),
+                                                    sellPrice: sellPrice.toFixed()
+                                                });
+                                                callback(null, sellPriceIndex);
+                                            },
+                                            onFailed: function (err) {
+                                                // console.error("generateOrderBook.sell", startingQuantity.toFixed(), sellPrice.toFixed(), outcome.id, "failed:", err);
+                                                callback(err, sellPriceIndex);
+                                            }
+                                        });
+                                    },
+                                    function (err, lastSellPriceIndex) {
+                                        if (err) console.error("sellPrice loop failed:", err, lastSellPriceIndex);
+                                        done(err);
+                                    }
+                                );
+                            }
+                        ], function (err) {
+                            if (err) console.error("buy/sell:", err);
+                            onSetupOutcome({market: p.market, outcome: outcome.id});
+                            nextOutcome(err);
+                        });
+                    });
+                }, function (err) {
+                    if (err) return onFailed(err);
+                    self.getOrderBook(p.market, onSuccess);
+                });
+            },
+            onFailed: function (err) {
+                console.error("generateOrderBook.buyCompleteSets failed:", err);
+                onFailed(err);
+            }
+        });
+    });
+};
+
 // buy&sellShares.se
 Augur.prototype.cancel = function (trade_id, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.cancel);
@@ -38843,6 +39070,7 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
         tags.push("0x0");
     }
     description = description.trim();
+    expDate = parseInt(expDate);
     var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
@@ -38875,6 +39103,17 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
                     var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                     rpc.getBlock(res.blockNumber, false, function (block) {
                         var utf8description = utf8.encode(description);
+                        console.log([
+                            tradingPeriod,
+                            abi.fix(tradingFee, "hex"),
+                            block.timestamp,
+                            tags[0],
+                            tags[1],
+                            tags[2],
+                            expDate,
+                            new Buffer(utf8description, "utf8").length,
+                            utf8description
+                        ]);
                         res.marketID = self.utils.sha3([
                             tradingPeriod,
                             abi.fix(tradingFee, "hex"),
@@ -38912,7 +39151,7 @@ Augur.prototype.createEvent = function (branchId, description, expDate, minValue
     tx.params = [
         branchId,
         description.trim(),
-        expDate,
+        parseInt(expDate),
         abi.fix(minValue, "hex"),
         abi.fix(maxValue, "hex"),
         numOutcomes,
@@ -39089,15 +39328,10 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
 
-        // organize trader info
-        for (var i = 0; i < info.numOutcomes; ++i) {
-            info.outcomes[i] = {shares: {}};
-        }
-
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
         var endDate;
-        for (i = 0; i < info.numEvents; ++i) {
+        for (var i = 0; i < info.numEvents; ++i) {
             endDate = parseInt(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {
                 id: rawInfo[i*EVENTS_FIELDS + index],
@@ -39121,18 +39355,13 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         }
 
         // organize outcome info
-        // eventinfo[0] = self.Events[event].branch
-        // eventinfo[1] = self.Events[event].expirationDate 
-        // eventinfo[2] = self.Events[event].outcome
-        // eventinfo[3] = self.Events[event].minValue
-        // eventinfo[4] = self.Events[event].maxValue
-        // eventinfo[5] = self.Events[event].numOutcomes
-        // eventinfo[6] = self.Events[event].bond
         index += info.numEvents*EVENTS_FIELDS;
         for (i = 0; i < info.numOutcomes; ++i) {
-            info.outcomes[i].id = i + 1;
-            info.outcomes[i].outstandingShares = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string");
-            info.outcomes[i].price = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string");
+            info.outcomes[i] = {
+                id: i + 1,
+                outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
+                price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
+            };
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;
         info.winningOutcomes = abi.string(
