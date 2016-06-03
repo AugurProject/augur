@@ -13,14 +13,14 @@
     "url": "https://github.com/thinkloop/augur-ui-react-components.git"
   },
   "scripts": {
+    "*** top-level runnable scripts ***": "",
     "start": "http-server ./demo -c-1 -p $PORT",
-    "test": "NODE_ENV=test mocha",
-    "test:watch": "npm test -- --watch",
-    "deploy:demo": "firebase deploy -f augur-ui",
-    "_____": "",
     "watch": "clear; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development npm run -s watch:all",
     "build": "clear; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
     "publish_to_npm": "clear; echo \"* * * *  PUBLISH  * * * *\"; NODE_ENV=production npm run -s build:all && git add --all && git commit -m 'build for publish' && npm version patch && git push && git push --tags && npm publish",
+    "test": "NODE_ENV=test mocha",
+    "test:watch": "npm test -- --watch",
+    "deploy:demo": "firebase deploy -f augur-ui",
     "______": "",
     "build:all": "npm run -s clean:build && (npm run -s build:css & npm run -s build:assets & npm run -s build:js) && npm run -s build:finish",
     "build:assets": "cp -R ./src/assets/. ./build/assets && echo ---------ASSETS---------`date +%r`",
