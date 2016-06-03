@@ -25,6 +25,7 @@ import {
 	BEST_STARTING_QUANTITY_DEFAULT,
 	BEST_STARTING_QUANTITY_MIN,
 	PRICE_WIDTH_DEFAULT,
+	PRICE_WIDTH_MIN,
 	PRICE_DEPTH_DEFAULT
 } from '../../../create-market/constants/market-values-constraints';
 
@@ -37,7 +38,7 @@ export const select = (formState) => {
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 		bestStartingQuantity: formState.bestStartingQuanity || BEST_STARTING_QUANTITY_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-		priceDepth: formState.priceDepth || PRICE_DEPTH_DEFAULT
+		priceDepth: PRICE_DEPTH_DEFAULT
 	};
 
 	return obj;
@@ -133,18 +134,30 @@ export const validateBestStartingQuantity = (bestStartingQuantity) => {
 	const parsed = parseFloat(bestStartingQuantity)
 	if(!bestStartingQuantity)
 		return 'Please provide a best starting quantity';
-	if(parsed !== bestStartingQuanity)
+	if(parsed !== bestStartingQuantity)
 		return 'Best starting quantity must be numeric';
 	if(parsed < BEST_STARTING_QUANTITY_MIN)
 		return `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
 };
 
+export const validatePriceWidth = (priceWidth) => {
+	const parsed = parseFloat(priceWidth);
+	if (!priceWidth)
+		return 'Please provide a price width';
+	if (parsed !== priceWidth)
+		return 'Price width must be numeric';
+	if (parsed < PRICE_WIDTH_MIN) {
+		return `Price width must be at least ${formatEther(PRICE_WIDTH_MIN).full}`;
+	}
+};
+
 export const isValid = (formState) => {
-	if(	validateTradingFee(formState.tradingFeePercent) 		||
-		validateMakerFee(formState.makerFeePercent) 			||
-		validateMarketInvestment(formState.initialLiquidity)	||
-		validateStartingQuantity(formState.startingQuantity)	||
-		validateBestStartingQuantity(formState.bestStartingQuantity))
+	if(	validateTradingFee(formState.tradingFeePercent) 				||
+		validateMakerFee(formState.makerFeePercent) 					||
+		validateMarketInvestment(formState.initialLiquidity)			||
+		validateStartingQuantity(formState.startingQuantity)			||
+		validateBestStartingQuantity(formState.bestStartingQuantity)	||
+		validatePriceWidth(formState.priceWidth))
 		return false;
 
 	return true;
