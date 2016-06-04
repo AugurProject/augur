@@ -7,10 +7,10 @@ const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(cb) {
-	const options = {
-		http: process.env.ETHEREUM_HOST_RPC,
-		ws: process.env.ETHEREUM_HOST_WSURL
-	};
+	if (process.env.ETHEREUM_HOST_RPC) {
+		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
+	}
+	let localnode = null;
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL && process.env.BUILD_AZURE_WSURL !== 'null') {
 			options.ws = process.env.BUILD_AZURE_WSURL;
@@ -18,6 +18,13 @@ ex.connect = function connect(cb) {
 		if (process.env.BUILD_AZURE_LOCALNODE && process.env.BUILD_AZURE_LOCALNODE !== 'null') {
 			options.http = process.env.BUILD_AZURE_LOCALNODE;
 		}
+	} else {
+		if (document.location.protocol === 'http:') {
+			localnode = 'http://127.0.0.1:8545';
+		}
+	}
+	augur.connect(localnode, null, (connected) => {
+		if (!connected) return cb('could not connect to ethereum');
 		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
 			options.contracts = JSON.parse(process.env.BUILD_AZURE_CONTRACTS);
 		}
