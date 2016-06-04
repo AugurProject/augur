@@ -27,7 +27,7 @@ ex.connect = function connect(cb) {
 		}
 	} else {
 		if (document.location.protocol === 'http:') {
-			// localnode = 'http://127.0.0.1:8545';
+			localnode = 'http://127.0.0.1:8545';
 		}
 	}
 	// augur.rpc.wsUrl = null;
