@@ -108,7 +108,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "为什么有这么严重吗？~|>€|☃|:D",
+                    description: "为什么有这么严重吗？~|>€|☃|:Dlel",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
@@ -121,7 +121,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "なぜこれほど深刻な？ €☃...~|>D:|€|☃",
+                    description: "なぜこれほど深刻な？ €☃...~|>D:|€|☃lel",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
