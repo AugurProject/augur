@@ -15,9 +15,6 @@ ex.connect = function connect(cb) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
 	let localnode = null;
-	if (document.location.protocol === 'http:') {
-		localnode = 'http://127.0.0.1:8545';
-	}
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL === 'null') {
 			augur.rpc.wsUrl = null;
@@ -33,6 +30,10 @@ ex.connect = function connect(cb) {
 			augur.rpc.nodes.hosted = [];
 		} else {
 			augur.rpc.nodes.hosted = [process.env.BUILD_AZURE_HOSTEDNODE];
+		}
+	} else {
+		if (document.location.protocol === 'http:') {
+			localnode = 'http://127.0.0.1:8545';
 		}
 	}
 	augur.connect(localnode, null, (connected) => {
