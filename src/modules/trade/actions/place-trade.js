@@ -16,11 +16,10 @@ import { selectTransactionsLink } from '../../link/selectors/links';
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
 		const market = selectMarket(marketID);
-		const { marketOrderBooks } = getState();
 
 		dispatch(addTransactions(market.tradeSummary.tradeOrders));
 
-		dispatch(trade(marketID, marketOrderBooks[marketID], market.tradeSummary.tradeOrders, market.positionsSummary));
+		dispatch(multiTrade(marketID));
 
 		dispatch(clearTradeInProgress(marketID));
 
@@ -28,18 +27,81 @@ export function placeTrade(marketID) {
 	};
 }
 
-export function trade(marketId, marketOrderBook, tradeOrders, positionsSummary) {
+/**
+ * 
+ * @param {String} marketID
+ */
+export function multiTrade(marketID) {
 	return (dispatch, getState) => {
+		const market = selectMarket(marketID);
+
+		const marketOrderBook = getState().marketOrderBooks[marketID];
+
+		const tradeOrders = market.tradeSummary.tradeOrders;
+
+		const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
+			outcomePositions[outcome.id] = outcome.position;
+			return outcomePositions;
+		}, {});
+
 		AugurJS.trade(
-			marketId, marketOrderBook, tradeOrders, positionsSummary,
-			(data)=> console.log("onTradeHash %o", data),
-			(data)=> console.log("onCommitSent %o", data),
-			(data)=> console.log("onCommitSuccess %o", data),
-			(data)=> console.log("onCommitFailed %o", data),
-			(data)=> console.log("onNextBlock %o", data),
-			(data)=> console.log("onTradeSent %o", data),
-			(data)=> console.log("onTradeSuccess %o", data),
-			(data)=> console.log("onTradeFailed %o", data)
+			marketID, marketOrderBook, tradeOrders, positionPerOutcome,
+			function onTradeHash(transactionID, res) {
+				console.log("onTradeHash %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onCommitSent(transactionID, res) {
+				console.log("onCommitSent %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onCommitSuccess(transactionID, res) {
+				console.log("onCommitSuccess %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onCommitFailed(transactionID, res) {
+				console.log("onCommitFailed %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onNextBlock(transactionID, res) {
+				console.log("onNextBlock %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onTradeSent(transactionID, res) {
+				console.log("onTradeSent %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onTradeSuccess(transactionID, res) {
+				console.log("onTradeSuccess %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onTradeFailed(transactionID, res) {
+				console.log("onTradeFailed %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onBuySellSent(transactionID, res) {
+				console.log("onBuySellSent %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onBuySellSuccess(transactionID, res) {
+				console.log("onBuySellSuccess %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onBuySellFailed(transactionID, res) {
+				console.log("onBuySellFailed %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onShortSellSent(transactionID, res) {
+				console.log("onShortSellSent %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onShortSellSuccess(transactionID, res) {
+				console.log("onShortSellSuccess %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onShortSellFailed(transactionID, res) {
+				console.log("onShortSellFailed %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			}
 		);
 	};
 }
