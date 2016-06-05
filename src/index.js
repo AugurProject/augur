@@ -881,16 +881,16 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
  * 2/ if there are no orders to match, place order to order book. exit
  *
  * if there are suitable orders in order book let's trade:
- * 
+ *
  * 3/ Trade user's buy order:
  *      3.1/ if user order was filled there is nothing to do. exit
  *      3.1/ if user order was partially filled we place bid for remaining shares to order book. exit
- * 
- * 4/ Trade user's sell order:
+ *
+ * 4/ Trade user's sell order: (todo)
  *      4.1/ if user has position, sell shares he owns:
  *          4.1.1/ if user order was filled there is nothing to do. exit
  *          4.1.2/ if order was partially filled place ask to order book. exit
- *      4.1/ if user doesn't have position do short sell
+ *      4.2/ if user doesn't have position do short sell
  *
  *
  * @param {String} marketId On what market trading occurs
@@ -906,9 +906,19 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
  * @param {Function} onTradeSent
  * @param {Function} onTradeSuccess
  * @param {Function} onTradeFailed
+ * @param {Function} onBuySellSent
+ * @param {Function} onBuySellSuccess
+ * @param {Function} onBuySellFailed
+ * @param {Function} onShortSellSent
+ * @param {Function} onShortSellSuccess
+ * @param {Function} onShortSellFailed
  */
-Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrdersPerOutcome, positionsPerOutcome, onTradeHash, onCommitSent, onCommitSuccess,
-                                         onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrdersPerOutcome, positionsPerOutcome,
+                                       onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
+                                       onTradeSent, onTradeSuccess, onTradeFailed,
+                                       onBuySellSent, onBuySellSuccess, onBuySellFailed,
+                                       onShortSellSent, onShortSellSuccess, onShortSellFailed
+) {
     userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
         // 1/
         if (userTradeOrder.type === "buy_shares") {
@@ -926,38 +936,67 @@ Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrder
                 });
 			if (matchingSortedAskIds.length === 0) {
                 // 2/
-                this.buy(userTradeOrder.ether.value, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                    function onSent(data) {
-                        return console.log("augurjs.js: trade: buy: onSent: %o", data);
+                this.buy(userTradeOrder.shares.value, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
+                    function onBuySentInner(data) {
+                        console.log("augurjs.js: trade: buy: onSent: %o", data);
+                        onBuySellSent(userTradeOrder.id, data);
                     },
-                    function onSuccess(data) {
-                        console.log("augurjs.js: trade: buy: onSuccess: %o", data)
+                    function onBuySuccessInner(data) {
+                        console.log("augurjs.js: trade: buy: onSuccess: %o", data);
+                        onBuySellSuccess(userTradeOrder.id, data);
                     },
-                    function onFailure(data) {
-                        console.log("augurjs.js: trade: buy: onFail: %o", data)
+                    function onBuyFailureInner(data) {
+                        console.log("augurjs.js: trade: buy: onFail: %o", data);
+                        onBuySellFailed(userTradeOrder.id, data);
                     }
                 );
             } else {
                 // 3/
                 this.trade(userTradeOrder.ether.value, null, matchingSortedAskIds,
-                    onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, function localOnTradeSuccess(data) {
-                        var etherNotFilled = data[2];
+                    function (data) {
+                        onTradeHash(userTradeOrder.id, data);
+                    },
+                    function (data) {
+                        onCommitSent(userTradeOrder.id, data);
+                    },
+                    function (data) {
+                        onCommitSuccess(userTradeOrder.id, data);
+                    },
+                    function (data) {
+                        onCommitFailed(userTradeOrder.id, data);
+                    },
+                    function (data) {
+                        onNextBlock(userTradeOrder.id, data);
+                    },
+                    function (data) {
+                        onTradeSent(userTradeOrder.id, data);
+                    },
+                    function localOnTradeSuccess(data) {
+                        var etherNotFilled = data[1];
                         if (etherNotFilled > 0) {
                             // 3.1/
-                            this.buy(etherNotFilled, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                                function onBuySent(data) {
-                                    return console.log("augurjs.js: trade: buy: onSent: %o", data);
+                            // todo: how to get number of shares from etherNotFilled? (dose the number really represent ether not filled?)
+                            var sharesNotFilled = "???";
+                            this.buy(sharesNotFilled, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
+                                function localOnBuySent(data) {
+                                    console.log("augurjs.js: trade: buy: onSent: %o", data);
+                                    onBuySellSent(userTradeOrder.id, data);
                                 },
-                                function onBuySuccess(data) {
-                                    console.log("augurjs.js: trade: buy: onSuccess: %o", data)
+                                function localOnBuySuccess(data) {
+                                    console.log("augurjs.js: trade: buy: onSuccess: %o", data);
+                                    onBuySellSuccess(userTradeOrder.id, data);
                                 },
-                                function onBuyFailure(data) {
-                                    console.log("augurjs.js: trade: buy: onFail: %o", data)
+                                function localOnBuyFailure(data) {
+                                    console.log("augurjs.js: trade: buy: onFail: %o", data);
+                                    onBuySellFailed(userTradeOrder.id, data);
                                 }
                             );
                         }
                         onTradeSuccess();
-                    }, onTradeFailed);
+                    },
+                    function (data) {
+                        onTradeFailed(userTradeOrder.id, data);
+                    });
             }
         } else {
             // 1.2/
@@ -975,59 +1014,84 @@ Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrder
 
             var userPosition = positionsPerOutcome[userTradeOrder.data.outcomeID];
             var hasUserPosition = userPosition.qtyShares > 0;
-            if (matchingSortedBidIds.length === 0) {
-                // 2/
-                this.sell(userTradeOrder.ether.value, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                    function onSent(data) {
-                        return console.log("augurjs.js: trade: sell: onSent: %o", data);
-                    },
-                    function onSuccess(data) {
-                        console.log("augurjs.js: trade: sell: onSuccess: %o", data)
-                    },
-                    function onFailure(data) {
-                        console.log("augurjs.js: trade: sell: onFail: %o", data)
-                    }
-                );
-            } else {
-                if (hasUserPosition) {
+            if (hasUserPosition) {
+                if (matchingSortedBidIds.length === 0) {
+                    // 2/
+                    this.sell(userTradeOrder.shares.value, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
+                        function localOnSellSent(data) {
+                            console.log("augurjs.js: trade: sell: onSent: %o", data);
+                            onBuySellSent(userTradeOrder.id, data);
+                        },
+                        function localOnSellSuccess(data) {
+                            console.log("augurjs.js: trade: sell: onSuccess: %o", data);
+                            onBuySellSuccess(userTradeOrder.id, data);
+                        },
+                        function localOnSellFailure(data) {
+                            console.log("augurjs.js: trade: sell: onFail: %o", data);
+                            onBuySellFailed(userTradeOrder.id, data);
+                        }
+                    );
+                } else {
                     // 4.1/
-                    // todo: is userTradeOrder.shares.value correct?
                     this.trade(null, userTradeOrder.shares.value, matchingSortedBidIds,
-                        onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent,
+                        function (data) {
+                            onTradeHash(userTradeOrder.id, data);
+                        },
+                        function (data) {
+                            onCommitSent(userTradeOrder.id, data);
+                        },
+                        function (data) {
+                            onCommitSuccess(userTradeOrder.id, data);
+                        },
+                        function (data) {
+                            onCommitFailed(userTradeOrder.id, data);
+                        },
+                        function (data) {
+                            onNextBlock(userTradeOrder.id, data);
+                        },
+                        function (data) {
+                            onTradeSent(userTradeOrder.id, data);
+                        },
                         function localOnTradeSuccess(data) {
-                            var sharesNotSold = data[1];
+                            var sharesNotSold = data[2];
                             if (sharesNotSold > 0) {
                                 // 4.1.2
-                                // todo: sharesNotSold should be "amount" (in ether) but is number, is this correct?
                                 this.sell(sharesNotSold, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
                                     function (data) {
                                         console.log("augurjs.js: trade: sell: onSent: %o", data);
+                                        onBuySellSent(userTradeOrder.id, data);
                                     },
                                     function (data) {
                                         console.log("augurjs.js: trade: sell: onSuccess: %o", data);
+                                        onBuySellSuccess(userTradeOrder.id, data);
                                     },
                                     function (data) {
                                         console.log("augurjs.js: trade: sell: onFail: %o", data);
+                                        onBuySellFailed(userTradeOrder.id, data);
                                     });
                             }
                             onTradeSuccess(data);
                         },
-                        onTradeFailed);
-                } else {
-                    // 4.1/
-                    // todo: how to get buyer_trade_id value?
-                    this.short_sell(buyer_trade_id, userTradeOrder.ether.value,
-                        function onShortSellSent(data) {
-                            return console.log("augurjs.js: trade: short_sell: onSent: %o", data);
-                        },
-                        function onShortSellSuccess(data) {
-                            console.log("augurjs.js: trade: short_sell: onSuccess: %o", data)
-                        },
-                        function onShortSellFailure(data) {
-                            console.log("augurjs.js: trade: short_sell: onFail: %o", data)
+                        function (dsta) {
+                            onTradeFailed(userTradeOrder.id, data);
                         });
                 }
-
+            } else {
+                // 4.2/
+                // todo: how to get buyer_trade_id value?
+                this.short_sell(buyer_trade_id, userTradeOrder.shares.value,
+                    function onShortSellSentInner(data) {
+                        console.log("augurjs.js: trade: short_sell: onSent: %o", data);
+                        onShortSellSent(userTradeOrder.id, data);
+                    },
+                    function onShortSellSuccessInner(data) {
+                        console.log("augurjs.js: trade: short_sell: onSuccess: %o", data);
+                        onShortSellSuccess(userTradeOrder.id, data);
+                    },
+                    function onShortSellFailureInner(data) {
+                        console.log("augurjs.js: trade: short_sell: onFail: %o", data);
+                        onShortSellFailed(userTradeOrder.id, data);
+                    });
             }
         }
     }, this);
