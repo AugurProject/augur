@@ -11,7 +11,7 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const makeTradeTransaction =
 (isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
-	const obj = {
+	return {
 		type: !isSell ? BUY_SHARES : SELL_SHARES,
 		shares: numShares,
 		limitPrice: limitPrice,
@@ -26,12 +26,12 @@ export const makeTradeTransaction =
 			feeToPay: formatEther(feeEther)
 		},
 		action: (transactionID) => {
+			// todo: what to do here?
 			dispatch(updateExistingTransaction({
 				[transactionID]: { status: 'sending...' }
 			}));
 		}
 	};
-	return obj;
 };
 
 export const addTradeTransaction =
