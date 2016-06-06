@@ -83,7 +83,7 @@ export const validateTradingFee = (tradingFeePercent) => {
 
 	if (!tradingFeePercent)
 		return 'Please specify a trading fee %';
-	if (Number.isNaN(parsed) && Number.isFinite(parsed))
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Trading fee must be a number';
 	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX)
 		return `Trading fee must be between ${ 
@@ -109,13 +109,14 @@ export const validateMakerFee = (makerFeePercent) => {
 
 export const validateInitialLiquidity = (initialLiquidity) => {
 	const parsed = parseFloat(initialLiquidity);
-	if (!initialLiquidity) {
+
+	console.log('number check -- ', parsed, Number.isNaN(parsed), Number.isFinite(parsed))
+
+	if (!initialLiquidity)
 		return 'Please provide some initial liquidity';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Initial liquidity must be numeric';
-	if(priceDepth < 0 || !Number.isFinite(priceDepth))
-		return 'Insufficient liquidity based on advanced parameters';
-	if (parsed < INITIAL_LIQUIDITY_MIN)
+	if (parsed < INITIAL_LIQUIDITY_MIN) {
 		return `Initial liquidity must be at least ${
 			formatEther(INITIAL_LIQUIDITY_MIN).full
 		}`;
