@@ -13,6 +13,7 @@ var marketsTotals = require('./marketsTotals');
 var onChangeSort = require('./onChangeSort');
 var pagination = require('./pagination');
 var searchSort = require('./searchSort');
+var siteHeader = require('./siteHeader');
 var transactions = require('./transactions');
 var transactionsTotals = require('./transactionsTotals');
 var update = require('./update');
@@ -33,6 +34,7 @@ module.exports = {
 	onChangeSort: onChangeSort,
 	pagination: pagination,
 	searchSort: searchSort,
+	siteHeader: siteHeader,
 	transactions: transactions,
 	transactionsTotals: transactionsTotals,
 	update: update
