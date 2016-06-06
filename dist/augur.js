@@ -5158,7 +5158,7 @@ module.exports = function (network) {
             to: contracts.trade,
             method: "short_sell",
             signature: "ii",
-            returns: "number",
+            returns: "hash[]",
             send: true
         },
 
@@ -37384,7 +37384,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.2.8";
+    this.version = "1.2.9";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -38436,12 +38436,72 @@ Augur.prototype.sell = function (amount, price, market, outcome, onSent, onSucce
     tx.params[1] = abi.fix(tx.params[1], "hex");
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
-Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuccess, onFailed) {
-    var tx = clone(this.tx.short_sell);
-    var unpacked = this.utils.unpack(arguments[0], this.utils.labels(this.short_sell), arguments);
-    tx.params = unpacked.params;
-    tx.params[1] = abi.fix(tx.params[1], "hex");
-    return this.transact.apply(this, [tx].concat(unpacked.cb));
+Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
+    var self = this;
+    if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
+        max_amount = buyer_trade_id.max_amount;
+        onTradeHash = buyer_trade_id.onTradeHash;
+        onCommitSent = buyer_trade_id.onCommitSent;
+        onCommitSuccess = buyer_trade_id.onCommitSuccess;
+        onCommitFailed = buyer_trade_id.onCommitFailed;
+        onNextBlock = buyer_trade_id.onNextBlock;
+        onTradeSent = buyer_trade_id.onTradeSent;
+        onTradeSuccess = buyer_trade_id.onTradeSuccess;
+        onTradeFailed = buyer_trade_id.onTradeFailed;
+        buyer_trade_id = buyer_trade_id.buyer_trade_id;
+    }
+    onTradeHash = onTradeHash || this.utils.noop;
+    onCommitSent = onCommitSent || this.utils.noop;
+    onCommitSuccess = onCommitSuccess || this.utils.noop;
+    onCommitFailed = onCommitFailed || this.utils.noop;
+    onNextBlock = onNextBlock || this.utils.noop;
+    onTradeSent = onTradeSent || this.utils.noop;
+    onTradeSuccess = onTradeSuccess || this.utils.noop;
+    onTradeFailed = onTradeFailed || this.utils.noop;
+    this.makeTradeHash(0, max_amount, [buyer_trade_id], function (tradeHash) {
+        onTradeHash(tradeHash);
+        self.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.short_sell);
+                    tx.params = [
+                        buyer_trade_id,
+                        abi.fix(max_amount, "hex")
+                    ];
+                    self.transact(tx, function (sentResult) {
+                        console.log("sent:", sentResult.callReturn);
+                        var result = clone(sentResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
+                            }
+                        }
+                        onTradeSuccess(result);
+                    }, function (successResult) {
+                        console.log("success:", successResult.callReturn);
+                        var result = clone(successResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
+                            }
+                        }
+                        onTradeSuccess(result);
+                    }, onTradeFailed);
+                });
+            },
+            onFailed: onCommitFailed
+        });
+    });
 };
 Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
     var self = this;
@@ -38481,26 +38541,28 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, function (res) {
-                        var cr = res.callReturn;
-                        if (cr && cr.constructor === Array) {
-                            cr[0] = parseInt(cr[0]);
-                            if (cr[0] === 1 && cr.length === 3) {
-                                cr[1] = abi.unfix(cr[1], "string");
-                                cr[2] = abi.unfix(cr[2], "string");
+                    self.transact(tx, function (sentResult) {
+                        console.log("sent:", sentResult.callReturn);
+                        var result = clone(sentResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                             }
                         }
-                        onTradeSent(res);
-                    }, function (res) {
-                        var cr = res.callReturn;
-                        if (cr && cr.constructor === Array) {
-                            cr[0] = parseInt(cr[0]);
-                            if (cr[0] === 1 && cr.length === 3) {
-                                cr[1] = abi.unfix(cr[1], "string");
-                                cr[2] = abi.unfix(cr[2], "string");
+                        onTradeSuccess(result);
+                    }, function (successResult) {
+                        console.log("success:", successResult.callReturn);
+                        var result = clone(successResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                             }
                         }
-                        onTradeSuccess(res);
+                        onTradeSuccess(result);
                     }, onTradeFailed);
                 });
             },

@@ -180,16 +180,16 @@ describe("Integration tests", function () {
         };
         runtests(this.title, test, markets);
     });
-    // if (!process.env.CONTINUOUS_INTEGRATION) {
-    //     describe("getOrderBook", function () {
-    //         var test = function (t) {
-    //             assert.isObject(t.output);
-    //         };
-    //         for (var i = 0; i < numMarkets; ++i) {
-    //             runtests(this.title, test, markets[i]);
-    //         }
-    //     });
-    // }
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+        describe("getOrderBook", function () {
+            var test = function (t) {
+                assert.isObject(t.output);
+            };
+            for (var i = 0; i < numMarkets; ++i) {
+                runtests(this.title, test, markets[i]);
+            }
+        });
+    }
     describe("getMarketsInfo", function () {
         var test = function (info, options, done) {
             if (utils.is_function(options) && !done) {
