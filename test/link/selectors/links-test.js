@@ -20,7 +20,7 @@ describe(`modules/link/selectors/links.js`, () => {
 		'../../../store': store
 	});
 
-	links = selector.default;
+	links = selector;
 
 	beforeEach(() => {
 		store.clearActions();

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -25,7 +26,7 @@ import createMarketForm from './create-market/selectors/create-market-form-test'
 
 import * as assertions from '../node_modules/augur-ui-react-components/test/assertions/';
 
-describe(`testing selectors with different states`, () => {
+describe(`selectors given different states tests:`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -55,5 +56,74 @@ describe(`testing selectors with different states`, () => {
 		'./modules/create-market/selectors/create-market-form': createMarketForm
 	});
 
-	it(`should be able to test different states`);
+	it(`should be able to load the auth page`, () => {
+			// siteheader, authForm
+			const siteHeader = {
+				activePage: selectors.activePage,
+				loginAccount: selectors.loginAccount,
+				positionsSummary: selectors.marketsTotals.positionsSummary,
+				transactionsTotals: selectors.transactionsTotals,
+				isTransactionsWorking: selectors.isTransactionsWorking
+			};
+			assertions.siteHeader(siteHeader);
+			assertions.authForm(selectors.authForm);
+	});
+
+	it(`should be able to load the crete market page`);
+	it(`should be able to load a market page`, () => {
+		// siteHeader, market, marketsTotals.numPendingReports
+		const siteHeader = {
+			activePage: selectors.activePage,
+			loginAccount: selectors.loginAccount,
+			positionsSummary: selectors.marketsTotals.positionsSummary,
+			transactionsTotals: selectors.transactionsTotals,
+			isTransactionsWorking: selectors.isTransactionsWorking
+		};
+		assertions.siteHeader(siteHeader);
+		assertions.market.marketAssertion(selectors.market);
+		assert.isDefined(selectors.marketsTotals.numPendingReports, `selectors.marketsTotals.numPendingReports isn't defined`);
+		assert.isNumber(selectors.marketsTotals.numPendingReports, `selectors.marketsTotals.numPendingReports isn't a number`);
+	});
+
+	it(`should be able to load the markets page`, () => {
+		// siteHeader, links.createMarketLink, keywords, markets,
+		// marketsHeader, favoriteMarkets, filters, pagination, searchSort
+		const siteHeader = {
+			activePage: selectors.activePage,
+			loginAccount: selectors.loginAccount,
+			positionsSummary: selectors.marketsTotals.positionsSummary,
+			transactionsTotals: selectors.transactionsTotals,
+			isTransactionsWorking: selectors.isTransactionsWorking
+		};
+		assertions.siteHeader(siteHeader);
+		assertions.markets(selectors.markets);
+		assertions.keywords(selectors.keywords);
+		assertions.links(selectors.links);
+		assertions.marketsHeader(selectors.marketsHeader);
+		assertions.filters(selectors.filters);
+		assertions.pagination(selectors.pagination);
+		assertions.searchSort(selectors.searchSort);
+		// assertions.
+	// 	assertions.
+	// 	createMarketLink={ (p.links || {}).createMarketLink }
+	// keywords={ p.keywords && p.keywords.value }
+	// 	onChangeKeywords={ p.keywords && p.keywords.onChangeKeywords }
+	//
+	// 	markets={ p.markets }
+	// 	marketsHeader={ p.marketsHeader }
+	// 	favoriteMarkets={ p.favoriteMarkets }
+	// 	filters={ p.filters }
+	// 	pagination={ p.pagination }
+	//
+	// 	selectedSort={ p.searchSort.selectedSort }
+	// 	sortOptions={ p.searchSort.sortOptions }
+	// 	onChangeSort={ p.searchSort.onChangeSort }
+	});
+	it(`should be able to load the transactions page`);
+	it(`should be able to laod the positions page`);
+	it(`selectorsInfo:`, () => {
+		// console.log(selectors.favoriteMarkets);
+		console.log('\n');
+		console.log(assertions);
+	});
 });

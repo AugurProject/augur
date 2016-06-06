@@ -71,7 +71,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 		'../../../store': store
 	});
 
-	loginAccount = selector.default;
+	loginAccount = selector;
 	it(`should login an account`, () => {
 		actual = selector.default();
 		loginAccountAssertion(actual);
