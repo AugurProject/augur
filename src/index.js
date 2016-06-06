@@ -23,7 +23,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.2.6";
+    this.version = "1.2.7";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
