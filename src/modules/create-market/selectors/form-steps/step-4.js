@@ -168,9 +168,10 @@ export const validateBestStartingQuantity = (bestStartingQuantity) => {
 
 export const validatePriceWidth = (priceWidth) => {
 	const parsed = parseFloat(priceWidth);
+	
 	if (!priceWidth)
 		return 'Please provide a price width';
-	if (parsed !== priceWidth)
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Price width must be numeric';
 	if (parsed < PRICE_WIDTH_MIN) {
 		return `Price width must be at least ${formatEther(PRICE_WIDTH_MIN).full}`;
@@ -198,12 +199,15 @@ export const errors = (formState) => {
 		errs.makerFeePercent = validateMakerFee(formState.makerFeePercent);
 	if(formState.hasOwnProperty('initialLiquidity'))
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
+
 	if(formState.hasOwnProperty('initialFairPrices'))
 		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.values);
 	if(formState.hasOwnProperty('startingQuantity'))
 		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity)
 	if(formState.hasOwnProperty('bestStartingQuantity'))
 		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity)
+	if(formState.hasOwnProperty('priceWidth'))
+		errs.priceWidth = validatePriceWidth(formState.priceWidth)
 
 	return errs;
 };
