@@ -23,6 +23,7 @@ ex.connect = function connect(cb) {
 			localnode = 'http://127.0.0.1:8545';
 		}
 	}
+	// augur.rpc.wsUrl = null;
 	augur.connect(localnode, null, (connected) => {
 		if (!connected) return cb('could not connect to ethereum');
 		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
