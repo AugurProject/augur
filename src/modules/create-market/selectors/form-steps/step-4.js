@@ -16,9 +16,9 @@ import {
 	TRADING_FEE_MAX,
 	INITIAL_LIQUIDITY_DEFAULT,
 	INITIAL_LIQUIDITY_MIN,
-	MAKER_FEE_DEFAULT,
-	MAKER_FEE_MIN,
-	MAKER_FEE_MAX,
+	MAKER_FEES_DEFAULT,
+	MAKER_FEES_MIN,
+	MAKER_FEES_MAX,
 	INITIAL_FAIR_PRICE_DEFAULT,
 	INITIAL_FAIR_PRICE_MIN,
 	STARTING_QUANTITY_DEFAULT,
@@ -33,7 +33,7 @@ import {
 export const select = (formState) => {
 	const obj = {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
-		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
+		makerFees: formState.makerFees || MAKER_FEES_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.values.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
@@ -94,18 +94,18 @@ export const validateTradingFee = (tradingFeePercent) => {
 			}`;
 };
 
-export const validateMakerFee = (makerFeePercent) => {
-	const parsed = parseFloat(makerFeePercent);
+export const validateMakerFees = (makerFees) => {
+	const parsed = parseFloat(makerFees);
 
-	if(!makerFeePercent)
+	if(!makerFees)
 		return 'Please specify a maker fee %';
 	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Maker fee must be as number';
-	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
+	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEES_MAX)
 		return `Maker fee must be between ${
-				formatPercent(MAKER_FEE_MIN, true).full
+				formatPercent(MAKER_FEES_MIN, true).full
 			} and ${
-				formatPercent(MAKER_FEE_MAX, true).full
+				formatPercent(MAKER_FEES_MAX, true).full
 			}`;
 };
 
@@ -168,7 +168,7 @@ export const validateBestStartingQuantity = (bestStartingQuantity) => {
 
 export const validatePriceWidth = (priceWidth) => {
 	const parsed = parseFloat(priceWidth);
-	
+
 	if (!priceWidth)
 		return 'Please provide a price width';
 	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
@@ -180,7 +180,7 @@ export const validatePriceWidth = (priceWidth) => {
 
 export const isValid = (formState) => {
 	if(	validateTradingFee(formState.tradingFeePercent) 				||
-		validateMakerFee(formState.makerFeePercent) 					||
+		validateMakerFees(formState.makerFees) 							||
 		validateInitialLiquidity(formState.initialLiquidity)			||
 		validateStartingQuantity(formState.startingQuantity)			||
 		validateBestStartingQuantity(formState.bestStartingQuantity)	||
@@ -196,7 +196,7 @@ export const errors = (formState) => {
 	if(formState.hasOwnProperty('tradingFeePercent'))
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
 	if(formState.hasOwnProperty('makerFeePercent'))
-		errs.makerFeePercent = validateMakerFee(formState.makerFeePercent);
+		errs.makerFees = validateMakerFees(formState.makerFees);
 	if(formState.hasOwnProperty('initialLiquidity'))
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
