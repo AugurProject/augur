@@ -127,7 +127,6 @@ export const validateInitialFairPrices = (initialFairPrices) => {
 
 	initialFairPrices.map((cV, i) => {
 		const parsed = parseFloat(cV.value)
-		console.log('checking -- ', parsed, i, cV.value)
 
 		if (!cV.value)
 			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity'
