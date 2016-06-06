@@ -146,7 +146,7 @@ export const validateStartingQuantity = (startingQuantity) => {
 	const parsed = parseFloat(startingQuantity);
 	if(!startingQuantity)
 		return 'Please provide a starting quantity';
-	if(parsed !== startingQuantity)
+	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Starting quantity must be numeric';
 	if(parsed < STARTING_QUANTITY_MIN)
 		return `Starting quantity must be at least ${
@@ -198,6 +198,8 @@ export const errors = (formState) => {
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 	if(formState.hasOwnProperty('initialFairPrices'))
 		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.values);
+	if(formState.hasOwnProperty('startingQuantity'))
+		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity)
 
 	return errs;
 };
