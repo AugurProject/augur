@@ -87,10 +87,10 @@ export const validateTradingFee = (tradingFeePercent) => {
 		return 'Trading fee must be a number';
 	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX)
 		return `Trading fee must be between ${ 
-			formatPercent(
-				TRADING_FEE_MIN,
-				true).full
-			} and ${formatPercent(TRADING_FEE_MAX, true).full}`;
+				formatPercent(TRADING_FEE_MIN, true).full
+			} and ${
+				formatPercent(TRADING_FEE_MAX, true).full
+			}`;
 };
 
 export const validateMakerFee = (makerFeePercent) => {
@@ -101,10 +101,11 @@ export const validateMakerFee = (makerFeePercent) => {
 	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Maker fee must be as number';
 	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
-		return `Maker fee must be between 
-			${formatPercent(MAKER_FEE_MIN, true).full
+		return `Maker fee must be between ${
+				formatPercent(MAKER_FEE_MIN, true).full
 			} and ${
-			formatPercent(MAKER_FEE_MAX, true).full}`
+				formatPercent(MAKER_FEE_MAX, true).full
+			}`;
 };
 
 export const validateInitialLiquidity = (initialLiquidity) => {
@@ -129,7 +130,9 @@ export const validateStartingQuantity = (startingQuantity) => {
 	if(parsed !== startingQuantity)
 		return 'Starting quantity must be numeric';
 	if(parsed < STARTING_QUANTITY_MIN)
-		return `Starting quantity must be at least ${formatShares(STARTING_QUANTITY_MIN).full}`;
+		return `Starting quantity must be at least ${
+			formatShares(STARTING_QUANTITY_MIN).full
+		}`;
 };
 
 export const validateBestStartingQuantity = (bestStartingQuantity) => {
@@ -168,9 +171,10 @@ export const isValid = (formState) => {
 export const errors = (formState) => {
 	const errs = {};
 
-	if (formState.hasOwnProperty('tradingFeePercent'))
+	if(formState.hasOwnProperty('tradingFeePercent'))
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
-
+	if(formState.hasOwnProperty('makerFeePercent'))
+		errs.makerFeePercent = validateMakerFee(formState.makerFeePercent);
 	if (formState.hasOwnProperty('initialLiquidity'))
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
