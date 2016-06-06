@@ -86,6 +86,7 @@ module.exports = {
         }
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         augur.rpc.wsUrl = "ws://127.0.0.1:8546";
+        // augur.rpc.wsUrl = null;
         if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
             if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
