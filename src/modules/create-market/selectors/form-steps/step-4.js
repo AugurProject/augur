@@ -101,7 +101,7 @@ export const validateMakerFees = (makerFees) => {
 		return 'Please specify a maker fee %';
 	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Maker fee must be as number';
-	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEES_MAX)
+	if(parsed < MAKER_FEES_MIN || parsed > MAKER_FEES_MAX)
 		return `Maker fee must be between ${
 				formatPercent(MAKER_FEES_MIN, true).full
 			} and ${
