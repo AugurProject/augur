@@ -123,7 +123,7 @@ export const validateInitialLiquidity = (initialLiquidity) => {
 };
 
 export const validateInitialFairPrices = (initialFairPrices) => {
-	let fairPriceErrors = {}
+	let fairPriceErrors = {};
 
 	initialFairPrices.map((cV, i) => {
 		const parsed = parseFloat(cV.value)
@@ -144,6 +144,7 @@ export const validateInitialFairPrices = (initialFairPrices) => {
 
 export const validateStartingQuantity = (startingQuantity) => {
 	const parsed = parseFloat(startingQuantity);
+
 	if(!startingQuantity)
 		return 'Please provide a starting quantity';
 	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
@@ -155,10 +156,11 @@ export const validateStartingQuantity = (startingQuantity) => {
 };
 
 export const validateBestStartingQuantity = (bestStartingQuantity) => {
-	const parsed = parseFloat(bestStartingQuantity)
+	const parsed = parseFloat(bestStartingQuantity);
+
 	if(!bestStartingQuantity)
 		return 'Please provide a best starting quantity';
-	if(parsed !== bestStartingQuantity)
+	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Best starting quantity must be numeric';
 	if(parsed < BEST_STARTING_QUANTITY_MIN)
 		return `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
@@ -200,6 +202,8 @@ export const errors = (formState) => {
 		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.values);
 	if(formState.hasOwnProperty('startingQuantity'))
 		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity)
+	if(formState.hasOwnProperty('bestStartingQuantity'))
+		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity)
 
 	return errs;
 };
