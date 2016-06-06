@@ -20,6 +20,7 @@ import {
 	MAKER_FEE_MIN,
 	MAKER_FEE_MAX,
 	INITIAL_FAIR_PRICE_DEFAULT,
+	INITIAL_FAIR_PRICE_MIN,
 	STARTING_QUANTITY_DEFAULT,
 	STARTING_QUANTITY_MIN,
 	BEST_STARTING_QUANTITY_DEFAULT,
@@ -111,8 +112,6 @@ export const validateMakerFee = (makerFeePercent) => {
 export const validateInitialLiquidity = (initialLiquidity) => {
 	const parsed = parseFloat(initialLiquidity);
 
-	console.log('number check -- ', parsed, Number.isNaN(parsed), Number.isFinite(parsed))
-
 	if (!initialLiquidity)
 		return 'Please provide some initial liquidity';
 	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
@@ -121,6 +120,27 @@ export const validateInitialLiquidity = (initialLiquidity) => {
 		return `Initial liquidity must be at least ${
 			formatEther(INITIAL_LIQUIDITY_MIN).full
 		}`;
+};
+
+export const validateInitialFairPrices = (initialFairPrices) => {
+	let fairPriceErrors = {}
+
+	initialFairPrices.map((cV, i) => {
+		const parsed = parseFloat(cV.value)
+		console.log('checking -- ', parsed, i, cV.value)
+
+		if (!cV.value)
+			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity'
+		if (Number.isNaN(parsed) && !Number.isFinite(parsed))
+			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric'
+		if (parsed < INITIAL_FAIR_PRICE_MIN)
+			fairPriceErrors[`${i}`] = 	`Initial liquidity must be at least ${
+											formatEther(INITIAL_FAIR_PRICE_MIN).full
+										}`
+	})
+
+	if(!!Object.keys(fairPriceErrors).length)
+		return fairPriceErrors
 };
 
 export const validateStartingQuantity = (startingQuantity) => {
@@ -175,8 +195,10 @@ export const errors = (formState) => {
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
 	if(formState.hasOwnProperty('makerFeePercent'))
 		errs.makerFeePercent = validateMakerFee(formState.makerFeePercent);
-	if (formState.hasOwnProperty('initialLiquidity'))
+	if(formState.hasOwnProperty('initialLiquidity'))
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
+	if(formState.hasOwnProperty('initialFairPrices'))
+		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.values);
 
 	return errs;
 };
