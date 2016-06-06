@@ -37384,7 +37384,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.2.4";
+    this.version = "1.2.5";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -43214,8 +43214,7 @@ module.exports = {
                 } else {
                     if (tx.returns && tx.returns !== "string" ||
                         (response && response.constructor === String &&
-                        response.slice(0,2) === "0x"))
-                    {
+                        response.slice(0,2) === "0x")) {
                         var responseNumber = abi.bignum(response);
                         if (responseNumber) {
                             responseNumber = abi.string(responseNumber);
@@ -43237,18 +43236,14 @@ module.exports = {
         var self = this;
         var tx = abi.copy(itx);
         if (!isFunction(callback)) {
-            var res = this.errorCodes(tx, this.invoke(tx));
-            if (res) {
-                if (res.error) return res;
-                return this.applyReturns(itx.returns, res);
-            }
+            var res = this.errorCodes(tx, self.applyReturns(itx.returns, this.invoke(tx)));
+            if (res) return res;
             throw new this.Error(errors.NO_RESPONSE);
         }
         this.invoke(tx, function (res) {
-            res = self.errorCodes(tx, res);
             if (res) {
-                if (res.error) return callback(res);
-                return callback(self.applyReturns(itx.returns, res));
+                res = self.errorCodes(tx, self.applyReturns(itx.returns, res));
+                return callback(res);
             }
             callback(errors.NO_RESPONSE);
         });
