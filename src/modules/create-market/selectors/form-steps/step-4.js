@@ -82,7 +82,7 @@ export const validateTradingFee = (tradingFeePercent) => {
 
 	if (!tradingFeePercent)
 		return 'Please specify a trading fee %';
-	if (Number.isNaN(parsed) && Number.isFinite(parsed))
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Trading fee must be a number';
 	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX)
 		return `Trading fee must be between ${ 
@@ -108,6 +108,8 @@ export const validateMakerFee = (makerFeePercent) => {
 
 export const validateInitialLiquidity = (initialLiquidity) => {
 	const parsed = parseFloat(initialLiquidity);
+
+	console.log('number check -- ', parsed, Number.isNaN(parsed), Number.isFinite(parsed))
 
 	if (!initialLiquidity)
 		return 'Please provide some initial liquidity';
