@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 import testState from '../../testState';
 import loginAccountAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/loginAccount';
 
-// let loginAccount;
+let loginAccount;
 describe(`modules/auth/selectors/login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -71,7 +71,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 		'../../../store': store
 	});
 
-	// loginAccount = selector.default;
+	loginAccount = selector.default;
 	it(`should login an account`, () => {
 		actual = selector.default();
 		loginAccountAssertion(actual);
@@ -80,4 +80,4 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 	});
 });
 
-// export default loginAccount;
+export default loginAccount;

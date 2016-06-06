@@ -9,7 +9,7 @@ import {
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
 import testState from '../../testState';
-import isTransactionWorkingAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/isTransactionWorking';
+import isTransactionsWorkingAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/isTransactionsWorking';
 
 describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -29,6 +29,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	it(`should check if a transaction is working`, () => {
 		let data = state.transactionsData;
 		test = selector.selectIsWorking(data);
+
 		assert.isFalse(test, `Didn't mark the transaction as not working when status was ${FAILED}.`);
 
 		data = {
@@ -66,8 +67,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 		};
 		test = selector.selectIsWorking(data);
 
-		isTransactionWorkingAssertion(test);
-
+		isTransactionsWorkingAssertion(test);
 		assert.isTrue(test, `Didn't mark the transaction as working when status was test.`);
 	});
 

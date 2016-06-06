@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import allMarkets from './all-markets-test';
+import allMarkets from './markets-all-test';
 import filteredMarkets from './markets-filtered-test';
 import favoriteMarkets from './markets-favorite-test';
 

@@ -1,7 +1,7 @@
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import testState from '../../testState';
+import testState from './testState';
 
 import activePage from './app/selectors/active-page-test';
 import loginAccount from './auth/selectors/login-account-test';
@@ -21,10 +21,9 @@ import searchSort from './markets/selectors/search-sort-test';
 import keywords from './markets/selectors/keywords-test';
 import transactions from './transactions/selectors/transactions-test';
 import transactionsTotals from './transactions/selectors/transactions-totals-test';
-import isTransactionsWorking from './transactions/selectors/is-transactions-working-test';
 import createMarketForm from './create-market/selectors/create-market-form-test';
 
-import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/';
+import * as assertions from '../node_modules/augur-ui-react-components/test/assertions/';
 
 describe(`testing selectors with different states`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -34,7 +33,7 @@ describe(`testing selectors with different states`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 
-	selectors = proxyquire('../src/selectors', {
+	selectors = proxyquire('../src/selectors.js', {
 		'./modules/app/selectors/active-page': activePage,
 		'./modules/auth/selectors/login-account': loginAccount,
 		'./modules/link/selectors/links': links,
@@ -53,7 +52,6 @@ describe(`testing selectors with different states`, () => {
 		'./modules/markets/selectors/keywords': keywords,
 		'./modules/transactions/selectors/transactions': transactions,
 		'./modules/transactions/selectors/transactions-totals': transactionsTotals,
-		'./modules/transactions/selectors/is-transactions-working': isTransactionsWorking,
 		'./modules/create-market/selectors/create-market-form': createMarketForm
 	});
 
