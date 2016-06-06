@@ -83,14 +83,14 @@ export const validateTradingFee = (tradingFeePercent) => {
 
 	if (!tradingFeePercent)
 		return 'Please specify a trading fee %';
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
+	if (Number.isNaN(parsed) && Number.isFinite(parsed))
 		return 'Trading fee must be a number';
 	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX)
 		return `Trading fee must be between ${ 
-				formatPercent(TRADING_FEE_MIN, true).full
-			} and ${
-				formatPercent(TRADING_FEE_MAX, true).full
-			}`;
+			formatPercent(
+				TRADING_FEE_MIN,
+				true).full
+			} and ${formatPercent(TRADING_FEE_MAX, true).full}`;
 };
 
 export const validateMakerFee = (makerFeePercent) => {
@@ -166,21 +166,11 @@ export const isValid = (formState) => {
 export const errors = (formState) => {
 	const errs = {};
 
-	if(formState.hasOwnProperty('tradingFeePercent'))
+	if (formState.tradingFeePercent !== undefined)
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
-	if(formState.hasOwnProperty('makerFeePercent'))
-		errs.makerFees = validateMakerFees(formState.makerFees);
-	if(formState.hasOwnProperty('initialLiquidity'))
-		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
-	if(formState.hasOwnProperty('initialFairPrices'))
-		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.raw);
-	if(formState.hasOwnProperty('startingQuantity'))
-		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity)
-	if(formState.hasOwnProperty('bestStartingQuantity'))
-		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity)
-	if(formState.hasOwnProperty('priceWidth'))
-		errs.priceWidth = validatePriceWidth(formState.priceWidth)
+	if (formState.initialLiquidity !== undefined)
+		errs.initialLiquidity = validateMarketInvestment(formState.initialLiquidity);
 
 	return errs;
 };
