@@ -43151,7 +43151,18 @@ module.exports = {
                 return rpclist;
             }
         }
-        if (!f) return this.broadcast(rpclist);
+        if (!f) {
+            var res = this.broadcast(rpclist);
+            var result = new Array(numCommands);
+            for (i = 0; i < numCommands; ++i) {
+                if (returns[i]) {
+                    result[i] = self.applyReturns(returns[i], res[i]);
+                } else {
+                    result[i] = res[i];
+                }
+            }
+            return result;
+        }
 
         // callback on whole array
         if (isFunction(f)) return this.broadcast(rpclist, function (res) {
@@ -43159,6 +43170,8 @@ module.exports = {
             for (var i = 0; i < numCommands; ++i) {
                 if (returns[i]) {
                     result[i] = self.applyReturns(returns[i], res[i]);
+                } else {
+                    result[i] = res[i];
                 }
             }
             f(result);
