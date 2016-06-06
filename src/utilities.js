@@ -6,7 +6,6 @@ var crypto = require("crypto");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
-var utf8 = require("utf8");
 var constants = require("./constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});

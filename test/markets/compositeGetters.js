@@ -37,9 +37,6 @@ describe("Integration tests", function () {
         } while (randomMarkets.length < tools.MAX_TEST_SAMPLES);
         markets = randomMarkets;
     }
-    // markets = markets.slice(0, 1);
-    // var numMarkets = 1;
-    // console.log("markets:", markets);
     tools.TIMEOUT *= 2;
 
     var errorCheck = function (output, done) {
@@ -138,8 +135,6 @@ describe("Integration tests", function () {
             assert.isNumber(r.outcomes[i].id);
             assert.property(r.outcomes[i], "outstandingShares");
             assert(abi.number(r.outcomes[i].outstandingShares) >= 0);
-            assert.property(r.outcomes[i], "shares");
-            assert.isObject(r.outcomes[i].shares);
         }
         assert.property(r, "events");
         assert.isArray(r.events);

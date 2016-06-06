@@ -12,7 +12,6 @@ var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
-var utf8 = require("utf8");
 var connector = require("ethereumjs-connect");
 var contracts = require("augur-contracts");
 var constants = require("./constants");
@@ -24,7 +23,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.1.9";
+    this.version = "1.2.4";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -838,6 +837,200 @@ Augur.prototype.fill_trade = function (id, fill, onSent, onSuccess, onFailed) {
     return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
+// expects BigNumber inputs
+Augur.prototype.calculatePriceDepth = function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
+};
+
+/**
+ * @param {Object} p
+ *     market: market ID
+ *     liquidity: initial cash to be placed on the order book
+ *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
+ *     startingQuantity: number of shares in each order
+ *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
+ *     priceWidth: spread between best bid/offer
+ *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
+ * @param {Object} cb
+ *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
+ */
+Augur.prototype.generateOrderBook = function (p, cb) {
+    var self = this;
+    var liquidity = new BigNumber(p.liquidity);
+    var numOutcomes = p.initialFairPrices.length;
+    var initialFairPrices = new Array(numOutcomes);
+    for (var i = 0; i < numOutcomes; ++i) {
+        initialFairPrices[i] = new BigNumber(p.initialFairPrices[i]);
+    }
+    var startingQuantity = new BigNumber(p.startingQuantity);
+    var bestStartingQuantity = new BigNumber(p.bestStartingQuantity || p.startingQuantity);
+    var halfPriceWidth = new BigNumber(p.priceWidth).dividedBy(new BigNumber(2));
+    cb = cb || {};
+    var onSimulate = cb.onSimulate || this.utils.noop;
+    var onBuyCompleteSets = cb.onBuyCompleteSets || this.utils.noop;
+    var onSetupOutcome = cb.onSetupOutcome || this.utils.noop;
+    var onSetupOrder = cb.onSetupOrder || this.utils.noop;
+    var onSuccess = cb.onSuccess || this.utils.noop;
+    var onFailed = cb.onFailed || this.utils.noop;
+    this.getMarketInfo(p.market, function (marketInfo) {
+        var minValue, maxValue;
+        if (marketInfo.type === "scalar") {
+            minValue = new BigNumber(marketInfo.events[0].minValue);
+            maxValue = new BigNumber(marketInfo.events[0].maxValue);
+        } else {
+            minValue = new BigNumber(0);
+            maxValue = new BigNumber(1);
+        }
+        var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+        if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
+            return onFailed({
+                error: 42,
+                message: "insufficient liquidity to generate order book"
+            });
+        }
+        var buyPrices = new Array(numOutcomes);
+        var sellPrices = new Array(numOutcomes);
+        var numSellOrders = new Array(numOutcomes);
+        var numBuyOrders = new Array(numOutcomes);
+        var shares = new BigNumber(0);
+        var i, j, buyPrice, sellPrice, outcomeShares;
+        for (i = 0; i < numOutcomes; ++i) {
+            buyPrice = initialFairPrices[i].minus(halfPriceWidth);
+            sellPrice = initialFairPrices[i].plus(halfPriceWidth);
+            numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+            numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+            outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
+            if (outcomeShares.gt(shares)) shares = outcomeShares;
+            numSellOrders[i] = numSellOrders[i].toNumber();
+            buyPrices[i] = new Array(numBuyOrders[i]);
+            buyPrices[i][0] = buyPrice;
+            for (j = 1; j < numBuyOrders[i]; ++j) {
+                buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
+                if (buyPrices[i][j].lte(minValue)) {
+                    buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
+                }
+            }
+            sellPrices[i] = new Array(numSellOrders[i]);
+            sellPrices[i][0] = sellPrice;
+            for (j = 1; j < numSellOrders[i]; ++j) {
+                sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
+                if (sellPrices[i][j].gte(maxValue)) {
+                    sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
+                }
+            }
+        }
+        if (p.isSimulation) {
+            var numTransactions = 0;
+            for (i = 0; i < numOutcomes; ++i) {
+                numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
+            }
+            return onSimulate({
+                shares: shares.toFixed(),
+                numBuyOrders: numBuyOrders,
+                numSellOrders: numSellOrders,
+                buyPrices: abi.string(buyPrices),
+                sellPrices: abi.string(sellPrices),
+                numTransactions: numTransactions,
+                priceDepth: priceDepth.toFixed()
+            });
+        }
+        self.buyCompleteSets({
+            market: p.market,
+            amount: abi.hex(shares),
+            onSent: function (res) {
+                // console.log("generateOrderBook.buyCompleteSets sent:", res);
+            },
+            onSuccess: function (res) {
+                // console.log("generateOrderBook.buyCompleteSets success:", res);
+                onBuyCompleteSets(res);
+                var outcomes = new Array(numOutcomes);
+                for (var i = 0; i < numOutcomes; ++i) {
+                    outcomes[i] = i + 1;
+                }
+                async.forEachOf(outcomes, function (outcome, index, nextOutcome) {
+                    async.parallel([
+                        function (callback) {
+                            async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
+                                // console.log("buyPrice", i, buyPrice.toFixed());
+                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                self.buy({
+                                    amount: abi.hex(amount),
+                                    price: abi.hex(buyPrice),
+                                    market: p.market,
+                                    outcome: outcome,
+                                    onSent: function (res) {
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
+                                    },
+                                    onSuccess: function (res) {
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
+                                        onSetupOrder({
+                                            market: p.market,
+                                            outcome: outcome,
+                                            amount: amount.toFixed(),
+                                            buyPrice: buyPrice.toFixed()
+                                        });
+                                        nextBuyPrice();
+                                    },
+                                    onFailed: function (err) {
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                                        nextBuyPrice(err);
+                                    }
+                                });
+                            }, function (err) {
+                                if (err) console.error("async.each buy:", err);
+                                callback(err);
+                            });
+                        },
+                        function (callback) {
+                            async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
+                                // console.log("sellPrice", i, sellPrice.toFixed());
+                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                self.sell({
+                                    amount: abi.hex(amount),
+                                    price: abi.hex(sellPrice),
+                                    market: p.market,
+                                    outcome: outcome,
+                                    onSent: function (res) {
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
+                                    },
+                                    onSuccess: function (res) {
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
+                                        onSetupOrder({
+                                            market: p.market,
+                                            outcome: outcome,
+                                            amount: amount.toFixed(),
+                                            sellPrice: sellPrice.toFixed()
+                                        });
+                                        nextSellPrice();
+                                    },
+                                    onFailed: function (err) {
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                                        nextSellPrice(err);
+                                    }
+                                });
+                            }, function (err) {
+                                if (err) console.error("async.each sell:", err);
+                                callback(err);
+                            });
+                        }
+                    ], function (err) {
+                        if (err) console.error("buy/sell:", err);
+                        onSetupOutcome({market: p.market, outcome: outcome});
+                        nextOutcome(err);
+                    });
+                }, function (err) {
+                    if (err) return onFailed(err);
+                    self.getOrderBook(p.market, onSuccess);
+                });
+            },
+            onFailed: function (err) {
+                console.error("generateOrderBook.buyCompleteSets failed:", err);
+                onFailed(err);
+            }
+        });
+    });
+};
+
 // buy&sellShares.se
 Augur.prototype.cancel = function (trade_id, onSent, onSuccess, onFailed) {
     var tx = clone(this.tx.cancel);
@@ -1135,10 +1328,8 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    // [parseInt(SUCCESS), unfix(max_value), unfix(max_amount)]
                     self.transact(tx, function (res) {
                         var cr = res.callReturn;
-                        console.log(cr);
                         if (cr && cr.constructor === Array) {
                             cr[0] = parseInt(cr[0]);
                             if (cr[0] === 1 && cr.length === 3) {
@@ -1146,8 +1337,6 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                                 cr[2] = abi.unfix(cr[2], "string");
                             }
                         }
-                        console.log("cr:", cr);
-                        console.log("res.callReturn:", res.callReturn);
                         onTradeSent(res);
                     }, function (res) {
                         var cr = res.callReturn;
@@ -1158,8 +1347,6 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                                 cr[2] = abi.unfix(cr[2], "string");
                             }
                         }
-                        console.log("cr:", cr);
-                        console.log("res.callReturn:", res.callReturn);
                         onTradeSuccess(res);
                     }, onTradeFailed);
                 });
@@ -1216,7 +1403,7 @@ Augur.prototype.createBranch = function (description, periodLength, parent, trad
                 abi.hex(parent),
                 parseInt(abi.fix(tradingFee, "hex")),
                 oracleOnly,
-                utf8.encode(description)
+                new Buffer(description, "utf8")
             ]);
             onSuccess(response);
         },
@@ -1467,6 +1654,7 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
         tags.push("0x0");
     }
     description = description.trim();
+    expDate = parseInt(expDate);
     var tx = clone(this.tx.createEvent);
     tx.params = [
         branchId,
@@ -1498,7 +1686,6 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
                 self.transact(tx, onSent, function (res) {
                     var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                     rpc.getBlock(res.blockNumber, false, function (block) {
-                        var utf8description = utf8.encode(description);
                         res.marketID = self.utils.sha3([
                             tradingPeriod,
                             abi.fix(tradingFee, "hex"),
@@ -1507,8 +1694,8 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
                             tags[1],
                             tags[2],
                             expDate,
-                            new Buffer(utf8description, "utf8").length,
-                            utf8description
+                            new Buffer(description, "utf8").length,
+                            description
                         ]);
                         onSuccess(res);
                     });
@@ -1536,7 +1723,7 @@ Augur.prototype.createEvent = function (branchId, description, expDate, minValue
     tx.params = [
         branchId,
         description.trim(),
-        expDate,
+        parseInt(expDate),
         abi.fix(minValue, "hex"),
         abi.fix(maxValue, "hex"),
         numOutcomes,
@@ -1596,7 +1783,6 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
                     expDate = parseInt(expDate);
                     var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                     rpc.getBlock(res.blockNumber, false, function (block) {
-                        var utf8description = utf8.encode(description);
                         res.marketID = self.utils.sha3([
                             tradingPeriod,
                             abi.fix(tradingFee, "hex"),
@@ -1605,8 +1791,8 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
                             tags[1],
                             tags[2],
                             expDate,
-                            new Buffer(utf8description, "utf8").length,
-                            utf8description
+                            new Buffer(description, "utf8").length,
+                            description
                         ]);
                         onSuccess(res);
                     });
@@ -1713,15 +1899,10 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
 
-        // organize trader info
-        for (var i = 0; i < info.numOutcomes; ++i) {
-            info.outcomes[i] = {shares: {}};
-        }
-
         // organize event info
         // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
         var endDate;
-        for (i = 0; i < info.numEvents; ++i) {
+        for (var i = 0; i < info.numEvents; ++i) {
             endDate = parseInt(rawInfo[i*EVENTS_FIELDS + index + 1]);
             info.events[i] = {
                 id: rawInfo[i*EVENTS_FIELDS + index],
@@ -1745,18 +1926,13 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         }
 
         // organize outcome info
-        // eventinfo[0] = self.Events[event].branch
-        // eventinfo[1] = self.Events[event].expirationDate 
-        // eventinfo[2] = self.Events[event].outcome
-        // eventinfo[3] = self.Events[event].minValue
-        // eventinfo[4] = self.Events[event].maxValue
-        // eventinfo[5] = self.Events[event].numOutcomes
-        // eventinfo[6] = self.Events[event].bond
         index += info.numEvents*EVENTS_FIELDS;
         for (i = 0; i < info.numOutcomes; ++i) {
-            info.outcomes[i].id = i + 1;
-            info.outcomes[i].outstandingShares = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string");
-            info.outcomes[i].price = abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string");
+            info.outcomes[i] = {
+                id: i + 1,
+                outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
+                price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
+            };
         }
         index += info.numOutcomes*OUTCOMES_FIELDS;
         info.winningOutcomes = abi.string(

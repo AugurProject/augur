@@ -211,7 +211,6 @@ describe("Integration tests", function () {
                                         }, function (r) {
                                             assert(r.txHash);
                                             assert.strictEqual(r.callReturn, "1");
-                                            // rpc.personal("lockAccount", [augur.from]);
                                             done();
                                         }, done);
                                     });
@@ -235,7 +234,7 @@ describe("Integration tests", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT*4);
-                    rpc.miner("start", 1);
+                    // rpc.miner("start", 1);
                     rpc.personal("unlockAccount", [accounts[0], password]);
                     augur.from = accounts[0];
                     augur.connector.from_field_tx(accounts[0]);
@@ -251,11 +250,9 @@ describe("Integration tests", function () {
                                 price: "0.01",
                                 market: t.market,
                                 outcome: t.outcome,
-                                onSent: function (r) {
-                                    // rpc.personal("lockAccount", accounts[0]);
-                                },
+                                onSent: function (r) {},
                                 onSuccess: function (r) {
-                                    rpc.miner("stop");
+                                    // rpc.miner("stop");
                                     augur.from = accounts[2];
                                     augur.connector.from_field_tx(accounts[2]);
                                     augur.sync(augur.connector);
@@ -266,8 +263,8 @@ describe("Integration tests", function () {
                                                 if (tradeInfo.owner === augur.from) return nextTrade();
                                                 if (tradeInfo.type === "buy") return nextTrade();
                                                 console.log("matched trade:", thisTrade, tradeInfo);
-                                                rpc.miner("start", 1);
-                                                console.log("unlock:", rpc.personal("unlockAccount", [accounts[2], password]));
+                                                // rpc.miner("start", 1);
+                                                rpc.personal("unlockAccount", [accounts[2], password]);
                                                 augur.trade({
                                                     max_value: t.max_value,
                                                     max_amount: 0,
@@ -299,9 +296,6 @@ describe("Integration tests", function () {
                                                 });
                                             });
                                         }, function (x) {
-                                            // rpc.miner("stop");
-                                            // rpc.personal("lockAccount", accounts[0]);
-                                            // rpc.personal("lockAccount", accounts[1]);
                                             if (x && x.callReturn) return done();
                                             done(x);
                                         });
