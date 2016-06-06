@@ -98,7 +98,7 @@ export const validateMakerFee = (makerFeePercent) => {
 
 	if(!makerFeePercent)
 		return 'Please specify a maker fee %';
-	if(parsed !== makerFeePercent)
+	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Maker fee must be as number';
 	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
 		return `Maker fee must be between 
@@ -168,10 +168,10 @@ export const isValid = (formState) => {
 export const errors = (formState) => {
 	const errs = {};
 
-	if (formState.tradingFeePercent !== undefined)
+	if (formState.hasOwnProperty('tradingFeePercent'))
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
 
-	if (formState.initialLiquidity !== undefined)
+	if (formState.hasOwnProperty('initialLiquidity'))
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
 	return errs;
