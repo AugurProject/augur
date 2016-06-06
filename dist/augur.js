@@ -37384,7 +37384,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.2.5";
+    this.version = "1.2.6";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -37905,25 +37905,45 @@ Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
     var len, shift, rawInfo, marketID, self = this;
     var tx = clone(this.tx.batchGetMarketInfo);
     tx.params = [marketIDs];
-    var marketsArray = this.fire(tx);
-    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-        return marketsArray;
+    if (!this.utils.is_function(callback)) {
+        var marketsArray = this.fire(tx);
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
+        }
+        var numMarkets = marketIDs.length;
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            rawInfo = marketsArray.slice(shift, shift + len - 1);
+            marketID = marketsArray[shift];
+            marketsInfo[marketID] = this.parseMarketInfo(rawInfo, {combinatorial: true});
+            marketsInfo[marketID]._id = marketID;
+            marketsInfo[marketID].sortOrder = i;
+            totalLen += len;
+        }
+        return marketsInfo;
     }
-    var numMarkets = marketIDs.length;
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-        len = parseInt(marketsArray[totalLen]);
-        shift = totalLen + 1;
-        rawInfo = marketsArray.slice(shift, shift + len - 1);
-        marketID = marketsArray[shift];
-        marketsInfo[marketID] = this.parseMarketInfo(rawInfo, {combinatorial: true});
-        marketsInfo[marketID]._id = marketID;
-        marketsInfo[marketID].sortOrder = i;
-        totalLen += len;
-    }
-    if (!this.utils.is_function(callback)) return marketsInfo;
-    callback(marketsInfo);
+    this.fire(tx, function (marketsArray) {
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return callback(marketsArray);
+        }
+        var numMarkets = marketIDs.length;
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            rawInfo = marketsArray.slice(shift, shift + len - 1);
+            marketID = marketsArray[shift];
+            marketsInfo[marketID] = this.parseMarketInfo(rawInfo, {combinatorial: true});
+            marketsInfo[marketID]._id = marketID;
+            marketsInfo[marketID].sortOrder = i;
+            totalLen += len;
+        }
+        callback(marketsInfo);
+    });
 };
 Augur.prototype.getMarketsInfo = function (options, callback) {
     // options: {branch, offset, numMarketsToLoad, callback}
