@@ -18,15 +18,17 @@ module.exports = React.createClass({
 
 		showAdvancedMarketParams: React.PropTypes.bool,
 
-		initialFairPrice: React.PropTypes.any,
-		sharesPerOrder: React.PropTypes.any,
-		sizeOfBest: React.PropTypes.any,
+		initialFairPrices: React.PropTypes.object,
+		startingQuantity: React.PropTypes.any,
+		bestStartingQuantity: React.PropTypes.any,
 		priceWidth: React.PropTypes.any,
-		separation: React.PropTypes.any
+		priceDepth: React.PropTypes.any
 	},
 
 	render: function() {
 		var p = this.props;
+
+		console.log('PROPS form 4-- ', p)
 
 		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼'
 
@@ -102,19 +104,24 @@ module.exports = React.createClass({
 							<p>
 								This establishes the initial price for each respective outcome.
 							</p>
-							{ p.initialFairPrice.map((cV, i) => {
+							{ p.initialFairPrices.values.map((cV, i) => {
 								return (
 									<div key={`initialFairPrice${i}`} >
 										<Input
 											type="text"
-											value={ p.initialFairPrice[i].value }
+											value={ p.initialFairPrices.values[i].value }
 											isClearable={ false }
 											onChange={
 												(onChangeValue) => {
-													let prices = p.initialFairPrice
+													let prices = p.initialFairPrices.values
 													prices[i].value = onChangeValue
 
-													p.onValuesUpdated({ initialFairPrice: prices })
+													p.onValuesUpdated({
+														initialFairPrices: {
+															...p.initialFairPrices,
+															values: prices
+														}
+													})
 												}
 											} />
 										<span className="denomination">{ cV.label }</span>
@@ -128,20 +135,20 @@ module.exports = React.createClass({
 						</div>
 
 						<div>
-							<h4>Shares Per Order</h4>
+							<h4>Starting Quanity</h4>
 							<p>
 								This is the number of shares in each order.
 							</p>
 
 							<Input
 								type="text"
-								value = { p.sharesPerOrder }
+								value = { p.startingQuantity }
 								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ sharesPerOrder: value }) }
+								onChange={ (value) => p.onValuesUpdated({ startingQuantity: value }) }
 							/>
 
-							{ p.errors.sharesPerOrder &&
-								<span className="error-message">{ p.errors.sharesPerOrder }</span>
+							{ p.errors.startingQuantity &&
+								<span className="error-message">{ p.errors.startingQuantity }</span>
 							}
 						</div>
 
@@ -153,13 +160,13 @@ module.exports = React.createClass({
 
 							<Input
 								type="text"
-								value = { p.sizeOfBest }
+								value = { p.bestStartingQuantity }
 								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ sizeOfBest: value }) }
+								onChange={ (value) => p.onValuesUpdated({ bestStartingQuantity: value }) }
 							/>
 
-							{ p.errors.sizeOfBest &&
-								<span className="error-message">{ p.errors.sizeOfBest }</span>
+							{ p.errors.bestStartingQuantity &&
+								<span className="error-message">{ p.errors.bestStartingQuantity }</span>
 							}
 						</div>
 
@@ -178,24 +185,6 @@ module.exports = React.createClass({
 
 							{ p.errors.priceWidth &&
 								<span className="error-message">{ p.errors.priceWidth }</span>
-							}
-						</div>
-
-						<div>
-							<h4>Order Separation</h4>
-							<p>
-								This defines the price distance between all initial bids and asks.
-							</p>
-
-							<Input
-								type="text"
-								value = { p.separation }
-								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ separation: value }) }
-							/>
-
-							{ p.errors.separation &&
-								<span className="error-message">{ p.errors.separation }</span>
 							}
 						</div>
 					</div>

@@ -27,7 +27,14 @@ export const MAKER_FEE_MAX = 100;
 
 // Advanced Market Creation Defaults
 export const INITIAL_FAIR_PRICE_DEFAULT = 46.5;
-export const SHARES_PER_ORDER_DEFAULT = 25;
-export const SIZE_OF_BEST_DEFAULT = 35;
+
+export const STARTING_QUANTITY_DEFAULT = 25;
+export const STARTING_QUANTITY_MIN = 0.1;
+
+export const BEST_STARTING_QUANTITY_DEFAULT = 35;
+export const BEST_STARTING_QUANTITY_MIN = 0.1;
+
 export const PRICE_WIDTH_DEFAULT = 4;
-export const SEPARATION_DEFAULT = 0.5;
+export const PRICE_WIDTH_MIN =  0.1;
+
+export const PRICE_DEPTH_DEFAULT = 0.1;
