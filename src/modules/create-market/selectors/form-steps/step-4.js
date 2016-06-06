@@ -34,9 +34,9 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFeePercent: formState.makerFeePercent || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.values ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
+		initialFairPrices: !!formState.initialFairPrices.values.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
-		bestStartingQuantity: formState.bestStartingQuanity || BEST_STARTING_QUANTITY_DEFAULT,
+		bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
 		priceDepth: PRICE_DEPTH_DEFAULT
 	};
