@@ -107,7 +107,7 @@ export const validateMakerFee = (makerFeePercent) => {
 			formatPercent(MAKER_FEE_MAX, true).full}`
 };
 
-export const validateMarketInvestment = (initialLiquidity) => {
+export const validateInitialLiquidity = (initialLiquidity) => {
 	const parsed = parseFloat(initialLiquidity);
 	if (!initialLiquidity) {
 		return 'Please provide some initial liquidity';
@@ -155,7 +155,7 @@ export const validatePriceWidth = (priceWidth) => {
 export const isValid = (formState) => {
 	if(	validateTradingFee(formState.tradingFeePercent) 				||
 		validateMakerFee(formState.makerFeePercent) 					||
-		validateMarketInvestment(formState.initialLiquidity)			||
+		validateInitialLiquidity(formState.initialLiquidity)			||
 		validateStartingQuantity(formState.startingQuantity)			||
 		validateBestStartingQuantity(formState.bestStartingQuantity)	||
 		validatePriceWidth(formState.priceWidth))
@@ -171,7 +171,7 @@ export const errors = (formState) => {
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
 
 	if (formState.initialLiquidity !== undefined)
-		errs.initialLiquidity = validateMarketInvestment(formState.initialLiquidity);
+		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
 	return errs;
 };
