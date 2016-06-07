@@ -1,7 +1,7 @@
 import React from 'react';
-import classnames from 'classnames';
 
 import MarketItem from '../../market/components/market-item';
+import Advanced from '../../market/components/advanced';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 
 module.exports = React.createClass({
@@ -16,6 +16,8 @@ module.exports = React.createClass({
 				<h1>Review and submit your new market</h1>
 
 				<MarketItem { ...p } />
+				
+				<Advanced { ...p } />
 
 				<FormButtons
 					nextLabel="submit new market"
