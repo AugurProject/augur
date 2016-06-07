@@ -1,8 +1,8 @@
 import {assert} from 'chai';
 import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from './testState';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from './testState';
 
 import activePage from './app/selectors/active-page-test';
 import loginAccount from './auth/selectors/login-account-test';
@@ -28,13 +28,13 @@ import * as assertions from '../node_modules/augur-ui-react-components/test/asse
 
 describe(`selectors given different states tests:`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selectors, actual;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	// const middlewares = [thunk];
+	// const mockStore = configureMockStore(middlewares);
+	// let store, selectors, actual;
+	// let state = Object.assign({}, testState);
+	// store = mockStore(state);
 
-	selectors = proxyquire('../src/selectors.js', {
+	const selectors = proxyquire('../src/selectors.js', {
 		'./modules/app/selectors/active-page': activePage,
 		'./modules/auth/selectors/login-account': loginAccount,
 		'./modules/link/selectors/links': links,
@@ -69,7 +69,18 @@ describe(`selectors given different states tests:`, () => {
 			assertions.authForm(selectors.authForm);
 	});
 
-	it(`should be able to load the crete market page`);
+	it(`should be able to load the create market page`, () => {
+		// siteHeader, createMarketForm
+		const siteHeader = {
+			activePage: selectors.activePage,
+			loginAccount: selectors.loginAccount,
+			positionsSummary: selectors.marketsTotals.positionsSummary,
+			transactionsTotals: selectors.transactionsTotals,
+			isTransactionsWorking: selectors.isTransactionsWorking
+		};
+		assertions.siteHeader(siteHeader);
+		assertions.createMarketForm(selectors.createMarketForm);
+	});
 
 	it(`should be able to load a market page`, () => {
 		// siteHeader, market, marketsTotals.numPendingReports
@@ -106,13 +117,31 @@ describe(`selectors given different states tests:`, () => {
 		assertions.searchSort(selectors.searchSort);
 	});
 
-	it(`should be able to load the transactions page`);
+	it(`should be able to load the transactions page`, () => {
+		// siteHeader, transactions, transactionsTotals
+		const siteHeader = {
+			activePage: selectors.activePage,
+			loginAccount: selectors.loginAccount,
+			positionsSummary: selectors.marketsTotals.positionsSummary,
+			transactionsTotals: selectors.transactionsTotals,
+			isTransactionsWorking: selectors.isTransactionsWorking
+		};
+		assertions.siteHeader(siteHeader);
+		assertions.transactions(selectors.transactions);
+		assertions.transactionsTotals(selectors.transactionsTotals);
+	});
 
-	it(`should be able to laod the positions page`);
-
-	it(`selectorsInfo:`, () => {
-		// console.log(selectors.favoriteMarkets);
-		console.log('\n');
-		console.log(assertions);
+	it(`should be able to laod the positions page`, () => {
+		// siteHeader, markets, marketsTotals.positionsSummary
+		const siteHeader = {
+			activePage: selectors.activePage,
+			loginAccount: selectors.loginAccount,
+			positionsSummary: selectors.marketsTotals.positionsSummary,
+			transactionsTotals: selectors.transactionsTotals,
+			isTransactionsWorking: selectors.isTransactionsWorking
+		};
+		assertions.siteHeader(siteHeader);
+		assertions.markets(selectors.markets);
+		assertions.marketsTotals.positionsSummaryAssertion(selectors.marketsTotals.positionsSummary);
 	});
 });
