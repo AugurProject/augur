@@ -152,6 +152,14 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
 	marketsTotals = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should return the market totals for selected market`, () => {
 		test = selector.default();
 		out = {

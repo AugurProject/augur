@@ -93,6 +93,14 @@ describe(`modules/markets/selectors/markets.js`, () => {
 
 	markets = selector;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should return unpaginatedMarkets if selectedMarketsHeader is PENDING_REPORTS`, () => {
 		test = selector.default();
 		assert.deepEqual(test, mockSelectors.unpaginatedMarkets, `Didn't return the expected markets`);

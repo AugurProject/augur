@@ -25,14 +25,16 @@ import transactionsTotals from './transactions/selectors/transactions-totals-tes
 import createMarketForm from './create-market/selectors/create-market-form-test';
 
 import * as assertions from '../node_modules/augur-ui-react-components/test/assertions/';
+import * as mockStore from './mockStore';
 
-describe(`selectors given different states tests:`, () => {
+describe(`![ SELECTORS TESTS - UI Integration ]!`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	// const middlewares = [thunk];
 	// const mockStore = configureMockStore(middlewares);
 	// let store, selectors, actual;
 	// let state = Object.assign({}, testState);
 	// store = mockStore(state);
+	let { state, store } = mockStore.default;
 
 	const selectors = proxyquire('../src/selectors.js', {
 		'./modules/app/selectors/active-page': activePage,

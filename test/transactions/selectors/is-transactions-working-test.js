@@ -8,22 +8,23 @@ import {
 	FAILED,
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
-import testState from '../../testState';
+// import testState from '../../testState';
+import * as mockStore from '../../mockStore';
 import isTransactionsWorkingAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/isTransactionsWorking';
 
 describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let out, test, selector, state, fakeStore;
-	state = Object.assign({}, testState);
-
-	fakeStore = {
-		default: {
-			getState: () => state
-		}
-	};
+	let out, test, selector;
+	// state = Object.assign({}, testState);
+	let { state, store } = mockStore.default;
+	// fakeStore = {
+	// 	default: {
+	// 		getState: () => state
+	// 	}
+	// };
 
 	selector = proxyquire('../../../src/modules/transactions/selectors/is-transactions-working', {
-		'../../../store': fakeStore
+		'../../../store': store
 	});
 
 	it(`should check if a transaction is working`, () => {

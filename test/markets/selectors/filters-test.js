@@ -51,6 +51,14 @@ describe(`modules/markets/selectors/filters.js`, () => {
 
 	filters = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should adjust and return filters props`, () => {
 		test = selector.default();
 

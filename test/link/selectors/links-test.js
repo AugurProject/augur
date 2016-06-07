@@ -41,6 +41,7 @@ describe(`modules/link/selectors/links.js`, () => {
 
 	afterEach(() => {
 		global.window = {};
+		store.clearActions();
 	});
 
 	it(`should return an links object with expected shape`, () => {

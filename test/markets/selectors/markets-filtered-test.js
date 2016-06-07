@@ -46,6 +46,14 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 
 	filteredMarkets = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should be able to select the correct filtered markets`, () => {
 		test = selector.default();
 

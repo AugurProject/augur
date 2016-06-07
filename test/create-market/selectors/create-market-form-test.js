@@ -3,19 +3,21 @@ import {
 } from 'chai';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+import * as mockStore from '../../mockStore';
 import createMarketFormAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/createMarketForm';
 
 let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test, steps, step2, step3, step4, step5, returnObj;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	// const middlewares = [thunk];
+	// const mockStore = configureMockStore(middlewares);
+	let selector, out, test, steps, step2, step3, step4, step5, returnObj;
+	// let state = Object.assign({}, testState);
+	// store = mockStore(state);
+	let { state, store } = mockStore.default;
 
 	steps = {
 		select: (formState) => true,
@@ -64,6 +66,14 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	});
 
 	createMarketForm = selector.default;
+
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
 
 	it(`should init the formState correctly`, () => {
 		test = selector.default();

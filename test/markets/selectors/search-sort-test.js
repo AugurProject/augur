@@ -36,6 +36,14 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 
 	searchSort = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should return information about the sorting filters in search`, () => {
 		test = selector.default();
 		let actions = [{

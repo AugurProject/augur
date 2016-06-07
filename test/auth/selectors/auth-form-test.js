@@ -32,6 +32,14 @@ describe(`modules/auth/selectors/auth-form.js`, () => {
 
 	authForm = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should select the correct auth form`, () => {
 		expected = {
 			title: 'Sign Up',

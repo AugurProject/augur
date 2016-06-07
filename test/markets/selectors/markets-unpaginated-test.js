@@ -33,6 +33,14 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 	});
 	unpaginatedMarkets = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should return unpaginated markets`, () => {
 		actual = selector.default();
 
