@@ -1373,22 +1373,42 @@ Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrder
                         // 4.2.1/ there is order to fill
                         var firstBuyerTradeId = matchingSortedBidIds.shift();
                         augurJs.short_sell(firstBuyerTradeId, sharesLeft,
-                            function onSentInner(data) {
-                                console.log("augurjs.js: trade: short_sell: onSent: %o", data);
-                                onShortSellSent(tradeOrderId, data);
+                            function (data) {
+                                console.log("augurjs.js: onTradeHash: %o", data);
+                                onTradeHash(tradeOrderId, data);
                             },
-                            function onSuccessInner(data) {
-                                console.log("augurjs.js: trade: short_sell: onSuccess: %o", data);
-                                onShortSellSuccess(tradeOrderId, data);
+                            function (data) {
+                                console.log("augurjs.js: onCommitSent: %o", data);
+                                onCommitSent(tradeOrderId, data);
+                            },
+                            function (data) {
+                                console.log("augurjs.js: onCommitSuccess: %o", data);
+                                onCommitSuccess(tradeOrderId, data);
+                            },
+                            function (data) {
+                                console.log("augurjs.js: onCommitFailed: %o", data);
+                                onCommitFailed(tradeOrderId, data);
+                            },
+                            function (data) {
+                                console.log("augurjs.js: onNextBlock: %o", data);
+                                onNextBlock(tradeOrderId, data);
+                            },
+                            function (data) {
+                                console.log("augurjs.js: onTradeSent: %o", data);
+                                onTradeSent(tradeOrderId, data);
+                            },
+                            function (data) {
+                                console.log("augurjs.js: onTradeSuccess: %o", data);
+                                onTradeSuccess(tradeOrderId, data);
                                 var sharesFilled = data[2];
                                 if (sharesLeft > sharesFilled) {
                                     // not all user shares were shorted, recursively short
                                     shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(), sharesLeft - sharesFilled);
                                 }
                             },
-                            function onFailureInner(data) {
-                                console.log("augurjs.js: trade: short_sell: onFail: %o", data);
-                                onShortSellFailed(tradeOrderId, data);
+                            function (data) {
+                                console.log("augurjs.js: onTradeFailed: %o", data);
+                                onTradeFailed(tradeOrderId, data);
                             });
                     } else {
                         // 4.2.1/ no order to fill
