@@ -6,7 +6,9 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import marketsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/markets';
 
+let allMarkets;
 describe(`modules/markets/selectors/markets-all.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -90,8 +92,11 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 		'../../../store': store
 	});
 
+	allMarkets = selector.default;
+
 	it(`should return the correct selectedMarket function`, () => {
 		test = selector.default();
+		marketsAssertion(test);
 		out = [{
 			endDate: new Date('01/01/3000'),
 			outcomes: {
@@ -125,3 +130,5 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 		assert.deepEqual(test, out, `Didn't produce all markets as expected and sorted`);
 	});
 });
+
+export default allMarkets;

@@ -6,7 +6,9 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import marketsHeaderAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/marketsHeader';
 
+let marketsHeader;
 describe(`modules/markets/selectors/markets-header.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -36,6 +38,8 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 		'../../markets/actions/update-selected-markets-header': mockHeader
 	});
 
+	marketsHeader = selector.default;
+
 	it(`should select the correct Markets Header`, () => {
 		test = selector.default();
 		out = [{
@@ -49,6 +53,8 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
+		marketsHeaderAssertion(test);
+
 		test.onClickAllMarkets();
 		test.onClickFavorites();
 		test.onClickPendingReports();
@@ -60,3 +66,5 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects from onclick events`);
 	});
 });
+
+export default marketsHeader;

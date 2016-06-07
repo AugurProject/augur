@@ -7,13 +7,14 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+let keywords;
 describe('modules/markets/selectors/keywords.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	let store, selector, out, test;
 	let state = Object.assign({}, testState, {
-		keywords: ['test', 'example', 'foobar']
+		keywords: `test, example`
 	});
 	store = mockStore(state);
 	let mockUpdate = {
@@ -31,6 +32,7 @@ describe('modules/markets/selectors/keywords.js', () => {
 		'../../markets/actions/update-keywords': mockUpdate
 	});
 
+	keywords = selector.default;
 	it(`should return the active keywords`, () => {
 		let keywords = store.getState().keywords;
 		test = selector.default();
@@ -46,3 +48,5 @@ describe('modules/markets/selectors/keywords.js', () => {
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action when onChangeKeywords was called.`);
 	});
 });
+
+export default keywords;

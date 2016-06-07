@@ -6,7 +6,9 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import paginationAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/pagination';
 
+let pagination;
 describe(`modules/markets/selectors/pagination.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -41,6 +43,8 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
+	pagination = selector.default;
+
 	it(`should change the selected page number`, () => {
 		test = selector.default();
 		let actions = [{
@@ -60,7 +64,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 			nextItemNum: 51,
 			previousItemNum: 31
 		};
-
+		paginationAssertion(test);
 		test.onUpdateSelectedPageNum(4);
 
 		assert.deepEqual(test, out, `Didn't return the expected object`);
@@ -68,3 +72,5 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 		assert.deepEqual(store.getActions(), actions, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
 	});
 });
+
+export default pagination;

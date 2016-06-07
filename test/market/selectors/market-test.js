@@ -6,7 +6,9 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/market';
 
+let market;
 describe(`modules/market/selectors/market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -39,7 +41,7 @@ describe(`modules/market/selectors/market.js`, () => {
 			testMarketID: {}
 		},
 		reports: {
-			testEventID: {}
+			testEventID: { isUnethical: false }
 		},
 		accountTrades: {
 			testMarketID: {}
@@ -109,15 +111,31 @@ describe(`modules/market/selectors/market.js`, () => {
 		}
 	});
 	sinon.stub(mockSubmitReport, `submitReport`, () => 'submitReportHit');
-	sinon.stub(mockLinks, `selectMarketLink`, () => 'selectMarketLinkHit');
+	sinon.stub(mockLinks, `selectMarketLink`, () => {
+		let obj = {
+			text: 'testMarketLink',
+			className: 'testMarketLink',
+			onClick: () => true
+		};
+		return obj;
+	});
 	sinon.stub(mockTradeOrders, 'selectOutcomeTradeOrders', (o, outcome, outcomeTradeInProgress, dispatch) => {
 		return 'selectOutcomeTradeOrdersHit';
 	});
-	sinon.stub(mockTradeSummary, `selectTradeSummary`, () => 'selectTradeSummaryHit');
-	sinon.stub(mockPosSummary, `selectPositionsSummary`, (listLength, qtyShares, totalValue, totalCost) => {
-		return 'selectPositionsSummaryHit';
+	sinon.stub(mockTradeSummary, `selectTradeSummary`, () => {
+		let obj = {
+			text: 'trade summary'
+		};
+		return obj;
 	});
-	sinon.stub(mockPriceTime, `selectPriceTimeSeries`, () => 'selectPriceTimeSeriesHit');
+	sinon.stub(mockPosSummary, `selectPositionsSummary`, (listLength, qtyShares, totalValue, totalCost) => {
+		let obj = {text: 'selectPositionsSummaryHit'};
+		return obj;
+	});
+	sinon.stub(mockPriceTime, `selectPriceTimeSeries`, () => {
+		let obj = ['price', 'time', 'series'];
+		return obj;
+	});
 	sinon.stub(mockPosition, `selectPositionFromOutcomeAccountTrades`, () => 'selectPositionFromOutcomeAccountTradesHit');
 
 	selector = proxyquire('../../../src/modules/market/selectors/market.js', {
@@ -134,6 +152,8 @@ describe(`modules/market/selectors/market.js`, () => {
 		'../../positions/selectors/position': mockPosition
 	});
 
+	market = selector.default;
+
 	beforeEach(() => {
 		store.clearActions();
 	});
@@ -144,145 +164,152 @@ describe(`modules/market/selectors/market.js`, () => {
 
 	it(`should return an assembled market`, () => {
 		actual = selector.default();
-		expected = {
-			eventID: 'testEventID',
-			name: 'testMarket',
-			description: 'some test description',
-			endDate: 0,
-			type: 'scalar',
-			tradingFee: 5,
-			volume: {
-				value: 500,
-				formattedValue: 500,
-				formatted: '500',
-				roundedValue: 500,
-				rounded: '500',
-				minimized: '500',
-				denomination: '',
-				full: '500'
-			},
-			tags: [{
-				name: 'tag1',
-				onClick: actual.tags[0].onClick
-			}, {
-				name: 'tag2',
-				onClick: actual.tags[1].onClick
-			}, {
-				name: 'tag3',
-				onClick: actual.tags[2].onClick
-			}],
-			id: 'testMarketID',
-			isBinary: false,
-			isCategorical: false,
-			isScalar: true,
-			endDate: {
-				formatted: 'Jan 1, 3000',
-				full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString(),
-				value: new Date(3000, 0, 1, 0, 0, 0, 0)
-			},
-			isOpen: false,
-			isExpired: true,
-			isFavorite: true,
-			tradingFeePercent: {
-				value: 500,
-				formattedValue: 500,
-				formatted: '500.0',
-				roundedValue: 500,
-				rounded: '500',
-				minimized: '500',
-				denomination: '%',
-				full: '500.0%'
-			},
-			isRequiredToReportByAccount: true,
-			isPendingReport: false,
-			isReportSubmitted: false,
-			isReported: false,
-			isMissedReport: true,
-			isMissedOrReported: true,
-			marketLink: 'selectMarketLinkHit',
-			onClickToggleFavorite: actual.onClickToggleFavorite,
-			onSubmitPlaceTrade: actual.onSubmitPlaceTrade,
-			report: {
-				onSubmitReport: actual.report.onSubmitReport
-			},
-			outcomes: [{
-				id: 'testMarketID',
-				name: 'testOutcome',
-				price: 50,
-				marketID: 'testMarketID',
-				lastPrice: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '50.00',
-					roundedValue: 50,
-					rounded: '50.0',
-					minimized: '50',
-					denomination: 'Eth',
-					full: '50.00Eth'
-				},
-				lastPricePercent: {
-					value: 5000,
-					formattedValue: 5000,
-					formatted: '5,000.0',
-					roundedValue: 5000,
-					rounded: '5,000',
-					minimized: '5,000',
-					denomination: '%',
-					full: '5,000.0%'
-				},
-				trade: {
-					numShares: 5000,
-					limitPrice: 100,
-					tradeSummary: 'selectTradeSummaryHit',
-					onChangeTrade: actual.outcomes[0].trade.onChangeTrade
-				}
-			}],
-			priceTimeSeries: 'selectPriceTimeSeriesHit',
-			reportableOutcomes: [{
-				id: 'testMarketID',
-				name: 'testOutcome',
-				price: 50,
-				marketID: 'testMarketID',
-				lastPrice: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '50.00',
-					roundedValue: 50,
-					rounded: '50.0',
-					minimized: '50',
-					denomination: 'Eth',
-					full: '50.00Eth'
-				},
-				lastPricePercent: {
-					value: 5000,
-					formattedValue: 5000,
-					formatted: '5,000.0',
-					roundedValue: 5000,
-					rounded: '5,000',
-					minimized: '5,000',
-					denomination: '%',
-					full: '5,000.0%'
-				},
-				trade: {
-					numShares: 5000,
-					limitPrice: 100,
-					tradeSummary: 'selectTradeSummaryHit',
-					onChangeTrade: actual.reportableOutcomes[0].trade.onChangeTrade
-				}
-			}, {
-				id: '1.5',
-				name: 'indeterminate'
-			}],
-			tradeSummary: 'selectTradeSummaryHit',
-			positionsSummary: 'selectPositionsSummaryHit',
-			positionOutcomes: []
-		};
-
-		assert(mockLinks.selectMarketLink.calledOnce, `Didn't call selectMarketLink once as expected`);
-		assert(mockTradeOrders.selectOutcomeTradeOrders.calledOnce, `Didn't call selectOutcomeTradeOrders once as expected`);
-		assert(mockTradeSummary.selectTradeSummary.calledTwice, `Didn't call selectTradeSummary twice as expected`);
-		assert(mockPosSummary.selectPositionsSummary.calledOnce, `Didn't call selectPositionsSummary once as expected`);
-		assert(mockPriceTime.selectPriceTimeSeries.calledOnce, `Didn't call selectPriceTimeSeries once as expected`);
-		assert.deepEqual(actual, expected, `Didn't produce the expected object`);
+		assertions.marketAssertion(actual);
+		assertions.tradingFeePercentAssertion(actual.tradingFeePercent);
+		assertions.volumeAssertion(actual.volume);
+		assertions.reportAssertion(actual.report);
+		assertions.marketLinkAssertion(actual.marketLink);
+		// expected = {
+		// 	eventID: 'testEventID',
+		// 	name: 'testMarket',
+		// 	description: 'some test description',
+		// 	endDate: 0,
+		// 	type: 'scalar',
+		// 	tradingFee: 5,
+		// 	volume: {
+		// 		value: 500,
+		// 		formattedValue: 500,
+		// 		formatted: '500',
+		// 		roundedValue: 500,
+		// 		rounded: '500',
+		// 		minimized: '500',
+		// 		denomination: '',
+		// 		full: '500'
+		// 	},
+		// 	tags: [{
+		// 		name: 'tag1',
+		// 		onClick: actual.tags[0].onClick
+		// 	}, {
+		// 		name: 'tag2',
+		// 		onClick: actual.tags[1].onClick
+		// 	}, {
+		// 		name: 'tag3',
+		// 		onClick: actual.tags[2].onClick
+		// 	}],
+		// 	id: 'testMarketID',
+		// 	isBinary: false,
+		// 	isCategorical: false,
+		// 	isScalar: true,
+		// 	endDate: {
+		// 		formatted: 'Jan 1, 3000',
+		// 		full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString(),
+		// 		value: new Date(3000, 0, 1, 0, 0, 0, 0)
+		// 	},
+		// 	isOpen: false,
+		// 	isExpired: true,
+		// 	isFavorite: true,
+		// 	tradingFeePercent: {
+		// 		value: 500,
+		// 		formattedValue: 500,
+		// 		formatted: '500.0',
+		// 		roundedValue: 500,
+		// 		rounded: '500',
+		// 		minimized: '500',
+		// 		denomination: '%',
+		// 		full: '500.0%'
+		// 	},
+		// 	isRequiredToReportByAccount: true,
+		// 	isPendingReport: false,
+		// 	isReportSubmitted: false,
+		// 	isReported: false,
+		// 	isMissedReport: true,
+		// 	isMissedOrReported: true,
+		// 	marketLink: 'selectMarketLinkHit',
+		// 	onClickToggleFavorite: actual.onClickToggleFavorite,
+		// 	onSubmitPlaceTrade: actual.onSubmitPlaceTrade,
+		// 	report: {
+		// 		onSubmitReport: actual.report.onSubmitReport
+		// 	},
+		// 	outcomes: [{
+		// 		id: 'testMarketID',
+		// 		name: 'testOutcome',
+		// 		price: 50,
+		// 		marketID: 'testMarketID',
+		// 		lastPrice: {
+		// 			value: 50,
+		// 			formattedValue: 50,
+		// 			formatted: '50.00',
+		// 			roundedValue: 50,
+		// 			rounded: '50.0',
+		// 			minimized: '50',
+		// 			denomination: 'Eth',
+		// 			full: '50.00Eth'
+		// 		},
+		// 		lastPricePercent: {
+		// 			value: 5000,
+		// 			formattedValue: 5000,
+		// 			formatted: '5,000.0',
+		// 			roundedValue: 5000,
+		// 			rounded: '5,000',
+		// 			minimized: '5,000',
+		// 			denomination: '%',
+		// 			full: '5,000.0%'
+		// 		},
+		// 		trade: {
+		// 			numShares: 5000,
+		// 			limitPrice: 100,
+		// 			tradeSummary: 'selectTradeSummaryHit',
+		// 			onChangeTrade: actual.outcomes[0].trade.onChangeTrade
+		// 		}
+		// 	}],
+		// 	priceTimeSeries: 'selectPriceTimeSeriesHit',
+		// 	reportableOutcomes: [{
+		// 		id: 'testMarketID',
+		// 		name: 'testOutcome',
+		// 		price: 50,
+		// 		marketID: 'testMarketID',
+		// 		lastPrice: {
+		// 			value: 50,
+		// 			formattedValue: 50,
+		// 			formatted: '50.00',
+		// 			roundedValue: 50,
+		// 			rounded: '50.0',
+		// 			minimized: '50',
+		// 			denomination: 'Eth',
+		// 			full: '50.00Eth'
+		// 		},
+		// 		lastPricePercent: {
+		// 			value: 5000,
+		// 			formattedValue: 5000,
+		// 			formatted: '5,000.0',
+		// 			roundedValue: 5000,
+		// 			rounded: '5,000',
+		// 			minimized: '5,000',
+		// 			denomination: '%',
+		// 			full: '5,000.0%'
+		// 		},
+		// 		trade: {
+		// 			numShares: 5000,
+		// 			limitPrice: 100,
+		// 			tradeSummary: 'selectTradeSummaryHit',
+		// 			onChangeTrade: actual.reportableOutcomes[0].trade.onChangeTrade
+		// 		}
+		// 	}, {
+		// 		id: '1.5',
+		// 		name: 'indeterminate'
+		// 	}],
+		// 	tradeSummary: 'selectTradeSummaryHit',
+		// 	positionsSummary: 'selectPositionsSummaryHit',
+		// 	positionOutcomes: []
+		// };
+		//
+		// assert(mockLinks.selectMarketLink.calledOnce, `Didn't call selectMarketLink once as expected`);
+		// assert(mockTradeOrders.selectOutcomeTradeOrders.calledOnce, `Didn't call selectOutcomeTradeOrders once as expected`);
+		// assert(mockTradeSummary.selectTradeSummary.calledTwice, `Didn't call selectTradeSummary twice as expected`);
+		// assert(mockPosSummary.selectPositionsSummary.calledOnce, `Didn't call selectPositionsSummary once as expected`);
+		// assert(mockPriceTime.selectPriceTimeSeries.calledOnce, `Didn't call selectPriceTimeSeries once as expected`);
+		// assert.deepEqual(actual, expected, `Didn't produce the expected object`);
 	});
 });
+
+export default market;

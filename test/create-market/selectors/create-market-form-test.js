@@ -6,7 +6,9 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
+import createMarketFormAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/createMarketForm';
 
+let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -61,8 +63,12 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		'../../create-market/selectors/form-steps/step-5': step5
 	});
 
+	createMarketForm = selector.default;
+
 	it(`should init the formState correctly`, () => {
 		test = selector.default();
+		createMarketFormAssertion(test);
+		// above assertion will need to be reworked.
 		assert.isFunction(test.onValuesUpdated);
 		assert.equal(test.step, 1);
 		assert.isObject(test.errors);
@@ -166,3 +172,5 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	});
 
 });
+
+export default createMarketForm;

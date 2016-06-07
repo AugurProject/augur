@@ -16,9 +16,6 @@ ex.connect = function connect(cb) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
 	let localnode = null;
-	if (document.location.protocol === 'http:') {
-		localnode = 'http://127.0.0.1:8545';
-	}
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL === 'null') {
 			augur.rpc.wsUrl = null;
@@ -35,7 +32,12 @@ ex.connect = function connect(cb) {
 		} else {
 			augur.rpc.nodes.hosted = [process.env.BUILD_AZURE_HOSTEDNODE];
 		}
+	} else {
+		if (document.location.protocol === 'http:') {
+			// localnode = 'http://127.0.0.1:8545';
+		}
 	}
+	// augur.rpc.wsUrl = null;
 	augur.connect(localnode, null, (connected) => {
 		if (!connected) return cb('could not connect to ethereum');
 		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
@@ -161,48 +163,48 @@ ex.loadNumMarkets = function loadNumMarkets(branchID, cb) {
 	});
 };
 
-function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, chunkCB) {
-	augur.getMarketsInfo({
-		branch: branchID,
-		offset: startIndex,
-		numMarketsToLoad: chunkSize
-	}, marketsData => {
-		const now = 0 - (Date.now() + window.performance.now());
-
-		if (!marketsData || marketsData.error) {
-			return chunkCB(marketsData);
-		}
-		// had to change this to return something, doesn't seem to break anything.
-		Object.keys(marketsData).forEach((key, i) => {
-			marketsData[key].creationSortOrder = now + i;
-			return marketsData[key].creationSortOrder;
-		});
-
-		chunkCB(null, marketsData);
-
-		if (isDesc && startIndex > 0) {
-			setTimeout(() => getMarketsInfo(
-				branchID,
-				startIndex - chunkSize,
-				chunkSize,
-				totalMarkets,
-				isDesc
-			), TIMEOUT_MILLIS);
-		} else if (!isDesc && startIndex < totalMarkets) {
-			setTimeout(() => getMarketsInfo(
-				branchID,
-				startIndex + chunkSize,
-				chunkSize,
-				totalMarkets,
-				isDesc
-			), TIMEOUT_MILLIS);
-		}
-	});
-}
-
 ex.loadMarkets = function loadMarkets(branchID, chunkSize, totalMarkets, isDesc, chunkCB) {
 	const firstStartIndex = isDesc ? totalMarkets - chunkSize + 1 : 0;
 	getMarketsInfo(branchID, firstStartIndex, chunkSize, totalMarkets, isDesc, chunkCB);
+
+	function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, chunkCB) {
+		augur.getMarketsInfo({
+			branch: branchID,
+			offset: startIndex,
+			numMarketsToLoad: chunkSize
+		}, marketsData => {
+			const now = 0 - (Date.now() + window.performance.now());
+
+			if (!marketsData || marketsData.error) {
+				return chunkCB(marketsData);
+			}
+			// had to change this to return something, doesn't seem to break anything.
+			Object.keys(marketsData).forEach((key, i) => {
+				marketsData[key].creationSortOrder = now + i;
+				return marketsData[key].creationSortOrder;
+			});
+
+			chunkCB(null, marketsData);
+
+			if (isDesc && startIndex > 0) {
+				setTimeout(() => getMarketsInfo(
+					branchID,
+					startIndex - chunkSize,
+					chunkSize,
+					totalMarkets,
+					isDesc
+				), TIMEOUT_MILLIS);
+			} else if (!isDesc && startIndex < totalMarkets) {
+				setTimeout(() => getMarketsInfo(
+					branchID,
+					startIndex + chunkSize,
+					chunkSize,
+					totalMarkets,
+					isDesc
+				), TIMEOUT_MILLIS);
+			}
+		});
+	}
 };
 
 ex.loadMarket = function loadMarket(marketID, cb) {
