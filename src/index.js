@@ -1083,7 +1083,10 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
  *      4.1/ if user has position, sell shares he owns:
  *          4.1.1/ if user order was filled there is nothing to do. exit
  *          4.1.2/ if order was partially filled place ask to order book. exit
- *      4.2/ if user doesn't have position do short sell (todo)
+ *      4.2/ if user doesn't have position do short sell
+ *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares to sell try again
+ *          4.2.2/ if there is no bid short_sell user has to buy complete set and then sell the outcome he wants, which
+ *          results in the equal position
  *
  *
  * @param {String} marketId On what market trading occurs
@@ -1105,12 +1108,16 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onSent, onSuc
  * @param {Function} onShortSellSent
  * @param {Function} onShortSellSuccess
  * @param {Function} onShortSellFailed
+ * @param {Function} onBuyCompleteSetsSent
+ * @param {Function} onBuyCompleteSetsSuccess
+ * @param {Function} onBuyCompleteSetsFailed
  */
 Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrdersPerOutcome, positionsPerOutcome,
                                        onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
                                        onTradeSent, onTradeSuccess, onTradeFailed,
                                        onBuySellSent, onBuySellSuccess, onBuySellFailed,
-                                       onShortSellSent, onShortSellSuccess, onShortSellFailed
+                                       onShortSellSent, onShortSellSuccess, onShortSellFailed,
+                                       onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
 ) {
     userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
         // 1/
@@ -1268,35 +1275,65 @@ Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrder
                         });
                 }
             } else {
-                // 4.2/ no user position todo
+                // 4.2/ no user position
+                shortSellUntilZero(userTradeOrder.id, matchingSortedBidIds, userTradeOrder.shares.value);
 
-                // if (matchingSortedBidIds.length > 0) {
-                //     var buyerTradeId = matchingSortedBidIds[0];
-                //     shortSellUntilZero(buyerTradeId, userTradeOrder.shares.value);
-				//
-                //     var augurJs = this;
-                //     function shortSellUntilZero(buyerTradeId, sharesLeft, onSent, onSuccess, onFailed) {
-                //         augurJs.short_sell(buyerTradeId, sharesLeft,
-                //             function onSentInner(data) {
-                //                 console.log("augurjs.js: trade: short_sell: onSent: %o", data);
-                //                 onSent(userTradeOrder.id, data);
-                //             },
-                //             function onSuccessInner(data) {
-                //                 var sharesFilled = data[2];
-                //                 if (sharesLeft > sharesFilled) {
-                //                     shortSellUntilZero()
-                //                 }
-                //                 console.log("augurjs.js: trade: short_sell: onSuccess: %o", data);
-                //                 onSuccess(userTradeOrder.id, data);
-                //             },
-                //             function onFailureInner(data) {
-                //                 console.log("augurjs.js: trade: short_sell: onFail: %o", data);
-                //                 onFailed(userTradeOrder.id, data);
-                //             });
-                //     }
-                // } else {
-                //     // todo: what here? buyCompleteSet() + sell()?
-                // }
+                var augurJs = this;
+
+				/**
+                 * Recursive. Uses either short_sell or buyCompleteSets + sell
+				 *
+                 * @param tradeOrderId
+                 * @param matchingSortedBidIds
+                 * @param sharesLeft
+                 */
+                function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, sharesLeft) {
+                    if (matchingSortedBidIds.length === 0) {
+                        // 4.2.1/ there is order to fill
+                        var firstBuyerTradeId = matchingSortedBidIds.shift();
+                        augurJs.short_sell(firstBuyerTradeId, sharesLeft,
+                            function onSentInner(data) {
+                                console.log("augurjs.js: trade: short_sell: onSent: %o", data);
+                                onShortSellSent(tradeOrderId, data);
+                            },
+                            function onSuccessInner(data) {
+                                console.log("augurjs.js: trade: short_sell: onSuccess: %o", data);
+                                onShortSellSuccess(tradeOrderId, data);
+                                var sharesFilled = data[2];
+                                if (sharesLeft > sharesFilled) {
+                                    // not all user shares were shorted, recursively short
+                                    shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(), sharesLeft - sharesFilled);
+                                }
+                            },
+                            function onFailureInner(data) {
+                                console.log("augurjs.js: trade: short_sell: onFail: %o", data);
+                                onShortSellFailed(tradeOrderId, data);
+                            });
+                    } else {
+                        // 4.2.1/ no order to fill
+                        augurJs.buyCompleteSets(marketId, userTradeOrder.shares.value,
+                            function (data) {
+                                onBuyCompleteSetsSent(userTradeOrder.id, data);
+                            },
+                            function (data) {
+                                onBuyCompleteSetsSuccess(userTradeOrder.id, data);
+                                augurJs.sell(sharesLeft, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
+                                    function (data) {
+                                        onBuySellSent(userTradeOrder.id, data);
+                                    },
+                                    function (data) {
+                                        onBuySellSuccess(userTradeOrder.id, data);
+                                    },
+                                    function (data) {
+                                        onBuySellFailed(userTradeOrder.id, data);
+                                    }
+                                );
+                            },
+                            function (data) {
+                                onBuyCompleteSetsFailed(userTradeOrder.id, data);
+                            });
+                        }
+                    }
             }
         }
     }, this);
