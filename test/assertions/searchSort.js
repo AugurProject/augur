@@ -7,7 +7,7 @@ function searchSortAssertion(actual) {
 	assert.isDefined(actual, `searchSort isn't defined`);
 	assert.isObject(actual, `searchSort isn't an object`);
 	assert.isDefined(actual.onChangeSort, `searchSort.onChangeSort isn't defined`);
-	assert.isFunc(actual.onChangeSort, `searchSort.onChangeSort isn't a function`);
+	assert.isFunction(actual.onChangeSort, `searchSort.onChangeSort isn't a function`);
 	selectedSortAssertion(actual.selectedSort);
 	sortOptionsAssertion(actual.sortOptions);
 }
