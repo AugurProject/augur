@@ -57,7 +57,7 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 			},
 			sortOptions: [{
 				label: 'Newest Market',
-				value: 'creationSortOrder',
+				value: 'creationTime',
 				isDesc: true
 			}, {
 				label: 'Soonest Expiry',

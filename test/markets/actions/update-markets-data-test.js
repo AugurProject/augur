@@ -11,7 +11,7 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
 		};
 		const expectedOutput = {
 			type: action.UPDATE_MARKETS_DATA,
-			...marketsOutcomesData
+			marketsData: { ...marketsOutcomesData }
 		};
 		assert.deepEqual(action.updateMarketsData(marketsOutcomesData), expectedOutput, `Update Markets Data action misfired.`);
 	});

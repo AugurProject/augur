@@ -21,7 +21,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	let mockUpdateAssets = {};
 	let mockOutcomePrice = {};
 	let mockLoadMarket = {
-		loadBasicMarket: () => {}
+		loadMarket: () => {}
 	};
 	mockUpdateAssets.updateAssets = sinon.stub().returns({
 		type: 'UPDATE_ASSETS'
@@ -32,7 +32,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	mockOutcomePrice.updateOutcomePrice = sinon.stub().returns({
 		type: 'UPDATE_OUTCOME_PRICE'
 	});
-	sinon.stub(mockLoadMarket, 'loadBasicMarket', (marketID) => {
+	sinon.stub(mockLoadMarket, 'loadMarket', (marketID) => {
 		return {
 			type: 'LOAD_BASIC_MARKET',
 			marketID
@@ -56,7 +56,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		'../../app/actions/update-blockchain': mockUpBlockchain,
 		'../../auth/actions/update-assets': mockUpdateAssets,
 		'../../markets/actions/update-outcome-price': mockOutcomePrice,
-		'../../market/actions/load-basic-market': mockLoadMarket
+		'../../market/actions/load-market': mockLoadMarket
 	});
 
 	beforeEach(() => {
@@ -84,7 +84,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 		assert(mockUpBlockchain.updateBlockchain.calledOnce, `Didn't call updateBlockchain() once as expected`);
 		assert(mockUpdateAssets.updateAssets.calledOnce, `Didn't call updateAssets() once as expected`);
 		assert(mockOutcomePrice.updateOutcomePrice.calledOnce, `Didn't call updateOutcomePrice() once as expected`);
-		assert(mockLoadMarket.loadBasicMarket.calledOnce, `Didn't call loadBasicMarket() once as expected`);
+		assert(mockLoadMarket.loadMarket.calledOnce, `Didn't call loadMarket() once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});
 });

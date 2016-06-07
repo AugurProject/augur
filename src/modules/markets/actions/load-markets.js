@@ -1,41 +1,38 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { parseMarketsData } from '../../../utils/parse-market-data';
-
 import { BRANCH_ID } from '../../app/constants/network';
 
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
+
+/*
 import { loadReports } from '../../reports/actions/load-reports';
 import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
 import { closeMarkets } from '../../reports/actions/close-markets';
+*/
 
 export function loadMarkets() {
 	const chunkSize = 10;
 
 	return (dispatch, getState) => {
-		AugurJS.loadNumMarkets(BRANCH_ID, (err, numMarkets) => {
+		AugurJS.loadMarkets(BRANCH_ID, chunkSize, true, (err, marketsData) => {
 			if (err) {
-				return console.log('ERR loadNumMarkets()', err);
+				console.log('ERROR loadMarkets()', err);
+				return;
 			}
-// numMarkets = 70; // TEMPORARY OVERRIDE
-			AugurJS.loadMarkets(BRANCH_ID, chunkSize, numMarkets, true, (error, marketsData) => {
-				if (error) {
-					console.log('ERROR loadMarkets()', error);
-					return;
-				}
-				if (!marketsData) {
-					console.log('WARN loadMarkets()', 'no markets data returned');
-					return;
-				}
+			if (!marketsData) {
+				console.log('WARN loadMarkets()', 'no markets data returned');
+				return;
+			}
 
-				const marketsDataOutcomesData = parseMarketsData(marketsData);
+			dispatch(updateMarketsData(marketsData));
+			dispatch(loadMarketsInfo(Object.keys(marketsData)));
 
-				dispatch(updateMarketsData(marketsDataOutcomesData));
-
-				dispatch(loadReports(marketsDataOutcomesData.marketsData));
-				dispatch(penalizeWrongReports(marketsDataOutcomesData.marketsData));
-				dispatch(closeMarkets(marketsDataOutcomesData.marketsData));
-			});
+			/*
+			dispatch(loadReports(marketsData));
+			dispatch(penalizeWrongReports(marketsData));
+			dispatch(closeMarkets(marketsData));
+			*/
 		});
 	};
 }

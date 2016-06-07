@@ -1,4 +1,4 @@
-import { loadBasicMarket } from '../../market/actions/load-basic-market';
+import { loadMarket } from '../../market/actions/load-market';
 import { loadPriceHistory } from '../../market/actions/load-price-history';
 
 export function loadFullMarket(marketId) {
@@ -10,7 +10,7 @@ export function loadFullMarket(marketId) {
 
 		// if the basic data hasn't loaded yet, load it first
 		if (!marketsData[marketId]) {
-			dispatch(loadBasicMarket(marketId, loadDetails));
+			dispatch(loadMarket(marketId, loadDetails));
 		} else {
 		// if the basic data is already loaded, just load the details
 			loadDetails();

@@ -1,15 +1,6 @@
-import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR,
-	COMBINATORIAL
-} from '../modules/markets/constants/market-types';
-import {
-	INDETERMINATE_OUTCOME_ID,
-	INDETERMINATE_OUTCOME_NAME,
-	// YES,
-	NO
-} from '../modules/markets/constants/market-outcomes';
+import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../modules/markets/constants/market-types';
+import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME, BINARY_NO_ID } from '../modules/markets/constants/market-outcomes';
+
 const CATEGORICAL_CHOICES_SEPARATOR = '~|>';
 const CATEGORICAL_CHOICE_SEPARATOR = '|';
 const CATEGORICAL_CHOICES_SEPARATOR2 = 'Choices:';
@@ -69,9 +60,9 @@ export function parseMarketsData(marketsData) {
 				if (categoricalOutcomeNames) {
 					p[outcome.id].name = categoricalOutcomeNames[i] &&
 					categoricalOutcomeNames[i].trim() ||
-					(parseInt(outcome.id, 10) === NO ? 'No' : 'Yes');
+					(parseInt(outcome.id, 10) === BINARY_NO_ID ? 'No' : 'Yes');
 				} else {
-					p[outcome.id].name = parseInt(outcome.id, 10) === NO ? 'No' : 'Yes';
+					p[outcome.id].name = parseInt(outcome.id, 10) === BINARY_NO_ID ? 'No' : 'Yes';
 				}
 				return p;
 
@@ -85,7 +76,7 @@ export function parseMarketsData(marketsData) {
 				return p;
 
 			case SCALAR:
-				p[outcome.id].name = parseInt(outcome.id, 10) === NO ? '⇩' : '⇧';
+				p[outcome.id].name = parseInt(outcome.id, 10) === BINARY_NO_ID ? '⇩' : '⇧';
 				return p;
 
 			case COMBINATORIAL:

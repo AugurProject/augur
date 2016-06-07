@@ -33,7 +33,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 		transactionsOrders: 6
 	});
 	sinon.stub(mockUpdTrans, 'updateExistingTransaction', (...args) => {
-		return {...args
+		return {type: 'UPDATE_EXISTING_TRANSACTION', ...args
 		};
 	});
 	mockUpdTrade.clearTradeInProgress = sinon.stub().returns({
@@ -106,14 +106,16 @@ describe(`modules/trade/actions/place-trade.js`, () => {
 				testTrans1: {
 					status: 'sending...'
 				}
-			}
+			},
+			type: 'UPDATE_EXISTING_TRANSACTION'
 		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
 		}, {
 			'0': 'testTrans1',
 			'1': {
 				status: 'testing'
-			}
+			},
+			type: 'UPDATE_EXISTING_TRANSACTION'
 		}];
 
 		store.dispatch(action.tradeShares('testTrans1', 'test1', 'testOutcome1', 3, 20, 20));
