@@ -336,6 +336,8 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 };
 
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
+	console.log('AugurJS -- createMarket -- ', newMarket);
+
 	augur.createSingleEventMarket({
 		description: newMarket.description,
 		expDate: newMarket.endDate.value.getTime() / 1000,
