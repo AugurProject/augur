@@ -1,6 +1,6 @@
 import {
-UPDATE_MAKE_IN_PROGRESS,
-CLEAR_MAKE_IN_PROGRESS
+	UPDATE_MAKE_IN_PROGRESS,
+	CLEAR_MAKE_IN_PROGRESS
 } from '../actions/update-make-in-progress';
 
 export default function (createMarketInProgress = {}, action) {

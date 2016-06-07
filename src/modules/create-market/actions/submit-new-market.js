@@ -2,16 +2,21 @@
 
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
+import {
+	SUCCESS,
+	FAILED,
+	CREATING_MARKET
+} from '../../transactions/constants/statuses';
 
 import AugurJS from '../../../services/augurjs';
 
 import { loadMarket } from '../../market/actions/load-market';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addCreateMarketTransaction } from '../../transactions/actions/add-create-market-transaction';
-import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
 
 import { selectTransactionsLink } from '../../link/selectors/links';
+
+import { submitGenerateOrderBook } from '../../create-market/actions/generate-order-book'
 
 export function submitNewMarket(newMarket) {
 	return (dispatch, getState) => {
@@ -57,9 +62,16 @@ export function createMarket(transactionID, newMarket) {
 				dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
 			} else {
 				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
+
 				if (res.status === SUCCESS) {
-					dispatch(clearMakeInProgress());
-					setTimeout(() => dispatch(loadMarket(res.marketID)), 5000);
+					setTimeout(() => dispatch(loadBasicMarket(res.marketID)), 5000);
+
+					newMarket.tx = res.tx;
+					console.log('finished creating market, generating order book -- ', newMarket)
+
+					dispatch(submitGenerateOrderBook(newMarket))
+
+					// Clear newMarket data?
 				}
 			}
 		});
