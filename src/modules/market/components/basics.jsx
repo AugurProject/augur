@@ -26,7 +26,7 @@ module.exports = React.createClass({
 					</ul>
 				}
 
-				<span className="description">{ p.description }</span>
+				<span className="description" title={ p.description }>{ p.description }</span>
 
 				<ul className="properties">
 					{ !!p.endDate &&
