@@ -13,7 +13,7 @@ module.exports = React.createClass({
 		isValid: React.PropTypes.bool,
 
 		tradingFeePercent: React.PropTypes.any,
-		makerFeePercent: React.PropTypes.any,
+		makerFees: React.PropTypes.any,
 		initialLiquidity: React.PropTypes.any,
 
 		showAdvancedMarketParams: React.PropTypes.bool,
@@ -27,8 +27,6 @@ module.exports = React.createClass({
 
 	render: function() {
 		var p = this.props;
-
-		console.log('PROPS form 4-- ', p)
 
 		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼'
 
@@ -62,14 +60,14 @@ module.exports = React.createClass({
 
 					<Input
 						type="text"
-						value = { p.makerFeePercent }
+						value = { p.makerFees }
 						isClearable={ false }
-						onChange={ (value) => p.onValuesUpdated({ makerFeePercent: value }) }
+						onChange={ (value) => p.onValuesUpdated({ makerFees: value }) }
 					/>
 					<span className="denomination">%</span>
 
-					{ p.errors.makerFeePercent &&
-						<span className="error-message">{ p.errors.makerFeePercent }</span>
+					{ p.errors.makerFees &&
+						<span className="error-message">{ p.errors.makerFees }</span>
 					}
 				</div>
 				<div className="liquidity">
@@ -113,13 +111,17 @@ module.exports = React.createClass({
 											isClearable={ false }
 											onChange={
 												(onChangeValue) => {
-													let prices = p.initialFairPrices.values
-													prices[i].value = onChangeValue
+													let prices = p.initialFairPrices.values,
+														raw = p.initialFairPrices.raw;
+														
+													prices[i].value = onChangeValue;
+													raw[i] = onChangeValue;
 
 													p.onValuesUpdated({
 														initialFairPrices: {
 															...p.initialFairPrices,
-															values: prices
+															values: prices,
+															raw
 														}
 													})
 												}
@@ -135,7 +137,7 @@ module.exports = React.createClass({
 						</div>
 
 						<div>
-							<h4>Starting Quanity</h4>
+							<h4>Starting Quantity</h4>
 							<p>
 								This is the number of shares in each order.
 							</p>
@@ -153,7 +155,7 @@ module.exports = React.createClass({
 						</div>
 
 						<div>
-							<h4>Size of best bid/ask</h4>
+							<h4>Best Bid/Ask Quantity</h4>
 							<p>
 								This defines the number of shares applied to the best bid and ask orders.
 							</p>
