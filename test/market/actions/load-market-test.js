@@ -37,9 +37,11 @@ describe(`modules/market/actions/load-market.js`, () => {
 
 		out = [{
 			type: 'UPDATE_MARKETS_DATA',
-			test1: {
-				_id: 'test1',
-				data: 'testing123'
+			marketsData: {
+				test1: {
+					_id: 'test1',
+					data: 'testing123'
+				}
 			}
 		}, {
 			type: 'TEST_CALLBACK'

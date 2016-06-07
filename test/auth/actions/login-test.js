@@ -41,9 +41,9 @@ describe(`modules/auth/actions/login.js`, () => {
 	let ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
 	let ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
 
-	updtLoginAccStub.updateLoginAccount = sinon.stub().returns(updateTestString);
-	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns(ldLoginAccDepTestString);
-	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns(ldLoginAccLSTestString);
+	updtLoginAccStub.updateLoginAccount = sinon.stub().returns({type: updateTestString });
+	ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
+	ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({type: ldLoginAccLSTestString });
 
 	action = proxyquire('../../../src/modules/auth/actions/login', {
 		'../../../services/augurjs': fakeAugurJS,
@@ -57,8 +57,8 @@ describe(`modules/auth/actions/login.js`, () => {
 	});
 
 	it(`should attempt to login an account given user/pass`, () => {
-		store.dispatch(action.login('test', 'test', 'test'));
-		const expectedOutput = [ldLoginAccLSTestString, updateTestString, ldLoginAccDepTestString];
+		store.dispatch(action.login('test', 'test'));
+		const expectedOutput = [{ type: ldLoginAccLSTestString}, { type: updateTestString}, { type: ldLoginAccDepTestString}];
 		assert(updtLoginAccStub.updateLoginAccount.calledOnce, `updateLoginAccount() wasn't called once as expected.`);
 		assert(ldLoginAccStub.loadLoginAccountDependents.calledOnce, `loadLoginAccountDependents() wasn't called once as expected`);
 		assert(ldLoginAccStub.loadLoginAccountLocalStorage.calledOnce, `loadLoginAccountLocalStorage() wasn't called once as expected`);
