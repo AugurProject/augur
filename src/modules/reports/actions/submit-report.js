@@ -2,30 +2,14 @@ import * as AugurJS from '../../../services/augurjs';
 import secureRandom from 'secure-random';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { BRANCH_ID } from '../../app/constants/network';
-import {
-	INDETERMINATE_OUTCOME_ID,
-	// INDETERMINATE_OUTCOME_NAME
-} from '../../markets/constants/market-outcomes';
-import {
-	// BINARY,
-	CATEGORICAL,
-	SCALAR,
-	// COMBINATORIAL
-} from '../../markets/constants/market-types';
-import {
-	// PENDING,
-	SUCCESS,
-	FAILED,
-	// CREATING_MARKET
-} from '../../transactions/constants/statuses';
+import { INDETERMINATE_OUTCOME_ID } from '../../markets/constants/market-outcomes';
+import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { addReportTransaction } from '../../transactions/actions/add-report-transaction';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateReports } from '../../reports/actions/update-reports';
 import { selectMarketFromEventID } from '../../market/selectors/market';
-import {
-	selectMarketLink,
-	selectMarketsLink
-} from '../../link/selectors/links';
+import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links';
 
 export function submitReport(market, reportedOutcomeID, isUnethical) {
 	return (dispatch, getState) => {

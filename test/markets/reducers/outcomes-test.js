@@ -1,13 +1,7 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import reducer from '../../../src/modules/markets/reducers/outcomes';
-import {
-	UPDATE_MARKETS_DATA
-} from '../../../src/modules/markets/actions/update-markets-data';
-import {
-	UPDATE_OUTCOME_PRICE
-} from '../../../src/modules/markets/actions/update-outcome-price';
+import { UPDATE_OUTCOMES_DATA } from '../../../src/modules/markets/actions/update-outcomes-data';
+import { UPDATE_OUTCOME_PRICE } from '../../../src/modules/markets/actions/update-outcome-price';
 
 describe(`modules/markets/reducers/outcomes.js`, () => {
 
@@ -17,7 +11,7 @@ describe(`modules/markets/reducers/outcomes.js`, () => {
 			test2: 'test456'
 		};
 		const action = {
-			type: UPDATE_MARKETS_DATA,
+			type: UPDATE_OUTCOMES_DATA,
 			outcomesData
 		};
 		const expectedOutput = {

@@ -1,8 +1,8 @@
 export const UPDATE_MARKETS_DATA = 'UPDATE_MARKETS_DATA';
 export const UPDATE_MARKET_DATA = 'UPDATE_MARKET_DATA';
 
-export function updateMarketsData(marketsOutcomesData) {
-	return { type: UPDATE_MARKETS_DATA, ...marketsOutcomesData };
+export function updateMarketsData(marketsData) {
+	return { type: UPDATE_MARKETS_DATA, marketsData };
 }
 
 export function updateMarketData(marketData) {

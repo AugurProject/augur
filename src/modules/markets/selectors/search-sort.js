@@ -12,15 +12,15 @@ export default function () {
 }
 
 export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
-	const creationSortOrder = { label: 'Newest Market', value: 'creationSortOrder', isDesc: true };
+	const creationTime = { label: 'Newest Market', value: 'creationTime', isDesc: true };
 	const endDate = { label: 'Soonest Expiry', value: 'endDate', isDesc: false };
 	const volume = { label: 'Most Volume', value: 'volume', isDesc: true };
 	const tradingFeePercent = { label: 'Lowest Fee', value: 'tradingFeePercent', isDesc: false };
 
 	switch (selectedSort.prop) {
-	case creationSortOrder.value:
-		creationSortOrder.label = selectedSort.isDesc ? 'Newest Market' : 'Oldest Market';
-		creationSortOrder.isDesc = selectedSort.isDesc;
+	case creationTime.value:
+		creationTime.label = selectedSort.isDesc ? 'Newest Market' : 'Oldest Market';
+		creationTime.isDesc = selectedSort.isDesc;
 		break;
 	case endDate.value:
 		endDate.label = selectedSort.isDesc ? 'Furthest Expiry' : 'Soonest Expiry';
@@ -38,7 +38,7 @@ export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
 		break;
 	}
 
-	return [creationSortOrder, endDate, volume, tradingFeePercent];
+	return [creationTime, endDate, volume, tradingFeePercent];
 });
 
 export const selectOnChangeSort = memoizerific(1)((dispatch) => (prop, isDesc) => {
