@@ -30,14 +30,19 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 	let mockUpExTrans = {
 		updateExistingTransaction: () => {}
 	};
-	let mockUpReports = {};
+	let mockUpReports = {updateReports: () => {}};
 	let mockMarket = {};
 	let mockLinks = {
 		selectMarketsLink: () => {},
 		selectMarketLink: () => {}
 	};
 	let mockHex = {};
-	mockUpReports.updateReports = sinon.stub().returnsArg(0);
+	sinon.stub(mockUpReports, 'updateReports', (obj) => {
+		return {
+			type: 'UPDATE_REPORTS',
+			...obj
+		}
+	});
 	mockReportTrans.addReportTransaction = sinon.stub().returns({
 		type: 'ADD_REPORT_TRANSACTION'
 	});
@@ -109,7 +114,8 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 		out = [{
 			test1EventID: {
 				reportHash: true
-			}
+			},
+			type: 'UPDATE_REPORTS'
 		}, {
 			type: 'ADD_REPORT_TRANSACTION'
 		}, {
@@ -132,7 +138,8 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 		out = [{
 			test1EventID: {
 				reportHash: true
-			}
+			},
+			type: 'UPDATE_REPORTS'
 		}, {
 			type: 'ADD_REPORT_TRANSACTION'
 		}, {
@@ -170,7 +177,8 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 				isUnethical: false,
 				salt: 'salt12345',
 				reportHash: true
-			}
+			},
+			type: 'UPDATE_REPORTS'
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			transactionID: 'transID1',
@@ -180,7 +188,8 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 		}, {
 			testEventID1: {
 				reportHash: 'testReportHash123456789'
-			}
+			},
+			type: 'UPDATE_REPORTS'
 		}];
 
 		store.dispatch(action.processReport('transID1', market, 'testOutcomeID', false));

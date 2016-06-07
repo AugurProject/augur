@@ -27,14 +27,14 @@ export function initAugur() {
 
 				dispatch(updateBranch(branch));
 
+				dispatch(loadMarkets());
+
+				const { selectedMarketID } = getState();
+				if (selectedMarketID !== null) {
+					dispatch(loadFullMarket(selectedMarketID));
+				}
+
 				dispatch(updateBlockchain(() => {
-					dispatch(loadMarkets());
-
-					const { selectedMarketID } = getState();
-					if (selectedMarketID !== null) {
-						dispatch(loadFullMarket(selectedMarketID));
-					}
-
 					dispatch(listenToUpdates());
 				}));
 			});

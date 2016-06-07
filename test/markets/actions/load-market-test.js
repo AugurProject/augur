@@ -15,19 +15,15 @@
 //   let state = Object.assign({}, testState);
 //   store = mockStore(state);
 //   let mockAugurJS = {};
-//   let mockParse = {};
 //   mockAugurJS.loadMarket = sinon.stub();
-//   mockParse.ParseMarketsData = sinon.stub();
 //   mockAugurJS.loadMarket.yields(null, {
 //     _id: 'test',
 //     test: 'info',
 //     example: 'test info'
 //   });
-//   mockParse.ParseMarketsData.returnsArg(0);
 //
 //   action = proxyquire('../../../src/modules/markets/actions/load-market', {
-//     '../../../services/augurjs': mockAugurJS,
-//     '../../../utils/parse-market-data': mockParse
+//     '../../../services/augurjs': mockAugurJS
 //   });
 //
 //   it(`should be able to load a market given an marketID`, () => {
@@ -41,7 +37,6 @@
 //     }];
 //     store.dispatch(action.loadMarket('test'));
 //     assert(mockAugurJS.loadMarket.calledOnce, `AugurJS.loadMarket() wasn't called.`);
-//     assert(mockParse.ParseMarketsData.calledOnce, `ParseMarketsData didn't get called.`);
 //     assert.deepEqual(store.getActions(), out, `Didn't properly dispatch an update markets data action`);
 //   });
 //

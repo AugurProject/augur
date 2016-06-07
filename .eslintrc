@@ -14,5 +14,6 @@
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
     "no-use-before-define": 0,
     "max-len": 0,
+    "no-shadow": 0,
   }
 }

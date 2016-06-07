@@ -15,15 +15,10 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 	let mockAugurJS = {};
-	let mockParse = {};
-	let mockReport = {};
-	let mockPenReports = {};
-	let mockClearReports = {};
+	let mockLoadMarketsInfo = { loadMarketsInfo: () => {} };
 
 	mockAugurJS.loadNumMarkets = sinon.stub();
 	mockAugurJS.loadMarkets = sinon.stub();
-	mockParse.parseMarketsData = sinon.stub();
-	mockReport.loadReports = sinon.stub();
 	mockAugurJS.loadNumMarkets.yields(null, 1);
 	mockAugurJS.loadMarkets.yields(null, {
 		marketsData: {
@@ -32,50 +27,40 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 			example: 'test info'
 		}
 	});
-	mockParse.parseMarketsData.returnsArg(0);
-	mockReport.loadReports.returnsArg(0);
-	mockPenReports.penalizeWrongReports = sinon.stub().returns({
-		type: 'PENALIZE_WRONG_REPORTS'
-	});
-	mockClearReports.closeMarkets = sinon.stub().returns({
-		type: 'CLEAR_MARKETS'
+
+	sinon.stub(mockLoadMarketsInfo, `loadMarketsInfo`, (marketsDataKeys) => {
+		return {
+			type: 'LOAD_MARKETS_INFO',
+			marketsInfo: {...marketsDataKeys}
+		};
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/load-markets', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../../utils/parse-market-data': mockParse,
-		'../../reports/actions/load-reports': mockReport,
-		'../../reports/actions/penalize-wrong-reports': mockPenReports,
-		'../../reports/actions/close-markets': mockClearReports
+		'../../markets/actions/load-markets-info': mockLoadMarketsInfo
 	});
 
 	it(`should load markets properly`, () => {
 		out = [{
 			type: 'UPDATE_MARKETS_DATA',
 			marketsData: {
-				_id: 'test',
-				test: 'info',
-				example: 'test info'
+				marketsData: {
+					_id: 'test',
+					test: 'info',
+					example: 'test info'
+				}
 			}
 		}, {
-			_id: 'test',
-			test: 'info',
-			example: 'test info'
-		}, {
-			type: 'PENALIZE_WRONG_REPORTS'
-		}, {
-			type: 'CLEAR_MARKETS'
+			marketsInfo: {
+				'0': 'marketsData'
+			},
+			type: 'LOAD_MARKETS_INFO'
 		}];
 
 		store.dispatch(action.loadMarkets());
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
-		assert(mockAugurJS.loadNumMarkets.calledOnce, `AugurJS.loadNumMarkets() wasn't called once`);
 		assert(mockAugurJS.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
-		assert(mockParse.parseMarketsData.calledOnce, `ParseMarketsData wasn't called once`);
-		assert(mockReport.loadReports.calledOnce, `loadReports() wasn't called once`);
-		assert(mockPenReports.penalizeWrongReports.calledOnce, `penalizeWrongReports() wsan't calledo once`);
-		assert(mockClearReports.closeMarkets.calledOnce, `closeMarkets() wasn't called once`);
 	});
 
 });

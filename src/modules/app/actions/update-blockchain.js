@@ -9,6 +9,7 @@ import { collectFees } from '../../reports/actions/collect-fees';
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
 let isAlreadyUpdatingBlockchain = false;
+
 export function incrementReportPeriod(cb) {
 	return (dispatch, getState) => {
 		const { blockchain } = getState();
@@ -65,7 +66,7 @@ export function incrementReportPeriod(cb) {
 export function updateBlockchain(cb) {
 	return (dispatch, getState) => {
 		if (isAlreadyUpdatingBlockchain) {
-			return;
+			return; // don't trigger cb on this failure
 		}
 
 		isAlreadyUpdatingBlockchain = true;
@@ -73,15 +74,13 @@ export function updateBlockchain(cb) {
 		// load latest block number
 		AugurJS.loadCurrentBlock(currentBlockNumber => {
 			const { branch, blockchain } = getState();
-			const	currentPeriod = Math.floor(currentBlockNumber / branch.periodLength);
+			const currentPeriod = Math.floor(currentBlockNumber / branch.periodLength);
 			const isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod;
-			const isReportConfirmationPhase = (currentBlockNumber %
-			branch.periodLength) > (branch.periodLength / 2);
-			const isChangedReportPhase = isReportConfirmationPhase !==
-			blockchain.isReportConfirmationPhase;
+			const isReportConfirmationPhase = (currentBlockNumber % branch.periodLength) > (branch.periodLength / 2);
+			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
 
 			if (!currentBlockNumber || currentBlockNumber !== parseInt(currentBlockNumber, 10)) {
-				return;
+				return; // don't trigger cb on this failure
 			}
 
 			// update blockchain state
@@ -95,8 +94,7 @@ export function updateBlockchain(cb) {
 				}
 			});
 
-			// if the report *period* changed this block, do some extra stuff
-			// (also triggers the first time blockchain is being set)
+			// if the report *period* changed this block, do some extra stuff (also triggers the first time blockchain is being set)
 			if (isChangedCurrentPeriod) {
 				dispatch(incrementReportPeriod(() => {
 					// if the report *phase* changed this block, do some extra stuff
