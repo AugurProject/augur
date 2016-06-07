@@ -343,6 +343,8 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 };
 
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
+	console.log('AugurJS -- createMarket -- ', newMarket);
+
 	augur.createSingleEventMarket({
 		description: newMarket.description,
 		expDate: newMarket.endDate.value.getTime() / 1000,
@@ -360,6 +362,27 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		branchId: branchId
 	});
 };
+
+ex.generateOrderBook = function generateOrderBook(marketData, cb){
+	console.log('AugurJS -- generateOrderBook -- ', marketData);
+
+	augur.generateOrderBook({
+		market: marketData.marketId,
+		liquidity: marketData.initialLiquidity,
+		initialFairPrices: marketData.initialFairPrices.raw,
+		startingQuantity: marketData.startingQuantity,
+		bestStartingQuantity: marketData.bestStartingQuantity,
+		priceWidth: marketData.priceWidth,
+		isSimulation: marketData.isSimulation
+	}, {
+		onSimulate: r => cb(null, r),
+		onBuyCompleteSets: r => cb(null, r),
+		onSetupOutcome: r => cb(null, r),
+		onSetupOrder: r => cb(null, r),
+		onSuccess: r => cb(null, r),
+		onFailed: err => cb(err)
+	});
+}
 
 ex.createMarketMetadata = function createMarketMetadata(newMarket, cb) {
 	console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);

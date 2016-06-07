@@ -27,7 +27,8 @@ import {
 	BEST_STARTING_QUANTITY_MIN,
 	PRICE_WIDTH_DEFAULT,
 	PRICE_WIDTH_MIN,
-	PRICE_DEPTH_DEFAULT
+	PRICE_DEPTH_DEFAULT,
+	IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
 
 export const select = (formState) => {
@@ -35,11 +36,12 @@ export const select = (formState) => {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
 		makerFees: formState.makerFees || MAKER_FEES_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.values.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
+		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 		bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-		priceDepth: PRICE_DEPTH_DEFAULT
+		priceDepth: PRICE_DEPTH_DEFAULT,
+		isSimulation: formState.isSimulation || IS_SIMULATION
 	};
 
 	return obj;
@@ -47,16 +49,18 @@ export const select = (formState) => {
 
 export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
-		let values = [];
+		let values = [],
+			raw = [];
 
 		labels.map((cV, i) => {
 			values[i] = {
 				label: cV,
 				value: INITIAL_FAIR_PRICE_DEFAULT
-			}
+			};
+			raw[i] = INITIAL_FAIR_PRICE_DEFAULT;
 		})
 
-		return { values }
+		return { values, raw }
 	};
 
 	switch(formState.type){
@@ -126,9 +130,9 @@ export const validateInitialFairPrices = (initialFairPrices) => {
 	let fairPriceErrors = {};
 
 	initialFairPrices.map((cV, i) => {
-		const parsed = parseFloat(cV.value)
+		const parsed = parseFloat(cV)
 
-		if (!cV.value)
+		if (!cV)
 			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity'
 		if (Number.isNaN(parsed) && !Number.isFinite(parsed))
 			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric'
@@ -201,7 +205,7 @@ export const errors = (formState) => {
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
 	if(formState.hasOwnProperty('initialFairPrices'))
-		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.values);
+		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.raw);
 	if(formState.hasOwnProperty('startingQuantity'))
 		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity)
 	if(formState.hasOwnProperty('bestStartingQuantity'))

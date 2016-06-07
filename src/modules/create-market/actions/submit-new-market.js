@@ -18,8 +18,6 @@ import { selectTransactionsLink } from '../../link/selectors/links';
 
 import { submitGenerateOrderBook } from '../../create-market/actions/generate-order-book'
 
-import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress'
-
 export function submitNewMarket(newMarket) {
 	return (dispatch, getState) => {
 		selectTransactionsLink(dispatch).onClick();
@@ -67,17 +65,14 @@ export function createMarket(transactionID, newMarket) {
 				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
 
 				if (res.status === SUCCESS) {
-					setTimeout(() => dispatch(loadMarket(res.marketID)), 5000);
+					setTimeout(() => dispatch(loadBasicMarket(res.marketID)), 5000);
 
-					newMarket = {
-						...newMarket,
-						id: res.marketID,
-						tx: res.tx
-					};
+					newMarket.tx = res.tx;
+					console.log('finished creating market, generating order book -- ', newMarket)
 
-					dispatch(submitGenerateOrderBook(newMarket));
+					dispatch(submitGenerateOrderBook(newMarket))
 
-					dispatch(clearMakeInProgress());
+					// Clear newMarket data?
 				}
 			}
 		});
