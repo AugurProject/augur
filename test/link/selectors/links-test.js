@@ -2,19 +2,21 @@
 // 	assert
 // } from 'chai';
 import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+import * as mockStore from '../../mockStore';
 import linksAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/links';
 // import selector from '../../../src/modules/link/selectors/links';
 let links;
 describe(`modules/link/selectors/links.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let mockState = Object.assign({}, testState);
-	let store = mockStore(mockState);
+	// const middlewares = [thunk];
+	// const mockStore = configureMockStore(middlewares);
+	// let mockState = Object.assign({}, testState);
+	// let store = mockStore(mockState);
 	let selector, actual;
+	let { state, store } = mockStore.default;
 
 	selector = proxyquire('../../../src/modules/link/selectors/links', {
 		'../../../store': store

@@ -2,9 +2,10 @@ import {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+import * as mockStore from '../../mockStore';
 import {
 	INVALID_USERNAME_OR_PASSWORD,
 	USERNAME_REQUIRED,
@@ -18,11 +19,12 @@ let authForm;
 
 describe(`modules/auth/selectors/auth-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let selector, expected, actual, store;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	// const middlewares = [thunk];
+	// const mockStore = configureMockStore(middlewares);
+	let selector, expected, actual;
+	// let state = Object.assign({}, testState);
+	// store = mockStore(state);
+	let { store, state } = mockStore.default;
 
 	selector = proxyquire('../../../src/modules/auth/selectors/auth-form', {
 		'../../../store': store

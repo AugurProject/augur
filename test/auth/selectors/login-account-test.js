@@ -1,32 +1,34 @@
-import {
-	assert
-} from 'chai';
+// import {
+// 	assert
+// } from 'chai';
 import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+import * as mockStore from '../../mockStore';
 import loginAccountAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/loginAccount';
 
 let loginAccount;
 describe(`modules/auth/selectors/login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let actual, selector, state, store;
-	state = Object.assign({}, testState, {
-		loginAccount: {
-			address: '0xtest123',
-			id: '0xtest123',
-			handle: 'testTesterson',
-			ether: 50,
-			realEther: 10,
-			rep: 105,
-			keystore: {
-				id: '0xtest123'
-			}
-		}
-	});
-	store = mockStore(state);
+	// const middlewares = [thunk];
+	// const mockStore = configureMockStore(middlewares);
+	let actual, selector;
+	// state = Object.assign({}, testState, {
+	// 	loginAccount: {
+	// 		address: '0xtest123',
+	// 		id: '0xtest123',
+	// 		handle: 'testTesterson',
+	// 		ether: 50,
+	// 		realEther: 10,
+	// 		rep: 105,
+	// 		keystore: {
+	// 			id: '0xtest123'
+	// 		}
+	// 	}
+	// });
+	// store = mockStore(state);
+	let { state, store } = mockStore.default;
 	//
 	// out = {
 	// 	address: '0xtest123',
