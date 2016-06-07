@@ -70,6 +70,7 @@ describe(`selectors given different states tests:`, () => {
 	});
 
 	it(`should be able to load the crete market page`);
+
 	it(`should be able to load a market page`, () => {
 		// siteHeader, market, marketsTotals.numPendingReports
 		const siteHeader = {
@@ -103,24 +104,12 @@ describe(`selectors given different states tests:`, () => {
 		assertions.filters(selectors.filters);
 		assertions.pagination(selectors.pagination);
 		assertions.searchSort(selectors.searchSort);
-		// assertions.
-	// 	assertions.
-	// 	createMarketLink={ (p.links || {}).createMarketLink }
-	// keywords={ p.keywords && p.keywords.value }
-	// 	onChangeKeywords={ p.keywords && p.keywords.onChangeKeywords }
-	//
-	// 	markets={ p.markets }
-	// 	marketsHeader={ p.marketsHeader }
-	// 	favoriteMarkets={ p.favoriteMarkets }
-	// 	filters={ p.filters }
-	// 	pagination={ p.pagination }
-	//
-	// 	selectedSort={ p.searchSort.selectedSort }
-	// 	sortOptions={ p.searchSort.sortOptions }
-	// 	onChangeSort={ p.searchSort.onChangeSort }
 	});
+
 	it(`should be able to load the transactions page`);
+
 	it(`should be able to laod the positions page`);
+
 	it(`selectorsInfo:`, () => {
 		// console.log(selectors.favoriteMarkets);
 		console.log('\n');
