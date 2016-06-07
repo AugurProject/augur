@@ -1,10 +1,10 @@
 import {
     TRADING_FEE_DEFAULT,
-    MAKER_FEE_DEFAULT,
+    MAKER_FEES_DEFAULT,
     INITIAL_LIQUIDITY_DEFAULT,
     INITIAL_FAIR_PRICE_DEFAULT,
-    SHARES_PER_ORDER_DEFAULT,
-    SIZE_OF_BEST_DEFAULT,
+    STARTING_QUANTITY_DEFAULT,
+    BEST_STARTING_QUANTITY_DEFAULT,
     PRICE_WIDTH_DEFAULT,
     SEPARATION_DEFAULT
 } from '../modules/create-market/constants/market-values-constraints'
@@ -23,33 +23,31 @@ function createMarketForm(){
         isValid: true,
 
         tradingFeePercent: TRADING_FEE_DEFAULT,
-        makerFeePercent: MAKER_FEE_DEFAULT,
+        makerFees: MAKER_FEES_DEFAULT,
         initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 
         // Advanced Market Creation
         defaultFairPrice: INITIAL_FAIR_PRICE_DEFAULT,
 
-        initialFairPrice: [],
-        sharesPerOrder: SHARES_PER_ORDER_DEFAULT,
-        sizeOfBest: SIZE_OF_BEST_DEFAULT,
+        initialFairPrices: {},
+        startingQuantity: STARTING_QUANTITY_DEFAULT,
+        bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
         priceWidth: PRICE_WIDTH_DEFAULT,
         separation: SEPARATION_DEFAULT,
 
         onValuesUpdated: newValues => updateForm(newValues)
     };
 
-    return form
+    return form;
 
     function updateForm(newValues){
         if(newValues.step === 4){
             switch(form.type){
                 case BINARY:
-                    setInitialFairPrice(['Yes', 'No']);
-
+                    setInitialFairPrices(['Yes', 'No'], BINARY);
                     break;
                 case SCALAR:
-                    setInitialFairPrice(['⇧', '⇩']);
-
+                    setInitialFairPrices(['⇧', '⇩'], SCALAR);
                     break;
                 case CATEGORICAL:
                     let labels = [];
@@ -58,20 +56,24 @@ function createMarketForm(){
                         labels[i] = val;
                     });
 
-                    setInitialFairPrice(labels)
-
+                    setInitialFairPrices(labels, CATEGORICAL);
                     break;
             }
 
-            function setInitialFairPrice(labels){
-                form.initialFairPrice = [];
+            function setInitialFairPrices(labels, type){
+                form.initialFairPrices = {
+                    type,
+                    values: [],
+                    raw: []
+                };
 
                 labels.map((cV, i) => {
-                    form.initialFairPrice[i] = {
+                    form.initialFairPrices.values[i] = {
                         label: cV,
-                        value: form.defaultFairPrice
-                    }
-                })
+                        value: INITIAL_FAIR_PRICE_DEFAULT
+                    };
+                    form.initialFairPrices.raw[i] = INITIAL_FAIR_PRICE_DEFAULT;
+                });
             }
         }
 
