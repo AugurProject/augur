@@ -1165,8 +1165,8 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  *          4.1.1/ if user order was filled there is nothing to do. exit
  *          4.1.2/ if order was partially filled place ask to order book. exit
  *      4.2/ if user doesn't have position do short sell
- *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares to sell try again
- *          4.2.2/ if there is no bid short_sell user has to buy complete set and then sell the outcome he wants, which
+ *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares after filling it try again
+ *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants, which
  *          results in the equal position
  *
  *
@@ -1411,7 +1411,7 @@ Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrder
                                 onTradeFailed(tradeOrderId, data);
                             });
                     } else {
-                        // 4.2.1/ no order to fill
+                        // 4.2.2/ no order to fill
                         augurJs.buyCompleteSets(marketId, userTradeOrder.shares.value,
                             function (data) {
                                 onBuyCompleteSetsSent(userTradeOrder.id, data);
