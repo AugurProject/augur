@@ -335,20 +335,22 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
-ex.createMarket = function createMarket(branchID, newMarket, cb) {
+ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
-		branchId: branchID,
 		description: newMarket.description,
-		expirationBlock: newMarket.endBlock,
+		expDate: newMarket.endDate.value.getTime() / 1000,
 		minValue: newMarket.minValue,
 		maxValue: newMarket.maxValue,
 		numOutcomes: newMarket.numOutcomes,
-		alpha: '0.0079',
-		initialLiquidity: newMarket.initialLiquidity,
+		resolution: newMarket.expirySource,
 		tradingFee: newMarket.tradingFee,
+		tags: newMarket.tags,
+		makerFees: newMarket.makerFees,
+		extraInfo: newMarket.extraInfo,
 		onSent: r => cb(null, { status: CREATING_MARKET, marketID: r.callReturn, txHash: r.txHash }),
 		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.callReturn, tx: r }),
-		onFailed: r => cb(r)
+		onFailed: r => cb(r),
+		branchId: branchId
 	});
 };
 
