@@ -76,7 +76,7 @@ describe("Integration tests", function () {
         if (info.constructor === Array) {
             assert.isAbove(info.length, 43);
             info = augur.rpc.encodeResult(info);
-            assert.strictEqual(info[7], branchId);
+            assert.strictEqual(parseInt(info[7]), parseInt(branchId));
             r = augur.parseMarketInfo(info);
             r._id = abi.hex(info[0]);
             if (r.numEvents > 1) {
@@ -118,7 +118,7 @@ describe("Integration tests", function () {
         assert(abi.number(r.tradingFee) <= 1);
         assert.strictEqual(augur.getTradingFee(market), r.tradingFee);
         assert.property(r, "branchId");
-        assert.strictEqual(augur.getBranchID(market), r.branchId);
+        assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchId));
         assert.property(r, "numEvents");
         assert.strictEqual(parseInt(augur.getNumEvents(market)), r.numEvents);
         assert.property(r, "cumulativeScale");
