@@ -80,7 +80,8 @@ export const initialFairPrices = (formState) => {
 		return {
 			initialFairPrices: {
 				type: formState.type,
-				values: []
+				values: [],
+				raw: []
 			}
 		}
 	}
