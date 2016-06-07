@@ -25,13 +25,7 @@ export function createOrderBook(transactionID, marketData){
 
         AugurJS.generateOrderBook(marketData, (err, res) => {
             if(err){
-                dispatch(
-                    updateExistingTransaction(
-                        transactionID,
-                        { status: FAILED, message: err.message }
-                    )
-                );
-
+                console.log('err --', err)
                 return;
             }
 
