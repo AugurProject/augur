@@ -1144,6 +1144,14 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
     });
 };
 /**
+ * Allows trading multiple outcomes in market.
+ *
+ * This method can result in multiple ethereum transactions per trade order (e.g. when user wants to buy 20 shares but
+ * there are only 10 ask shares on order book, this method does trade() and buy()). Callbacks are called with
+ * userTradeOrder.id to allow client map transactions to individual trade order
+ *
+ * Important fields in userTradeOrder are: id, shares, ether (total cost + fees) and limitPrice
+ *
  * Algorithm:
  *
  * for each user trade order do this:
@@ -1172,8 +1180,7 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  *
  * @param {String} marketId On what market trading occurs
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
- * @param {Object} userTradeOrdersPerOutcome Trade orders to execute (one per outcome), come from UI. important
- *      fields are: userTradeOrder.shares, userTradeOrder.ether (total cost + fees), userTradeOrder.limitPrice
+ * @param {Object} userTradeOrdersPerOutcome Trade orders to execute (one per outcome) (usually from UI).
  * @param {Object} positionsPerOutcome User's positions per outcome
  * @param {Function} onTradeHash
  * @param {Function} onCommitSent
@@ -1201,7 +1208,6 @@ Augur.prototype.multiTrade = function (marketId, marketOrderBook, userTradeOrder
                                        onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
 ) {
     userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
-        // 1/
         if (userTradeOrder.type === "buy_shares") {
             // 1.1/ user wants to buy
             var matchingSortedAskIds = marketOrderBook.sell
