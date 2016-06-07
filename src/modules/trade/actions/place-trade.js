@@ -101,6 +101,18 @@ export function multiTrade(marketID) {
 			function onShortSellFailed(transactionID, res) {
 				console.log("onShortSellFailed %o", res);
 				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onBuyCompleteSetsSent(transactionID, res) {
+				console.log("onBuyCompleteSetsSent %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onBuyCompleteSetsSuccess(transactionID, res) {
+				console.log("onBuyCompleteSetsSuccess %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
+			},
+			function onBuyCompleteSetsFailed(transactionID, res) {
+				console.log("onBuyCompleteSetsFailed %o", res);
+				updateExistingTransaction(transactionID, { status: res.status });
 			}
 		);
 	};
