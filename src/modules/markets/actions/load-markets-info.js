@@ -1,11 +1,8 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { BRANCH_ID } from '../../app/constants/network';
-import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../markets/constants/market-types';
-import { BINARY_NO_ID, BINARY_YES_ID } from '../../markets/constants/market-outcomes';
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
-import { SCALAR_DOWN_ID, SCALAR_UP_ID } from '../../markets/constants/market-outcomes';
-import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+// import { BRANCH_ID } from '../../app/constants/network';
+import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
+import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_NO_ID, BINARY_YES_ID, SCALAR_DOWN_ID, SCALAR_UP_ID } from '../../markets/constants/market-outcomes';
 
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
 import { updateOutcomesData } from '../../markets/actions/update-outcomes-data';
@@ -53,7 +50,7 @@ export function loadMarketsInfo(marketIDs) {
 			return;
 		}
 
-		let event = marketData.events[0];
+		const event = marketData.events[0];
 		marketData.eventID = event.id;
 		marketData.minValue = event.minValue;
 		marketData.maxValue = event.maxValue;
@@ -69,17 +66,17 @@ export function loadMarketsInfo(marketIDs) {
 		}
 
 		let outcomes;
+		let splitDescription;
+		let categoricalOutcomeNames;
 
 		switch (marketData.type) {
 		case BINARY:
 			outcomes = marketData.outcomes.map(outcome => {
 				if (outcome.id === BINARY_NO_ID) {
 					outcome.name = 'No';
-				}
-				else if (outcome.id === BINARY_YES_ID) {
+				} else if (outcome.id === BINARY_YES_ID) {
 					outcome.name = 'Yes';
-				}
-				else {
+				} else {
 					console.warn('Invalid outcome ID for binary market: ', outcome, marketData);
 				}
 				return outcome;
@@ -87,16 +84,15 @@ export function loadMarketsInfo(marketIDs) {
 			break;
 
 		case CATEGORICAL:
-
 			// parse outcome names from description
-			let splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
+			splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
 			if (splitDescription.length < 2) {
 				console.warn('Missing outcome names in description for categorical market: ', marketData);
 				break;
 			}
 
 			// parse individual outcomes from outcomes string
-			let categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_OUTCOME_SEPARATOR);
+			categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_OUTCOME_SEPARATOR);
 			if (categoricalOutcomeNames.length !== marketData.outcomes.length) {
 				console.warn('Number of outcomes parsed from description do not match number of outcomes in market for for categorical market: ', marketData);
 				break;
@@ -110,18 +106,15 @@ export function loadMarketsInfo(marketIDs) {
 
 			// update market description to exclude outcome names
 			marketData.description = splitDescription.join();
-
 			break;
 
 		case SCALAR:
 			outcomes = marketData.outcomes.map(outcome => {
 				if (outcome.id === SCALAR_DOWN_ID) {
 					outcome.name = '⇩';
-				}
-				else if (outcome.id === SCALAR_UP_ID) {
+				} else if (outcome.id === SCALAR_UP_ID) {
 					outcome.name = '⇧';
-				}
-				else {
+				} else {
 					console.warn('Invalid outcome ID for scalar market: ', outcome, marketData);
 				}
 				return outcome;

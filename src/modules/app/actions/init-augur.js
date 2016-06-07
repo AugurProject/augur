@@ -12,7 +12,6 @@ import { loadFullMarket } from '../../market/actions/load-full-market';
 
 export function initAugur() {
 	return (dispatch, getState) => {
-
 		AugurJS.connect((err, connected) => {
 			if (err) {
 				return console.error('connect failure:', err);

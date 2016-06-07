@@ -34,7 +34,7 @@ export function createMarket(transactionID, newMarket) {
 			newMarket.minValue = 1;
 			newMarket.maxValue = 2;
 			newMarket.numOutcomes = newMarket.outcomes.length;
-			//newMarket.description = makeDescriptionFromCategoricalOutcomeNames(newMarket);
+			// newMarket.description = makeDescriptionFromCategoricalOutcomeNames(newMarket);
 		} else {
 			console.warn('createMarket unsupported type:', newMarket.type);
 			return;

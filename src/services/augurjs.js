@@ -14,7 +14,7 @@ ex.connect = function connect(cb) {
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	let localnode = null;
+	const localnode = null;
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL === 'null') {
 			augur.rpc.wsUrl = null;
@@ -157,7 +157,6 @@ ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealE
 };
 
 ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
-
 	// load the total number of markets
 	augur.getNumMarketsBranch(branchID, numMarketsRaw => {
 		const numMarkets = parseInt(numMarketsRaw, 10);
@@ -173,18 +172,15 @@ ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
 			offset: startIndex,
 			numMarketsToLoad: chunkSize
 		}, marketsData => {
-
 			if (!marketsData || marketsData.error) {
 				chunkCB(marketsData);
-			}
-			else {
+			} else {
 				chunkCB(null, marketsData);
 			}
 
 			if (isDesc && startIndex > 0) {
 				setTimeout(() => getMarketsInfo(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc), TIMEOUT_MILLIS);
-			}
-			else if (!isDesc && startIndex < numMarkets) {
+			} else if (!isDesc && startIndex < numMarkets) {
 				setTimeout(() => getMarketsInfo(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc), TIMEOUT_MILLIS);
 			}
 		});
@@ -192,7 +188,7 @@ ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
 };
 
 ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
-	augur.batchGetMarketInfo(marketIDs, function(res) {
+	augur.batchGetMarketInfo(marketIDs, (res) => {
 		if (res && res.error) {
 			cb(res);
 		}

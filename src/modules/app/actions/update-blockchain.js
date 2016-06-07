@@ -65,7 +65,6 @@ export function incrementReportPeriod(cb) {
 
 export function updateBlockchain(cb) {
 	return (dispatch, getState) => {
-
 		if (isAlreadyUpdatingBlockchain) {
 			return; // don't trigger cb on this failure
 		}
@@ -98,7 +97,6 @@ export function updateBlockchain(cb) {
 			// if the report *period* changed this block, do some extra stuff (also triggers the first time blockchain is being set)
 			if (isChangedCurrentPeriod) {
 				dispatch(incrementReportPeriod(() => {
-
 					// if the report *phase* changed this block, do some extra stuff
 					if (isChangedReportPhase) {
 						dispatch(commitReports());
@@ -109,8 +107,7 @@ export function updateBlockchain(cb) {
 					isAlreadyUpdatingBlockchain = false;
 					return cb && cb();
 				}));
-			}
-			else {
+			} else {
 				isAlreadyUpdatingBlockchain = false;
 				return cb && cb();
 			}
