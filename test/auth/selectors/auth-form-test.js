@@ -16,7 +16,7 @@ import {
 import authFormAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/authForm';
 
 let authForm;
-
+let { store, state } = mockStore.default;
 describe(`modules/auth/selectors/auth-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	// const middlewares = [thunk];
@@ -24,7 +24,7 @@ describe(`modules/auth/selectors/auth-form.js`, () => {
 	let selector, expected, actual;
 	// let state = Object.assign({}, testState);
 	// store = mockStore(state);
-	let { store, state } = mockStore.default;
+
 
 	selector = proxyquire('../../../src/modules/auth/selectors/auth-form', {
 		'../../../store': store
@@ -154,4 +154,4 @@ describe(`modules/auth/selectors/auth-form.js`, () => {
 
 });
 
-export default authForm;
+export default {authForm, state};

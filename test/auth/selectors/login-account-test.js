@@ -9,6 +9,7 @@ import * as mockStore from '../../mockStore';
 import loginAccountAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/loginAccount';
 
 let loginAccount;
+let { state, store } = mockStore.default;
 describe(`modules/auth/selectors/login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	// const middlewares = [thunk];
@@ -28,7 +29,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 	// 	}
 	// });
 	// store = mockStore(state);
-	let { state, store } = mockStore.default;
+
 	//
 	// out = {
 	// 	address: '0xtest123',
@@ -83,12 +84,12 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
 	loginAccount = selector;
 
-	it(`should login an account`, () => {
-		actual = selector.default();
-		loginAccountAssertion(actual);
-		//
-		// assert.deepEqual(selector.default(), out, `Didn't properly update account information`);
-	});
+	// it(`should login an account`, () => {
+	// 	actual = selector.default();
+	// 	loginAccountAssertion(actual);
+	// 	//
+	// 	// assert.deepEqual(selector.default(), out, `Didn't properly update account information`);
+	// });
 });
 
-export default loginAccount;
+export default {loginAccount, state};

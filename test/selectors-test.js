@@ -1,13 +1,10 @@
 import {assert} from 'chai';
 import proxyquire from 'proxyquire';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from './testState';
 
 import activePage from './app/selectors/active-page-test';
-import loginAccount from './auth/selectors/login-account-test';
+import * as loginAccount from './auth/selectors/login-account-test';
 import links from './link/selectors/links-test';
-import authForm from './auth/selectors/auth-form-test';
+import * as authForm from './auth/selectors/auth-form-test';
 import marketsHeader from './markets/selectors/markets-header-test';
 import markets from './markets/selectors/markets-test';
 import allMarkets from './markets/selectors/markets-all-test';
@@ -22,25 +19,19 @@ import searchSort from './markets/selectors/search-sort-test';
 import keywords from './markets/selectors/keywords-test';
 import transactions from './transactions/selectors/transactions-test';
 import transactionsTotals from './transactions/selectors/transactions-totals-test';
-import createMarketForm from './create-market/selectors/create-market-form-test';
+import * as createMarketForm from './create-market/selectors/create-market-form-test';
 
 import * as assertions from '../node_modules/augur-ui-react-components/test/assertions/';
-import * as mockStore from './mockStore';
 
 describe(`![ SELECTORS TESTS - UI Integration ]!`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	// const middlewares = [thunk];
-	// const mockStore = configureMockStore(middlewares);
-	// let store, selectors, actual;
-	// let state = Object.assign({}, testState);
-	// store = mockStore(state);
-	let { state, store } = mockStore.default;
 
+	// this may be redundant, will refactor after I get this all working.
 	const selectors = proxyquire('../src/selectors.js', {
 		'./modules/app/selectors/active-page': activePage,
-		'./modules/auth/selectors/login-account': loginAccount,
+		'./modules/auth/selectors/login-account': loginAccount.default.loginAccount,
 		'./modules/link/selectors/links': links,
-		'./modules/auth/selectors/auth-form': authForm,
+		'./modules/auth/selectors/auth-form': authForm.default.authForm,
 		'./modules/markets/selectors/markets-header': marketsHeader,
 		'./modules/markets/selectors/markets': markets,
 		'./modules/markets/selectors/markets-all': allMarkets,
@@ -55,7 +46,7 @@ describe(`![ SELECTORS TESTS - UI Integration ]!`, () => {
 		'./modules/markets/selectors/keywords': keywords,
 		'./modules/transactions/selectors/transactions': transactions,
 		'./modules/transactions/selectors/transactions-totals': transactionsTotals,
-		'./modules/create-market/selectors/create-market-form': createMarketForm
+		'./modules/create-market/selectors/create-market-form': createMarketForm.default.createMarketForm
 	});
 
 	it(`should be able to load the auth page`, () => {
@@ -82,6 +73,78 @@ describe(`![ SELECTORS TESTS - UI Integration ]!`, () => {
 		};
 		assertions.siteHeader(siteHeader);
 		assertions.createMarketForm(selectors.createMarketForm);
+		// first import will be whatever the selector makes given the test state.
+		// after that subsequent imports should be trying to imprint the state with the new selector to modify the outcome.
+
+		// set the internal state of the selector to the initial step
+		createMarketForm.default.state.createMarketInProgress = selectors.createMarketForm;
+
+		// Binary createMarket Tests
+		createMarketForm.default.state.createMarketInProgress.step = 2;
+		createMarketForm.default.state.createMarketInProgress.type = 'binary';
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 3;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 4;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		// Scalar createMarket Tests
+		createMarketForm.default.state.createMarketInProgress = selectors.createMarketForm;
+		createMarketForm.default.state.createMarketInProgress.step = 2;
+		createMarketForm.default.state.createMarketInProgress.type = 'scalar';
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 3;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 4;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		// Categorical createMarket Tests
+		createMarketForm.default.state.createMarketInProgress = selectors.createMarketForm;
+		createMarketForm.default.state.createMarketInProgress.step = 2;
+		createMarketForm.default.state.createMarketInProgress.type = 'categorical';
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 3;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 4;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		// Combinatorial createMarket Tests
+		createMarketForm.default.state.createMarketInProgress = selectors.createMarketForm;
+		createMarketForm.default.state.createMarketInProgress.step = 2;
+		createMarketForm.default.state.createMarketInProgress.type = 'combinatorial';
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 3;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
+
+		createMarketForm.default.state.createMarketInProgress.step = 4;
+		createMarketForm.default.state.createMarketInProgress = createMarketForm.default.createMarketForm();
+		assertions.createMarketForm(createMarketForm.default.state.createMarketInProgress);
 	});
 
 	it(`should be able to load a market page`, () => {
