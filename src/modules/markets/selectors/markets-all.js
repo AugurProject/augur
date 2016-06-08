@@ -57,7 +57,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 });
 
 function cleanSortVal(val) {
-	// if a falsy simple value return it to sort as is
+	// if a falsy simple value return it to sort as-is
 	if (!val) {
 		return val;
 	}
@@ -65,8 +65,13 @@ function cleanSortVal(val) {
 	// if this is a formatted number object, with a `value` prop, use that for sorting
 	if (val.value || val.value === 0) {
 		return val.value;
-	} else if (val.toLowerCase) {
-	// if the val is a simple prop, that can be lowercased, use that
+	}
+
+	// if the val is a string, lowercase it
+	if (val.toLowerCase) {
 		return val.toLowerCase();
 	}
+
+	// otherwise the val is probably a number, either way return it as-is
+	return val;
 }
