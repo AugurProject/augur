@@ -71,7 +71,7 @@ var reportingInfo = (GLOBAL.reporting = function (branch) {
     return info;
 })(b);
 
-console.log(chalk.cyan("Vote period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
+console.log(chalk.cyan("Reporting period"), chalk.green(reportingInfo.vote_period) + chalk.cyan(":"));
 console.log("Current period:     ", chalk.green(reportingInfo.current_period));
 console.log("Number of events:   ", chalk.green(reportingInfo.num_events));
 console.log("Number of reporters:", chalk.green(reportingInfo.num_reports));

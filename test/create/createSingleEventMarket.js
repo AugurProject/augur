@@ -39,12 +39,12 @@ if (!process.env.CONTINUOUS_INTEGRATION) {
                         extraInfo: t.extraInfo,
                         resolution: t.resolution,
                         onSent: function (r) {
-                            console.log(r)
+                            // console.log(r)
                             assert(r.txHash);
                             assert(r.callReturn);
                         },
                         onSuccess: function (r) {
-                            console.log(r);
+                            // console.log(r);
                             var marketID = r.marketID;
                             assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                             assert.strictEqual(augur.getDescription(marketID), t.description);

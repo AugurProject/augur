@@ -3733,6 +3733,7 @@ module.exports={
         "consensus": "0xfcd9b63e2a8a2b869db64f8dd25f599b0b172ffd",
         "createBranch": "0xf2fc3c829ad9a271a64e6f437fb6f9e8ed0f9770",
         "createMarket": "0x2bcf1482f030d37de85528fb405e9864922d3ba6",
+        "createSingleEventMarket": "0x9a11cd80fdf2cdf74b3bc9816f5d3c309c5dcf72",
         "eventResolution": "0xfa01e10196e9575835e08d0af12383119b43ea5e",
         "faucets": "0x59997e2d0d9fb15cb4bb3ff41a79e8e3041e817f",
         "forkPenalize": "0x3ffd684dc0ff3c49eb137b8ceb3a6a825bd62a84",
@@ -3758,259 +3759,48 @@ module.exports={
         "trades": "0x07096a7a9584373d79a67c23e6c903075b1385fc"
     },
     "10101": {
-        "buyAndSellShares": "0xe4e20e7c0ff5e9830111d4f0950ce0565e61c590",
-        "closeMarket": "0x486ebc17cea241b25287663e96a7519d4fc498b1",
-        "closeMarketEight": "0xde2aee105f6f77a8633898faff5c2b0bee963047",
-        "closeMarketFour": "0xbafe39e8fec55c7ba31641cf0c3e35a1cfb9e5c8",
-        "closeMarketOne": "0xac2040d53015d6de158f86a2b29fa41a8c4d7519",
-        "closeMarketTwo": "0x5477cb9eb054a57fca2d56b282ba765ff0fdbed2",
-        "collectFees": "0xe702442d25c64f72c790634c281c43e6c359d201",
-        "completeSets": "0x0fe727fea25a580390240a0861b2d54314cc3212",
-        "compositeGetters": "0x0f20f3d63c8063db8fa4ae1fddd4851209fe80e5",
-        "consensus": "0xf9a5c4027fefd683daee992cac100c6fb398f204",
-        "createBranch": "0x7bb9c606e565f2a0eed830bacb227e8ac6d89de2",
-        "createMarket": "0xe59ef2a98c89423a41930a2b9309c00f60570c54",
-        "eventResolution": "0xc09a5002cca1c14aaf72589619a6d8fb2855673a",
-        "faucets": "0xaf5dc803f4036318a67893dd3f31b25cac477636",
-        "forkPenalize": "0x8f858590632b170f41d2ac1e1bcd79917fe95a26",
-        "forking": "0x1af69db86085d0b944d6dfc9b1511e4691057270",
-        "makeReports": "0xf9e5daf15d0b1c9543f383144d92b57bf50fd9b9",
-        "penalizationCatchup": "0xd7e55f745a1fda5a98a4f4a2ec165b02e3444def",
-        "penalizeNotEnoughReports": "0x0b8962420e59740ba39a2a400459828de3170f6b",
-        "roundTwo": "0x6b0e80245a4af86aa2254f19afe575ff0b71b69d",
-        "roundTwoPenalize": "0xf044afd6292f7064258b4ae3db23f9fa46bd9d0d",
-        "sendReputation": "0xef9f31d068584d02048c8f357cbf5f4da5af304e",
-        "slashRep": "0x2926ec7dbaa3c2354565628cd75686fa48c57903",
-        "trade": "0xee7724861914410fbeffee4a772354a501e41272",
-        "backstops": "0x52d6d4e29482b06d79d0a9a927601e63a4421b2b",
-        "branches": "0x8f6a8ee173b3d351ba53753f5c831bc6e5178487",
-        "cash": "0xa17a14a5c6dca8eec92609fc9acdbcc94834db6f",
-        "consensusData": "0x2e7207fea6fa6d268d15e714a3b960a71dd414d0",
-        "events": "0x7892dd6d5346a671412f8c109a9d66828b06a1b3",
-        "expiringEvents": "0x5deb634f2b4216466900d8d7ea7ab10aaf4e4f93",
-        "fxpFunctions": "0x1b886b04ceefb8308054e784ec8bd6a68d3b72e9",
-        "info": "0x550544613ddd57d08e3e42dd6e85f5a707224c2e",
-        "markets": "0xa8d937a6358f3040d89dd9994b80407d15fffb22",
-        "reporting": "0x41e5d8693714196bb2d79984774dae41c7770854",
-        "trades": "0x456afb1a2721e6926f9c8e621f8d7eaa384cfe39"
-    },
-    "errors": {
-        "0x": "no response or bad input",
-        "closeMarket": {
-            "0": "fail/trading not over yet/event not expired or closed already",
-            "-1": "Market has no cash anyway / already closed",
-            "-2": "0 outcome",
-            "-4": "Outcome .5 once, pushback and retry",
-            "-6": "bonded pushed forward market not ready to be resolved",
-            "-7": "event not reportable >.99"
-        },
-        "submitReportHash": {
-            "0": "could not set report hash",
-            "-1": "reporter (you) doesn't (don't) exist, or voting period over or hasn't started yet",
-            "-2": "not in hash submitting timeframe or event doesn't exist / not a valid event expiring then",
-            "-4": "already resolved",
-            "-5": ".99 market",
-            "-6": "no markets"
-        },
-        "submitReport": {
-            "-1": "has already reported",
-            "-2": "reporter (you) doesn't (don't) exist, or voting period over or hasn't started yet",
-            "-3": "hash doesn't match",
-            "-4": "no rep",
-            "-5": "bad report",
-            "-6": "hash not low enough",
-            "-8": "invalid event",
-            "-9": "already resolved",
-            "-10": "<24 hr left in period, too late to report, able to put up readj. bonds though"
-        },
-        "penalizeNotEnoughReports": {
-            "-1": "already done",
-            "-2": "hasn't reported this period"
-        },
-        "penalizationCatchup": {
-            "-2": "can only be called during the first half of the reporting period"
-        },
-        "penalizeWrong": {
-            "-1": "pushed back event already resolved, so can't redistribute rep based off of its original expected expiration period",
-            "-2": "already past first half of new period and needed to penalize before then",
-            "-3": "need to do not enough reports penalization [or lackthereof]"
-        },
-        "collectFees": {
-            "-2": "needs to be second half of reporting period to claim rep [1st half is when redistribution is done]"
-        },
-        "slashRep": {
-            "0": "not a valid claim",
-            "-2": "reporter doesn't exist"
-        },
-        "createSubbranch": {
-            "-1": "bad input or parent doesn't exist",
-            "-2": "no money for creation fee or branch already exists"
-        },
-        "createEvent": {
-            "0": "not enough money to pay fees or event already exists",
-            "-1": "we're either already past that date, branch doesn't exist, or description is bad",
-            "-2": "max value < min value"
-        },
-        "createMarket": {
-            "-1": "bad input or parent doesn't exist",
-            "-2": "too many events",
-            "-3": "too many outcomes",
-            "-4": "not enough money or market already exists",
-            "-5": "fee too low",
-            "-6": "duplicate events",
-            "-7": "event already expired"
-        },
-        "createSingleEventMarket": {
-            "-1": "bad input or parent doesn't exist",
-            "-2": "too many events",
-            "-3": "too many outcomes",
-            "-4": "not enough money or market already exists",
-            "-5": "fee too low",
-            "-6": "duplicate events",
-            "-7": "event already expired"
-        },
-        "sendReputation": {
-            "0": "not enough reputation",
-            "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-            "-2": "Receiving address doesn't exist"
-        },
-        "buy": {
-            "-0x1": "amount/price bad or no market",
-            "-0x2": "oracle-only branch",
-            "-0x4": "not enough money or shares"
-        },
-        "sell": {
-            "-0x1": "amount/price bad or no market",
-            "-0x2": "oracle only branch",
-            "-0x4": "not enough money or shares"
-        },
-        "trade": {
-            "-1": "oracle only branch",
-            "-2": "bad trade hash",
-            "-3": "trader doesn't exist / own shares in this market",
-            "-4": "must buy at least .00000001 in value",
-            "10": "insufficient balance"
-        },
-        "DB_DELETE_FAILED": {
-            "error": 97,
-            "message": "database delete failed"
-        },
-        "DB_WRITE_FAILED": {
-            "error": 98,
-            "message": "database write failed"
-        },
-        "DB_READ_FAILED": {
-            "error": 99,
-            "message": "database read failed"
-        },
-        "INVALID_CONTRACT_PARAMETER": {
-            "error": 400,
-            "message": "cannot send object parameter to contract"
-        },
-        "NOT_LOGGED_IN": {
-            "error": 401,
-            "message": "not logged in"
-        },
-        "PARAMETER_NUMBER_ERROR": {
-            "error": 402,
-            "message": "wrong number of parameters"
-        },
-        "BAD_CREDENTIALS": {
-            "error": 403,
-            "message": "incorrect handle or password"
-        },
-        "TRANSACTION_NOT_FOUND": {
-            "error": 404,
-            "message": "transaction not found"
-        },
-        "PASSWORD_TOO_SHORT": {
-            "error": 405,
-            "message": "password must be at least 6 characters long"
-        },
-        "NULL_CALL_RETURN": {
-            "error": 406,
-            "message": "expected contract call to return value, received null"
-        },
-        "NULL_RESPONSE": {
-            "error": 407,
-            "message": "expected transaction hash from Ethereum node, received null"
-        },
-        "NO_RESPONSE": {
-            "error": 408,
-            "message": "no response"
-        },
-        "INVALID_RESPONSE": {
-            "error": 409,
-            "message": "could not parse response from Ethereum node"
-        },
-        "LOCAL_NODE_FAILURE": {
-            "error": 410,
-            "message": "RPC request to local Ethereum node failed"
-        },
-        "HOSTED_NODE_FAILURE": {
-            "error": 411,
-            "message": "RPC request to hosted nodes failed"
-        },
-        "HANDLE_TAKEN": {
-            "error": 422,
-            "message": "handle already taken"
-        },
-        "FILTER_NOT_CREATED": {
-            "error": 450,
-            "message": "filter could not be created"
-        },
-        "TRANSACTION_FAILED": {
-            "error": 500,
-            "message": "transaction failed"
-        },
-        "TRANSACTION_NOT_CONFIRMED": {
-            "error": 501,
-            "message": "polled network but could not confirm transaction"
-        },
-        "DUPLICATE_TRANSACTION": {
-            "error": 502,
-            "message": "duplicate transaction"
-        },
-        "RAW_TRANSACTION_ERROR": {
-            "error": 503,
-            "message": "error sending client-side transaction"
-        },
-        "RLP_ENCODING_ERROR": {
-            "error": 504,
-            "message": "RLP encoding error"
-        },
-        "NO_MARKET_INFO": {
-            "error": 505,
-            "message": "could not retrieve market data"
-        },
-        "RPC_TIMEOUT": {
-            "error": 599,
-            "message": "timed out while waiting for Ethereum network response"
-        },
-        "LOOPBACK_NOT_FOUND": {
-            "error": 650,
-            "message": "loopback interface required for synchronous local commands"
-        },
-        "ETHEREUM_NOT_FOUND": {
-            "error": 651,
-            "message": "no active ethereum node(s) found"
-        },
-        "ROOT_NOT_FOUND": {
-            "error": 700,
-            "message": "no LS-LMSR objectve function solution found"
-        }
+        "buyAndSellShares": "0x7a670374ae3008ac564c97215a5d25edb49a7972",
+        "closeMarket": "0x5ed4279c70b8a88bf2bf711ef8c2ae36e0e33229",
+        "closeMarketEight": "0x21282038a5597e409cef655ff910d02848ecf929",
+        "closeMarketFour": "0x49110d1834d8572285b6fc4a428ffdd7ca71ec96",
+        "closeMarketOne": "0x696e342719e31943048c89f6335d9a93239d051d",
+        "closeMarketTwo": "0x4213cad92482c84af2eaf1321ba784762da6c189",
+        "collectFees": "0x7d24bb33a29df4136181e67edae2bb06a9715cbb",
+        "completeSets": "0x1cfdf31a6279ff38c9c3409eca951f31f34e7594",
+        "compositeGetters": "0x7084640d57dd088a1ccf82c5106bb0087e93e654",
+        "consensus": "0x787deb1acee09cc5159494aa4a940a3752017d77",
+        "createBranch": "0xea7420bc20dfe272850cfe26bbbbbef4fa32152a",
+        "createMarket": "0x13da6616a4e1901354a8b252b4a24550568fcfaf",
+        "createSingleEventMarket": "0x1574efcee47d5ab0014643602196b2ef5ebfd760",
+        "eventResolution": "0xa727de27cea1006dc88c6512f66dbf2a93bd18d9",
+        "faucets": "0xd39874ec9c3f062d18e9b0b1e667aef8c99aa3c2",
+        "forkPenalize": "0x41f9bf1daa579d8e1d9c0f05f06fc084a01c01b8",
+        "forking": "0x1cf519f8ed0a84d30b1c36046b32bb7b571a8be2",
+        "makeReports": "0x2ec590db1f0a1de11a82c505613fb85b05210944",
+        "penalizationCatchup": "0x00680935bb1ccdd4199e6e98e0d7f59a01fbbc83",
+        "penalizeNotEnoughReports": "0x9ead3356e0cbd27d3fad822eb3fb42bbd606c5e9",
+        "roundTwo": "0xd3dc70b2fc8342b36594977ff90428c65122315a",
+        "roundTwoPenalize": "0x96db9c0b955464e86780b859d10c0f316eb6bf85",
+        "sendReputation": "0x05c697446ea00d05b982b2a30cb6456f38de448e",
+        "slashRep": "0xc8c3d87292715a97ee9bc626301666eef29a5247",
+        "trade": "0x69a073ce7c1066a8556176aec748e86ebba2aba5",
+        "backstops": "0x7c8c360e897ecf0fc377a1eace3ce5ebcc12fa70",
+        "branches": "0xc61f3237957251ff62ea8fd759c18e5de8a5c29f",
+        "cash": "0xa4c4cb44d4c9329966c2e3a74ed11f1fe7e9fa6c",
+        "consensusData": "0xbd0b5ae2a48e61e420ebed88333fe73c47896471",
+        "events": "0xf128b2ae7d643ca1f202cb5e80aa42306923f8b9",
+        "expiringEvents": "0x36a04d99040c8d7eb51888e1255f8acf529ac58d",
+        "fxpFunctions": "0xcb55f548fc6dc7dc558980890a13edd319f41263",
+        "info": "0xd3c7de30d9970ecbae67c52336d2959a19dd9360",
+        "markets": "0xb529b11be3d4dff10703eb1e561d96caca5f644a",
+        "reporting": "0xa7601ca0d8aba3700879badb767e462f17cb0155",
+        "trades": "0x803c0262f1bc596c3016dad7f51ab26e768e565e"
     }
 }
 
 },{}],5:[function(require,module,exports){
 module.exports={
     "0x": "no response or bad input",
-    "getSimulatedBuy": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
-    "getSimulatedSell": {
-        "-2": "cost updating error (did you enter a valid quantity?)"
-    },
     "closeMarket": {
         "0": "fail/trading not over yet/event not expired or closed already",
         "-1": "Market has no cash anyway / already closed",
@@ -4018,16 +3808,6 @@ module.exports={
         "-4": "Outcome .5 once, pushback and retry",
         "-6": "bonded pushed forward market not ready to be resolved",
         "-7": "event not reportable >.99"
-    },
-    "claimProceeds": {
-        "0": "reporting not done",
-        "-1": "trader doesn't exist"
-    },
-    "report": {
-        "0": "could not set reporter ballot",
-        "-1": "report length does not match number of expiring events",
-        "-2": "voting period expired",
-        "-3": "incorrect hash"
     },
     "submitReportHash": {
         "0": "could not set report hash",
@@ -4048,9 +3828,9 @@ module.exports={
         "-9": "already resolved",
         "-10": "<24 hr left in period, too late to report, able to put up readj. bonds though"
     },
-    "checkReportValidity": {
-        "-1": "report isn't long enough",
-        "-2": "reporter doesn't exist, voting period is over, or voting period hasn't started yet"
+    "claimProceeds": {
+        "0": "reporting not done",
+        "-1": "trader doesn't exist"
     },
     "penalizeNotEnoughReports": {
         "-1": "already done",
@@ -4076,8 +3856,8 @@ module.exports={
         "-2": "no money for creation fee or branch already exists"
     },
     "createEvent": {
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad",
         "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad",
         "-2": "max value < min value"
     },
     "createMarket": {
@@ -4090,37 +3870,38 @@ module.exports={
         "-7": "event already expired"
     },
     "createSingleEventMarket": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "too many events",
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
+        "-2": "max value < min value",
         "-3": "too many outcomes",
-        "-4": "not enough money or market already exists",
+        "-4": "not enough money",
         "-5": "fee too low",
         "-6": "duplicate events",
-        "-7": "event already expired"
+        "-7": "event already expired",
+        "-8": "market already exists",
+        "-9": "would expire during non-reporting fork period"
     },
     "sendReputation": {
         "0": "not enough reputation",
         "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
         "-2": "Receiving address doesn't exist"
     },
-    "buyShares": {
-        "-1": "invalid outcome or trading closed",
-        "-2": "entered a -amt of shares",
-        "-3": "not enough money / limit order too low",
-        "-4": "invalid outcome",
-        "-5": "bad commitment or no commitment",
-        "-6": "oracle only branch, no trading"
+    "buy": {
+        "-1": "amount/price bad or no market",
+        "-2": "oracle-only branch",
+        "-4": "not enough money or shares"
     },
-    "sellShares": {
-        "-1": "invalid outcome, trading closed, or you haven't traded in this market",
-        "-2": "entered a -amt of shares",
-        "-3": "you own no shares / limit price too high",
-        "-5": "bad commitment or no commitment",
-        "-6": "oracle only branch, no trading"
+    "sell": {
+        "-1": "amount/price bad or no market",
+        "-2": "oracle only branch",
+        "-4": "not enough money or shares"
     },
-    "WHISPER_POST_FAILED": {
-        "error": 65,
-        "message": "could not post message to whisper"
+    "trade": {
+        "-1": "oracle only branch",
+        "-2": "bad trade hash",
+        "-3": "trader doesn't exist / own shares in this market",
+        "-4": "must buy at least .00000001 in value",
+        "10": "insufficient balance"
     },
     "DB_DELETE_FAILED": {
         "error": 97,
@@ -4213,14 +3994,6 @@ module.exports={
     "NO_MARKET_INFO": {
         "error": 505,
         "message": "could not retrieve market data"
-    },
-    "IPFS_ADD_FAILURE": {
-        "error": 506,
-        "message": "files could not be added to IPFS"
-    },
-    "IPFS_GET_FAILURE": {
-        "error": 507,
-        "message": "could not retrieve file from IPFS"
     },
     "RPC_TIMEOUT": {
         "error": 599,
@@ -5296,8 +5069,10 @@ module.exports = function (network) {
             signature: "isiaiiiis",
             send: true
         },
+
+        // createSingleEventMarket.se
         createSingleEventMarket: {
-            to: contracts.createMarket,
+            to: contracts.createSingleEventMarket,
             method: "createSingleEventMarket",
             signature: "isiiiisiiiiis",
             returns: "hash",
@@ -37384,7 +37159,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.3.0";
+    this.version = "1.3.1";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -37892,21 +37667,27 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         return this.fire(tx, function (marketInfo) {
             if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
             self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
-                info._id = market;
-                unpacked.cb[0](info);
+                if (info.numOutcomes && info.numEvents) {
+                    info._id = market;
+                    unpacked.cb[0](info);
+                } else {
+                    unpacked.cb[0](null);
+                }
             });
         });
     }
     var marketInfo = this.parseMarketInfo(this.fire(tx));
-    if (marketInfo) marketInfo._id = market;
-    return marketInfo;
+    if (marketInfo.numOutcomes && marketInfo.numEvents) {
+        marketInfo._id = market;
+        return marketInfo;
+    } else {
+        return null;
+    }
 };
 Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
-    var len, shift, rawInfo, marketID, self = this;
-    var tx = clone(this.tx.batchGetMarketInfo);
-    tx.params = [marketIDs];
-    if (!this.utils.is_function(callback)) {
-        var marketsArray = this.fire(tx);
+    var self = this;
+    function batchGetMarketInfo(marketsArray) {
+        var len, shift, rawInfo, info, marketID;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return marketsArray;
         }
@@ -37918,32 +37699,23 @@ Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
             shift = totalLen + 1;
             rawInfo = marketsArray.slice(shift, shift + len - 1);
             marketID = marketsArray[shift];
-            marketsInfo[marketID] = this.parseMarketInfo(rawInfo, {combinatorial: true});
-            marketsInfo[marketID]._id = marketID;
-            marketsInfo[marketID].sortOrder = i;
+            info = self.parseMarketInfo(rawInfo);
+            if (info && parseInt(info.numEvents) && info.numOutcomes) {
+                marketsInfo[marketID] = info;
+                marketsInfo[marketID]._id = marketID;
+                marketsInfo[marketID].sortOrder = i;
+            }
             totalLen += len;
         }
         return marketsInfo;
     }
+    var tx = clone(this.tx.batchGetMarketInfo);
+    tx.params = [marketIDs];
+    if (!this.utils.is_function(callback)) {
+        return batchGetMarketInfo(this.fire(tx));
+    }
     this.fire(tx, function (marketsArray) {
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return callback(marketsArray);
-        }
-        var numMarkets = marketIDs.length;
-        var marketsInfo = {};
-        var totalLen = 0;
-        var len, shift, rawInfo, marketID;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            rawInfo = marketsArray.slice(shift, shift + len - 1);
-            marketID = marketsArray[shift];
-            marketsInfo[marketID] = self.parseMarketInfo(rawInfo, {combinatorial: true});
-            marketsInfo[marketID]._id = marketID;
-            marketsInfo[marketID].sortOrder = i;
-            totalLen += len;
-        }
-        callback(marketsInfo);
+        callback(batchGetMarketInfo(marketsArray));
     });
 };
 Augur.prototype.getMarketsInfo = function (options, callback) {
@@ -38919,6 +38691,46 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
             });
         });
     }, onFailed);
+    // var tx = clone(this.tx.createSingleEventMarket);
+    // tx.params = [
+    //     branchId,
+    //     description,
+    //     expDate,
+    //     abi.fix(minValue, "hex"),
+    //     abi.fix(maxValue, "hex"),
+    //     numOutcomes,
+    //     resolution,
+    //     abi.fix(tradingFee, "hex"),
+    //     tags[0],
+    //     tags[1],
+    //     tags[2],
+    //     abi.fix(makerFees, "hex"),
+    //     extraInfo || ""
+    // ];
+    // rpc.gasPrice(function (gasPrice) {
+    //     tx.gasPrice = gasPrice;
+    //     gasPrice = abi.bignum(gasPrice);
+    //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    //     self.transact(tx, onSent, function (res) {
+    //         self.getPeriodLength(branchId, function (periodLength) {
+    //             rpc.getBlock(res.blockNumber, false, function (block) {
+    //                 var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+    //                 res.marketID = self.utils.sha3([
+    //                     tradingPeriod,
+    //                     abi.fix(tradingFee, "hex"),
+    //                     block.timestamp,
+    //                     tags[0],
+    //                     tags[1],
+    //                     tags[2],
+    //                     expDate,
+    //                     new Buffer(description, "utf8").length,
+    //                     description
+    //                 ]);
+    //                 onSuccess(res);
+    //             });
+    //         });
+    //     }, onFailed);
+    // });
 };
 
 // createEvent.se
@@ -39067,7 +38879,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
-    if (rawInfo && rawInfo.length > 14) {
+    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
 
         // all-inclusive except price history
         // info[1] = self.Markets[marketID].currentParticipant
@@ -39087,6 +38899,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[15] = self.Markets[marketID].tag2
         // info[16] = self.Markets[marketID].tag3
         var index = 17;
+        // console.log("rawInfo:", rawInfo);
         info = {
             network: this.network_id || rpc.version(),
             traderCount: parseInt(rawInfo[1]),
@@ -39112,6 +38925,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             winningOutcomes: [],
             description: null
         };
+        // console.log(info);
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
 
@@ -41797,7 +41611,6 @@ module.exports={
 }
 
 },{}],368:[function(require,module,exports){
-(function (process){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -42048,7 +41861,7 @@ module.exports = {
         return this.urlstring(rpc_obj);
     },
 
-    connect: function (rpcinfo, ipcpath, callback, retry) {
+    connect: function (rpcinfo, ipcpath, callback, isRetry) {
         var localnode, self = this;
         if (!ipcpath && is_function(rpcinfo)) {
             callback = rpcinfo;
@@ -42058,10 +41871,9 @@ module.exports = {
             callback = ipcpath;
             ipcpath = null;
         }
-        if (!retry) {
-            rpcinfo = rpcinfo || process.env.AUGUR_HOST;
+        if (!isRetry) {
+            // console.log("attempt 1...");
             if (ipcpath) {
-                this.rpc.balancer = false;
                 this.rpc.ipcpath = ipcpath;
                 if (rpcinfo) {
                     localnode = this.parse_rpcinfo(rpcinfo);
@@ -42074,21 +41886,21 @@ module.exports = {
             }
             if (rpcinfo) {
                 localnode = this.parse_rpcinfo(rpcinfo);
+                // console.log("local node:", localnode);
                 if (localnode) {
                     this.rpc.setLocalNode(localnode);
-                    this.rpc.balancer = false;
                 } else {
+                    console.log("using hosted:");
                     this.rpc.useHostedNode();
-                    this.rpc.balancer = true;
                 }
             } else {
+                console.log("using hosted");
                 this.rpc.useHostedNode();
-                this.rpc.balancer = true;
             }
         } else {
+            console.log("attempt 2...");
             this.rpc.ipcpath = null;
             this.rpc.useHostedNode();
-            this.rpc.balancer = true;
         }
         if (is_function(callback)) {
             async.series([
@@ -42097,7 +41909,7 @@ module.exports = {
             ], function (err) {
                 if (err) {
                     console.error("[async] connect error:", err);
-                    if (!retry) {
+                    if (!isRetry) {
                         return self.connect(rpcinfo, ipcpath, callback, true);
                     }
                     return callback(false);
@@ -42115,7 +41927,7 @@ module.exports = {
                 return true;
             } catch (exc) {
                 console.error("[sync] connect error:", exc);
-                if (!retry) {
+                if (!isRetry) {
                     return this.connect(rpcinfo, ipcpath, callback, true);
                 }
                 return false;
@@ -42139,8 +41951,7 @@ module.exports = {
 
 };
 
-}).call(this,require('_process'))
-},{"_process":212,"async":369,"augur-contracts":6,"ethrpc":370}],369:[function(require,module,exports){
+},{"async":369,"augur-contracts":6,"ethrpc":370}],369:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
 },{"_process":212,"dup":9}],370:[function(require,module,exports){
 (function (process){
@@ -42281,7 +42092,8 @@ module.exports = {
 
     applyReturns: function (returns, result) {
         var res;
-        if (returns && result && result !== "0x") {
+        if (!returns) return result;
+        if (result && result !== "0x") {
             if (result.error) return result;
             returns = returns.toLowerCase();
             res = clone(result);
@@ -43281,11 +43093,11 @@ module.exports = {
         });
     },
 
-    errorCodes: function (tx, response) {
+    errorCodes: function (method, returns, response) {
         if (response) {
             if (response.constructor === Array) {
                 for (var i = 0, len = response.length; i < len; ++i) {
-                    response[i] = this.errorCodes(tx.method, response[i]);
+                    response[i] = this.errorCodes(method, returns, response[i]);
                 }
             } else if (response.name && response.message && response.stack) {
                 response.error = response.name;
@@ -43296,16 +43108,16 @@ module.exports = {
                         message: errors[response]
                     };
                 } else {
-                    if (tx.returns && tx.returns !== "string" ||
+                    if (returns && returns !== "string" ||
                         (response && response.constructor === String &&
                         response.slice(0,2) === "0x")) {
                         var responseNumber = abi.bignum(response);
                         if (responseNumber) {
                             responseNumber = abi.string(responseNumber);
-                            if (errors[tx.method] && errors[tx.method][responseNumber]) {
+                            if (errors[method] && errors[method][responseNumber]) {
                                 response = {
                                     error: responseNumber,
-                                    message: errors[tx.method][responseNumber]
+                                    message: errors[method][responseNumber]
                                 };
                             }
                         }
@@ -43320,13 +43132,13 @@ module.exports = {
         var self = this;
         var tx = abi.copy(itx);
         if (!isFunction(callback)) {
-            var res = this.errorCodes(tx, self.applyReturns(itx.returns, this.invoke(tx)));
+            var res = this.errorCodes(itx.method, itx.returns, this.applyReturns(itx.returns, this.invoke(tx)));
             if (res) return res;
             throw new this.Error(errors.NO_RESPONSE);
         }
         this.invoke(tx, function (res) {
             if (res) {
-                res = self.errorCodes(tx, self.applyReturns(itx.returns, res));
+                res = self.errorCodes(itx.method, itx.returns, self.applyReturns(itx.returns, res));
                 return callback(res);
             }
             callback(errors.NO_RESPONSE);
@@ -43434,62 +43246,46 @@ module.exports = {
                                         });
                                     } else {
 
-                                        // transform callReturn to a number
-                                        var numReturn = self.applyReturns("number", callReturn);
-
-                                        // check if numReturn is an error object
-                                        if (numReturn.constructor === Object && numReturn.error) {
+                                        // check if the call return is an error code
+                                        var errorCheck = self.errorCodes(tx.method, tx.returns, callReturn);
+                                        if (errorCheck.constructor === Object && errorCheck.error) {
                                             self.txs[txhash].status = "failed";
-                                            if (isFunction(onFailed)) onFailed(numReturn);
-                                        } else if (errors[numReturn]) {
+                                            if (isFunction(onFailed)) onFailed(errorCheck);
+                                        } else if (errors[errorCheck]) {
                                             self.txs[txhash].status = "failed";
                                             if (isFunction(onFailed)) onFailed({
-                                                error: numReturn,
-                                                message: errors[numReturn],
+                                                error: errorCheck,
+                                                message: errors[errorCheck],
                                                 tx: tx
                                             });
                                         } else {
                                             try {
 
-                                                // check if numReturn is an error code
-                                                if (numReturn && numReturn.constructor === BigNumber) {
-                                                    numReturn = numReturn.toFixed();
-                                                }
-                                                if (numReturn && errors[tx.method] && errors[tx.method][numReturn]) {
-                                                    self.txs[txhash].status = "failed";
-                                                    if (isFunction(onFailed)) onFailed({
-                                                        error: numReturn,
-                                                        message: errors[tx.method][numReturn],
-                                                        tx: tx
-                                                    });
-                                                } else {
+                                                // no errors found, so transform to the requested
+                                                // return type, specified by "returns" parameter
+                                                self.txs[txhash].callReturn = self.applyReturns(returns, callReturn);
 
-                                                    // no errors found, so transform to the requested
-                                                    // return type, specified by "returns" parameter
-                                                    self.txs[txhash].callReturn = self.applyReturns(returns, callReturn);
+                                                // send the transaction hash and return value back
+                                                // to the client, using the onSent callback
+                                                onSent({
+                                                    txHash: txhash,
+                                                    callReturn: self.txs[txhash].callReturn
+                                                });
 
-                                                    // send the transaction hash and return value back
-                                                    // to the client, using the onSent callback
-                                                    onSent({
-                                                        txHash: txhash,
-                                                        callReturn: self.txs[txhash].callReturn
-                                                    });
-
-                                                    // if an onSuccess callback was supplied, then
-                                                    // poll the network until the transaction is
-                                                    // included in a block (i.e., has a non-null
-                                                    // blockHash field)
-                                                    if (isFunction(onSuccess)) {
-                                                        self.txNotify(
-                                                            self.txs[txhash].callReturn,
-                                                            tx,
-                                                            txhash,
-                                                            returns,
-                                                            onSent,
-                                                            onSuccess,
-                                                            onFailed
-                                                        );
-                                                    }
+                                                // if an onSuccess callback was supplied, then
+                                                // poll the network until the transaction is
+                                                // included in a block (i.e., has a non-null
+                                                // blockHash field)
+                                                if (isFunction(onSuccess)) {
+                                                    self.txNotify(
+                                                        self.txs[txhash].callReturn,
+                                                        tx,
+                                                        txhash,
+                                                        returns,
+                                                        onSent,
+                                                        onSuccess,
+                                                        onFailed
+                                                    );
                                                 }
 
                                             // something went wrong :(
