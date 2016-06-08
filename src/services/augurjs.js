@@ -156,6 +156,7 @@ ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealE
 };
 
 ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
+
 	// load the total number of markets
 	augur.getNumMarketsBranch(branchID, numMarketsRaw => {
 		const numMarkets = parseInt(numMarketsRaw, 10);
@@ -165,6 +166,7 @@ ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
 		getMarketsInfo(branchID, firstStartIndex, chunkSize, numMarkets, isDesc);
 	});
 
+	// load each batch of marketdata sequentially and recursively until complete
 	function getMarketsInfo(branchID, startIndex, chunkSize, numMarkets, isDesc) {
 		augur.getMarketsInfo({
 			branch: branchID,
