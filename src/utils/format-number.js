@@ -1,7 +1,5 @@
-import { MILLIS_PER_BLOCK } from '../modules/app/constants/network';
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	Produces a formatted number object used for display and possibly calculations
+	Produces a formatted number object used for display and calculations
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
@@ -36,21 +34,14 @@ The options object that is passed into `formatNumber` that enables all of this l
 		positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
 		zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
 	}
-*/
 
-export function formatRep(num, opts) {
-	return formatNumber(
-		num,
-		{
-			decimals: 0,
-			decimalsRounded: 0,
-			denomination: 'Rep',
-			positiveSign: true,
-			zeroStyled: false,
-			...opts
-		}
-	);
-}
+TIP
+Sometimes (not always) it is a good idea to use the formatted values in calculations,
+rather than the original input number, so that values match up in the ui. For example, if you are
+adding the numbers 1.11 and 1.44, but displaying them as 1.1 and 1.4, it may look awkward
+if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them using the formatted values.
+
+*/
 
 export function formatEther(num, opts) {
 	return formatNumber(
@@ -59,6 +50,20 @@ export function formatEther(num, opts) {
 			decimals: 2,
 			decimalsRounded: 1,
 			denomination: 'Eth',
+			positiveSign: true,
+			zeroStyled: false,
+			...opts
+		}
+	);
+}
+
+export function formatPercent(num, opts) {
+	return formatNumber(
+		num,
+		{
+			decimals: 1,
+			decimalsRounded: 0,
+			denomination: '%',
 			positiveSign: true,
 			zeroStyled: false,
 			...opts
@@ -80,13 +85,13 @@ export function formatShares(num, opts) {
 	);
 }
 
-export function formatPercent(num, opts) {
+export function formatRep(num, opts) {
 	return formatNumber(
 		num,
 		{
-			decimals: 1,
+			decimals: 0,
 			decimalsRounded: 0,
-			denomination: '%',
+			denomination: 'Rep',
 			positiveSign: true,
 			zeroStyled: false,
 			...opts
@@ -150,23 +155,3 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	return o;
 }
 
-export function makeDateFromBlock(currentBlock, startBlock, startBlockMillisSinceEpoch) {
-	const millis = (currentBlock - startBlock) * MILLIS_PER_BLOCK;
-	const currentMillisSinceEpoch = startBlockMillisSinceEpoch + millis;
-	return new Date(currentMillisSinceEpoch);
-}
-
-export function formatDate(d) {
-	const months = [
-		'Jan', 'Feb', 'Mar',
-		'Apr', 'May', 'Jun',
-		'Jul', 'Aug', 'Sep',
-		'Oct', 'Nov', 'Dec'
-	];
-	const date = (d instanceof Date) ? d : new Date(0);
-	return {
-		value: date,
-		formatted: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`,
-		full: d.toISOString()
-	};
-}
