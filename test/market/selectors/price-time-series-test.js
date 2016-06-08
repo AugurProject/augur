@@ -20,7 +20,7 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
 
 	selector = proxyquire('../../../src/modules/market/selectors/price-time-series.js', {
 		'../../../store': store,
-		'../../../utils/date': mockDate
+		'../../../utils/date-to-block-to-date': mockDate
 	});
 
 	beforeEach(() => {

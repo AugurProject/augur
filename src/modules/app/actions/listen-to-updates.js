@@ -2,7 +2,7 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
-import { loadBasicMarket } from '../../market/actions/load-basic-market';
+import { loadMarket } from '../../market/actions/load-market';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 
 export function listenToUpdates() {
@@ -22,12 +22,10 @@ export function listenToUpdates() {
 
 			// outcome price update, { marketId, outcome (id), price }
 			(errNone, outcomePriceChange) => {
-				if (!outcomePriceChange || !outcomePriceChange.marketId ||
-!outcomePriceChange.outcome || !outcomePriceChange.price) {
+				if (!outcomePriceChange || !outcomePriceChange.marketId || !outcomePriceChange.outcome || !outcomePriceChange.price) {
 					return;
 				}
-				dispatch(updateOutcomePrice(outcomePriceChange.marketId,
-outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
+				dispatch(updateOutcomePrice(outcomePriceChange.marketId, outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
 			},
 
 			// new market, result = { blockNumber, marketId }
@@ -35,7 +33,7 @@ outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
 				if (!result.marketId) {
 					return;
 				}
-				dispatch(loadBasicMarket(result.marketId));
+				dispatch(loadMarket(result.marketId));
 			}
 		);
 	};

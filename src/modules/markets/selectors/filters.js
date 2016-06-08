@@ -10,8 +10,7 @@ export default function () {
 	return selectFilters(filteredMarkets, selectedFilters, selectedTags, store.dispatch);
 }
 
-export const selectFilters = memoizerific(1)(
-(markets, selectedFilters, selectedTags, dispatch) => {
+export const selectFilters = memoizerific(1)((markets, selectedFilters, selectedTags, dispatch) => {
 	const basicCounts = {
 		isOpen: 0,
 		isExpired: 0,

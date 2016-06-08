@@ -1,12 +1,7 @@
 import augur from 'augur.js';
-import abi from 'augur-abi';
 import BigNumber from 'bignumber.js';
 
-import {
-	SUCCESS,
-	CREATING_MARKET
-} from '../modules/transactions/constants/statuses';
-import { BUY_SHARES } from "../modules/transactions/constants/types";
+import { SUCCESS, CREATING_MARKET } from '../modules/transactions/constants/statuses';
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
@@ -15,7 +10,7 @@ ex.connect = function connect(cb) {
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	let localnode = null;
+	const localnode = null;
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL === 'null') {
 			augur.rpc.wsUrl = null;
@@ -139,72 +134,64 @@ ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealE
 		if (!result || result.error) {
 			return cbEther(result);
 		}
-		return cbEther(null, abi.bignum(result).toNumber());
+		return cbEther(null, augur.abi.bignum(result).toNumber());
 	});
 
 	augur.getRepBalance(branchID, accountID, (result) => {
 		if (!result || result.error) {
 			return cbRep(result);
 		}
-		return cbRep(null, abi.bignum(result).toNumber());
+		return cbRep(null, augur.abi.bignum(result).toNumber());
 	});
 
 	augur.rpc.balance(accountID, (wei) => {
 		if (!wei || wei.error) {
 			return cbRealEther(wei);
 		}
-		return cbRealEther(null, abi.bignum(wei).dividedBy(new BigNumber(10).toPower(18)).toNumber());
+		return cbRealEther(null, augur.abi.bignum(wei).dividedBy(new BigNumber(10).toPower(18)).toNumber());
 	});
 };
 
-ex.loadNumMarkets = function loadNumMarkets(branchID, cb) {
-	augur.getNumMarketsBranch(branchID, numMarkets => {
-		cb(null, parseInt(numMarkets, 10));
+ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
+
+	// load the total number of markets
+	augur.getNumMarketsBranch(branchID, numMarketsRaw => {
+		const numMarkets = parseInt(numMarketsRaw, 10);
+		const firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+
+		// load markets in batches
+		getMarketsInfo(branchID, firstStartIndex, chunkSize, numMarkets, isDesc);
 	});
-};
 
-ex.loadMarkets = function loadMarkets(branchID, chunkSize, totalMarkets, isDesc, chunkCB) {
-	const firstStartIndex = isDesc ? totalMarkets - chunkSize + 1 : 0;
-	getMarketsInfo(branchID, firstStartIndex, chunkSize, totalMarkets, isDesc, chunkCB);
-
-	function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, chunkCB) {
+	// load each batch of marketdata sequentially and recursively until complete
+	function getMarketsInfo(branchID, startIndex, chunkSize, numMarkets, isDesc) {
 		augur.getMarketsInfo({
 			branch: branchID,
 			offset: startIndex,
 			numMarketsToLoad: chunkSize
 		}, marketsData => {
-			const now = 0 - (Date.now() + window.performance.now());
-
 			if (!marketsData || marketsData.error) {
-				return chunkCB(marketsData);
+				chunkCB(marketsData);
+			} else {
+				chunkCB(null, marketsData);
 			}
-			// had to change this to return something, doesn't seem to break anything.
-			Object.keys(marketsData).forEach((key, i) => {
-				marketsData[key].creationSortOrder = now + i;
-				return marketsData[key].creationSortOrder;
-			});
-
-			chunkCB(null, marketsData);
 
 			if (isDesc && startIndex > 0) {
-				setTimeout(() => getMarketsInfo(
-					branchID,
-					startIndex - chunkSize,
-					chunkSize,
-					totalMarkets,
-					isDesc
-				), TIMEOUT_MILLIS);
-			} else if (!isDesc && startIndex < totalMarkets) {
-				setTimeout(() => getMarketsInfo(
-					branchID,
-					startIndex + chunkSize,
-					chunkSize,
-					totalMarkets,
-					isDesc
-				), TIMEOUT_MILLIS);
+				setTimeout(() => getMarketsInfo(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc), TIMEOUT_MILLIS);
+			} else if (!isDesc && startIndex < numMarkets) {
+				setTimeout(() => getMarketsInfo(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc), TIMEOUT_MILLIS);
 			}
 		});
 	}
+};
+
+ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
+	augur.batchGetMarketInfo(marketIDs, (res) => {
+		if (res && res.error) {
+			cb(res);
+		}
+		cb(null, res);
+	});
 };
 
 ex.loadMarket = function loadMarket(marketID, cb) {
@@ -212,8 +199,7 @@ ex.loadMarket = function loadMarket(marketID, cb) {
 		if (marketInfo && marketInfo.error) {
 			return cb(marketInfo);
 		}
-
-		cb(null, { ...marketInfo || {}, creationSortOrder: Date.now() + window.performance.now() });
+		cb(null, marketInfo);
 	});
 };
 
@@ -331,7 +317,7 @@ ex.trade = function (marketId, marketOrderBook, tradeOrders, outcomePositions,
 ex.tradeShares = function tradeShares(branchID, marketID, outcomeID, numShares, limit, cap, cb) {
 	augur.trade({
 		branch: branchID,
-		market: abi.hex(marketID),
+		market: augur.abi.hex(marketID),
 		outcome: outcomeID,
 		amount: numShares,
 		limit,
@@ -446,7 +432,7 @@ ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(
 	// load market-ids related to each event-id one at a time
 	(function processEventID() {
 		const eventID = eventIDs.pop();
-		const randomNumber = abi.hex(abi.bignum(accountID).plus(abi.bignum(eventID)));
+		const randomNumber = augur.abi.hex(augur.abi.bignum(accountID).plus(augur.abi.bignum(eventID)));
 		const diceroll = augur.rpc.sha3(randomNumber, true);
 
 		function finish() {
@@ -473,7 +459,7 @@ ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(
 				console.log('ERROR: calculateReportingThreshold', threshold);
 				return finish();
 			}
-			if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+			if (augur.abi.bignum(diceroll).lt(augur.abi.bignum(threshold))) {
 				augur.getReportHash(branchID, reportPeriod, accountID, eventID, (reportHash) => {
 					if (reportHash && reportHash !== '0x0') {
 						pendingReportEventIDs[eventID] = { reportHash };
@@ -490,9 +476,9 @@ ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(
 };
 
 ex.submitReportHash = function submitReportHash(branchID, accountID, event, report, cb) {
-	const minValue = abi.bignum(event.minValue);
-	const maxValue = abi.bignum(event.maxValue);
-	const numOutcomes = abi.bignum(event.numOutcomes);
+	const minValue = augur.abi.bignum(event.minValue);
+	const maxValue = augur.abi.bignum(event.maxValue);
+	const numOutcomes = augur.abi.bignum(event.numOutcomes);
 	let rescaledReportedOutcome;
 
 	// Re-scale scalar/categorical reports so they fall between 0 and 1
@@ -500,14 +486,14 @@ ex.submitReportHash = function submitReportHash(branchID, accountID, event, repo
 		rescaledReportedOutcome = report.reportedOutcomeID;
 	} else {
 		if (report.isScalar) {
-			rescaledReportedOutcome = abi.bignum(report.reportedOutcomeID)
+			rescaledReportedOutcome = augur.abi.bignum(report.reportedOutcomeID)
 												.minus(minValue)
 												.dividedBy(maxValue.minus(minValue))
 												.toFixed();
 		} else if (report.isCategorical) {
-			rescaledReportedOutcome = abi.bignum(report.reportedOutcomeID)
-												.minus(abi.bignum(1))
-												.dividedBy(numOutcomes.minus(abi.bignum(1)))
+			rescaledReportedOutcome = augur.abi.bignum(report.reportedOutcomeID)
+												.minus(augur.abi.bignum(1))
+												.dividedBy(numOutcomes.minus(augur.abi.bignum(1)))
 												.toFixed();
 		} else {
 			rescaledReportedOutcome = report.reportedOutcomeID;

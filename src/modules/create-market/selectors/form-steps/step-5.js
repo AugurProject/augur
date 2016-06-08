@@ -1,4 +1,5 @@
-import { formatNumber, formatPercent, formatDate } from '../../../../utils/format-number';
+import { formatNumber, formatPercent } from '../../../../utils/format-number';
+import { formatDate } from '../../../../utils/format-date';
 
 import { MILLIS_PER_BLOCK } from '../../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../markets/constants/market-types';

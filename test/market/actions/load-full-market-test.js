@@ -18,13 +18,13 @@ describe(`modules/market/actions/load-full-market.js`, () => {
 	// let mockLoadMarket = {};
 	// let mockPriceHistory= {};
 	// let mockMarketsData = {};
-	// loadBasicMarket
+	// loadMarket
 	// loadPriceHistory
 	// updateMarketsData
 
 	// action = proxyquire('../../../src/modules/market/actions/load-full-market', {
 	//   '../../../services/augurjs': mockAugurJS,
-	//   '../../market/actions/load-basic-market': mockLoadMarket,
+	//   '../../market/actions/load-market': mockLoadMarket,
 	//   '../../market/actions/load-price-history': mockPriceHistory,
 	//   '../../markets/actions/update-markets-data': mockMarketsData
 	// });

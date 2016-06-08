@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 
 import store from '../../../store';
 
-import { blockToDate } from '../../../utils/date';
+import { blockToDate } from '../../../utils/date-to-block-to-date';
 
 /**
  * Prepares data structure for Highcharts

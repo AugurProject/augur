@@ -22,7 +22,7 @@ export const selectPositionsSummary = memoizerific(20)(
 				decimalsRounded: 0,
 				denomination: 'Positions',
 				positiveSign: false,
-				zero: true
+				zeroStyled: false
 			}),
 		qtyShares: formatShares(qtyShares),
 		purchasePrice: formatEther(purchasePrice),

@@ -163,7 +163,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 				marketDescription: market.description,
 				outcomeName: outcome.name.toUpperCase(),
 				avgPrice: formatEther(limitPrice),
-				feeToPay: formatNumber(0, { zero: true }) // no fee for market-making
+				feeToPay: formatNumber(0, { zeroStyled: false }) // no fee for market-making
 			},
 			(transactionID) => dispatch(trade(
 				transactionID, market.id, outcome.id,

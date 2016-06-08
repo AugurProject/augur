@@ -58,12 +58,14 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	});
 
 	let fakeLoadMarket = {};
-	fakeLoadMarket.loadBasicMarket = sinon.stub().returns(true);
+	fakeLoadMarket.loadMarket = sinon.stub().returns({
+		type: 'loadMarket'
+	});
 
 	action = proxyquire('../../../src/modules/create-market/actions/submit-new-market', {
 		'../../transactions/actions/add-create-market-transaction': fakeInclude,
 		'../../../services/augurjs': fakeAugurJS,
-		'../../market/actions/load-basic-market': fakeLoadMarket
+		'../../market/actions/load-market': fakeLoadMarket
 	});
 
 	beforeEach(() => {
@@ -130,9 +132,11 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		clock.tick(20000);
 		assert.deepEqual(store.getActions(), [{
 			type: 'CLEAR_MAKE_IN_PROGRESS'
-		}, true], `Didn't dispatch the right actions for a successfuly created binary market`);
+		}, {
+			type: 'loadMarket'
+		}], `Didn't dispatch the right actions for a successfuly created binary market`);
 		assert(fakeAugurJS.createMarket.calledOnce, `createMarket wasn't called one time after dispatching a createMarket action`);
-		assert(fakeLoadMarket.loadBasicMarket.calledOnce, `loadBasicMarket wasn't called once as expected`);
+		assert(fakeLoadMarket.loadMarket.calledOnce, `loadMarket wasn't called once as expected`);
 
 		store.clearActions();
 
