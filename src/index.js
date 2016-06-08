@@ -23,7 +23,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.3.2";
+    this.version = "1.3.3";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -531,7 +531,7 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         return this.fire(tx, function (marketInfo) {
             if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
             self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
-                if (info.numOutcomes && info.numEvents) {
+                if (info.numEvents && info.numOutcomes) {
                     unpacked.cb[0](info);
                 } else {
                     unpacked.cb[0](null);
@@ -898,10 +898,7 @@ Augur.prototype.generateOrderBook = function (p, cb) {
         }
         var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
         if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
-            return onFailed({
-                error: 42,
-                message: "insufficient liquidity to generate order book"
-            });
+            return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
         }
         var buyPrices = new Array(numOutcomes);
         var sellPrices = new Array(numOutcomes);
@@ -910,6 +907,10 @@ Augur.prototype.generateOrderBook = function (p, cb) {
         var shares = new BigNumber(0);
         var i, j, buyPrice, sellPrice, outcomeShares;
         for (i = 0; i < numOutcomes; ++i) {
+            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
+                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+                return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
+            }
             buyPrice = initialFairPrices[i].minus(halfPriceWidth);
             sellPrice = initialFairPrices[i].plus(halfPriceWidth);
             numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
@@ -1760,7 +1761,6 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[15] = self.Markets[marketID].tag2
         // info[16] = self.Markets[marketID].tag3
         var index = 17;
-        // console.log("rawInfo:", rawInfo);
         info = {
             network: this.network_id || rpc.version(),
             traderCount: parseInt(rawInfo[1]),
@@ -1786,7 +1786,6 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             winningOutcomes: [],
             description: null
         };
-        // console.log(info);
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
 
