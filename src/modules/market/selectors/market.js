@@ -211,13 +211,13 @@ export const assembleMarket = memoizerific(1000)((
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-	o.tags = o.tags.map(tag => {
+	o.tags = (o.tags || []).map(tag => {
 		const obj = {
-			name: tag,
+			name: tag && tag.toString().toLowerCase().trim(),
 			onClick: () => dispatch(toggleTag(tag))
 		};
 		return obj;
-	});
+	}).filter(tag => !!tag.name);
 
 	o.priceTimeSeries = selectPriceTimeSeries(o.outcomes, marketPriceHistory);
 

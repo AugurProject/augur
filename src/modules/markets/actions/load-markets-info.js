@@ -28,13 +28,10 @@ export function loadMarketsInfo(marketIDs) {
 				// parse out event, currently we only support single event markets, no combinatorial
 				parseEvent(marketData);
 
-				// parse out non-empty tags and make them lowercase
-				marketData.tags = (marketData.tags || []).map(tag => tag && tag.toLowerCase().trim()).filter(tag => !!tag);
-
 				// transform array of outcomes into an object and add their names
 				finalOutcomesData[marketID] = parseOutcomes(marketData);
 
-				// save market without outcomes
+				// save market (without outcomes)
 				finalMarketsData[marketID] = marketData;
 			});
 
