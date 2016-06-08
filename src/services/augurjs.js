@@ -1,10 +1,7 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
 
-import {
-	SUCCESS,
-	CREATING_MARKET
-} from '../modules/transactions/constants/statuses';
+import { SUCCESS, CREATING_MARKET } from '../modules/transactions/constants/statuses';
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
@@ -13,7 +10,7 @@ ex.connect = function connect(cb) {
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	var localnode = null;
+	const localnode = null;
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL === 'null') {
 			augur.rpc.wsUrl = null;

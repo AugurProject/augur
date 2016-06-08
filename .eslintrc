@@ -15,5 +15,6 @@
     "no-use-before-define": 0,
     "max-len": 0,
     "no-shadow": 0,
+    "padded-blocks": 0
   }
 }
