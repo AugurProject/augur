@@ -23,7 +23,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.3.0";
+    this.version = "1.3.2";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -531,21 +531,25 @@ Augur.prototype.getMarketInfo = function (market, callback) {
         return this.fire(tx, function (marketInfo) {
             if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
             self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
-                info._id = market;
-                unpacked.cb[0](info);
+                if (info.numOutcomes && info.numEvents) {
+                    unpacked.cb[0](info);
+                } else {
+                    unpacked.cb[0](null);
+                }
             });
         });
     }
     var marketInfo = this.parseMarketInfo(this.fire(tx));
-    if (marketInfo) marketInfo._id = market;
-    return marketInfo;
+    if (marketInfo.numOutcomes && marketInfo.numEvents) {
+        return marketInfo;
+    } else {
+        return null;
+    }
 };
 Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
-    var len, shift, rawInfo, marketID, self = this;
-    var tx = clone(this.tx.batchGetMarketInfo);
-    tx.params = [marketIDs];
-    if (!this.utils.is_function(callback)) {
-        var marketsArray = this.fire(tx);
+    var self = this;
+    function batchGetMarketInfo(marketsArray) {
+        var len, shift, rawInfo, info, marketID;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return marketsArray;
         }
@@ -557,32 +561,22 @@ Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
             shift = totalLen + 1;
             rawInfo = marketsArray.slice(shift, shift + len - 1);
             marketID = marketsArray[shift];
-            marketsInfo[marketID] = this.parseMarketInfo(rawInfo, {combinatorial: true});
-            marketsInfo[marketID]._id = marketID;
-            marketsInfo[marketID].sortOrder = i;
+            info = self.parseMarketInfo(rawInfo);
+            if (info && parseInt(info.numEvents) && info.numOutcomes) {
+                marketsInfo[marketID] = info;
+                marketsInfo[marketID].sortOrder = i;
+            }
             totalLen += len;
         }
         return marketsInfo;
     }
+    var tx = clone(this.tx.batchGetMarketInfo);
+    tx.params = [marketIDs];
+    if (!this.utils.is_function(callback)) {
+        return batchGetMarketInfo(this.fire(tx));
+    }
     this.fire(tx, function (marketsArray) {
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return callback(marketsArray);
-        }
-        var numMarkets = marketIDs.length;
-        var marketsInfo = {};
-        var totalLen = 0;
-        var len, shift, rawInfo, marketID;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            rawInfo = marketsArray.slice(shift, shift + len - 1);
-            marketID = marketsArray[shift];
-            marketsInfo[marketID] = self.parseMarketInfo(rawInfo, {combinatorial: true});
-            marketsInfo[marketID]._id = marketID;
-            marketsInfo[marketID].sortOrder = i;
-            totalLen += len;
-        }
-        callback(marketsInfo);
+        callback(batchGetMarketInfo(marketsArray));
     });
 };
 Augur.prototype.getMarketsInfo = function (options, callback) {
@@ -1861,6 +1855,46 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
             });
         });
     }, onFailed);
+    // var tx = clone(this.tx.createSingleEventMarket);
+    // tx.params = [
+    //     branchId,
+    //     description,
+    //     expDate,
+    //     abi.fix(minValue, "hex"),
+    //     abi.fix(maxValue, "hex"),
+    //     numOutcomes,
+    //     resolution,
+    //     abi.fix(tradingFee, "hex"),
+    //     tags[0],
+    //     tags[1],
+    //     tags[2],
+    //     abi.fix(makerFees, "hex"),
+    //     extraInfo || ""
+    // ];
+    // rpc.gasPrice(function (gasPrice) {
+    //     tx.gasPrice = gasPrice;
+    //     gasPrice = abi.bignum(gasPrice);
+    //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    //     self.transact(tx, onSent, function (res) {
+    //         self.getPeriodLength(branchId, function (periodLength) {
+    //             rpc.getBlock(res.blockNumber, false, function (block) {
+    //                 var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+    //                 res.marketID = self.utils.sha3([
+    //                     tradingPeriod,
+    //                     abi.fix(tradingFee, "hex"),
+    //                     block.timestamp,
+    //                     tags[0],
+    //                     tags[1],
+    //                     tags[2],
+    //                     expDate,
+    //                     new Buffer(description, "utf8").length,
+    //                     description
+    //                 ]);
+    //                 onSuccess(res);
+    //             });
+    //         });
+    //     }, onFailed);
+    // });
 };
 
 // createEvent.se
@@ -2009,7 +2043,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
     var OUTCOMES_FIELDS = 2;
     var WINNING_OUTCOMES_FIELDS = 8;
     var info = {};
-    if (rawInfo && rawInfo.length > 14) {
+    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
 
         // all-inclusive except price history
         // info[1] = self.Markets[marketID].currentParticipant
@@ -2029,6 +2063,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
         // info[15] = self.Markets[marketID].tag2
         // info[16] = self.Markets[marketID].tag3
         var index = 17;
+        // console.log("rawInfo:", rawInfo);
         info = {
             network: this.network_id || rpc.version(),
             traderCount: parseInt(rawInfo[1]),
@@ -2054,6 +2089,7 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             winningOutcomes: [],
             description: null
         };
+        // console.log(info);
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
 

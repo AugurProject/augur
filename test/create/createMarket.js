@@ -44,7 +44,7 @@ describe("Integration tests", function () {
                                 assert(r.callReturn);
                             },
                             onSuccess: function (r) {
-                                // console.log("createEvent success:", r);
+                                console.log("createEvent success:", r);
                                 var eventID = r.callReturn;
                                 assert.strictEqual(augur.getCreator(eventID), augur.from);
                                 assert.strictEqual(augur.getDescription(eventID), t.description);
@@ -62,15 +62,17 @@ describe("Integration tests", function () {
                                         assert(res.callReturn);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("createMarket success:", res);
+                                        console.log("createMarket success:", res);
                                         var marketID = res.marketID;
                                         assert.strictEqual(augur.getCreator(marketID), augur.from);
                                         assert.strictEqual(augur.getDescription(marketID), t.description);
                                         augur.getMarketEvents(marketID, function (eventList) {
+                                            console.log("market events:", eventList);
                                             assert.isArray(eventList);
                                             assert.strictEqual(eventList.length, 1);
                                             assert.strictEqual(eventList[0], eventID);
                                             augur.getMarketInfo(marketID, function (info) {
+                                                console.log("market info:", info);
                                                 if (info.error) return done(info);
                                                 assert.isArray(info.events);
                                                 assert.strictEqual(info.events.length, 1);
@@ -108,7 +110,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "为什么有这么严重吗？~|>€|☃|:Dlel",
+                    description: "为什么有这么严重吗？~|>€|☃|:D",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
@@ -121,7 +123,7 @@ describe("Integration tests", function () {
                 });
                 test({
                     branch: augur.branches.dev,
-                    description: "なぜこれほど深刻な？ €☃...~|>D:|€|☃lel",
+                    description: "なぜこれほど深刻な？ €☃...~|>D:|€|☃",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
                     maxValue: 2,
@@ -399,133 +401,133 @@ describe("Integration tests", function () {
                 });
             });
 
-            // describe("combinatorial", function () {
+            describe("combinatorial", function () {
 
-            //     var test = function (t) {
-            //         it(t.numEvents + "-event market", function (done) {
-            //             this.timeout(tools.TIMEOUT*8);
-            //             var events = [];
-            //             async.eachSeries(t.events, function (event, nextEvent) {
-            //                 augur.createEvent({
-            //                     branchId: t.branch,
-            //                     description: event.description,
-            //                     expDate: event.expDate,
-            //                     minValue: event.minValue,
-            //                     maxValue: event.maxValue,
-            //                     numOutcomes: event.numOutcomes,
-            //                     onSent: function (r) {
-            //                         assert(r.txHash);
-            //                         assert(r.callReturn);
-            //                     },
-            //                     onSuccess: function (r) {
-            //                         var eventID = r.callReturn;
-            //                         assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
-            //                         assert.strictEqual(augur.getDescription(eventID), event.description);
-            //                         events.push(eventID);
-            //                         nextEvent();
-            //                     },
-            //                     onFailed: nextEvent
-            //                 });
-            //             }, function (err) {
-            //                 if (err) return done(err);
-            //                 var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
-            //                 augur.createMarket({
-            //                     branchId: t.branch,
-            //                     description: t.description,
-            //                     tradingFee: t.tradingFee,
-            //                     makerFees: t.makerFees,
-            //                     tags: t.tags,
-            //                     extraInfo: t.extraInfo,
-            //                     events: events,
-            //                     onSent: function (res) {
-            //                         assert(res.txHash);
-            //                         assert(res.callReturn);
-            //                     },
-            //                     onSuccess: function (res) {
-            //                         var marketID = res.callReturn;
-            //                         assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-            //                         assert.strictEqual(augur.getDescription(marketID), t.description);
-            //                         assert.strictEqual(t.numEvents, parseInt(augur.getNumEvents(marketID)));
-            //                         augur.getMarketEvents(marketID, function (eventList) {
-            //                             assert.isArray(eventList);
-            //                             assert.strictEqual(eventList.length, t.numEvents);
-            //                             for (var i = 0, len = eventList.length; i < len; ++i) {
-            //                                 assert.strictEqual(eventList[i], events[i]);
-            //                             }
-            //                             augur.getMarketInfo(marketID, function (info) {
-            //                                 assert.notProperty(info, "error");
-            //                                 assert.isArray(info.events);
-            //                                 assert.strictEqual(info.events.length, t.numEvents);
-            //                                 for (var i = 0, len = info.events.length; i < len; ++i) {
-            //                                     assert.strictEqual(info.events[i].type, t.events[i].type);
-            //                                 }
-            //                                 assert.strictEqual(info.type, "combinatorial");
-            //                                 done();
-            //                             });
-            //                         });
-            //                     },
-            //                     onFailed: function (err) {
-            //                         done(new Error(tools.pp(err)));
-            //                     }
-            //                 });
-            //             });
-            //         });
-            //     };
+                var test = function (t) {
+                    it(t.numEvents + "-event market", function (done) {
+                        this.timeout(tools.TIMEOUT*8);
+                        var events = [];
+                        async.eachSeries(t.events, function (event, nextEvent) {
+                            augur.createEvent({
+                                branchId: t.branch,
+                                description: event.description,
+                                expDate: event.expDate,
+                                minValue: event.minValue,
+                                maxValue: event.maxValue,
+                                numOutcomes: event.numOutcomes,
+                                onSent: function (r) {
+                                    assert(r.txHash);
+                                    assert(r.callReturn);
+                                },
+                                onSuccess: function (r) {
+                                    var eventID = r.callReturn;
+                                    assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
+                                    assert.strictEqual(augur.getDescription(eventID), event.description);
+                                    events.push(eventID);
+                                    nextEvent();
+                                },
+                                onFailed: nextEvent
+                            });
+                        }, function (err) {
+                            if (err) return done(err);
+                            var initialLiquidity = t.initialLiquidityFloor + Math.round(Math.random() * 10);
+                            augur.createMarket({
+                                branchId: t.branch,
+                                description: t.description,
+                                tradingFee: t.tradingFee,
+                                makerFees: t.makerFees,
+                                tags: t.tags,
+                                extraInfo: t.extraInfo,
+                                events: events,
+                                onSent: function (res) {
+                                    assert(res.txHash);
+                                    assert(res.callReturn);
+                                },
+                                onSuccess: function (res) {
+                                    var marketID = res.callReturn;
+                                    assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+                                    assert.strictEqual(augur.getDescription(marketID), t.description);
+                                    assert.strictEqual(t.numEvents, parseInt(augur.getNumEvents(marketID)));
+                                    augur.getMarketEvents(marketID, function (eventList) {
+                                        assert.isArray(eventList);
+                                        assert.strictEqual(eventList.length, t.numEvents);
+                                        for (var i = 0, len = eventList.length; i < len; ++i) {
+                                            assert.strictEqual(eventList[i], events[i]);
+                                        }
+                                        augur.getMarketInfo(marketID, function (info) {
+                                            assert.notProperty(info, "error");
+                                            assert.isArray(info.events);
+                                            assert.strictEqual(info.events.length, t.numEvents);
+                                            for (var i = 0, len = info.events.length; i < len; ++i) {
+                                                assert.strictEqual(info.events[i].type, t.events[i].type);
+                                            }
+                                            assert.strictEqual(info.type, "combinatorial");
+                                            done();
+                                        });
+                                    });
+                                },
+                                onFailed: function (err) {
+                                    done(new Error(tools.pp(err)));
+                                }
+                            });
+                        });
+                    });
+                };
 
-            //     test({
-            //         branch: augur.branches.dev,
-            //         numEvents: 2,
-            //         events: [{
-            //             type: "scalar",
-            //             description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
-            //             expDate: new Date("1/2/2018").getTime() / 1000,
-            //             minValue: 0,
-            //             maxValue: 1000000,
-            //             numOutcomes: 2
-            //         }, {
-            //             type: "scalar",
-            //             description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
-            //             expDate: new Date("1/2/2018").getTime() / 1000,
-            //             minValue: 700,
-            //             maxValue: 5000,
-            //             numOutcomes: 2,
-            //                 extraInfo: "Vast quantities of methane are normally locked into the Earth's crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller \"burps\" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide.",
-            //                 tags: ["climate", "methane", "atmosphere"]
-            //         }],
-            //         description: "Is atmospheric methane concentration correlated to the extinction rates of marine species?",
-            //         alpha: "0.0079",
-            //         tradingFee: "0.03",
-            //         initialLiquidityFloor: 53
-            //     });
-            //     test({
-            //         branch: augur.branches.dev,
-            //         numEvents: 3,
-            //         events: [{
-            //             type: "scalar",
-            //             description: "How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?",
-            //             expDate: new Date("1/1/2021").getTime() / 1000,
-            //             minValue: 0,
-            //             maxValue: 30,
-            //             numOutcomes: 2
-            //         }, {
-            //             type: "binary",
-            //             description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
-            //             expDate: new Date("1/1/2021").getTime() / 1000,
-            //             minValue: 1,
-            //             maxValue: 2,
-            //             numOutcomes: 2
-            //         }, {
-            //             type: "categorical",
-            //             description: "What will be the number one killer in the United States by January 1, 2025? ~|> cancer, heart attacks, infectious diseases, starvation, lava, other",
-            //             expDate: new Date("1/2/2025").getTime() / 1000,
-            //             minValue: 0,
-            //             maxValue: 1,
-            //             numOutcomes: 6
-            //         }],
-            //         description: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
-            //         tradingFee: "0.025"
-            //     });
-            // });
+                test({
+                    branch: augur.branches.dev,
+                    numEvents: 2,
+                    events: [{
+                        type: "scalar",
+                        description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
+                        expDate: new Date("1/2/2018").getTime() / 1000,
+                        minValue: 0,
+                        maxValue: 1000000,
+                        numOutcomes: 2
+                    }, {
+                        type: "scalar",
+                        description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
+                        expDate: new Date("1/2/2018").getTime() / 1000,
+                        minValue: 700,
+                        maxValue: 5000,
+                        numOutcomes: 2,
+                            extraInfo: "Vast quantities of methane are normally locked into the Earth's crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller \"burps\" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide.",
+                            tags: ["climate", "methane", "atmosphere"]
+                    }],
+                    description: "Is atmospheric methane concentration correlated to the extinction rates of marine species?",
+                    alpha: "0.0079",
+                    tradingFee: "0.03",
+                    initialLiquidityFloor: 53
+                });
+                test({
+                    branch: augur.branches.dev,
+                    numEvents: 3,
+                    events: [{
+                        type: "scalar",
+                        description: "How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?",
+                        expDate: new Date("1/1/2021").getTime() / 1000,
+                        minValue: 0,
+                        maxValue: 30,
+                        numOutcomes: 2
+                    }, {
+                        type: "binary",
+                        description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
+                        expDate: new Date("1/1/2021").getTime() / 1000,
+                        minValue: 1,
+                        maxValue: 2,
+                        numOutcomes: 2
+                    }, {
+                        type: "categorical",
+                        description: "What will be the number one killer in the United States by January 1, 2025? ~|> cancer, heart attacks, infectious diseases, starvation, lava, other",
+                        expDate: new Date("1/2/2025").getTime() / 1000,
+                        minValue: 0,
+                        maxValue: 1,
+                        numOutcomes: 6
+                    }],
+                    description: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
+                    tradingFee: "0.025"
+                });
+            });
         });
     }
 });

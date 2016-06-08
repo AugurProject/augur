@@ -59,18 +59,18 @@ describe("Integration tests", function () {
             it("async", function (done) {
                 this.timeout(tools.TIMEOUT);
                 augur[method].apply(augur, params.concat(function (output) {
-                    test(errorCheck(output, done));
+                    test(errorCheck(output, done), params);
                 }));
             });
             it("sync", function (done) {
                 this.timeout(tools.TIMEOUT);
                 var output = augur[method].apply(augur, params);
-                test(errorCheck(output, done));
+                test(errorCheck(output, done), params);
             });
         });
     };
 
-    var testMarketInfo = function (info) {
+    var testMarketInfo = function (market, info) {
         var r;
         assert(info.constructor === Array || info.constructor === Object);
         if (info.constructor === Array) {
@@ -78,7 +78,6 @@ describe("Integration tests", function () {
             info = augur.rpc.encodeResult(info);
             assert.strictEqual(parseInt(info[7]), parseInt(branchId));
             r = augur.parseMarketInfo(info);
-            r._id = abi.hex(info[0]);
             if (r.numEvents > 1) {
                 var txList = new Array(r.numEvents);
                 for (var i = 0; i < r.numEvents; ++i) {
@@ -93,9 +92,7 @@ describe("Integration tests", function () {
         } else {
             r = info;
         }
-        var market = r._id;
         assert.isObject(r);
-        assert.property(r, "_id");
         assert.property(r, "network");
         assert(r.network === "7" || r.network === "10101" || r.network === "2");
         assert.property(r, "traderCount");
@@ -162,8 +159,8 @@ describe("Integration tests", function () {
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     });
     describe("getMarketInfo", function () {
-        var test = function (t) {
-            testMarketInfo(t.output);
+        var test = function (t, params) {
+            testMarketInfo(params[0], t.output);
             t.done();
         };
         for (var i = 0; i < numMarkets; ++i) {
@@ -171,25 +168,15 @@ describe("Integration tests", function () {
         }
     });
     describe("batchGetMarketInfo", function () {
-        var test = function (t) {
+        var test = function (t, params) {
             for (var market in t.output) {
                 if (!t.output.hasOwnProperty(market)) continue;
-                testMarketInfo(t.output[market]);
+                testMarketInfo(market, t.output[market]);
             }
             t.done();
         };
         runtests(this.title, test, markets);
     });
-    if (!process.env.CONTINUOUS_INTEGRATION) {
-        describe("getOrderBook", function () {
-            var test = function (t) {
-                assert.isObject(t.output);
-            };
-            for (var i = 0; i < numMarkets; ++i) {
-                runtests(this.title, test, markets[i]);
-            }
-        });
-    }
     describe("getMarketsInfo", function () {
         var test = function (info, options, done) {
             if (utils.is_function(options) && !done) {
@@ -204,7 +191,6 @@ describe("Integration tests", function () {
             for (var marketId in info) {
                 if (!info.hasOwnProperty(marketId)) continue;
                 market = info[marketId];
-                assert.isString(market._id);
                 assert.isNumber(market.tradingPeriod);
                 assert.isString(market.tradingFee);
                 assert.isNumber(market.creationTime);
@@ -281,4 +267,14 @@ describe("Integration tests", function () {
             });
         });
     });
+    if (!process.env.CONTINUOUS_INTEGRATION) {
+        describe("getOrderBook", function () {
+            var test = function (t) {
+                assert.isObject(t.output);
+            };
+            for (var i = 0; i < numMarkets; ++i) {
+                runtests(this.title, test, markets[i]);
+            }
+        });
+    }
 });
