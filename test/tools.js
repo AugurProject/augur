@@ -80,20 +80,21 @@ module.exports = {
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
             // ipcpath = process.env.GETH_IPC;
+            augur.rpc.wsUrl = "ws://127.0.0.1:8546";
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
         }
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
-        augur.rpc.wsUrl = "ws://127.0.0.1:8546";
-        // augur.rpc.wsUrl = null;
         if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
-            if (augur.options.debug.broadcast || augur.options.debug.fallback) {
-                console.log(chalk.blue.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
+            // if (augur.options.debug.broadcast || augur.options.debug.fallback) {
+                console.log(chalk.cyan.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
+                console.log(chalk.blue.bold("wsUrl:"), chalk.blue(augur.rpc.wsUrl));
+                console.log(chalk.magenta.bold("IPC:  "), chalk.magenta(augur.rpc.ipcpath));
                 this.print_nodes(augur.rpc.nodes.hosted);
-                console.log("coinbase:", chalk.green(augur.coinbase));
-                console.log("from:    ", chalk.green(augur.from));
-            }
+                console.log("coinbase:", chalk.white.dim(augur.coinbase));
+                console.log("from:    ", chalk.white.dim(augur.from));
+            // }
             augur.nodes = augur.rpc.nodes.hosted;
         }
         return augur;

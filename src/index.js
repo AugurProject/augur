@@ -23,7 +23,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.3.1";
+    this.version = "1.3.2";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -532,7 +532,6 @@ Augur.prototype.getMarketInfo = function (market, callback) {
             if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
             self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
                 if (info.numOutcomes && info.numEvents) {
-                    info._id = market;
                     unpacked.cb[0](info);
                 } else {
                     unpacked.cb[0](null);
@@ -542,7 +541,6 @@ Augur.prototype.getMarketInfo = function (market, callback) {
     }
     var marketInfo = this.parseMarketInfo(this.fire(tx));
     if (marketInfo.numOutcomes && marketInfo.numEvents) {
-        marketInfo._id = market;
         return marketInfo;
     } else {
         return null;
@@ -566,7 +564,6 @@ Augur.prototype.batchGetMarketInfo = function (marketIDs, callback) {
             info = self.parseMarketInfo(rawInfo);
             if (info && parseInt(info.numEvents) && info.numOutcomes) {
                 marketsInfo[marketID] = info;
-                marketsInfo[marketID]._id = marketID;
                 marketsInfo[marketID].sortOrder = i;
             }
             totalLen += len;
