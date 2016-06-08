@@ -23,7 +23,8 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatNumber, formatEther, formatPercent, formatDate } from '../../../utils/format-number';
+import { formatNumber, formatEther, formatPercent } from '../../../utils/format-number';
+import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
@@ -58,7 +59,7 @@ export const selectMarket = (marketID) => {
 		return {};
 	}
 
-	const endDate = new Date(marketsData[marketID].endDate);
+	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
 
 	return assembleMarket(
 		marketID,
@@ -73,7 +74,7 @@ export const selectMarket = (marketID) => {
 		accountTrades[marketID],
 		tradesInProgress[marketID],
 
-		// the reason we pass in the date parts broken up like this, is because otherwise the new date object will always trigger re-assembly, and never hit the memoization cache
+		// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
 		endDate.getFullYear(),
 		endDate.getMonth(),
 		endDate.getDate(),
@@ -104,6 +105,7 @@ export const assembleMarket = memoizerific(1000)((
 		endDateDay,
 		isReportConfirmationPhase,
 		dispatch) => { // console.log('>>assembleMarket<<');
+
 	const o = {
 		...marketData,
 		id: marketID
@@ -210,13 +212,13 @@ export const assembleMarket = memoizerific(1000)((
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-	o.tags = o.tags.map(tag => {
+	o.tags = (o.tags || []).map(tag => {
 		const obj = {
-			name: tag,
+			name: tag && tag.toString().toLowerCase().trim(),
 			onClick: () => dispatch(toggleTag(tag))
 		};
 		return obj;
-	});
+	}).filter(tag => !!tag.name);
 
 	o.priceTimeSeries = selectPriceTimeSeries(o.outcomes, marketPriceHistory);
 

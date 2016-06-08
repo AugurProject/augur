@@ -10,7 +10,7 @@ export function loadMarket(marketID, cb) {
 				return cb && cb();
 			}
 			if (marketData) {
-				dispatch(updateMarketsData({ [marketData._id]: marketData }));
+				dispatch(updateMarketsData({ [marketID]: marketData }));
 			}
 			return cb && cb();
 		});

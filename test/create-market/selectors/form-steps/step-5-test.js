@@ -71,12 +71,12 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			volume: {
 				value: 0,
 				formattedValue: 0,
-				formatted: '0',
+				formatted: '-',
 				roundedValue: 0,
-				rounded: '0',
-				minimized: '0',
+				rounded: '-',
+				minimized: '-',
 				denomination: '',
-				full: '0'
+				full: '-'
 			},
 			outcomes: [{
 				id: 1,

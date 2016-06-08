@@ -70,8 +70,7 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilters, sel
 	}
 
 	// status and type filters
-	const filtersParams = Object.keys(selectedFilters).filter(filter =>
-		!!selectedFilters[filter]).join(',');
+	const filtersParams = Object.keys(selectedFilters).filter(filter => !!selectedFilters[filter]).join(',');
 	if (filtersParams.length) {
 		params[FILTERS_PARAM_NAME] = filtersParams;
 	}

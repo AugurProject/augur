@@ -21,7 +21,7 @@ describe(`modules/market/selectors/market.js`, () => {
 				eventID: 'testEventID',
 				name: 'testMarket',
 				description: 'some test description',
-				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
+				endDate: 123,
 				type: 'scalar',
 				tradingFee: 5,
 				volume: 500,
