@@ -84,12 +84,12 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
 	loginAccount = selector;
 
-	// it(`should login an account`, () => {
-	// 	actual = selector.default();
-	// 	loginAccountAssertion(actual);
-	// 	//
-	// 	// assert.deepEqual(selector.default(), out, `Didn't properly update account information`);
-	// });
+	it(`should login an account`, () => {
+		actual = selector.default();
+		loginAccountAssertion(actual);
+		//
+		// assert.deepEqual(selector.default(), out, `Didn't properly update account information`);
+	});
 });
 
 export default {loginAccount, state};
