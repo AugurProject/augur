@@ -66,19 +66,15 @@ export function createMarket(transactionID, newMarket) {
 
 				if (res.status === SUCCESS) {
 					setTimeout(() => dispatch(loadBasicMarket(res.marketID)), 5000);
-
-					console.log('createMarket SUCCESS res -- ', res)
+					dispatch(clearMakeInProgress());
 
 					newMarket = {
 						...newMarket,
 						id: res.marketID,
 						tx: res.tx
-					}
-					console.log('finished creating market, generating order book -- ', newMarket)
+					};
 
 					dispatch(submitGenerateOrderBook(newMarket))
-
-					// Clear newMarket data?
 				}
 			}
 		});
