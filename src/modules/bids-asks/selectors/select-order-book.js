@@ -2,7 +2,11 @@ import memoizerific from 'memoizerific';
 
 import { formatShares, formatEther } from '../../../utils/format-number';
 
-export const selectOrderBook = memoizerific(100)((outcomeId, marketOrderBook) => {
+/**
+ * @param {String} outcomeId
+ * @param {Object} marketOrderBook
+ */
+export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrderBook) => {
 	if (marketOrderBook == null) {
 		return {
 			bids: [],
@@ -10,31 +14,57 @@ export const selectOrderBook = memoizerific(100)((outcomeId, marketOrderBook) =>
 		};
 	}
 
-	const outcomeBidsAsks = marketOrderBook.buy.concat(marketOrderBook.sell)
-		.filter(order => order != null && order.outcome === outcomeId);
 	return {
-		bids: outcomeBidsAsks
-			.filter(order => order.type === "buy")
-			.map(selectOrder)
-			.sort(sortBids),
-		asks: outcomeBidsAsks
-			.filter(order => order.type === "sell")
-			.map(selectOrder)
-			.sort(sortAsks)
+		bids: selectAggregatePricePoints(outcomeId, marketOrderBook.buy).sort(sortPricePointsByPriceDesc),
+		asks: selectAggregatePricePoints(outcomeId, marketOrderBook.sell).sort(sortPricePointsByPriceAsc)
 	};
 });
 
-export const selectOrder = memoizerific(100)((orderData) => {
-	return {
-		shares: formatShares(orderData.amount),
-		price: formatEther(orderData.price)
+/**
+ * Selects price points with aggregated amount of shares
+ * 
+ * @param {String} outcomeId
+ * @param {Array} orders
+ */
+const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
+	if (orders == null) {
+		return [];
+	} else {
+		const shareCountPerPrice = orders
+			.filter(order => order.outcome === outcomeId)
+			.reduce(reduceSharesCountByPrice, {});
+
+		return Object.keys(shareCountPerPrice)
+			.map(function mapPriceToPricePoint(price) {
+				return {
+					shares: formatShares(shareCountPerPrice[price]),
+					price: formatEther(parseFloat(price))
+				}
+			});
 	}
 });
 
-function sortAsks(ask1, ask2) {
-	return ask1.price.value < ask2.price.value ? -1 : 1;
+/**
+ *
+ *
+ * @param {Object} aggregateOrdersPerPrice
+ * @param order
+ * @return {Object} aggregateOrdersPerPrice
+ */
+function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
+	const key = parseFloat(order.price).toString(); // parseFloat("0.10000000000000000002").toString() => "0.1"
+	if (aggregateOrdersPerPrice[key] == null) {
+		aggregateOrdersPerPrice[key] = 0;
+	}
+
+	aggregateOrdersPerPrice[key] += parseFloat(order.amount);
+	return aggregateOrdersPerPrice;
 }
 
-function sortBids(bid1, bid2) {
-	return bid1.price.value > bid2.price.value ? -1 : 1;
+function sortPricePointsByPriceAsc(pricePoint1, pricePoint2) {
+	return pricePoint1.price.value - pricePoint2.price.value;
+}
+
+function sortPricePointsByPriceDesc(pricePoint1, pricePoint2) {
+	return pricePoint2.price.value - pricePoint1.price.value;
 }

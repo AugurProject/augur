@@ -47,7 +47,7 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
-import { selectOrderBook } from '../../bids-asks/selectors/select-order-book';
+import { selectAggregateOrderBook } from '../../bids-asks/selectors/select-order-book';
 
 export default function () {
 	const { selectedMarketID } = store.getState();
@@ -215,7 +215,7 @@ export const assembleMarket = memoizerific(1000)((
 			}
 		}
 
-		outcome.orderBook = selectOrderBook(outcome.id, marketOrderBooks);
+		outcome.orderBook = selectAggregateOrderBook(outcome.id, marketOrderBooks);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 
