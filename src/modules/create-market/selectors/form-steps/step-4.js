@@ -129,6 +129,12 @@ export const validateInitialLiquidity = (initialLiquidity) => {
 export const validateInitialFairPrices = (initialFairPrices) => {
 	let fairPriceErrors = {};
 
+	// Constraints (gist -- always totals to 1 ETH)
+	// Binary + Categorical:
+	//	priceWidth / 2 -- 1 - (priceWidth/2)
+	// Scalar
+	// 	minValue + (priceWidth/2) -- maxValue - priceWidth/2
+
 	initialFairPrices.map((cV, i) => {
 		const parsed = parseFloat(cV)
 

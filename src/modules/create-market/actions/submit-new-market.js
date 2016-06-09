@@ -48,7 +48,9 @@ export function createMarket(transactionID, newMarket) {
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
 
 		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
+			console.log()
 			if (err) {
+				
 				dispatch(
 					updateExistingTransaction(
 						transactionID,
@@ -58,7 +60,6 @@ export function createMarket(transactionID, newMarket) {
 				return;
 			}
 			if (res.status === CREATING_MARKET) {
-				newMarket.id = res.marketID;
 				dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
 			} else {
 				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
@@ -66,7 +67,13 @@ export function createMarket(transactionID, newMarket) {
 				if (res.status === SUCCESS) {
 					setTimeout(() => dispatch(loadBasicMarket(res.marketID)), 5000);
 
-					newMarket.tx = res.tx;
+					console.log('createMarket SUCCESS res -- ', res)
+
+					newMarket = {
+						...newMarket,
+						id: res.marketID,
+						tx: res.tx
+					}
 					console.log('finished creating market, generating order book -- ', newMarket)
 
 					dispatch(submitGenerateOrderBook(newMarket))

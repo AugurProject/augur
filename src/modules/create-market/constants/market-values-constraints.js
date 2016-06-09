@@ -40,4 +40,4 @@ export const PRICE_WIDTH_MIN =  0.1;
 
 export const PRICE_DEPTH_DEFAULT = 0.1;
 
-export const IS_SIMULATION = false;
+export const IS_SIMULATION = false; // Not used yet

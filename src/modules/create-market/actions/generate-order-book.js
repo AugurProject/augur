@@ -1,7 +1,10 @@
 import {
     SUCCESS,
     FAILED,
-    GENERATING_ORDER_BOOK
+    GENERATING_ORDER_BOOK,
+    COMPLETE_SET_BOUGHT,
+    ORDER_BOOK_ORDER_COMPLETE,
+    ORDER_BOOK_OUTCOME_COMPLETE
 } from '../../transactions/constants/statuses'
 
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction'
@@ -18,6 +21,8 @@ export function submitGenerateOrderBook(marketData){
 }
 
 export function createOrderBook(transactionID, marketData){
+    console.log('createOrderBook -- ', transactionID, marketData);
+
     return dispatch => {
         dispatch(updateExistingTransaction(transactionID, { status: GENERATING_ORDER_BOOK }));
 
@@ -25,6 +30,8 @@ export function createOrderBook(transactionID, marketData){
 
         AugurJS.generateOrderBook(marketData, (err, res) => {
             if(err){
+                console.log('err -- ', err)
+
                 dispatch(
                     updateExistingTransaction(
                         transactionID,
@@ -35,7 +42,75 @@ export function createOrderBook(transactionID, marketData){
                 return;
             }
 
-            console.log('res -- ', res);
+            let p = res.payload,
+                message = null;
+
+            switch(res.status){
+                case COMPLETE_SET_BOUGHT:
+                    dispatch(
+                        updateExistingTransaction(
+                            transactionID,
+                            {
+                                status: COMPLETE_SET_BOUGHT,
+                                message
+                            }
+                        )
+                    );
+
+                    break;
+                case ORDER_BOOK_ORDER_COMPLETE:
+                    message = `${
+                        !!p.buyPrice ? 'Bid' : 'Ask'
+                    } for ${
+                        p.amount
+                    } share${
+                        p.amount > 1 ? 's' : ''
+                    } of outcome '${
+                        marketData.outcomes[p.outcome - 1].name
+                    }' at ${ 
+                        p.buyPrice || p.sellPrice 
+                    } ETH created.`;
+                    
+                    dispatch(
+                        updateExistingTransaction(
+                            transactionID,
+                            {
+                                status: ORDER_BOOK_ORDER_COMPLETE,
+                                message
+                            }
+                        )
+                    );
+
+                    break;
+                case ORDER_BOOK_OUTCOME_COMPLETE:
+                    message = `Order book creation for outcome '${
+                        marketData.outcomes[p.outcome - 1].name
+                    }' completed.`;
+
+                    dispatch(
+                        updateExistingTransaction(
+                            transactionID,
+                            {
+                                status: ORDER_BOOK_OUTCOME_COMPLETE,
+                                message
+                            }
+                        )
+                    );
+
+                    break;
+                case SUCCESS:
+                    dispatch(
+                        updateExistingTransaction(
+                            transactionID,
+                            {
+                                status: SUCCESS,
+                                message
+                            }
+                        )
+                    );
+
+                    break;
+            }
         })
     }
 }
