@@ -356,8 +356,8 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		tags: newMarket.tags,
 		makerFees: newMarket.makerFees,
 		extraInfo: newMarket.extraInfo,
-		onSent: r => cb(null, { status: CREATING_MARKET, marketID: r.callReturn, txHash: r.txHash }),
-		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.callReturn, tx: r }),
+		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
+		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
 		onFailed: r => cb(r),
 		branchId: branchId
 	});
@@ -367,7 +367,7 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb){
 	console.log('AugurJS -- generateOrderBook -- ', marketData);
 
 	augur.generateOrderBook({
-		market: marketData.marketId,
+		market: marketData.id,
 		liquidity: marketData.initialLiquidity,
 		initialFairPrices: marketData.initialFairPrices.raw,
 		startingQuantity: marketData.startingQuantity,
@@ -375,14 +375,14 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb){
 		priceWidth: marketData.priceWidth,
 		isSimulation: marketData.isSimulation
 	}, {
-		onSimulate: r => cb(null, r),
-		onBuyCompleteSets: r => cb(null, r),
-		onSetupOutcome: r => cb(null, r),
-		onSetupOrder: r => cb(null, r),
-		onSuccess: r => cb(null, r),
+		onSimulate: r => cb(null, { status: SIMULATED_ORDER_BOOK, payload: r }),
+		onBuyCompleteSets: r => cb(null, { status: COMPLETE_SET_BOUGHT, payload: r }),
+		onSetupOutcome: r => cb(null, { status: ORDER_BOOK_OUTCOME_COMPLETE, payload: r }),
+		onSetupOrder: r => cb(null, { status: ORDER_BOOK_ORDER_COMPLETE, payload: r }),
+		onSuccess: r => cb(null, { status: SUCCESS, payload: r }),
 		onFailed: err => cb(err)
 	});
-}
+};
 
 ex.createMarketMetadata = function createMarketMetadata(newMarket, cb) {
 	console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);
