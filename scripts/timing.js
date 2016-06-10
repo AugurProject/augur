@@ -32,10 +32,24 @@ function createMarkets(numMarketsToCreate, callback) {
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+        var expDate = Math.round(new Date().getTime() / 500);
+        console.log(JSON.stringify({
+            branchId: augur.branches.dev,
+            description: description,
+            expDate: expDate,
+            minValue: minValue,
+            maxValue: maxValue,
+            numOutcomes: numOutcomes,
+            resolution: "lmgtfy.com",
+            tradingFee: "0.02",
+            makerFees: "0.5",
+            extraInfo: null,
+            tags: ["spam", "augur.js", "canned meat"]
+        }, null, 2));
         augur.createSingleEventMarket({
             branchId: augur.branches.dev,
             description: description,
-            expDate: new Date().getTime() / 500,
+            expDate: expDate,
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
@@ -47,22 +61,28 @@ function createMarkets(numMarketsToCreate, callback) {
             onSent: function (r) {},
             onSuccess: function (r) {
                 console.log(chalk.green(r.marketID), chalk.cyan.dim(description));
-                augur.generateOrderBook({
-                    market: r.marketID,
-                    liquidity: 50,
-                    initialFairPrices: ["0.4", "0.5"],
-                    startingQuantity: 10,
-                    bestStartingQuantity: 15,
-                    priceWidth: "0.4"
-                }, {
-                    onBuyCompleteSets: function (res) {},
-                    onSetupOutcome: function (res) {},
-                    onSetupOrder: function (res) {},
-                    onSuccess: function (res) {
-                        if (index % 10) return next();
-                        augur.cashFaucet(function (r) {}, function (r) { next(); }, next);
-                    },
-                    onFailed: next
+                augur.getMarketInfo(r.marketID, function (marketInfo) {
+                    if (marketInfo === null) {
+                        console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
+                        return next();
+                    }
+                    augur.generateOrderBook({
+                        market: r.marketID,
+                        liquidity: 50,
+                        initialFairPrices: ["0.4", "0.5"],
+                        startingQuantity: 10,
+                        bestStartingQuantity: 15,
+                        priceWidth: "0.4"
+                    }, {
+                        onBuyCompleteSets: function (res) {},
+                        onSetupOutcome: function (res) {},
+                        onSetupOrder: function (res) {},
+                        onSuccess: function (res) {
+                            if (index % 10) return next();
+                            augur.cashFaucet(function (r) {}, function (r) { next(); }, next);
+                        },
+                        onFailed: next
+                    });
                 });
             },
             onFailed: next
