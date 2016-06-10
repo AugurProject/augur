@@ -16,11 +16,9 @@ import {
 	TRADING_FEE_MAX,
 	INITIAL_LIQUIDITY_DEFAULT,
 	INITIAL_LIQUIDITY_MIN,
-	MAKER_FEES_DEFAULT,
-	MAKER_FEES_MIN,
-	MAKER_FEES_MAX,
-	INITIAL_FAIR_PRICE_DEFAULT,
-	INITIAL_FAIR_PRICE_MIN,
+	MAKER_FEE_DEFAULT,
+	MAKER_FEE_MIN,
+	MAKER_FEE_MAX,
 	STARTING_QUANTITY_DEFAULT,
 	STARTING_QUANTITY_MIN,
 	BEST_STARTING_QUANTITY_DEFAULT,
@@ -34,7 +32,7 @@ import {
 export const select = (formState) => {
 	const obj = {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
-		makerFees: formState.makerFees || MAKER_FEES_DEFAULT,
+		makerFee: formState.makerFee || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
@@ -51,15 +49,18 @@ export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
 		let values = [],
 			raw = [],
-			value = 1 / labels.length;
+			halfPriceWidth = PRICE_WIDTH_DEFAULT / 2,
+			defaultValue = formState.type === SCALAR ?
+				((parseFloat(formState.scalarBigNum) + halfPriceWidth) + (parseFloat(formState.scalarSmallNum) - halfPriceWidth)) / 2 :
+				((1 - halfPriceWidth) + (halfPriceWidth)) / 2;
 
 		labels.map((cV, i) => {
 			values[i] = {
 				label: cV,
-				value
+				value: defaultValue
 			};
-			raw[i] = value;
-		})
+			raw[i] = defaultValue;
+		});
 
 		return { values, raw }
 	};
@@ -99,18 +100,18 @@ export const validateTradingFee = (tradingFeePercent) => {
 			}`;
 };
 
-export const validateMakerFees = (makerFees) => {
-	const parsed = parseFloat(makerFees);
+export const validateMakerFee = (makerFee) => {
+	const parsed = parseFloat(makerFee);
 
-	if(!makerFees)
+	if(!makerFee)
 		return 'Please specify a maker fee %';
 	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Maker fee must be as number';
-	if(parsed < MAKER_FEES_MIN || parsed > MAKER_FEES_MAX)
+	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
 		return `Maker fee must be between ${
-				formatPercent(MAKER_FEES_MIN, true).full
+				formatPercent(MAKER_FEE_MIN, true).full
 			} and ${
-				formatPercent(MAKER_FEES_MAX, true).full
+				formatPercent(MAKER_FEE_MAX, true).full
 			}`;
 };
 
@@ -128,7 +129,8 @@ export const validateInitialLiquidity = (initialLiquidity) => {
 };
 
 export const validateInitialFairPrices = (initialFairPrices) => {
-	let fairPriceErrors = {};
+	let fairPriceErrors = {},
+		currentSum = initialFairPrices.reduce((prev, curr) => parseFloat(prev) + parseFloat(curr));
 
 	// Constraints (gist -- always totals to 1 ETH)
 	// Binary + Categorical:
@@ -136,18 +138,16 @@ export const validateInitialFairPrices = (initialFairPrices) => {
 	// Scalar
 	// 	minValue + (priceWidth/2) -- maxValue - priceWidth/2
 
-	initialFairPrices.raw.map((cV, i) => {
+	initialFairPrices.map((cV, i) => {
 		const parsed = parseFloat(cV)
 
-		if (!cV)
-			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity'
-		if (Number.isNaN(parsed) && !Number.isFinite(parsed))
-			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric'
-		if (parsed < INITIAL_FAIR_PRICE_MIN)
-			fairPriceErrors[`${i}`] = 	`Initial liquidity must be at least ${
-											formatEther(INITIAL_FAIR_PRICE_MIN).full
-										}`
-	})
+		if(!cV)
+			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity';
+		if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric';
+		if(currentSum != 1)
+			fairPriceErrors.general = `The total of all initial fair prices must be 1. The current total is: ${currentSum}`;
+	});
 
 	if(!!Object.keys(fairPriceErrors).length)
 		return fairPriceErrors
@@ -191,9 +191,9 @@ export const validatePriceWidth = (priceWidth) => {
 
 export const isValid = (formState) => {
 	if(	validateTradingFee(formState.tradingFeePercent) 				||
-		validateMakerFees(formState.makerFees) 							||
+		validateMakerFee(formState.makerFee) 							||
 		validateInitialLiquidity(formState.initialLiquidity)			||
-		validateInitialFairPrices(formState.initialFairPrices)			||
+		validateInitialFairPrices(formState.initialFairPrices.raw)		||
 		validateBestStartingQuantity(formState.bestStartingQuantity)	||
 		validateStartingQuantity(formState.startingQuantity)			||
 		validatePriceWidth(formState.priceWidth))
@@ -208,7 +208,7 @@ export const errors = (formState) => {
 	if(formState.hasOwnProperty('tradingFeePercent'))
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
 	if(formState.hasOwnProperty('makerFeePercent'))
-		errs.makerFees = validateMakerFees(formState.makerFees);
+		errs.makerFee = validateMakerFee(formState.makerFee);
 	if(formState.hasOwnProperty('initialLiquidity'))
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
