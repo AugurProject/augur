@@ -16,6 +16,8 @@ module.exports = createMarketForm();
 
 function createMarketForm(){
     let form = {
+        creatingMarket: true,
+
         step: 1,
         errors: {},
 
@@ -75,10 +77,25 @@ function createMarketForm(){
         }
 
         if(newValues.step === 5){
+            let formattedFairPrices = [];
+
+            form.initialFairPrices.values.map((cV, i) => {
+                formattedFairPrices[i] = makeNumber(cV.value, `ETH | ${cV.label}`, true)
+            });
+
+            form.initialFairPrices = {
+                ...form.initialFairPrices,
+                formatted: formattedFairPrices
+            };
+
+            form.volume = makeNumber(0);
+
             form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%');
             form.makerFeePercent = makeNumber(form.makerFee, '%');
             form.takerFeePercent = makeNumber(100 - form.makerFee, '%');
-            form.volume = makeNumber(0);
+            form.bestStartingQuantityFormatted = makeNumber(form.bestStartingQuantity, 'Shares', true);
+            form.startingQuantityFormatted = makeNumber(form.startingQuantity, 'Shares', true);
+            form.priceWidthFormatted = makeNumber(form.priceWidth, 'ETH', true);
         }
 
         form = {

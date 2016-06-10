@@ -19,8 +19,8 @@ module.exports = React.createClass({
 		showAdvancedMarketParams: React.PropTypes.bool,
 
 		initialFairPrices: React.PropTypes.object,
-		startingQuantity: React.PropTypes.any,
 		bestStartingQuantity: React.PropTypes.any,
+		startingQuantity: React.PropTypes.any,
 		priceWidth: React.PropTypes.any,
 		priceDepth: React.PropTypes.any
 	},
@@ -28,7 +28,7 @@ module.exports = React.createClass({
 	render: function() {
 		var p = this.props;
 
-		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼'
+		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼';
 
 		return (
 			<div className="step-4">
