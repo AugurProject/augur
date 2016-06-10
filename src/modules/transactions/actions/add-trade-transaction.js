@@ -27,10 +27,8 @@ export const makeTradeTransaction =
 			feeToPay: formatEther(feeEther)
 		},
 		action: (transactionID) => {
-			// todo: what to do here?
-			dispatch(updateExistingTransaction({
-				[transactionID]: { status: 'sending...' }
-			}));
+			throw new Error("add-trade-transaction.js -> makeTradeTransaction(): action should not be called");
+			// todo: I think we don't need tradeTransaction anymore, just the data it contains
 		}
 	};
 };
