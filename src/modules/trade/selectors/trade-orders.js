@@ -25,7 +25,7 @@ export const selectOutcomeTradeOrders =
 			numShares < 0,
 			market,
 			outcome,
-			numShares,
+			Math.abs(numShares),
 			outcomeTradeInProgress.limitPrice,
 			totalCost,
 			0.9,
