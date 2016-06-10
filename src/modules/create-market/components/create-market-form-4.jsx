@@ -85,7 +85,7 @@ module.exports = React.createClass({
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ initialLiquidity: value }) } />
 
-					<span className="denomination">Eth</span>
+					<span className="denomination">ETH</span>
 					{ p.errors.initialLiquidity &&
 						<span className="error-message">{ p.errors.initialLiquidity }</span>
 					}
@@ -101,7 +101,6 @@ module.exports = React.createClass({
 							<h4>Initial Fair Price</h4>
 							<p>
 								This establishes the initial price for each respective outcome.
-								The sum of these values must total to 1 ETH.
 							</p>
 							{ p.initialFairPrices.values.map((cV, i) => {
 								return (
@@ -127,7 +126,7 @@ module.exports = React.createClass({
 													})
 												}
 											} />
-										<span className="denomination">ETH -- { cV.label }</span>
+										<span className="denomination">ETH | { cV.label }</span>
 										{ !!get(p.errors, `initialFairPrice.${i}`) &&
 											<span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
 										}
@@ -149,7 +148,7 @@ module.exports = React.createClass({
 								isClearable={ false }
 								onChange={ (value) => p.onValuesUpdated({ bestStartingQuantity: value }) }
 							/>
-
+							<span className="denomination">Shares</span>
 							{ p.errors.bestStartingQuantity &&
 							<span className="error-message">{ p.errors.bestStartingQuantity }</span>
 							}
@@ -167,7 +166,7 @@ module.exports = React.createClass({
 								isClearable={ false }
 								onChange={ (value) => p.onValuesUpdated({ startingQuantity: value }) }
 							/>
-
+							<span className="denomination">Shares</span>
 							{ p.errors.startingQuantity &&
 								<span className="error-message">{ p.errors.startingQuantity }</span>
 							}
@@ -185,7 +184,7 @@ module.exports = React.createClass({
 								isClearable={ false }
 								onChange={ (value) => p.onValuesUpdated({ priceWidth: value }) }
 							/>
-
+							<span className="denomination">ETH</span>
 							{ p.errors.priceWidth &&
 								<span className="error-message">{ p.errors.priceWidth }</span>
 							}
