@@ -13,7 +13,7 @@
   },
   "scripts": {
     "watch": "clear; echo '* CLEAN * HTML * ASSETS * CSS * AUGURJS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
-    "start": "augur-ui-webserver -d './build'",
+    "start": "augur-ui-webserver './build'",
     "build": "clear; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
     "test:watch": "clear; npm test -- --watch",
@@ -61,7 +61,7 @@
     "secure-random": "^1.1.1"
   },
   "devDependencies": {
-    "augur-ui-webserver": "^1.0.5",
+    "augur-ui-webserver": "^1.0.4",
     "babel-eslint": "^6.0.4",
     "babel-plugin-transform-remove-console": "^6.8.0",
     "babel-preset-es2015": "^6.9.0",
