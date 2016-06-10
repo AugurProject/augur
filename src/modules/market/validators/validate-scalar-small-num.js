@@ -3,7 +3,7 @@ export default function (scalarSmallNum, scalarBigNum) {
 	if (!scalarSmallNum) {
 		return 'Please provide a minimum value';
 	}
-	if (parsedSmall !== scalarSmallNum) {
+	if (Number.isNaN(parsedSmall) && !Number.isFinite(parsedSmall)) {
 		return 'Minimum value must be a number';
 	}
 	if (parseFloat(scalarBigNum) === scalarBigNum && parsedSmall >= parseFloat(scalarBigNum)) {
