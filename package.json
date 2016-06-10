@@ -30,7 +30,7 @@
     "build:html": "cat ./src/index.html | npm run -s partial:replaceAssets | npm run -s build:html:inline_sources > $(npm run -s partial:index_filename) && echo ---------HTML-----------`date +%r`",
     "build:html:inline_sources": "inline-source --compress false --root ./build -",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
-    "build-azure": "BUILD_AZURE=true BUILD_AZURE_WSURL='{{ $BUILD_AZURE_WSURL }}' BUILD_AZURE_LOCALNODE='{{ $BUILD_AZURE_LOCALNODE }}' BUILD_AZURE_HOSTEDNODE='{{ $BUILD_AZURE_HOSTEDNODE }}' BUILD_AZURE_CONTRACTS='{{ $BUILD_AZURE_CONTRACTS }}' npm run build",
+    "build-azure": "BUILD_AZURE=true BUILD_AZURE_WSURL='{{ $BUILD_AZURE_WSURL }}' BUILD_AZURE_LOCALNODE='{{ $BUILD_AZURE_LOCALNODE }}' BUILD_AZURE_CONTRACTS='{{ $BUILD_AZURE_CONTRACTS }}' npm run build",
     "______": "",
     "watch:all": "npm run -s clean && (npm run -s watch:css & npm run -s watch:assets & npm run -s watch:augurjs & npm run -s watch:js & npm run -s watch:html)",
     "watch:assets": "onchange './src/assets/**' -i -- npm run -s build:assets",
