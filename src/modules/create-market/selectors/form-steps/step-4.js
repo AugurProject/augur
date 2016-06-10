@@ -38,6 +38,7 @@ export const select = (formState) => {
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 		bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
+		halfPriceWidth: formState.priceWidth ? formState.priceWidth / 2 : PRICE_WIDTH_DEFAULT / 2,
 		priceDepth: PRICE_DEPTH_DEFAULT,
 		isSimulation: formState.isSimulation || IS_SIMULATION
 	};
@@ -49,8 +50,8 @@ export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
 		let values = [],
 			raw = [],
-			halfPriceWidth = PRICE_WIDTH_DEFAULT / 2,
-			defaultValue = formState.type === SCALAR ?
+			halfPriceWidth = formState.halfPriceWidth,
+			defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
 				((parseFloat(formState.scalarBigNum) + halfPriceWidth) + (parseFloat(formState.scalarSmallNum) - halfPriceWidth)) / 2 :
 				((1 - halfPriceWidth) + (halfPriceWidth)) / 2;
 
@@ -128,15 +129,18 @@ export const validateInitialLiquidity = (initialLiquidity) => {
 		}`;
 };
 
-export const validateInitialFairPrices = (initialFairPrices) => {
-	let fairPriceErrors = {},
-		currentSum = initialFairPrices.reduce((prev, curr) => parseFloat(prev) + parseFloat(curr));
+export const validateInitialFairPrices = (initialFairPrices, type, width, halfWidth, scalarMin, scalarMax) => {
+	// -- Constraints --
+	// 	Binary + Categorical:
+	//		min: priceWidth / 2
+	//  	max: 1 - (priceWidth / 2)
+	// 	Scalar:
+	// 		min: scalarMin + (priceWidth / 2)
+	// 		max: scalarMax - (priceWidth / 2)
 
-	// Constraints (gist -- always totals to 1 ETH)
-	// Binary + Categorical:
-	//	priceWidth / 2 -- 1 - (priceWidth/2)
-	// Scalar
-	// 	minValue + (priceWidth/2) -- maxValue - priceWidth/2
+	let fairPriceErrors = {},
+		max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth,
+		min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
 
 	initialFairPrices.map((cV, i) => {
 		const parsed = parseFloat(cV)
@@ -145,8 +149,8 @@ export const validateInitialFairPrices = (initialFairPrices) => {
 			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity';
 		if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric';
-		if(currentSum != 1)
-			fairPriceErrors.general = `The total of all initial fair prices must be 1. The current total is: ${currentSum}`;
+		if(cV < min || cV > max)
+			fairPriceErrors[`${i}`] = `Initial prices must be between ${min} - ${max} based on the price width of ${width}`
 	});
 
 	if(!!Object.keys(fairPriceErrors).length)
@@ -213,7 +217,7 @@ export const errors = (formState) => {
 		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
 
 	if(formState.hasOwnProperty('initialFairPrices'))
-		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.raw);
+		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.raw, formState.type, formState.priceWidth, formState.halfPriceWidth, formState.scalarSmallNum, formState.scalarBigNum);
 	if(formState.hasOwnProperty('bestStartingQuantity'))
 		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity)
 	if(formState.hasOwnProperty('startingQuantity'))
