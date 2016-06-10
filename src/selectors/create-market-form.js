@@ -26,8 +26,6 @@ function createMarketForm(){
         initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 
         // Advanced Market Creation
-        defaultFairPrice: INITIAL_FAIR_PRICE_DEFAULT,
-
         initialFairPrices: {},
         startingQuantity: STARTING_QUANTITY_DEFAULT,
         bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
@@ -69,16 +67,18 @@ function createMarketForm(){
                 labels.map((cV, i) => {
                     form.initialFairPrices.values[i] = {
                         label: cV,
-                        value: INITIAL_FAIR_PRICE_DEFAULT
+                        value: 0.5
                     };
-                    form.initialFairPrices.raw[i] = INITIAL_FAIR_PRICE_DEFAULT;
+                    form.initialFairPrices.raw[i] = 0.5;
                 });
             }
         }
 
         if(newValues.step === 5){
-            form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%')
-            form.volume = makeNumber(0)
+            form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%');
+            form.makerFeePercent = makeNumber(form.makerFee, '%');
+            form.takerFeePercent = makeNumber(100 - form.makerFee, '%');
+            form.volume = makeNumber(0);
         }
 
         form = {

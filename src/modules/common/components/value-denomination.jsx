@@ -15,7 +15,7 @@ const ValueDenomination = React.createClass({
 		return (
 			<span
 				className={ classnames('value-denomination', p.className, { 'positive': p.formattedValue > 0, 'negative': p.formattedValue < 0 }) }
-				title={ p.value + ' ' + p.denomination}>
+				title={`${p.title}: ${p.value} ${p.denomination}`}>
 
 				{ (p.formatted) &&
 					<span className="value">{ p.formatted }</span>

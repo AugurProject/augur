@@ -9,7 +9,8 @@ module.exports = React.createClass({
 
 		endDate: React.PropTypes.object,
 		tradingFeePercent: React.PropTypes.object,
-		makerFee: React.PropTypes.object,
+		makerFeePercent: React.PropTypes.object,
+		takerFeePercent: React.PropTypes.object,
 		volume: React.PropTypes.object,
 
 		tags: React.PropTypes.array
@@ -17,6 +18,8 @@ module.exports = React.createClass({
 
 	render: function() {
 		var p = this.props;
+
+		console.log('p -- ', p);
 
 		return (
 			<section className="basics">
@@ -40,10 +43,9 @@ module.exports = React.createClass({
 					<li className="property fee">
 						<span className="property-label">fee</span>
 						<ValueDenomination className="property-value" { ...p.tradingFeePercent } />
-					</li>
-					<li className="property fee">
-						<span className="property-label">maker fee</span>
-						<ValueDenomination className="property-value" { ...p.makerFee } />
+						{ p.makerFeePercent && p.takerFeePercent &&
+							<span> (<ValueDenomination className="property-value" title="Maker Fee" { ...p.makerFeePercent } /> /<ValueDenomination className="property-value" title="Taker Fee" { ...p.takerFeePercent } />)</span>
+						}
 					</li>
 					<li className="property volume">
 						<span className="property-label">volume</span>
