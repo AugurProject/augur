@@ -76,17 +76,17 @@ module.exports = {
     },
 
     setup: function (augur, args, rpcinfo) {
-        var defaulthost, ipcpath;
+        var defaulthost, ipcpath, wsUrl;
         if (NODE_JS && !process.env.CONTINUOUS_INTEGRATION) {
             defaulthost = "http://127.0.0.1:8545";
             // ipcpath = process.env.GETH_IPC;
-            augur.rpc.wsUrl = "ws://127.0.0.1:8546";
+            wsUrl = "ws://127.0.0.1:8546";
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
         }
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
-        if (augur.connect(rpcinfo || defaulthost, ipcpath)) {
+        if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
             // if (augur.options.debug.broadcast || augur.options.debug.fallback) {
                 console.log(chalk.cyan.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
                 console.log(chalk.blue.bold("wsUrl:"), chalk.blue(augur.rpc.wsUrl));

@@ -288,9 +288,6 @@ describe("Integration tests", function () {
                                                         assert.isArray(r.callReturn);
                                                         assert.strictEqual(r.callReturn[0], 1);
                                                         assert.strictEqual(r.callReturn.length, 3);
-                                                        var totalTrades = parseInt(augur.get_total_trades(t.market));
-                                                        assert((totalTrades === initialTotalTrades - 1)
-                                                            || (totalTrades === initialTotalTrades));
                                                         var tradeIds = augur.get_trade_ids(t.market);
                                                         assert.strictEqual(tradeIds.indexOf(thisTrade), -1);
                                                         nextTrade(r);
