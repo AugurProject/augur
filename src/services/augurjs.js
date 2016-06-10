@@ -343,8 +343,6 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 };
 
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
-	console.log('AugurJS -- createMarket -- ', newMarket);
-
 	augur.createSingleEventMarket({
 		description: newMarket.description,
 		expDate: newMarket.endDate.value.getTime() / 1000,
@@ -354,7 +352,7 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		resolution: newMarket.expirySource,
 		tradingFee: newMarket.tradingFee,
 		tags: newMarket.tags,
-		makerFees: newMarket.makerFees,
+		makerFees: newMarket.makerFee,
 		extraInfo: newMarket.extraInfo,
 		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
 		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
@@ -364,8 +362,6 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 };
 
 ex.generateOrderBook = function generateOrderBook(marketData, cb){
-	console.log('AugurJS -- generateOrderBook -- ', marketData);
-
 	augur.generateOrderBook({
 		market: marketData.id,
 		liquidity: marketData.initialLiquidity,
