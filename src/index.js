@@ -18,21 +18,18 @@ var constants = require("./constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
-var options = {debug: {broadcast: false, fallback: false}};
-
 function Augur() {
-    var self = this;
+    this.version = "1.3.5";
 
-    this.version = "1.3.4";
-    this.options = options;
+    this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
-    this.abi = abi;
-
+    
     this.connection = null;
     this.coinbase = null;
     this.from = null;
 
     this.constants = constants;
+    this.abi = abi;
     this.utils = require("./utilities");
     this.db = require("./client/db");
     this.connector = connector;
@@ -2063,6 +2060,31 @@ Augur.prototype.setTotalRepReported = function (branchId, reportPeriod, repRepor
 
 Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
     var self = this;
+    function parsePriceLogs(logs) {
+        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+            return null;
+        }
+        if (logs.error) throw new Error(JSON.stringify(logs));
+        var outcome, parsed, priceHistory = {};
+        for (var i = 0, n = logs.length; i < n; ++i) {
+            if (logs[i] && logs[i].data !== undefined &&
+                logs[i].data !== null && logs[i].data !== "0x") {
+                parsed = rpc.unmarshal(logs[i].data);
+                outcome = parseInt(parsed[4], 16);
+                if (!priceHistory[outcome]) priceHistory[outcome] = [];
+                priceHistory[outcome].push({
+                    market: market,
+                    type: parseInt(parsed[0], 16),
+                    user: abi.format_address(logs[i].topics[2]),
+                    price: abi.unfix(parsed[1], "string"),
+                    shares: abi.unfix(parsed[2], "string"),
+                    timestamp: parseInt(parsed[3], 16),
+                    blockNumber: parseInt(logs[i].blockNumber, 16)
+                });
+            }
+        }
+        return priceHistory;
+    }
     if (!cb && this.utils.is_function(options)) {
         cb = options;
         options = null;
@@ -2072,54 +2094,13 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.trade,
-        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price)), null, abi.unfork(market, true)]
+        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price)), market]
     };
     if (!this.utils.is_function(cb)) {
-        var logs = rpc.getLogs(filter);
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return null;
-        }
-        if (logs.error) throw new Error(JSON.stringify(logs));
-        var outcome, parsed, priceHistory = {};
-        for (var i = 0, n = logs.length; i < n; ++i) {
-            if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
-                outcome = abi.number(logs[i].topics[3]);
-                if (!priceHistory[outcome]) priceHistory[outcome] = [];
-                parsed = rpc.unmarshal(logs[i].data);
-                priceHistory[outcome].push({
-                    market: abi.hex(market),
-                    user: abi.format_address(logs[i].topics[1]),
-                    price: abi.unfix(parsed[0], "string"),
-                    cost: abi.unfix(parsed[1], "string"),
-                    blockNumber: parseInt(logs[i].blockNumber)
-                });
-            }
-        }
-        return priceHistory;
+        return parsePriceLogs(rpc.getLogs(filter));
     }
     rpc.getLogs(filter, function (logs) {
-        if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-            return cb(null);
-        }
-        if (logs.error) return cb(logs);
-        var outcome, parsed, priceHistory = {};
-        for (var i = 0, n = logs.length; i < n; ++i) {
-            if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
-                outcome = abi.number(logs[i].topics[3]);
-                if (!priceHistory[outcome]) priceHistory[outcome] = [];
-                parsed = rpc.unmarshal(logs[i].data);
-                priceHistory[outcome].push({
-                    market: abi.hex(market),
-                    user: abi.format_address(logs[i].topics[1]),
-                    price: abi.unfix(parsed[0], "string"),
-                    cost: abi.unfix(parsed[1], "string"),
-                    blockNumber: parseInt(logs[i].blockNumber)
-                });
-            }
-        }
-        cb(priceHistory);
+        cb(parsePriceLogs(logs));
     });
 };
 
@@ -2159,34 +2140,34 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.trade,
-        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price))],
+        topics: [
+            abi.prefix_hex(abi.keccak_256(constants.LOGS.price)),
+            null,
+            abi.prefix_hex(abi.pad_left(account))
+        ],
         timeout: 480000
     }, function (logs) {
         if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
             return cb(null);
         }
         if (logs.error) return cb(logs);
-        var market, outcome, parsed, price, cost, shares, trades = {};
+        var market, outcome, parsed, price, timestamp, shares, type, trades = {};
         for (var i = 0, n = logs.length; i < n; ++i) {
             if (logs[i] && logs[i].data !== undefined &&
                 logs[i].data !== null && logs[i].data !== "0x") {
-                market = logs[i].topics[2];
-                outcome = abi.number(logs[i].topics[3]);
+                market = logs[i].topics[1];
                 if (!trades[market]) trades[market] = {};
-                if (!trades[market][outcome]) trades[market][outcome] = [];
                 parsed = rpc.unmarshal(logs[i].data);
-                price = abi.unfix(parsed[0]);
-                cost = abi.unfix(parsed[1]);
-                shares = abi.unfix(parsed[2]);
-                if (price && cost && shares) {
-                    trades[market][outcome].push({
-                        market: abi.hex(market), // re-fork
-                        price: price.toFixed(),
-                        cost: cost.toFixed(),
-                        shares: shares.toFixed(),
-                        blockNumber: parseInt(logs[i].blockNumber)
-                    });
-                }
+                outcome = parseInt(parsed[4]);
+                if (!trades[market][outcome]) trades[market][outcome] = [];
+                trades[market][outcome].push({
+                    type: parseInt(parsed[0], 16),
+                    market: market,
+                    price: abi.unfix(parsed[1], "string"),
+                    shares: abi.unfix(parsed[2], "string"),
+                    timestamp: parseInt(parsed[3], 16),
+                    blockNumber: parseInt(logs[i].blockNumber, 16)
+                });
             }
         }
         cb(trades);
