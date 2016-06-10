@@ -3279,90 +3279,17 @@ module.exports = {
     }
 })(this);
 
-},{"crypto":14}],3:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
+
+},{}],4:[function(require,module,exports){
 (function (global){
-/*
- * js-sha3 v0.3.1
- * https://github.com/emn178/js-sha3
+/*!
+ * The buffer module from node.js, for the browser.
  *
- * Copyright 2015, emn178@gmail.com
- *
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
  */
-;(function(root, undefined) {
-  'use strict';
-
-  var NODE_JS = typeof(module) != 'undefined';
-  if(NODE_JS) {
-    root = global;
-    if(root.JS_SHA3_TEST) {
-      root.navigator = { userAgent: 'Chrome'};
-    }
-  }
-  var CHROME = (root.JS_SHA3_TEST || !NODE_JS) && navigator.userAgent.indexOf('Chrome') != -1;
-  var HEX_CHARS = '0123456789abcdef'.split('');
-  var KECCAK_PADDING = [1, 256, 65536, 16777216];
-  var PADDING = [6, 1536, 393216, 100663296];
-  var SHIFT = [0, 8, 16, 24];
-  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
-            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
-            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
-
-  var blocks = [], s = [];
-
-  var keccak_224 = function(message) {
-    return keccak(message, 224, KECCAK_PADDING);
-  };
-
-  var keccak_256 = function(message) {
-    return keccak(message, 256, KECCAK_PADDING);
-  };
-
-  var keccak_384 = function(message) {
-    return keccak(message, 384, KECCAK_PADDING);
-  };
-
-  var sha3_224 = function(message) {
-    return keccak(message, 224, PADDING);
-  };
-
-  var sha3_256 = function(message) {
-    return keccak(message, 256, PADDING);
-  };
-
-  var sha3_384 = function(message) {
-    return keccak(message, 384, PADDING);
-  };
-
-  var sha3_512 = function(message) {
-    return keccak(message, 512, PADDING);
-  };
-
-  var keccak = function(message, bits, padding) {
-    var notString = typeof(message) != 'string';
-    if(notString && message.constructor == root.ArrayBuffer) {
-      message = new Uint8Array(message);
-    }
-
-    if(bits === undefined) {
-      bits = 512;
-      padding = KECCAK_PADDING;
-    }
-
-    var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
-        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
-    var blockCount = (1600 - bits * 2) / 32;
-    var byteCount = blockCount * 4;
-
-    for(i = 0;i < 50;++i) {
-      s[i] = 0;
-    }
+/* eslint-disable no-proto */
 
     block = 0;
     do {
@@ -32228,12 +32155,8 @@ function authError(err) {
 },{}],263:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.loadLoginAccountDependents = loadLoginAccountDependents;
-exports.loadLoginAccountLocalStorage = loadLoginAccountLocalStorage;
-exports.loadLoginAccount = loadLoginAccount;
+},{"base64-js":5,"ieee754":6,"isarray":7}],5:[function(require,module,exports){
+'use strict'
 
 var _augurjs = require('../../../services/augurjs');
 
@@ -32293,9 +32216,16 @@ function loadLoginAccountDependents() {
 	};
 }
 
-function loadLoginAccountLocalStorage(accountID) {
-	return function (dispatch, getState) {
-		var localStorageRef = typeof window !== 'undefined' && window.localStorage;
+},{}],6:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
 
 		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
 			return;
@@ -32355,11 +32285,13 @@ var _augurjs = require('../../../services/augurjs');
 
 var AugurJS = _interopRequireWildcard(_augurjs);
 
-var _loadLoginAccount = require('../../auth/actions/load-login-account');
+},{}],7:[function(require,module,exports){
+var toString = {}.toString;
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-var _authError = require('../../auth/actions/auth-error');
+},{}],8:[function(require,module,exports){
+// shim for using process in browser
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -32402,15 +32334,20 @@ var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function logout() {
-	return function (dispatch, getState) {
-		AugurJS.logout();
-		dispatch((0, _updateLoginAccount.clearLoginAccount)());
-	};
+},{}],9:[function(require,module,exports){
+(function (process){
+if (typeof Map !== 'function' || (process && process.env && process.env.TEST_MAPORSIMILAR === 'true')) {
+	module.exports = require('./similar');
+}
+else {
+	module.exports = Map;
 }
 
-},{"../../../services/augurjs":372,"../../auth/actions/update-login-account":268}],266:[function(require,module,exports){
-'use strict';
+},{"./similar":10,"_process":8}],10:[function(require,module,exports){
+function Similar() {
+	this.list = [];
+	this.lastItem = undefined;
+	this.size = 0;
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -32495,8 +32432,9 @@ function register(username, password, password2) {
 	};
 }
 
-},{"../../../selectors":371,"../../../services/augurjs":372,"../../auth/actions/auth-error":262,"../../auth/actions/update-assets":267,"../../auth/actions/update-login-account":268,"../../auth/constants/auth-types":269,"../../auth/constants/form-errors":270,"../../transactions/actions/add-transactions":360,"../../transactions/actions/update-existing-transaction":362,"../../transactions/actions/update-transactions-data":363,"../../transactions/constants/statuses":364}],267:[function(require,module,exports){
-'use strict';
+module.exports = Similar;
+},{}],11:[function(require,module,exports){
+var MapOrSimilar = require('map-or-similar');
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -32593,7 +32531,11 @@ var AUTH_TYPES = exports.AUTH_TYPES = (_AUTH_TYPES = {}, _defineProperty(_AUTH_T
 
 var DEFAULT_AUTH_TYPE = exports.DEFAULT_AUTH_TYPE = REGISTER;
 
-},{}],270:[function(require,module,exports){
+// check if the numbers are equal, or whether they are both precisely NaN (isNaN returns true for all non-numbers)
+function isEqual(val1, val2) {
+	return val1 === val2 || (val1 !== val1 && val2 !== val2);
+}
+},{"map-or-similar":9}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32608,7 +32550,8 @@ var PASSWORDS_DO_NOT_MATCH = exports.PASSWORDS_DO_NOT_MATCH = 'PASSWORDS_DO_NOT_
 var INVALID_USERNAME = exports.INVALID_USERNAME = 'INVALID_USERNAME';
 var INVALID_USER = exports.INVALID_USER = 'INVALID_USER';
 
-},{}],271:[function(require,module,exports){
+exports['default'] = thunk;
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32644,9 +32587,13 @@ var _paths = require('../../link/constants/paths');
 
 var _showLink = require('../../link/actions/show-link');
 
-var _authError = require('../../auth/actions/auth-error');
-
-},{"../../auth/actions/auth-error":262,"../../auth/constants/auth-types":269,"../../link/actions/show-link":286,"../../link/constants/paths":288}],272:[function(require,module,exports){
+      return _extends({}, store, {
+        dispatch: _dispatch
+      });
+    };
+  };
+}
+},{"./compose":16}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32659,21 +32606,18 @@ exports.default = function () {
 	var loginAccount = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	var action = arguments[1];
 
-	switch (action.type) {
-		case _updateLoginAccount.UPDATE_LOGIN_ACCOUNT:
-			return _extends({}, loginAccount, action.data || {});
-
-		case _updateLoginAccount.CLEAR_LOGIN_ACCOUNT:
-			return {};
-
-		default:
-			return loginAccount;
-	}
-};
-
-var _updateLoginAccount = require('../../auth/actions/update-login-account');
-
-},{"../../auth/actions/update-login-account":268}],273:[function(require,module,exports){
+  var keys = Object.keys(actionCreators);
+  var boundActionCreators = {};
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var actionCreator = actionCreators[key];
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+  return boundActionCreators;
+}
+},{}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32748,8 +32692,25 @@ var selectRegister = exports.selectRegister = function selectRegister(auth, disp
 		topLinkText: 'Login',
 		topLink: (0, _links.selectAuthLink)(_authTypes.LOGIN, false, dispatch),
 
-		msg: errMsg,
-		msgClass: errMsg ? 'error' : 'success',
+    var hasChanged = false;
+    var nextState = {};
+    for (var i = 0; i < finalReducerKeys.length; i++) {
+      var key = finalReducerKeys[i];
+      var reducer = finalReducers[key];
+      var previousStateForKey = state[key];
+      var nextStateForKey = reducer(previousStateForKey, action);
+      if (typeof nextStateForKey === 'undefined') {
+        var errorMessage = getUndefinedStateErrorMessage(key, action);
+        throw new Error(errorMessage);
+      }
+      nextState[key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+    return hasChanged ? nextState : state;
+  };
+}
+},{"./createStore":17,"./utils/warning":19,"lodash/isPlainObject":23}],16:[function(require,module,exports){
+"use strict";
 
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
@@ -32772,8 +32733,11 @@ var selectLogin = exports.selectLogin = function selectLogin(auth, dispatch) {
 		topLinkText: 'Sign Up',
 		topLink: (0, _links.selectAuthLink)(_authTypes.REGISTER, false, dispatch),
 
-		msg: errMsg,
-		msgClass: errMsg ? 'error' : 'success',
+    if (typeof _ret === "object") return _ret.v;
+  }
+}
+},{}],17:[function(require,module,exports){
+'use strict';
 
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
@@ -32923,7 +32887,15 @@ var _loadBasicMarket = require('../../market/actions/load-basic-market');
 
 var _updateExistingTransaction = require('../../transactions/actions/update-existing-transaction');
 
-var _addCreateMarketTransaction = require('../../transactions/actions/add-create-market-transaction');
+  return _ref2 = {
+    dispatch: dispatch,
+    subscribe: subscribe,
+    getState: getState,
+    replaceReducer: replaceReducer
+  }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
+}
+},{"lodash/isPlainObject":23,"symbol-observable":24}],18:[function(require,module,exports){
+'use strict';
 
 var _updateMakeInProgress = require('../../create-market/actions/update-make-in-progress');
 
@@ -33019,32 +32991,40 @@ var TAGS_MAX_LENGTH = exports.TAGS_MAX_LENGTH = 25;
 var RESOURCES_MAX_NUM = exports.RESOURCES_MAX_NUM = 5;
 var RESOURCES_MAX_LENGTH = exports.RESOURCES_MAX_LENGTH = 1250;
 
-var EXPIRY_SOURCE_GENERIC = exports.EXPIRY_SOURCE_GENERIC = 'generic';
-var EXPIRY_SOURCE_SPECIFIC = exports.EXPIRY_SOURCE_SPECIFIC = 'specific';
-
-var TRADING_FEE_MIN = exports.TRADING_FEE_MIN = 1;
-var TRADING_FEE_MAX = exports.TRADING_FEE_MAX = 12.5;
-var TRADING_FEE_DEFAULT = exports.TRADING_FEE_DEFAULT = 2;
-
-var INITIAL_LIQUIDITY_MIN = exports.INITIAL_LIQUIDITY_MIN = 50;
-var INITIAL_LIQUIDITY_DEFAULT = exports.INITIAL_LIQUIDITY_DEFAULT = 500;
-
-},{}],280:[function(require,module,exports){
+exports.createStore = _createStore2["default"];
+exports.combineReducers = _combineReducers2["default"];
+exports.bindActionCreators = _bindActionCreators2["default"];
+exports.applyMiddleware = _applyMiddleware2["default"];
+exports.compose = _compose2["default"];
+},{"./applyMiddleware":13,"./bindActionCreators":14,"./combineReducers":15,"./compose":16,"./createStore":17,"./utils/warning":19}],19:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-exports.default = function () {
-	var createMarketInProgress = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	var action = arguments[1];
-
-	switch (action.type) {
-		case _updateMakeInProgress.UPDATE_MAKE_IN_PROGRESS:
-			return _extends({}, createMarketInProgress, action.data);
+exports.__esModule = true;
+exports["default"] = warning;
+/**
+ * Prints a warning in the console if it exists.
+ *
+ * @param {String} message The warning message.
+ * @returns {void}
+ */
+function warning(message) {
+  /* eslint-disable no-console */
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message);
+  }
+  /* eslint-enable no-console */
+  try {
+    // This error was thrown as a convenience so that if you enable
+    // "break on all exceptions" in your console,
+    // it would pause the execution at this line.
+    throw new Error(message);
+    /* eslint-disable no-empty */
+  } catch (e) {}
+  /* eslint-enable no-empty */
+}
+},{}],20:[function(require,module,exports){
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetPrototype = Object.getPrototypeOf;
 
 		case _updateMakeInProgress.CLEAR_MAKE_IN_PROGRESS:
 			return {};
@@ -33054,20 +33034,64 @@ exports.default = function () {
 	}
 };
 
-var _updateMakeInProgress = require('../actions/update-make-in-progress');
+},{}],21:[function(require,module,exports){
+/**
+ * Checks if `value` is a host object in IE < 9.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+ */
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
+  }
+  return result;
+}
 
 },{"../actions/update-make-in-progress":278}],281:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.selectCreateMarketForm = undefined;
+},{}],22:[function(require,module,exports){
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-exports.default = function () {
-	var _store$getState = _store2.default.getState();
+},{}],23:[function(require,module,exports){
+var getPrototype = require('./_getPrototype'),
+    isHostObject = require('./_isHostObject'),
+    isObjectLike = require('./isObjectLike');
 
 	var createMarketInProgress = _store$getState.createMarketInProgress;
 	var blockchain = _store$getState.blockchain;
@@ -33087,13 +33111,17 @@ var _store = require('../../../store');
 
 var _store2 = _interopRequireDefault(_store);
 
-var _step = require('../../create-market/selectors/form-steps/step-2');
+},{"./_getPrototype":20,"./_isHostObject":21,"./isObjectLike":22}],24:[function(require,module,exports){
+(function (global){
+/* global window */
+'use strict';
 
 var Step2 = _interopRequireWildcard(_step);
 
 var _step2 = require('../../create-market/selectors/form-steps/step-3');
 
-var Step3 = _interopRequireWildcard(_step2);
+},{"./ponyfill":25}],25:[function(require,module,exports){
+'use strict';
 
 var _step3 = require('../../create-market/selectors/form-steps/step-4');
 
@@ -33101,7 +33129,10 @@ var Step4 = _interopRequireWildcard(_step3);
 
 var _step4 = require('../../create-market/selectors/form-steps/step-5');
 
-var Step5 = _interopRequireWildcard(_step4);
+},{}],26:[function(require,module,exports){
+(function (process,Buffer){
+!function(globals){
+'use strict'
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -33176,7 +33207,8 @@ var _marketValuesConstraints = require('../../../create-market/constants/market-
 
 var _validateDescription = require('../../../market/validators/validate-description');
 
-var _validateDescription2 = _interopRequireDefault(_validateDescription);
+},{"_process":8,"buffer":4,"crypto":3}],27:[function(require,module,exports){
+'use strict';
 
 var _validateEndDate = require('../../../market/validators/validate-end-date');
 
@@ -33253,10 +33285,8 @@ var selectCombinatorial = exports.selectCombinatorial = function selectCombinato
 	return obj;
 };
 
-var isValid = exports.isValid = function isValid(formState) {
-	if ((0, _validateDescription2.default)(formState.description)) {
-		return false;
-	}
+},{"./modules/app/actions/init-augur":28,"./modules/link/actions/show-link":64,"./selectors":151,"./store":153,"augur-ui-react-components":1}],28:[function(require,module,exports){
+'use strict';
 
 	if ((0, _validateEndDate2.default)(formState.endDate)) {
 		return false;
@@ -33383,7 +33413,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../create-market/constants/market-values-constraints":279}],284:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/actions/listen-to-updates":29,"../../app/actions/update-blockchain":30,"../../app/actions/update-branch":31,"../../app/actions/update-connection":32,"../../app/constants/network":33,"../../auth/actions/load-login-account":41,"../../market/actions/load-full-market":68,"../../markets/actions/load-markets":80}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33455,7 +33485,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../../utils/format-number":377,"../../../create-market/constants/market-values-constraints":279}],285:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/actions/update-blockchain":30,"../../auth/actions/update-assets":45,"../../market/actions/load-market":69,"../../markets/actions/update-outcome-price":86}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33517,7 +33547,7 @@ var selectOutcomesFromForm = exports.selectOutcomesFromForm = function selectOut
 	}
 };
 
-},{"../../../../utils/format-number":377,"../../../app/constants/network":255,"../../../create-market/actions/submit-new-market":277,"../../../create-market/constants/market-values-constraints":279,"../../../markets/constants/market-types":312}],286:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../reports/actions/collect-fees":124,"../../reports/actions/commit-reports":125,"../../reports/actions/penalize-too-few-reports":127}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33529,7 +33559,8 @@ exports.showPreviousLink = showPreviousLink;
 
 var _parseUrl = require('../../../utils/parse-url');
 
-var _loadFullMarket = require('../../market/actions/load-full-market');
+},{}],32:[function(require,module,exports){
+'use strict';
 
 var SHOW_LINK = exports.SHOW_LINK = 'SHOW_LINK';
 
@@ -33562,15 +33593,8 @@ function showLink(url) {
 	};
 }
 
-function showPreviousLink(url) {
-	return function (dispatch) {
-		dispatch({ type: SHOW_LINK, parsedURL: (0, _parseUrl.parseURL)(url) });
-		window.scrollTo(0, 0);
-	};
-}
-
-},{"../../../utils/parse-url":381,"../../market/actions/load-full-market":291}],287:[function(require,module,exports){
-'use strict';
+},{}],33:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -33584,7 +33608,7 @@ var PAGE_PARAM_NAME = exports.PAGE_PARAM_NAME = 'page';
 var TAGS_PARAM_NAME = exports.TAGS_PARAM_NAME = 'tags';
 var FILTERS_PARAM_NAME = exports.FILTERS_PARAM_NAME = 'filters';
 
-},{}],288:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33621,7 +33645,7 @@ var AUTH_PATHS = exports.AUTH_PATHS = Object.keys(PATHS_AUTH).reduce(function (f
 	return finalObj;
 }, {});
 
-},{"../../app/constants/pages":256,"../../auth/constants/auth-types":269}],289:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33668,7 +33692,8 @@ var _parseUrl = require('../../../utils/parse-url');
 
 var _paths = require('../../link/constants/paths');
 
-var _pages = require('../../app/constants/pages');
+},{"../../app/constants/pages":34,"../../link/actions/show-link":64,"../../link/constants/paths":66}],36:[function(require,module,exports){
+'use strict';
 
 var _authTypes = require('../../auth/constants/auth-types');
 
@@ -33765,22 +33790,8 @@ var selectMarketLink = exports.selectMarketLink = (0, _memoizerific2.default)(1)
 		}
 	};
 
-	if (market.isReported) {
-		link.text = 'Reported';
-		link.className = 'reported';
-	} else if (market.isMissedReport) {
-		link.text = 'Missed Report';
-		link.className = 'missed-report';
-	} else if (market.isPendingReport) {
-		link.text = 'Report';
-		link.className = 'report';
-	} else if (!market.isOpen) {
-		link.text = 'View';
-		link.className = 'view';
-	} else {
-		link.text = 'Trade';
-		link.className = 'trade';
-	}
+},{"../../app/actions/update-blockchain":30}],37:[function(require,module,exports){
+'use strict';
 
 	return link;
 });
@@ -33815,7 +33826,7 @@ var selectCreateMarketLink = exports.selectCreateMarketLink = (0, _memoizerific2
 	};
 });
 
-},{"../../../selectors":371,"../../../store":373,"../../../utils/list-words-under-length":379,"../../../utils/parse-url":381,"../../app/constants/pages":256,"../../auth/actions/logout":265,"../../auth/constants/auth-types":269,"../../link/actions/show-link":286,"../../link/constants/param-names":287,"../../link/constants/paths":288,"../../markets/constants/sort":315,"memoizerific":233}],290:[function(require,module,exports){
+},{"../../app/actions/update-branch":31}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33833,23 +33844,7 @@ var _updateMarketsData = require('../../markets/actions/update-markets-data');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function loadBasicMarket(marketID, cb) {
-	return function (dispatch, getState) {
-		AugurJS.loadMarket(marketID, function (err, marketData) {
-			if (err) {
-				console.info('ERROR: loadMarket()', err);
-				return cb && cb();
-			}
-			var marketDataOutcomesData = (0, _parseMarketData.parseMarketsData)(_defineProperty({}, marketData._id, marketData));
-			dispatch((0, _updateMarketsData.updateMarketsData)(marketDataOutcomesData));
-			return cb && cb();
-		});
-	};
-}
-
-},{"../../../services/augurjs":372,"../../../utils/parse-market-data":380,"../../markets/actions/update-markets-data":306}],291:[function(require,module,exports){
+},{"../../app/actions/update-connection":32}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33865,9 +33860,8 @@ function loadFullMarket(marketId) {
 	return function (dispatch, getState) {
 		var _getState = getState();
 
-		var marketsData = _getState.marketsData;
-		// load price history, and other non-basic market details here, dispatching
-		// the necessary actions to save each part in relevant state
+},{"../../../store":153}],40:[function(require,module,exports){
+'use strict';
 
 		var loadDetails = function loadDetails() {
 			return dispatch((0, _loadPriceHistory.loadPriceHistory)(marketId));
@@ -33883,7 +33877,7 @@ function loadFullMarket(marketId) {
 	};
 }
 
-},{"../../market/actions/load-basic-market":290,"../../market/actions/load-price-history":292}],292:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33963,8 +33957,8 @@ exports.default = function () {
 
 	var selectedMarketID = _store$getState.selectedMarketID;
 
-	return selectMarket(selectedMarketID);
-};
+},{"../../../services/augurjs":152,"../../auth/actions/update-assets":45,"../../auth/actions/update-login-account":46,"../../markets/actions/update-favorites":83,"../../positions/actions/load-account-trades":118,"../../positions/actions/update-account-trades-data":119,"../../reports/actions/close-markets":123,"../../reports/actions/collect-fees":124,"../../reports/actions/commit-reports":125,"../../reports/actions/load-reports":126,"../../reports/actions/penalize-too-few-reports":127,"../../reports/actions/penalize-wrong-reports":128,"../../reports/actions/update-reports":130,"../../transactions/actions/update-transactions-data":143,"../../transactions/constants/statuses":144}],42:[function(require,module,exports){
+'use strict';
 
 var _memoizerific = require('memoizerific');
 
@@ -33988,7 +33982,8 @@ var _submitReport = require('../../reports/actions/submit-report');
 
 var _toggleTag = require('../../markets/actions/toggle-tag');
 
-var _store = require('../../../store');
+},{"../../../selectors":151,"../../../services/augurjs":152,"../../auth/actions/auth-error":40,"../../auth/actions/load-login-account":41,"../../auth/actions/update-login-account":46}],43:[function(require,module,exports){
+'use strict';
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -34002,7 +33997,8 @@ var _positionsSummary = require('../../positions/selectors/positions-summary');
 
 var _priceTimeSeries = require('../../market/selectors/price-time-series');
 
-var _position = require('../../positions/selectors/position');
+},{"../../../services/augurjs":152,"../../auth/actions/update-login-account":46}],44:[function(require,module,exports){
+'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34167,7 +34163,7 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 	return o;
 });
 
-},{"../../../store":373,"../../../utils/format-number":377,"../../../utils/is-market-data-open":378,"../../link/selectors/links":289,"../../market/selectors/price-time-series":295,"../../markets/actions/toggle-tag":303,"../../markets/actions/update-favorites":304,"../../markets/constants/market-outcomes":311,"../../markets/constants/market-types":312,"../../positions/selectors/position":341,"../../positions/selectors/positions-summary":342,"../../reports/actions/submit-report":349,"../../trade/actions/place-trade":352,"../../trade/actions/update-trades-in-progress":353,"../../trade/selectors/trade-orders":355,"../../trade/selectors/trade-summary":356,"memoizerific":233}],295:[function(require,module,exports){
+},{"../../../selectors":151,"../../../services/augurjs":152,"../../auth/actions/auth-error":40,"../../auth/actions/update-assets":45,"../../auth/actions/update-login-account":46,"../../auth/constants/auth-types":47,"../../auth/constants/form-errors":48,"../../transactions/actions/add-transactions":140,"../../transactions/actions/update-existing-transaction":142,"../../transactions/actions/update-transactions-data":143,"../../transactions/constants/statuses":144}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34216,7 +34212,7 @@ var selectPriceTimeSeries = exports.selectPriceTimeSeries = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../store":373,"../../../utils/date":376,"memoizerific":233}],296:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../auth/actions/update-login-account":46}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34242,7 +34238,7 @@ exports.default = function (categoricalOutcomes) {
 	return errors;
 };
 
-},{}],297:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34267,7 +34263,7 @@ exports.default = function (description) {
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../create-market/constants/market-values-constraints":279}],298:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34281,7 +34277,7 @@ exports.default = function (endDate) {
 	return null;
 };
 
-},{}],299:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34323,7 +34319,7 @@ exports.default = function (scalarSmallNum, scalarBigNum) {
 	return null;
 };
 
-},{}],301:[function(require,module,exports){
+},{"../../auth/actions/auth-error":40,"../../auth/constants/auth-types":47,"../../link/actions/show-link":64,"../../link/constants/paths":66}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34380,7 +34376,7 @@ function loadMarkets() {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../../utils/parse-market-data":380,"../../app/constants/network":255,"../../markets/actions/update-markets-data":306,"../../reports/actions/close-markets":343,"../../reports/actions/load-reports":346,"../../reports/actions/penalize-wrong-reports":348}],302:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":46}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34474,7 +34470,7 @@ function updateKeywords(keywords) {
 	};
 }
 
-},{"../../../selectors":371,"../../link/actions/show-link":286}],306:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../auth/actions/login":42,"../../auth/actions/register":44,"../../auth/constants/auth-types":47,"../../auth/constants/form-errors":48,"../../link/selectors/links":67,"memoizerific":11}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34492,9 +34488,12 @@ function updateMarketsData(marketsOutcomesData) {
 	return _extends({ type: UPDATE_MARKETS_DATA }, marketsOutcomesData);
 }
 
-function updateMarketData(marketData) {
-	return { type: UPDATE_MARKET_DATA, marketData: marketData };
-}
+	return _extends({}, loginAccount, {
+		rep: (0, _formatNumber.formatRep)(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
+		ether: (0, _formatNumber.formatEther)(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
+		realEther: (0, _formatNumber.formatEther)(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 0 })
+	});
+};
 
 },{}],307:[function(require,module,exports){
 'use strict';
@@ -34522,7 +34521,7 @@ function updateSelectedMarketsHeader(selectedMarketsHeader) {
 	return { type: UPDATED_SELECTED_MARKETS_HEADER, selectedMarketsHeader: selectedMarketsHeader };
 }
 
-},{}],309:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/format-number":158}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34547,7 +34546,7 @@ function updateSelectedPageNum(selectedPageNum) {
 	};
 }
 
-},{"../../../selectors":371,"../../link/actions/show-link":286}],310:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34583,7 +34582,7 @@ var YES = exports.YES = 2;
 var INDETERMINATE_OUTCOME_ID = exports.INDETERMINATE_OUTCOME_ID = '1.5';
 var INDETERMINATE_OUTCOME_NAME = exports.INDETERMINATE_OUTCOME_NAME = 'indeterminate';
 
-},{}],312:[function(require,module,exports){
+},{"../actions/update-bids-asks":53}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34648,9 +34647,8 @@ exports.default = function () {
 
 	var newFavorites = void 0;
 
-	switch (action.type) {
-		case _updateFavorites.UPDATE_FAVORITES:
-			return _extends({}, favorites, action.favorites);
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../create-market/actions/update-make-in-progress":56,"../../link/selectors/links":67,"../../market/actions/load-market":69,"../../markets/constants/market-types":92,"../../transactions/actions/add-create-market-transaction":137,"../../transactions/actions/update-existing-transaction":142,"../../transactions/constants/statuses":144}],56:[function(require,module,exports){
+'use strict';
 
 		case _updateFavorites.TOGGLE_FAVORITE:
 			newFavorites = _extends({}, favorites);
@@ -34668,7 +34666,7 @@ exports.default = function () {
 
 var _updateFavorites = require('../../markets/actions/update-favorites');
 
-},{"../../markets/actions/update-favorites":304}],317:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34702,7 +34700,7 @@ var _showLink = require('../../link/actions/show-link');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":286,"../../link/constants/param-names":287,"../../markets/actions/update-keywords":305}],318:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34731,7 +34729,7 @@ var _updateMarketsData = require('../../markets/actions/update-markets-data');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../markets/actions/update-markets-data":306}],319:[function(require,module,exports){
+},{"../actions/update-make-in-progress":56}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34831,7 +34829,7 @@ var _pagination = require('../../markets/constants/pagination');
 
 var _showLink = require('../../link/actions/show-link');
 
-},{"../../link/actions/show-link":286,"../../link/constants/param-names":287,"../../markets/actions/toggle-filter":302,"../../markets/actions/toggle-tag":303,"../../markets/actions/update-keywords":305,"../../markets/actions/update-selected-markets-header":308,"../../markets/actions/update-selected-page-num":309,"../../markets/actions/update-selected-sort":310,"../../markets/constants/pagination":314}],321:[function(require,module,exports){
+},{"../../../store":153,"../../create-market/actions/update-make-in-progress":56,"../../create-market/selectors/form-steps/step-2":60,"../../create-market/selectors/form-steps/step-3":61,"../../create-market/selectors/form-steps/step-4":62,"../../create-market/selectors/form-steps/step-5":63,"../../markets/constants/market-types":92,"memoizerific":11}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34951,9 +34949,7 @@ exports.default = function () {
 	}
 };
 
-var _updateSelectedMarketsHeader = require('../../markets/actions/update-selected-markets-header');
-
-},{"../../markets/actions/update-selected-markets-header":308}],325:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":57,"../../../market/validators/validate-categorical-outcomes":74,"../../../market/validators/validate-description":75,"../../../market/validators/validate-end-date":76,"../../../market/validators/validate-scalar-big-num":77,"../../../market/validators/validate-scalar-small-num":78,"../../../markets/constants/market-types":92}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35037,13 +35033,7 @@ exports.default = function () {
 	}
 };
 
-var _showLink = require('../../link/actions/show-link');
-
-var _toggleTag = require('../../markets/actions/toggle-tag');
-
-var _paramNames = require('../../link/constants/param-names');
-
-},{"../../link/actions/show-link":286,"../../link/constants/param-names":287,"../../markets/actions/toggle-tag":303}],327:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":57}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35203,7 +35193,7 @@ var selectFilters = exports.selectFilters = (0, _memoizerific2.default)(1)(funct
 	return filters;
 });
 
-},{"../../../selectors":371,"../../../store":373,"../../markets/actions/toggle-filter":302,"../../markets/actions/toggle-tag":303,"memoizerific":233}],328:[function(require,module,exports){
+},{"../../../../utils/format-number":158,"../../../create-market/constants/market-values-constraints":57}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35214,7 +35204,9 @@ exports.selectOnChangeKeywords = undefined;
 exports.default = function () {
 	var _store$getState = _store2.default.getState();
 
-	var keywords = _store$getState.keywords;
+var _formatDate = require('../../../../utils/format-date');
+
+var _network = require('../../../app/constants/network');
 
 	return {
 		value: keywords,
@@ -35228,7 +35220,9 @@ var _memoizerific2 = _interopRequireDefault(_memoizerific);
 
 var _updateKeywords = require('../../markets/actions/update-keywords');
 
-var _store = require('../../../store');
+	o.type = formState.type;
+	o.endDate = (0, _formatDate.formatDate)(formState.endDate);
+	o.endBlock = selectEndBlockFromEndDate(formState.endDate.getTime(), currentBlockNumber, currentBlockMillisSinceEpoch);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -35243,7 +35237,30 @@ var selectOnChangeKeywords = exports.selectOnChangeKeywords = (0, _memoizerific2
 	};
 });
 
-},{"../../../store":373,"../../markets/actions/update-keywords":305,"memoizerific":233}],329:[function(require,module,exports){
+	return o;
+};
+
+var selectEndBlockFromEndDate = exports.selectEndBlockFromEndDate = function selectEndBlockFromEndDate(endDateMillisSinceEpoch, currentBlockNumber, currentBlockMillisSinceEpoch) {
+	return currentBlockNumber + Math.ceil((endDateMillisSinceEpoch - currentBlockMillisSinceEpoch) / _network.MILLIS_PER_BLOCK);
+};
+
+var selectOutcomesFromForm = exports.selectOutcomesFromForm = function selectOutcomesFromForm(type, categoricalOutcomes, scalarSmallNum, scalarBigNum) {
+	switch (type) {
+		case _marketTypes.BINARY:
+			return [{ id: 1, name: 'No' }, { id: 2, name: 'Yes' }];
+		case _marketTypes.CATEGORICAL:
+			return categoricalOutcomes.map(function (outcome, i) {
+				var obj = { id: i, name: outcome };
+				return obj;
+			});
+		case _marketTypes.SCALAR:
+			return [{ id: 1, name: scalarSmallNum }, { id: 2, name: scalarBigNum }];
+		default:
+			break;
+	}
+};
+
+},{"../../../../utils/format-date":157,"../../../../utils/format-number":158,"../../../app/constants/network":33,"../../../create-market/actions/submit-new-market":55,"../../../create-market/constants/market-values-constraints":57,"../../../markets/constants/market-types":92}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35280,7 +35297,8 @@ var _store2 = _interopRequireDefault(_store);
 
 var _market = require('../../market/selectors/market');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"../../../utils/parse-url":161,"../../market/actions/load-full-market":68}],65:[function(require,module,exports){
+'use strict';
 
 var selectMarkets = exports.selectMarkets = (0, _memoizerific2.default)(1)(function (marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, dispatch) {
 	if (!marketsData) {
@@ -35361,7 +35379,7 @@ function cleanSortVal(val) {
 	}
 }
 
-},{"../../../store":373,"../../../utils/is-market-data-open":378,"../../market/selectors/market":294,"memoizerific":233}],330:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35389,7 +35407,7 @@ var selectFavoriteMarkets = exports.selectFavoriteMarkets = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../selectors":371,"memoizerific":233}],331:[function(require,module,exports){
+},{"../../app/constants/pages":34,"../../auth/constants/auth-types":47}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35524,7 +35542,7 @@ var selectMarketsHeader = exports.selectMarketsHeader = (0, _memoizerific2.defau
 	return obj;
 });
 
-},{"../../../selectors":371,"../../../store":373,"../../markets/actions/update-selected-markets-header":308,"../../markets/constants/markets-headers":313,"memoizerific":233}],333:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../../utils/list-words-under-length":160,"../../../utils/parse-url":161,"../../app/constants/pages":34,"../../auth/actions/logout":43,"../../auth/constants/auth-types":47,"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../link/constants/paths":66,"../../markets/constants/sort":95,"memoizerific":11}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35560,31 +35578,7 @@ var selectMarketsTotals = exports.selectMarketsTotals = (0, _memoizerific2.defau
 			p.numPendingReports++;
 		}
 
-		if (market.positionsSummary && market.positionsSummary.qtyShares && market.positionsSummary.qtyShares.value) {
-			positions.numPositions += market.positionsSummary.numPositions.value;
-			positions.qtyShares += market.positionsSummary.qtyShares.value;
-			positions.totalValue += market.positionsSummary.totalValue.value || 0;
-			positions.totalCost += market.positionsSummary.totalCost.value || 0;
-		}
-
-		return p;
-	}, {
-		numAll: 0,
-		numFavorites: 0,
-		numPendingReports: 0,
-		numUnpaginated: 0,
-		numFiltered: 0
-	});
-
-	totals.numUnpaginated = unpaginatedMarketsLength;
-	totals.numFiltered = filteredMarketsLength;
-	totals.numFavorites = favoriteMarketsLength;
-	totals.positionsSummary = (0, _positionsSummary.selectPositionsSummary)(positions.numPositions, positions.qtyShares, positions.totalValue, positions.totalCost);
-
-	return totals;
-});
-
-},{"../../../selectors":371,"../../positions/selectors/positions-summary":342,"memoizerific":233}],334:[function(require,module,exports){
+},{"../../market/actions/load-market":69,"../../market/actions/load-price-history":70}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35608,7 +35602,8 @@ exports.default = function () {
 	return selectUnpaginatedMarkets(allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader);
 };
 
-var _memoizerific = require('memoizerific');
+},{"../../../services/augurjs":152,"../../markets/actions/update-markets-data":85}],70:[function(require,module,exports){
+'use strict';
 
 var _memoizerific2 = _interopRequireDefault(_memoizerific);
 
@@ -35622,11 +35617,8 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var selectPendingReports = exports.selectPendingReports = (0, _memoizerific2.default)(1)(function (markets) {
-	return markets.filter(function (market) {
-		return !!market.isPendingReport;
-	});
-});
+},{"../../../services/augurjs":152,"../../market/actions/update-market-price-history":71}],71:[function(require,module,exports){
+'use strict';
 
 var selectPositions = exports.selectPositions = (0, _memoizerific2.default)(1)(function (markets) {
 	return markets.filter(function (market) {
@@ -35643,14 +35635,7 @@ var selectUnpaginatedMarkets = exports.selectUnpaginatedMarkets = (0, _memoizeri
 		return selectPendingReports(allMarkets);
 	}
 
-	if (selectedMarketsHeader === _marketsHeaders.FAVORITES) {
-		return favoriteMarkets;
-	}
-
-	return filteredMarkets;
-});
-
-},{"../../../selectors":371,"../../../store":373,"../../app/constants/pages":256,"../../markets/constants/markets-headers":313,"memoizerific":233}],335:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35682,7 +35667,9 @@ var _memoizerific2 = _interopRequireDefault(_memoizerific);
 
 var _pages = require('../../app/constants/pages');
 
-var _marketsHeaders = require('../../markets/constants/markets-headers');
+var _formatDate = require('../../../utils/format-date');
+
+var _isMarketDataOpen = require('../../../utils/is-market-data-open');
 
 var _store = require('../../../store');
 
@@ -35768,11 +35755,13 @@ exports.default = function () {
 
 var _memoizerific = require('memoizerific');
 
-var _memoizerific2 = _interopRequireDefault(_memoizerific);
+	var endDate = new Date(marketsData[marketID].endDate * 1000 || 0);
 
 var _updateSelectedSort = require('../../markets/actions/update-selected-sort');
 
-var _store = require('../../../store');
+	// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
+	endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), blockchain && blockchain.isReportConfirmationPhase, _store2.default.dispatch);
+};
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -35781,10 +35770,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var selectSortOptions = exports.selectSortOptions = (0, _memoizerific2.default)(10)(function () {
 	var selectedSort = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-	var creationSortOrder = { label: 'Newest Market', value: 'creationSortOrder', isDesc: true };
-	var endDate = { label: 'Soonest Expiry', value: 'endDate', isDesc: false };
-	var volume = { label: 'Most Volume', value: 'volume', isDesc: true };
-	var tradingFeePercent = { label: 'Lowest Fee', value: 'tradingFeePercent', isDesc: false };
+var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(function (marketID, marketData, marketPriceHistory, isOpen, isFavorite, marketOutcomes, marketReport, marketAccountTrades, marketTradeInProgress, endDateYear, endDateMonth, endDateDay, isReportConfirmationPhase, dispatch) {
+	// console.log('>>assembleMarket<<');
+
+	var o = _extends({}, marketData, {
+		id: marketID
+	});
+	var tradeOrders = [];
+	var positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
 	switch (selectedSort.prop) {
 		case creationSortOrder.value:
@@ -35806,6 +35799,9 @@ var selectSortOptions = exports.selectSortOptions = (0, _memoizerific2.default)(
 		default:
 			break;
 	}
+	o.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && (0, _formatDate.formatDate)(new Date(endDateYear, endDateMonth, endDateDay)) || null;
+	o.isOpen = isOpen;
+	o.isExpired = !isOpen;
 
 	return [creationSortOrder, endDate, volume, tradingFeePercent];
 });
@@ -35871,54 +35867,17 @@ function loadAccountTrades() {
 				return p;
 			}, {});
 
-			dispatch((0, _updateAccountTradesData.updateAccountTradesData)(trades));
-		});
-	};
-}
-
-/*
-export function loadMeanTradePrices() {
-    return (dispatch, getState) => {
-        var { loginAccount } = getState();
-        AugurJS.loadMeanTradePrices(loginAccount.id, (err, meanTradePrices) => {
-console.log('========loadMeanTradePrices>>>>', err, meanTradePrices);
-            if (err) {
-                return console.info('ERR loadMeanTradePrices():', err);
-            }
-
-            if (meanTradePrices) {
-                dispatch(updatePositionsData(meanTradePrices));
-            }
-        });
-    };
-}
-*/
-
-},{"../../../services/augurjs":372,"../../positions/actions/update-account-trades-data":339}],339:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.updateAccountTradesData = updateAccountTradesData;
-var UPDATE_ACCOUNT_TRADES_DATA = exports.UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
-
-function updateAccountTradesData(data) {
-	return { type: UPDATE_ACCOUNT_TRADES_DATA, data: data };
-}
-
-},{}],340:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-exports.default = function () {
-	var accountTrades = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	var action = arguments[1];
+	o.tags = (o.tags || []).map(function (tag) {
+		var obj = {
+			name: tag && tag.toString().toLowerCase().trim(),
+			onClick: function onClick() {
+				return dispatch((0, _toggleTag.toggleTag)(tag));
+			}
+		};
+		return obj;
+	}).filter(function (tag) {
+		return !!tag.name;
+	});
 
 	switch (action.type) {
 		case _updateAccountTradesData.UPDATE_ACCOUNT_TRADES_DATA:
@@ -35936,7 +35895,7 @@ var _updateAccountTradesData = require('../../positions/actions/update-account-t
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":268,"../../positions/actions/update-account-trades-data":339}],341:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/format-date":157,"../../../utils/format-number":158,"../../../utils/is-market-data-open":159,"../../link/selectors/links":67,"../../market/selectors/price-time-series":73,"../../markets/actions/toggle-tag":82,"../../markets/actions/update-favorites":83,"../../markets/constants/market-outcomes":91,"../../markets/constants/market-types":92,"../../positions/selectors/position":121,"../../positions/selectors/positions-summary":122,"../../reports/actions/submit-report":129,"../../trade/actions/place-trade":132,"../../trade/actions/update-trades-in-progress":133,"../../trade/selectors/trade-orders":135,"../../trade/selectors/trade-summary":136,"memoizerific":11}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35948,7 +35907,11 @@ var _memoizerific = require('memoizerific');
 
 var _memoizerific2 = _interopRequireDefault(_memoizerific);
 
-var _positionsSummary = require('../../positions/selectors/positions-summary');
+var _store = require('../../../store');
+
+var _store2 = _interopRequireDefault(_store);
+
+var _dateToBlockToDate = require('../../../utils/date-to-block-to-date');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35961,10 +35924,15 @@ var selectPositionFromOutcomeAccountTrades = exports.selectPositionFromOutcomeAc
 		return null;
 	}
 
-	outcomeAccountTrades.forEach(function (outcomeAccountTrade) {
-		qtyShares += outcomeAccountTrade.qtyShares;
-		totalCost += outcomeAccountTrade.qtyShares * outcomeAccountTrade.purchasePrice;
-		totalValue += outcomeAccountTrade.qtyShares * lastPrice;
+	return outcomes.map(function (outcome) {
+		var outcomePriceHistory = marketPriceHistory[outcome.id] || [];
+
+		return {
+			name: outcome.name,
+			data: outcomePriceHistory.map(function (priceTimePoint) {
+				return [(0, _dateToBlockToDate.blockToDate)(priceTimePoint.blockNumber, blockchain.currentBlockNumber), Number(priceTimePoint.price)];
+			})
+		};
 	});
 
 	var position = (0, _positionsSummary.selectPositionsSummary)(outcomeAccountTrades.length, qtyShares, totalValue, totalCost);
@@ -35972,7 +35940,7 @@ var selectPositionFromOutcomeAccountTrades = exports.selectPositionFromOutcomeAc
 	return position;
 });
 
-},{"../../positions/selectors/positions-summary":342,"memoizerific":233}],342:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/date-to-block-to-date":156,"memoizerific":11}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36014,7 +35982,7 @@ var selectPositionsSummary = exports.selectPositionsSummary = (0, _memoizerific2
 	};
 });
 
-},{"../../../utils/format-number":377,"memoizerific":233}],343:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36032,7 +36000,8 @@ var _isMarketDataOpen = require('../../../utils/is-market-data-open');
 
 var _updateMarketsData = require('../../markets/actions/update-markets-data');
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+},{"../../create-market/constants/market-values-constraints":57}],76:[function(require,module,exports){
+'use strict';
 
 function closeMarkets(marketsData) {
 	return function (dispatch, getState) {
@@ -36042,6 +36011,8 @@ function closeMarkets(marketsData) {
 		var blockchain = _getState.blockchain;
 		var branch = _getState.branch;
 
+},{}],77:[function(require,module,exports){
+'use strict';
 
 		if (blockchain.isReportConfirmationPhase || !loginAccount.ether) {
 			return;
@@ -36053,9 +36024,8 @@ function closeMarkets(marketsData) {
 			return marketsData[marketID];
 		});
 
-		if (!unparsedMarkets || !unparsedMarkets.length) {
-			return;
-		}
+},{}],78:[function(require,module,exports){
+'use strict';
 
 		(function process() {
 			function next() {
@@ -36088,7 +36058,7 @@ function closeMarkets(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../../utils/is-market-data-open":378,"../../app/constants/network":255,"../../markets/actions/update-markets-data":306}],344:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36147,15 +36117,12 @@ var _updateReports2 = require('../../reports/actions/update-reports');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+				// transform array of outcomes into an object and add their names
+				finalOutcomesData[marketID] = parseOutcomes(marketData);
 
-function commitReports() {
-	return function (dispatch, getState) {
-		var _getState = getState();
-
-		var blockchain = _getState.blockchain;
-		var loginAccount = _getState.loginAccount;
-		var reports = _getState.reports;
+				// save market (without outcomes)
+				finalMarketsData[marketID] = marketData;
+			});
 
 		var branchID = _network.BRANCH_ID;
 		var prevPeriod = blockchain.reportPeriod - 1;
@@ -36217,7 +36184,7 @@ function commitReports() {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../app/constants/network":255,"../../reports/actions/update-reports":350}],346:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../markets/actions/update-markets-data":85,"../../markets/actions/update-outcomes-data":87,"../../markets/constants/market-outcomes":91,"../../markets/constants/market-types":92}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36269,7 +36236,7 @@ function loadReports(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../../utils/is-market-data-open":378,"../../app/constants/network":255,"../../reports/actions/update-reports":350}],347:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../markets/actions/load-markets-info":79,"../../markets/actions/update-markets-data":85}],81:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36279,7 +36246,8 @@ exports.penalizeTooFewReports = penalizeTooFewReports;
 
 var _augurjs = require('../../../services/augurjs');
 
-var AugurJS = _interopRequireWildcard(_augurjs);
+},{"../../../selectors":151,"../../link/actions/show-link":64}],82:[function(require,module,exports){
+'use strict';
 
 var _updateAssets = require('../../auth/actions/update-assets');
 
@@ -36329,7 +36297,7 @@ function penalizeTooFewReports() {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../app/constants/network":255,"../../auth/actions/update-assets":267}],348:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],83:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36339,7 +36307,8 @@ exports.penalizeWrongReports = penalizeWrongReports;
 
 var _augurjs = require('../../../services/augurjs');
 
-var AugurJS = _interopRequireWildcard(_augurjs);
+},{}],84:[function(require,module,exports){
+'use strict';
 
 var _isMarketDataOpen = require('../../../utils/is-market-data-open');
 
@@ -36387,7 +36356,7 @@ function penalizeWrongReports(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../../utils/is-market-data-open":378,"../../app/constants/network":255}],349:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],85:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36399,25 +36368,29 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 exports.submitReport = submitReport;
 exports.processReport = processReport;
 
-var _augurjs = require('../../../services/augurjs');
+},{}],86:[function(require,module,exports){
+'use strict';
 
 var AugurJS = _interopRequireWildcard(_augurjs);
 
 var _secureRandom = require('secure-random');
 
-var _secureRandom2 = _interopRequireDefault(_secureRandom);
+},{}],87:[function(require,module,exports){
+'use strict';
 
 var _bytesToHex = require('../../../utils/bytes-to-hex');
 
 var _network = require('../../app/constants/network');
 
-var _marketOutcomes = require('../../markets/constants/market-outcomes');
+},{}],88:[function(require,module,exports){
+'use strict';
 
 var _marketTypes = require('../../markets/constants/market-types');
 
 var _statuses = require('../../transactions/constants/statuses');
 
-var _addReportTransaction = require('../../transactions/actions/add-report-transaction');
+},{}],89:[function(require,module,exports){
+'use strict';
 
 var _updateExistingTransaction = require('../../transactions/actions/update-existing-transaction');
 
@@ -36458,9 +36431,8 @@ function submitReport(market, reportedOutcomeID, isUnethical) {
 	};
 }
 
-function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
-	return function (dispatch, getState) {
-		var _getState2 = getState();
+},{"../../../selectors":151,"../../link/actions/show-link":64}],90:[function(require,module,exports){
+'use strict';
 
 		var loginAccount = _getState2.loginAccount;
 		var blockchain = _getState2.blockchain;
@@ -36503,7 +36475,7 @@ function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
 	};
 }
 
-},{"../../../services/augurjs":372,"../../../utils/bytes-to-hex":374,"../../app/constants/network":255,"../../link/selectors/links":289,"../../market/selectors/market":294,"../../markets/constants/market-outcomes":311,"../../markets/constants/market-types":312,"../../reports/actions/update-reports":350,"../../transactions/actions/add-report-transaction":358,"../../transactions/actions/update-existing-transaction":362,"../../transactions/constants/statuses":364,"secure-random":248}],350:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],91:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36522,7 +36494,7 @@ function clearReports() {
 	return { type: CLEAR_REPORTS };
 }
 
-},{}],351:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36543,24 +36515,18 @@ exports.default = function () {
 	var reports = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	var action = arguments[1];
 
-	switch (action.type) {
-		case _updateReports.UPDATE_REPORTS:
-			return _extends({}, reports, Object.keys(action.reports).reduce(function (p, eventID) {
-				p[eventID] = _extends({}, reports[eventID], action.reports[eventID]);
-				return p;
-			}, {}));
+},{}],93:[function(require,module,exports){
+'use strict';
 
 		case _updateReports.CLEAR_REPORTS:
 			return {};
 
-		default:
-			return reports;
-	}
-};
+},{}],94:[function(require,module,exports){
+"use strict";
 
 var _updateReports = require('../../reports/actions/update-reports');
 
-},{"../../reports/actions/update-reports":350}],352:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36569,7 +36535,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.placeTrade = placeTrade;
 exports.tradeShares = tradeShares;
 
-var _augurjs = require('../../../services/augurjs');
+},{}],96:[function(require,module,exports){
+'use strict';
 
 var AugurJS = _interopRequireWildcard(_augurjs);
 
@@ -36618,7 +36585,7 @@ function tradeShares(transactionID, marketID, outcomeID, numShares, limitPrice, 
 	};
 }
 
-},{"../../../services/augurjs":372,"../../app/constants/network":255,"../../link/selectors/links":289,"../../market/selectors/market":294,"../../positions/actions/load-account-trades":338,"../../trade/actions/update-trades-in-progress":353,"../../transactions/actions/add-transactions":360,"../../transactions/actions/update-existing-transaction":362,"../../transactions/constants/statuses":364}],353:[function(require,module,exports){
+},{"../../markets/actions/update-favorites":83}],97:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36669,7 +36636,7 @@ function clearTradeInProgress(marketID) {
 	return { type: CLEAR_TRADE_IN_PROGRESS, marketID: marketID };
 }
 
-},{"../../../services/augurjs":372}],354:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/update-keywords":84}],98:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36703,7 +36670,7 @@ var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../auth/actions/update-login-account":268,"../../trade/actions/update-trades-in-progress":353}],355:[function(require,module,exports){
+},{"../../markets/actions/update-markets-data":85}],99:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36749,9 +36716,8 @@ var selectTradeOrders = exports.selectTradeOrders = function selectTradeOrders(m
 		return orders;
 	}
 
-	market.outcomes.forEach(function (outcome) {
-		orders.concat(selectOutcomeTradeOrders(market, outcome, marketTradeInProgress[outcome.id], dispatch));
-	});
+},{"../../markets/actions/update-outcome-price":86,"../../markets/actions/update-outcomes-data":87}],100:[function(require,module,exports){
+'use strict';
 
 	return orders;
 
@@ -36870,7 +36836,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 });
 */
 
-},{"../../../utils/format-number":377,"../../transactions/actions/add-trade-transaction":359}],356:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/toggle-filter":81,"../../markets/actions/toggle-tag":82,"../../markets/actions/update-keywords":84,"../../markets/actions/update-selected-markets-header":88,"../../markets/actions/update-selected-page-num":89,"../../markets/actions/update-selected-sort":90,"../../markets/constants/pagination":94}],101:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36914,7 +36880,7 @@ var selectTradeSummary = exports.selectTradeSummary = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../utils/format-number":377,"memoizerific":233}],357:[function(require,module,exports){
+},{"../../market/actions/update-market-price-history":71}],102:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36947,7 +36913,7 @@ var addCreateMarketTransaction = exports.addCreateMarketTransaction = function a
 	};
 };
 
-},{"../../create-market/actions/submit-new-market":277,"../../transactions/actions/add-transactions":360,"../../transactions/constants/types":365}],358:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/toggle-filter":81}],103:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36987,7 +36953,7 @@ var addReportTransaction = exports.addReportTransaction = function addReportTran
 	};
 };
 
-},{"../../reports/actions/submit-report":349,"../../transactions/actions/add-transactions":360,"../../transactions/constants/types":365}],359:[function(require,module,exports){
+},{"../../app/constants/pages":34,"../../link/actions/show-link":64,"../../link/constants/paths":66}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37030,7 +36996,7 @@ var addTradeTransaction = exports.addTradeTransaction = function addTradeTransac
 	};
 };
 
-},{"../../../utils/format-number":377,"../../trade/actions/place-trade":352,"../../transactions/actions/add-transactions":360,"../../transactions/constants/types":365}],360:[function(require,module,exports){
+},{"../../markets/actions/update-selected-markets-header":88}],105:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37084,7 +37050,7 @@ function processTransactions() {
 	};
 }
 
-},{"../../../selectors":371,"../../transactions/constants/statuses":364}],362:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/update-selected-sort":90,"../../markets/constants/sort":95}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37117,7 +37083,7 @@ function updateExistingTransaction(transactionID, newTransactionData) {
 	};
 }
 
-},{"../../auth/actions/update-assets":267,"../../transactions/actions/update-transactions-data":363}],363:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/toggle-tag":82}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37201,7 +37167,7 @@ var _updateTransactionsData = require('../../transactions/actions/update-transac
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":268,"../../transactions/actions/update-transactions-data":363}],367:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../markets/actions/toggle-filter":81,"../../markets/actions/toggle-tag":82,"memoizerific":11}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37235,7 +37201,7 @@ var selectIsWorking = exports.selectIsWorking = (0, _memoizerific2.default)(1)(f
 	});
 });
 
-},{"../../../store":373,"../../transactions/constants/statuses":364,"memoizerific":233}],368:[function(require,module,exports){
+},{"../../../store":153,"../../markets/actions/update-keywords":84,"memoizerific":11}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37246,9 +37212,7 @@ exports.selectTransactionsTotals = undefined;
 exports.default = function () {
 	var _require = require('../../../selectors');
 
-	var transactions = _require.transactions;
-
-	return selectTransactionsTotals(transactions);
+	return selectMarkets(marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, _store2.default.dispatch);
 };
 
 var _memoizerific = require('memoizerific');
@@ -37259,15 +37223,25 @@ var _statuses = require('../../transactions/constants/statuses');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var selectTransactionsTotals = exports.selectTransactionsTotals = (0, _memoizerific2.default)(1)(function (transactions) {
-	var o = {
-		numWorking: 0,
-		numPending: 0,
-		numComplete: 0,
-		numWorkingAndPending: 0,
-		numTotal: 0,
-		title: ''
-	};
+var selectMarkets = exports.selectMarkets = (0, _memoizerific2.default)(1)(function (marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, dispatch) {
+	if (!marketsData) {
+		return [];
+	}
+
+	return Object.keys(marketsData).map(function (marketID) {
+		if (!marketID || !marketsData[marketID]) {
+			return {};
+		}
+
+		var endDate = new Date(marketsData[marketID].endDate * 1000 || 0);
+
+		return (0, _market.assembleMarket)(marketID, marketsData[marketID], priceHistory[marketID], (0, _isMarketDataOpen.isMarketDataOpen)(marketsData[marketID], blockchain && blockchain.currentBlockNumber), !!favorites[marketID], outcomes[marketID], reports[marketsData[marketID].eventID], accountTrades[marketID], tradesInProgress[marketID],
+
+		// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
+		endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), blockchain && blockchain.isReportConfirmationPhase, dispatch);
+	}).sort(function (a, b) {
+		var aVal = cleanSortVal(a[selectedSort.prop]);
+		var bVal = cleanSortVal(b[selectedSort.prop]);
 
 	o.transactions = transactions.forEach(function (transaction) {
 		o.numTotal++;
@@ -37280,20 +37254,27 @@ var selectTransactionsTotals = exports.selectTransactionsTotals = (0, _memoizeri
 		}
 	});
 
-	o.numWorkingAndPending = o.numPending + o.numWorking;
-
-	if (o.numWorkingAndPending) {
-		o.title = o.numWorkingAndPending + ' Transaction' + (o.numWorkingAndPending !== 1 ? 's' : '') + ' Working';
-		o.shortTitle = o.numPending + ' Working';
-	} else {
-		o.title = o.numTotal + ' Transaction' + (o.numTotal !== 1 ? 's' : '');
-		o.shortTitle = o.numTotal + ' Total';
+function cleanSortVal(val) {
+	// if a falsy simple value return it to sort as-is
+	if (!val) {
+		return val;
 	}
 
-	return o;
-});
+	// if this is a formatted number object, with a `value` prop, use that for sorting
+	if (val.value || val.value === 0) {
+		return val.value;
+	}
 
-},{"../../../selectors":371,"../../transactions/constants/statuses":364,"memoizerific":233}],369:[function(require,module,exports){
+	// if the val is a string, lowercase it
+	if (val.toLowerCase) {
+		return val.toLowerCase();
+	}
+
+	// otherwise the val is probably a number, either way return it as-is
+	return val;
+}
+
+},{"../../../store":153,"../../../utils/is-market-data-open":159,"../../market/selectors/market":72,"memoizerific":11}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -37339,10 +37320,13 @@ var selectTransactions = exports.selectTransactions = (0, _memoizerific2.default
 	});
 });
 
-},{"../../../store":373,"../../../utils/format-number":377,"memoizerific":233}],370:[function(require,module,exports){
+},{"../../../selectors":151,"memoizerific":11}],111:[function(require,module,exports){
 'use strict';
 
-var _blockchain = require('./modules/app/reducers/blockchain');
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.isMarketFiltersMatch = exports.selectFilteredMarkets = undefined;
 
 var _blockchain2 = _interopRequireDefault(_blockchain);
 
@@ -37416,19 +37400,56 @@ var _createMarketInProgress2 = _interopRequireDefault(_createMarketInProgress);
 
 var _keywords = require('./modules/markets/reducers/keywords');
 
-var _keywords2 = _interopRequireDefault(_keywords);
+var selectFilteredMarkets = exports.selectFilteredMarkets = (0, _memoizerific2.default)(3)(function (markets, keywords, selectedFilters, selectedTags) {
+	return markets.filter(function (market) {
+		return isMarketFiltersMatch(market, keywords, selectedFilters, selectedTags);
+	});
+});
 
-var _selectedFilters = require('./modules/markets/reducers/selected-filters');
+var isMarketFiltersMatch = exports.isMarketFiltersMatch = (0, _memoizerific2.default)(3)(function (market, keywords, selectedFilters, selectedTags) {
+	return isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters) && isMatchTags(market, selectedTags);
 
-var _selectedFilters2 = _interopRequireDefault(_selectedFilters);
+	function isMatchKeywords(market, keys) {
+		var keywordsArray = (0, _cleanKeywords.cleanKeywordsArray)(keys);
+		if (!keywordsArray.length) {
+			return true;
+		}
+		return keywordsArray.every(function (keyword) {
+			return market.description.toLowerCase().indexOf(keyword) >= 0 || market.outcomes.some(function (outcome) {
+				return outcome.name.indexOf(keyword) >= 0;
+			}) || market.tags.some(function (tag) {
+				return tag.name.indexOf(keyword) >= 0;
+			});
+		});
+	}
 
-var _selectedTags = require('./modules/markets/reducers/selected-tags');
+	function isMatchFilters(market, selFilters) {
+		var selectedStatusProps = ['isOpen', 'isExpired', 'isMissedOrReported', 'isPendingReport'].filter(function (statusProp) {
+			return !!selFilters[statusProp];
+		});
+		var selectedTypeProps = ['isBinary', 'isCategorical', 'isScalar'].filter(function (typeProp) {
+			return !!selFilters[typeProp];
+		});
 
-var _selectedTags2 = _interopRequireDefault(_selectedTags);
+		return (!selectedStatusProps.length || selectedStatusProps.some(function (status) {
+			return !!market[status];
+		})) && (!selectedTypeProps.length || selectedTypeProps.some(function (type) {
+			return !!market[type];
+		}));
+	}
 
-var _selectedSort = require('./modules/markets/reducers/selected-sort');
+	function isMatchTags(market, selTags) {
+		if (!Object.keys(selTags).length) {
+			return true;
+		}
+		return market.tags.some(function (tag) {
+			return !!selTags[tag.name];
+		});
+	}
+});
 
-var _selectedSort2 = _interopRequireDefault(_selectedSort);
+},{"../../../selectors":151,"../../../store":153,"../../../utils/clean-keywords":155,"memoizerific":11}],112:[function(require,module,exports){
+'use strict';
 
 var _priceHistory = require('./modules/markets/reducers/price-history');
 
@@ -37477,7 +37498,8 @@ var _activePage2 = _interopRequireDefault(_activePage);
 
 var _loginAccount = require('./modules/auth/selectors/login-account');
 
-var _loginAccount2 = _interopRequireDefault(_loginAccount);
+},{"../../../selectors":151,"../../../store":153,"../../markets/actions/update-selected-markets-header":88,"../../markets/constants/markets-headers":93,"memoizerific":11}],113:[function(require,module,exports){
+'use strict';
 
 var _links = require('./modules/link/selectors/links');
 
@@ -37507,7 +37529,8 @@ var _marketsFiltered = require('./modules/markets/selectors/markets-filtered');
 
 var _marketsFiltered2 = _interopRequireDefault(_marketsFiltered);
 
-var _marketsUnpaginated = require('./modules/markets/selectors/markets-unpaginated');
+},{"../../../selectors":151,"../../positions/selectors/positions-summary":122,"memoizerific":11}],114:[function(require,module,exports){
+'use strict';
 
 var _marketsUnpaginated2 = _interopRequireDefault(_marketsUnpaginated);
 
@@ -37549,7 +37572,8 @@ var _isTransactionsWorking2 = _interopRequireDefault(_isTransactionsWorking);
 
 var _createMarketForm = require('./modules/create-market/selectors/create-market-form');
 
-var _createMarketForm2 = _interopRequireDefault(_createMarketForm);
+},{"../../../selectors":151,"../../../store":153,"../../app/constants/pages":34,"../../markets/constants/markets-headers":93,"memoizerific":11}],115:[function(require,module,exports){
+'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37601,7 +37625,8 @@ var _augurAbi = require('augur-abi');
 
 var _augurAbi2 = _interopRequireDefault(_augurAbi);
 
-var _bignumber = require('bignumber.js');
+},{"../../../selectors":151,"../../../store":153,"../../app/constants/pages":34,"../../markets/constants/markets-headers":93,"memoizerific":11}],116:[function(require,module,exports){
+'use strict';
 
 var _bignumber2 = _interopRequireDefault(_bignumber);
 
@@ -37763,9 +37788,8 @@ ex.loadNumMarkets = function loadNumMarkets(branchID, cb) {
 	});
 };
 
-ex.loadMarkets = function loadMarkets(branchID, chunkSize, totalMarkets, isDesc, chunkCB) {
-	var firstStartIndex = isDesc ? totalMarkets - chunkSize + 1 : 0;
-	getMarketsInfo(branchID, firstStartIndex, chunkSize, totalMarkets, isDesc, chunkCB);
+},{"../../../selectors":151,"../../../store":153,"../../markets/actions/update-selected-page-num":89}],117:[function(require,module,exports){
+'use strict';
 
 	function getMarketsInfo(branchID, startIndex, chunkSize, totalMarkets, isDesc, chunkCB) {
 		_augur2.default.getMarketsInfo({
@@ -37972,28 +37996,8 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
-ex.createMarket = function createMarket(branchID, newMarket, cb) {
-	_augur2.default.createSingleEventMarket({
-		branchId: branchID,
-		description: newMarket.description,
-		expirationBlock: newMarket.endBlock,
-		minValue: newMarket.minValue,
-		maxValue: newMarket.maxValue,
-		numOutcomes: newMarket.numOutcomes,
-		alpha: '0.0079',
-		initialLiquidity: newMarket.initialLiquidity,
-		tradingFee: newMarket.tradingFee,
-		onSent: function onSent(r) {
-			return cb(null, { status: _statuses.CREATING_MARKET, marketID: r.callReturn, txHash: r.txHash });
-		},
-		onSuccess: function onSuccess(r) {
-			return cb(null, { status: _statuses.SUCCESS, marketID: r.callReturn, tx: r });
-		},
-		onFailed: function onFailed(r) {
-			return cb(r);
-		}
-	});
-};
+},{"../../../store":153,"../../markets/actions/update-selected-sort":90,"memoizerific":11}],118:[function(require,module,exports){
+'use strict';
 
 ex.createMarketMetadata = function createMarketMetadata(newMarket, cb) {
 	console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);
@@ -38087,18 +38091,8 @@ ex.submitReportHash = function submitReportHash(branchID, accountID, event, repo
 	var numOutcomes = _augurAbi2.default.bignum(event.numOutcomes);
 	var rescaledReportedOutcome = void 0;
 
-	// Re-scale scalar/categorical reports so they fall between 0 and 1
-	if (report.isIndeterminate) {
-		rescaledReportedOutcome = report.reportedOutcomeID;
-	} else {
-		if (report.isScalar) {
-			rescaledReportedOutcome = _augurAbi2.default.bignum(report.reportedOutcomeID).minus(minValue).dividedBy(maxValue.minus(minValue)).toFixed();
-		} else if (report.isCategorical) {
-			rescaledReportedOutcome = _augurAbi2.default.bignum(report.reportedOutcomeID).minus(_augurAbi2.default.bignum(1)).dividedBy(numOutcomes.minus(_augurAbi2.default.bignum(1))).toFixed();
-		} else {
-			rescaledReportedOutcome = report.reportedOutcomeID;
-		}
-	}
+},{"../../../services/augurjs":152,"../../positions/actions/update-account-trades-data":119}],119:[function(require,module,exports){
+'use strict';
 
 	var reportHash = _augur2.default.makeHash(report.salt, rescaledReportedOutcome, event.id, accountID, report.isIndeterminate, report.isScalar);
 
@@ -38120,25 +38114,8 @@ ex.submitReportHash = function submitReportHash(branchID, accountID, event, repo
 	});
 };
 
-ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
-	_augur2.default.penalizationCatchup({
-		branch: branchID,
-		onSent: function onSent(res) {
-			console.log('penalizationCatchup sent:', res);
-		},
-		onSuccess: function onSuccess(res) {
-			console.log('penalizationCatchup success:', res);
-			cb(null, res);
-		},
-		onFailed: function onFailed(err) {
-			console.error('penalizationCatchup failed:', err);
-			if (err.error === '0') {
-				// already caught up
-			}
-			cb(err);
-		}
-	});
-};
+},{}],120:[function(require,module,exports){
+'use strict';
 
 ex.penalizeNotEnoughReports = function penalizeNotEnoughReports(branchID, cb) {
 	var self = this;
@@ -38265,7 +38242,7 @@ module.exports = ex;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../modules/transactions/constants/statuses":364,"augur-abi":1,"bignumber.js":7}],373:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":46,"../../positions/actions/update-account-trades-data":119}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38327,20 +38304,49 @@ if ("development" !== 'production') {
 // middleware
 exports.default = (0, _redux.createStore)((0, _redux.combineReducers)(_reducers2.default), middleWare);
 
-},{"./reducers":370,"redux":240,"redux-thunk":234}],374:[function(require,module,exports){
+},{"../../positions/selectors/positions-summary":122,"memoizerific":11}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.bytesToHex = bytesToHex;
-function bytesToHex(byteArray) {
-	return '0x' + byteArray.reduce(function (hexString, byte) {
-		return hexString + byte.toString(16);
-	}, '');
-}
+exports.selectPositionsSummary = undefined;
 
-},{}],375:[function(require,module,exports){
+var _memoizerific = require('memoizerific');
+
+var _memoizerific2 = _interopRequireDefault(_memoizerific);
+
+var _formatNumber = require('../../../utils/format-number');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var selectPositionsSummary = exports.selectPositionsSummary = (0, _memoizerific2.default)(20)(function (numPositions, qtyShares, totalValue, totalCost, positions) {
+	var purchasePrice = qtyShares && totalCost / qtyShares || 0;
+	var valuePrice = qtyShares && totalValue / qtyShares || 0;
+	var shareChange = valuePrice - purchasePrice;
+	var gainPercent = totalCost && (totalValue - totalCost) / totalCost * 100 || 0;
+	var netChange = totalValue - totalCost;
+
+	return {
+		numPositions: (0, _formatNumber.formatNumber)(numPositions, {
+			decimals: 0,
+			decimalsRounded: 0,
+			denomination: 'Positions',
+			positiveSign: false,
+			zeroStyled: false
+		}),
+		qtyShares: (0, _formatNumber.formatShares)(qtyShares),
+		purchasePrice: (0, _formatNumber.formatEther)(purchasePrice),
+		totalValue: (0, _formatNumber.formatEther)(totalValue),
+		totalCost: (0, _formatNumber.formatEther)(totalCost),
+		shareChange: (0, _formatNumber.formatEther)(shareChange),
+		gainPercent: (0, _formatNumber.formatPercent)(gainPercent),
+		netChange: (0, _formatNumber.formatEther)(netChange),
+		positions: positions
+	};
+});
+
+},{"../../../utils/format-number":158,"memoizerific":11}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38433,23 +38439,8 @@ function formatNone() {
 	};
 }
 
-function formatNumber(num) {
-	var opts = arguments.length <= 1 || arguments[1] === undefined ? {
-		decimals: 0,
-		decimalsRounded: 0,
-		denomination: '',
-		positiveSign: false,
-		zero: true,
-		minimized: false
-	} : arguments[1];
-	var minimized = opts.minimized;
-
-	var o = {};
-	var decimals = opts.decimals;
-	var decimalsRounded = opts.decimalsRounded;
-	var denomination = opts.denomination;
-	var positiveSign = opts.positiveSign;
-	var zero = opts.zero;
+},{"../../../services/augurjs":152,"../../../utils/is-market-data-open":159,"../../app/constants/network":33,"../../markets/actions/update-markets-data":85}],124:[function(require,module,exports){
+'use strict';
 
 
 	decimals = decimals || 0;
@@ -38492,14 +38483,8 @@ function formatNumber(num) {
 	return o;
 }
 
-function formatRep(num, opts) {
-	return formatNumber(num, _extends({
-		decimals: 0,
-		decimalsRounded: 0,
-		denomination: 'Rep',
-		positiveSign: true
-	}, opts));
-}
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../auth/actions/update-assets":45}],125:[function(require,module,exports){
+'use strict';
 
 function formatEther(num, opts) {
 	return formatNumber(num, _extends({
@@ -38594,7 +38579,7 @@ function listWordsUnderLength(str, maxLength) {
 	return wordsList;
 }
 
-},{}],380:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../reports/actions/update-reports":130}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38665,22 +38650,8 @@ function parseMarketsData(marketsData) {
 				return p;
 			}
 
-			switch (marketData.type) {
-				case _marketTypes.BINARY:
-					if (categoricalOutcomeNames) {
-						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || (parseInt(outcome.id, 10) === _marketOutcomes.NO ? 'No' : 'Yes');
-					} else {
-						p[outcome.id].name = parseInt(outcome.id, 10) === _marketOutcomes.NO ? 'No' : 'Yes';
-					}
-					return p;
-
-				case _marketTypes.CATEGORICAL:
-					if (categoricalOutcomeNames) {
-						p[outcome.id].name = categoricalOutcomeNames[i] && categoricalOutcomeNames[i].trim() || outcome.id.toString();
-					} else {
-						p[outcome.id].name = outcome.id.toString();
-					}
-					return p;
+},{"../../../services/augurjs":152,"../../../utils/is-market-data-open":159,"../../app/constants/network":33,"../../reports/actions/update-reports":130}],127:[function(require,module,exports){
+'use strict';
 
 				case _marketTypes.SCALAR:
 					p[outcome.id].name = parseInt(outcome.id, 10) === _marketOutcomes.NO ? '⇩' : '⇧';
@@ -38751,7 +38722,7 @@ export function ParseMinMaxNumOutcomes(marketData) {
 }
 */
 
-},{"../modules/markets/constants/market-outcomes":311,"../modules/markets/constants/market-types":312}],381:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../auth/actions/update-assets":45}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -38819,13 +38790,12 @@ function parseSearch(searchString) {
 	}, {});
 }
 
-/**
- * @param {String} url
- * @return {{pathArray: Array, searchParams: Object, url: String}}
- */
-function parseURL(url) {
-	var splitURL = url.split('?');
-	var parsed = {};
+},{"../../../services/augurjs":152,"../../../utils/is-market-data-open":159,"../../app/constants/network":33}],129:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
 	if (splitURL.length >= 1) {
 		parsed.pathArray = parsePath(splitURL[0]);
@@ -39094,10 +39064,8 @@ function decodeSingle (type, arg) {
       throw new Error('Invalid uint<N> width: ' + size)
     }
 
-    num = new BN(arg.slice(0, 32), 16, 'be').fromTwos(256)
-    if (num.bitLength() > size) {
-      throw new Error('Decoded uint exceeds width: ' + size + ' vs ' + num.bitLength())
-    }
+},{"../../../services/augurjs":152,"../../../utils/bytes-to-hex":154,"../../app/constants/network":33,"../../link/selectors/links":67,"../../market/selectors/market":72,"../../markets/constants/market-outcomes":91,"../../markets/constants/market-types":92,"../../reports/actions/update-reports":130,"../../transactions/actions/add-report-transaction":138,"../../transactions/actions/update-existing-transaction":142,"../../transactions/constants/statuses":144,"secure-random":26}],130:[function(require,module,exports){
+'use strict';
 
     return num
   }
@@ -39112,12 +39080,12 @@ function isDynamic (type) {
   return (type === 'string') || (type === 'bytes') || type.match(/\w+\[\]/)
 }
 
-// Encode a method/event with arguments
-// @types an array of string type names
-// @args  an array of the appropriate values
-ABI.rawEncode = function (types, values) {
-  var output = []
-  var data = []
+},{}],131:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
   var headLength = 32 * types.length
 
@@ -39156,13 +39124,8 @@ ABI.rawDecode = function (types, data) {
         throw new Error('Invalid offset: ' + dataOffset)
       }
 
-      cur = data.slice(dataOffset)
-    } else if (type.match(/\w+\[\d+\]/)) {
-      var count = parseTypeArray(type)
-      if (count > 1) {
-        cur = data.slice(offset, offset + (count * 32))
-      }
-    }
+},{"../../reports/actions/update-reports":130}],132:[function(require,module,exports){
+'use strict';
 
     ret.push(decodeSingle(type, cur))
     offset += 32
@@ -39257,10 +39220,8 @@ ABI.solidityPack = function (types, values) {
         throw new Error('Invalid uint<N> width: ' + size)
       }
 
-      num = parseNumber(value)
-      if (num.bitLength() > size) {
-        throw new Error('Supplied uint exceeds width: ' + size + ' vs ' + num.bitLength())
-      }
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../link/selectors/links":67,"../../market/selectors/market":72,"../../positions/actions/load-account-trades":118,"../../trade/actions/update-trades-in-progress":133,"../../transactions/actions/add-transactions":140,"../../transactions/actions/update-existing-transaction":142,"../../transactions/constants/statuses":144}],133:[function(require,module,exports){
+'use strict';
 
       ret.push(num.toArrayLike(Buffer, 'be', size / 8))
     } else if (type.startsWith('int')) {
@@ -39335,24 +39296,8 @@ ABI.fromSerpent = function (sig) {
   return ret
 }
 
-ABI.toSerpent = function (types) {
-  var ret = []
-  for (var i = 0; i < types.length; i++) {
-    var type = types[i]
-    if (type === 'bytes') {
-      ret.push('s')
-    } else if (type.startsWith('bytes')) {
-      ret.push('b' + parseTypeN(type))
-    } else if (type === 'int256') {
-      ret.push('i')
-    } else if (type === 'int256[]') {
-      ret.push('a')
-    } else {
-      throw new Error('Unsupported or invalid type: ' + type)
-    }
-  }
-  return ret.join('')
-}
+},{"../../../services/augurjs":152}],134:[function(require,module,exports){
+'use strict';
 
 module.exports = ABI
 
@@ -39411,11 +39356,8 @@ exports.SHA3_RLP_ARRAY = new Buffer(exports.SHA3_RLP_ARRAY_S, 'hex')
  */
 exports.SHA3_RLP_S = '56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421'
 
-/**
- * SHA3-256 hash of the RLP of null (a ```Buffer```)
- * @var {Buffer} SHA3_RLP
- */
-exports.SHA3_RLP = new Buffer(exports.SHA3_RLP_S, 'hex')
+},{"../../auth/actions/update-login-account":46,"../../trade/actions/update-trades-in-progress":133}],135:[function(require,module,exports){
+'use strict';
 
 /**
  * [`BN`](https://github.com/indutny/bn.js)
@@ -39690,23 +39632,28 @@ exports.isValidPublic = function (publicKey, sanitize) {
   return secp256k1.publicKeyVerify(publicKey)
 }
 
-/**
- * Returns the ethereum address of a given public key.
- * Accepts "Ethereum public keys" and SEC1 encoded keys.
- * @method publicToAddress
- * @param {Buffer} pubKey The two points of an uncompressed key, unless sanitize is enabled
- * @param {Boolean} [sanitize=false] Accept public keys in other formats
- * @return {Buffer}
- */
-exports.pubToAddress = exports.publicToAddress = function (pubKey, sanitize) {
-  pubKey = exports.toBuffer(pubKey)
-  if (sanitize && (pubKey.length !== 64)) {
-    pubKey = secp256k1.publicKeyConvert(pubKey, false).slice(1)
-  }
-  assert(pubKey.length === 64)
-  // Only take the lower 160bits of the hash
-  return exports.sha3(pubKey).slice(-20)
-}
+	if (o.sharesRemaining && limitPrice) {
+		o.ether = !isSell ? 0 - (o.sharesRemaining * limitPrice) : o.sharesRemaining * limitPrice;
+		o.shares = !isSell ? o.sharesRemaining : 0 - o.sharesRemaining;
+		orders.push(selectNewTransaction(
+			!isSell ? BID_SHARES : ASK_SHARES,
+			-0.1,
+			o.shares,
+			o.ether,
+			0,
+			{
+				marketID: market.id,
+				outcomeID: outcome.id,
+				marketDescription: market.description,
+				outcomeName: outcome.name.toUpperCase(),
+				avgPrice: formatEther(limitPrice),
+				feeToPay: formatNumber(0, { zeroStyled: false }) // no fee for market-making
+			},
+			(transactionID) => dispatch(tradeShares(
+				transactionID, market.id, outcome.id,
+				o.sharesRemaining, limitPrice, null))
+		));
+	}
 
 /**
  * Returns the ethereum public key of a given private key
@@ -39720,19 +39667,8 @@ var privateToPublic = exports.privateToPublic = function (privateKey) {
   return secp256k1.publicKeyCreate(privateKey, false).slice(1)
 }
 
-/**
- * Converts a public key to the Ethereum format.
- * @method importPublic
- * @param {Buffer} publicKey
- * @return {Buffer}
- */
-exports.importPublic = function (publicKey) {
-  publicKey = exports.toBuffer(publicKey)
-  if (publicKey.length !== 64) {
-    publicKey = secp256k1.publicKeyConvert(publicKey, false).slice(1)
-  }
-  return publicKey
-}
+},{"../../../utils/format-number":158,"../../transactions/actions/add-trade-transaction":139}],136:[function(require,module,exports){
+'use strict';
 
 /**
  * ECDSA sign
@@ -39841,9 +39777,8 @@ exports.generateAddress = function (from, nonce) {
     nonce = new Buffer(nonce.toArray())
   }
 
-  // Only take the lower 160bits of the hash
-  return exports.rlphash([from, nonce]).slice(-20)
-}
+},{"../../../utils/format-number":158,"memoizerific":11}],137:[function(require,module,exports){
+'use strict';
 
 /**
  * Returns true if the supplied address belongs to a precompiled account
@@ -39904,23 +39839,8 @@ exports.padToEven = function (a) {
   return a
 }
 
-/**
- * Converts a `Buffer` or `Array` to JSON
- * @method BAToJSON
- * @param {Buffer|Array} ba
- * @return {Array|String|null}
- */
-exports.baToJSON = function (ba) {
-  if (Buffer.isBuffer(ba)) {
-    return '0x' + ba.toString('hex')
-  } else if (ba instanceof Array) {
-    var array = []
-    for (var i = 0; i < ba.length; i++) {
-      array.push(exports.baToJSON(ba[i]))
-    }
-    return array
-  }
-}
+},{"../../create-market/actions/submit-new-market":55,"../../transactions/actions/add-transactions":140,"../../transactions/constants/types":145}],138:[function(require,module,exports){
+'use strict';
 
 /**
  * Defines properties on a `Object`. It make the assumption that underlying data is binary.
@@ -39975,12 +39895,8 @@ exports.defineProperties = function (self, fields, data) {
       self.raw[i] = v
     }
 
-    Object.defineProperty(self, field.name, {
-      enumerable: true,
-      configurable: true,
-      get: getter,
-      set: setter
-    })
+},{"../../reports/actions/submit-report":129,"../../transactions/actions/add-transactions":140,"../../transactions/constants/types":145}],139:[function(require,module,exports){
+'use strict';
 
     if (field.default) {
       self[field.name] = field.default
@@ -40030,8 +39946,7 @@ exports.defineProperties = function (self, fields, data) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"assert":8,"bn.js":384,"buffer":10,"create-hash":386,"keccakjs":400,"rlp":403,"secp256k1":404}],386:[function(require,module,exports){
-(function (Buffer){
+},{"../../../utils/format-number":158,"../../trade/actions/place-trade":132,"../../transactions/actions/add-transactions":140,"../../transactions/constants/types":145}],140:[function(require,module,exports){
 'use strict';
 var inherits = require('inherits')
 var md5 = require('./md5')
@@ -40053,10 +39968,15 @@ HashNoConstructor.prototype._update = function (data) {
   this.buffers.push(data)
 }
 
-HashNoConstructor.prototype._final = function () {
-  var buf = Buffer.concat(this.buffers)
-  var r = this._hash(buf)
-  this.buffers = null
+},{"../../transactions/actions/update-transactions-data":143,"../../transactions/constants/statuses":144}],141:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.processTransactions = processTransactions;
+
+var _statuses = require('../../transactions/constants/statuses');
 
   return r
 }
@@ -40067,7 +39987,8 @@ function Hash(hash) {
   this._hash = hash
 }
 
-inherits(Hash, Base)
+},{"../../../selectors":151,"../../transactions/constants/statuses":144}],142:[function(require,module,exports){
+'use strict';
 
 Hash.prototype._update = function (data) {
   this._hash.update(data)
@@ -40159,7 +40080,8 @@ CipherBase.prototype.update = function (data, inputEnc, outputEnc) {
   return outData
 }
 
-CipherBase.prototype.setAutoPadding = function () {}
+},{"../../auth/actions/update-assets":45,"../../transactions/actions/update-transactions-data":143}],143:[function(require,module,exports){
+'use strict';
 
 CipherBase.prototype.getAuthTag = function () {
   throw new Error('trying to get auth tag in unsupported state')
@@ -40205,35 +40127,21 @@ CipherBase.prototype._finalOrDigest = function (outputEnc) {
   return outData
 }
 
-CipherBase.prototype._toString = function (value, enc, final) {
-  if (!this._decoder) {
-    this._decoder = new StringDecoder(enc)
-    this._encoding = enc
-  }
-  if (this._encoding !== enc) {
-    throw new Error('can\'t switch encodings')
-  }
-  var out = this._decoder.write(value)
-  if (final) {
-    out += this._decoder.end()
-  }
-  return out
-}
+},{"../../transactions/actions/process-transactions":141}],144:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var PENDING = exports.PENDING = 'pending';
+var SUCCESS = exports.SUCCESS = 'success';
+var FAILED = exports.FAILED = 'failed';
+var INTERRUPTED = exports.INTERRUPTED = 'interrupted';
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":10,"inherits":390,"stream":225,"string_decoder":226}],390:[function(require,module,exports){
-arguments[4][207][0].apply(exports,arguments)
-},{"dup":207}],391:[function(require,module,exports){
-(function (Buffer){
-/*
-CryptoJS v3.1.2
-code.google.com/p/crypto-js
-(c) 2009-2013 by Jeff Mott. All rights reserved.
-code.google.com/p/crypto-js/wiki/License
-*/
-/** @preserve
-(c) 2012 by Cédric Mesnil. All rights reserved.
+},{}],145:[function(require,module,exports){
+'use strict';
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -40287,13 +40195,8 @@ function bytesToWords (bytes) {
   return words
 }
 
-function wordsToBytes (words) {
-  var bytes = []
-  for (var b = 0; b < words.length * 32; b += 8) {
-    bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF)
-  }
-  return bytes
-}
+},{}],146:[function(require,module,exports){
+'use strict';
 
 function processBlock (H, M, offset) {
   // swap endian
@@ -40386,9 +40289,8 @@ function f3 (x, y, z) {
   return (((x) | (~(y))) ^ (z))
 }
 
-function f4 (x, y, z) {
-  return (((x) & (z)) | ((y) & (~(z))))
-}
+},{"../../auth/actions/update-login-account":46,"../../transactions/actions/update-transactions-data":143}],147:[function(require,module,exports){
+'use strict';
 
 function f5 (x, y, z) {
   return ((x) ^ ((y) | (~(z))))
@@ -40435,7 +40337,8 @@ function ripemd160 (message) {
   return new Buffer(digestbytes)
 }
 
-module.exports = ripemd160
+},{"../../../store":153,"../../transactions/constants/statuses":144,"memoizerific":11}],148:[function(require,module,exports){
+'use strict';
 
 }).call(this,require("buffer").Buffer)
 
@@ -40496,9 +40399,8 @@ Hash.prototype.digest = function (enc) {
     this._block.fill(0)
   }
 
-  // to this append the block which is equal to the number l written in binary
-  // TODO: handle case where l is > Math.pow(2, 29)
-  this._block.writeInt32BE(l, this._blockSize - 4)
+},{"../../../selectors":151,"../../transactions/constants/statuses":144,"memoizerific":11}],149:[function(require,module,exports){
+'use strict';
 
   var hash = this._update(this._block) || this._hash()
 
@@ -40550,8 +40452,8 @@ Sha.prototype.init = function () {
   this._d = 0x10325476
   this._e = 0xc3d2e1f0
 
-  return this
-}
+},{"../../../store":153,"../../../utils/format-number":158,"memoizerific":11}],150:[function(require,module,exports){
+'use strict';
 
 function rotl5 (num) {
   return (num << 5) | (num >>> 27)
@@ -40815,7 +40717,8 @@ function Sha256 () {
   Hash.call(this, 64, 56)
 }
 
-inherits(Sha256, Hash)
+},{"./modules/app/reducers/active-page":35,"./modules/app/reducers/blockchain":36,"./modules/app/reducers/branch":37,"./modules/app/reducers/connection":38,"./modules/auth/reducers/auth":49,"./modules/auth/reducers/login-account":50,"./modules/bids-asks/reducers/bids-asks":54,"./modules/create-market/reducers/create-market-in-progress":58,"./modules/markets/reducers/favorites":96,"./modules/markets/reducers/keywords":97,"./modules/markets/reducers/markets-data":98,"./modules/markets/reducers/outcomes":99,"./modules/markets/reducers/pagination":100,"./modules/markets/reducers/price-history":101,"./modules/markets/reducers/selected-filters":102,"./modules/markets/reducers/selected-market-id":103,"./modules/markets/reducers/selected-markets-header":104,"./modules/markets/reducers/selected-sort":105,"./modules/markets/reducers/selected-tags":106,"./modules/positions/reducers/account-trades":120,"./modules/reports/reducers/reports":131,"./modules/trade/reducers/trades-in-progress":134,"./modules/transactions/reducers/transactions-data":146}],151:[function(require,module,exports){
+'use strict';
 
 Sha256.prototype.init = function () {
   this._a = 0x6a09e667
@@ -41246,12 +41149,9 @@ const Sha3 = require('js-sha3')
 
 const hashLengths = [ 224, 256, 384, 512 ]
 
-var hash = function (bitcount) {
-  if (bitcount !== undefined && hashLengths.indexOf(bitcount) == -1)
-    throw new Error('Unsupported hash length')
-  this.content = []
-  this.bitcount = bitcount ? 'keccak_' + bitcount : 'keccak_512'
-}
+},{"./modules/app/selectors/active-page":39,"./modules/auth/selectors/auth-form":51,"./modules/auth/selectors/login-account":52,"./modules/create-market/selectors/create-market-form":59,"./modules/link/selectors/links":67,"./modules/market/selectors/market":72,"./modules/markets/selectors/filters":107,"./modules/markets/selectors/keywords":108,"./modules/markets/selectors/markets":115,"./modules/markets/selectors/markets-all":109,"./modules/markets/selectors/markets-favorite":110,"./modules/markets/selectors/markets-filtered":111,"./modules/markets/selectors/markets-header":112,"./modules/markets/selectors/markets-totals":113,"./modules/markets/selectors/markets-unpaginated":114,"./modules/markets/selectors/pagination":116,"./modules/markets/selectors/search-sort":117,"./modules/transactions/selectors/is-transactions-working":147,"./modules/transactions/selectors/transactions":149,"./modules/transactions/selectors/transactions-totals":148}],152:[function(require,module,exports){
+(function (global){
+'use strict';
 
 hash.prototype.update = function (i) {
   if (Buffer.isBuffer(i))
@@ -41329,9 +41229,31 @@ module.exports = {
     return keccak(message, 224, PADDING);
   };
 
-  var sha3_256 = function(message) {
-    return keccak(message, 256, PADDING);
-  };
+ex.connect = function connect(cb) {
+	if (undefined) {
+		_augur2.default.rpc.nodes.hosted = [undefined];
+	}
+	var options = {
+		http: undefined,
+		ws: undefined
+	};
+	if ("true") {
+		if ("{{ $BUILD_AZURE_WSURL }}" && "{{ $BUILD_AZURE_WSURL }}" !== 'null') {
+			options.ws = "{{ $BUILD_AZURE_WSURL }}";
+		}
+		if ("{{ $BUILD_AZURE_LOCALNODE }}" && "{{ $BUILD_AZURE_LOCALNODE }}" !== 'null') {
+			options.http = "{{ $BUILD_AZURE_LOCALNODE }}";
+		}
+		if ("true" && "{{ $BUILD_AZURE_CONTRACTS }}" !== 'null') {
+			options.contracts = JSON.parse("{{ $BUILD_AZURE_CONTRACTS }}");
+		}
+	}
+	_augur2.default.connect(options, function (connection) {
+		if (!connection) return cb('could not connect to ethereum');
+		console.log("connected:", connection);
+		cb(null, connection);
+	});
+};
 
   var sha3_384 = function(message) {
     return keccak(message, 384, PADDING);
@@ -42029,9 +41951,8 @@ function loadCompressedPublicKey (first, xBuffer) {
   return ec.keyPair({ pub: { x: x, y: y } })
 }
 
-function loadUncompressedPublicKey (first, xBuffer, yBuffer) {
-  var x = new BN(xBuffer)
-  var y = new BN(yBuffer)
+},{"../modules/transactions/constants/statuses":144,"bignumber.js":2}],153:[function(require,module,exports){
+'use strict';
 
   // overflow
   if (x.cmp(ecparams.p) >= 0 || y.cmp(ecparams.p) >= 0) return null
@@ -42089,9 +42010,8 @@ exports.privateKeyTweakAdd = function (privateKey, tweak) {
   return bn.toArrayLike(Buffer, 'be', 32)
 }
 
-exports.privateKeyTweakMul = function (privateKey, tweak) {
-  var bn = new BN(tweak)
-  if (bn.cmp(ecparams.n) >= 0 || bn.isZero()) throw new Error(messages.EC_PRIVATE_KEY_TWEAK_MUL_FAIL)
+},{"./reducers":150,"redux":18,"redux-thunk":12}],154:[function(require,module,exports){
+'use strict';
 
   bn.imul(new BN(privateKey))
   if (bn.cmp(ecparams.n)) bn = bn.umod(ecparams.n)
@@ -42099,9 +42019,8 @@ exports.privateKeyTweakMul = function (privateKey, tweak) {
   return bn.toArrayLike(Buffer, 'be', 32)
 }
 
-exports.publicKeyCreate = function (privateKey, compressed) {
-  var d = new BN(privateKey)
-  if (d.cmp(ecparams.n) >= 0 || d.isZero()) throw new Error(messages.EC_PUBLIC_KEY_CREATE_FAIL)
+},{}],155:[function(require,module,exports){
+'use strict';
 
   return new Buffer(ec.keyFromPrivate(privateKey).getPublic(compressed, true))
 }
@@ -42113,342 +42032,192 @@ exports.publicKeyConvert = function (publicKey, compressed) {
   return new Buffer(pair.getPublic(compressed, true))
 }
 
-exports.publicKeyVerify = function (publicKey) {
-  return loadPublicKey(publicKey) !== null
-}
+},{}],156:[function(require,module,exports){
+'use strict';
 
 exports.publicKeyTweakAdd = function (publicKey, tweak, compressed) {
   var pair = loadPublicKey(publicKey)
   if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
 
-  tweak = new BN(tweak)
-  if (tweak.cmp(ecparams.n) >= 0) throw new Error(messages.EC_PUBLIC_KEY_TWEAK_ADD_FAIL)
+var _network = require('../modules/app/constants/network');
 
-  return new Buffer(ecparams.g.mul(tweak).add(pair.pub).encode(true, compressed))
+/**
+ * @param {Number} block
+ * @param {Number} currentBlock
+ * @return {Date}
+ */
+function blockToDate(block, currentBlock) {
+  var seconds = (block - currentBlock) * (_network.MILLIS_PER_BLOCK / 1000);
+  var now = new Date();
+  now.setSeconds(now.getSeconds() + seconds);
+  return now;
 }
 
-exports.publicKeyTweakMul = function (publicKey, tweak, compressed) {
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  tweak = new BN(tweak)
-  if (tweak.cmp(ecparams.n) >= 0 || tweak.isZero()) throw new Error(messages.EC_PUBLIC_KEY_TWEAK_MUL_FAIL)
-
-  return new Buffer(pair.pub.mul(tweak).encode(true, compressed))
+/**
+ * @param {Date} date
+ * @param {Number} currentBlock
+ * @return {Number}
+ */
+function dateToBlock(date, currentBlock) {
+  var now = new Date();
+  var secondsDelta = date.getSeconds() - now.getSeconds();
+  var blockDelta = parseInt(secondsDelta / (_network.MILLIS_PER_BLOCK / 1000), 10);
+  return currentBlock + blockDelta;
 }
 
-exports.publicKeyCombine = function (publicKeys, compressed) {
-  var pairs = new Array(publicKeys.length)
-  for (var i = 0; i < publicKeys.length; ++i) {
-    pairs[i] = loadPublicKey(publicKeys[i])
-    if (pairs[i] === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-  }
+},{"../modules/app/constants/network":33}],157:[function(require,module,exports){
+'use strict';
 
-  var point = pairs[0].pub
-  for (var j = 1; j < pairs.length; ++j) point = point.add(pairs[j].pub)
-  if (point.isInfinity()) throw new Error(messages.EC_PUBLIC_KEY_COMBINE_FAIL)
-
-  return new Buffer(point.encode(true, compressed))
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.formatDate = formatDate;
+function formatDate(d) {
+	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	var date = d instanceof Date ? d : new Date(0);
+	return {
+		value: date,
+		formatted: months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
+		full: d.toISOString()
+	};
 }
 
-exports.signatureNormalize = function (signature) {
-  var r = new BN(signature.slice(0, 32))
-  var s = new BN(signature.slice(32, 64))
-  if (r.cmp(ecparams.n) >= 0 || s.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
+},{}],158:[function(require,module,exports){
+'use strict';
 
-  var result = new Buffer(signature)
-  if (s.cmp(ec.nh) === 1) ecparams.n.sub(s).toArrayLike(Buffer, 'be', 32).copy(result, 32)
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-  return result
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+exports.formatEther = formatEther;
+exports.formatPercent = formatPercent;
+exports.formatShares = formatShares;
+exports.formatRep = formatRep;
+exports.formatNone = formatNone;
+exports.formatNumber = formatNumber;
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	Produces a formatted number object used for display and calculations
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
+
+A formatted number generally has three parts: the sign (+ or -), the stylized number, and a denomination (Eth, Rep, %, etc.)
+
+The formatted number object that is returned looks something like this:
+	{
+		value: the parsed number in numerical form, 0 if a bad input was passed in, can be used in calculations
+
+		formattedValue: the value in numerical form, possibly rounded, can be used in calculations
+		formatted: the value in string form with possibly additional formatting, like comma separator, used for display
+
+		o.roundedValue: the value in numerical form, with extra rounding, can be used in calculations
+		o.rounded: the value in string form, with extra rounding and possibly additional formatting, like comma separator, used for display
+
+		o.minimized: the value in string form, with trailing 0 decimals omitted, for example if the `formatted` value is 1.00, this minimized value would be 1
+	}
+
+The reason the number object has multiple states of rounding simultaneously,
+is because the ui can use it for multiple purposes. For example, when showing ether,
+we generally like to show it with 2 decimals, however when used in totals,
+maximum precision is not necessary, and we can opt to show the `rounded` display, which is only 1 decimal.
+Similar logic applies for `minimized`, sometimes we don't need to be consistent with the decimals
+and just show the prettiest, smallest representation of the value.
+
+The options object that is passed into `formatNumber` that enables all of this looks like:
+	{
+		decimals: the number of decimals for the precise case, can be 0-infinity
+		decimalsRounded: the number of decimals for the prettier case, can be 0-infinity
+		denomination: the string denomination of the number (ex. Eth, Rep, %), can be blank
+		positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
+		zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
+	}
+
+TIP
+Sometimes (not always) it is a good idea to use the formatted values in calculations,
+rather than the original input number, so that values match up in the ui. For example, if you are
+adding the numbers 1.11 and 1.44, but displaying them as 1.1 and 1.4, it may look awkward
+if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them using the formatted values.
+
+*/
+
+function formatEther(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 2,
+		decimalsRounded: 1,
+		denomination: 'Eth',
+		positiveSign: true,
+		zeroStyled: false
+	}, opts));
 }
 
-exports.signatureExport = function (signature) {
-  var r = signature.slice(0, 32)
-  var s = signature.slice(32, 64)
-  if (new BN(r).cmp(ecparams.n) >= 0 || new BN(s).cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-
-  return { r: r, s: s }
+function formatPercent(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 1,
+		decimalsRounded: 0,
+		denomination: '%',
+		positiveSign: true,
+		zeroStyled: false
+	}, opts));
 }
 
-exports.signatureImport = function (sigObj) {
-  var r = new BN(sigObj.r)
-  if (r.cmp(ecparams.n) >= 0) r = new BN(0)
-
-  var s = new BN(sigObj.s)
-  if (s.cmp(ecparams.n) >= 0) s = new BN(0)
-
-  return Buffer.concat([
-    r.toArrayLike(Buffer, 'be', 32),
-    s.toArrayLike(Buffer, 'be', 32)
-  ])
+function formatShares(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 2,
+		decimalsRounded: 0,
+		denomination: 'Shares',
+		minimized: true,
+		zeroStyled: false
+	}, opts));
 }
 
-exports.sign = function (message, privateKey, noncefn, data) {
-  if (typeof noncefn === 'function') {
-    var getNonce = noncefn
-    noncefn = function (counter) {
-      var nonce = getNonce(message, privateKey, null, data, counter)
-      if (!Buffer.isBuffer(nonce) || nonce.length !== 32) throw new Error(messages.ECDSA_SIGN_FAIL)
-
-      return new BN(nonce)
-    }
-  }
-
-  var d = new BN(privateKey)
-  if (d.cmp(ecparams.n) >= 0 || d.isZero()) throw new Error(messages.ECDSA_SIGN_FAIL)
-
-  var result = ec.sign(message, privateKey, { canonical: true, k: noncefn, pers: data })
-  return {
-    signature: Buffer.concat([
-      result.r.toArrayLike(Buffer, 'be', 32),
-      result.s.toArrayLike(Buffer, 'be', 32)
-    ]),
-    recovery: result.recoveryParam
-  }
+function formatRep(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 0,
+		decimalsRounded: 0,
+		denomination: 'Rep',
+		positiveSign: true,
+		zeroStyled: false
+	}, opts));
 }
-
-exports.verify = function (message, signature, publicKey) {
-  var sigObj = {r: signature.slice(0, 32), s: signature.slice(32, 64)}
-
-  var sigr = new BN(sigObj.r)
-  var sigs = new BN(sigObj.s)
-  if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-  if (sigs.cmp(ec.nh) === 1 || sigr.isZero() || sigs.isZero()) return false
-
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  return ec.verify(message, sigObj, {x: pair.pub.x, y: pair.pub.y})
-}
-
-exports.recover = function (message, signature, recovery, compressed) {
-  var sigObj = {r: signature.slice(0, 32), s: signature.slice(32, 64)}
-
-  var sigr = new BN(sigObj.r)
-  var sigs = new BN(sigObj.s)
-  if (sigr.cmp(ecparams.n) >= 0 || sigs.cmp(ecparams.n) >= 0) throw new Error(messages.ECDSA_SIGNATURE_PARSE_FAIL)
-
-  try {
-    if (sigr.isZero() || sigs.isZero()) throw new Error()
-
-    var point = ec.recoverPubKey(message, sigObj, recovery)
-    return new Buffer(point.encode(true, compressed))
-  } catch (err) {
-    throw new Error(messages.ECDSA_RECOVER_FAIL)
-  }
-}
-
-exports.ecdh = function (publicKey, privateKey) {
-  var shared = exports.ecdhUnsafe(publicKey, privateKey, true)
-  return createHash('sha256').update(shared).digest()
-}
-
-exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
-  var pair = loadPublicKey(publicKey)
-  if (pair === null) throw new Error(messages.EC_PUBLIC_KEY_PARSE_FAIL)
-
-  var scalar = new BN(privateKey)
-  if (scalar.cmp(ecparams.n) >= 0 || scalar.isZero()) throw new Error(messages.ECDH_FAIL)
-
-  return new Buffer(pair.pub.mul(scalar).encode(true, compressed))
-}
-
-}).call(this,require("buffer").Buffer)
-
-},{"../messages.json":408,"bn.js":384,"buffer":10,"create-hash":386,"elliptic":410}],407:[function(require,module,exports){
-(function (Buffer){
-'use strict'
-var bip66 = require('bip66')
-
-var assert = require('./assert')
-var messages = require('./messages.json')
-
-var EC_PRIVKEY_EXPORT_DER_COMPRESSED_BEGIN = new Buffer(
-  '3081d30201010420', 'hex')
-var EC_PRIVKEY_EXPORT_DER_COMPRESSED_MIDDLE = new Buffer(
-  'a08185308182020101302c06072a8648ce3d0101022100fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f300604010004010704210279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798022100fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141020101a124032200', 'hex')
-var EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED_BEGIN = new Buffer(
-  '308201130201010420', 'hex')
-var EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED_MIDDLE = new Buffer(
-  'a081a53081a2020101302c06072a8648ce3d0101022100fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f300604010004010704410479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8022100fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141020101a144034200', 'hex')
-
-var ZERO_BUFFER_32 = new Buffer('0000000000000000000000000000000000000000000000000000000000000000', 'hex')
-
-function initCompressedValue (value, defaultValue) {
-  if (value === undefined) return defaultValue
-
-  assert.isBoolean(value, messages.COMPRESSED_TYPE_INVALID)
-  return value
-}
-
-module.exports = function (secp256k1) {
-  return {
-    privateKeyVerify: function (privateKey) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      return privateKey.length === 32 && secp256k1.privateKeyVerify(privateKey)
-    },
-
-    privateKeyExport: function (privateKey, compressed) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      var publicKey = secp256k1.privateKeyExport(privateKey, compressed)
-
-      var result = new Buffer(compressed ? 214 : 279)
-      var targetStart = 0
-      if (compressed) {
-        EC_PRIVKEY_EXPORT_DER_COMPRESSED_BEGIN.copy(result, targetStart)
-        targetStart += EC_PRIVKEY_EXPORT_DER_COMPRESSED_BEGIN.length
-
-        privateKey.copy(result, targetStart)
-        targetStart += privateKey.length
-
-        EC_PRIVKEY_EXPORT_DER_COMPRESSED_MIDDLE.copy(result, targetStart)
-        targetStart += EC_PRIVKEY_EXPORT_DER_COMPRESSED_MIDDLE.length
-
-        publicKey.copy(result, targetStart)
-      } else {
-        EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED_BEGIN.copy(result, targetStart)
-        targetStart += EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED_BEGIN.length
-
-        privateKey.copy(result, targetStart)
-        targetStart += privateKey.length
-
-        EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED_MIDDLE.copy(result, targetStart)
-        targetStart += EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED_MIDDLE.length
-
-        publicKey.copy(result, targetStart)
-      }
-
-      return result
-    },
-
-    privateKeyImport: function (privateKey) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-
-      do {
-        var length = privateKey.length
-
-        // sequence header
-        var index = 0
-        if (length < index + 1 || privateKey[index] !== 0x30) break
-        index += 1
-
-        // sequence length constructor
-        if (length < index + 1 || !(privateKey[index] & 0x80)) break
-
-        var lenb = privateKey[index] & 0x7f
-        index += 1
-        if (lenb < 1 || lenb > 2) break
-        if (length < index + lenb) break
-
-        // sequence length
-        var len = privateKey[index + lenb - 1] | (lenb > 1 ? privateKey[index + lenb - 2] << 8 : 0)
-        index += lenb
-        if (length < index + len) break
-
-        // sequence element 0: version number (=1)
-        if (length < index + 3 ||
-            privateKey[index] !== 0x02 ||
-            privateKey[index + 1] !== 0x01 ||
-            privateKey[index + 2] !== 0x01) {
-          break
-        }
-        index += 3
-
-        // sequence element 1: octet string, up to 32 bytes
-        if (length < index + 2 ||
-            privateKey[index] !== 0x04 ||
-            privateKey[index + 1] > 0x20 ||
-            length < index + 2 + privateKey[index + 1]) {
-          break
-        }
-
-        privateKey = privateKey.slice(index + 2, index + 2 + privateKey[index + 1])
-        if (privateKey.length === 32 && secp256k1.privateKeyVerify(privateKey)) return privateKey
-      } while (false)
-
-      throw new Error(messages.EC_PRIVATE_KEY_IMPORT_DER_FAIL)
-    },
-
-    privateKeyTweakAdd: function (privateKey, tweak) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
-
-      return secp256k1.privateKeyTweakAdd(privateKey, tweak)
-    },
-
-    privateKeyTweakMul: function (privateKey, tweak) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
-
-      return secp256k1.privateKeyTweakMul(privateKey, tweak)
-    },
-
-    publicKeyCreate: function (privateKey, compressed) {
-      assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
-      assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyCreate(privateKey, compressed)
-    },
-
-    publicKeyConvert: function (publicKey, compressed) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyConvert(publicKey, compressed)
-    },
-
-    publicKeyVerify: function (publicKey) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      return secp256k1.publicKeyVerify(publicKey)
-    },
 
     publicKeyTweakAdd: function (publicKey, tweak, compressed) {
       assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
       assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
 
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
+function formatNumber(num) {
+	var opts = arguments.length <= 1 || arguments[1] === undefined ? { decimals: 0, decimalsRounded: 0, denomination: '', positiveSign: false, zeroStyled: true, minimized: false } : arguments[1];
+	var minimized = opts.minimized;
 
-      compressed = initCompressedValue(compressed, true)
+	var o = {};
+	var value = opts.value;
+	var decimals = opts.decimals;
+	var decimalsRounded = opts.decimalsRounded;
+	var denomination = opts.denomination;
+	var positiveSign = opts.positiveSign;
+	var zeroStyled = opts.zeroStyled;
 
       return secp256k1.publicKeyTweakAdd(publicKey, tweak, compressed)
     },
 
-    publicKeyTweakMul: function (publicKey, tweak, compressed) {
-      assert.isBuffer(publicKey, messages.EC_PUBLIC_KEY_TYPE_INVALID)
-      assert.isBufferLength2(publicKey, 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
+	decimals = decimals || 0;
+	decimalsRounded = decimalsRounded || 0;
+	denomination = denomination || '';
+	positiveSign = !!positiveSign;
+	zeroStyled = zeroStyled !== false;
+	value = parseFloat(num) || 0;
 
-      assert.isBuffer(tweak, messages.TWEAK_TYPE_INVALID)
-      assert.isBufferLength(tweak, 32, messages.TWEAK_LENGTH_INVALID)
+	if (!value && zeroStyled) {
+		return formatNone();
+	}
 
-      compressed = initCompressedValue(compressed, true)
-
-      return secp256k1.publicKeyTweakMul(publicKey, tweak, compressed)
-    },
-
-    publicKeyCombine: function (publicKeys, compressed) {
-      assert.isArray(publicKeys, messages.EC_PUBLIC_KEYS_TYPE_INVALID)
-      assert.isLengthGTZero(publicKeys, messages.EC_PUBLIC_KEYS_LENGTH_INVALID)
-      for (var i = 0; i < publicKeys.length; ++i) {
-        assert.isBuffer(publicKeys[i], messages.EC_PUBLIC_KEY_TYPE_INVALID)
-        assert.isBufferLength2(publicKeys[i], 33, 65, messages.EC_PUBLIC_KEY_LENGTH_INVALID)
-      }
-
-      compressed = initCompressedValue(compressed, true)
+	o.value = value;
+	o.formattedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	o.formatted = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+	o.roundedValue = Math.round(value * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
+	o.rounded = o.roundedValue.toLocaleString(undefined, { minimumFractionDigits: decimalsRounded, maximumFractionDigits: decimalsRounded });
+	o.minimized = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
 
       return secp256k1.publicKeyCombine(publicKeys, compressed)
     },
@@ -42464,36 +42233,8 @@ module.exports = function (secp256k1) {
       assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
       assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
 
-      var sigObj = secp256k1.signatureExport(signature)
-
-      var r = Buffer.concat([new Buffer([0]), sigObj.r])
-      for (var lenR = 33, posR = 0; lenR > 1 && r[posR] === 0x00 && !(r[posR + 1] & 0x80); --lenR, ++posR);
-
-      var s = Buffer.concat([new Buffer([0]), sigObj.s])
-      for (var lenS = 33, posS = 0; lenS > 1 && s[posS] === 0x00 && !(s[posS + 1] & 0x80); --lenS, ++posS);
-
-      return bip66.encode(r.slice(posR), s.slice(posS))
-    },
-
-    signatureImport: function (sig) {
-      assert.isBuffer(sig, messages.ECDSA_SIGNATURE_TYPE_INVALID)
-      assert.isLengthGTZero(sig, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
-
-      try {
-        var sigObj = bip66.decode(sig)
-        if (sigObj.r.length === 33 && sigObj.r[0] === 0x00) sigObj.r = sigObj.r.slice(1)
-        if (sigObj.r.length > 32) throw new Error('R length is too long')
-        if (sigObj.s.length === 33 && sigObj.s[0] === 0x00) sigObj.s = sigObj.s.slice(1)
-        if (sigObj.s.length > 32) throw new Error('S length is too long')
-      } catch (err) {
-        throw new Error(messages.ECDSA_SIGNATURE_PARSE_DER_FAIL)
-      }
-
-      return secp256k1.signatureImport({
-        r: Buffer.concat([ZERO_BUFFER_32, sigObj.r]).slice(-32),
-        s: Buffer.concat([ZERO_BUFFER_32, sigObj.s]).slice(-32)
-      })
-    },
+},{}],159:[function(require,module,exports){
+"use strict";
 
     sign: function (message, privateKey, options) {
       assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
@@ -42502,10 +42243,8 @@ module.exports = function (secp256k1) {
       assert.isBuffer(privateKey, messages.EC_PRIVATE_KEY_TYPE_INVALID)
       assert.isBufferLength(privateKey, 32, messages.EC_PRIVATE_KEY_LENGTH_INVALID)
 
-      var data = null
-      var noncefn = null
-      if (options !== undefined) {
-        assert.isObject(options, messages.OPTIONS_TYPE_INVALID)
+},{}],160:[function(require,module,exports){
+'use strict';
 
         if (options.data !== undefined) {
           assert.isBuffer(options.data, messages.OPTIONS_DATA_TYPE_INVALID)
@@ -42535,9 +42274,8 @@ module.exports = function (secp256k1) {
       return secp256k1.verify(message, signature, publicKey)
     },
 
-    recover: function (message, signature, recovery, compressed) {
-      assert.isBuffer(message, messages.MSG32_TYPE_INVALID)
-      assert.isBufferLength(message, 32, messages.MSG32_LENGTH_INVALID)
+},{}],161:[function(require,module,exports){
+'use strict';
 
       assert.isBuffer(signature, messages.ECDSA_SIGNATURE_TYPE_INVALID)
       assert.isBufferLength(signature, 64, messages.ECDSA_SIGNATURE_LENGTH_INVALID)
@@ -42864,5 +42602,5 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}]},{},[249])
+},{}]},{},[27])
 //# sourceMappingURL=build.js.map
