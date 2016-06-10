@@ -21,17 +21,11 @@ export function submitGenerateOrderBook(marketData){
 }
 
 export function createOrderBook(transactionID, marketData){
-    console.log('createOrderBook -- ', transactionID, marketData);
-
     return dispatch => {
         dispatch(updateExistingTransaction(transactionID, { status: GENERATING_ORDER_BOOK }));
 
-        console.log('createOrderBook -- ', transactionID, marketData);
-
         AugurJS.generateOrderBook(marketData, (err, res) => {
             if(err){
-                console.log('err -- ', err)
-
                 dispatch(
                     updateExistingTransaction(
                         transactionID,
