@@ -9,6 +9,7 @@
 var fs = require("fs");
 var join = require("path").join;
 var async = require("async");
+var chalk = require("chalk");
 var madlibs = require("madlibs");
 var utils = require("../src/utilities");
 var augurpath = "../src/index";
@@ -27,6 +28,7 @@ function createMarkets(numMarketsToCreate, callback) {
     var minValue = 1;
     var maxValue = 2;
     var numOutcomes = 2;
+    console.log(chalk.blue.bold("Creating " + numMarketsToCreate + " markets..."));
     async.eachSeries(new Array(numMarketsToCreate), function (_, next) {
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
@@ -44,8 +46,7 @@ function createMarkets(numMarketsToCreate, callback) {
             tags: ["spam", "augur.js", "canned meat"],
             onSent: function (r) {},
             onSuccess: function (r) {
-                console.log("created market:", r.marketID);
-                console.log(description);
+                console.log(chalk.green(r.marketID), chalk.cyan.dim(description));
                 augur.generateOrderBook({
                     market: r.marketID,
                     liquidity: 50,
@@ -57,10 +58,7 @@ function createMarkets(numMarketsToCreate, callback) {
                     onBuyCompleteSets: function (res) {},
                     onSetupOutcome: function (res) {},
                     onSetupOrder: function (res) {},
-                    onSuccess: function (res) {
-                        console.log("order book setup:", r.marketID);
-                        next();
-                    },
+                    onSuccess: function (res) { next(); },
                     onFailed: next
                 });
             },
