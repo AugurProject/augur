@@ -26,10 +26,10 @@ export const MAKER_FEE_MIN = 0;
 export const MAKER_FEE_MAX = 100;
 
 // Advanced Market Creation Defaults
-export const STARTING_QUANTITY_DEFAULT = 25;
+export const STARTING_QUANTITY_DEFAULT = 10;
 export const STARTING_QUANTITY_MIN = 0.1;
 
-export const BEST_STARTING_QUANTITY_DEFAULT = 35;
+export const BEST_STARTING_QUANTITY_DEFAULT = 20;
 export const BEST_STARTING_QUANTITY_MIN = 0.1;
 
 export const PRICE_WIDTH_DEFAULT = 0.1;
