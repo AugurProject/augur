@@ -28,6 +28,7 @@ export const selectCreateMarketForm =
 	dispatch) => {
 		let formState = {
 			...createMarketInProgress,
+			creatingMarket: true,
 			errors: {}
 		};
 
