@@ -8,8 +8,8 @@
 
 var fs = require("fs");
 var join = require("path").join;
-var _ = require("lodash");
 var async = require("async");
+var madlibs = require("madlibs");
 var utils = require("../src/utilities");
 var augurpath = "../src/index";
 var tools = require("../test/tools");
@@ -24,67 +24,67 @@ try {
 }
 
 function createMarkets(numMarketsToCreate, callback) {
-    var minValue = 0;
-    var maxValue = 1;
+    var minValue = 1;
+    var maxValue = 2;
     var numOutcomes = 2;
-    var period = augur.getVotePeriod(augur.branches.dev);
-    var exp_date = augur.rpc.blockNumber() + 2500;
-    async.eachSeries(_.range(0, numMarketsToCreate), function (index, nextIndex) {
-        var description = Math.random().toString(36).substring(4);
-        augur.createEvent({
+    async.eachSeries(new Array(numMarketsToCreate), function (_, next) {
+        var suffix = Math.random().toString(36).substring(4);
+        var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+        augur.createSingleEventMarket({
             branchId: augur.branches.dev,
             description: description,
-            expDate: exp_date,
+            expDate: new Date().getTime() / 500,
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
-            onSent: function (r) {
-                // console.log(r);
-            },
+            resolution: "lmgtfy.com",
+            tradingFee: "0.02",
+            makerFees: "0.5",
+            extraInfo: null,
+            tags: ["spam", "augur.js", "canned meat"],
+            onSent: function (r) {},
             onSuccess: function (r) {
-                var alpha = "0.0079";
-                var initialLiquidity = 10;
-                var tradingFee = "0.02";
-                var events = [ r.callReturn ];
-
-                augur.createMarket({
-                    branchId: augur.branches.dev,
-                    description: description,
-                    alpha: alpha,
-                    initialLiquidity: initialLiquidity,
-                    tradingFee: tradingFee,
-                    events: events,
-                    onSent: function (res) {
-                        // console.log(res);
-                    },
+                console.log("created market:", r.marketID);
+                console.log(description);
+                augur.generateOrderBook({
+                    market: r.marketID,
+                    liquidity: 50,
+                    initialFairPrices: ["0.4", "0.5"],
+                    startingQuantity: 10,
+                    bestStartingQuantity: 15,
+                    priceWidth: "0.4"
+                }, {
+                    onBuyCompleteSets: function (res) {},
+                    onSetupOutcome: function (res) {},
+                    onSetupOrder: function (res) {},
                     onSuccess: function (res) {
-                        nextIndex();
+                        console.log("order book setup:", r.marketID);
+                        next();
                     },
-                    onFailed: nextIndex
+                    onFailed: next
                 });
-            
             },
-            onFailed: nextIndex
+            onFailed: next
         });
     }, callback);
 }
 
 function time_getMarketsInfo(numMarkets) {
     fs.writeFileSync(DATAFILE, "\"# markets\",\"time elapsed (seconds)\"\n");
-    async.eachSeries(_.range(1, numMarkets + 1), function (sample, nextSample) {
+    async.forEachOfSeries(new Array(numMarkets), function (_, index, next) {
         augur = tools.setup(tools.reset(augurpath));
         var startTime = new Date().getTime();
         augur.getMarketsInfo({
             branch: augur.branches.dev,
             offset: 0,
-            numMarketsToLoad: sample,
+            numMarketsToLoad: index + 1,
             callback: function (info) {
-                if (!info || info.error) return nextSample(info);
+                if (!info || info.error) return next(info);
                 var dt = ((new Date().getTime() - startTime) / 1000.0).toString();
                 var numMarkets = Object.keys(info).length.toString();
                 console.log(numMarkets + "\t" + dt);
                 fs.appendFileSync(DATAFILE, numMarkets + "," + dt + "\n");
-                nextSample();
+                next();
             }
         });
     }, process.exit);
@@ -93,7 +93,6 @@ function time_getMarketsInfo(numMarkets) {
 function timing(maxNumMarkets) {
     var numMarkets = parseInt(augur.getNumMarketsBranch(augur.branches.dev));
     console.log("Found", numMarkets, "markets");
-
     if (numMarkets >= maxNumMarkets) {
         return time_getMarketsInfo(numMarkets);
     }

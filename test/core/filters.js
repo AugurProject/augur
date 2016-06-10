@@ -36,7 +36,7 @@ function createMarket(done, augur) {
     augur.createSingleEventMarket({
         branchId: t.branch,
         description: t.description,
-        expDate: new Date().getTime() + 10000,
+        expDate: new Date().getTime() / 500,
         minValue: 1,
         maxValue: 2,
         numOutcomes: 2,
