@@ -19,6 +19,8 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 
 	o.tradingFee = formState.tradingFeePercent / 100;
 	o.tradingFeePercent = formatPercent(formState.tradingFeePercent);
+	o.makerFee = formState.makerFee / 100;
+	o.makerFeePercent = formatPercent(formState.makerFee);
 	o.volume = formatNumber(0);
 	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
@@ -30,6 +32,8 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 	o.isFavorite = false;
 
 	o.onSubmit = () => dispatch(submitNewMarket(o));
+
+	console.log('o -- ', o);
 
 	return o;
 };
