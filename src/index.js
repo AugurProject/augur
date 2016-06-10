@@ -23,7 +23,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.3.3";
+    this.version = "1.3.4";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -84,14 +84,57 @@ Augur.prototype.updateContracts = function (newContracts) {
     }
     return false;
 };
+
+/** 
+ * @param rpcinfo {Object|string=} Two forms accepted:
+ *    1. Object with connection info fields:
+ *       { http: "https://eth3.augur.net",
+ *         ipc: "/path/to/geth.ipc",
+ *         ws: "wss://ws.augur.net" }
+ *    2. URL string for HTTP RPC: "https://eth3.augur.net"
+ * @param ipcpath {string=} Local IPC path, if not provided in rpcinfo object.
+ * @param cb {function=} Callback function.
+ */
 Augur.prototype.connect = function (rpcinfo, ipcpath, cb) {
+    var options = {};
+    if (rpcinfo) {
+        switch (rpcinfo.constructor) {
+        case String:
+            options.http = rpcinfo;
+            break;
+        case Function:
+            cb = rpcinfo;
+            options.http = null;
+            break;
+        case Object:
+            options = rpcinfo;
+            break;
+        default:
+            options.http = null;
+        }
+    }
+    if (ipcpath) {
+        switch (ipcpath.constructor) {
+        case String:
+            options.ipc = ipcpath;
+            break;
+        case Function:
+            if (!cb) {
+                cb = ipcpath;
+                options.ipc = null;
+            }
+            break;
+        default:
+            options.ipc = null;
+        }
+    }
     if (!this.utils.is_function(cb)) {
-        var connected = connector.connect(rpcinfo, ipcpath);
+        var connected = connector.connect(options);
         this.sync(connector);
         return connected;
     }
     var self = this;
-    connector.connect(rpcinfo, ipcpath, function (connected) {
+    connector.connect(options, function (connected) {
         self.sync(connector);
         cb(connected);
     });
@@ -1108,7 +1151,6 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
                         abi.fix(max_amount, "hex")
                     ];
                     self.transact(tx, function (sentResult) {
-                        console.log("sent:", sentResult.callReturn);
                         var result = clone(sentResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -1120,7 +1162,6 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
                         }
                         onTradeSuccess(result);
                     }, function (successResult) {
-                        console.log("success:", successResult.callReturn);
                         var result = clone(successResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -1177,7 +1218,6 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         trade_ids
                     ];
                     self.transact(tx, function (sentResult) {
-                        console.log("sent:", sentResult.callReturn);
                         var result = clone(sentResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -1188,7 +1228,6 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         }
                         onTradeSuccess(result);
                     }, function (successResult) {
-                        console.log("success:", successResult.callReturn);
                         var result = clone(successResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);

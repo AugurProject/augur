@@ -4039,9 +4039,9 @@ module.exports = contracts;
 
 "use strict";
 
-module.exports = function (network) {
+module.exports = function (network, contracts) {
 
-    var contracts = require("./contracts")[network || "2"];
+    contracts = contracts || require("./contracts")[network || "2"];
 
     return {
 
@@ -37167,7 +37167,7 @@ var options = {debug: {broadcast: false, fallback: false}};
 function Augur() {
     var self = this;
 
-    this.version = "1.3.3";
+    this.version = "1.3.4";
     this.options = options;
     this.protocol = NODE_JS || document.location.protocol;
     this.abi = abi;
@@ -37228,14 +37228,57 @@ Augur.prototype.updateContracts = function (newContracts) {
     }
     return false;
 };
+
+/** 
+ * @param rpcinfo {Object|string=} Two forms accepted:
+ *    1. Object with connection info fields:
+ *       { http: "https://eth3.augur.net",
+ *         ipc: "/path/to/geth.ipc",
+ *         ws: "wss://ws.augur.net" }
+ *    2. URL string for HTTP RPC: "https://eth3.augur.net"
+ * @param ipcpath {string=} Local IPC path, if not provided in rpcinfo object.
+ * @param cb {function=} Callback function.
+ */
 Augur.prototype.connect = function (rpcinfo, ipcpath, cb) {
+    var options = {};
+    if (rpcinfo) {
+        switch (rpcinfo.constructor) {
+        case String:
+            options.http = rpcinfo;
+            break;
+        case Function:
+            cb = rpcinfo;
+            options.http = null;
+            break;
+        case Object:
+            options = rpcinfo;
+            break;
+        default:
+            options.http = null;
+        }
+    }
+    if (ipcpath) {
+        switch (ipcpath.constructor) {
+        case String:
+            options.ipc = ipcpath;
+            break;
+        case Function:
+            if (!cb) {
+                cb = ipcpath;
+                options.ipc = null;
+            }
+            break;
+        default:
+            options.ipc = null;
+        }
+    }
     if (!this.utils.is_function(cb)) {
-        var connected = connector.connect(rpcinfo, ipcpath);
+        var connected = connector.connect(options);
         this.sync(connector);
         return connected;
     }
     var self = this;
-    connector.connect(rpcinfo, ipcpath, function (connected) {
+    connector.connect(options, function (connected) {
         self.sync(connector);
         cb(connected);
     });
@@ -38252,7 +38295,6 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
                         abi.fix(max_amount, "hex")
                     ];
                     self.transact(tx, function (sentResult) {
-                        console.log("sent:", sentResult.callReturn);
                         var result = clone(sentResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -38264,7 +38306,6 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
                         }
                         onTradeSuccess(result);
                     }, function (successResult) {
-                        console.log("success:", successResult.callReturn);
                         var result = clone(successResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -38321,7 +38362,6 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         trade_ids
                     ];
                     self.transact(tx, function (sentResult) {
-                        console.log("sent:", sentResult.callReturn);
                         var result = clone(sentResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -38332,7 +38372,6 @@ Augur.prototype.trade = function (max_value, max_amount, trade_ids, onTradeHash,
                         }
                         onTradeSuccess(result);
                     }, function (successResult) {
-                        console.log("success:", successResult.callReturn);
                         var result = clone(successResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -38930,7 +38969,6 @@ Augur.prototype.parseMarketInfo = function (rawInfo, options, callback) {
             winningOutcomes: [],
             description: null
         };
-        console.log("numOutcomes:", info.numOutcomes);
         info.outcomes = new Array(info.numOutcomes);
         info.events = new Array(info.numEvents);
 
@@ -41659,12 +41697,9 @@ module.exports = {
 
     init_contracts: contracts[network_id],
 
-    tx: new contracts.Tx(network_id),
+    custom_contracts: null,
 
-    urlstring: function (obj) {
-        var port = (obj.port) ? ":" + obj.port : "";
-        return (obj.protocol || "http") + "://" + (obj.host || "127.0.0.1") + port;
-    },
+    tx: new contracts.Tx(network_id),
 
     has_value: function (o, v) {
         for (var p in o) {
@@ -41672,12 +41707,6 @@ module.exports = {
                 if (o[p] === v) return p;
             }
         }
-    },
-
-    default_rpc: function () {
-        this.rpc.reset();
-        this.rpc.useHostedNode();
-        return false;
     },
 
     detect_network: function (callback) {
@@ -41690,8 +41719,8 @@ module.exports = {
                     var key;
                     if (version !== null && version !== undefined && !version.error) {
                         self.network_id = version;
-                        self.tx = new contracts.Tx(version);
-                        self.contracts = clone(contracts[self.network_id]);
+                        self.tx = new contracts.Tx(version, self.custom_contracts);
+                        self.contracts = clone(self.custom_contracts || contracts[self.network_id]);
                         for (var method in self.tx) {
                             if (!self.tx.hasOwnProperty(method)) continue;
                             key = self.has_value(self.init_contracts, self.tx[method].to);
@@ -41705,8 +41734,8 @@ module.exports = {
             } else {
                 var key, method;
                 this.network_id = this.rpc.version() || "2";
-                this.tx = new contracts.Tx(this.network_id);
-                this.contracts = clone(contracts[this.network_id]);
+                this.tx = new contracts.Tx(this.network_id, this.custom_contracts);
+                this.contracts = clone(this.custom_contracts || contracts[this.network_id]);
                 for (method in this.tx) {
                     if (!this.tx.hasOwnProperty(method)) continue;
                     key = this.has_value(this.init_contracts, this.tx[method].to);
@@ -41732,7 +41761,7 @@ module.exports = {
         var self = this;
         if (is_function(callback)) {
             this.rpc.coinbase(function (coinbase) {
-                if (coinbase && !coinbase.error) {
+                if (coinbase && !coinbase.error && coinbase !== "0x") {
                     self.coinbase = coinbase;
                     self.from = self.from || coinbase;
                     self.from_field_tx(self.from);
@@ -41742,17 +41771,14 @@ module.exports = {
                     self.rpc.accounts(function (accounts) {
                         if (accounts && accounts.constructor === Array && accounts.length) {
                             async.eachSeries(accounts, function (account, nextAccount) {
-                                if (self.unlocked(account)) {
-                                    return nextAccount(account);
-                                }
+                                if (self.unlocked(account)) return nextAccount(account);
                                 nextAccount();
                             }, function (account) {
-                                if (account) {
-                                    self.coinbase = account;
-                                    self.from = self.from || account;
-                                    self.from_field_tx(self.from);
-                                    if (callback) callback(null, account);
-                                }
+                                if (!account) return callback("get_coinbase: coinbase not found");
+                                self.coinbase = account;
+                                self.from = self.from || account;
+                                self.from_field_tx(self.from);
+                                callback(null, account);
                             });
                         }
                     });
@@ -41779,7 +41805,7 @@ module.exports = {
                     }
                 }
             }
-            if (this.coinbase && this.coinbase !== "0x") {
+            if (this.coinbase && !this.coinbase.error && this.coinbase !== "0x") {
                 this.from = this.from || this.coinbase;
                 for (method in this.tx) {
                     if (!this.tx.hasOwnProperty(method)) continue;
@@ -41793,7 +41819,7 @@ module.exports = {
                     }
                 }
             } else {
-                return this.default_rpc();
+                throw new Error("get_coinbase: coinbase not found");
             }
         }
     },
@@ -41822,106 +41848,63 @@ module.exports = {
         this.init_contracts = clone(this.contracts);
     },
 
-    parse_rpcinfo: function (rpcinfo) {
-        var rpcstr, rpc_obj = {};
-        if (rpcinfo.constructor === Object) {
-            if (rpcinfo.protocol) rpc_obj.protocol = rpcinfo.protocol;
-            if (rpcinfo.host) rpc_obj.host = rpcinfo.host;
-            if (rpcinfo.port) {
-                rpc_obj.port = rpcinfo.port;
-            } else {
-                if (rpcinfo.host) {
-                    rpcstr = rpcinfo.host.split(":");
-                    if (rpcstr.length === 2) {
-                        rpc_obj.host = rpcstr[0];
-                        rpc_obj.port = rpcstr[1];
-                    }
-                }
-            }
-        } else if (rpcinfo.constructor === String) {
-            if (rpcinfo.indexOf("://") === -1 && rpcinfo.indexOf(':') === -1) {
-                rpc_obj.host = rpcinfo;
-            } else if (rpcinfo.indexOf("://") > -1) {
-                rpcstr = rpcinfo.split("://");
-                rpc_obj.protocol = rpcstr[0];
-                rpcstr = rpcstr[1].split(':');
-                if (rpcstr.length === 2) {
-                    rpc_obj.host = rpcstr[0];
-                    rpc_obj.port = rpcstr[1];
-                } else {
-                    rpc_obj.host = rpcstr;
-                }
-            } else if (rpcinfo.indexOf(':') > -1) {
-                rpcstr = rpcinfo.split(':');
-                if (rpcstr.length === 2) {
-                    rpc_obj.host = rpcstr[0];
-                    rpc_obj.port = rpcstr[1];
-                } else {
-                    rpc_obj.host = rpcstr;
-                }
-            } else {
-                return this.default_rpc();
-            }
+    connect: function (options, callback) {
+        var self = this;
+        if (!callback && is_function(options)) {
+            callback = options;
+            options = null;
         }
-        return this.urlstring(rpc_obj);
-    },
+        options = options || {};
+        if (options.contracts) {
+            this.contracts = clone(options.contracts);
+            this.init_contracts = clone(options.contracts);
+            this.custom_contracts = clone(options.contracts);
+        }
 
-    connect: function (rpcinfo, ipcpath, callback, isRetry) {
-        var localnode, self = this;
-        if (!ipcpath && is_function(rpcinfo)) {
-            callback = rpcinfo;
-            rpcinfo = null;
-        }
-        if (!callback && is_function(ipcpath)) {
-            callback = ipcpath;
-            ipcpath = null;
-        }
-        if (!isRetry) {
-            // console.log("attempt 1...");
-            if (ipcpath) {
-                this.rpc.ipcpath = ipcpath;
-                if (rpcinfo) {
-                    localnode = this.parse_rpcinfo(rpcinfo);
-                    if (localnode) this.rpc.nodes.local = localnode;
-                } else {
-                    this.rpc.nodes.local = "http://127.0.0.1:8545";
-                }
-            } else {
-                this.rpc.ipcpath = null;
-            }
-            if (rpcinfo) {
-                localnode = this.parse_rpcinfo(rpcinfo);
-                // console.log("local node:", localnode);
-                if (localnode) {
-                    this.rpc.setLocalNode(localnode);
-                } else {
-                    console.log("using hosted:");
-                    this.rpc.useHostedNode();
-                }
-            } else {
-                console.log("using hosted");
-                this.rpc.useHostedNode();
-            }
+        // if this is the first attempt to connect, connect using the
+        // parameters provided by the user exactly
+        if ((options.http || options.ipc || options.ws) && !options.attempts) {
+            this.rpc.ipcpath = options.ipc;
+            this.rpc.nodes.local = options.http;
+            this.rpc.nodes.hosted = [];
+            this.rpc.wsUrl = options.ws;
+
+        // if this is the second attempt to connect, fall back to the
+        // default hosted nodes
         } else {
-            console.log("attempt 2...");
+            console.debug("Connecting to hosted Ethereum node...");
             this.rpc.ipcpath = null;
+            this.rpc.reset();
             this.rpc.useHostedNode();
+            console.debug("HTTP RPC:", JSON.stringify(this.rpc.nodes.hosted, null, 2));
+            console.debug("WebSocket:", this.rpc.wsUrl);
         }
+
         if (is_function(callback)) {
             async.series([
                 this.detect_network.bind(this),
                 this.get_coinbase.bind(this)
             ], function (err) {
                 if (err) {
-                    console.error("[async] connect error:", err);
-                    if (!isRetry) {
-                        return self.connect(rpcinfo, ipcpath, callback, true);
+                    console.warn("[async] Couldn't connect to Ethereum", err, JSON.stringify(options, null, 2));
+                    self.connection = false;
+                    if (!options.attempts) {
+                        options.attempts = 1;
+                        return self.connect(options, callback);
                     }
                     return callback(false);
                 }
-                self.update_contracts();
+                if (options.contracts) {
+
+                } else {
+                    self.update_contracts();
+                }
                 self.connection = true;
-                callback(true);
+                callback({
+                    http: self.rpc.nodes.local || self.rpc.nodes.hosted,
+                    ws: self.rpc.wsUrl,
+                    ipc: self.rpc.ipcpath
+                });
             });
         } else {
             try {
@@ -41929,11 +41912,17 @@ module.exports = {
                 this.get_coinbase();
                 this.update_contracts();
                 this.connection = true;
-                return true;
+                return {
+                    http: this.rpc.nodes.local || this.rpc.nodes.hosted,
+                    ws: this.rpc.wsUrl,
+                    ipc: this.rpc.ipcpath
+                };
             } catch (exc) {
-                console.error("[sync] connect error:", exc);
-                if (!isRetry) {
-                    return this.connect(rpcinfo, ipcpath, callback, true);
+                console.warn("[sync] Couldn't connect to Ethereum", exc, JSON.stringify(options, null, 2));
+                this.connection = false;
+                if (!options.attempts) {
+                    options.attempts = 1;
+                    return this.connect(options);
                 }
                 return false;
             }
@@ -42002,6 +41991,7 @@ var HOSTED_NODES = [
     // "https://morden-state.ether.camp/api/v1/transaction/submit"
     "https://eth3.augur.net"
 ];
+var HOSTED_WEBSOCKET = "wss://ws.augur.net";
 
 module.exports = {
 
@@ -42017,7 +42007,7 @@ module.exports = {
     socket: null,
 
     // geth websocket endpoint
-    wsUrl: process.env.GETH_WEBSOCKET_URL || "wss://ws.augur.net",
+    wsUrl: process.env.GETH_WEBSOCKET_URL || HOSTED_WEBSOCKET,
 
     // initial value 0
     // if connection fails: -1
@@ -42533,9 +42523,16 @@ module.exports = {
         this.nodes.local = urlstr || this.localnode;
     },
 
-    useHostedNode: function (urlstr) {
+    useHostedNode: function (host) {
         this.nodes.local = null;
-        if (urlstr) this.nodes.hosted = [urlstr];
+        if (host) {
+            if (host.constructor === Object) {
+                if (host.http) this.nodes.hosted = [host.http];
+                if (host.ws) this.wsUrl = host.ws;
+            } else {
+                this.nodes.hosted = [host];
+            }
+        }
     },
 
     // delete cached network, notification, and transaction data
@@ -42553,6 +42550,7 @@ module.exports = {
     // reset to default Ethereum nodes
     reset: function (deleteData) {
         this.nodes.hosted = HOSTED_NODES.slice();
+        this.wsUrl = process.env.GETH_WEBSOCKET_URL || HOSTED_WEBSOCKET;
         if (deleteData) this.clear();
     },
 
@@ -42896,7 +42894,7 @@ module.exports = {
         }
         try {
             if (isFunction(f)) {
-                this.sign(account, "1010101", function (res) {
+                this.sign(account, "0x00000000000000000000000000000000000000000000000000000000000f69b5", function (res) {
                     if (res) {
                         if (res.error) return f(false);
                         return f(true);
@@ -42904,7 +42902,7 @@ module.exports = {
                     f(false);
                 });
             } else {
-                var res = this.sign(account, "1010101");
+                var res = this.sign(account, "0x00000000000000000000000000000000000000000000000000000000000f69b5");
                 if (res) {
                     if (res.error) {
                         return false;
