@@ -33,19 +33,6 @@ function createMarkets(numMarketsToCreate, callback) {
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
         var expDate = Math.round(new Date().getTime() / 500);
-        console.log(JSON.stringify({
-            branchId: augur.branches.dev,
-            description: description,
-            expDate: expDate,
-            minValue: minValue,
-            maxValue: maxValue,
-            numOutcomes: numOutcomes,
-            resolution: "lmgtfy.com",
-            tradingFee: "0.02",
-            makerFees: "0.5",
-            extraInfo: null,
-            tags: ["spam", "augur.js", "canned meat"]
-        }, null, 2));
         augur.createSingleEventMarket({
             branchId: augur.branches.dev,
             description: description,
@@ -64,7 +51,11 @@ function createMarkets(numMarketsToCreate, callback) {
                 augur.getMarketInfo(r.marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
-                        return next();
+                        return augur.fundNewAccount(augur.branches.dev,
+                            function (r) {},
+                            function (r) { next(); },
+                            next
+                        );
                     }
                     augur.generateOrderBook({
                         market: r.marketID,
@@ -79,7 +70,11 @@ function createMarkets(numMarketsToCreate, callback) {
                         onSetupOrder: function (res) {},
                         onSuccess: function (res) {
                             if (index % 10) return next();
-                            augur.cashFaucet(function (r) {}, function (r) { next(); }, next);
+                            augur.fundNewAccount(augur.branches.dev,
+                                function (r) {},
+                                function (r) { next(); },
+                                next
+                            );
                         },
                         onFailed: next
                     });
