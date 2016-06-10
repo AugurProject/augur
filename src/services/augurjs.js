@@ -10,39 +10,25 @@ ex.connect = function connect(cb) {
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	const localnode = null;
+	var options = {
+		http: process.env.ETHEREUM_HOST_RPC,
+		ws: process.env.ETHEREUM_HOST_WSURL
+	};
 	if (process.env.BUILD_AZURE) {
-		if (process.env.BUILD_AZURE_WSURL === 'null') {
-			augur.rpc.wsUrl = null;
-		} else {
-			augur.rpc.wsUrl = process.env.BUILD_AZURE_WSURL;
+		if (process.env.BUILD_AZURE_WSURL && process.env.BUILD_AZURE_WSURL !== 'null') {
+			options.ws = process.env.BUILD_AZURE_WSURL;
 		}
-		if (process.env.BUILD_AZURE_LOCALNODE === 'null') {
-			augur.rpc.nodes.local = null;
-		} else {
-			augur.rpc.nodes.local = process.env.BUILD_AZURE_LOCALNODE;
+		if (process.env.BUILD_AZURE_LOCALNODE && process.env.BUILD_AZURE_LOCALNODE !== 'null') {
+			options.http = process.env.BUILD_AZURE_LOCALNODE;
 		}
-		if (process.env.BUILD_AZURE_HOSTEDNODE === 'null') {
-			augur.rpc.nodes.hosted = [];
-		} else {
-			augur.rpc.nodes.hosted = [process.env.BUILD_AZURE_HOSTEDNODE];
-		}
-	} else {
-		if (document.location.protocol === 'http:') {
-			// localnode = 'http://127.0.0.1:8545';
+		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
+			options.contracts = JSON.parse(process.env.BUILD_AZURE_CONTRACTS);
 		}
 	}
-	// augur.rpc.wsUrl = null;
-	augur.connect(localnode, null, (connected) => {
-		if (!connected) return cb('could not connect to ethereum');
-		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
-			try {
-				augur.updateContracts(JSON.parse(process.env.BUILD_AZURE_CONTRACTS));
-			} catch (exc) {
-				console.error('couldn\'t parse contracts', exc);
-			}
-		}
-		cb(null, connected);
+	augur.connect(options, (connection) => {
+		if (!connection) return cb('could not connect to ethereum');
+		console.log("connected:", connection);
+		cb(null, connection);
 	});
 };
 

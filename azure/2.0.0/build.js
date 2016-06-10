@@ -2749,55 +2749,8 @@ value:l.EXPIRY_SOURCE_GENERIC,type:"radio",checked:t.expirySource===l.EXPIRY_SOU
 })(this);
 
 },{}],3:[function(require,module,exports){
-/** 
- * augur.js constants
- */
 
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    ZERO: new BigNumber(0),
-    ONE: new BigNumber(2).toPower(64),
-    ETHER: new BigNumber(10).toPower(18),
-
-    // default gas: 3.135M
-    DEFAULT_GAS: "0x2fd618",
-
-    // expected block interval
-    SECONDS_PER_BLOCK: 12,
-
-    KDF: "pbkdf2",
-    SCRYPT: "scrypt",
-    ROUNDS: 65536,
-    KEYSIZE: 32,
-    IVSIZE: 16,
-
-    FAUCET: "https://faucet.augur.net/faucet/",
-    LOGS: {
-        // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
-        price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
-        
-        // event log_add_tx(market:indexed, sender, type, price, amount, outcome, tradeid)
-        add_tx: "log_add_tx(int256,int256,int256,int256,int256,int256,int256)",
-        
-        // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
-        fill_tx: "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)",
-        
-        // event log_cancel(market:indexed, sender, price, amount, tradeid, outcome, type)
-        cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)"
-    }
-};
-
-},{"bignumber.js":2}],4:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],5:[function(require,module,exports){
-
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -4513,7 +4466,7 @@ function isnan (val) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":7,"ieee754":8,"isarray":9}],7:[function(require,module,exports){
+},{"base64-js":5,"ieee754":6,"isarray":7}],5:[function(require,module,exports){
 'use strict'
 
 exports.toByteArray = toByteArray
@@ -4624,7 +4577,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -4710,14 +4663,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],10:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4813,7 +4766,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (process){
 if (typeof Map !== 'function' || (process && process.env && process.env.TEST_MAPORSIMILAR === 'true')) {
 	module.exports = require('./similar');
@@ -4823,7 +4776,7 @@ else {
 }
 }).call(this,require('_process'))
 
-},{"./similar":12,"_process":10}],12:[function(require,module,exports){
+},{"./similar":10,"_process":8}],10:[function(require,module,exports){
 function Similar() {
 	this.list = [];
 	this.lastItem = undefined;
@@ -4927,7 +4880,7 @@ Similar.prototype.isEqual = function(val1, val2) {
 };
 
 module.exports = Similar;
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var MapOrSimilar = require('map-or-similar');
 
 module.exports = function (limit) {
@@ -5061,7 +5014,7 @@ function removeCachedResult(removedLru) {
 function isEqual(val1, val2) {
 	return val1 === val2 || (val1 !== val1 && val2 !== val2);
 }
-},{"map-or-similar":11}],14:[function(require,module,exports){
+},{"map-or-similar":9}],12:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5085,7 +5038,7 @@ var thunk = createThunkMiddleware();
 thunk.withExtraArgument = createThunkMiddleware;
 
 exports['default'] = thunk;
-},{}],15:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5144,7 +5097,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":18}],16:[function(require,module,exports){
+},{"./compose":16}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5196,7 +5149,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],17:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5324,7 +5277,7 @@ function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
-},{"./createStore":19,"./utils/warning":21,"lodash/isPlainObject":25}],18:[function(require,module,exports){
+},{"./createStore":17,"./utils/warning":19,"lodash/isPlainObject":23}],16:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -5365,7 +5318,7 @@ function compose() {
     if (typeof _ret === "object") return _ret.v;
   }
 }
-},{}],19:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5628,7 +5581,7 @@ function createStore(reducer, initialState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
 }
-},{"lodash/isPlainObject":25,"symbol-observable":26}],20:[function(require,module,exports){
+},{"lodash/isPlainObject":23,"symbol-observable":24}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5675,7 +5628,7 @@ exports.combineReducers = _combineReducers2["default"];
 exports.bindActionCreators = _bindActionCreators2["default"];
 exports.applyMiddleware = _applyMiddleware2["default"];
 exports.compose = _compose2["default"];
-},{"./applyMiddleware":15,"./bindActionCreators":16,"./combineReducers":17,"./compose":18,"./createStore":19,"./utils/warning":21}],21:[function(require,module,exports){
+},{"./applyMiddleware":13,"./bindActionCreators":14,"./combineReducers":15,"./compose":16,"./createStore":17,"./utils/warning":19}],19:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5701,7 +5654,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],22:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeGetPrototype = Object.getPrototypeOf;
 
@@ -5718,7 +5671,7 @@ function getPrototype(value) {
 
 module.exports = getPrototype;
 
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
  * Checks if `value` is a host object in IE < 9.
  *
@@ -5740,7 +5693,7 @@ function isHostObject(value) {
 
 module.exports = isHostObject;
 
-},{}],24:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -5771,7 +5724,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],25:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var getPrototype = require('./_getPrototype'),
     isHostObject = require('./_isHostObject'),
     isObjectLike = require('./isObjectLike');
@@ -5843,7 +5796,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_getPrototype":22,"./_isHostObject":23,"./isObjectLike":24}],26:[function(require,module,exports){
+},{"./_getPrototype":20,"./_isHostObject":21,"./isObjectLike":22}],24:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -5852,7 +5805,7 @@ module.exports = require('./ponyfill')(global || window || this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./ponyfill":27}],27:[function(require,module,exports){
+},{"./ponyfill":25}],25:[function(require,module,exports){
 'use strict';
 
 module.exports = function symbolObservablePonyfill(root) {
@@ -5873,7 +5826,7 @@ module.exports = function symbolObservablePonyfill(root) {
 	return result;
 };
 
-},{}],28:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 (function (process,Buffer){
 !function(globals){
 'use strict'
@@ -5956,7 +5909,7 @@ secureRandom.randomBuffer = function(byteCount) {
 
 }).call(this,require('_process'),require("buffer").Buffer)
 
-},{"_process":10,"buffer":6,"crypto":5}],29:[function(require,module,exports){
+},{"_process":8,"buffer":4,"crypto":3}],27:[function(require,module,exports){
 'use strict';
 
 var _augurUiReactComponents = require('augur-ui-react-components');
@@ -6000,7 +5953,7 @@ window.onpopstate = function (e) {
   _store2.default.dispatch((0, _showLink.showLink)(window.location.pathname + window.location.search));
 };
 
-},{"./modules/app/actions/init-augur":30,"./modules/link/actions/show-link":66,"./selectors":153,"./store":155,"augur-ui-react-components":1}],30:[function(require,module,exports){
+},{"./modules/app/actions/init-augur":28,"./modules/link/actions/show-link":64,"./selectors":151,"./store":153,"augur-ui-react-components":1}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6065,7 +6018,7 @@ function initAugur() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/actions/listen-to-updates":31,"../../app/actions/update-blockchain":32,"../../app/actions/update-branch":33,"../../app/actions/update-connection":34,"../../app/constants/network":35,"../../auth/actions/load-login-account":43,"../../market/actions/load-full-market":70,"../../markets/actions/load-markets":82}],31:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/actions/listen-to-updates":29,"../../app/actions/update-blockchain":30,"../../app/actions/update-branch":31,"../../app/actions/update-connection":32,"../../app/constants/network":33,"../../auth/actions/load-login-account":41,"../../market/actions/load-full-market":68,"../../markets/actions/load-markets":80}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6120,7 +6073,7 @@ function listenToUpdates() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/actions/update-blockchain":32,"../../auth/actions/update-assets":47,"../../market/actions/load-market":71,"../../markets/actions/update-outcome-price":88}],32:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/actions/update-blockchain":30,"../../auth/actions/update-assets":45,"../../market/actions/load-market":69,"../../markets/actions/update-outcome-price":86}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6258,7 +6211,7 @@ function updateBlockchain(cb) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../reports/actions/collect-fees":126,"../../reports/actions/commit-reports":127,"../../reports/actions/penalize-too-few-reports":129}],33:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../reports/actions/collect-fees":124,"../../reports/actions/commit-reports":125,"../../reports/actions/penalize-too-few-reports":127}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6271,7 +6224,7 @@ function updateBranch(branch) {
 	return { type: UPDATE_BRANCH, branch: branch };
 }
 
-},{}],34:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6291,7 +6244,7 @@ function updateConnectionStatus(isConnected) {
 	};
 }
 
-},{}],35:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6300,7 +6253,7 @@ Object.defineProperty(exports, "__esModule", {
 var MILLIS_PER_BLOCK = exports.MILLIS_PER_BLOCK = 12000;
 var BRANCH_ID = exports.BRANCH_ID = 1010101;
 
-},{}],36:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6314,7 +6267,7 @@ var M = exports.M = 'm';
 
 var DEFAULT_PAGE = exports.DEFAULT_PAGE = MARKETS;
 
-},{}],37:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6340,7 +6293,7 @@ var _pages = require('../../app/constants/pages');
 
 var _paths = require('../../link/constants/paths');
 
-},{"../../app/constants/pages":36,"../../link/actions/show-link":66,"../../link/constants/paths":68}],38:[function(require,module,exports){
+},{"../../app/constants/pages":34,"../../link/actions/show-link":64,"../../link/constants/paths":66}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6364,7 +6317,7 @@ exports.default = function () {
 
 var _updateBlockchain = require('../../app/actions/update-blockchain');
 
-},{"../../app/actions/update-blockchain":32}],39:[function(require,module,exports){
+},{"../../app/actions/update-blockchain":30}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6387,7 +6340,7 @@ exports.default = function () {
 
 var _updateBranch = require('../../app/actions/update-branch');
 
-},{"../../app/actions/update-branch":33}],40:[function(require,module,exports){
+},{"../../app/actions/update-branch":31}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6415,7 +6368,7 @@ exports.default = function () {
 
 var _updateConnection = require('../../app/actions/update-connection');
 
-},{"../../app/actions/update-connection":34}],41:[function(require,module,exports){
+},{"../../app/actions/update-connection":32}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6436,7 +6389,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../../store":155}],42:[function(require,module,exports){
+},{"../../../store":153}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6449,7 +6402,7 @@ function authError(err) {
 	return { type: AUTH_ERROR, err: err };
 }
 
-},{}],43:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6567,7 +6520,7 @@ function loadLoginAccount() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../auth/actions/update-assets":47,"../../auth/actions/update-login-account":48,"../../markets/actions/update-favorites":85,"../../positions/actions/load-account-trades":120,"../../positions/actions/update-account-trades-data":121,"../../reports/actions/close-markets":125,"../../reports/actions/collect-fees":126,"../../reports/actions/commit-reports":127,"../../reports/actions/load-reports":128,"../../reports/actions/penalize-too-few-reports":129,"../../reports/actions/penalize-wrong-reports":130,"../../reports/actions/update-reports":132,"../../transactions/actions/update-transactions-data":145,"../../transactions/constants/statuses":146}],44:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../auth/actions/update-assets":45,"../../auth/actions/update-login-account":46,"../../markets/actions/update-favorites":83,"../../positions/actions/load-account-trades":118,"../../positions/actions/update-account-trades-data":119,"../../reports/actions/close-markets":123,"../../reports/actions/collect-fees":124,"../../reports/actions/commit-reports":125,"../../reports/actions/load-reports":126,"../../reports/actions/penalize-too-few-reports":127,"../../reports/actions/penalize-wrong-reports":128,"../../reports/actions/update-reports":130,"../../transactions/actions/update-transactions-data":143,"../../transactions/constants/statuses":144}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6610,7 +6563,7 @@ function login(username, password) {
 	};
 }
 
-},{"../../../selectors":153,"../../../services/augurjs":154,"../../auth/actions/auth-error":42,"../../auth/actions/load-login-account":43,"../../auth/actions/update-login-account":48}],45:[function(require,module,exports){
+},{"../../../selectors":151,"../../../services/augurjs":152,"../../auth/actions/auth-error":40,"../../auth/actions/load-login-account":41,"../../auth/actions/update-login-account":46}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6633,7 +6586,7 @@ function logout() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../auth/actions/update-login-account":48}],46:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../auth/actions/update-login-account":46}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6719,7 +6672,7 @@ function register(username, password, password2) {
 	};
 }
 
-},{"../../../selectors":153,"../../../services/augurjs":154,"../../auth/actions/auth-error":42,"../../auth/actions/update-assets":47,"../../auth/actions/update-login-account":48,"../../auth/constants/auth-types":49,"../../auth/constants/form-errors":50,"../../transactions/actions/add-transactions":142,"../../transactions/actions/update-existing-transaction":144,"../../transactions/actions/update-transactions-data":145,"../../transactions/constants/statuses":146}],47:[function(require,module,exports){
+},{"../../../selectors":151,"../../../services/augurjs":152,"../../auth/actions/auth-error":40,"../../auth/actions/update-assets":45,"../../auth/actions/update-login-account":46,"../../auth/constants/auth-types":47,"../../auth/constants/form-errors":48,"../../transactions/actions/add-transactions":140,"../../transactions/actions/update-existing-transaction":142,"../../transactions/actions/update-transactions-data":143,"../../transactions/constants/statuses":144}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6780,7 +6733,7 @@ function updateAssets() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../auth/actions/update-login-account":48}],48:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../auth/actions/update-login-account":46}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6799,7 +6752,7 @@ function clearLoginAccount() {
 	return { type: CLEAR_LOGIN_ACCOUNT };
 }
 
-},{}],49:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6817,7 +6770,7 @@ var AUTH_TYPES = exports.AUTH_TYPES = (_AUTH_TYPES = {}, _defineProperty(_AUTH_T
 
 var DEFAULT_AUTH_TYPE = exports.DEFAULT_AUTH_TYPE = REGISTER;
 
-},{}],50:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6832,7 +6785,7 @@ var PASSWORDS_DO_NOT_MATCH = exports.PASSWORDS_DO_NOT_MATCH = 'PASSWORDS_DO_NOT_
 var INVALID_USERNAME = exports.INVALID_USERNAME = 'INVALID_USERNAME';
 var INVALID_USER = exports.INVALID_USER = 'INVALID_USER';
 
-},{}],51:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6870,7 +6823,7 @@ var _showLink = require('../../link/actions/show-link');
 
 var _authError = require('../../auth/actions/auth-error');
 
-},{"../../auth/actions/auth-error":42,"../../auth/constants/auth-types":49,"../../link/actions/show-link":66,"../../link/constants/paths":68}],52:[function(require,module,exports){
+},{"../../auth/actions/auth-error":40,"../../auth/constants/auth-types":47,"../../link/actions/show-link":64,"../../link/constants/paths":66}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6897,7 +6850,7 @@ exports.default = function () {
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":48}],53:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":46}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7026,7 +6979,7 @@ var selectAuthForm = exports.selectAuthForm = (0, _memoizerific2.default)(1)(fun
 	return obj;
 });
 
-},{"../../../selectors":153,"../../../store":155,"../../auth/actions/login":44,"../../auth/actions/register":46,"../../auth/constants/auth-types":49,"../../auth/constants/form-errors":50,"../../link/selectors/links":69,"memoizerific":13}],54:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../auth/actions/login":42,"../../auth/actions/register":44,"../../auth/constants/auth-types":47,"../../auth/constants/form-errors":48,"../../link/selectors/links":67,"memoizerific":11}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7041,9 +6994,9 @@ exports.default = function () {
 	var loginAccount = _store$getState.loginAccount;
 
 	return _extends({}, loginAccount, {
-		rep: (0, _formatNumber.formatRep)(loginAccount.rep, { zero: true, decimalsRounded: 0 }),
-		ether: (0, _formatNumber.formatEther)(loginAccount.ether, { zero: true, decimalsRounded: 0 }),
-		realEther: (0, _formatNumber.formatEther)(loginAccount.realEther, { zero: true, decimalsRounded: 0 })
+		rep: (0, _formatNumber.formatRep)(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
+		ether: (0, _formatNumber.formatEther)(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
+		realEther: (0, _formatNumber.formatEther)(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 0 })
 	});
 };
 
@@ -7055,7 +7008,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../../store":155,"../../../utils/format-number":159}],55:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/format-number":158}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7068,7 +7021,7 @@ function updateBidsAsks(bidsAsksData) {
 	return { type: UPDATE_BIDSASKS_DATA, bidsAsksData: bidsAsksData };
 }
 
-},{}],56:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7122,7 +7075,7 @@ exports.default = function () {
 
 var _updateBidsAsks = require('../actions/update-bids-asks');
 
-},{"../actions/update-bids-asks":55}],57:[function(require,module,exports){
+},{"../actions/update-bids-asks":53}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7203,7 +7156,7 @@ function createMarket(transactionID, newMarket) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../create-market/actions/update-make-in-progress":58,"../../link/selectors/links":69,"../../market/actions/load-market":71,"../../markets/constants/market-types":94,"../../transactions/actions/add-create-market-transaction":139,"../../transactions/actions/update-existing-transaction":144,"../../transactions/constants/statuses":146}],58:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../create-market/actions/update-make-in-progress":56,"../../link/selectors/links":67,"../../market/actions/load-market":69,"../../markets/constants/market-types":92,"../../transactions/actions/add-create-market-transaction":137,"../../transactions/actions/update-existing-transaction":142,"../../transactions/constants/statuses":144}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7222,7 +7175,7 @@ function clearMakeInProgress() {
 	return { type: CLEAR_MAKE_IN_PROGRESS };
 }
 
-},{}],59:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7251,7 +7204,7 @@ var TRADING_FEE_DEFAULT = exports.TRADING_FEE_DEFAULT = 2;
 var INITIAL_LIQUIDITY_MIN = exports.INITIAL_LIQUIDITY_MIN = 50;
 var INITIAL_LIQUIDITY_DEFAULT = exports.INITIAL_LIQUIDITY_DEFAULT = 500;
 
-},{}],60:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7278,7 +7231,7 @@ exports.default = function () {
 
 var _updateMakeInProgress = require('../actions/update-make-in-progress');
 
-},{"../actions/update-make-in-progress":58}],61:[function(require,module,exports){
+},{"../actions/update-make-in-progress":56}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7384,7 +7337,7 @@ var selectCreateMarketForm = exports.selectCreateMarketForm = (0, _memoizerific2
 	});
 });
 
-},{"../../../store":155,"../../create-market/actions/update-make-in-progress":58,"../../create-market/selectors/form-steps/step-2":62,"../../create-market/selectors/form-steps/step-3":63,"../../create-market/selectors/form-steps/step-4":64,"../../create-market/selectors/form-steps/step-5":65,"../../markets/constants/market-types":94,"memoizerific":13}],62:[function(require,module,exports){
+},{"../../../store":153,"../../create-market/actions/update-make-in-progress":56,"../../create-market/selectors/form-steps/step-2":60,"../../create-market/selectors/form-steps/step-3":61,"../../create-market/selectors/form-steps/step-4":62,"../../create-market/selectors/form-steps/step-5":63,"../../markets/constants/market-types":92,"memoizerific":11}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7545,7 +7498,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../create-market/constants/market-values-constraints":59,"../../../market/validators/validate-categorical-outcomes":76,"../../../market/validators/validate-description":77,"../../../market/validators/validate-end-date":78,"../../../market/validators/validate-scalar-big-num":79,"../../../market/validators/validate-scalar-small-num":80,"../../../markets/constants/market-types":94}],63:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":57,"../../../market/validators/validate-categorical-outcomes":74,"../../../market/validators/validate-description":75,"../../../market/validators/validate-end-date":76,"../../../market/validators/validate-scalar-big-num":77,"../../../market/validators/validate-scalar-small-num":78,"../../../markets/constants/market-types":92}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7605,7 +7558,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../create-market/constants/market-values-constraints":59}],64:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":57}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7677,7 +7630,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../../utils/format-number":159,"../../../create-market/constants/market-values-constraints":59}],65:[function(require,module,exports){
+},{"../../../../utils/format-number":158,"../../../create-market/constants/market-values-constraints":57}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7688,6 +7641,8 @@ exports.selectOutcomesFromForm = exports.selectEndBlockFromEndDate = exports.sel
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _formatNumber = require('../../../../utils/format-number');
+
+var _formatDate = require('../../../../utils/format-date');
 
 var _network = require('../../../app/constants/network');
 
@@ -7701,7 +7656,7 @@ var select = exports.select = function select(formState, currentBlockNumber, cur
 	var o = _extends({}, formState);
 
 	o.type = formState.type;
-	o.endDate = (0, _formatNumber.formatDate)(formState.endDate);
+	o.endDate = (0, _formatDate.formatDate)(formState.endDate);
 	o.endBlock = selectEndBlockFromEndDate(formState.endDate.getTime(), currentBlockNumber, currentBlockMillisSinceEpoch);
 
 	o.tradingFee = formState.tradingFeePercent / 100;
@@ -7739,7 +7694,7 @@ var selectOutcomesFromForm = exports.selectOutcomesFromForm = function selectOut
 	}
 };
 
-},{"../../../../utils/format-number":159,"../../../app/constants/network":35,"../../../create-market/actions/submit-new-market":57,"../../../create-market/constants/market-values-constraints":59,"../../../markets/constants/market-types":94}],66:[function(require,module,exports){
+},{"../../../../utils/format-date":157,"../../../../utils/format-number":158,"../../../app/constants/network":33,"../../../create-market/actions/submit-new-market":55,"../../../create-market/constants/market-values-constraints":57,"../../../markets/constants/market-types":92}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7791,7 +7746,7 @@ function showPreviousLink(url) {
 	};
 }
 
-},{"../../../utils/parse-url":162,"../../market/actions/load-full-market":70}],67:[function(require,module,exports){
+},{"../../../utils/parse-url":161,"../../market/actions/load-full-market":68}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7806,7 +7761,7 @@ var PAGE_PARAM_NAME = exports.PAGE_PARAM_NAME = 'page';
 var TAGS_PARAM_NAME = exports.TAGS_PARAM_NAME = 'tags';
 var FILTERS_PARAM_NAME = exports.FILTERS_PARAM_NAME = 'filters';
 
-},{}],68:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7843,7 +7798,7 @@ var AUTH_PATHS = exports.AUTH_PATHS = Object.keys(PATHS_AUTH).reduce(function (f
 	return finalObj;
 }, {});
 
-},{"../../app/constants/pages":36,"../../auth/constants/auth-types":49}],69:[function(require,module,exports){
+},{"../../app/constants/pages":34,"../../auth/constants/auth-types":47}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8037,7 +7992,7 @@ var selectCreateMarketLink = exports.selectCreateMarketLink = (0, _memoizerific2
 	};
 });
 
-},{"../../../selectors":153,"../../../store":155,"../../../utils/list-words-under-length":161,"../../../utils/parse-url":162,"../../app/constants/pages":36,"../../auth/actions/logout":45,"../../auth/constants/auth-types":49,"../../link/actions/show-link":66,"../../link/constants/param-names":67,"../../link/constants/paths":68,"../../markets/constants/sort":97,"memoizerific":13}],70:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../../utils/list-words-under-length":160,"../../../utils/parse-url":161,"../../app/constants/pages":34,"../../auth/actions/logout":43,"../../auth/constants/auth-types":47,"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../link/constants/paths":66,"../../markets/constants/sort":95,"memoizerific":11}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8071,7 +8026,7 @@ function loadFullMarket(marketId) {
 	};
 }
 
-},{"../../market/actions/load-market":71,"../../market/actions/load-price-history":72}],71:[function(require,module,exports){
+},{"../../market/actions/load-market":69,"../../market/actions/load-price-history":70}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8104,7 +8059,7 @@ function loadMarket(marketID, cb) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../markets/actions/update-markets-data":87}],72:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../markets/actions/update-markets-data":85}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8131,7 +8086,7 @@ function loadPriceHistory(marketID) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../market/actions/update-market-price-history":73}],73:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../market/actions/update-market-price-history":71}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8148,7 +8103,7 @@ function updateMarketPriceHistory(marketID, priceHistory) {
   return { type: UPDATE_MARKET_PRICE_HISTORY, marketID: marketID, priceHistory: priceHistory };
 }
 
-},{}],74:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8192,6 +8147,8 @@ var _memoizerific = require('memoizerific');
 var _memoizerific2 = _interopRequireDefault(_memoizerific);
 
 var _formatNumber = require('../../../utils/format-number');
+
+var _formatDate = require('../../../utils/format-date');
 
 var _isMarketDataOpen = require('../../../utils/is-market-data-open');
 
@@ -8244,11 +8201,11 @@ var selectMarket = exports.selectMarket = function selectMarket(marketID) {
 		return {};
 	}
 
-	var endDate = new Date(marketsData[marketID].endDate);
+	var endDate = new Date(marketsData[marketID].endDate * 1000 || 0);
 
 	return assembleMarket(marketID, marketsData[marketID], priceHistory[marketID], (0, _isMarketDataOpen.isMarketDataOpen)(marketsData[marketID], blockchain && blockchain.currentBlockNumber), !!favorites[marketID], outcomes[marketID], reports[marketsData[marketID].eventID], accountTrades[marketID], tradesInProgress[marketID],
 
-	// the reason we pass in the date parts broken up like this, is because otherwise the new date object will always trigger re-assembly, and never hit the memoization cache
+	// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
 	endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), blockchain && blockchain.isReportConfirmationPhase, _store2.default.dispatch);
 };
 
@@ -8264,6 +8221,7 @@ var selectMarketFromEventID = exports.selectMarketFromEventID = function selectM
 
 var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(function (marketID, marketData, marketPriceHistory, isOpen, isFavorite, marketOutcomes, marketReport, marketAccountTrades, marketTradeInProgress, endDateYear, endDateMonth, endDateDay, isReportConfirmationPhase, dispatch) {
 	// console.log('>>assembleMarket<<');
+
 	var o = _extends({}, marketData, {
 		id: marketID
 	});
@@ -8290,7 +8248,7 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 		default:
 			break;
 	}
-	o.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && (0, _formatNumber.formatDate)(new Date(endDateYear, endDateMonth, endDateDay)) || null;
+	o.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && (0, _formatDate.formatDate)(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	o.isOpen = isOpen;
 	o.isExpired = !isOpen;
 
@@ -8366,14 +8324,16 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 		return b.lastPrice.value - a.lastPrice.value || (a.name < b.name ? -1 : 1);
 	});
 
-	o.tags = o.tags.map(function (tag) {
+	o.tags = (o.tags || []).map(function (tag) {
 		var obj = {
-			name: tag,
+			name: tag && tag.toString().toLowerCase().trim(),
 			onClick: function onClick() {
 				return dispatch((0, _toggleTag.toggleTag)(tag));
 			}
 		};
 		return obj;
+	}).filter(function (tag) {
+		return !!tag.name;
 	});
 
 	o.priceTimeSeries = (0, _priceTimeSeries.selectPriceTimeSeries)(o.outcomes, marketPriceHistory);
@@ -8388,7 +8348,7 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 	return o;
 });
 
-},{"../../../store":155,"../../../utils/format-number":159,"../../../utils/is-market-data-open":160,"../../link/selectors/links":69,"../../market/selectors/price-time-series":75,"../../markets/actions/toggle-tag":84,"../../markets/actions/update-favorites":85,"../../markets/constants/market-outcomes":93,"../../markets/constants/market-types":94,"../../positions/selectors/position":123,"../../positions/selectors/positions-summary":124,"../../reports/actions/submit-report":131,"../../trade/actions/place-trade":134,"../../trade/actions/update-trades-in-progress":135,"../../trade/selectors/trade-orders":137,"../../trade/selectors/trade-summary":138,"memoizerific":13}],75:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/format-date":157,"../../../utils/format-number":158,"../../../utils/is-market-data-open":159,"../../link/selectors/links":67,"../../market/selectors/price-time-series":73,"../../markets/actions/toggle-tag":82,"../../markets/actions/update-favorites":83,"../../markets/constants/market-outcomes":91,"../../markets/constants/market-types":92,"../../positions/selectors/position":121,"../../positions/selectors/positions-summary":122,"../../reports/actions/submit-report":129,"../../trade/actions/place-trade":132,"../../trade/actions/update-trades-in-progress":133,"../../trade/selectors/trade-orders":135,"../../trade/selectors/trade-summary":136,"memoizerific":11}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8404,7 +8364,7 @@ var _store = require('../../../store');
 
 var _store2 = _interopRequireDefault(_store);
 
-var _date = require('../../../utils/date');
+var _dateToBlockToDate = require('../../../utils/date-to-block-to-date');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8431,13 +8391,13 @@ var selectPriceTimeSeries = exports.selectPriceTimeSeries = (0, _memoizerific2.d
 		return {
 			name: outcome.name,
 			data: outcomePriceHistory.map(function (priceTimePoint) {
-				return [(0, _date.blockToDate)(priceTimePoint.blockNumber, blockchain.currentBlockNumber), Number(priceTimePoint.price)];
+				return [(0, _dateToBlockToDate.blockToDate)(priceTimePoint.blockNumber, blockchain.currentBlockNumber), Number(priceTimePoint.price)];
 			})
 		};
 	});
 });
 
-},{"../../../store":155,"../../../utils/date":158,"memoizerific":13}],76:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/date-to-block-to-date":156,"memoizerific":11}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8463,7 +8423,7 @@ exports.default = function (categoricalOutcomes) {
 	return errors;
 };
 
-},{}],77:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8488,7 +8448,7 @@ exports.default = function (description) {
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../create-market/constants/market-values-constraints":59}],78:[function(require,module,exports){
+},{"../../create-market/constants/market-values-constraints":57}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8502,7 +8462,7 @@ exports.default = function (endDate) {
 	return null;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8523,7 +8483,7 @@ exports.default = function (scalarSmallNum, scalarBigNum) {
 	return null;
 };
 
-},{}],80:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8544,7 +8504,7 @@ exports.default = function (scalarSmallNum, scalarBigNum) {
 	return null;
 };
 
-},{}],81:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8588,17 +8548,10 @@ function loadMarketsInfo(marketIDs) {
 				// parse out event, currently we only support single event markets, no combinatorial
 				parseEvent(marketData);
 
-				// parse out non-empty tags and make them lowercase
-				marketData.tags = (marketData.tags || []).map(function (tag) {
-					return tag && tag.toLowerCase().trim();
-				}).filter(function (tag) {
-					return !!tag;
-				});
-
 				// transform array of outcomes into an object and add their names
 				finalOutcomesData[marketID] = parseOutcomes(marketData);
 
-				// save market without outcomes
+				// save market (without outcomes)
 				finalMarketsData[marketID] = marketData;
 			});
 
@@ -8701,7 +8654,7 @@ function loadMarketsInfo(marketIDs) {
 	}
 }
 
-},{"../../../services/augurjs":154,"../../markets/actions/update-markets-data":87,"../../markets/actions/update-outcomes-data":89,"../../markets/constants/market-outcomes":93,"../../markets/constants/market-types":94}],82:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../markets/actions/update-markets-data":85,"../../markets/actions/update-outcomes-data":87,"../../markets/constants/market-outcomes":91,"../../markets/constants/market-types":92}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8753,7 +8706,7 @@ function loadMarkets() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../markets/actions/load-markets-info":81,"../../markets/actions/update-markets-data":87}],83:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../markets/actions/load-markets-info":79,"../../markets/actions/update-markets-data":85}],81:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8778,7 +8731,7 @@ function toggleFilter(filterID) {
 	};
 }
 
-},{"../../../selectors":153,"../../link/actions/show-link":66}],84:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],82:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8803,7 +8756,7 @@ function toggleTag(filterID) {
 	};
 }
 
-},{"../../../selectors":153,"../../link/actions/show-link":66}],85:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],83:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8822,7 +8775,7 @@ function toggleFavorite(marketID) {
 	return { type: TOGGLE_FAVORITE, marketID: marketID };
 }
 
-},{}],86:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8847,7 +8800,7 @@ function updateKeywords(keywords) {
 	};
 }
 
-},{"../../../selectors":153,"../../link/actions/show-link":66}],87:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],85:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8866,7 +8819,7 @@ function updateMarketData(marketData) {
 	return { type: UPDATE_MARKET_DATA, marketData: marketData };
 }
 
-},{}],88:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8879,7 +8832,7 @@ function updateOutcomePrice(marketID, outcomeID, price) {
 	return { type: UPDATE_OUTCOME_PRICE, marketID: marketID, outcomeID: outcomeID, price: price };
 }
 
-},{}],89:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8892,7 +8845,7 @@ function updateOutcomesData(outcomesData) {
 	return { type: UPDATE_OUTCOMES_DATA, outcomesData: outcomesData };
 }
 
-},{}],90:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8905,7 +8858,7 @@ function updateSelectedMarketsHeader(selectedMarketsHeader) {
 	return { type: UPDATED_SELECTED_MARKETS_HEADER, selectedMarketsHeader: selectedMarketsHeader };
 }
 
-},{}],91:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8930,7 +8883,7 @@ function updateSelectedPageNum(selectedPageNum) {
 	};
 }
 
-},{"../../../selectors":153,"../../link/actions/show-link":66}],92:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],90:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8955,7 +8908,7 @@ function updateSelectedSort(selectedSort) {
 	};
 }
 
-},{"../../../selectors":153,"../../link/actions/show-link":66}],93:[function(require,module,exports){
+},{"../../../selectors":151,"../../link/actions/show-link":64}],91:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8973,7 +8926,7 @@ var SCALAR_UP_ID = exports.SCALAR_UP_ID = 2;
 var INDETERMINATE_OUTCOME_ID = exports.INDETERMINATE_OUTCOME_ID = '1.5';
 var INDETERMINATE_OUTCOME_NAME = exports.INDETERMINATE_OUTCOME_NAME = 'indeterminate';
 
-},{}],94:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8991,7 +8944,7 @@ var COMBINATORIAL = exports.COMBINATORIAL = 'combinatorial';
 
 var MARKET_TYPES = exports.MARKET_TYPES = (_MARKET_TYPES = {}, _defineProperty(_MARKET_TYPES, BINARY, BINARY), _defineProperty(_MARKET_TYPES, CATEGORICAL, CATEGORICAL), _defineProperty(_MARKET_TYPES, SCALAR, SCALAR), _defineProperty(_MARKET_TYPES, COMBINATORIAL, COMBINATORIAL), _MARKET_TYPES);
 
-},{}],95:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9000,7 +8953,7 @@ Object.defineProperty(exports, "__esModule", {
 var FAVORITES = exports.FAVORITES = 'favorites';
 var PENDING_REPORTS = exports.PENDING_REPORTS = 'pending reports';
 
-},{}],96:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9011,7 +8964,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 var DEFAULT_PAGE = exports.DEFAULT_PAGE = 1;
 
-},{}],97:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9023,7 +8976,7 @@ Object.defineProperty(exports, "__esModule", {
 var DEFAULT_SORT_PROP = exports.DEFAULT_SORT_PROP = 'volume';
 var DEFAULT_IS_SORT_DESC = exports.DEFAULT_IS_SORT_DESC = true;
 
-},{}],98:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9058,7 +9011,7 @@ exports.default = function () {
 
 var _updateFavorites = require('../../markets/actions/update-favorites');
 
-},{"../../markets/actions/update-favorites":85}],99:[function(require,module,exports){
+},{"../../markets/actions/update-favorites":83}],97:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9092,7 +9045,7 @@ var _showLink = require('../../link/actions/show-link');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":66,"../../link/constants/param-names":67,"../../markets/actions/update-keywords":86}],100:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/update-keywords":84}],98:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9121,7 +9074,7 @@ var _updateMarketsData = require('../../markets/actions/update-markets-data');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../markets/actions/update-markets-data":87}],101:[function(require,module,exports){
+},{"../../markets/actions/update-markets-data":85}],99:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9157,7 +9110,7 @@ var _updateOutcomePrice = require('../../markets/actions/update-outcome-price');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../markets/actions/update-outcome-price":88,"../../markets/actions/update-outcomes-data":89}],102:[function(require,module,exports){
+},{"../../markets/actions/update-outcome-price":86,"../../markets/actions/update-outcomes-data":87}],100:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9221,7 +9174,7 @@ var _pagination = require('../../markets/constants/pagination');
 
 var _showLink = require('../../link/actions/show-link');
 
-},{"../../link/actions/show-link":66,"../../link/constants/param-names":67,"../../markets/actions/toggle-filter":83,"../../markets/actions/toggle-tag":84,"../../markets/actions/update-keywords":86,"../../markets/actions/update-selected-markets-header":90,"../../markets/actions/update-selected-page-num":91,"../../markets/actions/update-selected-sort":92,"../../markets/constants/pagination":96}],103:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/toggle-filter":81,"../../markets/actions/toggle-tag":82,"../../markets/actions/update-keywords":84,"../../markets/actions/update-selected-markets-header":88,"../../markets/actions/update-selected-page-num":89,"../../markets/actions/update-selected-sort":90,"../../markets/constants/pagination":94}],101:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9247,7 +9200,7 @@ var _updateMarketPriceHistory = require('../../market/actions/update-market-pric
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../market/actions/update-market-price-history":73}],104:[function(require,module,exports){
+},{"../../market/actions/update-market-price-history":71}],102:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9292,7 +9245,7 @@ var _toggleFilter = require('../../markets/actions/toggle-filter');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":66,"../../link/constants/param-names":67,"../../markets/actions/toggle-filter":83}],105:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/toggle-filter":81}],103:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9321,7 +9274,7 @@ var _pages = require('../../app/constants/pages');
 
 var _paths = require('../../link/constants/paths');
 
-},{"../../app/constants/pages":36,"../../link/actions/show-link":66,"../../link/constants/paths":68}],106:[function(require,module,exports){
+},{"../../app/constants/pages":34,"../../link/actions/show-link":64,"../../link/constants/paths":66}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9343,7 +9296,7 @@ exports.default = function () {
 
 var _updateSelectedMarketsHeader = require('../../markets/actions/update-selected-markets-header');
 
-},{"../../markets/actions/update-selected-markets-header":90}],107:[function(require,module,exports){
+},{"../../markets/actions/update-selected-markets-header":88}],105:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9389,7 +9342,7 @@ var _sort = require('../../markets/constants/sort');
 
 var _updateSelectedSort = require('../../markets/actions/update-selected-sort');
 
-},{"../../link/actions/show-link":66,"../../link/constants/param-names":67,"../../markets/actions/update-selected-sort":92,"../../markets/constants/sort":97}],108:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/update-selected-sort":90,"../../markets/constants/sort":95}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9433,7 +9386,7 @@ var _toggleTag = require('../../markets/actions/toggle-tag');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":66,"../../link/constants/param-names":67,"../../markets/actions/toggle-tag":84}],109:[function(require,module,exports){
+},{"../../link/actions/show-link":64,"../../link/constants/param-names":65,"../../markets/actions/toggle-tag":82}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9593,7 +9546,7 @@ var selectFilters = exports.selectFilters = (0, _memoizerific2.default)(1)(funct
 	return filters;
 });
 
-},{"../../../selectors":153,"../../../store":155,"../../markets/actions/toggle-filter":83,"../../markets/actions/toggle-tag":84,"memoizerific":13}],110:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../markets/actions/toggle-filter":81,"../../markets/actions/toggle-tag":82,"memoizerific":11}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9633,7 +9586,7 @@ var selectOnChangeKeywords = exports.selectOnChangeKeywords = (0, _memoizerific2
 	};
 });
 
-},{"../../../store":155,"../../markets/actions/update-keywords":86,"memoizerific":13}],111:[function(require,module,exports){
+},{"../../../store":153,"../../markets/actions/update-keywords":84,"memoizerific":11}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9653,7 +9606,6 @@ exports.default = function () {
 	var blockchain = _store$getState.blockchain;
 	var selectedSort = _store$getState.selectedSort;
 	var priceHistory = _store$getState.priceHistory;
-
 
 	return selectMarkets(marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, _store2.default.dispatch);
 };
@@ -9677,51 +9629,17 @@ var selectMarkets = exports.selectMarkets = (0, _memoizerific2.default)(1)(funct
 		return [];
 	}
 
-	/*
- 	var markets = [],
- 		marketKeys,
- 		len,
- 		i;
- 	marketKeys = Object.keys(marketsData);
- 	len = marketKeys.length;
- console.time('selectMarkets');
- 
- 	for (i = 0; i < len; i++) {
- 		markets.push(assembleMarket(
- 			marketKeys[i],
- 			marketsData[marketKeys[i]],
- 			isMarketDataOpen(marketsData[marketKeys[i]], blockchain && blockchain.currentBlockNumber),
- 
- 			!!favorites[marketKeys[i]],
- 			outcomes[marketKeys[i]],
- 
- 			reports[marketsData[marketKeys[i]].eventID],
- 			accountTrades[marketKeys[i]],
- 			tradesInProgress[marketKeys[i]],
- 			formatBlockToDate(marketsData[marketKeys[i]].endDate,
-  	blockchain.currentBlockNumber, blockchain.currentBlockMillisSinceEpoch),
- 			blockchain && blockchain.isReportConfirmationPhase,
- 			dispatch));
- 	}
- 
- 	markets.sort((a, b) => {
- 		var aVal = cleanSortVal(a[selectedSort.prop]),
- 			bVal = cleanSortVal(b[selectedSort.prop]);
- 
- 		if (bVal < aVal) {
- 			return selectedSort.isDesc ? -1 : 1;
- 		}
- 		else if (bVal > aVal) {
- 			return selectedSort.isDesc ? 1 : -1;
- 		}
- 
- 		return a.id < b.id ? -1 : 1;
- 	});
- */
 	return Object.keys(marketsData).map(function (marketID) {
-		// this is here for performance reasons not to trigger memoization on every block
-		var endDate = new Date(marketsData[marketID].endDate);
-		return (0, _market.assembleMarket)(marketID, marketsData[marketID], priceHistory[marketID], (0, _isMarketDataOpen.isMarketDataOpen)(marketsData[marketID], blockchain && blockchain.currentBlockNumber), !!favorites[marketID], outcomes[marketID], reports[marketsData[marketID].eventID], accountTrades[marketID], tradesInProgress[marketID], endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), blockchain && blockchain.isReportConfirmationPhase, dispatch);
+		if (!marketID || !marketsData[marketID]) {
+			return {};
+		}
+
+		var endDate = new Date(marketsData[marketID].endDate * 1000 || 0);
+
+		return (0, _market.assembleMarket)(marketID, marketsData[marketID], priceHistory[marketID], (0, _isMarketDataOpen.isMarketDataOpen)(marketsData[marketID], blockchain && blockchain.currentBlockNumber), !!favorites[marketID], outcomes[marketID], reports[marketsData[marketID].eventID], accountTrades[marketID], tradesInProgress[marketID],
+
+		// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
+		endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), blockchain && blockchain.isReportConfirmationPhase, dispatch);
 	}).sort(function (a, b) {
 		var aVal = cleanSortVal(a[selectedSort.prop]);
 		var bVal = cleanSortVal(b[selectedSort.prop]);
@@ -9737,7 +9655,7 @@ var selectMarkets = exports.selectMarkets = (0, _memoizerific2.default)(1)(funct
 // import { makeDateFromBlock } from '../../../utils/format-number';
 
 function cleanSortVal(val) {
-	// if a falsy simple value return it to sort as is
+	// if a falsy simple value return it to sort as-is
 	if (!val) {
 		return val;
 	}
@@ -9745,13 +9663,18 @@ function cleanSortVal(val) {
 	// if this is a formatted number object, with a `value` prop, use that for sorting
 	if (val.value || val.value === 0) {
 		return val.value;
-	} else if (val.toLowerCase) {
-		// if the val is a simple prop, that can be lowercased, use that
+	}
+
+	// if the val is a string, lowercase it
+	if (val.toLowerCase) {
 		return val.toLowerCase();
 	}
+
+	// otherwise the val is probably a number, either way return it as-is
+	return val;
 }
 
-},{"../../../store":155,"../../../utils/is-market-data-open":160,"../../market/selectors/market":74,"memoizerific":13}],112:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/is-market-data-open":159,"../../market/selectors/market":72,"memoizerific":11}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9779,13 +9702,13 @@ var selectFavoriteMarkets = exports.selectFavoriteMarkets = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../selectors":153,"memoizerific":13}],113:[function(require,module,exports){
+},{"../../../selectors":151,"memoizerific":11}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.selectFilteredMarkets = exports.isMarketFiltersMatch = undefined;
+exports.isMarketFiltersMatch = exports.selectFilteredMarkets = undefined;
 
 exports.default = function () {
 	var _store$getState = _store2.default.getState();
@@ -9813,22 +9736,30 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var selectFilteredMarkets = exports.selectFilteredMarkets = (0, _memoizerific2.default)(3)(function (markets, keywords, selectedFilters, selectedTags) {
+	return markets.filter(function (market) {
+		return isMarketFiltersMatch(market, keywords, selectedFilters, selectedTags);
+	});
+});
+
 var isMarketFiltersMatch = exports.isMarketFiltersMatch = (0, _memoizerific2.default)(3)(function (market, keywords, selectedFilters, selectedTags) {
-	function isMatchKeywords(mark, keys) {
+	return isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters) && isMatchTags(market, selectedTags);
+
+	function isMatchKeywords(market, keys) {
 		var keywordsArray = (0, _cleanKeywords.cleanKeywordsArray)(keys);
 		if (!keywordsArray.length) {
 			return true;
 		}
 		return keywordsArray.every(function (keyword) {
-			return mark.description.toLowerCase().indexOf(keyword) >= 0 || mark.outcomes.some(function (outcome) {
+			return market.description.toLowerCase().indexOf(keyword) >= 0 || market.outcomes.some(function (outcome) {
 				return outcome.name.indexOf(keyword) >= 0;
-			}) || mark.tags.some(function (tag) {
+			}) || market.tags.some(function (tag) {
 				return tag.name.indexOf(keyword) >= 0;
 			});
 		});
 	}
 
-	function isMatchFilters(mark, selFilters) {
+	function isMatchFilters(market, selFilters) {
 		var selectedStatusProps = ['isOpen', 'isExpired', 'isMissedOrReported', 'isPendingReport'].filter(function (statusProp) {
 			return !!selFilters[statusProp];
 		});
@@ -9837,31 +9768,23 @@ var isMarketFiltersMatch = exports.isMarketFiltersMatch = (0, _memoizerific2.def
 		});
 
 		return (!selectedStatusProps.length || selectedStatusProps.some(function (status) {
-			return !!mark[status];
+			return !!market[status];
 		})) && (!selectedTypeProps.length || selectedTypeProps.some(function (type) {
-			return !!mark[type];
+			return !!market[type];
 		}));
 	}
 
-	function isMatchTags(mark, selTags) {
+	function isMatchTags(market, selTags) {
 		if (!Object.keys(selTags).length) {
 			return true;
 		}
-		return mark.tags.some(function (tag) {
+		return market.tags.some(function (tag) {
 			return !!selTags[tag.name];
 		});
 	}
-
-	return isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters) && isMatchTags(market, selectedTags);
 });
 
-var selectFilteredMarkets = exports.selectFilteredMarkets = (0, _memoizerific2.default)(3)(function (markets, keywords, selectedFilters, selectedTags) {
-	return markets.filter(function (market) {
-		return isMarketFiltersMatch(market, keywords, selectedFilters, selectedTags);
-	});
-});
-
-},{"../../../selectors":153,"../../../store":155,"../../../utils/clean-keywords":157,"memoizerific":13}],114:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../../utils/clean-keywords":155,"memoizerific":11}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9914,7 +9837,7 @@ var selectMarketsHeader = exports.selectMarketsHeader = (0, _memoizerific2.defau
 	return obj;
 });
 
-},{"../../../selectors":153,"../../../store":155,"../../markets/actions/update-selected-markets-header":90,"../../markets/constants/markets-headers":95,"memoizerific":13}],115:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../markets/actions/update-selected-markets-header":88,"../../markets/constants/markets-headers":93,"memoizerific":11}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9974,7 +9897,7 @@ var selectMarketsTotals = exports.selectMarketsTotals = (0, _memoizerific2.defau
 	return totals;
 });
 
-},{"../../../selectors":153,"../../positions/selectors/positions-summary":124,"memoizerific":13}],116:[function(require,module,exports){
+},{"../../../selectors":151,"../../positions/selectors/positions-summary":122,"memoizerific":11}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10040,7 +9963,7 @@ var selectUnpaginatedMarkets = exports.selectUnpaginatedMarkets = (0, _memoizeri
 	return filteredMarkets;
 });
 
-},{"../../../selectors":153,"../../../store":155,"../../app/constants/pages":36,"../../markets/constants/markets-headers":95,"memoizerific":13}],117:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../app/constants/pages":34,"../../markets/constants/markets-headers":93,"memoizerific":11}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10084,7 +10007,7 @@ var selectPaginated = exports.selectPaginated = (0, _memoizerific2.default)(1)(f
 	return markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage);
 });
 
-},{"../../../selectors":153,"../../../store":155,"../../app/constants/pages":36,"../../markets/constants/markets-headers":95,"memoizerific":13}],118:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../app/constants/pages":34,"../../markets/constants/markets-headers":93,"memoizerific":11}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10136,7 +10059,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../../selectors":153,"../../../store":155,"../../markets/actions/update-selected-page-num":91}],119:[function(require,module,exports){
+},{"../../../selectors":151,"../../../store":153,"../../markets/actions/update-selected-page-num":89}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10215,7 +10138,7 @@ var selectOnChangeSort = exports.selectOnChangeSort = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../store":155,"../../markets/actions/update-selected-sort":92,"memoizerific":13}],120:[function(require,module,exports){
+},{"../../../store":153,"../../markets/actions/update-selected-sort":90,"memoizerific":11}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10284,7 +10207,7 @@ console.log('========loadMeanTradePrices>>>>', err, meanTradePrices);
 }
 */
 
-},{"../../../services/augurjs":154,"../../positions/actions/update-account-trades-data":121}],121:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../positions/actions/update-account-trades-data":119}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10297,7 +10220,7 @@ function updateAccountTradesData(data) {
 	return { type: UPDATE_ACCOUNT_TRADES_DATA, data: data };
 }
 
-},{}],122:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10326,7 +10249,7 @@ var _updateAccountTradesData = require('../../positions/actions/update-account-t
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":48,"../../positions/actions/update-account-trades-data":121}],123:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":46,"../../positions/actions/update-account-trades-data":119}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10362,7 +10285,7 @@ var selectPositionFromOutcomeAccountTrades = exports.selectPositionFromOutcomeAc
 	return position;
 });
 
-},{"../../positions/selectors/positions-summary":124,"memoizerific":13}],124:[function(require,module,exports){
+},{"../../positions/selectors/positions-summary":122,"memoizerific":11}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10391,7 +10314,7 @@ var selectPositionsSummary = exports.selectPositionsSummary = (0, _memoizerific2
 			decimalsRounded: 0,
 			denomination: 'Positions',
 			positiveSign: false,
-			zero: true
+			zeroStyled: false
 		}),
 		qtyShares: (0, _formatNumber.formatShares)(qtyShares),
 		purchasePrice: (0, _formatNumber.formatEther)(purchasePrice),
@@ -10404,7 +10327,7 @@ var selectPositionsSummary = exports.selectPositionsSummary = (0, _memoizerific2
 	};
 });
 
-},{"../../../utils/format-number":159,"memoizerific":13}],125:[function(require,module,exports){
+},{"../../../utils/format-number":158,"memoizerific":11}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10478,7 +10401,7 @@ function closeMarkets(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../../utils/is-market-data-open":160,"../../app/constants/network":35,"../../markets/actions/update-markets-data":87}],126:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../../utils/is-market-data-open":159,"../../app/constants/network":33,"../../markets/actions/update-markets-data":85}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10515,7 +10438,7 @@ function collectFees() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../auth/actions/update-assets":47}],127:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../auth/actions/update-assets":45}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10607,7 +10530,7 @@ function commitReports() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../reports/actions/update-reports":132}],128:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../reports/actions/update-reports":130}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10659,7 +10582,7 @@ function loadReports(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../../utils/is-market-data-open":160,"../../app/constants/network":35,"../../reports/actions/update-reports":132}],129:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../../utils/is-market-data-open":159,"../../app/constants/network":33,"../../reports/actions/update-reports":130}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10719,7 +10642,7 @@ function penalizeTooFewReports() {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../auth/actions/update-assets":47}],130:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../auth/actions/update-assets":45}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10777,7 +10700,7 @@ function penalizeWrongReports(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../../utils/is-market-data-open":160,"../../app/constants/network":35}],131:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../../utils/is-market-data-open":159,"../../app/constants/network":33}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10893,7 +10816,7 @@ function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
 	};
 }
 
-},{"../../../services/augurjs":154,"../../../utils/bytes-to-hex":156,"../../app/constants/network":35,"../../link/selectors/links":69,"../../market/selectors/market":74,"../../markets/constants/market-outcomes":93,"../../markets/constants/market-types":94,"../../reports/actions/update-reports":132,"../../transactions/actions/add-report-transaction":140,"../../transactions/actions/update-existing-transaction":144,"../../transactions/constants/statuses":146,"secure-random":28}],132:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../../utils/bytes-to-hex":154,"../../app/constants/network":33,"../../link/selectors/links":67,"../../market/selectors/market":72,"../../markets/constants/market-outcomes":91,"../../markets/constants/market-types":92,"../../reports/actions/update-reports":130,"../../transactions/actions/add-report-transaction":138,"../../transactions/actions/update-existing-transaction":142,"../../transactions/constants/statuses":144,"secure-random":26}],130:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10912,7 +10835,7 @@ function clearReports() {
 	return { type: CLEAR_REPORTS };
 }
 
-},{}],133:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10950,7 +10873,7 @@ exports.default = function () {
 
 var _updateReports = require('../../reports/actions/update-reports');
 
-},{"../../reports/actions/update-reports":132}],134:[function(require,module,exports){
+},{"../../reports/actions/update-reports":130}],132:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11008,7 +10931,7 @@ function tradeShares(transactionID, marketID, outcomeID, numShares, limitPrice, 
 	};
 }
 
-},{"../../../services/augurjs":154,"../../app/constants/network":35,"../../link/selectors/links":69,"../../market/selectors/market":74,"../../positions/actions/load-account-trades":120,"../../trade/actions/update-trades-in-progress":135,"../../transactions/actions/add-transactions":142,"../../transactions/actions/update-existing-transaction":144,"../../transactions/constants/statuses":146}],135:[function(require,module,exports){
+},{"../../../services/augurjs":152,"../../app/constants/network":33,"../../link/selectors/links":67,"../../market/selectors/market":72,"../../positions/actions/load-account-trades":118,"../../trade/actions/update-trades-in-progress":133,"../../transactions/actions/add-transactions":140,"../../transactions/actions/update-existing-transaction":142,"../../transactions/constants/statuses":144}],133:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11059,7 +10982,7 @@ function clearTradeInProgress(marketID) {
 	return { type: CLEAR_TRADE_IN_PROGRESS, marketID: marketID };
 }
 
-},{"../../../services/augurjs":154}],136:[function(require,module,exports){
+},{"../../../services/augurjs":152}],134:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11093,7 +11016,7 @@ var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../auth/actions/update-login-account":48,"../../trade/actions/update-trades-in-progress":135}],137:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":46,"../../trade/actions/update-trades-in-progress":133}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11248,7 +11171,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 				marketDescription: market.description,
 				outcomeName: outcome.name.toUpperCase(),
 				avgPrice: formatEther(limitPrice),
-				feeToPay: formatNumber(0, { zero: true }) // no fee for market-making
+				feeToPay: formatNumber(0, { zeroStyled: false }) // no fee for market-making
 			},
 			(transactionID) => dispatch(tradeShares(
 				transactionID, market.id, outcome.id,
@@ -11260,7 +11183,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 });
 */
 
-},{"../../../utils/format-number":159,"../../transactions/actions/add-trade-transaction":141}],138:[function(require,module,exports){
+},{"../../../utils/format-number":158,"../../transactions/actions/add-trade-transaction":139}],136:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11304,7 +11227,7 @@ var selectTradeSummary = exports.selectTradeSummary = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../utils/format-number":159,"memoizerific":13}],139:[function(require,module,exports){
+},{"../../../utils/format-number":158,"memoizerific":11}],137:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11337,7 +11260,7 @@ var addCreateMarketTransaction = exports.addCreateMarketTransaction = function a
 	};
 };
 
-},{"../../create-market/actions/submit-new-market":57,"../../transactions/actions/add-transactions":142,"../../transactions/constants/types":147}],140:[function(require,module,exports){
+},{"../../create-market/actions/submit-new-market":55,"../../transactions/actions/add-transactions":140,"../../transactions/constants/types":145}],138:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11377,7 +11300,7 @@ var addReportTransaction = exports.addReportTransaction = function addReportTran
 	};
 };
 
-},{"../../reports/actions/submit-report":131,"../../transactions/actions/add-transactions":142,"../../transactions/constants/types":147}],141:[function(require,module,exports){
+},{"../../reports/actions/submit-report":129,"../../transactions/actions/add-transactions":140,"../../transactions/constants/types":145}],139:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11420,7 +11343,7 @@ var addTradeTransaction = exports.addTradeTransaction = function addTradeTransac
 	};
 };
 
-},{"../../../utils/format-number":159,"../../trade/actions/place-trade":134,"../../transactions/actions/add-transactions":142,"../../transactions/constants/types":147}],142:[function(require,module,exports){
+},{"../../../utils/format-number":158,"../../trade/actions/place-trade":132,"../../transactions/actions/add-transactions":140,"../../transactions/constants/types":145}],140:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11452,7 +11375,7 @@ function addTransaction(transaction) {
 	return addTransactions([transaction]);
 }
 
-},{"../../transactions/actions/update-transactions-data":145,"../../transactions/constants/statuses":146}],143:[function(require,module,exports){
+},{"../../transactions/actions/update-transactions-data":143,"../../transactions/constants/statuses":144}],141:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11474,7 +11397,7 @@ function processTransactions() {
 	};
 }
 
-},{"../../../selectors":153,"../../transactions/constants/statuses":146}],144:[function(require,module,exports){
+},{"../../../selectors":151,"../../transactions/constants/statuses":144}],142:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11507,7 +11430,7 @@ function updateExistingTransaction(transactionID, newTransactionData) {
 	};
 }
 
-},{"../../auth/actions/update-assets":47,"../../transactions/actions/update-transactions-data":145}],145:[function(require,module,exports){
+},{"../../auth/actions/update-assets":45,"../../transactions/actions/update-transactions-data":143}],143:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11527,7 +11450,7 @@ function updateTransactionsData(transactionsData) {
 	};
 }
 
-},{"../../transactions/actions/process-transactions":143}],146:[function(require,module,exports){
+},{"../../transactions/actions/process-transactions":141}],144:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11540,7 +11463,7 @@ var INTERRUPTED = exports.INTERRUPTED = 'interrupted';
 
 var CREATING_MARKET = exports.CREATING_MARKET = 'creating market...';
 
-},{}],147:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11557,7 +11480,7 @@ var SUBMIT_REPORT = exports.SUBMIT_REPORT = 'submit_report';
 
 var REGISTER_ACCOUNT = exports.REGISTER_ACCOUNT = 'register_account';
 
-},{}],148:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11591,7 +11514,7 @@ var _updateTransactionsData = require('../../transactions/actions/update-transac
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":48,"../../transactions/actions/update-transactions-data":145}],149:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":46,"../../transactions/actions/update-transactions-data":143}],147:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11625,7 +11548,7 @@ var selectIsWorking = exports.selectIsWorking = (0, _memoizerific2.default)(1)(f
 	});
 });
 
-},{"../../../store":155,"../../transactions/constants/statuses":146,"memoizerific":13}],150:[function(require,module,exports){
+},{"../../../store":153,"../../transactions/constants/statuses":144,"memoizerific":11}],148:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11683,7 +11606,7 @@ var selectTransactionsTotals = exports.selectTransactionsTotals = (0, _memoizeri
 	return o;
 });
 
-},{"../../../selectors":153,"../../transactions/constants/statuses":146,"memoizerific":13}],151:[function(require,module,exports){
+},{"../../../selectors":151,"../../transactions/constants/statuses":144,"memoizerific":11}],149:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11729,7 +11652,7 @@ var selectTransactions = exports.selectTransactions = (0, _memoizerific2.default
 	});
 });
 
-},{"../../../store":155,"../../../utils/format-number":159,"memoizerific":13}],152:[function(require,module,exports){
+},{"../../../store":153,"../../../utils/format-number":158,"memoizerific":11}],150:[function(require,module,exports){
 'use strict';
 
 var _blockchain = require('./modules/app/reducers/blockchain');
@@ -11858,7 +11781,7 @@ module.exports = {
 	transactionsData: _transactionsData2.default
 };
 
-},{"./modules/app/reducers/active-page":37,"./modules/app/reducers/blockchain":38,"./modules/app/reducers/branch":39,"./modules/app/reducers/connection":40,"./modules/auth/reducers/auth":51,"./modules/auth/reducers/login-account":52,"./modules/bids-asks/reducers/bids-asks":56,"./modules/create-market/reducers/create-market-in-progress":60,"./modules/markets/reducers/favorites":98,"./modules/markets/reducers/keywords":99,"./modules/markets/reducers/markets-data":100,"./modules/markets/reducers/outcomes":101,"./modules/markets/reducers/pagination":102,"./modules/markets/reducers/price-history":103,"./modules/markets/reducers/selected-filters":104,"./modules/markets/reducers/selected-market-id":105,"./modules/markets/reducers/selected-markets-header":106,"./modules/markets/reducers/selected-sort":107,"./modules/markets/reducers/selected-tags":108,"./modules/positions/reducers/account-trades":122,"./modules/reports/reducers/reports":133,"./modules/trade/reducers/trades-in-progress":136,"./modules/transactions/reducers/transactions-data":148}],153:[function(require,module,exports){
+},{"./modules/app/reducers/active-page":35,"./modules/app/reducers/blockchain":36,"./modules/app/reducers/branch":37,"./modules/app/reducers/connection":38,"./modules/auth/reducers/auth":49,"./modules/auth/reducers/login-account":50,"./modules/bids-asks/reducers/bids-asks":54,"./modules/create-market/reducers/create-market-in-progress":58,"./modules/markets/reducers/favorites":96,"./modules/markets/reducers/keywords":97,"./modules/markets/reducers/markets-data":98,"./modules/markets/reducers/outcomes":99,"./modules/markets/reducers/pagination":100,"./modules/markets/reducers/price-history":101,"./modules/markets/reducers/selected-filters":102,"./modules/markets/reducers/selected-market-id":103,"./modules/markets/reducers/selected-markets-header":104,"./modules/markets/reducers/selected-sort":105,"./modules/markets/reducers/selected-tags":106,"./modules/positions/reducers/account-trades":120,"./modules/reports/reducers/reports":131,"./modules/trade/reducers/trades-in-progress":134,"./modules/transactions/reducers/transactions-data":146}],151:[function(require,module,exports){
 'use strict';
 
 var _activePage = require('./modules/app/selectors/active-page');
@@ -11977,7 +11900,7 @@ Object.keys(selectors).forEach(function (selectorKey) {
 	return Object.defineProperty(module.exports, selectorKey, { get: selectors[selectorKey], enumerable: true });
 });
 
-},{"./modules/app/selectors/active-page":41,"./modules/auth/selectors/auth-form":53,"./modules/auth/selectors/login-account":54,"./modules/create-market/selectors/create-market-form":61,"./modules/link/selectors/links":69,"./modules/market/selectors/market":74,"./modules/markets/selectors/filters":109,"./modules/markets/selectors/keywords":110,"./modules/markets/selectors/markets":117,"./modules/markets/selectors/markets-all":111,"./modules/markets/selectors/markets-favorite":112,"./modules/markets/selectors/markets-filtered":113,"./modules/markets/selectors/markets-header":114,"./modules/markets/selectors/markets-totals":115,"./modules/markets/selectors/markets-unpaginated":116,"./modules/markets/selectors/pagination":118,"./modules/markets/selectors/search-sort":119,"./modules/transactions/selectors/is-transactions-working":149,"./modules/transactions/selectors/transactions":151,"./modules/transactions/selectors/transactions-totals":150}],154:[function(require,module,exports){
+},{"./modules/app/selectors/active-page":39,"./modules/auth/selectors/auth-form":51,"./modules/auth/selectors/login-account":52,"./modules/create-market/selectors/create-market-form":59,"./modules/link/selectors/links":67,"./modules/market/selectors/market":72,"./modules/markets/selectors/filters":107,"./modules/markets/selectors/keywords":108,"./modules/markets/selectors/markets":115,"./modules/markets/selectors/markets-all":109,"./modules/markets/selectors/markets-favorite":110,"./modules/markets/selectors/markets-filtered":111,"./modules/markets/selectors/markets-header":112,"./modules/markets/selectors/markets-totals":113,"./modules/markets/selectors/markets-unpaginated":114,"./modules/markets/selectors/pagination":116,"./modules/markets/selectors/search-sort":117,"./modules/transactions/selectors/is-transactions-working":147,"./modules/transactions/selectors/transactions":149,"./modules/transactions/selectors/transactions-totals":148}],152:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -12002,39 +11925,25 @@ ex.connect = function connect(cb) {
 	if (undefined) {
 		_augur2.default.rpc.nodes.hosted = [undefined];
 	}
-	var localnode = null;
+	var options = {
+		http: undefined,
+		ws: undefined
+	};
 	if ("true") {
-		if ("{{ $BUILD_AZURE_WSURL }}" === 'null') {
-			_augur2.default.rpc.wsUrl = null;
-		} else {
-			_augur2.default.rpc.wsUrl = "{{ $BUILD_AZURE_WSURL }}";
+		if ("{{ $BUILD_AZURE_WSURL }}" && "{{ $BUILD_AZURE_WSURL }}" !== 'null') {
+			options.ws = "{{ $BUILD_AZURE_WSURL }}";
 		}
-		if ("{{ $BUILD_AZURE_LOCALNODE }}" === 'null') {
-			_augur2.default.rpc.nodes.local = null;
-		} else {
-			_augur2.default.rpc.nodes.local = "{{ $BUILD_AZURE_LOCALNODE }}";
+		if ("{{ $BUILD_AZURE_LOCALNODE }}" && "{{ $BUILD_AZURE_LOCALNODE }}" !== 'null') {
+			options.http = "{{ $BUILD_AZURE_LOCALNODE }}";
 		}
-		if ("{{ $BUILD_AZURE_HOSTEDNODE }}" === 'null') {
-			_augur2.default.rpc.nodes.hosted = [];
-		} else {
-			_augur2.default.rpc.nodes.hosted = ["{{ $BUILD_AZURE_HOSTEDNODE }}"];
-		}
-	} else {
-		if (document.location.protocol === 'http:') {
-			// localnode = 'http://127.0.0.1:8545';
+		if ("true" && "{{ $BUILD_AZURE_CONTRACTS }}" !== 'null') {
+			options.contracts = JSON.parse("{{ $BUILD_AZURE_CONTRACTS }}");
 		}
 	}
-	// augur.rpc.wsUrl = null;
-	_augur2.default.connect(localnode, null, function (connected) {
-		if (!connected) return cb('could not connect to ethereum');
-		if ("true" && "{{ $BUILD_AZURE_CONTRACTS }}" !== 'null') {
-			try {
-				_augur2.default.updateContracts(JSON.parse("{{ $BUILD_AZURE_CONTRACTS }}"));
-			} catch (exc) {
-				console.error('couldn\'t parse contracts', exc);
-			}
-		}
-		cb(null, connected);
+	_augur2.default.connect(options, function (connection) {
+		if (!connection) return cb('could not connect to ethereum');
+		console.log("connected:", connection);
+		cb(null, connection);
 	});
 };
 
@@ -12655,7 +12564,7 @@ module.exports = ex;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../modules/transactions/constants/statuses":146,"bignumber.js":4}],155:[function(require,module,exports){
+},{"../modules/transactions/constants/statuses":144,"bignumber.js":2}],153:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12717,7 +12626,7 @@ if ("development" !== 'production') {
 // middleware
 exports.default = (0, _redux.createStore)((0, _redux.combineReducers)(_reducers2.default), middleWare);
 
-},{"./reducers":152,"redux":20,"redux-thunk":14}],156:[function(require,module,exports){
+},{"./reducers":150,"redux":18,"redux-thunk":12}],154:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12730,7 +12639,7 @@ function bytesToHex(byteArray) {
 	}, '');
 }
 
-},{}],157:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12747,7 +12656,7 @@ function cleanKeywordsArray(keywords) {
 	return CleanKeywords ? CleanKeywords.split(' ').sort() : [];
 }
 
-},{}],158:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12756,11 +12665,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.blockToDate = blockToDate;
 exports.dateToBlock = dateToBlock;
 
-var _constants = require('augur.js/src/constants');
-
-var _constants2 = _interopRequireDefault(_constants);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _network = require('../modules/app/constants/network');
 
 /**
  * @param {Number} block
@@ -12768,7 +12673,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {Date}
  */
 function blockToDate(block, currentBlock) {
-  var seconds = (block - currentBlock) * _constants2.default.SECONDS_PER_BLOCK;
+  var seconds = (block - currentBlock) * (_network.MILLIS_PER_BLOCK / 1000);
   var now = new Date();
   now.setSeconds(now.getSeconds() + seconds);
   return now;
@@ -12779,36 +12684,129 @@ function blockToDate(block, currentBlock) {
  * @param {Number} currentBlock
  * @return {Number}
  */
-/*
- * Author: priecint
- */
 function dateToBlock(date, currentBlock) {
   var now = new Date();
   var secondsDelta = date.getSeconds() - now.getSeconds();
-  var blockDelta = parseInt(secondsDelta / _constants2.default.SECONDS_PER_BLOCK, 10);
+  var blockDelta = parseInt(secondsDelta / (_network.MILLIS_PER_BLOCK / 1000), 10);
   return currentBlock + blockDelta;
 }
 
-},{"augur.js/src/constants":3}],159:[function(require,module,exports){
+},{"../modules/app/constants/network":33}],157:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.formatDate = formatDate;
+function formatDate(d) {
+	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	var date = d instanceof Date ? d : new Date(0);
+	return {
+		value: date,
+		formatted: months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
+		full: d.toISOString()
+	};
+}
+
+},{}],158:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; // import memoizerific from 'memoizerific';
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-
+exports.formatEther = formatEther;
+exports.formatPercent = formatPercent;
+exports.formatShares = formatShares;
+exports.formatRep = formatRep;
 exports.formatNone = formatNone;
 exports.formatNumber = formatNumber;
-exports.formatRep = formatRep;
-exports.formatEther = formatEther;
-exports.formatShares = formatShares;
-exports.formatPercent = formatPercent;
-exports.makeDateFromBlock = makeDateFromBlock;
-exports.formatDate = formatDate;
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	Produces a formatted number object used for display and calculations
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-var _network = require('../modules/app/constants/network');
+The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
+
+A formatted number generally has three parts: the sign (+ or -), the stylized number, and a denomination (Eth, Rep, %, etc.)
+
+The formatted number object that is returned looks something like this:
+	{
+		value: the parsed number in numerical form, 0 if a bad input was passed in, can be used in calculations
+
+		formattedValue: the value in numerical form, possibly rounded, can be used in calculations
+		formatted: the value in string form with possibly additional formatting, like comma separator, used for display
+
+		o.roundedValue: the value in numerical form, with extra rounding, can be used in calculations
+		o.rounded: the value in string form, with extra rounding and possibly additional formatting, like comma separator, used for display
+
+		o.minimized: the value in string form, with trailing 0 decimals omitted, for example if the `formatted` value is 1.00, this minimized value would be 1
+	}
+
+The reason the number object has multiple states of rounding simultaneously,
+is because the ui can use it for multiple purposes. For example, when showing ether,
+we generally like to show it with 2 decimals, however when used in totals,
+maximum precision is not necessary, and we can opt to show the `rounded` display, which is only 1 decimal.
+Similar logic applies for `minimized`, sometimes we don't need to be consistent with the decimals
+and just show the prettiest, smallest representation of the value.
+
+The options object that is passed into `formatNumber` that enables all of this looks like:
+	{
+		decimals: the number of decimals for the precise case, can be 0-infinity
+		decimalsRounded: the number of decimals for the prettier case, can be 0-infinity
+		denomination: the string denomination of the number (ex. Eth, Rep, %), can be blank
+		positiveSign: boolean whether to include a plus sign at the beginning of positive numbers
+		zeroStyled: boolean, if true, when the value is 0, it formates it as a dash (-) instead
+	}
+
+TIP
+Sometimes (not always) it is a good idea to use the formatted values in calculations,
+rather than the original input number, so that values match up in the ui. For example, if you are
+adding the numbers 1.11 and 1.44, but displaying them as 1.1 and 1.4, it may look awkward
+if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them using the formatted values.
+
+*/
+
+function formatEther(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 2,
+		decimalsRounded: 1,
+		denomination: 'Eth',
+		positiveSign: true,
+		zeroStyled: false
+	}, opts));
+}
+
+function formatPercent(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 1,
+		decimalsRounded: 0,
+		denomination: '%',
+		positiveSign: true,
+		zeroStyled: false
+	}, opts));
+}
+
+function formatShares(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 2,
+		decimalsRounded: 0,
+		denomination: 'Shares',
+		minimized: true,
+		zeroStyled: false
+	}, opts));
+}
+
+function formatRep(num, opts) {
+	return formatNumber(num, _extends({
+		decimals: 0,
+		decimalsRounded: 0,
+		denomination: 'Rep',
+		positiveSign: true,
+		zeroStyled: false
+	}, opts));
+}
 
 function formatNone() {
 	return {
@@ -12824,42 +12822,34 @@ function formatNone() {
 }
 
 function formatNumber(num) {
-	var opts = arguments.length <= 1 || arguments[1] === undefined ? {
-		decimals: 0,
-		decimalsRounded: 0,
-		denomination: '',
-		positiveSign: false,
-		zero: true,
-		minimized: false
-	} : arguments[1];
+	var opts = arguments.length <= 1 || arguments[1] === undefined ? { decimals: 0, decimalsRounded: 0, denomination: '', positiveSign: false, zeroStyled: true, minimized: false } : arguments[1];
 	var minimized = opts.minimized;
 
 	var o = {};
+	var value = opts.value;
 	var decimals = opts.decimals;
 	var decimalsRounded = opts.decimalsRounded;
 	var denomination = opts.denomination;
 	var positiveSign = opts.positiveSign;
-	var zero = opts.zero;
+	var zeroStyled = opts.zeroStyled;
 
 
 	decimals = decimals || 0;
 	decimalsRounded = decimalsRounded || 0;
 	denomination = denomination || '';
 	positiveSign = !!positiveSign;
-	zero = zero !== false;
+	zeroStyled = zeroStyled !== false;
+	value = parseFloat(num) || 0;
 
-	if (!num && !zero) {
+	if (!value && zeroStyled) {
 		return formatNone();
 	}
 
-	o.value = parseFloat(num) || 0;
-
-	o.formattedValue = Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	o.value = value;
+	o.formattedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	o.formatted = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-
-	o.roundedValue = Math.round(num * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
+	o.roundedValue = Math.round(value * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
 	o.rounded = o.roundedValue.toLocaleString(undefined, { minimumFractionDigits: decimalsRounded, maximumFractionDigits: decimalsRounded });
-
 	o.minimized = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
 
 	if (positiveSign) {
@@ -12882,59 +12872,7 @@ function formatNumber(num) {
 	return o;
 }
 
-function formatRep(num, opts) {
-	return formatNumber(num, _extends({
-		decimals: 0,
-		decimalsRounded: 0,
-		denomination: 'Rep',
-		positiveSign: true
-	}, opts));
-}
-
-function formatEther(num, opts) {
-	return formatNumber(num, _extends({
-		decimals: 2,
-		decimalsRounded: 1,
-		denomination: 'Eth',
-		positiveSign: true
-	}, opts));
-}
-
-function formatShares(num, opts) {
-	return formatNumber(num, _extends({
-		decimals: 2,
-		decimalsRounded: 0,
-		denomination: 'Shares',
-		minimized: true
-	}, opts));
-}
-
-function formatPercent(num, opts) {
-	return formatNumber(num, _extends({
-		decimals: 1,
-		decimalsRounded: 0,
-		denomination: '%',
-		positiveSign: true
-	}, opts));
-}
-
-function makeDateFromBlock(currentBlock, startBlock, startBlockMillisSinceEpoch) {
-	var millis = (currentBlock - startBlock) * _network.MILLIS_PER_BLOCK;
-	var currentMillisSinceEpoch = startBlockMillisSinceEpoch + millis;
-	return new Date(currentMillisSinceEpoch);
-}
-
-function formatDate(d) {
-	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	var date = d instanceof Date ? d : new Date(0);
-	return {
-		value: date,
-		formatted: months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(),
-		full: d.toISOString()
-	};
-}
-
-},{"../modules/app/constants/network":35}],160:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12950,7 +12888,7 @@ function isMarketDataPreviousReportPeriod(marketData, currentPeriod, periodLengt
 	return parseInt(marketData.endDate, 10) <= (currentPeriod - 2) * periodLength;
 }
 
-},{}],161:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12984,7 +12922,7 @@ function listWordsUnderLength(str, maxLength) {
 	return wordsList;
 }
 
-},{}],162:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13070,5 +13008,5 @@ function parseURL(url) {
 	return makeLocation(parsed.pathArray, parsed.searchParams);
 }
 
-},{}]},{},[29])
+},{}]},{},[27])
 //# sourceMappingURL=build.js.map
