@@ -11,83 +11,89 @@ import AuthPage from './modules/auth/components/auth-page';
 import PositionsPage from './modules/positions/components/positions-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
-export default function(appElement, selectors) {
-    var p = selectors,
-    	node;
+import * as assertions from '../test/assertions/';
 
-    p.siteHeader = {
-		activePage: p.activePage,
-		loginAccount: p.loginAccount,
-		positionsSummary: p.marketsTotals.positionsSummary,
-		transactionsTotals: p.transactionsTotals,
-		isTransactionsWorking: p.isTransactionsWorking,
+const augurUiReactComponents = {
+		assertions,
+		App: function(appElement, selectors) {
+	    var p = selectors,
+	    	node;
 
-		marketsLink: p.links && p.links.marketsLink || undefined,
-		positionsLink: p.links && p.links.positionsLink || undefined,
-		transactionsLink: p.links && p.links.transactionsLink || undefined,
-		authLink: p.links && p.links.authLink || undefined
-    };
+	    p.siteHeader = {
+			activePage: p.activePage,
+			loginAccount: p.loginAccount,
+			positionsSummary: p.marketsTotals.positionsSummary,
+			transactionsTotals: p.transactionsTotals,
+			isTransactionsWorking: p.isTransactionsWorking,
 
- 	switch(p.activePage) {
-    	case REGISTER:
-        case LOGIN:
-        case LOGOUT:
-    		node = <AuthPage
-    					siteHeader={ p.siteHeader }
-    					authForm={ p.authForm } />;
-    		break;
+			marketsLink: p.links && p.links.marketsLink || undefined,
+			positionsLink: p.links && p.links.positionsLink || undefined,
+			transactionsLink: p.links && p.links.transactionsLink || undefined,
+			authLink: p.links && p.links.authLink || undefined
+	    };
 
-    	case MAKE:
-    		node = <CreateMarketPage
-    					siteHeader={ p.siteHeader }
-    					createMarketForm={ p.createMarketForm } />;
-    		break;
+	 	switch(p.activePage) {
+	    	case REGISTER:
+	        case LOGIN:
+	        case LOGOUT:
+	    		node = <AuthPage
+	    					siteHeader={ p.siteHeader }
+	    					authForm={ p.authForm } />;
+	    		break;
 
-    	case POSITIONS:
-    		node = <PositionsPage
-    					siteHeader={ p.siteHeader }
-    					positionsSummary={ p.marketsTotals.positionsSummary }
-    					markets={ p.markets }
-    					/>;
-    		break;
+	    	case MAKE:
+	    		node = <CreateMarketPage
+	    					siteHeader={ p.siteHeader }
+	    					createMarketForm={ p.createMarketForm } />;
+	    		break;
 
-    	case TRANSACTIONS:
-    		node = <TransactionsPage
-    					siteHeader={ p.siteHeader }
-    					transactions={ p.transactions }
-    					transactionsTotals={ p.transactionsTotals } />;
-    		break;
+	    	case POSITIONS:
+	    		node = <PositionsPage
+	    					siteHeader={ p.siteHeader }
+	    					positionsSummary={ p.marketsTotals.positionsSummary }
+	    					markets={ p.markets }
+	    					/>;
+	    		break;
 
-    	case M:
-    		node = <MarketPage
-    		            siteHeader={ p.siteHeader }
-    		            market={ p.market }
-    		            numPendingReports={ p.marketsTotals.numPendingReports } />;
-    		break;
+	    	case TRANSACTIONS:
+	    		node = <TransactionsPage
+	    					siteHeader={ p.siteHeader }
+	    					transactions={ p.transactions }
+	    					transactionsTotals={ p.transactionsTotals } />;
+	    		break;
 
-    	default:
-    		node = <MarketsPage
-    					siteHeader={ p.siteHeader }
-    					createMarketLink={ (p.links || {}).createMarketLink }
-						keywords={ p.keywords && p.keywords.value }
-    					onChangeKeywords={ p.keywords && p.keywords.onChangeKeywords }
+	    	case M:
+	    		node = <MarketPage
+	    		            siteHeader={ p.siteHeader }
+	    		            market={ p.market }
+	    		            numPendingReports={ p.marketsTotals.numPendingReports } />;
+	    		break;
 
-    					markets={ p.markets }
-    					marketsHeader={ p.marketsHeader }
-    					favoriteMarkets={ p.favoriteMarkets }
-    					filters={ p.filters }
-    					pagination={ p.pagination }
+	    	default:
+	    		node = <MarketsPage
+	    					siteHeader={ p.siteHeader }
+	    					createMarketLink={ (p.links || {}).createMarketLink }
+							keywords={ p.keywords && p.keywords.value }
+	    					onChangeKeywords={ p.keywords && p.keywords.onChangeKeywords }
 
-    					selectedSort={ p.searchSort.selectedSort }
-    					sortOptions={ p.searchSort.sortOptions }
-    					onChangeSort={ p.searchSort.onChangeSort }
-    					/>;
-    		break;
-    }
+	    					markets={ p.markets }
+	    					marketsHeader={ p.marketsHeader }
+	    					favoriteMarkets={ p.favoriteMarkets }
+	    					filters={ p.filters }
+	    					pagination={ p.pagination }
 
-	render(
-		node,
-		appElement
-	);
-}
+	    					selectedSort={ p.searchSort.selectedSort }
+	    					sortOptions={ p.searchSort.sortOptions }
+	    					onChangeSort={ p.searchSort.onChangeSort }
+	    					/>;
+	    		break;
+	    }
 
+		render(
+			node,
+			appElement
+		);
+	}
+};
+
+export default augurUiReactComponents;
