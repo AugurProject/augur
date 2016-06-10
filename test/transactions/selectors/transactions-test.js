@@ -5,15 +5,13 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import transactionsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/transactions';
-
-let transactions;
+import { assertions } from 'augur-ui-react-components';
 
 describe(`modules/transactions/selectors/transactions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
+	let store, selector, expected, actual;
 	let state = Object.assign({}, testState, {
 		transactionsData: {
 			testtransaction12345: {
@@ -34,12 +32,11 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 		'../../../store': store
 	});
 
-	transactions = selector.default;
 
 	it(`should return data on all transactions`, () => {
-		test = selector.default();
+		actual = selector.default();
 
-		out = [{
+		expected = [{
 			id: 'testtransaction12345',
 			message: 'test message',
 			status: 'failed',
@@ -88,10 +85,8 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 				full: '+100Rep'
 			}
 		}];
-		transactionsAssertion(test);
-		assert.deepEqual(test, out, `Didn't return the correct information`);
+		assertions.transactions(actual);
+		assert.deepEqual(actual, expected, `Didn't return the correct information`);
 	});
 
 });
-
-export default transactions;

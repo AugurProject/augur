@@ -9,12 +9,11 @@ import {
 	FAILED,
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
-import transactionsTotalsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/transactionsTotals';
+import { assertions } from 'augur-ui-react-components';
 
-let transactionsTotals;
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let test, out, mockSelector, selectors;
+	let actual, expected, mockSelector, selectors;
 
 	selectors = {
 		transactions: [{
@@ -36,11 +35,10 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 		'../../../selectors': selectors
 	});
 
-	transactionsTotals = selector.default;
 
 	it(`should return the transaction totals for a blank state`, () => {
-		test = selector.default();
-		out = {
+		actual = selector.default();
+		expected = {
 			numWorking: 0,
 			numPending: 0,
 			numComplete: 0,
@@ -50,12 +48,12 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			transactions: undefined,
 			shortTitle: '0 Total'
 		};
-		assert.deepEqual(test, out, `Didn't properly handle an empty state`);
+		assert.deepEqual(actual, expected, `Didn't properly handle an empty state`);
 	});
 
 	it(`should properly return total info on transactions`, () => {
-		test = mockSelector.default();
-		out = {
+		actual = mockSelector.default();
+		expected = {
 			numWorking: 0,
 			numPending: 1,
 			numComplete: 3,
@@ -65,9 +63,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			transactions: undefined,
 			shortTitle: '1 Working'
 		};
-		transactionsTotalsAssertion(test);
-		assert.deepEqual(test, out, `Didn't return total info on transactions`);
+		assertions.transactionsTotals(actual);
+		assert.deepEqual(actual, expected, `Didn't return total info on transactions`);
 	})
 });
-
-export default transactionsTotals;

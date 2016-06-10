@@ -2,14 +2,11 @@ import {
 	assert
 } from 'chai';
 import selector from '../../../src/modules/app/selectors/active-page';
-import activePageAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/activePage';
+import {assertions} from 'augur-ui-react-components';
 
 describe(`modules/app/selectors/active-page.js`, () => {
-	// let out = 'markets';
 	it(`should get activepage from store`, () => {
 		let actual = selector();
-		activePageAssertion(actual);
+		assertions.activePage(actual);
 	});
 });
-let activePage = selector;
-export default activePage;

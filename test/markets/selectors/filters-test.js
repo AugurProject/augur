@@ -4,9 +4,6 @@ import {
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
 import filteredMarkets from './markets-filtered-test';
 
 let filters;
