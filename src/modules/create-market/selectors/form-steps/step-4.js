@@ -202,8 +202,23 @@ export const validatePriceWidth = (priceWidth) => {
 export const isValid = (formState) => {
 	if(	validateTradingFee(formState.tradingFeePercent) 				||
 		validateMakerFee(formState.makerFee) 							||
-		validateInitialLiquidity(formState.initialLiquidity)			||
-		validateInitialFairPrices(formState.initialFairPrices.raw)		||
+		validateInitialLiquidity(
+			formState.type,
+			formState.initialLiquidity,
+			formState.startingQuantity,
+			formState.bestStartingQuantity,
+			formState.halfPriceWidth,
+			formState.scalarSmallNum,
+			formState.scalarBigNum
+		)																||
+		validateInitialFairPrices(
+			formState.type,
+			formState.initialFairPrices.raw,
+			formState.priceWidth,
+			formState.halfPriceWidth,
+			formState.scalarSmallNum,
+			formState.scalarBigNum
+		)																||
 		validateBestStartingQuantity(formState.bestStartingQuantity)	||
 		validateStartingQuantity(formState.startingQuantity)			||
 		validatePriceWidth(formState.priceWidth))
@@ -239,11 +254,11 @@ export const errors = (formState) => {
 			formState.scalarBigNum
 		);
 	if(formState.hasOwnProperty('bestStartingQuantity'))
-		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity)
+		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity);
 	if(formState.hasOwnProperty('startingQuantity'))
-		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity)
+		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity);
 	if(formState.hasOwnProperty('priceWidth'))
-		errs.priceWidth = validatePriceWidth(formState.priceWidth)
+		errs.priceWidth = validatePriceWidth(formState.priceWidth);
 
 	return errs;
 };
