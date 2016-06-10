@@ -18,8 +18,6 @@ module.exports = React.createClass({
 	render: function() {
 		var p = this.props;
 
-		console.log('p -- ', p);
-
 		return (
 			<section className="basics">
 				{ !!p.tags && !!p.tags.length &&
