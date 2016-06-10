@@ -9,7 +9,7 @@ module.exports = React.createClass({
 
 		endDate: React.PropTypes.object,
 		tradingFeePercent: React.PropTypes.object,
-		makerFees: React.PropTypes.object,
+		makerFee: React.PropTypes.object,
 		volume: React.PropTypes.object,
 
 		tags: React.PropTypes.array
@@ -43,7 +43,7 @@ module.exports = React.createClass({
 					</li>
 					<li className="property fee">
 						<span className="property-label">maker fee</span>
-						<ValueDenomination className="property-value" { ...p.makerFees } />
+						<ValueDenomination className="property-value" { ...p.makerFee } />
 					</li>
 					<li className="property volume">
 						<span className="property-label">volume</span>

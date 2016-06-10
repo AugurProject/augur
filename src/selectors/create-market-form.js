@@ -1,8 +1,7 @@
 import {
     TRADING_FEE_DEFAULT,
-    MAKER_FEES_DEFAULT,
+    MAKER_FEE_DEFAULT,
     INITIAL_LIQUIDITY_DEFAULT,
-    INITIAL_FAIR_PRICE_DEFAULT,
     STARTING_QUANTITY_DEFAULT,
     BEST_STARTING_QUANTITY_DEFAULT,
     PRICE_WIDTH_DEFAULT,
@@ -23,7 +22,7 @@ function createMarketForm(){
         isValid: true,
 
         tradingFeePercent: TRADING_FEE_DEFAULT,
-        makerFees: MAKER_FEES_DEFAULT,
+        makerFee: MAKER_FEE_DEFAULT,
         initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 
         // Advanced Market Creation

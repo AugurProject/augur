@@ -13,7 +13,7 @@ module.exports = React.createClass({
 		isValid: React.PropTypes.bool,
 
 		tradingFeePercent: React.PropTypes.any,
-		makerFees: React.PropTypes.any,
+		makerFee: React.PropTypes.any,
 		initialLiquidity: React.PropTypes.any,
 
 		showAdvancedMarketParams: React.PropTypes.bool,
@@ -60,14 +60,14 @@ module.exports = React.createClass({
 
 					<Input
 						type="text"
-						value = { p.makerFees }
+						value = { p.makerFee }
 						isClearable={ false }
-						onChange={ (value) => p.onValuesUpdated({ makerFees: value }) }
+						onChange={ (value) => p.onValuesUpdated({ makerFee: value }) }
 					/>
 					<span className="denomination">%</span>
 
-					{ p.errors.makerFees &&
-						<span className="error-message">{ p.errors.makerFees }</span>
+					{ p.errors.makerFee &&
+						<span className="error-message">{ p.errors.makerFee }</span>
 					}
 				</div>
 				<div className="liquidity">
@@ -101,6 +101,7 @@ module.exports = React.createClass({
 							<h4>Initial Fair Price</h4>
 							<p>
 								This establishes the initial price for each respective outcome.
+								The sum of these values must total to 1 ETH.
 							</p>
 							{ p.initialFairPrices.values.map((cV, i) => {
 								return (
@@ -126,7 +127,7 @@ module.exports = React.createClass({
 													})
 												}
 											} />
-										<span className="denomination">{ cV.label }</span>
+										<span className="denomination">ETH -- { cV.label }</span>
 										{ !!get(p.errors, `initialFairPrice.${i}`) &&
 											<span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
 										}
@@ -134,6 +135,24 @@ module.exports = React.createClass({
 								)
 							})}
 
+						</div>
+
+						<div>
+							<h4>Best Bid/Ask Quantity</h4>
+							<p>
+								This defines the number of shares applied to the best bid and ask orders.
+							</p>
+
+							<Input
+								type="text"
+								value = { p.bestStartingQuantity }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ bestStartingQuantity: value }) }
+							/>
+
+							{ p.errors.bestStartingQuantity &&
+							<span className="error-message">{ p.errors.bestStartingQuantity }</span>
+							}
 						</div>
 
 						<div>
@@ -151,24 +170,6 @@ module.exports = React.createClass({
 
 							{ p.errors.startingQuantity &&
 								<span className="error-message">{ p.errors.startingQuantity }</span>
-							}
-						</div>
-
-						<div>
-							<h4>Best Bid/Ask Quantity</h4>
-							<p>
-								This defines the number of shares applied to the best bid and ask orders.
-							</p>
-
-							<Input
-								type="text"
-								value = { p.bestStartingQuantity }
-								isClearable={ false }
-								onChange={ (value) => p.onValuesUpdated({ bestStartingQuantity: value }) }
-							/>
-
-							{ p.errors.bestStartingQuantity &&
-								<span className="error-message">{ p.errors.bestStartingQuantity }</span>
 							}
 						</div>
 
