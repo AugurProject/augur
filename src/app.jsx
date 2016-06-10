@@ -15,7 +15,7 @@ import * as assertions from '../test/assertions/';
 
 const augurUiReactComponents = {
 		assertions,
-		App: function(appElement, selectors) {
+		App: (appElement, selectors) => {
 	    var p = selectors,
 	    	node;
 
