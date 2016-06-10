@@ -29,7 +29,7 @@ function createMarkets(numMarketsToCreate, callback) {
     var maxValue = 2;
     var numOutcomes = 2;
     console.log(chalk.blue.bold("Creating " + numMarketsToCreate + " markets..."));
-    async.eachSeries(new Array(numMarketsToCreate), function (_, next) {
+    async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
         augur.createSingleEventMarket({
@@ -58,7 +58,10 @@ function createMarkets(numMarketsToCreate, callback) {
                     onBuyCompleteSets: function (res) {},
                     onSetupOutcome: function (res) {},
                     onSetupOrder: function (res) {},
-                    onSuccess: function (res) { next(); },
+                    onSuccess: function (res) {
+                        if (index % 10) return next();
+                        augur.cashFaucet(function (r) {}, function (r) { next(); }, next);
+                    },
                     onFailed: next
                 });
             },
