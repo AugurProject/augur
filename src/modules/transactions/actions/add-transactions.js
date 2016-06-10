@@ -9,9 +9,7 @@ export function addTransactions(transactionsArray) {
 	return (dispatch, getState) => {
 		dispatch(updateTransactionsData(transactionsArray.reduce((p, transaction) => {
 			transaction.status = PENDING;
-			const transactionID = makeTransactionID();
-			transaction.id = transactionID;
-			p[transactionID] = transaction;
+			p[makeTransactionID()] = transaction;
 			return p;
 		}, {})));
 	};
