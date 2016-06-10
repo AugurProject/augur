@@ -38,7 +38,7 @@ export const select = (formState) => {
 		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
 		bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
 		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-		halfPriceWidth: formState.priceWidth ? formState.priceWidth / 2 : PRICE_WIDTH_DEFAULT / 2,
+		halfPriceWidth: !!formState.priceWidth ? parseFloat(formState.priceWidth) / 2 : PRICE_WIDTH_DEFAULT / 2,
 		priceDepth: PRICE_DEPTH_DEFAULT,
 		isSimulation: formState.isSimulation || IS_SIMULATION
 	};
@@ -48,12 +48,13 @@ export const select = (formState) => {
 
 export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
+		const 	halfPriceWidth = PRICE_WIDTH_DEFAULT / 2,
+				defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
+					((parseFloat(formState.scalarBigNum) + halfPriceWidth) + (parseFloat(formState.scalarSmallNum) - halfPriceWidth)) / 2 :
+					((1 - halfPriceWidth) + (halfPriceWidth)) / 2;
+
 		let values = [],
-			raw = [],
-			halfPriceWidth = formState.halfPriceWidth,
-			defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
-				((parseFloat(formState.scalarBigNum) + halfPriceWidth) + (parseFloat(formState.scalarSmallNum) - halfPriceWidth)) / 2 :
-				((1 - halfPriceWidth) + (halfPriceWidth)) / 2;
+			raw = [];
 
 		labels.map((cV, i) => {
 			values[i] = {
@@ -85,7 +86,6 @@ export const initialFairPrices = (formState) => {
 	}
 };
 
-// Validators
 export const validateTradingFee = (tradingFeePercent) => {
 	const parsed = parseFloat(tradingFeePercent);
 
@@ -116,20 +116,25 @@ export const validateMakerFee = (makerFee) => {
 			}`;
 };
 
-export const validateInitialLiquidity = (initialLiquidity) => {
-	const parsed = parseFloat(initialLiquidity);
+export const validateInitialLiquidity = (type, liquidity, start, best, halfWidth, scalarMin, scalarMax) => {
+	const 	parsed = parseFloat(liquidity),
+			priceDepth = type === SCALAR ?
+				(parseFloat(start) * (parseFloat(scalarMin) + parseFloat(scalarMax) - halfWidth)) / (parseFloat(liquidity) - ( 2 * parseFloat(best))) :
+				(parseFloat(start) * (1 - halfWidth)) / (parseFloat(liquidity) - ( 2 * parseFloat(best)));
 
-	if (!initialLiquidity)
+	if(!liquidity)
 		return 'Please provide some initial liquidity';
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
+	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
 		return 'Initial liquidity must be numeric';
-	if (parsed < INITIAL_LIQUIDITY_MIN) {
+	if(priceDepth < 0 || !Number.isFinite(priceDepth))
+		return 'Insufficient liquidity based on advanced parameters';
+	if (parsed < INITIAL_LIQUIDITY_MIN)
 		return `Initial liquidity must be at least ${
 			formatEther(INITIAL_LIQUIDITY_MIN).full
 		}`;
 };
 
-export const validateInitialFairPrices = (initialFairPrices, type, width, halfWidth, scalarMin, scalarMax) => {
+export const validateInitialFairPrices = (type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) => {
 	// -- Constraints --
 	// 	Binary + Categorical:
 	//		min: priceWidth / 2
@@ -138,9 +143,10 @@ export const validateInitialFairPrices = (initialFairPrices, type, width, halfWi
 	// 		min: scalarMin + (priceWidth / 2)
 	// 		max: scalarMax - (priceWidth / 2)
 
-	let fairPriceErrors = {},
-		max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth,
-		min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
+	const 	max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth,
+			min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
+
+	let fairPriceErrors = {};
 
 	initialFairPrices.map((cV, i) => {
 		const parsed = parseFloat(cV)
@@ -214,10 +220,24 @@ export const errors = (formState) => {
 	if(formState.hasOwnProperty('makerFeePercent'))
 		errs.makerFee = validateMakerFee(formState.makerFee);
 	if(formState.hasOwnProperty('initialLiquidity'))
-		errs.initialLiquidity = validateInitialLiquidity(formState.initialLiquidity);
-
+		errs.initialLiquidity = validateInitialLiquidity(
+			formState.type,
+			formState.initialLiquidity,
+			formState.startingQuantity,
+			formState.bestStartingQuantity,
+			formState.halfPriceWidth,
+			formState.scalarSmallNum,
+			formState.scalarBigNum
+		);
 	if(formState.hasOwnProperty('initialFairPrices'))
-		errs.initialFairPrice = validateInitialFairPrices(formState.initialFairPrices.raw, formState.type, formState.priceWidth, formState.halfPriceWidth, formState.scalarSmallNum, formState.scalarBigNum);
+		errs.initialFairPrice = validateInitialFairPrices(
+			formState.type,
+			formState.initialFairPrices.raw,
+			formState.priceWidth,
+			formState.halfPriceWidth,
+			formState.scalarSmallNum,
+			formState.scalarBigNum
+		);
 	if(formState.hasOwnProperty('bestStartingQuantity'))
 		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity)
 	if(formState.hasOwnProperty('startingQuantity'))
