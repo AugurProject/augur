@@ -7,9 +7,6 @@ const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(cb) {
-	if (process.env.ETHEREUM_HOST_RPC) {
-		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
-	}
 	var options = {
 		http: process.env.ETHEREUM_HOST_RPC,
 		ws: process.env.ETHEREUM_HOST_WSURL

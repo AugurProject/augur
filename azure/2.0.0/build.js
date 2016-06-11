@@ -11922,9 +11922,6 @@ var TIMEOUT_MILLIS = 50;
 var ex = {};
 
 ex.connect = function connect(cb) {
-	if (undefined) {
-		_augur2.default.rpc.nodes.hosted = [undefined];
-	}
 	var options = {
 		http: undefined,
 		ws: undefined
