@@ -7,7 +7,7 @@ const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(cb) {
-	var options = {
+	const options = {
 		http: process.env.ETHEREUM_HOST_RPC,
 		ws: process.env.ETHEREUM_HOST_WSURL
 	};
@@ -24,7 +24,7 @@ ex.connect = function connect(cb) {
 	}
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
-		console.log("connected:", connection);
+		console.log('connected:', connection);
 		cb(null, connection);
 	});
 };
