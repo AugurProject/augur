@@ -54,7 +54,10 @@ function createMarkets(numMarketsToCreate, callback) {
                         return augur.fundNewAccount(augur.branches.dev,
                             function (r) {},
                             function (r) { next(); },
-                            next
+                            function (err) {
+                                console.error("fundNewAccount failed:", err);
+                                next();
+                            }
                         );
                     }
                     augur.generateOrderBook({
@@ -73,14 +76,23 @@ function createMarkets(numMarketsToCreate, callback) {
                             augur.fundNewAccount(augur.branches.dev,
                                 function (r) {},
                                 function (r) { next(); },
-                                next
+                                function (err) {
+                                    console.error("fundNewAccount failed:", err);
+                                    next();
+                                }
                             );
                         },
-                        onFailed: next
+                        onFailed: function (err) {
+                            console.error("generateOrderBook failed:", err);
+                            next();
+                        }
                     });
                 });
             },
-            onFailed: next
+            onFailed: function (err) {
+                console.error("createSingleEventMarket failed:", err);
+                next();
+            }
         });
     }, callback);
 }
