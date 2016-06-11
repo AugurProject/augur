@@ -59,11 +59,11 @@ function createMarkets(numMarketsToCreate, callback) {
                     }
                     augur.generateOrderBook({
                         market: r.marketID,
-                        liquidity: 50,
+                        liquidity: 500,
                         initialFairPrices: ["0.4", "0.5"],
-                        startingQuantity: 10,
-                        bestStartingQuantity: 15,
-                        priceWidth: "0.4"
+                        startingQuantity: 100,
+                        bestStartingQuantity: 50,
+                        priceWidth: "0.3"
                     }, {
                         onBuyCompleteSets: function (res) {},
                         onSetupOutcome: function (res) {},

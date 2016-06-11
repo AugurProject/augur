@@ -14,6 +14,8 @@ var constants = require("../src/constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
+var displayed_connection_info = false;
+
 module.exports = {
 
     // maximum number of accounts/samples for testing
@@ -66,12 +68,14 @@ module.exports = {
 
     print_nodes: function (nodes) {
         var node;
-        process.stdout.write(chalk.green.bold("hosts: "));
-        for (var i = 0, len = nodes.length; i < len; ++i) {
-            node = nodes[i];
-            node = (i === 0) ? chalk.green(node) : chalk.gray(node);
-            process.stdout.write(node + ' ');
-            if (i === len - 1) process.stdout.write('\n');
+        if (nodes && nodes.length) {
+            process.stdout.write(chalk.green.bold("hosts: "));
+            for (var i = 0, len = nodes.length; i < len; ++i) {
+                node = nodes[i];
+                node = (i === 0) ? chalk.green(node) : chalk.gray(node);
+                process.stdout.write(node + ' ');
+                if (i === len - 1) process.stdout.write('\n');
+            }
         }
     },
 
@@ -87,14 +91,15 @@ module.exports = {
         }
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
-            // if (augur.options.debug.broadcast || augur.options.debug.fallback) {
+            if (!displayed_connection_info) {
                 console.log(chalk.cyan.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
                 console.log(chalk.blue.bold("wsUrl:"), chalk.blue(augur.rpc.wsUrl));
                 console.log(chalk.magenta.bold("IPC:  "), chalk.magenta(augur.rpc.ipcpath));
                 this.print_nodes(augur.rpc.nodes.hosted);
                 console.log("coinbase:", chalk.white.dim(augur.coinbase));
                 console.log("from:    ", chalk.white.dim(augur.from));
-            // }
+                displayed_connection_info = true;
+            }
             augur.nodes = augur.rpc.nodes.hosted;
         }
         return augur;
