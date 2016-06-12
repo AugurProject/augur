@@ -371,7 +371,7 @@ describe("Logout", function () {
 
 });
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("Duplicate accounts", function () {
 
@@ -646,7 +646,7 @@ describe("Transaction signing", function () {
 
 describe("Contract methods", function () {
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         describe("Set transaction nonce", function () {
 
@@ -754,7 +754,7 @@ describe("Contract methods", function () {
 
     });
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         describe("Send transaction", function () {
 

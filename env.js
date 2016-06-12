@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+process.env.AUGURJS_INTEGRATION_TESTS = true;
+
 GLOBAL.path = require("path");
 GLOBAL.fs = require("fs");
 GLOBAL.BigNumber = require("bignumber.js");

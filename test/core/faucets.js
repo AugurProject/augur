@@ -19,7 +19,7 @@ describe("Unit tests", function () {
     }]);
 });
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("Integration tests", function () {
 

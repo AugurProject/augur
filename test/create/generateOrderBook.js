@@ -59,7 +59,7 @@ describe("calculatePriceDepth", function () {
 });
 
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("generateOrderBook", function () {
         var test = function (t) {

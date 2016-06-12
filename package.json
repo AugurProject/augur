@@ -5,9 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh --core --create --markets --client",
+    "integration-test": "AUGURJS_INTEGRATION_TESTS=true scripts/runtests.sh --core --create --markets --client",
     "lint": "scripts/runtests.sh",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "testnet": "scripts/runtests.sh --core --markets --client",
     "setup": "scripts/setup.js --reset --faucets"
   },
   "dependencies": {
@@ -21,7 +21,7 @@
     "ethereumjs-connect": "0.4.0",
     "ethereumjs-tx": "^1.1.1",
     "ethereumjs-util": "^4.3.0",
-    "ethrpc": "0.9.4",
+    "ethrpc": "0.9.5",
     "keythereum": "^0.2.6",
     "locks": "^0.2.2",
     "node-localstorage": "^1.1.2",

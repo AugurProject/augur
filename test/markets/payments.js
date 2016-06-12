@@ -13,7 +13,7 @@ var constants = require("../../src/constants");
 var augurpath = join(__dirname, "..", "..", "src", "index");
 var augur = tools.setup(require(augurpath), process.argv.slice(2));
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     var paymentValue = 1;
     var branch = augur.branches.dev;

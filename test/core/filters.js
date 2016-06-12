@@ -405,7 +405,7 @@ describe("Integration tests", function () {
     //     });
     // });
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         describe("Price history", function () {
             // before(function (done) {
@@ -464,7 +464,7 @@ describe("Integration tests", function () {
                         if (!priceHistory.hasOwnProperty(k)) continue;
                         var logs = priceHistory[k];
                         assert.isArray(logs);
-                        if (k === outcome && !process.env.CONTINUOUS_INTEGRATION) {
+                        if (k === outcome && process.env.AUGURJS_INTEGRATION_TESTS) {
                             assert.property(logs, "length");
                             assert.isAbove(logs.length, 0);
                             assert.property(logs[0], "price");
@@ -489,7 +489,7 @@ describe("Integration tests", function () {
                     if (!priceHistory.hasOwnProperty(k)) continue;
                     var logs = priceHistory[k];
                     assert.isArray(logs);
-                    if (k === outcome && !process.env.CONTINUOUS_INTEGRATION) {
+                    if (k === outcome && process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert.property(logs, "length");
                         assert.isAbove(logs.length, 0);
                         assert.property(logs[0], "price");

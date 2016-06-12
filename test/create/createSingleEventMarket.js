@@ -13,7 +13,7 @@ var augur = require(augurpath);
 var runner = require("../runner");
 var tools = require("../tools");
 
-if (!process.env.CONTINUOUS_INTEGRATION) {
+if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("Integration tests", function () {
 

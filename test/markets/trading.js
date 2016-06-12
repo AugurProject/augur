@@ -79,7 +79,7 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var branchID = augur.branches.dev;
@@ -388,6 +388,104 @@ describe("Integration tests", function () {
                 amount: 1,
                 outcome: "1",
                 max_amount: 1
+            });
+        });
+
+        describe("multiTrade", function () {
+            var test = function (t) {
+                it(JSON.stringify(t), function (done) {
+                    this.timeout(tools.TIMEOUT*10);
+                    rpc.personal("unlockAccount", [accounts[0], password]);
+                    augur.from = accounts[0];
+                    augur.connector.from_field_tx(accounts[0]);
+                    augur.sync(augur.connector);
+                    var orderBook = augur.getOrderBook(t.market);
+                    console.log("orderbook:", orderBook);
+                    augur.multiTrade({
+                        requestId: t.requestId,
+                        market: t.market,
+                        marketOrderBook: orderBook,
+                        userTradeOrdersPerOutcome: [{
+                            type: t.type,
+                            shares: {value: t.amount},
+                            ether: {value: t.max_value},
+                            limitPrice: t.limitPrice,
+                            data: {outcomeID: t.outcome}
+                        }],
+                        positionsPerOutcome: {"1": {qtyShares: 0}},
+                        onTradeHash: function (tradeOrderId, tradeHash) {
+
+                        },
+                        onCommitSent: function (tradeOrderId, res) {
+
+                        },
+                        onCommitFailed: function (tradeOrderId, err) {
+                            console.error("commit failed:", err);
+                            done(new Error(JSON.stringify(err, null, 2)));
+                        },
+                        onNextBlock: function (tradeOrderId, block) {
+
+                        },
+                        onTradeSent: function (tradeOrderId, res) {
+
+                        },
+                        onTradeSuccess: function (tradeOrderId, res) {
+
+                        },
+                        onTradeFailed: function (tradeOrderId, err) {
+                            console.error("trade failed:", err);
+                            done(new Error(JSON.stringify(err, null, 2)));
+                        },
+                        onBuySellSent: function (requestId, res) {
+
+                        },
+                        onBuySellSuccess: function (requestId, res) {
+                            console.log("buy/sell order placed on the books successfully!");
+                            var newOrderBook = augur.getOrderBook(t.market);
+                            console.log("new orderbook:", newOrderBook);
+                            var orderType = (t.type === "buy_shares") ? "buy" : "sell";
+                            console.log(newOrderBook[orderType]);
+                            for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
+                                console.log("outcome:", t.outcome, newOrderBook[orderType][i].outcome);
+                                console.log("amount:", t.amount, parseInt(newOrderBook[orderType][i].amount));
+                                console.log("owner:", augur.from, newOrderBook[orderType][i].owner);
+                                console.log("price:", Math.round(parseFloat(t.limitPrice)*1e6) / 1e6, Math.round(parseFloat(newOrderBook[orderType][i].price)*1e6) / 1e6);
+                                if (t.outcome === newOrderBook[orderType][i].outcome &&
+                                    t.amount === parseInt(newOrderBook[orderType][i].amount) &&
+                                    augur.from === newOrderBook[orderType][i].owner) {
+                                    console.log("found order!", newOrderBook[orderType][i]);
+                                    return done();
+                                }
+                            }
+                            done(new Error("order not found :("));
+                        },
+                        onBuySellFailed: function (requestId, err) {
+                            console.error("buy/sell failed:", err);
+                            done(new Error(JSON.stringify(err, null, 2)));
+                        },
+                        onBuyCompleteSetsSent: function (requestId, res) {
+
+                        },
+                        onBuyCompleteSetsSuccess: function (requestId, res) {
+
+                        },
+                        onBuyCompleteSetsFailed: function (requestId, err) {
+                            console.error("buyCompleteSets failed:", err);
+                            done(new Error(JSON.stringify(err, null, 2)));
+                        }
+                    });
+                });
+            };
+
+            // user wants to buy 1 share of outcome 1 @ limit price 0.6
+            test({
+                requestId: 1,
+                market: markets[markets.length - 1],
+                amount: 1,
+                outcome: "1",
+                max_value: 1,
+                limitPrice: "0.6",
+                type: "buy_shares"
             });
         });
     }

@@ -21,7 +21,7 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         var minValue = 1;
         var maxValue = 2;

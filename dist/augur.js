@@ -37161,7 +37161,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.6";
+    this.version = "1.3.7";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38355,7 +38355,7 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  *
  *
  * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this method
- * @param {String} marketId On what market trading occurs
+ * @param {String} market The market ID on which trading occurs
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
  * @param {Object} userTradeOrdersPerOutcome Trade orders to execute (one per outcome) (usually from UI).
  * @param {Object} positionsPerOutcome User's positions per outcome
@@ -38377,15 +38377,39 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  * @param {Function} onBuyCompleteSetsSuccess
  * @param {Function} onBuyCompleteSetsFailed
  */
-Augur.prototype.multiTrade = function (requestId, marketId, marketOrderBook, userTradeOrdersPerOutcome, positionsPerOutcome,
-                                       onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
-                                       onTradeSent, onTradeSuccess, onTradeFailed,
-                                       onBuySellSent, onBuySellSuccess, onBuySellFailed,
-                                       onShortSellSent, onShortSellSuccess, onShortSellFailed,
-                                       onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
+Augur.prototype.multiTrade = function (
+    requestId, market, marketOrderBook, userTradeOrdersPerOutcome, positionsPerOutcome,
+    onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
+    onTradeSent, onTradeSuccess, onTradeFailed,
+    onBuySellSent, onBuySellSuccess, onBuySellFailed,
+    onShortSellSent, onShortSellSuccess, onShortSellFailed,
+    onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
 ) {
     var self = this;
-
+    if (requestId.constructor === Object && requestId.requestId) {
+        market = requestId.market;
+        marketOrderBook = requestId.marketOrderBook;
+        userTradeOrdersPerOutcome = requestId.userTradeOrdersPerOutcome;
+        positionsPerOutcome = requestId.positionsPerOutcome;
+        onTradeHash = requestId.onTradeHash || this.utils.noop;
+        onCommitSent = requestId.onCommitSent || this.utils.noop;
+        onCommitSuccess = requestId.onCommitSuccess || this.utils.noop;
+        onCommitFailed = requestId.onCommitFailed || this.utils.noop;
+        onNextBlock = requestId.onNextBlock || this.utils.noop;
+        onTradeSent = requestId.onTradeSent || this.utils.noop;
+        onTradeSuccess = requestId.onTradeSuccess || this.utils.noop;
+        onTradeFailed = requestId.onTradeFailed || this.utils.noop;
+        onBuySellSent = requestId.onBuySellSent || this.utils.noop;
+        onBuySellSuccess = requestId.onBuySellSuccess || this.utils.noop;
+        onBuySellFailed = requestId.onBuySellFailed || this.utils.noop;
+        // onShortSellSent = requestId.onShortSellSent || this.utils.noop;
+        // onShortSellSuccess = requestId.onShortSellSuccess || this.utils.noop;
+        // onShortSellFailed = requestId.onShortSellFailed || this.utils.noop;
+        onBuyCompleteSetsSent = requestId.onBuyCompleteSetsSent || this.utils.noop;
+        onBuyCompleteSetsSuccess = requestId.onBuyCompleteSetsSuccess || this.utils.noop;
+        onBuyCompleteSetsFailed = requestId.onBuyCompleteSetsFailed || this.utils.noop;
+        requestId = requestId.requestId;
+    }
     /**
      * Recursive. Uses either short_sell or buyCompleteSets + sell
      *
@@ -38398,75 +38422,86 @@ Augur.prototype.multiTrade = function (requestId, marketId, marketOrderBook, use
         if (matchingSortedBidIds.length > 0) {
             // 4.2.1/ there is order to fill
             var firstBuyerTradeId = matchingSortedBidIds[0];
-            self.short_sell(firstBuyerTradeId, sharesLeft,
-                function (data) {
+            self.short_sell({
+                buyer_trade_id: firstBuyerTradeId,
+                max_amount: sharesLeft,
+                onTradeHash: function (data) {
                     console.log("augurjs.js: onTradeHash: %o", data);
                     onTradeHash(tradeOrderId, data);
                 },
-                function (data) {
+                onCommitSent: function (data) {
                     console.log("augurjs.js: onCommitSent: %o", data);
                     onCommitSent(tradeOrderId, data);
                 },
-                function (data) {
+                onCommitSuccess: function (data) {
                     console.log("augurjs.js: onCommitSuccess: %o", data);
                     onCommitSuccess(tradeOrderId, data);
                 },
-                function (data) {
+                onCommitFailed: function (data) {
                     console.log("augurjs.js: onCommitFailed: %o", data);
                     onCommitFailed(tradeOrderId, data);
                 },
-                function (data) {
+                onNextBlock: function (data) {
                     console.log("augurjs.js: onNextBlock: %o", data);
                     onNextBlock(tradeOrderId, data);
                 },
-                function (data) {
+                onTradeSent: function (data) {
                     console.log("augurjs.js: onTradeSent: %o", data);
                     onTradeSent(tradeOrderId, data);
                 },
-                function (data) {
+                onTradeSuccess: function (data) {
                     console.log("augurjs.js: onTradeSuccess: %o", data);
                     onTradeSuccess(tradeOrderId, data);
-                    var sharesFilled = data.callReturn[2];
+                    var sharesFilled = Number(data.callReturn[2]);
                     if (sharesLeft > sharesFilled) {
                         // not all user shares were shorted, recursively short
                         shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), sharesLeft - sharesFilled);
                     }
                 },
-                function (data) {
+                onTradeFailed: function (data) {
                     console.log("augurjs.js: onTradeFailed: %o", data);
                     onTradeFailed(tradeOrderId, data);
-                });
+                }
+            });
         } else {
             // 4.2.2/ no order to fill
-            self.buyCompleteSets(marketId, userTradeOrder.shares.value,
-                function (data) {
+            self.buyCompleteSets({
+                market: market,
+                amount: userTradeOrder.shares.value,
+                onSent: function (data) {
                     onBuyCompleteSetsSent(requestId, data);
                 },
-                function (data) {
+                onSuccesS: function (data) {
                     onBuyCompleteSetsSuccess(requestId, data);
-                    self.sell(sharesLeft, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                        function (data) {
+                    self.sell({
+                        amount: sharesLeft,
+                        price: userTradeOrder.limitPrice,
+                        market: market,
+                        outcome: userTradeOrder.data.outcomeID,
+                        onSent: function (data) {
                             onBuySellSent(requestId, data);
                         },
-                        function (data) {
+                        onSuccess: function (data) {
                             onBuySellSuccess(requestId, data);
                         },
-                        function (data) {
+                        onFailed: function (data) {
                             onBuySellFailed(requestId, data);
                         }
-                    );
+                    });
                 },
-                function (data) {
+                onFailed: function (data) {
                     onBuyCompleteSetsFailed(requestId, data);
-                });
+                }
+            });
         }
     }
 
     userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
+        console.log("userTradeOrder:", userTradeOrder);
         if (userTradeOrder.type === "buy_shares") {
             // 1.1/ user wants to buy
 
-            var matchingSortedAskIds = marketOrderBook.sell == null ? [] : marketOrderBook.sell
+            var matchingSortedAskIds = (marketOrderBook.sell) ? [] : marketOrderBook.sell
                 .filter(function (ask) {
                     return ask.outcome === userTradeOrder.data.outcomeID &&
                         parseFloat(ask.price) <= userTradeOrder.limitPrice;
@@ -38480,69 +38515,81 @@ Augur.prototype.multiTrade = function (requestId, marketId, marketOrderBook, use
 
             if (matchingSortedAskIds.length === 0) {
                 // 2/ there are no suitable asks on order book
-                this.buy(userTradeOrder.ether.value, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                    function onBuySentInner(data) {
+                this.buy({
+                    amount: userTradeOrder.ether.value,
+                    price: userTradeOrder.limitPrice,
+                    market: market,
+                    outcome: userTradeOrder.data.outcomeID,
+                    onSent: function onBuySentInner(data) {
                         console.log("augurjs.js: trade: buy: onSent: %o", data);
                         onBuySellSent(requestId, data);
                     },
-                    function onBuySuccessInner(data) {
+                    onSuccess: function onBuySuccessInner(data) {
                         console.log("augurjs.js: trade: buy: onSuccess: %o", data);
                         onBuySellSuccess(requestId, data);
                     },
-                    function onBuyFailureInner(data) {
+                    onFailed: function onBuyFailureInner(data) {
                         console.log("augurjs.js: trade: buy: onFail: %o", data);
                         onBuySellFailed(requestId, data);
                     }
-                );
+                });
             } else {
                 // 3/ there are orders on order book to match
-                this.trade(userTradeOrder.ether.value, 0, matchingSortedAskIds,
-                    function (data) {
+                this.trade({
+                    max_value: userTradeOrder.ether.value,
+                    max_amount: 0,
+                    trade_ids: matchingSortedAskIds,
+                    onTradeHash: function (data) {
                         onTradeHash(requestId, data);
                     },
-                    function (data) {
+                    onCommitSent: function (data) {
                         onCommitSent(requestId, data);
                     },
-                    function (data) {
+                    onCommitSuccess: function (data) {
                         onCommitSuccess(requestId, data);
                     },
-                    function (data) {
+                    onCommitFailed: function (data) {
                         onCommitFailed(requestId, data);
                     },
-                    function (data) {
+                    onNextBlock: function (data) {
                         onNextBlock(requestId, data);
                     },
-                    function (data) {
+                    onTradeSent: function (data) {
                         onTradeSent(requestId, data);
                     },
-                    function localOnTradeSuccess(data) {
-                        var etherNotFilled = data.callReturn[1];
+                    onTradeSuccess: function localOnTradeSuccess(data) {
+                        var etherNotFilled = Number(data.callReturn[1]);
                         if (etherNotFilled > 0) {
                             // 3.1/ order was partially filled so place bid on order book
-                            this.buy(etherNotFilled, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                                function localOnBuySent(data) {
+                            this.buy({
+                                amount: etherNotFilled,
+                                price: userTradeOrder.limitPrice,
+                                market: market,
+                                outcome: userTradeOrder.data.outcomeID,
+                                onSent: function localOnBuySent(data) {
                                     console.log("augurjs.js: trade: buy: onSent: %o", data);
                                     onBuySellSent(requestId, data);
                                 },
-                                function localOnBuySuccess(data) {
+                                onSuccess: function localOnBuySuccess(data) {
                                     console.log("augurjs.js: trade: buy: onSuccess: %o", data);
                                     onBuySellSuccess(requestId, data);
                                 },
-                                function localOnBuyFailure(data) {
+                                onFailed: function localOnBuyFailure(data) {
                                     console.log("augurjs.js: trade: buy: onFail: %o", data);
                                     onBuySellFailed(requestId, data);
                                 }
-                            );
+                            });
                         }
                         onTradeSuccess(requestId, data);
                     },
-                    function (data) {
+                    onTradeFailed: function (data) {
                         onTradeFailed(requestId, data);
-                    });
+                    }
+                });
             }
         } else {
             // 1.2/ user wants to sell
-            var matchingSortedBidIds = marketOrderBook.buy == null ? [] : marketOrderBook.buy
+            var matchingSortedBidIds = (marketOrderBook.buy) ? [] : marketOrderBook.buy
                 .filter(function (bid) {
                     return bid.outcome === userTradeOrder.data.outcomeID &&
                         parseFloat(bid.price) >= userTradeOrder.limitPrice;
@@ -38555,68 +38602,81 @@ Augur.prototype.multiTrade = function (requestId, marketId, marketOrderBook, use
                 });
 
             var userPosition = positionsPerOutcome[userTradeOrder.data.outcomeID];
-            var hasUserPosition = userPosition != null && userPosition.qtyShares > 0;
+            var hasUserPosition = userPosition && userPosition.qtyShares > 0;
             if (hasUserPosition) {
                 if (matchingSortedBidIds.length === 0) {
                     // 2/ no bids to match => place ask on order book
-                    this.sell(userTradeOrder.shares.value, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                        function localOnSellSent(data) {
+                    this.sell({
+                        amount: userTradeOrder.shares.value,
+                        price: userTradeOrder.limitPrice,
+                        market: market,
+                        outcome: userTradeOrder.data.outcomeID,
+                        onSent: function localOnSellSent(data) {
                             console.log("augurjs.js: trade: sell: onSent: %o", data);
                             onBuySellSent(requestId, data);
                         },
-                        function localOnSellSuccess(data) {
+                        onSuccess: function localOnSellSuccess(data) {
                             console.log("augurjs.js: trade: sell: onSuccess: %o", data);
                             onBuySellSuccess(requestId, data);
                         },
-                        function localOnSellFailure(data) {
+                        onFailed: function localOnSellFailure(data) {
                             console.log("augurjs.js: trade: sell: onFail: %o", data);
                             onBuySellFailed(requestId, data);
                         }
-                    );
+                    });
                 } else {
                     // 4.1/ there are bids to match
-                    this.trade(0, userTradeOrder.shares.value, matchingSortedBidIds,
-                        function (data) {
+                    this.trade({
+                        max_value: 0,
+                        max_amount: userTradeOrder.shares.value,
+                        trade_ids: matchingSortedBidIds,
+                        onTradeHash: function (data) {
                             onTradeHash(requestId, data);
                         },
-                        function (data) {
+                        onCommitSent: function (data) {
                             onCommitSent(requestId, data);
                         },
-                        function (data) {
+                        onCommitSuccess: function (data) {
                             onCommitSuccess(requestId, data);
                         },
-                        function (data) {
+                        onCommitFailed: function (data) {
                             onCommitFailed(requestId, data);
                         },
-                        function (data) {
+                        onNextBlock: function (data) {
                             onNextBlock(requestId, data);
                         },
-                        function (data) {
+                        onTradeSent: function (data) {
                             onTradeSent(requestId, data);
                         },
-                        function localOnTradeSuccess(data) {
-                            var sharesNotSold = data.callReturn[2];
+                        onTradeSuccess: function localOnTradeSuccess(data) {
+                            var sharesNotSold = Number(data.callReturn[2]);
                             if (sharesNotSold > 0) {
                                 // 4.1.2 order was partially filled
-                                this.sell(sharesNotSold, userTradeOrder.limitPrice, marketId, userTradeOrder.data.outcomeID,
-                                    function (data) {
+                                this.sell({
+                                    amount: sharesNotSold,
+                                    price: userTradeOrder.limitPrice,
+                                    market: market,
+                                    outcome: userTradeOrder.data.outcomeID,
+                                    onSent: function (data) {
                                         console.log("augurjs.js: trade: sell: onSent: %o", data);
                                         onBuySellSent(requestId, data);
                                     },
-                                    function (data) {
+                                    onSuccess: function (data) {
                                         console.log("augurjs.js: trade: sell: onSuccess: %o", data);
                                         onBuySellSuccess(requestId, data);
                                     },
-                                    function (data) {
+                                    onFailed: function (data) {
                                         console.log("augurjs.js: trade: sell: onFail: %o", data);
                                         onBuySellFailed(requestId, data);
-                                    });
+                                    }
+                                });
                             }
                             onTradeSuccess(requestId, data);
                         },
-                        function (data) {
+                        onTradeFailed: function (data) {
                             onTradeFailed(requestId, data);
-                        });
+                        }
+                    });
                 }
             } else {
                 // 4.2/ no user position
@@ -42792,7 +42852,8 @@ module.exports = {
             }
             if (params.constructor === Array) {
                 for (var i = 0, len = params.length; i < len; ++i) {
-                    if (params[i].constructor === Number) {
+                    if (params[i] !== null && params[i] !== undefined &&
+                        params[i].constructor === Number) {
                         params[i] = abi.prefix_hex(params[i].toString(16));
                     }
                 }

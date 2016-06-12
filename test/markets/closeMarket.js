@@ -23,7 +23,7 @@ describe("Unit tests", function () {
 
 describe("Integration tests", function () {
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         var branchID = augur.branches.dev;

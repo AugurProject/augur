@@ -116,7 +116,7 @@ describe("Integration tests", function () {
         }
     });
 
-    if (!process.env.CONTINUOUS_INTEGRATION) {
+    if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         describe("Commit-and-reveal", function () {
 
