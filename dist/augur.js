@@ -37161,7 +37161,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.7";
+    this.version = "1.3.8";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37662,10 +37662,9 @@ Augur.prototype.getOrderBook = function (marketID, callback) {
         var orderArray = this.fire(tx);
         if (!orderArray || orderArray.error) return orderArray;
         var numOrders = orderArray.length / 8;
-        var orders, orderBook = {};
+        var orders, orderBook = {buy: [], sell: []};
         for (var i = 0; i < numOrders; ++i) {
             orders = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-            if (!orderBook[orders.type]) orderBook[orders.type] = [];
             orderBook[orders.type].push(orders);
         }
         return orderBook;
@@ -37674,7 +37673,7 @@ Augur.prototype.getOrderBook = function (marketID, callback) {
     this.fire(tx, function (orderArray) {
         if (!orderArray || orderArray.error) return callback(orderArray);
         var numOrders = orderArray.length / 8;
-        var orders, orderBook = {};
+        var orders, orderBook = {buy: [], sell: []};
         for (var i = 0; i < numOrders; ++i) {
             orders = self.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
             if (!orderBook[orders.type]) orderBook[orders.type] = [];
@@ -38370,9 +38369,6 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  * @param {Function} onBuySellSent
  * @param {Function} onBuySellSuccess
  * @param {Function} onBuySellFailed
- * @param {Function} onShortSellSent
- * @param {Function} onShortSellSuccess
- * @param {Function} onShortSellFailed
  * @param {Function} onBuyCompleteSetsSent
  * @param {Function} onBuyCompleteSetsSuccess
  * @param {Function} onBuyCompleteSetsFailed
@@ -38402,9 +38398,6 @@ Augur.prototype.multiTrade = function (
         onBuySellSent = requestId.onBuySellSent || this.utils.noop;
         onBuySellSuccess = requestId.onBuySellSuccess || this.utils.noop;
         onBuySellFailed = requestId.onBuySellFailed || this.utils.noop;
-        // onShortSellSent = requestId.onShortSellSent || this.utils.noop;
-        // onShortSellSuccess = requestId.onShortSellSuccess || this.utils.noop;
-        // onShortSellFailed = requestId.onShortSellFailed || this.utils.noop;
         onBuyCompleteSetsSent = requestId.onBuyCompleteSetsSent || this.utils.noop;
         onBuyCompleteSetsSuccess = requestId.onBuyCompleteSetsSuccess || this.utils.noop;
         onBuyCompleteSetsFailed = requestId.onBuyCompleteSetsFailed || this.utils.noop;
@@ -38418,7 +38411,7 @@ Augur.prototype.multiTrade = function (
      * @param userTradeOrder
      */
     function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, userTradeOrder) {
-        var sharesLeft = userTradeOrder.shares.value;
+        var sharesLeft = new BigNumber(userTradeOrder.shares.value);
         if (matchingSortedBidIds.length > 0) {
             // 4.2.1/ there is order to fill
             var firstBuyerTradeId = matchingSortedBidIds[0];
@@ -38426,40 +38419,41 @@ Augur.prototype.multiTrade = function (
                 buyer_trade_id: firstBuyerTradeId,
                 max_amount: sharesLeft,
                 onTradeHash: function (data) {
-                    console.log("augurjs.js: onTradeHash: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onTradeHash:", data);
                     onTradeHash(tradeOrderId, data);
                 },
                 onCommitSent: function (data) {
-                    console.log("augurjs.js: onCommitSent: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onCommitSent:", data);
                     onCommitSent(tradeOrderId, data);
                 },
                 onCommitSuccess: function (data) {
-                    console.log("augurjs.js: onCommitSuccess: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onCommitSuccess:", data);
                     onCommitSuccess(tradeOrderId, data);
                 },
                 onCommitFailed: function (data) {
-                    console.log("augurjs.js: onCommitFailed: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onCommitFailed:", data);
                     onCommitFailed(tradeOrderId, data);
                 },
                 onNextBlock: function (data) {
-                    console.log("augurjs.js: onNextBlock: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onNextBlock:", data);
                     onNextBlock(tradeOrderId, data);
                 },
                 onTradeSent: function (data) {
-                    console.log("augurjs.js: onTradeSent: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onTradeSent:", data);
                     onTradeSent(tradeOrderId, data);
                 },
                 onTradeSuccess: function (data) {
-                    console.log("augurjs.js: onTradeSuccess: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onTradeSuccess:", data);
                     onTradeSuccess(tradeOrderId, data);
-                    var sharesFilled = Number(data.callReturn[2]);
-                    if (sharesLeft > sharesFilled) {
+                    var newSharesLeft = new BigNumber(data.callReturn[1]);
+                    if (newSharesLeft.gt(constants.ZERO)) {
                         // not all user shares were shorted, recursively short
-                        shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), sharesLeft - sharesFilled);
+                        userTradeOrder.shares.value = newSharesLeft.toFixed();
+                        shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), userTradeOrder);
                     }
                 },
                 onTradeFailed: function (data) {
-                    console.log("augurjs.js: onTradeFailed: %o", data);
+                    console.log("[multiTrade] shortSellUntilZero: onTradeFailed:", data);
                     onTradeFailed(tradeOrderId, data);
                 }
             });
@@ -38471,10 +38465,10 @@ Augur.prototype.multiTrade = function (
                 onSent: function (data) {
                     onBuyCompleteSetsSent(requestId, data);
                 },
-                onSuccesS: function (data) {
+                onSuccess: function (data) {
                     onBuyCompleteSetsSuccess(requestId, data);
                     self.sell({
-                        amount: sharesLeft,
+                        amount: sharesLeft.toFixed(),
                         price: userTradeOrder.limitPrice,
                         market: market,
                         outcome: userTradeOrder.data.outcomeID,
@@ -38497,11 +38491,9 @@ Augur.prototype.multiTrade = function (
     }
 
     userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
-        console.log("userTradeOrder:", userTradeOrder);
         if (userTradeOrder.type === "buy_shares") {
             // 1.1/ user wants to buy
-
-            var matchingSortedAskIds = (marketOrderBook.sell) ? [] : marketOrderBook.sell
+            var matchingSortedAskIds = marketOrderBook.sell
                 .filter(function (ask) {
                     return ask.outcome === userTradeOrder.data.outcomeID &&
                         parseFloat(ask.price) <= userTradeOrder.limitPrice;
@@ -38521,15 +38513,15 @@ Augur.prototype.multiTrade = function (
                     market: market,
                     outcome: userTradeOrder.data.outcomeID,
                     onSent: function onBuySentInner(data) {
-                        console.log("augurjs.js: trade: buy: onSent: %o", data);
+                        console.log("[multiTrade] trade: buy: onSent:", data);
                         onBuySellSent(requestId, data);
                     },
                     onSuccess: function onBuySuccessInner(data) {
-                        console.log("augurjs.js: trade: buy: onSuccess: %o", data);
+                        console.log("[multiTrade] trade: buy: onSuccess:", data);
                         onBuySellSuccess(requestId, data);
                     },
                     onFailed: function onBuyFailureInner(data) {
-                        console.log("augurjs.js: trade: buy: onFail: %o", data);
+                        console.log("[multiTrade] trade: buy: onFail:", data);
                         onBuySellFailed(requestId, data);
                     }
                 });
@@ -38561,21 +38553,21 @@ Augur.prototype.multiTrade = function (
                         var etherNotFilled = Number(data.callReturn[1]);
                         if (etherNotFilled > 0) {
                             // 3.1/ order was partially filled so place bid on order book
-                            this.buy({
+                            self.buy({
                                 amount: etherNotFilled,
                                 price: userTradeOrder.limitPrice,
                                 market: market,
                                 outcome: userTradeOrder.data.outcomeID,
                                 onSent: function localOnBuySent(data) {
-                                    console.log("augurjs.js: trade: buy: onSent: %o", data);
+                                    console.log("[multiTrade] trade: buy: onSent:", data);
                                     onBuySellSent(requestId, data);
                                 },
                                 onSuccess: function localOnBuySuccess(data) {
-                                    console.log("augurjs.js: trade: buy: onSuccess: %o", data);
+                                    console.log("[multiTrade] trade: buy: onSuccess:", data);
                                     onBuySellSuccess(requestId, data);
                                 },
                                 onFailed: function localOnBuyFailure(data) {
-                                    console.log("augurjs.js: trade: buy: onFail: %o", data);
+                                    console.log("[multiTrade] trade: buy: onFail:", data);
                                     onBuySellFailed(requestId, data);
                                 }
                             });
@@ -38589,7 +38581,7 @@ Augur.prototype.multiTrade = function (
             }
         } else {
             // 1.2/ user wants to sell
-            var matchingSortedBidIds = (marketOrderBook.buy) ? [] : marketOrderBook.buy
+            var matchingSortedBidIds = marketOrderBook.buy
                 .filter(function (bid) {
                     return bid.outcome === userTradeOrder.data.outcomeID &&
                         parseFloat(bid.price) >= userTradeOrder.limitPrice;
@@ -38612,15 +38604,15 @@ Augur.prototype.multiTrade = function (
                         market: market,
                         outcome: userTradeOrder.data.outcomeID,
                         onSent: function localOnSellSent(data) {
-                            console.log("augurjs.js: trade: sell: onSent: %o", data);
+                            console.log("[multiTrade] trade: sell: onSent:", data);
                             onBuySellSent(requestId, data);
                         },
                         onSuccess: function localOnSellSuccess(data) {
-                            console.log("augurjs.js: trade: sell: onSuccess: %o", data);
+                            console.log("[multiTrade] trade: sell: onSuccess:", data);
                             onBuySellSuccess(requestId, data);
                         },
                         onFailed: function localOnSellFailure(data) {
-                            console.log("augurjs.js: trade: sell: onFail: %o", data);
+                            console.log("[multiTrade] trade: sell: onFail:", data);
                             onBuySellFailed(requestId, data);
                         }
                     });
@@ -38652,21 +38644,21 @@ Augur.prototype.multiTrade = function (
                             var sharesNotSold = Number(data.callReturn[2]);
                             if (sharesNotSold > 0) {
                                 // 4.1.2 order was partially filled
-                                this.sell({
+                                self.sell({
                                     amount: sharesNotSold,
                                     price: userTradeOrder.limitPrice,
                                     market: market,
                                     outcome: userTradeOrder.data.outcomeID,
                                     onSent: function (data) {
-                                        console.log("augurjs.js: trade: sell: onSent: %o", data);
+                                        console.log("[multiTrade] trade: sell: onSent:", data);
                                         onBuySellSent(requestId, data);
                                     },
                                     onSuccess: function (data) {
-                                        console.log("augurjs.js: trade: sell: onSuccess: %o", data);
+                                        console.log("[multiTrade] trade: sell: onSuccess:", data);
                                         onBuySellSuccess(requestId, data);
                                     },
                                     onFailed: function (data) {
-                                        console.log("augurjs.js: trade: sell: onFail: %o", data);
+                                        console.log("[multiTrade] trade: sell: onFail:", data);
                                         onBuySellFailed(requestId, data);
                                     }
                                 });
