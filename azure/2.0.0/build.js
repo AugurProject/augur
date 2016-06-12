@@ -11923,8 +11923,8 @@ var ex = {};
 
 ex.connect = function connect(cb) {
 	var options = {
-		http: undefined,
-		ws: undefined
+		http: "http://127.0.0.1:8545",
+		ws: "ws://127.0.0.1:8546"
 	};
 	if ("true") {
 		if ("{{ $BUILD_AZURE_WSURL }}" && "{{ $BUILD_AZURE_WSURL }}" !== 'null') {
@@ -11939,7 +11939,7 @@ ex.connect = function connect(cb) {
 	}
 	_augur2.default.connect(options, function (connection) {
 		if (!connection) return cb('could not connect to ethereum');
-		console.log("connected:", connection);
+		console.log('connected:', connection);
 		cb(null, connection);
 	});
 };
