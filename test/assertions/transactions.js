@@ -18,8 +18,6 @@ function transactionsAssertion(actual) {
 		assert.isDefined(actual[0], `transactions[0] isn't defined`);
 		assert.isObject(actual[0], `transactions[0] isn't an object`);
 		transactionAssertion(actual[0]);
-	}	else {
-		console.log(`! transactions is an empty array.`);
 	}
 }
 module.exports = transactionsAssertion;
