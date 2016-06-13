@@ -11939,7 +11939,7 @@ ex.connect = function connect(cb) {
 	}
 	_augur2.default.connect(options, function (connection) {
 		if (!connection) return cb('could not connect to ethereum');
-		console.log("connected:", connection);
+		console.log('connected:', connection);
 		cb(null, connection);
 	});
 };
