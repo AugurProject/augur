@@ -29,6 +29,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+import { BID } from '../../bids-asks/constants/bids-asks-types'
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
@@ -193,15 +194,17 @@ export const assembleMarket = memoizerific(1000)((
 																dispatch);
 
 		outcome.trade = {
+			side: outcomeTradeInProgress && outcomeTradeInProgress.side || BID,
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			updateTradeOrder: (outcomeId, shares, limitPrice) =>
+			updateTradeOrder: (outcomeId, shares, limitPrice, side) =>
 				dispatch(updateTradesInProgress(
 					marketID,
 					outcome.id,
 					shares,
-					limitPrice))
+					limitPrice,
+					side))
 		};
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {

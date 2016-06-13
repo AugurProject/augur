@@ -1,16 +1,18 @@
 import * as AugurJS from '../../../services/augurjs';
+import { BID } from '../../bids-asks/constants/bids-asks-types'
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 
-export function updateTradesInProgress(marketID, outcomeID, numShares, limitPrice) {
+export function updateTradesInProgress(marketID, outcomeID, numShares, limitPrice, side) {
 	return (dispatch, getState) => {
 		const tradesInProgress = getState().tradesInProgress;
 
 		if (tradesInProgress[marketID] &&
 			tradesInProgress[marketID][outcomeID] &&
 			tradesInProgress[marketID][outcomeID].numShares === numShares &&
-			tradesInProgress[marketID][outcomeID].limitPrice === limitPrice) {
+			tradesInProgress[marketID][outcomeID].limitPrice === limitPrice &&
+			tradesInProgress[marketID][outcomeID].side === side) {
 			return;
 		}
 
@@ -31,6 +33,14 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 			}
 		}
 
+		if (side === undefined) {
+			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
+				side = tradesInProgress[marketID][outcomeID].side;
+			} else {
+				side = BID;
+			}
+		}
+
 		// if (numShares >= 0) {
 		// 	simulation = AugurJS.getSimulatedBuy(marketID, outcomeID, numShares);
 		// } else {
@@ -43,7 +53,8 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 			details: {
 				numShares,
 				limitPrice,
-				totalCost: numShares * limitPrice
+				totalCost: numShares * limitPrice,
+				side: side
 			}
 		} });
 	};

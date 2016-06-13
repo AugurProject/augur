@@ -10,6 +10,7 @@ import {
 // 	selectOutcomeAsks
 // } from '../../bids-asks/selectors/select-bids-asks';
 import { makeTradeTransaction } from '../../transactions/actions/add-trade-transaction';
+import { ASK } from '../../bids-asks/constants/bids-asks-types'
 
 export const selectOutcomeTradeOrders =
 (market, outcome, outcomeTradeInProgress, dispatch) => {
@@ -22,14 +23,14 @@ export const selectOutcomeTradeOrders =
 	const numShares = outcomeTradeInProgress.numShares;
 	const	totalCost = outcomeTradeInProgress.totalCost;
 	const	tradeTransaction = makeTradeTransaction(
-			numShares < 0,
+			outcomeTradeInProgress.side === ASK,
 			market,
 			outcome,
 			Math.abs(numShares),
 			outcomeTradeInProgress.limitPrice,
 			totalCost,
-			0.9,
-			-0.3,
+			0,
+			0,
 			dispatch
 		);
 
