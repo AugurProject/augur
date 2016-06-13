@@ -19,7 +19,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.8";
+    this.version = "1.3.9";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -1753,12 +1753,12 @@ Augur.prototype.makeHash = function (salt, report, event, from, indeterminate, i
     } else {
         fixedReport = abi.fix(report, "hex");
     }
-    return abi.hex(this.utils.sha3([
+    return this.utils.sha3([
         from || this.from,
         abi.hex(salt),
         fixedReport,
         event
-    ]));
+    ]);
 };
 Augur.prototype.makeHash_contract = function (salt, report, event, sender, indeterminate, isScalar, callback) {
     if (salt.constructor === Object && salt.salt) {
