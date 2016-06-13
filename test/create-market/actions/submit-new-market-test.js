@@ -62,10 +62,25 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		type: 'loadMarket'
 	});
 
+	let mockLoadPriceHistory = {};
+	mockLoadPriceHistory.loadPriceHistory = sinon.stub().returns(null, {});
+
+	let loadFullMarketSelector = proxyquire('../../../src/modules/market/actions/load-full-market', {
+		'../../market/actions/load-price-history': mockLoadPriceHistory
+	});
+
+	let fakeSelectTransactionsLink = {};
+	fakeSelectTransactionsLink.selectTransactionsLink = sinon.stub().returns({
+		onClick: () => {
+			loadFullMarketSelector.loadFullMarket(state.selectedMarketID);
+		}
+	});
+
 	action = proxyquire('../../../src/modules/create-market/actions/submit-new-market', {
 		'../../transactions/actions/add-create-market-transaction': fakeInclude,
 		'../../../services/augurjs': fakeAugurJS,
-		'../../market/actions/load-market': fakeLoadMarket
+		'../../market/actions/load-market': fakeLoadMarket,
+		'../../link/selectors/links': fakeSelectTransactionsLink
 	});
 
 	beforeEach(() => {
@@ -101,13 +116,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			}
 		}));
 		out = [{
-			type: 'SHOW_LINK',
-			parsedURL: {
-				pathArray: ['/transactions'],
-				searchParams: {},
-				url: '/transactions'
-			}
-		}, {
 			type: 'UPDATE_TRANSACTIONS_DATA',
 			'test123': {
 				type: 'create_market',

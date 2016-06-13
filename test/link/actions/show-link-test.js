@@ -1,18 +1,31 @@
 import {
 	assert
 } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import * as action from '../../../src/modules/link/actions/show-link';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+import * as mockStore from '../../mockStore';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+// import * as action from '../../../src/modules/link/actions/show-link';
 
 describe(`modules/link/actions/show-link.js`, () => {
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let thisTestState = Object.assign({}, testState);
-	let store = mockStore(thisTestState);
-	let out;
+	let {
+		state,
+		store
+	} = mockStore.default;
+	let out, action;
 	const URL = '/test?search=example';
+
+	let mockFullMarket = {};
+	mockFullMarket.loadFullMarket = sinon.stub().returns({
+		type: 'SHOW_LINK',
+		value: 'loadFullMarket has been called, this is a stub.'
+	});
+
+	action = proxyquire('../../../src/modules/link/actions/show-link', {
+		'../../market/actions/load-full-market': mockFullMarket
+	});
 
 	beforeEach(() => {
 		store.clearActions();
@@ -45,6 +58,9 @@ describe(`modules/link/actions/show-link.js`, () => {
 				},
 				url: '/test?search=example'
 			}
+		}, {
+			type: 'SHOW_LINK',
+			value: 'loadFullMarket has been called, this is a stub.'
 		}];
 
 		assert.deepEqual(store.getActions(), out, `Didn't parse the url correctly`);
@@ -53,7 +69,16 @@ describe(`modules/link/actions/show-link.js`, () => {
 
 	it(`should be able to dispatch the previous link`, () => {
 		store.dispatch(action.showPreviousLink(URL));
-
+		out = [{
+			type: 'SHOW_LINK',
+			parsedURL: {
+				pathArray: ['/test'],
+				searchParams: {
+					search: 'example'
+				},
+				url: '/test?search=example'
+			}
+		}];
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the previous link`);
 		assert.deepEqual(window.history.state, [], `window.history.state has a history of links instead of being empty as expected`);
 	});

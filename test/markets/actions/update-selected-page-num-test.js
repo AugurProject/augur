@@ -1,17 +1,26 @@
 import {
 	assert
 } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import * as action from '../../../src/modules/markets/actions/update-selected-page-num';
+import * as mockStore from '../../mockStore';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+// import * as action from '../../../src/modules/markets/actions/update-selected-page-num';
 
 describe(`modules/markets/actions/update-selected-page-num.js`, () => {
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let state = Object.assign({}, testState);
-	let store = mockStore(state);
-	let out;
+	let { state, store } = mockStore.default;
+	let out, action;
+	let mockShowLink = { showLink: () => {} };
+
+	sinon.stub(mockShowLink, 'showLink', (href) => {
+		return { type: 'SHOW_LINK', href };
+	});
+
+	action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
+		'../../link/actions/show-link': mockShowLink
+	});
 
 	beforeEach(() => {
 		store.clearActions();
@@ -28,6 +37,7 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 	});
 
 	afterEach(() => {
+		store.clearActions();
 		global.window = {};
 	});
 
@@ -37,25 +47,13 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 			selectedPageNum: 2
 		}, {
 			type: 'SHOW_LINK',
-			parsedURL: {
-				pathArray: ['/'],
-				searchParams: {
-					filters: 'isOpen'
-				},
-				url: '/?filters=isOpen'
-			}
+			href: '/?filters=isOpen'
 		}, {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			selectedPageNum: 5
 		}, {
 			type: 'SHOW_LINK',
-			parsedURL: {
-				pathArray: ['/'],
-				searchParams: {
-					filters: 'isOpen'
-				},
-				url: '/?filters=isOpen'
-			}
+			href: '/?filters=isOpen'
 		}];
 		store.dispatch(action.updateSelectedPageNum(2));
 		store.dispatch(action.updateSelectedPageNum(5));

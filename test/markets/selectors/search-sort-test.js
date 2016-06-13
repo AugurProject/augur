@@ -4,19 +4,12 @@ import {
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
-import searchSortAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/searchSort';
+import {assertions} from 'augur-ui-react-components';
 
 let searchSort;
 describe(`modules/markets/selectors/search-sort.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	// const middlewares = [thunk];
-	// const mockStore = configureMockStore(middlewares);
-	let selector, out, test;
-	// let state = Object.assign({}, testState);
-	// store = mockStore(state);
+	let selector, expected, actual;
 	let { state, store } = mockStore.default;
 	let mockSort = {
 		updateSelectedSort: () => {}
@@ -45,8 +38,8 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 	});
 
 	it(`should return information about the sorting filters in search`, () => {
-		test = selector.default();
-		let actions = [{
+		actual = selector.default();
+		expected = [{
 			type: 'UPDATE_SELECTED_SORT',
 			value: {
 				prop: 'endDate',
@@ -54,40 +47,11 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 			}
 		}];
 
-		searchSortAssertion(test);
-		// assertions.selectedSortAssertion(test.selectedSort);
-		// assertions.sortOptionsAssertion(test.sortOptions);
-
-		out = {
-			selectedSort: {
-				isDesc: true,
-				prop: 'volume'
-			},
-			sortOptions: [{
-				label: 'Newest Market',
-				value: 'creationTime',
-				isDesc: true
-			}, {
-				label: 'Soonest Expiry',
-				value: 'endDate',
-				isDesc: false
-			}, {
-				label: 'Most Volume',
-				value: 'volume',
-				isDesc: true
-			}, {
-				label: 'Lowest Fee',
-				value: 'tradingFeePercent',
-				isDesc: false
-			}],
-			onChangeSort: test.onChangeSort
-		};
-
-		test.onChangeSort('endDate', false);
+		assertions.searchSort(actual);
+		actual.onChangeSort('endDate', false);
 
 		assert(mockSort.updateSelectedSort.calledOnce, `updateSelectedSort wasn't called once as expected`);
-		assert.deepEqual(store.getActions(), actions, `Didn't dispatch the expected action object when onChangeSort was called from output selector object`);
-		assert.deepEqual(test, out, `Didn't produce the expected output object`);
+		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action object when onChangeSort was called from output selector object`);
 	});
 });
 

@@ -3,9 +3,6 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
 import * as mockStore from '../../mockStore';
 import allMarkets from './markets-all-test';
 import filteredMarkets from './markets-filtered-test';
@@ -14,11 +11,7 @@ import favoriteMarkets from './markets-favorite-test';
 let unpaginatedMarkets;
 describe('modules/markets/selectors/markets-unpaginated', () => {
 	proxyquire.noPreserveCache().noCallThru();
-	// const middlewares = [thunk];
-	// const mockStore = configureMockStore(middlewares);
 	let selector, actual, expected;
-	// let state = Object.assign({}, testState);
-	// store = mockStore(state);
 	let { state, store } = mockStore.default;
 
 	const mockSelectors = {

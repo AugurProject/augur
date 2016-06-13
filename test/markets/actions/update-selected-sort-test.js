@@ -1,17 +1,26 @@
 import {
 	assert
 } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import * as action from '../../../src/modules/markets/actions/update-selected-sort';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+import * as mockStore from '../../mockStore';
+// import configureMockStore from 'redux-mock-store';
+// import thunk from 'redux-thunk';
+// import testState from '../../testState';
+// import * as action from '../../../src/modules/markets/actions/update-selected-sort';
 
 describe('modules/markets/actions/update-selected-sort', () => {
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let state = Object.assign({}, testState);
-	let store = mockStore(state);
-	let out;
+	let { state, store } = mockStore.default;
+	let out, action;
+	let mockShowLink = { showLink: () => {} };
+
+	sinon.stub(mockShowLink, 'showLink', (href, options) => {
+		return { type: 'SHOW_LINK', href, options };
+	});
+
+	action = proxyquire('../../../src/modules/markets/actions/update-selected-sort', {
+		'../../link/actions/show-link': mockShowLink
+	});
 
 	beforeEach(() => {
 		store.clearActions();
@@ -28,6 +37,7 @@ describe('modules/markets/actions/update-selected-sort', () => {
 	});
 
 	afterEach(() => {
+		store.clearActions();
 		global.window = {};
 	});
 
@@ -39,13 +49,8 @@ describe('modules/markets/actions/update-selected-sort', () => {
 			selectedSort: 'puppies'
 		}, {
 			type: 'SHOW_LINK',
-			parsedURL: {
-				pathArray: ['/'],
-				searchParams: {
-					filters: 'isOpen'
-				},
-				url: '/?filters=isOpen'
-			}
+			href: '/?filters=isOpen',
+			options: { preventScrollTop: true }
 		}];
 
 		assert.deepEqual(store.getActions(), out, `Didn't return the correct action object`);

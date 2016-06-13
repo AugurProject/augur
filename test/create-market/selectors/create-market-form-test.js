@@ -1,6 +1,6 @@
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
-import {assertions} from 'augur-ui-react-components';
+import { assertions } from 'augur-ui-react-components';
 
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -24,7 +24,6 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		actual = selector.default();
 		// console.log(actual);
 		state.createMarketInProgress = actual;
-		state.createMarketInProgress.endDate = new Date('01/01/2017');
 		assertions.createMarketForm(actual);
 	});
 
@@ -38,22 +37,19 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		state.createMarketInProgress = actual;
 	});
 
-	// it(`should handle a binary market step 3`, () => {
-		// console.log(state.createMarketInProgress);
-		// state.createMarketInProgress.step = 3;
-		// console.log(state.createMarketInProgress);
-		// actual = selector.default();
+	it(`should handle a binary market step 3`, () => {
+		state.createMarketInProgress.step = 3;
+		actual = selector.default();
 		// console.log(actual);
-		// assertions.createMarketForm(actual);
-		// state.createMarketInProgress = actual;
-	// });
+		assertions.createMarketForm(actual);
+		state.createMarketInProgress = actual;
+	});
 
-	// it(`should handle a binary market step 4`, () => {
-	// 	console.log(state.createMarketInProgress);
-	// 	state.createMarketInProgress.step = 4;
-	// 	actual = selector.default();
-	// 	console.log(actual);
-	// 	assertions.createMarketForm(actual);
-	// 	state.createMarketInProgress = actual;
-	// });
+	it(`should handle a binary market step 4`, () => {
+		state.createMarketInProgress.step = 4;
+		actual = selector.default();
+		// console.log(actual);
+		assertions.createMarketForm(actual);
+		state.createMarketInProgress = actual;
+	});
 });

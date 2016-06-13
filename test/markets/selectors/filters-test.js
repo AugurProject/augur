@@ -9,12 +9,9 @@ import filteredMarkets from './markets-filtered-test';
 let filters;
 describe(`modules/markets/selectors/filters.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	// const middlewares = [thunk];
-	// const mockStore = configureMockStore(middlewares);
 	let selector, out, test;
 	let { state, store } = mockStore.default;
-	// let state = Object.assign({}, testState);
-	// store = mockStore(state);
+
 	let mockFilter = {
 		toggleFilter: () => {}
 	};

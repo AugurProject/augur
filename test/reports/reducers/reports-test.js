@@ -28,6 +28,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
 			test: {
 				example: 'example'
 			},
+			testEventID: { isUnethical: false },
 			example: {
 				test: 'test'
 			}

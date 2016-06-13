@@ -3,25 +3,13 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
 import * as mockStore from '../../mockStore';
-import paginationAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/pagination';
+import {assertions} from 'augur-ui-react-components';
 
 let pagination;
 describe(`modules/markets/selectors/pagination.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	// const middlewares = [thunk];
-	// const mockStore = configureMockStore(middlewares);
-	let selector, out, test;
-	// let state = Object.assign({}, testState, {
-	// 	pagination: {
-	// 		numPerPage: 10,
-	// 		selectedPageNum: 5
-	// 	}
-	// });
-	// store = mockStore(state);
+	let selector, expected, actual;
 	let { state, store } = mockStore.default;
 
 	let mockPage = {
@@ -57,30 +45,14 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 	});
 
 	it(`should change the selected page number`, () => {
-		test = selector.default();
-		let actions = [{
+		actual = selector.default();
+		expected = [{
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			pageNum: 4
 		}];
-		out = {
-			numUnpaginated: 100,
-			selectedPageNum: 5,
-			numPerPage: 10,
-			numPages: 10,
-			startItemNum: 41,
-			endItemNum: 50,
-			onUpdateSelectedPageNum: test.onUpdateSelectedPageNum,
-			nextPageNum: 6,
-			previousPageNum: 4,
-			nextItemNum: 51,
-			previousItemNum: 31
-		};
-		paginationAssertion(test);
-		test.onUpdateSelectedPageNum(4);
-
-		// assert.deepEqual(test, out, `Didn't return the expected object`);
-		// assert(mockPage.updateSelectedPageNum.calledOnce, `updateSelectedPageNum didn't get called once as expected`);
-		assert.deepEqual(store.getActions(), actions, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
+		assertions.pagination(actual);
+		actual.onUpdateSelectedPageNum(4);
+		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
 	});
 });
 
