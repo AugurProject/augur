@@ -11923,8 +11923,8 @@ var ex = {};
 
 ex.connect = function connect(cb) {
 	var options = {
-		http: "http://127.0.0.1:8545",
-		ws: "ws://127.0.0.1:8546"
+		http: undefined,
+		ws: undefined
 	};
 	if ("true") {
 		if ("{{ $BUILD_AZURE_WSURL }}" && "{{ $BUILD_AZURE_WSURL }}" !== 'null') {
