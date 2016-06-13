@@ -21,7 +21,7 @@ const OrderBook = React.createClass({
 					{ p.bids.map((bid, i) => (
 						<article key={ bid.price.full } className="bid-ask bid">
 							<Clickable
-								onClick={ () => { p.updateTradeOrder(p.outcome.id, bid.shares.value, bid.price.value) } }>
+								onClick={ () => { p.updateTradeOrder(p.outcome.id, bid.shares.value, bid.price.value, 'ask') } }>
 								<ValueDenomination className="shares" { ...bid.shares } />
 							</Clickable>
 							<Clickable onClick={ () => { p.updateTradeOrder(p.outcome.id, 0, bid.price.value) } }>
@@ -44,7 +44,7 @@ const OrderBook = React.createClass({
 								<ValueDenomination className="price" { ...ask.price } />
 							</Clickable>
 							<Clickable
-								onClick={ () => { p.updateTradeOrder(p.outcome.id, -ask.shares.value, ask.price.value) } }>
+								onClick={ () => { p.updateTradeOrder(p.outcome.id, ask.shares.value, ask.price.value, 'bid') } }>
 								<ValueDenomination className="shares" { ...ask.shares } />
 							</Clickable>
 						</article>
