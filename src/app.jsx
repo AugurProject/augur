@@ -61,7 +61,8 @@ export default function(appElement, selectors) {
     	case M:
     		node = <MarketPage
     		            siteHeader={ p.siteHeader }
-    		            market={ p.market }
+						sideOptions={ p.sideOptions }
+						market={ p.market }
     		            numPendingReports={ p.marketsTotals.numPendingReports } />;
     		break;
 

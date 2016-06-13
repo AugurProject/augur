@@ -244,6 +244,7 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
+						side: {value: 'bid', label: 'Buy'},
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {
@@ -255,13 +256,16 @@ function makeMarkets(numMarkets = 25) {
 						 +  @param {Number|undefined} shares Pass undefined to keep the value unchanged
 						 +  @param {Number|undefined} limitPrice Pass undefined to keep the value unchanged
 						 */
-						updateTradeOrder: (outcomeId, shares, limitPrice) => {
+						updateTradeOrder: (outcomeId, shares, limitPrice, side) => {
 							let outcome = m.outcomes.find((outcome) => outcome.id === outcomeId);
 							if (typeof shares !== 'undefined') {
 								outcome.trade.numShares = shares;
 							}
 							if (typeof limitPrice !== 'undefined') {
 								outcome.trade.limitPrice = limitPrice;
+							}
+							if (typeof side !== 'undefined') {
+								outcome.trade.side = side;
 							}
 							outcome.trade.profitLoss = makeNumber(Math.round(outcome.trade.numShares * outcome.trade.limitPrice * 100) / 100, 'eth');
 							require('../selectors').update();

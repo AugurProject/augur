@@ -20,6 +20,7 @@ const TradePanel = React.createClass({
 						<span className="last-price">Last</span>
 						<span className="top-bid">Top Bid</span>
 						<span className="top-ask">Top Ask</span>
+						<span className="num-shares">Side</span>
 						<span className="num-shares">Shares</span>
 						<span className="limit-price">Limit</span>
 						<span className="fee-to-pay">Fee</span>
@@ -28,6 +29,7 @@ const TradePanel = React.createClass({
 					{ p.outcomes && p.outcomes.map(outcome => (
 						<TradePanelItem
 							key={ outcome.id }
+							sideOptions={ p.sideOptions }
 							{ ...outcome }
 							{ ...outcome.trade } />
 					))}

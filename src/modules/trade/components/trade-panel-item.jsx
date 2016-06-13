@@ -3,6 +3,7 @@ import classnames from 'classnames';
 
 import ValueDenomination from '../../common/components/value-denomination';
 import Input from '../../common/components/input';
+import Dropdown from '../../common/components/dropdown';
 import {Clickable} from '../../common/components/clickable';
 
 const TradePanelItem = React.createClass({
@@ -12,6 +13,7 @@ const TradePanelItem = React.createClass({
 
 		numShares: React.PropTypes.number,
 		limitPrice: React.PropTypes.number,
+		sideOptions: React.PropTypes.array,
 
 		lastPrice: React.PropTypes.object,
 		topBid: React.PropTypes.object,
@@ -41,6 +43,12 @@ const TradePanelItem = React.createClass({
 					<ValueDenomination className="top-ask" { ...p.topAsk } />
 				</Clickable>
 
+				<Dropdown
+					selected={ p.sideOptions.find(opt => opt.value === p.side) }
+					options={p.sideOptions}
+					onChange={(selectedOption) => { p.updateTradeOrder(p.id, undefined, undefined, selectedOption) }}
+				/>
+				
 				<Input
 					className="num-shares"
 					type="text"

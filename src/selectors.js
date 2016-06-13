@@ -52,6 +52,7 @@ selectors.searchSort = {
 selectors.marketsHeader =  {};
 
 selectors.market =  {}; // selected market
+selectors.sideOptions = [{value: 'bid', label: 'Buy'}, {value: 'ask', label: 'Sell'}];
 selectors.marketsTotals = {
 	positionsSummary: {
 		numPositions: makeNumber(3, 'Positions', true),

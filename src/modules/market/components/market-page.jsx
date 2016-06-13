@@ -53,6 +53,7 @@ const MarketPage = React.createClass({
 				nodes.push(
 					<TradePanel
 						key="trade-panel"
+						sideOptions={ p.sideOptions }
 						{ ...p.market }
 						{ ...p.market.tradeSummary } />
 				);
