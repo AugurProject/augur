@@ -3799,78 +3799,45 @@ module.exports={
 },{}],5:[function(require,module,exports){
 module.exports={
     "0x": "no response or bad input",
-    "closeMarket": {
-        "0": "fail/trading not over yet/event not expired or closed already",
-        "-1": "Market has no cash anyway / already closed",
-        "-2": "0 outcome",
-        "-4": "Outcome .5 once, pushback and retry",
-        "-6": "bonded pushed forward market not ready to be resolved",
-        "-7": "event not reportable >.99"
+    "buy": {
+        "-1": "amount/price bad or no market",
+        "-2": "oracle-only branch",
+        "-4": "not enough money or shares"
     },
-    "submitReportHash": {
-        "0": "could not set report hash",
-        "-1": "reporter (you) doesn't (don't) exist, or voting period over or hasn't started yet",
-        "-2": "not in hash submitting timeframe or event doesn't exist / not a valid event expiring then",
-        "-4": "already resolved",
-        "-5": ".99 market",
-        "-6": "no markets"
+    "buyCompleteSets": {
+        "0": "market not found",
+        "-1": "oracle-only branch",
+        "-3": "not enough cash"
     },
-    "submitReport": {
-        "-1": "has already reported",
-        "-2": "reporter (you) doesn't (don't) exist, or voting period over or hasn't started yet",
-        "-3": "hash doesn't match",
-        "-4": "no rep",
-        "-5": "bad report",
-        "-6": "hash not low enough",
-        "-8": "invalid event",
-        "-9": "already resolved",
-        "-10": "<24 hr left in period, too late to report, able to put up readj. bonds though"
+    "cashFaucet": {
+        "-1": "Hey, you're not broke!"
     },
     "claimProceeds": {
         "0": "reporting not done",
         "-1": "trader doesn't exist"
     },
-    "penalizeNotEnoughReports": {
-        "-1": "already done",
-        "-2": "hasn't reported this period"
-    },
-    "penalizationCatchup": {
-        "-2": "can only be called during the first half of the reporting period"
-    },
-    "penalizeWrong": {
-        "-1": "pushed back event already resolved, so can't redistribute rep based off of its original expected expiration period",
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-3": "need to do not enough reports penalization [or lackthereof]"
+    "closeMarket": {
+        "0": "fail/trading not over yet/event not expired or closed already",
+        "-1": "Market has no cash anyway / already closed",
+        "-2": "0 outcome / not reported on yet",
+        "-3": "not final round 2 event",
+        "-5": "Event forked and not final yet",
+        "-6": "bonded pushed forward market not ready to be resolved",
+        "-7": "event not reportable >.99",
+        "-8": "market isn't in branch"
     },
     "collectFees": {
-        "-2": "needs to be second half of reporting period to claim rep [1st half is when redistribution is done]"
-    },
-    "slashRep": {
-        "0": "not a valid claim",
-        "-2": "reporter doesn't exist"
-    },
-    "createSubbranch": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "no money for creation fee or branch already exists"
+        "-2": "needs to be second half of reporting period to claim rep (1st half is when redistribution is done)"
     },
     "createEvent": {
-        "0": "not enough money to pay fees or event already exists",
         "-1": "we're either already past that date, branch doesn't exist, or description is bad",
-        "-2": "max value < min value"
+        "0": "not enough money to pay fees or event already exists",
+        "-2": "max value < min value",
+        "-9": "would expire during non-reporting fork period"
     },
     "createMarket": {
         "-1": "bad input or parent doesn't exist",
         "-2": "too many events",
-        "-3": "too many outcomes",
-        "-4": "not enough money or market already exists",
-        "-5": "fee too low",
-        "-6": "duplicate events",
-        "-7": "event already expired"
-    },
-    "createSingleEventMarket": {
-        "0": "not enough money to pay fees or event already exists",
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
-        "-2": "max value < min value",
         "-3": "too many outcomes",
         "-4": "not enough money",
         "-5": "fee too low",
@@ -3879,20 +3846,81 @@ module.exports={
         "-8": "market already exists",
         "-9": "would expire during non-reporting fork period"
     },
-    "sendReputation": {
-        "0": "not enough reputation",
-        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-        "-2": "Receiving address doesn't exist"
+    "createSubbranch": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "no money for creation fee or branch already exists"
     },
-    "buy": {
-        "-1": "amount/price bad or no market",
-        "-2": "oracle-only branch",
-        "-4": "not enough money or shares"
+    "penalizationCatchup": {
+        "-2": "can only be called during the first half of the reporting period"
+    },
+    "penalizeNotEnoughReports": {
+        "-1": "already done",
+        "-2": "hasn't reported this period"
+    },
+    "penalizeOnForkedEvent": {
+        "-2": "already past first half of new period and needed to penalize before then",
+        "-4": "fork event isn't resolved yet",
+        "-5": "already done for all events in this period"
+    },
+    "penalizeRoundTwoWrong": {
+        "0": "event is a fork event",
+        "-1": "need to penalize in round 2 penalize function",
+        "-2": "already past first half of new period and needed to penalize before then",
+        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
+        "-5": "already done for all events in this period",
+        "-6": "forked events should be penalized using the fork penalization function"
+    },
+    "penalizeWrong": {
+        "0": "event is a fork event",
+        "-1": "need to penalize in round 2 penalize function",
+        "-2": "already past first half of new period and needed to penalize before then",
+        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
+        "-5": "already done for all events in this period",
+        "-6": "forked events should be penalized using the fork penalization function",
+        "-7": "no outcome"
     },
     "sell": {
         "-1": "amount/price bad or no market",
         "-2": "oracle only branch",
         "-4": "not enough money or shares"
+    },
+    "sellCompleteSets": {
+        "-1": "oracle-only branch",
+        "-2": "not a participant in this market",
+        "-3": "not enough shares"
+    },
+    "sendReputation": {
+        "0": "not enough reputation",
+        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+        "-2": "Receiving address doesn't exist"
+    },
+    "short_sell": {
+        "-1": "oracle only branch",
+        "-2": "bad trade hash",
+        "-3": "trader doesn't exist / own shares in this market",
+        "-4": "must buy at least .00000001 in value",
+        "10": "insufficient balance"
+    },
+    "slashRep": {
+        "0": "not a valid claim",
+        "-2": "reporter doesn't exist"
+    },
+    "submitReportHash": {
+        "0": "not caught up on rep redistributions",
+        "-1": "invalid event",
+        "-2": "not in first half of period (commit phase)"
+    },
+    "submitReport": {
+        "0": "reporter doesn't exist or has <1 rep",
+        "-1": "has already reported",
+        "-2": "not in second half of period [reveal part]",
+        "-3": "hash doesn't match",
+        "-4": "bad report",
+        "-5": "invalid event",
+        "-6": "already resolved",
+        "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
+        "-8": "fees couldn't be collected",
+        "-9": "need to pay not reporting bond"
     },
     "trade": {
         "-1": "oracle only branch",
@@ -3969,6 +3997,10 @@ module.exports={
         "error": 411,
         "message": "RPC request to hosted nodes failed"
     },
+    "TRANSACTION_INVALID": {
+        "error": 412,
+        "message": "transaction validation failed"
+    },
     "HANDLE_TAKEN": {
         "error": 422,
         "message": "handle already taken"
@@ -4012,10 +4044,6 @@ module.exports={
     "ETHEREUM_NOT_FOUND": {
         "error": 651,
         "message": "no active ethereum node(s) found"
-    },
-    "ROOT_NOT_FOUND": {
-        "error": 700,
-        "message": "no LS-LMSR objectve function solution found"
     },
     "CHECK_ORDER_BOOK_FAILED": {
         "error": 710,
@@ -36424,7 +36452,6 @@ var BigNumber = require("bignumber.js");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
-
     ZERO: new BigNumber(0),
     ONE: new BigNumber(2).toPower(64),
     ETHER: new BigNumber(10).toPower(18),
@@ -36435,25 +36462,49 @@ module.exports = {
     // expected block interval
     SECONDS_PER_BLOCK: 12,
 
+    // keythereum crypto parameters
     KDF: "pbkdf2",
     SCRYPT: "scrypt",
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
 
+    // Morden testnet faucet endpoint
     FAUCET: "https://faucet.augur.net/faucet/",
+
+    // event (log) signatures
     LOGS: {
-        // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
-        price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
-        
         // event log_add_tx(market:indexed, sender, type, price, amount, outcome, tradeid)
+        // contract: buyAndSellShares
         add_tx: "log_add_tx(int256,int256,int256,int256,int256,int256,int256)",
         
-        // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
-        fill_tx: "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)",
-        
         // event log_cancel(market:indexed, sender, price, amount, tradeid, outcome, type)
-        cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)"
+        // contract: buyAndSellShares
+        cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)",
+
+        // event thru(user:indexed, time)
+        // contract: closeMarket
+        thru: "thru(int256,int256)",
+
+        // event penalize(user:indexed, outcome, oldrep, repchange, newafterrep, p, reportValue)
+        // contract: consensus
+        penalize: "penalize(int256,int256,int256,int256,int256,int256,int256)",
+
+        // event Transfer(_from:indexed, _to:indexed, _value)
+        // contract: sendReputation
+        transfer: "Transfer(int256,int256,int256)",
+
+        // event Approval(_owner:indexed, _spender:indexed, value)
+        // contract: sendReputation
+        approval: "Approval(int256,int256,int256)",
+
+        // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
+        // contract: trade
+        price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
+        
+        // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
+        // contract: trade
+        fill_tx: "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)"
     }
 };
 
