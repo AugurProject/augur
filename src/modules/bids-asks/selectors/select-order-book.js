@@ -20,6 +20,16 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrde
 	};
 });
 
+export const selectTopBidPrice = memoizerific(10)((marketOrderBook) => {
+	const topBid = marketOrderBook.bids[0];
+	return topBid != null ? topBid.price : null;
+});
+
+export const selectTopAskPrice = memoizerific(10)((marketOrderBook) => {
+	const topAsk = marketOrderBook.asks[0];
+	return topAsk != null ? topAsk.price : null;
+});
+
 /**
  * Selects price points with aggregated amount of shares
  * 
