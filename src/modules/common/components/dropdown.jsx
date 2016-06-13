@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-module.exports = React.createClass({
+const Dropdown = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
 
@@ -12,7 +12,7 @@ module.exports = React.createClass({
 	},
 
 	render: function() {
-	    var p = this.props;
+		const p = this.props;
 
 		return (
 			<span className={ classnames('drop-down', p.className) }>
@@ -28,3 +28,5 @@ module.exports = React.createClass({
 		);
 	}
 });
+
+module.exports = Dropdown;
