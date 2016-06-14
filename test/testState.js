@@ -66,7 +66,8 @@ const testState = {
 			type: 'scalar',
 			tradingFee: 5,
 			volume: 500,
-			tags: ['tag1', 'tag2', 'tag3']
+			tags: ['tag1', 'tag2', 'tag3'],
+			orderBook: {}
 		}
 	},
 	marketOrderBooks: {
