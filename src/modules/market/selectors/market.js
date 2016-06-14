@@ -29,6 +29,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+import { BID } from '../../bids-asks/constants/bids-asks-types'
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
@@ -47,13 +48,18 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
+import { selectAggregateOrderBook, selectTopBidPrice, selectTopAskPrice } from '../../bids-asks/selectors/select-order-book';
+
 export default function () {
 	const { selectedMarketID } = store.getState();
 	return selectMarket(selectedMarketID);
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, priceHistory } = store.getState();
+	const { marketsData, favorites,
+					reports, outcomes,
+					accountTrades, tradesInProgress,
+					blockchain, priceHistory, marketOrderBooks } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -80,6 +86,8 @@ export const selectMarket = (marketID) => {
 		endDate.getDate(),
 
 		blockchain && blockchain.isReportConfirmationPhase,
+
+		marketOrderBooks[marketID],
 		store.dispatch);
 };
 
@@ -104,6 +112,7 @@ export const assembleMarket = memoizerific(1000)((
 		endDateMonth,
 		endDateDay,
 		isReportConfirmationPhase,
+		marketOrderBooks,
 		dispatch) => { // console.log('>>assembleMarket<<');
 
 	const o = {
@@ -185,15 +194,17 @@ export const assembleMarket = memoizerific(1000)((
 																dispatch);
 
 		outcome.trade = {
+			side: outcomeTradeInProgress && outcomeTradeInProgress.side || BID,
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			onChangeTrade: (numShares, limitPrice) =>
+			updateTradeOrder: (outcomeId, shares, limitPrice, side) =>
 				dispatch(updateTradesInProgress(
 					marketID,
 					outcome.id,
-					numShares,
-					limitPrice))
+					shares,
+					limitPrice,
+					side))
 		};
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {
@@ -206,6 +217,11 @@ export const assembleMarket = memoizerific(1000)((
 				positions.list.push(outcome);
 			}
 		}
+
+		const orderBook = selectAggregateOrderBook(outcome.id, marketOrderBooks);
+		outcome.orderBook = orderBook;
+		outcome.topBid = selectTopBidPrice(orderBook);
+		outcome.topAsk = selectTopAskPrice(orderBook);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 

@@ -3,7 +3,9 @@
 const testState = {
 	accountTrades: {},
 	activePage: 'markets',
-	accountTrades: { testMarketID: {} },
+	accountTrades: {
+		testMarketID: {}
+	},
 	auth: {
 		err: null,
 		selectedAuthType: 'register'
@@ -36,9 +38,13 @@ const testState = {
 		description: 'root branch',
 		periodLength: 4000
 	},
-	connection: { isConnected: true },
+	connection: {
+		isConnected: true
+	},
 	createMarketInProgress: {},
-	favorites: { testMarketID: true },
+	favorites: {
+		testMarketID: true
+	},
 	loginAccount: {
 		address: '0xtest123',
 		id: '0xtest123',
@@ -63,6 +69,9 @@ const testState = {
 			tags: ['tag1', 'tag2', 'tag3']
 		}
 	},
+	marketOrderBooks: {
+		testMarketID: {}
+	},
 	outcomes: {
 		testMarketID: {
 			testMarketID: {
@@ -79,7 +88,11 @@ const testState = {
 	priceHistory: {
 		testMarketID: {}
 	},
-	reports: { testEventID: { isUnethical: false } },
+	reports: {
+		testEventID: {
+			isUnethical: false
+		}
+	},
 	selectedFilters: {
 		isOpen: true
 	},
@@ -89,7 +102,14 @@ const testState = {
 		isDesc: true,
 		prop: 'volume'
 	},
-	selectedTags: { testtag: {name: 'testtag'}, tag: {name: 'tag'} },
+	selectedTags: {
+		testtag: {
+			name: 'testtag'
+		},
+		tag: {
+			name: 'tag'
+		}
+	},
 	tradesInProgress: {
 		testMarketID: {
 			testMarketID: {

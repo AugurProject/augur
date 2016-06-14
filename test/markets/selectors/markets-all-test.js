@@ -73,6 +73,11 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 			test2: {},
 			test3: {}
 		},
+		marketOrderBooks: {
+			test: {},
+			test2: {},
+			test3: {}
+		},
 		tradesInProgress: {
 			test: {},
 			test2: {},
@@ -83,7 +88,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	let mockMarket = {
 		assembleMarket: () => {}
 	};
-	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, dispatch) => {
+	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, dispatch) => {
 		return market;
 	});
 

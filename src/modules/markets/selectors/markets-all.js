@@ -7,11 +7,20 @@ import store from '../../../store';
 import { assembleMarket } from '../../market/selectors/market';
 
 export default function () {
-	const { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory } = store.getState();
-	return selectMarkets(marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, store.dispatch);
+	const { marketsData, favorites, reports,
+					outcomes, accountTrades, tradesInProgress,
+					blockchain, selectedSort, priceHistory, marketOrderBooks } = store.getState();
+
+	return selectMarkets(
+		marketsData, favorites, reports,
+		outcomes, accountTrades, tradesInProgress,
+		blockchain, selectedSort, priceHistory, marketOrderBooks, store.dispatch
+	);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports,
+	outcomes, accountTrades, tradesInProgress,
+	blockchain, selectedSort, priceHistory, marketOrderBooks, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -41,19 +50,21 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			endDate.getMonth(),
 			endDate.getDate(),
 			blockchain && blockchain.isReportConfirmationPhase,
+			marketOrderBooks[marketID],
 			dispatch);
 
 	}).sort((a, b) => {
 		const aVal = cleanSortVal(a[selectedSort.prop]);
 		const bVal = cleanSortVal(b[selectedSort.prop]);
 
-		if (bVal < aVal) {
-			return selectedSort.isDesc ? -1 : 1;
-		} else if (bVal > aVal) {
-			return selectedSort.isDesc ? 1 : -1;
-		}
-		return a.id < b.id ? -1 : 1;
-	});
+			if (bVal < aVal) {
+				return selectedSort.isDesc ? -1 : 1;
+			}
+			else if (bVal > aVal) {
+				return selectedSort.isDesc ? 1 : -1;
+			}
+			return a.id < b.id ? -1 : 1;
+		});
 });
 
 function cleanSortVal(val) {

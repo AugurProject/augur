@@ -3,4 +3,17 @@ export const SUCCESS = 'success';
 export const FAILED = 'failed';
 export const INTERRUPTED = 'interrupted';
 
+// Market Creation
 export const CREATING_MARKET = 'creating market...';
+
+// Order Book Generation
+export const GENERATING_ORDER_BOOK = 'generating order book...';
+
+export const SIMULATED_ORDER_BOOK = 'order book simulated';
+
+export const COMPLETE_SET_BOUGHT = 'complete set bought';
+export const ORDER_BOOK_ORDER_COMPLETE = 'order creation complete';
+export const ORDER_BOOK_OUTCOME_COMPLETE = 'outcome creation complete';
+
+// Trading
+export const PLACE_MULTI_TRADE = 'placing multi-trade';
