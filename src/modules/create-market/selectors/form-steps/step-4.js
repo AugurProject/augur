@@ -3,13 +3,11 @@ import {
 	formatPercent,
 	formatShares
 } from '../../../../utils/format-number';
-
 import {
 	BINARY,
 	CATEGORICAL,
 	SCALAR
 } from '../../../markets/constants/market-types';
-
 import {
 	TRADING_FEE_DEFAULT,
 	TRADING_FEE_MIN,
@@ -48,13 +46,13 @@ export const select = (formState) => {
 
 export const initialFairPrices = (formState) => {
 	const setInitialFairPrices = (labels) => {
-		const 	halfPriceWidth = PRICE_WIDTH_DEFAULT / 2,
-				defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
+		const halfPriceWidth = PRICE_WIDTH_DEFAULT / 2;
+		const defaultValue = formState.type === SCALAR ? // Sets the initialFairPrices to midpoint of min/max
 					((parseFloat(formState.scalarBigNum) + halfPriceWidth) + (parseFloat(formState.scalarSmallNum) - halfPriceWidth)) / 2 :
 					((1 - halfPriceWidth) + (halfPriceWidth)) / 2;
 
-		let values = [],
-			raw = [];
+		const values = [];
+		const raw = [];
 
 		labels.map((cV, i) => {
 			values[i] = {
@@ -62,76 +60,87 @@ export const initialFairPrices = (formState) => {
 				value: defaultValue
 			};
 			raw[i] = defaultValue;
+			return cV;
 		});
 
-		return { values, raw }
+		return { values, raw };
 	};
+	const labels = [];
+	switch (formState.type) {
+	case BINARY:
+		return setInitialFairPrices(['Yes', 'No']);
+	case SCALAR:
+		return setInitialFairPrices(['⇧', '⇩']);
+	case CATEGORICAL:
 
-	switch(formState.type){
-		case BINARY:
-			return setInitialFairPrices(['Yes', 'No']);
-		case SCALAR:
-			return setInitialFairPrices(['⇧', '⇩']);
-		case CATEGORICAL:
-			let labels = [];
+		formState.categoricalOutcomes.map((val, i) => {
+			labels[i] = val;
+			return val;
+		});
 
-			formState.categoricalOutcomes.map((val, i) => {
-				labels[i] = val;
-			});
+		return setInitialFairPrices(labels);
 
-			return setInitialFairPrices(labels);
-
-		default:
-			break;
+	default:
+		break;
 	}
 };
 
 export const validateTradingFee = (tradingFeePercent) => {
 	const parsed = parseFloat(tradingFeePercent);
 
-	if (!tradingFeePercent)
+	if (!tradingFeePercent) {
 		return 'Please specify a trading fee %';
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
+	}
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Trading fee must be a number';
-	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX)
-		return `Trading fee must be between ${ 
+	}
+	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX) {
+		return `Trading fee must be between ${
 				formatPercent(TRADING_FEE_MIN, true).full
 			} and ${
 				formatPercent(TRADING_FEE_MAX, true).full
 			}`;
+	}
 };
 
 export const validateMakerFee = (makerFee) => {
 	const parsed = parseFloat(makerFee);
 
-	if(!makerFee)
+	if (!makerFee) {
 		return 'Please specify a maker fee %';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	}
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Maker fee must be as number';
-	if(parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX)
+	}
+	if (parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX) {
 		return `Maker fee must be between ${
 				formatPercent(MAKER_FEE_MIN, true).full
 			} and ${
 				formatPercent(MAKER_FEE_MAX, true).full
 			}`;
+	}
 };
 
 export const validateInitialLiquidity = (type, liquidity, start, best, halfWidth, scalarMin, scalarMax) => {
-	const 	parsed = parseFloat(liquidity),
-			priceDepth = type === SCALAR ?
-				(parseFloat(start) * (parseFloat(scalarMin) + parseFloat(scalarMax) - halfWidth)) / (parseFloat(liquidity) - ( 2 * parseFloat(best))) :
-				(parseFloat(start) * (1 - halfWidth)) / (parseFloat(liquidity) - ( 2 * parseFloat(best)));
+	const	parsed = parseFloat(liquidity);
+	const	priceDepth = type === SCALAR ?
+				(parseFloat(start) * (parseFloat(scalarMin) + parseFloat(scalarMax) - halfWidth)) / (parseFloat(liquidity) - (2 * parseFloat(best))) :
+				(parseFloat(start) * (1 - halfWidth)) / (parseFloat(liquidity) - (2 * parseFloat(best)));
 
-	if(!liquidity)
+	if (!liquidity) {
 		return 'Please provide some initial liquidity';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	}
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Initial liquidity must be numeric';
-	if(priceDepth < 0 || !Number.isFinite(priceDepth))
+	}
+	if (priceDepth < 0 || !Number.isFinite(priceDepth)) {
 		return 'Insufficient liquidity based on advanced parameters';
-	if (parsed < INITIAL_LIQUIDITY_MIN)
+	}
+	if (parsed < INITIAL_LIQUIDITY_MIN) {
 		return `Initial liquidity must be at least ${
 			formatEther(INITIAL_LIQUIDITY_MIN).full
 		}`;
+	}
 };
 
 export const validateInitialFairPrices = (type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) => {
@@ -143,65 +152,77 @@ export const validateInitialFairPrices = (type, initialFairPrices, width, halfWi
 	// 		min: scalarMin + (priceWidth / 2)
 	// 		max: scalarMax - (priceWidth / 2)
 
-	const 	max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth,
-			min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
-
-	let fairPriceErrors = {};
+	const max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth;
+	const min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
+	const fairPriceErrors = {};
 
 	initialFairPrices.map((cV, i) => {
-		const parsed = parseFloat(cV)
+		const parsed = parseFloat(cV);
 
-		if(!cV)
+		if (!cV) {
 			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity';
-		if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+		}
+		if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric';
-		if(cV < min || cV > max)
-			fairPriceErrors[`${i}`] = `Initial prices must be between ${min} - ${max} based on the price width of ${width}`
+		}
+		if (cV < min || cV > max) {
+			fairPriceErrors[`${i}`] = `Initial prices must be between ${min} - ${max} based on the price width of ${width}`;
+		}
+		return cV;
 	});
 
-	if(!!Object.keys(fairPriceErrors).length)
-		return fairPriceErrors
+	if (!!Object.keys(fairPriceErrors).length) {
+		return fairPriceErrors;
+	}
 };
 
 export const validateBestStartingQuantity = (bestStartingQuantity) => {
 	const parsed = parseFloat(bestStartingQuantity);
 
-	if(!bestStartingQuantity)
+	if (!bestStartingQuantity) {
 		return 'Please provide a best starting quantity';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	}
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Best starting quantity must be numeric';
-	if(parsed < BEST_STARTING_QUANTITY_MIN)
+	}
+	if (parsed < BEST_STARTING_QUANTITY_MIN) {
 		return `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
+	}
 };
 
 export const validateStartingQuantity = (startingQuantity) => {
 	const parsed = parseFloat(startingQuantity);
 
-	if(!startingQuantity)
+	if (!startingQuantity) {
 		return 'Please provide a starting quantity';
-	if(Number.isNaN(parsed) && !Number.isFinite(parsed))
+	}
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Starting quantity must be numeric';
-	if(parsed < STARTING_QUANTITY_MIN)
+	}
+	if (parsed < STARTING_QUANTITY_MIN) {
 		return `Starting quantity must be at least ${
 			formatShares(STARTING_QUANTITY_MIN).full
 		}`;
+	}
 };
 
 export const validatePriceWidth = (priceWidth) => {
 	const parsed = parseFloat(priceWidth);
 
-	if (!priceWidth)
+	if (!priceWidth) {
 		return 'Please provide a price width';
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed))
+	}
+	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Price width must be numeric';
+	}
 	if (parsed < PRICE_WIDTH_MIN) {
 		return `Price width must be at least ${formatEther(PRICE_WIDTH_MIN).full}`;
 	}
 };
 
 export const isValid = (formState) => {
-	if(	validateTradingFee(formState.tradingFeePercent) 				||
-		validateMakerFee(formState.makerFee) 							||
+	if (validateTradingFee(formState.tradingFeePercent) ||
+		validateMakerFee(formState.makerFee) ||
 		validateInitialLiquidity(
 			formState.type,
 			formState.initialLiquidity,
@@ -210,7 +231,7 @@ export const isValid = (formState) => {
 			formState.halfPriceWidth,
 			formState.scalarSmallNum,
 			formState.scalarBigNum
-		)																||
+		)	||
 		validateInitialFairPrices(
 			formState.type,
 			formState.initialFairPrices.raw,
@@ -218,23 +239,25 @@ export const isValid = (formState) => {
 			formState.halfPriceWidth,
 			formState.scalarSmallNum,
 			formState.scalarBigNum
-		)																||
-		validateBestStartingQuantity(formState.bestStartingQuantity)	||
-		validateStartingQuantity(formState.startingQuantity)			||
-		validatePriceWidth(formState.priceWidth))
+		)	||
+		validateBestStartingQuantity(formState.bestStartingQuantity) ||
+		validateStartingQuantity(formState.startingQuantity)	||
+		validatePriceWidth(formState.priceWidth)) {
 		return false;
-
+	}
 	return true;
 };
 
 export const errors = (formState) => {
 	const errs = {};
 
-	if(formState.hasOwnProperty('tradingFeePercent'))
+	if (formState.hasOwnProperty('tradingFeePercent')) {
 		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
-	if(formState.hasOwnProperty('makerFeePercent'))
+	}
+	if (formState.hasOwnProperty('makerFeePercent')) {
 		errs.makerFee = validateMakerFee(formState.makerFee);
-	if(formState.hasOwnProperty('initialLiquidity'))
+	}
+	if (formState.hasOwnProperty('initialLiquidity')) {
 		errs.initialLiquidity = validateInitialLiquidity(
 			formState.type,
 			formState.initialLiquidity,
@@ -244,7 +267,8 @@ export const errors = (formState) => {
 			formState.scalarSmallNum,
 			formState.scalarBigNum
 		);
-	if(formState.hasOwnProperty('initialFairPrices'))
+	}
+	if (formState.hasOwnProperty('initialFairPrices')) {
 		errs.initialFairPrice = validateInitialFairPrices(
 			formState.type,
 			formState.initialFairPrices.raw,
@@ -253,12 +277,15 @@ export const errors = (formState) => {
 			formState.scalarSmallNum,
 			formState.scalarBigNum
 		);
-	if(formState.hasOwnProperty('bestStartingQuantity'))
+	}
+	if (formState.hasOwnProperty('bestStartingQuantity')) {
 		errs.bestStartingQuantity = validateBestStartingQuantity(formState.bestStartingQuantity);
-	if(formState.hasOwnProperty('startingQuantity'))
+	}
+	if (formState.hasOwnProperty('startingQuantity')) {
 		errs.startingQuantity = validateStartingQuantity(formState.startingQuantity);
-	if(formState.hasOwnProperty('priceWidth'))
+	}
+	if (formState.hasOwnProperty('priceWidth')) {
 		errs.priceWidth = validatePriceWidth(formState.priceWidth);
-
+	}
 	return errs;
 };

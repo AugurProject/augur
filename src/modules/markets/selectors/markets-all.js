@@ -57,14 +57,13 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports,
 		const aVal = cleanSortVal(a[selectedSort.prop]);
 		const bVal = cleanSortVal(b[selectedSort.prop]);
 
-			if (bVal < aVal) {
-				return selectedSort.isDesc ? -1 : 1;
-			}
-			else if (bVal > aVal) {
-				return selectedSort.isDesc ? 1 : -1;
-			}
-			return a.id < b.id ? -1 : 1;
-		});
+		if (bVal < aVal) {
+			return selectedSort.isDesc ? -1 : 1;
+		} else if (bVal > aVal) {
+			return selectedSort.isDesc ? 1 : -1;
+		}
+		return a.id < b.id ? -1 : 1;
+	});
 });
 
 function cleanSortVal(val) {

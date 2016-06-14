@@ -1,6 +1,5 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
-
 import {
 	SUCCESS,
 	CREATING_MARKET,
@@ -9,18 +8,18 @@ import {
 	ORDER_BOOK_ORDER_COMPLETE,
 	ORDER_BOOK_OUTCOME_COMPLETE
 } from '../modules/transactions/constants/statuses';
-
 const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(cb) {
-	if (process.env.ETHEREUM_HOST_RPC) {
-		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
-	}
-	var options = {
+	const options = {
 		http: process.env.ETHEREUM_HOST_RPC,
 		ws: process.env.ETHEREUM_HOST_WSURL
 	};
+	if (process.env.ETHEREUM_HOST_RPC) {
+		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
+	}
+
 	if (process.env.BUILD_AZURE) {
 		if (process.env.BUILD_AZURE_WSURL && process.env.BUILD_AZURE_WSURL !== 'null') {
 			options.ws = process.env.BUILD_AZURE_WSURL;
@@ -34,7 +33,7 @@ ex.connect = function connect(cb) {
 	}
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
-		console.log("connected:", connection);
+		console.log('connected:', connection);
 		cb(null, connection);
 	});
 };
@@ -294,12 +293,7 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
-ex.multiTrade = function (transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions,
-					 onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed,
-					 onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
-					 onBuySellSent, onBuySellSuccess, onBuySellFailed,
-					 onShortSellSent, onShortSellSuccess, onShortSellFailed,
-					 onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
+ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
 	augur.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions,
 		onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
 		onBuySellSent, onBuySellSuccess, onBuySellFailed,
@@ -350,15 +344,15 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
-ex.get_trade_ids = function (marketID, cb) {
+ex.get_trade_ids = function getTradeIds(marketID, cb) {
 	augur.get_trade_ids(marketID, cb);
 };
 
-ex.getOrderBook = function (marketID, cb) {
+ex.getOrderBook = function getOrderBook(marketID, cb) {
 	augur.getOrderBook(marketID, cb);
 };
 
-ex.get_trade = function (orderID, cb) {
+ex.get_trade = function getTrade(orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
 
@@ -377,11 +371,11 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
 		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
 		onFailed: r => cb(r),
-		branchId: branchId
+		branchId
 	});
 };
 
-ex.generateOrderBook = function generateOrderBook(marketData, cb){
+ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 	augur.generateOrderBook({
 		market: marketData.id,
 		liquidity: marketData.initialLiquidity,

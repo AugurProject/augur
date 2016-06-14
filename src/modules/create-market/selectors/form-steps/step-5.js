@@ -32,10 +32,11 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formState.scalarBigNum);
 	o.isFavorite = false;
 
-	let formattedFairPrices = [];
+	const formattedFairPrices = [];
 
 	o.initialFairPrices.values.map((cV, i) => {
-		formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` })
+		formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
+		return formattedFairPrices;
 	});
 
 	o.initialFairPrices = {

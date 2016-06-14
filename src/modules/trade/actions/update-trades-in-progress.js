@@ -1,5 +1,5 @@
-import * as AugurJS from '../../../services/augurjs';
-import { BID } from '../../bids-asks/constants/bids-asks-types'
+// import * as AugurJS from '../../../services/augurjs';
+import { BID } from '../../bids-asks/constants/bids-asks-types';
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
@@ -7,6 +7,9 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 export function updateTradesInProgress(marketID, outcomeID, numShares, limitPrice, side) {
 	return (dispatch, getState) => {
 		const tradesInProgress = getState().tradesInProgress;
+		let updatedNumShares = numShares;
+		let updatedLimitPrice = limitPrice;
+		let updatedSide = side;
 
 		if (tradesInProgress[marketID] &&
 			tradesInProgress[marketID][outcomeID] &&
@@ -18,26 +21,26 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 
 		if (numShares === undefined) {
 			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
-				numShares = tradesInProgress[marketID][outcomeID].numShares;
+				updatedNumShares = tradesInProgress[marketID][outcomeID].numShares;
 			} else {
-				numShares = 0;
+				updatedNumShares = 0;
 
 			}
 		}
 
 		if (limitPrice === undefined) {
 			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
-				limitPrice = tradesInProgress[marketID][outcomeID].limitPrice;
+				updatedLimitPrice = tradesInProgress[marketID][outcomeID].limitPrice;
 			} else {
-				limitPrice = 0;
+				updatedLimitPrice = 0;
 			}
 		}
 
 		if (side === undefined) {
 			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
-				side = tradesInProgress[marketID][outcomeID].side;
+				updatedSide = tradesInProgress[marketID][outcomeID].side;
 			} else {
-				side = BID;
+				updatedSide = BID;
 			}
 		}
 
@@ -51,10 +54,10 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 			marketID,
 			outcomeID,
 			details: {
-				numShares,
-				limitPrice,
+				numShares: updatedNumShares,
+				limitPrice: updatedLimitPrice,
 				totalCost: numShares * limitPrice,
-				side: side
+				side: updatedSide
 			}
 		} });
 	};

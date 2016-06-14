@@ -32,26 +32,26 @@ export const selectTopAskPrice = memoizerific(10)((marketOrderBook) => {
 
 /**
  * Selects price points with aggregated amount of shares
- * 
+ *
  * @param {String} outcomeId
  * @param {Array} orders
  */
 const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 	if (orders == null) {
 		return [];
-	} else {
-		const shareCountPerPrice = orders
-			.filter(order => order.outcome === outcomeId)
-			.reduce(reduceSharesCountByPrice, {});
-
-		return Object.keys(shareCountPerPrice)
-			.map(function mapPriceToPricePoint(price) {
-				return {
-					shares: formatShares(shareCountPerPrice[price]),
-					price: formatEther(parseFloat(price))
-				}
-			});
 	}
+	const shareCountPerPrice = orders
+		.filter(order => order.outcome === outcomeId)
+		.reduce(reduceSharesCountByPrice, {});
+
+	return Object.keys(shareCountPerPrice)
+		.map((price) => {
+			const obj = {
+				shares: formatShares(shareCountPerPrice[price]),
+				price: formatEther(parseFloat(price))
+			};
+			return obj;
+		});
 });
 
 /**

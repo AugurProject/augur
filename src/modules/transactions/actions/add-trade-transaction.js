@@ -6,16 +6,16 @@ import {
 // BID_SHARES,
 // ASK_SHARES
 } from '../../transactions/constants/types';
-import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+// import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { multiTrade } from '../../trade/actions/place-trade';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const makeTradeTransaction =
 (isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
-	return {
+	const obj = {
 		type: !isSell ? BUY_SHARES : SELL_SHARES,
 		shares: numShares,
-		limitPrice: limitPrice,
+		limitPrice,
 		ether: totalCostWithoutFeeEther + feeEther,
 		gas,
 		data: {
@@ -27,10 +27,11 @@ export const makeTradeTransaction =
 			feeToPay: formatEther(feeEther)
 		},
 		action: (transactionID) => {
-			throw new Error("add-trade-transaction.js -> makeTradeTransaction(): action should not be called");
+			throw new Error('add-trade-transaction.js -> makeTradeTransaction(): action should not be called');
 			// todo: I think we don't need tradeTransaction anymore, just the data it contains
 		}
 	};
+	return obj;
 };
 
 export function makeMultiTradeTransaction(marketId, dispatch) {
