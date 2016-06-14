@@ -1,5 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
-import { updateMarketOrderBook } from "./update-order";
+import { updateMarketOrderBook } from "./update-market-order-book";
 
 export function loadBidsAsks(marketID) {
 	return (dispatch, getState) => {

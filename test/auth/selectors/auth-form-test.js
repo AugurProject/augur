@@ -48,7 +48,7 @@ describe(`modules/auth/selectors/auth-form.js`, () => {
 			onSubmit: () => {},
 			closeLink: {
 				href: '/',
-				onClick: (href) => {}
+				onClick: function(href)  {}
 			}
 		};
 

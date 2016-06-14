@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-describe(`modules/trade/actions/trade-actions.js`, () => {
+describe.skip(`modules/trade/actions/trade-actions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	// going to need better test state data eventually...
 	const testState = {

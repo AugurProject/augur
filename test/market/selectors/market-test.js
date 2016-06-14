@@ -55,6 +55,7 @@ describe(`modules/market/selectors/market.js`, () => {
 				}
 			}
 		},
+		marketOrderBooks: {},
 		favorites: {
 			testMarketID: true
 		}
