@@ -2,6 +2,8 @@ import React from 'react';
 
 import ValueDenomination from '../../common/components/value-denomination';
 
+import classNames from 'classnames';
+
 module.exports = React.createClass({
 	propTypes: {
 		description: React.PropTypes.string,
@@ -23,7 +25,7 @@ module.exports = React.createClass({
 				{ !!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{ p.tags.map((tag, i) => (
-							<li key={ i } className="tag" onClick={ tag.onClick }>{ tag.name }</li>
+							<li key={ i } className={classNames('tag', { link: !!tag.name })} onClick={ !!tag.onClick && tag.onClick }>{ !!tag.name ? tag.name : tag }</li>
 						))}
 					</ul>
 				}
