@@ -4674,6 +4674,31 @@ module.exports = Array.isArray || function (arr) {
 // shim for using process in browser
 
 var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+  try {
+    cachedSetTimeout = setTimeout;
+  } catch (e) {
+    cachedSetTimeout = function () {
+      throw new Error('setTimeout is not defined');
+    }
+  }
+  try {
+    cachedClearTimeout = clearTimeout;
+  } catch (e) {
+    cachedClearTimeout = function () {
+      throw new Error('clearTimeout is not defined');
+    }
+  }
+} ())
 var queue = [];
 var draining = false;
 var currentQueue;
@@ -4698,7 +4723,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = setTimeout(cleanUpNextTick);
+    var timeout = cachedSetTimeout(cleanUpNextTick);
     draining = true;
 
     var len = queue.length;
@@ -4715,7 +4740,7 @@ function drainQueue() {
     }
     currentQueue = null;
     draining = false;
-    clearTimeout(timeout);
+    cachedClearTimeout(timeout);
 }
 
 process.nextTick = function (fun) {
@@ -4727,7 +4752,7 @@ process.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
+        cachedSetTimeout(drainQueue, 0);
     }
 };
 
@@ -7689,6 +7714,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.errors = exports.isValid = exports.validatePriceWidth = exports.validateStartingQuantity = exports.validateBestStartingQuantity = exports.validateInitialFairPrices = exports.validateInitialLiquidity = exports.validateMakerFee = exports.validateTradingFee = exports.initialFairPrices = exports.select = undefined;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _formatNumber = require('../../../../utils/format-number');
@@ -7734,23 +7761,33 @@ var initialFairPrices = exports.initialFairPrices = function initialFairPrices(f
 		return { values: values, raw: raw };
 	};
 
-	switch (formState.type) {
-		case _marketTypes.BINARY:
-			return setInitialFairPrices(['Yes', 'No']);
-		case _marketTypes.SCALAR:
-			return setInitialFairPrices(['⇧', '⇩']);
-		case _marketTypes.CATEGORICAL:
-			var labels = [];
+	var _ret = function () {
+		switch (formState.type) {
+			case _marketTypes.BINARY:
+				return {
+					v: setInitialFairPrices(['Yes', 'No'])
+				};
+			case _marketTypes.SCALAR:
+				return {
+					v: setInitialFairPrices(['⇧', '⇩'])
+				};
+			case _marketTypes.CATEGORICAL:
+				var labels = [];
 
-			formState.categoricalOutcomes.map(function (val, i) {
-				labels[i] = val;
-			});
+				formState.categoricalOutcomes.map(function (val, i) {
+					labels[i] = val;
+				});
 
-			return setInitialFairPrices(labels);
+				return {
+					v: setInitialFairPrices(labels)
+				};
 
-		default:
-			break;
-	}
+			default:
+				break;
+		}
+	}();
+
+	if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 };
 
 var validateTradingFee = exports.validateTradingFee = function validateTradingFee(tradingFeePercent) {
@@ -12204,12 +12241,12 @@ var TIMEOUT_MILLIS = 50;
 var ex = {};
 
 ex.connect = function connect(cb) {
-	if ("http://127.0.0.1:8545") {
-		_augur2.default.rpc.nodes.hosted = ["http://127.0.0.1:8545"];
+	if (undefined) {
+		_augur2.default.rpc.nodes.hosted = [undefined];
 	}
 	var options = {
-		http: "http://127.0.0.1:8545",
-		ws: "ws://127.0.0.1:8546"
+		http: undefined,
+		ws: undefined
 	};
 	if ("true") {
 		if ("{{ $BUILD_AZURE_WSURL }}" && "{{ $BUILD_AZURE_WSURL }}" !== 'null') {
