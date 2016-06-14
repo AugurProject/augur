@@ -33,7 +33,7 @@ export const BEST_STARTING_QUANTITY_DEFAULT = 20;
 export const BEST_STARTING_QUANTITY_MIN = 0.1;
 
 export const PRICE_WIDTH_DEFAULT = 0.1;
-export const PRICE_WIDTH_MIN =  0.01;
+export const PRICE_WIDTH_MIN = 0.01;
 
 export const PRICE_DEPTH_DEFAULT = 0.1; // Not used yet
 

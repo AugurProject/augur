@@ -10,7 +10,6 @@ export const makeCreateMarketTransaction = (marketData, gas, etherWithoutGas, di
 		data: marketData,
 		action: (transactionID) => dispatch(createMarket(transactionID, marketData))
 	};
-	
 	return obj;
 };
 

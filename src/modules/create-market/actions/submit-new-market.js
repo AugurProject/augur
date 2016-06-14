@@ -1,5 +1,4 @@
 // import { makeDescriptionFromCategoricalOutcomeNames } from '../../../utils/parse-market-data';
-
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import {
@@ -16,9 +15,9 @@ import { addCreateMarketTransaction } from '../../transactions/actions/add-creat
 
 import { selectTransactionsLink } from '../../link/selectors/links';
 
-import { submitGenerateOrderBook } from '../../create-market/actions/generate-order-book'
+import { submitGenerateOrderBook } from '../../create-market/actions/generate-order-book';
 
-import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress'
+import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
 
 export function submitNewMarket(newMarket) {
 	return dispatch => {
@@ -51,7 +50,6 @@ export function createMarket(transactionID, newMarket) {
 
 		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
 			if (err) {
-				
 				dispatch(
 					updateExistingTransaction(
 						transactionID,
@@ -69,13 +67,13 @@ export function createMarket(transactionID, newMarket) {
 					dispatch(clearMakeInProgress());
 					setTimeout(() => dispatch(loadMarket(res.marketID)), 5000);
 
-					newMarket = {
+					const updatedNewMarket = {
 						...newMarket,
 						id: res.marketID,
 						tx: res.tx
 					};
 
-					dispatch(submitGenerateOrderBook(newMarket));
+					dispatch(submitGenerateOrderBook(updatedNewMarket));
 				}
 			}
 		});

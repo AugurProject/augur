@@ -1,6 +1,6 @@
 import { loadMarket } from '../../market/actions/load-market';
 import { loadPriceHistory } from '../../market/actions/load-price-history';
-import { loadBidsAsks } from "../../bids-asks/actions/load-bids-asks";
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 
 export function loadFullMarket(marketId) {
 	return (dispatch, getState) => {
