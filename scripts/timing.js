@@ -14,6 +14,7 @@ var madlibs = require("madlibs");
 var utils = require("../src/utilities");
 var augurpath = "../src/index";
 var tools = require("../test/tools");
+process.env.AUGURJS_INTEGRATION_TESTS = true;
 var augur = tools.setup(require(augurpath));
 
 var DATAFILE = join(__dirname, "..", "data", "timing-getMarketsInfo.csv");

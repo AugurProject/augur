@@ -19,7 +19,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.11";
+    this.version = "1.3.12";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -1867,7 +1867,7 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
     return this.fire(tx, callback);
 };
 
-// createSingleEventMarket.se
+// createMarket.se
 Augur.prototype.createSingleEventMarket = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
     var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
@@ -1990,8 +1990,6 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
     //     }, onFailed);
     // });
 };
-
-// createEvent.se
 Augur.prototype.createEvent = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
     if (branchId.constructor === Object && branchId.branchId) {
         description = branchId.description;         // string
@@ -2017,8 +2015,6 @@ Augur.prototype.createEvent = function (branchId, description, expDate, minValue
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
-
-// createMarket.se
 Augur.prototype.createMarket = function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
     var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
@@ -2086,6 +2082,19 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
             }, onFailed);
         });
     });
+};
+Augur.prototype.updateTradingFee = function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.updateTradingFee);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.updateTradingFee), arguments);
+    tx.params = unpacked.params;
+    tx.params[2] = abi.fix(tx.params[2], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.pushMarketForward = function (branch, market, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.pushMarketForward);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.pushMarketForward), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
 // closeMarket.se
@@ -2454,7 +2463,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.trade,
-        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price)), market]
+        topics: [constants.LOGS.price.signature, market]
     };
     if (!this.utils.is_function(cb)) {
         return parsePriceLogs(rpc.getLogs(filter));
@@ -2501,7 +2510,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         toBlock: options.toBlock || "latest",
         address: this.contracts.trade,
         topics: [
-            abi.prefix_hex(abi.keccak_256(constants.LOGS.price)),
+            constants.LOGS.price.signature,
             null,
             abi.prefix_hex(abi.pad_left(account))
         ],

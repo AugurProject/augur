@@ -3732,7 +3732,7 @@ module.exports={
         "compositeGetters": "0xce65c10f58c0ba0fe6dd98c4872af2b14a97a539",
         "consensus": "0xfcd9b63e2a8a2b869db64f8dd25f599b0b172ffd",
         "createBranch": "0xf2fc3c829ad9a271a64e6f437fb6f9e8ed0f9770",
-        "createMarket": "0x2bcf1482f030d37de85528fb405e9864922d3ba6",
+        "createMarket": "0x660cdfdf3d0e7443e7935343a1131b961575ccc7",
         "eventResolution": "0xfa01e10196e9575835e08d0af12383119b43ea5e",
         "faucets": "0x59997e2d0d9fb15cb4bb3ff41a79e8e3041e817f",
         "forkPenalize": "0x3ffd684dc0ff3c49eb137b8ceb3a6a825bd62a84",
@@ -3853,10 +3853,6 @@ module.exports={
     "penalizationCatchup": {
         "-2": "can only be called during the first half of the reporting period"
     },
-    "penalizeNotEnoughReports": {
-        "-1": "already done",
-        "-2": "hasn't reported this period"
-    },
     "penalizeOnForkedEvent": {
         "-2": "already past first half of new period and needed to penalize before then",
         "-4": "fork event isn't resolved yet",
@@ -3878,6 +3874,16 @@ module.exports={
         "-5": "already done for all events in this period",
         "-6": "forked events should be penalized using the fork penalization function",
         "-7": "no outcome"
+    },
+    "proveReporterDidntReportEnough": {
+        "-1": "already done",
+        "-2": "not in right part of period"
+    },
+    "pushMarketForward": {
+        "-1": "fork period cannot be the current or previous period",
+        "-2": "market is already closed or pushed forward",
+        "-3": "not enough cash to post early resolution bond",
+        "-4": "early resolution already attempted or outcome already exists"
     },
     "sell": {
         "-1": "amount/price bad or no market",
@@ -3928,6 +3934,10 @@ module.exports={
         "-3": "trader doesn't exist / own shares in this market",
         "-4": "must buy at least .00000001 in value",
         "10": "insufficient balance"
+    },
+    "updateTradingFee": {
+        "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
+        "-4": "sender's address does not match the market creator's address"
     },
     "INSUFFICIENT_LIQUIDITY": {
         "error": 42,
@@ -5103,15 +5113,29 @@ module.exports = function (network, contracts) {
             signature: "isiaiiiis",
             send: true
         },
+        updateTradingFee: {
+            to: contracts.createMarket,
+            method: "updateTradingFee",
+            signature: "iii",
+            send: true,
+            returns: "number"
+        },
+        pushMarketForward: {
+            to: contracts.createMarket,
+            method: "pushMarketForward",
+            signature: "ii",
+            send: true,
+            returns: "number"
+        },
 
         // createSingleEventMarket.se
-        createSingleEventMarket: {
-            to: contracts.createMarket,
-            method: "createSingleEventMarket",
-            signature: "isiiiisiiiiis",
-            returns: "hash",
-            send: true
-        },
+        // createSingleEventMarket: {
+        //     to: contracts.createMarket,
+        //     method: "createSingleEventMarket",
+        //     signature: "isiiiisiiiiis",
+        //     returns: "hash",
+        //     send: true
+        // },
 
         // closeMarket.se
         closeMarket: {
@@ -36448,6 +36472,7 @@ module.exports = {
 "use strict";
 
 var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -36475,40 +36500,68 @@ module.exports = {
     // event (log) signatures
     LOGS: {
         // event log_add_tx(market:indexed, sender, type, price, amount, outcome, tradeid)
-        // contract: buyAndSellShares
-        add_tx: "log_add_tx(int256,int256,int256,int256,int256,int256,int256)",
+        add_tx: {
+            signature: abi.prefix_hex(abi.keccak_256("log_add_tx(int256,int256,int256,int256,int256,int256,int256)")),
+            contract: "buyAndSellShares"
+        },
         
         // event log_cancel(market:indexed, sender, price, amount, tradeid, outcome, type)
-        // contract: buyAndSellShares
-        cancel: "log_cancel(int256,int256,int256,int256,int256,int256,int256)",
+        cancel: {
+            signature: abi.prefix_hex(abi.keccak_256("log_cancel(int256,int256,int256,int256,int256,int256,int256)")),
+            contract: "buyAndSellShares"
+        },
 
         // event thru(user:indexed, time)
-        // contract: closeMarket
-        thru: "thru(int256,int256)",
+        thru: {
+            signature: abi.prefix_hex(abi.keccak_256("thru(int256,int256)")),
+            contract: "closeMarket"
+        },
 
         // event penalize(user:indexed, outcome, oldrep, repchange, newafterrep, p, reportValue)
-        // contract: consensus
-        penalize: "penalize(int256,int256,int256,int256,int256,int256,int256)",
+        penalize: {
+            signature: abi.prefix_hex(abi.keccak_256("penalize(int256,int256,int256,int256,int256,int256,int256)")),
+            contract: "consensus"
+        },
 
-        // event Transfer(_from:indexed, _to:indexed, _value)
-        // contract: sendReputation
-        transfer: "Transfer(int256,int256,int256)",
+        // event marketCreated(marketID)
+        marketCreated: {
+            signature: abi.prefix_hex(abi.keccak_256("marketCreated(int256)")),
+            contract: "createMarket"
+        },
+
+        // event tradingFeeUpdated(marketID, tradingFee)
+        tradingFeeUpdated: {
+            signature: abi.prefix_hex(abi.keccak_256("tradingFeeUpdated(int256,int256)")),
+            contract: "createMarket"
+        },
 
         // event Approval(_owner:indexed, _spender:indexed, value)
-        // contract: sendReputation
-        approval: "Approval(int256,int256,int256)",
+        approval: {
+            signature: abi.prefix_hex(abi.keccak_256("Approval(int256,int256,int256)")),
+            contract: "sendReputation"
+        },
+
+        // event Transfer(_from:indexed, _to:indexed, _value)
+        transfer: {
+            signature: abi.prefix_hex(abi.keccak_256("Transfer(int256,int256,int256)")),
+            contract: "sendReputation"
+        },
+
+        // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
+        fill_tx: {
+            signature: abi.prefix_hex(abi.keccak_256("log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)")),
+            contract: "trade"
+        },
 
         // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
-        // contract: trade
-        price: "log_price(int256,int256,int256,int256,int256,int256,int256)",
-        
-        // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
-        // contract: trade
-        fill_tx: "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)"
+        price: {
+            signature: abi.prefix_hex(abi.keccak_256("log_price(int256,int256,int256,int256,int256,int256,int256)")),
+            contract: "trade"
+        }
     }
 };
 
-},{"bignumber.js":10}],312:[function(require,module,exports){
+},{"augur-abi":1,"bignumber.js":10}],312:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -36521,6 +36574,25 @@ var errors = require("augur-contracts").errors;
 var utils = require("./utilities");
 var constants = require("./constants");
 
+var FILTER_LABELS = [
+    "block",
+    "contracts",
+    "price",
+    "fill_tx",
+    "add_tx",
+    "cancel",
+    "thru",
+    "penalize",
+    "marketCreated",
+    "tradingFeeUpdated",
+    "approval",
+    "transfer"
+];
+var filters = {};
+for (var i = 0, n = FILTER_LABELS.length; i < n; ++i) {
+    filters[FILTER_LABELS[i]] = {id: null, heartbeat: null};
+}
+
 module.exports = function () {
 
     var augur = this;
@@ -36529,31 +36601,7 @@ module.exports = function () {
 
         PULSE: constants.SECONDS_PER_BLOCK * 500,
 
-        filter: {
-            block: {id: null, heartbeat: null},
-            contracts: {id: null, heartbeat: null},
-            price: {id: null, heartbeat: null},
-            fill_tx: {id: null, heartbeat: null},
-            add_tx: {id: null, heartbeat: null},
-            cancel: {id: null, heartbeat: null}
-        },
-
-        createMarketMessage: function (data, blockNumber, onMessage) {
-            var tx = {
-                to: augur.contracts.createMarket,
-                from: augur.from,
-                data: data,
-                gas: augur.rpc.DEFAULT_GAS
-            };
-            if (!utils.is_function(onMessage)) return augur.rpc.call(tx);
-            augur.rpc.call(tx, function (callReturn) {
-                onMessage({
-                    label: "createMarket",
-                    marketId: callReturn,
-                    creationBlock: blockNumber
-                });
-            });
-        },
+        filter: filters,
 
         parse_contracts_message: function (message, onMessage) {
             var messages = [];
@@ -36578,30 +36626,6 @@ module.exports = function () {
                 }
             }
         },
-
-        poll_contracts_listener: function (onMessage) {
-            if (utils.is_function(onMessage)) {
-                var self = this;
-                augur.rpc.getFilterChanges(this.filter.contracts.id, function (message) {
-                    if (message && message.length && message.constructor === Array) {
-                        self.parse_contracts_message(message, onMessage);
-                    }
-                });
-            }
-        },
-
-        poll_block_listener: function (onMessage) {
-            if (utils.is_function(onMessage)) {
-                augur.rpc.getFilterChanges(this.filter.block.id, function (message) {
-                    if (message && message.length && message.constructor === Array) {
-                        for (var i = 0, len = message.length; i < len; ++i) {
-                            onMessage(message[i]);
-                        }
-                    }
-                });
-            }
-        },
-
         parse_price_message: function (message, onMessage) {
             var data_array, market, marketplus, outcome;
             if (message && message.length) {
@@ -36630,129 +36654,76 @@ module.exports = function () {
                 }
             }
         },
-
-        poll_price_listener: function (onMessage) {
-            var self = this;
-            if (this.filter.price) {
-                augur.rpc.getFilterChanges(this.filter.price.id, function (message) {
-                    self.parse_price_message(message, onMessage);
-                });
+        parse_marketCreated_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].data);
+                    }
+                } else {
+                    if (message.data) onMessage(message.data);
+                }
             }
         },
-
-        poll_fill_tx_listener: function (onMessage) {
-            if (this.filter.fill_tx) {
-                augur.rpc.getFilterChanges(this.filter.fill_tx.id, onMessage);
+        parse_block_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].hash);
+                    }
+                } else {
+                    if (message.hash) onMessage(message.hash);
+                }
             }
         },
-
-        poll_add_tx_listener: function (onMessage) {
-            if (this.filter.add_tx) {
-                augur.rpc.getFilterChanges(this.filter.add_tx.id, onMessage);
-            }
-        },
-
-        poll_cancel_listener: function (onMessage) {
-            if (this.filter.cancel) {
-                augur.rpc.getFilterChanges(this.filter.cancel.id, onMessage);
+        poll_filter: function (label, onMessage) {
+            var callback, self = this;
+            if (this.filter[label]) {
+                switch (label) {
+                case "price":
+                    callback = function (msg) {
+                        self.parse_price_message(msg, onMessage);
+                    };
+                    break;
+                case "contracts":
+                    callback = function (msg) {
+                        self.parse_contracts_message(msg, onMessage);
+                    };
+                    break;
+                case "block":
+                    callback = function (msg) {
+                        self.parse_block_message(msg, onMessage);
+                    };
+                    break;
+                default:
+                    callback = onMessage;
+                }
+                augur.rpc.getFilterChanges(this.filter[label].id, callback);
             }
         },
 
         // clear/uninstall filters
-
-        clear_price_filter: function (cb) {
+        clear_filter: function (label, cb) {
             if (utils.is_function(cb)) {
                 var self = this;
-                this.unsubscribe(this.filter.price.id, function (uninst) {
-                    self.filter.price.id = null;
+                this.unsubscribe(this.filter[label].id, function (uninst) {
+                    self.filter[label].id = null;
                     cb(uninst);
                 });
             } else {
-                var uninst = this.unsubscribe(this.filter.price.id);
-                this.filter.price.id = null;
-                return uninst;
-            }
-        },
-
-        clear_fill_tx_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter.fill_tx.id, function (uninst) {
-                    self.filter.fill_tx.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter.fill_tx.id);
-                this.filter.fill_tx.id = null;
-                return uninst;
-            }
-        },
-
-        clear_add_tx_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter.add_tx.id, function (uninst) {
-                    self.filter.add_tx.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter.add_tx.id);
-                this.filter.add_tx.id = null;
-                return uninst;
-            }
-        },
-
-        clear_cancel_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter.cancel.id, function (uninst) {
-                    self.filter.cancel.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter.cancel.id);
-                this.filter.cancel.id = null;
-                return uninst;
-            }
-        },
-
-        clear_contracts_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter.contracts.id, function (uninst) {
-                    self.filter.contracts.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter.contracts.id);
-                this.filter.contracts.id = null;
-                return uninst;
-            }
-        },
-
-        clear_block_filter: function (cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter.block.id, function (uninst) {
-                    self.filter.block.id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter.block.id);
-                this.filter.block.id = null;
+                var uninst = this.unsubscribe(this.filter[label].id);
+                this.filter[label].id = null;
                 return uninst;
             }
         },
 
         // set up filters
-
-        setup_trade_filter: function (contract, label, f) {
+        setup_event_filter: function (contract, label, f) {
             return this.subscribeLogs({
                 address: augur.contracts[contract],
-                topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS[label]))]
+                topics: [constants.LOGS[label].signature]
             }, f);
         },
-
         setup_contracts_filter: function (f) {
             var self = this;
             var contract_list = [];
@@ -36780,7 +36751,6 @@ module.exports = function () {
                 f(self.filter.contracts);
             });
         },
-
         setup_block_filter: function (f) {
             var self = this;
             if (!utils.is_function(f)) {
@@ -36797,38 +36767,37 @@ module.exports = function () {
         },
 
         // start listeners
-
-        start_trade_listener: function (contract, filter_name, cb) {
+        start_event_listener: function (label, cb) {
             var self = this;
-            if (this.filter[filter_name] && this.filter[filter_name].id) {
-                if (!utils.is_function(cb)) return this.filter[filter_name].id;
-                return cb(this.filter[filter_name].id);
+            var contract = constants.LOGS[label].contract;
+            if (this.filter[label] && this.filter[label].id) {
+                if (!utils.is_function(cb)) return this.filter[label].id;
+                return cb(this.filter[label].id);
             }
             if (!utils.is_function(cb)) {
-                var filter_id = this.setup_trade_filter(contract, filter_name);
+                var filter_id = this.setup_event_filter(contract, label);
                 if (!filter_id || filter_id === "0x") {
                     return errors.FILTER_NOT_CREATED;
                 }
                 if (filter_id.error) return filter_id;
-                self.filter[filter_name] = {
+                self.filter[label] = {
                     id: filter_id,
                     heartbeat: null
                 };
                 return filter_id;
             }
-            this.setup_trade_filter(contract, filter_name, function (filter_id) {
+            this.setup_event_filter(contract, label, function (filter_id) {
                 if (!filter_id || filter_id === "0x") {
                     return cb(errors.FILTER_NOT_CREATED);
                 }
                 if (filter_id.error) return cb(filter_id);
-                self.filter[filter_name] = {
+                self.filter[label] = {
                     id: filter_id,
                     heartbeat: null
                 };
                 cb(filter_id);
             });
         },
-
         start_contracts_listener: function (cb) {
             if (this.filter.contracts.id === null) {
                 if (utils.is_function(cb)) {
@@ -36838,7 +36807,6 @@ module.exports = function () {
                 }
             }
         },
-
         start_block_listener: function (cb) {
             if (this.filter.block.id === null) {
                 if (utils.is_function(cb)) {
@@ -36850,75 +36818,55 @@ module.exports = function () {
         },
 
         // start/stop polling
-
         pacemaker: function (cb) {
             var self = this;
             if (!cb || cb.constructor !== Object) return;
             if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                if (utils.is_function(cb.block)) {
-                    this.poll_block_listener(cb.block);
-                    this.filter.block.heartbeat = setInterval(function () {
-                        self.poll_block_listener(cb.block);
-                    }, this.PULSE);
-                }
-                if (utils.is_function(cb.contracts)) {
-                    this.poll_contracts_listener(cb.contracts);
-                    this.filter.contracts.heartbeat = setInterval(function () {
-                        self.poll_contracts_listener(cb.contracts);
-                    }, this.PULSE);
-                }
-                if (utils.is_function(cb.price)) {
-                    this.poll_price_listener(cb.price);
-                    this.filter.price.heartbeat = setInterval(function () {
-                        self.poll_price_listener(cb.price);
-                    }, this.PULSE);
-                }
-                if (utils.is_function(cb.fill_tx)) {
-                    this.poll_fill_tx_listener(cb.fill_tx);
-                    this.filter.fill_tx.heartbeat = setInterval(function () {
-                        self.poll_fill_tx_listener(cb.fill_tx);
-                    }, this.PULSE);
-                }
-                if (utils.is_function(cb.add_tx)) {
-                    this.poll_add_tx_listener(cb.add_tx);
-                    this.filter.add_tx.heartbeat = setInterval(function () {
-                        self.poll_add_tx_listener(cb.add_tx);
-                    }, this.PULSE);
-                }
-                if (utils.is_function(cb.cancel)) {
-                    this.poll_cancel_listener(cb.cancel);
-                    this.filter.cancel.heartbeat = setInterval(function () {
-                        self.poll_cancel_listener(cb.cancel);
-                    }, this.PULSE);
-                }
+                async.forEachOf(this.filter, function (filter, label, next) {
+                    if (utils.is_function(cb[label])) {
+                        self.poll_filter(label, cb[label]);
+                        self.filter[label].heartbeat = setInterval(function () {
+                            self.poll_filter(label, cb[label]);
+                        }, self.PULSE);
+                    }
+                    next();
+                });
             } else {
-                if (utils.is_function(cb.block)) {
-                    augur.rpc.registerSubscriptionCallback(this.filter.block.id, function (msg) {
-                        cb.block(msg.hash);
-                    });
-                }
-                if (utils.is_function(cb.contracts)) {
-                    augur.rpc.registerSubscriptionCallback(this.filter.contracts.id, function (msg) {
-                        self.parse_contracts_message(msg, cb.contracts);
-                    });
-                }
-                if (utils.is_function(cb.price)) {
-                    augur.rpc.registerSubscriptionCallback(this.filter.price.id, function (msg) {
-                        self.parse_price_message(msg, cb.price);
-                    });
-                }
-                if (utils.is_function(cb.fill_tx)) {
-                    augur.rpc.registerSubscriptionCallback(this.filter.fill_tx.id, cb.fill_tx);
-                }
-                if (utils.is_function(cb.add_tx)) {
-                    augur.rpc.registerSubscriptionCallback(this.filter.add_tx.id, cb.add_tx);
-                }
-                if (utils.is_function(cb.cancel)) {
-                    augur.rpc.registerSubscriptionCallback(this.filter.cancel.id, cb.cancel);
-                }
+                async.forEachOf(this.filter, function (filter, label, next) {
+                    if (utils.is_function(cb[label])) {
+                        var callback;
+                        switch (label) {
+                        case "block":
+                            callback = cb.block;
+                            cb.block = function (block) {
+                                self.parse_block_message(block, callback);
+                            };
+                            break;
+                        case "contracts":
+                            callback = cb.contracts;
+                            cb.contracts = function (msg) {
+                                self.parse_contracts_message(msg, callback);
+                            };
+                            break;
+                        case "price":
+                            callback = cb.price;
+                            cb.price = function (msg) {
+                                self.parse_price_message(msg, callback);
+                            };
+                            break;
+                        case "marketCreated":
+                            callback = cb.marketCreated;
+                            cb.marketCreated = function (msg) {
+                                self.parse_marketCreated_message(msg, callback);
+                            };
+                            break;
+                        }
+                        augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
+                        next();
+                    }
+                });
             }
         },
-
         listen: function (cb, setup_complete) {
             var run, self = this;
             if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
@@ -36932,135 +36880,50 @@ module.exports = function () {
                 this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
                 run = async.series;
             }
-            if (utils.is_function(setup_complete)) {
-                run([
-                    function (callback) {
-                        if (this.filter.contracts.id === null && cb.contracts) {
-                            this.start_contracts_listener(function () {
-                                self.pacemaker({contracts: cb.contracts});
-                                callback(null, ["contracts", self.filter.contracts.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this),
-                    function (callback) {
-                        var self = this;
-                        if (this.filter.price.id === null && cb.price) {
-                            this.start_trade_listener("trade", "price", function () {
-                                self.pacemaker({price: cb.price});
-                                callback(null, ["price", self.filter.price.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this),
-                    function (callback) {
-                        if (this.filter.fill_tx.id === null && cb.fill_tx) {
-                            this.start_trade_listener("trade", "fill_tx", function () {
-                                self.pacemaker({fill_tx: cb.fill_tx});
-                                callback(null, ["fill_tx", self.filter.fill_tx.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this),
-                    function (callback) {
-                        if (this.filter.add_tx.id === null && cb.add_tx) {
-                            this.start_trade_listener("buyAndSellShares", "add_tx", function () {
-                                self.pacemaker({add_tx: cb.add_tx});
-                                callback(null, ["add_tx", self.filter.add_tx.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this),
-                    function (callback) {
-                        if (this.filter.cancel.id === null && cb.cancel) {
-                            this.start_trade_listener("buyAndSellShares", "cancel", function () {
-                                self.pacemaker({cancel: cb.cancel});
-                                callback(null, ["cancel", self.filter.cancel.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this),
-                    function (callback) {
-                        if (this.filter.block.id === null && cb.block) {
-                            this.start_block_listener(function () {
-                                self.pacemaker({block: cb.block});
-                                callback(null, ["block", self.filter.block.id]);
-                            });
-                        } else {
-                            callback();
-                        }
-                    }.bind(this)
-                ], function (err, filter_ids) {
-                    if (err) {
-                        console.error("filters.listen:", err);
-                        return setup_complete(err);
+            async.forEachOfSeries(cb, function (callback, label, next) {
+                if (self.filter[label].id === null && callback) {
+                    switch (label) {
+                    case "contracts":
+                        self.start_contracts_listener(function () {
+                            self.pacemaker({contracts: callback});
+                            next(null, [label, self.filter[label].id]);
+                        });
+                        break;
+                    case "block":
+                        self.start_block_listener(function () {
+                            self.pacemaker({block: callback});
+                            next(null, [label, self.filter[label].id]);
+                        });
+                        break;
+                    default:
+                        self.start_event_listener(label, function () {
+                            var p = {};
+                            p[label] = callback;
+                            self.pacemaker(p);
+                            next(null, [label, self.filter[label].id]);
+                        });
                     }
-                    var filters = {};
-                    if (filter_ids && filter_ids.length) {
-                        for (var i = 0; i < filter_ids.length; ++i) {
-                            if (filter_ids[i] && filter_ids[i].length) {
-                                filters[filter_ids[i][0]] = filter_ids[i][1];
-                            }
-                        }
-                    }
-                    setup_complete(filters);
-                });
-            } else {
-                if (this.filter.contracts.id === null && cb.contracts) {
-                    this.start_contracts_listener(function () {
-                        self.pacemaker({contracts: cb.contracts});
-                    });
                 }
-                if (this.filter.price.id === null && cb.price) {
-                    this.start_trade_listener("trade", "price", function () {
-                        self.pacemaker({price: cb.price});
-                    });
-                }
-                if (this.filter.fill_tx.id === null && cb.fill_tx) {
-                    this.start_trade_listener("trade", "fill_tx", function () {
-                        self.pacemaker({fill_tx: cb.fill_tx});
-                    });
-                }
-                if (this.filter.add_tx.id === null && cb.add_tx) {
-                    this.start_trade_listener("buyAndSellShares", "add_tx", function () {
-                        self.pacemaker({add_tx: cb.add_tx});
-                    });
-                }
-                if (this.filter.cancel.id === null && cb.cancel) {
-                    this.start_trade_listener("buyAndSellShares", "cancel", function () {
-                        self.pacemaker({cancel: cb.cancel});
-                    });
-                }
-                if (this.filter.block.id === null && cb.block) {
-                    this.start_block_listener(function () {
-                        self.pacemaker({block: cb.block});
-                    });
+            }, function (err) {
+                if (err) console.error(err);
+                if (utils.is_function(setup_complete)) setup_complete(self.filter);
+            });
+        },
+        all_filters_removed: function () {
+            var f, isRemoved = true;
+            for (var label in this.filter) {
+                if (!this.filter.hasOwnProperty(label)) continue;
+                f = this.filter[label];
+                if (f.heartbeat !== null || f.id !== null) {
+                    isRemoved = false;
+                    break;
                 }
             }
-        },
-
-        all_filters_removed: function () {
-            return this.filter.price.heartbeat === null &&
-                this.filter.fill_tx.heartbeat === null &&
-                this.filter.add_tx.heartbeat === null &&
-                this.filter.cancel.heartbeat === null &&
-                this.filter.contracts.heartbeat === null &&
-                this.filter.block.heartbeat === null &&
-                this.filter.price.id === null &&
-                this.filter.fill_tx.id === null &&
-                this.filter.add_tx.id === null &&
-                this.filter.cancel.id === null &&
-                this.filter.contracts.id === null &&
-                this.filter.block.id === null;
+            return isRemoved;
         },
 
         ignore: function (uninstall, cb, complete) {
-            var self = this;
+            var label, self = this;
 
             function cleared(uninst, callback, complete) {
                 callback(uninst);
@@ -37076,116 +36939,44 @@ module.exports = function () {
             }
             if (uninstall && uninstall.constructor === Object) {
                 cb = {};
-                if (utils.is_function(uninstall.price)) {
-                    cb.price = uninstall.price;
-                }
-                if (utils.is_function(uninstall.fill_tx)) {
-                    cb.fill_tx = uninstall.fill_tx;
-                }
-                if (utils.is_function(uninstall.add_tx)) {
-                    cb.add_tx = uninstall.add_tx;
-                }
-                if (utils.is_function(uninstall.cancel)) {
-                    cb.cancel = uninstall.cancel;
-                }
-                if (utils.is_function(uninstall.contracts)) {
-                    cb.contracts = uninstall.contracts;
-                }
-                if (utils.is_function(uninstall.block)) {
-                    cb.block = uninstall.block;
+                for (label in this.filter) {
+                    if (!this.filter.hasOwnProperty(label)) continue;
+                    if (utils.is_function(uninstall[label])) {
+                        cb[label] = uninstall[label];
+                    }
                 }
                 uninstall = false;
             }
             cb = cb || {}; // individual filter removal callbacks
-            cb.price = utils.is_function(cb.price) ? cb.price : utils.noop;
-            cb.fill_tx = utils.is_function(cb.fill_tx) ? cb.fill_tx : utils.noop;
-            cb.add_tx = utils.is_function(cb.add_tx) ? cb.add_tx : utils.noop;
-            cb.cancel = utils.is_function(cb.cancel) ? cb.cancel : utils.noop;
-            cb.contracts = utils.is_function(cb.contracts) ? cb.contracts : utils.noop;
-            cb.block = utils.is_function(cb.block) ? cb.block : utils.noop;
+            for (label in this.filter) {
+                if (!this.filter.hasOwnProperty(label)) continue;
+                cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
+            }
             complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
-            if (this.filter.price.heartbeat !== null) {
-                clearInterval(this.filter.price.heartbeat);
-                this.filter.price.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.price)) {
-                    cb.price();
-                    if (this.all_filters_removed()) complete();
-                }
-            }
-            if (this.filter.fill_tx.heartbeat !== null) {
-                clearInterval(this.filter.fill_tx.heartbeat);
-                this.filter.fill_tx.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.fill_tx)) {
-                    cb.fill_tx();
-                    if (this.all_filters_removed()) complete();
-                }
-            }
-            if (this.filter.add_tx.heartbeat !== null) {
-                clearInterval(this.filter.add_tx.heartbeat);
-                this.filter.add_tx.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.add_tx)) {
-                    cb.add_tx();
-                    if (this.all_filters_removed()) complete();
-                }
-            }
-            if (this.filter.cancel.heartbeat !== null) {
-                clearInterval(this.filter.cancel.heartbeat);
-                this.filter.cancel.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.cancel)) {
-                    cb.cancel();
-                    if (this.all_filters_removed()) complete();
-                }
-            }
-            if (this.filter.contracts.heartbeat !== null) {
-                clearInterval(this.filter.contracts.heartbeat);
-                this.filter.contracts.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.contracts)) {
-                    cb.contracts();
-                    if (this.all_filters_removed()) complete();
-                }
-            }
-            if (this.filter.block.heartbeat !== null) {
-                clearInterval(this.filter.block.heartbeat);
-                this.filter.block.heartbeat = null;
-                if (!uninstall && utils.is_function(cb.block)) {
-                    cb.block();
-                    if (this.all_filters_removed()) complete();
+            for (label in this.filter) {
+                if (!this.filter.hasOwnProperty(label)) continue;
+                if (this.filter[label].heartbeat !== null) {
+                    clearInterval(this.filter[label].heartbeat);
+                    this.filter[label].heartbeat = null;
+                    if (!uninstall && utils.is_function(cb[label])) {
+                        cb[label]();
+                        if (this.all_filters_removed()) complete();
+                    }
                 }
             }
             if (uninstall) {
-                if (this.filter.price.id !== null) {
-                    this.clear_price_filter(function (uninst) {
-                        cleared(uninst, cb.price, complete);
-                    });
-                }
-                if (this.filter.fill_tx.id !== null) {
-                    this.clear_fill_tx_filter(function (uninst) {
-                        cleared(uninst, cb.fill_tx, complete);
-                    });
-                }
-                if (this.filter.add_tx.id !== null) {
-                    this.clear_add_tx_filter(function (uninst) {
-                        cleared(uninst, cb.add_tx, complete);
-                    });
-                }
-                if (this.filter.cancel.id !== null) {
-                    this.clear_cancel_filter(function (uninst) {
-                        cleared(uninst, cb.cancel, complete);
-                    });
-                }
-                if (this.filter.contracts.id !== null) {
-                    this.clear_contracts_filter(function (uninst) {
-                        cleared(uninst, cb.contracts, complete);
-                    });
-                }
-                if (this.filter.block.id !== null) {
-                    this.clear_block_filter(function (uninst) {
-                        cleared(uninst, cb.block, complete);
-                    });
-                }
+                async.forEachOfSeries(this.filter, function (filter, label, next) {
+                    if (filter.id !== null) {
+                        self.clear_filter(label, function (uninst) {
+                            cleared(uninst, cb[label], complete);
+                            next();
+                        });
+                    } else {
+                        next();
+                    }
+                });
             }
         }
-
     };
 };
 
@@ -37212,7 +37003,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.11";
+    this.version = "1.3.12";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39060,7 +38851,7 @@ Augur.prototype.checkReportValidity = function (branch, report, reportPeriod, ca
     return this.fire(tx, callback);
 };
 
-// createSingleEventMarket.se
+// createMarket.se
 Augur.prototype.createSingleEventMarket = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
     var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
@@ -39183,8 +38974,6 @@ Augur.prototype.createSingleEventMarket = function (branchId, description, expDa
     //     }, onFailed);
     // });
 };
-
-// createEvent.se
 Augur.prototype.createEvent = function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
     if (branchId.constructor === Object && branchId.branchId) {
         description = branchId.description;         // string
@@ -39210,8 +38999,6 @@ Augur.prototype.createEvent = function (branchId, description, expDate, minValue
     ];
     return this.transact(tx, onSent, onSuccess, onFailed);
 };
-
-// createMarket.se
 Augur.prototype.createMarket = function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
     var self = this;
     if (branchId.constructor === Object && branchId.branchId) {
@@ -39279,6 +39066,19 @@ Augur.prototype.createMarket = function (branchId, description, tradingFee, even
             }, onFailed);
         });
     });
+};
+Augur.prototype.updateTradingFee = function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.updateTradingFee);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.updateTradingFee), arguments);
+    tx.params = unpacked.params;
+    tx.params[2] = abi.fix(tx.params[2], "hex");
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
+};
+Augur.prototype.pushMarketForward = function (branch, market, onSent, onSuccess, onFailed) {
+    var tx = clone(this.tx.pushMarketForward);
+    var unpacked = this.utils.unpack(branch, this.utils.labels(this.pushMarketForward), arguments);
+    tx.params = unpacked.params;
+    return this.transact.apply(this, [tx].concat(unpacked.cb));
 };
 
 // closeMarket.se
@@ -39647,7 +39447,7 @@ Augur.prototype.getMarketPriceHistory = function (market, options, cb) {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.trade,
-        topics: [abi.prefix_hex(abi.keccak_256(constants.LOGS.price)), market]
+        topics: [constants.LOGS.price.signature, market]
     };
     if (!this.utils.is_function(cb)) {
         return parsePriceLogs(rpc.getLogs(filter));
@@ -39694,7 +39494,7 @@ Augur.prototype.getAccountTrades = function (account, options, cb) {
         toBlock: options.toBlock || "latest",
         address: this.contracts.trade,
         topics: [
-            abi.prefix_hex(abi.keccak_256(constants.LOGS.price)),
+            constants.LOGS.price.signature,
             null,
             abi.prefix_hex(abi.pad_left(account))
         ],
