@@ -10,6 +10,14 @@ import testState from '../../testState';
 
 import { GENERATE_ORDER_BOOK } from '../../../src/modules/transactions/constants/types';
 
+import {
+    SUCCESS,
+    GENERATING_ORDER_BOOK,
+    COMPLETE_SET_BOUGHT,
+    ORDER_BOOK_ORDER_COMPLETE,
+    ORDER_BOOK_OUTCOME_COMPLETE
+} from '../../../src/modules/transactions/constants/statuses';
+
 describe('modules/create-market/actions/generate-order-book.js', () => {
     proxyquire.noPreserveCache().noCallThru();
 
@@ -21,7 +29,10 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
         out,
         transactions,
         stubbedTransactions,
+        augurJS,
+        stubbedAugurJS,
         marketData,
+        orderBookParams,
         state = Object.assign({}, testState);
 
     store = mockStore(state);
@@ -43,16 +54,23 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
     };
 
     stubbedTransactions = sinon.stub(Object.assign({}, transactions));
-
     stubbedTransactions.addGenerateOrderBookTransaction.withArgs(marketData).returns({
         type: GENERATE_ORDER_BOOK,
         data: marketData,
         action: 'create order book action'
     });
 
+    augurJS = {
+        generateOrderBook: () => {}
+    };
+
+    stubbedAugurJS = sinon.stub(Object.assign({}, augurJS));
+    stubbedAugurJS.generateOrderBook.returns(true);
+
     action = proxyquire(
         '../../../src/modules/create-market/actions/generate-order-book',
         {
+            '../../../services/augurjs': stubbedAugurJS,
             '../../transactions/actions/add-generate-order-book-transaction': stubbedTransactions
         }
     );
@@ -95,5 +113,11 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
         assert.deepEqual(store.getActions(), out, `Didn't correctly submit an order book`);
     });
 
-    it('[TODO] should be able to generate an order book');
+    it('should be able to generate an order book', () => {
+        console.log('============> HERE');
+
+        store.dispatch(action.createOrderBook());
+
+        assert(stubbedAugurJS.generateOrderBook.calledOnce, `generateOrderBook wasn't called once as expected`);
+    });
 });
