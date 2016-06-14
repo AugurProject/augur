@@ -7,15 +7,16 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
+import BidsAsks from '../../bids-asks/components/bids-asks';
 
-module.exports = React.createClass({
-    propTypes: {
-        className: React.PropTypes.string,
-        siteHeader: React.PropTypes.object,
+const MarketPage = React.createClass({
+	propTypes: {
+		className: React.PropTypes.string,
+		siteHeader: React.PropTypes.object,
 		market: React.PropTypes.object,
 		priceTimeSeries: React.PropTypes.array,
 		numPendingReports: React.PropTypes.number
-    },
+	},
 
 	shouldComponentUpdate: shouldComponentUpdatePure,
 
@@ -50,10 +51,11 @@ module.exports = React.createClass({
 			// trade panel
 			else if (p.market.isOpen) {
 				nodes.push(
-			        <TradePanel
-			        	key="trade-panel"
-			            { ...p.market }
-			            { ...p.market.tradeSummary } />
+					<TradePanel
+						key="trade-panel"
+						sideOptions={ p.sideOptions }
+						{ ...p.market }
+						{ ...p.market.tradeSummary } />
 				);
 
 				// positions
@@ -64,9 +66,16 @@ module.exports = React.createClass({
 							className="market-positions"
 							positionsSummary={ p.market.positionsSummary }
 							positionOutcomes={ p.market.positionOutcomes }
-							/>
+						/>
 					);
 				}
+
+				nodes.push(
+					<BidsAsks
+						key="order-books"
+						market={p.market}
+					/>
+				);
 			}
 		}
 
@@ -85,3 +94,5 @@ module.exports = React.createClass({
 		);
 	}
 });
+
+module.exports = MarketPage;

@@ -1,11 +1,20 @@
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
 import filters from './selectors/filters';
+import createMarketForm from './selectors/create-market-form'
 
 import { makeNumber } from './utils/make-number';
 
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
+
+import {
+	INITIAL_FAIR_PRICE_DEFAULT,
+	SHARES_PER_ORDER_DEFAULT,
+	SIZE_OF_BEST_DEFAULT,
+	PRICE_WIDTH_DEFAULT,
+	SEPARATION_DEFAULT
+} from './modules/create-market/constants/market-values-constraints'
 
 var selectors = {
 	update: (newState = {}) => {
@@ -15,7 +24,8 @@ var selectors = {
 	},
 	loginAccount,
 	markets,
-	filters
+	filters,
+	createMarketForm
 };
 
 selectors.activePage = MARKETS;
@@ -52,6 +62,7 @@ selectors.searchSort = {
 selectors.marketsHeader =  {};
 
 selectors.market =  {}; // selected market
+selectors.sideOptions = [{value: 'bid', label: 'Buy'}, {value: 'ask', label: 'Sell'}];
 selectors.marketsTotals = {
 	positionsSummary: {
 		numPositions: makeNumber(3, 'Positions', true),
@@ -102,7 +113,5 @@ selectors.pagination = {
 		}
 	})
 };
-
-selectors.createMarketForm =  {};
 
 module.exports = selectors;

@@ -3,7 +3,7 @@ import React from 'react';
 import TradePanelItem from './trade-panel-item';
 import Transaction from '../../transactions/components/transaction';
 
-module.exports = React.createClass({
+const TradePanel = React.createClass({
 	propTypes: {
 		outcomes: React.PropTypes.array,
 		tradeOrders: React.PropTypes.array,
@@ -20,38 +20,40 @@ module.exports = React.createClass({
 						<span className="last-price">Last</span>
 						<span className="top-bid">Top Bid</span>
 						<span className="top-ask">Top Ask</span>
+						<span className="num-shares">Side</span>
 						<span className="num-shares">Shares</span>
 						<span className="limit-price">Limit</span>
 						<span className="fee-to-pay">Fee</span>
-						<span className="total-cost">Cost</span>
+						<span className="total-cost">Profit/Loss</span>
 					</div>
 					{ p.outcomes && p.outcomes.map(outcome => (
 						<TradePanelItem
 							key={ outcome.id }
+							sideOptions={ p.sideOptions }
 							{ ...outcome }
 							{ ...outcome.trade } />
 					))}
 				</div>
 
 				{ p.tradeOrders && !!p.tradeOrders.length &&
-					<div className="trade-orders">
-						<h5>Trade Summary</h5>
-						{ p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
-							<Transaction
-								key={ i }
-								className="order"
-								{ ...tradeOrder }
-								status={ undefined }
-							/>
-						))}
-
+				<div className="trade-orders">
+					<h5>Trade Summary</h5>
+					{ p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
 						<Transaction
-							shares={ p.totalShares }
-							className="order total"
-							ether={ p.totalEther }
-							gas={ p.totalGas }
-							status={ undefined } />
-					</div>
+							key={ i }
+							className="order"
+							{ ...tradeOrder }
+							status={ undefined }
+						/>
+					))}
+
+					<Transaction
+						shares={ p.totalShares }
+						className="order total"
+						ether={ p.totalEther }
+						gas={ p.totalGas }
+						status={ undefined } />
+				</div>
 				}
 				<div className="place-trade-container">
 					<button
@@ -62,3 +64,5 @@ module.exports = React.createClass({
 		);
 	}
 });
+
+module.exports = TradePanel;

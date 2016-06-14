@@ -1,4 +1,4 @@
-.basics {
+.basics, .advanced {
 	.description {
 		display: block;
 		line-height: 1.3em;
@@ -33,16 +33,34 @@
 			padding: 0.5em 0;
 			font-size: 1rem;
 			text-transform: uppercase;
-			cursor: pointer;
-
-			&:hover, &:active, &:focus {
-				text-decoration: underline;
-			}
 
 			&:not(:last-child):after {
 				display: inline-block;
 				content: '>';
 				margin: 0 0.5em;
+			}
+
+			&.link {
+				cursor: pointer;
+
+				&:hover, &:active, &:focus {
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}
+
+.advanced {
+	.properties {
+		margin: 0;
+
+		.property {
+			vertical-align: top;
+			
+			.distinct {
+				display: block;
+				margin: 0.5rem 0 0 0;
 			}
 		}
 	}

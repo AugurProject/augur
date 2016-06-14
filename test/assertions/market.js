@@ -71,9 +71,11 @@ function marketAssertion(actual) {
 	assert.isObject(actual.positionsSummary, `market.positionsSummary isn't an object`);
 
 	assert.isDefined(actual.report, `market.report isn't defined`);
-	assert.isObject(actual.report, `market.positionsSummary isn't an object`);
+	assert.isObject(actual.report, `market.report isn't an object`);
 	reportAssertion(actual.report);
 
+	assert.isDefined(actual.orderBook, `market.orderBook isn't defined`);
+	assert.isObject(actual.orderBook, `market.orderBook isn't an object`);
 }
 // tradingFeePercent: {
 // 	value: Number,

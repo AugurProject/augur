@@ -1,24 +1,32 @@
 import React from 'react';
-import classnames from 'classnames';
 
-import BidsAsksOutcomeGroup from './bids-asks-outcome-group';
+import OrderBook from './order-book';
 
-module.exports = React.createClass({
-    propTypes: {
-        className: React.PropTypes.string,
-		bidsAsks: React.PropTypes.array
-    },
+const BidsAsks = React.createClass({
+	propTypes: {
+		market: React.PropTypes.object
+	},
 
-    render: function() {
-        var p = this.props;
-        return (
-            <div className={ p.className }>
-                { p.bidsAsks.map(outcomeBidsAsks => (
-                    <BidsAsksOutcomeGroup
-                        key={ outcomeBidsAsks.id }
-                        { ...outcomeBidsAsks } />
-                ))}
-            </div>
-        );
-    }
+	render: function () {
+		var p = this.props;
+		return (
+			<div className="bids-asks">
+				{
+					p.market.outcomes.map(outcome => {
+						return (
+							<OrderBook
+								key={`order-book-${outcome.id}`}
+								outcome={ outcome }
+								updateTradeOrder={ outcome.trade.updateTradeOrder }
+								bids={ outcome.orderBook.bids }
+								asks={ outcome.orderBook.asks }
+							/>
+						)
+					})
+				}
+			</div>
+		);
+	}
 });
+
+module.exports = BidsAsks;
