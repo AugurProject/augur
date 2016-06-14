@@ -1,8 +1,0 @@
-{
-    "env": {
-        "production": {
-            "plugins": ["babel-plugin-transform-remove-console"]
-        }
-    },
-    "presets": ["es2015", "stage-0", "react"]
-}

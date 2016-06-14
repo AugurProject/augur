@@ -36,9 +36,11 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.tradingFeePercent, `market.tradingFeePercent isn't defined`);
 	assert.isObject(actual.tradingFeePercent, `market.tradingFeePercent isn't an object`);
+	tradingFeePercentAssertion(actual.tradingFeePercent);
 
 	assert.isDefined(actual.volume, `market.volume isn't defined`);
 	assert.isObject(actual.volume, `market.volume isn't an object`);
+	volumeAssertion(actual.volume);
 
 	assert.isDefined(actual.isOpen, `market.isOpen isn't defined`);
 	assert.isBoolean(actual.isOpen, `market.isOpen isn't a boolean`);
@@ -48,6 +50,7 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.marketLink, `market.marketLink isn't defined`);
 	assert.isObject(actual.marketLink, `market.marketLink isn't an object`);
+	marketLinkAssertion(actual.marketLink);
 
 	assert.isDefined(actual.tags, `market.tags isn't defined`);
 	assert.isArray(actual.tags, `market.tags isn't an array`);
@@ -69,6 +72,7 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.report, `market.report isn't defined`);
 	assert.isObject(actual.report, `market.report isn't an object`);
+	reportAssertion(actual.report);
 
 	assert.isDefined(actual.orderBook, `market.orderBook isn't defined`);
 	assert.isObject(actual.orderBook, `market.orderBook isn't an object`);

@@ -1,5 +1,5 @@
 import selectors from '../src/selectors';
-import * as assertions from './assertions/searchSort';
+import searchSortAssertion from './assertions/searchSort';
 
 describe(`selectors.searchSort tests:`, () => {
 	// searchSort: {
@@ -8,16 +8,16 @@ describe(`selectors.searchSort tests:`, () => {
 	// },
 	it(`should contain a searchSort and is the expected shape`, () => {
 		let actual = selectors.searchSort;
-		assertions.searchSortAssertion(actual);
+		searchSortAssertion(actual);
 	});
 
-	it(`searchSort should contain a selectedSort object with correct shape`, () => {
-		let actual = selectors.searchSort.selectedSort;
-		assertions.selectedSortAssertion(actual);
-	});
-
-	it(`searchSort should contain a sortOptions array of objects with correct shape`, () => {
-		let actual = selectors.searchSort.sortOptions;
-		assertions.sortOptionsAssertion(actual);
-	});
+	// it(`searchSort should contain a selectedSort object with correct shape`, () => {
+	// 	let actual = selectors.searchSort.selectedSort;
+	// 	assertions.selectedSortAssertion(actual);
+	// });
+	//
+	// it(`searchSort should contain a sortOptions array of objects with correct shape`, () => {
+	// 	let actual = selectors.searchSort.sortOptions;
+	// 	assertions.sortOptionsAssertion(actual);
+	// });
 });
