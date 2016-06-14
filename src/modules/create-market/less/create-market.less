@@ -33,6 +33,7 @@
 
 		.error-message {
 			display: inline-block;
+			display: inline-block;
 			margin: 0.7rem 1rem;
 			color: @color-danger-normal;
 		}
@@ -54,6 +55,61 @@
 
 				.input {
 					width: 100%; max-width: 25rem
+				}
+			}
+		}
+
+		.advanced-market-params {
+			.horizontal-divider {
+				padding: 1rem 0;
+
+				overflow: hidden;
+				text-align: center;
+
+				font-size: 1.4rem;
+				span {
+					font-size: 0.7rem;
+					vertical-align: middle;
+					line-height: 1.4rem;
+				}
+
+				color: @color-muted-normal;
+				cursor: pointer;
+
+				// Horizontal Lines
+				&::before,
+				&::after {
+					background-color: @color-muted-normal;
+					content: "";
+					display: inline-block;
+					height: 1px;
+					position: relative;
+					vertical-align: middle;
+					width: 50%;
+				}
+				&::before {
+					right: 0.5rem;
+					margin-left: -50%;
+				}
+				&::after {
+					left: 0.5rem;
+					margin-right: -50%;
+				}
+
+				// States
+				&:hover {
+					color: @color-muted-hover;
+				}
+				&:hover::before,
+				&:hover::after {
+					background-color: @color-muted-hover;
+				}
+				&:active {
+					color: @color-muted-active;
+				}
+				&:active::before,
+				&:active::after {
+					background-color: @color-muted-active;
 				}
 			}
 		}

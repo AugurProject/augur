@@ -1,21 +1,35 @@
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
+
+import { get } from '../../../utils/get'
 
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
 module.exports = React.createClass({
 	propTypes: {
+		onValuesUpdated: React.PropTypes.func,
+		errors: React.PropTypes.object,
+		isValid: React.PropTypes.bool,
+
 		tradingFeePercent: React.PropTypes.any,
+		makerFee: React.PropTypes.any,
 		initialLiquidity: React.PropTypes.any,
 
-		errors: React.PropTypes.object,
+		showAdvancedMarketParams: React.PropTypes.bool,
 
-		onValuesUpdated: React.PropTypes.func
+		initialFairPrices: React.PropTypes.object,
+		bestStartingQuantity: React.PropTypes.any,
+		startingQuantity: React.PropTypes.any,
+		priceWidth: React.PropTypes.any,
+		priceDepth: React.PropTypes.any
 	},
 
 	render: function() {
 		var p = this.props;
+
+		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼';
+
 		return (
 			<div className="step-4">
 				<div className="fee">
@@ -38,6 +52,24 @@ module.exports = React.createClass({
 						<span className="error-message">{ p.errors.tradingFeePercent }</span>
 					}
 				</div>
+				<div className="fee">
+					<h4>Set the maker's share of the trading fee</h4>
+					<p>
+						The Maker Fee is the percentage split the 'Maker' of an order must pay of the trading fee with the remaining percentage being paid by the 'Taker'.
+					</p>
+
+					<Input
+						type="text"
+						value = { p.makerFee }
+						isClearable={ false }
+						onChange={ (value) => p.onValuesUpdated({ makerFee: value }) }
+					/>
+					<span className="denomination">%</span>
+
+					{ p.errors.makerFee &&
+						<span className="error-message">{ p.errors.makerFee }</span>
+					}
+				</div>
 				<div className="liquidity">
 					<h4>Set the amount of initial liquidity</h4>
 					<p>
@@ -53,17 +85,119 @@ module.exports = React.createClass({
 						isClearable={ false }
 						onChange={ (value) => p.onValuesUpdated({ initialLiquidity: value }) } />
 
-					<span className="denomination">Eth</span>
+					<span className="denomination">ETH</span>
 					{ p.errors.initialLiquidity &&
 						<span className="error-message">{ p.errors.initialLiquidity }</span>
 					}
 				</div>
 
+
+				<div className="advanced-market-params" >
+					<h6 className="horizontal-divider" onClick={() => {p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams })}}><span>{ advancedParamsArrow }</span> Advanced <span>{ advancedParamsArrow }</span></h6>
+
+					<div className={ classNames({ 'displayNone': !!!p.showAdvancedMarketParams }) }>
+
+						<div>
+							<h4>Initial Fair Price</h4>
+							<p>
+								This establishes the initial price for each respective outcome.
+							</p>
+							{ p.initialFairPrices.values.map((cV, i) => {
+								return (
+									<div key={`initialFairPrice${i}`} >
+										<Input
+											type="text"
+											value={ p.initialFairPrices.values[i].value }
+											isClearable={ false }
+											onChange={
+												(onChangeValue) => {
+													let prices = p.initialFairPrices.values,
+														raw = p.initialFairPrices.raw;
+														
+													prices[i].value = onChangeValue;
+													raw[i] = onChangeValue;
+
+													p.onValuesUpdated({
+														initialFairPrices: {
+															...p.initialFairPrices,
+															values: prices,
+															raw
+														}
+													})
+												}
+											} />
+										<span className="denomination">ETH | { cV.label }</span>
+										{ !!get(p.errors, `initialFairPrice.${i}`) &&
+											<span className="error-message">{ p.errors.initialFairPrice[`${i}`] }</span>
+										}
+									</div>
+								)
+							})}
+
+						</div>
+
+						<div>
+							<h4>Best Bid/Ask Quantity</h4>
+							<p>
+								This defines the number of shares applied to the best bid and ask orders.
+							</p>
+
+							<Input
+								type="text"
+								value = { p.bestStartingQuantity }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ bestStartingQuantity: value }) }
+							/>
+							<span className="denomination">Shares</span>
+							{ p.errors.bestStartingQuantity &&
+							<span className="error-message">{ p.errors.bestStartingQuantity }</span>
+							}
+						</div>
+
+						<div>
+							<h4>Starting Quantity</h4>
+							<p>
+								This is the number of shares in each order.
+							</p>
+
+							<Input
+								type="text"
+								value = { p.startingQuantity }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ startingQuantity: value }) }
+							/>
+							<span className="denomination">Shares</span>
+							{ p.errors.startingQuantity &&
+								<span className="error-message">{ p.errors.startingQuantity }</span>
+							}
+						</div>
+
+						<div>
+							<h4>Price Width</h4>
+							<p>
+								This defines the spread between the initial best bid and ask orders.
+							</p>
+
+							<Input
+								type="text"
+								value = { p.priceWidth }
+								isClearable={ false }
+								onChange={ (value) => p.onValuesUpdated({ priceWidth: value }) }
+							/>
+							<span className="denomination">ETH</span>
+							{ p.errors.priceWidth &&
+								<span className="error-message">{ p.errors.priceWidth }</span>
+							}
+						</div>
+					</div>
+				</div>
+
+
 				<FormButtons
 					disabled={ !p.isValid }
 					nextLabel="review"
-					onNext={ () => p.onValuesUpdated({ step: this.props.step + 1 }) }
-					onPrev={ () => p.onValuesUpdated({ step: this.props.step - 1 }) } />
+					onNext={ () => p.onValuesUpdated({ step: p.step + 1 }) }
+					onPrev={ () => p.onValuesUpdated({ step: p.step - 1 }) } />
 			</div>
 		);
 	}

@@ -24,6 +24,7 @@ function makeMarkets(numMarkets = 25) {
 				description: 'Will the dwerps achieve a mwerp by the end of zwerp ' + (index + 1) + '?',
 				endDate: { formatted: '12/12/2017' },
 				tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
+				makerFeePercent: makeNumber(randomInt(0,100), '%', true),
 				volume: makeNumber(randomInt(0, 10000), 'Shares', true),
 				isOpen: Math.random() > 0.1,
 				isPendingReport: Math.random() < 0.5,
