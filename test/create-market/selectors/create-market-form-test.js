@@ -20,7 +20,8 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	steps = {
 		select: (formState) => true,
 		errors: () => {},
-		isValid: (formState) => true
+		isValid: (formState) => true,
+		initialFairPrices: () => {}
 	};
 	returnObj = {
 		descriptionPlaceholder: 'some desc',
@@ -30,6 +31,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	step2 = sinon.stub(Object.assign({}, steps));
 	step2.isValid.returns(true);
 	step2.select.returns(returnObj);
+	step2.initialFairPrices.returns({});
 
 	returnObj = {
 		tagsMaxNum: 3,
