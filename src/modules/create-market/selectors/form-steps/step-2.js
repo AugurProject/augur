@@ -19,16 +19,16 @@ import validateCategoricalOutcomes from '../../../market/validators/validate-cat
 
 export const select = (formState) => {
 	switch (formState.type) {
-	case BINARY:
-		return selectBinary(formState);
-	case CATEGORICAL:
-		return selectCategorical(formState);
-	case SCALAR:
-		return selectScalar(formState);
-	case COMBINATORIAL:
-		return selectCombinatorial(formState);
-	default:
-		break;
+		case BINARY:
+			return selectBinary(formState);
+		case CATEGORICAL:
+			return selectCategorical(formState);
+		case SCALAR:
+			return selectScalar(formState);
+		case COMBINATORIAL:
+			return selectCombinatorial(formState);
+		default:
+			break;
 	}
 };
 
@@ -74,6 +74,18 @@ export const selectCombinatorial = (formState) => {
 	};
 	return obj;
 };
+
+export const initialFairPrices = (formState) => {
+	if(!!!formState.initialFairPrices || formState.type != formState.initialFairPrices.type){
+		return {
+			initialFairPrices: {
+				type: formState.type,
+				values: [],
+				raw: []
+			}
+		}
+	}
+}
 
 export const isValid = (formState) => {
 	if (validateDescription(formState.description)) {

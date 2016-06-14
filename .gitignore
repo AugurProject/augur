@@ -33,3 +33,6 @@ build/Release
 
 # Optional npm cache directory
 .npm
+
+# IDEs
+.idea

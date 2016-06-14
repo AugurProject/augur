@@ -1,7 +1,14 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
 
-import { SUCCESS, CREATING_MARKET } from '../modules/transactions/constants/statuses';
+import {
+	SUCCESS,
+	CREATING_MARKET,
+	SIMULATED_ORDER_BOOK,
+	COMPLETE_SET_BOUGHT,
+	ORDER_BOOK_ORDER_COMPLETE,
+	ORDER_BOOK_OUTCOME_COMPLETE
+} from '../modules/transactions/constants/statuses';
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
@@ -355,20 +362,41 @@ ex.get_trade = function (orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
 
-ex.createMarket = function createMarket(branchID, newMarket, cb) {
+ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
-		branchId: branchID,
 		description: newMarket.description,
-		expirationBlock: newMarket.endBlock,
+		expDate: newMarket.endDate.value.getTime() / 1000,
 		minValue: newMarket.minValue,
 		maxValue: newMarket.maxValue,
 		numOutcomes: newMarket.numOutcomes,
-		alpha: '0.0079',
-		initialLiquidity: newMarket.initialLiquidity,
+		resolution: newMarket.expirySource,
 		tradingFee: newMarket.tradingFee,
-		onSent: r => cb(null, { status: CREATING_MARKET, marketID: r.callReturn, txHash: r.txHash }),
-		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.callReturn, tx: r }),
-		onFailed: r => cb(r)
+		tags: newMarket.tags,
+		makerFees: newMarket.makerFee,
+		extraInfo: newMarket.extraInfo,
+		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
+		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
+		onFailed: r => cb(r),
+		branchId: branchId
+	});
+};
+
+ex.generateOrderBook = function generateOrderBook(marketData, cb){
+	augur.generateOrderBook({
+		market: marketData.id,
+		liquidity: marketData.initialLiquidity,
+		initialFairPrices: marketData.initialFairPrices.raw,
+		startingQuantity: marketData.startingQuantity,
+		bestStartingQuantity: marketData.bestStartingQuantity,
+		priceWidth: marketData.priceWidth,
+		isSimulation: marketData.isSimulation
+	}, {
+		onSimulate: r => cb(null, { status: SIMULATED_ORDER_BOOK, payload: r }),
+		onBuyCompleteSets: r => cb(null, { status: COMPLETE_SET_BOUGHT, payload: r }),
+		onSetupOutcome: r => cb(null, { status: ORDER_BOOK_OUTCOME_COMPLETE, payload: r }),
+		onSetupOrder: r => cb(null, { status: ORDER_BOOK_ORDER_COMPLETE, payload: r }),
+		onSuccess: r => cb(null, { status: SUCCESS, payload: r }),
+		onFailed: err => cb(err)
 	});
 };
 
