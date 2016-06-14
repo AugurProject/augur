@@ -49,20 +49,25 @@ module.exports = function () {
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
             onRegistered(account);
-            var url = constants.FAUCET + abi.format_address(account.address);
-            request(url, function (err, response, body) {
-                if (err) return onFailed(err);
-                if (response.statusCode !== 200) {
-                    return onFailed(response.statusCode);
-                }
-                onSendEther(account);
-                augur.fundNewAccount({
-                    branch: branch || augur.branches.dev,
-                    onSent: onSent,
-                    onSuccess: onSuccess,
-                    onFailed: onFailed
+            if (process.env.BUILD_AZURE) {
+                var FREEBIE=2.5;
+                augur.sendCash(account.address, FREEBIE, onSent, onSuccess, onFailed);
+            }else{
+                var url = constants.FAUCET + abi.format_address(account.address);
+                request(url, function (err, response, body) {
+                    if (err) return onFailed(err);
+                    if (response.statusCode !== 200) {
+                        return onFailed(response.statusCode);
+                    }
+                    onSendEther(account);
+                    augur.fundNewAccount({
+                        branch: branch || augur.branches.dev,
+                        onSent: onSent,
+                        onSuccess: onSuccess,
+                        onFailed: onFailed
+                    });
                 });
-            });
+            }
         },
 
         // options: {doNotFund, persist}
