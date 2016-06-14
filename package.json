@@ -52,7 +52,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "augur-ui-react-components": "^2.2.9",
+    "augur-ui-react-components": "https://github.com/AugurProject/augur-ui-react-components.git",
     "augur.js": "^1.3.12",
     "bignumber.js": "^2.3.0",
     "memoizerific": "^1.8.3",

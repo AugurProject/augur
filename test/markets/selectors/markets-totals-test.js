@@ -3,20 +3,15 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import * as assertions from '../../../node_modules/augur-ui-react-components/test/assertions/marketsTotals';
+import * as mockStore from '../../mockStore';
+import {assertions} from 'augur-ui-react-components';
 
 let marketsTotals;
-
 describe(`modules/markets/selectors/markets-totals.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	let selector, expected, actual;
+	let { state, store } = mockStore.default;
+
 	let mockPositions = {
 		selectPositionsSummary: () => {}
 	};
@@ -145,31 +140,34 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 	selector = proxyquire('../../../src/modules/markets/selectors/markets-totals.js', {
 		'../../../store': store,
 		'../../../selectors': mockSelectors,
-		'../../positions/selectors/positions-summary': mockPositions
 	});
 
 	marketsTotals = selector.default;
 
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
 	it(`should return the market totals for selected market`, () => {
-		test = selector.default();
-		out = {
-			numAll: 6,
-			numFavorites: 4,
-			numPendingReports: 3,
-			numUnpaginated: 7,
-			numFiltered: 7,
-			positionsSummary: {
-				numPositions: 70,
-				qtyShares: 35,
-				totalValue: 140,
-				totalCost: 297
-			}
-		};
-		assertions.marketsTotalsAssertion(test);
-
-		assert(mockPositions.selectPositionsSummary.calledOnce, `Didn't selectPositionsSummary call once as expected`);
-
-		assert.deepEqual(test, out, `Didn't output the expected Totals`);
+		actual = selector.default();
+		// expected = {
+		// 	numAll: 6,
+		// 	numFavorites: 4,
+		// 	numPendingReports: 3,
+		// 	numUnpaginated: 7,
+		// 	numFiltered: 7,
+		// 	positionsSummary: {
+		// 		numPositions: 70,
+		// 		qtyShares: 35,
+		// 		totalValue: 140,
+		// 		totalCost: 297
+		// 	}
+		// };
+		assertions.marketsTotals.marketsTotalsAssertion(actual);
 	});
 });
 

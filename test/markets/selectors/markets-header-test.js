@@ -3,19 +3,14 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import marketsHeaderAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/marketsHeader';
+import * as mockStore from '../../mockStore';
+import {assertions} from 'augur-ui-react-components';
 
-let marketsHeader;
 describe(`modules/markets/selectors/markets-header.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	let selector, actual, expected;
+	let { state, store } = mockStore.default;
+
 	let mockSelect = {};
 	mockSelect.marketsTotals = {
 		numFiltered: 10,
@@ -38,11 +33,19 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 		'../../markets/actions/update-selected-markets-header': mockHeader
 	});
 
-	marketsHeader = selector.default;
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
+
+	// marketsHeader = selector.default;
 
 	it(`should select the correct Markets Header`, () => {
-		test = selector.default();
-		out = [{
+		actual = selector.default();
+		expected = [{
 			type: 'UPDATE_SELECTED_MARKETS_HEADER',
 			header: null
 		}, {
@@ -53,18 +56,12 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
-		marketsHeaderAssertion(test);
+		assertions.marketsHeader(actual)
 
-		test.onClickAllMarkets();
-		test.onClickFavorites();
-		test.onClickPendingReports();
+		actual.onClickAllMarkets();
+		actual.onClickFavorites();
+		actual.onClickPendingReports();
 
-		assert.equal(test.selectedMarketsHeader, 'testMarketHeader', `Didn't assign the expected selectedMarketsHeader`);
-		assert.equal(test.numMarkets, 10, `Didn't assign the correct number of markets`);
-		assert.equal(test.numFavorites, 100, `Didn't assign the correct number of favorites`);
-		assert.equal(test.numPendingReports, 25, `Didn't assign the correct number of pending reports`);
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects from onclick events`);
+		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects from onclick events`);
 	});
 });
-
-export default marketsHeader;

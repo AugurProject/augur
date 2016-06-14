@@ -3,19 +3,17 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-// import * as selector from '../../../src/modules/market/selectors/price-time-series';
+import * as mockStore from '../../mockStore';
 
 describe(`modules/market/selectors/price-time-series.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, expected, actual;
-	let state = Object.assign({}, testState);
+	// const middlewares = [thunk];
+	// const mockStore = configureMockStore(middlewares);
+	let selector, expected, actual;
+	let { state, store } = mockStore.default;
+	// let state = Object.assign({}, testState);
 	let mockDate = {};
-	store = mockStore(state);
+	// store = mockStore(state);
 	mockDate.blockToDate = sinon.stub().returns('SomeDate');
 
 	selector = proxyquire('../../../src/modules/market/selectors/price-time-series.js', {

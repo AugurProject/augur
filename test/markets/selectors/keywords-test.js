@@ -3,20 +3,14 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
+import * as mockStore from '../../mockStore';
+import { assertions } from 'augur-ui-react-components';
 
-let keywords;
 describe('modules/markets/selectors/keywords.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
-	let state = Object.assign({}, testState, {
-		keywords: `test, example`
-	});
-	store = mockStore(state);
+	let selector, expected, actual;
+	let { state, store } = mockStore.default;
+
 	let mockUpdate = {
 		updateKeywords: () => {}
 	};
@@ -32,21 +26,18 @@ describe('modules/markets/selectors/keywords.js', () => {
 		'../../markets/actions/update-keywords': mockUpdate
 	});
 
-	keywords = selector.default;
 	it(`should return the active keywords`, () => {
 		let keywords = store.getState().keywords;
-		test = selector.default();
-		out = [{
+		actual = selector.default();
+		expected = [{
 			type: 'UPDATE_KEYWORDS',
 			keywords
 		}];
 
-		test.onChangeKeywords(keywords);
+		actual.onChangeKeywords(keywords);
+		assertions.keywords(actual);
 
-		assert.equal(test.value, keywords, `Didn't assign the current keywords as a "value" of output object`);
 		assert(mockUpdate.updateKeywords.calledOnce, `updateKeywords wasn't called once as expected`);
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action when onChangeKeywords was called.`);
+		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the correct action when onChangeKeywords was called.`);
 	});
 });
-
-export default keywords;

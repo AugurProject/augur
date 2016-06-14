@@ -2,20 +2,14 @@ import {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
-// import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-// import * as selector from '../../../src/modules/markets/selectors/markets-filtered';
-let filteredMarkets;
+import * as mockStore from '../../mockStore';
 
+let filteredMarkets;
 describe(`modules/markets/selectors/markets-filtered.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	let selector, out, test;
+	let { state, store } = mockStore.default;
+
 	let mockSelectors = { allMarkets: [{
 		isOpen: true,
 		description: 'test 1',
@@ -42,6 +36,14 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 	});
 
 	filteredMarkets = selector.default;
+
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
 
 	it(`should be able to select the correct filtered markets`, () => {
 		test = selector.default();

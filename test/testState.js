@@ -3,6 +3,9 @@
 const testState = {
 	accountTrades: {},
 	activePage: 'markets',
+	accountTrades: {
+		testMarketID: {}
+	},
 	auth: {
 		err: null,
 		selectedAuthType: 'register'
@@ -35,8 +38,13 @@ const testState = {
 		description: 'root branch',
 		periodLength: 4000
 	},
+	connection: {
+		isConnected: true
+	},
 	createMarketInProgress: {},
-	favorites: {},
+	favorites: {
+		testMarketID: true
+	},
 	loginAccount: {
 		address: '0xtest123',
 		id: '0xtest123',
@@ -49,32 +57,69 @@ const testState = {
 		}
 	},
 	keywords: 'test testtag',
-	marketsData: {},
+	marketsData: {
+		testMarketID: {
+			eventID: 'testEventID',
+			name: 'testMarket',
+			description: 'some test description',
+			endDate: 123,
+			type: 'scalar',
+			tradingFee: 5,
+			volume: 500,
+			tags: ['tag1', 'tag2', 'tag3'],
+			orderBook: {}
+		}
+	},
+	marketOrderBooks: {
+		testMarketID: {}
+	},
 	outcomes: {
 		testMarketID: {
-			id: 'testMarketID'
-		},
-		test: {
-			id: 'test'
+			testMarketID: {
+				id: 'testMarketID',
+				name: 'testOutcome',
+				price: 50
+			}
 		}
 	},
 	pagination: {
 		numPerPage: 10,
 		selectedPageNum: 1
 	},
-	priceHistory: {},
-	reports: {},
+	priceHistory: {
+		testMarketID: {}
+	},
+	reports: {
+		testEventID: {
+			isUnethical: false
+		}
+	},
 	selectedFilters: {
 		isOpen: true
 	},
-	selectedMarketId: null,
+	selectedMarketID: 'testMarketID',
 	selectedMarketsHeader: 'testMarketHeader',
 	selectedSort: {
 		isDesc: true,
 		prop: 'volume'
 	},
-	selectedTags: { testtag: {name: 'testtag'}, tag: {name: 'tag'} },
-	tradesInProgress: {},
+	selectedTags: {
+		testtag: {
+			name: 'testtag'
+		},
+		tag: {
+			name: 'tag'
+		}
+	},
+	tradesInProgress: {
+		testMarketID: {
+			testMarketID: {
+				numShares: 5000,
+				limitPrice: 100,
+				totalCost: 50
+			}
+		}
+	},
 	transactionsData: {
 		testtransaction12345: {
 			id: 'testtransaction12345',

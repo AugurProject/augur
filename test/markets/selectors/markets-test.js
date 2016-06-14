@@ -91,7 +91,15 @@ describe(`modules/markets/selectors/markets.js`, () => {
 		'../../../selectors': mockSelectors
 	});
 
-	markets = selector.default;
+	markets = selector;
+
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
 
 	it(`should return unpaginatedMarkets if selectedMarketsHeader is PENDING_REPORTS`, () => {
 		test = selector.default();
