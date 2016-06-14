@@ -7,14 +7,14 @@ export const makeGenerateOrderBookTransaction = (marketData, dispatch) => {
     const obj = {
         type: GENERATE_ORDER_BOOK,
         data: marketData,
-        action: (transactionID) => dispatch(createOrderBook(transactionID, marketData))
+        action: transactionID => dispatch(createOrderBook(transactionID, marketData))
     };
 
     return obj;
 };
 
-export const addGenerateOrderBookTransaction = (marketData) =>
-    dispatch =>
+export const addGenerateOrderBookTransaction = (marketData) => {
+    return dispatch => {
         dispatch(
             addTransaction(
                 makeGenerateOrderBookTransaction(
@@ -23,3 +23,5 @@ export const addGenerateOrderBookTransaction = (marketData) =>
                 )
             )
         );
+    };
+};

@@ -21,14 +21,14 @@ import { submitGenerateOrderBook } from '../../create-market/actions/generate-or
 import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress'
 
 export function submitNewMarket(newMarket) {
-	return (dispatch, getState) => {
+	return dispatch => {
 		selectTransactionsLink(dispatch).onClick();
 		dispatch(addCreateMarketTransaction(newMarket));
 	};
 }
 
 export function createMarket(transactionID, newMarket) {
-	return (dispatch, getState) => {
+	return dispatch => {
 		if (newMarket.type === BINARY) {
 			newMarket.minValue = 1;
 			newMarket.maxValue = 2;
@@ -50,7 +50,6 @@ export function createMarket(transactionID, newMarket) {
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
 
 		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
-			console.log()
 			if (err) {
 				
 				dispatch(
@@ -67,6 +66,7 @@ export function createMarket(transactionID, newMarket) {
 				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
 
 				if (res.status === SUCCESS) {
+					dispatch(clearMakeInProgress());
 					setTimeout(() => dispatch(loadMarket(res.marketID)), 5000);
 
 					newMarket = {
@@ -76,8 +76,6 @@ export function createMarket(transactionID, newMarket) {
 					};
 
 					dispatch(submitGenerateOrderBook(newMarket));
-
-					dispatch(clearMakeInProgress());
 				}
 			}
 		});

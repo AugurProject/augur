@@ -14,10 +14,8 @@ import AugurJS from '../../../services/augurjs'
 
 export function submitGenerateOrderBook(marketData){
     return dispatch => {
-        // selectTransactionsLink(dispatch).onClick(); Not sure what this does yet...
         dispatch(addGenerateOrderBookTransaction(marketData));
     }
-
 }
 
 export function createOrderBook(transactionID, marketData){
