@@ -4,6 +4,7 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 
 module.exports = React.createClass({
 	propTypes: {
+		type: React.PropTypes.string,
 		className: React.PropTypes.string,
 		value: React.PropTypes.any,
 		isMultiline: React.PropTypes.bool,
@@ -30,21 +31,20 @@ module.exports = React.createClass({
 	render() {
 		var p = this.props,
 			s = this.state;
+
 		return (
 			<div className={ classnames('input', { 'clearable': p.isClearable !== false }, this.props.className) }>
 				{ !p.isMultiline &&
-					<input { ...this.props }
+					<input { ...p }
 							className="box"
-							type="text"
 							value={ s.value }
 							onChange={ this.handleOnChange }
 							onBlur={ this.handleOnBlur } />
 				}
 
 				{ p.isMultiline &&
-					<textarea { ...this.props }
+					<textarea { ...p }
 							className="box"
-							type="text"
 							value={ s.value }
 							onChange={ this.handleOnChange }
 							onBlur={ this.handleOnBlur } />

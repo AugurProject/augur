@@ -1,7 +1,8 @@
 import React from 'react';
-import classnames from 'classnames';
 
 import ValueDenomination from '../../common/components/value-denomination';
+
+import classNames from 'classnames';
 
 module.exports = React.createClass({
 	propTypes: {
@@ -9,6 +10,8 @@ module.exports = React.createClass({
 
 		endDate: React.PropTypes.object,
 		tradingFeePercent: React.PropTypes.object,
+		makerFeePercent: React.PropTypes.object,
+		takerFeePercent: React.PropTypes.object,
 		volume: React.PropTypes.object,
 
 		tags: React.PropTypes.array
@@ -16,12 +19,13 @@ module.exports = React.createClass({
 
 	render: function() {
 		var p = this.props;
+
 		return (
 			<section className="basics">
 				{ !!p.tags && !!p.tags.length &&
 					<ul className="tags">
 						{ p.tags.map((tag, i) => (
-							<li key={ i } className="tag" onClick={ tag.onClick }>{ tag.name }</li>
+							<li key={ i } className={classNames('tag', { link: !!tag.name })} onClick={ !!tag.onClick && tag.onClick }>{ !!tag.name ? tag.name : tag }</li>
 						))}
 					</ul>
 				}
@@ -38,6 +42,9 @@ module.exports = React.createClass({
 					<li className="property fee">
 						<span className="property-label">fee</span>
 						<ValueDenomination className="property-value" { ...p.tradingFeePercent } />
+						{ p.makerFeePercent && p.takerFeePercent &&
+							<span> (<ValueDenomination className="property-value" title="Maker Fee" { ...p.makerFeePercent } /> /<ValueDenomination className="property-value" title="Taker Fee" { ...p.takerFeePercent } />)</span>
+						}
 					</li>
 					<li className="property volume">
 						<span className="property-label">volume</span>

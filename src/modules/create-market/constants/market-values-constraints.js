@@ -14,9 +14,27 @@ export const RESOURCES_MAX_LENGTH = 1250;
 export const EXPIRY_SOURCE_GENERIC = 'generic';
 export const EXPIRY_SOURCE_SPECIFIC = 'specific';
 
-export const TRADING_FEE_MIN = 1;
-export const TRADING_FEE_MAX = 12.5;
-export const TRADING_FEE_DEFAULT = 2;
-
 export const INITIAL_LIQUIDITY_MIN = 50;
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
+
+export const TRADING_FEE_DEFAULT = 2;
+export const TRADING_FEE_MIN = 1;
+export const TRADING_FEE_MAX = 12.5;
+
+export const MAKER_FEE_DEFAULT = 0.5;
+export const MAKER_FEE_MIN = 0;
+export const MAKER_FEE_MAX = 100;
+
+// Advanced Market Creation Defaults
+export const STARTING_QUANTITY_DEFAULT = 25;
+export const STARTING_QUANTITY_MIN = 0.1;
+
+export const BEST_STARTING_QUANTITY_DEFAULT = 35;
+export const BEST_STARTING_QUANTITY_MIN = 0.1;
+
+export const PRICE_WIDTH_DEFAULT = 0.1;
+export const PRICE_WIDTH_MIN =  0.01;
+
+export const PRICE_DEPTH_DEFAULT = 0.1; // Not used yet
+
+export const IS_SIMULATION = false; // Not used yet
