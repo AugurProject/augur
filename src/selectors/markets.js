@@ -41,6 +41,7 @@ function makeMarkets(numMarkets = 25) {
 					className: 'trade',
 					onClick: () => require('../selectors').update({activePage: M, market: m})
 				},
+				orderBook: {}
 			};
 
 		// tags
