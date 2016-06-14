@@ -5,6 +5,6 @@ overflow
 npm-debug*
 aux
 test-aux
-scratch
+*scratch*
 build
 data

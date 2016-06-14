@@ -8,8 +8,9 @@
 var assert = require("chai").assert;
 var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
+var tools = require("../tools");
 
-require('it-each')({ testPerIteration: true });
+require("it-each")({testPerIteration: true});
 
 describe("Read contracts", function () {
 
@@ -22,11 +23,11 @@ describe("Read contracts", function () {
     var contract_list = [];
     for (var c in contracts["2"]) {
         if (!contracts["2"].hasOwnProperty(c)) continue;
-        if (c === "namereg") continue;
         contract_list.push(c);
     }
 
     it.each(contract_list, "read %s", ['element'], function (element, next) {
+        this.timeout(tools.TIMEOUT);
         rpc.reset();
         rpc.version(function (network) {
             test(element, network);

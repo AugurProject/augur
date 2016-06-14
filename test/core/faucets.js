@@ -24,43 +24,31 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
     describe("Integration tests", function () {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var payment_value = 1;
-        var branch = augur.branches.dev;
-        var coinbase = augur.coinbase;
 
         it("cashFaucet", function (done) {
             this.timeout(tools.TIMEOUT);
-            augur.cashFaucet(
-                function (r) {
-                    // sent
-                    assert.strictEqual(r.callReturn, "1");
+            augur.cashFaucet({
+                onSent: function (r) {
                     assert(abi.bignum(r.txHash).toNumber());
                 },
-                function (r) {
-                    // success
-                    assert.strictEqual(r.callReturn, "1");
+                onSuccess: function (r) {
                     assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
                     assert.isAbove(abi.number(r.blockNumber), 0);
-                    var cash_balance = augur.getCashBalance(augur.coinbase);
-                    assert.strictEqual(cash_balance, "10000");
                     done();
                 },
-                // failed
-                done
+                onFailed: done
             );
         });
 
         it("reputationFaucet", function (done) {
             this.timeout(tools.TIMEOUT);
-            augur.reputationFaucet(
-                augur.branches.dev,
-                function (r) {
-                    // sent
+            augur.reputationFaucet({
+                branch: augur.branches.dev,
+                onSent: function (r) {
                     assert.strictEqual(r.callReturn, "1");
                     assert(abi.bignum(r.txHash).toNumber());
                 },
-                function (r) {
-                    // success
+                onSuccess: function (r) {
                     assert.strictEqual(r.callReturn, "1");
                     assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
                     assert.isAbove(abi.number(r.blockNumber), 0);
@@ -68,9 +56,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     assert.strictEqual(rep_balance, "47");
                     done();
                 },
-                // failed
-                done
-            );
+                onFailed: done
+            });
         });
     });
 }

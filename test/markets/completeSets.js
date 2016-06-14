@@ -39,10 +39,10 @@ describe("Integration tests", function () {
                         market: t.market,
                         amount: t.amount,
                         onSent: function (r) {
-                            console.log("sent:", r);
+                            assert.strictEqual(r.callReturn, "1");
                         },
                         onSuccess: function (r) {
-                            console.log("success:", r);
+                            assert.strictEqual(r.callReturn, "1");
                             done();
                         },
                         onFailed: done
@@ -75,10 +75,10 @@ describe("Integration tests", function () {
                         market: t.market,
                         amount: t.amount,
                         onSent: function (r) {
-                            console.log("sent:", r);
+                            assert.strictEqual(r.callReturn, "1");
                         },
                         onSuccess: function (r) {
-                            console.log("success:", r);
+                            assert.strictEqual(r.callReturn, "1");
                             done();
                         },
                         onFailed: done
