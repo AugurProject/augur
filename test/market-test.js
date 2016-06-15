@@ -37,10 +37,10 @@ describe(`selectors.markets[0] (single market) tests:`, () => {
 	//   denomination: String,
 	//   full: String
 	// }
-	it(`market should contain a tradingFeePercent object with correct shape`, () => {
-		let actual = selectors.markets[0].tradingFeePercent;
-		assertions.tradingFeePercentAssertion(actual);
-	});
+	// it(`market should contain a tradingFeePercent object with correct shape`, () => {
+	// 	let actual = selectors.markets[0].tradingFeePercent;
+	// 	assertions.tradingFeePercentAssertion(actual);
+	// });
 
 	// volume: {
 	// 	value: Number,
@@ -52,27 +52,27 @@ describe(`selectors.markets[0] (single market) tests:`, () => {
 	//   denomination: String,
 	//   full: String
 	// }
-	it(`market should contain a volume object with correct shape`, () => {
-		let actual = selectors.markets[0].volume;
-		assertions.volumeAssertion(actual);
-	});
+	// it(`market should contain a volume object with correct shape`, () => {
+	// 	let actual = selectors.markets[0].volume;
+	// 	assertions.volumeAssertion(actual);
+	// });
 
 	// report: {
 	// 	isUnethical: Boolean,
   // 	onSubmitReport: [Function: onSubmitReport]
 	// }
-	it(`market should contain a report object with correct shape`, () => {
-		let actual = selectors.markets[0].report;
-		assertions.reportAssertion(actual);
-	});
+	// it(`market should contain a report object with correct shape`, () => {
+	// 	let actual = selectors.markets[0].report;
+	// 	assertions.reportAssertion(actual);
+	// });
 
 	// marketLink: {
 	// 	text: string,
 	//   className: string,
 	//   onClick: [Function: onClick]
 	// }
-	it(`market should contain a marketLink with expected shape`, () => {
-		let actual = selectors.markets[0].marketLink;
-		assertions.marketLinkAssertion(actual);
-	});
+	// it(`market should contain a marketLink with expected shape`, () => {
+	// 	let actual = selectors.markets[0].marketLink;
+	// 	assertions.marketLinkAssertion(actual);
+	// });
 });

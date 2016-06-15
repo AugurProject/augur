@@ -11,7 +11,9 @@ import AuthPage from './modules/auth/components/auth-page';
 import PositionsPage from './modules/positions/components/positions-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
-export default function(appElement, selectors) {
+import * as assertions from '../test/assertions/';
+
+export default function (appElement, selectors) {
     var p = selectors,
     	node;
 
@@ -90,5 +92,6 @@ export default function(appElement, selectors) {
 		node,
 		appElement
 	);
-}
+};
 
+export { assertions };
