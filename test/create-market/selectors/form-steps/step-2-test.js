@@ -59,6 +59,24 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			assert.deepEqual(selector.select(formState), out, `Correct object not returned`);
 		});
+
+		it('should return the correct object for a scalar market', () => {
+			formState = {
+				type: SCALAR,
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			out = {
+				descriptionPlaceholder: 'What will the temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?',
+				descriptionMinLength: DESCRIPTION_MIN_LENGTH,
+				descriptionMaxLength: DESCRIPTION_MAX_LENGTH,
+				scalarSmallNum: formState.scalarSmallNum,
+				scalarBigNum: formState.scalarBigNum
+			};
+
+			assert.deepEqual(selector.select(formState), out, `Correct object not returned`);
+		});
 	});
 
 	it('should handle selecting type of market and return correct data', () => {
