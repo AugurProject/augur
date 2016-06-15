@@ -12,6 +12,7 @@ import { GENERATE_ORDER_BOOK } from '../../../src/modules/transactions/constants
 
 import {
     SUCCESS,
+    FAILED,
     GENERATING_ORDER_BOOK,
     COMPLETE_SET_BOUGHT,
     ORDER_BOOK_ORDER_COMPLETE,
@@ -155,6 +156,27 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 status: {
                     status: SUCCESS,
                     message: null
+                }
+            }], `Didn't correctly handle onSuccess callback`);
+        });
+
+        it('should handle onFailed', () => {
+            store.dispatch(
+                action.handleGenerateOrderBookResponse(
+                    {
+                        message: 'failed'
+                    },
+                    null,
+                    'trans123'
+                )
+            );
+
+            assert.deepEqual(store.getActions(), [{
+                type: 'UPDATE_EXISTING_TRANSACTIONS',
+                transactionID: 'trans123',
+                status: {
+                    status: FAILED,
+                    message: 'failed'
                 }
             }], `Didn't correctly handle onSuccess callback`);
         });
