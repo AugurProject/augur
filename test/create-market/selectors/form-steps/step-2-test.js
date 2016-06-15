@@ -242,7 +242,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			stubbedValidateEndDate.reset();
 		});
 
-		it('should handle binary errors for binary markets', () => {
+		it('should handle errors for binary markets', () => {
 			formState = {
 				type: BINARY,
 				description: 'test',
@@ -255,7 +255,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
 		});
 
-		it('should handle binary errors for categorical markets', () => {
+		it('should handle errors for categorical markets', () => {
 			formState = {
 				type: CATEGORICAL,
 				description: 'test',
@@ -272,38 +272,22 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
 			assert(stubbedValidateCategoricalOutcomes.calledOnce, 'validateCategoricalOutcomes was not called once');
 		});
-	});
 
-	it(`should handle errors in step 2`, () => {
-		// formState1 = {
-		// 	type: BINARY,
-		// 	description: '',
-		// 	endDate: 'notadate'
-		// };
-		// formState2 = {
-		// 	type: CATEGORICAL,
-		// 	categoricalOutcomes: [1]
-		// };
-		// formState3 = {
-		// 	type: SCALAR,
-		// 	scalarSmallNum: 200,
-		// 	scalarBigNum: 1
-		// };
-		// out1 = {
-		// 	description: 'Please enter your question',
-		// 	endDate: null
-		// };
-		// out2 = {
-		// 	categoricalOutcomes: ['Answer cannot be blank']
-		// };
-		// out3 = {
-		// 	scalarSmallNum: 'Minimum must be less than maximum',
-		// 	scalarBigNum: 'Maximum must be greater than minimum'
-		// };
+		it('should handle errors for scalar markets', () => {
+			formState = {
+				type: SCALAR,
+				description: 'test',
+				endDate: new Date.now(),
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
 
-		// assert.deepEqual(selector.errors(formState1), out1, `Didn't catch the expected errors for BINARY forms`);
-		// assert.deepEqual(selector.errors(formState2), out2, `Didn't catch the expected errors for SCALAR forms`);
-		// assert.deepEqual(selector.errors(formState3), out3, `Didn't catch the expected errors for CATEGORICAL forms`);
+			validators.errors(formState);
 
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
+			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+			assert(stubbedValidateScalarSmallNum.calledOnce, 'validateScalarSmallNum was not called once');
+			assert(stubbedValidateScalarBigNum.calledOnce, 'validateScalarBigNum was not called once');
+		});
 	});
 });
