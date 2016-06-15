@@ -186,7 +186,14 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			stubbedValidateDescription.reset();
 			stubbedValidateEndDate.reset();
+		});
+
+		after(() => {
+			stubbedValidateDescription.reset();
+			stubbedValidateEndDate.reset();
 			stubbedValidateCategoricalOutcomes.reset();
+			stubbedValidateScalarSmallNum.reset();
+			stubbedValidateScalarBigNum.reset();
 		});
 		
 		it('should handle binary validations', () => {
@@ -226,53 +233,24 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		});
 	});
 
-	it(`should handle validation of step 2`, () => {
-		// formState1 = {
-		// 	type: BINARY,
-		// 	descriptionPlaceholder: 'Will "Batman v Superman: Dawn of Justice" take more than $150 million box in office receipts opening weekend?',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256
-		// };
-        //
-		// formState2 = {
-		// 	descriptionPlaceholder: 'Who will win the Four Nations Rugby Championship in 2016?',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256,
-		// 	categoricalOutcomesMinNum: 2,
-		// 	categoricalOutcomesMaxNum: 8,
-		// 	categoricalOutcomeMaxLength: 250
-		// };
-        //
-		// formState3 = {
-		// 	descriptionPlaceholder: 'What will the temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256,
-		// 	scalarSmallNum: 10,
-		// 	scalarBigNum: 100
-		// };
-        //
-		// formState4 = {
-		// 	descriptionPlaceholder: 'Combinatorial',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256
-		// };
-        //
-		// // assert(!selector.isValid(formState1), `Didn't properly invalidate a formstate without description`);
-		// formState1.description = 'test1234 this is a description';
-		// // assert(!selector.isValid(formState1), `Didn't properly invalidate a formState without a valid endDate`);
-		// formState1.endDate = Date('01/01/3000');
-		// // assert(selector.isValid(formState1), `Didn't properly validate a BINARY form state`);
-        //
-		// formState2.description = 'test1234 this is a description';
-		// formState2.endDate = Date('01/01/3000');
-		// formState3.description = 'test1234 this is a description';
-		// formState3.endDate = Date('01/01/3000');
-		// formState4.description = 'test1234 this is a description';
-		// formState4.endDate = Date('01/01/3000');
+	describe('error handling', () => {
+		beforeEach(() => {
+			formState = null;
+			out = null;
+		});
 
-		// assert(selector.isValid(formState2), `Didn't properly validate a CATEGORICAL form state`);
-		// assert(selector.isValid(formState3), `Didn't properly validate a SCALAR form state`);
-		// assert(selector.isValid(formState4), `Didn't properly validate a COMBINATORIAL form state`);
+		it('should handle binary errors for binary markets', () => {
+			formState = {
+				type: BINARY,
+				description: 'test',
+				endDate: new Date.now()
+			};
+
+			validators.errors(formState);
+
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
+			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+		});
 	});
 
 	it(`should handle errors in step 2`, () => {
