@@ -23,7 +23,12 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	let formState,
 		out;
 
-	describe('returning correct object for market type', () => {
+	describe('returns correct object for market type', () => {
+		beforeEach(() => {
+			formState = null;
+			out = null;
+		});
+
 		it('should return the correct object for a binary market', () => {
 			formState = {
 				type: BINARY
@@ -33,7 +38,24 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 				descriptionPlaceholder: 'Will "Batman v Superman: Dawn of Justice" take more than $150 million box in office receipts opening weekend?',
 				descriptionMinLength: DESCRIPTION_MIN_LENGTH,
 				descriptionMaxLength: DESCRIPTION_MAX_LENGTH
-			}
+			};
+
+			assert.deepEqual(selector.select(formState), out, `Correct object not returned`);
+		});
+
+		it('should return the correct object for a categorical market', () => {
+			formState = {
+				type: CATEGORICAL
+			};
+
+			out = {
+				descriptionPlaceholder: 'Who will win the Four Nations Rugby Championship in 2016?',
+				descriptionMinLength: DESCRIPTION_MIN_LENGTH,
+				descriptionMaxLength: DESCRIPTION_MAX_LENGTH,
+				categoricalOutcomesMinNum: CATEGORICAL_OUTCOMES_MIN_NUM,
+				categoricalOutcomesMaxNum: CATEGORICAL_OUTCOMES_MAX_NUM,
+				categoricalOutcomeMaxLength: CATEGORICAL_OUTCOME_MAX_LENGTH
+			};
 
 			assert.deepEqual(selector.select(formState), out, `Correct object not returned`);
 		});
