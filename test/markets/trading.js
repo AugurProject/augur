@@ -189,10 +189,10 @@ describe("Unit tests", function () {
                     marketOrderBook: t.marketOrderBook,
                     userTradeOrdersPerOutcome: [{
                         type: t.type,
-                        shares: {value: t.amount},
-                        ether: {value: value},
+                        sharesToSell: t.amount,
+                        etherToBuy: value,
                         limitPrice: t.limitPrice,
-                        data: {outcomeID: t.outcome}
+                        outcomeID: t.outcome
                     }],
                     positionsPerOutcome: t.positionsPerOutcome,
                     onTradeHash: t.onTradeHash,
@@ -219,7 +219,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.6",
-            type: "buy_shares",
+            type: "buy",
             marketOrderBook: {buy: [], sell: []},
             positionsPerOutcome: {
                 "1": {qtyShares: 0},
@@ -238,7 +238,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "2",
             limitPrice: "0.6",
-            type: "buy_shares",
+            type: "buy",
             marketOrderBook: {buy: [], sell: []},
             positionsPerOutcome: {
                 "1": {qtyShares: 0},
@@ -257,7 +257,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.9",
-            type: "buy_shares",
+            type: "buy",
             marketOrderBook: {
                 buy: [],
                 sell: [{
@@ -288,7 +288,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.9",
-            type: "buy_shares",
+            type: "buy",
             etherNotFilled: "0.4",
             marketOrderBook: {
                 buy: [],
@@ -324,7 +324,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.6",
-            type: "sell_shares",
+            type: "sell",
             marketOrderBook: {buy: [], sell: []},
             positionsPerOutcome: {
                 "1": {qtyShares: 1},
@@ -343,7 +343,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.1",
-            type: "sell_shares",
+            type: "sell",
             marketOrderBook: {
                 buy: [{
                     id: "0x123456789abcdef",
@@ -374,7 +374,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.5",
-            type: "sell_shares",
+            type: "sell",
             sharesNotSold: "0.5",
             marketOrderBook: {
                 buy: [{
@@ -410,7 +410,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.6",
-            type: "sell_shares",
+            type: "sell",
             marketOrderBook: {buy: [], sell: []},
             positionsPerOutcome: {
                 "1": {qtyShares: 0},
@@ -433,7 +433,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.6",
-            type: "sell_shares",
+            type: "sell",
             marketOrderBook: {
                 buy: [{
                     id: "0x123456789abcdef",
@@ -464,7 +464,7 @@ describe("Unit tests", function () {
             amount: 1,
             outcome: "1",
             limitPrice: "0.6",
-            type: "sell_shares",
+            type: "sell",
             marketOrderBook: {
                 buy: [{
                     id: "0x123456789abcdef",
@@ -512,7 +512,7 @@ describe("Integration tests", function () {
         var markets = augur.getMarketsInBranch(branchID);
         var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
         var accounts = rpc.personal("listAccounts");
-        
+
         describe("buy", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
@@ -834,10 +834,10 @@ describe("Integration tests", function () {
                         marketOrderBook: orderBook,
                         userTradeOrdersPerOutcome: [{
                             type: t.type,
-                            shares: {value: t.amount},
-                            ether: {value: value},
+                            sharesToSell: t.amount,
+                            etherToBuy: value,
                             limitPrice: t.limitPrice,
-                            data: {outcomeID: t.outcome}
+                            outcomeID: t.outcome
                         }],
                         positionsPerOutcome: {"1": {qtyShares: 0}},
                         onTradeHash: function (tradeOrderId, tradeHash) {
@@ -869,7 +869,7 @@ describe("Integration tests", function () {
                         onBuySellSuccess: function (requestId, res) {
                             // console.log("buy/sell order placed on the books successfully!");
                             var newOrderBook = augur.getOrderBook(t.market);
-                            var orderType = (t.type === "buy_shares") ? "buy" : "sell";
+                            var orderType = t.type;
                             // console.log(newOrderBook[orderType]);
                             for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
                                 // console.log("outcome:", t.outcome, newOrderBook[orderType][i].outcome);
@@ -910,7 +910,7 @@ describe("Integration tests", function () {
                 amount: 1,
                 outcome: "1",
                 limitPrice: "0.999",
-                type: "buy_shares"
+                type: "buy"
             });
         });
     }

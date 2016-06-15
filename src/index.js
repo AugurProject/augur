@@ -1183,7 +1183,7 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  * there are only 10 ask shares on order book, this method does trade() and buy()). Callbacks are called with
  * requestId to allow client map transactions to individual trade order
  *
- * Important fields in userTradeOrder are: shares, ether (total cost + fees) and limitPrice
+ * Important fields in userTradeOrder are: sharesToSell, etherToBuy (total cost + fees) and limitPrice
  *
  * Algorithm:
  *
@@ -1269,7 +1269,7 @@ Augur.prototype.multiTrade = function (
      * @param userTradeOrder
      */
     function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, userTradeOrder) {
-        var sharesLeft = new BigNumber(userTradeOrder.shares.value);
+        var sharesLeft = new BigNumber(userTradeOrder.sharesToSell);
         if (matchingSortedBidIds.length > 0) {
             // 4.2.1/ there is order to fill
             var firstBuyerTradeId = matchingSortedBidIds[0];
@@ -1306,7 +1306,7 @@ Augur.prototype.multiTrade = function (
                     var newSharesLeft = new BigNumber(data.callReturn[1]);
                     if (newSharesLeft.gt(constants.ZERO)) {
                         // not all user shares were shorted, recursively short
-                        userTradeOrder.shares.value = newSharesLeft.toFixed();
+                        userTradeOrder.sharesToSell = newSharesLeft.toFixed();
                         shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), userTradeOrder);
                     }
                 },
@@ -1319,7 +1319,7 @@ Augur.prototype.multiTrade = function (
             // 4.2.2/ no order to fill
             self.buyCompleteSets({
                 market: market,
-                amount: userTradeOrder.shares.value,
+                amount: userTradeOrder.sharesToSell,
                 onSent: function (data) {
                     onBuyCompleteSetsSent(requestId, data);
                 },
@@ -1329,7 +1329,7 @@ Augur.prototype.multiTrade = function (
                         amount: sharesLeft.toFixed(),
                         price: userTradeOrder.limitPrice,
                         market: market,
-                        outcome: userTradeOrder.data.outcomeID,
+                        outcome: userTradeOrder.outcomeID,
                         onSent: function (data) {
                             onBuySellSent(requestId, data);
                         },
@@ -1349,11 +1349,11 @@ Augur.prototype.multiTrade = function (
     }
 
     userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
-        if (userTradeOrder.type === "buy_shares") {
+        if (userTradeOrder.type === "buy") {
             // 1.1/ user wants to buy
             var matchingSortedAskIds = marketOrderBook.sell
                 .filter(function (ask) {
-                    return ask.outcome === userTradeOrder.data.outcomeID &&
+                    return ask.outcome === userTradeOrder.outcomeID &&
                         parseFloat(ask.price) <= userTradeOrder.limitPrice;
                 }, this)
                 .sort(function compareOrdersByPriceAsc(order1, order2) {
@@ -1366,10 +1366,10 @@ Augur.prototype.multiTrade = function (
             if (matchingSortedAskIds.length === 0) {
                 // 2/ there are no suitable asks on order book
                 this.buy({
-                    amount: userTradeOrder.ether.value,
+                    amount: userTradeOrder.etherToBuy,
                     price: userTradeOrder.limitPrice,
                     market: market,
-                    outcome: userTradeOrder.data.outcomeID,
+                    outcome: userTradeOrder.outcomeID,
                     onSent: function onBuySentInner(data) {
                         console.log("[multiTrade] trade: buy: onSent:", data);
                         onBuySellSent(requestId, data);
@@ -1386,7 +1386,7 @@ Augur.prototype.multiTrade = function (
             } else {
                 // 3/ there are orders on order book to match
                 this.trade({
-                    max_value: userTradeOrder.ether.value,
+                    max_value: userTradeOrder.etherToBuy,
                     max_amount: 0,
                     trade_ids: matchingSortedAskIds,
                     onTradeHash: function (data) {
@@ -1415,7 +1415,7 @@ Augur.prototype.multiTrade = function (
                                 amount: etherNotFilled,
                                 price: userTradeOrder.limitPrice,
                                 market: market,
-                                outcome: userTradeOrder.data.outcomeID,
+                                outcome: userTradeOrder.outcomeID,
                                 onSent: function localOnBuySent(data) {
                                     console.log("[multiTrade] trade: buy: onSent:", data);
                                     onBuySellSent(requestId, data);
@@ -1441,7 +1441,7 @@ Augur.prototype.multiTrade = function (
             // 1.2/ user wants to sell
             var matchingSortedBidIds = marketOrderBook.buy
                 .filter(function (bid) {
-                    return bid.outcome === userTradeOrder.data.outcomeID &&
+                    return bid.outcome === userTradeOrder.outcomeID &&
                         parseFloat(bid.price) >= userTradeOrder.limitPrice;
                 })
                 .sort(function compareOrdersByPriceDesc(order1, order2) {
@@ -1451,16 +1451,16 @@ Augur.prototype.multiTrade = function (
                     return bid.id;
                 });
 
-            var userPosition = positionsPerOutcome[userTradeOrder.data.outcomeID];
+            var userPosition = positionsPerOutcome[userTradeOrder.outcomeID];
             var hasUserPosition = userPosition && userPosition.qtyShares > 0;
             if (hasUserPosition) {
                 if (matchingSortedBidIds.length === 0) {
                     // 2/ no bids to match => place ask on order book
                     this.sell({
-                        amount: userTradeOrder.shares.value,
+                        amount: userTradeOrder.sharesToSell,
                         price: userTradeOrder.limitPrice,
                         market: market,
-                        outcome: userTradeOrder.data.outcomeID,
+                        outcome: userTradeOrder.outcomeID,
                         onSent: function localOnSellSent(data) {
                             console.log("[multiTrade] trade: sell: onSent:", data);
                             onBuySellSent(requestId, data);
@@ -1478,7 +1478,7 @@ Augur.prototype.multiTrade = function (
                     // 4.1/ there are bids to match
                     this.trade({
                         max_value: 0,
-                        max_amount: userTradeOrder.shares.value,
+                        max_amount: userTradeOrder.sharesToSell,
                         trade_ids: matchingSortedBidIds,
                         onTradeHash: function (data) {
                             onTradeHash(requestId, data);
@@ -1506,7 +1506,7 @@ Augur.prototype.multiTrade = function (
                                     amount: sharesNotSold,
                                     price: userTradeOrder.limitPrice,
                                     market: market,
-                                    outcome: userTradeOrder.data.outcomeID,
+                                    outcome: userTradeOrder.outcomeID,
                                     onSent: function (data) {
                                         console.log("[multiTrade] trade: sell: onSent:", data);
                                         onBuySellSent(requestId, data);
