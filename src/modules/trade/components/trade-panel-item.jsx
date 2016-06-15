@@ -1,73 +1,67 @@
 import React from 'react';
 import classnames from 'classnames';
-
 import ValueDenomination from '../../common/components/value-denomination';
 import Input from '../../common/components/input';
 import Dropdown from '../../common/components/dropdown';
-import {Clickable} from '../../common/components/clickable';
+import { Clickable } from '../../common/components/clickable';
 
-const TradePanelItem = React.createClass({
-	propTypes: {
-		className: React.PropTypes.string,
-		name: React.PropTypes.string,
+const TradePanelItem = (props) => {
+	const p = this.props;
+	return (
+		<div className={classnames('trade-panel-item', p.className)}>
 
-		numShares: React.PropTypes.number,
-		limitPrice: React.PropTypes.number,
-		sideOptions: React.PropTypes.array,
+			<span className="outcome-name">{p.name}</span>
 
-		lastPrice: React.PropTypes.object,
-		topBid: React.PropTypes.object,
-		topAsk: React.PropTypes.object,
-		feeToPay: React.PropTypes.object,
+			<ValueDenomination className="last-price" {...p.lastPrice} />
+			<Clickable onClick={() => { p.updateTradeOrder(p.id, undefined, p.topBid.value); }}>
+				<ValueDenomination className="top-bid" {...p.topBid} />
+			</Clickable>
+			<Clickable onClick={() => { p.updateTradeOrder(p.id, undefined, p.topAsk.value); }}>
+				<ValueDenomination className="top-ask" {...p.topAsk} />
+			</Clickable>
 
-		tradeSummary: React.PropTypes.object,
+			<Dropdown
+				selected={p.sideOptions.find(opt => opt.value === p.side)}
+				options={p.sideOptions}
+				onChange={(selectedOption) => { p.updateTradeOrder(p.id, undefined, undefined, selectedOption); }}
+			/>
 
-		sharesOwned: React.PropTypes.number,
-		etherAvailable: React.PropTypes.number,
+			<Input
+				className="num-shares"
+				type="text"
+				value={p.numShares}
+				isClearable={false}
+				onChange={(value) => p.updateTradeOrder(p.id, parseFloat(value) || 0, undefined)}
+			/>
 
-		updateTradeOrder: React.PropTypes.func
-	},
+			<Input
+				className="limit-price"
+				type="text"
+				value={p.limitPrice}
+				isClearable={false}
+				onChange={(value) => p.updateTradeOrder(p.id, undefined, parseFloat(value) || 0)}
+			/>
 
-	render: function () {
-		var p = this.props;
-		return (
-			<div className={ classnames('trade-panel-item', p.className) }>
+			<ValueDenomination className="fee-to-pay" {...p.feeToPay} />
+			<ValueDenomination className="total-cost" {...p.profitLoss} />
+		</div>
+	);
+};
 
-				<span className="outcome-name">{ p.name }</span>
+TradePanelItem.propTypes = {
+	className: React.PropTypes.string,
+	name: React.PropTypes.string,
+	numShares: React.PropTypes.number,
+	limitPrice: React.PropTypes.number,
+	sideOptions: React.PropTypes.array,
+	lastPrice: React.PropTypes.object,
+	topBid: React.PropTypes.object,
+	topAsk: React.PropTypes.object,
+	feeToPay: React.PropTypes.object,
+	tradeSummary: React.PropTypes.object,
+	sharesOwned: React.PropTypes.number,
+	etherAvailable: React.PropTypes.number,
+	updateTradeOrder: React.PropTypes.func
+};
 
-				<ValueDenomination className="last-price" { ...p.lastPrice } />
-				<Clickable onClick={() => { p.updateTradeOrder(p.id, undefined,  p.topBid.value) }}>
-					<ValueDenomination className="top-bid" { ...p.topBid } />
-				</Clickable>
-				<Clickable onClick={() => { p.updateTradeOrder(p.id, undefined, p.topAsk.value) }}>
-					<ValueDenomination className="top-ask" { ...p.topAsk } />
-				</Clickable>
-
-				<Dropdown
-					selected={ p.sideOptions.find(opt => opt.value === p.side) }
-					options={p.sideOptions}
-					onChange={(selectedOption) => { p.updateTradeOrder(p.id, undefined, undefined, selectedOption) }}
-				/>
-				
-				<Input
-					className="num-shares"
-					type="text"
-					value={ p.numShares }
-					isClearable={ false }
-					onChange={ (value) => p.updateTradeOrder(p.id, parseFloat(value) || 0, undefined) }/>
-
-				<Input
-					className="limit-price"
-					type="text"
-					value={ p.limitPrice }
-					isClearable={ false }
-					onChange={ (value) => p.updateTradeOrder(p.id, undefined, parseFloat(value) || 0) }/>
-				
-				<ValueDenomination className="fee-to-pay" { ...p.feeToPay } />
-				<ValueDenomination className="total-cost" { ...p.profitLoss } />
-			</div>
-		);
-	}
-});
-
-module.exports = TradePanelItem;
+export default TradePanelItem;
