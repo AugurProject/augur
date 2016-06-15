@@ -232,5 +232,38 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 }
             }], `Didn't correctly handle onSetupOutcome callback`);
         });
+        
+        it('should handle onSetupOrder', () => {
+            store.dispatch(
+                action.handleGenerateOrderBookResponse(
+                    null,
+                    {
+                        status: ORDER_BOOK_ORDER_COMPLETE,
+                        payload: {
+                            buyPrice: 1,
+                            amount: 1,
+                            outcome: 1
+                        }
+                    },
+                    'trans123',
+                    {
+                        outcomes: [
+                            {
+                                name: 'outcome 1'
+                            }
+                        ]
+                    }
+                )
+            );
+
+            assert.deepEqual(store.getActions(), [{
+                type: 'UPDATE_EXISTING_TRANSACTIONS',
+                transactionID: 'trans123',
+                status: {
+                    status: ORDER_BOOK_ORDER_COMPLETE,
+                    message: `Bid for 1 share of outcome 'outcome 1' at 1 ETH created.`
+                }
+            }], `Didn't correctly handle onSetupOutcome callback`);
+        });
     });
 });
