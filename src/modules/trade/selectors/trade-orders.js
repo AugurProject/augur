@@ -10,6 +10,7 @@ import {
 // 	selectOutcomeAsks
 // } from '../../bids-asks/selectors/select-bids-asks';
 import { makeTradeTransaction } from '../../transactions/actions/add-trade-transaction';
+import { ASK } from '../../bids-asks/constants/bids-asks-types';
 
 export const selectOutcomeTradeOrders =
 (market, outcome, outcomeTradeInProgress, dispatch) => {
@@ -22,13 +23,14 @@ export const selectOutcomeTradeOrders =
 	const numShares = outcomeTradeInProgress.numShares;
 	const	totalCost = outcomeTradeInProgress.totalCost;
 	const	tradeTransaction = makeTradeTransaction(
-			numShares < 0,
+			outcomeTradeInProgress.side === ASK,
 			market,
 			outcome,
-			numShares,
+			Math.abs(numShares),
+			outcomeTradeInProgress.limitPrice,
 			totalCost,
-			0.9,
-			-0.3,
+			0,
+			0,
 			dispatch
 		);
 
@@ -140,7 +142,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 				avgPrice: formatEther(Math.abs(o.ether / o.shares)),
 				feeToPay: formatEther(o.feeToPay)
 			},
-			(transactionID) => dispatch(tradeShares(
+			(transactionID) => dispatch(trade(
 				transactionID, market.id,
 				outcome.id, o.shares,
 				limitPrice, null))
@@ -164,7 +166,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 				avgPrice: formatEther(limitPrice),
 				feeToPay: formatNumber(0, { zeroStyled: false }) // no fee for market-making
 			},
-			(transactionID) => dispatch(tradeShares(
+			(transactionID) => dispatch(trade(
 				transactionID, market.id, outcome.id,
 				o.sharesRemaining, limitPrice, null))
 		));

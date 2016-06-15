@@ -6,14 +6,14 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import marketsAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/markets';
+import {assertions} from 'augur-ui-react-components';
 
 let allMarkets;
 describe(`modules/markets/selectors/markets-all.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
+	let store, selector, actual;
 	let state = Object.assign({}, testState, {
 		marketsData: {
 			test: {
@@ -73,6 +73,11 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 			test2: {},
 			test3: {}
 		},
+		marketOrderBooks: {
+			test: {},
+			test2: {},
+			test3: {}
+		},
 		tradesInProgress: {
 			test: {},
 			test2: {},
@@ -83,7 +88,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	let mockMarket = {
 		assembleMarket: () => {}
 	};
-	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, dispatch) => {
+	sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, dispatch) => {
 		return market;
 	});
 
@@ -95,39 +100,10 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	allMarkets = selector.default;
 
 	it(`should return the correct selectedMarket function`, () => {
-		test = selector.default();
-		marketsAssertion(test);
-		out = [{
-			endDate: new Date('01/01/3000'),
-			outcomes: {
-				test2: {}
-			},
-			eventID: 'testEvent2',
-			volume: {
-				value: 10
-			}
-		}, {
-			endDate: new Date('01/01/3000'),
-			outcomes: {
-				test3: {}
-			},
-			eventID: 'testEvent3',
-			volume: {
-				value: 7
-			}
-		}, {
-			endDate: new Date('01/01/3000'),
-			outcomes: {
-				test: {}
-			},
-			eventID: 'testEvent',
-			volume: {
-				value: 5
-			}
-		}];
+		actual = selector.default();
 
+		assertions.markets(actual);
 		assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`);
-		assert.deepEqual(test, out, `Didn't produce all markets as expected and sorted`);
 	});
 });
 

@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
+describe.skip(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);

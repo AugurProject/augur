@@ -75,6 +75,18 @@ export const selectCombinatorial = (formState) => {
 	return obj;
 };
 
+export const initialFairPrices = (formState) => {
+	if (!!!formState.initialFairPrices || formState.type !== formState.initialFairPrices.type) {
+		return {
+			initialFairPrices: {
+				type: formState.type,
+				values: [],
+				raw: []
+			}
+		};
+	}
+};
+
 export const isValid = (formState) => {
 	if (validateDescription(formState.description)) {
 		return false;

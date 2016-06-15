@@ -8,28 +8,23 @@ import {
 	FAILED,
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
-import testState from '../../testState';
-import isTransactionWorkingAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/isTransactionWorking';
+import * as mockStore from '../../mockStore';
+import {assertions} from 'augur-ui-react-components';
 
 describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let out, test, selector, state, fakeStore;
-	state = Object.assign({}, testState);
-
-	fakeStore = {
-		default: {
-			getState: () => state
-		}
-	};
+	let expected, actual, selector;
+	let { state, store } = mockStore.default;
 
 	selector = proxyquire('../../../src/modules/transactions/selectors/is-transactions-working', {
-		'../../../store': fakeStore
+		'../../../store': store
 	});
 
 	it(`should check if a transaction is working`, () => {
 		let data = state.transactionsData;
-		test = selector.selectIsWorking(data);
-		assert.isFalse(test, `Didn't mark the transaction as not working when status was ${FAILED}.`);
+		actual = selector.selectIsWorking(data);
+
+		assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${FAILED}.`);
 
 		data = {
 			testtransaction12345: {
@@ -37,8 +32,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 				status: SUCCESS
 			}
 		};
-		test = selector.selectIsWorking(data);
-		assert.isFalse(test, `Didn't mark the transaction as not working when status was ${SUCCESS}.`);
+		actual = selector.selectIsWorking(data);
+		assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${SUCCESS}.`);
 
 		data = {
 			testtransaction12345: {
@@ -46,8 +41,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 				status: PENDING
 			}
 		};
-		test = selector.selectIsWorking(data);
-		assert.isFalse(test, `Didn't mark the transaction as not working when status was ${PENDING}.`);
+		actual = selector.selectIsWorking(data);
+		assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${PENDING}.`);
 
 		data = {
 			testtransaction12345: {
@@ -55,8 +50,8 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 				status: INTERRUPTED
 			}
 		};
-		test = selector.selectIsWorking(data);
-		assert.isFalse(test, `Didn't mark the transaction as not working when status was ${INTERRUPTED}.`);
+		actual = selector.selectIsWorking(data);
+		assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${INTERRUPTED}.`);
 
 		data = {
 			testtransaction12345: {
@@ -64,11 +59,10 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 				status: 'test'
 			}
 		};
-		test = selector.selectIsWorking(data);
+		actual = selector.selectIsWorking(data);
 
-		isTransactionWorkingAssertion(test);
-
-		assert.isTrue(test, `Didn't mark the transaction as working when status was test.`);
+		assertions.isTransactionsWorking(actual);
+		assert.isTrue(actual, `Didn't mark the transaction as working when status was test.`);
 	});
 
 });

@@ -14,6 +14,7 @@ import marketsTotals from './modules/markets/selectors/markets-totals';
 import pagination from './modules/markets/selectors/pagination';
 
 import market from './modules/market/selectors/market';
+import sideOptions from './modules/trade/selectors/side-options';
 
 import filters from './modules/markets/selectors/filters';
 import searchSort from './modules/markets/selectors/search-sort';
@@ -43,6 +44,7 @@ const selectors = {
 	pagination,
 
 	market,
+	sideOptions,
 
 	filters,
 	searchSort,

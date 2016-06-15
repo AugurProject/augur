@@ -1,17 +1,22 @@
 import {
 	assert
 } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import * as action from '../../../src/modules/markets/actions/update-keywords';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+import * as mockStore from '../../mockStore';
 
 describe(`modules/markets/actions/update-keywords.js`, () => {
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let state = Object.assign({}, testState);
-	let store = mockStore(state);
-	let out;
+	let out, action;
+	let { state, store } = mockStore.default;
+	let mockShowLink = { showLink: () => {} };
+
+	sinon.stub(mockShowLink, 'showLink', (href, options) => {
+		return { type: 'SHOW_LINK', href, options };
+	});
+
+	action = proxyquire('../../../src/modules/markets/actions/update-keywords', {
+		'../../link/actions/show-link': mockShowLink
+	});
 
 	beforeEach(() => {
 		store.clearActions();
@@ -28,6 +33,7 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 	});
 
 	afterEach(() => {
+		store.clearActions();
 		global.window = {};
 	});
 
@@ -38,13 +44,8 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 			keywords: ['key', 'words']
 		}, {
 			type: 'SHOW_LINK',
-			parsedURL: {
-				pathArray: ['/'],
-				searchParams: {
-					filters: 'isOpen'
-				},
-				url: '/?filters=isOpen'
-			}
+			href: '/?filters=isOpen',
+			options: { preventScrollTop: true }
 		}];
 
 		store.dispatch(action.updateKeywords(keywords));

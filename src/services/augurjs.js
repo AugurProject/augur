@@ -1,48 +1,40 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
-
-import { SUCCESS, CREATING_MARKET } from '../modules/transactions/constants/statuses';
-
+import {
+	SUCCESS,
+	CREATING_MARKET,
+	SIMULATED_ORDER_BOOK,
+	COMPLETE_SET_BOUGHT,
+	ORDER_BOOK_ORDER_COMPLETE,
+	ORDER_BOOK_OUTCOME_COMPLETE
+} from '../modules/transactions/constants/statuses';
 const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(cb) {
+	const options = {
+		http: process.env.ETHEREUM_HOST_RPC,
+		ws: process.env.ETHEREUM_HOST_WSURL
+	};
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
 	}
-	const localnode = null;
+
 	if (process.env.BUILD_AZURE) {
-		if (process.env.BUILD_AZURE_WSURL === 'null') {
-			augur.rpc.wsUrl = null;
-		} else {
-			augur.rpc.wsUrl = process.env.BUILD_AZURE_WSURL;
+		if (process.env.BUILD_AZURE_WSURL && process.env.BUILD_AZURE_WSURL !== 'null') {
+			options.ws = process.env.BUILD_AZURE_WSURL;
 		}
-		if (process.env.BUILD_AZURE_LOCALNODE === 'null') {
-			augur.rpc.nodes.local = null;
-		} else {
-			augur.rpc.nodes.local = process.env.BUILD_AZURE_LOCALNODE;
+		if (process.env.BUILD_AZURE_LOCALNODE && process.env.BUILD_AZURE_LOCALNODE !== 'null') {
+			options.http = process.env.BUILD_AZURE_LOCALNODE;
 		}
-		if (process.env.BUILD_AZURE_HOSTEDNODE === 'null') {
-			augur.rpc.nodes.hosted = [];
-		} else {
-			augur.rpc.nodes.hosted = [process.env.BUILD_AZURE_HOSTEDNODE];
-		}
-	} else {
-		if (document.location.protocol === 'http:') {
-			// localnode = 'http://127.0.0.1:8545';
+		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
+			options.contracts = JSON.parse(process.env.BUILD_AZURE_CONTRACTS);
 		}
 	}
-	// augur.rpc.wsUrl = null;
-	augur.connect(localnode, null, (connected) => {
-		if (!connected) return cb('could not connect to ethereum');
-		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
-			try {
-				augur.updateContracts(JSON.parse(process.env.BUILD_AZURE_CONTRACTS));
-			} catch (exc) {
-				console.error('couldn\'t parse contracts', exc);
-			}
-		}
-		cb(null, connected);
+	augur.connect(options, (connection) => {
+		if (!connection) return cb('could not connect to ethereum');
+		console.log('connected:', connection);
+		cb(null, connection);
 	});
 };
 
@@ -301,6 +293,14 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
+ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
+	augur.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions,
+		onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
+		onBuySellSent, onBuySellSuccess, onBuySellFailed,
+		onShortSellSent, onShortSellSuccess, onShortSellFailed,
+		onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed);
+};
+
 ex.tradeShares = function tradeShares(branchID, marketID, outcomeID, numShares, limit, cap, cb) {
 	augur.trade({
 		branch: branchID,
@@ -344,20 +344,53 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
-ex.createMarket = function createMarket(branchID, newMarket, cb) {
+ex.get_trade_ids = function getTradeIds(marketID, cb) {
+	augur.get_trade_ids(marketID, cb);
+};
+
+ex.getOrderBook = function getOrderBook(marketID, cb) {
+	augur.getOrderBook(marketID, cb);
+};
+
+ex.get_trade = function getTrade(orderID, cb) {
+	augur.get_trade(orderID, cb);
+};
+
+ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
-		branchId: branchID,
 		description: newMarket.description,
-		expirationBlock: newMarket.endBlock,
+		expDate: newMarket.endDate.value.getTime() / 1000,
 		minValue: newMarket.minValue,
 		maxValue: newMarket.maxValue,
 		numOutcomes: newMarket.numOutcomes,
-		alpha: '0.0079',
-		initialLiquidity: newMarket.initialLiquidity,
+		resolution: newMarket.expirySource,
 		tradingFee: newMarket.tradingFee,
-		onSent: r => cb(null, { status: CREATING_MARKET, marketID: r.callReturn, txHash: r.txHash }),
-		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.callReturn, tx: r }),
-		onFailed: r => cb(r)
+		tags: newMarket.tags,
+		makerFees: newMarket.makerFee,
+		extraInfo: newMarket.extraInfo,
+		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
+		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
+		onFailed: r => cb(r),
+		branchId
+	});
+};
+
+ex.generateOrderBook = function generateOrderBook(marketData, cb) {
+	augur.generateOrderBook({
+		market: marketData.id,
+		liquidity: marketData.initialLiquidity,
+		initialFairPrices: marketData.initialFairPrices.raw,
+		startingQuantity: marketData.startingQuantity,
+		bestStartingQuantity: marketData.bestStartingQuantity,
+		priceWidth: marketData.priceWidth,
+		isSimulation: marketData.isSimulation
+	}, {
+		onSimulate: r => cb(null, { status: SIMULATED_ORDER_BOOK, payload: r }),
+		onBuyCompleteSets: r => cb(null, { status: COMPLETE_SET_BOUGHT, payload: r }),
+		onSetupOutcome: r => cb(null, { status: ORDER_BOOK_OUTCOME_COMPLETE, payload: r }),
+		onSetupOrder: r => cb(null, { status: ORDER_BOOK_ORDER_COMPLETE, payload: r }),
+		onSuccess: r => cb(null, { status: SUCCESS, payload: r }),
+		onFailed: err => cb(err)
 	});
 };
 

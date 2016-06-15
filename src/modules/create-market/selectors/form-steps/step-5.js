@@ -19,6 +19,9 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 
 	o.tradingFee = formState.tradingFeePercent / 100;
 	o.tradingFeePercent = formatPercent(formState.tradingFeePercent);
+	o.makerFee = formState.makerFee / 100;
+	o.makerFeePercent = formatPercent(formState.makerFee);
+	o.takerFeePercent = formatPercent(100 - formState.makerFee);
 	o.volume = formatNumber(0);
 	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
@@ -28,6 +31,22 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formState.scalarSmallNum,
 		formState.scalarBigNum);
 	o.isFavorite = false;
+
+	const formattedFairPrices = [];
+
+	o.initialFairPrices.values.map((cV, i) => {
+		formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
+		return formattedFairPrices;
+	});
+
+	o.initialFairPrices = {
+		...o.initialFairPrices,
+		formatted: formattedFairPrices
+	};
+
+	o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
+	o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
+	o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
 
 	o.onSubmit = () => dispatch(submitNewMarket(o));
 

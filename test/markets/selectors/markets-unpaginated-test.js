@@ -3,21 +3,17 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
-import allMarkets from './all-markets-test';
+import * as mockStore from '../../mockStore';
+import allMarkets from './markets-all-test';
 import filteredMarkets from './markets-filtered-test';
 import favoriteMarkets from './markets-favorite-test';
 
 let unpaginatedMarkets;
 describe('modules/markets/selectors/markets-unpaginated', () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, actual, expected;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	let selector, actual, expected;
+	let { state, store } = mockStore.default;
+
 	const mockSelectors = {
 		filteredMarkets: filteredMarkets(),
 		allMarkets: allMarkets(),
@@ -29,6 +25,14 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 		'../../../selectors': mockSelectors
 	});
 	unpaginatedMarkets = selector.default;
+
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
 
 	it(`should return unpaginated markets`, () => {
 		actual = selector.default();

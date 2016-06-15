@@ -3,19 +3,15 @@ import {
 } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from '../../testState';
+import * as mockStore from '../../mockStore';
 import filteredMarkets from './markets-filtered-test';
 
 let filters;
 describe(`modules/markets/selectors/filters.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	const middlewares = [thunk];
-	const mockStore = configureMockStore(middlewares);
-	let store, selector, out, test;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+	let selector, out, test;
+	let { state, store } = mockStore.default;
+
 	let mockFilter = {
 		toggleFilter: () => {}
 	};
@@ -48,6 +44,14 @@ describe(`modules/markets/selectors/filters.js`, () => {
 	});
 
 	filters = selector.default;
+
+	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
+		store.clearActions();
+	});
 
 	it(`should adjust and return filters props`, () => {
 		test = selector.default();
