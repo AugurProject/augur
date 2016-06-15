@@ -52,7 +52,6 @@ module.exports = React.createClass({
 					{ !!p.marketLink &&
 						<div className="buttons">
 							<Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
-							<Link { ...p.marketLink } className={ classnames('button', p.marketLink.className) }>{ p.marketLink.text }</Link>
 						</div>
 					}
 				</div>
