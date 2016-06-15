@@ -1,25 +1,25 @@
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
 import filters from './selectors/filters';
-import createMarketForm from './selectors/create-market-form'
+import createMarketForm from './selectors/create-market-form';
 
-import { makeNumber } from './utils/make-number';
+// import { makeNumber } from './utils/make-number';
 
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
-import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
+import { LOGIN } from './modules/auth/constants/auth-types';
 
-import {
-	INITIAL_FAIR_PRICE_DEFAULT,
-	SHARES_PER_ORDER_DEFAULT,
-	SIZE_OF_BEST_DEFAULT,
-	PRICE_WIDTH_DEFAULT,
-	SEPARATION_DEFAULT
-} from './modules/create-market/constants/market-values-constraints'
+// import {
+// 	INITIAL_FAIR_PRICE_DEFAULT,
+// 	SHARES_PER_ORDER_DEFAULT,
+// 	SIZE_OF_BEST_DEFAULT,
+// 	PRICE_WIDTH_DEFAULT,
+// 	SEPARATION_DEFAULT
+// } from './modules/create-market/constants/market-values-constraints';
 
-var selectors = {
+const selectors = {
 	update: (newState = {}) => {
 		console.log('*** update', newState);
-		Object.keys(newState).forEach(key => selectors[key] = newState[key]);
+		Object.keys(newState).forEach(key => selectors[key]);
 		selectors.render();
 	},
 	loginAccount,
@@ -47,11 +47,11 @@ selectors.keywords = {
 
 selectors.authForm = { closeLink: { href: '/', onClick: () => {} } };
 
-selectors.transactions =  [];
-selectors.transactionsTotals =  {
+selectors.transactions = [];
+selectors.transactionsTotals = {
 	title: '0 Transactions'
 };
-selectors.isTransactionsWorking =  false;
+selectors.isTransactionsWorking = false;
 
 
 selectors.searchSort = {
@@ -59,10 +59,10 @@ selectors.searchSort = {
 	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Description', value: 'description' }]
 };
 
-selectors.marketsHeader =  {};
+selectors.marketsHeader = {};
 
-selectors.market =  {}; // selected market
-selectors.sideOptions = [{value: 'bid', label: 'Buy'}, {value: 'ask', label: 'Sell'}];
+selectors.market = {}; // selected market
+selectors.sideOptions = [{ value: 'bid', label: 'Buy' }, { value: 'ask', label: 'Sell' }];
 selectors.marketsTotals = {
 	positionsSummary: { numPositions:
    { value: 100,
@@ -136,12 +136,12 @@ selectors.marketsTotals = {
      minimized: '-9,000',
      denomination: 'Eth',
      full: '-9,000.00Eth' },
-  positions: 50 },
+	positions: 50 },
 	numAll: 6,
-  numFavorites: 4,
-  numPendingReports: 3,
-  numUnpaginated: 7,
-  numFiltered: 7,
+	numFavorites: 4,
+	numPendingReports: 3,
+	numUnpaginated: 7,
+	numFiltered: 7,
 };
 
 selectors.keywords = {
@@ -149,15 +149,16 @@ selectors.keywords = {
 	onChangeKeywords: () => {}
 };
 selectors.onChangeSort = (prop, isDesc) => {
+	let isDescending = isDesc;
 	if (isDesc !== false && isDesc !== true) {
-		isDesc = selectors.searchSort.selectedSort.isDesc;
+		isDescending = selectors.searchSort.selectedSort.isDesc;
 	}
 	module.exports.update({
 		searchSort: {
 			...selectors.searchSort,
 			selectedSort: {
 				prop: prop || selectors.selectedSort.prop,
-				isDesc
+				isDesc: isDescending
 			}
 		}
 	});
