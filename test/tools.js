@@ -69,7 +69,7 @@ module.exports = {
     print_nodes: function (nodes) {
         var node;
         if (nodes && nodes.length) {
-            process.stdout.write(chalk.green.bold("hosts: "));
+            process.stdout.write(chalk.green.bold("hosted:   "));
             for (var i = 0, len = nodes.length; i < len; ++i) {
                 node = nodes[i];
                 node = (i === 0) ? chalk.green(node) : chalk.gray(node);
@@ -92,12 +92,13 @@ module.exports = {
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
             if (!displayed_connection_info) {
-                console.log(chalk.cyan.bold("local:"), chalk.cyan(augur.rpc.nodes.local));
-                console.log(chalk.blue.bold("wsUrl:"), chalk.blue(augur.rpc.wsUrl));
-                console.log(chalk.magenta.bold("IPC:  "), chalk.magenta(augur.rpc.ipcpath));
+                console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
+                console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
+                console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
                 this.print_nodes(augur.rpc.nodes.hosted);
-                console.log("coinbase:", chalk.white.dim(augur.coinbase));
-                console.log("from:    ", chalk.white.dim(augur.from));
+                console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.network_id));
+                console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
+                console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
                 displayed_connection_info = true;
             }
             augur.nodes = augur.rpc.nodes.hosted;
