@@ -118,6 +118,22 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			assert.deepEqual(selector.initialFairPrices(formState), out, `Correct object not returned`);
 		});
+
+		it('should return correct object for a scalar market', () => {
+			formState = {
+				type: SCALAR
+			};
+
+			out = {
+				initialFairPrices: {
+					type: SCALAR,
+					values: [],
+					raw: []
+				}
+			};
+
+			assert.deepEqual(selector.initialFairPrices(formState), out, `Correct object not returned`);
+		});
 	});
 
 	it('should handle calling initialFairPrices and return correct data', () => {
