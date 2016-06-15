@@ -1,0 +1,25 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "comma-dangle": 0,
+    "eqeqeq": [2, "allow-null"],
+    "no-eq-null": 0,
+    "no-console": 0,
+    "indent": ["error", "tab"],
+    "consistent-return": 0,
+    "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
+    "no-param-reassign": ["error", { "props": false }],
+    "global-require": 0,
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "no-use-before-define": 0,
+    "max-len": 0,
+    "no-shadow": 0,
+    "padded-blocks": 0
+  }
+}
