@@ -19,7 +19,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.16";
+    this.version = "1.3.17";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -2484,7 +2484,7 @@ Augur.prototype.meanTradePrice = function (trades, sell) {
         totalShares = new BigNumber(0);
         for (var i = 0, n = trades[outcome].length; i < n; ++i) {
             price = new BigNumber(trades[outcome][i].price);
-            shares = new BigNumber(trades[outcome][i].shares);
+            shares = new BigNumber(trades[outcome][i].amount);
             if (include(shares)) {
                 outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
                 totalShares = totalShares.plus(shares);

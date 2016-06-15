@@ -37023,7 +37023,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.16";
+    this.version = "1.3.17";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39488,7 +39488,7 @@ Augur.prototype.meanTradePrice = function (trades, sell) {
         totalShares = new BigNumber(0);
         for (var i = 0, n = trades[outcome].length; i < n; ++i) {
             price = new BigNumber(trades[outcome][i].price);
-            shares = new BigNumber(trades[outcome][i].shares);
+            shares = new BigNumber(trades[outcome][i].amount);
             if (include(shares)) {
                 outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
                 totalShares = totalShares.plus(shares);
@@ -42853,7 +42853,7 @@ module.exports = {
     },
 
     balance: function (address, block, f) {
-        if (block && block.constructor === Function) {
+        if (!f && isFunction(block)) {
             f = block;
             block = null;
         }
@@ -42861,7 +42861,7 @@ module.exports = {
         return this.broadcast(this.marshal("getBalance", [address, block]), f);
     },
     getBalance: function (address, block, f) {
-        if (block && block.constructor === Function) {
+        if (!f && isFunction(block)) {
             f = block;
             block = null;
         }
@@ -42893,7 +42893,6 @@ module.exports = {
         return this.transact({
             from: from,
             to: to,
-            invocation: {invoke: this.sendTx, context: this},
             value: abi.bignum(value).mul(this.ETHER).toFixed(),
             returns: "null"
         }, onSent, onSuccess, onFailed);
@@ -43169,62 +43168,45 @@ module.exports = {
      * }
      */
     invoke: function (itx, f) {
-        var tx, dataAbi, packaged, invocation, invoke, invoked, err, context;
-        try {
-            if (itx) {
-                if (itx.send && itx.invocation && itx.invocation.invoke &&
-                    itx.invocation.invoke.constructor === Function) {
-                    invoke = itx.invocation.invoke;
-                    context = clone(itx.invocation.context);
-                    delete itx.invocation;
-                    return invoke.call(context, itx, f);
-                } else {
-                    tx = clone(itx);
-                    if (tx.params === undefined || tx.params === null) {
-                        tx.params = [];
-                    } else if (tx.params.constructor !== Array) {
-                        tx.params = [tx.params];
-                    }
-                    for (var j = 0; j < tx.params.length; ++j) {
-                        if (tx.params[j] !== undefined && tx.params[j] !== null &&
-                            tx.params[j].constructor === Number) {
-                            tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
-                        }
-                    }
-                    if (tx.to) tx.to = abi.format_address(tx.to);
-                    if (tx.from) tx.from = abi.format_address(tx.from);
-                    dataAbi = abi.encode(tx);
-                    if (dataAbi) {
-                        packaged = {
-                            from: tx.from,
-                            to: tx.to,
-                            data: dataAbi,
-                            gas: tx.gas || this.DEFAULT_GAS,
-                            gasPrice: tx.gasPrice
-                        };
-                        if (tx.timeout) packaged.timeout = tx.timeout;
-                        if (tx.value) packaged.value = tx.value;
-                        if (tx.returns) packaged.returns = tx.returns;
-                        if (this.debug.broadcast) {
-                            packaged.debug = clone(tx);
-                            packaged.debug.batch = false;
-                        }
-                        invocation = (tx.send) ? this.sendTx : this.call;
-                        invoked = true;
-                        return invocation.call(this, packaged, f);
+        var tx, dataAbi, packaged, invocation, invoked, err;
+        if (itx) {
+            if (itx.send && itx.invocation && isFunction(itx.invocation.invoke)) {
+                return itx.invocation.invoke.call(itx.invocation.context, itx, f);
+            } else {
+                tx = clone(itx);
+                if (tx.params === undefined || tx.params === null) {
+                    tx.params = [];
+                } else if (tx.params.constructor !== Array) {
+                    tx.params = [tx.params];
+                }
+                for (var j = 0; j < tx.params.length; ++j) {
+                    if (tx.params[j] !== undefined && tx.params[j] !== null &&
+                        tx.params[j].constructor === Number) {
+                        tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
                     }
                 }
-            }
-        } catch (exc) {
-            if (exc && exc.name === "TypeError" && this.ipcpath && itx.invocation) {
-                delete itx.invocation;
-                return this.invoke(itx, f);
-            } else {
-                err = clone(errors.TRANSACTION_FAILED);
-                err.bubble = exc;
-                err.tx = itx;
-                if (isFunction(f)) return f(err);
-                return err;
+                if (tx.to) tx.to = abi.format_address(tx.to);
+                if (tx.from) tx.from = abi.format_address(tx.from);
+                dataAbi = abi.encode(tx);
+                if (dataAbi) {
+                    packaged = {
+                        from: tx.from,
+                        to: tx.to,
+                        data: dataAbi,
+                        gas: tx.gas || this.DEFAULT_GAS,
+                        gasPrice: tx.gasPrice
+                    };
+                    if (tx.timeout) packaged.timeout = tx.timeout;
+                    if (tx.value) packaged.value = tx.value;
+                    if (tx.returns) packaged.returns = tx.returns;
+                    if (this.debug.broadcast) {
+                        packaged.debug = clone(tx);
+                        packaged.debug.batch = false;
+                    }
+                    invocation = (tx.send) ? this.sendTx : this.call;
+                    invoked = true;
+                    return invocation.call(this, packaged, f);
+                }
             }
         }
         if (!invoked) {
@@ -43268,7 +43250,7 @@ module.exports = {
             if (tx.to) tx.to = abi.format_address(tx.to);
             dataAbi = abi.encode(tx);
             if (dataAbi) {
-                if (tx.callback && tx.callback.constructor === Function) {
+                if (isFunction(tx.callback)) {
                     callbacks[i] = tx.callback;
                     delete tx.callback;
                 }
