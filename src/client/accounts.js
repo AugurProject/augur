@@ -50,8 +50,22 @@ module.exports = function () {
             onFailed = onFailed || utils.noop;
             onRegistered(account);
             if (process.env.BUILD_AZURE) {
-                var FREEBIE=2.5;
-                augur.sendCash(account.address, FREEBIE, onSent, onSuccess, onFailed);
+                var FREEBIE_ETH=5.;
+                augur.rpc.sendEther({
+                    to: account.address,
+                    value: FREEBIE_ETH,
+                    from: augur.coinbase,
+                    onFailed: onFailed,
+                    onSuccess: function (res) {
+                        onSendEther(account);
+                        augur.fundNewAccount({
+                            branch: branch || augur.branches.dev,
+                            onSent: onSent,
+                            onSuccess: onSuccess,
+                            onFailed: onFailed
+                        });
+                    }
+                });
             }else{
                 var url = constants.FAUCET + abi.format_address(account.address);
                 request(url, function (err, response, body) {
