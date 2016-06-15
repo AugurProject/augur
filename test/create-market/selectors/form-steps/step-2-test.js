@@ -19,9 +19,45 @@ import {
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-2';
 
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+
 describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
+	proxyquire.noPreserveCache().noCallThru();
+
 	let formState,
 		out;
+
+	let validations = {
+		validateDescription: () => {},
+		validateEndDate: () => {},
+		validateScalarSmallNum: () => {},
+		validateScalarBigNum: () => {},
+		validateCategoricalOutcomes: () => {}
+	};
+
+	let stubbedValidateDescription = sinon.stub(validations, 'validateDescription');
+	stubbedValidateDescription.returns(false);
+
+	let stubbedValidateEndDate = sinon.stub(validations, 'validateEndDate');
+	stubbedValidateEndDate.returns(false);
+
+	let stubbedValidateScalarSmallNum = sinon.stub(validations, 'validateScalarSmallNum');
+	stubbedValidateScalarSmallNum.returns(false);
+
+	let stubbedValidateScalarBigNum = sinon.stub(validations, 'validateScalarBigNum');
+	stubbedValidateScalarBigNum.returns(false);
+
+	let stubbedValidateCategoricalOutcomes = sinon.stub(validations, 'validateCategoricalOutcomes');
+	stubbedValidateCategoricalOutcomes.returns(false);
+
+	let validators = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-2', {
+		'../../../market/validators/validate-description': stubbedValidateDescription,
+		'../../../market/validators/validate-end-date': stubbedValidateEndDate,
+		'../../../market/validators/validate-scalar-small-num': stubbedValidateScalarSmallNum,
+		'../../../market/validators/validate-scalar-big-num': stubbedValidateScalarBigNum,
+		'../../../market/validators/validate-categorical-outcomes': stubbedValidateCategoricalOutcomes
+	});
 
 	describe('returning object for market type', () => {
 		beforeEach(() => {
@@ -133,6 +169,24 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			};
 
 			assert.deepEqual(selector.initialFairPrices(formState), out, `Correct object not returned`);
+		});
+	});
+
+	describe('validation handling', () => {
+		beforeEach(() => {
+			formState = null;
+			out = null;
+		});
+		
+		it('should handle binary validations', () => {
+			formState = {
+				type: BINARY
+			};
+
+			validators.isValid(formState);
+
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called');
+			assert(stubbedValidateEndDate.calledOnce, 'validateDescription was not called');
 		});
 	});
 
