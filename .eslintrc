@@ -1,11 +1,12 @@
 {
-  "extends": "airbnb",
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     }
   },
+  "plugins": ["react"],
   "rules": {
     "comma-dangle": 0,
     "eqeqeq": [2, "allow-null"],
@@ -21,6 +22,8 @@
     "no-use-before-define": 0,
     "max-len": 0,
     "no-shadow": 0,
-    "padded-blocks": 0
+    "padded-blocks": 0,
+    "react/jsx-indent": [2, 'tab'],
+    "react/jsx-indent-props": [2, 'tab'],
   }
 }
