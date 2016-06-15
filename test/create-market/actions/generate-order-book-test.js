@@ -139,6 +139,27 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
             store.clearActions();
         });
 
+        it('should handle onFailed', () => {
+            store.dispatch(
+                action.handleGenerateOrderBookResponse(
+                    {
+                        message: 'failed'
+                    },
+                    null,
+                    'trans123'
+                )
+            );
+
+            assert.deepEqual(store.getActions(), [{
+                type: 'UPDATE_EXISTING_TRANSACTIONS',
+                transactionID: 'trans123',
+                status: {
+                    status: FAILED,
+                    message: 'failed'
+                }
+            }], `Didn't correctly handle onFailed callback`);
+        });
+
         it('should handle onSuccess', () => {
             store.dispatch(
                 action.handleGenerateOrderBookResponse(
@@ -160,13 +181,13 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
             }], `Didn't correctly handle onSuccess callback`);
         });
 
-        it('should handle onFailed', () => {
+        it('should handle onBuyCompleteSets', () => {
             store.dispatch(
                 action.handleGenerateOrderBookResponse(
-                    {
-                        message: 'failed'
-                    },
                     null,
+                    {
+                        status: COMPLETE_SET_BOUGHT
+                    },
                     'trans123'
                 )
             );
@@ -175,10 +196,10 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 type: 'UPDATE_EXISTING_TRANSACTIONS',
                 transactionID: 'trans123',
                 status: {
-                    status: FAILED,
-                    message: 'failed'
+                    status: COMPLETE_SET_BOUGHT,
+                    message: null
                 }
-            }], `Didn't correctly handle onSuccess callback`);
+            }], `Didn't correctly handle onCompleteSets callback`);
         });
     });
 });
