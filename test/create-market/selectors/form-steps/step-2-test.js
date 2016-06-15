@@ -122,8 +122,6 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			assert.deepEqual(selector.select(formState), out, `Correct object not returned`);
 		});
-
-		it('[NOT CURRENTLY USED] should return the correct object for a combinatorial market');
 	});
 
 	describe('returning object for initialFairPrices', () => {
