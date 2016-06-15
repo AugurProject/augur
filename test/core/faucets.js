@@ -37,7 +37,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     done();
                 },
                 onFailed: done
-            );
+            });
         });
 
         it("reputationFaucet", function (done) {
