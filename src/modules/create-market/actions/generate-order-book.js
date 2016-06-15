@@ -19,21 +19,28 @@ export function createOrderBook(transactionID, marketData) {
 		dispatch(updateExistingTransaction(transactionID, { status: GENERATING_ORDER_BOOK }));
 
 		AugurJS.generateOrderBook(marketData, (err, res) => {
-			if (err) {
-				dispatch(
-					updateExistingTransaction(
-						transactionID,
-						{ status: FAILED, message: err.message }
-					)
-				);
+			handleGenerateOrderBookResponse(err, res, transactionID);
+		});
+	};
+}
 
-				return;
-			}
+export function handleGenerateOrderBookResponse(err, res, transactionID){
+	return dispatch => {
+		if (err) {
+			dispatch(
+				updateExistingTransaction(
+					transactionID,
+					{ status: FAILED, message: err.message }
+				)
+			);
 
-			const p = res.payload;
-			let message = null;
+			return;
+		}
 
-			switch (res.status) {
+		const p = res.payload;
+		let message = null;
+
+		switch (res.status) {
 			case COMPLETE_SET_BOUGHT:
 				dispatch(
 					updateExistingTransaction(
@@ -48,16 +55,16 @@ export function createOrderBook(transactionID, marketData) {
 				break;
 			case ORDER_BOOK_ORDER_COMPLETE:
 				message = `${
-				!!p.buyPrice ? 'Bid' : 'Ask'
-				} for ${
-				p.amount
-				} share${
-				p.amount > 1 ? 's' : ''
-				} of outcome '${
-				marketData.outcomes[p.outcome - 1].name
-				}' at ${
+					!!p.buyPrice ? 'Bid' : 'Ask'
+					} for ${
+					p.amount
+					} share${
+					p.amount > 1 ? 's' : ''
+					} of outcome '${
+					marketData.outcomes[p.outcome - 1].name
+					}' at ${
 				p.buyPrice || p.sellPrice
-				} ETH created.`;
+					} ETH created.`;
 
 				dispatch(
 					updateExistingTransaction(
@@ -72,8 +79,8 @@ export function createOrderBook(transactionID, marketData) {
 				break;
 			case ORDER_BOOK_OUTCOME_COMPLETE:
 				message = `Order book creation for outcome '${
-				marketData.outcomes[p.outcome - 1].name
-				}' completed.`;
+					marketData.outcomes[p.outcome - 1].name
+					}' completed.`;
 
 				dispatch(
 					updateExistingTransaction(
@@ -100,7 +107,7 @@ export function createOrderBook(transactionID, marketData) {
 				break;
 			default:
 				break;
-			}
-		});
+		}
 	};
 }
+

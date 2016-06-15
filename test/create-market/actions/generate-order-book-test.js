@@ -27,12 +27,10 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
     let store,
         action,
         out,
-        transactions,
+        orderBookTransactions,
         stubbedTransactions,
-        augurJS,
         stubbedAugurJS,
         marketData,
-        orderBookParams,
         state = Object.assign({}, testState);
 
     store = mockStore(state);
@@ -49,36 +47,46 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
         isSimulation: false
     };
 
-    transactions = {
+    orderBookTransactions = {
         addGenerateOrderBookTransaction: () => {}
     };
 
-    stubbedTransactions = sinon.stub(Object.assign({}, transactions));
+    stubbedTransactions = sinon.stub(Object.assign({}, orderBookTransactions));
     stubbedTransactions.addGenerateOrderBookTransaction.withArgs(marketData).returns({
         type: GENERATE_ORDER_BOOK,
         data: marketData,
         action: 'create order book action'
     });
 
-    augurJS = {
-        generateOrderBook: () => {}
+    let stubbedUpdateTransaction = {
+        updateExistingTransaction: () => {}
     };
 
-    stubbedAugurJS = sinon.stub(Object.assign({}, augurJS));
-    stubbedAugurJS.generateOrderBook.returns(true);
+    sinon.stub(stubbedUpdateTransaction, 'updateExistingTransaction', (transactionID, status) => {
+        return {
+            type: 'UPDATE_EXISTING_TRANSACTIONS',
+            transactionID,
+            status
+        };
+    });
+
+    stubbedAugurJS = {
+        generateOrderBook: () => {}
+    };
+    sinon.stub(stubbedAugurJS, 'generateOrderBook');
 
     action = proxyquire(
         '../../../src/modules/create-market/actions/generate-order-book',
         {
             '../../../services/augurjs': stubbedAugurJS,
-            '../../transactions/actions/add-generate-order-book-transaction': stubbedTransactions
+            '../../transactions/actions/add-generate-order-book-transaction': stubbedTransactions,
+            '../../transactions/actions/update-existing-transaction': stubbedUpdateTransaction
         }
     );
 
     beforeEach(() => {
     	store.clearActions();
-    	// clock = sinon.useFakeTimers();
-    	// Mock the window object
+
     	global.window = {};
     	global.window.performance = {
     		now: () => Date.now()
@@ -97,7 +105,6 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
     afterEach(() => {
     	global.window = {};
     	store.clearActions();
-    	// clock.restore();
     });
 
     it('should be able to submit a request to generate an order book', () => {
@@ -114,10 +121,42 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
     });
 
     it('should be able to generate an order book', () => {
-        console.log('============> HERE');
-
-        store.dispatch(action.createOrderBook());
+        store.dispatch(action.createOrderBook('trans123', marketData));
 
         assert(stubbedAugurJS.generateOrderBook.calledOnce, `generateOrderBook wasn't called once as expected`);
+        assert.deepEqual(store.getActions(), [{
+            type: 'UPDATE_EXISTING_TRANSACTIONS',
+            transactionID: 'trans123',
+            status: {
+                status: GENERATING_ORDER_BOOK
+            }
+        }], `Didn't correctly create order book`);
+    });
+
+    describe('generateOrderBook callbacks', () => {
+        beforeEach(() => {
+            store.clearActions();
+        });
+
+        it('should handle onSuccess', () => {
+            store.dispatch(
+                action.handleGenerateOrderBookResponse(
+                    null,
+                    {
+                        status: SUCCESS
+                    },
+                    'trans123'
+                )
+            );
+
+            assert.deepEqual(store.getActions(), [{
+                type: 'UPDATE_EXISTING_TRANSACTIONS',
+                transactionID: 'trans123',
+                status: {
+                    status: SUCCESS,
+                    message: null
+                }
+            }], `Didn't correctly handle onSuccess callback`);
+        });
     });
 });
