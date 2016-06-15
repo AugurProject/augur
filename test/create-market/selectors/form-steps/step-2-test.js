@@ -23,7 +23,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	let formState,
 		out;
 
-	describe('returns correct object for market type', () => {
+	describe('returning object for market type', () => {
 		beforeEach(() => {
 			formState = null;
 			out = null;
@@ -79,6 +79,29 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		});
 
 		it('[NOT CURRENTLY USED] should return the correct object for a combinatorial market');
+	});
+
+	describe('returning object for initialFairPrices', () => {
+		beforeEach(() => {
+			formState = null;
+			out = null;
+		});
+
+		it('should return correct object for a binary market', () => {
+			formState = {
+				type: BINARY
+			};
+
+			out = {
+				initialFairPrices: {
+					type: BINARY,
+					values: [],
+					raw: []
+				}
+			};
+
+			assert.deepEqual(selector.initialFairPrices(formState), out, `Correct object not returned`);
+		});
 	});
 
 	it('should handle calling initialFairPrices and return correct data', () => {
