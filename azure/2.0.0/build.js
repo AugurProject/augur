@@ -17,117 +17,6 @@ a.isObject(t,"filters[0] isn't an object"),a.isObject(n,"filters[1] isn't an obj
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],2:[function(require,module,exports){
-'use strict'
-
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-function init () {
-  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-  for (var i = 0, len = code.length; i < len; ++i) {
-    lookup[i] = code[i]
-    revLookup[code.charCodeAt(i)] = i
-  }
-
-  revLookup['-'.charCodeAt(0)] = 62
-  revLookup['_'.charCodeAt(0)] = 63
-}
-
-init()
-
-function toByteArray (b64) {
-  var i, j, l, tmp, placeHolders, arr
-  var len = b64.length
-
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
-
-  // base64 is 4/3 + up to two characters of the original data
-  arr = new Arr(len * 3 / 4 - placeHolders)
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
-
-  var L = 0
-
-  for (i = 0, j = 0; i < l; i += 4, j += 3) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
-  }
-
-  parts.push(output)
-
-  return parts.join('')
-}
-
-},{}],3:[function(require,module,exports){
 /*! bignumber.js v2.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -2862,9 +2751,9 @@ function fromByteArray (uint8) {
     }
 })(this);
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -4580,7 +4469,118 @@ function isnan (val) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":2,"ieee754":6,"isarray":7}],6:[function(require,module,exports){
+},{"base64-js":5,"ieee754":6,"isarray":7}],5:[function(require,module,exports){
+'use strict'
+
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+function init () {
+  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+  for (var i = 0, len = code.length; i < len; ++i) {
+    lookup[i] = code[i]
+    revLookup[code.charCodeAt(i)] = i
+  }
+
+  revLookup['-'.charCodeAt(0)] = 62
+  revLookup['_'.charCodeAt(0)] = 63
+}
+
+init()
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+
+  // base64 is 4/3 + up to two characters of the original data
+  arr = new Arr(len * 3 / 4 - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+},{}],6:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -4674,148 +4674,127 @@ module.exports = Array.isArray || function (arr) {
 };
 
 },{}],8:[function(require,module,exports){
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeGetPrototype = Object.getPrototypeOf;
+// shim for using process in browser
 
-/**
- * Gets the `[[Prototype]]` of `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {null|Object} Returns the `[[Prototype]]`.
- */
-function getPrototype(value) {
-  return nativeGetPrototype(Object(value));
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+  try {
+    cachedSetTimeout = setTimeout;
+  } catch (e) {
+    cachedSetTimeout = function () {
+      throw new Error('setTimeout is not defined');
+    }
+  }
+  try {
+    cachedClearTimeout = clearTimeout;
+  } catch (e) {
+    cachedClearTimeout = function () {
+      throw new Error('clearTimeout is not defined');
+    }
+  }
+} ())
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
 }
 
-module.exports = getPrototype;
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = cachedSetTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    cachedClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        cachedSetTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 },{}],9:[function(require,module,exports){
-/**
- * Checks if `value` is a host object in IE < 9.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
- */
-function isHostObject(value) {
-  // Many host objects are `Object` objects that can coerce to strings
-  // despite having improperly defined `toString` methods.
-  var result = false;
-  if (value != null && typeof value.toString != 'function') {
-    try {
-      result = !!(value + '');
-    } catch (e) {}
-  }
-  return result;
-}
-
-module.exports = isHostObject;
-
-},{}],10:[function(require,module,exports){
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-module.exports = isObjectLike;
-
-},{}],11:[function(require,module,exports){
-var getPrototype = require('./_getPrototype'),
-    isHostObject = require('./_isHostObject'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = Function.prototype.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to infer the `Object` constructor. */
-var objectCtorString = funcToString.call(Object);
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/**
- * Checks if `value` is a plain object, that is, an object created by the
- * `Object` constructor or one with a `[[Prototype]]` of `null`.
- *
- * @static
- * @memberOf _
- * @since 0.8.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object,
- *  else `false`.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * _.isPlainObject(new Foo);
- * // => false
- *
- * _.isPlainObject([1, 2, 3]);
- * // => false
- *
- * _.isPlainObject({ 'x': 0, 'y': 0 });
- * // => true
- *
- * _.isPlainObject(Object.create(null));
- * // => true
- */
-function isPlainObject(value) {
-  if (!isObjectLike(value) ||
-      objectToString.call(value) != objectTag || isHostObject(value)) {
-    return false;
-  }
-  var proto = getPrototype(value);
-  if (proto === null) {
-    return true;
-  }
-  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-  return (typeof Ctor == 'function' &&
-    Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString);
-}
-
-module.exports = isPlainObject;
-
-},{"./_getPrototype":8,"./_isHostObject":9,"./isObjectLike":10}],12:[function(require,module,exports){
 (function (process){
 if (typeof Map !== 'function' || (process && process.env && process.env.TEST_MAPORSIMILAR === 'true')) {
 	module.exports = require('./similar');
@@ -4825,7 +4804,7 @@ else {
 }
 }).call(this,require('_process'))
 
-},{"./similar":13,"_process":15}],13:[function(require,module,exports){
+},{"./similar":10,"_process":8}],10:[function(require,module,exports){
 function Similar() {
 	this.list = [];
 	this.lastItem = undefined;
@@ -4929,7 +4908,7 @@ Similar.prototype.isEqual = function(val1, val2) {
 };
 
 module.exports = Similar;
-},{}],14:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var MapOrSimilar = require('map-or-similar');
 
 module.exports = function (limit) {
@@ -5063,128 +5042,7 @@ function removeCachedResult(removedLru) {
 function isEqual(val1, val2) {
 	return val1 === val2 || (val1 !== val1 && val2 !== val2);
 }
-},{"map-or-similar":12}],15:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-(function () {
-  try {
-    cachedSetTimeout = setTimeout;
-  } catch (e) {
-    cachedSetTimeout = function () {
-      throw new Error('setTimeout is not defined');
-    }
-  }
-  try {
-    cachedClearTimeout = clearTimeout;
-  } catch (e) {
-    cachedClearTimeout = function () {
-      throw new Error('clearTimeout is not defined');
-    }
-  }
-} ())
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = cachedSetTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    cachedClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        cachedSetTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],16:[function(require,module,exports){
+},{"map-or-similar":9}],12:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5208,7 +5066,7 @@ var thunk = createThunkMiddleware();
 thunk.withExtraArgument = createThunkMiddleware;
 
 exports['default'] = thunk;
-},{}],17:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5267,7 +5125,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":20}],18:[function(require,module,exports){
+},{"./compose":16}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5319,7 +5177,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],19:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5447,7 +5305,7 @@ function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
-},{"./createStore":21,"./utils/warning":23,"lodash/isPlainObject":11}],20:[function(require,module,exports){
+},{"./createStore":17,"./utils/warning":19,"lodash/isPlainObject":23}],16:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -5488,7 +5346,7 @@ function compose() {
     if (typeof _ret === "object") return _ret.v;
   }
 }
-},{}],21:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5751,7 +5609,7 @@ function createStore(reducer, initialState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
 }
-},{"lodash/isPlainObject":11,"symbol-observable":25}],22:[function(require,module,exports){
+},{"lodash/isPlainObject":23,"symbol-observable":24}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5798,7 +5656,7 @@ exports.combineReducers = _combineReducers2["default"];
 exports.bindActionCreators = _bindActionCreators2["default"];
 exports.applyMiddleware = _applyMiddleware2["default"];
 exports.compose = _compose2["default"];
-},{"./applyMiddleware":17,"./bindActionCreators":18,"./combineReducers":19,"./compose":20,"./createStore":21,"./utils/warning":23}],23:[function(require,module,exports){
+},{"./applyMiddleware":13,"./bindActionCreators":14,"./combineReducers":15,"./compose":16,"./createStore":17,"./utils/warning":19}],19:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5824,7 +5682,179 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],24:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetPrototype = Object.getPrototypeOf;
+
+/**
+ * Gets the `[[Prototype]]` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {null|Object} Returns the `[[Prototype]]`.
+ */
+function getPrototype(value) {
+  return nativeGetPrototype(Object(value));
+}
+
+module.exports = getPrototype;
+
+},{}],21:[function(require,module,exports){
+/**
+ * Checks if `value` is a host object in IE < 9.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+ */
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
+  }
+  return result;
+}
+
+module.exports = isHostObject;
+
+},{}],22:[function(require,module,exports){
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+},{}],23:[function(require,module,exports){
+var getPrototype = require('./_getPrototype'),
+    isHostObject = require('./_isHostObject'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var objectTag = '[object Object]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = Function.prototype.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to infer the `Object` constructor. */
+var objectCtorString = funcToString.call(Object);
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/**
+ * Checks if `value` is a plain object, that is, an object created by the
+ * `Object` constructor or one with a `[[Prototype]]` of `null`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.8.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a plain object,
+ *  else `false`.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * _.isPlainObject(new Foo);
+ * // => false
+ *
+ * _.isPlainObject([1, 2, 3]);
+ * // => false
+ *
+ * _.isPlainObject({ 'x': 0, 'y': 0 });
+ * // => true
+ *
+ * _.isPlainObject(Object.create(null));
+ * // => true
+ */
+function isPlainObject(value) {
+  if (!isObjectLike(value) ||
+      objectToString.call(value) != objectTag || isHostObject(value)) {
+    return false;
+  }
+  var proto = getPrototype(value);
+  if (proto === null) {
+    return true;
+  }
+  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+  return (typeof Ctor == 'function' &&
+    Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString);
+}
+
+module.exports = isPlainObject;
+
+},{"./_getPrototype":20,"./_isHostObject":21,"./isObjectLike":22}],24:[function(require,module,exports){
+(function (global){
+/* global window */
+'use strict';
+
+module.exports = require('./ponyfill')(global || window || this);
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./ponyfill":25}],25:[function(require,module,exports){
+'use strict';
+
+module.exports = function symbolObservablePonyfill(root) {
+	var result;
+	var Symbol = root.Symbol;
+
+	if (typeof Symbol === 'function') {
+		if (Symbol.observable) {
+			result = Symbol.observable;
+		} else {
+			result = Symbol('observable');
+			Symbol.observable = result;
+		}
+	} else {
+		result = '@@observable';
+	}
+
+	return result;
+};
+
+},{}],26:[function(require,module,exports){
 (function (process,Buffer){
 !function(globals){
 'use strict'
@@ -5907,37 +5937,7 @@ secureRandom.randomBuffer = function(byteCount) {
 
 }).call(this,require('_process'),require("buffer").Buffer)
 
-},{"_process":15,"buffer":5,"crypto":4}],25:[function(require,module,exports){
-(function (global){
-/* global window */
-'use strict';
-
-module.exports = require('./ponyfill')(global || window || this);
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./ponyfill":26}],26:[function(require,module,exports){
-'use strict';
-
-module.exports = function symbolObservablePonyfill(root) {
-	var result;
-	var Symbol = root.Symbol;
-
-	if (typeof Symbol === 'function') {
-		if (Symbol.observable) {
-			result = Symbol.observable;
-		} else {
-			result = Symbol('observable');
-			Symbol.observable = result;
-		}
-	} else {
-		result = '@@observable';
-	}
-
-	return result;
-};
-
-},{}],27:[function(require,module,exports){
+},{"_process":8,"buffer":4,"crypto":3}],27:[function(require,module,exports){
 'use strict';
 
 var _augurUiReactComponents = require('augur-ui-react-components');
@@ -7007,7 +7007,7 @@ var selectAuthForm = exports.selectAuthForm = (0, _memoizerific2.default)(1)(fun
 	return obj;
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../auth/actions/login":42,"../../auth/actions/register":44,"../../auth/constants/auth-types":47,"../../auth/constants/form-errors":48,"../../link/selectors/links":71,"memoizerific":14}],52:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../auth/actions/login":42,"../../auth/actions/register":44,"../../auth/constants/auth-types":47,"../../auth/constants/form-errors":48,"../../link/selectors/links":71,"memoizerific":11}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7263,7 +7263,7 @@ function sortPricePointsByPriceDesc(pricePoint1, pricePoint2) {
 	return pricePoint2.price.value - pricePoint1.price.value;
 }
 
-},{"../../../utils/format-number":164,"memoizerific":14}],58:[function(require,module,exports){
+},{"../../../utils/format-number":164,"memoizerific":11}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7638,7 +7638,7 @@ var selectCreateMarketForm = exports.selectCreateMarketForm = (0, _memoizerific2
 	});
 });
 
-},{"../../../store":159,"../../create-market/actions/update-make-in-progress":60,"../../create-market/selectors/form-steps/step-2":64,"../../create-market/selectors/form-steps/step-3":65,"../../create-market/selectors/form-steps/step-4":66,"../../create-market/selectors/form-steps/step-5":67,"../../markets/constants/market-types":96,"memoizerific":14}],64:[function(require,module,exports){
+},{"../../../store":159,"../../create-market/actions/update-make-in-progress":60,"../../create-market/selectors/form-steps/step-2":64,"../../create-market/selectors/form-steps/step-3":65,"../../create-market/selectors/form-steps/step-4":66,"../../create-market/selectors/form-steps/step-5":67,"../../markets/constants/market-types":96,"memoizerific":11}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8479,7 +8479,7 @@ var selectCreateMarketLink = exports.selectCreateMarketLink = (0, _memoizerific2
 	};
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../../utils/list-words-under-length":166,"../../../utils/parse-url":167,"../../app/constants/pages":34,"../../auth/actions/logout":43,"../../auth/constants/auth-types":47,"../../link/actions/show-link":68,"../../link/constants/param-names":69,"../../link/constants/paths":70,"../../markets/constants/sort":99,"memoizerific":14}],72:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../../utils/list-words-under-length":166,"../../../utils/parse-url":167,"../../app/constants/pages":34,"../../auth/actions/logout":43,"../../auth/constants/auth-types":47,"../../link/actions/show-link":68,"../../link/constants/param-names":69,"../../link/constants/paths":70,"../../markets/constants/sort":99,"memoizerific":11}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8849,7 +8849,7 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 	return o;
 });
 
-},{"../../../store":159,"../../../utils/format-date":163,"../../../utils/format-number":164,"../../../utils/is-market-data-open":165,"../../bids-asks/constants/bids-asks-types":55,"../../bids-asks/selectors/select-order-book":57,"../../link/selectors/links":71,"../../market/selectors/price-time-series":77,"../../markets/actions/toggle-tag":86,"../../markets/actions/update-favorites":87,"../../markets/constants/market-outcomes":95,"../../markets/constants/market-types":96,"../../positions/selectors/position":125,"../../positions/selectors/positions-summary":126,"../../reports/actions/submit-report":133,"../../trade/actions/place-trade":136,"../../trade/actions/update-trades-in-progress":137,"../../trade/selectors/trade-orders":140,"../../trade/selectors/trade-summary":141,"memoizerific":14}],77:[function(require,module,exports){
+},{"../../../store":159,"../../../utils/format-date":163,"../../../utils/format-number":164,"../../../utils/is-market-data-open":165,"../../bids-asks/constants/bids-asks-types":55,"../../bids-asks/selectors/select-order-book":57,"../../link/selectors/links":71,"../../market/selectors/price-time-series":77,"../../markets/actions/toggle-tag":86,"../../markets/actions/update-favorites":87,"../../markets/constants/market-outcomes":95,"../../markets/constants/market-types":96,"../../positions/selectors/position":125,"../../positions/selectors/positions-summary":126,"../../reports/actions/submit-report":133,"../../trade/actions/place-trade":136,"../../trade/actions/update-trades-in-progress":137,"../../trade/selectors/trade-orders":140,"../../trade/selectors/trade-summary":141,"memoizerific":11}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8898,7 +8898,7 @@ var selectPriceTimeSeries = exports.selectPriceTimeSeries = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../store":159,"../../../utils/date-to-block-to-date":162,"memoizerific":14}],78:[function(require,module,exports){
+},{"../../../store":159,"../../../utils/date-to-block-to-date":162,"memoizerific":11}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10048,7 +10048,7 @@ var selectFilters = exports.selectFilters = (0, _memoizerific2.default)(1)(funct
 	return filters;
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../markets/actions/toggle-filter":85,"../../markets/actions/toggle-tag":86,"memoizerific":14}],112:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../markets/actions/toggle-filter":85,"../../markets/actions/toggle-tag":86,"memoizerific":11}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10088,7 +10088,7 @@ var selectOnChangeKeywords = exports.selectOnChangeKeywords = (0, _memoizerific2
 	};
 });
 
-},{"../../../store":159,"../../markets/actions/update-keywords":88,"memoizerific":14}],113:[function(require,module,exports){
+},{"../../../store":159,"../../markets/actions/update-keywords":88,"memoizerific":11}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10178,7 +10178,7 @@ function cleanSortVal(val) {
 	return val;
 }
 
-},{"../../../store":159,"../../../utils/is-market-data-open":165,"../../market/selectors/market":76,"memoizerific":14}],114:[function(require,module,exports){
+},{"../../../store":159,"../../../utils/is-market-data-open":165,"../../market/selectors/market":76,"memoizerific":11}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10206,7 +10206,7 @@ var selectFavoriteMarkets = exports.selectFavoriteMarkets = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../selectors":157,"memoizerific":14}],115:[function(require,module,exports){
+},{"../../../selectors":157,"memoizerific":11}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10288,7 +10288,7 @@ var isMarketFiltersMatch = exports.isMarketFiltersMatch = (0, _memoizerific2.def
 	}
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../../utils/clean-keywords":161,"memoizerific":14}],116:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../../utils/clean-keywords":161,"memoizerific":11}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10341,7 +10341,7 @@ var selectMarketsHeader = exports.selectMarketsHeader = (0, _memoizerific2.defau
 	return obj;
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../markets/actions/update-selected-markets-header":92,"../../markets/constants/markets-headers":97,"memoizerific":14}],117:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../markets/actions/update-selected-markets-header":92,"../../markets/constants/markets-headers":97,"memoizerific":11}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10401,7 +10401,7 @@ var selectMarketsTotals = exports.selectMarketsTotals = (0, _memoizerific2.defau
 	return totals;
 });
 
-},{"../../../selectors":157,"../../positions/selectors/positions-summary":126,"memoizerific":14}],118:[function(require,module,exports){
+},{"../../../selectors":157,"../../positions/selectors/positions-summary":126,"memoizerific":11}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10467,7 +10467,7 @@ var selectUnpaginatedMarkets = exports.selectUnpaginatedMarkets = (0, _memoizeri
 	return filteredMarkets;
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../app/constants/pages":34,"../../markets/constants/markets-headers":97,"memoizerific":14}],119:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../app/constants/pages":34,"../../markets/constants/markets-headers":97,"memoizerific":11}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10511,7 +10511,7 @@ var selectPaginated = exports.selectPaginated = (0, _memoizerific2.default)(1)(f
 	return markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage);
 });
 
-},{"../../../selectors":157,"../../../store":159,"../../app/constants/pages":34,"../../markets/constants/markets-headers":97,"memoizerific":14}],120:[function(require,module,exports){
+},{"../../../selectors":157,"../../../store":159,"../../app/constants/pages":34,"../../markets/constants/markets-headers":97,"memoizerific":11}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10642,7 +10642,7 @@ var selectOnChangeSort = exports.selectOnChangeSort = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../store":159,"../../markets/actions/update-selected-sort":94,"memoizerific":14}],122:[function(require,module,exports){
+},{"../../../store":159,"../../markets/actions/update-selected-sort":94,"memoizerific":11}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10789,7 +10789,7 @@ var selectPositionFromOutcomeAccountTrades = exports.selectPositionFromOutcomeAc
 	return position;
 });
 
-},{"../../positions/selectors/positions-summary":126,"memoizerific":14}],126:[function(require,module,exports){
+},{"../../positions/selectors/positions-summary":126,"memoizerific":11}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10831,7 +10831,7 @@ var selectPositionsSummary = exports.selectPositionsSummary = (0, _memoizerific2
 	};
 });
 
-},{"../../../utils/format-number":164,"memoizerific":14}],127:[function(require,module,exports){
+},{"../../../utils/format-number":164,"memoizerific":11}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11320,7 +11320,7 @@ function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
 	};
 }
 
-},{"../../../services/augurjs":158,"../../../utils/bytes-to-hex":160,"../../app/constants/network":33,"../../link/selectors/links":71,"../../market/selectors/market":76,"../../markets/constants/market-outcomes":95,"../../markets/constants/market-types":96,"../../reports/actions/update-reports":134,"../../transactions/actions/add-report-transaction":144,"../../transactions/actions/update-existing-transaction":148,"../../transactions/constants/statuses":150,"secure-random":24}],134:[function(require,module,exports){
+},{"../../../services/augurjs":158,"../../../utils/bytes-to-hex":160,"../../app/constants/network":33,"../../link/selectors/links":71,"../../market/selectors/market":76,"../../markets/constants/market-outcomes":95,"../../markets/constants/market-types":96,"../../reports/actions/update-reports":134,"../../transactions/actions/add-report-transaction":144,"../../transactions/actions/update-existing-transaction":148,"../../transactions/constants/statuses":150,"secure-random":26}],134:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11849,7 +11849,7 @@ var selectTradeSummary = exports.selectTradeSummary = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../utils/format-number":164,"memoizerific":14}],142:[function(require,module,exports){
+},{"../../../utils/format-number":164,"memoizerific":11}],142:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12233,7 +12233,7 @@ var selectIsWorking = exports.selectIsWorking = (0, _memoizerific2.default)(1)(f
 	});
 });
 
-},{"../../../store":159,"../../transactions/constants/statuses":150,"memoizerific":14}],154:[function(require,module,exports){
+},{"../../../store":159,"../../transactions/constants/statuses":150,"memoizerific":11}],154:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12291,7 +12291,7 @@ var selectTransactionsTotals = exports.selectTransactionsTotals = (0, _memoizeri
 	return o;
 });
 
-},{"../../../selectors":157,"../../transactions/constants/statuses":150,"memoizerific":14}],155:[function(require,module,exports){
+},{"../../../selectors":157,"../../transactions/constants/statuses":150,"memoizerific":11}],155:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12337,7 +12337,7 @@ var selectTransactions = exports.selectTransactions = (0, _memoizerific2.default
 	});
 });
 
-},{"../../../store":159,"../../../utils/format-number":164,"memoizerific":14}],156:[function(require,module,exports){
+},{"../../../store":159,"../../../utils/format-number":164,"memoizerific":11}],156:[function(require,module,exports){
 'use strict';
 
 var _blockchain = require('./modules/app/reducers/blockchain');
@@ -13304,7 +13304,7 @@ module.exports = ex;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../modules/transactions/constants/statuses":150,"bignumber.js":3}],159:[function(require,module,exports){
+},{"../modules/transactions/constants/statuses":150,"bignumber.js":2}],159:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -13366,7 +13366,7 @@ if ("development" !== 'production') {
 // middleware
 exports.default = (0, _redux.createStore)((0, _redux.combineReducers)(_reducers2.default), middleWare);
 
-},{"./reducers":156,"redux":22,"redux-thunk":16}],160:[function(require,module,exports){
+},{"./reducers":156,"redux":18,"redux-thunk":12}],160:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

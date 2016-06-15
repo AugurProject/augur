@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "augur-ui-react-components": "https://github.com/AugurProject/augur-ui-react-components.git",
-    "augur.js": "^1.3.13",
+    "augur.js": "^1.3.17",
     "bignumber.js": "^2.3.0",
     "memoizerific": "^1.8.3",
     "redux": "^3.5.2",
