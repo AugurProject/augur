@@ -29,6 +29,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		out,
 		clock,
 		transID = 'trans123',
+		marketData = {},
+		expectedMarketData = {},
 		testData = {
 			type: 'UPDATE_TRANSACTIONS_DATA',
 			test123: {
@@ -65,6 +67,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	let stubbedAugurJS = {
 		createMarket: () => {}
 	};
+	stubbedAugurJS.createMarket = sinon.stub();
+
 	stubbedAugurJS.createMarket = sinon.stub().yields(null, {
 		marketID: 'test123',
 		status: SUCCESS
@@ -162,24 +166,27 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	describe('createMarket states', () => {
 		beforeEach(() => {
 			store.clearActions();
+			stubbedUpdateExistingTransaction.updateExistingTransaction.reset();
+			marketData = {};
+			expectedMarketData = {};
+
 			global.window.performance = {
 				now: () => Date.now()
 			};
+
 			clock = sinon.useFakeTimers();
 		});
 
 		afterEach(() => {
-			store.clearActions();
 			clock.restore();
 		});
 
 		it('should be able to create a binary market', () => {
-			store.dispatch(action.createMarket(
-				'trans123',
-				{
-					type: BINARY
-				}
-			));
+			marketData = {
+				type: BINARY
+			};
+
+			store.dispatch(action.createMarket( transID, marketData ));
 
 			clock.tick(10000);
 
@@ -192,7 +199,49 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'UPDATE_EXISTING_TRANSACTIONS',
 					transactionID: 'trans123',
-					status: { status: 'success' }
+					status: { status: SUCCESS }
+				},
+				{
+					type: 'CLEAR_MAKE_IN_PROGRESS'
+				},
+				{
+					type: 'loadMarket'
+				}
+			];
+
+			expectedMarketData = {
+				type: BINARY,
+				minValue: 1,
+				maxValue: 2,
+				numOutcomes: 2
+			};
+			
+			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
+			assert.deepEqual(store.getActions(), out, `a binary market was not correctly created`);
+			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
+		});
+
+		it('should be able to create a scalar market', () => {
+			marketData = {
+				type: SCALAR,
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			store.dispatch(action.createMarket( transID, marketData ));
+
+			clock.tick(10000);
+
+			out = [
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: 'trans123',
+					status: { status: 'sending...' }
+				},
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: 'trans123',
+					status: { status: SUCCESS }
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
@@ -202,10 +251,20 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				}
 			];
 			
+			expectedMarketData = {
+				type: SCALAR,
+				scalarSmallNum: 10,
+				scalarBigNum: 100,
+				minValue: 10,
+				maxValue: 100,
+				numOutcomes: 2 
+			};
+
 			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
-			assert.deepEqual(store.getActions(), out, `a binary market was not correctly created`);
+			assert.deepEqual(store.getActions(), out, `a scalar market was not correctly created`);
+			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
 		});
-		it('[TODO] should be able to create a scalar market');
+
 		it('[TODO] should be able to create a categorical market');
 	});
 
