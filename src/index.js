@@ -19,7 +19,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.13";
+    this.version = "1.3.14";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;

@@ -57954,7 +57954,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.13";
+    this.version = "1.3.14";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -59118,7 +59118,7 @@ Augur.prototype.short_sell = function (buyer_trade_id, max_amount, onTradeHash, 
  * there are only 10 ask shares on order book, this method does trade() and buy()). Callbacks are called with
  * requestId to allow client map transactions to individual trade order
  *
- * Important fields in userTradeOrder are: shares, ether (total cost + fees) and limitPrice
+ * Important fields in userTradeOrder are: sharesToSell, etherToBuy (total cost + fees) and limitPrice
  *
  * Algorithm:
  *
