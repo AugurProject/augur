@@ -136,43 +136,6 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		});
 	});
 
-	it('should handle calling initialFairPrices and return correct data', () => {
-		// formState1 = {
-		// 	type: BINARY
-		// };
-		// formState2 = {
-		// 	type: CATEGORICAL
-		// };
-		// formState3 = {
-		// 	type: SCALAR
-		// };
-		// out1 = {
-		// 	initialFairPrices: {
-		// 		type: BINARY,
-		// 		values: [],
-		// 		raw: []
-		// 	}
-		// };
-		// out2 = {
-		// 	initialFairPrices: {
-		// 		type: CATEGORICAL,
-		// 		values: [],
-		// 		raw: []
-		// 	}
-		// };
-		// out3 = {
-		// 	initialFairPrices: {
-		// 		type: SCALAR,
-		// 		values: [],
-		// 		raw: []
-		// 	}
-		// };
-
-		// assert.deepEqual(selector.initialFairPrices(formState1), out1, `Didn't produce the expected object`);
-		// assert.deepEqual(selector.initialFairPrices(formState2), out2, `Didn't produce the expected object`);
-		// assert.deepEqual(selector.initialFairPrices(formState3), out3, `Didn't produce the expected object`);
-	});
-
 	it(`should handle validation of step 2`, () => {
 		// formState1 = {
 		// 	type: BINARY,
