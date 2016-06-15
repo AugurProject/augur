@@ -9,14 +9,11 @@ import testState from '../../testState';
 import {
 	BINARY,
 	CATEGORICAL,
-	SCALAR,
-	COMBINATORIAL
+	SCALAR
 } from '../../../src/modules/markets/constants/market-types';
 import {
-	PENDING,
 	SUCCESS,
-	FAILED,
-	CREATING_MARKET
+	FAILED
 } from '../../../src/modules/transactions/constants/statuses';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
@@ -89,27 +86,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			status: SUCCESS
 		}
 	);
-
-	// stubbedAugurJS.createMarket = sinon.stub().yields(null, {
-	// 	marketID: 'test123',
-	// 	status: SUCCESS
-	// });
-	// stubbedAugurJS.createMarket.withArgs(transID, { type: BINARY, testFail: FAILED }).yields(
-	// 	{
-	// 		status: FAILED,
-	// 		message: 'error!'
-	// 	}
-	// );
-
-	// fakeAugurJS.createMarket = sinon.stub().yields(null, {
-	// 	marketID: 'test123',
-	// 	status: SUCCESS,
-	// });
-	// fakeAugurJS.createMarket.onCall(1).yields({
-	// 	message: 'error!'
-	// }, {
-	// 	status: FAILED
-	// });
     
 	let stubbedLoadMarket = {
 		loadMarket: () => {}
@@ -118,9 +94,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		type: 'loadMarket'
 	});
     
-	let stubbedGenerateOrderBook = {};
-	stubbedGenerateOrderBook = sinon.stub().returns({
-		type: 'TEST'
+	let stubbedGenerateOrderBook = {
+		submitGenerateOrderBook: () => {}
+	};
+	sinon.stub(stubbedGenerateOrderBook, 'submitGenerateOrderBook', (data) => {
+		return {
+			type: 'submitGenerateOrderBook'
+		};
 	});
     
 	action = proxyquire(
@@ -130,7 +110,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			'../../transactions/actions/update-existing-transaction': stubbedUpdateExistingTransaction,
 			'../../../services/augurjs': stubbedAugurJS,
 			'../../market/actions/load-market': stubbedLoadMarket,
-			'./generate-order-book': stubbedGenerateOrderBook
+			'../../create-market/actions/generate-order-book': stubbedGenerateOrderBook
 		}
 	);
 
@@ -247,9 +227,14 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 					type: 'CLEAR_MAKE_IN_PROGRESS'
 				},
 				{
+					type: 'submitGenerateOrderBook'
+				},
+				{
 					type: 'loadMarket'
 				}
 			];
+
+			console.log('store.getActions() -- ', store.getActions());
 
 			expectedMarketData = {
 				type: BINARY,
@@ -287,6 +272,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
+				},
+				{
+					type: 'submitGenerateOrderBook'
 				},
 				{
 					type: 'loadMarket'
@@ -334,6 +322,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
+				},
+				{ 
+					type: 'submitGenerateOrderBook' 
 				},
 				{
 					type: 'loadMarket'
