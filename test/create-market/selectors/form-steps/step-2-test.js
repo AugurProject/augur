@@ -49,7 +49,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	stubbedValidateScalarBigNum.returns(false);
 
 	let stubbedValidateCategoricalOutcomes = sinon.stub(validations, 'validateCategoricalOutcomes');
-	stubbedValidateCategoricalOutcomes.returns(false);
+	stubbedValidateCategoricalOutcomes.returns([]);
 
 	let validators = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-2', {
 		'../../../market/validators/validate-description': stubbedValidateDescription,
@@ -58,6 +58,15 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		'../../../market/validators/validate-scalar-big-num': stubbedValidateScalarBigNum,
 		'../../../market/validators/validate-categorical-outcomes': stubbedValidateCategoricalOutcomes
 	});
+
+	before(() => {
+		sinon.stub(Array.prototype, 'some', () => false);
+	});
+
+	after(() => {
+		Array.prototype.some.restore();
+	});
+
 
 	describe('returning object for market type', () => {
 		beforeEach(() => {
@@ -176,6 +185,10 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		beforeEach(() => {
 			formState = null;
 			out = null;
+
+			stubbedValidateDescription.reset();
+			stubbedValidateEndDate.reset();
+			stubbedValidateCategoricalOutcomes.reset();
 		});
 		
 		it('should handle binary validations', () => {
@@ -185,8 +198,20 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			validators.isValid(formState);
 
-			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called');
-			assert(stubbedValidateEndDate.calledOnce, 'validateDescription was not called');
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
+			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+		});
+
+		it('should handle categorical validations', () => {
+			formState = {
+				type: CATEGORICAL
+			};
+
+			validators.isValid(formState);
+
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
+			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+			assert(stubbedValidateCategoricalOutcomes.calledOnce, 'validateCategoricalOutcomes was not called once');
 		});
 	});
 
