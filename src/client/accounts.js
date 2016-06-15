@@ -50,7 +50,7 @@ module.exports = function () {
             onFailed = onFailed || utils.noop;
             onRegistered(account);
             if (process.env.BUILD_AZURE) {
-                var FREEBIE_ETH=5.;
+                var FREEBIE_ETH = 5;
                 augur.rpc.sendEther({
                     to: account.address,
                     value: FREEBIE_ETH,
@@ -66,13 +66,14 @@ module.exports = function () {
                         });
                     }
                 });
-            }else{
+            } else {
                 var url = constants.FAUCET + abi.format_address(account.address);
                 request(url, function (err, response, body) {
                     if (err) return onFailed(err);
                     if (response.statusCode !== 200) {
                         return onFailed(response.statusCode);
                     }
+                    console.log("sent ether to account:", account);
                     onSendEther(account);
                     augur.fundNewAccount({
                         branch: branch || augur.branches.dev,

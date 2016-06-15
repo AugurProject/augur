@@ -515,11 +515,13 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             this.timeout(tools.TIMEOUT*2);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
+                // console.log("login:", account);
                 checkAccount(augur, account);
                 var recipient = account.address;
                 var initial_balance = abi
                     .bignum(augur.rpc.balance(recipient))
                     .dividedBy(constants.ETHER);
+                // console.log("initial balance:", initial_balance.toFixed());
                 augur.web.fund({address: recipient}, augur.branches.dev, {
                     onRegistered: function (account) {
                         assert.strictEqual(account.address, recipient);
@@ -530,6 +532,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             .bignum(augur.rpc.balance(recipient))
                             .dividedBy(constants.ETHER);
                         var delta = final_balance.sub(initial_balance).toNumber();
+                        // console.log("final balance:", final_balance.toFixed());
                         assert.isAbove(Math.abs(delta), 0);
                     },
                     onSend: function (res) {
@@ -728,9 +731,9 @@ describe("Contract methods", function () {
                 assert.isAbove(branches.length, 0);
                 assert.isArray(branches);
                 assert.strictEqual(
-                    augur.rpc.encodeResult(
-                        branches[0],
-                        augur.tx.getBranches.returns
+                    augur.rpc.applyReturns(
+                        augur.tx.getBranches.returns,
+                        branches[0]
                     ),
                     augur.branches.dev
                 );
@@ -740,9 +743,9 @@ describe("Contract methods", function () {
                     assert.isAbove(branches.length, 0);
                     assert.isArray(branches);
                     assert.strictEqual(
-                        augur.rpc.encodeResult(
-                            branches[0],
-                            augur.tx.getBranches.returns
+                        augur.rpc.applyReturns(
+                            augur.tx.getBranches.returns,
+                            branches[0]
                         ),
                         augur.branches.dev
                     );
