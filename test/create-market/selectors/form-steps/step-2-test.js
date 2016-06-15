@@ -60,7 +60,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	});
 
 	before(() => {
-		sinon.stub(Array.prototype, 'some', () => false);
+		sinon.stub(Array.prototype, 'some', () => true);
 	});
 
 	after(() => {
@@ -237,6 +237,9 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 		beforeEach(() => {
 			formState = null;
 			out = null;
+
+			stubbedValidateDescription.reset();
+			stubbedValidateEndDate.reset();
 		});
 
 		it('should handle binary errors for binary markets', () => {
@@ -250,6 +253,24 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
 			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+		});
+
+		it('should handle binary errors for categorical markets', () => {
+			formState = {
+				type: CATEGORICAL,
+				description: 'test',
+				endDate: new Date.now(),
+				categoricalOutcomes: [
+					'outcome1',
+					'outcome2'
+				]
+			};
+
+			validators.errors(formState);
+
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
+			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+			assert(stubbedValidateCategoricalOutcomes.calledOnce, 'validateCategoricalOutcomes was not called once');
 		});
 	});
 
