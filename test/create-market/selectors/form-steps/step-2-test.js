@@ -5,8 +5,7 @@ import {
 import {
 	BINARY,
 	CATEGORICAL,
-	SCALAR,
-	COMBINATORIAL
+	SCALAR
 } from '../../../../src/modules/markets/constants/market-types';
 
 import {
