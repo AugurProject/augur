@@ -1,5 +1,9 @@
 import * as AugurJS from '../../../services/augurjs';
 import {
+	BUY_SHARES
+} from '../../transactions/constants/types';
+
+import {
 	PLACE_MULTI_TRADE,
 	SUCCESS,
 	FAILED
@@ -35,7 +39,15 @@ export function multiTrade(transactionID, marketID) {
 
 		const marketOrderBook = getState().marketOrderBooks[marketID];
 
-		const tradeOrders = market.tradeSummary.tradeOrders;
+		const tradeOrders = market.tradeSummary.tradeOrders.map((tradeTransaction) => {
+			return {
+				type: tradeTransaction.type === BUY_SHARES ? "buy" : "sell",
+				outcomeID: tradeTransaction.data.outcomeID,
+				limitPrice: tradeTransaction.limitPrice,
+				etherToBuy: tradeTransaction.ether.value,
+				sharesToSell: tradeTransaction.shares
+			};
+		});
 
 		const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
 			outcomePositions[outcome.id] = outcome.position;
