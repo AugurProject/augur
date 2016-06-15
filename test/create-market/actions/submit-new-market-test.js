@@ -234,8 +234,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				}
 			];
 
-			console.log('store.getActions() -- ', store.getActions());
-
 			expectedMarketData = {
 				type: BINARY,
 				minValue: 1,
