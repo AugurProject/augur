@@ -213,6 +213,19 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
 			assert(stubbedValidateCategoricalOutcomes.calledOnce, 'validateCategoricalOutcomes was not called once');
 		});
+
+		it('should handle scalar validations', () => {
+			formState = {
+				type: SCALAR
+			};
+
+			validators.isValid(formState);
+
+			assert(stubbedValidateDescription.calledOnce, 'validateDescription was not called once');
+			assert(stubbedValidateEndDate.calledOnce, 'validateEndDate was not called once');
+			assert(stubbedValidateScalarSmallNum.calledOnce, 'validateScalarSmallNum was not called once');
+			assert(stubbedValidateScalarBigNum.calledOnce, 'validateScalarBigNum was not called once');
+		});
 	});
 
 	it(`should handle validation of step 2`, () => {
