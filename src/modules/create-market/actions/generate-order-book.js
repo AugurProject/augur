@@ -19,12 +19,12 @@ export function createOrderBook(transactionID, marketData) {
 		dispatch(updateExistingTransaction(transactionID, { status: GENERATING_ORDER_BOOK }));
 
 		AugurJS.generateOrderBook(marketData, (err, res) => {
-			handleGenerateOrderBookResponse(err, res, transactionID);
+			handleGenerateOrderBookResponse(err, res, transactionID, marketData);
 		});
 	};
 }
 
-export function handleGenerateOrderBookResponse(err, res, transactionID){
+export function handleGenerateOrderBookResponse(err, res, transactionID, marketData){
 	return dispatch => {
 		if (err) {
 			dispatch(

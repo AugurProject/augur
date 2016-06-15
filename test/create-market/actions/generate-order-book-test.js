@@ -201,5 +201,36 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
                 }
             }], `Didn't correctly handle onCompleteSets callback`);
         });
+
+        it('should handle onSetupOutcome', () => {
+            store.dispatch(
+                action.handleGenerateOrderBookResponse(
+                    null,
+                    {
+                        status: ORDER_BOOK_OUTCOME_COMPLETE,
+                        payload: {
+                            outcome: 1
+                        }
+                    },
+                    'trans123',
+                    {
+                        outcomes: [
+                            {
+                                name: 'outcome 1'
+                            }
+                        ]
+                    }
+                )
+            );
+
+            assert.deepEqual(store.getActions(), [{
+                type: 'UPDATE_EXISTING_TRANSACTIONS',
+                transactionID: 'trans123',
+                status: {
+                    status: ORDER_BOOK_OUTCOME_COMPLETE,
+                    message: `Order book creation for outcome 'outcome 1' completed.`
+                }
+            }], `Didn't correctly handle onSetupOutcome callback`);
+        });
     });
 });
