@@ -185,18 +185,28 @@ describe("Integration tests", function () {
             }
             options = options || {};
             assert.isObject(info);
-            var numMarkets = options.numMarkets || parseInt(augur.getNumMarkets(branchId));
+            var numMarkets = options.numMarkets || parseInt(augur.getNumMarketsBranch(branchId));
             var market;
+            console.log("info:", info);
+            console.log("numMarkets:", numMarkets);
+            console.log("keys length:", Object.keys(info).length);
             assert.strictEqual(Object.keys(info).length, numMarkets);
             for (var marketId in info) {
                 if (!info.hasOwnProperty(marketId)) continue;
                 market = info[marketId];
+                console.log("tradingPeriod:", market.tradingPeriod);
                 assert.isNumber(market.tradingPeriod);
+                console.log("tradingFee:", market.tradingFee);
                 assert.isString(market.tradingFee);
+                console.log("creationTime:", market.creationTime);
                 assert.isNumber(market.creationTime);
+                console.log("volume:", market.volume);
                 assert.isString(market.volume);
+                console.log("tags:", market.tags);
                 assert.isArray(market.tags);
+                console.log("endDate:", market.endDate);
                 assert.isNumber(market.endDate);
+                console.log("description:", market.description);
                 assert.isString(market.description);
             }
             if (done) done();
@@ -210,71 +220,64 @@ describe("Integration tests", function () {
             this.timeout(tools.TIMEOUT);
             test(augur.getMarketsInfo(params), {numMarkets: params.numMarketsToLoad});
         });
-        it("sync/missing numMarketsToLoad", function () {
+        it("sync/missing offset", function () {
             this.timeout(tools.TIMEOUT);
             var p = tools.copy(params);
-            delete p.numMarketsToLoad;
-            test(augur.getMarketsInfo(p));
-        });
-        it("sync/missing numMarketsToLoad/missing offset", function () {
-            this.timeout(tools.TIMEOUT);
-            var p = tools.copy(params);
-            delete p.numMarketsToLoad;
             delete p.offset;
-            test(augur.getMarketsInfo(p));
+            test(augur.getMarketsInfo(p), {numMarkets: p.numMarketsToLoad});
         });
-        it("async", function (done) {
-            this.timeout(tools.TIMEOUT);
-            params.callback = function (info) {
-                if (info.error) return done(info);
-                test(info, {numMarkets: params.numMarketsToLoad}, done);
-            };
-            augur.getMarketsInfo(params);
-        });
-        it("async/missing numMarketsToLoad", function (done) {
-            this.timeout(tools.TIMEOUT);
-            var p = tools.copy(params);
-            delete p.numMarketsToLoad;
-            p.callback = function (info) {
-                if (info.error) return done(info);
-                test(info, done);
-            };
-            augur.getMarketsInfo(p);
-        });
-        it("async/missing numMarketsToLoad/missing offset", function (done) {
-            this.timeout(tools.TIMEOUT);
-            var p = tools.copy(params);
-            delete p.numMarketsToLoad;
-            delete p.offset;
-            p.callback = function (info) {
-                if (info.error) return done(info);
-                test(info, done);
-            };
-            augur.getMarketsInfo(p);
-        });
-        it("async/offset=1/numMarketsToLoad=2", function (done) {
-            this.timeout(tools.TIMEOUT);
-            var numMarketsToLoad = 3;
-            augur.getMarketsInfo({
-                branch: branchId,
-                offset: 1,
-                numMarketsToLoad: numMarketsToLoad,
-                callback: function (info) {
-                    if (info.error) return done(info);
-                    assert.strictEqual(Object.keys(info).length, numMarketsToLoad);
-                    test(info, {numMarkets: numMarketsToLoad}, done);
-                }
-            });
-        });
+    //     it("async", function (done) {
+    //         this.timeout(tools.TIMEOUT);
+    //         params.callback = function (info) {
+    //             if (info.error) return done(info);
+    //             test(info, {numMarkets: params.numMarketsToLoad}, done);
+    //         };
+    //         augur.getMarketsInfo(params);
+    //     });
+    //     it("async/missing numMarketsToLoad", function (done) {
+    //         this.timeout(tools.TIMEOUT);
+    //         var p = tools.copy(params);
+    //         delete p.numMarketsToLoad;
+    //         p.callback = function (info) {
+    //             if (info.error) return done(info);
+    //             test(info, done);
+    //         };
+    //         augur.getMarketsInfo(p);
+    //     });
+    //     it("async/missing numMarketsToLoad/missing offset", function (done) {
+    //         this.timeout(tools.TIMEOUT);
+    //         var p = tools.copy(params);
+    //         delete p.numMarketsToLoad;
+    //         delete p.offset;
+    //         p.callback = function (info) {
+    //             if (info.error) return done(info);
+    //             test(info, done);
+    //         };
+    //         augur.getMarketsInfo(p);
+    //     });
+    //     it("async/offset=1/numMarketsToLoad=2", function (done) {
+    //         this.timeout(tools.TIMEOUT);
+    //         var numMarketsToLoad = 3;
+    //         augur.getMarketsInfo({
+    //             branch: branchId,
+    //             offset: 1,
+    //             numMarketsToLoad: numMarketsToLoad,
+    //             callback: function (info) {
+    //                 if (info.error) return done(info);
+    //                 assert.strictEqual(Object.keys(info).length, numMarketsToLoad);
+    //                 test(info, {numMarkets: numMarketsToLoad}, done);
+    //             }
+    //         });
+    //     });
     });
-    if (process.env.AUGURJS_INTEGRATION_TESTS) {
-        describe("getOrderBook", function () {
-            var test = function (t) {
-                assert.isObject(t.output);
-            };
-            for (var i = 0; i < numMarkets; ++i) {
-                runtests(this.title, test, markets[i]);
-            }
-        });
-    }
+    // if (process.env.AUGURJS_INTEGRATION_TESTS) {
+    //     describe("getOrderBook", function () {
+    //         var test = function (t) {
+    //             assert.isObject(t.output);
+    //         };
+    //         for (var i = 0; i < numMarkets; ++i) {
+    //             runtests(this.title, test, markets[i]);
+    //         }
+    //     });
+    // }
 });
