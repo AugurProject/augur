@@ -37,7 +37,7 @@ describe("Integration tests", function () {
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var branchId = augur.branches.dev;
-    var reporter_index = "0";
+    var reporterIndex = "1";
 
     describe("getTotalRep(" + branchId + ")", function () {
         var test = function (r) {
@@ -92,22 +92,22 @@ describe("Integration tests", function () {
         }
     });
 
-    describe("getRepByIndex(" + branchId + ", " + reporter_index + ") ", function () {
+    describe("getRepByIndex(" + branchId + ", " + reporterIndex + ") ", function () {
         var test = function (r) {
             assert(Number(r) >= 0);
         };
         it("sync", function () {
-            test(augur.getRepByIndex(branchId, reporter_index));
+            test(augur.getRepByIndex(branchId, reporterIndex));
         });
         it("async", function (done) {
-            augur.getRepByIndex(branchId, reporter_index, function (r) {
+            augur.getRepByIndex(branchId, reporterIndex, function (r) {
                 test(r); done();
             });
         });
         if (!augur.rpc.wsUrl) {
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                var params = [branchId, reporter_index];
+                var params = [branchId, reporterIndex];
                 batch.add("getRepByIndex", params, function (r) {
                     test(r);
                 });
@@ -119,25 +119,22 @@ describe("Integration tests", function () {
         }
     });
 
-    describe("getReporterID(" + branchId + ", " + reporter_index + ") ", function () {
+    describe("getReporterID(" + branchId + ", " + reporterIndex + ") ", function () {
         var test = function (r) {
-            assert.isAbove(abi.bignum(r).toNumber(), 0);
-            if (augur.rpc.nodes.local) {
-                assert(abi.bignum(r).eq(abi.bignum(accounts[0])));
-            }
+            assert.strictEqual(abi.hex(r), abi.hex(branchId));
         };
         it("sync", function () {
-            test(augur.getReporterID(branchId, reporter_index));
+            test(augur.getReporterID(branchId, reporterIndex));
         });
         it("async", function (done) {
-            augur.getReporterID(branchId, reporter_index, function (r) {
+            augur.getReporterID(branchId, reporterIndex, function (r) {
                 test(r); done();
             });
         });
         if (!augur.rpc.wsUrl) {
             it("batched-async", function (done) {
                 var batch = augur.createBatch();
-                var params = [branchId, reporter_index];
+                var params = [branchId, reporterIndex];
                 batch.add("getReporterID", params, function (r) {
                     test(r);
                 });
