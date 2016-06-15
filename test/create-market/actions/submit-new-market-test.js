@@ -39,14 +39,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			status: 'pending'
 		}
 	};
-	let fakeInclude = {
+	let stubbedNewMarketTransactions = {
 		addCreateMarketTransaction: () => {}
 	};
-
-	sinon.stub(fakeInclude, 'addCreateMarketTransaction', (newMarket) => testData);
-
+	sinon.stub(stubbedNewMarketTransactions, 'addCreateMarketTransaction', (newMarket) => testData);
+    
 	let fakeAugurJS = {};
-
 	fakeAugurJS.createMarket = sinon.stub().yields(null, {
 		marketID: 'test123',
 		status: SUCCESS,
@@ -56,33 +54,31 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	}, {
 		status: FAILED
 	});
-
-	let fakeLoadMarket = {};
+    
+	let fakeLoadMarket = {
+		loadMarket: () => {}
+	};
 	fakeLoadMarket.loadMarket = sinon.stub().returns({
 		type: 'loadMarket'
 	});
-
-	let mockLoadPriceHistory = {};
-	mockLoadPriceHistory.loadPriceHistory = sinon.stub().returns(null, {});
-
-	let loadFullMarketSelector = proxyquire('../../../src/modules/market/actions/load-full-market', {
-		'../../market/actions/load-price-history': mockLoadPriceHistory
+    
+	let fakeGenerateOrderBook = {
+		
+	};
+	fakeGenerateOrderBook = sinon.stub().returns({
+		type: 'TEST'
 	});
-
-	let fakeSelectTransactionsLink = {};
-	fakeSelectTransactionsLink.selectTransactionsLink = sinon.stub().returns({
-		onClick: () => {
-			loadFullMarketSelector.loadFullMarket(state.selectedMarketID);
+    
+	action = proxyquire(
+		'../../../src/modules/create-market/actions/submit-new-market',
+		{
+			'./generate-order-book': fakeGenerateOrderBook,
+			'../../transactions/actions/add-create-market-transaction': stubbedNewMarketTransactions,
+			'../../../services/augurjs': fakeAugurJS,
+			'../../market/actions/load-market': fakeLoadMarket
 		}
-	});
-
-	action = proxyquire('../../../src/modules/create-market/actions/submit-new-market', {
-		'../../transactions/actions/add-create-market-transaction': fakeInclude,
-		'../../../services/augurjs': fakeAugurJS,
-		'../../market/actions/load-market': fakeLoadMarket,
-		'../../link/selectors/links': fakeSelectTransactionsLink
-	});
-
+	);
+    
 	beforeEach(() => {
 		store.clearActions();
 		clock = sinon.useFakeTimers();
@@ -101,7 +97,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		};
 		global.window.scrollTo = (x, y) => true;
 	});
-
+    
 	afterEach(() => {
 		global.window = {};
 		store.clearActions();
@@ -109,13 +105,19 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	});
 
 	it(`should be able to submit a new market`, () => {
-
 		store.dispatch(action.submitNewMarket({
 			market: {
 				id: 'market'
 			}
 		}));
 		out = [{
+			type: 'SHOW_LINK',
+			parsedURL: {
+				pathArray: ['/transactions'],
+				searchParams: {},
+				url: '/transactions'
+			}
+		}, {
 			type: 'UPDATE_TRANSACTIONS_DATA',
 			'test123': {
 				type: 'create_market',
@@ -128,8 +130,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				status: 'pending'
 			}
 		}];
-
-		assert(fakeInclude.addCreateMarketTransaction.calledOnce, `addCreateMarketTransaction wasn't called once as expected`);
+        
+		assert(stubbedNewMarketTransactions.addCreateMarketTransaction.calledOnce, `addCreateMarketTransaction wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't correctly create a new market`);
 	});
 
@@ -177,6 +179,4 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		assert(fakeAugurJS.createMarket.calledTwice, `createMarket wasn't called twice after dispatching a createMarket Action 2 times`);
 		// assert.deepEqual(store.getActions(), [], `Didn't properly dispatch actions for a error when creating account`);
 	});
-
-	it('[TODO] should be able to generate an order book');
 });
