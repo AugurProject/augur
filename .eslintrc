@@ -13,6 +13,7 @@
     "no-console": 0,
     "indent": ["error", "tab"],
     "consistent-return": 0,
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
     "no-param-reassign": ["error", { "props": false }],
     "global-require": 0,
