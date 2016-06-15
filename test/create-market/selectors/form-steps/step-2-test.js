@@ -77,54 +77,8 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 
 			assert.deepEqual(selector.select(formState), out, `Correct object not returned`);
 		});
-	});
 
-	it('should handle selecting type of market and return correct data', () => {
-		// formState1 = {
-		// 	type: BINARY
-		// };
-		// formState2 = {
-		// 	type: CATEGORICAL
-		// };
-		// formState3 = {
-		// 	type: SCALAR,
-		// 	scalarSmallNum: 10,
-		// 	scalarBigNum: 100
-		// };
-		// formState4 = {
-		// 	type: COMBINATORIAL
-		// };
-		// out1 = {
-		// 	descriptionPlaceholder: 'Will "Batman v Superman: Dawn of Justice" take more than $150 million box in office receipts opening weekend?',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256
-		// };
-		// out2 = {
-		// 	descriptionPlaceholder: 'Who will win the Four Nations Rugby Championship in 2016?',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256,
-		// 	categoricalOutcomesMinNum: 2,
-		// 	categoricalOutcomesMaxNum: 8,
-		// 	categoricalOutcomeMaxLength: 250
-		// };
-		// out3 = {
-		// 	descriptionPlaceholder: 'What will the temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256,
-		// 	scalarSmallNum: 10,
-		// 	scalarBigNum: 100
-		// };
-		// out4 = {
-		// 	descriptionPlaceholder: 'Combinatorial',
-		// 	descriptionMinLength: 1,
-		// 	descriptionMaxLength: 256
-		// };
-
-
-		// assert.deepEqual(selector.select(formState1), out1, `Didn't produce the expected object`);
-		// assert.deepEqual(selector.select(formState2), out2, `Didn't produce the expected object`);
-		// assert.deepEqual(selector.select(formState3), out3, `Didn't produce the expected object`);
-		// assert.deepEqual(selector.select(formState4), out4, `Didn't produce the expected object`);
+		it('[NOT CURRENTLY USED] should return the correct object for a combinatorial market');
 	});
 
 	it('should handle calling initialFairPrices and return correct data', () => {
