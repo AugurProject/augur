@@ -129,7 +129,50 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a categorical market');
 		});
-		it('should return the correct object for scaler markets');
+		
+		it('should return the correct object for scaler markets', () => {
+			formState = {
+				type: SCALAR,
+				initialFairPrices: {
+					type: SCALAR,
+					values: [],
+					raw: []
+				},
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			out = {
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialFairPrices: {
+					type: SCALAR,
+					values: [
+						{
+							label: '⇧',
+							value: 55
+						},
+						{
+							label: '⇩',
+							value: 55
+						}
+					],
+					raw: [
+						55,
+						55
+					]
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				priceDepth: PRICE_DEPTH_DEFAULT,
+				isSimulation: IS_SIMULATION
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a scalar market');
+		});
 	});
 
 	it('should handle returning correct data shape', () => {
