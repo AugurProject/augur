@@ -1,4 +1,4 @@
-import { formatEther } from '../../../utils/format-number';
+import { formatEther, formatShares } from '../../../utils/format-number';
 import {
 	MULTI_TRADE,
 	BUY_SHARES,
@@ -12,11 +12,14 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const makeTradeTransaction =
 (isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
+	const totalEther = totalCostWithoutFeeEther + feeEther;
 	const obj = {
 		type: !isSell ? BUY_SHARES : SELL_SHARES,
 		shares: numShares,
+		sharesNegative: formatShares(-numShares),
 		limitPrice,
-		ether: totalCostWithoutFeeEther + feeEther,
+		ether: totalEther,
+		etherNegative: formatEther(-totalEther),
 		gas,
 		data: {
 			marketID: market.id,
