@@ -161,14 +161,16 @@ export const validateInitialFairPrices = (type, initialFairPrices, width, halfWi
 
 		if (!cV) {
 			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity';
+			return;
 		}
 		if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric';
+			return;
 		}
 		if (cV < min || cV > max) {
 			fairPriceErrors[`${i}`] = `Initial prices must be between ${min} - ${max} based on the price width of ${width}`;
+			return;
 		}
-		return cV;
 	});
 
 	if (!!Object.keys(fairPriceErrors).length) {

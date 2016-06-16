@@ -32,7 +32,8 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We've also implicitly tested `initialFairPrices` via these tests; thus, those tests are excluded.
 
 	let formState,
-		out;
+		out,
+		types = [ BINARY, CATEGORICAL, SCALAR ];
 
 	describe('select', () => {
 		beforeEach(() => {
@@ -253,8 +254,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 	describe('validateInitialLiquidity', () => {
 		let obj,
-			out,
-			types = [ BINARY, CATEGORICAL, SCALAR ];
+			out;
 
 		before(() => {
 			obj = {
@@ -271,103 +271,123 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			out = null;
 		});
 
-		function callValidateInitialLiquidity(){
-			return selector.validateInitialLiquidity(obj.type, obj.initialLiquidity, obj.startingQuantity, obj.bestStartingQuantity, obj.halfPriceWidth, obj.scalarBigNum, obj.scalarSmallNum);
-		}
-
 		types.map((type) => {
-			obj = { ...obj, type };
-
-			it(`should validate a null or undefined state for ${obj.type} market`, () => {
+			it(`should validate a null or undefined state for ${type} market`, () => {
 				obj.initialLiquidity = null;
 
 				out = 'Please provide some initial liquidity';
 
-				assert.deepEqual(callValidateInitialLiquidity(), out, 'null or undefined state was not validated correctly');
+				assert.deepEqual(callValidateInitialLiquidity(type, obj), out, 'null or undefined state was not validated correctly');
 			});
 
-			it(`should validate NaN for ${obj.type} market`, () => {
+			it(`should validate NaN for ${type} market`, () => {
 				obj.initialLiquidity = 'test';
 
 				out = 'Initial liquidity must be numeric';
 
-				assert.deepEqual(callValidateInitialLiquidity(), out, 'NaN value state was not validated correctly');
+				assert.deepEqual(callValidateInitialLiquidity(type, obj), out, 'NaN value state was not validated correctly');
 			});
 
-			it(`should validate priceDepth bounds for ${obj.type} market`, () => {
+			it(`should validate priceDepth bounds for ${type} market`, () => {
 				obj.initialLiquidity = 1;
 
 				out = 'Insufficient liquidity based on advanced parameters';
 
-				assert.deepEqual(callValidateInitialLiquidity(), out, 'priceDepth value state was not validated correclty');
+				assert.deepEqual(callValidateInitialLiquidity(type, obj), out, 'priceDepth value state was not validated correclty');
 			});
 
-			it(`should validate bounds for ${obj.type} market`, () => {
+			it(`should validate bounds for ${type} market`, () => {
 				obj.initialLiquidity = INITIAL_LIQUIDITY_MIN - 0.1;
 
 				out = `Initial liquidity must be at least ${ formatEther(INITIAL_LIQUIDITY_MIN).full }`;
 
-				assert.deepEqual(callValidateInitialLiquidity(), out, 'less than lower bound value state was not validated correctly');
+				assert.deepEqual(callValidateInitialLiquidity(type, obj), out, 'less than lower bound value state was not validated correctly');
 			});
 		});
+
+		function callValidateInitialLiquidity(type, obj){
+			return selector.validateInitialLiquidity(type, obj.initialLiquidity, obj.startingQuantity, obj.bestStartingQuantity, obj.halfPriceWidth, obj.scalarBigNum, obj.scalarSmallNum);
+		}
 	});
 
-	// describe('validateInitialFairPrices', () => {
-	// 	let obj,
-	// 		out,
-	// 		types = [ BINARY, CATEGORICAL, SCALAR ];
-    //
-	// 	beforeEach(() => {
-	// 		obj = {
-	// 			initialFairPrices: [ 0.5, 0.5 ],
-	// 			pricewidth: PRICE_WIDTH_DEFAULT,
-	// 			halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
-	// 			scalarSmallNum: 10,
-	// 			scalarBigNum: 100
-	// 		};
-	// 		out = null;
-	// 	});
-    //
-	// 	function callValidateInitialLiquidity(){
-	// 		return selector.validateInitialLiquidity(obj.type, obj.initialLiquidity, obj.startingQuantity, obj.bestStartingQuantity, obj.halfPriceWidth, obj.scalarBigNum, obj.scalarSmallNum);
-	// 	}
-    //
-	// 	types.map((type) => {
-	// 		obj.type = type;
-    //
-	// 		it(`should validate a null or undefined state for ${obj.type} market`, () => {
-	// 			obj.initialLiquidity = null;
-    //
-	// 			out = 'Please provide some initial liquidity';
-    //
-	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'null or undefined state was not validated correctly');
-	// 		});
-    //
-	// 		it(`should validate NaN for ${obj.type} market`, () => {
-	// 			obj.initialLiquidity = 'test';
-    //
-	// 			out = 'Initial liquidity must be numeric';
-    //
-	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'NaN value state was not validated correctly');
-	// 		});
-    //
-	// 		it(`should validate priceDepth bounds for ${obj.type} market`, () => {
-	// 			obj.initialLiquidity = 1;
-    //
-	// 			out = 'Insufficient liquidity based on advanced parameters';
-    //
-	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'priceDepth value state was not validated correclty');
-	// 		});
-    //
-	// 		it(`should validate bounds for ${obj.type} market`, () => {
-	// 			obj.initialLiquidity = INITIAL_LIQUIDITY_MIN - 0.1;
-    //
-	// 			out = `Initial liquidity must be at least ${ formatEther(INITIAL_LIQUIDITY_MIN).full }`;
-    //
-	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'less than lower bound value state was not validated correctly');
-	// 		});
-	// 	});
-	// });
+	describe('validateInitialFairPrices', () => {
+		let obj,
+			bounds,
+			out;
+
+		before(() => {
+			obj = {
+				initialFairPrices: [ 0.5, 0.5 ],
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+		});
+
+		beforeEach(() => {
+			out = null;
+		});
+
+		types.forEach((type) => {
+			it(`should validate a null or undefined state for ${type} market`, () => {
+				bounds = setMinMax(type);
+
+				obj.initialFairPrices = [null, bounds.max - 0.1];
+
+				out = { 0: 'Please provide some initial liquidity' };
+
+				assert.deepEqual(callValidateInitialFairPrices(type, obj), out, 'null or undefined state was not validated correctly');
+			});
+
+			it(`should validate NaN for ${type} market`, () => {
+				bounds = setMinMax(type);
+
+				obj.initialFairPrices = ['test', bounds.max - 0.1];
+
+				out = { 0: 'Initial liquidity must be numeric' };
+
+				assert.deepEqual(callValidateInitialFairPrices(type, obj), out, 'NaN value state was not validated correctly');
+			});
+
+			it(`should validate bounds for ${type} market`, () => {
+				bounds = setMinMax(type);
+
+				obj.initialFairPrices = [bounds.min - 0.1, bounds.max - 0.1];
+
+				out = {
+					0: `Initial prices must be between ${ bounds.min } - ${ bounds.max } based on the price width of ${ obj.priceWidth }`
+				};
+
+				assert.deepEqual(callValidateInitialFairPrices(type, obj), out, 'less than lower bound value state was not validated correctly');
+
+				obj.initialFairPrices = [bounds.min + 0.1, bounds.max + 0.1];
+
+				out = {
+					1: `Initial prices must be between ${ bounds.min } - ${ bounds.max } based on the price width of ${ obj.priceWidth }`
+				};
+
+				assert.deepEqual(callValidateInitialFairPrices(type, obj), out, 'great than upper bound value state was not validated correctly');
+			});
+		});
+
+		function setMinMax(type){
+			return {
+				max: type === SCALAR ? obj.scalarBigNum - obj.halfPriceWidth : 1 - obj.halfPriceWidth,
+				min: type === SCALAR ? obj.scalarSmallNum + obj.halfPriceWidth : obj.halfPriceWidth
+			};
+		}
+
+		function callValidateInitialFairPrices(type, currentObj){
+			return selector.validateInitialFairPrices(
+				type,
+				currentObj.initialFairPrices,
+				currentObj.priceWidth,
+				currentObj.halfPriceWidth,
+				currentObj.scalarSmallNum,
+				currentObj.scalarBigNum);
+		}
+	});
 
 	it(`[TODO] should handle validation of step 4`);
 
