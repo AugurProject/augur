@@ -78,15 +78,10 @@ function trade(done, augur) {
                                     },
                                     onCommitFailed: nextTrade,
                                     onTradeSent: function (r) {
-                                        assert.isArray(r.callReturn);
-                                        assert.strictEqual(r.callReturn[0], 1);
-                                        assert.strictEqual(r.callReturn.length, 3);
+
                                     },
                                     onTradeSuccess: function (r) {
                                         console.log("trade success:", r)
-                                        assert.isArray(r.callReturn);
-                                        assert.strictEqual(r.callReturn[0], 1);
-                                        assert.strictEqual(r.callReturn.length, 3);
                                         nextTrade(r);
                                     },
                                     onTradeFailed: nextTrade
@@ -124,7 +119,7 @@ function createMarket(done, augur) {
 
         },
         onSuccess: function (r) {
-            newMarketId = res.marketIDs;
+            newMarketId = r.marketIDs;
         },
         onFailed: done
     });
@@ -155,9 +150,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             assert.property(logs[0], "price");
                             assert.property(logs[0], "blockNumber");
                             assert.property(logs[0], "market");
-                            assert.property(logs[0], "user");
                             assert.isAbove(logs[0].market.length, 64);
-                            assert.strictEqual(logs[0].trader.length, 42);
                         }
                     }
                     done();
@@ -180,9 +173,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert.property(logs[0], "price");
                         assert.property(logs[0], "blockNumber");
                         assert.property(logs[0], "market");
-                        assert.property(logs[0], "user");
                         assert.isAbove(logs[0].market.length, 64);
-                        assert.strictEqual(logs[0].trader.length, 42);
                     }
                 }
             });
@@ -549,7 +540,6 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert.property(tx, "blockHash");
                         assert.property(tx, "transactionHash");
                         assert.property(tx, "transactionIndex");
-                        assert.strictEqual(tx.address, augur.contracts.buyAndSellShares);
                         assert.isArray(tx.topics);
                         assert.isArray(tx.data);
                         assert.isAbove(parseInt(tx.blockNumber), 0);
