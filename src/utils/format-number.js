@@ -130,10 +130,10 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
 	o.value = value;
 	o.formattedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-	o.formatted = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+	o.formatted = o.formattedValue.toFixed(decimals);
 	o.roundedValue = Math.round(value * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
-	o.rounded = o.roundedValue.toLocaleString(undefined, { minimumFractionDigits: decimalsRounded, maximumFractionDigits: decimalsRounded });
-	o.minimized = o.formattedValue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+	o.rounded = o.roundedValue.toFixed(decimalsRounded);
+	o.minimized = o.formattedValue.toFixed(decimals);
 
 	if (positiveSign) {
 		if (o.formattedValue > 0) {
@@ -154,4 +154,3 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
 	return o;
 }
-
