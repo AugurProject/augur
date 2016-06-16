@@ -500,82 +500,6 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             });
         });
 
-        describe("Price listener", function () {
-            var listeners = [];
-            it("should find message after buyShares", function (done) {
-                this.timeout(tools.TIMEOUT*4);
-                var augur = tools.setup(require(augurpath), process.argv.slice(2));
-
-                augur.filters.start_event_listener("price", function (filter_id) {
-
-                    // poll contracts filter
-                    listeners.push(setInterval(function () {
-                        augur.filters.poll_filter("price", function (data) {
-                            if (data) {
-                                assert.notProperty(data, "error");
-                                clearInterval(listeners[listeners.length - 1]);
-                                augur.filters.clear_filter("price", function () {
-                                    assert.isObject(data);
-                                    assert.property(data, "type");
-                                    assert.property(data, "amount");
-                                    assert.property(data, "trader");
-                                    assert.property(data, "marketId");
-                                    assert.property(data, "outcome");
-                                    assert.property(data, "price");
-                                    assert.property(data, "blockNumber");
-                                    assert(abi.bignum(data.trader).eq(abi.bignum(augur.coinbase)));
-                                    assert(abi.bignum(data.outcome).eq(abi.bignum(outcome)));
-                                    assert.isAbove(parseInt(data.blockNumber), 0);
-                                    assert.isAbove(parseInt(data.timestamp), 0);
-                                    done();
-                                });
-                            }
-                        });
-                    }, augur.filters.PULSE));
-
-                    setTimeout(function () { trade(done, augur); }, DELAY);
-                });
-            });
-        });
-
-        describe("Contracts listener", function () {
-            it("should find message after trade", function (done) {
-                this.timeout(tools.TIMEOUT*4);
-                var augur = tools.setup(require(augurpath), process.argv.slice(2));
-                augur.filters.start_contracts_listener(function (contracts_filter) {
-                    assert.deepEqual(augur.filters.filter.contracts, contracts_filter);
-
-                    // poll contracts filter
-                    var listener = setInterval(function () {
-                        augur.filters.poll_filter("contracts", function (message) {
-                            clearInterval(listener);
-                            assert.property(message, "address");
-                            assert.property(message, "topics");
-                            assert.property(message, "data");
-                            assert.property(message, "blockNumber");
-                            assert.property(message, "logIndex");
-                            assert.property(message, "blockHash");
-                            assert.property(message, "transactionHash");
-                            assert.property(message, "transactionIndex");
-                            assert.strictEqual(message.address, augur.contracts.trade);
-                            assert.isArray(message.topics);
-                            assert.isArray(message.data);
-                            assert.isAbove(parseInt(message.blockNumber), 0);
-
-                            // tear down filter
-                            augur.filters.clear_filter("contracts", function () {
-                                assert.isNull(augur.filters.filter.contracts.id);
-                                assert.isNull(augur.filters.filter.contracts.heartbeat);
-                                done();
-                            });
-                        });
-                    }, augur.filters.PULSE);
-
-                    setTimeout(function () { trade(done, augur); }, DELAY);
-                });
-            });
-        });
-
         describe("listen/ignore", function () {
 
             it("block filter", function (done) {
@@ -589,7 +513,9 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert.strictEqual(blockHash.length, 66);
                         assert.isNull(augur.filters.filter.contracts.heartbeat);
                         assert.isNull(augur.filters.filter.price.heartbeat);
-                        assert.isNotNull(augur.filters.filter.block.heartbeat);
+                        if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                            assert.isNotNull(augur.filters.filter.block.heartbeat);
+                        }
                         assert.isNull(augur.filters.filter.contracts.id);
                         assert.isNull(augur.filters.filter.price.id);
                         assert.isNotNull(augur.filters.filter.block.id);
@@ -623,11 +549,9 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert.property(tx, "blockHash");
                         assert.property(tx, "transactionHash");
                         assert.property(tx, "transactionIndex");
-                        assert.strictEqual(tx.address, augur.contracts.trade);
+                        assert.strictEqual(tx.address, augur.contracts.buyAndSellShares);
                         assert.isArray(tx.topics);
-                        assert.strictEqual(tx.topics.length, 4);
                         assert.isArray(tx.data);
-                        assert.strictEqual(tx.data.length, 2);
                         assert.isAbove(parseInt(tx.blockNumber), 0);
                         assert.isAbove(parseInt(augur.filters.filter.contracts.id), 0);
 
@@ -635,20 +559,20 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         augur.filters.ignore({
                             contracts: function () {
                                 assert.isNull(augur.filters.filter.contracts.heartbeat);
-                                assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                                assert.isNull(augur.filters.filter.price.heartbeat);
                                 assert.isNull(augur.filters.filter.block.heartbeat);
                                 assert.isNotNull(augur.filters.filter.contracts.id);
-                                assert.isNull(augur.filters.filter.updatePrice.id);
+                                assert.isNull(augur.filters.filter.price.id);
                                 assert.isNull(augur.filters.filter.block.id);
 
                                 // tear down filters
                                 augur.filters.ignore(true, {
                                     contracts: function () {
                                         assert.isNull(augur.filters.filter.contracts.heartbeat);
-                                        assert.isNull(augur.filters.filter.updatePrice.heartbeat);
+                                        assert.isNull(augur.filters.filter.price.heartbeat);
                                         assert.isNull(augur.filters.filter.block.heartbeat);
                                         assert.isNull(augur.filters.filter.contracts.id);
-                                        assert.isNull(augur.filters.filter.updatePrice.id);
+                                        assert.isNull(augur.filters.filter.price.id);
                                         assert.isNull(augur.filters.filter.block.id);
                                         done();
                                     }
@@ -674,7 +598,9 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert(abi.bignum(update.trader).eq(abi.bignum(augur.coinbase)));
                         assert.isAbove(parseInt(augur.filters.filter.price.id), 0);
                         assert.isNull(augur.filters.filter.contracts.heartbeat);
-                        assert.isNotNull(augur.filters.filter.price.heartbeat);
+                        if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                            assert.isNotNull(augur.filters.filter.price.heartbeat);
+                        }
                         assert.isNull(augur.filters.filter.block.heartbeat);
                         assert.isNull(augur.filters.filter.contracts.id);
                         assert.isNotNull(augur.filters.filter.price.id);
@@ -726,8 +652,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                     assert.isNull(augur.filters.filter.contracts.id);
                                 },
                                 price: function () {
-                                    assert.isNull(augur.filters.filter.updatePrice.heartbeat);
-                                    assert.isNull(augur.filters.filter.updatePrice.id);
+                                    assert.isNull(augur.filters.filter.price.heartbeat);
+                                    assert.isNull(augur.filters.filter.price.id);
                                 }
                             }, function (err) {
                                 mutex.unlock();
@@ -741,7 +667,9 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     block: function (blockHash) {
                         assert.strictEqual(blockHash.slice(0, 2), "0x");
                         assert.strictEqual(blockHash.length, 66);
-                        assert.isNotNull(augur.filters.filter.block.heartbeat);
+                        if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                            assert.isNotNull(augur.filters.filter.block.heartbeat);
+                        }
                         assert.isNotNull(augur.filters.filter.block.id);
                         if (!setup.block) {
                             setup.block = true;
@@ -772,9 +700,11 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         assert.isAbove(parseInt(update.blockNumber), 0);
                         assert.strictEqual(update.outcome, outcome);
                         assert(abi.bignum(update.trader).eq(abi.bignum(augur.coinbase)));
-                        assert.isAbove(parseInt(augur.filters.filter.updatePrice.id), 0);
-                        assert.isNotNull(augur.filters.filter.updatePrice.heartbeat);
-                        assert.isNotNull(augur.filters.filter.updatePrice.id);
+                        assert.isAbove(parseInt(augur.filters.filter.price.id), 0);
+                        if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                            assert.isNotNull(augur.filters.filter.price.heartbeat);
+                        }
+                        assert.isNotNull(augur.filters.filter.price.id);
                         if (!setup.price) {
                             setup.price = true;
                             teardown(setup, done);

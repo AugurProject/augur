@@ -36624,25 +36624,12 @@ module.exports = function () {
         filter: filters,
 
         parse_contracts_message: function (message, onMessage) {
-            var messages = [];
             for (var i = 0, len = message.length; i < len; ++i) {
-                try {
-                    if (message[i]) {
-                        if (message[i].constructor === Object) {
-                            if (message.address === augur.contracts.createMarket) {
-                                this.createMarketMessage(message[i].data, message[i].blockNumber);
-                            } else {
-                                if (message[i].data) {
-                                    message[i].data = augur.rpc.unmarshal(message[i].data);
-                                }
-                            }
-                        }
-                        if (onMessage) onMessage(message[i]);
-                        messages.push(message[i]);
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } catch (exc) {
-                    console.error("parse_contracts_message:", exc);
-                    console.log(i, message[i]);
+                    if (onMessage) onMessage(message[i]);
                 }
             }
         },
@@ -36651,24 +36638,19 @@ module.exports = function () {
             if (message && message.length) {
                 for (var i = 0, len = message.length; i < len; ++i) {
                     if (message[i] && message[i].topics && message[i].topics.length > 3) {
-                        try {
-                            data_array = augur.rpc.unmarshal(message[i].data);
-                            if (data_array && data_array.constructor === Array &&
-                                data_array.length > 1) {
-                                onMessage({
-                                    marketId: message[i].topics[1],
-                                    trader: abi.format_address(message[i].topics[2]),
-                                    type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
-                                    price: abi.unfix(data_array[1], "string"),
-                                    amount: abi.unfix(data_array[2], "string"),
-                                    timestamp: parseInt(data_array[3]),
-                                    outcome: abi.string(data_array[4]),
-                                    blockNumber: message[i].blockNumber
-                                });
-                            }
-                        } catch (exc) {
-                            console.error("parse_price_message:", exc);
-                            console.log(i, message[i]);
+                        data_array = augur.rpc.unmarshal(message[i].data);
+                        if (data_array && data_array.constructor === Array &&
+                            data_array.length > 1) {
+                            onMessage({
+                                marketId: message[i].topics[1],
+                                trader: abi.format_address(message[i].topics[2]),
+                                type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
+                                price: abi.unfix(data_array[1], "string"),
+                                amount: abi.unfix(data_array[2], "string"),
+                                timestamp: parseInt(data_array[3]),
+                                outcome: abi.string(data_array[4]),
+                                blockNumber: message[i].blockNumber
+                            });
                         }
                     }
                 }
@@ -37023,7 +37005,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.17";
+    this.version = "1.3.18";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
