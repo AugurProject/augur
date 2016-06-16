@@ -48,6 +48,7 @@ const TradePanel = React.createClass({
 					))}
 
 					<Transaction
+						type="trade_summary"
 						shares={ p.totalShares }
 						className="order total"
 						ether={ p.totalEther }
