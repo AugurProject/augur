@@ -246,7 +246,7 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: {value: 'bid', label: 'Buy'},
+						side: 'bid',
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {
