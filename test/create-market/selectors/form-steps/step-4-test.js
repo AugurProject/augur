@@ -254,11 +254,10 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	describe('validateInitialLiquidity', () => {
 		let obj,
 			out,
-			types = [ BINARY, SCALAR ];
+			types = [ BINARY, CATEGORICAL, SCALAR ];
 
-		beforeEach(() => {
+		before(() => {
 			obj = {
-				type: BINARY,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
@@ -266,6 +265,9 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 				scalarSmallNum: 10,
 				scalarBigNum: 100
 			};
+		});
+
+		beforeEach(() => {
 			out = null;
 		});
 
@@ -274,7 +276,6 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 		}
 
 		types.map((type) => {
-
 			obj = { ...obj, type };
 
 			it(`should validate a null or undefined state for ${obj.type} market`, () => {
@@ -310,6 +311,63 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			});
 		});
 	});
+
+	// describe('validateInitialFairPrices', () => {
+	// 	let obj,
+	// 		out,
+	// 		types = [ BINARY, CATEGORICAL, SCALAR ];
+    //
+	// 	beforeEach(() => {
+	// 		obj = {
+	// 			initialFairPrices: [ 0.5, 0.5 ],
+	// 			pricewidth: PRICE_WIDTH_DEFAULT,
+	// 			halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+	// 			scalarSmallNum: 10,
+	// 			scalarBigNum: 100
+	// 		};
+	// 		out = null;
+	// 	});
+    //
+	// 	function callValidateInitialLiquidity(){
+	// 		return selector.validateInitialLiquidity(obj.type, obj.initialLiquidity, obj.startingQuantity, obj.bestStartingQuantity, obj.halfPriceWidth, obj.scalarBigNum, obj.scalarSmallNum);
+	// 	}
+    //
+	// 	types.map((type) => {
+	// 		obj.type = type;
+    //
+	// 		it(`should validate a null or undefined state for ${obj.type} market`, () => {
+	// 			obj.initialLiquidity = null;
+    //
+	// 			out = 'Please provide some initial liquidity';
+    //
+	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'null or undefined state was not validated correctly');
+	// 		});
+    //
+	// 		it(`should validate NaN for ${obj.type} market`, () => {
+	// 			obj.initialLiquidity = 'test';
+    //
+	// 			out = 'Initial liquidity must be numeric';
+    //
+	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'NaN value state was not validated correctly');
+	// 		});
+    //
+	// 		it(`should validate priceDepth bounds for ${obj.type} market`, () => {
+	// 			obj.initialLiquidity = 1;
+    //
+	// 			out = 'Insufficient liquidity based on advanced parameters';
+    //
+	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'priceDepth value state was not validated correclty');
+	// 		});
+    //
+	// 		it(`should validate bounds for ${obj.type} market`, () => {
+	// 			obj.initialLiquidity = INITIAL_LIQUIDITY_MIN - 0.1;
+    //
+	// 			out = `Initial liquidity must be at least ${ formatEther(INITIAL_LIQUIDITY_MIN).full }`;
+    //
+	// 			assert.deepEqual(callValidateInitialLiquidity(), out, 'less than lower bound value state was not validated correctly');
+	// 		});
+	// 	});
+	// });
 
 	it(`[TODO] should handle validation of step 4`);
 
