@@ -115,67 +115,67 @@ export const assembleMarket = memoizerific(1000)((
 		marketOrderBooks,
 		dispatch) => { // console.log('>>assembleMarket<<');
 
-	const o = {
+	const market = {
 		...marketData,
 		id: marketID
 	};
 	let tradeOrders = [];
 	const positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
-	o.type = marketData.type;
-	switch (o.type) {
+	market.type = marketData.type;
+	switch (market.type) {
 	case BINARY:
-		o.isBinary = true;
-		o.isCategorical = false;
-		o.isScalar = false;
+		market.isBinary = true;
+		market.isCategorical = false;
+		market.isScalar = false;
 		break;
 	case CATEGORICAL:
-		o.isBinary = false;
-		o.isCategorical = true;
-		o.isScalar = false;
+		market.isBinary = false;
+		market.isCategorical = true;
+		market.isScalar = false;
 		break;
 	case SCALAR:
-		o.isBinary = false;
-		o.isCategorical = false;
-		o.isScalar = true;
+		market.isBinary = false;
+		market.isCategorical = false;
+		market.isScalar = true;
 		break;
 	default:
 		break;
 	}
-	o.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
-	o.isOpen = isOpen;
-	o.isExpired = !isOpen;
+	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
+	market.isOpen = isOpen;
+	market.isExpired = !isOpen;
 
-	o.isFavorite = isFavorite;
+	market.isFavorite = isFavorite;
 
-	o.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
-	o.volume = formatNumber(marketData.volume, { positiveSign: false });
+	market.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
+	market.volume = formatNumber(marketData.volume, { positiveSign: false });
 
-	o.isRequiredToReportByAccount = !!marketReport;
+	market.isRequiredToReportByAccount = !!marketReport;
 	// was the user chosen to report on this market
-	o.isPendingReport = o.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase;
+	market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase;
 	// account is required to report on this unreported market during reporting phase
-	o.isReportSubmitted = o.isRequiredToReportByAccount && !!marketReport.reportHash;
+	market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash;
 	// the user submitted a report that is not yet confirmed (reportHash === true)
-	o.isReported = o.isReportSubmitted && !!marketReport.reportHash.length;
+	market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length;
 	// the user fully reported on this market (reportHash === [string])
-	o.isMissedReport = o.isRequiredToReportByAccount && !o.isReported && !o.isReportSubmitted && isReportConfirmationPhase;
+	market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase;
 	// the user submitted a report that is not yet confirmed
-	o.isMissedOrReported = o.isMissedReport || o.isReported;
+	market.isMissedOrReported = market.isMissedReport || market.isReported;
 
-	o.marketLink = selectMarketLink(o, dispatch);
-	o.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
-	o.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
+	market.marketLink = selectMarketLink(market, dispatch);
+	market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
+	market.onSubmitPlaceTrade = () => dispatch(placeTrade(marketID));
 
-	o.report = {
+	market.report = {
 		...marketReport,
 		onSubmitReport: (reportedOutcomeID, isUnethical) =>
-			dispatch(submitReport(o, reportedOutcomeID, isUnethical))
+			dispatch(submitReport(market, reportedOutcomeID, isUnethical))
 	};
 
-	o.outcomes = [];
+	market.outcomes = [];
 
-	o.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
+	market.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
 		const outcomeData = marketOutcomes[outcomeID];
 		const	outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
@@ -188,7 +188,7 @@ export const assembleMarket = memoizerific(1000)((
 		};
 
 		const outcomeTradeOrders = selectOutcomeTradeOrders(
-																o,
+																market,
 																outcome,
 																outcomeTradeInProgress,
 																dispatch);
@@ -228,7 +228,7 @@ export const assembleMarket = memoizerific(1000)((
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-	o.tags = (o.tags || []).map(tag => {
+	market.tags = (market.tags || []).map(tag => {
 		const obj = {
 			name: tag && tag.toString().toLowerCase().trim(),
 			onClick: () => dispatch(toggleTag(tag))
@@ -236,18 +236,18 @@ export const assembleMarket = memoizerific(1000)((
 		return obj;
 	}).filter(tag => !!tag.name);
 
-	o.priceTimeSeries = selectPriceTimeSeries(o.outcomes, marketPriceHistory);
+	market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
-	o.reportableOutcomes = o.outcomes.slice();
-	o.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
+	market.reportableOutcomes = market.outcomes.slice();
+	market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
-	o.tradeSummary = selectTradeSummary(tradeOrders);
-	o.positionsSummary = selectPositionsSummary(
+	market.tradeSummary = selectTradeSummary(tradeOrders);
+	market.positionsSummary = selectPositionsSummary(
 		positions.list.length,
 		positions.qtyShares,
 		positions.totalValue,
 		positions.totalCost);
-	o.positionOutcomes = positions.list;
+	market.positionOutcomes = positions.list;
 
-	return o;
+	return market;
 });
