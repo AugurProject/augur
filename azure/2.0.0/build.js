@@ -12631,7 +12631,7 @@ ex.connect = function connect(cb) {
 			options.contracts = JSON.parse("{{ $BUILD_AZURE_CONTRACTS }}");
 		}
 	}
-	_augur2.default.connect({ http: "https://eth3.augur.net", ws: null }, function (connection) {
+	_augur2.default.connect(options, function (connection) {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
 		cb(null, connection);
