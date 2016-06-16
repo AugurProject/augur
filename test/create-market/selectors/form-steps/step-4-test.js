@@ -26,7 +26,7 @@ import {
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
 
-import { formatPercent } from '../../../../src/utils/format-number';
+import { formatPercent, formatEther } from '../../../../src/utils/format-number';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We've also implicitly tested `initialFairPrices` via these tests; thus, those tests are excluded.
@@ -248,6 +248,66 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			makerFee = MAKER_FEE_MAX + 0.1;
 
 			assert.deepEqual(selector.validateMakerFee(makerFee), out, 'greater than upper bound value state was not validated correctly');
+		});
+	});
+
+	describe('validateInitialLiquidity', () => {
+		let obj,
+			out,
+			types = [ BINARY, SCALAR ];
+
+		beforeEach(() => {
+			obj = {
+				type: BINARY,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+			out = null;
+		});
+
+		function callValidateInitialLiquidity(){
+			return selector.validateInitialLiquidity(obj.type, obj.initialLiquidity, obj.startingQuantity, obj.bestStartingQuantity, obj.halfPriceWidth, obj.scalarBigNum, obj.scalarSmallNum);
+		}
+
+		types.map((type) => {
+
+			obj = { ...obj, type };
+
+			it(`should validate a null or undefined state for ${obj.type} market`, () => {
+				obj.initialLiquidity = null;
+
+				out = 'Please provide some initial liquidity';
+
+				assert.deepEqual(callValidateInitialLiquidity(), out, 'null or undefined state was not validated correctly');
+			});
+
+			it(`should validate NaN for ${obj.type} market`, () => {
+				obj.initialLiquidity = 'test';
+
+				out = 'Initial liquidity must be numeric';
+
+				assert.deepEqual(callValidateInitialLiquidity(), out, 'NaN value state was not validated correctly');
+			});
+
+			it(`should validate priceDepth bounds for ${obj.type} market`, () => {
+				obj.initialLiquidity = 1;
+
+				out = 'Insufficient liquidity based on advanced parameters';
+
+				assert.deepEqual(callValidateInitialLiquidity(), out, 'priceDepth value state was not validated correclty');
+			});
+
+			it(`should validate bounds for ${obj.type} market`, () => {
+				obj.initialLiquidity = INITIAL_LIQUIDITY_MIN - 0.1;
+
+				out = `Initial liquidity must be at least ${ formatEther(INITIAL_LIQUIDITY_MIN).full }`;
+
+				assert.deepEqual(callValidateInitialLiquidity(), out, 'less than lower bound value state was not validated correctly');
+			});
 		});
 	});
 
