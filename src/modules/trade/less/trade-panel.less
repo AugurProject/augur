@@ -2,7 +2,7 @@
     color: @color-light-normal;
     background: @color-dark-hover;
 
-    .trade-panel-item, .trade-panel-item-header {
+    .trade-panel-item .trade-panel-item-content, .trade-panel-item-header {
         display: flex;
         padding: 0em 0 1em 0;
         align-items: center;
@@ -46,6 +46,12 @@
 				font-weight: 900;
 			}
         }
+    }
+
+    .trade-panel-item .order-book {
+      .order-book();
+      background: none;
+      margin-left: 30%;
     }
 
     .trade-panel-item-header {
@@ -146,14 +152,4 @@
         }
     }
 
-
-
-
-    // LMSR
-    .trade-panel-item, .trade-panel-item-header {
-    	> * {
-    	    width: 100%;
-    		max-width: 23.5%;
-    	}
-    }
 }

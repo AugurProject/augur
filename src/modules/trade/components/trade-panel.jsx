@@ -30,6 +30,8 @@ const TradePanel = React.createClass({
 						<TradePanelItem
 							key={ outcome.id }
 							sideOptions={ p.sideOptions }
+							updateSelectedOutcome={ p.updateSelectedOutcome }
+							selectedOutcomeID={ p.selectedOutcomeID }
 							{ ...outcome }
 							{ ...outcome.trade } />
 					))}

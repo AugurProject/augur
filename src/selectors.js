@@ -63,6 +63,17 @@ selectors.marketsHeader =  {};
 
 selectors.market =  {}; // selected market
 selectors.sideOptions = [{value: 'bid', label: 'Buy'}, {value: 'ask', label: 'Sell'}];
+selectors.selectedOutcome = {
+	updateSelectedOutcome: (selectedOutcomeID) => {
+		module.exports.update({
+			selectedOutcome: {
+				...selectors.selectedOutcome,
+				selectedOutcomeID: selectors.selectedOutcome.selectedOutcomeID !== selectedOutcomeID ? selectedOutcomeID : null
+			}
+		})
+	},
+	selectedOutcomeID: null
+};
 selectors.marketsTotals = {
 	positionsSummary: { numPositions:
    { value: 100,

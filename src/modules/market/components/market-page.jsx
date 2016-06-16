@@ -54,6 +54,8 @@ const MarketPage = React.createClass({
 					<TradePanel
 						key="trade-panel"
 						sideOptions={ p.sideOptions }
+						updateSelectedOutcome={ p.updateSelectedOutcome }
+						selectedOutcomeID={ p.selectedOutcomeID }
 						{ ...p.market }
 						{ ...p.market.tradeSummary } />
 				);
@@ -70,12 +72,12 @@ const MarketPage = React.createClass({
 					);
 				}
 
-				nodes.push(
-					<BidsAsks
-						key="order-books"
-						market={p.market}
-					/>
-				);
+				// nodes.push(
+				// 	<BidsAsks
+				// 		key="order-books"
+				// 		market={p.market}
+				// 	/>
+				// );
 			}
 		}
 
