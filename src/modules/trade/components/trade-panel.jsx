@@ -22,6 +22,8 @@ const TradePanel = (props) => {
 					<TradePanelItem
 						key={outcome.id}
 						sideOptions={p.sideOptions}
+						updateSelectedOutcome={p.updateSelectedOutcome}
+						selectedOutcomeID={p.selectedOutcomeID}
 						{...outcome}
 						{...outcome.trade}
 					/>
@@ -41,6 +43,7 @@ const TradePanel = (props) => {
 					))}
 
 					<Transaction
+						type="trade_summary"
 						shares={p.totalShares}
 						className="order total"
 						ether={p.totalEther}

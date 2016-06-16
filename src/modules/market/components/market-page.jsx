@@ -6,7 +6,7 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-import BidsAsks from '../../bids-asks/components/bids-asks';
+// import BidsAsks from '../../bids-asks/components/bids-asks';
 
 export default class MarketPage extends Component {
 	static propTypes = {
@@ -52,6 +52,8 @@ export default class MarketPage extends Component {
 					<TradePanel
 						key="trade-panel"
 						sideOptions={p.sideOptions}
+						updateSelectedOutcome={p.updateSelectedOutcome}
+						selectedOutcomeID={p.selectedOutcomeID}
 						{...p.market}
 						{...p.market.tradeSummary}
 					/>
@@ -69,12 +71,12 @@ export default class MarketPage extends Component {
 					);
 				}
 
-				nodes.push(
-					<BidsAsks
-						key="order-books"
-						market={p.market}
-					/>
-				);
+				// nodes.push(
+				// 	<BidsAsks
+				// 		key="order-books"
+				// 		market={p.market}
+				// 	/>
+				// );
 			}
 		}
 

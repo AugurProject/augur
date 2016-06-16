@@ -6,7 +6,6 @@ const OrderBook = (props) => {
 	const p = this.props;
 	return (
 		<div className="order-book">
-			<h3>{p.outcome.name}</h3>
 			<div className="bids">
 				<h5>Bids</h5>
 				{p.bids.map((bid, i) => (
