@@ -19,6 +19,7 @@ import {
 	MAKER_FEE_MAX,
 	STARTING_QUANTITY_DEFAULT,
 	BEST_STARTING_QUANTITY_DEFAULT,
+	BEST_STARTING_QUANTITY_MIN,
 	PRICE_WIDTH_DEFAULT,
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
@@ -26,7 +27,7 @@ import {
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
 
-import { formatPercent, formatEther } from '../../../../src/utils/format-number';
+import { formatPercent, formatEther, formatShares } from '../../../../src/utils/format-number';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We've also implicitly tested `initialFairPrices` via these tests; thus, those tests are excluded.
@@ -388,6 +389,39 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 				currentObj.scalarBigNum);
 		}
 	});
+
+	describe('validateBestStartingQuantity', () => {
+		let bestStartingQuantity,
+			out;
+
+		beforeEach(() => {
+			bestStartingQuantity = null;
+			out = null;
+		});
+
+		it('should validate a null or undefined state', () => {
+			out = 'Please provide a best starting quantity';
+
+			assert.deepEqual(selector.validateBestStartingQuantity(bestStartingQuantity), out, 'null or undefined state was not validated correctly');
+		});
+
+		it('should validate NaN', () => {
+			bestStartingQuantity = 'test';
+
+			out = 'Best starting quantity must be numeric';
+
+			assert.deepEqual(selector.validateBestStartingQuantity(bestStartingQuantity), out, 'NaN value state was not validated correctly');
+		});
+
+		it('should validate bounds', () => {
+			bestStartingQuantity = BEST_STARTING_QUANTITY_MIN - 0.01;
+
+			out = `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
+
+			assert.deepEqual(selector.validateBestStartingQuantity(bestStartingQuantity), out, 'less than lower bound value state was not validated correctly');
+		});
+	});
+	
 
 	it(`[TODO] should handle validation of step 4`);
 
