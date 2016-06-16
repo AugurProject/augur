@@ -1,52 +1,48 @@
-import React from 'react';
-
-import shouldComponentUpdate from '../../../utils/should-component-update-pure';
-
+import { React, Component, PropTypes } from 'react';
+import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import ReactHighcharts from 'react-highcharts';
 
-module.exports = React.createClass({
-    propTypes: {
-        series: React.PropTypes.array
-    },
+export default class Chart extends Component {
+	static propTypes = {
+		series: PropTypes.array
+	};
 
-    shouldComponentUpdate: shouldComponentUpdate,
+	constructor(props) {
+		super(props);
+		this.shouldComponentUpdate = shouldComponentUpdatePure;
+	}
 
-    render: function() {
-        var p = this.props;
-        let config = {
-            title: {
-                text: "Price history"
-            },
-            rangeSelector: {selected: 1},
-            xAxis: {
-                type: "datetime"
-            },
-            yAxis: {
-                title: {
-                    text: "price"
-                },
-                min: 0,
-                max: 1
-            },
+	render() {
+		const p = this.props;
+		const config = {
+			title: {
+				text: 'Price history'
+			},
+			rangeSelector: { selected: 1 },
+			xAxis: {
+				type: 'datetime'
+			},
+			yAxis: {
+				title: {
+					text: 'price'
+				},
+				min: 0,
+				max: 1
+			},
+			legend: {
+				enabled: true
+			},
+			tooltip: {
+				pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+				valueDecimals: 2
+			},
+			series: p.series
+		};
 
-            legend: {
-                enabled: true
-            },
-
-            tooltip: {
-                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
-                valueDecimals: 2
-            },
-            series: p.series
-        };
-
-        return (
-            <div>
-                <ReactHighcharts
-                    config={config}>
-                </ReactHighcharts>
-
-            </div>
-        );
-    }
-});
+		return (
+			<div>
+				<ReactHighcharts config={config} />
+			</div>
+		);
+	}
+}
