@@ -24,9 +24,9 @@ import {
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
 
-import sinon from 'sinon';
-
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
+	// NOTE -- We've also implicitly tested `initialFairPrices` via these tests; thus, those tests are excluded.
+
 	let formState,
 		out;
 
