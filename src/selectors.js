@@ -12,6 +12,7 @@ import filteredMarkets from './modules/markets/selectors/markets-filtered';
 import unpaginatedMarkets from './modules/markets/selectors/markets-unpaginated';
 import marketsTotals from './modules/markets/selectors/markets-totals';
 import pagination from './modules/markets/selectors/pagination';
+import selectedOutcome from './modules/outcome/selectors/selected-outcome';
 
 import market from './modules/market/selectors/market';
 import sideOptions from './modules/trade/selectors/side-options';
@@ -42,6 +43,7 @@ const selectors = {
 	unpaginatedMarkets,
 	marketsTotals,
 	pagination,
+	selectedOutcome,
 
 	market,
 	sideOptions,

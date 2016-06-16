@@ -27,6 +27,8 @@ import selectedTags from './modules/markets/reducers/selected-tags';
 import selectedSort from './modules/markets/reducers/selected-sort';
 import priceHistory from './modules/markets/reducers/price-history';
 
+import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
+
 module.exports = {
 	blockchain,
 	branch,
@@ -49,6 +51,7 @@ module.exports = {
 	selectedTags,
 	selectedSort,
 	priceHistory,
+	selectedOutcomeID,
 
 	tradesInProgress,
 	createMarketInProgress,
