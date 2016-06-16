@@ -1,27 +1,24 @@
-import React from 'react';
-
+import { React, PropTypes } from 'react';
 import MarketItem from '../../market/components/market-item';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 
-module.exports = React.createClass({
-	propTypes: {
-		onSubmit: React.PropTypes.func
-	},
+const CreateMarketForm5 = (props) => {
+	const p = this.props;
+	return (
+		<div className="step-5">
+			<h1>Review and submit your new market</h1>
+			<MarketItem {...p} />
+			<FormButtons
+				nextLabel="submit new market"
+				onNext={p.onSubmit}
+				onPrev={() => p.onValuesUpdated({ step: p.step - 1 })}
+			/>
+		</div>
+	);
+};
 
-	render: function() {
-		var p = this.props;
-		
-		return (
-			<div className="step-5">
-				<h1>Review and submit your new market</h1>
+CreateMarketForm5.propTypes = {
+	onSubmit: PropTypes.func
+};
 
-				<MarketItem { ...p } />
-
-				<FormButtons
-					nextLabel="submit new market"
-					onNext={ p.onSubmit }
-					onPrev={ () => p.onValuesUpdated({ step: this.props.step - 1 }) } />
-			</div>
-		);
-	}
-});
+export default CreateMarketForm5;
