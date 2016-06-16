@@ -24,17 +24,60 @@ import {
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
 
+import sinon from 'sinon';
+
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	let formState,
 		out;
 
-	describe('returning initial object', () => {
+	describe('select', () => {
 		beforeEach(() => {
 			formState = null;
 			out = null;
 		});
 
-		it('should return the correct object for binary markets');
+		it('should return the correct object for binary markets', () => {
+			formState = {
+				type: BINARY,
+				initialFairPrices: {
+					type: BINARY,
+					values: [],
+					raw: []
+				}
+			};
+
+			out = {
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialFairPrices: {
+					type: BINARY,
+					values: [
+						{
+							label: 'Yes',
+							value: 0.5
+						},
+						{
+							label: 'No',
+							value: 0.5
+						}
+					],
+					raw: [
+						0.5,
+						0.5
+					]
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				priceDepth: PRICE_DEPTH_DEFAULT,
+				isSimulation: IS_SIMULATION
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a binary market');
+		});
+
 		it('should return the correct object for categorical markets');
 		it('should return the correct object for scaler markets');
 	});
