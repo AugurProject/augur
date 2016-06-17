@@ -12,7 +12,7 @@ import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market
 
 import { makeNumber } from '../utils/make-number';
 
-export default function createMarketForm() {
+function createMarketForm() {
 	let form = {
 		creatingMarket: true,
 		step: 1,
@@ -101,3 +101,5 @@ export default function createMarketForm() {
 		require('../selectors').update({ createMarketForm: form });
 	}
 }
+
+export default createMarketForm();
