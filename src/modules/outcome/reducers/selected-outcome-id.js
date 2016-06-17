@@ -1,15 +1,13 @@
 /*
  * Author: priecint
  */
+import { UPDATE_SELECTED_OUTCOME } from '../../outcome/actions/update-selected-outcome';
 
-import {UPDATE_SELECTED_OUTCOME} from "../../outcome/actions/update-selected-outcome";
-
-export default function (selectedOutcomeID = null, action) {
+export default (selectedOutcomeID = null, action) => {
 	switch (action.type) {
-		case UPDATE_SELECTED_OUTCOME:
-			return action.selectedOutcomeID;
-			break;
-		default:
-			return selectedOutcomeID;
+	case UPDATE_SELECTED_OUTCOME:
+		return action.selectedOutcomeID;
+	default:
+		return selectedOutcomeID;
 	}
-}
+};
