@@ -18,7 +18,7 @@
     "watch": "clear; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development npm run -s watch:all",
     "build": "clear; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
     "lint": "clear; echo begin linting... && eslint --ext .jsx,.js src && echo linting complete.",
-		"lint:watch": "npm run lint -- --watch",
+    "lint:watch": "npm run lint -- --watch",
     "test": "NODE_ENV=test mocha",
     "publish_to_npm": "clear; echo \"* * * *  PUBLISH  * * * *\"; NODE_ENV=production npm run -s build:all && git add --all && git commit -m 'build for publish' && npm version patch && git push && git push --tags && npm publish",
     "deploy:demo": "firebase deploy -f augur-ui",
