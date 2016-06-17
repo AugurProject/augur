@@ -5,7 +5,6 @@ import SiteFooter from '../../site/components/site-footer';
 import SearchSort from '../../markets/components/search-sort';
 import Markets from '../../markets/components/markets';
 
-// const MarketsPage = (props) => {
 export default class MarketsPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,
