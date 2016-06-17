@@ -85,23 +85,3 @@ SiteHeader.propTypes = {
 };
 
 export default SiteHeader;
-
-//
-// module.exports = React.createClass({
-// 	propTypes: {
-// 		activePage: React.PropTypes.string,
-// 		loginAccount: React.PropTypes.object,
-// 		positionsSummary: React.PropTypes.object,
-// 		transactionsTotals: React.PropTypes.object,
-// 		isTransactionsWorking: React.PropTypes.bool,
-//
-// 		marketsLink: React.PropTypes.object,
-// 		positionsLink: React.PropTypes.object,
-// 		transactionsLink: React.PropTypes.object,
-// 		authLink: React.PropTypes.object
-// 	},
-//
-// 	render: function() {
-//
-// 	}
-// });
