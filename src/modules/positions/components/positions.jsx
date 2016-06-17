@@ -1,19 +1,18 @@
 import React from 'react';
 import Position from './position';
 
-const Positions = (p) => {
-	return (
-		<section className="positions-list">
-				{(p.outcomes || []).map(outcome =>
-					<Position
-						key={outcome.id}
-						{...outcome}
-						{...outcome.position}
-					/>
-				)}
-		</section>
-	);
-};
+const Positions = (p) => (
+	<section className="positions-list">
+			{(p.outcomes || []).map(outcome =>
+				<Position
+					key={outcome.id}
+					{...outcome}
+					{...outcome.position}
+				/>
+			)}
+	</section>
+);
+
 Positions.propTypes = {
 	className: React.PropTypes.string,
 	outcomes: React.PropTypes.array

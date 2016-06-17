@@ -75,7 +75,7 @@ export default class MarketPage extends Component {
 				nodes.push(
 					<Chart
 						key="chart"
-						series={ p.market.priceTimeSeries }
+						series={p.market.priceTimeSeries}
 					/>
 				);
 			}
