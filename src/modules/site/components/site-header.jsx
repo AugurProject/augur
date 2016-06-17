@@ -5,8 +5,7 @@ import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const SiteHeader = (props) => {
-	const p = this.props;
+const SiteHeader = (p) => {
 	return (
 		<header className="site-header">
 			<nav className="site-nav">
