@@ -45,7 +45,7 @@ export function multiTrade(transactionID, marketID) {
 				outcomeID: tradeTransaction.data.outcomeID,
 				limitPrice: tradeTransaction.limitPrice,
 				etherToBuy: tradeTransaction.ether.value,
-				sharesToSell: tradeTransaction.shares
+				sharesToSell: tradeTransaction.shares.value
 			})
 		);
 
@@ -83,7 +83,7 @@ export function multiTrade(transactionID, marketID) {
 				dispatch(updateExistingTransaction(transactionID, { status: 'CommitSuccess' }));
 			},
 			(transactionID, res) => {
-				console.log('onCommitFailed %o', res.bubble.stack);
+				console.log('onCommitFailed %o', res);
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 			},
 			(transactionID, res) => {
@@ -99,7 +99,7 @@ export function multiTrade(transactionID, marketID) {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			},
 			(transactionID, res) => {
-				console.log('onTradeFailed %o', res.bubble.stack);
+				console.log('onTradeFailed %o', res);
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 			},
 			(transactionID, res) => {
@@ -111,7 +111,7 @@ export function multiTrade(transactionID, marketID) {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			},
 			(transactionID, res) => {
-				console.log('onBuySellFailed %o', res.bubble.stack);
+				console.log('onBuySellFailed %o', res);
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 			},
 			(transactionID, res) => {
@@ -123,7 +123,7 @@ export function multiTrade(transactionID, marketID) {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			},
 			(transactionID, res) => {
-				console.log('onShortSellFailed %o', res.bubble.stack);
+				console.log('onShortSellFailed %o', res);
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 			},
 			(transactionID, res) => {
@@ -135,7 +135,7 @@ export function multiTrade(transactionID, marketID) {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 			},
 			(transactionID, res) => {
-				console.log('onBuyCompleteSetsFailed %o', res.bubble.stack);
+				console.log('onBuyCompleteSetsFailed %o', res);
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 			}
 		);
