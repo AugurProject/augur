@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
 import Checkbox from '../../common/components/checkbox';
 
-const Filters = (props) => {
-	const p = this.props;
+const Filters = (p) => {
 	return (
 		<aside className="filters">
 			{p.filters.map(filter =>

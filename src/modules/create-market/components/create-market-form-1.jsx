@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 
-const CreateMarketForm1 = (props) => {
-	const p = this.props;
+const CreateMarketForm1 = (p) => {
 	return (
 		<div className="step-1">
 			<h1>Select the type of market you want to create</h1>

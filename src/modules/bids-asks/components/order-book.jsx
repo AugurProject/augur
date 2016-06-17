@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { Clickable } from '../../common/components/clickable';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const OrderBook = (props) => {
-	const p = this.props;
+const OrderBook = (p) => {
 	return (
 		<div className="order-book">
 			<div className="bids">

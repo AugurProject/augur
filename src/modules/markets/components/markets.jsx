@@ -1,12 +1,10 @@
 import React from 'react';
-// import classnames from 'classnames';
 import MarketsHeader from '../../markets/components/markets-header';
 import Filters from '../../filters/components/filters';
 import MarketItem from '../../market/components/market-item';
 import Link from '../../link/components/link';
 
-const Markets = (props) => {
-	const p = this.props;
+const Markets = (p) => {
 	return (
 		<section className={p.className}>
 			<div className="markets-header-bar">

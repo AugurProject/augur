@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-// import classnames from 'classnames';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import Positions from '../../positions/components/positions';
 import PositionsSummary from '../../positions/components/positions-summary';

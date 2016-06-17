@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import MarketItem from '../../market/components/market-item';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 
-const CreateMarketForm5 = (props) => {
-	const p = this.props;
+const CreateMarketForm5 = (p) => {
 	return (
 		<div className="step-5">
 			<h1>Review and submit your new market</h1>

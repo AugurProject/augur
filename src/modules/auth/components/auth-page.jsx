@@ -3,8 +3,7 @@ import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import AuthForm from '../../auth/components/auth-form';
 
-const AuthPage = (props) => {
-	const p = this.props;
+const AuthPage = (p) => {
 	return (
 		<main className="page auth">
 			<SiteHeader {...p.siteHeader} />

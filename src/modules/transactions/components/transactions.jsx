@@ -2,8 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import Transaction from './transaction';
 
-const Transactions = (props) => {
-	const p = this.props;
+const Transactions = (p) => {
 	return (
 		<section className={classnames(p.className)}>
 			{(p.transactions || []).map((transaction, i) =>

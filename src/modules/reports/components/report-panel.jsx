@@ -2,8 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import ReportForm from '../../reports/components/report-form';
 
-const ReportPanel = (props) => {
-	const p = this.props;
+const ReportPanel = (p) => {
 	return (
 		<section className={classnames('report-panel', p.className)}>
 			<span className="num-total-reports">{p.numPendingReports}</span>

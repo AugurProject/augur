@@ -3,8 +3,7 @@ import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import CreateMarketForm from '../../create-market/components/create-market-form';
 
-const CreateMarketPage = (props) => {
-	const p = this.props;
+const CreateMarketPage = (p) => {
 	return (
 		<main className="page create-market">
 			<SiteHeader {...p.siteHeader} />

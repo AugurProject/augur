@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const Advanced = (props) => {
-	const p = this.props;
+const Advanced = (p) => {
 	return (
 		<section className="advanced">
 			<ul className="properties">

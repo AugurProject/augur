@@ -13,8 +13,7 @@ import {
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const Transaction = (props) => {
-	const p = this.props;
+const Transaction = (p) => {
 	const nodes = {};
 
 	switch (p.type) {

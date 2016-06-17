@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const Checkbox = (props) => {
-	const p = this.props;
+const Checkbox = (p) => {
 	return (
 		<span
 			className={classnames('checkbox', p.className, { checked: p.isChecked })}

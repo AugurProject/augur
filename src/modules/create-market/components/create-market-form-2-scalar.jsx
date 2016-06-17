@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import Input from '../../common/components/input';
 
-const CreateMarketForm2Scalar = (props) => {
-	const p = this.props;
+const CreateMarketForm2Scalar = (p) => {
 	return (
 		<div className="scalar">
 			<h4>What are the minimum and maximum values allowed when answering?</h4>

@@ -2,8 +2,7 @@ import React from 'react';
 import TradePanelItem from './trade-panel-item';
 import Transaction from '../../transactions/components/transaction';
 
-const TradePanel = (props) => {
-	const p = this.props;
+const TradePanel = (p) => {
 	return (
 		<section className="trade-panel">
 			<div className="trade-builder">

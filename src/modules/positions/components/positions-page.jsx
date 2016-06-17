@@ -4,8 +4,7 @@ import SiteFooter from '../../site/components/site-footer';
 import Positions from '../../positions/components/positions';
 import PositionsSummary from '../../positions/components/positions-summary';
 
-const PositionsPage = (props) => {
-	const p = this.props;
+const PositionsPage = (p) => {
 	return (
 		<main className="page positions-page">
 			<SiteHeader {...p.siteHeader} />

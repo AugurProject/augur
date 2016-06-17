@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 import classNames from 'classnames';
 
-const Basics = (props) => {
-	const p = this.props;
+const Basics = (p) => {
 	return (
 		<section className="basics">
 			{!!p.tags && !!p.tags.length &&

@@ -2,8 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const PositionsSummary = (props) => {
-	const p = this.props;
+const PositionsSummary = (p) => {
 	return (
 		<div className={classnames('positions-summary', p.className)}>
 			{!!p.numPositions &&

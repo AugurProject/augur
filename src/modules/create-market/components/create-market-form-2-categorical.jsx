@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import InputList from '../../common/components/input-list';
 
-const CreateMarketForm2Categorical = (props) => {
-	const p = this.props;
+const CreateMarketForm2Categorical = (p) => {
 	return (
 		<div className="categorical">
 			<h4>What are the possible answers to your question? (required)</h4>

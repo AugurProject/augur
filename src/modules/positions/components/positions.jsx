@@ -1,9 +1,7 @@
 import React from 'react';
-// import classnames from 'classnames';
 import Position from './position';
 
-const Positions = (props) => {
-	const p = this.props;
+const Positions = (p) => {
 	return (
 		<section className="positions-list">
 				{(p.outcomes || []).map(outcome =>

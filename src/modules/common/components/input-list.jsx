@@ -53,7 +53,7 @@ export default class InputList extends Component {
 
 	render() {
 		const p = this.props;
-		const	s = this.state;
+		const s = this.state;
 		let list = s.list;
 
 		if (!p.listMaxElements || list.length < p.listMaxElements) {

@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import OrderBook from './order-book';
 
-const BidsAsks = (props) => {
-	const p = this.props;
+const BidsAsks = (p) => {
 	return (
 		<div className="bids-asks">
 			{

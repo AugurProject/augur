@@ -7,8 +7,7 @@ import { Clickable } from '../../common/components/clickable';
 import { Collapse } from '../../common/components/collapse';
 import OrderBook from '../../bids-asks/components/order-book';
 
-const TradePanelItem = (props) => {
-	const p = this.props;
+const TradePanelItem = (p) => {
 	const isOutcomeActive = p.selectedOutcomeID === p.id;
 	return (
 		<div className={classnames('trade-panel-item', p.className, { active: isOutcomeActive })}>

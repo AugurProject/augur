@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 
-const CreateMarketFormButtons = (props) => {
-	const p = this.props;
+const CreateMarketFormButtons = (p) => {
 	return (
 		<div className="buttons">
 			<button

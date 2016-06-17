@@ -37,7 +37,7 @@ export default class ReportForm extends React.Component {
 
 	render() {
 		const p = this.props;
-		const	s = this.state;
+		const s = this.state;
 
 		return (
 			<section className={classnames('report-form', { reported: s.isReported })}>

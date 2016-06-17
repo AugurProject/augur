@@ -5,8 +5,7 @@ import InputList from '../../common/components/input-list';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
-const CreateMarketForm4 = (props) => {
-	const p = this.props;
+const CreateMarketForm4 = (p) => {
 	return (
 		<div className="step-3">
 			<h1>Additional market information</h1>

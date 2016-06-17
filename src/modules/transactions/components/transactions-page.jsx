@@ -1,11 +1,9 @@
 import React from 'react';
-// import classnames from 'classnames';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Transactions from '../../transactions/components/transactions';
 
-const TransactionsPage = (props) => {
-	const p = this.props;
+const TransactionsPage = (p) => {
 	return (
 		<main className="page transactions">
 			<SiteHeader {...p.siteHeader} />

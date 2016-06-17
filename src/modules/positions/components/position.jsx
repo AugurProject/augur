@@ -1,9 +1,7 @@
 import React from 'react';
-// import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const Position = (props) => {
-	const p = this.props;
+const Position = (p) => {
 	return (
 		<div className="position">
 			<div className="main-group">

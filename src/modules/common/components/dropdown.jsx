@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const Dropdown = (props) => {
-	const p = this.props;
+const Dropdown = (p) => {
 	return (
 		<span className={classnames('drop-down', p.className)}>
 			{!!p.selected &&
