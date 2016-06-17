@@ -8,12 +8,11 @@ import classnames from 'classnames';
 
 const Collapse = (props) => (
 	React.createElement(
-		this.props.component,
+		props.component,
 		{
-			className: classnames('collapse', { displayNone: !this.props.isOpen }),
-			onClick: this.onClick
+			className: classnames('collapse', { displayNone: !props.isOpen })
 		},
-		this.props.children
+		props.children
 	)
 );
 

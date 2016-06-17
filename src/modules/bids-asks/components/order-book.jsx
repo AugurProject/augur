@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Clickable } from '../../common/components/clickable';
+import Clickable from '../../common/components/clickable';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OrderBook = (p) => (

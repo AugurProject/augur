@@ -3,8 +3,8 @@ import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 import Input from '../../common/components/input';
 import Dropdown from '../../common/components/dropdown';
-import { Clickable } from '../../common/components/clickable';
-import { Collapse } from '../../common/components/collapse';
+import Clickable from '../../common/components/clickable';
+import Collapse from '../../common/components/collapse';
 import OrderBook from '../../bids-asks/components/order-book';
 
 const TradePanelItem = (p) => {
