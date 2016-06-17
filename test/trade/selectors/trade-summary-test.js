@@ -77,8 +77,8 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
      denomination: 'Eth',
      full: '+101300.00Eth' },
   tradeOrders };
-		console.log(selectTradeSummary(tradeOrders));
-		console.log(tradeOrders);
+		// console.log(selectTradeSummary(tradeOrders));
+		// console.log(tradeOrders);
 		assert.deepEqual(selectTradeSummary(tradeOrders), out, `Didn't produce the correct trade summary info`);
 	});
 });
