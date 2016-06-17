@@ -1,4 +1,4 @@
-export default function(nextProps, nextState) {
+export default function (nextProps, nextState) {
 	return isShallowUnEqual(nextProps, this.props) || isShallowUnEqual(nextState, this.state);
 }
 
@@ -15,15 +15,15 @@ export function isShallowUnEqual(obj1, obj2, log) {
 		return true;
 	}
 
-	var keysA = Object.keys(obj1);
-	var keysB = Object.keys(obj2);
-	var keysALen = keysA.length;
+	const keysA = Object.keys(obj1);
+	const keysB = Object.keys(obj2);
+	const keysALen = keysA.length;
 
 	if (keysALen !== keysB.length) {
 		return true;
 	}
 
-	for (var i = 0; i < keysALen; i++) {
+	for (let i = 0; i < keysALen; i++) {
 		if (obj1[keysA[i]] !== obj2[keysA[i]] && typeof obj1[keysA[i]] !== 'function') {
 			log && console.log('------->', keysA[i], obj1[keysA[i]], obj2[keysA[i]]);
 			return true;

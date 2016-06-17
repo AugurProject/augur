@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -14,86 +14,99 @@ import TransactionsPage from './modules/transactions/components/transactions-pag
 import * as assertions from '../test/assertions/';
 
 export default function (appElement, selectors) {
-    var p = selectors,
-    	node;
+	const p = selectors;
+	let node;
 
-    p.siteHeader = {
+	p.siteHeader = {
 		activePage: p.activePage,
 		loginAccount: p.loginAccount,
 		positionsSummary: p.marketsTotals.positionsSummary,
 		transactionsTotals: p.transactionsTotals,
 		isTransactionsWorking: p.isTransactionsWorking,
-
 		marketsLink: p.links && p.links.marketsLink || undefined,
 		positionsLink: p.links && p.links.positionsLink || undefined,
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
 		authLink: p.links && p.links.authLink || undefined
-    };
+	};
 
- 	switch(p.activePage) {
-    	case REGISTER:
-        case LOGIN:
-        case LOGOUT:
-    		node = <AuthPage
-    					siteHeader={ p.siteHeader }
-    					authForm={ p.authForm } />;
-    		break;
+	switch (p.activePage) {
+	case REGISTER:
+	case LOGIN:
+	case LOGOUT:
+		node = (
+			<AuthPage
+				siteHeader={p.siteHeader}
+				authForm={p.authForm}
+			/>
+		);
+		break;
 
-    	case MAKE:
-    		node = <CreateMarketPage
-    					siteHeader={ p.siteHeader }
-    					createMarketForm={ p.createMarketForm } />;
-    		break;
+	case MAKE:
+		node = (
+			<CreateMarketPage
+				siteHeader={p.siteHeader}
+				createMarketForm={p.createMarketForm}
+			/>
+		);
+		break;
 
-    	case POSITIONS:
-    		node = <PositionsPage
-    					siteHeader={ p.siteHeader }
-    					positionsSummary={ p.marketsTotals.positionsSummary }
-    					markets={ p.markets }
-    					/>;
-    		break;
+	case POSITIONS:
+		node = (
+			<PositionsPage
+				siteHeader={p.siteHeader}
+				positionsSummary={p.marketsTotals.positionsSummary}
+				markets={p.markets}
+			/>
+		);
+		break;
 
-    	case TRANSACTIONS:
-    		node = <TransactionsPage
-    					siteHeader={ p.siteHeader }
-    					transactions={ p.transactions }
-    					transactionsTotals={ p.transactionsTotals } />;
-    		break;
+	case TRANSACTIONS:
+		node = (
+			<TransactionsPage
+				siteHeader={p.siteHeader}
+				transactions={p.transactions}
+				transactionsTotals={p.transactionsTotals}
+			/>
+		);
+		break;
 
-    	case M:
-    		node = <MarketPage
-    		            siteHeader={ p.siteHeader }
-						sideOptions={ p.sideOptions }
-						updateSelectedOutcome={ p.selectedOutcome.updateSelectedOutcome }
-						selectedOutcomeID={ p.selectedOutcome.selectedOutcomeID }
-						market={ p.market }
-    		            numPendingReports={ p.marketsTotals.numPendingReports } />;
-    		break;
+	case M:
+		node = (
+			<MarketPage
+				siteHeader={p.siteHeader}
+				sideOptions={p.sideOptions}
+				updateSelectedOutcome={p.selectedOutcome.updateSelectedOutcome}
+				selectedOutcomeID={p.selectedOutcome.selectedOutcomeID}
+				market={p.market}
+				numPendingReports={p.marketsTotals.numPendingReports}
+			/>
+		);
+		break;
 
-    	default:
-    		node = <MarketsPage
-    					siteHeader={ p.siteHeader }
-    					createMarketLink={ (p.links || {}).createMarketLink }
-						keywords={ p.keywords && p.keywords.value }
-    					onChangeKeywords={ p.keywords && p.keywords.onChangeKeywords }
-
-    					markets={ p.markets }
-    					marketsHeader={ p.marketsHeader }
-    					favoriteMarkets={ p.favoriteMarkets }
-    					filters={ p.filters }
-    					pagination={ p.pagination }
-
-    					selectedSort={ p.searchSort.selectedSort }
-    					sortOptions={ p.searchSort.sortOptions }
-    					onChangeSort={ p.searchSort.onChangeSort }
-    					/>;
-    		break;
-    }
+	default:
+		node = (
+			<MarketsPage
+				siteHeader={p.siteHeader}
+				createMarketLink={(p.links || {}).createMarketLink}
+				keywords={p.keywords && p.keywords.value}
+				onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
+				markets={p.markets}
+				marketsHeader={p.marketsHeader}
+				favoriteMarkets={p.favoriteMarkets}
+				filters={p.filters}
+				pagination={p.pagination}
+				selectedSort={p.searchSort.selectedSort}
+				sortOptions={p.searchSort.sortOptions}
+				onChangeSort={p.searchSort.onChangeSort}
+			/>
+		);
+		break;
+	}
 
 	render(
 		node,
 		appElement
 	);
-};
+}
 
 export { assertions };

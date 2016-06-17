@@ -1,6 +1,6 @@
 import { emptyNumber } from '../utils/empty-number';
 
-module.exports = {
+export default {
 	id: '123',
 	handle: 'Johnny',
 	rep: emptyNumber('rep'),

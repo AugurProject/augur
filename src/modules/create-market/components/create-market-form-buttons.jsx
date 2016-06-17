@@ -1,31 +1,35 @@
-import React from 'react';
+import { React, PropTypes } from 'react';
 
-module.exports = React.createClass({
-	propTypes: {
-		disabled: React.PropTypes.bool,
+const CreateMarketFormButtons = (props) => {
+	const p = this.props;
+	return (
+		<div className="buttons">
+			<button
+				className="button prev"
+				type="button"
+				onClick={p.onPrev}
+			>
+				{p.prevLabel || 'back'}
+			</button>
 
-		nextLabel: React.PropTypes.string,
-		prevLabel: React.PropTypes.string,
+			<button
+				className="button next"
+				type="button"
+				disabled={p.disabled}
+				onClick={!p.disabled && p.onNext}
+			>
+				{p.nextLabel || 'Next'}
+			</button>
+		</div>
+	);
+};
 
-		onPrev: React.PropTypes.func,
-		onNext: React.PropTypes.func
-	},
+CreateMarketFormButtons.propTypes = {
+	disabled: PropTypes.bool,
+	nextLabel: PropTypes.string,
+	prevLabel: PropTypes.string,
+	onPrev: PropTypes.func,
+	onNext: PropTypes.func
+};
 
-	render: function() {
-		var p = this.props;
-		return (
-			<div className="buttons">
-				<button
-					className="button prev"
-					type="button"
-					onClick={ p.onPrev }>{ p.prevLabel || 'back' }</button>
-
-				<button
-					className="button next"
-					type="button"
-					disabled={ p.disabled }
-					onClick={ !p.disabled && p.onNext }>{ p.nextLabel || 'Next' }</button>
-			</div>
-		);
-	}
-});
+export default CreateMarketFormButtons;

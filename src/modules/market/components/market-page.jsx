@@ -1,28 +1,29 @@
-import React from 'react';
+import { React, Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
-
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Basics from '../../market/components/basics';
 import TradePanel from '../../trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-import BidsAsks from '../../bids-asks/components/bids-asks';
+// import BidsAsks from '../../bids-asks/components/bids-asks';
 
-const MarketPage = React.createClass({
-	propTypes: {
-		className: React.PropTypes.string,
-		siteHeader: React.PropTypes.object,
-		market: React.PropTypes.object,
-		priceTimeSeries: React.PropTypes.array,
-		numPendingReports: React.PropTypes.number
-	},
+export default class MarketPage extends Component {
+	static propTypes = {
+		className: PropTypes.string,
+		siteHeader: PropTypes.object,
+		market: PropTypes.object,
+		priceTimeSeries: PropTypes.array,
+		numPendingReports: PropTypes.number
+	};
+	constructor(props) {
+		super(props);
+		this.shouldComponentUpdate = shouldComponentUpdatePure;
+	}
 
-	shouldComponentUpdate: shouldComponentUpdatePure,
-
-	render: function() {
-		var p = this.props,
-			nodes = [];
+	render() {
+		const p = this.props;
+		const	nodes = [];
 
 		// no market
 		if (!p.market || !p.market.id) {
@@ -31,33 +32,31 @@ const MarketPage = React.createClass({
 					<span className="description">No market</span>
 				</section>
 			);
-		}
-
-		// market exists
-		else {
-			nodes.push(<Basics key="bascis" { ...p.market } />);
+		} else {
+			// market exists
+			nodes.push(<Basics key="bascis" {...p.market} />);
 
 			// report form
 			if (p.market.isPendingReport) {
 				nodes.push(
 					<ReportPanel
 						key="report-panel"
-						{ ...p.market }
-						{ ...p.market.report }
-						numPendingReports={ p.numPendingReports } />
+						{...p.market}
+						{...p.market.report}
+						numPendingReports={p.numPendingReports}
+					/>
 				);
-			}
-
-			// trade panel
-			else if (p.market.isOpen) {
+			}	else if (p.market.isOpen) {
+				// trade panel
 				nodes.push(
 					<TradePanel
 						key="trade-panel"
-						sideOptions={ p.sideOptions }
-						updateSelectedOutcome={ p.updateSelectedOutcome }
-						selectedOutcomeID={ p.selectedOutcomeID }
-						{ ...p.market }
-						{ ...p.market.tradeSummary } />
+						sideOptions={p.sideOptions}
+						updateSelectedOutcome={p.updateSelectedOutcome}
+						selectedOutcomeID={p.selectedOutcomeID}
+						{...p.market}
+						{...p.market.tradeSummary}
+					/>
 				);
 
 				// positions
@@ -66,8 +65,8 @@ const MarketPage = React.createClass({
 						<MarketPositions
 							key="market-positions"
 							className="market-positions"
-							positionsSummary={ p.market.positionsSummary }
-							positionOutcomes={ p.market.positionOutcomes }
+							positionsSummary={p.market.positionsSummary}
+							positionOutcomes={p.market.positionOutcomes}
 						/>
 					);
 				}
@@ -83,11 +82,11 @@ const MarketPage = React.createClass({
 
 		return (
 			<main className="page market">
-				<SiteHeader { ...p.siteHeader } />
+				<SiteHeader {...p.siteHeader} />
 
 				<article className="page-content">
 					<div className="l-container">
-						{ nodes }
+						{nodes}
 					</div>
 				</article>
 
@@ -95,6 +94,4 @@ const MarketPage = React.createClass({
 			</main>
 		);
 	}
-});
-
-module.exports = MarketPage;
+}

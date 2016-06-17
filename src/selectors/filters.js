@@ -1,4 +1,4 @@
-module.exports = [
+export default [
 	{
 		title: 'Status',
 		options: [
@@ -29,4 +29,3 @@ module.exports = [
 		]
 	}
 ];
-

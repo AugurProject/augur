@@ -1,38 +1,39 @@
 /*
  * Provides clickable wrapper (default is span) with pointer cursor.
- * 
  * Author: priecint
  */
+import { React, Component, PropTypes } from 'react';
 
-import React from 'react';
+export default class Clickable extends Component {
+	static propTypes = {
+		onClick: PropTypes.func,
+		component: PropTypes.any,
+		children: PropTypes.any
+	};
+	static defaultProps = {
+		component: 'span'
+	};
+	constructor(props) {
+		super(props);
+		this.onClick = this.onClick.bind(this);
+	}
 
-export const Clickable = React.createClass({
-    propTypes: {
-        onClick: React.PropTypes.func,
-        component: React.PropTypes.any
-    },
+	onClick = () => {
+		if (typeof this.props.onClick === 'function') {
+			this.props.onClick();
+		}
+	}
 
-    getDefaultProps() {
-        return {
-            component: 'span'
-        }
-    },
-    onClick() {
-        if (typeof this.props.onClick === 'function') {
-            this.props.onClick();
-        }
-    },
-
-    render() {
-        return (
-            React.createElement(
-                this.props.component,
-                {
-                    className: 'clickable',
-                    onClick: this.onClick
-                },
-                this.props.children
-            )
-        );
-    }
-});
+	render() {
+		return (
+			React.createElement(
+				this.props.component,
+				{
+					className: 'clickable',
+					onClick: this.onClick
+				},
+				this.props.children
+			)
+		);
+	}
+}

@@ -3,32 +3,28 @@
  *
  * Author: priecint
  */
-
-import React from 'react';
+import { React, PropTypes } from 'react';
 import classnames from 'classnames';
 
-export const Collapse = React.createClass({
-	propTypes: {
-		isOpen: React.PropTypes.bool,
-		component: React.PropTypes.any
-	},
+const Collapse = (props) => (
+	React.createElement(
+		this.props.component,
+		{
+			className: classnames('collapse', { displayNone: !this.props.isOpen }),
+			onClick: this.onClick
+		},
+		this.props.children
+	)
+);
 
-	getDefaultProps() {
-		return {
-			component: 'div'
-		}
-	},
+Collapse.propTypes = {
+	isOpen: PropTypes.bool,
+	component: PropTypes.any,
+	children: PropTypes.any
+};
 
-	render() {
-		return (
-			React.createElement(
-				this.props.component,
-				{
-					className: classnames('collapse', { 'displayNone': !this.props.isOpen }),
-					onClick: this.onClick
-				},
-				this.props.children
-			)
-		);
-	}
-});
+Collapse.defaultProps = {
+	component: 'div'
+};
+
+export default Collapse;

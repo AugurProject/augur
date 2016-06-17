@@ -1,32 +1,27 @@
-import React from 'react';
+import { React, PropTypes } from 'react';
 import classnames from 'classnames';
 
-const Dropdown = React.createClass({
-	propTypes: {
-		className: React.PropTypes.string,
+const Dropdown = (props) => {
+	const p = this.props;
+	return (
+		<span className={classnames('drop-down', p.className)}>
+			{!!p.selected &&
+				<span className="selected">{p.selected.label}</span>
+			}
+			<ul className="options">
+				{p.options.filter(option => option.value !== p.selected.value).map(option => (
+					<li key={option.value} className="option" onClick={() => p.onChange(option.value)}>{option.label}</li>
+				))}
+			</ul>
+		</span>
+	);
+};
 
-		selected: React.PropTypes.object,
-		options: React.PropTypes.array,
+Dropdown.propTypes = {
+	className: PropTypes.string,
+	selected: PropTypes.object,
+	options: PropTypes.array,
+	onChange: PropTypes.func
+};
 
-		onChange: React.PropTypes.func
-	},
-
-	render: function() {
-		const p = this.props;
-
-		return (
-			<span className={ classnames('drop-down', p.className) }>
-				{ !!p.selected &&
-			    	<span className="selected">{ p.selected.label }</span>
-				}
-			    <ul className="options">
-			    	{ p.options.filter(option => option.value !== p.selected.value).map(option => (
-			        	<li key={ option.value } className="option" onClick={ () => p.onChange(option.value) }>{ option.label }</li>
-			        ))}
-			    </ul>
-			</span>
-		);
-	}
-});
-
-module.exports = Dropdown;
+export default Dropdown;

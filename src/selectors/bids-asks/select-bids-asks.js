@@ -5,37 +5,37 @@ export default function selectOrderBook() {
 		bids: [
 			{
 				shares: makeNumber(10, 'Shares'),
-				price: makeNumber(.5, 'eth')
+				price: makeNumber(0.5, 'eth')
 			},
 			{
 				shares: makeNumber(20, 'Shares'),
-				price: makeNumber(.45, 'eth')
+				price: makeNumber(0.45, 'eth')
 			},
 			{
 				shares: makeNumber(30, 'Shares'),
-				price: makeNumber(.35, 'eth')
+				price: makeNumber(0.35, 'eth')
 			},
 			{
 				shares: makeNumber(40, 'Shares'),
-				price: makeNumber(.25, 'eth')
+				price: makeNumber(0.25, 'eth')
 			}
 		],
 		asks: [
 			{
 				shares: makeNumber(10, 'Shares'),
-				price: makeNumber(.6, 'eth')
+				price: makeNumber(0.6, 'eth')
 			},
 			{
 				shares: makeNumber(20, 'Shares'),
-				price: makeNumber(.7, 'eth')
+				price: makeNumber(0.7, 'eth')
 			},
 			{
 				shares: makeNumber(30, 'Shares'),
-				price: makeNumber(.8, 'eth')
+				price: makeNumber(0.8, 'eth')
 			},
 			{
 				shares: makeNumber(40, 'Shares'),
-				price: makeNumber(.9, 'eth')
+				price: makeNumber(0.9, 'eth')
 			}
 		]
 	};
