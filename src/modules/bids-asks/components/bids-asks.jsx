@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import OrderBook from './order-book';
 
 const BidsAsks = (props) => {

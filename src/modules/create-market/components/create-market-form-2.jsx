@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import Form2Categorical from './create-market-form-2-categorical';

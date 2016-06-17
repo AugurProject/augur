@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { get } from '../../../utils/get';
 import FormButtons from '../../create-market/components/create-market-form-buttons';

@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 import classNames from 'classnames';
 

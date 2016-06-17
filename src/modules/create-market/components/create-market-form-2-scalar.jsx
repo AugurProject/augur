@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Input from '../../common/components/input';
 
 const CreateMarketForm2Scalar = (props) => {

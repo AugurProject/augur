@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 // import classnames from 'classnames';
 import Form1 from './create-market-form-1';
 import Form2 from './create-market-form-2';

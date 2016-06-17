@@ -1,4 +1,4 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import InputList from '../../common/components/input-list';
 
 const CreateMarketForm2Categorical = (props) => {

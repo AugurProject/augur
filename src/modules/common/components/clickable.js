@@ -2,7 +2,7 @@
  * Provides clickable wrapper (default is span) with pointer cursor.
  * Author: priecint
  */
-import { React, Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default class Clickable extends Component {
 	static propTypes = {
