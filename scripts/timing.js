@@ -25,15 +25,44 @@ try {
     MAX_NUM_MARKETS = 100;
 }
 
+function getRandomInt(min, max) {
+    return ;
+}
+
 function createMarkets(numMarketsToCreate, callback) {
-    var minValue = 1;
-    var maxValue = 2;
-    var numOutcomes = 2;
     console.log(chalk.blue.bold("Creating " + numMarketsToCreate + " markets..."));
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
+        var minValue, maxValue, numOutcomes, type;
+        var rand = Math.random();
+        if (rand > 0.667) {
+            // scalar
+            maxValue = Math.round(Math.random() * 10000);
+            minValue = Math.round(Math.random() * maxValue);
+            numOutcomes = 2;
+            type = "scalar";
+        } else if (rand < 0.333) {
+            // binary
+            maxValue = 2;
+            minValue = 1;
+            numOutcomes = 2;
+            type = "binary";
+        } else {
+            // categorical
+            maxValue = 2;
+            minValue = 1;
+            numOutcomes = Math.floor(6*Math.random()) + 2;
+            type = "categorical";
+        }
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
-        var expDate = Math.round(new Date().getTime() / 500);
+        if (type === "categorical") {
+            var choices = new Array(numOutcomes);
+            for (var i = 0; i < numOutcomes; ++i) {
+                choices[i] = madlibs.action();
+            }
+            description += "~|>" + choices.join('|');
+        }
+        var expDate = Math.round(new Date().getTime() / 995);
         augur.createSingleEventMarket({
             branchId: augur.branches.dev,
             description: description,
@@ -41,14 +70,14 @@ function createMarkets(numMarketsToCreate, callback) {
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
-            resolution: "lmgtfy.com",
-            tradingFee: "0.02",
-            makerFees: "0.5",
-            extraInfo: null,
-            tags: ["spam", "augur.js", "canned meat"],
+            resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
+            tradingFee: Math.random().toString(),
+            makerFees: Math.random().toString(),
+            extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun(),
+            tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
             onSent: function (r) {},
             onSuccess: function (r) {
-                console.log(chalk.green(r.marketID), chalk.cyan.dim(description));
+                console.log("[" + type + "]", chalk.green(r.marketID), chalk.cyan.dim(description));
                 augur.getMarketInfo(r.marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
@@ -63,11 +92,11 @@ function createMarkets(numMarketsToCreate, callback) {
                     }
                     augur.generateOrderBook({
                         market: r.marketID,
-                        liquidity: 500,
-                        initialFairPrices: ["0.4", "0.5"],
-                        startingQuantity: 100,
-                        bestStartingQuantity: 50,
-                        priceWidth: "0.3"
+                        liquidity: Math.floor(4000*Math.random()) + 1000,
+                        initialFairPrices: [Math.random().toString(), Math.random().toString()],
+                        startingQuantity: Math.floor(400*Math.random()) + 100,
+                        bestStartingQuantity: Math.floor(400*Math.random()) + 100,
+                        priceWidth: Math.random().toString()
                     }, {
                         onBuyCompleteSets: function (res) {},
                         onSetupOutcome: function (res) {},
