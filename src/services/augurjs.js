@@ -204,7 +204,7 @@ ex.listenToUpdates = function listenToUpdates(cbBlock, cbContracts, cbPrice, cbC
 		// update market when a price change has been detected
 		price: (result) => cbPrice(null, result),
 		// listen for new markets
-		creation: (result) => cbCreation(null, result)
+		marketCreated: (result) => cbCreation(null, result)
 	}, (filters) => console.log('### listen to filters:', filters));
 };
 
