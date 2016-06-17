@@ -10,7 +10,7 @@ const Advanced = (p) => {
 					<span>
 						{
 							p.initialFairPrices.values.map((cV, i, arr) =>
-								(<div className="distinct">
+								(<div key={`${cV}${i}`} className="distinct">
 									<ValueDenomination className="property-value" { ...p.initialFairPrices.formatted[`${i}`] } />
 								</div>)
 							)
