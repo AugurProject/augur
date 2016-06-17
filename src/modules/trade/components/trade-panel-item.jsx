@@ -11,7 +11,6 @@ const TradePanelItem = (props) => {
 	const p = this.props;
 	const isOutcomeActive = p.selectedOutcomeID === p.id;
 	return (
-		// <div className={classnames('trade-panel-item', p.className)}>
 		<div className={classnames('trade-panel-item', p.className, { active: isOutcomeActive })}>
 			<Clickable onClick={() => { p.updateSelectedOutcome(p.id); }}>
 				<div className="trade-panel-item-content">
