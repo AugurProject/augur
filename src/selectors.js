@@ -2,24 +2,15 @@ import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
 import filters from './selectors/filters';
 import createMarketForm from './selectors/create-market-form';
-
-// import { makeNumber } from './utils/make-number';
-
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { LOGIN } from './modules/auth/constants/auth-types';
-
-// import {
-// 	INITIAL_FAIR_PRICE_DEFAULT,
-// 	SHARES_PER_ORDER_DEFAULT,
-// 	SIZE_OF_BEST_DEFAULT,
-// 	PRICE_WIDTH_DEFAULT,
-// 	SEPARATION_DEFAULT
-// } from './modules/create-market/constants/market-values-constraints';
 
 const selectors = {
 	update: (newState = {}) => {
 		console.log('*** update', newState);
-		Object.keys(newState).forEach(key => selectors[key]);
+		Object.keys(newState).forEach(key => {
+			selectors[key] = newState[key];
+		});
 		selectors.render();
 	},
 	loginAccount,

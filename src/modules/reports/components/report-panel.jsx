@@ -2,19 +2,16 @@ import React from 'react';
 import classnames from 'classnames';
 import ReportForm from '../../reports/components/report-form';
 
-const ReportPanel = (props) => {
-	const p = this.props;
-	return (
-		<section className={classnames('report-panel', p.className)}>
-			<span className="num-total-reports">{p.numPendingReports}</span>
-			<ReportForm
-				{...p}
-				isReported={p.isReported || p.isReportSubmitted}
-				onClickSubmit={p.onSubmitReport}
-			/>
-		</section>
-	);
-};
+const ReportPanel = (p) => (
+	<section className={classnames('report-panel', p.className)}>
+		<span className="num-total-reports">{p.numPendingReports}</span>
+		<ReportForm
+			{...p}
+			isReported={p.isReported || p.isReportSubmitted}
+			onClickSubmit={p.onSubmitReport}
+		/>
+	</section>
+);
 
 ReportPanel.propTypes = {
 	className: React.PropTypes.string,

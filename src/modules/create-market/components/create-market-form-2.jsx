@@ -1,5 +1,4 @@
-import { React, PropTypes } from 'react';
-// import classnames from 'classnames';
+import React, { PropTypes } from 'react';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import Form2Categorical from './create-market-form-2-categorical';
 import Form2Scalar from './create-market-form-2-scalar';
@@ -7,8 +6,7 @@ import FormButtons from '../../create-market/components/create-market-form-butto
 import Input from '../../common/components/input';
 import DatePicker from 'react-date-picker';
 
-const CreateMarketForm2 = (props) => {
-	const p = this.props;
+const CreateMarketForm2 = (p) => {
 	let	typeSpecific;
 
 	switch (p.type) {
@@ -57,8 +55,8 @@ const CreateMarketForm2 = (props) => {
 			</div>
 			<FormButtons
 				disabled={!p.isValid}
-				onNext={() => p.onValuesUpdated({ step: this.props.step + 1 })}
-				onPrev={() => p.onValuesUpdated({ step: this.props.step - 1 })}
+				onNext={() => p.onValuesUpdated({ step: p.step + 1 })}
+				onPrev={() => p.onValuesUpdated({ step: p.step - 1 })}
 			/>
 		</div>
 	);

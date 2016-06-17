@@ -1,13 +1,11 @@
-import { React, PropTypes } from 'react';
-// import classnames from 'classnames';
+import React, { PropTypes } from 'react';
 import Form1 from './create-market-form-1';
 import Form2 from './create-market-form-2';
 import Form3 from './create-market-form-3';
 import Form4 from './create-market-form-4';
 import Form5 from './create-market-form-5';
 
-const CreateMarketForm = (props) => {
-	const p = this.props;
+const CreateMarketForm = (p) => {
 	let form;
 
 	switch (p.step) {

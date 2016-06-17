@@ -1,4 +1,4 @@
-import { React, Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import ReactHighcharts from 'react-highcharts';
 

@@ -1,5 +1,4 @@
-import { React, Component, PropTypes } from 'react';
-// import classnames from 'classnames';
+import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import ValueDenomination from '../../common/components/value-denomination';
 

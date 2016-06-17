@@ -1,9 +1,9 @@
-import { React, Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default class Link extends Component {
 	static propTypes = {
 		className: PropTypes.string,
-		href: PropTypes.object,
+		href: PropTypes.string,
 		target: PropTypes.string,
 		onClick: PropTypes.func
 	};

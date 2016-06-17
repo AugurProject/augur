@@ -1,4 +1,4 @@
-import { React, Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
@@ -75,7 +75,7 @@ export default class MarketPage extends Component {
 				nodes.push(
 					<Chart
 						key="chart"
-						series={ p.market.priceTimeSeries }
+						series={p.market.priceTimeSeries}
 					/>
 				);
 			}

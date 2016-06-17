@@ -1,11 +1,10 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { get } from '../../../utils/get';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
 
-const CreateMarketForm4 = (props) => {
-	const p = this.props;
+const CreateMarketForm4 = (p) => {
 	const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼';
 	return (
 		<div className="step-4">

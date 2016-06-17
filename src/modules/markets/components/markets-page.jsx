@@ -1,11 +1,10 @@
-import { React, Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import SearchSort from '../../markets/components/search-sort';
 import Markets from '../../markets/components/markets';
 
-// const MarketsPage = (props) => {
 export default class MarketsPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,

@@ -1,25 +1,22 @@
-import { React, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const Checkbox = (props) => {
-	const p = this.props;
-	return (
+const Checkbox = (p) => (
+	<span
+		className={classnames('checkbox', p.className, { checked: p.isChecked })}
+		title={p.title}
+	>
+		<span className="checkbox-box" onClick={p.onClick} />
 		<span
-			className={classnames('checkbox', p.className, { checked: p.isChecked })}
-			title={p.title}
+			className="checkbox-label"
+			maxLength={p.maxLength}
+			tabIndex={p.tabIndex}
+			onClick={p.onClick}
 		>
-			<span className="checkbox-box" onClick={p.onClick} />
-			<span
-				className="checkbox-label"
-				maxLength={p.maxLength}
-				tabIndex={p.tabIndex}
-				onClick={p.onClick}
-			>
-				{p.text}
-			</span>
+			{p.text}
 		</span>
-	);
-};
+	</span>
+);
 
 Checkbox.propTypes = {
 	className: PropTypes.string,
