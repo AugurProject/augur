@@ -1,4 +1,4 @@
-import React, gitr s{ PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 import Input from '../../common/components/input';
