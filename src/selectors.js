@@ -19,7 +19,7 @@ import { LOGIN } from './modules/auth/constants/auth-types';
 const selectors = {
 	update: (newState = {}) => {
 		console.log('*** update', newState);
-		Object.keys(newState).forEach(key => selectors[key]);
+		Object.keys(newState).forEach(key => selectors[key] = newState[key]);
 		selectors.render();
 	},
 	loginAccount,
