@@ -69,6 +69,7 @@
     "http-server": "^0.9.0",
     "inline-source-cli": "^1.1.1",
     "less": "^2.7.1",
+    "mocha": "^2.5.3",
     "npm-check-updates": "^2.6.5",
     "onchange": "^2.4.0",
     "react": "^15.1.0",
