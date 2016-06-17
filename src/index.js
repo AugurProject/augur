@@ -1269,7 +1269,7 @@ Augur.prototype.multiTrade = function (
      * @param userTradeOrder
      */
     function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, userTradeOrder) {
-        var sharesLeft = new BigNumber(userTradeOrder.sharesToSell);
+        var sharesLeft = new BigNumber(userTradeOrder.sharesToSell, 10);
         if (matchingSortedBidIds.length > 0) {
             // 4.2.1/ there is order to fill
             var firstBuyerTradeId = matchingSortedBidIds[0];
@@ -1303,7 +1303,7 @@ Augur.prototype.multiTrade = function (
                 onTradeSuccess: function (data) {
                     console.log("[multiTrade] shortSellUntilZero: onTradeSuccess:", data);
                     onTradeSuccess(tradeOrderId, data);
-                    var newSharesLeft = new BigNumber(data.callReturn[1]);
+                    var newSharesLeft = new BigNumber(data.callReturn[1], 10);
                     if (newSharesLeft.gt(constants.ZERO)) {
                         // not all user shares were shorted, recursively short
                         userTradeOrder.sharesToSell = newSharesLeft.toFixed();

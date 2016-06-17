@@ -71,7 +71,7 @@ function createMarkets(numMarketsToCreate, callback) {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
-            tradingFee: Math.random().toString(),
+            tradingFee: "0.02",
             makerFees: Math.random().toString(),
             extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun(),
             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
