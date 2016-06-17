@@ -1,10 +1,8 @@
 import React from 'react';
-// import classnames from 'classnames';
 import Input from '../../common/components/input';
 import DropDown from '../../common/components/dropdown';
 
-const SearchSort = (props) => {
-	const p = this.props;
+const SearchSort = (p) => {
 	return (
 		<div className="search-sort">
 			<div className="search-sort-content">
