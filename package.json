@@ -12,9 +12,9 @@
     "url": "https://github.com/AugurProject/augur"
   },
   "scripts": {
-    "watch": "clear; echo '* CLEAN * HTML * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
+    "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "augur-ui-webserver -d './build'",
-    "build": "clear; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
+    "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
     "test:watch": "clear; npm test -- --watch",
     "lint": "echo begin linting... && eslint src/*.js src/services/* src/utils/* src/modules/* && echo linting complete.",
@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "augur-ui-react-components": "2.2.9",
-    "augur.js": "1.3.19",
+    "augur.js": "1.3.20",
     "bignumber.js": "2.3.0",
     "memoizerific": "1.8.4",
     "redux": "3.5.2",
