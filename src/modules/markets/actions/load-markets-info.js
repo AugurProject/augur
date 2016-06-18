@@ -31,6 +31,9 @@ export function loadMarketsInfo(marketIDs) {
 				// transform array of outcomes into an object and add their names
 				finalOutcomesData[marketID] = parseOutcomes(marketData);
 
+				// mark that details have been loaded
+				marketData.isLoadedMarketInfo = true;
+
 				// save market (without outcomes)
 				finalMarketsData[marketID] = marketData;
 			});
@@ -132,4 +135,15 @@ export function loadMarketsInfo(marketIDs) {
 			return p;
 		}, {});
 	}
+}
+
+export function loadMarketsInfoForDisplayedMarkets() {
+	return (dispatch, getState) => {
+		const { markets } = require('../../../selectors');
+		const marketIDsMissingInfo = markets.filter(market => !market.isLoadedMarketInfo).map(market => market.id);
+
+		if (marketIDsMissingInfo.length) {
+			dispatch(loadMarketsInfo(marketIDsMissingInfo));
+		}
+	};
 }
