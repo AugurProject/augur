@@ -27,6 +27,14 @@ import {
 	IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
 
+import validateTradingFee from '../../validators/validate-trading-fee';
+import validateMakerFee from '../../validators/validate-maker-fee';
+import validateInitialLiquidity from '../../validators/validate-initial-liquidity';
+import validateInitialFairPrices from '../../validators/validate-initial-fair-prices';
+import validateBestStartingQuantity from '../../validators/validate-best-starting-quanity';
+import validateStartingQuantity from '../../validators/validate-starting-quantity';
+import validatePriceWidth from '../../validators/validate-price-width';
+
 export const select = (formState) => {
 	const obj = {
 		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
@@ -82,143 +90,6 @@ export const initialFairPrices = (formState) => {
 
 	default:
 		break;
-	}
-};
-
-export const validateTradingFee = (tradingFeePercent) => {
-	const parsed = parseFloat(tradingFeePercent);
-
-	if (!tradingFeePercent) {
-		return 'Please specify a trading fee %';
-	}
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-		return 'Trading fee must be a number';
-	}
-	if (parsed < TRADING_FEE_MIN || parsed > TRADING_FEE_MAX) {
-		return `Trading fee must be between ${
-				formatPercent(TRADING_FEE_MIN, true).full
-			} and ${
-				formatPercent(TRADING_FEE_MAX, true).full
-			}`;
-	}
-};
-
-export const validateMakerFee = (makerFee) => {
-	const parsed = parseFloat(makerFee);
-
-	if (!makerFee) {
-		return 'Please specify a maker fee %';
-	}
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-		return 'Maker fee must be a number';
-	}
-	if (parsed < MAKER_FEE_MIN || parsed > MAKER_FEE_MAX) {
-		return `Maker fee must be between ${
-				formatPercent(MAKER_FEE_MIN, true).full
-			} and ${
-				formatPercent(MAKER_FEE_MAX, true).full
-			}`;
-	}
-};
-
-export const validateInitialLiquidity = (type, liquidity, start, best, halfWidth, scalarMin, scalarMax) => {
-	const	parsed = parseFloat(liquidity);
-	const	priceDepth = type === SCALAR ?
-				(parseFloat(start) * (parseFloat(scalarMin) + parseFloat(scalarMax) - halfWidth)) / (parseFloat(liquidity) - (2 * parseFloat(best))) :
-				(parseFloat(start) * (1 - halfWidth)) / (parseFloat(liquidity) - (2 * parseFloat(best)));
-
-	if (!liquidity) {
-		return 'Please provide some initial liquidity';
-	}
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-		return 'Initial liquidity must be numeric';
-	}
-	if (priceDepth < 0 || !Number.isFinite(priceDepth)) {
-		return 'Insufficient liquidity based on advanced parameters';
-	}
-	if (parsed < INITIAL_LIQUIDITY_MIN) {
-		return `Initial liquidity must be at least ${
-			formatEther(INITIAL_LIQUIDITY_MIN).full
-		}`;
-	}
-};
-
-export const validateInitialFairPrices = (type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) => {
-	// -- Constraints --
-	// 	Binary + Categorical:
-	//		min: priceWidth / 2
-	//  	max: 1 - (priceWidth / 2)
-	// 	Scalar:
-	// 		min: scalarMin + (priceWidth / 2)
-	// 		max: scalarMax - (priceWidth / 2)
-
-	const max = type === SCALAR ? parseFloat(scalarMax) - halfWidth : 1 - halfWidth;
-	const min = type === SCALAR ? parseFloat(scalarMin) + halfWidth : halfWidth;
-	const fairPriceErrors = {};
-
-	initialFairPrices.map((cV, i) => {
-		const parsed = parseFloat(cV);
-
-		if (!cV) {
-			fairPriceErrors[`${i}`] = 'Please provide some initial liquidity';
-			return;
-		}
-		if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-			fairPriceErrors[`${i}`] = 'Initial liquidity must be numeric';
-			return;
-		}
-		if (cV < min || cV > max) {
-			fairPriceErrors[`${i}`] = `Initial prices must be between ${min} - ${max} based on the price width of ${width}`;
-			return;
-		}
-	});
-
-	if (!!Object.keys(fairPriceErrors).length) {
-		return fairPriceErrors;
-	}
-};
-
-export const validateBestStartingQuantity = (bestStartingQuantity) => {
-	const parsed = parseFloat(bestStartingQuantity);
-
-	if (!bestStartingQuantity) {
-		return 'Please provide a best starting quantity';
-	}
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-		return 'Best starting quantity must be numeric';
-	}
-	if (parsed < BEST_STARTING_QUANTITY_MIN) {
-		return `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
-	}
-};
-
-export const validateStartingQuantity = (startingQuantity) => {
-	const parsed = parseFloat(startingQuantity);
-
-	if (!startingQuantity) {
-		return 'Please provide a starting quantity';
-	}
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-		return 'Starting quantity must be numeric';
-	}
-	if (parsed < STARTING_QUANTITY_MIN) {
-		return `Starting quantity must be at least ${
-			formatShares(STARTING_QUANTITY_MIN).full
-		}`;
-	}
-};
-
-export const validatePriceWidth = (priceWidth) => {
-	const parsed = parseFloat(priceWidth);
-
-	if (!priceWidth) {
-		return 'Please provide a price width';
-	}
-	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
-		return 'Price width must be numeric';
-	}
-	if (parsed < PRICE_WIDTH_MIN) {
-		return `Price width must be at least ${formatEther(PRICE_WIDTH_MIN).full}`;
 	}
 };
 
