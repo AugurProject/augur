@@ -91,8 +91,13 @@ function createMarkets(numMarketsToCreate, callback) {
                         );
                     }
                     var initialFairPrices = new Array(numOutcomes);
-                    for (var i = 0; i < numOutcomes; ++i) {
-                        initialFairPrices[i] = ((0.4*Math.random()) + 0.3).toString();
+                    if (type === "scalar") {
+                        var avg = 0.5*(minValue + maxValue);
+                        initialFairPrices = [0.9*avg, 1.1*avg];
+                    } else {
+                        for (var i = 0; i < numOutcomes; ++i) {
+                            initialFairPrices[i] = ((0.4*Math.random()) + 0.3).toString();
+                        }
                     }
                     var orderBookParams = {
                         market: r.marketID,
