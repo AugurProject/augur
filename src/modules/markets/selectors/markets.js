@@ -9,13 +9,13 @@ import store from '../../../store';
 export default function () {
 	const { activePage, selectedMarketsHeader, pagination } = store.getState();
 	const { unpaginatedMarkets } = require('../../../selectors');
+
 	let markets;
 
 	if (activePage !== POSITIONS && selectedMarketsHeader !== PENDING_REPORTS) {
 		markets = selectPaginated(unpaginatedMarkets, pagination.selectedPageNum, pagination.numPerPage);
-	}
-	else {
-		markets =unpaginatedMarkets;
+	} else {
+		markets = unpaginatedMarkets;
 	}
 
 	const marketIDsMissingInfo = markets.filter(market => !market.isLoadedMarketInfo).map(market => market.id);

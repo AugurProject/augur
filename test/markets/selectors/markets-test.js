@@ -32,7 +32,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 1',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test2',
 			isFavorite: false,
@@ -43,7 +44,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 2',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test3',
 			isFavorite: true,
@@ -54,13 +56,15 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 3',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test4',
 			isFavorite: false,
 			isPendingReport: true,
 			description: 'test 4',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test5',
 			isFavorite: true,
@@ -71,7 +75,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 5',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test6',
 			isFavorite: false,
@@ -82,7 +87,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 6',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}]
 	};
 
@@ -126,7 +132,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 1',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test2',
 			isFavorite: false,
@@ -137,7 +144,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 2',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test3',
 			isFavorite: true,
@@ -148,13 +156,15 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 3',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test4',
 			isFavorite: false,
 			isPendingReport: true,
 			description: 'test 4',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}, {
 			id: 'test5',
 			isFavorite: true,
@@ -165,7 +175,8 @@ describe(`modules/markets/selectors/markets.js`, () => {
 				}
 			},
 			description: 'test 5',
-			tags: ['testtag', 'test']
+			tags: ['testtag', 'test'],
+			isLoadedMarketInfo: true
 		}];
 
 		assert.deepEqual(test, out, `Didn't return only markets that are pending reports`);

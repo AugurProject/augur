@@ -59,6 +59,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 					tags: [ 'test', 'testtag' ],
 					type: 'binary',
 					eventID: 'event1',
+					isLoadedMarketInfo: true,
 					minValue: 1,
 					maxValue: 3,
 					numOutcomes: 3,
