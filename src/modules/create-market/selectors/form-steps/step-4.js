@@ -31,7 +31,7 @@ import validateTradingFee from '../../validators/validate-trading-fee';
 import validateMakerFee from '../../validators/validate-maker-fee';
 import validateInitialLiquidity from '../../validators/validate-initial-liquidity';
 import validateInitialFairPrices from '../../validators/validate-initial-fair-prices';
-import validateBestStartingQuantity from '../../validators/validate-best-starting-quanity';
+import validateBestStartingQuantity from '../../validators/validate-best-starting-quantity';
 import validateStartingQuantity from '../../validators/validate-starting-quantity';
 import validatePriceWidth from '../../validators/validate-price-width';
 

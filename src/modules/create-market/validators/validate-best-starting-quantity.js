@@ -1,5 +1,7 @@
 import { formatShares } from '../../../utils/format-number';
 
+import { BEST_STARTING_QUANTITY_MIN } from '../../create-market/constants/market-values-constraints';
+
 export default function validateBestStartingQuantity(bestStartingQuantity) {
     const parsed = parseFloat(bestStartingQuantity);
 

@@ -32,7 +32,7 @@ import * as validateTradingFee from '../../../../src/modules/create-market/valid
 import * as validateMakerFee from '../../../../src/modules/create-market/validators/validate-maker-fee';
 import * as validateInitialLiquidity from '../../../../src/modules/create-market/validators/validate-initial-liquidity';
 import * as validateInitialFairPrices from '../../../../src/modules/create-market/validators/validate-initial-fair-prices';
-import * as validateBestStartingQuantity from '../../../../src/modules/create-market/validators/validate-best-starting-quanity';
+import * as validateBestStartingQuantity from '../../../../src/modules/create-market/validators/validate-best-starting-quantity';
 import * as validateStartingQuantity from '../../../../src/modules/create-market/validators/validate-starting-quantity';
 import * as validatePriceWidth from '../../../../src/modules/create-market/validators/validate-price-width';
 
@@ -402,38 +402,6 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// 	}
 	// });
     //
-	// describe('validateBestStartingQuantity', () => {
-	// 	let bestStartingQuantity,
-	// 		out;
-    //
-	// 	beforeEach(() => {
-	// 		bestStartingQuantity = null;
-	// 		out = null;
-	// 	});
-    //
-	// 	it('should validate a null or undefined state', () => {
-	// 		out = 'Please provide a best starting quantity';
-    //
-	// 		assert.deepEqual(selector.validateBestStartingQuantity(bestStartingQuantity), out, 'null or undefined state was not validated correctly');
-	// 	});
-    //
-	// 	it('should validate NaN', () => {
-	// 		bestStartingQuantity = 'test';
-    //
-	// 		out = 'Best starting quantity must be numeric';
-    //
-	// 		assert.deepEqual(selector.validateBestStartingQuantity(bestStartingQuantity), out, 'NaN value state was not validated correctly');
-	// 	});
-    //
-	// 	it('should validate bounds', () => {
-	// 		bestStartingQuantity = BEST_STARTING_QUANTITY_MIN - 0.01;
-    //
-	// 		out = `Starting quantity must be at least ${formatShares(BEST_STARTING_QUANTITY_MIN).full}`;
-    //
-	// 		assert.deepEqual(selector.validateBestStartingQuantity(bestStartingQuantity), out, 'less than lower bound value state was not validated correctly');
-	// 	});
-	// });
-    //
 	// describe('validateStartingQuantity', () => {
 	// 	let startingQuantity,
 	// 		out;
@@ -539,6 +507,12 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 		after(() => {
 			validateTradingFee.default.restore();
+			validateMakerFee.default.restore();
+			validateInitialLiquidity.default.restore();
+			validateInitialFairPrices.default.restore();
+			validateBestStartingQuantity.default.restore();
+			validateStartingQuantity.default.restore();
+			validatePriceWidth.default.restore();
 		});
 
 		it('calls validateTradingFee', () => {
