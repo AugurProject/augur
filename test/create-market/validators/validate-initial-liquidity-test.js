@@ -12,7 +12,7 @@ import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/consta
 import { formatEther } from '../../../src/utils/format-number';
 import validateInitialLiquidity from '../../../src/modules/create-market/validators/validate-initial-liquidity';
 
-describe('validateInitialLiquidity', () => {
+describe('modules/create-market/validators/validate-initial-liquidity.js', () => {
 	let obj,
 		out,
         types = [ BINARY, CATEGORICAL, SCALAR ];
