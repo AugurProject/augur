@@ -928,6 +928,10 @@ Augur.prototype.generateOrderBook = function (p, cb) {
     var onFailed = cb.onFailed || this.utils.noop;
     this.getMarketInfo(p.market, function (marketInfo) {
         var minValue, maxValue;
+        if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
+        if (marketInfo.numOutcomes !== numOutcomes) {
+            return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
+        }
         if (marketInfo.type === "scalar") {
             minValue = new BigNumber(marketInfo.events[0].minValue);
             maxValue = new BigNumber(marketInfo.events[0].maxValue);
@@ -1701,11 +1705,6 @@ Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSucces
 Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
     var tx = clone(this.tx.getNumEventsToReport);
     tx.params = [branch, period];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback) {
-    var tx = clone(this.tx.getReportedPeriod);
-    tx.params = [branch, period, reporter];
     return this.fire(tx, callback);
 };
 Augur.prototype.getNumReportsActual = function (branch, reportPeriod, callback) {

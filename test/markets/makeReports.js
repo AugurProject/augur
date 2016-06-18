@@ -23,9 +23,6 @@ describe("Unit tests", function () {
             method: "getNumEventsToReport",
             parameters: ["hash", "int"]
         }, {
-            method: "getReportedPeriod",
-            parameters: ["hash", "int", "address"]
-        }, {
             method: "getNumReportsActual",
             parameters: ["hash", "int"]
         }, {

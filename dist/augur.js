@@ -3939,6 +3939,10 @@ module.exports={
         "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
         "-4": "sender's address does not match the market creator's address"
     },
+    "WRONG_NUMBER_OF_OUTCOMES": {
+        "error": 41,
+        "message": "the number of initial fair prices does not match this market's number of outcomes"
+    },
     "INSUFFICIENT_LIQUIDITY": {
         "error": 42,
         "message": "insufficient liquidity to generate order book"
@@ -4450,12 +4454,6 @@ module.exports = function (network, contracts) {
         },
 
         // expiringEvents.se
-        getReportedPeriod: {
-            to: contracts.expiringEvents,
-            method: "getReportedPeriod",
-            signature: "iii",
-            returns: "number"
-        },
         getEventIndex: {
             to: contracts.expiringEvents,
             method: "getEventIndex",
@@ -36623,7 +36621,68 @@ module.exports = function () {
 
         filter: filters,
 
+        parse_block_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].hash);
+                    }
+                } else {
+                    if (message.hash) onMessage(message.hash);
+                }
+            }
+        },
         parse_contracts_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_add_tx_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_cancel_message: function (message, onMessage) {
+            console.log("cancel:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_thru_message: function (message, onMessage) {
+            console.log("thru:", JSON.stringify(message, null, 2));
             for (var i = 0, len = message.length; i < len; ++i) {
                 if (message[i]) {
                     if (message[i].constructor === Object && message[i].data) {
@@ -36633,11 +36692,106 @@ module.exports = function () {
                 }
             }
         },
+        parse_penalize_message: function (message, onMessage) {
+            console.log("penalize:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_marketCreated_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].data);
+                    }
+                } else {
+                    if (message.data) onMessage(message.data);
+                }
+            }
+        },
+        parse_tradingFeeUpdated_message: function (message, onMessage) {
+            console.log("tradingFeeUpdated:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_approval_message: function (message, onMessage) {
+            console.log("approval:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_transfer_message: function (message, onMessage) {
+            console.log("transfer:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_fill_tx_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
         parse_price_message: function (message, onMessage) {
             var data_array, market, marketplus, outcome;
             if (message && message.length) {
                 for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i] && message[i].topics && message[i].topics.length > 3) {
+                    if (message[i] && message[i].topics && message[i].topics.length === 3) {
                         data_array = augur.rpc.unmarshal(message[i].data);
                         if (data_array && data_array.constructor === Array &&
                             data_array.length > 1) {
@@ -36656,28 +36810,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_marketCreated_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].data);
-                    }
-                } else {
-                    if (message.data) onMessage(message.data);
-                }
-            }
-        },
-        parse_block_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].hash);
-                    }
-                } else {
-                    if (message.hash) onMessage(message.hash);
-                }
-            }
-        },
+
         poll_filter: function (label, onMessage) {
             var callback, self = this;
             if (this.filter[label]) {
@@ -37914,6 +38047,10 @@ Augur.prototype.generateOrderBook = function (p, cb) {
     var onFailed = cb.onFailed || this.utils.noop;
     this.getMarketInfo(p.market, function (marketInfo) {
         var minValue, maxValue;
+        if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
+        if (marketInfo.numOutcomes !== numOutcomes) {
+            return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
+        }
         if (marketInfo.type === "scalar") {
             minValue = new BigNumber(marketInfo.events[0].minValue);
             maxValue = new BigNumber(marketInfo.events[0].maxValue);
@@ -38687,11 +38824,6 @@ Augur.prototype.sendReputation = function (branchId, to, value, onSent, onSucces
 Augur.prototype.getNumEventsToReport = function (branch, period, callback) {
     var tx = clone(this.tx.getNumEventsToReport);
     tx.params = [branch, period];
-    return this.fire(tx, callback);
-};
-Augur.prototype.getReportedPeriod = function (branch, period, reporter, callback) {
-    var tx = clone(this.tx.getReportedPeriod);
-    tx.params = [branch, period, reporter];
     return this.fire(tx, callback);
 };
 Augur.prototype.getNumReportsActual = function (branch, reportPeriod, callback) {

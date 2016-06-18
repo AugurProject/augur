@@ -39,7 +39,68 @@ module.exports = function () {
 
         filter: filters,
 
+        parse_block_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].hash);
+                    }
+                } else {
+                    if (message.hash) onMessage(message.hash);
+                }
+            }
+        },
         parse_contracts_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_add_tx_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_cancel_message: function (message, onMessage) {
+            console.log("cancel:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_thru_message: function (message, onMessage) {
+            console.log("thru:", JSON.stringify(message, null, 2));
             for (var i = 0, len = message.length; i < len; ++i) {
                 if (message[i]) {
                     if (message[i].constructor === Object && message[i].data) {
@@ -49,11 +110,106 @@ module.exports = function () {
                 }
             }
         },
+        parse_penalize_message: function (message, onMessage) {
+            console.log("penalize:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_marketCreated_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].data);
+                    }
+                } else {
+                    if (message.data) onMessage(message.data);
+                }
+            }
+        },
+        parse_tradingFeeUpdated_message: function (message, onMessage) {
+            console.log("tradingFeeUpdated:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_approval_message: function (message, onMessage) {
+            console.log("approval:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_transfer_message: function (message, onMessage) {
+            console.log("transfer:", JSON.stringify(message, null, 2));
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
+        parse_fill_tx_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) {
+                            if (message[i].constructor === Object && message[i].data) {
+                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            }
+                            if (onMessage) onMessage(message[i]);
+                        }
+                    }
+                } else {
+                    onMessage(message);
+                }
+            }
+        },
         parse_price_message: function (message, onMessage) {
             var data_array, market, marketplus, outcome;
             if (message && message.length) {
                 for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i] && message[i].topics && message[i].topics.length > 3) {
+                    if (message[i] && message[i].topics && message[i].topics.length === 3) {
                         data_array = augur.rpc.unmarshal(message[i].data);
                         if (data_array && data_array.constructor === Array &&
                             data_array.length > 1) {
@@ -72,28 +228,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_marketCreated_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].data);
-                    }
-                } else {
-                    if (message.data) onMessage(message.data);
-                }
-            }
-        },
-        parse_block_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].hash);
-                    }
-                } else {
-                    if (message.hash) onMessage(message.hash);
-                }
-            }
-        },
+
         poll_filter: function (label, onMessage) {
             var callback, self = this;
             if (this.filter[label]) {

@@ -62,7 +62,7 @@ function createMarkets(numMarketsToCreate, callback) {
             }
             description += "~|>" + choices.join('|');
         }
-        var expDate = Math.round(new Date().getTime() / 995);
+        var expDate = Math.round(new Date().getTime() / 990);
         augur.createSingleEventMarket({
             branchId: augur.branches.dev,
             description: description,
@@ -90,14 +90,19 @@ function createMarkets(numMarketsToCreate, callback) {
                             }
                         );
                     }
-                    augur.generateOrderBook({
+                    var initialFairPrices = new Array(numOutcomes);
+                    for (var i = 0; i < numOutcomes; ++i) {
+                        initialFairPrices[i] = ((0.4*Math.random()) + 0.3).toString();
+                    }
+                    var orderBookParams = {
                         market: r.marketID,
                         liquidity: Math.floor(4000*Math.random()) + 1000,
-                        initialFairPrices: [Math.random().toString(), Math.random().toString()],
+                        initialFairPrices: initialFairPrices,
                         startingQuantity: Math.floor(400*Math.random()) + 100,
                         bestStartingQuantity: Math.floor(400*Math.random()) + 100,
                         priceWidth: Math.random().toString()
-                    }, {
+                    };
+                    augur.generateOrderBook(orderBookParams, {
                         onBuyCompleteSets: function (res) {},
                         onSetupOutcome: function (res) {},
                         onSetupOrder: function (res) {},
