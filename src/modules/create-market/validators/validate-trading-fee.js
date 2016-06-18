@@ -1,4 +1,5 @@
 import { formatPercent } from '../../../utils/format-number';
+import { TRADING_FEE_MIN, TRADING_FEE_MAX } from '../../create-market/constants/market-values-constraints'
 
 export default function (tradingFeePercent) {
     const parsed = parseFloat(tradingFeePercent);
