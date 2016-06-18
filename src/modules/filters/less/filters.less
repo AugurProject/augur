@@ -20,6 +20,13 @@
 			.filter {
 				display: block;
 				margin: 0.5rem 1rem 0.5rem 4rem;
+				white-space: nowrap;
+
+				.checkbox-label2 {
+					vertical-align: baseline;
+					color: fade(@color-dark-active, 80%);
+					font-size: 0.8em;
+				}
 			}
 		}
 	}
@@ -37,10 +44,19 @@
 				.filters-group {
 				    display: inline-block;
 				    min-width: 31%;
+				    margin-left: 2rem;
 				    vertical-align: top;
 
 					.title {
-						margin: 1em;
+						margin: 1em 1rem 1rem -1rem;
+					}
+
+					.filter {
+						display: inline-block;
+						width: 10em;
+						margin: 0.25em 0em 0.25em 0.5em;
+						font-size: 0.9em;
+						overflow: hidden;
 					}
 				}
 			}
