@@ -1,3 +1,5 @@
+import { SCALAR } from '../../markets/constants/market-types';
+
 export default function validateInitialFairPrices(type, initialFairPrices, width, halfWidth, scalarMin, scalarMax) {
     // -- Constraints --
     // 	Binary + Categorical:
