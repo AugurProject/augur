@@ -260,38 +260,6 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// 		assert.deepEqual(selector.validateStartingQuantity(startingQuantity), out, 'less than lower bound value state was not validated correctly');
 	// 	});
 	// });
-    //
-	// describe('validatePriceWidth', () => {
-	// 	let priceWidth,
-	// 		out;
-    //
-	// 	beforeEach(() => {
-	// 		priceWidth = null;
-	// 		out = null;
-	// 	});
-    //
-	// 	it('should validate a null or undefined state', () => {
-	// 		out = 'Please provide a price width';
-    //
-	// 		assert.deepEqual(selector.validatePriceWidth(priceWidth), out, 'null or undefined state was not validated correctly');
-	// 	});
-    //
-	// 	it('should validate NaN', () => {
-	// 		priceWidth = 'test';
-    //
-	// 		out = 'Price width must be numeric';
-    //
-	// 		assert.deepEqual(selector.validatePriceWidth(priceWidth), out, 'NaN value state was not validated correctly');
-	// 	});
-    //
-	// 	it('should validate bounds', () => {
-	// 		priceWidth = PRICE_WIDTH_MIN - 0.001;
-    //
-	// 		out = `Price width must be at least ${formatEther(PRICE_WIDTH_MIN).full}`;
-    //
-	// 		assert.deepEqual(selector.validatePriceWidth(priceWidth), out, 'less than lower bound value state was not validated correctly');
-	// 	});
-	// });
 
 	describe('isValid', () => {
 		proxyquire.noCallThru();

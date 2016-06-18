@@ -1,4 +1,5 @@
 import { formatEther } from '../../../utils/format-number';
+import { PRICE_WIDTH_MIN } from '../../create-market/constants/market-values-constraints'
 
 export default function validatePriceWidth(priceWidth) {
     const parsed = parseFloat(priceWidth);
