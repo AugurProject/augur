@@ -125,8 +125,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		}, {
 			type: 'COMMIT_REPORTS'
 		}, {
-			type: 'PENALIZE_TOO_FEW_REPORTS'
-		}, {
 			type: 'COLLECT_FEES'
 		}, {
 			type: 'PENALIZE_WRONG_REPORTS'
@@ -138,7 +136,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		assert(fakeClearReports.clearReports.calledOnce, `clearReports wasn't called once as expected.`);
 		assert(fakeLoadReports.loadReports.calledOnce, `loadReports wasn't called once as expected.`);
 		assert(fakeCommitReports.commitReports.calledOnce, `commitReports wasn't called once as expected.`);
-		assert(fakePenalizeTooFew.penalizeTooFewReports.calledOnce, `penalizeTooFewReports wasn't called once as expected.`);
+		// assert(fakePenalizeTooFew.penalizeTooFewReports.calledOnce, `penalizeTooFewReports wasn't called once as expected.`);
 		assert(fakeCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected.`);
 		assert(fakePenalizeWrong.penalizeWrongReports.calledOnce, `penalizeWrongReports wasn't called once as expected.`);
 		assert(fakeCloseMarkets.closeMarkets.calledOnce, `closeMarkets wasn't called once as expected.`);

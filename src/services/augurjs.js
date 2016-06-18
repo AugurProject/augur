@@ -665,6 +665,5 @@ ex.getOutcome = augur.getOutcome.bind(augur);
 ex.getEventIndex = augur.getEventIndex.bind(augur);
 ex.submitReport = augur.submitReport.bind(augur);
 ex.getEvents = augur.getEvents.bind(augur);
-ex.getReportedPeriod = augur.getReportedPeriod.bind(augur);
 ex.rpc = augur.rpc;
 module.exports = ex;

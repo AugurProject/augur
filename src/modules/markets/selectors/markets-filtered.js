@@ -13,7 +13,8 @@ export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selecte
 );
 
 export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedFilters, selectedTags) => {
-	return isMatchKeywords(market, keywords) && isMatchFilters(market, selectedFilters) && isMatchTags(market, selectedTags);
+	const selectedTagsList = Object.keys(selectedTags);
+	return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList);
 
 	function isMatchKeywords(market, keys) {
 		const keywordsArray = cleanKeywordsArray(keys);
@@ -27,20 +28,10 @@ export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedF
 		));
 	}
 
-	function isMatchFilters(market, selFilters) {
-		const selectedStatusProps = ['isOpen', 'isExpired', 'isMissedOrReported', 'isPendingReport'].filter(statusProp => !!selFilters[statusProp]);
-		const selectedTypeProps = ['isBinary', 'isCategorical', 'isScalar'].filter(typeProp => !!selFilters[typeProp]);
-
-		return (
-			(!selectedStatusProps.length || selectedStatusProps.some(status => !!market[status])) &&
-			(!selectedTypeProps.length || selectedTypeProps.some(type => !!market[type]))
-		);
-	}
-
-	function isMatchTags(market, selTags) {
-		if (!Object.keys(selTags).length) {
+	function isMatchTags(market, selectedTagsList) {
+		if (!selectedTagsList.length) {
 			return true;
 		}
-		return market.tags.some(tag => !!selTags[tag.name]);
+		return selectedTagsList.every(tag => market.tags.some(marketTag => marketTag.name === tag));
 	}
 });
