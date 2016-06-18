@@ -4,7 +4,7 @@ import Form2Categorical from './create-market-form-2-categorical';
 import Form2Scalar from './create-market-form-2-scalar';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
-import DatePicker from 'react-date-picker';
+import { Calendar, DateField, TransitionView } from 'react-date-picker';
 
 const CreateMarketForm2 = (p) => {
 	let	typeSpecific;
@@ -43,12 +43,19 @@ const CreateMarketForm2 = (p) => {
 			<div className="end-date">
 				<h4>What&apos;s the end date for your question?</h4>
 
-				<DatePicker
+				<DateField
+					forceValidDate
 					minDate={new Date()}
+					dateFormat="YYYY-MM-DD hh:mm a"
+					defaultValue={p.endDate}
 					date={p.endDate}
-					hideFooter
-					onChange={(dateText, dateMoment) => p.onValuesUpdated({ endDate: dateMoment.toDate() })}
-				/>
+					onChange={(dateText, dateMoment) =>
+						p.onValuesUpdated({ endDate: new Date(dateText) })}
+				>
+					<TransitionView>
+						<Calendar style={{padding: 10}} showClock />
+					</TransitionView>
+				</DateField>
 				{p.errors.endDate &&
 					<span className="error-message">{p.errors.endDate}</span>
 				}
