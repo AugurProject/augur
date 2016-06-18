@@ -20,11 +20,18 @@ export const selectFilters = memoizerific(1)((markets, selectedTags, dispatch) =
 		});
 	});
 
+	// make sure all selected tags are displayed, even if markets haven't loaded yet
+	Object.keys(selectedTags).forEach(selectedTag => {
+		if (!tagCounts[selectedTag]) {
+			tagCounts[selectedTag] = 0;
+		}
+	});
+
 	const filters = [];
 
 	const tagOptions =
 		Object.keys(tagCounts)
-			.filter(tag => tagCounts[tag] > 0)
+			.filter(tag => tagCounts[tag] > 0 || !!selectedTags[tag])
 			.sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
 			.slice(0, 50)
 			.map(tag => {
