@@ -33,8 +33,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	// NOTE -- We've also implicitly tested `initialFairPrices` via these tests; thus, those tests are excluded.
 
 	let formState,
-		out,
-		types = [ BINARY, CATEGORICAL, SCALAR ];
+		out;
 
 	describe('select', () => {
 		beforeEach(() => {
