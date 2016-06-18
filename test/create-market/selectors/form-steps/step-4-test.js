@@ -1,28 +1,18 @@
 import {
 	assert
 } from 'chai';
-
 import {
 	BINARY,
 	CATEGORICAL,
 	SCALAR
 } from '../../../../src/modules/markets/constants/market-types';
-
 import {
-	TRADING_FEE_MIN,
-	TRADING_FEE_MAX,
-	INITIAL_LIQUIDITY_MIN,
 	TRADING_FEE_DEFAULT,
 	INITIAL_LIQUIDITY_DEFAULT,
 	MAKER_FEE_DEFAULT,
-	MAKER_FEE_MIN,
-	MAKER_FEE_MAX,
 	STARTING_QUANTITY_DEFAULT,
-	STARTING_QUANTITY_MIN,
 	BEST_STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_MIN,
 	PRICE_WIDTH_DEFAULT,
-	PRICE_WIDTH_MIN,
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
 } from '../../../../src/modules/create-market/constants/market-values-constraints';
@@ -36,8 +26,6 @@ import * as validateBestStartingQuantity from '../../../../src/modules/create-ma
 import * as validateStartingQuantity from '../../../../src/modules/create-market/validators/validate-starting-quantity';
 import * as validatePriceWidth from '../../../../src/modules/create-market/validators/validate-price-width';
 
-import { formatPercent, formatEther, formatShares } from '../../../../src/utils/format-number';
-
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
@@ -48,151 +36,151 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 		out,
 		types = [ BINARY, CATEGORICAL, SCALAR ];
 
-	// describe('select', () => {
-	// 	beforeEach(() => {
-	// 		formState = null;
-	// 		out = null;
-	// 	});
-    //
-	// 	it('should return the correct object for binary markets', () => {
-	// 		formState = {
-	// 			type: BINARY,
-	// 			initialFairPrices: {
-	// 				type: BINARY,
-	// 				values: [],
-	// 				raw: []
-	// 			}
-	// 		};
-    //
-	// 		out = {
-	// 			tradingFeePercent: TRADING_FEE_DEFAULT,
-	// 			makerFee: MAKER_FEE_DEFAULT,
-	// 			initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
-	// 			initialFairPrices: {
-	// 				type: BINARY,
-	// 				values: [
-	// 					{
-	// 						label: 'Yes',
-	// 						value: 0.5
-	// 					},
-	// 					{
-	// 						label: 'No',
-	// 						value: 0.5
-	// 					}
-	// 				],
-	// 				raw: [
-	// 					0.5,
-	// 					0.5
-	// 				]
-	// 			},
-	// 			startingQuantity: STARTING_QUANTITY_DEFAULT,
-	// 			bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-	// 			priceWidth: PRICE_WIDTH_DEFAULT,
-	// 			halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
-	// 			priceDepth: PRICE_DEPTH_DEFAULT,
-	// 			isSimulation: IS_SIMULATION
-	// 		};
-    //
-	// 		assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a binary market');
-	// 	});
-    //
-	// 	it('should return the correct object for categorical markets', () => {
-	// 		formState = {
-	// 			type: CATEGORICAL,
-	// 			initialFairPrices: {
-	// 				type: CATEGORICAL,
-	// 				values: [],
-	// 				raw: []
-	// 			},
-	// 			categoricalOutcomes: [
-	// 				'test1',
-	// 				'test2',
-	// 				'test3'
-	// 			]
-	// 		};
-    //
-	// 		out = {
-	// 			tradingFeePercent: TRADING_FEE_DEFAULT,
-	// 			makerFee: MAKER_FEE_DEFAULT,
-	// 			initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
-	// 			initialFairPrices: {
-	// 				type: CATEGORICAL,
-	// 				values: [
-	// 					{
-	// 						label: 'test1',
-	// 						value: 0.5
-	// 					},
-	// 					{
-	// 						label: 'test2',
-	// 						value: 0.5
-	// 					},
-	// 					{
-	// 						label: 'test3',
-	// 						value: 0.5
-	// 					}
-	// 				],
-	// 				raw: [
-	// 					0.5,
-	// 					0.5,
-	// 					0.5
-	// 				]
-	// 			},
-	// 			startingQuantity: STARTING_QUANTITY_DEFAULT,
-	// 			bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-	// 			priceWidth: PRICE_WIDTH_DEFAULT,
-	// 			halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
-	// 			priceDepth: PRICE_DEPTH_DEFAULT,
-	// 			isSimulation: IS_SIMULATION
-	// 		};
-    //
-	// 		assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a categorical market');
-	// 	});
-	//
-	// 	it('should return the correct object for scaler markets', () => {
-	// 		formState = {
-	// 			type: SCALAR,
-	// 			initialFairPrices: {
-	// 				type: SCALAR,
-	// 				values: [],
-	// 				raw: []
-	// 			},
-	// 			scalarSmallNum: 10,
-	// 			scalarBigNum: 100
-	// 		};
-    //
-	// 		out = {
-	// 			tradingFeePercent: TRADING_FEE_DEFAULT,
-	// 			makerFee: MAKER_FEE_DEFAULT,
-	// 			initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
-	// 			initialFairPrices: {
-	// 				type: SCALAR,
-	// 				values: [
-	// 					{
-	// 						label: '⇧',
-	// 						value: 55
-	// 					},
-	// 					{
-	// 						label: '⇩',
-	// 						value: 55
-	// 					}
-	// 				],
-	// 				raw: [
-	// 					55,
-	// 					55
-	// 				]
-	// 			},
-	// 			startingQuantity: STARTING_QUANTITY_DEFAULT,
-	// 			bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-	// 			priceWidth: PRICE_WIDTH_DEFAULT,
-	// 			halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
-	// 			priceDepth: PRICE_DEPTH_DEFAULT,
-	// 			isSimulation: IS_SIMULATION
-	// 		};
-    //
-	// 		assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a scalar market');
-	// 	});
-	// });
-    
+	describe('select', () => {
+		beforeEach(() => {
+			formState = null;
+			out = null;
+		});
+
+		it('should return the correct object for binary markets', () => {
+			formState = {
+				type: BINARY,
+				initialFairPrices: {
+					type: BINARY,
+					values: [],
+					raw: []
+				}
+			};
+
+			out = {
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialFairPrices: {
+					type: BINARY,
+					values: [
+						{
+							label: 'Yes',
+							value: 0.5
+						},
+						{
+							label: 'No',
+							value: 0.5
+						}
+					],
+					raw: [
+						0.5,
+						0.5
+					]
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				priceDepth: PRICE_DEPTH_DEFAULT,
+				isSimulation: IS_SIMULATION
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a binary market');
+		});
+
+		it('should return the correct object for categorical markets', () => {
+			formState = {
+				type: CATEGORICAL,
+				initialFairPrices: {
+					type: CATEGORICAL,
+					values: [],
+					raw: []
+				},
+				categoricalOutcomes: [
+					'test1',
+					'test2',
+					'test3'
+				]
+			};
+
+			out = {
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialFairPrices: {
+					type: CATEGORICAL,
+					values: [
+						{
+							label: 'test1',
+							value: 0.5
+						},
+						{
+							label: 'test2',
+							value: 0.5
+						},
+						{
+							label: 'test3',
+							value: 0.5
+						}
+					],
+					raw: [
+						0.5,
+						0.5,
+						0.5
+					]
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				priceDepth: PRICE_DEPTH_DEFAULT,
+				isSimulation: IS_SIMULATION
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a categorical market');
+		});
+
+		it('should return the correct object for scaler markets', () => {
+			formState = {
+				type: SCALAR,
+				initialFairPrices: {
+					type: SCALAR,
+					values: [],
+					raw: []
+				},
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			out = {
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialFairPrices: {
+					type: SCALAR,
+					values: [
+						{
+							label: '⇧',
+							value: 55
+						},
+						{
+							label: '⇩',
+							value: 55
+						}
+					],
+					raw: [
+						55,
+						55
+					]
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
+				priceDepth: PRICE_DEPTH_DEFAULT,
+				isSimulation: IS_SIMULATION
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a scalar market');
+		});
+	});
+
     
 
 	describe('isValid', () => {
@@ -273,35 +261,9 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 		});
 	});
 
-	// () => {
-	// 	formState = {
-	// 		tradingFeePercent: '',
-	// 		initialLiquidity: ''
-	// 	};
-    //
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a blank tradingFeePercent`);
-    //
-	// 	formState.tradingFeePercent = 'testNonNumeric';
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a tradingFeePercent that wasn't a number`);
-    //
-	// 	formState.tradingFeePercent = (TRADING_FEE_MIN - 1);
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a tradingFeePercent that is below the Trading Fee min`);
-    //
-	// 	formState.tradingFeePercent = (TRADING_FEE_MAX + 1);
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a tradingFeePercent that is above the Trading Fee max`);
-    //
-	// 	formState.tradingFeePercent = TRADING_FEE_DEFAULT;
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a initialLiquidity of empty string`);
-    //
-	// 	formState.initialLiquidity = 'testNonNumeric';
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a non numeric initialLiquidity`);
-    //
-	// 	formState.initialLiquidity = (INITIAL_LIQUIDITY_MIN - 1);
-	// 	assert(!selector.isValid(formState), `Didn't invalidate a initialLiquidity that was below the minumum`);
-    //
-	// 	formState.initialLiquidity = (INITIAL_LIQUIDITY_MIN + 10);
-	// 	assert(selector.isValid(formState), `Didn't validate a valid formState`);
-	// }
+	describe('errors', () => {
+		it('[TODO] tests for errors method');
+	});
 
 	it(`should handle errors in step 4`, () => {
 		// formState = {
