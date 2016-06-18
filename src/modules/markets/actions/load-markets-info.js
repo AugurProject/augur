@@ -9,21 +9,24 @@ import { updateOutcomesData } from '../../markets/actions/update-outcomes-data';
 
 export function loadMarketsInfo(marketIDs) {
 	return (dispatch, getState) => {
+		if (!marketIDs || !marketIDs.length) {
+			return;
+		}
 		AugurJS.batchGetMarketInfo(marketIDs, (err, marketsData) => {
 			if (err) {
 				console.error('ERROR loadMarketsInfo()', err);
-				return;
-			}
-			if (!marketsData) {
-				return;
+				// we purposely don't return here so that the loop below runs and sets isLoadedMarketInfo
 			}
 
 			const finalMarketsData = {};
 			const finalOutcomesData = {};
+
 			let marketData;
 
-			Object.keys(marketsData).forEach(marketID => {
-				marketData = marketsData[marketID];
+			// it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
+			marketIDs.forEach(marketID => {
+
+				marketData = marketsData[marketID] || {};
 
 				// parse out event, currently we only support single event markets, no combinatorial
 				parseEvent(marketData);

@@ -79,7 +79,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 				}
 			}
 		}];
-		let actual = store.dispatch(action.loadMarketsInfo('test123'));
+		let actual = store.dispatch(action.loadMarketsInfo(['test123']));
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});
