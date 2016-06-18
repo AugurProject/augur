@@ -1,4 +1,5 @@
 import { formatPercent } from '../../../utils/format-number';
+import { MAKER_FEE_MIN, MAKER_FEE_MAX } from '../../create-market/constants/market-values-constraints'
 
 export default function(makerFee) {
     const parsed = parseFloat(makerFee);
