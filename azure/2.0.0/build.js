@@ -25640,7 +25640,7 @@ var constants = require("./constants");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 function Augur() {
-    this.version = "1.3.18";
+    this.version = "1.3.21";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -26573,6 +26573,8 @@ Augur.prototype.generateOrderBook = function (p, cb) {
         for (i = 0; i < numOutcomes; ++i) {
             if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
                 initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+                console.log(initialFairPrices[i].toFixed(), minValue.plus(halfPriceWidth).toFixed());
+                console.log(initialFairPrices[i].toFixed(), maxValue.minus(halfPriceWidth).toFixed());
                 return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
             }
             buyPrice = initialFairPrices[i].minus(halfPriceWidth);
@@ -26589,6 +26591,9 @@ Augur.prototype.generateOrderBook = function (p, cb) {
                 if (buyPrices[i][j].lte(minValue)) {
                     buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
                 }
+                if (marketInfo.type === "scalar") {
+                    buyPrices[i][j] = buyPrices[i][j].minus(minValue);
+                }
             }
             sellPrices[i] = new Array(numSellOrders[i]);
             sellPrices[i][0] = sellPrice;
@@ -26596,6 +26601,9 @@ Augur.prototype.generateOrderBook = function (p, cb) {
                 sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
                 if (sellPrices[i][j].gte(maxValue)) {
                     sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
+                }
+                if (marketInfo.type === "scalar") {
+                    sellPrices[i][j] = maxValue.minus(sellPrices[i][j]);
                 }
             }
         }
@@ -26632,12 +26640,6 @@ Augur.prototype.generateOrderBook = function (p, cb) {
                         function (callback) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                console.log("buy:", {
-                                    amount: amount.toFixed(),
-                                    price: buyPrice.toFixed(),
-                                    market: p.market,
-                                    outcome: outcome
-                                });
                                 self.buy({
                                     amount: amount.toFixed(),
                                     price: buyPrice.toFixed(),
@@ -26670,12 +26672,6 @@ Augur.prototype.generateOrderBook = function (p, cb) {
                         function (callback) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                console.log("sell:", {
-                                    amount: amount.toFixed(),
-                                    price: sellPrice.toFixed(),
-                                    market: p.market,
-                                    outcome: outcome
-                                });
                                 self.sell({
                                     amount: amount.toFixed(),
                                     price: sellPrice.toFixed(),
