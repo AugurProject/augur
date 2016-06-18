@@ -1,4 +1,6 @@
 import { formatEther } from '../../../utils/format-number';
+import { SCALAR } from '../../markets/constants/market-types';
+import { INITIAL_LIQUIDITY_MIN } from '../../create-market/constants/market-values-constraints'
 
 export default function validateInitialLiquidity(type, liquidity, start, best, halfWidth, scalarMin, scalarMax) {
     const	parsed = parseFloat(liquidity);
