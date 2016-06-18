@@ -8,7 +8,8 @@ import { Calendar, DateField, TransitionView } from 'react-date-picker';
 
 const CreateMarketForm2 = (p) => {
 	let	typeSpecific;
-
+	// const tomorrow = new Date();
+	// tomorrow.setDate(tomorrow.getDate() + 1);
 	switch (p.type) {
 	case CATEGORICAL:
 		typeSpecific = <Form2Categorical {...p} />;
@@ -44,10 +45,10 @@ const CreateMarketForm2 = (p) => {
 				<h4>What&apos;s the end date for your question?</h4>
 
 				<DateField
+					expanded={true}
 					forceValidDate
 					minDate={new Date()}
-					dateFormat="YYYY-MM-DD hh:mm a"
-					defaultValue={p.endDate}
+					dateFormat="YYYY/MM/DD hh:mm:ss a"
 					date={p.endDate}
 					onChange={(dateText, dateMoment) =>
 						p.onValuesUpdated({ endDate: new Date(dateText) })}
