@@ -1,6 +1,3 @@
-// import * as AugurJS from '../../../services/augurjs';
-import { BID } from '../../bids-asks/constants/bids-asks-types';
-
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 
@@ -17,56 +14,38 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 export function updateTradesInProgress(marketID, outcomeID, numShares, limitPrice, side) {
 	return (dispatch, getState) => {
 		const tradesInProgress = getState().tradesInProgress;
-		let newNumShares = numShares;
-		let newLimitPrice = limitPrice;
-		let newSide = side;
 
-		if (tradesInProgress[marketID] &&
-			tradesInProgress[marketID][outcomeID] &&
-			tradesInProgress[marketID][outcomeID].numShares === numShares &&
-			tradesInProgress[marketID][outcomeID].limitPrice === limitPrice &&
-			tradesInProgress[marketID][outcomeID].side === side) {
+		let currentTrade;
+		if (tradesInProgress[marketID] != null && tradesInProgress[marketID][outcomeID] != null) {
+			currentTrade = tradesInProgress[marketID][outcomeID];
+		} else {
+			currentTrade = {};
+		}
+
+		if (currentTrade.numShares === numShares &&
+			currentTrade.limitPrice === limitPrice &&
+			currentTrade.side === side) {
 			return;
 		}
 
-		if (numShares === undefined) {
-			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
-				newNumShares = tradesInProgress[marketID][outcomeID].numShares;
-			} else {
-				newNumShares = 0;
+		const newTradeDetails = {
+			numShares: numShares !== undefined ? numShares : currentTrade.numShares,
+			limitPrice: limitPrice !== undefined ? limitPrice : currentTrade.limitPrice,
+			side: side !== undefined ? side : currentTrade.side
+		};
+		newTradeDetails.totalCost = (newTradeDetails.numShares != null && newTradeDetails.limitPrice != null)
+			? newTradeDetails.numShares * newTradeDetails.limitPrice
+			: null;
 
-			}
-		}
-
-		if (limitPrice === undefined) {
-			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
-				newLimitPrice = tradesInProgress[marketID][outcomeID].limitPrice;
-			} else {
-				newLimitPrice = 0;
-			}
-		}
-
-		if (side === undefined) {
-			if (tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) {
-				newSide = tradesInProgress[marketID][outcomeID].side;
-			} else {
-				newSide = BID;
-			}
-		}
-
-		dispatch({ type: UPDATE_TRADE_IN_PROGRESS, data: {
-			marketID,
-			outcomeID,
-			details: {
-				numShares: newNumShares,
-				limitPrice: newLimitPrice,
-				totalCost: newNumShares * newLimitPrice,
-				side: newSide
-			}
-		} });
+		dispatch({
+			type: UPDATE_TRADE_IN_PROGRESS, data: {
+				marketID,
+				outcomeID,
+				details: newTradeDetails			}
+		});
 	};
 }
 
 export function clearTradeInProgress(marketID) {
-	return { type: CLEAR_TRADE_IN_PROGRESS, marketID };
+	return {type: CLEAR_TRADE_IN_PROGRESS, marketID};
 }
