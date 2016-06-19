@@ -131,10 +131,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		assert(fakeClearReports.clearReports.calledOnce, `clearReports wasn't called once as expected.`);
 		assert(fakeLoadReports.loadReports.calledOnce, `loadReports wasn't called once as expected.`);
 		assert(fakeCommitReports.commitReports.calledOnce, `commitReports wasn't called once as expected.`);
-<<<<<<< Updated upstream
-		// assert(fakePenalizeTooFew.penalizeTooFewReports.calledOnce, `penalizeTooFewReports wasn't called once as expected.`);
-=======
->>>>>>> Stashed changes
 		assert(fakeCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected.`);
 		assert(fakePenalizeWrong.penalizeWrongReports.calledOnce, `penalizeWrongReports wasn't called once as expected.`);
 		assert(fakeCloseMarkets.closeMarkets.calledOnce, `closeMarkets wasn't called once as expected.`);

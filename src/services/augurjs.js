@@ -294,7 +294,6 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 };
 
 ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
-	console.log(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax);
 	augur.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
 		onBuySellSent, onBuySellSuccess, onBuySellFailed,
 		onShortSellSent, onShortSellSuccess, onShortSellFailed,
