@@ -58,7 +58,7 @@ export function multiTrade(transactionID, marketID) {
 
 		dispatch(updateExistingTransaction(transactionID, { status: PLACE_MULTI_TRADE }));
 
-		if (market.type === "scalar") {
+		if (market.type === 'scalar') {
 			scalarMinMax = {
 				minValue: market.minValue,
 				maxValue: market.maxValue
