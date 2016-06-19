@@ -293,9 +293,9 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
-ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
-	augur.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions,
-		onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
+ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
+	console.log(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax);
+	augur.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
 		onBuySellSent, onBuySellSuccess, onBuySellFailed,
 		onShortSellSent, onShortSellSuccess, onShortSellFailed,
 		onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed);
@@ -348,8 +348,8 @@ ex.get_trade_ids = function getTradeIds(marketID, cb) {
 	augur.get_trade_ids(marketID, cb);
 };
 
-ex.getOrderBook = function getOrderBook(marketID, cb) {
-	augur.getOrderBook(marketID, cb);
+ex.getOrderBook = function getOrderBook(marketID, scalarMinMax, cb) {
+	augur.getOrderBook(marketID, scalarMinMax, cb);
 };
 
 ex.get_trade = function getTrade(orderID, cb) {
