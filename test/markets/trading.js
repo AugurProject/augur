@@ -815,6 +815,11 @@ describe("Integration tests", function () {
                     var orderBook = augur.getOrderBook(t.market);
                     var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
                     // console.log("orderBook:", orderBook);
+                    var scalarMinMax = {};
+                    var marketInfo = augur.getMarketInfo(t.market);
+                    if (marketInfo && marketInfo.type === "scalar") {
+                        scalarMinMax = marketInfo.events[0];
+                    }
                     augur.multiTrade({
                         requestId: t.requestId,
                         market: t.market,
