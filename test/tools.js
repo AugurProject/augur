@@ -21,7 +21,7 @@ module.exports = {
     // maximum number of accounts/samples for testing
     MAX_TEST_ACCOUNTS: 3,
     UNIT_TEST_SAMPLES: 100,
-    MAX_TEST_SAMPLES: 3,
+    MAX_TEST_SAMPLES: 10,
 
     // unit test timeout
     TIMEOUT: 600000,
@@ -83,7 +83,7 @@ module.exports = {
         var defaulthost, ipcpath, wsUrl;
         if (NODE_JS && process.env.AUGURJS_INTEGRATION_TESTS) {
             defaulthost = "http://127.0.0.1:8545";
-            // ipcpath = process.env.GETH_IPC;
+            ipcpath = process.env.GETH_IPC;
             wsUrl = "ws://127.0.0.1:8546";
         }
         if (process.env.CONTINUOUS_INTEGRATION) {

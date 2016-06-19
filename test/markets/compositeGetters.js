@@ -6,6 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var async = require("async");
 var abi = require("augur-abi");
 var clone = require("clone");
 var utils = require("../../src/utilities");
@@ -187,26 +188,16 @@ describe("Integration tests", function () {
             assert.isObject(info);
             var numMarkets = options.numMarkets || parseInt(augur.getNumMarketsBranch(branchId));
             var market;
-            console.log("info:", info);
-            console.log("numMarkets:", numMarkets);
-            console.log("keys length:", Object.keys(info).length);
             assert.strictEqual(Object.keys(info).length, numMarkets);
             for (var marketId in info) {
                 if (!info.hasOwnProperty(marketId)) continue;
                 market = info[marketId];
-                console.log("tradingPeriod:", market.tradingPeriod);
                 assert.isNumber(market.tradingPeriod);
-                console.log("tradingFee:", market.tradingFee);
                 assert.isString(market.tradingFee);
-                console.log("creationTime:", market.creationTime);
                 assert.isNumber(market.creationTime);
-                console.log("volume:", market.volume);
                 assert.isString(market.volume);
-                console.log("tags:", market.tags);
                 assert.isArray(market.tags);
-                console.log("endDate:", market.endDate);
                 assert.isNumber(market.endDate);
-                console.log("description:", market.description);
                 assert.isString(market.description);
             }
             if (done) done();
@@ -226,58 +217,90 @@ describe("Integration tests", function () {
             delete p.offset;
             test(augur.getMarketsInfo(p), {numMarkets: p.numMarketsToLoad});
         });
-    //     it("async", function (done) {
-    //         this.timeout(tools.TIMEOUT);
-    //         params.callback = function (info) {
-    //             if (info.error) return done(info);
-    //             test(info, {numMarkets: params.numMarketsToLoad}, done);
-    //         };
-    //         augur.getMarketsInfo(params);
-    //     });
-    //     it("async/missing numMarketsToLoad", function (done) {
-    //         this.timeout(tools.TIMEOUT);
-    //         var p = tools.copy(params);
-    //         delete p.numMarketsToLoad;
-    //         p.callback = function (info) {
-    //             if (info.error) return done(info);
-    //             test(info, done);
-    //         };
-    //         augur.getMarketsInfo(p);
-    //     });
-    //     it("async/missing numMarketsToLoad/missing offset", function (done) {
-    //         this.timeout(tools.TIMEOUT);
-    //         var p = tools.copy(params);
-    //         delete p.numMarketsToLoad;
-    //         delete p.offset;
-    //         p.callback = function (info) {
-    //             if (info.error) return done(info);
-    //             test(info, done);
-    //         };
-    //         augur.getMarketsInfo(p);
-    //     });
-    //     it("async/offset=1/numMarketsToLoad=2", function (done) {
-    //         this.timeout(tools.TIMEOUT);
-    //         var numMarketsToLoad = 3;
-    //         augur.getMarketsInfo({
-    //             branch: branchId,
-    //             offset: 1,
-    //             numMarketsToLoad: numMarketsToLoad,
-    //             callback: function (info) {
-    //                 if (info.error) return done(info);
-    //                 assert.strictEqual(Object.keys(info).length, numMarketsToLoad);
-    //                 test(info, {numMarkets: numMarketsToLoad}, done);
-    //             }
-    //         });
-    //     });
+        it("async", function (done) {
+            this.timeout(tools.TIMEOUT);
+            params.callback = function (info) {
+                if (info.error) return done(info);
+                test(info, {numMarkets: params.numMarketsToLoad}, done);
+            };
+            augur.getMarketsInfo(params);
+        });
+        it("async/offset=1/numMarketsToLoad=2", function (done) {
+            this.timeout(tools.TIMEOUT);
+            var numMarketsToLoad = 3;
+            augur.getMarketsInfo({
+                branch: branchId,
+                offset: 1,
+                numMarketsToLoad: numMarketsToLoad,
+                callback: function (info) {
+                    if (info.error) return done(info);
+                    assert.strictEqual(Object.keys(info).length, numMarketsToLoad);
+                    test(info, {numMarkets: numMarketsToLoad}, done);
+                }
+            });
+        });
     });
-    // if (process.env.AUGURJS_INTEGRATION_TESTS) {
-    //     describe("getOrderBook", function () {
-    //         var test = function (t) {
-    //             assert.isObject(t.output);
-    //         };
-    //         for (var i = 0; i < numMarkets; ++i) {
-    //             runtests(this.title, test, markets[i]);
-    //         }
-    //     });
-    // }
+    describe("adjustScalarPrice", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                var adjustedPrice = augur.adjustScalarPrice(t.type, t.minValue, t.maxValue, t.price);
+                assert.isString(adjustedPrice);
+                if (t.type === "buy") {
+                    assert(abi.bignum(adjustedPrice).lte(abi.bignum(t.price)));
+                } else {
+                    assert(abi.bignum(adjustedPrice).gte(abi.bignum(t.price)));
+                }
+            });
+        };
+        async.eachSeries(markets, function (market, next) {
+            augur.getMarketInfo(market, function (marketInfo) {
+                if (!marketInfo) return next(market);
+                if (marketInfo.type !== "scalar") return next();
+                augur.getOrderBook(market, function (rawOrderBook) {
+                    for (var type in rawOrderBook) {
+                        if (!rawOrderBook.hasOwnProperty(type)) continue;
+                        for (var i = 0; i < rawOrderBook[type].length; ++i) {
+                            assert.strictEqual(type, rawOrderBook[type][i].type);
+                            test({
+                                type: type,
+                                minValue: abi.bignum(marketInfo.events[0].minValue),
+                                maxValue: abi.bignum(marketInfo.events[0].maxValue),
+                                price: rawOrderBook[type][i].price
+                            });
+                        }
+                    }
+                    next();
+                });
+            });
+        });
+    });
+    describe("getOrderBook", function () {
+        var test = function (t) {
+            var marketInfo;
+            assert.isObject(t.output);
+            for (var type in t.output) {
+                if (!t.output.hasOwnProperty(type)) continue;
+                assert.isArray(t.output[type]);
+                for (var i = 0; i < t.output[type]; ++i) {
+                    marketInfo = augur.getMarketInfo(t.output[type][i].market);
+                    assert.isNotNull(marketInfo);
+                    assert.isString(marketInfo.type);
+                    assert.strictEqual(type, t.output[type][i].type);
+                    assert.isString(t.output[type][i].id);
+                    assert.isString(t.output[type][i].market);
+                    assert.isString(t.output[type][i].amount);
+                    assert.isString(t.output[type][i].price);
+                    assert.isString(t.output[type][i].owner);
+                    assert.strictEqual(t.output[type][i].owner, abi.format_address(t.output[type][i].owner));
+                    assert.isNumber(t.output[type][i].block);
+                    assert.isString(t.output[type][i].outcome);
+                    assert.deepEqual(augur.get_trade(t.output[type][i].id), t.output[type][i]);
+                }
+            }
+            t.done();
+        };
+        for (var i = 0; i < numMarkets; ++i) {
+            runtests(this.title, test, markets[i]);
+        }
+    });
 });

@@ -25,10 +25,6 @@ try {
     MAX_NUM_MARKETS = 100;
 }
 
-function getRandomInt(min, max) {
-    return ;
-}
-
 function createMarkets(numMarketsToCreate, callback) {
     console.log(chalk.blue.bold("Creating " + numMarketsToCreate + " markets..."));
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
@@ -62,8 +58,8 @@ function createMarkets(numMarketsToCreate, callback) {
             }
             description += "~|>" + choices.join('|');
         }
-        var expDate = Math.round(new Date().getTime() / 990);
-        augur.createSingleEventMarket({
+        var expDate = Math.round(new Date().getTime() / 900);
+        var createSingleEventMarketParams = {
             branchId: augur.branches.dev,
             description: description,
             expDate: expDate,
@@ -72,7 +68,7 @@ function createMarkets(numMarketsToCreate, callback) {
             numOutcomes: numOutcomes,
             resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
             tradingFee: "0.02",
-            makerFees: Math.random().toString(),
+            makerFees: (0.5 * Math.random()).toString(),
             extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun(),
             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
             onSent: function (r) {},
@@ -81,59 +77,73 @@ function createMarkets(numMarketsToCreate, callback) {
                 augur.getMarketInfo(r.marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
+                        console.log(r);
                         return augur.fundNewAccount(augur.branches.dev,
                             function (r) {},
                             function (r) { next(); },
                             function (err) {
-                                console.error("fundNewAccount failed:", err);
+                                console.error(chalk.red.bold("fundNewAccount failed:"), err);
                                 next();
                             }
                         );
                     }
-                    var initialFairPrices = new Array(numOutcomes);
-                    if (type === "scalar") {
-                        var avg = 0.5*(minValue + maxValue);
-                        initialFairPrices = [0.9*avg, 1.1*avg];
-                    } else {
-                        for (var i = 0; i < numOutcomes; ++i) {
-                            initialFairPrices[i] = ((0.4*Math.random()) + 0.3).toString();
-                        }
-                    }
                     var orderBookParams = {
                         market: r.marketID,
                         liquidity: Math.floor(4000*Math.random()) + 1000,
-                        initialFairPrices: initialFairPrices,
                         startingQuantity: Math.floor(400*Math.random()) + 100,
                         bestStartingQuantity: Math.floor(400*Math.random()) + 100,
                         priceWidth: Math.random().toString()
                     };
+                    var initialFairPrices = new Array(numOutcomes);
+                    if (type === "scalar") {
+                        var avg = 0.5*(minValue + maxValue);
+                        initialFairPrices = [0.9*avg, 1.1*avg];
+                        while (initialFairPrices[i] < minValue + 0.5*parseFloat(orderBookParams.priceWidth) || initialFairPrices[i] > maxValue - 0.5*parseFloat(orderBookParams.priceWidth)) {
+                            initialFairPrices = [initialFairPrices[0]*1.01, initialFairPrices[1]*0.99];
+                        }
+                    } else {
+                        for (var i = 0; i < numOutcomes; ++i) {
+                            do {
+                                initialFairPrices[i] = ((0.4*Math.random()) + 0.3);
+                            } while (initialFairPrices[i] < 0.5*parseFloat(orderBookParams.priceWidth) || initialFairPrices[i] > 1 - 0.5*parseFloat(orderBookParams.priceWidth));
+                        }
+                    }
+                    orderBookParams.initialFairPrices = initialFairPrices;
                     augur.generateOrderBook(orderBookParams, {
-                        onBuyCompleteSets: function (res) {},
-                        onSetupOutcome: function (res) {},
-                        onSetupOrder: function (res) {},
+                        onBuyCompleteSets: function (res) {
+                            // console.log("buyCompleteSets:", res);
+                        },
+                        onSetupOutcome: function (res) {
+                            // console.log("setupOutcome:", res);
+                        },
+                        onSetupOrder: function (res) {
+                            // console.log("setupOrder:", res);
+                        },
                         onSuccess: function (res) {
                             if (index % 10) return next();
                             augur.fundNewAccount(augur.branches.dev,
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
-                                    console.error("fundNewAccount failed:", err);
+                                    console.error(chalk.red.bold("fundNewAccount failed:"), err);
                                     next();
                                 }
                             );
                         },
                         onFailed: function (err) {
-                            console.error("generateOrderBook failed:", err);
+                            console.error(chalk.red.bold("generateOrderBook failed:"), err);
                             next();
                         }
                     });
                 });
             },
             onFailed: function (err) {
-                console.error("createSingleEventMarket failed:", err);
+                console.error(chalk.red.bold("createSingleEventMarket failed:"), err);
                 next();
             }
-        });
+        };
+        // console.log("params:", createSingleEventMarketParams);
+        augur.createSingleEventMarket(createSingleEventMarketParams);
     }, callback);
 }
 
