@@ -657,11 +657,8 @@ describe("Integration tests", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT*4);
-                    // rpc.miner("start", 1);
                     rpc.personal("unlockAccount", [accounts[0], password]);
-                    augur.from = accounts[0];
-                    augur.connector.from_field_tx(accounts[0]);
-                    augur.sync(augur.connector);
+                    augur.useAccount(accounts[0]);
                     var initialTotalTrades = parseInt(augur.get_total_trades(t.market));
                     augur.buyCompleteSets({
                         market: t.market,
@@ -675,18 +672,14 @@ describe("Integration tests", function () {
                                 outcome: t.outcome,
                                 onSent: function (r) {},
                                 onSuccess: function (r) {
-                                    // rpc.miner("stop");
-                                    augur.from = accounts[2];
-                                    augur.connector.from_field_tx(accounts[2]);
-                                    augur.sync(augur.connector);
+                                    augur.useAccount(accounts[2]);
                                     augur.get_trade_ids(t.market, function (trade_ids) {
                                         async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
                                             augur.get_trade(thisTrade, function (tradeInfo) {
                                                 if (!tradeInfo) return nextTrade("no trade info found");
                                                 if (tradeInfo.owner === augur.from) return nextTrade();
                                                 if (tradeInfo.type === "buy") return nextTrade();
-                                                console.log("matched trade:", thisTrade, tradeInfo);
-                                                // rpc.miner("start", 1);
+                                                // console.log("matched trade:", thisTrade, tradeInfo);
                                                 rpc.personal("unlockAccount", [accounts[2], password]);
                                                 augur.trade({
                                                     max_value: t.max_value,
@@ -747,9 +740,7 @@ describe("Integration tests", function () {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT*4);
                     rpc.personal("unlockAccount", [accounts[0], password]);
-                    augur.from = accounts[0];
-                    augur.connector.from_field_tx(accounts[0]);
-                    augur.sync(augur.connector);
+                    augur.useAccount(accounts[0]);
                     var initialTotalTrades = parseInt(augur.get_total_trades(t.market));
                     augur.buy({
                         amount: 1,
@@ -758,16 +749,14 @@ describe("Integration tests", function () {
                         outcome: t.outcome,
                         onSent: function (r) {},
                         onSuccess: function (r) {
-                            augur.from = accounts[2];
-                            augur.connector.from_field_tx(accounts[2]);
-                            augur.sync(augur.connector);
+                            augur.useAccount(accounts[2]);
                             augur.get_trade_ids(t.market, function (trade_ids) {
                                 async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
                                     augur.get_trade(thisTrade, function (tradeInfo) {
                                         if (!tradeInfo) return nextTrade("no trade info found");
                                         if (tradeInfo.owner === augur.from) return nextTrade();
                                         if (tradeInfo.type === "sell") return nextTrade();
-                                        console.log("matched trade:", thisTrade, tradeInfo);
+                                        // console.log("matched trade:", thisTrade, tradeInfo);
                                         rpc.personal("unlockAccount", [accounts[2], password]);
                                         augur.short_sell({
                                             buyer_trade_id: thisTrade,
@@ -822,12 +811,10 @@ describe("Integration tests", function () {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT*10);
                     rpc.personal("unlockAccount", [accounts[0], password]);
-                    augur.from = accounts[0];
-                    augur.connector.from_field_tx(accounts[0]);
-                    augur.sync(augur.connector);
+                    augur.useAccount(accounts[0]);
                     var orderBook = augur.getOrderBook(t.market);
                     var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
-                    console.log("orderBook:", orderBook);
+                    // console.log("orderBook:", orderBook);
                     augur.multiTrade({
                         requestId: t.requestId,
                         market: t.market,

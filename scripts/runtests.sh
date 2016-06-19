@@ -69,7 +69,7 @@ echo -e "+${GRAY}================${NC}+\n"
 
 echo -e " ${TEAL}jshint${NC}\n"
 
-declare -a targets=("gulpfile.js" "src/*.js" "src/client/*.js" "scripts/setup.js" "test/*.js")
+declare -a targets=("gulpfile.js" "src/*.js" "src/client/*.js" "src/modules/*.js" "scripts/setup.js" "test/*.js")
 for target in "${targets[@]}"
 do
     jshint ${target}

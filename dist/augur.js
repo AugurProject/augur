@@ -37429,7 +37429,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.0";
+    this.version = "1.4.1";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38145,7 +38145,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    sync: function (connector) {
+    sync: function () {
         if (connector && connector.constructor === Object) {
             this.network_id = connector.network_id;
             this.from = connector.from;
@@ -38158,11 +38158,17 @@ module.exports = {
         return false;
     },
 
+    useAccount: function (account) {
+        this.from = account;
+        connector.from_field_tx(account);
+        this.sync();
+    },
+
     updateContracts: function (newContracts) {
         if (connector && connector.constructor === Object) {
             connector.contracts = clone(newContracts);
             connector.update_contracts();
-            return this.sync(connector);
+            return this.sync();
         }
         return false;
     },
@@ -38212,12 +38218,12 @@ module.exports = {
         }
         if (!utils.is_function(cb)) {
             var connection = connector.connect(options);
-            this.sync(connector);
+            this.sync();
             return connection;
         }
         var self = this;
         connector.connect(options, function (connection) {
-            self.sync(connector);
+            self.sync();
             cb(connection);
         });
     }
