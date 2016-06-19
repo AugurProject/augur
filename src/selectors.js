@@ -1,7 +1,9 @@
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
+import keywords from './selectors/keywords';
 import filters from './selectors/filters';
 import createMarketForm from './selectors/create-market-form';
+
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { LOGIN } from './modules/auth/constants/auth-types';
 
@@ -15,6 +17,7 @@ const selectors = {
 	},
 	loginAccount,
 	markets,
+	keywords,
 	filters,
 	createMarketForm
 };
@@ -29,11 +32,6 @@ selectors.links = {
 	marketLink: { href: '', onClick: () => module.exports.update({ activePage: M }) },
 	previousLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
 	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
-};
-
-selectors.keywords = {
-	value: '',
-	onChangeKeywords: () => {}
 };
 
 selectors.authForm = { closeLink: { href: '/', onClick: () => {} } };
@@ -146,10 +144,7 @@ selectors.marketsTotals = {
 	numFiltered: 7,
 };
 
-selectors.keywords = {
-	value: '',
-	onChangeKeywords: () => {}
-};
+
 selectors.onChangeSort = (prop, isDesc) => {
 	let isDescending = isDesc;
 	if (isDesc !== false && isDesc !== true) {

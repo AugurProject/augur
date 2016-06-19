@@ -1,4 +1,10 @@
 .checkbox {
+	cursor: default;
+
+	&:disabled {
+		opacity: 0.4;
+	}
+
 	&.checked {
 		.checkbox-box:before {
 			position: absolute;
@@ -17,20 +23,11 @@
 		background: #fafafa;
 		border: 1px solid @color-border-darker;
 		vertical-align: middle;
-		cursor: default;
-
-		&:disabled {
-			opacity: 0.4;
-		}
 	}
 
-	.checkbox-label {
+	.checkbox-label, .checkbox-label2 {
 		display: inline-block; position: relative;
+		margin-left: 0.25em;
 		vertical-align: middle;
-		cursor: default;
-
-		&.editing {
-			cursor: text;
-		}
 	}
 }

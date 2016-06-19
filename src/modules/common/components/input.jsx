@@ -26,7 +26,7 @@ export default class Input extends Component {
 			}
 		};
 		this.handleOnChange = this.handleOnChange.bind(this);
-		this.handleOnBlur = this.handleOnChange.bind(this);
+		this.handleOnBlur = this.handleOnBlur.bind(this);
 		this.handleClear = this.handleClear.bind(this);
 		this.sendValue = this.sendValue.bind(this);
 	}
