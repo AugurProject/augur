@@ -37429,7 +37429,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.1";
+    this.version = "1.4.2";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38030,7 +38030,7 @@ module.exports = {
             for (var i = 0; i < numOrders; ++i) {
                 order = self.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
                 if (isScalar) {
-                    self.adjustScalarPrice(order.type, minValue, maxValue, order.price);
+                    order.price = self.adjustScalarPrice(order.type, minValue, maxValue, order.price);
                 }
                 orderBook[order.type].push(order);
             }

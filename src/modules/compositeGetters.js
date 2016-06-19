@@ -35,7 +35,7 @@ module.exports = {
             for (var i = 0; i < numOrders; ++i) {
                 order = self.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
                 if (isScalar) {
-                    self.adjustScalarPrice(order.type, minValue, maxValue, order.price);
+                    order.price = self.adjustScalarPrice(order.type, minValue, maxValue, order.price);
                 }
                 orderBook[order.type].push(order);
             }
