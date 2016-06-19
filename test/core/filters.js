@@ -241,24 +241,6 @@ describe("Unit tests", function () {
             "transactionHash": "0xa1796f1e7bd1290ba695908a2633a5164deb83c1431c5106c51fb186e79c257e",
             "transactionIndex": "0x3"
         }]);
-        test([{
-            address: '0x8d28df956673fa4a8bc30cd0b3cb657445bc820e',
-            blockHash: '0x171e8b766a39d5922cdeb45f9f4b3ebfba60d98a4a0b5c1e2dd14fb223fcd595',
-            blockNumber: '0x11966f',
-            data: 
-            [ '0x0000000000000000000000007c0d52faab596c08f484e3478aebc6205f3f5d8c',
-             '0x0000000000000000000000000000000000000000000000008000000000000000',
-             '0x0000000000000000000000000000000000000000000000010000000000000000',
-             '0xc84e2b59c1a8cb678624e582d22e3ac0b4bbed6490900065143bf29b0563e1ee',
-             '0x0000000000000000000000000000000000000000000000000000000000000001',
-             '0x0000000000000000000000000000000000000000000000000000000000000002' ],
-            logIndex: '0x0',
-            topics: 
-            [ '0x9ecf4903f3efaf1549dc51545bd945f94d51923f37ce198a3b838125a2f397d5',
-             '0x467982cbbb0fbb3fc4499f4376aa15795f44a999f32369476f355196f52eeb68' ],
-            transactionHash: '0xf5a45ffe66c9182545dd6c876d2727dded27ea41369ebee7d1b3c7469e70a99c',
-            transactionIndex: '0x2'
-        }]);
     });
     describe("parse_add_tx_message", function () {
         var test = function (msg) {
