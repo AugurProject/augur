@@ -19,7 +19,7 @@ export function updateAssets() {
 					return;
 				}
 
-				if (!loginAccount.ether || loginAccount.ether.value !== ether) {
+				if (!loginAccount.ether || loginAccount.ether !== ether) {
 					return dispatch(updateLoginAccount({ ether }));
 				}
 			},
@@ -28,7 +28,7 @@ export function updateAssets() {
 					console.info('!! ERROR updateAssets() rep', err);
 					return;
 				}
-				if (!loginAccount.rep || loginAccount.rep.value !== rep) {
+				if (!loginAccount.rep || loginAccount.rep !== rep) {
 					return dispatch(updateLoginAccount({ rep }));
 				}
 			},
@@ -38,7 +38,7 @@ export function updateAssets() {
 					return;
 				}
 
-				if (!loginAccount.realEther || loginAccount.realEther.value !== realEther) {
+				if (!loginAccount.realEther || loginAccount.realEther !== realEther) {
 					return dispatch(updateLoginAccount({ realEther }));
 				}
 			}

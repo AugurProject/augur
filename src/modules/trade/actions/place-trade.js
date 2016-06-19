@@ -56,8 +56,16 @@ export function multiTrade(transactionID, marketID) {
 
 		dispatch(updateExistingTransaction(transactionID, { status: PLACE_MULTI_TRADE }));
 
+		var scalarMinMax;
+        if (market.type === "scalar") {
+            scalarMinMax = {
+            	minValue: market.minValue,
+            	maxValue: market.maxValue
+            };
+        }
+
 		AugurJS.multiTrade(
-			transactionID, marketID, marketOrderBook, tradeOrders, positionPerOutcome,
+			transactionID, marketID, marketOrderBook, tradeOrders, positionPerOutcome, scalarMinMax,
 			(transactionID, res) => {
 				console.log('onTradeHash %o', res);
 				let newTransactionData;

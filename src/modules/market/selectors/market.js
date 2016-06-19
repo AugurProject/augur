@@ -6,8 +6,7 @@ This is the point where the shallow, light, loose, flexible, independent
 pieces of state come together to make each market.
 
 IMPORTANT
-The assembleMarket() function (where all the action happens) is heavily
- memoized, and performance sensitive.
+The assembleMarket() function (where all the action happens) is heavily memoized, and performance sensitive.
 Doing things sub-optimally here will cause noticeable performance degradation in the app.
 The "trick" is to maximize memoization cache hits as much a spossible, and not have assembleMarket()
 run any more than it has to.
@@ -56,10 +55,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites,
-					reports, outcomes,
-					accountTrades, tradesInProgress,
-					blockchain, priceHistory, marketOrderBooks } = store.getState();
+	const { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -117,10 +113,9 @@ export const assembleMarket = memoizerific(1000)((
 
 	const market = {
 		...marketData,
+		description: marketData.description || '',
 		id: marketID
 	};
-	let tradeOrders = [];
-	const positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
 	market.type = marketData.type;
 	switch (market.type) {
@@ -142,6 +137,7 @@ export const assembleMarket = memoizerific(1000)((
 	default:
 		break;
 	}
+
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.isOpen = isOpen;
 	market.isExpired = !isOpen;
@@ -174,6 +170,9 @@ export const assembleMarket = memoizerific(1000)((
 	};
 
 	market.outcomes = [];
+
+	let tradeOrders = [];
+	const positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
 	market.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
 		const outcomeData = marketOutcomes[outcomeID];

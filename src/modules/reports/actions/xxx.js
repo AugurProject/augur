@@ -28,54 +28,34 @@ export function autoReportSequence(isReportConfirmationPhase) {
 
 			// if this user has reputation
 			if (loginAccount.rep) {
-				if (!track.calledPenalizeNotEnoughReports && !track.calledPenalizationCatchup) {
-					AugurJS.getReportedPeriod(branchID, prevPeriod, loginAccount, reported => {
-						// if the reporter submitted a report during the previous period,
-						// penalize if they did not submit enough reports.
-						if (reported === '1') {
-							AugurJS.penalizeNotEnoughReports(branchID, (err, res) => {
-								track.calledPenalizeNotEnoughReports = true;
-								dispatch(updateAssets());
-							});
-						} else {
-							// if the reporter did not submit a report during the previous period,
-							// dock 10% for each report-less period.
-							AugurJS.penalizationCatchup(branchID, (err, res) => {
-								track.calledPenalizationCatchup = true;
-								dispatch(updateAssets());
-							});
-						}
-					});
 
 				// number-of-reports penalties applied; now penalize wrong answers.
-				} else {
-					AugurJS.getEvents(branchID, prevPeriod, events => {
-						if (!events || events.error) return console.error('getEvents:', events);
-						async.eachSeries(events, (event, nextEvent) => {
-							if (track.calledPenalizeWrong && track.calledPenalizeWrong[event]) {
-								return nextEvent();
-							}
-							AugurJS.penalizeWrong(branchID, prevPeriod, event, (err, res) => {
-								if (err) {
-									if (track.calledPenalizeWrong && track.calledPenalizeWrong.length) {
-										if (track.calledPenalizeWrong[event]) {
-											track.calledPenalizeWrong[event] = false;
-										}
-									}
-									track.calledPenalizeNotEnoughReports = false;
-								}
-								if (!track.calledPenalizeWrong) track.calledPenalizeWrong = {};
-								track.calledPenalizeWrong[event] = true;
-								nextEvent();
-							});
-						}, err => {
+				AugurJS.getEvents(branchID, prevPeriod, events => {
+					if (!events || events.error) return console.error('getEvents:', events);
+					async.eachSeries(events, (event, nextEvent) => {
+						if (track.calledPenalizeWrong && track.calledPenalizeWrong[event]) {
+							return nextEvent();
+						}
+						AugurJS.penalizeWrong(branchID, prevPeriod, event, (err, res) => {
 							if (err) {
-								return console.error('penalizeWrong series error:', err);
+								if (track.calledPenalizeWrong && track.calledPenalizeWrong.length) {
+									if (track.calledPenalizeWrong[event]) {
+										track.calledPenalizeWrong[event] = false;
+									}
+								}
+								track.calledPenalizeNotEnoughReports = false;
 							}
-							console.log('penalizeWrong series completed');
+							if (!track.calledPenalizeWrong) track.calledPenalizeWrong = {};
+							track.calledPenalizeWrong[event] = true;
+							nextEvent();
 						});
+					}, err => {
+						if (err) {
+							return console.error('penalizeWrong series error:', err);
+						}
+						console.log('penalizeWrong series completed');
 					});
-				}
+				});
 			}
 		// if we're in the second half of the reporting period
 		} else {

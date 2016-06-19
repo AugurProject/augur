@@ -3,7 +3,6 @@ import * as AugurJS from '../../../services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
 
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 
 /*
 import { loadReports } from '../../reports/actions/load-reports';
@@ -26,7 +25,6 @@ export function loadMarkets() {
 			}
 
 			dispatch(updateMarketsData(marketsData));
-			dispatch(loadMarketsInfo(Object.keys(marketsData)));
 
 			/*
 			dispatch(loadReports(marketsData));

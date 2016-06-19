@@ -19,14 +19,14 @@ export default function () {
 }
 
 export const selectPendingReports = memoizerific(1)((markets) =>
-markets.filter(market => !!market.isPendingReport));
+	markets.filter(market => !!market.isPendingReport)
+);
 
 export const selectPositions = memoizerific(1)((markets) =>
-markets.filter(market =>
-		market.positionsSummary && market.positionsSummary.qtyShares.value));
+	markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
+);
 
-export const selectUnpaginatedMarkets = memoizerific(1)(
-(allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader) => {
+export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activePage, selectedMarketsHeader) => {
 	if (activePage === POSITIONS) {
 		return selectPositions(allMarkets);
 	}

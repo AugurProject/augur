@@ -15,7 +15,6 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 	let mockAugurJS = {};
-	let mockLoadMarketsInfo = { loadMarketsInfo: () => {} };
 
 	mockAugurJS.loadNumMarkets = sinon.stub();
 	mockAugurJS.loadMarkets = sinon.stub();
@@ -28,16 +27,8 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 		}
 	});
 
-	sinon.stub(mockLoadMarketsInfo, `loadMarketsInfo`, (marketsDataKeys) => {
-		return {
-			type: 'LOAD_MARKETS_INFO',
-			marketsInfo: {...marketsDataKeys}
-		};
-	});
-
 	action = proxyquire('../../../src/modules/markets/actions/load-markets', {
-		'../../../services/augurjs': mockAugurJS,
-		'../../markets/actions/load-markets-info': mockLoadMarketsInfo
+		'../../../services/augurjs': mockAugurJS
 	});
 
 	it(`should load markets properly`, () => {
@@ -50,11 +41,6 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 					example: 'test info'
 				}
 			}
-		}, {
-			marketsInfo: {
-				'0': 'marketsData'
-			},
-			type: 'LOAD_MARKETS_INFO'
 		}];
 
 		store.dispatch(action.loadMarkets());

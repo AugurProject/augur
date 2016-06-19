@@ -35,9 +35,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	mockCommitReports.commitReports = sinon.stub().returns({
 		type: 'COMMIT_REPORTS'
 	});
-	mockPenalize.penalizeTooFewReports = sinon.stub().returns({
-		type: 'PENALIZE_TOO_FEW_REPORTS'
-	});
 	mockCollectFees.collectFees = sinon.stub().returns({
 		type: 'COLLECT_FEES'
 	});
@@ -45,7 +42,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	action = proxyquire('../../../src/modules/app/actions/update-blockchain.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../reports/actions/commit-reports': mockCommitReports,
-		'../../reports/actions/penalize-too-few-reports': mockPenalize,
 		'../../reports/actions/collect-fees': mockCollectFees
 	});
 
@@ -58,7 +54,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		store.clearActions();
 		mockAugurJS.loadCurrentBlock.reset();
 		mockCommitReports.commitReports.reset();
-		mockPenalize.penalizeTooFewReports.reset();
 		mockCollectFees.collectFees.reset();
 	});
 
@@ -84,8 +79,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		}, {
 			type: 'COMMIT_REPORTS'
 		}, {
-			type: 'PENALIZE_TOO_FEW_REPORTS'
-		}, {
 			type: 'COLLECT_FEES'
 		}, {
 			type: 'MOCK_CB_CALLED'
@@ -94,7 +87,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		assert(mockAugurJS.loadCurrentBlock.calledOnce, `loadCurrentBlock wasn't called once as expected`);
 		assert(mockAugurJS.getReportPeriod.calledOnce, `getReportPeriod wasn't called once as expected`);
 		assert(mockCommitReports.commitReports.calledOnce, `commitReports wasn't called once as expected`);
-		assert(mockPenalize.penalizeTooFewReports.calledOnce, `penalizeTooFewReports wasn't called once as expected`);
 		assert(mockCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actons`);
 	});
@@ -121,8 +113,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		}, {
 			type: 'COMMIT_REPORTS'
 		}, {
-			type: 'PENALIZE_TOO_FEW_REPORTS'
-		}, {
 			type: 'COLLECT_FEES'
 		}, {
 			type: 'MOCK_CB_CALLED'
@@ -134,7 +124,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		// didn't reset teh next one because we need it to yield the expected outputs.
 		assert(mockAugurJS.getReportPeriod.calledThrice, `getReportPeriod wasn't called twice as expected`);
 		assert(mockCommitReports.commitReports.calledOnce, `commitReports wasn't called once as expected`);
-		assert(mockPenalize.penalizeTooFewReports.calledOnce, `penalizeTooFewReports wasn't called once as expected`);
 		assert(mockCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
 	});
