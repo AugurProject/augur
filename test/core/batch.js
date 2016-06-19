@@ -15,6 +15,7 @@ augur.rpc.wsUrl = null;
 describe("Batch", function () {
 
     it("batch(depositEther, reputationFaucet)", function (done) {
+        this.timeout(tools.TIMEOUT);
         var count = 0;
         var batch = augur.createBatch();
         augur.tx.depositEther.send = false;
@@ -34,6 +35,7 @@ describe("Batch", function () {
     });
 
     it("batch(reputationFaucet, depositEther)", function (done) {
+        this.timeout(tools.TIMEOUT);
         var count = 0;
         var batch = augur.createBatch();
         augur.tx.depositEther.send = false;

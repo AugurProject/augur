@@ -37433,7 +37433,7 @@ function Augur() {
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
-    
+
     this.connection = null;
     this.coinbase = null;
     this.from = null;
