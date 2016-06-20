@@ -16,13 +16,10 @@ import {
 } from '../../../../src/modules/markets/constants/market-types';
 import {
 	TRADING_FEE_DEFAULT,
-	INITIAL_LIQUIDITY_DEFAULT,
 	MAKER_FEE_DEFAULT,
 	STARTING_QUANTITY_DEFAULT,
 	BEST_STARTING_QUANTITY_DEFAULT,
-	PRICE_WIDTH_DEFAULT,
-	PRICE_DEPTH_DEFAULT,
-	IS_SIMULATION
+	PRICE_WIDTH_DEFAULT
 } from '../../../../src/modules/create-market/constants/market-values-constraints';
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-5';
@@ -41,10 +38,6 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		store = mockStore(state);
 
 	let stubbedSubmitNewMarket = sinon.stub(submitNewMarket, 'submitNewMarket', () => ({ type: CREATE_MARKET }));
-
-	// stubbedSubmit.submitNewMarket = sinon.stub().returns({
-	// 	type: 'SUBMIT_NEW_MARKET'
-	// });
 
 	let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-5', {
 		'../../../create-market/actions/submit-new-market': stubbedSubmitNewMarket
