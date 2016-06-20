@@ -18,6 +18,7 @@ import {
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
+
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 
@@ -102,6 +103,15 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			type: 'submitGenerateOrderBook'
 		};
 	});
+	
+	let stubbedLink = {
+		selectTransactionsLink: () => {}
+	};
+	sinon.stub(stubbedLink, 'selectTransactionsLink', () => ({
+		onClick: () => ({
+			type: 'clickedLink'
+		})
+	}));
     
 	action = proxyquire(
 		'../../../src/modules/create-market/actions/submit-new-market',
@@ -110,7 +120,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			'../../transactions/actions/update-existing-transaction': stubbedUpdateExistingTransaction,
 			'../../../services/augurjs': stubbedAugurJS,
 			'../../market/actions/load-market': stubbedLoadMarket,
-			'../../create-market/actions/generate-order-book': stubbedGenerateOrderBook
+			'../../create-market/actions/generate-order-book': stubbedGenerateOrderBook,
+			'../../link/selectors/links': stubbedLink
 		}
 	);
 
@@ -136,14 +147,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				id: 'market'
 			}
 		}));
+
 		out = [{
-			type: 'SHOW_LINK',
-			parsedURL: {
-				pathArray: ['/transactions'],
-				searchParams: {},
-				url: '/transactions'
-			}
-		}, {
 			type: 'UPDATE_TRANSACTIONS_DATA',
 			'test123': {
 				type: 'create_market',
@@ -156,7 +161,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				status: 'pending'
 			}
 		}];
-        
+
+		assert(stubbedLink.selectTransactionsLink.calledOnce, 'selectTransactionsLink was not called once');
 		assert(stubbedNewMarketTransactions.addCreateMarketTransaction.calledOnce, `addCreateMarketTransaction wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't correctly create a new market`);
 
