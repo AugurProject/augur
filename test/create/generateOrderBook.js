@@ -63,6 +63,22 @@ describe("calculatePriceDepth", function () {
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("generateOrderBook", function () {
+
+        before("top up account", function (done) {
+            this.timeout(tools.TIMEOUT);
+            augur.fundNewAccount({
+                branch: augur.branches.dev,
+                onSent: function (r) {
+                    assert.strictEqual(r.callReturn, "1");
+                },
+                onSuccess: function (r) {
+                    assert.strictEqual(r.callReturn, "1");
+                    done();
+                },
+                onFailed: done
+            });
+        });
+
         var test = function (t) {
             it("[binary] " + JSON.stringify(t), function (done) {
                 this.timeout(tools.TIMEOUT*10);
@@ -115,7 +131,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                         assert(res.sellPrice || res.buyPrice);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("onSuccess", res);
+                                        // console.log("onSuccess", res);
                                         assert.isArray(res.buy);
                                         assert.isArray(res.sell);
                                         done();
@@ -156,39 +172,24 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             startingQuantity: t.startingQuantity,
                             bestStartingQuantity: t.bestStartingQuantity,
                             priceWidth: t.priceWidth,
-                            isSimulation: true
-                        }, {
-                            onSimulate: function (simulation) {
-                                console.log("simulation:", simulation);
-                                augur.generateOrderBook({
-                                    market: r.marketID,
-                                    liquidity: t.liquidity,
-                                    initialFairPrices: initialFairPrices,
-                                    startingQuantity: t.startingQuantity,
-                                    bestStartingQuantity: t.bestStartingQuantity,
-                                    priceWidth: t.priceWidth
-                                }, {
-                                    onBuyCompleteSets: function (res) {
-                                        assert.strictEqual(res.callReturn, "1");
-                                    },
-                                    onSetupOutcome: function (res) {
-                                        assert.strictEqual(res.market, r.marketID);
-                                        assert(res.outcome);
-                                    },
-                                    onSetupOrder: function (res) {
-                                        assert.strictEqual(res.market, r.marketID);
-                                        assert(res.outcome);
-                                        assert(res.amount);
-                                        assert(res.sellPrice || res.buyPrice);
-                                    },
-                                    onSuccess: function (res) {
-                                        console.log("onSuccess", res);
-                                        assert.isArray(res.buy);
-                                        assert.isArray(res.sell);
-                                        done();
-                                    },
-                                    onFailed: done
-                                });
+                            onSimulate: function (simulation) {},
+                            onBuyCompleteSets: function (res) {
+                                assert.strictEqual(res.callReturn, "1");
+                            },
+                            onSetupOutcome: function (res) {
+                                assert.strictEqual(res.market, r.marketID);
+                                assert(res.outcome);
+                            },
+                            onSetupOrder: function (res) {
+                                assert.strictEqual(res.market, r.marketID);
+                                assert(res.outcome);
+                                assert(res.amount);
+                                assert(res.sellPrice || res.buyPrice);
+                            },
+                            onSuccess: function (res) {
+                                assert.isArray(res.buy);
+                                assert.isArray(res.sell);
+                                done();
                             },
                             onFailed: done
                         });
@@ -225,39 +226,31 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         for (var i = 0; i < numOutcomes; ++i) {
                             initialFairPrices[i] = ((0.4*Math.random()) + 0.3).toString();
                         }
-                        var orderBookParams = {
+                        augur.generateOrderBook({
                             market: r.marketID,
                             liquidity: t.liquidity,
                             initialFairPrices: initialFairPrices,
                             startingQuantity: t.startingQuantity,
                             bestStartingQuantity: t.bestStartingQuantity,
                             priceWidth: t.priceWidth,
-                            isSimulation: true
-                        };
-                        augur.generateOrderBook(orderBookParams, {
-                            onSimulate: function (simulation) {
-                                orderBookParams.isSimulation = false;
-                                augur.generateOrderBook(orderBookParams, {
-                                    onBuyCompleteSets: function (res) {
-                                        assert.strictEqual(res.callReturn, "1");
-                                    },
-                                    onSetupOutcome: function (res) {
-                                        assert.strictEqual(res.market, r.marketID);
-                                        assert(res.outcome);
-                                    },
-                                    onSetupOrder: function (res) {
-                                        assert.strictEqual(res.market, r.marketID);
-                                        assert(res.outcome);
-                                        assert(res.amount);
-                                        assert(res.sellPrice || res.buyPrice);
-                                    },
-                                    onSuccess: function (res) {
-                                        assert.isArray(res.buy);
-                                        assert.isArray(res.sell);
-                                        done();
-                                    },
-                                    onFailed: done
-                                });
+                            onSimulate: function (simulation) {},
+                            onBuyCompleteSets: function (res) {
+                                assert.strictEqual(res.callReturn, "1");
+                            },
+                            onSetupOutcome: function (res) {
+                                assert.strictEqual(res.market, r.marketID);
+                                assert(res.outcome);
+                            },
+                            onSetupOrder: function (res) {
+                                assert.strictEqual(res.market, r.marketID);
+                                assert(res.outcome);
+                                assert(res.amount);
+                                assert(res.sellPrice || res.buyPrice);
+                            },
+                            onSuccess: function (res) {
+                                assert.isArray(res.buy);
+                                assert.isArray(res.sell);
+                                done();
                             },
                             onFailed: done
                         });
@@ -268,8 +261,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         };
         test({
             liquidity: 500,
-            startingQuantity: 5,
-            bestStartingQuantity: 10,
+            startingQuantity: 50,
+            bestStartingQuantity: 100,
             priceWidth: "0.4"
         });
     });
