@@ -1,7 +1,14 @@
+import {
+	assert
+} from 'chai';
+import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import * as mockStore from '../../mockStore';
-import { assertions } from 'augur-ui-react-components';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import testState from '../../testState';
+// import createMarketFormAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/createMarketForm';
 
+let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 
@@ -50,7 +57,11 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	step5.isValid.returns(true);
 
 	selector = proxyquire('../../../src/modules/create-market/selectors/create-market-form', {
-		'../../../store': store
+		'../../../store': store,
+		'../../create-market/selectors/form-steps/step-2': step2,
+		'../../create-market/selectors/form-steps/step-3': step3,
+		'../../create-market/selectors/form-steps/step-4': step4,
+		'../../create-market/selectors/form-steps/step-5': step5
 	});
 
 	createMarketForm = selector.default;
@@ -86,7 +97,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		state.createMarketInProgress = test;
 	});
 
-	it(`should handle a binary market step 3`, () => {
+	it(`should handle step3 correctly`, () => {
 		state.createMarketInProgress.step = 3;
 
 		test = selector.default();
@@ -100,7 +111,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		state.createMarketInProgress = test;
 	});
 
-	it(`should handle a binary market step 4`, () => {
+	it(`should handle step4 correctly`, () => {
 		state.createMarketInProgress.step = 4;
 
 		test = selector.default();
@@ -121,4 +132,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
 		assert(step5.select.calledOnce, 'select is not called once');
 	});
+
 });
+
+export default createMarketForm;
