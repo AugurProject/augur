@@ -24,7 +24,7 @@ export function createOrderBook(transactionID, marketData) {
 	};
 }
 
-export function handleGenerateOrderBookResponse(err, res, transactionID, marketData){
+export function handleGenerateOrderBookResponse(err, res, transactionID, marketData) {
 	return dispatch => {
 		if (err) {
 			dispatch(
@@ -41,72 +41,72 @@ export function handleGenerateOrderBookResponse(err, res, transactionID, marketD
 		let message = null;
 
 		switch (res.status) {
-			case COMPLETE_SET_BOUGHT:
-				dispatch(
-					updateExistingTransaction(
-						transactionID,
-						{
-							status: COMPLETE_SET_BOUGHT,
-							message
-						}
-					)
-				);
+		case COMPLETE_SET_BOUGHT:
+			dispatch(
+				updateExistingTransaction(
+					transactionID,
+					{
+						status: COMPLETE_SET_BOUGHT,
+						message
+					}
+				)
+			);
 
-				break;
-			case ORDER_BOOK_ORDER_COMPLETE:
-				message = `${
-					!!p.buyPrice ? 'Bid' : 'Ask'
-					} for ${
-					p.amount
-					} share${
-					p.amount > 1 ? 's' : ''
-					} of outcome '${
-					marketData.outcomes[p.outcome - 1].name
-					}' at ${
-				p.buyPrice || p.sellPrice
-					} ETH created.`;
+			break;
+		case ORDER_BOOK_ORDER_COMPLETE:
+			message = `${
+				!!p.buyPrice ? 'Bid' : 'Ask'
+				} for ${
+				p.amount
+				} share${
+				p.amount > 1 ? 's' : ''
+				} of outcome '${
+				marketData.outcomes[p.outcome - 1].name
+				}' at ${
+			p.buyPrice || p.sellPrice
+				} ETH created.`;
 
-				dispatch(
-					updateExistingTransaction(
-						transactionID,
-						{
-							status: ORDER_BOOK_ORDER_COMPLETE,
-							message
-						}
-					)
-				);
+			dispatch(
+				updateExistingTransaction(
+					transactionID,
+					{
+						status: ORDER_BOOK_ORDER_COMPLETE,
+						message
+					}
+				)
+			);
 
-				break;
-			case ORDER_BOOK_OUTCOME_COMPLETE:
-				message = `Order book creation for outcome '${
-					marketData.outcomes[p.outcome - 1].name
-					}' completed.`;
+			break;
+		case ORDER_BOOK_OUTCOME_COMPLETE:
+			message = `Order book creation for outcome '${
+				marketData.outcomes[p.outcome - 1].name
+				}' completed.`;
 
-				dispatch(
-					updateExistingTransaction(
-						transactionID,
-						{
-							status: ORDER_BOOK_OUTCOME_COMPLETE,
-							message
-						}
-					)
-				);
+			dispatch(
+				updateExistingTransaction(
+					transactionID,
+					{
+						status: ORDER_BOOK_OUTCOME_COMPLETE,
+						message
+					}
+				)
+			);
 
-				break;
-			case SUCCESS:
-				dispatch(
-					updateExistingTransaction(
-						transactionID,
-						{
-							status: SUCCESS,
-							message
-						}
-					)
-				);
+			break;
+		case SUCCESS:
+			dispatch(
+				updateExistingTransaction(
+					transactionID,
+					{
+						status: SUCCESS,
+						message
+					}
+				)
+			);
 
-				break;
-			default:
-				break;
+			break;
+		default:
+			break;
 		}
 	};
 }

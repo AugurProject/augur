@@ -1,28 +1,15 @@
 import {
-	formatEther,
-	formatPercent,
-	formatShares
-} from '../../../../utils/format-number';
-import {
 	BINARY,
 	CATEGORICAL,
 	SCALAR
 } from '../../../markets/constants/market-types';
 import {
 	TRADING_FEE_DEFAULT,
-	TRADING_FEE_MIN,
-	TRADING_FEE_MAX,
 	INITIAL_LIQUIDITY_DEFAULT,
-	INITIAL_LIQUIDITY_MIN,
 	MAKER_FEE_DEFAULT,
-	MAKER_FEE_MIN,
-	MAKER_FEE_MAX,
 	STARTING_QUANTITY_DEFAULT,
-	STARTING_QUANTITY_MIN,
 	BEST_STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_MIN,
 	PRICE_WIDTH_DEFAULT,
-	PRICE_WIDTH_MIN,
 	PRICE_DEPTH_DEFAULT,
 	IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
