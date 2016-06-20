@@ -46,7 +46,6 @@ const CreateMarketForm2 = (p) => {
 
 				<DateField
 					forceValidDate
-					expanded={true}
 					minDate={new Date()}
 					dateFormat="YYYY/MM/DD hh:mm:ss a"
 					date={p.endDate}
