@@ -544,15 +544,20 @@ describe("Integration tests", function () {
                             market: t.market,
                             outcome: t.outcome,
                             onSent: function (r) {
-                                assert(r.txHash);
-                                assert(r.callReturn);
+                                assert.isString(r.txHash);
+                                assert.isString(r.callReturn);
                             },
                             onSuccess: function (r) {
-                                augur.get_total_trades(t.market, function (totalTrades) {
-                                    // assert.strictEqual(parseInt(totalTrades), initialTotalTrades + 1);
-                                    console.log("initial:", initialTotalTrades);
-                                    console.log("final:", parseInt(totalTrades));
-                                    done();
+                                augur.get_trade(r.callReturn, function (trade) {
+                                    assert.isObject(trade);
+                                    assert.approximately(trade.amount, t.amount, tools.EPSILON);
+                                    assert.approximately(trade.price, t.price, tools.EPSILON);
+                                    assert.strictEqual(trade.market, t.market);
+                                    assert.strictEqual(trade.outcome, t.outcome);
+                                    augur.get_total_trades(t.market, function (totalTrades) {
+                                        assert.isAbove(parseInt(totalTrades), initialTotalTrades);
+                                        done();
+                                    });
                                 });
                             },
                             onFailed: done
@@ -591,15 +596,20 @@ describe("Integration tests", function () {
                                     market: t.market,
                                     outcome: t.outcome,
                                     onSent: function (r) {
-                                        assert(r.txHash);
-                                        assert(r.callReturn);
+                                        assert.isString(r.txHash);
+                                        assert.isString(r.callReturn);
                                     },
                                     onSuccess: function (r) {
-                                        augur.get_total_trades(t.market, function (totalTrades) {
-                                            // assert.strictEqual(parseInt(totalTrades), initialTotalTrades + 1);
-                                            console.log("initial:", initialTotalTrades);
-                                            console.log("final:", parseInt(totalTrades));
-                                            done();
+                                        augur.get_trade(r.callReturn, function (trade) {
+                                            assert.isObject(trade);
+                                            assert.approximately(trade.amount, t.amount, tools.EPSILON);
+                                            assert.approximately(trade.price, t.price, tools.EPSILON);
+                                            assert.strictEqual(trade.market, t.market);
+                                            assert.strictEqual(trade.outcome, t.outcome);
+                                            augur.get_total_trades(t.market, function (totalTrades) {
+                                                assert.isAbove(parseInt(totalTrades), initialTotalTrades);
+                                                done();
+                                            });
                                         });
                                     },
                                     onFailed: done

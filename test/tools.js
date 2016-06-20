@@ -26,6 +26,9 @@ module.exports = {
     // unit test timeout
     TIMEOUT: 600000,
 
+    // approximately equals threshold
+    EPSILON: 1e-6,
+
     chunk32: function (string, stride, offset) {
         var elements, chunked, position;
         if (string.length >= 66) {
