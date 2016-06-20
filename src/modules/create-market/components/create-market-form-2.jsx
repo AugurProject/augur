@@ -45,16 +45,22 @@ const CreateMarketForm2 = (p) => {
 				<h4>What&apos;s the end date for your question?</h4>
 
 				<DateField
-					expanded={true}
 					forceValidDate
+					expanded={true}
 					minDate={new Date()}
 					dateFormat="YYYY/MM/DD hh:mm:ss a"
 					date={p.endDate}
+					highlightWeekends={false}
 					onChange={(dateText, dateMoment) =>
 						p.onValuesUpdated({ endDate: new Date(dateText) })}
 				>
 					<TransitionView>
-						<Calendar style={{padding: 10}} showClock />
+						<Calendar
+							style={{padding: 10}}
+							weekNumbers={false}
+							highlightWeekends={false}
+							showClock
+						/>
 					</TransitionView>
 				</DateField>
 				{p.errors.endDate &&
@@ -83,3 +89,4 @@ CreateMarketForm2.propTypes = {
 };
 
 export default CreateMarketForm2;
+// 	expanded={true}
