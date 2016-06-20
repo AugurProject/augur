@@ -9,6 +9,7 @@
     box-sizing: border-box; }
   .react-date-field > .react-date-field__picker {
     min-width: 100%;
+		display: block;
     position: absolute;
     z-index: 100;
     left: -1px;
@@ -28,7 +29,8 @@
           flex: 1 1 auto;
   padding: 5px;
   border: none;
-  outline: none; }
+  outline: none;
+	}
 
 .react-date-field__calendar-icon {
   border: 3px solid gray;
@@ -37,7 +39,8 @@
   padding: 5px 7px;
   margin: 2px 4px 0px 2px;
   position: relative;
-  cursor: pointer; }
+  cursor: pointer;
+	}
 
 .react-date-field__clear-icon {
   color: gray;
@@ -175,7 +178,8 @@
   .react-date-picker__nav-bar-date {
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden; }
+    overflow: hidden;
+	}
   .react-date-picker__nav-bar svg {
     vertical-align: middle; }
   .react-date-picker__nav-bar-history-view {
@@ -253,7 +257,9 @@
   outline: none; }
   .react-date-picker__month-view-week-day-name,
   .react-date-picker__basic-month-view-week-day-name {
-    padding: 5px 0px; }
+    padding: 5px 0px;
+		font-weight: bold;
+	}
   .react-date-picker__month-view-day--hidden,
   .react-date-picker__basic-month-view-day--hidden {
     visibility: hidden; }

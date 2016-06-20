@@ -55,14 +55,12 @@ const CreateMarketForm2 = (p) => {
 					onChange={(dateText, dateMoment) =>
 						p.onValuesUpdated({ endDate: new Date(dateText) })}
 				>
-					<TransitionView>
-						<Calendar
-							style={{padding: 10}}
-							weekNumbers={false}
-							highlightWeekends={false}
-							showClock
-						/>
-					</TransitionView>
+					<Calendar
+						style={{padding: 10}}
+						weekNumbers={false}
+						highlightWeekends={false}
+						showClock
+					/>
 				</DateField>
 				{p.errors.endDate &&
 					<span className="error-message">{p.errors.endDate}</span>
