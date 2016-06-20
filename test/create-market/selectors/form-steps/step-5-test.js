@@ -33,12 +33,12 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
+
 	let formState,
 		out,
-		store,
-		outAction;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
+		outAction,
+		state = Object.assign({}, testState),
+		store = mockStore(state);
 
 	console.log('submitNewMarket -- ', submitNewMarket);
 
@@ -58,21 +58,206 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
 				tradingFeePercent: TRADING_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
-				expirySource: 'testing'
+				expirySource: 'testing',
+				type: BINARY,
+				initialFairPrices: {
+					type: BINARY,
+					values: [
+						{
+							label: 'Yes',
+							value: 0.5
+						},
+						{
+							label: 'No',
+							value: 0.5
+						}
+					],
+					raw: [
+						0.5,
+						0.5
+					]
+				}
 			};
 
-			// selector.select(
-			// 	formState,
-			// 	state.blockchain.currentBlockNumber,
-			// 	state.blockchain.currentBlockMillisSinceEpoch,
-			// 	store.dispatch
-			// );
+			outAction = [store.dispatch(stubbedSubmitNewMarket())];
+			store.clearActions();
 		});
 
-		it('should return the correct object for a binary market');
-		it('should return the correct object for a categorical market');
-		it('should return the correct object for a scalar market');
-		it('should call the correct action onSubmit');
+		it('should call the correct action onSubmit', () => {
+			let select = selector.select(
+				formState,
+				state.blockchain.currentBlockNumber,
+				state.blockchain.currentBlockMillisSinceEpoch,
+				store.dispatch
+			);
+
+			select.onSubmit();
+
+			assert.deepEqual(store.getActions(), outAction, `Didn't dispatch the expected action object when onSubmit was called`);
+		});
+
+	// 	it('should return the correct object for a binary market', () => {
+	// 		formState = {
+	// 			...formState,
+	// 			type: BINARY,
+	// 			initialFairPrices: {
+	// 				type: BINARY,
+	// 				values: [
+	// 					{
+	// 						label: 'Yes',
+	// 						value: 0.5
+	// 					},
+	// 					{
+	// 						label: 'No',
+	// 						value: 0.5
+	// 					}
+	// 				],
+	// 				raw: [
+	// 					0.5,
+	// 					0.5
+	// 				]
+	// 			},
+	// 		};
+    //
+	// 		out = {
+	// 			endDate: {
+	// 				value: new Date(3000, 0, 1, 0, 0, 0, 0),
+	// 				formatted: 'Jan 1, 3000',
+	// 				full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+	// 			},
+	// 			tradingFeePercent: {
+	// 				value: 2,
+	// 				formattedValue: 2,
+	// 				formatted: '+2.0',
+	// 				roundedValue: 2,
+	// 				rounded: '+2',
+	// 				minimized: '+2',
+	// 				denomination: '%',
+	// 				full: '+2.0%'
+	// 			},
+	// 			makerFee: 0.005,
+	// 			expirySource: 'testing',
+	// 			type: 'binary',
+	// 			initialFairPrices: {
+	// 				type: 'binary',
+	// 				values: [
+	// 					{
+	// 						label: 'Yes',
+	// 						value: 0.5
+	// 					},
+	// 					{
+	// 						label: 'No',
+	// 						value: 0.5
+	// 					}
+	// 				],
+	// 				raw: [ 0.5, 0.5 ],
+	// 				formatted: [
+	// 					{
+	// 						value: 0.5,
+	// 						formattedValue: 0.5,
+	// 						formatted: '0.5',
+	// 						roundedValue: 1,
+	// 						rounded: '1',
+	// 						minimized: '0.5',
+	// 						denomination: 'ETH | Yes',
+	// 						full: '0.5ETH | Yes'
+	// 					},
+	// 					{
+	// 						value: 0.5,
+	// 						formattedValue: 0.5,
+	// 						formatted: '0.5',
+	// 						roundedValue: 1,
+	// 						rounded: '1',
+	// 						minimized: '0.5',
+	// 						denomination: 'ETH | No',
+	// 						full: '0.5ETH | No'
+	// 					}
+	// 				]
+	// 			},
+	// 			endBlock: 2587661218,
+	// 			tradingFee: 0.02,
+	// 			makerFeePercent:
+	// 			{ value: 0.5,
+	// 				formattedValue: 0.5,
+	// 				formatted: '+0.5',
+	// 				roundedValue: 1,
+	// 				rounded: '+1',
+	// 				minimized: '+0.5',
+	// 				denomination: '%',
+	// 				full: '+0.5%'
+	// 			},
+	// 			takerFeePercent: {
+	// 				value: 99.5,
+	// 				formattedValue: 99.5,
+	// 				formatted: '+99.5',
+	// 				roundedValue: 100,
+	// 				rounded: '+100',
+	// 				minimized: '+99.5',
+	// 				denomination: '%',
+	// 				full: '+99.5%'
+	// 			},
+	// 			volume: {
+	// 				value: 0,
+	// 				formattedValue: 0,
+	// 				formatted: '-',
+	// 				roundedValue: 0,
+	// 				rounded: '-',
+	// 				minimized: '-',
+	// 				denomination: '',
+	// 				full: '-'
+	// 			},
+	// 			outcomes: [
+	// 				{ id: 1, name: 'No' },
+	// 				{ id: 2, name: 'Yes' }
+	// 			],
+	// 			isFavorite: false,
+	// 			bestStartingQuantityFormatted: {
+	// 				value: 0,
+	// 				formattedValue: 0,
+	// 				formatted: '-',
+	// 				roundedValue: 0,
+	// 				rounded: '-',
+	// 				minimized: '-',
+	// 				denomination: '',
+	// 				full: '-'
+	// 			},
+	// 			startingQuantityFormatted: {
+	// 				value: 0,
+	// 				formattedValue: 0,
+	// 				formatted: '-',
+	// 				roundedValue: 0,
+	// 				rounded: '-',
+	// 				minimized: '-',
+	// 				denomination: '',
+	// 				full: '-'
+	// 			},
+	// 			priceWidthFormatted: {
+	// 				value: 0,
+	// 				formattedValue: 0,
+	// 				formatted: '-',
+	// 				roundedValue: 0,
+	// 				rounded: '-',
+	// 				minimized: '-',
+	// 				denomination: '',
+	// 				full: '-'
+	// 			},
+	// 			onSubmit: store.dispatch(stubbedSubmitNewMarket())
+	// 		};
+    //
+	// 		// console.log('out -- ', out);
+    //
+	// 		selector.select(
+	// 			formState,
+	// 			state.blockchain.currentBlockNumber,
+	// 			state.blockchain.currentBlockMillisSinceEpoch,
+	// 			store.dispatch
+	// 		);
+    //
+	// 		// 	assert.deepEqual(test, out, `Didn't produce the expected object from select`);
+	//
+	// 	});
+	// 	it('should return the correct object for a categorical market');
+	// 	it('should return the correct object for a scalar market');
 	});
 
 	it('[TODO] should return a new market');
