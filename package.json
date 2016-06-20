@@ -7,7 +7,7 @@
   "engines": {
     "node": ">= 4.2.x"
   },
-  "main": "./build/app.jsx",
+  "main": "./build/components.jsx",
   "repository": {
     "type": "git",
     "url": "https://github.com/thinkloop/augur-ui-react-components.git"
@@ -26,7 +26,7 @@
     "build:all": "npm run -s clean:build && (npm run -s build:css & npm run -s build:assets & npm run -s build:js) && npm run -s build:finish",
     "build:assets": "cp -R ./src/assets/. ./build/assets && echo ---------ASSETS---------`date +%r`",
     "build:css": "lessc $npm_package_config_less_entry_file | cleancss --s0 > ./build/styles.css | sed -e 's~less~css~' && echo ---------CSS------------`date +%r`",
-    "build:js": "npm run -s build:js:browserify | npm run -s partial:uglify > ./build/app.jsx && echo ---------JS-------------`date +%r`",
+    "build:js": "npm run -s build:js:browserify | npm run -s partial:uglify > ./build/components.jsx && echo ---------JS-------------`date +%r`",
     "build:js:browserify": "browserify $npm_package_config_js_entry_file_build --extension=.js --extension=.jsx --detectGlobals false --standalone augur-react-components -t [ babelify --presets [ es2015 stage-0 react ] ] -t [envify purge] | derequire",
     "build:finish": "echo ---------FINISHED-------`date +%r`",
     "_______": "On change create build",
@@ -80,7 +80,7 @@
     "watchify": "3.7.0"
   },
   "config": {
-    "js_entry_file_build": "./src/app.jsx",
+    "js_entry_file_build": "./src/components.jsx",
     "js_entry_file_demo": "./src/index.js",
     "less_entry_file": "./src/styles.less"
   }
