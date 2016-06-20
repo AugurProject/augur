@@ -6,22 +6,73 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../../testState';
-// import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-5';
+
+import { CREATE_MARKET } from '../../../../src/modules/transactions/constants/types';
+
+import {
+	BINARY,
+	CATEGORICAL,
+	SCALAR
+} from '../../../../src/modules/markets/constants/market-types';
+import {
+	TRADING_FEE_DEFAULT,
+	INITIAL_LIQUIDITY_DEFAULT,
+	MAKER_FEE_DEFAULT,
+	STARTING_QUANTITY_DEFAULT,
+	BEST_STARTING_QUANTITY_DEFAULT,
+	PRICE_WIDTH_DEFAULT,
+	PRICE_DEPTH_DEFAULT,
+	IS_SIMULATION
+} from '../../../../src/modules/create-market/constants/market-values-constraints';
+
+import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-5';
+import * as submitNewMarket from '../../../../src/modules/create-market/actions/submit-new-market';
 
 describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
+
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let formState, out, selector, store, outAction;
+	let formState,
+		out,
+		store,
+		outAction;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
-	let mockSubmit = {};
-	// submitNewMarket
-	mockSubmit.submitNewMarket = sinon.stub().returns({
-		type: 'SUBMIT_NEW_MARKET'
+
+	console.log('submitNewMarket -- ', submitNewMarket);
+
+	let stubbedSubmitNewMarket = sinon.stub(submitNewMarket, 'submitNewMarket', () => ({ type: CREATE_MARKET }));
+
+	// stubbedSubmit.submitNewMarket = sinon.stub().returns({
+	// 	type: 'SUBMIT_NEW_MARKET'
+	// });
+
+	let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-5', {
+		'../../../create-market/actions/submit-new-market': stubbedSubmitNewMarket
 	});
-	selector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-5', {
-		'../../../create-market/actions/submit-new-market': mockSubmit
+
+	describe('select', () => {
+		before(() => {
+			formState = {
+				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				expirySource: 'testing'
+			};
+
+			// selector.select(
+			// 	formState,
+			// 	state.blockchain.currentBlockNumber,
+			// 	state.blockchain.currentBlockMillisSinceEpoch,
+			// 	store.dispatch
+			// );
+		});
+
+		it('should return the correct object for a binary market');
+		it('should return the correct object for a categorical market');
+		it('should return the correct object for a scalar market');
+		it('should call the correct action onSubmit');
 	});
 
 	it('[TODO] should return a new market');
