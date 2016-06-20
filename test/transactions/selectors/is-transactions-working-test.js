@@ -8,8 +8,8 @@ import {
 	FAILED,
 	INTERRUPTED
 } from '../../../src/modules/transactions/constants/statuses';
-import testState from '../../testState';
-import isTransactionWorkingAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/isTransactionsWorking';
+import * as mockStore from '../../mockStore';
+import {assertions} from 'augur-ui-react-components';
 
 describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
