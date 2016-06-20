@@ -269,9 +269,213 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				out,
 				`correct object was not returned`
 			);
-	
 		});
-		it('should return the correct object for a categorical market');
+
+		it('should return the correct object for a categorical market', () => {
+			formState = {
+				...formState,
+				type: CATEGORICAL,
+				initialFairPrices: {
+					type: CATEGORICAL,
+					values: [
+						{
+							label: 'test1',
+							value: 0.5
+						},
+						{
+							label: 'test2',
+							value: 0.5
+						},
+						{
+							label: 'test3',
+							value: 0.5
+						}
+					],
+					raw: [
+						0.5,
+						0.5,
+						0.5
+					]
+				},
+				categoricalOutcomes: [
+					'test1',
+					'test2',
+					'test3'
+				]
+			};
+
+			let select = selector.select(
+				formState,
+				state.blockchain.currentBlockNumber,
+				state.blockchain.currentBlockMillisSinceEpoch,
+				store.dispatch
+			);
+
+			out = {
+				type: CATEGORICAL,
+				expirySource: 'testing',
+				makerFee: 0.005,
+				endDate: {
+					value: new Date(3000, 0, 1, 0, 0, 0, 0),
+					formatted: 'Jan 1, 3000',
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+				},
+				categoricalOutcomes: [
+					'test1',
+					'test2',
+					'test3'
+				],
+				initialFairPrices: {
+					type: CATEGORICAL,
+					values: [
+						{
+							label: 'test1',
+							value: 0.5
+						},
+						{
+							label: 'test2',
+							value: 0.5
+						},
+						{
+							label: 'test3',
+							value: 0.5
+						}
+					],
+					raw: [ 0.5, 0.5, 0.5 ],
+					formatted: [
+						{
+							denomination: "ETH | test1",
+							formatted: "0.5",
+							formattedValue: 0.5,
+							full: "0.5ETH | test1",
+							minimized: "0.5",
+							rounded: "1",
+							roundedValue: 1,
+							value: 0.5
+						},
+						{
+							denomination: "ETH | test2",
+							formatted: "0.5",
+							formattedValue: 0.5,
+							full: "0.5ETH | test2",
+							minimized: "0.5",
+							rounded: "1",
+							roundedValue: 1,
+							value: 0.5
+						},
+						{
+							denomination: "ETH | test3",
+							formatted: "0.5",
+							formattedValue: 0.5,
+							full: "0.5ETH | test3",
+							minimized: "0.5",
+							rounded: "1",
+							roundedValue: 1,
+							value: 0.5
+						}
+					]
+				},
+				outcomes: [
+					{
+						id: 0,
+						name: "test1"
+					},
+					{
+						id: 1,
+						name: "test2"
+					},
+					{
+						id: 2,
+						name: "test3"
+					}
+				],
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				tradingFeePercent: {
+					value: 2,
+					formattedValue: 2,
+					formatted: '+2.0',
+					roundedValue: 2,
+					rounded: '+2',
+					minimized: '+2',
+					denomination: '%',
+					full: '+2.0%'
+				},
+				makerFeePercent: {
+					value: 0.5,
+					formattedValue: 0.5,
+					formatted: '+0.5',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+0.5',
+					denomination: '%',
+					full: '+0.5%'
+				},
+				endBlock: select.endBlock,
+				tradingFee: TRADING_FEE_DEFAULT / 100,
+				takerFeePercent: {
+					value: 99.5,
+					formattedValue: 99.5,
+					formatted: '+99.5',
+					roundedValue: 100,
+					rounded: '+100',
+					minimized: '+99.5',
+					denomination: '%',
+					full: '+99.5%'
+				},
+				volume: {
+					value: 0,
+					formattedValue: 0,
+					formatted: '-',
+					roundedValue: 0,
+					rounded: '-',
+					minimized: '-',
+					denomination: '',
+					full: '-'
+				},
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantityFormatted: {
+					denomination: "Shares",
+					formatted: "20",
+					formattedValue: 20,
+					full: "20Shares",
+					minimized: "20",
+					rounded: "20",
+					roundedValue: 20,
+					value: 20
+				},
+				priceWidthFormatted: {
+					denomination: "ETH",
+					formatted: "0.1",
+					formattedValue: 0.1,
+					full: "0.1ETH",
+					minimized: "0.1",
+					rounded: "0",
+					roundedValue: 0,
+					value: 0.1
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				startingQuantityFormatted: {
+					denomination: "Shares",
+					formatted: "10",
+					formattedValue: 10,
+					full: "10Shares",
+					minimized: "10",
+					rounded: "10",
+					roundedValue: 10,
+					value: 10
+				},
+				isFavorite: false
+			};
+
+			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+
+			assert.deepEqual(
+				select,
+				out,
+				`correct object was not returned`
+			);
+		});
+
 		it('should return the correct object for a scalar market');
 	});
 
