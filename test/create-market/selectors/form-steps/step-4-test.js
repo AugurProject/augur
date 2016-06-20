@@ -30,10 +30,37 @@ import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
-	// NOTE -- We've also implicitly tested `initialFairPrices` via these tests; thus, those tests are excluded.
+	// NOTE -- We implicitly test `initialFairPrices` via the `select` test.
 
 	let formState,
-		out;
+		out,
+		stubbedValidateTradingFee = sinon.stub(validateTradingFee, 'default', () => false),
+		stubbedValidateMakerFee = sinon.stub(validateMakerFee, 'default', () => false),
+		stubbedValidateInitialLiquidity = sinon.stub(validateInitialLiquidity, 'default', () => false),
+		stubbedValidateInitialFairPrices = sinon.stub(validateInitialFairPrices, 'default', () => false),
+		stubbedValidateBestStartingQuantity = sinon.stub(validateBestStartingQuantity, 'default', () => false),
+		stubbedValidateStartingQuantity = sinon.stub(validateStartingQuantity, 'default', () => false),
+		stubbedValidatePriceWidth = sinon.stub(validatePriceWidth, 'default', () => false);
+
+	let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-4', {
+		'../../validators/validate-trading-fee': stubbedValidateTradingFee,
+		'../../validators/validate-maker-fee': stubbedValidateMakerFee,
+		'../../validators/validate-initial-liquidity': stubbedValidateInitialLiquidity,
+		'../../validators/validate-initial-fair-prices': stubbedValidateInitialFairPrices,
+		'../../validators/validate-best-starting-quantity': stubbedValidateBestStartingQuantity,
+		'../../validators/validate-starting-quantity': stubbedValidateStartingQuantity,
+		'../../validators/validate-price-width': stubbedValidatePriceWidth
+	});
+
+	after(() => {
+		validateTradingFee.default.restore();
+		validateMakerFee.default.restore();
+		validateInitialLiquidity.default.restore();
+		validateInitialFairPrices.default.restore();
+		validateBestStartingQuantity.default.restore();
+		validateStartingQuantity.default.restore();
+		validatePriceWidth.default.restore();
+	});
 
 	describe('select', () => {
 		beforeEach(() => {
@@ -180,12 +207,11 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 		});
 	});
 
-    
-
 	describe('isValid', () => {
 		proxyquire.noCallThru();
 
-		let formState = {
+		before(() => {
+			formState = {
 				tradingFeePercent: null,
 				makerFee: null,
 				type: null,
@@ -198,132 +224,95 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 				initialFairPrices: {
 					raw: null
 				}
-			},
-			stubbedValidateTradingFee = sinon.stub(validateTradingFee, 'default', () => false),
-			stubbedValidateMakerFee = sinon.stub(validateMakerFee, 'default', () => false),
-			stubbedValidateInitialLiquidity = sinon.stub(validateInitialLiquidity, 'default', () => false),
-			stubbedValidateInitialFairPrices = sinon.stub(validateInitialFairPrices, 'default', () => false),
-			stubbedValidateBestStartingQuantity = sinon.stub(validateBestStartingQuantity, 'default', () => false),
-			stubbedValidateStartingQuantity = sinon.stub(validateStartingQuantity, 'default', () => false),
-			stubbedValidatePriceWidth = sinon.stub(validatePriceWidth, 'default', () => false);
+			};
 
-		let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-4', {
-			'../../validators/validate-trading-fee': stubbedValidateTradingFee,
-			'../../validators/validate-maker-fee': stubbedValidateMakerFee,
-			'../../validators/validate-initial-liquidity': stubbedValidateInitialLiquidity,
-			'../../validators/validate-initial-fair-prices': stubbedValidateInitialFairPrices,
-			'../../validators/validate-best-starting-quantity': stubbedValidateBestStartingQuantity,
-			'../../validators/validate-starting-quantity': stubbedValidateStartingQuantity,
-			'../../validators/validate-price-width': stubbedValidatePriceWidth
-		});
-
-		before(() => {
 			proxiedSelector.isValid(formState);
-		});
-
-		after(() => {
-			validateTradingFee.default.restore();
-			validateMakerFee.default.restore();
-			validateInitialLiquidity.default.restore();
-			validateInitialFairPrices.default.restore();
-			validateBestStartingQuantity.default.restore();
-			validateStartingQuantity.default.restore();
-			validatePriceWidth.default.restore();
 		});
 
 		it('calls validateTradingFee', () => {
 			assert(stubbedValidateTradingFee.calledOnce, 'validateTradingFee was not called once');
+			validateTradingFee.default.reset();
 		});
 
 		it('calls validateMakerFee', () => {
 			assert(stubbedValidateMakerFee.calledOnce, 'validateMakerFee was not called once');
+			validateMakerFee.default.reset();
 		});
 
 		it('calls validateInitialLiquidity', () => {
 			assert(stubbedValidateInitialLiquidity.calledOnce, 'validateInitialLiquidity was not called once');
+			validateInitialLiquidity.default.reset();
 		});
 
 		it('calls validateInitialFairPrices', () => {
 			assert(stubbedValidateInitialFairPrices.calledOnce, 'validateInitialFairPrices was not called once');
+			validateInitialFairPrices.default.reset();
 		});
 
 		it('calls validateBestStartingQuantity', () => {
 			assert(stubbedValidateBestStartingQuantity.calledOnce, 'validateBestStartingQuantity was not called once');
+			validateBestStartingQuantity.default.reset();
 		});
 
 		it('calls validateStartingQuantity', () => {
 			assert(stubbedValidateStartingQuantity.calledOnce, 'validateStartingQuantity was not called once');
+			validateStartingQuantity.default.reset();
 		});
 
 		it('calls validatePriceWidth', () => {
 			assert(stubbedValidatePriceWidth.calledOnce, 'validatePriceWidth was not called once');
+			validatePriceWidth.default.reset();
 		});
 	});
 
 	describe('errors', () => {
-		it('[TODO] tests for errors method');
-	});
+		proxyquire.noCallThru();
+    
+		before(() => {
+			formState = {
+				tradingFeePercent: TRADING_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT,
+				type: BINARY,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				scalarSmallNum: 10,
+				scalarBigNum: 100,
+				initialFairPrices: {
+					raw: [0.5, 0.5]
+				}
+			};
 
-	it(`should handle errors in step 4`, () => {
-		// formState = {
-		// 	tradingFeePercent: '',
-		// 	initialLiquidity: ''
-		// };
-		// out = {
-		// 	tradingFeePercent: 'Please specify a trading fee %',
-		// 	initialLiquidity: 'Please provide some initial liquidity'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a blank tradingFeePercent`);
-        //
-		// formState.tradingFeePercent = 'testNonNumeric';
-		// out = {
-		// 	tradingFeePercent: 'Trading fee must be a number',
-		// 	initialLiquidity: 'Please provide some initial liquidity'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a tradingFeePercent that wasn't a number`);
-        //
-		// formState.tradingFeePercent = (TRADING_FEE_MIN - 1);
-		// out = {
-		// 	tradingFeePercent: 'Please specify a trading fee %',
-		// 	initialLiquidity: 'Please provide some initial liquidity'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a tradingFeePercent that is below the Trading Fee min`);
-        //
-		// formState.tradingFeePercent = (TRADING_FEE_MAX + 1);
-		// out = {
-		// 	tradingFeePercent: 'Trading fee must be between +1.0% and +12.5%',
-		// 	initialLiquidity: 'Please provide some initial liquidity'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a tradingFeePercent that is above the Trading Fee max`);
-        //
-		// formState.tradingFeePercent = TRADING_FEE_DEFAULT;
-		// out = {
-		// 	tradingFeePercent: undefined,
-		// 	initialLiquidity: 'Please provide some initial liquidity'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a initialLiquidity of empty string`);
-        //
-		// formState.initialLiquidity = 'testNonNumeric';
-		// out = {
-		// 	tradingFeePercent: undefined,
-		// 	initialLiquidity: 'Initial liquidity must be numeric'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a non numeric initialLiquidity`);
-        //
-		// formState.initialLiquidity = (INITIAL_LIQUIDITY_MIN - 1);
-		// out = {
-		// 	tradingFeePercent: undefined,
-		// 	initialLiquidity: 'Insufficient liquidity based on advanced parameters'
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't error on a initialLiquidity that was below the minumum`);
-
-		// TODO -- requires a more filled out formState to properly test
-		// formState.initialLiquidity = (INITIAL_LIQUIDITY_MIN + 10);
-		// out = {
-		// 	tradingFeePercent: undefined,
-		// 	initialLiquidity: undefined
-		// };
-		// assert.deepEqual(selector.errors(formState), out, `Didn't return no errors for a valid formState`);
-
+			proxiedSelector.errors(formState);
+		});
+    
+		it('calls validateTradingFee', () => {
+			assert(stubbedValidateTradingFee.calledOnce, 'validateTradingFee was not called once');
+		});
+    
+		it('calls validateMakerFee', () => {
+			assert(stubbedValidateMakerFee.calledOnce, 'validateMakerFee was not called once');
+		});
+    
+		it('calls validateInitialLiquidity', () => {
+			assert(stubbedValidateInitialLiquidity.calledOnce, 'validateInitialLiquidity was not called once');
+		});
+    
+		it('calls validateInitialFairPrices', () => {
+			assert(stubbedValidateInitialFairPrices.calledOnce, 'validateInitialFairPrices was not called once');
+		});
+    
+		it('calls validateBestStartingQuantity', () => {
+			assert(stubbedValidateBestStartingQuantity.calledOnce, 'validateBestStartingQuantity was not called once');
+		});
+    
+		it('calls validateStartingQuantity', () => {
+			assert(stubbedValidateStartingQuantity.calledOnce, 'validateStartingQuantity was not called once');
+		});
+    
+		it('calls validatePriceWidth', () => {
+			assert(stubbedValidatePriceWidth.calledOnce, 'validatePriceWidth was not called once');
+		});
 	});
 });
