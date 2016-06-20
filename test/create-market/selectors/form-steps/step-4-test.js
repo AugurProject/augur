@@ -30,7 +30,7 @@ import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 
 describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
-	// NOTE -- We implicitly test `initialFairPrices` via the `select` test.
+	// NOTE -- We implicitly tested `initialFairPrices` via the `select` test.
 
 	let formState,
 		out,
