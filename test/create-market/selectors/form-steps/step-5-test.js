@@ -1,4 +1,4 @@
-import {
+import chai, {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
@@ -58,6 +58,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
 				tradingFeePercent: TRADING_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
 				expirySource: 'testing',
 				type: BINARY,
 				initialFairPrices: {
@@ -96,168 +99,180 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			assert.deepEqual(store.getActions(), outAction, `Didn't dispatch the expected action object when onSubmit was called`);
 		});
 
-	// 	it('should return the correct object for a binary market', () => {
-	// 		formState = {
-	// 			...formState,
-	// 			type: BINARY,
-	// 			initialFairPrices: {
-	// 				type: BINARY,
-	// 				values: [
-	// 					{
-	// 						label: 'Yes',
-	// 						value: 0.5
-	// 					},
-	// 					{
-	// 						label: 'No',
-	// 						value: 0.5
-	// 					}
-	// 				],
-	// 				raw: [
-	// 					0.5,
-	// 					0.5
-	// 				]
-	// 			},
-	// 		};
-    //
-	// 		out = {
-	// 			endDate: {
-	// 				value: new Date(3000, 0, 1, 0, 0, 0, 0),
-	// 				formatted: 'Jan 1, 3000',
-	// 				full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
-	// 			},
-	// 			tradingFeePercent: {
-	// 				value: 2,
-	// 				formattedValue: 2,
-	// 				formatted: '+2.0',
-	// 				roundedValue: 2,
-	// 				rounded: '+2',
-	// 				minimized: '+2',
-	// 				denomination: '%',
-	// 				full: '+2.0%'
-	// 			},
-	// 			makerFee: 0.005,
-	// 			expirySource: 'testing',
-	// 			type: 'binary',
-	// 			initialFairPrices: {
-	// 				type: 'binary',
-	// 				values: [
-	// 					{
-	// 						label: 'Yes',
-	// 						value: 0.5
-	// 					},
-	// 					{
-	// 						label: 'No',
-	// 						value: 0.5
-	// 					}
-	// 				],
-	// 				raw: [ 0.5, 0.5 ],
-	// 				formatted: [
-	// 					{
-	// 						value: 0.5,
-	// 						formattedValue: 0.5,
-	// 						formatted: '0.5',
-	// 						roundedValue: 1,
-	// 						rounded: '1',
-	// 						minimized: '0.5',
-	// 						denomination: 'ETH | Yes',
-	// 						full: '0.5ETH | Yes'
-	// 					},
-	// 					{
-	// 						value: 0.5,
-	// 						formattedValue: 0.5,
-	// 						formatted: '0.5',
-	// 						roundedValue: 1,
-	// 						rounded: '1',
-	// 						minimized: '0.5',
-	// 						denomination: 'ETH | No',
-	// 						full: '0.5ETH | No'
-	// 					}
-	// 				]
-	// 			},
-	// 			endBlock: 2587661218,
-	// 			tradingFee: 0.02,
-	// 			makerFeePercent:
-	// 			{ value: 0.5,
-	// 				formattedValue: 0.5,
-	// 				formatted: '+0.5',
-	// 				roundedValue: 1,
-	// 				rounded: '+1',
-	// 				minimized: '+0.5',
-	// 				denomination: '%',
-	// 				full: '+0.5%'
-	// 			},
-	// 			takerFeePercent: {
-	// 				value: 99.5,
-	// 				formattedValue: 99.5,
-	// 				formatted: '+99.5',
-	// 				roundedValue: 100,
-	// 				rounded: '+100',
-	// 				minimized: '+99.5',
-	// 				denomination: '%',
-	// 				full: '+99.5%'
-	// 			},
-	// 			volume: {
-	// 				value: 0,
-	// 				formattedValue: 0,
-	// 				formatted: '-',
-	// 				roundedValue: 0,
-	// 				rounded: '-',
-	// 				minimized: '-',
-	// 				denomination: '',
-	// 				full: '-'
-	// 			},
-	// 			outcomes: [
-	// 				{ id: 1, name: 'No' },
-	// 				{ id: 2, name: 'Yes' }
-	// 			],
-	// 			isFavorite: false,
-	// 			bestStartingQuantityFormatted: {
-	// 				value: 0,
-	// 				formattedValue: 0,
-	// 				formatted: '-',
-	// 				roundedValue: 0,
-	// 				rounded: '-',
-	// 				minimized: '-',
-	// 				denomination: '',
-	// 				full: '-'
-	// 			},
-	// 			startingQuantityFormatted: {
-	// 				value: 0,
-	// 				formattedValue: 0,
-	// 				formatted: '-',
-	// 				roundedValue: 0,
-	// 				rounded: '-',
-	// 				minimized: '-',
-	// 				denomination: '',
-	// 				full: '-'
-	// 			},
-	// 			priceWidthFormatted: {
-	// 				value: 0,
-	// 				formattedValue: 0,
-	// 				formatted: '-',
-	// 				roundedValue: 0,
-	// 				rounded: '-',
-	// 				minimized: '-',
-	// 				denomination: '',
-	// 				full: '-'
-	// 			},
-	// 			onSubmit: store.dispatch(stubbedSubmitNewMarket())
-	// 		};
-    //
-	// 		// console.log('out -- ', out);
-    //
-	// 		selector.select(
-	// 			formState,
-	// 			state.blockchain.currentBlockNumber,
-	// 			state.blockchain.currentBlockMillisSinceEpoch,
-	// 			store.dispatch
-	// 		);
-    //
-	// 		// 	assert.deepEqual(test, out, `Didn't produce the expected object from select`);
-	//
-	// 	});
-	// 	it('should return the correct object for a categorical market');
-	// 	it('should return the correct object for a scalar market');
+		it('should return the correct object for a binary market', () => {
+			formState = {
+				...formState,
+				type: BINARY,
+				initialFairPrices: {
+					type: BINARY,
+					values: [
+						{
+							label: 'Yes',
+							value: 0.5
+						},
+						{
+							label: 'No',
+							value: 0.5
+						}
+					],
+					raw: [
+						0.5,
+						0.5
+					]
+				}
+			};
+
+			let select = selector.select(
+				formState,
+				state.blockchain.currentBlockNumber,
+				state.blockchain.currentBlockMillisSinceEpoch,
+				store.dispatch
+			);
+    
+			out = {
+				type: BINARY,
+				expirySource: 'testing',
+				makerFee: 0.005,
+				endDate: {
+					value: new Date(3000, 0, 1, 0, 0, 0, 0),
+					formatted: 'Jan 1, 3000',
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+				},
+				initialFairPrices: {
+					type: BINARY,
+					values: [
+						{
+							label: 'Yes',
+							value: 0.5
+						},
+						{
+							label: 'No',
+							value: 0.5
+						}
+					],
+					raw: [ 0.5, 0.5 ],
+					formatted: [
+						{
+							denomination: "ETH | Yes",
+			        		formatted: "0.5",
+				        	formattedValue: 0.5,
+							full: "0.5ETH | Yes",
+							minimized: "0.5",
+							rounded: "1",
+							roundedValue: 1,
+							value: 0.5
+						},
+						{
+							denomination: "ETH | No",
+							formatted: "0.5",
+							formattedValue: 0.5,
+							full: "0.5ETH | No",
+							minimized: "0.5",
+							rounded: "1",
+							roundedValue: 1,
+							value: 0.5
+				  		}
+					]
+				},
+				outcomes: [
+					{
+						id: 1,
+						name: "No"
+					},
+					{
+						id: 2,
+						name: "Yes"
+					}
+				],
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				tradingFeePercent: {
+					value: 2,
+					formattedValue: 2,
+					formatted: '+2.0',
+					roundedValue: 2,
+					rounded: '+2',
+					minimized: '+2',
+					denomination: '%',
+					full: '+2.0%'
+				},
+				makerFeePercent: {
+					value: 0.5,
+					formattedValue: 0.5,
+					formatted: '+0.5',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+0.5',
+					denomination: '%',
+					full: '+0.5%'
+				},
+				endBlock: select.endBlock,
+				tradingFee: TRADING_FEE_DEFAULT / 100,
+				takerFeePercent: {
+					value: 99.5,
+					formattedValue: 99.5,
+					formatted: '+99.5',
+					roundedValue: 100,
+					rounded: '+100',
+					minimized: '+99.5',
+					denomination: '%',
+					full: '+99.5%'
+				},
+				volume: {
+					value: 0,
+					formattedValue: 0,
+					formatted: '-',
+					roundedValue: 0,
+					rounded: '-',
+					minimized: '-',
+					denomination: '',
+					full: '-'
+				},
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+			  	bestStartingQuantityFormatted: {
+					denomination: "Shares",
+					formatted: "20",
+					formattedValue: 20,
+					full: "20Shares",
+					minimized: "20",
+					rounded: "20",
+					roundedValue: 20,
+					value: 20
+				},
+				priceWidthFormatted: {
+					denomination: "ETH",
+					formatted: "0.1",
+					formattedValue: 0.1,
+					full: "0.1ETH",
+					minimized: "0.1",
+					rounded: "0",
+					roundedValue: 0,
+					value: 0.1
+				},
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				startingQuantityFormatted: {
+					denomination: "Shares",
+					formatted: "10",
+					formattedValue: 10,
+					full: "10Shares",
+					minimized: "10",
+					rounded: "10",
+					roundedValue: 10,
+					value: 10
+				},
+				isFavorite: false
+			};
+
+			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+    
+			assert.deepEqual(
+				select,
+				out,
+				`correct object was not returned`
+			);
+	
+		});
+		it('should return the correct object for a categorical market');
+		it('should return the correct object for a scalar market');
 	});
 
 	it('[TODO] should return a new market');
