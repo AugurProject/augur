@@ -35,6 +35,8 @@ export function placeTrade(marketID) {
  */
 export function multiTrade(transactionID, marketID) {
 	return (dispatch, getState) => {
+		let scalarMinMax;
+
 		const market = selectMarket(marketID);
 
 		const marketOrderBook = getState().marketOrderBooks[marketID];
@@ -56,13 +58,12 @@ export function multiTrade(transactionID, marketID) {
 
 		dispatch(updateExistingTransaction(transactionID, { status: PLACE_MULTI_TRADE }));
 
-		var scalarMinMax;
-        if (market.type === "scalar") {
-            scalarMinMax = {
-            	minValue: market.minValue,
-            	maxValue: market.maxValue
-            };
-        }
+		if (market.type === 'scalar') {
+			scalarMinMax = {
+				minValue: market.minValue,
+				maxValue: market.maxValue
+			};
+		}
 
 		AugurJS.multiTrade(
 			transactionID, marketID, marketOrderBook, tradeOrders, positionPerOutcome, scalarMinMax,

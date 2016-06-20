@@ -71394,6 +71394,8 @@ function placeTrade(marketID) {
  */
 function multiTrade(transactionID, marketID) {
 	return function (dispatch, getState) {
+		var scalarMinMax = void 0;
+
 		var market = (0, _market.selectMarket)(marketID);
 
 		var marketOrderBook = getState().marketOrderBooks[marketID];
@@ -71415,8 +71417,7 @@ function multiTrade(transactionID, marketID) {
 
 		dispatch((0, _updateExistingTransaction.updateExistingTransaction)(transactionID, { status: _statuses.PLACE_MULTI_TRADE }));
 
-		var scalarMinMax;
-		if (market.type === "scalar") {
+		if (market.type === 'scalar') {
 			scalarMinMax = {
 				minValue: market.minValue,
 				maxValue: market.maxValue
@@ -72896,7 +72897,6 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 };
 
 ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
-	console.log(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax);
 	_augur2.default.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed);
 };
 
