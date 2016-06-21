@@ -1,4 +1,7 @@
 var assert = require('chai').assert;
+
+import percentNumberShape from '../../test/assertions/common/percentNumberShape';
+
 // markets:
 //  [ { id: String,
 //      type: String,
@@ -36,7 +39,7 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.tradingFeePercent, `market.tradingFeePercent isn't defined`);
 	assert.isObject(actual.tradingFeePercent, `market.tradingFeePercent isn't an object`);
-	tradingFeePercentAssertion(actual.tradingFeePercent);
+	percentNumberShape(actual.tradingFeePercent);
 
 	assert.isDefined(actual.volume, `market.volume isn't defined`);
 	assert.isObject(actual.volume, `market.volume isn't an object`);
@@ -76,36 +79,6 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.orderBook, `market.orderBook isn't defined`);
 	assert.isObject(actual.orderBook, `market.orderBook isn't an object`);
-}
-// tradingFeePercent: {
-// 	value: Number,
-//   formattedValue: Number,
-//   formatted: String,
-//   roundedValue: Number,
-//   rounded: String,
-//   minimized: String,
-//   denomination: String,
-//   full: String
-// }
-function tradingFeePercentAssertion(actual) {
-	assert.isDefined(actual, `market.tradingFeePercent doesn't exist`);
-	assert.isObject(actual, `market.tradingFeePercent isn't an object`);
-	assert.isDefined(actual.value, `tradingFeePercent.value isn't defined`);
-	assert.isNumber(actual.value, `tradingFeePercent.value isn't a number`);
-	assert.isDefined(actual.formattedValue, `tradingFeePercent.formattedValue isn't defined`);
-	assert.isNumber(actual.formattedValue, `tradingFeePercent.formattedValue isn't a number`);
-	assert.isDefined(actual.formatted, `tradingFeePercent.formatted isn't defined`);
-	assert.isString(actual.formatted, `tradingFeePercent.formatted isn't a string`);
-	assert.isDefined(actual.roundedValue, `tradingFeePercent.roundedValue isn't defined`);
-	assert.isNumber(actual.roundedValue, `tradingFeePercent.roundedValue isn't a number`);
-	assert.isDefined(actual.rounded, `tradingFeePercent.rounded isn't defined`);
-	assert.isString(actual.rounded, `tradingFeePercent.rounded isn't a string`);
-	assert.isDefined(actual.minimized, `tradingFeePercent.minimized isn't defined`);
-	assert.isString(actual.minimized, `tradingFeePercent.minimized isn't a string`);
-	assert.isDefined(actual.denomination, `tradingFeePercent.denomination isn't defined`);
-	assert.isString(actual.denomination, `tradingFeePercent.denomination isn't a String`);
-	assert.isDefined(actual.full, `tradingFeePercent.full isn't defined`);
-	assert.isString(actual.full, `tradingFeePercent.full isn't a string`);
 }
 // volume: {
 // 	value: Number,
@@ -166,7 +139,6 @@ function marketLinkAssertion(actual) {
 }
 
 module.exports = {
-	tradingFeePercentAssertion: tradingFeePercentAssertion,
 	marketAssertion: marketAssertion,
 	volumeAssertion: volumeAssertion,
 	reportAssertion: reportAssertion,

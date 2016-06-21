@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+
 export default function (endDate){
 	assert.isDefined(endDate.value, 'endDate.value is not defined');
 	assert.instanceOf(endDate.value, Date, 'endDate.value is not a date');

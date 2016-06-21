@@ -1,6 +1,8 @@
 import { assert } from 'chai';
 
-import endDateShapeAssertion from '../../test/assertions/common/endDateShape';
+import endDateShape from '../../test/assertions/common/endDateShape';
+import initialFairPricesShape from '../../test/assertions/common/initialFairPricesShape';
+import percentNumberShape from '../../test/assertions/common/percentNumberShape';
 
 export function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
@@ -36,7 +38,7 @@ export function step2(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			_initialFairPricesShapeAssertion(actual.initialFairPrices);
+			initialFairPricesShape(actual.initialFairPrices);
 		});
 
 		it('should receive descriptionPlaceholder and be a string', () => {
@@ -115,7 +117,7 @@ export function step4(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			_initialFairPricesShapeAssertion(actual.initialFairPrices);
+			initialFairPricesShape(actual.initialFairPrices);
 		});
 
 		it('should receive bestStartingQuantity and be a number', () => {
@@ -155,18 +157,18 @@ export function step5(actual){
 		it('should receive endDate and be an object with correct shape', () => {
 			assert.isDefined(actual.endDate, 'endDate is not defined');
 			assert.isObject(actual.endDate, 'endDate is not an array');
-			endDateShapeAssertion(actual.endDate);
+			endDateShape(actual.endDate);
+		});
+
+		it('should receive tradingFeePercent and be an object with correct shape', () => {
+			assert.isDefined(actual.tradingFeePercent, 'endDate is not defined');
+			assert.isObject(actual.tradingFeePercent, 'endDate is not an array');
+			percentNumberShape(actual.tradingFeePercent);
+		});
+
+		it('should receive creatingMarket and be a boolean', () => {
+			assert.isDefined(actual.creatingMarket, 'creatingMarket is not defined');
+			assert.isBoolean(actual.creatingMarket, 'creatingMarket is not a boolean');
 		});
 	});
-}
-
-function _initialFairPricesShapeAssertion(initialFairPrices){
-	assert.isDefined(initialFairPrices.type, 'initialFairPrices.type is not defined');
-	assert.isString(initialFairPrices.type, 'initialFairPrices.type is not a string');
-
-	assert.isDefined(initialFairPrices.values, 'initialFairPrices.values is not defined');
-	assert.isArray(initialFairPrices.values, 'initialFairPrices.values is not an array');
-
-	assert.isDefined(initialFairPrices.raw, 'initialFairPrices.raw is not defined');
-	assert.isArray(initialFairPrices.raw, 'initialFairPrices.raw is not an array');
 }
