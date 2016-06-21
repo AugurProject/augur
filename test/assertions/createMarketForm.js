@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
 export function step1(actual){
-	describe('augur-ui-react-components createMarketForm step-1', () => {
+	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
 		it('should receive step and be a number', () => {
 			assert.isDefined(actual.step, 'step is not defined');
 			assert.isNumber(actual.step, 'step is not a number');
@@ -25,7 +25,7 @@ export function step1(actual){
 }
 
 export function step2(actual){
-	describe(`augur-ui-react-components createMarketForm step-2 ${actual.type} market state`, () => {
+	describe(`augur-ui-react-components createMarketForm step-2 ${actual.type} market initial state`, () => {
 		it('should receive type and be a string', () => {
 			assert.isDefined(actual.type, 'type is not defined');
 			assert.isString(actual.type, 'type is not a string');
@@ -86,5 +86,24 @@ export function step2(actual){
 			});
 			break;
 		}
+	});
+}
+
+export function step3(actual){
+	describe('augur-ui-react-components createMarketForm step-3 initial state', () => {
+		it('should receive description and be a string', () => {
+			assert.isDefined(actual.description, 'description is not defined');
+			assert.isString(actual.description, 'description is not a string');
+		});
+
+		it('should receive tagMaxNum and be a number', () => {
+			assert.isDefined(actual.tagsMaxNum, 'tagsMaxNum is not defined');
+			assert.isNumber(actual.tagsMaxNum, 'tagsMaxNum is not a number');
+		});
+
+		it('should receive tagsMaxLength and be a number', () => {
+			assert.isDefined(actual.tagMaxLength, 'tagsMaxLength is not defined');
+			assert.isNumber(actual.tagMaxLength, 'tagsMaxLength is not a number');
+		});
 	});
 }
