@@ -74,7 +74,6 @@
     "npm-check-updates": "^2.6.5",
     "onchange": "^2.4.0",
     "react": "^15.1.0",
-    "react-date-picker": "^5.3.9",
     "react-datetime": "^2.3.2",
     "react-dom": "^15.1.0",
     "react-highcharts": "^8.3.2",
