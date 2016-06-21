@@ -11,20 +11,14 @@ const DatePicker = (p) => {
 			dateFormat="YYYY/MM/DD"
 			timeFormat="hh:mm:ss a"
 			onChange={(date) => p.onValuesUpdated({ endDate: new Date(date) })}
-			value={p.endDate}
-			defaultValue={new Date()}
 			open
+			inputProps={{ placeholder: 'YYYY/MM/DD hh:mm:ss a' }}
 		/>
 	);
 };
 
 DatePicker.propTypes = {
-	onValuesUpdated: PropTypes.func,
-	endDate: PropTypes.object
-};
-
-DatePicker.defaultProps = {
-	endDate: new Date()
+	onValuesUpdated: PropTypes.func
 };
 
 export default DatePicker;

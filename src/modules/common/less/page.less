@@ -1,9 +1,7 @@
-@import (reference) "../../../../node_modules/flex.less/flex";
-
 .page {
-    .display(flex);
+    display: flex;
     min-height: 100vh;
-    .flex-direction(column);
+    flex-direction: column;
 }
 
 .page-header {
@@ -21,7 +19,7 @@
 }
 
 .page-content {
-    .flex(1, 0, auto);
+    flex: 1;
     padding: 0;
     color: @color-dark-active;
 }

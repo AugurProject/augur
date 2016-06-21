@@ -44,10 +44,8 @@ const CreateMarketForm2 = (p) => {
 			<div className="end-date">
 				<h4>What&apos;s the end date for your question?</h4>
 
-				<DatePicker
-					endDate={p.endDate}
-					onValuesUpdated={p.onValuesUpdated}
-				/>
+				<DatePicker onValuesUpdated={p.onValuesUpdated} />
+
 				{p.errors.endDate &&
 					<span className="error-message">{p.errors.endDate}</span>
 				}
