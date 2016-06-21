@@ -7,7 +7,7 @@ const Checkbox = (p) => (
 		<span className="checkbox-label" tabIndex={p.tabIndex} onClick={p.onClick}>
 			{p.text}
 		</span>
-		{ p.text2 != null &&
+		{p.text2 != null &&
 			<span className="checkbox-label2" onClick={p.onClick}>
 				{p.text2}
 			</span>

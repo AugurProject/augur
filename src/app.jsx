@@ -11,8 +11,6 @@ import AuthPage from './modules/auth/components/auth-page';
 import PositionsPage from './modules/positions/components/positions-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
-import * as assertions from '../test/assertions/';
-
 export default function (appElement, selectors) {
 	const p = selectors;
 	let node;
@@ -108,5 +106,3 @@ export default function (appElement, selectors) {
 		appElement
 	);
 }
-
-export { assertions };

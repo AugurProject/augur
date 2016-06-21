@@ -1,7 +1,7 @@
 export default {
 	value: '',
 	onChangeKeywords: (keywords) => {
-		var selectors = require('../selectors');
+		const selectors = require('../selectors');
 		selectors.update({
 			keywords: {
 				...selectors.keywords,
