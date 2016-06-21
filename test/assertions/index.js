@@ -1,6 +1,6 @@
 var activePage = require('./activePage');
 var authForm = require('./authForm');
-import * as createMarketForm from './createMarketForm';
+var createMarketForm = require('./createMarketForm');
 var filters = require('./filters');
 var isTransactionsWorking = require('./isTransactionsWorking');
 var keywords = require('./keywords');
@@ -21,7 +21,7 @@ var update = require('./update');
 module.exports = {
 	activePage: activePage,
 	authForm: authForm,
-	createMarketForm,
+	createMarketForm: createMarketForm,
 	filters: filters,
 	isTransactionsWorking: isTransactionsWorking,
 	keywords: keywords,
