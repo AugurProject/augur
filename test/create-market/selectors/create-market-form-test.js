@@ -11,6 +11,7 @@ import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/consta
 
 import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
 import * as actualStep3 from '../../../src/modules/create-market/selectors/form-steps/step-3';
+import * as actualStep4 from '../../../src/modules/create-market/selectors/form-steps/step-4';
 
 let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
@@ -94,6 +95,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	describe('step 2', () => {
 		before(() => {
 			state.createMarketInProgress = {
+				...state.createMarketInProgress,
 				step: 2,
 				type: BINARY
 			};
@@ -107,7 +109,11 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		after(() => {
-			state.createMarketInProgress.type = BINARY;
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				type: BINARY,
+				...actualStep2.initialFairPrices({ type: BINARY })
+			};
 		});
 
 		it('should have the correct state', () => {
@@ -117,15 +123,15 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		it('should call select', () => {
 			assert(step2.select.calledOnce, 'select is not called once');
 		});
-		
+
 		it('should call isValid', () => {
 			assert(step2.isValid.calledOnce, 'isValid is not called once');
 		});
-		
+
 		it('should call errors', () => {
 			assert(step2.errors.calledOnce, 'errors is not called once');
 		});
-		
+
 		it('should call initialFairPrices', () => {
 			assert(step2.initialFairPrices.calledOnce, 'initialFairPrices is not called once');
 		});
@@ -153,7 +159,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 			});
 		});
 	});
-	
+
 	describe('step 3', () => {
 		before(() => {
 			state.createMarketInProgress.step = 3;
@@ -165,15 +171,15 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...test
 			};
 		});
-		
+
 		it('should have the correct state', () => {
 			assert.equal(test.step, 3, 'step is not equal to 3');
 		});
-		
+
 		it('should call select', () => {
 			assert(step3.select.calledOnce, 'select is not called once');
 		});
-		
+
 		it('should call isValid', () => {
 			assert(step3.isValid.calledOnce, 'isValid is not called once');
 		});
@@ -183,8 +189,6 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			console.log(actualStep3.select(state.createMarketInProgress));
-
 			let fullTestState = {
 				description: 'user would have entered this prior to arriving @ step 3',
 				...state.createMarketInProgress,
@@ -224,8 +228,17 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		it('should call errors', () => {
 			assert(step4.errors.calledOnce, 'errors is not called once');
 		});
+
+		it('should deliver the correct values to components', () => {
+			let fullTestState = {
+				...state.createMarketInProgress,
+				...actualStep4.select(state.createMarketInProgress)
+			};
+
+			componentAssertions.step4(fullTestState);
+		});
 	});
-	
+
 	describe('step 5', () => {
 		before(() => {
 			state.createMarketInProgress.step = 5;
