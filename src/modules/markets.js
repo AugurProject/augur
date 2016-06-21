@@ -10,6 +10,30 @@ var utils = require("../utilities");
 
 module.exports = {
 
+    getFees: function (market, callback) {
+        var tx = clone(this.tx.getFees);
+        tx.params = market;
+        return this.fire(tx, callback);
+    },
+
+    getMakerFees: function (market, callback) {
+        var tx = clone(this.tx.getMakerFees);
+        tx.params = market;
+        return this.fire(tx, callback);
+    },
+
+    getgasSubsidy: function (market, callback) {
+        var tx = clone(this.tx.getgasSubsidy);
+        tx.params = market;
+        return this.fire(tx, callback);
+    },
+
+    getSharesValue: function (market, callback) {
+        var tx = clone(this.tx.getSharesValue);
+        tx.params = market;
+        return this.fire(tx, callback);
+    },
+
     get_total_trades: function (market_id, callback) {
         var tx = clone(this.tx.get_total_trades);
         tx.params = market_id;
