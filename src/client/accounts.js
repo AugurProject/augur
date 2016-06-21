@@ -330,8 +330,7 @@ module.exports = function () {
                                 return cb(err);
                             } else if (res.message.indexOf("Nonce too low") > -1 ||
                                 res.message.indexOf("Known transaction") > -1) {
-                                console.log("Increment nonce:", packaged);
-                                ++packaged.nonce;
+                                packaged.nonce += 1;
                                 return self.submitTx(packaged, cb);
                             } else {
                                 err = clone(errors.RAW_TRANSACTION_ERROR);
