@@ -3,6 +3,7 @@ import { assert } from 'chai';
 import endDateShape from '../../test/assertions/common/endDateShape';
 import initialFairPricesShape from '../../test/assertions/common/initialFairPricesShape';
 import percentNumberShape from '../../test/assertions/common/percentNumberShape';
+import volumeNumberShape from '../../test/assertions/common/volumeNumberShape';
 
 export function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
@@ -169,6 +170,12 @@ export function step5(actual){
 		it('should receive creatingMarket and be a boolean', () => {
 			assert.isDefined(actual.creatingMarket, 'creatingMarket is not defined');
 			assert.isBoolean(actual.creatingMarket, 'creatingMarket is not a boolean');
+		});
+
+		it('should receive volume and be an object with correct shape', () => {
+			assert.isDefined(actual.volume, 'volume is not defined');
+			assert.isObject(actual.volume, 'volume is not an object');
+			volumeNumberShape(actual.volume);
 		});
 	});
 }
