@@ -23,7 +23,7 @@ export const TRADING_FEE_MAX = 12.5;
 
 export const MAKER_FEE_DEFAULT = 50;
 export const MAKER_FEE_MIN = 0;
-export const MAKER_FEE_MAX = 100;
+export const MAKER_FEE_MAX = 50;
 
 // Advanced Market Creation Defaults
 export const STARTING_QUANTITY_DEFAULT = 10;

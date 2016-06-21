@@ -1,4 +1,4 @@
-import App from 'augur-ui-react-components';
+import { App } from 'augur-ui-react-components';
 import selectors from './selectors';
 
 import { initAugur } from './modules/app/actions/init-augur';
@@ -26,7 +26,7 @@ store.dispatch(initAugur());
 
 // store.dispatch(MarketsActions.listenToMarkets());
 
-store.subscribe(() => new App(appElement, selectors));
+store.subscribe(() => App(appElement, selectors)); // eslint-disable-line new-cap
 
 window.onpopstate = (e) => {
 	store.dispatch(showLink(window.location.pathname + window.location.search));
