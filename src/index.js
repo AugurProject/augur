@@ -35,7 +35,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.2";
+    this.version = "1.4.3";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;

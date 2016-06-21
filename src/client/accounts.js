@@ -56,6 +56,7 @@ module.exports = function () {
                     value: FREEBIE_ETH,
                     from: augur.coinbase,
                     onFailed: onFailed,
+                    onSent: utils.noop,
                     onSuccess: function (res) {
                         onSendEther(account);
                         augur.fundNewAccount({
