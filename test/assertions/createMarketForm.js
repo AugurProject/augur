@@ -107,3 +107,53 @@ export function step3(actual){
 		});
 	});
 }
+
+export function step4(actual){
+	describe('augur-ui-react-components createMarketForm step-4 initial state', () => {
+		it('should receive makerFee and be a number', () => {
+			assert.isDefined(actual.makerFee, 'makerFee is not defined');
+			assert.isNumber(actual.makerFee, 'makerFee is not a number');
+		});
+
+		it('should receive initialLiquidity and be a number', () => {
+			assert.isDefined(actual.initialLiquidity, 'initialLiquidity is not defined');
+			assert.isNumber(actual.initialLiquidity, 'initialLiquidity is not a number');
+		});
+
+		it('should receive initialFairPrices and be an object', () => {
+			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
+			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
+		});
+
+		it('should receive the proper shape within initialFairPrices', () => {
+			assert.isDefined(actual.initialFairPrices.type, 'initialFairPrices.type is not defined');
+			assert.isString(actual.initialFairPrices.type, 'initialFairPrices.type is not a string');
+
+			assert.isDefined(actual.initialFairPrices.values, 'initialFairPrices.values is not defined');
+			assert.isArray(actual.initialFairPrices.values, 'initialFairPrices.values is not an array');
+
+			assert.isDefined(actual.initialFairPrices.raw, 'initialFairPrices.raw is not defined');
+			assert.isArray(actual.initialFairPrices.raw, 'initialFairPrices.raw is not an array');
+		});
+
+		it('should receive bestStartingQuantity and be a number', () => {
+			assert.isDefined(actual.bestStartingQuantity, 'bestStartingQuantity is not defined');
+			assert.isNumber(actual.bestStartingQuantity, 'bestStartingQuantity is not a number');
+		});
+
+		it('should receive startingQuantity and be a number', () => {
+			assert.isDefined(actual.startingQuantity, 'startingQuantity is not defined');
+			assert.isNumber(actual.startingQuantity, 'startingQuantity is not a number');
+		});
+
+		it('should receive priceWidth and be a number', () => {
+			assert.isDefined(actual.priceWidth, 'priceWidth is not defined');
+			assert.isNumber(actual.priceWidth, 'priceWidth is not a number');
+		});
+
+		it('should receive priceDepth and be a number', () => {
+			assert.isDefined(actual.priceDepth, 'priceDepth is not defined');
+			assert.isNumber(actual.priceDepth, 'priceDepth is not a number');
+		});
+	});
+}
