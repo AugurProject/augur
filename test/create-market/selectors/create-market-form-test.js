@@ -10,6 +10,7 @@ import { assertions } from 'augur-ui-react-components';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
 
 import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
+import * as actualStep3 from '../../../src/modules/create-market/selectors/form-steps/step-3';
 
 let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
@@ -74,9 +75,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 	describe('step 1', () => {
 		before(() => {
 			test = selector.default();
-		});
 
-		after(() => {
 			state.createMarketInProgress = {
 				...state.createMarketInProgress,
 				...test
@@ -88,7 +87,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			componentAssertions.step1(test);
+			componentAssertions.step1(state.createMarketInProgress);
 		});
 	});
 
@@ -96,19 +95,19 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		before(() => {
 			state.createMarketInProgress = {
 				step: 2,
-				type: BINARY,
-				initialFairPrices: {}
+				type: BINARY
 			};
 
 			test = selector.default();
+
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
 		});
 
 		after(() => {
-			state.createMarketInProgress = {
-				...state.createMarketInProgress,
-				...test,
-				type: BINARY
-			};
+			state.createMarketInProgress.type = BINARY;
 		});
 
 		it('should have the correct state', () => {
@@ -133,10 +132,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
 		it('should deliver the correct values to components', () => {
 			types.map((cV) => {
-				state.createMarketInProgress = {
-					...state.createMarketInProgress,
-					type: cV
-				};
+				state.createMarketInProgress.type = cV;
 
 				if(cV === SCALAR){
 					state.createMarketInProgress = {
@@ -163,9 +159,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 			state.createMarketInProgress.step = 3;
 
 			test = selector.default();
-		});
 
-		after(() => {
 			state.createMarketInProgress = {
 				...state.createMarketInProgress,
 				...test
@@ -186,6 +180,18 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
 		it('should call errors', () => {
 			assert(step3.errors.calledOnce, 'errors is not called once');
+		});
+
+		it('should deliver the correct values to components', () => {
+			console.log(actualStep3.select(state.createMarketInProgress));
+
+			let fullTestState = {
+				description: 'user would have entered this prior to arriving @ step 3',
+				...state.createMarketInProgress,
+				...actualStep3.select(state.createMarketInProgress)
+			};
+
+			componentAssertions.step3(fullTestState);
 		});
 	});
 
