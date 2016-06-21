@@ -56,7 +56,6 @@ const CreateMarketForm2 = (p) => {
 						p.onValuesUpdated({ endDate: new Date(dateText) })}
 				>
 					<Calendar
-						style={{padding: 10}}
 						weekNumbers={false}
 						highlightWeekends={false}
 						showClock
