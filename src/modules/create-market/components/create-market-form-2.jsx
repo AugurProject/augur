@@ -4,7 +4,7 @@ import Form2Categorical from './create-market-form-2-categorical';
 import Form2Scalar from './create-market-form-2-scalar';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
-import { Calendar, DateField, TransitionView } from 'react-date-picker';
+import { Calendar, DateField } from 'react-date-picker';
 
 const CreateMarketForm2 = (p) => {
 	let	typeSpecific;
