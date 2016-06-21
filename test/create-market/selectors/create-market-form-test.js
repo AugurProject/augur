@@ -12,6 +12,7 @@ import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/consta
 import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
 import * as actualStep3 from '../../../src/modules/create-market/selectors/form-steps/step-3';
 import * as actualStep4 from '../../../src/modules/create-market/selectors/form-steps/step-4';
+import * as actualStep5 from '../../../src/modules/create-market/selectors/form-steps/step-5';
 
 let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
@@ -167,6 +168,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 			test = selector.default();
 
 			state.createMarketInProgress = {
+				description: 'user would have entered this prior to arriving @ step 3',
 				...state.createMarketInProgress,
 				...test
 			};
@@ -190,7 +192,6 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
 		it('should deliver the correct values to components', () => {
 			let fullTestState = {
-				description: 'user would have entered this prior to arriving @ step 3',
 				...state.createMarketInProgress,
 				...actualStep3.select(state.createMarketInProgress)
 			};
@@ -204,12 +205,17 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 			state.createMarketInProgress.step = 4;
 
 			test = selector.default();
+
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
 		});
 
 		after(() => {
 			state.createMarketInProgress = {
 				...state.createMarketInProgress,
-				...test
+				...actualStep4.select(state.createMarketInProgress)
 			};
 		});
 
@@ -244,10 +250,30 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 			state.createMarketInProgress.step = 5;
 
 			test = selector.default();
+
+			state.createMarketInProgress = {
+				endDate: new Date(3000, 0, 1, 0, 0, 0, 0), // User would have entered this during step-2
+				...state.createMarketInProgress,
+				...test
+			};
 		});
 
 		it('should call select', () => {
 			assert(step5.select.calledOnce, 'select is not called once');
+		});
+
+		it('should deliver the correct values to components', () => {
+			let fullTestState = {
+				...state.createMarketInProgress,
+				...actualStep5.select(
+					state.createMarketInProgress,
+					state.blockchain.currentBlockNumber,
+					state.blockchain.currentBlockMillisSinceEpoch,
+					store.dispatch
+				)
+			};
+
+			componentAssertions.step5(fullTestState);
 		});
 	});
 });
