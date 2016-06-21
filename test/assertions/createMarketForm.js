@@ -1,5 +1,7 @@
 import { assert } from 'chai';
 
+import endDateShapeAssertion from '../../test/assertions/common/endDateShape';
+
 export function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
 		it('should receive step and be a number', () => {
@@ -31,20 +33,10 @@ export function step2(actual){
 			assert.isString(actual.type, 'type is not a string');
 		});
 
-		it('should receive initialFairPrices and be an object', () => {
+		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-		});
-
-		it('should receive the proper shape within initialFairPrices', () => {
-			assert.isDefined(actual.initialFairPrices.type, 'initialFairPrices.type is not defined');
-			assert.isString(actual.initialFairPrices.type, 'initialFairPrices.type is not a string');
-
-			assert.isDefined(actual.initialFairPrices.values, 'initialFairPrices.values is not defined');
-			assert.isArray(actual.initialFairPrices.values, 'initialFairPrices.values is not an array');
-
-			assert.isDefined(actual.initialFairPrices.raw, 'initialFairPrices.raw is not defined');
-			assert.isArray(actual.initialFairPrices.raw, 'initialFairPrices.raw is not an array');
+			_initialFairPricesShapeAssertion(actual.initialFairPrices);
 		});
 
 		it('should receive descriptionPlaceholder and be a string', () => {
@@ -120,20 +112,10 @@ export function step4(actual){
 			assert.isNumber(actual.initialLiquidity, 'initialLiquidity is not a number');
 		});
 
-		it('should receive initialFairPrices and be an object', () => {
+		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-		});
-
-		it('should receive the proper shape within initialFairPrices', () => {
-			assert.isDefined(actual.initialFairPrices.type, 'initialFairPrices.type is not defined');
-			assert.isString(actual.initialFairPrices.type, 'initialFairPrices.type is not a string');
-
-			assert.isDefined(actual.initialFairPrices.values, 'initialFairPrices.values is not defined');
-			assert.isArray(actual.initialFairPrices.values, 'initialFairPrices.values is not an array');
-
-			assert.isDefined(actual.initialFairPrices.raw, 'initialFairPrices.raw is not defined');
-			assert.isArray(actual.initialFairPrices.raw, 'initialFairPrices.raw is not an array');
+			_initialFairPricesShapeAssertion(actual.initialFairPrices);
 		});
 
 		it('should receive bestStartingQuantity and be a number', () => {
@@ -156,4 +138,35 @@ export function step4(actual){
 			assert.isNumber(actual.priceDepth, 'priceDepth is not a number');
 		});
 	});
+}
+
+export function step5(actual){
+	describe('augur-ui-react-components createMarketForm step-5 initial state', () => {
+		it('should receive description and be a string', () => {
+			assert.isDefined(actual.description, 'description is not defined');
+			assert.isString(actual.description, 'description is not a string');
+		});
+
+		it('should receive outcomes and be an array', () => {
+			assert.isDefined(actual.outcomes, 'outcomes is not defined');
+			assert.isArray(actual.outcomes, 'outcomes is not an array');
+		});
+
+		it('should receive endDate and be an object with correct shape', () => {
+			assert.isDefined(actual.endDate, 'endDate is not defined');
+			assert.isObject(actual.endDate, 'endDate is not an array');
+			endDateShapeAssertion(actual.endDate);
+		});
+	});
+}
+
+function _initialFairPricesShapeAssertion(initialFairPrices){
+	assert.isDefined(initialFairPrices.type, 'initialFairPrices.type is not defined');
+	assert.isString(initialFairPrices.type, 'initialFairPrices.type is not a string');
+
+	assert.isDefined(initialFairPrices.values, 'initialFairPrices.values is not defined');
+	assert.isArray(initialFairPrices.values, 'initialFairPrices.values is not an array');
+
+	assert.isDefined(initialFairPrices.raw, 'initialFairPrices.raw is not defined');
+	assert.isArray(initialFairPrices.raw, 'initialFairPrices.raw is not an array');
 }
