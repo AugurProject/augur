@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 
 import percentNumberShape from '../../test/assertions/common/percentNumberShape';
-import volumeNumberShape from '../../test/assertions/common/volumeNumberShape';
+import numberShape from '../../test/assertions/common/numberShape';
 
 // markets:
 //  [ { id: String,
@@ -44,7 +44,7 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.volume, `market.volume isn't defined`);
 	assert.isObject(actual.volume, `market.volume isn't an object`);
-	volumeNumberShape(actual.volume);
+	numberShape(actual.volume);
 
 	assert.isDefined(actual.isOpen, `market.isOpen isn't defined`);
 	assert.isBoolean(actual.isOpen, `market.isOpen isn't a boolean`);

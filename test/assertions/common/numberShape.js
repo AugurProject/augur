@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-// <volume formatted number>: {
+// <formatted number>: {
 // 	 value: Number,
 //   formattedValue: Number,
 //   formatted: String,
@@ -11,8 +11,8 @@ import { assert } from 'chai';
 //   full: String
 // }
 export default function (actual) {
-	assert.isDefined(actual, `volume formatted number doesn't exist`);
-	assert.isObject(actual, `volume formatted number isn't an object`);
+	assert.isDefined(actual, `formatted number doesn't exist`);
+	assert.isObject(actual, `formatted number isn't an object`);
 	assert.isDefined(actual.value, `volume formatted number value isn't defined`);
 	assert.isNumber(actual.value, `volume formatted number value isn't a number`);
 	assert.isDefined(actual.formattedValue, `volume formatted number formattedValue isn't defined`);

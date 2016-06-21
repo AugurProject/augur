@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import endDateShape from '../../test/assertions/common/endDateShape';
 import initialFairPricesShape from '../../test/assertions/common/initialFairPricesShape';
 import percentNumberShape from '../../test/assertions/common/percentNumberShape';
-import volumeNumberShape from '../../test/assertions/common/volumeNumberShape';
+import numberShape from '../../test/assertions/common/numberShape';
 
 export function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
@@ -162,8 +162,8 @@ export function step5(actual){
 		});
 
 		it('should receive tradingFeePercent and be an object with correct shape', () => {
-			assert.isDefined(actual.tradingFeePercent, 'endDate is not defined');
-			assert.isObject(actual.tradingFeePercent, 'endDate is not an array');
+			assert.isDefined(actual.tradingFeePercent, 'tradingFeePercent is not defined');
+			assert.isObject(actual.tradingFeePercent, 'tradingFeePercent is not an object');
 			percentNumberShape(actual.tradingFeePercent);
 		});
 
@@ -175,7 +175,43 @@ export function step5(actual){
 		it('should receive volume and be an object with correct shape', () => {
 			assert.isDefined(actual.volume, 'volume is not defined');
 			assert.isObject(actual.volume, 'volume is not an object');
-			volumeNumberShape(actual.volume);
+			numberShape(actual.volume);
+		});
+
+		it('should receive makerFeePercent and be an object with correct shape', () => {
+			assert.isDefined(actual.makerFeePercent, 'makerFeePercent is not defined');
+			assert.isObject(actual.makerFeePercent, 'makerFeePercent is not an object');
+			percentNumberShape(actual.makerFeePercent);
+		});
+
+		it('should receive takerFeePercent and be an object with correct shape', () => {
+			assert.isDefined(actual.takerFeePercent, 'takerFeePercent is not defined');
+			assert.isObject(actual.takerFeePercent, 'takerFeePercent is not an object');
+			percentNumberShape(actual.takerFeePercent);
+		});
+
+		it('should receive initialFairPrices and be an object with correct shape', () => {
+			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
+			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
+			initialFairPricesShape(actual.initialFairPrices);
+		});
+
+		it('should receive bestStartingQuantityFormatted and be an object with correct shape', () => {
+			assert.isDefined(actual.bestStartingQuantityFormatted, 'bestStartingQuantityFormatted is not defined');
+			assert.isObject(actual.bestStartingQuantityFormatted, 'bestStartingQuantityFormatted is not an object');
+			numberShape(actual.bestStartingQuantityFormatted);
+		});
+
+		it('should receive startingQuantityFormatted and be an object with correct shape', () => {
+			assert.isDefined(actual.startingQuantityFormatted, 'startingQuantityFormatted is not defined');
+			assert.isObject(actual.startingQuantityFormatted, 'startingQuantityFormatted is not an object');
+			numberShape(actual.startingQuantityFormatted);
+		});
+
+		it('should receive priceWidthFormatted and be an object with correct shape', () => {
+			assert.isDefined(actual.priceWidthFormatted, 'priceWidthFormatted is not defined');
+			assert.isObject(actual.priceWidthFormatted, 'priceWidthFormatted is not an object');
+			numberShape(actual.priceWidthFormatted);
 		});
 	});
 }
