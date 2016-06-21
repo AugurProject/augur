@@ -7,7 +7,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 import { assertions } from 'augur-ui-react-components';
-import { BINARY } from '../../../src/modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
+
+import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
 
 let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
@@ -24,6 +26,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		step3,
 		step4,
 		step5,
+		types = [ BINARY, CATEGORICAL, SCALAR ],
 		returnObj = {},
 		state = Object.assign({}, testState),
 		componentAssertions = assertions.createMarketForm;
@@ -73,6 +76,13 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 			test = selector.default();
 		});
 
+		after(() => {
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
+		});
+
 		it('should init formState correctly', () => {
 			assert.equal(test.step, 1, 'step is not equal to 1');
 		});
@@ -94,7 +104,11 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		after(() => {
-			state.createMarketInProgress = test;
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test,
+				type: BINARY
+			};
 		});
 
 		it('should have the correct state', () => {
@@ -116,6 +130,32 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		it('should call initialFairPrices', () => {
 			assert(step2.initialFairPrices.calledOnce, 'initialFairPrices is not called once');
 		});
+
+		it('should deliver the correct values to components', () => {
+			types.map((cV) => {
+				state.createMarketInProgress = {
+					...state.createMarketInProgress,
+					type: cV
+				};
+
+				if(cV === SCALAR){
+					state.createMarketInProgress = {
+						...state.createMarketInProgress,
+						scalarSmallNum: 10,
+						scalarBigNum: 100
+					};
+				}
+
+				let fullTestState = {
+					...test,
+					...state.createMarketInProgress,
+					...actualStep2.initialFairPrices(state.createMarketInProgress),
+					...actualStep2.select(state.createMarketInProgress)
+				};
+
+				componentAssertions.step2(fullTestState);
+			});
+		});
 	});
 	
 	describe('step 3', () => {
@@ -126,7 +166,10 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		after(() => {
-			state.createMarketInProgress = test;
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
 		});
 		
 		it('should have the correct state', () => {
@@ -154,7 +197,10 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		after(() => {
-			state.createMarketInProgress = test;
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
 		});
 
 		it('should have the correct state', () => {
