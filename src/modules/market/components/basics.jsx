@@ -17,7 +17,7 @@ const Basics = (p) => (
 		<ul className="properties">
 			{!!p.endDate &&
 				<li className="property end-date">
-					<span className="property-label">{(p.endDate && p.endDate.value < new Date()) ? 'ended' : 'ends'}</span>
+					<span className="property-label">{p.endDateLabel}</span>
 					<ValueDenomination className="property-value" {...p.endDate} />
 				</li>
 			}
