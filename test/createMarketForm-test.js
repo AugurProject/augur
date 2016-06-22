@@ -1,9 +1,11 @@
+import { assert } from 'chai';
 import selectors from '../src/selectors';
-import createMarketFormAssertion from './assertions/createMarketForm';
 
 describe(`selectors.createMarketForm tests:`, () => {
-	it(`should contain a createMarketForm Object`, () => {
+	it('should contain a createMarketForm object', () => {
 		let actual = selectors.createMarketForm;
-		createMarketFormAssertion(actual);
+
+		assert.isDefined(actual, 'createMarketForm is not defined');
+		assert.isObject(actual, 'createMarketForm is not an object');
 	});
 });
