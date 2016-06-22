@@ -15,7 +15,8 @@ export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
 	const creationTime = { label: 'Newest Market', value: 'creationTime', isDesc: true };
 	const endDate = { label: 'Soonest Expiry', value: 'endDate', isDesc: false };
 	const volume = { label: 'Most Volume', value: 'volume', isDesc: true };
-	const tradingFeePercent = { label: 'Lowest Fee', value: 'tradingFeePercent', isDesc: false };
+	const takerFeePercent = { label: 'Lowest Taker Fee', value: 'takerFeePercent', isDesc: false };
+	const makerFeePercent = { label: 'Lowest Maker Fee', value: 'makerFeePercent', isDesc: false };
 
 	switch (selectedSort.prop) {
 	case creationTime.value:
@@ -30,15 +31,19 @@ export const selectSortOptions = memoizerific(10)((selectedSort = {}) => {
 		volume.label = selectedSort.isDesc ? 'Most Volume' : 'Least Volume';
 		volume.isDesc = selectedSort.isDesc;
 		break;
-	case tradingFeePercent.value:
-		tradingFeePercent.label = selectedSort.isDesc ? 'Highest Fee' : 'Lowest Fee';
-		tradingFeePercent.isDesc = selectedSort.isDesc;
+	case takerFeePercent.value:
+		takerFeePercent.label = selectedSort.isDesc ? 'Highest Taker Fee' : 'Lowest Taker Fee';
+		takerFeePercent.isDesc = selectedSort.isDesc;
+		break;
+	case makerFeePercent.value:
+		makerFeePercent.label = selectedSort.isDesc ? 'Highest Maker Fee' : 'Lowest Maker Fee';
+		makerFeePercent.isDesc = selectedSort.isDesc;
 		break;
 	default:
 		break;
 	}
 
-	return [creationTime, endDate, volume, tradingFeePercent];
+	return [creationTime, endDate, volume, takerFeePercent, makerFeePercent];
 });
 
 export const selectOnChangeSort = memoizerific(1)((dispatch) => (prop, isDesc) => {

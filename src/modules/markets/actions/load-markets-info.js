@@ -29,7 +29,7 @@ export function loadMarketsInfo(marketIDs) {
 				marketData = marketsData[marketID] || {};
 
 				// parse out event, currently we only support single event markets, no combinatorial
-				parseEvent(marketData);
+				parseEvent(marketData, marketID);
 
 				// transform array of outcomes into an object and add their names
 				finalOutcomesData[marketID] = parseOutcomes(marketData);
@@ -46,9 +46,9 @@ export function loadMarketsInfo(marketIDs) {
 		});
 	};
 
-	function parseEvent(marketData) {
+	function parseEvent(marketData, marketID) {
 		if (!marketData.events || marketData.events.length !== 1) {
-			console.warn('Market does not have correct number of events:', marketData);
+			console.warn('Market does not have correct number of events:', marketID, marketData);
 			delete marketData.events;
 			return;
 		}
@@ -62,9 +62,9 @@ export function loadMarketsInfo(marketIDs) {
 		delete marketData.events;
 	}
 
-	function parseOutcomes(marketData) {
+	function parseOutcomes(marketData, marketID) {
 		if (!marketData.outcomes || !marketData.outcomes.length) {
-			console.warn('Market does not have outcomes: ', marketData);
+			console.warn('Market does not have outcomes:', marketID, marketData);
 			return undefined;
 		}
 
@@ -80,7 +80,7 @@ export function loadMarketsInfo(marketIDs) {
 				} else if (outcome.id === BINARY_YES_ID) {
 					outcome.name = 'Yes';
 				} else {
-					console.warn('Invalid outcome ID for binary market: ', outcome, marketData);
+					console.warn('Invalid outcome ID for binary market:', outcome, marketID, marketData);
 				}
 				return outcome;
 			});
@@ -90,14 +90,14 @@ export function loadMarketsInfo(marketIDs) {
 			// parse outcome names from description
 			splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
 			if (splitDescription.length < 2) {
-				console.warn('Missing outcome names in description for categorical market: ', marketData);
+				console.warn('Missing outcome names in description for categorical market:', marketID, marketData);
 				break;
 			}
 
 			// parse individual outcomes from outcomes string
 			categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_OUTCOME_SEPARATOR);
 			if (categoricalOutcomeNames.length !== marketData.outcomes.length) {
-				console.warn('Number of outcomes parsed from description do not match number of outcomes in market for for categorical market: ', marketData);
+				console.warn('Number of outcomes parsed from description do not match number of outcomes in market for for categorical market:', marketID, marketData);
 				break;
 			}
 
@@ -118,14 +118,14 @@ export function loadMarketsInfo(marketIDs) {
 				} else if (outcome.id === SCALAR_UP_ID) {
 					outcome.name = '⇧';
 				} else {
-					console.warn('Invalid outcome ID for scalar market: ', outcome, marketData);
+					console.warn('Invalid outcome ID for scalar market:', marketID, outcome, marketData);
 				}
 				return outcome;
 			});
 			break;
 
 		default:
-			console.warn('Unknown market type:', marketData.type, marketData);
+			console.warn('Unknown market type:', marketID, marketData.type, marketData);
 			outcomes = undefined;
 			break;
 		}

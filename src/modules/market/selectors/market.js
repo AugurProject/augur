@@ -139,24 +139,21 @@ export const assembleMarket = memoizerific(1000)((
 	}
 
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
+	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
+
 	market.isOpen = isOpen;
 	market.isExpired = !isOpen;
-	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
 	market.isFavorite = isFavorite;
 
-	market.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
+	market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
+	market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
 	market.volume = formatNumber(marketData.volume, { positiveSign: false });
 
-	market.isRequiredToReportByAccount = !!marketReport;
-	// was the user chosen to report on this market
-	market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase;
-	// account is required to report on this unreported market during reporting phase
-	market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash;
-	// the user submitted a report that is not yet confirmed (reportHash === true)
-	market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length;
-	// the user fully reported on this market (reportHash === [string])
-	market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase;
-	// the user submitted a report that is not yet confirmed
+	market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
+	market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase
+	market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
+	market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
+	market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportConfirmationPhase; // the user submitted a report that is not yet confirmed
 	market.isMissedOrReported = market.isMissedReport || market.isReported;
 
 	market.marketLink = selectMarketLink(market, dispatch);
@@ -165,8 +162,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.report = {
 		...marketReport,
-		onSubmitReport: (reportedOutcomeID, isUnethical) =>
-			dispatch(submitReport(market, reportedOutcomeID, isUnethical))
+		onSubmitReport: (reportedOutcomeID, isUnethical) => dispatch(submitReport(market, reportedOutcomeID, isUnethical))
 	};
 
 	market.outcomes = [];

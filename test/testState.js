@@ -64,7 +64,8 @@ const testState = {
 			description: 'some test description',
 			endDate: 123,
 			type: 'scalar',
-			tradingFee: 5,
+			makerFee: 0.02,
+			takerFee: 0.05,
 			volume: 500,
 			tags: ['tag1', 'tag2', 'tag3'],
 			orderBook: {}
