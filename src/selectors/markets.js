@@ -30,7 +30,7 @@ function makeMarkets(numMarkets = 25) {
 			id,
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
-			endDate: { formatted: `${d.getFullYear()}/${d.getMonth()}/${d.getDate() }`, full: d.toISOString() },
+			endDate: { formatted: `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`, full: d.toISOString() },
 			endDateLabel: (d < new Date()) ? 'ended' : 'ends',
 			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
