@@ -51,9 +51,15 @@ const Transaction = (p) => {
 				</span>
 			</span>
 		);
+		nodes.transactions =
+			p.data.txns.length > 0
+			? (<div className="transactions">
+				{p.data.txns.map((txn) => <span key={txn.hash}>{txn.hash}: {txn.status}</span>)}
+			</div>)
+				: null;
 		if (p.type === BUY_SHARES) {
 			nodes.valueChange = (
-				<span className="value-change">
+				<span className="value-changes">
 					{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 					}
 					{!!p.etherNegative && !!p.etherNegative.value && <ValueDenomination className="value-change ether" {...p.etherNegative} />
@@ -62,7 +68,7 @@ const Transaction = (p) => {
 			);
 		} else {
 			nodes.valueChange = (
-				<span className="value-change">
+				<span className="value-changes">
 					{!!p.sharesNegative && !!p.sharesNegative.value && <ValueDenomination className="value-change shares" {...p.sharesNegative} />
 					}
 					{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -132,7 +138,7 @@ const Transaction = (p) => {
 	default:
 		nodes.description = (<span className="description">{p.type}</span>);
 		nodes.valueChange = (
-			<span className="value-change">
+			<span className="value-changes">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -144,14 +150,21 @@ const Transaction = (p) => {
 
 	return (
 		<article className={classnames('transaction-item', p.className, p.status)}>
-			{p.index &&
-				<span className="index">{`${p.index}.`}</span>
-			}
-			{nodes.description}
-			{nodes.valueChange}
-			{p.status &&
-				<div className="status-and-message"><span className="status">{p.status}</span><br /><span className="message">{p.message}</span></div>
-			}
+			<div className="content">
+				{p.index &&
+					<span className="index">{`${p.index}.`}</span>
+				}
+				{nodes.description}
+				{nodes.valueChange}
+				{p.status &&
+					<div className="status-and-message">
+						<span className="status">{p.status}</span>
+						<br />
+						<span className="message">{p.message}</span>
+					</div>
+				}
+			</div>
+			{nodes.transactions}
 		</article>
 	);
 };

@@ -4,8 +4,6 @@
         background: white;
 
         .transaction-item {
-			display: flex;
-			align-items: center;
 			padding: 2vh 0;
             line-height: 2.5rem;
             border-bottom: 1px solid @color-border;
@@ -27,7 +25,6 @@
 
             &.pending {
                 background: fade(@color-light-normal, 50%);
-                animation-name: unset;
 				.status-and-message {
 					color: @color-dark-normal;
 				}
@@ -39,6 +36,11 @@
 				.status-and-message {
 					color: @color-success-normal;
 				}
+            }
+
+            .content {
+              display: flex;
+              align-items: center;
             }
 
             .index {

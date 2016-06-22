@@ -1,7 +1,9 @@
 import { makeNumber } from '../utils/make-number';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
-import { M } from '../modules/site/constants/pages';
+import { SUCCESS, PENDING } from '../modules/transactions/constants/statuses';
+
+import { M, TRANSACTIONS } from '../modules/site/constants/pages';
 import {
 	// CREATE_MARKET,
 	BUY_SHARES,
@@ -69,7 +71,7 @@ function makeMarkets(numMarkets = 25) {
 						type: BUY_SHARES,
 						shares: makeNumber(numShares),
 						ether: makeNumber(cost),
-						data: { outcomeName: 'MAYBE', marketDescription: m.description }
+						data: { txns: [], outcomeName: outcome.name, marketDescription: m.description }
 					});
 					p.totalShares += numShares;
 					p.totalEther += cost;
@@ -81,6 +83,47 @@ function makeMarkets(numMarkets = 25) {
 				tots.totalFees = makeNumber(tots.totalFees);
 				tots.totalGas = makeNumber(tots.totalGas);
 				tots.onSubmitPlaceTrade = () => {
+					require('../selectors').update({
+						activePage: TRANSACTIONS
+					});
+
+					setTimeout(() => {
+						require('../selectors').update({
+							transactions: [
+								{
+									type: 'buy_shares',
+									status: PENDING,
+									data: {
+										outcomeName: 'outcome name',
+										marketDescription: 'marketDescription',
+										txns: [{
+											hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
+											status: "on sent"
+										}]
+									}
+								}
+							]
+						});
+
+						setTimeout(() => {
+							require('../selectors').update({
+								transactions: [
+									{
+										type: 'buy_shares',
+										status: SUCCESS,
+										data: {
+											outcomeName: 'outcome name',
+											marketDescription: 'marketDescription',
+											txns: [{
+												hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
+												status: "success"
+											}]
+										}
+									}
+								]
+							});
+						}, 5000);
+					}, 1000);
 				};
 
 				return tots;
