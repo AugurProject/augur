@@ -47,5 +47,5 @@ export function updateTradesInProgress(marketID, outcomeID, numShares, limitPric
 }
 
 export function clearTradeInProgress(marketID) {
-	return {type: CLEAR_TRADE_IN_PROGRESS, marketID};
+	return { type: CLEAR_TRADE_IN_PROGRESS, marketID };
 }
