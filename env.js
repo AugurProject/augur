@@ -3,6 +3,7 @@
 process.env.AUGURJS_INTEGRATION_TESTS = true;
 
 GLOBAL.path = require("path");
+GLOBAL.join = require("path").join;
 GLOBAL.fs = require("fs");
 GLOBAL.BigNumber = require("bignumber.js");
 GLOBAL.Decimal = require("decimal.js");

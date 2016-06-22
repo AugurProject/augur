@@ -15,6 +15,8 @@ module.exports = {
     ETHER: new BigNumber(10).toPower(18),
 
     DEFAULT_BRANCH_ID: "0xf69b5",
+    BID: 1,
+    ASK: 2,
 
     // default gas: 3.135M
     DEFAULT_GAS: "0x2fd618",

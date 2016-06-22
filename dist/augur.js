@@ -36558,6 +36558,8 @@ module.exports = {
     ETHER: new BigNumber(10).toPower(18),
 
     DEFAULT_BRANCH_ID: "0xf69b5",
+    BID: 1,
+    ASK: 2,
 
     // default gas: 3.135M
     DEFAULT_GAS: "0x2fd618",
@@ -37447,7 +37449,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.4";
+    this.version = "1.4.5";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37819,6 +37821,7 @@ module.exports = {
 var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 module.exports = {
 
@@ -37830,25 +37833,67 @@ module.exports = {
     },
 
     buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.buy);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.buy), arguments);
-        tx.params = unpacked.params;
-        tx.params[0] = abi.fix(tx.params[0], "hex");
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        this.transact(tx, onSent, function (res) {
+            res.callReturn = utils.sha3([
+                constants.BID,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                self.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            onSuccess(res);
+        }, onFailed);
     },
 
     sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.sell);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.sell), arguments);
-        tx.params = unpacked.params;
-        tx.params[0] = abi.fix(tx.params[0], "hex");
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        this.transact(tx, onSent, function (res) {
+            res.callReturn = utils.sha3([
+                constants.ASK,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                self.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            onSuccess(res);
+        }, onFailed);
     }
 };
 
-},{"../utilities":341,"augur-abi":1,"clone":237}],319:[function(require,module,exports){
+},{"../constants":312,"../utilities":341,"augur-abi":1,"clone":237}],319:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38416,6 +38461,7 @@ module.exports = {
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
+var utils = require("../utilities");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -38439,6 +38485,9 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         if (!tags || tags.constructor !== Array) tags = [];
         if (tags.length) {
             for (var i = 0; i < tags.length; ++i) {
@@ -38464,7 +38513,7 @@ module.exports = {
             numOutcomes,
             resolution
         ];
-        this.transact(tx, this.utils.noop, function (res) {
+        this.transact(tx, utils.noop, function (res) {
             var tx = clone(self.tx.createMarket);
             tx.params = [
                 branchId,
@@ -38485,7 +38534,7 @@ module.exports = {
                     self.transact(tx, onSent, function (res) {
                         var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                         self.rpc.getBlock(res.blockNumber, false, function (block) {
-                            res.marketID = self.utils.sha3([
+                            res.marketID = utils.sha3([
                                 tradingPeriod,
                                 abi.fix(tradingFee, "hex"),
                                 block.timestamp,
@@ -38496,6 +38545,7 @@ module.exports = {
                                 new Buffer(description, "utf8").length,
                                 description
                             ]);
+                            res.callReturn = res.marketID;
                             onSuccess(res);
                         });
                     }, onFailed);
@@ -38526,7 +38576,7 @@ module.exports = {
         //         self.getPeriodLength(branchId, function (periodLength) {
         //             self.rpc.getBlock(res.blockNumber, false, function (block) {
         //                 var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-        //                 res.marketID = self.utils.sha3([
+        //                 res.marketID = utils.sha3([
         //                     tradingPeriod,
         //                     abi.fix(tradingFee, "hex"),
         //                     block.timestamp,
@@ -38584,6 +38634,9 @@ module.exports = {
             onFailed = branchId.onFailed;       // function
             branchId = branchId.branchId;       // sha256 hash
         }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         if (!tags || tags.constructor !== Array) tags = [];
         if (tags.length) {
             for (var i = 0; i < tags.length; ++i) {
@@ -38620,7 +38673,7 @@ module.exports = {
                         expDate = parseInt(expDate);
                         var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                         self.rpc.getBlock(res.blockNumber, false, function (block) {
-                            res.marketID = self.utils.sha3([
+                            res.marketID = utils.sha3([
                                 tradingPeriod,
                                 abi.fix(tradingFee, "hex"),
                                 block.timestamp,
@@ -38631,6 +38684,7 @@ module.exports = {
                                 new Buffer(description, "utf8").length,
                                 description
                             ]);
+                            res.callReturn = res.marketID;
                             onSuccess(res);
                         });
                     });
@@ -38641,7 +38695,7 @@ module.exports = {
 
     updateTradingFee: function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.updateTradingFee);
-        var unpacked = this.utils.unpack(branch, this.utils.labels(this.updateTradingFee), arguments);
+        var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
@@ -38649,14 +38703,14 @@ module.exports = {
 
     pushMarketForward: function (branch, market, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.pushMarketForward);
-        var unpacked = this.utils.unpack(branch, this.utils.labels(this.pushMarketForward), arguments);
+        var unpacked = utils.unpack(branch, utils.labels(this.pushMarketForward), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     }
 };
 
 }).call(this,require("buffer").Buffer)
-},{"augur-abi":1,"bignumber.js":10,"buffer":233,"clone":237}],327:[function(require,module,exports){
+},{"../utilities":341,"augur-abi":1,"bignumber.js":10,"buffer":233,"clone":237}],327:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)

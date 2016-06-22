@@ -8,6 +8,7 @@
 var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 module.exports = {
 
@@ -19,20 +20,62 @@ module.exports = {
     },
 
     buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.buy);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.buy), arguments);
-        tx.params = unpacked.params;
-        tx.params[0] = abi.fix(tx.params[0], "hex");
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        this.transact(tx, onSent, function (res) {
+            res.callReturn = utils.sha3([
+                constants.BID,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                self.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            onSuccess(res);
+        }, onFailed);
     },
 
     sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.sell);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.sell), arguments);
-        tx.params = unpacked.params;
-        tx.params[0] = abi.fix(tx.params[0], "hex");
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        this.transact(tx, onSent, function (res) {
+            res.callReturn = utils.sha3([
+                constants.ASK,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                self.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            onSuccess(res);
+        }, onFailed);
     }
 };
