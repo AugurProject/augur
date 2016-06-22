@@ -14,7 +14,7 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
-    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {
             description = branchId.description;         // string
@@ -23,9 +23,9 @@ module.exports = {
             maxValue = branchId.maxValue;               // integer (2 for binary)
             numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
             resolution = branchId.resolution;
-            tradingFee = branchId.tradingFee;           // number -> fixed-point
+            takerFee = branchId.takerFee;
             tags = branchId.tags;
-            makerFees = branchId.makerFees;
+            makerFee = branchId.makerFee;
             extraInfo = branchId.extraInfo;
             onSent = branchId.onSent;                   // function
             onSuccess = branchId.onSuccess;             // function
@@ -48,6 +48,9 @@ module.exports = {
         while (tags.length < 3) {
             tags.push("0x0");
         }
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         description = description.trim();
         expDate = parseInt(expDate);
         var tx = clone(this.tx.createEvent);
@@ -70,7 +73,7 @@ module.exports = {
                 tags[0],
                 tags[1],
                 tags[2],
-                abi.fix(makerFees, "hex"),
+                abi.fix(makerProportionOfFee, "hex"),
                 extraInfo || ""
             ];
             self.rpc.gasPrice(function (gasPrice) {
@@ -112,7 +115,7 @@ module.exports = {
         //     tags[0],
         //     tags[1],
         //     tags[2],
-        //     abi.fix(makerFees, "hex"),
+        //     abi.fix(makerProportionOfFee, "hex"),
         //     extraInfo || ""
         // ];
         // this.rpc.gasPrice(function (gasPrice) {
@@ -167,14 +170,14 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    createMarket: function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {
             description = branchId.description; // string
-            tradingFee = branchId.tradingFee;   // number -> fixed-point
+            takerFee = branchId.takerFee;
             events = branchId.events;           // array [sha256, ...]
             tags = branchId.tags;
-            makerFees = branchId.makerFees;
+            makerFee = branchId.makerFee;
             extraInfo = branchId.extraInfo;
             onSent = branchId.onSent;           // function
             onSuccess = branchId.onSuccess;     // function
@@ -197,6 +200,9 @@ module.exports = {
         while (tags.length < 3) {
             tags.push("0x0");
         }
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         var tx = clone(this.tx.createMarket);
         description = description.trim();
         tx.params = [
@@ -207,7 +213,7 @@ module.exports = {
             tags[0],
             tags[1],
             tags[2],
-            abi.fix(makerFees, "hex"),
+            abi.fix(makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
         this.rpc.gasPrice(function (gasPrice) {

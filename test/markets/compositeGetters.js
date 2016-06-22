@@ -99,8 +99,10 @@ describe("Integration tests", function () {
         assert.property(r, "traderCount");
         assert.isAbove(r.traderIndex, -1);
         assert.strictEqual(parseInt(augur.getCurrentParticipantNumber(market)), r.traderCount);
-        assert.property(r, "makerFees");
-        assert.isNotNull(r.makerFees);
+        assert.property(r, "makerFee");
+        assert.isNotNull(r.makerFee);
+        assert.property(r, "takerFee");
+        assert.isNotNull(r.takerFee);
         assert.property(r, "tags");
         assert.isNotNull(r.tags);
         assert.property(r, "traderIndex");

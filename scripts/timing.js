@@ -61,6 +61,9 @@ function createMarkets(numMarketsToCreate, callback) {
             description += "~|>" + choices.join('|');
         }
         var expDate = Math.round(new Date().getTime() / 900);
+        var takerFee = 0.1 * Math.random();
+        var makerFee = 0.5 * takerFee * Math.random();
+        // console.log("takerFee:", takerFee, "makerFee:", makerFee);
         var createSingleEventMarketParams = {
             branchId: augur.branches.dev,
             description: description,
@@ -69,8 +72,8 @@ function createMarkets(numMarketsToCreate, callback) {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
-            tradingFee: "0.02",
-            makerFees: (0.5 * Math.random()).toString(),
+            takerFee: takerFee.toString(),
+            makerFee: makerFee.toString(),
             extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun(),
             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
             onSent: function (r) {},

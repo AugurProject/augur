@@ -77,15 +77,24 @@ module.exports = {
             // info[14] = self.Markets[marketID].tag1
             // info[15] = self.Markets[marketID].tag2
             // info[16] = self.Markets[marketID].tag3
+
+            // tradingFee = (takerFee + makerFee) / 1.5
+            // 1.5*tradingFee = takerFee + makerFee
+            // takerFee = 1.5*tradingFee - makerFee
+
             var index = 17;
+            var makerProportionOfFee = abi.unfix(rawInfo[2]);
+            var tradingFee = abi.unfix(rawInfo[6]);
+            var makerFee = tradingFee.times(makerProportionOfFee);
             info = {
                 network: this.network_id,
                 traderCount: parseInt(rawInfo[1]),
-                makerFees: abi.unfix(rawInfo[2], "string"),
+                makerFee: makerFee.toFixed(),
+                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
+                tradingFee: tradingFee.toFixed(),
                 traderIndex: abi.unfix(rawInfo[3], "number"),
                 numOutcomes: abi.number(rawInfo[4]),
                 tradingPeriod: abi.number(rawInfo[5]),
-                tradingFee: abi.unfix(rawInfo[6], "string"),
                 branchId: rawInfo[7],
                 numEvents: parseInt(rawInfo[8]),
                 cumulativeScale: abi.unfix(rawInfo[9], "string"),

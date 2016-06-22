@@ -331,8 +331,10 @@ module.exports = function () {
                                 return cb(err);
                             } else if (res.message.indexOf("Nonce too low") > -1 ||
                                 res.message.indexOf("Known transaction") > -1) {
-                                packaged.nonce += 1;
-                                return self.submitTx(packaged, cb);
+                                console.debug("bad nonce, retry", res.message);
+                                // packaged.nonce++;
+                                // return self.submitTx(packaged, cb);
+                                return self.getTxNonce(packaged, cb);
                             } else {
                                 err = clone(errors.RAW_TRANSACTION_ERROR);
                                 err.bubble = res;
@@ -359,6 +361,8 @@ module.exports = function () {
             augur.rpc.pendingTxCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount);
+                    // packaged.nonce = Math.max(parseInt(txCount), self.nonce);
+                    // self.nonce = packaged.nonce;
                 }
                 self.submitTx(packaged, cb);
             });

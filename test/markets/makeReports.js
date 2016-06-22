@@ -171,8 +171,8 @@ describe("Integration tests", function () {
                                             augur.createMarket({
                                                 branchId: newBranchID,
                                                 description: description,
-                                                makerFees: "0.5",
-                                                tradingFee: "0.02",
+                                                makerFee: "0.01",
+                                                takerFee: "0.02",
                                                 tags: ["testing", "makeReports", "reporting"],
                                                 extraInfo: "Market provided courtesy of the augur.js test suite.",
                                                 events: [eventID],

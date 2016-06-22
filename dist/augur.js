@@ -36385,8 +36385,10 @@ module.exports = function () {
                                 return cb(err);
                             } else if (res.message.indexOf("Nonce too low") > -1 ||
                                 res.message.indexOf("Known transaction") > -1) {
-                                packaged.nonce += 1;
-                                return self.submitTx(packaged, cb);
+                                console.debug("bad nonce, retry", res.message);
+                                // packaged.nonce++;
+                                // return self.submitTx(packaged, cb);
+                                return self.getTxNonce(packaged, cb);
                             } else {
                                 err = clone(errors.RAW_TRANSACTION_ERROR);
                                 err.bubble = res;
@@ -36413,6 +36415,8 @@ module.exports = function () {
             augur.rpc.pendingTxCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount);
+                    // packaged.nonce = Math.max(parseInt(txCount), self.nonce);
+                    // self.nonce = packaged.nonce;
                 }
                 self.submitTx(packaged, cb);
             });
@@ -37449,7 +37453,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.5";
+    this.version = "1.4.6";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37570,15 +37574,24 @@ module.exports = {
             // info[14] = self.Markets[marketID].tag1
             // info[15] = self.Markets[marketID].tag2
             // info[16] = self.Markets[marketID].tag3
+
+            // tradingFee = (takerFee + makerFee) / 1.5
+            // 1.5*tradingFee = takerFee + makerFee
+            // takerFee = 1.5*tradingFee - makerFee
+
             var index = 17;
+            var makerProportionOfFee = abi.unfix(rawInfo[2]);
+            var tradingFee = abi.unfix(rawInfo[6]);
+            var makerFee = tradingFee.times(makerProportionOfFee);
             info = {
                 network: this.network_id,
                 traderCount: parseInt(rawInfo[1]),
-                makerFees: abi.unfix(rawInfo[2], "string"),
+                makerFee: makerFee.toFixed(),
+                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
+                tradingFee: tradingFee.toFixed(),
                 traderIndex: abi.unfix(rawInfo[3], "number"),
                 numOutcomes: abi.number(rawInfo[4]),
                 tradingPeriod: abi.number(rawInfo[5]),
-                tradingFee: abi.unfix(rawInfo[6], "string"),
                 branchId: rawInfo[7],
                 numEvents: parseInt(rawInfo[8]),
                 cumulativeScale: abi.unfix(rawInfo[9], "string"),
@@ -38467,7 +38480,7 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
-    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, tradingFee, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {
             description = branchId.description;         // string
@@ -38476,9 +38489,9 @@ module.exports = {
             maxValue = branchId.maxValue;               // integer (2 for binary)
             numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
             resolution = branchId.resolution;
-            tradingFee = branchId.tradingFee;           // number -> fixed-point
+            takerFee = branchId.takerFee;
             tags = branchId.tags;
-            makerFees = branchId.makerFees;
+            makerFee = branchId.makerFee;
             extraInfo = branchId.extraInfo;
             onSent = branchId.onSent;                   // function
             onSuccess = branchId.onSuccess;             // function
@@ -38501,6 +38514,9 @@ module.exports = {
         while (tags.length < 3) {
             tags.push("0x0");
         }
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         description = description.trim();
         expDate = parseInt(expDate);
         var tx = clone(this.tx.createEvent);
@@ -38523,7 +38539,7 @@ module.exports = {
                 tags[0],
                 tags[1],
                 tags[2],
-                abi.fix(makerFees, "hex"),
+                abi.fix(makerProportionOfFee, "hex"),
                 extraInfo || ""
             ];
             self.rpc.gasPrice(function (gasPrice) {
@@ -38565,7 +38581,7 @@ module.exports = {
         //     tags[0],
         //     tags[1],
         //     tags[2],
-        //     abi.fix(makerFees, "hex"),
+        //     abi.fix(makerProportionOfFee, "hex"),
         //     extraInfo || ""
         // ];
         // this.rpc.gasPrice(function (gasPrice) {
@@ -38620,14 +38636,14 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    createMarket: function (branchId, description, tradingFee, events, tags, makerFees, extraInfo, onSent, onSuccess, onFailed) {
+    createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {
             description = branchId.description; // string
-            tradingFee = branchId.tradingFee;   // number -> fixed-point
+            takerFee = branchId.takerFee;
             events = branchId.events;           // array [sha256, ...]
             tags = branchId.tags;
-            makerFees = branchId.makerFees;
+            makerFee = branchId.makerFee;
             extraInfo = branchId.extraInfo;
             onSent = branchId.onSent;           // function
             onSuccess = branchId.onSuccess;     // function
@@ -38650,6 +38666,9 @@ module.exports = {
         while (tags.length < 3) {
             tags.push("0x0");
         }
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         var tx = clone(this.tx.createMarket);
         description = description.trim();
         tx.params = [
@@ -38660,7 +38679,7 @@ module.exports = {
             tags[0],
             tags[1],
             tags[2],
-            abi.fix(makerFees, "hex"),
+            abi.fix(makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
         this.rpc.gasPrice(function (gasPrice) {
