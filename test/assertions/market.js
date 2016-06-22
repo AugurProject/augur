@@ -8,6 +8,7 @@ import numberShape from '../../test/assertions/common/numberShape';
 //      type: String,
 //      description: String,
 //      endDate: Object,
+//			endDateLabel: String,
 //      tradingFeePercent: Object,
 //      volume: Object,
 //      isOpen: Boolean,
@@ -37,6 +38,9 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.endDate, `market.endDate isn't defined`);
 	assert.isObject(actual.endDate, `market.endDate isn't an object`);
+
+	assert.isDefined(actual.endDateLabel, `market.endDateLabel isn't defined`);
+	assert.isString(actual.endDateLabel, `market.endDateLabel isn't an string`);
 
 	assert.isDefined(actual.tradingFeePercent, `market.tradingFeePercent isn't defined`);
 	assert.isObject(actual.tradingFeePercent, `market.tradingFeePercent isn't an object`);
