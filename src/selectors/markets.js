@@ -87,43 +87,7 @@ function makeMarkets(numMarkets = 25) {
 						activePage: TRANSACTIONS
 					});
 
-					setTimeout(() => {
-						require('../selectors').update({
-							transactions: [
-								{
-									type: 'buy_shares',
-									status: PENDING,
-									data: {
-										outcomeName: 'outcome name',
-										marketDescription: 'marketDescription',
-										txns: [{
-											hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
-											status: "on sent"
-										}]
-									}
-								}
-							]
-						});
-
-						setTimeout(() => {
-							require('../selectors').update({
-								transactions: [
-									{
-										type: 'buy_shares',
-										status: SUCCESS,
-										data: {
-											outcomeName: 'outcome name',
-											marketDescription: 'marketDescription',
-											txns: [{
-												hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
-												status: "success"
-											}]
-										}
-									}
-								]
-							});
-						}, 5000);
-					}, 1000);
+					prepareTestTradingTransactions();
 				};
 
 				return tots;
@@ -327,4 +291,90 @@ function makeMarkets(numMarkets = 25) {
 
 function randomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function prepareTestTradingTransactions() {
+	setTimeout(() => {
+		require('../selectors').update({
+			transactions: [
+				{
+					type: 'buy_shares',
+					status: PENDING,
+					data: {
+						outcomeName: 'outcome name',
+						marketDescription: 'marketDescription',
+						txns: [{
+							hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
+							status: "on sent"
+						}]
+					}
+				}
+			]
+		});
+		setTimeout(() => {
+			require('../selectors').update({
+				transactions: [
+					{
+						type: 'buy_shares',
+						status: PENDING,
+						data: {
+							outcomeName: 'outcome name',
+							marketDescription: 'marketDescription',
+							txns: [{
+								hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
+								status: "on sent"
+							}, {
+								hash: "0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717",
+								status: "on sent"
+							}]
+						}
+					}
+				]
+			});
+		}, 1000);
+
+		setTimeout(() => {
+			require('../selectors').update({
+				transactions: [
+					{
+						type: 'buy_shares',
+						status: PENDING,
+						data: {
+							outcomeName: 'outcome name',
+							marketDescription: 'marketDescription',
+							txns: [{
+								hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
+								status: "success"
+							}, {
+								hash: "0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717",
+								status: "on sent"
+							}]
+						}
+					}
+				]
+			});
+		}, 6000);
+
+		setTimeout(() => {
+			require('../selectors').update({
+				transactions: [
+					{
+						type: 'buy_shares',
+						status: SUCCESS,
+						data: {
+							outcomeName: 'outcome name',
+							marketDescription: 'marketDescription',
+							txns: [{
+								hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
+								status: "success"
+							}, {
+								hash: "0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717",
+								status: "success"
+							}]
+						}
+					}
+				]
+			});
+		}, 7000);
+	}, 1000);
 }

@@ -54,7 +54,7 @@ const Transaction = (p) => {
 		nodes.transactions =
 			p.data.txns.length > 0
 			? (<div className="transactions">
-				{p.data.txns.map((txn) => <span key={txn.hash}>{txn.hash}: {txn.status}</span>)}
+				{p.data.txns.map((txn) => <div key={txn.hash}>{txn.hash}: {txn.status}</div>)}
 			</div>)
 				: null;
 		if (p.type === BUY_SHARES) {
