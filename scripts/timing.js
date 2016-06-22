@@ -32,10 +32,8 @@ function createMarkets(numMarketsToCreate, callback) {
         var rand = Math.random();
         if (rand > 0.667) {
             // scalar
-            // maxValue = Math.round(Math.random() * 10000);
-            // minValue = Math.round(Math.random() * maxValue);
-            maxValue = 100;
-            minValue = -100;
+            maxValue = Math.round(Math.random() * 10000);
+            minValue = Math.round(Math.random() * maxValue);
             numOutcomes = 2;
             type = "scalar";
         } else if (rand < 0.333) {

@@ -113,10 +113,6 @@ describe("Integration tests", function () {
         assert.property(r, "tradingPeriod");
         assert.isNumber(r.tradingPeriod);
         assert.strictEqual(parseInt(augur.getTradingPeriod(market)), r.tradingPeriod);
-        assert.property(r, "tradingFee");
-        assert(abi.number(r.tradingFee) >= 0);
-        assert(abi.number(r.tradingFee) <= 1);
-        assert.strictEqual(augur.getTradingFee(market), r.tradingFee);
         assert.property(r, "branchId");
         assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchId));
         assert.property(r, "numEvents");
@@ -196,6 +192,8 @@ describe("Integration tests", function () {
                 market = info[marketId];
                 assert.isNumber(market.tradingPeriod);
                 assert.isString(market.tradingFee);
+                assert.isString(market.makerFee);
+                assert.isString(market.takerFee);
                 assert.isNumber(market.creationTime);
                 assert.isString(market.volume);
                 assert.isArray(market.tags);

@@ -3729,7 +3729,7 @@ module.exports={
         "closeMarketTwo": "0x486b370b1ba29711b683e1e71cc9a7c2a1614e4c",
         "collectFees": "0x0e5816830d327c7272c115348a2dda92e4706b25",
         "completeSets": "0x4f0d1af7d72d72a2e95e1fb9d187e958c07a1084",
-        "compositeGetters": "0xce65c10f58c0ba0fe6dd98c4872af2b14a97a539",
+        "compositeGetters": "0x0d9995e01fd62263a5b52255dc069d70d4edc1a7",
         "consensus": "0xfcd9b63e2a8a2b869db64f8dd25f599b0b172ffd",
         "createBranch": "0xf2fc3c829ad9a271a64e6f437fb6f9e8ed0f9770",
         "createMarket": "0x660cdfdf3d0e7443e7935343a1131b961575ccc7",
@@ -37453,7 +37453,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.6";
+    this.version = "1.4.7";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37574,11 +37574,6 @@ module.exports = {
             // info[14] = self.Markets[marketID].tag1
             // info[15] = self.Markets[marketID].tag2
             // info[16] = self.Markets[marketID].tag3
-
-            // tradingFee = (takerFee + makerFee) / 1.5
-            // 1.5*tradingFee = takerFee + makerFee
-            // takerFee = 1.5*tradingFee - makerFee
-
             var index = 17;
             var makerProportionOfFee = abi.unfix(rawInfo[2]);
             var tradingFee = abi.unfix(rawInfo[6]);
@@ -37588,7 +37583,6 @@ module.exports = {
                 traderCount: parseInt(rawInfo[1]),
                 makerFee: makerFee.toFixed(),
                 takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                tradingFee: tradingFee.toFixed(),
                 traderIndex: abi.unfix(rawInfo[3], "number"),
                 numOutcomes: abi.number(rawInfo[4]),
                 tradingPeriod: abi.number(rawInfo[5]),
@@ -37695,7 +37689,7 @@ module.exports = {
     },
 
     parseMarketsArray: function (marketsArray) {
-        var numMarkets, marketsInfo, totalLen, len, shift, rawInfo, marketID;
+        var numMarkets, marketsInfo, totalLen, len, shift, marketID;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return marketsArray;
         }
@@ -37705,8 +37699,10 @@ module.exports = {
         for (var i = 0; i < numMarkets; ++i) {
             len = parseInt(marketsArray[totalLen]);
             shift = totalLen + 1;
-            rawInfo = marketsArray.slice(shift, shift + len);
             marketID = marketsArray[shift];
+            var makerProportionOfFee = abi.unfix(marketsArray[shift + 9]);
+            var tradingFee = abi.unfix(marketsArray[shift + 2]);
+            var makerFee = tradingFee.times(makerProportionOfFee);
             marketsInfo[marketID] = {
                 _id: marketID,
                 sortOrder: i,
@@ -37720,7 +37716,9 @@ module.exports = {
                     this.decodeTag(marketsArray[shift + 7])
                 ],
                 endDate: parseInt(marketsArray[shift + 8]),
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 9, shift + len - 1))
+                makerFee: makerFee.toFixed(),
+                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
             };
             totalLen += len;
         }

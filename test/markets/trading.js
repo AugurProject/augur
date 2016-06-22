@@ -872,6 +872,7 @@ describe("Integration tests", function () {
                         },
                         onTradeSuccess: function (tradeOrderId, res) {
                             console.log("tradeSuccess:", tradeOrderId, res);
+                            done();
                         },
                         onTradeFailed: function (tradeOrderId, err) {
                             console.error("trade failed:", err);
@@ -884,16 +885,16 @@ describe("Integration tests", function () {
                             console.log("buy/sell order placed on the books successfully!");
                             var newOrderBook = augur.getOrderBook(t.market);
                             var orderType = t.type;
-                            // console.log(newOrderBook[orderType]);
+                            console.log(newOrderBook[orderType]);
                             for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
-                                // console.log("outcome:", t.outcome, newOrderBook[orderType][i].outcome);
-                                // console.log("amount:", t.amount, parseInt(newOrderBook[orderType][i].amount));
-                                // console.log("owner:", accounts[0], newOrderBook[orderType][i].owner);
-                                // console.log("price:", Math.round(parseFloat(t.limitPrice)*1e6) / 1e6, Math.round(parseFloat(newOrderBook[orderType][i].price)*1e6) / 1e6);
+                                console.log("outcome:", t.outcome, newOrderBook[orderType][i].outcome);
+                                console.log("amount:", t.amount, parseInt(newOrderBook[orderType][i].amount));
+                                console.log("owner:", accounts[0], newOrderBook[orderType][i].owner);
+                                console.log("price:", Math.round(parseFloat(t.limitPrice)*1e6) / 1e6, Math.round(parseFloat(newOrderBook[orderType][i].price)*1e6) / 1e6);
                                 if (t.outcome === newOrderBook[orderType][i].outcome &&
                                     t.amount === parseInt(newOrderBook[orderType][i].amount) &&
                                     accounts[0] === newOrderBook[orderType][i].owner) {
-                                    // console.log("found order!", newOrderBook[orderType][i]);
+                                    console.log("found order!", newOrderBook[orderType][i]);
                                     return done();
                                 }
                             }
