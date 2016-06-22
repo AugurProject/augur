@@ -56,8 +56,8 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
      roundedValue: -586,
      rounded: '-586',
      minimized: '-586.00',
-     denomination: 'Shares',
-     full: '-586.00Shares' },
+     denomination: 'shares',
+     full: '-586.00shares' },
   totalEther:
    { value: 5670,
      formattedValue: 5670,
@@ -65,8 +65,8 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
      roundedValue: 5670,
      rounded: '+5670.0',
      minimized: '+5670.00',
-     denomination: 'Eth',
-     full: '+5670.00Eth' },
+     denomination: 'eth',
+     full: '+5670.00eth' },
   totalGas:
    { value: 101300,
      formattedValue: 101300,
@@ -74,8 +74,8 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
      roundedValue: 101300,
      rounded: '+101300.0',
      minimized: '+101300.00',
-     denomination: 'Eth',
-     full: '+101300.00Eth' },
+     denomination: 'eth',
+     full: '+101300.00eth' },
   tradeOrders };
 		// console.log(selectTradeSummary(tradeOrders));
 		// console.log(tradeOrders);

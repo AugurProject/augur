@@ -22,7 +22,7 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatNumber, formatEther, formatPercent } from '../../../utils/format-number';
+import { formatShares, formatEther, formatPercent } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
@@ -147,7 +147,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
 	market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
-	market.volume = formatNumber(marketData.volume, { positiveSign: false });
+	market.volume = formatShares(marketData.volume, { positiveSign: false });
 
 	market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
 	market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportConfirmationPhase; // account is required to report on this unreported market during reporting phase

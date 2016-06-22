@@ -49,7 +49,7 @@ export function formatEther(num, opts) {
 		{
 			decimals: 2,
 			decimalsRounded: 1,
-			denomination: 'Eth',
+			denomination: 'eth',
 			positiveSign: true,
 			zeroStyled: false,
 			...opts
@@ -77,7 +77,7 @@ export function formatShares(num, opts) {
 		{
 			decimals: 2,
 			decimalsRounded: 0,
-			denomination: 'Shares',
+			denomination: 'shares',
 			minimized: true,
 			zeroStyled: false,
 			...opts
@@ -91,7 +91,7 @@ export function formatRep(num, opts) {
 		{
 			decimals: 0,
 			decimalsRounded: 0,
-			denomination: 'Rep',
+			denomination: 'rep',
 			positiveSign: true,
 			zeroStyled: false,
 			...opts
