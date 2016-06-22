@@ -4,11 +4,12 @@ import Form2Categorical from './create-market-form-2-categorical';
 import Form2Scalar from './create-market-form-2-scalar';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
-import DatePicker from 'react-date-picker';
+import DatePicker from '../../common/components/datepicker';
 
 const CreateMarketForm2 = (p) => {
 	let	typeSpecific;
-
+	// const tomorrow = new Date();
+	// tomorrow.setDate(tomorrow.getDate() + 1);
 	switch (p.type) {
 	case CATEGORICAL:
 		typeSpecific = <Form2Categorical {...p} />;
@@ -43,12 +44,8 @@ const CreateMarketForm2 = (p) => {
 			<div className="end-date">
 				<h4>What&apos;s the end date for your question?</h4>
 
-				<DatePicker
-					minDate={new Date()}
-					date={p.endDate}
-					hideFooter
-					onChange={(dateText, dateMoment) => p.onValuesUpdated({ endDate: dateMoment.toDate() })}
-				/>
+				<DatePicker endDate={p.endDate} onValuesUpdated={p.onValuesUpdated} />
+
 				{p.errors.endDate &&
 					<span className="error-message">{p.errors.endDate}</span>
 				}
@@ -75,3 +72,4 @@ CreateMarketForm2.propTypes = {
 };
 
 export default CreateMarketForm2;
+// 	expanded={true}
