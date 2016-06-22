@@ -42,9 +42,13 @@ function marketAssertion(actual) {
 	assert.isDefined(actual.endDateLabel, `market.endDateLabel isn't defined`);
 	assert.isString(actual.endDateLabel, `market.endDateLabel isn't an string`);
 
-	assert.isDefined(actual.tradingFeePercent, `market.tradingFeePercent isn't defined`);
-	assert.isObject(actual.tradingFeePercent, `market.tradingFeePercent isn't an object`);
-	percentNumberShape(actual.tradingFeePercent);
+	assert.isDefined(actual.takerFeePercent, `market.takerFeePercent isn't defined`);
+	assert.isObject(actual.takerFeePercent, `market.takerFeePercent isn't an object`);
+	percentNumberShape(actual.takerFeePercent);
+
+	assert.isDefined(actual.makerFeePercent, `market.makerFeePercent isn't defined`);
+	assert.isObject(actual.makerFeePercent, `market.makerFeePercent isn't an object`);
+	percentNumberShape(actual.makerFeePercent);
 
 	assert.isDefined(actual.volume, `market.volume isn't defined`);
 	assert.isObject(actual.volume, `market.volume isn't an object`);
