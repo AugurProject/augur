@@ -141,7 +141,7 @@ export const assembleMarket = memoizerific(1000)((
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.isOpen = isOpen;
 	market.isExpired = !isOpen;
-
+	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
 	market.isFavorite = isFavorite;
 
 	market.tradingFeePercent = formatPercent(marketData.tradingFee * 100, { positiveSign: false });
