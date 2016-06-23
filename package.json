@@ -50,7 +50,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "augur-ui-react-components": "3.0.2",
+    "augur-ui-react-components": "3.0.3",
     "augur.js": "1.4.7",
     "bignumber.js": "2.3.0",
     "memoizerific": "1.8.4",
