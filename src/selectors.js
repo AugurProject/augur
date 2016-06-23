@@ -45,7 +45,7 @@ selectors.isTransactionsWorking = false;
 
 selectors.searchSort = {
 	selectedSort: { prop: 'creationDate', isDesc: true },
-	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Description', value: 'description' }]
+	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Lowest Taker Fee', value: 'takerFeePercent' }]
 };
 
 selectors.marketsHeader = {};
