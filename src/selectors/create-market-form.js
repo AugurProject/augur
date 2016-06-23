@@ -1,5 +1,5 @@
 import {
-    TRADING_FEE_DEFAULT,
+    TAKER_FEE_DEFAULT,
     MAKER_FEE_DEFAULT,
     INITIAL_LIQUIDITY_DEFAULT,
     STARTING_QUANTITY_DEFAULT,
@@ -18,7 +18,7 @@ function createMarketForm() {
 		step: 1,
 		errors: {},
 		isValid: true,
-		tradingFeePercent: TRADING_FEE_DEFAULT,
+		takerFee: TAKER_FEE_DEFAULT,
 		makerFee: MAKER_FEE_DEFAULT,
 		initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 		// Advanced Market Creation
@@ -86,9 +86,8 @@ function createMarketForm() {
 
 			form.volume = makeNumber(0);
 
-			form.tradingFeePercent = makeNumber(form.tradingFeePercent, '%');
+			form.takerFeePercent = makeNumber(form.takerFee, '%');
 			form.makerFeePercent = makeNumber(form.makerFee, '%');
-			form.takerFeePercent = makeNumber(100 - form.makerFee, '%');
 			form.bestStartingQuantityFormatted = makeNumber(form.bestStartingQuantity, 'Shares', true);
 			form.startingQuantityFormatted = makeNumber(form.startingQuantity, 'Shares', true);
 			form.priceWidthFormatted = makeNumber(form.priceWidth, 'ETH', true);
