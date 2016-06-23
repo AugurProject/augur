@@ -40,7 +40,7 @@ export default class Chart extends Component {
 		};
 
 		return (
-			<div>
+			<div className="price-history-chart">
 				<ReactHighcharts config={config} />
 			</div>
 		);

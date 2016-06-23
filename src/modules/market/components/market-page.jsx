@@ -34,7 +34,7 @@ export default class MarketPage extends Component {
 			);
 		} else {
 			// market exists
-			nodes.push(<Basics key="bascis" {...p.market} />);
+			nodes.push(<Basics key="basics" {...p.market} />);
 
 			// report form
 			if (p.market.isPendingReport) {
