@@ -21,11 +21,11 @@ const Basics = (p) => (
 					<ValueDenomination className="property-value" {...p.endDate} />
 				</li>
 			}
-			<li className="property fee" title="Discounted fee for placing bids or asks on the books">
+			<li className="property fee" title={`${p.makerFeePercent.full} discounted fee for placing bids or asks on the books`}>
 				<span className="property-label">maker fee</span>
 				<ValueDenomination className="property-value" {...p.makerFeePercent} />
 			</li>
-			<li className="property fee" title="Fee for taking bids or asks from the books">
+			<li className="property fee" title={`${p.takerFeePercent.full} fee for taking bids or asks from the books`}>
 				<span className="property-label">taker fee</span>
 				<ValueDenomination className="property-value" {...p.takerFeePercent} />
 			</li>
