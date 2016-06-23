@@ -17,13 +17,13 @@ const CreateMarketForm4 = (p) => {
 				</p>
 				<Input
 					type="text"
-					value={p.tradingFeePercent}
+					value={p.takerFee}
 					isClearable={false}
-					onChange={(value) => p.onValuesUpdated({ tradingFeePercent: value })}
+					onChange={(value) => p.onValuesUpdated({ takerFee: value })}
 				/>
 				<span className="denomination">%</span>
-				{p.errors.tradingFeePercent &&
-					<span className="error-message">{p.errors.tradingFeePercent}</span>
+				{p.errors.takerFee &&
+					<span className="error-message">{p.errors.takerFee}</span>
 				}
 			</div>
 			<div className="fee">
@@ -169,8 +169,8 @@ CreateMarketForm4.propTypes = {
 	onValuesUpdated: PropTypes.func,
 	errors: PropTypes.object,
 	isValid: PropTypes.bool,
-	tradingFeePercent: PropTypes.any,
-	makerFee: PropTypes.any,
+	takerFee: PropTypes.number,
+	makerFee: PropTypes.number,
 	initialLiquidity: PropTypes.any,
 	showAdvancedMarketParams: PropTypes.bool,
 	initialFairPrices: PropTypes.object,
