@@ -105,6 +105,11 @@ function step3(actual){
 
 function step4(actual){
 	describe('augur-ui-react-components createMarketForm step-4 initial state', () => {
+		it('should receive takerFee and be a number', () => {
+			assert.isDefined(actual.takerFee, 'makerFee is not defined');
+			assert.isNumber(actual.takerFee, 'makerFee is not a number');
+		});
+
 		it('should receive makerFee and be a number', () => {
 			assert.isDefined(actual.makerFee, 'makerFee is not defined');
 			assert.isNumber(actual.makerFee, 'makerFee is not a number');
@@ -161,10 +166,16 @@ function step5(actual){
 			endDateShape(actual.endDate);
 		});
 
-		it('should receive tradingFeePercent and be an object with correct shape', () => {
-			assert.isDefined(actual.tradingFeePercent, 'tradingFeePercent is not defined');
-			assert.isObject(actual.tradingFeePercent, 'tradingFeePercent is not an object');
-			percentNumberShape(actual.tradingFeePercent);
+		it('should receive takerFeePercent and be an object with correct shape', () => {
+			assert.isDefined(actual.takerFeePercent, 'takerFeePercent is not defined');
+			assert.isObject(actual.takerFeePercent, 'takerFeePercent is not an object');
+			percentNumberShape(actual.takerFeePercent);
+		});
+
+		it('should receive makerFeePercent and be an object with correct shape', () => {
+			assert.isDefined(actual.makerFeePercent, 'makerFeePercent is not defined');
+			assert.isObject(actual.makerFeePercent, 'makerFeePercent is not an object');
+			percentNumberShape(actual.makerFeePercent);
 		});
 
 		it('should receive creatingMarket and be a boolean', () => {
@@ -176,12 +187,6 @@ function step5(actual){
 			assert.isDefined(actual.volume, 'volume is not defined');
 			assert.isObject(actual.volume, 'volume is not an object');
 			numberShape(actual.volume);
-		});
-
-		it('should receive makerFeePercent and be an object with correct shape', () => {
-			assert.isDefined(actual.makerFeePercent, 'makerFeePercent is not defined');
-			assert.isObject(actual.makerFeePercent, 'makerFeePercent is not an object');
-			percentNumberShape(actual.makerFeePercent);
 		});
 
 		it('should receive takerFeePercent and be an object with correct shape', () => {
