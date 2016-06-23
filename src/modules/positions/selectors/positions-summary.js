@@ -6,7 +6,7 @@ import {
 	formatNumber
 } from '../../../utils/format-number';
 
-export const selectPositionsSummary = memoizerific(20)((numPositions, qtyShares, totalValue, totalCost, positions) => {
+export const selectPositionsSummary = memoizerific(20)((numPositions, qtyShares, totalValue, totalCost) => {
 	const purchasePrice = qtyShares && totalCost / qtyShares || 0;
 	const valuePrice = qtyShares && totalValue / qtyShares || 0;
 	const shareChange = valuePrice - purchasePrice;
@@ -30,7 +30,6 @@ export const selectPositionsSummary = memoizerific(20)((numPositions, qtyShares,
 		totalCost: formatEther(totalCost),
 		shareChange: formatEther(shareChange),
 		gainPercent: formatPercent(gainPercent),
-		netChange: formatEther(netChange),
-		positions
+		netChange: formatEther(netChange)
 	};
 });
