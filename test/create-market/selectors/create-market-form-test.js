@@ -6,7 +6,13 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-// import createMarketFormAssertion from '../../../node_modules/augur-ui-react-components/test/assertions/createMarketForm';
+import { assertions } from 'augur-ui-react-components';
+import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
+
+import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';
+import * as actualStep3 from '../../../src/modules/create-market/selectors/form-steps/step-3';
+import * as actualStep4 from '../../../src/modules/create-market/selectors/form-steps/step-4';
+import * as actualStep5 from '../../../src/modules/create-market/selectors/form-steps/step-5';
 
 let createMarketForm;
 describe(`modules/create-market/selectors/create-market-form.js`, () => {
@@ -23,8 +29,10 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		step3,
 		step4,
 		step5,
+		types = [ BINARY, CATEGORICAL, SCALAR ],
 		returnObj = {},
-		state = Object.assign({}, testState);
+		state = Object.assign({}, testState),
+		componentAssertions = assertions.createMarketForm;
 
 	store = mockStore(state);
 
@@ -66,73 +74,208 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
 	createMarketForm = selector.default;
 
-	it(`should init the formState correctly`, () => {
-		test = selector.default();
+	describe('step 1', () => {
+		before(() => {
+			test = selector.default();
 
-		// createMarketFormAssertion(test); // assertion will need to be reworked.
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
+		});
 
-		assert.equal(test.step, 1, 'step is not equal to 1');
+		it('should init formState correctly', () => {
+			assert.equal(test.step, 1, 'step is not equal to 1');
+		});
 
-		assert.isFunction(test.onValuesUpdated, 'onValuesUpdated is not a function');
-		assert.isTrue(test.creatingMarket, 'creatingMarket is not true');
-		assert.isObject(test.errors, 'error value is not an object');
+		it('should deliver the correct values to components', () => {
+			componentAssertions.step1(state.createMarketInProgress);
+		});
 	});
 
-	it(`should handle step2 correctly`, () => {
-		state.createMarketInProgress = {
-			step: 2,
-			type: 'binary',
-			initialFairPrices: {}
-		};
+	describe('step 2', () => {
+		before(() => {
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				step: 2,
+				type: BINARY
+			};
 
-		test = selector.default();
+			test = selector.default();
 
-		assert.equal(test.step, 2, 'step is not equal to 2');
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
+		});
 
-		assert(step2.select.calledOnce, 'select is not called once');
-		assert(step2.isValid.calledOnce, 'isValid is not called once');
-		assert(step2.errors.calledOnce, 'errors is not called once');
-		assert(step2.initialFairPrices.calledOnce, 'initialFairPrices is not called once');
+		after(() => {
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				type: BINARY,
+				...actualStep2.initialFairPrices({ type: BINARY })
+			};
+		});
 
-		state.createMarketInProgress = test;
+		it('should have the correct state', () => {
+			assert.equal(test.step, 2, 'step is not equal to 2');
+		});
+
+		it('should call select', () => {
+			assert(step2.select.calledOnce, 'select is not called once');
+		});
+
+		it('should call isValid', () => {
+			assert(step2.isValid.calledOnce, 'isValid is not called once');
+		});
+
+		it('should call errors', () => {
+			assert(step2.errors.calledOnce, 'errors is not called once');
+		});
+
+		it('should call initialFairPrices', () => {
+			assert(step2.initialFairPrices.calledOnce, 'initialFairPrices is not called once');
+		});
+
+		it('should deliver the correct values to components', () => {
+			types.map((cV) => {
+				state.createMarketInProgress.type = cV;
+
+				if(cV === SCALAR){
+					state.createMarketInProgress = {
+						...state.createMarketInProgress,
+						scalarSmallNum: 10,
+						scalarBigNum: 100
+					};
+				}
+
+				let fullTestState = {
+					...test,
+					...state.createMarketInProgress,
+					...actualStep2.initialFairPrices(state.createMarketInProgress),
+					...actualStep2.select(state.createMarketInProgress)
+				};
+
+				componentAssertions.step2(fullTestState);
+			});
+		});
 	});
 
-	it(`should handle step3 correctly`, () => {
-		state.createMarketInProgress.step = 3;
+	describe('step 3', () => {
+		before(() => {
+			state.createMarketInProgress.step = 3;
 
-		test = selector.default();
+			test = selector.default();
 
-		assert.equal(test.step, 3, 'step is not equal to 3');
+			state.createMarketInProgress = {
+				description: 'user would have entered this prior to arriving @ step 3',
+				...state.createMarketInProgress,
+				...test
+			};
+		});
 
-		assert(step3.select.calledOnce, 'select is not called once');
-		assert(step3.isValid.calledOnce, 'isValid is not called once');
-		assert(step3.errors.calledOnce, 'errors is not called once');
+		it('should have the correct state', () => {
+			assert.equal(test.step, 3, 'step is not equal to 3');
+		});
 
-		state.createMarketInProgress = test;
+		it('should call select', () => {
+			assert(step3.select.calledOnce, 'select is not called once');
+		});
+
+		it('should call isValid', () => {
+			assert(step3.isValid.calledOnce, 'isValid is not called once');
+		});
+
+		it('should call errors', () => {
+			assert(step3.errors.calledOnce, 'errors is not called once');
+		});
+
+		it('should deliver the correct values to components', () => {
+			let fullTestState = {
+				...state.createMarketInProgress,
+				...actualStep3.select(state.createMarketInProgress)
+			};
+
+			componentAssertions.step3(fullTestState);
+		});
 	});
 
-	it(`should handle step4 correctly`, () => {
-		state.createMarketInProgress.step = 4;
+	describe('step 4', () => {
+		before(() => {
+			state.createMarketInProgress.step = 4;
 
-		test = selector.default();
+			test = selector.default();
 
-		assert.equal(test.step, 4, 'step is not equal to 4');
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...test
+			};
+		});
 
-		assert(step4.select.calledOnce, 'select is not called once');
-		assert(step4.isValid.calledOnce, 'isValid is not called once');
-		assert(step4.errors.calledOnce, 'errors is not called once');
+		after(() => {
+			state.createMarketInProgress = {
+				...state.createMarketInProgress,
+				...actualStep4.select(state.createMarketInProgress)
+			};
+		});
 
-		state.createMarketInProgress = test;
+		it('should have the correct state', () => {
+			assert.equal(test.step, 4, 'step is not equal to 3');
+		});
+
+		it('should call select', () => {
+			assert(step4.select.calledOnce, 'select is not called once');
+		});
+
+		it('should call isValid', () => {
+			assert(step4.isValid.calledOnce, 'isValid is not called once');
+		});
+
+		it('should call errors', () => {
+			assert(step4.errors.calledOnce, 'errors is not called once');
+		});
+
+		it('should deliver the correct values to components', () => {
+			let fullTestState = {
+				...state.createMarketInProgress,
+				...actualStep4.select(state.createMarketInProgress)
+			};
+
+			componentAssertions.step4(fullTestState);
+		});
 	});
 
-	it(`should handle step5 correctly`, () => {
-		state.createMarketInProgress.step = 5;
+	describe('step 5', () => {
+		before(() => {
+			state.createMarketInProgress.step = 5;
 
-		test = selector.default();
+			test = selector.default();
 
-		assert(step5.select.calledOnce, 'select is not called once');
+			state.createMarketInProgress = {
+				endDate: new Date(3000, 0, 1, 0, 0, 0, 0), // User would have entered this during step-2
+				...state.createMarketInProgress,
+				...test
+			};
+		});
+
+		it('should call select', () => {
+			assert(step5.select.calledOnce, 'select is not called once');
+		});
+
+		it('should deliver the correct values to components', () => {
+			let fullTestState = {
+				...state.createMarketInProgress,
+				...actualStep5.select(
+					state.createMarketInProgress,
+					state.blockchain.currentBlockNumber,
+					state.blockchain.currentBlockMillisSinceEpoch,
+					store.dispatch
+				)
+			};
+
+			componentAssertions.step5(fullTestState);
+		});
 	});
-
 });
 
 export default createMarketForm;
