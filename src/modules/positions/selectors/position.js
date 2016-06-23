@@ -1,8 +1,7 @@
 import memoizerific from 'memoizerific';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 
-export const selectPositionFromOutcomeAccountTrades = memoizerific(100)(
-(outcomeAccountTrades, lastPrice) => {
+export const selectPositionFromOutcomeAccountTrades = memoizerific(100)((outcomeAccountTrades, lastPrice) => {
 	let qtyShares = 0;
 	let	totalValue = 0;
 	let	totalCost = 0;
