@@ -111,7 +111,7 @@ export const isValid = (formState) => {
 export const errors = (formState) => {
 	const errs = {};
 
-	if (formState.hasOwnProperty('tradingFeePercent')) {
+	if (formState.hasOwnProperty('takerFee')) {
 		errs.takerFee = validateTakerFee(formState.takerFee);
 	}
 	if (formState.hasOwnProperty('makerFee')) {
