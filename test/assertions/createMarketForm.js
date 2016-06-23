@@ -189,12 +189,6 @@ function step5(actual){
 			numberShape(actual.volume);
 		});
 
-		it('should receive takerFeePercent and be an object with correct shape', () => {
-			assert.isDefined(actual.takerFeePercent, 'takerFeePercent is not defined');
-			assert.isObject(actual.takerFeePercent, 'takerFeePercent is not an object');
-			percentNumberShape(actual.takerFeePercent);
-		});
-
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
