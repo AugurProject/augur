@@ -1,9 +1,9 @@
 import { formatPercent } from '../../../utils/format-number';
-import { MAKER_FEE_MIN, MAKER_FEE_MAX } from '../../create-market/constants/market-values-constraints';
+import { MAKER_FEE_MIN } from '../../create-market/constants/market-values-constraints';
 
 export default function (makerFee, takerFee) {
-	const 	parsedMakerFee = parseFloat(makerFee),
-			parsedHalfTakerFee = parseFloat(takerFee / 2);
+	const parsedMakerFee = parseFloat(makerFee);
+	const parsedHalfTakerFee = parseFloat(takerFee / 2);
 
 	if (!makerFee) {
 		return 'Please specify a maker fee %';
