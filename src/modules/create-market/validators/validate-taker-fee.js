@@ -5,7 +5,7 @@ export default function (takerFee) {
 	const parsed = parseFloat(takerFee);
 
 	if (!takerFee) {
-		return 'Please specify a trading fee %';
+		return 'Please specify a taker fee %';
 	}
 	if (Number.isNaN(parsed) && !Number.isFinite(parsed)) {
 		return 'Trading fee must be a number';
