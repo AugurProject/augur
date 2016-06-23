@@ -82,7 +82,7 @@ export const initialFairPrices = (formState) => {
 
 export const isValid = (formState) => {
 	if (validateTakerFee(formState.takerFee) ||
-		validateMakerFee(formState.makerFee) ||
+		validateMakerFee(formState.makerFee, formState.takerFee) ||
 		validateInitialLiquidity(
 			formState.type,
 			formState.initialLiquidity,
@@ -115,7 +115,7 @@ export const errors = (formState) => {
 		errs.tradingFeePercent = validateTakerFee(formState.takerFee);
 	}
 	if (formState.hasOwnProperty('makerFee')) {
-		errs.makerFee = validateMakerFee(formState.makerFee);
+		errs.makerFee = validateMakerFee(formState.makerFee, formState.takerFee);
 	}
 	if (formState.hasOwnProperty('initialLiquidity')) {
 		errs.initialLiquidity = validateInitialLiquidity(
