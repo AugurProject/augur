@@ -1,7 +1,4 @@
-import {
-	EXPIRY_SOURCE_GENERIC,
-	EXPIRY_SOURCE_SPECIFIC
-} from '../../create-market/constants/market-values-constraints';
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../create-market/constants/market-values-constraints';
 
 export default function (expirySource) {
 	if (
