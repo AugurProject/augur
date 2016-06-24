@@ -8,9 +8,15 @@ export default function (categoricalOutcomes) {
 	errors = Array(categoricalOutcomes.length);
 	errors.fill('');
 
-	categoricalOutcomes.forEach((outcome, i) => {
+	categoricalOutcomes.forEach((outcome, currentIndex) => {
 		if (!outcome.length) {
-			errors[i] = 'Answer cannot be blank';
+			errors[currentIndex] = 'Answer cannot be blank';
+		} else {
+			categoricalOutcomes.forEach((cV, i) => {
+				if (cV === outcome && i !== currentIndex) {
+					errors[currentIndex] = 'Category must be unique';
+				}
+			});
 		}
 	});
 
