@@ -21,6 +21,7 @@
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "deploy-firebase": "firebase deploy",
     "publish-ipfs": "ipfs name publish `ipfs add -rq build | tail -1`",
+    "restart-faucet": "ssh augur@eth1.augur.net \"sudo service faucet restart\"",
     "_____": "",
     "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:js) && npm run -s build:html && npm run -s build:finish",
     "build:assets": "cp -R ./src/assets/. ./build/$npm_package_version && cp -R $npm_package_config_assets_folder ./build/$npm_package_version && echo ---------ASSETS---------`date +%r`",
