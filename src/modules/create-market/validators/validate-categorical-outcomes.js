@@ -1,18 +1,18 @@
 export default function (categoricalOutcomes) {
-	let categoricalErrors = null;
+	let errors = null;
 
 	if (!categoricalOutcomes || !categoricalOutcomes.length) {
-		return categoricalErrors;
+		return [];
 	}
 
-	categoricalErrors = Array(categoricalOutcomes.length);
-	categoricalErrors.fill('');
+	errors = Array(categoricalOutcomes.length);
+	errors.fill('');
 
-	categoricalOutcomes.map((outcome, i) => {
+	categoricalOutcomes.forEach((outcome, i) => {
 		if (!outcome.length) {
-			categoricalErrors[i] = 'Answer cannot be blank';
+			errors[i] = 'Answer cannot be blank';
 		}
 	});
 
-	return categoricalErrors;
+	return errors;
 }

@@ -5,4 +5,4 @@ export default function (expirySourceUrl, expirySource) {
 		(!expirySourceUrl || !expirySourceUrl.length)) {
 		return 'Please enter the full URL of the website';
 	}
-};
+}

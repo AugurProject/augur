@@ -1,7 +1,7 @@
 import {
 	assert
 } from 'chai';
-import validator from '../../../src/modules/market/validators/validate-end-date';
+import validator from '../../../src/modules/create-market/validators/validate-end-date';
 
 describe(`modules/market/validators/validate-end-date.js`, () => {
 	let test, out;

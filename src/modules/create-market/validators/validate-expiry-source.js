@@ -6,4 +6,4 @@ export default function (expirySource) {
 		[EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC].indexOf(expirySource) < 0) {
 		return 'Please choose an expiry source';
 	}
-};
+}

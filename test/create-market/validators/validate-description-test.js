@@ -5,7 +5,7 @@ import {
 	DESCRIPTION_MIN_LENGTH,
 	DESCRIPTION_MAX_LENGTH
 } from '../../../src/modules/create-market/constants/market-values-constraints';
-import validator from '../../../src/modules/market/validators/validate-description';
+import validator from '../../../src/modules/create-market/validators/validate-description';
 
 describe(`modules/market/validators/validate-description.js`, () => {
 	let test, out;
