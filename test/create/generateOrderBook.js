@@ -99,14 +99,6 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
                     onSent: function (r) {},
                     onSuccess: function (r) {
-                        // console.log(JSON.stringify({
-                        //     market: r.marketID,
-                        //     liquidity: t.liquidity,
-                        //     initialFairPrices: ["0.4", "0.5"],
-                        //     startingQuantity: t.startingQuantity,
-                        //     bestStartingQuantity: t.bestStartingQuantity,
-                        //     priceWidth: t.priceWidth
-                        // }, null, 2));
                         augur.generateOrderBook({
                             market: r.marketID,
                             liquidity: t.liquidity,

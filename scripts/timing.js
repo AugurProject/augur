@@ -80,7 +80,7 @@ function createMarkets(numMarketsToCreate, callback) {
                 augur.getMarketInfo(r.marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
-                        console.log(r);
+                        // console.log(r);
                         return augur.fundNewAccount(augur.branches.dev,
                             function (r) {},
                             function (r) { next(); },
@@ -135,14 +135,28 @@ function createMarkets(numMarketsToCreate, callback) {
                         },
                         onFailed: function (err) {
                             console.error(chalk.red.bold("generateOrderBook failed:"), err);
-                            next();
+                            augur.fundNewAccount(augur.branches.dev,
+                                function (r) {},
+                                function (r) { next(); },
+                                function (err) {
+                                    console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                    next();
+                                }
+                            );
                         }
                     });
                 });
             },
             onFailed: function (err) {
                 console.error(chalk.red.bold("createSingleEventMarket failed:"), err);
-                next();
+                augur.fundNewAccount(augur.branches.dev,
+                    function (r) {},
+                    function (r) { next(); },
+                    function (err) {
+                        console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                        next();
+                    }
+                );
             }
         };
         // console.log("params:", createSingleEventMarketParams);
