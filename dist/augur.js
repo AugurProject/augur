@@ -37465,7 +37465,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.7";
+    this.version = "1.4.9";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -44117,9 +44117,8 @@ module.exports = {
                     if (returns && returns !== "string" ||
                         (response && response.constructor === String &&
                         response.slice(0,2) === "0x")) {
-                        var responseNumber = abi.bignum(response);
+                        var responseNumber = abi.bignum(response, "string", true);
                         if (responseNumber) {
-                            responseNumber = abi.string(responseNumber);
                             if (errors[method] && errors[method][responseNumber]) {
                                 response = {
                                     error: responseNumber,
