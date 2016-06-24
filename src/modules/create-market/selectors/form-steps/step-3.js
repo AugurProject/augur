@@ -3,8 +3,7 @@ import {
 	RESOURCES_MAX_NUM, RESOURCES_MAX_LENGTH,
 	EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC
 } from '../../../create-market/constants/market-values-constraints';
-
-// import { FAILED } from '../../../transactions/constants/statuses';
+import validateExpirySource from '../../../create-market/validators/validate-expiry-source';
 
 export const select = (formState) => {
 	const obj = {
@@ -14,14 +13,6 @@ export const select = (formState) => {
 		resourceMaxLength: RESOURCES_MAX_LENGTH
 	};
 	return obj;
-};
-
-export const validateExpirySource = (expirySource) => {
-	if (
-!expirySource ||
-[EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC].indexOf(expirySource) < 0) {
-		return 'Please choose an expiry source';
-	}
 };
 
 export const validateExpirySourceUrl = (expirySourceUrl, expirySource) => {
