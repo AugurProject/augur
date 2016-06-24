@@ -61,21 +61,21 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
   totalEther:
    { value: 5670,
      formattedValue: 5670,
-     formatted: '+5670.00',
+     formatted: '+5,670.00',
      roundedValue: 5670,
      rounded: '+5670.0',
      minimized: '+5670.00',
      denomination: 'eth',
-     full: '+5670.00eth' },
+     full: '+5,670.00eth' },
   totalGas:
    { value: 101300,
      formattedValue: 101300,
-     formatted: '+101300.00',
+     formatted: '+101,300.00',
      roundedValue: 101300,
      rounded: '+101300.0',
      minimized: '+101300.00',
      denomination: 'eth',
-     full: '+101300.00eth' },
+     full: '+101,300.00eth' },
   tradeOrders };
 		// console.log(selectTradeSummary(tradeOrders));
 		// console.log(tradeOrders);
