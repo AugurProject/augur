@@ -13,8 +13,8 @@ const ex = {};
 
 ex.connect = function connect(cb) {
 	const options = {
-		http: process.env.ETHEREUM_HOST_RPC,
-		ws: process.env.ETHEREUM_HOST_WSURL
+		http: process.env.ETHEREUM_HOST_RPC || 'http://127.0.0.1:8545',
+		ws: process.env.ETHEREUM_HOST_WSURL || 'ws://127.0.0.1:8546'
 	};
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
@@ -80,7 +80,7 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 	});
 };
 
-ex.loadLoginAccount = function loadLoginAccount(isHosted, cb) {
+ex.loadLoginAccount = function loadLoginAccount(cb) {
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
@@ -90,18 +90,14 @@ ex.loadLoginAccount = function loadLoginAccount(isHosted, cb) {
 		});
 	}
 
-	// hosted node: no unlocked account available
-	if (isHosted) {
-		// if the user has a persistent login, use it
-		const account = augur.web.persist();
-		if (account && account.privateKey) {
-			console.log('using persistent login:', account);
-			return cb(null, {
-				...augur.web.account,
-				id: augur.web.account.address
-			});
-		}
-		return cb(null);
+	// if the user has a persistent login, use it
+	const account = augur.web.persist();
+	if (account && account.privateKey) {
+		console.log('using persistent login:', account);
+		return cb(null, {
+			...augur.web.account,
+			id: augur.web.account.address
+		});
 	}
 
 	// local node: if it's unlocked, use the coinbase account

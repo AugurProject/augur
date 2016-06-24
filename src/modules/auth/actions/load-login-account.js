@@ -72,7 +72,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 
 export function loadLoginAccount() {
 	return (dispatch) => {
-		AugurJS.loadLoginAccount(true, (err, loginAccount) => {
+		AugurJS.loadLoginAccount((err, loginAccount) => {
 			if (err) {
 				return console.error('ERR loadLoginAccount():', err);
 			}
