@@ -1,13 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
 import MarketPage from './modules/market/components/market-page';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
 import AuthPage from './modules/auth/components/auth-page';
+import AccountPage from './modules/account/components/account-page';
 import PositionsPage from './modules/positions/components/positions-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
@@ -24,7 +25,8 @@ export default function (appElement, selectors) {
 		marketsLink: p.links && p.links.marketsLink || undefined,
 		positionsLink: p.links && p.links.positionsLink || undefined,
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
-		authLink: p.links && p.links.authLink || undefined
+		authLink: p.links && p.links.authLink || undefined,
+		accountLink: p.links && p.links.accountLink || undefined
 	};
 
 	switch (p.activePage) {
@@ -35,6 +37,15 @@ export default function (appElement, selectors) {
 			<AuthPage
 				siteHeader={p.siteHeader}
 				authForm={p.authForm}
+			/>
+		);
+		break;
+
+	case ACCOUNT:
+		node = (
+			<AccountPage
+				siteHeader={p.siteHeader}
+				account={p.loginAccount}
 			/>
 		);
 		break;
