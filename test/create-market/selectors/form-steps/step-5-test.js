@@ -15,7 +15,7 @@ import {
 	SCALAR
 } from '../../../../src/modules/markets/constants/market-types';
 import {
-	TRADING_FEE_DEFAULT,
+	TAKER_FEE_DEFAULT,
 	MAKER_FEE_DEFAULT,
 	STARTING_QUANTITY_DEFAULT,
 	BEST_STARTING_QUANTITY_DEFAULT,
@@ -52,7 +52,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		beforeEach(() => {
 			formState = {
 				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
-				tradingFeePercent: TRADING_FEE_DEFAULT,
+				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
@@ -125,7 +125,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			out = {
 				type: BINARY,
 				expirySource: 'testing',
-				makerFee: MAKER_FEE_DEFAULT / 100,
+				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
@@ -178,7 +178,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
-				tradingFeePercent: {
+				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.0',
@@ -189,27 +189,17 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					full: '+2.0%'
 				},
 				makerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
+					value: 1,
+					formattedValue: 1,
+					formatted: '+1.0',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+1.0',
 					denomination: '%',
-					full: '+50.0%'
+					full: '+1.0%'
 				},
 				endBlock: select.endBlock,
-				tradingFee: TRADING_FEE_DEFAULT / 100,
-				takerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
-					denomination: '%',
-					full: '+50.0%'
-				},
+				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
 					formattedValue: 0,
@@ -307,7 +297,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			out = {
 				type: CATEGORICAL,
 				expirySource: 'testing',
-				makerFee: MAKER_FEE_DEFAULT / 100,
+				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
@@ -383,7 +373,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
-				tradingFeePercent: {
+				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.0',
@@ -394,27 +384,17 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					full: '+2.0%'
 				},
 				makerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
+					value: 1,
+					formattedValue: 1,
+					formatted: '+1.0',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+1.0',
 					denomination: '%',
-					full: '+50.0%'
+					full: '+1.0%'
 				},
 				endBlock: select.endBlock,
-				tradingFee: TRADING_FEE_DEFAULT / 100,
-				takerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
-					denomination: '%',
-					full: '+50.0%'
-				},
+				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
 					formattedValue: 0,
@@ -504,7 +484,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			out = {
 				type: SCALAR,
 				expirySource: 'testing',
-				makerFee: MAKER_FEE_DEFAULT / 100,
+				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
@@ -557,7 +537,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
-				tradingFeePercent: {
+				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.0',
@@ -568,27 +548,17 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					full: '+2.0%'
 				},
 				makerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
+					value: 1,
+					formattedValue: 1,
+					formatted: '+1.0',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+1.0',
 					denomination: '%',
-					full: '+50.0%'
+					full: '+1.0%'
 				},
 				endBlock: select.endBlock,
-				tradingFee: TRADING_FEE_DEFAULT / 100,
-				takerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
-					denomination: '%',
-					full: '+50.0%'
-				},
+				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
 					formattedValue: 0,

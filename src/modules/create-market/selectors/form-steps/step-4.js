@@ -4,7 +4,7 @@ import {
 	SCALAR
 } from '../../../markets/constants/market-types';
 import {
-	TRADING_FEE_DEFAULT,
+	TAKER_FEE_DEFAULT,
 	INITIAL_LIQUIDITY_DEFAULT,
 	MAKER_FEE_DEFAULT,
 	STARTING_QUANTITY_DEFAULT,
@@ -14,7 +14,7 @@ import {
 	IS_SIMULATION
 } from '../../../create-market/constants/market-values-constraints';
 
-import validateTradingFee from '../../validators/validate-trading-fee';
+import validateTakerFee from '../../validators/validate-taker-fee';
 import validateMakerFee from '../../validators/validate-maker-fee';
 import validateInitialLiquidity from '../../validators/validate-initial-liquidity';
 import validateInitialFairPrices from '../../validators/validate-initial-fair-prices';
@@ -24,7 +24,7 @@ import validatePriceWidth from '../../validators/validate-price-width';
 
 export const select = (formState) => {
 	const obj = {
-		tradingFeePercent: formState.tradingFeePercent || TRADING_FEE_DEFAULT,
+		takerFee: formState.takerFee || TAKER_FEE_DEFAULT,
 		makerFee: formState.makerFee || MAKER_FEE_DEFAULT,
 		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
 		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
@@ -81,8 +81,8 @@ export const initialFairPrices = (formState) => {
 };
 
 export const isValid = (formState) => {
-	if (validateTradingFee(formState.tradingFeePercent) ||
-		validateMakerFee(formState.makerFee) ||
+	if (validateTakerFee(formState.takerFee) ||
+		validateMakerFee(formState.makerFee, formState.takerFee) ||
 		validateInitialLiquidity(
 			formState.type,
 			formState.initialLiquidity,
@@ -111,11 +111,11 @@ export const isValid = (formState) => {
 export const errors = (formState) => {
 	const errs = {};
 
-	if (formState.hasOwnProperty('tradingFeePercent')) {
-		errs.tradingFeePercent = validateTradingFee(formState.tradingFeePercent);
+	if (formState.hasOwnProperty('takerFee')) {
+		errs.takerFee = validateTakerFee(formState.takerFee);
 	}
 	if (formState.hasOwnProperty('makerFee')) {
-		errs.makerFee = validateMakerFee(formState.makerFee);
+		errs.makerFee = validateMakerFee(formState.makerFee, formState.takerFee);
 	}
 	if (formState.hasOwnProperty('initialLiquidity')) {
 		errs.initialLiquidity = validateInitialLiquidity(

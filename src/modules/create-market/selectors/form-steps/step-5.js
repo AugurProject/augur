@@ -17,11 +17,9 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 								currentBlockNumber,
 								currentBlockMillisSinceEpoch);
 
-	o.tradingFee = formState.tradingFeePercent / 100;
-	o.tradingFeePercent = formatPercent(formState.tradingFeePercent);
-	o.makerFee = formState.makerFee / 100;
+	// o.tradingFee = formState.tradingFeePercent / 100;
+	o.takerFeePercent = formatPercent(formState.takerFee);
 	o.makerFeePercent = formatPercent(formState.makerFee);
-	o.takerFeePercent = formatPercent(100 - formState.makerFee);
 	o.volume = formatNumber(0);
 	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
