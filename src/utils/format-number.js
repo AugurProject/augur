@@ -132,13 +132,10 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
 	o.value = value;
 	o.formattedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	o.formatted = addCommas(o.formattedValue.toFixed(decimals));
 	o.roundedValue = Math.round(value * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
-
-	let toFixedDecimal = o.formattedValue.toFixed(decimals);
-
-	o.formatted = addCommas(toFixedDecimal);
-	o.rounded = addCommas(toFixedDecimal);
-	o.minimized = addCommas(parseFloat(toFixedDecimal).toString());
+	o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
+	o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
 
 	if (positiveSign) {
 		if (o.formattedValue > 0) {
