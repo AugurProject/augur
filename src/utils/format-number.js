@@ -133,11 +133,9 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	o.value = value;
 	o.formattedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	o.formatted = addCommas(o.formattedValue.toFixed(decimals));
-	console.log('results of formatting -- ', o.formattedValue.toFixed(decimals), addCommas(o.formattedValue.toFixed(decimals)));
-	
 	o.roundedValue = Math.round(value * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
-	o.rounded = o.roundedValue.toFixed(decimalsRounded);
-	o.minimized = o.formattedValue.toFixed(decimals);
+	o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
+	o.minimized = addCommas(o.formattedValue.toFixed(decimals));
 
 	if (positiveSign) {
 		if (o.formattedValue > 0) {
