@@ -1,16 +1,51 @@
-.account-resources {
-	text-align: center;
-	padding: 1rem;
+.account-details {
+	padding: 4% 5%;
 	font-size: 1.5rem;
 	border: 1px solid @color-border;
 	border-radius: 1px;
 	background: white;
+	display: flex;
+	flex-direction: column;
+
 	h1 {
 		font-size: 3rem;
 	}
-	.value-denomination {
-		margin: 0 1rem;
-		line-height: 1.5;
-		font-size: 2rem;
+
+	.account-resources {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+
+		.value-denomination {
+			margin: 1rem 2rem;
+			line-height: 1.5;
+			font-size: 2rem;
+		}
+	}
+
+	.remember {
+		margin: 1rem 0;
+		p:first-child {
+			font-weight: bold;
+		}
+		p:last-child {
+			font-style: italic;
+			font-weight: bold;
+		}
+	}
+
+	.account-actions {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
+		border-top: 1px solid @color-border-dark;
+		padding-top: 1rem;
+		margin-top: 1rem;
+
+		.link.button {
+			font-size: 1.5rem;
+		}
 	}
 }
