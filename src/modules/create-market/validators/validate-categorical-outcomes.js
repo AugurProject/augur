@@ -10,7 +10,6 @@ export default function (categoricalOutcomes) {
 
 	categoricalOutcomes.map((outcome, i) => {
 		if (!outcome.length) {
-			console.log('outcome is blank');
 			categoricalErrors[i] = 'Answer cannot be blank';
 		}
 	});
