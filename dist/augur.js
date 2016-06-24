@@ -3835,6 +3835,18 @@ module.exports={
         "-2": "max value < min value",
         "-9": "would expire during non-reporting fork period"
     },
+    "createSingleEventMarket": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
+        "-2": "max value < min value",
+        "-3": "too many outcomes",
+        "-4": "not enough money",
+        "-5": "fee too low",
+        "-6": "duplicate events",
+        "-7": "event already expired",
+        "-8": "market already exists",
+        "-9": "would expire during non-reporting fork period"
+    },
     "createMarket": {
         "-1": "bad input or parent doesn't exist",
         "-2": "too many events",
