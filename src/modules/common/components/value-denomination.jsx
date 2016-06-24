@@ -4,7 +4,6 @@ import classnames from 'classnames';
 const ValueDenomination = (p) => (
 	<span
 		className={classnames('value-denomination', p.className, { positive: p.formattedValue > 0, negative: p.formattedValue < 0 })}
-		title={`${p.title}: ${p.value} ${p.denomination}`}
 	>
 		{(p.formatted) &&
 			<span className="value">{p.formatted}</span>

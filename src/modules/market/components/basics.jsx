@@ -16,21 +16,20 @@ const Basics = (p) => (
 
 		<ul className="properties">
 			{!!p.endDate &&
-				<li className="property end-date">
-					<span className="property-label">{(p.endDate && p.endDate.value < new Date()) ? 'ended' : 'ends'}</span>
+				<li className="property end-date" title={`${p.endDateLabel}: ${p.endDate.full}`}>
+					<span className="property-label">{p.endDateLabel}</span>
 					<ValueDenomination className="property-value" {...p.endDate} />
 				</li>
 			}
-			<li className="property fee">
-				<span className="property-label">fee</span>
-				<ValueDenomination className="property-value" {...p.tradingFeePercent} />
-				{p.makerFeePercent && p.takerFeePercent &&
-					<span>
-						(<ValueDenomination className="property-value" title="Maker Fee" {...p.makerFeePercent} /> /<ValueDenomination className="property-value" title="Taker Fee" {...p.takerFeePercent} />)
-					</span>
-				}
+			<li className="property fee" title={`${p.makerFeePercent.full} discounted fee for placing bids or asks on the books`}>
+				<span className="property-label">maker fee</span>
+				<ValueDenomination className="property-value" {...p.makerFeePercent} />
 			</li>
-			<li className="property volume">
+			<li className="property fee" title={`${p.takerFeePercent.full} fee for taking bids or asks from the books`}>
+				<span className="property-label">taker fee</span>
+				<ValueDenomination className="property-value" {...p.takerFeePercent} />
+			</li>
+			<li className="property volume" title={`${p.volume.rounded} total ${p.volume.denomination} traded`}>
 				<span className="property-label">volume</span>
 				<ValueDenomination className="property-value" {...p.volume} formatted={p.volume.rounded} />
 			</li>
@@ -41,7 +40,6 @@ const Basics = (p) => (
 Basics.propTypes = {
 	description: PropTypes.string,
 	endDate: PropTypes.object,
-	tradingFeePercent: PropTypes.object,
 	makerFeePercent: PropTypes.object,
 	takerFeePercent: PropTypes.object,
 	volume: PropTypes.object,

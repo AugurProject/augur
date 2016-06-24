@@ -1,6 +1,6 @@
 {
   "name": "augur-ui-react-components",
-  "version": "3.0.1",
+  "version": "3.0.6",
   "description": "Augur UI React Components",
   "author": "Baz (@thinkloop)",
   "license": "AAL",
@@ -46,7 +46,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "babel-eslint": "6.0.4",
+    "babel-eslint": "6.1.0",
     "babel-preset-es2015": "6.9.0",
     "babel-preset-react": "6.5.0",
     "babel-preset-stage-0": "6.5.0",
@@ -57,10 +57,10 @@
     "classnames": "2.2.5",
     "clean-css": "3.4.18",
     "derequire": "2.0.3",
-    "envify": "3.4.0",
-    "eslint": "2.13.0",
+    "envify": "3.4.1",
+    "eslint": "2.13.1",
     "eslint-config-airbnb": "9.0.1",
-    "eslint-plugin-import": "1.8.1",
+    "eslint-plugin-import": "1.9.2",
     "eslint-plugin-jsx-a11y": "1.5.3",
     "eslint-plugin-react": "5.2.2",
     "exorcist": "0.4.0",
@@ -76,7 +76,7 @@
     "react-dom": "15.1.0",
     "react-highcharts": "8.3.3",
     "rimraf": "2.5.2",
-    "uglify-js": "2.6.2",
+    "uglify-js": "2.6.4",
     "watchify": "3.7.0"
   },
   "config": {

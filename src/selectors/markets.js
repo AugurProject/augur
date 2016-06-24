@@ -25,14 +25,16 @@ function makeMarkets(numMarkets = 25) {
 
 	function makeMarket(index) {
 		const id = index.toString();
+		const d = new Date('2017/12/12/');
 		const	m = {
 			id,
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
-			endDate: { formatted: '12/12/2017' },
-			tradingFeePercent: makeNumber(randomInt(1, 10), '%', true),
-			makerFeePercent: makeNumber(randomInt(0, 100), '%', true),
-			volume: makeNumber(randomInt(0, 10000), 'Shares', true),
+			endDate: { formatted: `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`, full: d.toISOString() },
+			endDateLabel: (d < new Date()) ? 'ended' : 'ends',
+			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
+			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
+			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: Math.random() > 0.1,
 			isPendingReport: Math.random() < 0.5,
 			marketLink: {
@@ -229,7 +231,7 @@ function makeMarkets(numMarkets = 25) {
 					lastPrice: makeNumber(lastPrice, 'eth'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),
 					position: {
-						qtyShares: makeNumber(16898, 'Shares'),
+						qtyShares: makeNumber(16898, 'shares'),
 						totalValue: makeNumber(14877, 'eth'),
 						gainPercent: makeNumber(14, '%'),
 						purchasePrice: makeNumber(0.77, 'eth'),
