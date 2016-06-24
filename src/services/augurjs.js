@@ -13,8 +13,8 @@ const ex = {};
 
 ex.connect = function connect(cb) {
 	const options = {
-		http: process.env.ETHEREUM_HOST_RPC,
-		ws: process.env.ETHEREUM_HOST_WSURL
+		http: process.env.ETHEREUM_HOST_RPC || 'http://127.0.0.1:8545',
+		ws: process.env.ETHEREUM_HOST_WSURL || 'ws://127.0.0.1:8546'
 	};
 	if (process.env.ETHEREUM_HOST_RPC) {
 		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
@@ -80,7 +80,7 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 	});
 };
 
-ex.loadLoginAccount = function loadLoginAccount(isHosted, cb) {
+ex.loadLoginAccount = function loadLoginAccount(cb) {
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
@@ -90,18 +90,14 @@ ex.loadLoginAccount = function loadLoginAccount(isHosted, cb) {
 		});
 	}
 
-	// hosted node: no unlocked account available
-	if (isHosted) {
-		// if the user has a persistent login, use it
-		const account = augur.web.persist();
-		if (account && account.privateKey) {
-			console.log('using persistent login:', account);
-			return cb(null, {
-				...augur.web.account,
-				id: augur.web.account.address
-			});
-		}
-		return cb(null);
+	// if the user has a persistent login, use it
+	const account = augur.web.persist();
+	if (account && account.privateKey) {
+		console.log('using persistent login:', account);
+		return cb(null, {
+			...augur.web.account,
+			id: augur.web.account.address
+		});
 	}
 
 	// local node: if it's unlocked, use the coinbase account
@@ -126,14 +122,14 @@ ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealE
 		if (!result || result.error) {
 			return cbEther(result);
 		}
-		return cbEther(null, augur.abi.bignum(result).toNumber());
+		return cbEther(null, augur.abi.number(result));
 	});
 
 	augur.getRepBalance(branchID, accountID, (result) => {
 		if (!result || result.error) {
 			return cbRep(result);
 		}
-		return cbRep(null, augur.abi.bignum(result).toNumber());
+		return cbRep(null, augur.abi.number(result));
 	});
 
 	augur.rpc.balance(accountID, (wei) => {
@@ -303,7 +299,7 @@ ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tr
 ex.tradeShares = function tradeShares(branchID, marketID, outcomeID, numShares, limit, cap, cb) {
 	augur.trade({
 		branch: branchID,
-		market: augur.abi.hex(marketID),
+		market: marketID,
 		outcome: outcomeID,
 		amount: numShares,
 		limit,
@@ -382,8 +378,7 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 		startingQuantity: marketData.startingQuantity,
 		bestStartingQuantity: marketData.bestStartingQuantity,
 		priceWidth: marketData.priceWidth,
-		isSimulation: marketData.isSimulation
-	}, {
+		isSimulation: marketData.isSimulation,
 		onSimulate: r => cb(null, { status: SIMULATED_ORDER_BOOK, payload: r }),
 		onBuyCompleteSets: r => cb(null, { status: COMPLETE_SET_BOUGHT, payload: r }),
 		onSetupOutcome: r => cb(null, { status: ORDER_BOOK_OUTCOME_COMPLETE, payload: r }),
@@ -391,31 +386,6 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 		onSuccess: r => cb(null, { status: SUCCESS, payload: r }),
 		onFailed: err => cb(err)
 	});
-};
-
-ex.createMarketMetadata = function createMarketMetadata(newMarket, cb) {
-	console.log('--createMarketMetadata', newMarket.id, ' --- ', newMarket.detailsText, ' --- ', newMarket.tags, ' --- ', newMarket.resources, ' --- ', newMarket.expirySource);
-	let tag1;
-	let tag2;
-	let tag3;
-	if (newMarket.tags && newMarket.tags.constructor === Array && newMarket.tags.length) {
-		tag1 = newMarket.tags[0];
-		if (newMarket.tags.length > 1) tag2 = newMarket.tags[1];
-		if (newMarket.tags.length > 2) tag3 = newMarket.tags[2];
-	}
-	augur.setMetadata({
-		market: newMarket.id,
-		details: newMarket.detailsText,
-		tag1,
-		tag2,
-		tag3,
-		links: newMarket.resources,
-		source: newMarket.expirySource
-	},
-		res => cb(null, { status: 'processing metadata...', metadata: res }),
-		res => cb(null, { status: SUCCESS, metadata: res }),
-		err => cb(err)
-	);
 };
 
 ex.getReport = function getReport(branchID, reportPeriod, eventID) {
@@ -542,31 +512,6 @@ ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
 			console.error('penalizationCatchup failed:', err);
 			if (err.error === '0') {
 				// already caught up
-			}
-			cb(err);
-		}
-	});
-};
-
-ex.penalizeNotEnoughReports = function penalizeNotEnoughReports(branchID, cb) {
-	const self = this;
-	augur.penalizeNotEnoughReports({
-		branch: branchID,
-		onSent: res => {
-			console.log('penalizeNotEnoughReports sent:', res);
-		},
-		onSuccess: res => {
-			console.log('penalizeNotEnoughReports success:', res);
-			cb(null, res);
-		},
-		onFailed: err => {
-			console.error('penalizeNotEnoughReports failed:', err);
-			if (err.error === '-1') {
-				// already called
-				return cb(err);
-			} else if (err.error === '-2') {
-				// need to catch up
-				return self.penalizationCatchup(branchID, cb);
 			}
 			cb(err);
 		}
