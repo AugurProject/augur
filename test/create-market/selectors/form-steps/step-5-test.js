@@ -147,20 +147,20 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | Yes",
-			        		formatted: "0.50",
+			        		formatted: "0.5",
 				        	formattedValue: 0.5,
-							full: "0.50ETH | Yes",
-							minimized: "0.50",
+							full: "0.5ETH | Yes",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
 						},
 						{
 							denomination: "ETH | No",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | No",
-							minimized: "0.50",
+							full: "0.5ETH | No",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
@@ -184,7 +184,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: '+2.0',
 					roundedValue: 2,
 					rounded: '+2',
-					minimized: '+2.0',
+					minimized: '+2',
 					denomination: '%',
 					full: '+2.0%'
 				},
@@ -194,7 +194,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: '+1.0',
 					roundedValue: 1,
 					rounded: '+1',
-					minimized: '+1.0',
+					minimized: '+1',
 					denomination: '%',
 					full: '+1.0%'
 				},
@@ -223,10 +223,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				priceWidthFormatted: {
 					denomination: "ETH",
-					formatted: "0.10",
+					formatted: "0.1",
 					formattedValue: 0.1,
-					full: "0.10ETH",
-					minimized: "0.10",
+					full: "0.1ETH",
+					minimized: "0.1",
 					rounded: "0",
 					roundedValue: 0,
 					value: 0.1
@@ -328,30 +328,30 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | test1",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | test1",
-							minimized: "0.50",
+							full: "0.5ETH | test1",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
 						},
 						{
 							denomination: "ETH | test2",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | test2",
-							minimized: "0.50",
+							full: "0.5ETH | test2",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
 						},
 						{
 							denomination: "ETH | test3",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | test3",
-							minimized: "0.50",
+							full: "0.5ETH | test3",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
@@ -379,7 +379,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: '+2.0',
 					roundedValue: 2,
 					rounded: '+2',
-					minimized: '+2.0',
+					minimized: '+2',
 					denomination: '%',
 					full: '+2.0%'
 				},
@@ -389,7 +389,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: '+1.0',
 					roundedValue: 1,
 					rounded: '+1',
-					minimized: '+1.0',
+					minimized: '+1',
 					denomination: '%',
 					full: '+1.0%'
 				},
@@ -418,10 +418,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				priceWidthFormatted: {
 					denomination: "ETH",
-					formatted: "0.10",
+					formatted: "0.1",
 					formattedValue: 0.1,
-					full: "0.10ETH",
-					minimized: "0.10",
+					full: "0.1ETH",
+					minimized: "0.1",
 					rounded: "0",
 					roundedValue: 0,
 					value: 0.1
@@ -506,20 +506,20 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | ⇧",
-							formatted: "55.00",
+							formatted: "55",
 							formattedValue: 55,
-							full: "55.00ETH | ⇧",
-							minimized: "55.00",
+							full: "55ETH | ⇧",
+							minimized: "55",
 							rounded: "55",
 							roundedValue: 55,
 							value: 55
 						},
 						{
 							denomination: "ETH | ⇩",
-							formatted: "55.00",
+							formatted: "55",
 							formattedValue: 55,
-							full: "55.00ETH | ⇩",
-							minimized: "55.00",
+							full: "55ETH | ⇩",
+							minimized: "55",
 							rounded: "55",
 							roundedValue: 55,
 							value: 55
@@ -543,7 +543,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: '+2.0',
 					roundedValue: 2,
 					rounded: '+2',
-					minimized: '+2.0',
+					minimized: '+2',
 					denomination: '%',
 					full: '+2.0%'
 				},
@@ -553,7 +553,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: '+1.0',
 					roundedValue: 1,
 					rounded: '+1',
-					minimized: '+1.0',
+					minimized: '+1',
 					denomination: '%',
 					full: '+1.0%'
 				},
@@ -582,10 +582,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				priceWidthFormatted: {
 					denomination: "ETH",
-					formatted: "0.10",
+					formatted: "0.1",
 					formattedValue: 0.1,
-					full: "0.10ETH",
-					minimized: "0.10",
+					full: "0.1ETH",
+					minimized: "0.1",
 					rounded: "0",
 					roundedValue: 0,
 					value: 0.1
