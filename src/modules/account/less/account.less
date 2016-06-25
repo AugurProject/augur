@@ -11,6 +11,50 @@
 		font-size: 3rem;
 	}
 
+	.account-info {
+		display: flex;
+		flex-direction: column;
+		padding: 2vmin 0;
+
+		.account-info-item {
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			margin: 0.5rem 1vmin;
+
+			h2 {
+				flex-shrink: 1;
+			}
+			div {
+				flex-grow: 1;
+				margin: 0 1vmin;
+			}
+			p {
+				flex-grow: 1;
+				flex-basis: 65%;
+				margin: 0 1vmin;
+			}
+			.item {
+				padding: 0.5em 2em 0.5em 0.5em;
+				border: 1px solid transparent;
+			}
+
+			.editable {
+				cursor: pointer;
+			}
+
+			.link.button {
+				font-size: 1.22rem;
+			}
+
+			@media screen and (max-width: @media-mobile-width) {
+				.item {
+					padding: 0;
+				}
+			}
+		}
+	}
+
 	.account-resources {
 		display: flex;
 		flex-direction: row;
@@ -35,17 +79,28 @@
 		}
 	}
 
-	.account-actions {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-end;
-		align-items: center;
-		border-top: 1px solid @color-border-dark;
-		padding-top: 1rem;
-		margin-top: 1rem;
+	// .account-actions {
+	// 	display: flex;
+	// 	flex-direction: row;
+	// 	justify-content: flex-end;
+	// 	align-items: center;
+	// 	border-top: 1px solid @color-border-dark;
+	// 	padding-top: 1rem;
+	// 	margin-top: 1rem;
+	//
+	// 	.link.button {
+	// 		font-size: 1.5rem;
+	// 	}
+	// }
+}
+.sign-out-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 0 2vmin;
 
-		.link.button {
-			font-size: 1.5rem;
-		}
+	.sign-out {
+		font-size: 1.5rem;
 	}
 }

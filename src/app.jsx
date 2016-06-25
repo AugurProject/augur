@@ -26,7 +26,8 @@ export default function (appElement, selectors) {
 		positionsLink: p.links && p.links.positionsLink || undefined,
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
 		authLink: p.links && p.links.authLink || undefined,
-		accountLink: p.links && p.links.accountLink || undefined
+		accountLink: p.links && p.links.accountLink || undefined,
+		accountLinkText: p.loginAccount.handle || p.loginAccount.linkText
 	};
 
 	switch (p.activePage) {

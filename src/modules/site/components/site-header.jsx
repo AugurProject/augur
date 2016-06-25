@@ -69,7 +69,7 @@ const SiteHeader = (p) => (
 			}
 			{p.loginAccount && p.loginAccount.id &&
 			<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
-				Account
+				{p.accountLinkText}
 			</Link>
 			}
 		</nav>
