@@ -67,7 +67,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         before("top up account", function (done) {
             this.timeout(tools.TIMEOUT);
             augur.fundNewAccount({
-                branch: augur.branches.dev,
+                branch: augur.constants.DEFAULT_BRANCH_ID,
                 onSent: function (r) {
                     assert.strictEqual(r.callReturn, "1");
                 },
@@ -86,7 +86,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
                 var expDate = Math.round(new Date().getTime() / 990);
                 augur.createSingleEventMarket({
-                    branchId: augur.branches.dev,
+                    branchId: augur.constants.DEFAULT_BRANCH_ID,
                     description: description,
                     expDate: expDate,
                     minValue: 1,
@@ -138,7 +138,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
                 var expDate = Math.round(new Date().getTime() / 990);
                 augur.createSingleEventMarket({
-                    branchId: augur.branches.dev,
+                    branchId: augur.constants.DEFAULT_BRANCH_ID,
                     description: description,
                     expDate: expDate,
                     minValue: 10,
@@ -196,7 +196,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 description += "~|>" + choices.join('|');
                 var expDate = Math.round(new Date().getTime() / 990);
                 augur.createSingleEventMarket({
-                    branchId: augur.branches.dev,
+                    branchId: augur.constants.DEFAULT_BRANCH_ID,
                     description: description,
                     expDate: expDate,
                     minValue: 1,

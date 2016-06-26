@@ -10,13 +10,14 @@ var tools = require("./tools");
 var utils = require("../src/utilities");
 var augur = require("../src");
 augur.tx = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || "2");
+augur.bindContractAPI();
 
 var noop = function () {};
 
 var test = {
     eth_call: function (t, next) {
         next = next || noop;
-        var i, expected = clone(augur.tx[t.method]);
+        var i, expected = clone(augur.tx[t.contract][t.method]);
         if (t.params && t.params.length === 1) {
             expected.params = t.params[0];
         } else {
@@ -46,12 +47,13 @@ var test = {
             augur.fire = fire;
             next();
         };
-        augur[t.method].apply(augur, t.params.concat(t.callback));
+        var params = (t.callback) ? t.params.concat(t.callback) : t.params;
+        augur[t.method].apply(augur, params);
     },
     eth_sendTransaction: {
         object: function (t, next) {
             next = next || noop;
-            var i, expected = clone(augur.tx[t.method]);
+            var i, expected = clone(augur.tx[t.contract][t.method]);
             if (t.params && t.params.length === 1) {
                 expected.params = t.params[0];
             } else {
@@ -90,7 +92,7 @@ var test = {
             augur[t.method](params);
         },
         positional: function (t, next) {
-            var i, expected = clone(augur.tx[t.method]);
+            var i, expected = clone(augur.tx[t.contract][t.method]);
             if (t.params && t.params.length === 1) {
                 expected.params = t.params[0];
             } else {
@@ -128,6 +130,7 @@ var test = {
 var run = {
     eth_call: function (testCase, nextCase) {
         var method = testCase.method;
+        var contract = testCase.contract;
         var numParams = testCase.parameters.length;
         var count = 0;
         async.whilst(
@@ -147,12 +150,14 @@ var run = {
                 }
                 if (!testCase.asyncOnly) {
                     test.eth_call({
+                        contract: contract,
                         method: method,
                         params: params,
                         fixed: fixed,
                         ether: ether
                     }, function () {
                         test.eth_call({
+                            contract: contract,
                             method: method,
                             params: params,
                             fixed: fixed,
@@ -162,6 +167,7 @@ var run = {
                     });
                 } else {
                     test.eth_call({
+                        contract: contract,
                         method: method,
                         params: params,
                         fixed: fixed,
@@ -175,6 +181,7 @@ var run = {
     },
     eth_sendTransaction: function (testCase, nextCase) {
         var method = testCase.method;
+        var contract = testCase.contract;
         var numParams = testCase.parameters.length;
         var count = 0;
         async.whilst(
@@ -195,6 +202,7 @@ var run = {
                 }
                 var tests = {positional: null, object: null, complete: null};
                 test.eth_sendTransaction.positional({
+                    contract: contract,
                     method: method,
                     params: params,
                     fixed: fixed,
@@ -207,6 +215,7 @@ var run = {
                     }
                 });
                 test.eth_sendTransaction.object({
+                    contract: contract,
                     method: method,
                     params: params,
                     fixed: fixed,
@@ -224,8 +233,9 @@ var run = {
     },
 };
 
-module.exports = function (invocation, cases) {
+module.exports = function (invocation, contract, cases) {
     async.each(cases, function (thisCase, nextCase) {
+        thisCase.contract = contract;
         describe(thisCase.method, function () {
             run[invocation](thisCase, nextCase);
         });

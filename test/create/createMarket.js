@@ -96,7 +96,7 @@ describe("Integration tests", function () {
                 };
 
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "Will the average temperature on Earth in 2016 be Higher, Lower, or Unchanged from the average temperature on Earth in 2015?~|> Higher|Lower|Unchanged",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
@@ -109,7 +109,7 @@ describe("Integration tests", function () {
                     extraInfo: "Hello world!  Are you getting hotter?"
                 });
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "为什么有这么严重吗？~|>€|☃|:D",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
@@ -122,7 +122,7 @@ describe("Integration tests", function () {
                     extraInfo: "Why so serious? 为什么有这么严重吗？"
                 });
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "なぜこれほど深刻な？ €☃...~|>D:|€|☃",
                     expDate: new Date("1-9-2017").getTime() / 1000,
                     minValue: 1,
@@ -135,7 +135,7 @@ describe("Integration tests", function () {
                     extraInfo: "Why so serious? なぜこれほど深刻な？ €☃!"
                 });
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "Will Microsoft's stock price at 12:00 UTC on July 1, 2016 be Higher, Lower, or Equal to $54.13?~|>Higher|Lower|Equal",
                     expDate: new Date("1-2-2017").getTime() / 1000,
                     minValue: 10,
@@ -146,7 +146,7 @@ describe("Integration tests", function () {
                     resolution: "http://finance.google.com"
                 });
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "Who will win the 2016 U.S. Presidential Election?~|>Hillary Clinton|Donald Trump|Bernie Sanders|someone else",
                     expDate: new Date("1-11-2017").getTime() / 1000,
                     minValue: 0,
@@ -159,7 +159,7 @@ describe("Integration tests", function () {
                     resolution: "generic"
                 });
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "Which political party's candidate will win the 2016 U.S. Presidential Election?~|>Democratic|Republican|Libertarian|other",
                     expDate: new Date("1-4-2017").getTime() / 1000,
                     minValue: 10,
@@ -170,7 +170,7 @@ describe("Integration tests", function () {
                     resolution: "generic"
                 });
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "Which city will have the highest median single-family home price for September 2016?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|Paris|other",
                     expDate: new Date("10-2-2016").getTime() / 1000,
                     minValue: 0,
@@ -249,7 +249,7 @@ describe("Integration tests", function () {
 
                 // scalar markets have numOutcomes==2 and maxValue!=2
                 test({
-                    branch: augur.branches.dev,
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
                     description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2017?",
                     expDate: new Date("7-3-2017").getTime() / 1000,
                     minValue: 0,
@@ -261,7 +261,7 @@ describe("Integration tests", function () {
                     tags: ["temperature"]
                 });
                 // test({
-                //     branch: augur.branches.dev,
+                //     branch: augur.constants.DEFAULT_BRANCH_ID,
                 //     description: "How much will it cost (in USD) to move a pound of inert cargo from Earth's surface to Low Earth Orbit by January 1, 2021?",
                 //     expDate: new Date("1-2-2021").getTime() / 1000,
                 //     minValue: 1,
@@ -308,7 +308,7 @@ describe("Integration tests", function () {
                     this.timeout(tools.TIMEOUT*2);
 
                     // create an event
-                    var branch = augur.branches.dev;
+                    var branch = augur.constants.DEFAULT_BRANCH_ID;
                     var description = element[0];
                     var expDate = (EXPIRING) ?
                         5*blockNumber + Math.round(Math.random() * 1000) : element[1];

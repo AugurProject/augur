@@ -8,7 +8,7 @@
 var runner = require("../runner");
 
 describe("Unit tests", function () {
-    runner("eth_sendTransaction", [{
+    runner("eth_sendTransaction", "sendReputation", [{
         method: "sendReputation",
         parameters: ["hash", "address", "fixed"]
     }]);

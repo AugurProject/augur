@@ -28,7 +28,7 @@ describe("Integration tests", function () {
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var branchID = augur.branches.dev;
+        var branchID = augur.constants.DEFAULT_BRANCH_ID;
         var markets = augur.getMarketsInBranch(branchID);
         
         describe("buyCompleteSets", function () {

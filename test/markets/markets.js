@@ -18,7 +18,7 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "markets", [{
             method: "getFees",
             parameters: ["hash"]
         }, {
@@ -105,7 +105,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "markets", [{
             method: "modifyShares",
             parameters: ["hash", "int", "fixed"]
         }]);
@@ -116,7 +116,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
     var amount = "1";
-    var branchId = augur.branches.dev;
+    var branchId = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var traderIndex = "1";
     var outcome = 1;
@@ -164,7 +164,7 @@ describe("Integration tests", function () {
                 var output = augur[method].apply(augur, params);
                 test(errorCheck(output, done));
             });
-            if (augur.tx[method] && !augur.rpc.wsUrl) {
+            if (augur.tx.markets[method] && !augur.rpc.wsUrl) {
                 it("batch", function (done) {
                     this.timeout(tools.TIMEOUT);
                     var batch = augur.createBatch();
@@ -180,9 +180,6 @@ describe("Integration tests", function () {
         });
     };
 
-    before(function () {
-        augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
-    });
     describe("getMarketEvents", function () {
         var test = function (t) {
             assert.isArray(t.output);
@@ -215,7 +212,7 @@ describe("Integration tests", function () {
     });
     describe("getBranchID", function () {
         var test = function (t) {
-            assert.strictEqual(abi.hex(t.output), abi.hex(augur.branches.dev));
+            assert.strictEqual(abi.hex(t.output), abi.hex(augur.constants.DEFAULT_BRANCH_ID));
             t.done();
         };
         for (var i = 0; i < numMarkets; ++i) {

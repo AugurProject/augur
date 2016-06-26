@@ -28,7 +28,7 @@ describe("Integration tests", function () {
         var numOutcomes = 2;
         var numEvents = 2;
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var branch = augur.branches.dev;
+        var branch = augur.constants.DEFAULT_BRANCH_ID;
         var period = augur.getVotePeriod(branch);
         var expDate = new Date().getTime()*2;
         var resolution = "https://www.google.com";

@@ -59,7 +59,7 @@ describe("Unit tests", function () {
 describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var branchNumber = "0";
 
     describe("getBranches", function () {

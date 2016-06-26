@@ -35,7 +35,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var constants = augur.constants;
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var testAccount = accounts[0];
     var markets = augur.getMarketsInBranch(branchID);

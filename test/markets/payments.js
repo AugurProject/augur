@@ -16,7 +16,7 @@ var augur = tools.setup(require(augurpath), process.argv.slice(2));
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     var paymentValue = 1;
-    var branch = augur.branches.dev;
+    var branch = augur.constants.DEFAULT_BRANCH_ID;
     var coinbase = augur.coinbase;
     var testAccounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var receiver = testAccounts[1];

@@ -35,7 +35,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.10";
+    this.version = "1.5.0";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -51,9 +51,6 @@ function Augur() {
     this.errors = require("augur-contracts").errors;
     this.rpc = require("ethrpc");
     this.rpc.debug = this.options.debug;
-
-    // Branch IDs
-    this.branches = {dev: this.constants.DEFAULT_BRANCH_ID};
 
     // Load submodules
     for (var i = 0, len = modules.length; i < len; ++i) {

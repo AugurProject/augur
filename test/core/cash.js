@@ -9,13 +9,13 @@ var runner = require("../runner");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "cash", [{
             method: "getCashBalance",
             parameters: ["address"]
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "cash", [{
             method: "setCash",
             parameters: ["address", "fixed"]
         }, {
@@ -24,12 +24,6 @@ describe("Unit tests", function () {
         }, {
             method: "initiateOwner",
             parameters: ["address"]
-        }, {
-            method: "sendCash",
-            parameters: ["address", "fixed"]
-        }, {
-            method: "sendCashFrom",
-            parameters: ["address", "fixed", "address"]
         }, {
             method: "withdrawEther",
             parameters: ["address", "ether"]

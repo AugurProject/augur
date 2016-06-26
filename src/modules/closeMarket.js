@@ -17,7 +17,7 @@ module.exports = {
             onFailed = branch.onFailed;
             branch = branch.branch;
         }
-        var tx = clone(this.tx.closeMarket);
+        var tx = clone(this.tx.closeMarket.closeMarket);
         tx.params = [branch, market];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }

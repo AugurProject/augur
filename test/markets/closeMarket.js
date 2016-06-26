@@ -26,7 +26,7 @@ describe("Integration tests", function () {
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var branchID = augur.branches.dev;
+        var branchID = augur.constants.DEFAULT_BRANCH_ID;
         var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;

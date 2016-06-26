@@ -23,6 +23,9 @@ module.exports = {
             if (description.onFailed) onFailed = description.onFailed;
             description = description.description;
         }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
         oracleOnly = oracleOnly || 0;
         return this.createSubbranch({
             description: description,
@@ -32,18 +35,21 @@ module.exports = {
             oracleOnly: oracleOnly,
             onSent: onSent,
             onSuccess: function (response) {
-                response.branchID = utils.sha3([
-                    0,
-                    response.from,
-                    "0x2f0000000000000000",
-                    periodLength,
-                    parseInt(response.blockNumber),
-                    abi.hex(parent),
-                    parseInt(abi.fix(tradingFee, "hex")),
-                    oracleOnly,
-                    new Buffer(description, "utf8")
-                ]);
-                onSuccess(response);
+                self.rpc.getBlock(response.blockNumber, false, function (block) {
+                    response.branchID = utils.sha3([
+                        0,
+                        response.from,
+                        "0x2f0000000000000000",
+                        periodLength,
+                        block.timestamp,
+                        parent,
+                        abi.fix(tradingFee, "hex"),
+                        oracleOnly,
+                        description
+                    ]);
+                    response.callReturn = response.branchID;
+                    onSuccess(response);
+                });
             },
             onFailed: onFailed
         });
@@ -61,7 +67,7 @@ module.exports = {
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
-        var tx = clone(this.tx.createSubbranch);
+        var tx = clone(this.tx.createBranch.createSubbranch);
         tx.params = [
             description,
             periodLength,

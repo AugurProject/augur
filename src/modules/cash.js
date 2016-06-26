@@ -12,7 +12,7 @@ var utils = require("../utilities");
 module.exports = {
     
     setCash: function (address, balance, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.setCash);
+        var tx = clone(this.tx.cash.setCash);
         var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -20,7 +20,7 @@ module.exports = {
     },
     
     addCash: function (ID, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.addCash);
+        var tx = clone(this.tx.cash.addCash);
         var unpacked = utils.unpack(ID, utils.labels(this.addCash), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -35,17 +35,17 @@ module.exports = {
             if (account.onFailed) onFailed = account.onFailed;
             account = account.account;
         }
-        var tx = clone(this.tx.initiateOwner);
+        var tx = clone(this.tx.cash.initiateOwner);
         tx.params = account;
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    getCashBalance: function (account, callback) {
-        // account: ethereum account
-        var tx = clone(this.tx.getCashBalance);
-        tx.params = account || this.from;
-        return this.fire(tx, callback);
-    },
+    // getCashBalance: function (account, callback) {
+    //     // account: ethereum account
+    //     var tx = clone(this.tx.cash.getCashBalance);
+    //     tx.params = account || this.from;
+    //     return this.fire(tx, callback);
+    // },
 
     sendCash: function (to, value, onSent, onSuccess, onFailed) {
         // to: ethereum account
@@ -57,7 +57,7 @@ module.exports = {
             if (to.onFailed) onFailed = to.onFailed;
             to = to.to;
         }
-        var tx = clone(this.tx.sendCash);
+        var tx = clone(this.tx.cash.send);
         tx.params = [to, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
@@ -74,7 +74,7 @@ module.exports = {
             if (to.onFailed) onFailed = to.onFailed;
             to = to.to;
         }
-        var tx = clone(this.tx.sendCashFrom);
+        var tx = clone(this.tx.cash.sendFrom);
         tx.params = [to, abi.fix(value, "hex"), from];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
@@ -87,13 +87,13 @@ module.exports = {
             if (value.onFailed) onFailed = value.onFailed;
             value = value.value;
         }
-        var tx = clone(this.tx.depositEther);
+        var tx = clone(this.tx.cash.depositEther);
         tx.value = abi.prefix_hex(abi.bignum(value).mul(this.rpc.ETHER).toString(16));
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
     withdrawEther: function (to, value, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.withdrawEther);
+        var tx = clone(this.tx.cash.withdrawEther);
         var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.prefix_hex(abi.bignum(tx.params[1]).mul(this.rpc.ETHER).toString(16));

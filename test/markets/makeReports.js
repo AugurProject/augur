@@ -7,8 +7,6 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var contracts = require("augur-contracts");
-var clone = require("clone");
 var madlibs = require("madlibs");
 var utils = require("../../src/utilities");
 var tools = require("../tools");
@@ -19,7 +17,7 @@ var DEBUG = true;
 describe("Unit tests", function () {
 
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "makeReports", [{
             method: "getNumEventsToReport",
             parameters: ["hash", "int"]
         }, {
@@ -47,24 +45,21 @@ describe("Unit tests", function () {
             method: "getNumReportsEvent",
             parameters: ["hash", "int", "hash"]
         }, {
-            method: "calculateReportingThreshold",
-            parameters: ["hash", "hash", "int"]
-        }, {
-            method: "checkReportValidity",
-            parameters: ["hash", "fixed", "int"]
+            method: "validateReport",
+            parameters: ["hash", "hash", "int", "fixed", "int", "int", "int", "fixed"]
         }]);
     });
 
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "makeReports", [{
             method: "submitReportHash",
-            parameters: ["hash", "hash", "int", "hash", "int"]
+            parameters: ["hash", "hash"]
         }, {
             method: "submitReport",
-            parameters: ["hash", "int", "int", "intHexString", "fixed", "hash", "fixed", null]
+            parameters: ["hash", "intHexString", "fixed", "fixed", null]
         }, {
             method: "submitReport",
-            parameters: ["hash", "int", "int", "intHexString", "fixed", "hash", "fixed", "1"]
+            parameters: ["hash", "intHexString", "fixed", "fixed", "1"]
         }]);
     });
 });
@@ -73,11 +68,11 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var suffix = Math.random().toString(36).substring(4);
-    var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
-    var periodLength = 75;
+    var description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
+    var periodLength = 120;
     var report = 1;
     var salt = "1337";
     var eventID, newBranchID, marketID;
@@ -85,8 +80,8 @@ describe("Integration tests", function () {
     describe("makeHash", function () {
         var test = function (t) {
             it("salt=" + t.salt + ", report=" + t.report + ", eventID=" + t.eventID, function () {
-                var localHash = augur.makeHash(t.salt, t.report, t.eventID, t.sender, null, t.isScalar);
-                var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.sender, null, t.isScalar);
+                var localHash = augur.makeHash(t.salt, t.report, t.eventID, t.sender, t.isScalar);
+                var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.sender, t.isScalar);
                 assert.strictEqual(localHash, contractHash);
             });
         };
@@ -120,7 +115,7 @@ describe("Integration tests", function () {
             before(function (done) {
                 this.timeout(tools.TIMEOUT*100);
 
-                var branchDescription = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+                var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + suffix + "]";
                 var tradingFee = "0.01";
 
                 // create a new branch
@@ -133,92 +128,86 @@ describe("Integration tests", function () {
                     onSent: utils.noop,
                     onSuccess: function (res) {
                         newBranchID = res.branchID;
-                        assert.strictEqual(newBranchID, utils.sha256([
+                        if (DEBUG) console.log("Branch ID:", newBranchID);
+                        assert.strictEqual(augur.getCreator(newBranchID), augur.from);
+                        assert.strictEqual(augur.getDescription(newBranchID), branchDescription);
+                        var block = augur.rpc.getBlock(res.blockNumber);
+                        assert.strictEqual(newBranchID, utils.sha3([
                             0,
                             res.from,
                             abi.fix(47, "hex"),
                             periodLength,
-                            parseInt(res.blockNumber),
+                            block.timestamp,
                             branchID,
-                            parseInt(abi.fix(tradingFee, "hex")),
+                            abi.fix(tradingFee, "hex"),
                             0,
                             branchDescription
                         ]));
-                        if (DEBUG) console.log("Branch ID:", newBranchID);
 
                         // get reputation on the new branch
-                        augur.reputationFaucet({
+                        augur.fundNewAccount({
                             branch: newBranchID,
                             onSent: utils.noop,
                             onSuccess: function (res) {
 
-                                function createEvent(newBranchID, description, expDate) {
-                                    if (DEBUG) console.log("Event expiration block:", expDate);
-                                    augur.createEvent({
+                                function createSingleEventMarket(newBranchID, description, expDate) {
+                                    if (DEBUG) console.log("Expiration:", parseInt(expDate));
+                                    var createSingleEventMarketParams = {
                                         branchId: newBranchID,
                                         description: description,
-                                        expDate: expDate,
+                                        expDate: parseInt(expDate),
                                         minValue: 1,
                                         maxValue: 2,
                                         numOutcomes: 2,
-                                        resolution: "http://lmgtfy.com",
-                                        onSent: utils.noop,
+                                        resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
+                                        takerFee: "0.02",
+                                        makerFee: "0.01",
+                                        tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
+                                        extraInfo: madlibs.city() + " " + madlibs.noun() + " " + madlibs.action() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
+                                        onSent: function (res) {
+                                            console.log("sent:", res);
+                                        },
                                         onSuccess: function (res) {
-                                            eventID = res.callReturn;
+                                            console.log("success:", res);
+                                            marketID = res.marketID;
+                                            if (DEBUG) console.log("Market ID:", marketID);
+                                            eventID = augur.getMarketEvents(marketID)[0];
                                             if (DEBUG) console.log("Event ID:", eventID);
 
-                                            // incorporate the event into a market on the new branch
-                                            augur.createMarket({
-                                                branchId: newBranchID,
-                                                description: description,
-                                                makerFee: "0.01",
-                                                takerFee: "0.02",
-                                                tags: ["testing", "makeReports", "reporting"],
-                                                extraInfo: "Market provided courtesy of the augur.js test suite.",
-                                                events: [eventID],
-                                                onSent: utils.noop,
-                                                onSuccess: function (res) {
-                                                    marketID = res.callReturn;
-                                                    if (DEBUG) console.log("Market ID:", marketID);
-
-                                                    // fast-forward to the period in which the new event expires
-                                                    var period = parseInt(augur.getReportPeriod(newBranchID));
-                                                    var currentPeriod = augur.getCurrentPeriod(newBranchID);
-                                                    var blockNumber = augur.rpc.blockNumber();
-                                                    var blocksToGo = periodLength - (blockNumber % periodLength);
-                                                    if (DEBUG) {
-                                                        console.log("Current block:", blockNumber);
-                                                        console.log("Fast forwarding", blocksToGo, "blocks...");
-                                                    }
-                                                    augur.rpc.fastforward(blocksToGo, function (endBlock) {
-                                                        assert.notProperty(endBlock, "error");
-                                                        done();
-                                                    });
-                                                },
-                                                onFailed: done
-                                            });
+                                            // fast-forward to the period in which the new event expires
+                                            var curTime = parseInt(new Date().getTime() / 1000);
+                                            var timeToWait = periodLength - (curTime % periodLength);
+                                            if (DEBUG) {
+                                                console.log("Current timestamp:", curTime);
+                                                console.log("Waiting", timeToWait, "seconds...");
+                                            }
+                                            setTimeout(done, timeToWait*1000);
                                         },
-                                        onFailed: done
-                                    });
+                                        onFailed: function (err) {
+                                            console.error("failed:", err);
+                                            done(new Error("createSingleEventMarket failed"));
+                                        }
+                                    };
+                                    // console.log("createSingleEventMarket params:", createSingleEventMarketParams);
+                                    augur.createSingleEventMarket(createSingleEventMarketParams);
                                 }
 
                                 assert.strictEqual(res.callReturn, "1");
                                 assert.strictEqual(augur.getRepBalance(newBranchID, augur.from), "47");
 
-                                // create an event on the new branch
-                                var blockNumber = augur.rpc.blockNumber();
-                                var blocksToGo = periodLength - (blockNumber % periodLength);
+                                // create an event (and market) on the new branch
+                                var curTime = parseInt(new Date().getTime() / 1000);
+                                var timeToWait = periodLength - (curTime % periodLength);
                                 if (DEBUG) {
-                                    console.log("Current block:", blockNumber);
-                                    console.log("Next period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
+                                    console.log("Current timestamp:", curTime);
+                                    console.log("Next period starts at time", curTime + timeToWait, "(" + timeToWait + " seconds to go)");
                                 }
-                                if (blocksToGo > 10) {
-                                    return createEvent(newBranchID, description, new Date().getTime() + 1000);
+                                if (timeToWait > 30) {
+                                    return createSingleEventMarket(newBranchID, description, new Date().getTime() / 975);
                                 }
-                                augur.rpc.fastforward(blocksToGo, function (endBlock) {
-                                    assert.notProperty(endBlock, "error");
-                                    createEvent(newBranchID, description, new Date().getTime() + 1000);
-                                });
+                                setTimeout(function () {
+                                    createSingleEventMarket(newBranchID, description, new Date().getTime() / 975);
+                                }, timeToWait*1000);
                             },
                             onFailed: done
                         });
@@ -229,8 +218,8 @@ describe("Integration tests", function () {
 
             it("makeReports.submitReportHash", function (done) {
                 this.timeout(tools.TIMEOUT*100);
-                var blockNumber = augur.rpc.blockNumber();
-                if (DEBUG) console.log("Current block:", blockNumber + "\tResidual:", blockNumber % periodLength);
+                var curTime = new Date().getTime() / 1000;
+                if (DEBUG) console.log("Current time:", curTime + "\tResidual:", curTime % periodLength);
                 var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
                 if (DEBUG) console.log("Events in start period", startPeriod, augur.getEvents(newBranchID, startPeriod));
                 var currentPeriod = augur.getCurrentPeriod(newBranchID);
@@ -246,23 +235,26 @@ describe("Integration tests", function () {
                         currentPeriod = Math.floor(currentPeriod).toString();
                         if (DEBUG) console.log("Events in new period", period, augur.getEvents(newBranchID, period));
                         if (DEBUG) console.log("Difference " + (Number(currentPeriod) - period) + ". Submitting report hash...");
-                        var eventIndex = augur.getEventIndex(period, eventID);
                         var reportHash = augur.makeHash(salt, report, eventID);
-                        var diceroll = augur.rpc.sha3(abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID))));
-                        var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period);
-                        var blockNumber = augur.rpc.blockNumber();
-                        if (DEBUG) console.log("Residual:", blockNumber % periodLength);
-                        var currentExpPeriod = blockNumber / periodLength;
-                        if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
-                        assert.isTrue(currentExpPeriod >= period + 1);
-                        assert.isBelow(currentExpPeriod, period + 2);
-                        if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+                        console.log("reportHash:", reportHash);
+                        var hashable = abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID)));
+                        var diceroll = abi.prefix_hex(abi.keccak_256(hashable));
+                        console.log("diceroll1:", diceroll);
+                        var diceroll = augur.rpc.sha3(hashable);
+                        console.log("diceroll2:", diceroll);
+                        var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period, augur.from);
+                        console.log("threshold:", threshold);
+                        var curTime = new Date().getTime() / 1000;
+                        if (DEBUG) console.log("Residual:", curTime % periodLength);
+                        var currentExpPeriod = curTime / periodLength;
+                        if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
+                        // assert.isAtLeast(currentExpPeriod, period + 1);
+                        // assert.isBelow(currentExpPeriod, period + 2);
+                        console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
+                        // if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
                             return augur.submitReportHash({
-                                branch: newBranchID,
+                                event: eventID,
                                 reportHash: reportHash,
-                                reportPeriod: period,
-                                eventID: eventID,
-                                eventIndex: eventIndex,
                                 onSent: function (res) {
                                     if (DEBUG) console.log("submitReportHash sent:", res);
                                     assert(res.txHash);
@@ -276,7 +268,9 @@ describe("Integration tests", function () {
                                 },
                                 onFailed: done
                             });
-                        }
+                        // } else {
+                        //     done();
+                        // }
                     }, console.error);
                 }
             });
@@ -286,24 +280,20 @@ describe("Integration tests", function () {
 
                 // fast-forward to the second half of the reporting period
                 var period = parseInt(augur.getReportPeriod(newBranchID));
-                var blockNumber = augur.rpc.blockNumber();
-                var blocksToGo = Math.ceil((periodLength / 2) - (blockNumber % (periodLength / 2)));
+                var curTime = new Date().getTime() / 1000;
+                var timeToGo = Math.ceil((periodLength / 2) - (curTime % (periodLength / 2)));
                 if (DEBUG) {
-                    console.log("Current block:", blockNumber);
-                    console.log("Next half-period starts at block", blockNumber + blocksToGo, "(" + blocksToGo + " to go)")
-                    console.log("Fast forwarding", blocksToGo, "blocks...");
+                    console.log("Current time:", curTime);
+                    console.log("Next half-period starts at time", curTime + timeToGo, "(" + timeToGo + " to go)")
                 }
-                augur.rpc.fastforward(blocksToGo, function (endBlock) {
+                setTimeout(function () {
                     assert.strictEqual(parseInt(augur.getReportPeriod(newBranchID)), period);
-                    var eventIndex = augur.getEventIndex(period, eventID);
-                    return augur.submitReport({
-                        branch: newBranchID,
-                        reportPeriod: period,
-                        eventIndex: eventIndex,
+                    augur.submitReport({
+                        event: eventID,
                         salt: salt,
                         report: report,
-                        eventID: eventID,
                         ethics: 1,
+                        isScalar: false,
                         onSent: function (res) {
                             if (DEBUG) console.log("submitReport sent:", res);
                             assert(res.txHash);
@@ -317,10 +307,8 @@ describe("Integration tests", function () {
                         },
                         onFailed: done
                     });
-                });
+                }, timeToGo*1000);
             });
         });
-
     }
-
 });

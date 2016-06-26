@@ -60,7 +60,7 @@ module.exports = function () {
                     onSuccess: function (res) {
                         onSendEther(account);
                         augur.fundNewAccount({
-                            branch: branch || augur.branches.dev,
+                            branch: branch || augur.constants.DEFAULT_BRANCH_ID,
                             onSent: onSent,
                             onSuccess: onSuccess,
                             onFailed: onFailed
@@ -77,7 +77,7 @@ module.exports = function () {
                     console.log("sent ether to account:", account);
                     onSendEther(account);
                     augur.fundNewAccount({
-                        branch: branch || augur.branches.dev,
+                        branch: branch || augur.constants.DEFAULT_BRANCH_ID,
                         onSent: onSent,
                         onSuccess: onSuccess,
                         onFailed: onFailed
@@ -166,7 +166,7 @@ module.exports = function () {
                             }
 
                             if (options.doNotFund) return onRegistered(self.account);
-                            self.fund(self.account, augur.branches.dev, onRegistered, onSendEther, onSent, onSuccess, onFailed);
+                            self.fund(self.account, augur.constants.DEFAULT_BRANCH_ID, onRegistered, onSendEther, onSent, onSuccess, onFailed);
 
                         }); // augur.db.put
                     }); // deriveKey

@@ -19,7 +19,7 @@ var rpc = augur.rpc;
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "trades", [{
             method: "makeTradeHash",
             parameters: ["fixed", "fixed", "hashArray"]
         }, {
@@ -43,7 +43,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "trades", [{
             method: "setInitialTrade",
             parameters: ["hash"]
         }, {
@@ -502,7 +502,7 @@ describe("Integration tests", function () {
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var branchID = augur.branches.dev;
+        var branchID = augur.constants.DEFAULT_BRANCH_ID;
         var markets = augur.getMarketsInBranch(branchID);
         var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
         var accounts = rpc.personal("listAccounts");
@@ -515,7 +515,7 @@ describe("Integration tests", function () {
                     augur.getCashBalance(account, function (cashBalance) {
                         if (parseFloat(cashBalance) > 2500) return nextAccount();
                         augur.fundNewAccount({
-                            branch: augur.branches.dev,
+                            branch: augur.constants.DEFAULT_BRANCH_ID,
                             onSent: function (r) {
                                 assert.strictEqual(r.callReturn, "1");
                             },

@@ -10,6 +10,12 @@ var runner = require("../runner");
 describe("Unit tests", function () {
     describe("eth_call", function () {
         runner(this.title, [{
+            method: "calculateReportingThreshold",
+            parameters: ["hash", "hash", "int"]
+        }, {
+            method: "getEventCanReportOn",
+            parameters: ["hash", "int", "address", "hash"]
+        }, {
             method: "getEventIndex",
             parameters: ["int", "hash"]
         }, {

@@ -22,7 +22,7 @@ module.exports = {
             if (branchId.onFailed) onFailed = branchId.onFailed;
             branchId = branchId.branchId;
         }
-        var tx = clone(this.tx.sendReputation);
+        var tx = clone(this.tx.sendReputation.sendReputation);
         tx.params = [branchId, to, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }

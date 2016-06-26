@@ -11,50 +11,36 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    proportionCorrect: function (event, branch, period, callback) {
-        var tx = clone(this.tx.proportionCorrect);
-        tx.params = [event, branch, period];
-        return this.fire(tx, callback);
-    },
+    // proportionCorrect: function (event, branch, period, callback) {
+    //     var tx = clone(this.tx.consensus.proportionCorrect);
+    //     tx.params = [event, branch, period];
+    //     return this.fire(tx, callback);
+    // },
 
     moveEventsToCurrentPeriod: function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.moveEventsToCurrentPeriod);
+        var tx = clone(this.tx.consensus.moveEventsToCurrentPeriod);
         var unpacked = utils.unpack(branch, utils.labels(this.moveEventsToCurrentPeriod), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
     incrementPeriodAfterReporting: function (branch, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.incrementPeriodAfterReporting);
+        var tx = clone(this.tx.consensus.incrementPeriodAfterReporting);
         var unpacked = utils.unpack(branch, utils.labels(this.incrementPeriodAfterReporting), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
-    penalizeNotEnoughReports: function (branch, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.penalizeNotEnoughReports);
-        var unpacked = utils.unpack(branch, utils.labels(this.penalizeNotEnoughReports), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
     penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.penalizeWrong);
+        var tx = clone(this.tx.consensus.penalizeWrong);
         var unpacked = utils.unpack(branch, utils.labels(this.penalizeWrong), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
     collectFees: function (branch, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.collectFees);
+        var tx = clone(this.tx.consensus.collectFees);
         var unpacked = utils.unpack(branch, utils.labels(this.collectFees), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    penalizationCatchup: function (branch, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.penalizationCatchup);
-        var unpacked = utils.unpack(branch, utils.labels(this.penalizationCatchup), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
@@ -70,7 +56,7 @@ module.exports = {
             onFailed = branchId.onFailed;
             branchId = branchId.branchId;
         }
-        var tx = clone(this.tx.slashRep);
+        var tx = clone(this.tx.consensus.slashRep);
         tx.params = [branchId, salt, abi.fix(report, "hex"), reporter, eventID];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }

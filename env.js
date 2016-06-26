@@ -29,7 +29,7 @@ GLOBAL.augur = (GLOBAL.reload = function () {
     return tools.setup(tools.reset("./src/index"), process.argv.slice(2));
 })();
 GLOBAL.comments = augur.comments;
-GLOBAL.b = augur.branches.dev;
+GLOBAL.b = augur.constants.DEFAULT_BRANCH_ID
 GLOBAL.log = console.log;
 GLOBAL.rpc = augur.rpc;
 try {
@@ -45,13 +45,13 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     account = account || augur.from;
     var balances = {
         cash: augur.getCashBalance(account),
-        reputation: augur.getRepBalance(branch || augur.branches.dev, account),
+        reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
         ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
     console.log(balances);
     return balances;
 })();
-GLOBAL.markets = augur.getMarketsInBranch(augur.branches.dev);
+GLOBAL.markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
 if (markets && markets.constructor === Array && markets.length) {
     GLOBAL.market = markets[markets.length - 1];
 }

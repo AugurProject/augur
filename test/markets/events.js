@@ -59,7 +59,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var amount = "1";
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var markets = augur.getMarketsInBranch(branchID);
     var marketID = markets[markets.length - 1];
     var eventID = augur.getMarketEvents(marketID)[0];

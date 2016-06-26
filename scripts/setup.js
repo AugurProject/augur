@@ -155,7 +155,7 @@ function init(geth, account, callback, next, count) {
 function faucets(geth) {
     augur.connector.from = augur.coinbase;
     connect_augur();
-    var branch = augur.branches.dev;
+    var branch = augur.constants.DEFAULT_BRANCH_ID;
     var coinbase = augur.coinbase;
     var value = constants.FREEBIE * 0.25;
     var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();

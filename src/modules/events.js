@@ -11,32 +11,32 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    getmode: function (event, callback) {
-        // event: sha256 hash id
-        var tx = clone(this.tx.getmode);
-        tx.params = event;
-        return this.fire(tx, callback);
-    },
+    // getmode: function (event, callback) {
+    //     // event: sha256 hash id
+    //     var tx = clone(this.tx.events.getmode);
+    //     tx.params = event;
+    //     return this.fire(tx, callback);
+    // },
 
-    getUncaughtOutcome: function (event, callback) {
-        // event: sha256 hash id
-        var tx = clone(this.tx.getUncaughtOutcome);
-        tx.params = event;
-        return this.fire(tx, callback);
-    },
+    // getUncaughtOutcome: function (event, callback) {
+    //     // event: sha256 hash id
+    //     var tx = clone(this.tx.events.getUncaughtOutcome);
+    //     tx.params = event;
+    //     return this.fire(tx, callback);
+    // },
 
-    getMarkets: function (eventID, callback) {
-        // eventID: sha256 hash id
-        var tx = clone(this.tx.getMarkets);
-        tx.params = eventID;
-        return this.fire(tx, callback);
-    },
+    // getMarkets: function (eventID, callback) {
+    //     // eventID: sha256 hash id
+    //     var tx = clone(this.tx.events.getMarkets);
+    //     tx.params = eventID;
+    //     return this.fire(tx, callback);
+    // },
 
-    getReportingThreshold: function (event, callback) {
-        var tx = clone(this.tx.getReportingThreshold);
-        tx.params = event;
-        return this.fire(tx, callback);
-    },
+    // getReportingThreshold: function (event, callback) {
+    //     var tx = clone(this.tx.events.getReportingThreshold);
+    //     tx.params = event;
+    //     return this.fire(tx, callback);
+    // },
 
     getEventInfo: function (eventId, callback) {
         // eventId: sha256 hash id
@@ -62,7 +62,7 @@ module.exports = {
             }
             return info;
         };
-        var tx = clone(this.tx.getEventInfo);
+        var tx = clone(this.tx.events.getEventInfo);
         tx.params = eventId;
         if (utils.is_function(callback)) {
             this.fire(tx, function (info) {
@@ -73,44 +73,44 @@ module.exports = {
         }
     },
 
-    getEventBranch: function (eventId, callback) {
-        var tx = clone(this.tx.getEventBranch);
-        tx.params = eventId;
-        return this.fire(tx, callback);
-    },
+    // getEventBranch: function (eventId, callback) {
+    //     var tx = clone(this.tx.events.getEventBranch);
+    //     tx.params = eventId;
+    //     return this.fire(tx, callback);
+    // },
 
-    getExpiration: function (eventId, callback) {
-        var tx = clone(this.tx.getExpiration);
-        tx.params = eventId;
-        return this.fire(tx, callback);
-    },
+    // getExpiration: function (eventId, callback) {
+    //     var tx = clone(this.tx.events.getExpiration);
+    //     tx.params = eventId;
+    //     return this.fire(tx, callback);
+    // },
 
-    getOutcome: function (eventId, callback) {
-        var tx = clone(this.tx.getOutcome);
-        tx.params = eventId;
-        return this.fire(tx, callback);
-    },
+    // getOutcome: function (eventId, callback) {
+    //     var tx = clone(this.tx.events.getOutcome);
+    //     tx.params = eventId;
+    //     return this.fire(tx, callback);
+    // },
 
-    getMinValue: function (eventId, callback) {
-        var tx = clone(this.tx.getMinValue);
-        tx.params = eventId;
-        return this.fire(tx, callback);
-    },
+    // getMinValue: function (eventId, callback) {
+    //     var tx = clone(this.tx.events.getMinValue);
+    //     tx.params = eventId;
+    //     return this.fire(tx, callback);
+    // },
 
-    getMaxValue: function (eventId, callback) {
-        var tx = clone(this.tx.getMaxValue);
-        tx.params = eventId;
-        return this.fire(tx, callback);
-    },
+    // getMaxValue: function (eventId, callback) {
+    //     var tx = clone(this.tx.events.getMaxValue);
+    //     tx.params = eventId;
+    //     return this.fire(tx, callback);
+    // },
 
-    getNumOutcomes: function (eventId, callback) {
-        var tx = clone(this.tx.getNumOutcomes);
-        tx.params = eventId;
-        return this.fire(tx, callback);
-    },
+    // getNumOutcomes: function (eventId, callback) {
+    //     var tx = clone(this.tx.events.getNumOutcomes);
+    //     tx.params = eventId;
+    //     return this.fire(tx, callback);
+    // },
 
     setOutcome: function (ID, outcome, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.setOutcome);
+        var tx = clone(this.tx.events.setOutcome);
         var unpacked = utils.unpack(ID, utils.labels(this.setOutcome), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));

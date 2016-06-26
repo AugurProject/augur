@@ -61,9 +61,8 @@ function createMarkets(numMarketsToCreate, callback) {
         var expDate = Math.round(new Date().getTime() / 900);
         var takerFee = 0.1 * Math.random();
         var makerFee = 0.5 * takerFee * Math.random();
-        // console.log("takerFee:", takerFee, "makerFee:", makerFee);
         var createSingleEventMarketParams = {
-            branchId: augur.branches.dev,
+            branchId: augur.constants.DEFAULT_BRANCH_ID,
             description: description,
             expDate: expDate,
             minValue: minValue,
@@ -72,7 +71,7 @@ function createMarkets(numMarketsToCreate, callback) {
             resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
             takerFee: takerFee.toString(),
             makerFee: makerFee.toString(),
-            extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun(),
+            extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
             onSent: function (r) {},
             onSuccess: function (r) {
@@ -80,8 +79,7 @@ function createMarkets(numMarketsToCreate, callback) {
                 augur.getMarketInfo(r.marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
-                        // console.log(r);
-                        return augur.fundNewAccount(augur.branches.dev,
+                        return augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
                             function (r) {},
                             function (r) { next(); },
                             function (err) {
@@ -92,9 +90,9 @@ function createMarkets(numMarketsToCreate, callback) {
                     }
                     var orderBookParams = {
                         market: r.marketID,
-                        liquidity: Math.floor(4000*Math.random()) + 1000,
-                        startingQuantity: Math.floor(400*Math.random()) + 100,
-                        bestStartingQuantity: Math.floor(400*Math.random()) + 100,
+                        liquidity: Math.floor(400*Math.random()) + 100,
+                        startingQuantity: Math.floor(40*Math.random()) + 10,
+                        bestStartingQuantity: Math.floor(40*Math.random()) + 10,
                         priceWidth: Math.random().toString()
                     };
                     var initialFairPrices = new Array(numOutcomes);
@@ -124,7 +122,7 @@ function createMarkets(numMarketsToCreate, callback) {
                         },
                         onSuccess: function (res) {
                             if (index % 10) return next();
-                            augur.fundNewAccount(augur.branches.dev,
+                            augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
@@ -135,7 +133,7 @@ function createMarkets(numMarketsToCreate, callback) {
                         },
                         onFailed: function (err) {
                             console.error(chalk.red.bold("generateOrderBook failed:"), err);
-                            augur.fundNewAccount(augur.branches.dev,
+                            augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
@@ -149,7 +147,7 @@ function createMarkets(numMarketsToCreate, callback) {
             },
             onFailed: function (err) {
                 console.error(chalk.red.bold("createSingleEventMarket failed:"), err);
-                augur.fundNewAccount(augur.branches.dev,
+                augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
                     function (r) {},
                     function (r) { next(); },
                     function (err) {
@@ -170,7 +168,7 @@ function time_getMarketsInfo(numMarkets) {
         augur = tools.setup(tools.reset(augurpath));
         var startTime = new Date().getTime();
         augur.getMarketsInfo({
-            branch: augur.branches.dev,
+            branch: augur.constants.DEFAULT_BRANCH_ID,
             offset: 0,
             numMarketsToLoad: index + 1,
             callback: function (info) {
@@ -186,7 +184,7 @@ function time_getMarketsInfo(numMarkets) {
 }
 
 function timing(maxNumMarkets) {
-    var numMarkets = parseInt(augur.getNumMarketsBranch(augur.branches.dev));
+    var numMarkets = parseInt(augur.getNumMarketsBranch(augur.constants.DEFAULT_BRANCH_ID));
     console.log("Found", numMarkets, "markets");
     if (numMarkets >= maxNumMarkets) {
         return time_getMarketsInfo(numMarkets);
