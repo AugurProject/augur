@@ -67,6 +67,7 @@ module.exports = {
                 cb.push(params.pop());
             }
             tx.params = params;
+            cb.reverse();
             return self.transact.apply(self, [tx].concat(cb));
         };
     },

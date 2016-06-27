@@ -26,16 +26,8 @@ augur.connect("http://127.0.0.1:8545", process.env.GETH_IPC, function (connected
                         console.log("fundNewAccount", account, "sent:", res);
                     }, function (res) {
                         console.log("fundNewAccount", account, "success:", res);
-                        augur.rpc.personal("lockAccount", [account], function (locked) {
-                            if (!locked) return nextAccount("couldn't lock " + account);
-                            nextAccount();
-                        });
-                    }, function (err) {
-                        augur.rpc.personal("lockAccount", [account], function (locked) {
-                            if (!locked) return nextAccount("couldn't lock " + account);
-                            nextAccount(err);
-                        });
-                    });
+                        nextAccount();
+                    }, nextAccount);
                 });
             }, function (err) {
                 if (err) console.error("fundNewAccount failed:", err);
