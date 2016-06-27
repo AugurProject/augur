@@ -16,27 +16,27 @@ export const selectMarketsTotals = memoizerific(1)((allMarkets, filteredMarketsL
 	const positions = { numPositions: 0, qtyShares: 0, totalValue: 0, totalCost: 0 };
 
 	const totals = allMarkets.reduce((p, market) => {
-			p.numAll++;
+		p.numAll++;
 
-			if (market.isPendingReport) {
-				p.numPendingReports++;
-			}
+		if (market.isPendingReport) {
+			p.numPendingReports++;
+		}
 
-			if (market.positionsSummary && market.positionsSummary.qtyShares && market.positionsSummary.qtyShares.value) {
-				positions.numPositions += market.positionsSummary.numPositions.value;
-				positions.qtyShares += market.positionsSummary.qtyShares.value;
-				positions.totalValue += market.positionsSummary.totalValue.value || 0;
-				positions.totalCost += market.positionsSummary.totalCost.value || 0;
-			}
+		if (market.positionsSummary && market.positionsSummary.qtyShares && market.positionsSummary.qtyShares.value) {
+			positions.numPositions += market.positionsSummary.numPositions.value;
+			positions.qtyShares += market.positionsSummary.qtyShares.value;
+			positions.totalValue += market.positionsSummary.totalValue.value || 0;
+			positions.totalCost += market.positionsSummary.totalCost.value || 0;
+		}
 
-			return p;
-		}, {
-			numAll: 0,
-			numFavorites: 0,
-			numPendingReports: 0,
-			numUnpaginated: 0,
-			numFiltered: 0
-		});
+		return p;
+	}, {
+		numAll: 0,
+		numFavorites: 0,
+		numPendingReports: 0,
+		numUnpaginated: 0,
+		numFiltered: 0
+	});
 
 	totals.numUnpaginated = unpaginatedMarketsLength;
 	totals.numFiltered = filteredMarketsLength;
