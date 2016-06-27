@@ -27,7 +27,7 @@ export default function (appElement, selectors) {
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
 		authLink: p.links && p.links.authLink || undefined,
 		accountLink: p.links && p.links.accountLink || undefined,
-		accountLinkText: p.loginAccount.handle || p.loginAccount.linkText
+		accountLinkText: p.loginAccount.linkText
 	};
 
 	switch (p.activePage) {
@@ -47,6 +47,7 @@ export default function (appElement, selectors) {
 			<AccountPage
 				siteHeader={p.siteHeader}
 				account={p.loginAccount}
+				onChangePass={p.loginAccount.onChangePass}
 			/>
 		);
 		break;

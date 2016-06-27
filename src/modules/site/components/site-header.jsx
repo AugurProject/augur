@@ -63,14 +63,14 @@ const SiteHeader = (p) => (
 				</Link>
 			}
 			{!p.loginAccount && !p.loginAccount.id &&
-			<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
-				Sign Up / Login
-			</Link>
+				<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
+					Sign Up / Login
+				</Link>
 			}
 			{p.loginAccount && p.loginAccount.id &&
-			<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
-				{p.accountLinkText}
-			</Link>
+				<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
+					{p.accountLinkText}
+				</Link>
 			}
 		</nav>
 	</header>
