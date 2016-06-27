@@ -34,7 +34,7 @@ module.exports = {
                 market,
                 abi.fix(amount, "hex"),
                 abi.fix(price, "hex"),
-                self.from,
+                res.from,
                 res.blockNumber,
                 parseInt(outcome)
             ]);
@@ -64,7 +64,7 @@ module.exports = {
                 market,
                 abi.fix(amount, "hex"),
                 abi.fix(price, "hex"),
-                self.from,
+                res.from,
                 res.blockNumber,
                 parseInt(outcome)
             ]);

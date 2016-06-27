@@ -16636,7 +16636,7 @@ module.exports={
       ]
     }
   }, 
-  "Buy&sellShares": {
+  "BuyAndSellShares": {
     "buy": {
       "inputs": [
         "amount", 
@@ -47670,7 +47670,6 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                // console.log("buy:", buyPrice.toFixed(), i, amount.toFixed());
                                 self.buy({
                                     amount: amount.toFixed(),
                                     price: buyPrice.toFixed(),
@@ -47691,7 +47690,7 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
@@ -47703,7 +47702,6 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                // console.log("sell:", sellPrice.toFixed(), i, amount.toFixed());
                                 self.sell({
                                     amount: amount.toFixed(),
                                     price: sellPrice.toFixed(),
@@ -47724,7 +47722,7 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
@@ -48120,7 +48118,7 @@ module.exports = {
                 market,
                 abi.fix(amount, "hex"),
                 abi.fix(price, "hex"),
-                self.from,
+                res.from,
                 res.blockNumber,
                 parseInt(outcome)
             ]);
@@ -48150,7 +48148,7 @@ module.exports = {
                 market,
                 abi.fix(amount, "hex"),
                 abi.fix(price, "hex"),
-                self.from,
+                res.from,
                 res.blockNumber,
                 parseInt(outcome)
             ]);
