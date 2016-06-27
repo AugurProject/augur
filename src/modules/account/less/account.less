@@ -26,14 +26,13 @@
 			align-items: center;
 			margin: 0.5rem 1vmin;
 
-			h2 {
-				flex-shrink: 1;
+			p {
+				margin: 3vmin 0;
+				width: 100%;
 			}
 
-			p {
-				flex-grow: 1;
-				flex-basis: 65%;
-				margin: 0 1vmin;
+			h2 {
+				flex-basis: 18%;
 			}
 
 			.item {
@@ -43,13 +42,19 @@
 				margin: 0 1vmin;
 			}
 
+			.input {
+				margin: 0 3vmin;
+				flex-grow: 1;
+			}
+
 			.editable {
 				cursor: pointer;
 			}
 
 			.button {
 				font-size: 1.22rem;
-				flex-basis: 23vmin;
+				flex-basis: 25vmin;
+				text-align: center;
 			}
 		}
 
@@ -68,7 +73,7 @@
 				.button {
 					font-size: 1.22rem;
 					margin: .25rem .5rem;
-					flex-basis: 23vmin;
+					flex-basis: 25vmin;
 				}
 			}
 
@@ -113,20 +118,6 @@
 			font-weight: bold;
 		}
 	}
-
-	// .account-actions {
-	// 	display: flex;
-	// 	flex-direction: row;
-	// 	justify-content: flex-end;
-	// 	align-items: center;
-	// 	border-top: 1px solid @color-border-dark;
-	// 	padding-top: 1rem;
-	// 	margin-top: 1rem;
-	//
-	// 	.link.button {
-	// 		font-size: 1.5rem;
-	// 	}
-	// }
 }
 .sign-out-container {
 	display: flex;
@@ -147,11 +138,18 @@
 		padding: 0;
 		margin: 2vmin 0;
 	}
+	.account-details > .account-info > .account-info-item > .input {
+		padding: 0;
+		margin: 2vmin 0;
+	}
 	.account-details > .account-info > .account-info-item > .button {
 		flex-grow: 1;
 		flex-basis: 0;
 	}
 	.account-details > .account-info > .account-info-item > h2 {
 		flex-grow: 1;
+	}
+	.account-details > .account-info > .account-info-item > p {
+		text-align: center;
 	}
 }

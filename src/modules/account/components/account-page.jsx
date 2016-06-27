@@ -99,7 +99,7 @@ export default class AccountPage extends Component {
 									</Link>
 								</div>
 
-								{!s.editPassword && <div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
+								{!s.editPassword && <div className="account-info-item">
 									<h2>Password:</h2>
 									<div className="item">************</div>
 									<Link className="button make" href="" onClick={() => this.setState({ editPassword: true })}>
@@ -155,12 +155,12 @@ export default class AccountPage extends Component {
 								}
 
 								<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
-									<h2>Export Account:</h2>
+									<h2>Download Account:</h2>
 									<p>
-										Augur is a decentralized app that stores a lot of its data right in your browser. To load your account on another device or browser, you will need to export it from one device and import it into another.
+										If you are running Augur using a local geth node, you can download your account data to login through the node.
 									</p>
 									<Link className="button make" href="">
-										Export Account
+										Download Account
 									</Link>
 								</div>
 

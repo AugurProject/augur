@@ -37,6 +37,7 @@ loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
 
 loginAccount.editName = (name) => {
 	loginAccount.name = (name && name !== '') ? name : undefined;
+	loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
 };
 
 loginAccount.onChangePass = (password, newPassword, newPassword2) => console.log(`Password: ${password}.`, `New Password: ${newPassword}.`, `Confirmed New Password: ${newPassword2}.`, 'This function would trigger a password change in Augur + validation.');
