@@ -15,7 +15,7 @@ import {
 	SCALAR
 } from '../../../../src/modules/markets/constants/market-types';
 import {
-	TRADING_FEE_DEFAULT,
+	TAKER_FEE_DEFAULT,
 	MAKER_FEE_DEFAULT,
 	STARTING_QUANTITY_DEFAULT,
 	BEST_STARTING_QUANTITY_DEFAULT,
@@ -52,7 +52,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 		beforeEach(() => {
 			formState = {
 				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
-				tradingFeePercent: TRADING_FEE_DEFAULT,
+				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
 				startingQuantity: STARTING_QUANTITY_DEFAULT,
@@ -125,7 +125,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			out = {
 				type: BINARY,
 				expirySource: 'testing',
-				makerFee: MAKER_FEE_DEFAULT / 100,
+				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
@@ -147,20 +147,20 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | Yes",
-			        		formatted: "0.50",
+			        		formatted: "0.5",
 				        	formattedValue: 0.5,
-							full: "0.50ETH | Yes",
-							minimized: "0.50",
+							full: "0.5ETH | Yes",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
 						},
 						{
 							denomination: "ETH | No",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | No",
-							minimized: "0.50",
+							full: "0.5ETH | No",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
@@ -178,38 +178,28 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
-				tradingFeePercent: {
+				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.0',
 					roundedValue: 2,
 					rounded: '+2',
-					minimized: '+2.0',
+					minimized: '+2',
 					denomination: '%',
 					full: '+2.0%'
 				},
 				makerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
+					value: 1,
+					formattedValue: 1,
+					formatted: '+1.0',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+1',
 					denomination: '%',
-					full: '+50.0%'
+					full: '+1.0%'
 				},
 				endBlock: select.endBlock,
-				tradingFee: TRADING_FEE_DEFAULT / 100,
-				takerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
-					denomination: '%',
-					full: '+50.0%'
-				},
+				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
 					formattedValue: 0,
@@ -233,10 +223,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				priceWidthFormatted: {
 					denomination: "ETH",
-					formatted: "0.10",
+					formatted: "0.1",
 					formattedValue: 0.1,
-					full: "0.10ETH",
-					minimized: "0.10",
+					full: "0.1ETH",
+					minimized: "0.1",
 					rounded: "0",
 					roundedValue: 0,
 					value: 0.1
@@ -307,7 +297,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			out = {
 				type: CATEGORICAL,
 				expirySource: 'testing',
-				makerFee: MAKER_FEE_DEFAULT / 100,
+				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
@@ -338,30 +328,30 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | test1",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | test1",
-							minimized: "0.50",
+							full: "0.5ETH | test1",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
 						},
 						{
 							denomination: "ETH | test2",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | test2",
-							minimized: "0.50",
+							full: "0.5ETH | test2",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
 						},
 						{
 							denomination: "ETH | test3",
-							formatted: "0.50",
+							formatted: "0.5",
 							formattedValue: 0.5,
-							full: "0.50ETH | test3",
-							minimized: "0.50",
+							full: "0.5ETH | test3",
+							minimized: "0.5",
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
@@ -383,38 +373,28 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
-				tradingFeePercent: {
+				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.0',
 					roundedValue: 2,
 					rounded: '+2',
-					minimized: '+2.0',
+					minimized: '+2',
 					denomination: '%',
 					full: '+2.0%'
 				},
 				makerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
+					value: 1,
+					formattedValue: 1,
+					formatted: '+1.0',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+1',
 					denomination: '%',
-					full: '+50.0%'
+					full: '+1.0%'
 				},
 				endBlock: select.endBlock,
-				tradingFee: TRADING_FEE_DEFAULT / 100,
-				takerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
-					denomination: '%',
-					full: '+50.0%'
-				},
+				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
 					formattedValue: 0,
@@ -438,10 +418,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				priceWidthFormatted: {
 					denomination: "ETH",
-					formatted: "0.10",
+					formatted: "0.1",
 					formattedValue: 0.1,
-					full: "0.10ETH",
-					minimized: "0.10",
+					full: "0.1ETH",
+					minimized: "0.1",
 					rounded: "0",
 					roundedValue: 0,
 					value: 0.1
@@ -504,7 +484,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			out = {
 				type: SCALAR,
 				expirySource: 'testing',
-				makerFee: MAKER_FEE_DEFAULT / 100,
+				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
 					value: new Date(3000, 0, 1, 0, 0, 0, 0),
 					formatted: 'Jan 1, 3000',
@@ -526,20 +506,20 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | ⇧",
-							formatted: "55.00",
+							formatted: "55",
 							formattedValue: 55,
-							full: "55.00ETH | ⇧",
-							minimized: "55.00",
+							full: "55ETH | ⇧",
+							minimized: "55",
 							rounded: "55",
 							roundedValue: 55,
 							value: 55
 						},
 						{
 							denomination: "ETH | ⇩",
-							formatted: "55.00",
+							formatted: "55",
 							formattedValue: 55,
-							full: "55.00ETH | ⇩",
-							minimized: "55.00",
+							full: "55ETH | ⇩",
+							minimized: "55",
 							rounded: "55",
 							roundedValue: 55,
 							value: 55
@@ -557,38 +537,28 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					}
 				],
 				priceWidth: PRICE_WIDTH_DEFAULT,
-				tradingFeePercent: {
+				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.0',
 					roundedValue: 2,
 					rounded: '+2',
-					minimized: '+2.0',
+					minimized: '+2',
 					denomination: '%',
 					full: '+2.0%'
 				},
 				makerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
+					value: 1,
+					formattedValue: 1,
+					formatted: '+1.0',
+					roundedValue: 1,
+					rounded: '+1',
+					minimized: '+1',
 					denomination: '%',
-					full: '+50.0%'
+					full: '+1.0%'
 				},
 				endBlock: select.endBlock,
-				tradingFee: TRADING_FEE_DEFAULT / 100,
-				takerFeePercent: {
-					value: 50,
-					formattedValue: 50,
-					formatted: '+50.0',
-					roundedValue: 50,
-					rounded: '+50',
-					minimized: '+50.0',
-					denomination: '%',
-					full: '+50.0%'
-				},
+				takerFee: TAKER_FEE_DEFAULT,
 				volume: {
 					value: 0,
 					formattedValue: 0,
@@ -612,10 +582,10 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				priceWidthFormatted: {
 					denomination: "ETH",
-					formatted: "0.10",
+					formatted: "0.1",
 					formattedValue: 0.1,
-					full: "0.10ETH",
-					minimized: "0.10",
+					full: "0.1ETH",
+					minimized: "0.1",
 					rounded: "0",
 					roundedValue: 0,
 					value: 0.1

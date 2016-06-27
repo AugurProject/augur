@@ -1,23 +1,7 @@
-import {
-	assert
-} from 'chai';
-
-import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR
-} from '../../../../src/modules/markets/constants/market-types';
-
-import {
-	DESCRIPTION_MIN_LENGTH,
-	DESCRIPTION_MAX_LENGTH,
-	CATEGORICAL_OUTCOMES_MIN_NUM,
-	CATEGORICAL_OUTCOMES_MAX_NUM,
-	CATEGORICAL_OUTCOME_MAX_LENGTH
-} from '../../../../src/modules/create-market/constants/market-values-constraints';
-
+import { assert } from 'chai';
+import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
+import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH, CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from '../../../../src/modules/create-market/constants/market-values-constraints';
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-2';
-
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
@@ -51,11 +35,11 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 	stubbedValidateCategoricalOutcomes.returns([]);
 
 	let validators = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-2', {
-		'../../../market/validators/validate-description': stubbedValidateDescription,
-		'../../../market/validators/validate-end-date': stubbedValidateEndDate,
-		'../../../market/validators/validate-scalar-small-num': stubbedValidateScalarSmallNum,
-		'../../../market/validators/validate-scalar-big-num': stubbedValidateScalarBigNum,
-		'../../../market/validators/validate-categorical-outcomes': stubbedValidateCategoricalOutcomes
+		'../../../create-market/validators/validate-description': stubbedValidateDescription,
+		'../../../create-market/validators/validate-end-date': stubbedValidateEndDate,
+		'../../../create-market/validators/validate-scalar-small-num': stubbedValidateScalarSmallNum,
+		'../../../create-market/validators/validate-scalar-big-num': stubbedValidateScalarBigNum,
+		'../../../create-market/validators/validate-categorical-outcomes': stubbedValidateCategoricalOutcomes
 	});
 
 	before(() => {

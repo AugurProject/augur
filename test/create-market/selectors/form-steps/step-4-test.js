@@ -7,7 +7,7 @@ import {
 	SCALAR
 } from '../../../../src/modules/markets/constants/market-types';
 import {
-	TRADING_FEE_DEFAULT,
+	TAKER_FEE_DEFAULT,
 	INITIAL_LIQUIDITY_DEFAULT,
 	MAKER_FEE_DEFAULT,
 	STARTING_QUANTITY_DEFAULT,
@@ -18,7 +18,7 @@ import {
 } from '../../../../src/modules/create-market/constants/market-values-constraints';
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-4';
-import * as validateTradingFee from '../../../../src/modules/create-market/validators/validate-trading-fee';
+import * as validateTakerFee from '../../../../src/modules/create-market/validators/validate-taker-fee';
 import * as validateMakerFee from '../../../../src/modules/create-market/validators/validate-maker-fee';
 import * as validateInitialLiquidity from '../../../../src/modules/create-market/validators/validate-initial-liquidity';
 import * as validateInitialFairPrices from '../../../../src/modules/create-market/validators/validate-initial-fair-prices';
@@ -34,7 +34,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 	let formState,
 		out,
-		stubbedValidateTradingFee = sinon.stub(validateTradingFee, 'default', () => false),
+		stubbedValidateTakerFee = sinon.stub(validateTakerFee, 'default', () => false),
 		stubbedValidateMakerFee = sinon.stub(validateMakerFee, 'default', () => false),
 		stubbedValidateInitialLiquidity = sinon.stub(validateInitialLiquidity, 'default', () => false),
 		stubbedValidateInitialFairPrices = sinon.stub(validateInitialFairPrices, 'default', () => false),
@@ -43,7 +43,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 		stubbedValidatePriceWidth = sinon.stub(validatePriceWidth, 'default', () => false);
 
 	let proxiedSelector = proxyquire('../../../../src/modules/create-market/selectors/form-steps/step-4', {
-		'../../validators/validate-trading-fee': stubbedValidateTradingFee,
+		'../../validators/validate-taker-fee': stubbedValidateTakerFee,
 		'../../validators/validate-maker-fee': stubbedValidateMakerFee,
 		'../../validators/validate-initial-liquidity': stubbedValidateInitialLiquidity,
 		'../../validators/validate-initial-fair-prices': stubbedValidateInitialFairPrices,
@@ -53,7 +53,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 	});
 
 	after(() => {
-		validateTradingFee.default.restore();
+		validateTakerFee.default.restore();
 		validateMakerFee.default.restore();
 		validateInitialLiquidity.default.restore();
 		validateInitialFairPrices.default.restore();
@@ -79,7 +79,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			};
 
 			out = {
-				tradingFeePercent: TRADING_FEE_DEFAULT,
+				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialFairPrices: {
@@ -126,7 +126,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			};
 
 			out = {
-				tradingFeePercent: TRADING_FEE_DEFAULT,
+				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialFairPrices: {
@@ -175,7 +175,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			};
 
 			out = {
-				tradingFeePercent: TRADING_FEE_DEFAULT,
+				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialFairPrices: {
@@ -212,7 +212,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 
 		before(() => {
 			formState = {
-				tradingFeePercent: null,
+				takerFee: null,
 				makerFee: null,
 				type: null,
 				initialLiquidity: null,
@@ -229,9 +229,9 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			proxiedSelector.isValid(formState);
 		});
 
-		it('calls validateTradingFee', () => {
-			assert(stubbedValidateTradingFee.calledOnce, 'validateTradingFee was not called once');
-			validateTradingFee.default.reset();
+		it('calls validateTakerFee', () => {
+			assert(stubbedValidateTakerFee.calledOnce, 'validateTakerFee was not called once');
+			validateTakerFee.default.reset();
 		});
 
 		it('calls validateMakerFee', () => {
@@ -270,7 +270,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
     
 		before(() => {
 			formState = {
-				tradingFeePercent: TRADING_FEE_DEFAULT,
+				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
 				type: BINARY,
 				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
@@ -287,8 +287,8 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			proxiedSelector.errors(formState);
 		});
     
-		it('calls validateTradingFee', () => {
-			assert(stubbedValidateTradingFee.calledOnce, 'validateTradingFee was not called once');
+		it('calls validateTakerFee', () => {
+			assert(stubbedValidateTakerFee.calledOnce, 'validateTakerFee was not called once');
 		});
     
 		it('calls validateMakerFee', () => {

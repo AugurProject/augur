@@ -1,21 +1,10 @@
-import {
-BINARY,
-CATEGORICAL,
-SCALAR,
-COMBINATORIAL } from '../../../markets/constants/market-types';
-import {
-DESCRIPTION_MIN_LENGTH,
-DESCRIPTION_MAX_LENGTH,
-CATEGORICAL_OUTCOMES_MIN_NUM,
-CATEGORICAL_OUTCOMES_MAX_NUM,
-CATEGORICAL_OUTCOME_MAX_LENGTH } from '../../../create-market/constants/market-values-constraints';
-// import { FAILED } from '../../../transactions/constants/statuses';
-
-import validateDescription from '../../../market/validators/validate-description';
-import validateEndDate from '../../../market/validators/validate-end-date';
-import validateScalarSmallNum from '../../../market/validators/validate-scalar-small-num';
-import validateScalarBigNum from '../../../market/validators/validate-scalar-big-num';
-import validateCategoricalOutcomes from '../../../market/validators/validate-categorical-outcomes';
+import { BINARY, CATEGORICAL, SCALAR, COMBINATORIAL } from '../../../markets/constants/market-types';
+import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH, CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from '../../../create-market/constants/market-values-constraints';
+import validateDescription from '../../../create-market/validators/validate-description';
+import validateEndDate from '../../../create-market/validators/validate-end-date';
+import validateScalarSmallNum from '../../../create-market/validators/validate-scalar-small-num';
+import validateScalarBigNum from '../../../create-market/validators/validate-scalar-big-num';
+import validateCategoricalOutcomes from '../../../create-market/validators/validate-categorical-outcomes';
 
 export const select = (formState) => {
 	switch (formState.type) {
@@ -98,7 +87,7 @@ export const isValid = (formState) => {
 
 	switch (formState.type) {
 	case CATEGORICAL:
-		if (validateCategoricalOutcomes(formState.categoricalOutcomes).some(error => !!error)) {
+		if (validateCategoricalOutcomes(formState.categoricalOutcomes).some(errors => !!errors)) {
 			return false;
 		}
 		break;
@@ -132,7 +121,7 @@ export const errors = (formState) => {
 
 	switch (formState.type) {
 	case CATEGORICAL:
-		if (formState.categoricalOutcomes && formState.categoricalOutcomes.some(val => !!val)) {
+		if (formState.hasOwnProperty('categoricalOutcomes')) {
 			errs.categoricalOutcomes = validateCategoricalOutcomes(formState.categoricalOutcomes);
 		}
 		break;
