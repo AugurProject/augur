@@ -24,7 +24,7 @@ module.exports = {
     bindContractMethod: function (contract, method) {
         var self = this;
         return function (args) {
-            var tx, params, cb, onSent, onSuccess, onFailed;
+            var tx, params, cb, i, onSent, onSuccess, onFailed;
             tx = clone(self.tx[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
@@ -32,10 +32,21 @@ module.exports = {
             }
             params = Array.prototype.slice.call(arguments);
             if (!tx.send) {
-                if (utils.is_function(params[params.length - 1])) {
-                    cb = params.pop();
+                if (params[0] !== undefined && params[0] !== null &&
+                    params[0].constructor === Object) {
+                    cb = params[0].callback || utils.pass;
+                    if (tx.inputs && tx.inputs.length) {
+                        tx.params = new Array(tx.inputs.length);
+                        for (i = 0; i < tx.inputs.length; ++i) {
+                            tx.params[i] = params[0][tx.inputs[i]];
+                        }
+                    }
+                } else {
+                    if (utils.is_function(params[params.length - 1])) {
+                        cb = params.pop();
+                    }
+                    tx.params = params;
                 }
-                tx.params = params;
                 return self.fire(tx, cb);
             }
             if (params[0] !== undefined && params[0] !== null &&
@@ -43,16 +54,20 @@ module.exports = {
                 onSent = params[0].onSent || utils.pass;
                 onSuccess = params[0].onSuccess || utils.pass;
                 onFailed = params[0].onFailed || utils.pass;
-                // need param names, order
-                return self.transact(tx, onSent, onSuccess, onFailed);
-            } else {
-                cb = [];
-                while (utils.is_function(params[params.length - 1])) {
-                    cb.push(params.pop());
+                if (tx.inputs && tx.inputs.length) {
+                    tx.params = new Array(tx.inputs.length);
+                    for (i = 0; i < tx.inputs.length; ++i) {
+                        tx.params[i] = params[0][tx.inputs[i]];
+                    }
                 }
-                tx.params = params;
-                return self.transact.apply(self, [tx].concat(cb));
+                return self.transact(tx, onSent, onSuccess, onFailed);
             }
+            cb = [];
+            while (utils.is_function(params[params.length - 1])) {
+                cb.push(params.pop());
+            }
+            tx.params = params;
+            return self.transact.apply(self, [tx].concat(cb));
         };
     },
     bindContractAPI: function (methods) {

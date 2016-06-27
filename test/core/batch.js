@@ -20,16 +20,16 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             this.timeout(tools.TIMEOUT);
             var count = 0;
             var batch = augur.createBatch();
-            augur.tx.cash.depositEther.send = false;
-            augur.tx.cash.depositEther.returns = "number";
-            augur.tx.cash.depositEther.value = 1;
-            augur.tx.faucets.reputationFaucet.send = false;
-            augur.tx.faucets.reputationFaucet.returns = "number";
-            batch.add("cash", "depositEther", [], function (r) {
+            augur.tx.Cash.depositEther.send = false;
+            augur.tx.Cash.depositEther.returns = "number";
+            augur.tx.Cash.depositEther.value = 1;
+            augur.tx.Faucets.reputationFaucet.send = false;
+            augur.tx.Faucets.reputationFaucet.returns = "number";
+            batch.add("Cash", "depositEther", [], function (r) {
                 assert(r === "1" || r === "-1");
                 if ((++count) === 2) done();
             });
-            batch.add("faucets", "reputationFaucet", [augur.constants.DEFAULT_BRANCH_ID], function (r) {
+            batch.add("Faucets", "reputationFaucet", [augur.constants.DEFAULT_BRANCH_ID], function (r) {
                 assert.strictEqual(r, "1");
                 if ((++count) === 2) done();
             });
@@ -40,16 +40,16 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             this.timeout(tools.TIMEOUT);
             var count = 0;
             var batch = augur.createBatch();
-            augur.tx.cash.depositEther.send = false;
-            augur.tx.cash.depositEther.returns = "number";
-            augur.tx.cash.depositEther.value = 1;
-            augur.tx.faucets.reputationFaucet.send = false;
-            augur.tx.faucets.reputationFaucet.returns = "number";
-            batch.add("faucets", "reputationFaucet", [augur.constants.DEFAULT_BRANCH_ID], function (r) {
+            augur.tx.Cash.depositEther.send = false;
+            augur.tx.Cash.depositEther.returns = "number";
+            augur.tx.Cash.depositEther.value = 1;
+            augur.tx.Faucets.reputationFaucet.send = false;
+            augur.tx.Faucets.reputationFaucet.returns = "number";
+            batch.add("Faucets", "reputationFaucet", [augur.constants.DEFAULT_BRANCH_ID], function (r) {
                 assert.strictEqual(r, "1");
                 if ((++count) === 2) done();
             });
-            batch.add("cash", "depositEther", [], function (r) {
+            batch.add("Cash", "depositEther", [], function (r) {
                 assert(r === "1" || r === "-1");
                 if ((++count) === 2) done();
             });

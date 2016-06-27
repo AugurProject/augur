@@ -11,35 +11,8 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    // getmode: function (event, callback) {
-    //     // event: sha256 hash id
-    //     var tx = clone(this.tx.events.getmode);
-    //     tx.params = event;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getUncaughtOutcome: function (event, callback) {
-    //     // event: sha256 hash id
-    //     var tx = clone(this.tx.events.getUncaughtOutcome);
-    //     tx.params = event;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMarkets: function (eventID, callback) {
-    //     // eventID: sha256 hash id
-    //     var tx = clone(this.tx.events.getMarkets);
-    //     tx.params = eventID;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReportingThreshold: function (event, callback) {
-    //     var tx = clone(this.tx.events.getReportingThreshold);
-    //     tx.params = event;
-    //     return this.fire(tx, callback);
-    // },
-
     getEventInfo: function (eventId, callback) {
-        // eventId: sha256 hash id
+        // eventId: hash id
         var self = this;
         var parse_info = function (info) {
             // eventinfo = string(7*32 + length)
@@ -50,7 +23,6 @@ module.exports = {
             // eventinfo[4] = self.Events[event].maxValue
             // eventinfo[5] = self.Events[event].numOutcomes
             // eventinfo[6] = self.Events[event].bond
-            // mcopy(eventinfo + 7*32, load(self.Events[event].resolutionSource[0], chars=length), length)
             if (info && info.length) {
                 info[0] = abi.hex(info[0]);
                 info[1] = abi.bignum(info[1]).toFixed();
@@ -62,7 +34,7 @@ module.exports = {
             }
             return info;
         };
-        var tx = clone(this.tx.events.getEventInfo);
+        var tx = clone(this.tx.Events.getEventInfo);
         tx.params = eventId;
         if (utils.is_function(callback)) {
             this.fire(tx, function (info) {
@@ -71,49 +43,5 @@ module.exports = {
         } else {
             return parse_info(this.fire(tx));
         }
-    },
-
-    // getEventBranch: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getEventBranch);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getExpiration: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getExpiration);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getOutcome: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getOutcome);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMinValue: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getMinValue);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMaxValue: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getMaxValue);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumOutcomes: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getNumOutcomes);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    setOutcome: function (ID, outcome, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.events.setOutcome);
-        var unpacked = utils.unpack(ID, utils.labels(this.setOutcome), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
     }
-
 };

@@ -18,7 +18,7 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, "markets", [{
+        runner(this.title, "Markets", [{
             method: "getFees",
             parameters: ["hash"]
         }, {
@@ -164,7 +164,7 @@ describe("Integration tests", function () {
                 var output = augur[method].apply(augur, params);
                 test(errorCheck(output, done));
             });
-            if (augur.tx.markets[method] && !augur.rpc.wsUrl) {
+            if (augur.tx.Markets[method] && !augur.rpc.wsUrl) {
                 it("batch", function (done) {
                     this.timeout(tools.TIMEOUT);
                     var batch = augur.createBatch();

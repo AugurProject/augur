@@ -12,7 +12,7 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Info", [{
             method: "getCreator",
             parameters: ["address"]
         }, {
@@ -24,7 +24,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "Info", [{
             method: "setInfo",
             parameters: ["hash", "string", "address", "fixed"]
         }]);

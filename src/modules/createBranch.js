@@ -67,7 +67,7 @@ module.exports = {
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
-        var tx = clone(this.tx.createBranch.createSubbranch);
+        var tx = clone(this.tx.CreateBranch.createSubbranch);
         tx.params = [
             description,
             periodLength,

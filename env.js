@@ -45,7 +45,7 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     account = account || augur.from;
     var balances = {
         cash: augur.getCashBalance(account),
-        reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
+        reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
         ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
     };
     console.log(balances);

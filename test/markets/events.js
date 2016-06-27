@@ -12,7 +12,7 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Events", [{
             method: "getmode",
             parameters: ["hash"]
         }, {
@@ -48,7 +48,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "Events", [{
             method: "setOutcome",
             parameters: ["hash", "int"]
         }]);

@@ -7,7 +7,7 @@ var runner = require("../runner");
 var tools = require("../tools");
 
 describe("Unit tests", function () {
-    runner("eth_sendTransaction", "faucets", [{
+    runner("eth_sendTransaction", "Faucets", [{
         method: "reputationFaucet",
         parameters: ["hash"]
     }, {

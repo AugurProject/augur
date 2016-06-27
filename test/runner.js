@@ -23,11 +23,6 @@ var test = {
         } else {
             expected.params = clone(t.params);
         }
-        if (t.fixed && t.fixed.length) {
-            for (i = 0; i < t.fixed.length; ++i) {
-                expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
-            }
-        }
         if (t.ether && t.ether.length) {
             for (i = 0; i < t.ether.length; ++i) {
                 expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
@@ -48,7 +43,7 @@ var test = {
             next();
         };
         var params = (t.callback) ? t.params.concat(t.callback) : t.params;
-        augur[t.method].apply(augur, params);
+        augur[t.contract][t.method].apply(augur, params);
     },
     eth_sendTransaction: {
         object: function (t, next) {
@@ -58,11 +53,6 @@ var test = {
                 expected.params = t.params[0];
             } else {
                 expected.params = clone(t.params);
-            }
-            if (t.fixed && t.fixed.length) {
-                for (i = 0; i < t.fixed.length; ++i) {
-                    expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
-                }
             }
             if (t.ether && t.ether.length) {
                 for (i = 0; i < t.ether.length; ++i) {
@@ -83,13 +73,13 @@ var test = {
                 augur.transact = transact;
                 next();
             };
-            var labels = utils.labels(augur[t.method]);
+            var labels = augur.tx[t.contract][t.method].inputs || [];
             var params = {onSent: noop, onSuccess: noop, onFailed: noop};
             for (i = 0; i < labels.length; ++i) {
                 if (params[labels[i]]) continue;
                 params[labels[i]] = t.params[i];
             }
-            augur[t.method](params);
+            augur[t.contract][t.method](params);
         },
         positional: function (t, next) {
             var i, expected = clone(augur.tx[t.contract][t.method]);
@@ -97,11 +87,6 @@ var test = {
                 expected.params = t.params[0];
             } else {
                 expected.params = clone(t.params);
-            }
-            if (t.fixed && t.fixed.length) {
-                for (i = 0; i < t.fixed.length; ++i) {
-                    expected.params[t.fixed[i]] = abi.fix(expected.params[t.fixed[i]], "hex");
-                }
             }
             if (t.ether && t.ether.length) {
                 for (i = 0; i < t.ether.length; ++i) {
@@ -122,7 +107,7 @@ var test = {
                 augur.transact = transact;
                 next();
             };
-            augur[t.method].apply(augur, t.params.concat([noop, noop, noop]));
+            augur[t.contract][t.method].apply(augur, t.params.concat([noop, noop, noop]));
         }
     }
 };

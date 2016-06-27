@@ -44,7 +44,7 @@ module.exports = {
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
-                        var tx = clone(self.tx.trade.trade);
+                        var tx = clone(self.tx.Trade.trade);
                         tx.params = [
                             abi.fix(max_value, "hex"),
                             abi.fix(max_amount, "hex"),
@@ -109,7 +109,7 @@ module.exports = {
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
-                        var tx = clone(self.tx.trade.short_sell);
+                        var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [
                             buyer_trade_id,
                             abi.fix(max_amount, "hex")

@@ -41,7 +41,7 @@ module.exports = {
             }
             return orderBook;
         }
-        var tx = clone(this.tx.compositeGetters.getOrderBook);
+        var tx = clone(this.tx.CompositeGetters.getOrderBook);
         tx.params = marketID;
         if (!utils.is_function(callback)) return getOrderBook(this.fire(tx));
         this.fire(tx, function (orderArray) {
@@ -51,7 +51,7 @@ module.exports = {
 
     getMarketInfo: function (market, callback) {
         var self = this;
-        var tx = clone(this.tx.compositeGetters.getMarketInfo);
+        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
         var unpacked = utils.unpack(market, utils.labels(this.getMarketInfo), arguments);
         tx.params = unpacked.params;
         tx.timeout = 45000;
@@ -99,7 +99,7 @@ module.exports = {
             }
             return marketsInfo;
         }
-        var tx = clone(this.tx.compositeGetters.batchGetMarketInfo);
+        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs];
         if (!utils.is_function(callback)) {
             return batchGetMarketInfo(this.fire(tx));
@@ -123,7 +123,7 @@ module.exports = {
         if (!callback && utils.is_function(options.callback)) {
             callback = options.callback;
         }
-        var tx = clone(this.tx.compositeGetters.getMarketsInfo);
+        var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
         tx.params = [branch, offset, numMarketsToLoad];
         tx.timeout = 240000;
         if (!utils.is_function(callback)) {

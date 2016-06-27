@@ -577,17 +577,16 @@ module.exports = {
 
     // hex-encode a function's ABI data and return it
     encode: function (tx) {
-        tx.signature = tx.signature || "";
-        var sig = ethabi.fromSerpent(tx.signature);
+        tx.signature = tx.signature || [];
         return this.prefix_hex(Buffer.concat([
-            ethabi.methodID(tx.method, sig),
-            ethabi.rawEncode(sig, tx.params)
+            ethabi.methodID(tx.method, tx.signature),
+            ethabi.rawEncode(tx.signature, tx.params)
         ]).toString("hex"));
     }
 };
 
 }).call(this,require("buffer").Buffer)
-},{"bignumber.js":2,"buffer":234,"ethereumjs-abi":343,"js-sha3":3}],2:[function(require,module,exports){
+},{"bignumber.js":2,"buffer":234,"ethereumjs-abi":337,"js-sha3":3}],2:[function(require,module,exports){
 /*! bignumber.js v2.0.8 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (global) {
@@ -3720,83 +3719,4270 @@ module.exports = {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 module.exports={
+  "Backstops": {
+    "adjForkBondPaid": {
+      "inputs": [
+        "event", 
+        "amount"
+      ], 
+      "method": "adjForkBondPaid", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "doRoundTwoRefund": {
+      "inputs": [
+        "sender", 
+        "event"
+      ], 
+      "method": "doRoundTwoRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBondAmount": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondAmount", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBondPaid": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondPaid", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBondPoster": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondPoster", 
+      "returns": "address", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBondReturned": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondReturned", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getFinal": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getFinal", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkBondPaid": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkBondPaid", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkBondPoster": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkBondPoster", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkedOverEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkedOverEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMoved": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMoved", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalBranch": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalBranch", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalOutcome", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalVotePeriod": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalVotePeriod", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getResolved": {
+      "inputs": [
+        "branch", 
+        "forkPeriod"
+      ], 
+      "method": "getResolved", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRoundTwo": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRoundTwo", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "increaseBondPaid": {
+      "inputs": [
+        "event", 
+        "amount"
+      ], 
+      "method": "increaseBondPaid", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBondAmount": {
+      "inputs": [
+        "event", 
+        "amount"
+      ], 
+      "method": "setBondAmount", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBondPoster": {
+      "inputs": [
+        "event", 
+        "bondPoster"
+      ], 
+      "method": "setBondPoster", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBondReturned": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setBondReturned", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setFinal": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setFinal", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setForkBondPoster": {
+      "inputs": [
+        "event", 
+        "poster"
+      ], 
+      "method": "setForkBondPoster", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkedOverEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setForkedOverEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setMoved": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setMoved", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setOriginalBranch": {
+      "inputs": [
+        "event", 
+        "branch"
+      ], 
+      "method": "setOriginalBranch", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOriginalEthicality": {
+      "inputs": [
+        "event", 
+        "ethicality"
+      ], 
+      "method": "setOriginalEthicality", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOriginalOutcome": {
+      "inputs": [
+        "event", 
+        "originalOutcome"
+      ], 
+      "method": "setOriginalOutcome", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOriginalVotePeriod": {
+      "inputs": [
+        "event", 
+        "period"
+      ], 
+      "method": "setOriginalVotePeriod", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setResolved": {
+      "inputs": [
+        "branch", 
+        "forkPeriod", 
+        "winner"
+      ], 
+      "method": "setResolved", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRoundTwo": {
+      "inputs": [
+        "event", 
+        "roundTwo"
+      ], 
+      "method": "setRoundTwo", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRoundTwoRefund": {
+      "inputs": [
+        "event", 
+        "amt"
+      ], 
+      "method": "setRoundTwoRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Branches": {
+    "addMarketToBranch": {
+      "inputs": [
+        "branch", 
+        "market"
+      ], 
+      "method": "addMarketToBranch", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBaseReporters": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getBaseReporters", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranchByNum": {
+      "inputs": [
+        "branchNumber"
+      ], 
+      "method": "getBranchByNum", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranches": {
+      "method": "getBranches", 
+      "returns": "hash[]"
+    }, 
+    "getCreationDate": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getCreationDate", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventForkedOver": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getEventForkedOver", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getForkPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getInitialBalance": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getInitialBalance", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getMarketsInBranch": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getMarketsInBranch", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMinTradingFee": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getMinTradingFee", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumBranches": {
+      "method": "getNumBranches", 
+      "returns": "number"
+    }, 
+    "getNumMarketsBranch": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getNumMarketsBranch", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOracleOnly": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getOracleOnly", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getParent": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getParent", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getParentPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getParentPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getPeriodLength": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getPeriodLength", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getSomeMarketsInBranch": {
+      "inputs": [
+        "branch", 
+        "initial", 
+        "last"
+      ], 
+      "method": "getSomeMarketsInBranch", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getVotePeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getVotePeriod", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "incrementPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "incrementPeriod", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "initDefaultBranch": {
+      "method": "initDefaultBranch", 
+      "returns": "number", 
+      "send": true
+    }, 
+    "initializeBranch": {
+      "inputs": [
+        "ID", 
+        "currentVotePeriod", 
+        "periodLength", 
+        "minTradingFee", 
+        "oracleOnly", 
+        "parentPeriod", 
+        "parent"
+      ], 
+      "method": "initializeBranch", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBaseReporters": {
+      "inputs": [
+        "branch", 
+        "num"
+      ], 
+      "method": "setBaseReporters", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEventForkedOver": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "setEventForkedOver", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "setForkPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setInitialBalance": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "balance"
+      ], 
+      "method": "setInitialBalance", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Buy&sellShares": {
+    "buy": {
+      "inputs": [
+        "amount", 
+        "price", 
+        "market", 
+        "outcome"
+      ], 
+      "method": "buy", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "cancel": {
+      "inputs": [
+        "trade_id"
+      ], 
+      "method": "cancel", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "sell": {
+      "inputs": [
+        "amount", 
+        "price", 
+        "market", 
+        "outcome"
+      ], 
+      "method": "sell", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Cash": {
+    "addCash": {
+      "inputs": [
+        "ID", 
+        "amount"
+      ], 
+      "method": "addCash", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "balance": {
+      "inputs": [
+        "address"
+      ], 
+      "method": "balance", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "depositEther": {
+      "method": "depositEther", 
+      "returns": "number", 
+      "send": true
+    }, 
+    "initiateOwner": {
+      "inputs": [
+        "account"
+      ], 
+      "method": "initiateOwner", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "send": {
+      "inputs": [
+        "recver", 
+        "value"
+      ], 
+      "method": "send", 
+      "returns": "unfix", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "sendFrom": {
+      "inputs": [
+        "recver", 
+        "value", 
+        "from"
+      ], 
+      "method": "sendFrom", 
+      "returns": "unfix", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setCash": {
+      "inputs": [
+        "address", 
+        "balance"
+      ], 
+      "method": "setCash", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "subtractCash": {
+      "inputs": [
+        "ID", 
+        "amount"
+      ], 
+      "method": "subtractCash", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "withdrawEther": {
+      "inputs": [
+        "to", 
+        "value"
+      ], 
+      "method": "withdrawEther", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarket": {
+    "claimProceeds": {
+      "inputs": [
+        "branch", 
+        "market"
+      ], 
+      "method": "claimProceeds", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "closeMarket": {
+      "inputs": [
+        "branch", 
+        "market", 
+        "sender"
+      ], 
+      "method": "closeMarket", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarketEight": {
+    "eightOutcomes": {
+      "inputs": [
+        "market", 
+        "winningOutcome", 
+        "events", 
+        "sender"
+      ], 
+      "method": "eightOutcomes", 
+      "signature": [
+        "int256", 
+        "int256[]", 
+        "int256[]", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarketFour": {
+    "fourOutcomes": {
+      "inputs": [
+        "market", 
+        "winningOutcome", 
+        "events", 
+        "sender"
+      ], 
+      "method": "fourOutcomes", 
+      "signature": [
+        "int256", 
+        "int256[]", 
+        "int256[]", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarketOne": {
+    "oneOutcome": {
+      "inputs": [
+        "market", 
+        "winningOutcome", 
+        "sender", 
+        "categoricalPointFive", 
+        "numOutcomes"
+      ], 
+      "method": "oneOutcome", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarketTwo": {
+    "twoOutcomes": {
+      "inputs": [
+        "market", 
+        "winningOutcome", 
+        "events", 
+        "sender"
+      ], 
+      "method": "twoOutcomes", 
+      "signature": [
+        "int256", 
+        "int256[]", 
+        "int256[]", 
+        "int256"
+      ]
+    }
+  }, 
+  "CollectFees": {
+    "collectFees": {
+      "inputs": [
+        "branch", 
+        "sender"
+      ], 
+      "method": "collectFees", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CompleteSets": {
+    "buyCompleteSets": {
+      "inputs": [
+        "market", 
+        "amount"
+      ], 
+      "method": "buyCompleteSets", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "sellCompleteSets": {
+      "inputs": [
+        "market", 
+        "amount"
+      ], 
+      "method": "sellCompleteSets", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CompositeGetters": {
+    "batchGetMarketInfo": {
+      "inputs": [
+        "marketIDs"
+      ], 
+      "method": "batchGetMarketInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256[]"
+      ]
+    }, 
+    "getMarketInfo": {
+      "inputs": [
+        "marketID"
+      ], 
+      "method": "getMarketInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketsInfo": {
+      "inputs": [
+        "branch", 
+        "offset", 
+        "numMarketsToLoad"
+      ], 
+      "method": "getMarketsInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getOrderBook": {
+      "inputs": [
+        "marketID"
+      ], 
+      "method": "getOrderBook", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Consensus": {
+    "incrementPeriodAfterReporting": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "incrementPeriodAfterReporting", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "penalizeWrong": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "penalizeWrong", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "proportionCorrect": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "proportionCorrect", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "ConsensusData": {
+    "doRefund": {
+      "inputs": [
+        "sender", 
+        "refunder"
+      ], 
+      "method": "doRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBaseReportersLastPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getBaseReportersLastPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDenominator": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getDenominator", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getFeeFirst": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getFeeFirst", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getFeesCollected": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "getFeesCollected", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNotEnoughPenalized": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "getNotEnoughPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPenalized": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender", 
+        "event"
+      ], 
+      "method": "getPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPenalizedNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getPenalizedNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPenalizedUpTo": {
+      "inputs": [
+        "branch", 
+        "sender"
+      ], 
+      "method": "getPenalizedUpTo", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPeriodBalance": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getPeriodBalance", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRRDone": {
+      "inputs": [
+        "branch", 
+        "reporter"
+      ], 
+      "method": "getRRDone", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "increaseDenominator": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "amount"
+      ], 
+      "method": "increaseDenominator", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "increasePenalizedNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender", 
+        "amount"
+      ], 
+      "method": "increasePenalizedNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBaseReportersLastPeriod": {
+      "inputs": [
+        "branch", 
+        "amount"
+      ], 
+      "method": "setBaseReportersLastPeriod", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setFeeFirst": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "val"
+      ], 
+      "method": "setFeeFirst", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setFeesCollected": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "setFeesCollected", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setNotEnoughPenalized": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "setNotEnoughPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPenalized": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender", 
+        "event"
+      ], 
+      "method": "setPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPenalizedUpTo": {
+      "inputs": [
+        "branch", 
+        "sender", 
+        "period"
+      ], 
+      "method": "setPenalizedUpTo", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPeriodBalance": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "balance"
+      ], 
+      "method": "setPeriodBalance", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRefund": {
+      "inputs": [
+        "refunder", 
+        "amt"
+      ], 
+      "method": "setRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CreateBranch": {
+    "createSubbranch": {
+      "inputs": [
+        "description", 
+        "periodLength", 
+        "parent", 
+        "tradingFee", 
+        "oracleOnly"
+      ], 
+      "method": "createSubbranch", 
+      "returns": "hash", 
+      "send": true, 
+      "signature": [
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CreateMarket": {
+    "createEvent": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "expDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution"
+      ], 
+      "method": "createEvent", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "createMarket": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "tradingFee", 
+        "events", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "extraInfo"
+      ], 
+      "method": "createMarket", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256[]", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "pushMarketForward": {
+      "inputs": [
+        "branch", 
+        "market"
+      ], 
+      "method": "pushMarketForward", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "updateTradingFee": {
+      "inputs": [
+        "branch", 
+        "market", 
+        "tradingFee"
+      ], 
+      "method": "updateTradingFee", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "EventResolution": {
+    "catch": {
+      "inputs": [
+        "x"
+      ], 
+      "method": "catch", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "determineWinningOutcomes": {
+      "inputs": [
+        "events", 
+        "numberEvents", 
+        "branch", 
+        "market"
+      ], 
+      "method": "determineWinningOutcomes", 
+      "signature": [
+        "int256[]", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolveBinary": {
+      "inputs": [
+        "event", 
+        "market", 
+        "branch", 
+        "votingPeriodEvent"
+      ], 
+      "method": "resolveBinary", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolveCategoricalOrScalar": {
+      "inputs": [
+        "scaled_min", 
+        "scaled_max", 
+        "event", 
+        "market", 
+        "branch", 
+        "votingPeriodEvent"
+      ], 
+      "method": "resolveCategoricalOrScalar", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Events": {
+    "addMarket": {
+      "inputs": [
+        "event", 
+        "marketID"
+      ], 
+      "method": "addMarket", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addPast24": {
+      "inputs": [
+        "period"
+      ], 
+      "method": "addPast24", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBond": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBond", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranch": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBranch", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEthical": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEthical", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEthics": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEthics", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventBranch": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventBranch", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventInfo": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventPushedUp": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventPushedUp", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventResolution": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventResolution", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getExpiration": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getExpiration", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkOutcome", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForked": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForked", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkedDone": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkedDone", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarket": {
+      "inputs": [
+        "event", 
+        "marketIndex"
+      ], 
+      "method": "getMarket", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getMarkets": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMarkets", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMaxValue": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMaxValue", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMinValue": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMinValue", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumMarkets": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getNumMarkets", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumOutcomes": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getNumOutcomes", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalExpiration": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalExpiration", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOutcome", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getPast24": {
+      "inputs": [
+        "period"
+      ], 
+      "method": "getPast24", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getRejected": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRejected", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getRejectedPeriod": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRejectedPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getReportingThreshold": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getReportingThreshold", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getResolution": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getResolution", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getUncaughtOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getUncaughtOutcome", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getmode": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getmode", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "initializeEvent": {
+      "inputs": [
+        "ID", 
+        "branch", 
+        "expirationDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution"
+      ], 
+      "method": "initializeEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "setBond": {
+      "inputs": [
+        "event", 
+        "bond"
+      ], 
+      "method": "setBond", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBranch": {
+      "inputs": [
+        "event", 
+        "branch"
+      ], 
+      "method": "setBranch", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEthics": {
+      "inputs": [
+        "event", 
+        "ethicality"
+      ], 
+      "method": "setEthics", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEventPushedUp": {
+      "inputs": [
+        "event", 
+        "val"
+      ], 
+      "method": "setEventPushedUp", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setExpiration": {
+      "inputs": [
+        "event", 
+        "date"
+      ], 
+      "method": "setExpiration", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkDone": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setForkDone", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setForkEthicality": {
+      "inputs": [
+        "event", 
+        "value"
+      ], 
+      "method": "setForkEthicality", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkOutcome": {
+      "inputs": [
+        "event", 
+        "value"
+      ], 
+      "method": "setForkOutcome", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForked": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setForked", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setOutcome": {
+      "inputs": [
+        "ID", 
+        "outcome"
+      ], 
+      "method": "setOutcome", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRejected": {
+      "inputs": [
+        "event", 
+        "period"
+      ], 
+      "method": "setRejected", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setThreshold": {
+      "inputs": [
+        "event", 
+        "threshold"
+      ], 
+      "method": "setThreshold", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setUncaughtOutcome": {
+      "inputs": [
+        "event", 
+        "outcome"
+      ], 
+      "method": "setUncaughtOutcome", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setmode": {
+      "inputs": [
+        "event", 
+        "mode"
+      ], 
+      "method": "setmode", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "ExpiringEvents": {
+    "addEvent": {
+      "inputs": [
+        "branch", 
+        "futurePeriod", 
+        "eventID", 
+        "subsidy"
+      ], 
+      "method": "addEvent", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addRepEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "event", 
+        "amount"
+      ], 
+      "method": "addRepEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReportExpected": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID"
+      ], 
+      "method": "addReportExpected", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReportToEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID", 
+        "sender"
+      ], 
+      "method": "addReportToEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReportersPaidSoFar": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "addReportersPaidSoFar", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addRoundTwo": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "addRoundTwo", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addToWeightOfReport": {
+      "inputs": [
+        "period", 
+        "event", 
+        "report", 
+        "amount"
+      ], 
+      "method": "addToWeightOfReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "adjustPeriodShareValueOutstanding": {
+      "inputs": [
+        "branch", 
+        "expIndex", 
+        "amount"
+      ], 
+      "method": "adjustPeriodShareValueOutstanding", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "calculateReportingThreshold": {
+      "inputs": [
+        "branch", 
+        "eventID", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "calculateReportingThreshold", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "deleteEvent": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "deleteEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getAfterRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getAfterRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBeforeRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getBeforeRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getCurrentMode": {
+      "inputs": [
+        "period", 
+        "event"
+      ], 
+      "method": "getCurrentMode", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getCurrentModeItems": {
+      "inputs": [
+        "period", 
+        "event"
+      ], 
+      "method": "getCurrentModeItems", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEthicReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "sender"
+      ], 
+      "method": "getEthicReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEvent": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "eventIndex"
+      ], 
+      "method": "getEvent", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventCanReportOn": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "event"
+      ], 
+      "method": "getEventCanReportOn", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventIndex": {
+      "inputs": [
+        "period", 
+        "eventID"
+      ], 
+      "method": "getEventIndex", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEvents": {
+      "inputs": [
+        "branch", 
+        "expDateIndex"
+      ], 
+      "method": "getEvents", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventsRange": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "start", 
+        "end"
+      ], 
+      "method": "getEventsRange", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventsToReportOn": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "sender"
+      ], 
+      "method": "getEventsToReportOn", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getLesserReportNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "getLesserReportNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumEventsToReportOn": {
+      "inputs": [
+        "branch", 
+        "expDateIndex"
+      ], 
+      "method": "getNumEventsToReportOn", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumRemoved": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getNumRemoved", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumReportsActual": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "getNumReportsActual", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumReportsEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID"
+      ], 
+      "method": "getNumReportsEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumReportsExpectedEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID"
+      ], 
+      "method": "getNumReportsExpectedEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumRequired": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getNumRequired", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumRoundTwo": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getNumRoundTwo", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumberEvents": {
+      "inputs": [
+        "branch", 
+        "expDateIndex"
+      ], 
+      "method": "getNumberEvents", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPeriodDormantRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getPeriodDormantRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPeriodRepConstant": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "getPeriodRepConstant", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRepEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "event"
+      ], 
+      "method": "getRepEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "sender"
+      ], 
+      "method": "getReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReportHash": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "event"
+      ], 
+      "method": "getReportHash", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReportersPaidSoFar": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "getReportersPaidSoFar", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRequired": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRequired", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getShareValue": {
+      "inputs": [
+        "branch", 
+        "expIndex"
+      ], 
+      "method": "getShareValue", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getSubsidy": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "getSubsidy", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getWeightOfReport": {
+      "inputs": [
+        "period", 
+        "event", 
+        "report"
+      ], 
+      "method": "getWeightOfReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "moveEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "moveEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "refundCost": {
+      "inputs": [
+        "to", 
+        "value"
+      ], 
+      "method": "refundCost", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "removeEvent": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "removeEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setAfterRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "rep", 
+        "sender"
+      ], 
+      "method": "setAfterRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBeforeRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "rep", 
+        "sender"
+      ], 
+      "method": "setBeforeRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setCurrentMode": {
+      "inputs": [
+        "period", 
+        "event", 
+        "mode"
+      ], 
+      "method": "setCurrentMode", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setCurrentModeItems": {
+      "inputs": [
+        "period", 
+        "event", 
+        "modeReport"
+      ], 
+      "method": "setCurrentModeItems", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEthicReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "ethics", 
+        "sender"
+      ], 
+      "method": "setEthicReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEventRequired": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "setEventRequired", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setLesserReportNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "num"
+      ], 
+      "method": "setLesserReportNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setNumEventsToReportOn": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "setNumEventsToReportOn", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setNumReportsEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID", 
+        "num"
+      ], 
+      "method": "setNumReportsEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setNumReportsExpectedEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID", 
+        "num"
+      ], 
+      "method": "setNumReportsExpectedEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPeriodDormantRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "rep", 
+        "sender"
+      ], 
+      "method": "setPeriodDormantRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPeriodRepConstant": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "sender", 
+        "value"
+      ], 
+      "method": "setPeriodRepConstant", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "report", 
+        "sender"
+      ], 
+      "method": "setReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setReportHash": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "reportHash", 
+        "event"
+      ], 
+      "method": "setReportHash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setReportingThreshold": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setReportingThreshold", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Faucets": {
+    "cashFaucet": {
+      "method": "cashFaucet", 
+      "returns": "number", 
+      "send": true
+    }, 
+    "claimInitialRep": {
+      "inputs": [
+        "parent", 
+        "branch"
+      ], 
+      "method": "claimInitialRep", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "fundNewAccount": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "fundNewAccount", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "reputationFaucet": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "reputationFaucet", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "ForkPenalize": {
+    "penalizeOnForkedEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "penalizeOnForkedEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "proportionCorrectForkEvent": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "proportionCorrectForkEvent", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Forking": {
+    "exchangeRate": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "exchangeRate", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "fork": {
+      "inputs": [
+        "event", 
+        "branch", 
+        "forkedOverEthicality"
+      ], 
+      "method": "fork", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "move_event": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "move_event", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "resolveForkEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "resolveForkEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolveForkedEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "resolveForkedEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolve_fork": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "resolve_fork", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "FxpFunctions": {
+    "fx_exp": {
+      "inputs": [
+        "x"
+      ], 
+      "method": "fx_exp", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "fx_log": {
+      "inputs": [
+        "x"
+      ], 
+      "method": "fx_log", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "sqrt": {
+      "inputs": [
+        "n"
+      ], 
+      "method": "sqrt", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Info": {
+    "getCreationFee": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getCreationFee", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCreator": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getCreator", 
+      "returns": "address", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDescription": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getDescription", 
+      "returns": "string", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDescriptionLength": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getDescriptionLength", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setInfo": {
+      "inputs": [
+        "ID", 
+        "description", 
+        "creator", 
+        "fee"
+      ], 
+      "method": "setInfo", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "MakeReports": {
+    "calculateReportTargetForEvent": {
+      "inputs": [
+        "branch", 
+        "eventID", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "calculateReportTargetForEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "makeHash": {
+      "inputs": [
+        "salt", 
+        "report", 
+        "eventID", 
+        "sender"
+      ], 
+      "method": "makeHash", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "submitReport": {
+      "inputs": [
+        "event", 
+        "salt", 
+        "report", 
+        "ethics"
+      ], 
+      "method": "submitReport", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "submitReportHash": {
+      "inputs": [
+        "event", 
+        "reportHash"
+      ], 
+      "method": "submitReportHash", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "validateReport": {
+      "inputs": [
+        "eventID", 
+        "branch", 
+        "votePeriod", 
+        "report", 
+        "forkedOverEthicality", 
+        "forkedOverThisEvent", 
+        "roundTwo", 
+        "balance"
+      ], 
+      "method": "validateReport", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Markets": {
+    "addFees": {
+      "inputs": [
+        "market", 
+        "amount"
+      ], 
+      "method": "addFees", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addParticipant": {
+      "inputs": [
+        "market", 
+        "address"
+      ], 
+      "method": "addParticipant", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addToMarketsHash": {
+      "inputs": [
+        "branch", 
+        "newHash"
+      ], 
+      "method": "addToMarketsHash", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addTrade": {
+      "inputs": [
+        "market", 
+        "trade_id", 
+        "last_id"
+      ], 
+      "method": "addTrade", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBondsMan": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getBondsMan", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranchID": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getBranchID", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCreationTime": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getCreationTime", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCumScale": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getCumScale", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCurrentParticipantNumber": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getCurrentParticipantNumber", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getExtraInfo": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getExtraInfo", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getFees": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getFees", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getLastExpDate": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getLastExpDate", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getLastOutcomePrice": {
+      "inputs": [
+        "market", 
+        "outcome"
+      ], 
+      "method": "getLastOutcomePrice", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getLastTrade": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getLastTrade", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMakerFees": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getMakerFees", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketEvent": {
+      "inputs": [
+        "market", 
+        "index"
+      ], 
+      "method": "getMarketEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getMarketEvents": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getMarketEvents", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketNumOutcomes": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getMarketNumOutcomes", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketsHash": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getMarketsHash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumEvents": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getNumEvents", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOneWinningOutcome": {
+      "inputs": [
+        "market", 
+        "num"
+      ], 
+      "method": "getOneWinningOutcome", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getOriginalTradingPeriod": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getOriginalTradingPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getParticipantID": {
+      "inputs": [
+        "market", 
+        "participantNumber"
+      ], 
+      "method": "getParticipantID", 
+      "returns": "address", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getParticipantNumber": {
+      "inputs": [
+        "market", 
+        "address"
+      ], 
+      "method": "getParticipantNumber", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getParticipantSharesPurchased": {
+      "inputs": [
+        "market", 
+        "participantNumber", 
+        "outcome"
+      ], 
+      "method": "getParticipantSharesPurchased", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPushedForward": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getPushedForward", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getSender": {
+      "method": "getSender"
+    }, 
+    "getSharesPurchased": {
+      "inputs": [
+        "market", 
+        "outcome"
+      ], 
+      "method": "getSharesPurchased", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getSharesValue": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getSharesValue", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTotalSharesPurchased": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getTotalSharesPurchased", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTradingFee": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getTradingFee", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTradingPeriod": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getTradingPeriod", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getVolume": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getVolume", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getWinningOutcomes": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getWinningOutcomes", 
+      "returns": "number[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_total_trades": {
+      "inputs": [
+        "market_id"
+      ], 
+      "method": "get_total_trades", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_trade_ids": {
+      "inputs": [
+        "market_id"
+      ], 
+      "method": "get_trade_ids", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getgasSubsidy": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getgasSubsidy", 
+      "returns": "int", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "initializeMarket": {
+      "inputs": [
+        "marketID", 
+        "events", 
+        "tradingPeriod", 
+        "tradingFee", 
+        "branch", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "cumScale", 
+        "numOutcomes", 
+        "extraInfo", 
+        "gasSubsidy", 
+        "creationFee", 
+        "lastExpDate"
+      ], 
+      "method": "initializeMarket", 
+      "signature": [
+        "int256", 
+        "int256[]", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "modifyParticipantShares": {
+      "inputs": [
+        "marketID", 
+        "participantNumber", 
+        "outcome", 
+        "amount", 
+        "cancel", 
+        "sets"
+      ], 
+      "method": "modifyParticipantShares", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "modifyShares": {
+      "inputs": [
+        "marketID", 
+        "outcome", 
+        "amount"
+      ], 
+      "method": "modifyShares", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "modifySharesValue": {
+      "inputs": [
+        "marketID", 
+        "amount"
+      ], 
+      "method": "modifySharesValue", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "refundClosing": {
+      "inputs": [
+        "amount", 
+        "to"
+      ], 
+      "method": "refundClosing", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "remove_trade_from_market": {
+      "inputs": [
+        "market_id", 
+        "trade_id"
+      ], 
+      "method": "remove_trade_from_market", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "returnTags": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "returnTags", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setPrice": {
+      "inputs": [
+        "market", 
+        "outcome", 
+        "price"
+      ], 
+      "method": "setPrice", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPushedForward": {
+      "inputs": [
+        "market", 
+        "bool", 
+        "sender"
+      ], 
+      "method": "setPushedForward", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setTradingFee": {
+      "inputs": [
+        "market", 
+        "fee"
+      ], 
+      "method": "setTradingFee", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setTradingPeriod": {
+      "inputs": [
+        "market", 
+        "period"
+      ], 
+      "method": "setTradingPeriod", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setWinningOutcomes": {
+      "inputs": [
+        "market", 
+        "outcomes"
+      ], 
+      "method": "setWinningOutcomes", 
+      "signature": [
+        "int256", 
+        "int256[]"
+      ]
+    }
+  }, 
+  "PenalizationCatchup": {
+    "penalizationCatchup": {
+      "inputs": [
+        "branch", 
+        "sender"
+      ], 
+      "method": "penalizationCatchup", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "PenalizeNotEnoughReports": {
+    "proveReporterDidntReportEnough": {
+      "inputs": [
+        "branch", 
+        "reporter", 
+        "eventExample"
+      ], 
+      "method": "proveReporterDidntReportEnough", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Reporting": {
+    "addDormantRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "addDormantRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "addRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReporter": {
+      "inputs": [
+        "branch", 
+        "sender", 
+        "amount", 
+        "dormant", 
+        "repToBonderOrBranch"
+      ], 
+      "method": "addReporter", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "adjustActiveRep": {
+      "inputs": [
+        "branch", 
+        "amount"
+      ], 
+      "method": "adjustActiveRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "balanceOf": {
+      "inputs": [
+        "branch", 
+        "address"
+      ], 
+      "method": "balanceOf", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "checkContractWhitelist": {
+      "inputs": [
+        "contract", 
+        "address"
+      ], 
+      "method": "checkContractWhitelist", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "checkWhitelist": {
+      "inputs": [
+        "address"
+      ], 
+      "method": "checkWhitelist", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getActiveRep": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getActiveRep", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDormantRepByIndex": {
+      "inputs": [
+        "branch", 
+        "repIndex"
+      ], 
+      "method": "getDormantRepByIndex", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getFork": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getFork", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumberReporters": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getNumberReporters", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getRepBalance": {
+      "inputs": [
+        "branch", 
+        "address"
+      ], 
+      "method": "getRepBalance", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRepByIndex": {
+      "inputs": [
+        "branch", 
+        "repIndex"
+      ], 
+      "method": "getRepByIndex", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReporterID": {
+      "inputs": [
+        "branch", 
+        "index"
+      ], 
+      "method": "getReporterID", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReputation": {
+      "inputs": [
+        "address"
+      ], 
+      "method": "getReputation", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTotalRep": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getTotalRep", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "hashReport": {
+      "inputs": [
+        "report", 
+        "salt"
+      ], 
+      "method": "hashReport", 
+      "signature": [
+        "int256[]", 
+        "int256"
+      ]
+    }, 
+    "repIDToIndex": {
+      "inputs": [
+        "branch", 
+        "repID"
+      ], 
+      "method": "repIDToIndex", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setFork": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "setFork", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setInitialReporters": {
+      "inputs": [
+        "parent", 
+        "branchID"
+      ], 
+      "method": "setInitialReporters", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "newRep"
+      ], 
+      "method": "setRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setSaleDistribution": {
+      "inputs": [
+        "addresses", 
+        "balances", 
+        "branchID"
+      ], 
+      "method": "setSaleDistribution", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256[]", 
+        "int256[]", 
+        "int256"
+      ]
+    }, 
+    "setWhitelist": {
+      "inputs": [
+        "contract", 
+        "addresses"
+      ], 
+      "method": "setWhitelist", 
+      "returns": "string", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256[]"
+      ]
+    }, 
+    "subtractDormantRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "subtractDormantRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "subtractRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "subtractRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "totalSupply": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "totalSupply", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "RoundTwo": {
+    "resolve": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "resolve", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "roundTwoPostBond": {
+      "inputs": [
+        "branch", 
+        "event", 
+        "eventIndex", 
+        "votePeriod"
+      ], 
+      "method": "roundTwoPostBond", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "roundTwoResolve": {
+      "inputs": [
+        "branch", 
+        "event", 
+        "eventIndex", 
+        "sender"
+      ], 
+      "method": "roundTwoResolve", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "RoundTwoPenalize": {
+    "penalizeRoundTwoWrong": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "penalizeRoundTwoWrong", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "proportionCorrect": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "proportionCorrect", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "SendReputation": {
+    "allowance": {
+      "inputs": [
+        "owner", 
+        "spender"
+      ], 
+      "method": "allowance", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "approve": {
+      "inputs": [
+        "branch", 
+        "spender", 
+        "value"
+      ], 
+      "method": "approve", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "convertToActiveRep": {
+      "inputs": [
+        "branch", 
+        "value"
+      ], 
+      "method": "convertToActiveRep", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "convertToDormantRep": {
+      "inputs": [
+        "branch", 
+        "value"
+      ], 
+      "method": "convertToDormantRep", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "sendReputation": {
+      "inputs": [
+        "branch", 
+        "recver", 
+        "value"
+      ], 
+      "method": "sendReputation", 
+      "returns": "unfix", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "transfer": {
+      "inputs": [
+        "branch", 
+        "recver", 
+        "value"
+      ], 
+      "method": "transfer", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "transferFrom": {
+      "inputs": [
+        "branch", 
+        "from", 
+        "recver", 
+        "value"
+      ], 
+      "method": "transferFrom", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "SlashRep": {
+    "slashRep": {
+      "inputs": [
+        "branch", 
+        "salt", 
+        "report", 
+        "reporter", 
+        "eventID", 
+        "testing"
+      ], 
+      "method": "slashRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Trade": {
+    "short_sell": {
+      "inputs": [
+        "buyer_trade_id", 
+        "max_amount"
+      ], 
+      "method": "short_sell", 
+      "returns": "hash[]", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "trade": {
+      "inputs": [
+        "max_value", 
+        "max_amount", 
+        "trade_ids"
+      ], 
+      "method": "trade", 
+      "returns": "hash[]", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256[]"
+      ]
+    }
+  }, 
+  "Trades": {
+    "checkHash": {
+      "inputs": [
+        "tradeHash", 
+        "sender"
+      ], 
+      "method": "checkHash", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "commitTrade": {
+      "inputs": [
+        "hash"
+      ], 
+      "method": "commitTrade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "fill_trade": {
+      "inputs": [
+        "id", 
+        "fill"
+      ], 
+      "method": "fill_trade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getID": {
+      "inputs": [
+        "tradeID"
+      ], 
+      "method": "getID", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getInitialTrade": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "getInitialTrade", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_amount": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "get_amount", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_price": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "get_price", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_trade": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "get_trade", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "makeTradeHash": {
+      "inputs": [
+        "max_value", 
+        "max_amount", 
+        "trade_ids"
+      ], 
+      "method": "makeTradeHash", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256[]"
+      ]
+    }, 
+    "remove_trade": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "remove_trade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "saveTrade": {
+      "inputs": [
+        "trade_id", 
+        "type", 
+        "market", 
+        "amount", 
+        "price", 
+        "sender", 
+        "outcome"
+      ], 
+      "method": "saveTrade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setInitialTrade": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "setInitialTrade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "update_trade": {
+      "inputs": [
+        "id", 
+        "price"
+      ], 
+      "method": "update_trade", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "zeroHash": {
+      "method": "zeroHash", 
+      "returns": "number", 
+      "send": true
+    }
+  }
+}
+},{}],5:[function(require,module,exports){
+module.exports={
     "2": {
-        "buyAndSellShares": "0x97df797d9bc6c348208e1564d34e3eca077b36be",
-        "closeMarket": "0xb246e534415c626fc577f0847d9ac9247dc16d59",
-        "closeMarketEight": "0x8d1c577a709ccdf1779d5a5848bb2c75f071638f",
-        "closeMarketFour": "0x2c9723f616e8a766cc2906b1e7e60293aeb3fb47",
-        "closeMarketOne": "0x8e3539bb61a7493e643a32275770dff7bd6c48aa",
-        "closeMarketTwo": "0x4b1793071f852a41d69ba53e71f664d64422326c",
-        "collectFees": "0xe14c3df9a3ee8b805c17fb3ba213a69d36992152",
-        "completeSets": "0x79a6bdf2d2a2239e368529b5410a7763fc45f858",
-        "compositeGetters": "0xcc3c8c452a33ff56248afdc0913499b32b4badc3",
-        "consensus": "0xdab83c382ea094d94423b5e9672dbd2415c0e839",
-        "createBranch": "0xc0d09f5532b2093336ff62f9763d787ea2f3c6d9",
-        "createMarket": "0x509419d22c9424f6d5996f35db2d869bc94f68b3",
-        "eventResolution": "0xb92b2304fd3948f1e26bd3005536460ea91b7c45",
-        "faucets": "0x3dc20d009a93524ca76ba95102281d0947949989",
-        "forkPenalize": "0x4a6ea4130ad6a4cc3a97e01a59275ff2f8f067e7",
-        "forking": "0x2e076f33d0608cac340d16046f957ba61b4ce911",
-        "makeReports": "0x40020e787cbba61848743c27513ab6380396173a",
-        "penalizationCatchup": "0x377ae708ce0b643aaaf68f1c1b674e0dec399ae0",
-        "penalizeNotEnoughReports": "0x483bfcc013cf3b308ac626feab90b41a3ed89e11",
-        "roundTwo": "0x825fceebb8a613f444a9e387e51f284fdb3bdbef",
-        "roundTwoPenalize": "0xe06885ad61501124af005be3549b2bf3b4726a1d",
-        "sendReputation": "0x25525fa8d3b56201434e7316518c0befe60250a2",
-        "slashRep": "0xbc6bb79e67a01fa1c88e260cc63c5fd43b342d78",
-        "trade": "0x20b57a03fccf5c86f21a4fe366bec463cb01c586",
-        "backstops": "0x2b43f3258e5fe625b2fb667690630100bcbc115f",
-        "branches": "0x6a6cb111da271671197bcb144956f43d64a1bf80",
-        "cash": "0x7d75b06cceabc34627be767ebaface401d6ecb32",
-        "consensusData": "0x382fecf2780a2eed2ce497fc15b4e431f2ade49c",
-        "events": "0xdac808d3df6364c23c54460e6ba52b37b1a0be1f",
-        "expiringEvents": "0x00959da720fa63788cf23ae99c726d3551278590",
-        "fxpFunctions": "0xfe599d9ac0ba360bc53f519eeee63a18487f2f1d",
-        "info": "0x91fe6b845ab763c8e50ad23b23a397e9231dde9c",
-        "markets": "0x29fcb14958850fdbd9ae91063b84dc58ba76f9b1",
-        "reporting": "0x62bee7452324153e6a406afab165e15d4e004f9b",
-        "trades": "0x2e1754f2d16ec778adccc35325882771a5bf74a1"
+        "BuyAndSellShares": "0x97df797d9bc6c348208e1564d34e3eca077b36be",
+        "CloseMarket": "0xb246e534415c626fc577f0847d9ac9247dc16d59",
+        "CloseMarketEight": "0x8d1c577a709ccdf1779d5a5848bb2c75f071638f",
+        "CloseMarketFour": "0x2c9723f616e8a766cc2906b1e7e60293aeb3fb47",
+        "CloseMarketOne": "0x8e3539bb61a7493e643a32275770dff7bd6c48aa",
+        "CloseMarketTwo": "0x4b1793071f852a41d69ba53e71f664d64422326c",
+        "CollectFees": "0xe14c3df9a3ee8b805c17fb3ba213a69d36992152",
+        "CompleteSets": "0x79a6bdf2d2a2239e368529b5410a7763fc45f858",
+        "CompositeGetters": "0xcc3c8c452a33ff56248afdc0913499b32b4badc3",
+        "Consensus": "0xdab83c382ea094d94423b5e9672dbd2415c0e839",
+        "CreateBranch": "0xc0d09f5532b2093336ff62f9763d787ea2f3c6d9",
+        "CreateMarket": "0x509419d22c9424f6d5996f35db2d869bc94f68b3",
+        "EventResolution": "0xb92b2304fd3948f1e26bd3005536460ea91b7c45",
+        "Faucets": "0x3dc20d009a93524ca76ba95102281d0947949989",
+        "ForkPenalize": "0x4a6ea4130ad6a4cc3a97e01a59275ff2f8f067e7",
+        "Forking": "0x2e076f33d0608cac340d16046f957ba61b4ce911",
+        "MakeReports": "0x40020e787cbba61848743c27513ab6380396173a",
+        "PenalizationCatchup": "0x377ae708ce0b643aaaf68f1c1b674e0dec399ae0",
+        "PenalizeNotEnoughReports": "0x483bfcc013cf3b308ac626feab90b41a3ed89e11",
+        "RoundTwo": "0x825fceebb8a613f444a9e387e51f284fdb3bdbef",
+        "RoundTwoPenalize": "0xe06885ad61501124af005be3549b2bf3b4726a1d",
+        "SendReputation": "0x25525fa8d3b56201434e7316518c0befe60250a2",
+        "SlashRep": "0xbc6bb79e67a01fa1c88e260cc63c5fd43b342d78",
+        "Trade": "0x20b57a03fccf5c86f21a4fe366bec463cb01c586",
+        "Backstops": "0x2b43f3258e5fe625b2fb667690630100bcbc115f",
+        "Branches": "0x6a6cb111da271671197bcb144956f43d64a1bf80",
+        "Cash": "0x7d75b06cceabc34627be767ebaface401d6ecb32",
+        "ConsensusData": "0x382fecf2780a2eed2ce497fc15b4e431f2ade49c",
+        "Events": "0xdac808d3df6364c23c54460e6ba52b37b1a0be1f",
+        "ExpiringEvents": "0x00959da720fa63788cf23ae99c726d3551278590",
+        "FxpFunctions": "0xfe599d9ac0ba360bc53f519eeee63a18487f2f1d",
+        "Info": "0x91fe6b845ab763c8e50ad23b23a397e9231dde9c",
+        "Markets": "0x29fcb14958850fdbd9ae91063b84dc58ba76f9b1",
+        "Reporting": "0x62bee7452324153e6a406afab165e15d4e004f9b",
+        "Trades": "0x2e1754f2d16ec778adccc35325882771a5bf74a1"
     },
     "10101": {
-        "buyAndSellShares": "0xc1f513a64709200e30d3db0049fbdf73a88e16f6",
-        "closeMarket": "0xe4f0e3c5c7fce0858f166c896ffdc5e034d0e416",
-        "closeMarketEight": "0x87a5e6383bfaf81013ffc7e12d5f2bfa50220445",
-        "closeMarketFour": "0x2168d7c22f01b978ea9396cc443d1c4b73648012",
-        "closeMarketOne": "0x0920d1513057572be46580b7ef75d1d01a99a3e5",
-        "closeMarketTwo": "0x3482344d1ddbfd671b7dea7de22fbb1364dcd26e",
-        "collectFees": "0x4dcd129ecd475b8ba99a4326d39864a9cf50a131",
-        "completeSets": "0x3b83b10cb6ae9ecf6f3119e0c92ad229264fe437",
-        "compositeGetters": "0x20070e3c267d17eb7818ed6f0f1440be1fda6684",
-        "consensus": "0xcf8ee66789361ea03c819b1b72614789e3c09740",
-        "createBranch": "0xc50146cac2a210fffc7d486354880b66bc5991cb",
-        "createMarket": "0x242c0bc4d991da7a961c3d03e447188c30d622d5",
-        "eventResolution": "0xb1bf667309b77417b2adab55c21d6c9d4e202033",
-        "faucets": "0xaba981839e40075b161caf3526a11e724f0aaec2",
-        "forkPenalize": "0x338ce82ecb10df7267beb55ea95184850580c6a6",
-        "forking": "0x9fb5fc0b474ff8b00a047e51047aca2fa198dc73",
-        "makeReports": "0xace477b2af23c950febe2466d253e6260555a010",
-        "penalizationCatchup": "0x1527eeca77ebf5ea176fef3886c67c886ce2e49d",
-        "penalizeNotEnoughReports": "0xa09020c4c488cf64fe8f6abf11fd3457e1d19856",
-        "roundTwo": "0x47b3972405ad844a9eb66e9139fca4e017a0b816",
-        "roundTwoPenalize": "0xd5c6b9f812fb00b8340808edb8dba8f330b4c75c",
-        "sendReputation": "0x2d54bf7b82ce420fa3fd966262f2e677559f72a3",
-        "slashRep": "0x6a592facbd32b04c429117c434fdc0b3ed4c45e9",
-        "trade": "0xe308ec109bac5ca6c4407d12020737b1fa24b9f0",
-        "backstops": "0xda216a38eaf283a8e8a16d0a1a069e5346f668fd",
-        "branches": "0x8615d86e88b98f1b2b5fe2c8d0baaf454089c459",
-        "cash": "0x07414b523bef5d3d11cd195350fddf16ca97c40b",
-        "consensusData": "0x8c15701224aff132963efcbc829158f829172369",
-        "events": "0x68e9b831346211ab54b2d471d25be6d5f343608d",
-        "expiringEvents": "0xbc561d76e72c599a695b0fd461fe912716099e6e",
-        "fxpFunctions": "0x26ceb833ebc12a439359da7387d99568b447c8bb",
-        "info": "0x1b1200650196cacf30cc17a6796a68fbfddd4828",
-        "markets": "0x71a3b076606e80e8558798eafa4ac6927ab72a38",
-        "reporting": "0x2e3b98b5c9d1d21df7a4a65dac851fcf763ebded",
-        "trades": "0xef6abcef46c0871d3db0e602a003b99499e326db"
+        "BuyAndSellShares": "0xc1f513a64709200e30d3db0049fbdf73a88e16f6",
+        "CloseMarket": "0xe4f0e3c5c7fce0858f166c896ffdc5e034d0e416",
+        "CloseMarketEight": "0x87a5e6383bfaf81013ffc7e12d5f2bfa50220445",
+        "CloseMarketFour": "0x2168d7c22f01b978ea9396cc443d1c4b73648012",
+        "CloseMarketOne": "0x0920d1513057572be46580b7ef75d1d01a99a3e5",
+        "CloseMarketTwo": "0x3482344d1ddbfd671b7dea7de22fbb1364dcd26e",
+        "CollectFees": "0x4dcd129ecd475b8ba99a4326d39864a9cf50a131",
+        "CompleteSets": "0x3b83b10cb6ae9ecf6f3119e0c92ad229264fe437",
+        "CompositeGetters": "0x20070e3c267d17eb7818ed6f0f1440be1fda6684",
+        "Consensus": "0xcf8ee66789361ea03c819b1b72614789e3c09740",
+        "CreateBranch": "0xc50146cac2a210fffc7d486354880b66bc5991cb",
+        "CreateMarket": "0x242c0bc4d991da7a961c3d03e447188c30d622d5",
+        "EventResolution": "0xb1bf667309b77417b2adab55c21d6c9d4e202033",
+        "Faucets": "0xaba981839e40075b161caf3526a11e724f0aaec2",
+        "ForkPenalize": "0x338ce82ecb10df7267beb55ea95184850580c6a6",
+        "Forking": "0x9fb5fc0b474ff8b00a047e51047aca2fa198dc73",
+        "MakeReports": "0xace477b2af23c950febe2466d253e6260555a010",
+        "PenalizationCatchup": "0x1527eeca77ebf5ea176fef3886c67c886ce2e49d",
+        "PenalizeNotEnoughReports": "0xa09020c4c488cf64fe8f6abf11fd3457e1d19856",
+        "RoundTwo": "0x47b3972405ad844a9eb66e9139fca4e017a0b816",
+        "RoundTwoPenalize": "0xd5c6b9f812fb00b8340808edb8dba8f330b4c75c",
+        "SendReputation": "0x2d54bf7b82ce420fa3fd966262f2e677559f72a3",
+        "SlashRep": "0x6a592facbd32b04c429117c434fdc0b3ed4c45e9",
+        "Trade": "0xe308ec109bac5ca6c4407d12020737b1fa24b9f0",
+        "Backstops": "0xda216a38eaf283a8e8a16d0a1a069e5346f668fd",
+        "Branches": "0x8615d86e88b98f1b2b5fe2c8d0baaf454089c459",
+        "Cash": "0x07414b523bef5d3d11cd195350fddf16ca97c40b",
+        "ConsensusData": "0x8c15701224aff132963efcbc829158f829172369",
+        "Events": "0x68e9b831346211ab54b2d471d25be6d5f343608d",
+        "ExpiringEvents": "0xbc561d76e72c599a695b0fd461fe912716099e6e",
+        "FxpFunctions": "0x26ceb833ebc12a439359da7387d99568b447c8bb",
+        "Info": "0x1b1200650196cacf30cc17a6796a68fbfddd4828",
+        "Markets": "0x71a3b076606e80e8558798eafa4ac6927ab72a38",
+        "Reporting": "0x2e3b98b5c9d1d21df7a4a65dac851fcf763ebded",
+        "Trades": "0xef6abcef46c0871d3db0e602a003b99499e326db"
     }
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports={
     "0x": "no response or bad input",
     "buy": {
@@ -4081,1031 +8267,38 @@ module.exports={
     }
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var contracts = require("./contracts");
 contracts.errors = require("./errors");
 contracts.Tx = require("./tx");
 
 module.exports = contracts;
 
-},{"./contracts":4,"./errors":5,"./tx":8}],7:[function(require,module,exports){
-module.exports={
-  "faucets": {
-    "reputationFaucet": {
-      "method": "reputationFaucet",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "cashFaucet": {
-      "method": "cashFaucet",
-      "returns": "number",
-      "send": true
-    },
-    "fundNewAccount": {
-      "method": "fundNewAccount",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "cash": {
-    "addCash": {
-      "method": "addCash",
-      "signature": "ii",
-      "send": true,
-      "returns": "number"
-    },
-    "setCash": {
-      "method": "setCash",
-      "signature": "ii",
-      "send": true,
-      "returns": "number"
-    },
-    "initiateOwner": {
-      "method": "initiateOwner",
-      "signature": "i",
-      "send": true,
-      "returns": "number"
-    },
-    "getCashBalance": {
-      "method": "balance",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "balance": {
-      "method": "balance",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "send": {
-      "method": "send",
-      "send": true,
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "sendFrom": {
-      "method": "sendFrom",
-      "send": true,
-      "signature": "iii",
-      "returns": "unfix"
-    },
-    "depositEther": {
-      "method": "depositEther",
-      "send": true,
-      "returns": "number"
-    },
-    "withdrawEther": {
-      "method": "withdrawEther",
-      "signature": "ii",
-      "send": true,
-      "returns": "number"
-    }
-  },
-  "info": {
-    "getCreator": {
-      "method": "getCreator",
-      "signature": "i",
-      "returns": "address"
-    },
-    "getCreationFee": {
-      "method": "getCreationFee",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getDescription": {
-      "method": "getDescription",
-      "signature": "i",
-      "returns": "string"
-    },
-    "setInfo": {
-      "method": "setInfo",
-      "signature": "isii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "branches": {
-    "initDefaultBranch": {
-      "method": "initDefaultBranch",
-      "returns": "number",
-      "send": true
-    },
-    "getBranches": {
-      "method": "getBranches",
-      "returns": "hash[]"
-    },
-    "getMarketsInBranch": {
-      "method": "getMarketsInBranch",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "getPeriodLength": {
-      "method": "getPeriodLength",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getVotePeriod": {
-      "method": "getVotePeriod",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getReportPeriod": {
-      "method": "getVotePeriod",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getNumMarkets": {
-      "method": "getNumMarketsBranch",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getNumMarketsBranch": {
-      "method": "getNumMarketsBranch",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getMinTradingFee": {
-      "method": "getMinTradingFee",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getNumBranches": {
-      "method": "getNumBranches",
-      "returns": "number"
-    },
-    "getBranchByNum": {
-      "method": "getBranchByNum",
-      "signature": "i",
-      "returns": "hash"
-    },
-    "incrementPeriod": {
-      "method": "incrementPeriod",
-      "signature": "i",
-      "send": true,
-      "returns": "number"
-    },
-    "addMarket": {
-      "method": "addMarket",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "consensus": {
-    "getFeesCollected": {
-      "method": "getFeesCollected",
-      "signature": "iii",
-      "returns": "number"
-    },
-    "setFeesCollected": {
-      "method": "setFeesCollected",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "setNotEnoughPenalized": {
-      "method": "setNotEnoughPenalized",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "getNotEnoughPenalized": {
-      "method": "getNotEnoughPenalized",
-      "signature": "iii",
-      "returns": "number"
-    },
-    "getBaseReportersLastPeriod": {
-      "method": "getBaseReportersLastPeriod",
-      "signature": "i",
-      "returns": "number"
-    },
-    "initialPenalizedSetting": {
-      "method": "initialPenalizedSetting",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "proportionCorrect": {
-      "method": "proportionCorrect",
-      "signature": "iii",
-      "returns": "unfix"
-    },
-    "incrementPeriodAfterReporting": {
-      "method": "incrementPeriodAfterReporting",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "penalizeWrong": {
-      "method": "penalizeWrong",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "penalizeNotEnoughReports": {
-    "proveReporterDidntReportEnough": {
-      "method": "proveReporterDidntReportEnough",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "collectFees": {
-    "collectFees": {
-      "method": "collectFees",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "slashRep": {
-    "slashRep": {
-      "method": "slashRep",
-      "signature": "iiiii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "events": {
-    "getmode": {
-      "method": "getmode",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getUncaughtOutcome": {
-      "method": "getUncaughtOutcome",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getMarkets": {
-      "method": "getMarkets",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "getReportingThreshold": {
-      "method": "getReportingThreshold",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getEventInfo": {
-      "method": "getEventInfo",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "getEventBranch": {
-      "method": "getEventBranch",
-      "signature": "i",
-      "returns": "hash"
-    },
-    "getExpiration": {
-      "method": "getExpiration",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getOutcome": {
-      "method": "getOutcome",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getMinValue": {
-      "method": "getMinValue",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getMaxValue": {
-      "method": "getMaxValue",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getNumOutcomes": {
-      "method": "getNumOutcomes",
-      "signature": "i",
-      "returns": "number"
-    },
-    "setOutcome": {
-      "method": "setOutcome",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "expiringEvents": {
-    "calculateReportingThreshold": {
-      "method": "calculateReportingThreshold",
-      "signature": "iiii",
-      "returns": "hash"
-    },
-    "getEventCanReportOn": {
-      "method": "getEventCanReportOn",
-      "signature": "iiii",
-      "returns": "number"
-    },
-    "getEventIndex": {
-      "method": "getEventIndex",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getEvents": {
-      "method": "getEvents",
-      "signature": "ii",
-      "returns": "hash[]"
-    },
-    "getNumberEvents": {
-      "method": "getNumberEvents",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getEvent": {
-      "method": "getEvent",
-      "signature": "iii",
-      "returns": "hash"
-    },
-    "getTotalRepReported": {
-      "method": "getTotalRepReported",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getReportHash": {
-      "method": "getReportHash",
-      "signature": "iiii",
-      "returns": "hash"
-    },
-    "moveEventsToCurrentPeriod": {
-      "method": "moveEventsToCurrentPeriod",
-      "signature": "iii",
-      "send": true
-    },
-    "addEvent": {
-      "method": "addEvent",
-      "signature": "iii",
-      "send": true
-    },
-    "setTotalRepReported": {
-      "method": "setTotalRepReported",
-      "signature": "iii",
-      "send": true
-    }
-  },
-  "compositeGetters": {
-    "getOrderBook": {
-      "method": "getOrderBook",
-      "signature": "i",
-      "returns": "hash[]",
-      "gas": "0x9184e729fff"
-    },
-    "getMarketInfo": {
-      "method": "getMarketInfo",
-      "signature": "i",
-      "returns": "hash[]",
-      "gas": "0x9184e729fff"
-    },
-    "batchGetMarketInfo": {
-      "method": "batchGetMarketInfo",
-      "signature": "a",
-      "returns": "hash[]",
-      "gas": "0x9184e729fff"
-    },
-    "getMarketsInfo": {
-      "method": "getMarketsInfo",
-      "signature": "iii",
-      "returns": "hash[]",
-      "gas": "0x9184e729fff"
-    }
-  },
-  "markets": {
-    "getFees": {
-      "method": "getFees",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getMakerFees": {
-      "method": "getMakerFees",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getgasSubsidy": {
-      "method": "getgasSubsidy",
-      "signature": "i",
-      "returns": "int"
-    },
-    "getSharesValue": {
-      "method": "getSharesValue",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "get_total_trades": {
-      "method": "get_total_trades",
-      "signature": "i",
-      "returns": "number"
-    },
-    "get_trade_ids": {
-      "method": "get_trade_ids",
-      "signature": "i",
-      "returns": "hash[]",
-      "gas": "0x9184e729fff"
-    },
-    "getMarketEvents": {
-      "method": "getMarketEvents",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "getNumEvents": {
-      "method": "getNumEvents",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getBranchID": {
-      "method": "getBranchID",
-      "signature": "i",
-      "returns": "hash"
-    },
-    "getCurrentParticipantNumber": {
-      "method": "getCurrentParticipantNumber",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getMarketNumOutcomes": {
-      "method": "getMarketNumOutcomes",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getParticipantSharesPurchased": {
-      "method": "getParticipantSharesPurchased",
-      "signature": "iii",
-      "returns": "unfix"
-    },
-    "getSharesPurchased": {
-      "method": "getSharesPurchased",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "getForkSelection": {
-      "method": "getForkSelection",
-      "signature": "i",
-      "returns": "hash"
-    },
-    "getLastExpDate": {
-      "method": "getLastExpDate",
-      "signature": "i",
-      "returns": "number"
-    },
-    "returnTags": {
-      "method": "returnTags",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "getCreationTime": {
-      "method": "getCreationTime",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getVolume": {
-      "method": "getVolume",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getWinningOutcomes": {
-      "method": "getWinningOutcomes",
-      "signature": "i",
-      "returns": "number[]"
-    },
-    "getParticipantNumber": {
-      "method": "getParticipantNumber",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getParticipantID": {
-      "method": "getParticipantID",
-      "signature": "ii",
-      "returns": "address"
-    },
-    "getCumScale": {
-      "method": "getCumScale",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getTradingPeriod": {
-      "method": "getTradingPeriod",
-      "signature": "i",
-      "returns": "number"
-    },
-    "getTradingFee": {
-      "method": "getTradingFee",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "initialLiquidityAmount": {
-      "method": "initialLiquidityAmount",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "modifyShares": {
-      "method": "modifyShares",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "reporting": {
-    "checkWhitelist": {
-      "method": "checkWhitelist",
-      "signature": "i"
-    },
-    "getActiveRep": {
-      "method": "getActiveRep",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "adjustActiveRep": {
-      "method": "adjustActiveRep",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "setFork": {
-      "method": "setFork",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "getFork": {
-      "method": "getFork",
-      "signature": "i",
-      "returns": "number"
-    },
-    "checkContractWhitelist": {
-      "method": "checkContractWhitelist",
-      "signature": "ii"
-    },
-    "setWhitelist": {
-      "method": "setWhitelist",
-      "signature": "ia",
-      "returns": "string",
-      "send": true
-    },
-    "getRepByIndex": {
-      "method": "getRepByIndex",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "getRepBalance": {
-      "method": "getRepBalance",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "getDormantRepByIndex": {
-      "method": "getDormantRepByIndex",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "balanceOf": {
-      "method": "balanceOf",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "totalSupply": {
-      "method": "totalSupply",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getReporterID": {
-      "method": "getReporterID",
-      "signature": "ii",
-      "returns": "hash"
-    },
-    "getTotalRep": {
-      "method": "getTotalRep",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "getReputation": {
-      "method": "getReputation",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "getNumberReporters": {
-      "method": "getNumberReporters",
-      "signature": "i",
-      "returns": "number"
-    },
-    "repIDToIndex": {
-      "method": "repIDToIndex",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "hashReport": {
-      "method": "hashReport",
-      "signature": "ai"
-    },
-    "setInitialReporters": {
-      "method": "setInitialReporters",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "addReporter": {
-      "method": "addReporter",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "addRep": {
-      "method": "addRep",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "subtractRep": {
-      "method": "subtractRep",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "setRep": {
-      "method": "setRep",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "addDormantRep": {
-      "method": "addDormantRep",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "subtractDormantRep": {
-      "method": "subtractDormantRep",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    },
-    "setSaleDistribution": {
-      "method": "setSaleDistribution",
-      "signature": "aai",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "trades": {
-    "makeTradeHash": {
-      "method": "makeTradeHash",
-      "signature": "iia",
-      "returns": "hash"
-    },
-    "commitTrade": {
-      "method": "commitTrade",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "setInitialTrade": {
-      "method": "setInitialTrade",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "getInitialTrade": {
-      "method": "getInitialTrade",
-      "signature": "i",
-      "returns": "hash"
-    },
-    "zeroHash": {
-      "method": "zeroHash",
-      "returns": "number",
-      "send": true
-    },
-    "checkHash": {
-      "method": "checkHash",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getID": {
-      "method": "getID",
-      "signature": "i",
-      "returns": "hash"
-    },
-    "saveTrade": {
-      "method": "saveTrade",
-      "signature": "iiiiiii",
-      "returns": "number",
-      "send": true
-    },
-    "get_trade": {
-      "method": "get_trade",
-      "signature": "i",
-      "returns": "hash[]"
-    },
-    "get_amount": {
-      "method": "get_amount",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "get_price": {
-      "method": "get_price",
-      "signature": "i",
-      "returns": "unfix"
-    },
-    "update_trade": {
-      "method": "update_trade",
-      "signature": "ii",
-      "send": true
-    },
-    "remove_trade": {
-      "method": "remove_trade",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "fill_trade": {
-      "method": "fill_trade",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "buyAndSellShares": {
-    "cancel": {
-      "method": "cancel",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "buy": {
-      "method": "buy",
-      "signature": "iiii",
-      "returns": "hash",
-      "send": true
-    },
-    "sell": {
-      "method": "sell",
-      "signature": "iiii",
-      "returns": "hash",
-      "send": true
-    }
-  },
-  "trade": {
-    "trade": {
-      "method": "trade",
-      "signature": "iia",
-      "returns": "hash[]",
-      "send": true
-    },
-    "short_sell": {
-      "method": "short_sell",
-      "signature": "ii",
-      "returns": "hash[]",
-      "send": true
-    }
-  },
-  "completeSets": {
-    "buyCompleteSets": {
-      "method": "buyCompleteSets",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "sellCompleteSets": {
-      "method": "sellCompleteSets",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "createBranch": {
-    "createSubbranch": {
-      "method": "createSubbranch",
-      "signature": "siiii",
-      "returns": "hash",
-      "send": true
-    }
-  },
-  "sendReputation": {
-    "sendReputation": {
-      "method": "sendReputation",
-      "signature": "iii",
-      "send": true,
-      "returns": "unfix"
-    }
-  },
-  "makeReports": {
-    "getNumEventsToReport": {
-      "method": "getNumEventsToReport",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getNumReportsActual": {
-      "method": "getNumReportsActual",
-      "signature": "ii",
-      "returns": "number"
-    },
-    "getSubmittedHash": {
-      "method": "getSubmittedHash",
-      "signature": "iii",
-      "returns": "hash"
-    },
-    "getBeforeRep": {
-      "method": "getBeforeRep",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "getAfterRep": {
-      "method": "getAfterRep",
-      "signature": "ii",
-      "returns": "unfix"
-    },
-    "getReport": {
-      "method": "getReport",
-      "signature": "iii",
-      "returns": "unfix"
-    },
-    "getRRUpToDate": {
-      "method": "getRRUpToDate",
-      "returns": "number"
-    },
-    "getNumReportsExpectedEvent": {
-      "method": "getNumReportsExpectedEvent",
-      "signature": "iii",
-      "returns": "hash"
-    },
-    "getNumReportsEvent": {
-      "method": "getNumReportsEvent",
-      "signature": "iii",
-      "returns": "hash"
-    },
-    "makeHash": {
-      "method": "makeHash",
-      "signature": "iiii",
-      "returns": "hash"
-    },
-    "submitReportHash": {
-      "method": "submitReportHash",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "submitReport": {
-      "method": "submitReport",
-      "signature": "iiii",
-      "returns": "number",
-      "send": true
-    },
-    "validateReport": {
-      "method": "validateReport",
-      "signature": "iiiiiiii",
-      "returns": "number"
-    }
-  },
-  "createMarket": {
-    "createEvent": {
-      "method": "createEvent",
-      "signature": "isiiiis",
-      "send": true
-    },
-    "createMarket": {
-      "method": "createMarket",
-      "signature": "isiaiiiis",
-      "send": true
-    },
-    "updateTradingFee": {
-      "method": "updateTradingFee",
-      "signature": "iii",
-      "send": true,
-      "returns": "number"
-    },
-    "pushMarketForward": {
-      "method": "pushMarketForward",
-      "signature": "ii",
-      "send": true,
-      "returns": "number"
-    }
-  },
-  "closeMarket": {
-    "closeMarket": {
-      "method": "closeMarket",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "claimProceeds": {
-      "method": "claimProceeds",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "roundTwo": {
-    "roundTwoPostBond": {
-      "method": "roundTwoPostBond",
-      "signature": "iiii",
-      "returns": "number",
-      "send": true
-    },
-    "roundTwoResolve": {
-      "method": "roundTwoResolve",
-      "signature": "iiii",
-      "returns": "number",
-      "send": true
-    },
-    "resolve": {
-      "method": "resolve",
-      "signature": "iii",
-      "returns": "number",
-      "send": true
-    }
-  },
-  "backstops": {
-    "getRoundTwo": {
-      "method": "getRoundTwo",
-      "signature": "i"
-    },
-    "setRoundTwo": {
-      "method": "setRoundTwo",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "getBondPoster": {
-      "method": "getBondPoster",
-      "signature": "i",
-      "returns": "address"
-    },
-    "setBondPoster": {
-      "method": "setBondPoster",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "getFinal": {
-      "method": "getFinal",
-      "signature": "i"
-    },
-    "setFinal": {
-      "method": "setFinal",
-      "signature": "i",
-      "returns": "number",
-      "send": true
-    },
-    "getOriginalOutcome": {
-      "method": "getOriginalOutcome",
-      "signature": "i"
-    },
-    "setOriginalOutcome": {
-      "method": "setOriginalOutcome",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "getOriginalEthicality": {
-      "method": "getOriginalEthicality",
-      "signature": "i"
-    },
-    "setOriginalEthicality": {
-      "method": "setOriginalEthicality",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    },
-    "getOriginalVotePeriod": {
-      "method": "getOriginalVotePeriod",
-      "signature": "i",
-      "returns": "number"
-    },
-    "setOriginalVotePeriod": {
-      "method": "setOriginalVotePeriod",
-      "signature": "ii",
-      "returns": "number",
-      "send": true
-    }
-  }
-}
-
-},{}],8:[function(require,module,exports){
+},{"./contracts":5,"./errors":6,"./tx":8}],8:[function(require,module,exports){
 /**
  * Augur contract method info.
  */
 
 "use strict";
 
-var methods = require("./methods");
+var api = require("./api");
 
 module.exports = function (network, contracts) {
 
     contracts = contracts || require("./contracts")[network || "2"];
 
-    for (var contract in methods) {
-        if (!methods.hasOwnProperty(contract)) continue;
-        for (var method in methods[contract]) {
-            if (!methods[contract].hasOwnProperty(method)) continue;
-            methods[contract][method].to = contracts[contract];
+    for (var contract in api) {
+        if (!api.hasOwnProperty(contract)) continue;
+        for (var method in api[contract]) {
+            if (!api[contract].hasOwnProperty(method)) continue;
+            api[contract][method].to = contracts[contract];
         }
     }
 
-    return methods;
+    return api;
 };
 
-},{"./contracts":4,"./methods":7}],9:[function(require,module,exports){
+},{"./api":4,"./contracts":5}],9:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./src/index");
 global.augur = augur;
@@ -36240,7 +39433,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../constants":313,"../utilities":342,"_process":213,"augur-abi":1,"augur-contracts":6,"bignumber.js":11,"browser-request":12,"buffer":234,"clone":238,"ethereumjs-tx":239,"keythereum":404,"locks":293,"node-uuid":309,"request":15}],312:[function(require,module,exports){
+},{"../constants":313,"../utilities":336,"_process":213,"augur-abi":1,"augur-contracts":7,"bignumber.js":11,"browser-request":12,"buffer":234,"clone":238,"ethereumjs-tx":239,"keythereum":398,"locks":293,"node-uuid":309,"request":15}],312:[function(require,module,exports){
 (function (process,Buffer){
 /* global localStorage:true */
 /**
@@ -36358,7 +39551,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../constants":313,"../utilities":342,"_process":213,"augur-abi":1,"augur-contracts":6,"buffer":234,"clone":238,"keythereum":404,"node-localstorage":298}],313:[function(require,module,exports){
+},{"../constants":313,"../utilities":336,"_process":213,"augur-abi":1,"augur-contracts":7,"buffer":234,"clone":238,"keythereum":398,"node-localstorage":298}],313:[function(require,module,exports){
 /** 
  * augur.js constants
  */
@@ -36995,7 +40188,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":313,"./utilities":342,"async":10,"augur-abi":1,"augur-contracts":6}],315:[function(require,module,exports){
+},{"./constants":313,"./utilities":336,"async":10,"augur-abi":1,"augur-contracts":7}],315:[function(require,module,exports){
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -37242,14 +40435,10 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var modules = [
     require("./modules/connect"),
     require("./modules/transact"),
-    require("./modules/faucets"),
     require("./modules/cash"),
-    require("./modules/info"),
     require("./modules/branches"),
     require("./modules/events"),
-    require("./modules/expiringEvents"),
     require("./modules/markets"),
-    require("./modules/reporting"),
     require("./modules/trades"),
     require("./modules/buyAndSellShares"),
     require("./modules/trade"),
@@ -37258,8 +40447,6 @@ var modules = [
     require("./modules/sendReputation"),
     require("./modules/makeReports"),
     require("./modules/createMarket"),
-    require("./modules/closeMarket"),
-    require("./modules/consensus"),
     require("./modules/compositeGetters"),
     require("./modules/whitelist"),
     require("./modules/logs"),
@@ -37305,7 +40492,7 @@ Augur.prototype.Filters = require("./filters");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./batch":310,"./client/accounts":311,"./client/db":312,"./constants":313,"./filters":314,"./generateOrderBook":315,"./modules/abacus":317,"./modules/branches":318,"./modules/buyAndSellShares":319,"./modules/cash":320,"./modules/closeMarket":321,"./modules/completeSets":322,"./modules/compositeGetters":323,"./modules/connect":324,"./modules/consensus":325,"./modules/createBranch":326,"./modules/createMarket":327,"./modules/events":328,"./modules/expiringEvents":329,"./modules/faucets":330,"./modules/info":331,"./modules/logs":332,"./modules/makeReports":333,"./modules/markets":334,"./modules/reporting":335,"./modules/sendReputation":336,"./modules/trade":337,"./modules/trades":338,"./modules/transact":339,"./modules/whitelist":340,"./multiTrade":341,"./utilities":342,"_process":213,"augur-abi":1,"augur-contracts":6,"ethrpc":398}],317:[function(require,module,exports){
+},{"./batch":310,"./client/accounts":311,"./client/db":312,"./constants":313,"./filters":314,"./generateOrderBook":315,"./modules/abacus":317,"./modules/branches":318,"./modules/buyAndSellShares":319,"./modules/cash":320,"./modules/completeSets":321,"./modules/compositeGetters":322,"./modules/connect":323,"./modules/createBranch":324,"./modules/createMarket":325,"./modules/events":326,"./modules/logs":327,"./modules/makeReports":328,"./modules/markets":329,"./modules/sendReputation":330,"./modules/trade":331,"./modules/trades":332,"./modules/transact":333,"./modules/whitelist":334,"./multiTrade":335,"./utilities":336,"_process":213,"augur-abi":1,"augur-contracts":7,"ethrpc":392}],317:[function(require,module,exports){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
  * make RPC requests).
@@ -37537,7 +40724,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"async":10,"augur-abi":1,"bignumber.js":11,"clone":238}],318:[function(require,module,exports){
+},{"../utilities":336,"async":10,"augur-abi":1,"bignumber.js":11,"clone":238}],318:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -37550,75 +40737,6 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    initDefaultBranch: function (onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.branches.initDefaultBranch);
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    // getNumBranches: function (callback) {
-    //     return this.fire(this.tx.branches.getNumBranches, callback);
-    // },
-
-    // getBranches: function (callback) {
-    //     return this.fire(this.tx.branches.getBranches, callback);
-    // },
-
-    // getMarketsInBranch: function (branch, callback) {
-    //     // branch: sha256 hash id
-    //     var tx = clone(this.tx.branches.getMarketsInBranch);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getPeriodLength: function (branch, callback) {
-    //     // branch: sha256 hash id
-    //     var tx = clone(this.tx.branches.getPeriodLength);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getVotePeriod: function (branch, callback) {
-    //     // branch: sha256 hash id
-    //     var tx = clone(this.tx.branches.getVotePeriod);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReportPeriod: function (branch, callback) {
-    //     // branch: sha256 hash id
-    //     var tx = clone(this.tx.branches.getReportPeriod);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumMarketsBranch: function (branch, callback) {
-    //     // branch: sha256
-    //     var tx = clone(this.tx.branches.getNumMarketsBranch);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumMarkets: function (branch, callback) {
-    //     // branch: sha256
-    //     var tx = clone(this.tx.branches.getNumMarketsBranch);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMinTradingFee: function (branch, callback) {
-    //     // branch: sha256
-    //     var tx = clone(this.tx.branches.getMinTradingFee);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getBranchByNum: function (branchNumber, callback) {
-    //     // branchNumber: integer
-    //     var tx = clone(this.tx.branches.getBranchByNum);
-    //     tx.params = branchNumber;
-    //     return this.fire(tx, callback);
-    // },
-
     getCurrentPeriod: function (branch, callback) {
         var self = this;
         if (!utils.is_function(callback)) {
@@ -37630,7 +40748,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"clone":238}],319:[function(require,module,exports){
+},{"../utilities":336,"clone":238}],319:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -37644,13 +40762,6 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
-
-    cancel: function (trade_id, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.buyAndSellShares.cancel);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.cancel), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
 
     buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
         var self = this;
@@ -37666,7 +40777,7 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.buyAndSellShares.buy);
+        var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
@@ -37696,7 +40807,7 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.buyAndSellShares.sell);
+        var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
@@ -37713,7 +40824,7 @@ module.exports = {
     }
 };
 
-},{"../constants":313,"../utilities":342,"augur-abi":1,"clone":238}],320:[function(require,module,exports){
+},{"../constants":313,"../utilities":336,"augur-abi":1,"clone":238}],320:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -37728,7 +40839,7 @@ var utils = require("../utilities");
 module.exports = {
     
     setCash: function (address, balance, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.cash.setCash);
+        var tx = clone(this.tx.Cash.setCash);
         var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -37736,32 +40847,16 @@ module.exports = {
     },
     
     addCash: function (ID, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.cash.addCash);
+        var tx = clone(this.tx.Cash.addCash);
         var unpacked = utils.unpack(ID, utils.labels(this.addCash), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
     
-    initiateOwner: function (account, onSent, onSuccess, onFailed) {
-        // account: ethereum account
-        if (account && account.account) {
-            if (account.onSent) onSent = account.onSent;
-            if (account.onSuccess) onSuccess = account.onSuccess;
-            if (account.onFailed) onFailed = account.onFailed;
-            account = account.account;
-        }
-        var tx = clone(this.tx.cash.initiateOwner);
-        tx.params = account;
-        return this.transact(tx, onSent, onSuccess, onFailed);
+    getCashBalance: function (args) {
+        return this.Cash.balance(args);
     },
-
-    // getCashBalance: function (account, callback) {
-    //     // account: ethereum account
-    //     var tx = clone(this.tx.cash.getCashBalance);
-    //     tx.params = account || this.from;
-    //     return this.fire(tx, callback);
-    // },
 
     sendCash: function (to, value, onSent, onSuccess, onFailed) {
         // to: ethereum account
@@ -37773,7 +40868,7 @@ module.exports = {
             if (to.onFailed) onFailed = to.onFailed;
             to = to.to;
         }
-        var tx = clone(this.tx.cash.send);
+        var tx = clone(this.tx.Cash.send);
         tx.params = [to, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
@@ -37790,61 +40885,13 @@ module.exports = {
             if (to.onFailed) onFailed = to.onFailed;
             to = to.to;
         }
-        var tx = clone(this.tx.cash.sendFrom);
+        var tx = clone(this.tx.Cash.sendFrom);
         tx.params = [to, abi.fix(value, "hex"), from];
         return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    depositEther: function (value, onSent, onSuccess, onFailed) {
-        // value: amount of ether to exchange for cash (in ETHER, not wei!)
-        if (value && value.value) {
-            if (value.onSent) onSent = value.onSent;
-            if (value.onSuccess) onSuccess = value.onSuccess;
-            if (value.onFailed) onFailed = value.onFailed;
-            value = value.value;
-        }
-        var tx = clone(this.tx.cash.depositEther);
-        tx.value = abi.prefix_hex(abi.bignum(value).mul(this.rpc.ETHER).toString(16));
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    withdrawEther: function (to, value, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.cash.withdrawEther);
-        var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.prefix_hex(abi.bignum(tx.params[1]).mul(this.rpc.ETHER).toString(16));
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238}],321:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-
-module.exports = {
-
-    closeMarket: function (branch, market, onSent, onSuccess, onFailed) {
-        if (branch.constructor === Object && branch.branch) {
-            market = branch.market;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.closeMarket.closeMarket);
-        tx.params = [branch, market];
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    }
-
-};
-
-},{"clone":238}],322:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238}],321:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -37859,7 +40906,7 @@ var utils = require("../utilities");
 module.exports = {
 
     buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.completeSets.buyCompleteSets);
+        var tx = clone(this.tx.CompleteSets.buyCompleteSets);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.buyCompleteSets), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -37867,7 +40914,7 @@ module.exports = {
     },
 
     sellCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.completeSets.sellCompleteSets);
+        var tx = clone(this.tx.CompleteSets.sellCompleteSets);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.sellCompleteSets), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -37875,7 +40922,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238}],323:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238}],322:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -37919,7 +40966,7 @@ module.exports = {
             }
             return orderBook;
         }
-        var tx = clone(this.tx.compositeGetters.getOrderBook);
+        var tx = clone(this.tx.CompositeGetters.getOrderBook);
         tx.params = marketID;
         if (!utils.is_function(callback)) return getOrderBook(this.fire(tx));
         this.fire(tx, function (orderArray) {
@@ -37929,7 +40976,7 @@ module.exports = {
 
     getMarketInfo: function (market, callback) {
         var self = this;
-        var tx = clone(this.tx.compositeGetters.getMarketInfo);
+        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
         var unpacked = utils.unpack(market, utils.labels(this.getMarketInfo), arguments);
         tx.params = unpacked.params;
         tx.timeout = 45000;
@@ -37977,7 +41024,7 @@ module.exports = {
             }
             return marketsInfo;
         }
-        var tx = clone(this.tx.compositeGetters.batchGetMarketInfo);
+        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs];
         if (!utils.is_function(callback)) {
             return batchGetMarketInfo(this.fire(tx));
@@ -38001,7 +41048,7 @@ module.exports = {
         if (!callback && utils.is_function(options.callback)) {
             callback = options.callback;
         }
-        var tx = clone(this.tx.compositeGetters.getMarketsInfo);
+        var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
         tx.params = [branch, offset, numMarketsToLoad];
         tx.timeout = 240000;
         if (!utils.is_function(callback)) {
@@ -38013,7 +41060,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"bignumber.js":11,"clone":238}],324:[function(require,module,exports){
+},{"../utilities":336,"bignumber.js":11,"clone":238}],323:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -38040,7 +41087,7 @@ module.exports = {
     bindContractMethod: function (contract, method) {
         var self = this;
         return function (args) {
-            var tx, params, cb, onSent, onSuccess, onFailed;
+            var tx, params, cb, i, onSent, onSuccess, onFailed;
             tx = clone(self.tx[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
@@ -38048,10 +41095,21 @@ module.exports = {
             }
             params = Array.prototype.slice.call(arguments);
             if (!tx.send) {
-                if (utils.is_function(params[params.length - 1])) {
-                    cb = params.pop();
+                if (params[0] !== undefined && params[0] !== null &&
+                    params[0].constructor === Object) {
+                    cb = params[0].callback || utils.pass;
+                    if (tx.inputs && tx.inputs.length) {
+                        tx.params = new Array(tx.inputs.length);
+                        for (i = 0; i < tx.inputs.length; ++i) {
+                            tx.params[i] = params[0][tx.inputs[i]];
+                        }
+                    }
+                } else {
+                    if (utils.is_function(params[params.length - 1])) {
+                        cb = params.pop();
+                    }
+                    tx.params = params;
                 }
-                tx.params = params;
                 return self.fire(tx, cb);
             }
             if (params[0] !== undefined && params[0] !== null &&
@@ -38059,16 +41117,20 @@ module.exports = {
                 onSent = params[0].onSent || utils.pass;
                 onSuccess = params[0].onSuccess || utils.pass;
                 onFailed = params[0].onFailed || utils.pass;
-                // need param names, order
-                return self.transact(tx, onSent, onSuccess, onFailed);
-            } else {
-                cb = [];
-                while (utils.is_function(params[params.length - 1])) {
-                    cb.push(params.pop());
+                if (tx.inputs && tx.inputs.length) {
+                    tx.params = new Array(tx.inputs.length);
+                    for (i = 0; i < tx.inputs.length; ++i) {
+                        tx.params[i] = params[0][tx.inputs[i]];
+                    }
                 }
-                tx.params = params;
-                return self.transact.apply(self, [tx].concat(cb));
+                return self.transact(tx, onSent, onSuccess, onFailed);
             }
+            cb = [];
+            while (utils.is_function(params[params.length - 1])) {
+                cb.push(params.pop());
+            }
+            tx.params = params;
+            return self.transact.apply(self, [tx].concat(cb));
         };
     },
     bindContractAPI: function (methods) {
@@ -38172,72 +41234,7 @@ module.exports = {
     }
 };
 
-},{"../constants":313,"../utilities":342,"clone":238,"ethereumjs-connect":396}],325:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    // proportionCorrect: function (event, branch, period, callback) {
-    //     var tx = clone(this.tx.consensus.proportionCorrect);
-    //     tx.params = [event, branch, period];
-    //     return this.fire(tx, callback);
-    // },
-
-    moveEventsToCurrentPeriod: function (branch, currentVotePeriod, currentPeriod, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.consensus.moveEventsToCurrentPeriod);
-        var unpacked = utils.unpack(branch, utils.labels(this.moveEventsToCurrentPeriod), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    incrementPeriodAfterReporting: function (branch, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.consensus.incrementPeriodAfterReporting);
-        var unpacked = utils.unpack(branch, utils.labels(this.incrementPeriodAfterReporting), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.consensus.penalizeWrong);
-        var unpacked = utils.unpack(branch, utils.labels(this.penalizeWrong), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    collectFees: function (branch, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.consensus.collectFees);
-        var unpacked = utils.unpack(branch, utils.labels(this.collectFees), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    slashRep: function (branchId, salt, report, reporter, eventID, onSent, onSuccess, onFailed) {
-        if (branchId.constructor === Object && branchId.branchId) {
-            eventID = branchId.eventID;
-            salt = branchId.salt;
-            report = branchId.report;
-            reporter = branchId.reporter;
-            onSent = branchId.onSent;
-            onSuccess = branchId.onSuccess;
-            onFailed = branchId.onFailed;
-            branchId = branchId.branchId;
-        }
-        var tx = clone(this.tx.consensus.slashRep);
-        tx.params = [branchId, salt, abi.fix(report, "hex"), reporter, eventID];
-        return this.transact(tx, onSent, onSuccess, onFailed);
-    }
-};
-
-},{"../utilities":342,"augur-abi":1,"clone":238}],326:[function(require,module,exports){
+},{"../constants":313,"../utilities":336,"clone":238,"ethereumjs-connect":390}],324:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38307,7 +41304,7 @@ module.exports = {
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
-        var tx = clone(this.tx.createBranch.createSubbranch);
+        var tx = clone(this.tx.CreateBranch.createSubbranch);
         tx.params = [
             description,
             periodLength,
@@ -38319,7 +41316,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238}],327:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238}],325:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript API
@@ -38376,7 +41373,7 @@ module.exports = {
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         description = description.trim();
         expDate = parseInt(expDate);
-        var tx = clone(this.tx.createMarket.createEvent);
+        var tx = clone(this.tx.CreateMarket.createEvent);
         tx.params = [
             branchId,
             description,
@@ -38387,7 +41384,7 @@ module.exports = {
             resolution
         ];
         this.transact(tx, utils.noop, function (res) {
-            var tx = clone(self.tx.createMarket.createMarket);
+            var tx = clone(self.tx.CreateMarket.createMarket);
             tx.params = [
                 branchId,
                 description,
@@ -38425,7 +41422,7 @@ module.exports = {
                 });
             });
         }, onFailed);
-        // var tx = clone(this.tx.createMarket.createSingleEventMarket);
+        // var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         // tx.params = [
         //     branchId,
         //     description,
@@ -38480,7 +41477,7 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        var tx = clone(this.tx.createMarket.createEvent);
+        var tx = clone(this.tx.CreateMarket.createEvent);
         tx.params = [
             branchId,
             description.trim(),
@@ -38526,7 +41523,7 @@ module.exports = {
         var bnMakerFee = abi.bignum(makerFee);
         var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-        var tx = clone(this.tx.createMarket.createMarket);
+        var tx = clone(this.tx.CreateMarket.createMarket);
         description = description.trim();
         tx.params = [
             branchId,
@@ -38570,7 +41567,7 @@ module.exports = {
     },
 
     updateTradingFee: function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.createMarket.updateTradingFee);
+        var tx = clone(this.tx.CreateMarket.updateTradingFee);
         var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
@@ -38578,7 +41575,7 @@ module.exports = {
     },
 
     pushMarketForward: function (branch, market, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.createMarket.pushMarketForward);
+        var tx = clone(this.tx.CreateMarket.pushMarketForward);
         var unpacked = utils.unpack(branch, utils.labels(this.pushMarketForward), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
@@ -38586,7 +41583,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../utilities":342,"augur-abi":1,"bignumber.js":11,"buffer":234,"clone":238}],328:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"bignumber.js":11,"buffer":234,"clone":238}],326:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38600,35 +41597,8 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    // getmode: function (event, callback) {
-    //     // event: sha256 hash id
-    //     var tx = clone(this.tx.events.getmode);
-    //     tx.params = event;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getUncaughtOutcome: function (event, callback) {
-    //     // event: sha256 hash id
-    //     var tx = clone(this.tx.events.getUncaughtOutcome);
-    //     tx.params = event;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMarkets: function (eventID, callback) {
-    //     // eventID: sha256 hash id
-    //     var tx = clone(this.tx.events.getMarkets);
-    //     tx.params = eventID;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReportingThreshold: function (event, callback) {
-    //     var tx = clone(this.tx.events.getReportingThreshold);
-    //     tx.params = event;
-    //     return this.fire(tx, callback);
-    // },
-
     getEventInfo: function (eventId, callback) {
-        // eventId: sha256 hash id
+        // eventId: hash id
         var self = this;
         var parse_info = function (info) {
             // eventinfo = string(7*32 + length)
@@ -38639,7 +41609,6 @@ module.exports = {
             // eventinfo[4] = self.Events[event].maxValue
             // eventinfo[5] = self.Events[event].numOutcomes
             // eventinfo[6] = self.Events[event].bond
-            // mcopy(eventinfo + 7*32, load(self.Events[event].resolutionSource[0], chars=length), length)
             if (info && info.length) {
                 info[0] = abi.hex(info[0]);
                 info[1] = abi.bignum(info[1]).toFixed();
@@ -38651,7 +41620,7 @@ module.exports = {
             }
             return info;
         };
-        var tx = clone(this.tx.events.getEventInfo);
+        var tx = clone(this.tx.Events.getEventInfo);
         tx.params = eventId;
         if (utils.is_function(callback)) {
             this.fire(tx, function (info) {
@@ -38660,206 +41629,10 @@ module.exports = {
         } else {
             return parse_info(this.fire(tx));
         }
-    },
-
-    // getEventBranch: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getEventBranch);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getExpiration: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getExpiration);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getOutcome: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getOutcome);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMinValue: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getMinValue);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMaxValue: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getMaxValue);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumOutcomes: function (eventId, callback) {
-    //     var tx = clone(this.tx.events.getNumOutcomes);
-    //     tx.params = eventId;
-    //     return this.fire(tx, callback);
-    // },
-
-    setOutcome: function (ID, outcome, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.events.setOutcome);
-        var unpacked = utils.unpack(ID, utils.labels(this.setOutcome), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
     }
-
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238}],329:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-
-module.exports = {
-
-    // calculateReportingThreshold: function (branch, eventID, reportPeriod, sender, callback) {
-    //     var tx = clone(this.tx.calculateReportingThreshold);
-    //     tx.params = [branch, eventID, reportPeriod, sender];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getEventCanReportOn: function (branch, expDateIndex, reporter, event, callback) {
-    //     var tx = clone(this.tx.getEventCanReportOn);
-    //     tx.params = [branch, expDateIndex, reporter, event];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getEventIndex: function (period, eventID, callback) {
-    //     var tx = clone(this.tx.getEventIndex);
-    //     tx.params = [period, eventID];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getEvents: function (branch, reportPeriod, callback) {
-    //     // reportPeriod: integer
-    //     var tx = clone(this.tx.getEvents);
-    //     tx.params = [branch, reportPeriod];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumberEvents: function (branch, reportPeriod, callback) {
-    //     // reportPeriod: integer
-    //     var tx = clone(this.tx.getNumberEvents);
-    //     tx.params = [branch, reportPeriod];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getEvent: function (branch, reportPeriod, eventIndex, callback) {
-    //     // reportPeriod: integer
-    //     var tx = clone(this.tx.getEvent);
-    //     tx.params = [branch, reportPeriod, eventIndex];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getTotalRepReported: function (branch, reportPeriod, callback) {
-    //     // reportPeriod: integer
-    //     var tx = clone(this.tx.getTotalRepReported);
-    //     tx.params = [branch, reportPeriod];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReport: function (branch, reportPeriod, eventId, callback) {
-    //     // reportPeriod: integer
-    //     var tx = clone(this.tx.getReport);
-    //     tx.params = [branch, reportPeriod, eventId];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReportHash: function (branch, reportPeriod, reporter, event, callback) {
-    //     // reportPeriod: integer
-    //     var tx = clone(this.tx.getReportHash);
-    //     tx.params = [branch, reportPeriod, reporter, event];
-    //     return this.fire(tx, callback);
-    // }
-
-};
-
-},{"clone":238}],330:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-
-module.exports = {
-
-    // reputationFaucet: function (branch, onSent, onSuccess, onFailed) {
-    //     if (branch && branch.constructor === Object && branch.branch) {
-    //         if (branch.onSuccess) onSuccess = branch.onSuccess;
-    //         if (branch.onFailed) onFailed = branch.onFailed;
-    //         if (branch.onSent) onSent = branch.onSent;
-    //         branch = branch.branch;
-    //     }
-    //     var tx = clone(this.tx.faucets.reputationFaucet);
-    //     tx.params = branch;
-    //     return this.transact(tx, onSent, onSuccess, onFailed);
-    // },
-
-    // cashFaucet: function (onSent, onSuccess, onFailed) {
-    //     if (onSent && onSent.constructor === Object && onSent.onSent) {
-    //         if (onSent.onSuccess) onSuccess = onSent.onSuccess;
-    //         if (onSent.onFailed) onFailed = onSent.onFailed;
-    //         if (onSent.onSent) onSent = onSent.onSent;
-    //     }
-    //     return this.transact(clone(this.tx.faucets.cashFaucet), onSent, onSuccess, onFailed);
-    // },
-
-    // fundNewAccount: function (branch, onSent, onSuccess, onFailed) {
-    //     if (branch && branch.constructor === Object && branch.branch) {
-    //         if (branch.onSuccess) onSuccess = branch.onSuccess;
-    //         if (branch.onFailed) onFailed = branch.onFailed;
-    //         if (branch.onSent) onSent = branch.onSent;
-    //         branch = branch.branch;
-    //     }
-    //     var tx = clone(this.tx.faucets.fundNewAccount);
-    //     tx.params = branch;
-    //     return this.transact(tx, onSent, onSuccess, onFailed);
-    // }
-};
-
-},{"clone":238}],331:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-
-module.exports = {
-
-    // getCreator: function (id, callback) {
-    //     var tx = clone(this.tx.info.getCreator);
-    //     tx.params = id;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getCreationFee: function (id, callback) {
-    //     var tx = clone(this.tx.info.getCreationFee);
-    //     tx.params = id;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getDescription: function (item, callback) {
-    //     // item: hash id
-    //     var tx = clone(this.tx.info.getDescription);
-    //     tx.params = item;
-    //     return this.fire(tx, callback);
-    // }
-};
-
-},{"clone":238}],332:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238}],327:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -39009,7 +41782,7 @@ module.exports = {
     }
 };
 
-},{"../constants":313,"../utilities":342,"augur-abi":1,"bignumber.js":11}],333:[function(require,module,exports){
+},{"../constants":313,"../utilities":336,"augur-abi":1,"bignumber.js":11}],328:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -39024,58 +41797,6 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    // getNumEventsToReport: function (branch, period, callback) {
-    //     var tx = clone(this.tx.getNumEventsToReport);
-    //     tx.params = [branch, period];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumReportsActual: function (branch, reportPeriod, callback) {
-    //     var tx = clone(this.tx.getNumReportsActual);
-    //     tx.params = [branch, reportPeriod];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getSubmittedHash: function (branch, period, reporter, callback) {
-    //     var tx = clone(this.tx.getSubmittedHash);
-    //     tx.params = [branch, period, reporter];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getBeforeRep: function (branch, period, callback) {
-    //     var tx = clone(this.tx.getBeforeRep);
-    //     tx.params = [branch, period];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getAfterRep: function (branch, period, callback) {
-    //     var tx = clone(this.tx.getAfterRep);
-    //     tx.params = [branch, period];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReport: function (branch, period, event, callback) {
-    //     var tx = clone(this.tx.getReport);
-    //     tx.params = [branch, period, event];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getRRUpToDate: function (callback) {
-    //     return this.fire(clone(this.tx.getRRUpToDate), callback);
-    // },
-
-    // getNumReportsExpectedEvent: function (branch, reportPeriod, eventID, callback) {
-    //     var tx = clone(this.tx.getNumReportsExpectedEvent);
-    //     tx.params = [branch, reportPeriod, eventID];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumReportsEvent: function (branch, reportPeriod, eventID, callback) {
-    //     var tx = clone(this.tx.getNumReportsEvent);
-    //     tx.params = [branch, reportPeriod, eventID];
-    //     return this.fire(tx, callback);
-    // },
-
     makeHash: function (salt, report, event, from, isScalar) {
         var fixedReport;
         if (isScalar && report === "0") {
@@ -39089,41 +41810,6 @@ module.exports = {
             fixedReport,
             event
         ]);
-    },
-
-    makeHash_contract: function (salt, report, event, sender, isScalar, callback) {
-        if (salt.constructor === Object && salt.salt) {
-            report = salt.report;
-            event = salt.event;
-            if (salt.callback) callback = salt.callback;
-            salt = salt.salt;
-        }
-        var fixedReport;
-        if (isScalar && report === "0") {
-            fixedReport = "0x1";
-        } else {
-            fixedReport = abi.fix(report, "hex");
-        }
-        var tx = clone(this.tx.makeReports.makeHash);
-        tx.params = [abi.hex(salt), fixedReport, event, sender];
-        return this.fire(tx, callback);
-    },
-
-    submitReportHash: function (event, reportHash, onSent, onSuccess, onFailed) {
-        var self = this;
-        if (event.constructor === Object && event.event) {
-            reportHash = event.reportHash;
-            if (event.onSent) onSent = event.onSent;
-            if (event.onSuccess) onSuccess = event.onSuccess;
-            if (event.onFailed) onFailed = event.onFailed;
-            event = event.event;
-        }
-        onSent = onSent || utils.pass;
-        onSuccess = onSuccess || utils.pass;
-        onFailed = onFailed || utils.pass;
-        var tx = clone(this.tx.makeReports.submitReportHash);
-        tx.params = [event, reportHash];
-        return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
     submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed) {
@@ -39147,7 +41833,7 @@ module.exports = {
         } else {
             fixedReport = abi.fix(report, "hex");
         }
-        var tx = clone(this.tx.makeReports.submitReport);
+        var tx = clone(this.tx.MakeReports.submitReport);
         tx.params = [
             event,
             abi.hex(salt),
@@ -39158,7 +41844,7 @@ module.exports = {
     },
 
     validateReport: function (eventID, branch, reportPeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
-        var tx = clone(this.tx.makeReports.validateReport);
+        var tx = clone(this.tx.MakeReports.validateReport);
         tx.params = [
             eventID,
             branch,
@@ -39173,7 +41859,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"augur-contracts":6,"clone":238}],334:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"augur-contracts":7,"clone":238}],329:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -39186,121 +41872,10 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    // getFees: function (market, callback) {
-    //     var tx = clone(this.tx.getFees);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMakerFees: function (market, callback) {
-    //     var tx = clone(this.tx.getMakerFees);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getgasSubsidy: function (market, callback) {
-    //     var tx = clone(this.tx.getgasSubsidy);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getSharesValue: function (market, callback) {
-    //     var tx = clone(this.tx.getSharesValue);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // get_total_trades: function (market_id, callback) {
-    //     var tx = clone(this.tx.get_total_trades);
-    //     tx.params = market_id;
-    //     return this.fire(tx, callback);
-    // },
-
-    // get_trade_ids: function (market_id, callback) {
-    //     var tx = clone(this.tx.get_trade_ids);
-    //     tx.params = market_id;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getVolume: function (market, callback) {
-    //     var tx = clone(this.tx.getVolume);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getCreationTime: function (market, callback) {
-    //     var tx = clone(this.tx.getCreationTime);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getForkSelection: function (market, callback) {
-    //     var tx = clone(this.tx.getForkSelection);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMarketEvents: function (market, callback) {
-    //     // market: sha256 hash id
-    //     var tx = clone(this.tx.getMarketEvents);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumEvents: function (market, callback) {
-    //     // market: sha256 hash id
-    //     var tx = clone(this.tx.getNumEvents);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getBranchID: function (market, callback) {
-    //     // market: sha256 hash id
-    //     var tx = clone(this.tx.getBranchID);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // // Get the current number of participants in this market
-    // getCurrentParticipantNumber: function (market, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getCurrentParticipantNumber);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getMarketNumOutcomes: function (market, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getMarketNumOutcomes);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getCumScale: function (market, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getCumScale);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getTradingPeriod: function (market, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getTradingPeriod);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
-    // getTradingFee: function (market, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getTradingFee);
-    //     tx.params = market;
-    //     return this.fire(tx, callback);
-    // },
-
     getWinningOutcomes: function (market, callback) {
         // market: hash id
         var self = this;
-        var tx = clone(this.tx.markets.getWinningOutcomes);
+        var tx = clone(this.tx.Markets.getWinningOutcomes);
         tx.params = market;
         if (!utils.is_function(callback)) {
             var winningOutcomes = this.fire(tx);
@@ -39322,105 +41897,10 @@ module.exports = {
                 callback(winningOutcomes.slice(0, numOutcomes));
             });
         });
-    },
-
-    // initialLiquidityAmount: function (market, outcome, callback) {
-    //     var tx = clone(this.tx.initialLiquidityAmount);
-    //     tx.params = [market, outcome];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getSharesPurchased: function (market, outcome, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getSharesPurchased);
-    //     tx.params = [market, outcome];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getParticipantSharesPurchased: function (market, participantNumber, outcome, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getParticipantSharesPurchased);
-    //     tx.params = [market, participantNumber, outcome];
-    //     return this.fire(tx, callback);
-    // },
-
-    // // Get the participant number (the array index) for specified address
-    // getParticipantNumber: function (market, address, callback) {
-    //     // market: hash id
-    //     // address: ethereum account
-    //     var tx = clone(this.tx.getParticipantNumber);
-    //     tx.params = [market, address];
-    //     return this.fire(tx, callback);
-    // },
-
-    // // Get the address for the specified participant number (array index) 
-    // getParticipantID: function (market, participantNumber, callback) {
-    //     // market: hash id
-    //     var tx = clone(this.tx.getParticipantID);
-    //     tx.params = [market, participantNumber];
-    //     return this.fire(tx, callback);
-    // }
+    }
 };
 
-},{"../utilities":342,"clone":238}],335:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-
-module.exports = {
-
-    // getRepBalance: function (branch, account, callback) {
-    //     // branch: sha256 hash id
-    //     // account: ethereum address (hexstring)
-    //     var tx = clone(this.tx.getRepBalance);
-    //     tx.params = [branch, account || this.from];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getRepByIndex: function (branch, repIndex, callback) {
-    //     // branch: sha256
-    //     // repIndex: integer
-    //     var tx = clone(this.tx.getRepByIndex);
-    //     tx.params = [branch, repIndex];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getReporterID: function (branch, index, callback) {
-    //     // branch: sha256
-    //     // index: integer
-    //     var tx = clone(this.tx.getReporterID);
-    //     tx.params = [branch, index];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getNumberReporters: function (branch, callback) {
-    //     // branch: sha256
-    //     var tx = clone(this.tx.getNumberReporters);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // },
-
-    // repIDToIndex: function (branch, repID, callback) {
-    //     // branch: sha256
-    //     // repID: ethereum account
-    //     var tx = clone(this.tx.repIDToIndex);
-    //     tx.params = [branch, repID];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getTotalRep: function (branch, callback) {
-    //     var tx = clone(this.tx.getTotalRep);
-    //     tx.params = branch;
-    //     return this.fire(tx, callback);
-    // }
-};
-
-},{"clone":238}],336:[function(require,module,exports){
+},{"../utilities":336,"clone":238}],330:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -39437,21 +41917,21 @@ module.exports = {
         // branchId: hash id
         // to: ethereum address of recipient
         // value: number -> fixed-point
-        if (branchId && branchId.branchId && branchId.to && branchId.value) {
+        if (branchId && branchId.branchId) {
             to = branchId.to;
             value = branchId.value;
-            if (branchId.onSent) onSent = branchId.onSent;
-            if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-            if (branchId.onFailed) onFailed = branchId.onFailed;
+            onSent = branchId.onSent;
+            onSuccess = branchId.onSuccess;
+            onFailed = branchId.onFailed;
             branchId = branchId.branchId;
         }
-        var tx = clone(this.tx.sendReputation.sendReputation);
+        var tx = clone(this.tx.SendReputation.sendReputation);
         tx.params = [branchId, to, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
-},{"augur-abi":1,"clone":238}],337:[function(require,module,exports){
+},{"augur-abi":1,"clone":238}],331:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -39498,7 +41978,7 @@ module.exports = {
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
-                        var tx = clone(self.tx.trade.trade);
+                        var tx = clone(self.tx.Trade.trade);
                         tx.params = [
                             abi.fix(max_value, "hex"),
                             abi.fix(max_amount, "hex"),
@@ -39563,7 +42043,7 @@ module.exports = {
                     onCommitSuccess(res);
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
-                        var tx = clone(self.tx.trade.short_sell);
+                        var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [
                             buyer_trade_id,
                             abi.fix(max_amount, "hex")
@@ -39599,7 +42079,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238,"ethrpc":398}],338:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238,"ethrpc":392}],332:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -39614,51 +42094,13 @@ var utils = require("../utilities");
 module.exports = {
 
     makeTradeHash: function (max_value, max_amount, trade_ids, callback) {
-        var tx = clone(this.tx.trades.makeTradeHash);
+        var tx = clone(this.tx.Trades.makeTradeHash);
         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
         return this.fire(tx, callback);
     },
 
-    commitTrade: function (hash, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.commitTrade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.commitTrade), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    setInitialTrade: function (id, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.setInitialTrade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.setInitialTrade), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    // getInitialTrade: function (id, callback) {
-    //     var tx = clone(this.tx.trades.getInitialTrade);
-    //     tx.params = id;
-    //     return this.fire(tx, callback);
-    // },
-
-    zeroHash: function (onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.zeroHash);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.zeroHash), arguments);
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    // checkHash: function (tradeHash, sender, callback) {
-    //     var tx = clone(this.tx.trades.checkHash);
-    //     tx.params = [tradeHash, sender];
-    //     return this.fire(tx, callback);
-    // },
-
-    // getID: function (tradeID, callback) {
-    //     var tx = clone(this.tx.trades.getID);
-    //     tx.params = tradeID;
-    //     return this.fire(tx, callback);
-    // },
-
     saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.saveTrade);
+        var tx = clone(this.tx.Trades.saveTrade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.saveTrade), arguments);
         tx.params = unpacked.params;
         tx.params[3] = abi.fix(tx.params[3], "hex");
@@ -39677,7 +42119,7 @@ module.exports = {
         // trade[6] = self.trades[id].block
         // trade[7] = self.trades[id].outcome
         var self = this;
-        var tx = clone(this.tx.trades.get_trade);
+        var tx = clone(this.tx.Trades.get_trade);
         tx.params = id;
         if (!utils.is_function(callback)) {
             var trade = this.fire(tx);
@@ -39690,35 +42132,16 @@ module.exports = {
         });
     },
 
-    // get_amount: function (id, callback) {
-    //     var tx = clone(this.tx.trades.get_amount);
-    //     tx.params = id;
-    //     return this.fire(tx, callback);
-    // },
-
-    // get_price: function (id, callback) {
-    //     var tx = clone(this.tx.trades.get_price);
-    //     tx.params = id;
-    //     return this.fire(tx, callback);
-    // },
-
     update_trade: function (id, price, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.update_trade);
+        var tx = clone(this.tx.Trades.update_trade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.update_trade), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
-    remove_trade: function (id, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.remove_trade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.remove_trade), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
     fill_trade: function (id, fill, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.trades.fill_trade);
+        var tx = clone(this.tx.Trades.fill_trade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.fill_trade), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -39726,7 +42149,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238}],339:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238}],333:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -39756,7 +42179,7 @@ module.exports = {
     }
 };
 
-},{}],340:[function(require,module,exports){
+},{}],334:[function(require,module,exports){
 /**
  * Testing-only: these methods are whitelisted on production contracts!
  */
@@ -39770,7 +42193,7 @@ var utils = require("../utilities");
 module.exports = {
 
     setInfo: function (id, description, creator, fee, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.info.setInfo);
+        var tx = clone(this.tx.Info.setInfo);
         var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
         tx.params = unpacked.params;
         tx.params[3] = abi.fix(tx.params[3], "hex");
@@ -39778,36 +42201,15 @@ module.exports = {
     },
 
     modifyShares: function (marketID, outcome, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.markets.modifyShares);
+        var tx = clone(this.tx.Markets.modifyShares);
         var unpacked = utils.unpack(marketID, utils.labels(this.modifyShares), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
-    incrementPeriod: function (branchId, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.branches.incrementPeriod);
-        var unpacked = utils.unpack(branchId, utils.labels(this.incrementPeriod), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    addMarket: function (branchId, marketID, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.branches.addMarket);
-        var unpacked = utils.unpack(branchId, utils.labels(this.addMarket), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    addEvent: function (branchId, futurePeriod, eventID, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.expiringEvents.addEvent);
-        var unpacked = utils.unpack(branchId, utils.labels(this.addEvent), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
     setTotalRepReported: function (branchId, reportPeriod, repReported, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.expiringEvents.setTotalRepReported);
+        var tx = clone(this.tx.ExpiringEvents.setTotalRepReported);
         var unpacked = utils.unpack(branchId, utils.labels(this.setTotalRepReported), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
@@ -39815,7 +42217,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":342,"augur-abi":1,"clone":238}],341:[function(require,module,exports){
+},{"../utilities":336,"augur-abi":1,"clone":238}],335:[function(require,module,exports){
 /**
  * multiTrade: allows trading multiple outcomes in market.
  *
@@ -40199,7 +42601,7 @@ module.exports = function (
     }, this);
 };
 
-},{"./constants":313,"./utilities":342,"bignumber.js":11}],342:[function(require,module,exports){
+},{"./constants":313,"./utilities":336,"bignumber.js":11}],336:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -40353,10 +42755,10 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":313,"_process":213,"augur-abi":1,"bignumber.js":11,"buffer":234,"clone":238,"crypto":17}],343:[function(require,module,exports){
+},{"./constants":313,"_process":213,"augur-abi":1,"bignumber.js":11,"buffer":234,"clone":238,"crypto":17}],337:[function(require,module,exports){
 module.exports = require('./lib/index.js')
 
-},{"./lib/index.js":344}],344:[function(require,module,exports){
+},{"./lib/index.js":338}],338:[function(require,module,exports){
 (function (Buffer){
 const utils = require('ethereumjs-util')
 const BN = require('bn.js')
@@ -40873,9 +43275,9 @@ ABI.toSerpent = function (types) {
 module.exports = ABI
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":345,"buffer":234,"ethereumjs-util":346}],345:[function(require,module,exports){
+},{"bn.js":339,"buffer":234,"ethereumjs-util":340}],339:[function(require,module,exports){
 arguments[4][50][0].apply(exports,arguments)
-},{"dup":50}],346:[function(require,module,exports){
+},{"dup":50}],340:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -41544,45 +43946,45 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":14,"bn.js":345,"buffer":234,"create-hash":347,"keccakjs":361,"rlp":364,"secp256k1":365}],347:[function(require,module,exports){
+},{"assert":14,"bn.js":339,"buffer":234,"create-hash":341,"keccakjs":355,"rlp":358,"secp256k1":359}],341:[function(require,module,exports){
 arguments[4][141][0].apply(exports,arguments)
-},{"./md5":349,"buffer":234,"cipher-base":350,"dup":141,"inherits":351,"ripemd160":352,"sha.js":354}],348:[function(require,module,exports){
+},{"./md5":343,"buffer":234,"cipher-base":344,"dup":141,"inherits":345,"ripemd160":346,"sha.js":348}],342:[function(require,module,exports){
 arguments[4][142][0].apply(exports,arguments)
-},{"buffer":234,"dup":142}],349:[function(require,module,exports){
+},{"buffer":234,"dup":142}],343:[function(require,module,exports){
 arguments[4][143][0].apply(exports,arguments)
-},{"./helpers":348,"dup":143}],350:[function(require,module,exports){
+},{"./helpers":342,"dup":143}],344:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"buffer":234,"dup":34,"inherits":351,"stream":228,"string_decoder":229}],351:[function(require,module,exports){
+},{"buffer":234,"dup":34,"inherits":345,"stream":228,"string_decoder":229}],345:[function(require,module,exports){
 arguments[4][210][0].apply(exports,arguments)
-},{"dup":210}],352:[function(require,module,exports){
+},{"dup":210}],346:[function(require,module,exports){
 arguments[4][145][0].apply(exports,arguments)
-},{"buffer":234,"dup":145}],353:[function(require,module,exports){
+},{"buffer":234,"dup":145}],347:[function(require,module,exports){
 arguments[4][146][0].apply(exports,arguments)
-},{"buffer":234,"dup":146}],354:[function(require,module,exports){
+},{"buffer":234,"dup":146}],348:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
-},{"./sha":355,"./sha1":356,"./sha224":357,"./sha256":358,"./sha384":359,"./sha512":360,"dup":147}],355:[function(require,module,exports){
+},{"./sha":349,"./sha1":350,"./sha224":351,"./sha256":352,"./sha384":353,"./sha512":354,"dup":147}],349:[function(require,module,exports){
 arguments[4][148][0].apply(exports,arguments)
-},{"./hash":353,"buffer":234,"dup":148,"inherits":351}],356:[function(require,module,exports){
+},{"./hash":347,"buffer":234,"dup":148,"inherits":345}],350:[function(require,module,exports){
 arguments[4][149][0].apply(exports,arguments)
-},{"./hash":353,"buffer":234,"dup":149,"inherits":351}],357:[function(require,module,exports){
+},{"./hash":347,"buffer":234,"dup":149,"inherits":345}],351:[function(require,module,exports){
 arguments[4][150][0].apply(exports,arguments)
-},{"./hash":353,"./sha256":358,"buffer":234,"dup":150,"inherits":351}],358:[function(require,module,exports){
+},{"./hash":347,"./sha256":352,"buffer":234,"dup":150,"inherits":345}],352:[function(require,module,exports){
 arguments[4][151][0].apply(exports,arguments)
-},{"./hash":353,"buffer":234,"dup":151,"inherits":351}],359:[function(require,module,exports){
+},{"./hash":347,"buffer":234,"dup":151,"inherits":345}],353:[function(require,module,exports){
 arguments[4][152][0].apply(exports,arguments)
-},{"./hash":353,"./sha512":360,"buffer":234,"dup":152,"inherits":351}],360:[function(require,module,exports){
+},{"./hash":347,"./sha512":354,"buffer":234,"dup":152,"inherits":345}],354:[function(require,module,exports){
 arguments[4][153][0].apply(exports,arguments)
-},{"./hash":353,"buffer":234,"dup":153,"inherits":351}],361:[function(require,module,exports){
+},{"./hash":347,"buffer":234,"dup":153,"inherits":345}],355:[function(require,module,exports){
 arguments[4][244][0].apply(exports,arguments)
-},{"browserify-sha3":362,"dup":244}],362:[function(require,module,exports){
+},{"browserify-sha3":356,"dup":244}],356:[function(require,module,exports){
 arguments[4][245][0].apply(exports,arguments)
-},{"buffer":234,"dup":245,"js-sha3":363}],363:[function(require,module,exports){
+},{"buffer":234,"dup":245,"js-sha3":357}],357:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],364:[function(require,module,exports){
+},{"dup":3}],358:[function(require,module,exports){
 arguments[4][247][0].apply(exports,arguments)
-},{"assert":14,"buffer":234,"dup":247}],365:[function(require,module,exports){
+},{"assert":14,"buffer":234,"dup":247}],359:[function(require,module,exports){
 arguments[4][248][0].apply(exports,arguments)
-},{"./lib":368,"./lib/elliptic":367,"dup":248}],366:[function(require,module,exports){
+},{"./lib":362,"./lib/elliptic":361,"dup":248}],360:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -41630,17 +44032,17 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
-},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":211}],367:[function(require,module,exports){
+},{"../../../../../../augur.js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":211}],361:[function(require,module,exports){
 arguments[4][250][0].apply(exports,arguments)
-},{"../messages.json":369,"bn.js":345,"buffer":234,"create-hash":347,"dup":250,"elliptic":371}],368:[function(require,module,exports){
+},{"../messages.json":363,"bn.js":339,"buffer":234,"create-hash":341,"dup":250,"elliptic":365}],362:[function(require,module,exports){
 arguments[4][251][0].apply(exports,arguments)
-},{"./assert":366,"./messages.json":369,"bip66":370,"buffer":234,"dup":251}],369:[function(require,module,exports){
+},{"./assert":360,"./messages.json":363,"bip66":364,"buffer":234,"dup":251}],363:[function(require,module,exports){
 arguments[4][252][0].apply(exports,arguments)
-},{"dup":252}],370:[function(require,module,exports){
+},{"dup":252}],364:[function(require,module,exports){
 arguments[4][253][0].apply(exports,arguments)
-},{"buffer":234,"dup":253}],371:[function(require,module,exports){
+},{"buffer":234,"dup":253}],365:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"../package.json":395,"./elliptic/curve":374,"./elliptic/curves":377,"./elliptic/ec":378,"./elliptic/eddsa":381,"./elliptic/hmac-drbg":384,"./elliptic/utils":386,"brorand":387,"dup":52}],372:[function(require,module,exports){
+},{"../package.json":389,"./elliptic/curve":368,"./elliptic/curves":371,"./elliptic/ec":372,"./elliptic/eddsa":375,"./elliptic/hmac-drbg":378,"./elliptic/utils":380,"brorand":381,"dup":52}],366:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -42003,25 +44405,25 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":371,"bn.js":345}],373:[function(require,module,exports){
+},{"../../elliptic":365,"bn.js":339}],367:[function(require,module,exports){
 arguments[4][54][0].apply(exports,arguments)
-},{"../../elliptic":371,"../curve":374,"bn.js":345,"dup":54,"inherits":394}],374:[function(require,module,exports){
+},{"../../elliptic":365,"../curve":368,"bn.js":339,"dup":54,"inherits":388}],368:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"./base":372,"./edwards":373,"./mont":375,"./short":376,"dup":55}],375:[function(require,module,exports){
+},{"./base":366,"./edwards":367,"./mont":369,"./short":370,"dup":55}],369:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"../../elliptic":371,"../curve":374,"bn.js":345,"dup":56,"inherits":394}],376:[function(require,module,exports){
+},{"../../elliptic":365,"../curve":368,"bn.js":339,"dup":56,"inherits":388}],370:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"../../elliptic":371,"../curve":374,"bn.js":345,"dup":57,"inherits":394}],377:[function(require,module,exports){
+},{"../../elliptic":365,"../curve":368,"bn.js":339,"dup":57,"inherits":388}],371:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"../elliptic":371,"./precomputed/secp256k1":385,"dup":58,"hash.js":388}],378:[function(require,module,exports){
+},{"../elliptic":365,"./precomputed/secp256k1":379,"dup":58,"hash.js":382}],372:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"../../elliptic":371,"./key":379,"./signature":380,"bn.js":345,"dup":59}],379:[function(require,module,exports){
+},{"../../elliptic":365,"./key":373,"./signature":374,"bn.js":339,"dup":59}],373:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"bn.js":345,"dup":60}],380:[function(require,module,exports){
+},{"bn.js":339,"dup":60}],374:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"../../elliptic":371,"bn.js":345,"dup":61}],381:[function(require,module,exports){
+},{"../../elliptic":365,"bn.js":339,"dup":61}],375:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../elliptic":371,"./key":382,"./signature":383,"dup":62,"hash.js":388}],382:[function(require,module,exports){
+},{"../../elliptic":365,"./key":376,"./signature":377,"dup":62,"hash.js":382}],376:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -42119,7 +44521,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":371}],383:[function(require,module,exports){
+},{"../../elliptic":365}],377:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -42187,11 +44589,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":371,"bn.js":345}],384:[function(require,module,exports){
+},{"../../elliptic":365,"bn.js":339}],378:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"../elliptic":371,"dup":65,"hash.js":388}],385:[function(require,module,exports){
+},{"../elliptic":365,"dup":65,"hash.js":382}],379:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],386:[function(require,module,exports){
+},{"dup":66}],380:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -42365,23 +44767,23 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":345}],387:[function(require,module,exports){
+},{"bn.js":339}],381:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"dup":68}],388:[function(require,module,exports){
+},{"dup":68}],382:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"./hash/common":389,"./hash/hmac":390,"./hash/ripemd":391,"./hash/sha":392,"./hash/utils":393,"dup":69}],389:[function(require,module,exports){
+},{"./hash/common":383,"./hash/hmac":384,"./hash/ripemd":385,"./hash/sha":386,"./hash/utils":387,"dup":69}],383:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../hash":388,"dup":70}],390:[function(require,module,exports){
+},{"../hash":382,"dup":70}],384:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../hash":388,"dup":71}],391:[function(require,module,exports){
+},{"../hash":382,"dup":71}],385:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"../hash":388,"dup":72}],392:[function(require,module,exports){
+},{"../hash":382,"dup":72}],386:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"../hash":388,"dup":73}],393:[function(require,module,exports){
+},{"../hash":382,"dup":73}],387:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"dup":74,"inherits":394}],394:[function(require,module,exports){
+},{"dup":74,"inherits":388}],388:[function(require,module,exports){
 arguments[4][210][0].apply(exports,arguments)
-},{"dup":210}],395:[function(require,module,exports){
+},{"dup":210}],389:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.2.8",
@@ -42467,7 +44869,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],396:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -42786,9 +45188,9 @@ module.exports = {
 
 };
 
-},{"async":397,"augur-contracts":6,"ethrpc":398}],397:[function(require,module,exports){
+},{"async":391,"augur-contracts":7,"ethrpc":392}],391:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
-},{"_process":213,"dup":10}],398:[function(require,module,exports){
+},{"_process":213,"dup":10}],392:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -44202,7 +46604,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":213,"async":399,"augur-abi":1,"augur-contracts":6,"bignumber.js":400,"browser-request":401,"clone":402,"js-sha3":403,"net":13,"request":15,"sync-request":15,"websocket":15}],399:[function(require,module,exports){
+},{"_process":213,"async":393,"augur-abi":1,"augur-contracts":7,"bignumber.js":394,"browser-request":395,"clone":396,"js-sha3":397,"net":13,"request":15,"sync-request":15,"websocket":15}],393:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -45470,7 +47872,7 @@ module.exports = {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":213}],400:[function(require,module,exports){
+},{"_process":213}],394:[function(require,module,exports){
 /*! bignumber.js v2.1.3 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (globalObj) {
@@ -48168,11 +50570,11 @@ module.exports = {
     }
 })(this);
 
-},{}],401:[function(require,module,exports){
+},{}],395:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
-},{"dup":12}],402:[function(require,module,exports){
+},{"dup":12}],396:[function(require,module,exports){
 arguments[4][238][0].apply(exports,arguments)
-},{"buffer":234,"dup":238}],403:[function(require,module,exports){
+},{"buffer":234,"dup":238}],397:[function(require,module,exports){
 (function (global){
 /*
  * js-sha3 v0.5.1
@@ -48649,7 +51051,7 @@ arguments[4][238][0].apply(exports,arguments)
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],404:[function(require,module,exports){
+},{}],398:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -49255,7 +51657,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":405,"./lib/scrypt":406,"_process":213,"buffer":234,"crypto":17,"elliptic":407,"ethereumjs-util":433,"fs":13,"node-uuid":438,"path":212,"validator":440}],405:[function(require,module,exports){
+},{"./lib/keccak":399,"./lib/scrypt":400,"_process":213,"buffer":234,"crypto":17,"elliptic":401,"ethereumjs-util":427,"fs":13,"node-uuid":432,"path":212,"validator":434}],399:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -49449,7 +51851,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],406:[function(require,module,exports){
+},{}],400:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -61170,9 +63572,9 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":213,"fs":13,"path":212}],407:[function(require,module,exports){
+},{"_process":213,"fs":13,"path":212}],401:[function(require,module,exports){
 arguments[4][52][0].apply(exports,arguments)
-},{"../package.json":432,"./elliptic/curve":410,"./elliptic/curves":413,"./elliptic/ec":414,"./elliptic/eddsa":417,"./elliptic/hmac-drbg":420,"./elliptic/utils":422,"brorand":424,"dup":52}],408:[function(require,module,exports){
+},{"../package.json":426,"./elliptic/curve":404,"./elliptic/curves":407,"./elliptic/ec":408,"./elliptic/eddsa":411,"./elliptic/hmac-drbg":414,"./elliptic/utils":416,"brorand":418,"dup":52}],402:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -61525,7 +63927,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":407,"bn.js":423}],409:[function(require,module,exports){
+},{"../../elliptic":401,"bn.js":417}],403:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -61933,9 +64335,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":407,"../curve":410,"bn.js":423,"inherits":431}],410:[function(require,module,exports){
+},{"../../elliptic":401,"../curve":404,"bn.js":417,"inherits":425}],404:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"./base":408,"./edwards":409,"./mont":411,"./short":412,"dup":55}],411:[function(require,module,exports){
+},{"./base":402,"./edwards":403,"./mont":405,"./short":406,"dup":55}],405:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -62113,7 +64515,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":407,"../curve":410,"bn.js":423,"inherits":431}],412:[function(require,module,exports){
+},{"../../elliptic":401,"../curve":404,"bn.js":417,"inherits":425}],406:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -63022,9 +65424,9 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":407,"../curve":410,"bn.js":423,"inherits":431}],413:[function(require,module,exports){
+},{"../../elliptic":401,"../curve":404,"bn.js":417,"inherits":425}],407:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"../elliptic":407,"./precomputed/secp256k1":421,"dup":58,"hash.js":425}],414:[function(require,module,exports){
+},{"../elliptic":401,"./precomputed/secp256k1":415,"dup":58,"hash.js":419}],408:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63236,7 +65638,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":407,"./key":415,"./signature":416,"bn.js":423}],415:[function(require,module,exports){
+},{"../../elliptic":401,"./key":409,"./signature":410,"bn.js":417}],409:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63345,7 +65747,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":423}],416:[function(require,module,exports){
+},{"bn.js":417}],410:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63482,11 +65884,11 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":407,"bn.js":423}],417:[function(require,module,exports){
+},{"../../elliptic":401,"bn.js":417}],411:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"../../elliptic":407,"./key":418,"./signature":419,"dup":62,"hash.js":425}],418:[function(require,module,exports){
+},{"../../elliptic":401,"./key":412,"./signature":413,"dup":62,"hash.js":419}],412:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"../../elliptic":407,"dup":63}],419:[function(require,module,exports){
+},{"../../elliptic":401,"dup":63}],413:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -63554,11 +65956,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":407,"bn.js":423}],420:[function(require,module,exports){
+},{"../../elliptic":401,"bn.js":417}],414:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"../elliptic":407,"dup":65,"hash.js":425}],421:[function(require,module,exports){
+},{"../elliptic":401,"dup":65,"hash.js":419}],415:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],422:[function(require,module,exports){
+},{"dup":66}],416:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -63733,7 +66135,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":423}],423:[function(require,module,exports){
+},{"bn.js":417}],417:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -66182,23 +68584,23 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],424:[function(require,module,exports){
+},{}],418:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"dup":68}],425:[function(require,module,exports){
+},{"dup":68}],419:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"./hash/common":426,"./hash/hmac":427,"./hash/ripemd":428,"./hash/sha":429,"./hash/utils":430,"dup":69}],426:[function(require,module,exports){
+},{"./hash/common":420,"./hash/hmac":421,"./hash/ripemd":422,"./hash/sha":423,"./hash/utils":424,"dup":69}],420:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"../hash":425,"dup":70}],427:[function(require,module,exports){
+},{"../hash":419,"dup":70}],421:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../hash":425,"dup":71}],428:[function(require,module,exports){
+},{"../hash":419,"dup":71}],422:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"../hash":425,"dup":72}],429:[function(require,module,exports){
+},{"../hash":419,"dup":72}],423:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"../hash":425,"dup":73}],430:[function(require,module,exports){
+},{"../hash":419,"dup":73}],424:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"dup":74,"inherits":431}],431:[function(require,module,exports){
+},{"dup":74,"inherits":425}],425:[function(require,module,exports){
 arguments[4][210][0].apply(exports,arguments)
-},{"dup":210}],432:[function(require,module,exports){
+},{"dup":210}],426:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "5.2.1",
@@ -66267,7 +68669,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],433:[function(require,module,exports){
+},{}],427:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -66644,9 +69046,9 @@ function padToEven (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":14,"bn.js":434,"buffer":234,"elliptic":407,"rlp":437,"sha3":435}],434:[function(require,module,exports){
-arguments[4][423][0].apply(exports,arguments)
-},{"dup":423}],435:[function(require,module,exports){
+},{"assert":14,"bn.js":428,"buffer":234,"elliptic":401,"rlp":431,"sha3":429}],428:[function(require,module,exports){
+arguments[4][417][0].apply(exports,arguments)
+},{"dup":417}],429:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -66672,9 +69074,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":234,"js-sha3":436}],436:[function(require,module,exports){
+},{"buffer":234,"js-sha3":430}],430:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],437:[function(require,module,exports){
+},{"dup":3}],431:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -66903,9 +69305,9 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":14,"buffer":234}],438:[function(require,module,exports){
+},{"assert":14,"buffer":234}],432:[function(require,module,exports){
 arguments[4][309][0].apply(exports,arguments)
-},{"buffer":234,"crypto":17,"dup":309}],439:[function(require,module,exports){
+},{"buffer":234,"crypto":17,"dup":309}],433:[function(require,module,exports){
 /*!
  * depd
  * Copyright(c) 2015 Douglas Christopher Wilson
@@ -66986,7 +69388,7 @@ function wrapproperty(obj, prop, message) {
   return
 }
 
-},{}],440:[function(require,module,exports){
+},{}],434:[function(require,module,exports){
 (function (process){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
@@ -67971,4 +70373,4 @@ function wrapproperty(obj, prop, message) {
 });
 
 }).call(this,require('_process'))
-},{"_process":213,"depd":439}]},{},[9]);
+},{"_process":213,"depd":433}]},{},[9]);

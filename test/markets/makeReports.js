@@ -17,49 +17,19 @@ var DEBUG = true;
 describe("Unit tests", function () {
 
     describe("eth_call", function () {
-        runner(this.title, "makeReports", [{
-            method: "getNumEventsToReport",
-            parameters: ["hash", "int"]
-        }, {
-            method: "getNumReportsActual",
-            parameters: ["hash", "int"]
-        }, {
-            method: "getSubmittedHash",
-            parameters: ["hash", "int", "address"]
-        }, {
-            method: "getBeforeRep",
-            parameters: ["hash", "int"]
-        }, {
-            method: "getAfterRep",
-            parameters: ["hash", "int"]
-        }, {
-            method: "getReport",
-            parameters: ["hash", "int", "hash"]
-        }, {
-            method: "getRRUpToDate",
-            parameters: []
-        }, {
-            method: "getNumReportsExpectedEvent",
-            parameters: ["hash", "int", "hash"]
-        }, {
-            method: "getNumReportsEvent",
-            parameters: ["hash", "int", "hash"]
-        }, {
+        runner(this.title, "MakeReports", [{
             method: "validateReport",
             parameters: ["hash", "hash", "int", "fixed", "int", "int", "int", "fixed"]
         }]);
     });
 
     describe("eth_sendTransaction", function () {
-        runner(this.title, "makeReports", [{
+        runner(this.title, "MakeReports", [{
             method: "submitReportHash",
             parameters: ["hash", "hash"]
         }, {
             method: "submitReport",
-            parameters: ["hash", "intHexString", "fixed", "fixed", null]
-        }, {
-            method: "submitReport",
-            parameters: ["hash", "intHexString", "fixed", "fixed", "1"]
+            parameters: ["hash", "intHexString", "fixed", "fixed"]
         }]);
     });
 });
@@ -81,7 +51,7 @@ describe("Integration tests", function () {
         var test = function (t) {
             it("salt=" + t.salt + ", report=" + t.report + ", eventID=" + t.eventID, function () {
                 var localHash = augur.makeHash(t.salt, t.report, t.eventID, t.sender, t.isScalar);
-                var contractHash = augur.makeHash_contract(t.salt, t.report, t.eventID, t.sender, t.isScalar);
+                var contractHash = augur.MakeReports.makeHash(abi.hex(t.salt), abi.fix(t.report, "hex"), t.eventID, t.sender);
                 assert.strictEqual(localHash, contractHash);
             });
         };
@@ -220,7 +190,7 @@ describe("Integration tests", function () {
                 this.timeout(tools.TIMEOUT*100);
                 var curTime = new Date().getTime() / 1000;
                 if (DEBUG) console.log("Current time:", curTime + "\tResidual:", curTime % periodLength);
-                var startPeriod = parseInt(augur.getReportPeriod(newBranchID));
+                var startPeriod = parseInt(augur.getVotePeriod(newBranchID));
                 if (DEBUG) console.log("Events in start period", startPeriod, augur.getEvents(newBranchID, startPeriod));
                 var currentPeriod = augur.getCurrentPeriod(newBranchID);
                 if (DEBUG) console.log("Current period:", currentPeriod);
@@ -230,7 +200,7 @@ describe("Integration tests", function () {
                     if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
                     augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
                         assert.strictEqual(res.callReturn, "1");
-                        var period = parseInt(augur.getReportPeriod(newBranchID));
+                        var period = parseInt(augur.getVotePeriod(newBranchID));
                         if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                         currentPeriod = Math.floor(currentPeriod).toString();
                         if (DEBUG) console.log("Events in new period", period, augur.getEvents(newBranchID, period));
@@ -242,15 +212,15 @@ describe("Integration tests", function () {
                         console.log("diceroll1:", diceroll);
                         var diceroll = augur.rpc.sha3(hashable);
                         console.log("diceroll2:", diceroll);
-                        var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period, augur.from);
-                        console.log("threshold:", threshold);
+                        // var threshold = augur.calculateReportingThreshold(newBranchID, eventID, period, augur.from);
+                        // console.log("threshold:", threshold);
                         var curTime = new Date().getTime() / 1000;
                         if (DEBUG) console.log("Residual:", curTime % periodLength);
                         var currentExpPeriod = curTime / periodLength;
                         if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
                         // assert.isAtLeast(currentExpPeriod, period + 1);
                         // assert.isBelow(currentExpPeriod, period + 2);
-                        console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
+                        // console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
                         // if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
                             return augur.submitReportHash({
                                 event: eventID,
@@ -266,7 +236,30 @@ describe("Integration tests", function () {
                                     assert.strictEqual(res.callReturn, "1");
                                     done();
                                 },
-                                onFailed: done
+                                onFailed: function (err) {
+                                    if (err && err.error === "-9") {
+                                        augur.submitReportHash({
+                                            event: eventID,
+                                            reportHash: reportHash,
+                                            onSent: function (res) {
+                                                if (DEBUG) console.log("submitReportHash sent:", res);
+                                                assert(res.txHash);
+                                                assert.strictEqual(res.callReturn, "1");
+                                            },
+                                            onSuccess: function (res) {
+                                                if (DEBUG) console.log("submitReportHash success:", res);
+                                                assert(res.txHash);
+                                                assert.strictEqual(res.callReturn, "1");
+                                                done();
+                                            },
+                                            onFailed: function (err) {
+                                                if (err && err.error === "-9") {
+                                                    
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
                             });
                         // } else {
                         //     done();
@@ -279,7 +272,7 @@ describe("Integration tests", function () {
                 this.timeout(tools.TIMEOUT*100);
 
                 // fast-forward to the second half of the reporting period
-                var period = parseInt(augur.getReportPeriod(newBranchID));
+                var period = parseInt(augur.getVotePeriod(newBranchID));
                 var curTime = new Date().getTime() / 1000;
                 var timeToGo = Math.ceil((periodLength / 2) - (curTime % (periodLength / 2)));
                 if (DEBUG) {
@@ -287,7 +280,7 @@ describe("Integration tests", function () {
                     console.log("Next half-period starts at time", curTime + timeToGo, "(" + timeToGo + " to go)")
                 }
                 setTimeout(function () {
-                    assert.strictEqual(parseInt(augur.getReportPeriod(newBranchID)), period);
+                    assert.strictEqual(parseInt(augur.getVotePeriod(newBranchID)), period);
                     augur.submitReport({
                         event: eventID,
                         salt: salt,

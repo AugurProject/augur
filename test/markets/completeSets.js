@@ -13,7 +13,7 @@ var runner = require("../runner");
 
 describe("Unit tests", function () {
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "CompleteSets", [{
             method: "buyCompleteSets",
             parameters: ["hash", "fixed"]
         }, {

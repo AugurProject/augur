@@ -12,13 +12,6 @@ var constants = require("../constants");
 
 module.exports = {
 
-    cancel: function (trade_id, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.buyAndSellShares.cancel);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.cancel), arguments);
-        tx.params = unpacked.params;
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
     buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
         var self = this;
         if (amount.constructor === Object && amount.amount) {
@@ -33,7 +26,7 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.buyAndSellShares.buy);
+        var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
@@ -63,7 +56,7 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.buyAndSellShares.sell);
+        var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
