@@ -18,15 +18,15 @@ describe("Unit tests", function () {
         runner(this.title, "Cash", [{
             method: "setCash",
             parameters: ["address", "fixed"]
-    //     }, {
-    //         method: "addCash",
-    //         parameters: ["address", "fixed"]
-    //     }, {
-    //         method: "initiateOwner",
-    //         parameters: ["address"]
-    //     }, {
-    //         method: "withdrawEther",
-    //         parameters: ["address", "ether"]
+        }, {
+            method: "addCash",
+            parameters: ["address", "fixed"]
+        }, {
+            method: "initiateOwner",
+            parameters: ["address"]
+        }, {
+            method: "withdrawEther",
+            parameters: ["address", "int"]
         }]);
     });
 });

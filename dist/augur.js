@@ -48187,8 +48187,8 @@ module.exports = {
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
     
-    getCashBalance: function (args) {
-        return this.Cash.balance(args);
+    getCashBalance: function (account, callback) {
+        return this.Cash.balance(account, callback);
     },
 
     sendCash: function (to, value, onSent, onSuccess, onFailed) {

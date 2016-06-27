@@ -23,11 +23,6 @@ var test = {
         } else {
             expected.params = clone(t.params);
         }
-        if (t.ether && t.ether.length) {
-            for (i = 0; i < t.ether.length; ++i) {
-                expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
-            }
-        }
         var fire = augur.fire;
         augur.fire = function (tx, callback) {
             if (tx.timeout) delete tx.timeout;
@@ -53,11 +48,6 @@ var test = {
                 expected.params = t.params[0];
             } else {
                 expected.params = clone(t.params);
-            }
-            if (t.ether && t.ether.length) {
-                for (i = 0; i < t.ether.length; ++i) {
-                    expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
-                }
             }
             var transact = augur.transact;
             augur.transact = function (tx, onSent, onSuccess, onFailed) {
@@ -87,11 +77,6 @@ var test = {
                 expected.params = t.params[0];
             } else {
                 expected.params = clone(t.params);
-            }
-            if (t.ether && t.ether.length) {
-                for (i = 0; i < t.ether.length; ++i) {
-                    expected.params[t.ether[i]] = abi.prefix_hex(abi.bignum(expected.params[t.ether[i]]).mul(augur.rpc.ETHER).toString(16));
-                }
             }
             var transact = augur.transact;
             augur.transact = function (tx, onSent, onSuccess, onFailed) {

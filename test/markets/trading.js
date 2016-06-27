@@ -19,7 +19,7 @@ var rpc = augur.rpc;
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, "trades", [{
+        runner(this.title, "Trades", [{
             method: "makeTradeHash",
             parameters: ["fixed", "fixed", "hashArray"]
         }, {
@@ -43,7 +43,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, "trades", [{
+        runner(this.title, "Trades", [{
             method: "setInitialTrade",
             parameters: ["hash"]
         }, {
@@ -64,7 +64,8 @@ describe("Unit tests", function () {
         }, {
             method: "fill_trade",
             parameters: ["hash", "fixed"]
-        }, {
+        }]);
+        runner(this.title, "BuyAndSellShares", [{
             method: "cancel",
             parameters: ["hash"]
         }]);
@@ -501,7 +502,7 @@ describe("Integration tests", function () {
 
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
-        var augur = tools.setup(require("../../src"), process.argv.slice(2));
+        var augur = tools.setup(require(augurpath), process.argv.slice(2));
         var branchID = augur.constants.DEFAULT_BRANCH_ID;
         var markets = augur.getMarketsInBranch(branchID);
         var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
@@ -510,6 +511,7 @@ describe("Integration tests", function () {
 
         beforeEach("top up accounts", function (done) {
             this.timeout(tools.TIMEOUT*unlockable.length);
+            augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             async.eachSeries(unlockable, function (account, nextAccount) {
                 augur.rpc.personal("unlockAccount", [account, password], function (unlocked) {
                     augur.getCashBalance(account, function (cashBalance) {
