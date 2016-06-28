@@ -13,7 +13,7 @@ const OrderBook = (p) => (
 					>
 						<ValueDenomination className="shares" {...bid.shares} />
 					</Clickable>
-					<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, bid.price.value); }}>
+					<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, undefined, bid.price.value); }}>
 						<ValueDenomination className="price" {...bid.price} />
 					</Clickable>
 				</article>
@@ -29,7 +29,7 @@ const OrderBook = (p) => (
 			<h5>Asks</h5>
 			{p.asks.map((ask, i) => (
 				<article key={ask.price.full} className="bid-ask ask">
-					<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, ask.price.value); }}>
+					<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, undefined, ask.price.value); }}>
 						<ValueDenomination className="price" {...ask.price} />
 					</Clickable>
 					<Clickable
