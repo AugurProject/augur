@@ -10,11 +10,15 @@ import OrderBook from '../../bids-asks/components/order-book';
 const TradePanelItem = (p) => {
 	const isOutcomeActive = p.selectedOutcomeID === p.id;
 
-	console.log('p -- ', p);
+	// console.log('trade panel item, p -- ', p);
 
 	return (
 		<div className={classnames('trade-panel-item', p.className, { active: isOutcomeActive })}>
-			<Clickable onClick={() => { p.updateSelectedOutcome(p.id); }}>
+			<Clickable onClick={event => {
+				event.stopPropagation();
+
+				p.updateSelectedOutcome(p.id);
+			}}>
 				<div className="trade-panel-item-content">
 					<span className="outcome-name">{p.name}</span>
 

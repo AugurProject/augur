@@ -57,7 +57,7 @@ selectors.selectedOutcome = {
 		module.exports.update({
 			selectedOutcome: {
 				...selectors.selectedOutcome,
-				selectedOutcomeID: selectors.selectedOutcome.selectedOutcomeID !== selectedOutcomeID ? selectedOutcomeID : null
+				selectedOutcomeID: selectedOutcomeID
 			}
 		});
 	},
