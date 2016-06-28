@@ -4,20 +4,9 @@ import ValueDenomination from '../../common/components/value-denomination';
 import Input from '../../common/components/input';
 import Dropdown from '../../common/components/dropdown';
 import Clickable from '../../common/components/clickable';
-import Collapse from '../../common/components/collapse';
-import OrderBook from '../../bids-asks/components/order-book';
 
 const TradePanelItems = (p) => {
-	console.log('p -- ', p);
-	console.log('selectedOutcome -- ', p.selectedOutcomeID);
-
-	// const isOutcomeActive = p.selectedOutcomeID === p.id;
-
-	// console.log('trade panel item, p -- ', p);
-
 	const itemRows = (outcomes, sideOptions) => {
-		console.log('outcomes -- ', outcomes, sideOptions);
-
 		let tableRows = [];
 
 		outcomes.map((outcome) => {
@@ -148,7 +137,7 @@ const TradePanelItems = (p) => {
 		<tbody>
 			{itemRows(p.outcomes, p.sideOptions)}
 		</tbody>
-	)
+	);
 };
 
 TradePanelItems.propTypes = {
@@ -169,79 +158,3 @@ TradePanelItems.propTypes = {
 };
 
 export default TradePanelItems;
-
-// {p.outcomes && p.outcomes.map(outcome => (
-//
-// )}
-
-// <div className={classnames('trade-panel-item', p.className, { active: isOutcomeActive })}>
-// 	<Clickable onClick={event => {
-// 				event.stopPropagation();
-//
-// 				p.updateSelectedOutcome(p.id);
-// 			}}>
-
-// </Clickable>
-// <div>
-// 	<Collapse isOpen={isOutcomeActive}>
-// 		<OrderBook
-// 			key={`order-book-${p.id}`}
-// 			outcome={p}
-// 			updateTradeOrder={p.trade.updateTradeOrder}
-// 			bids={p.orderBook.bids}
-// 			asks={p.orderBook.asks}
-// 		/>
-// 	</Collapse>
-// 	</div>
-// 	</div>
-
-
-
-// <div className="bids">
-// 	{p.bids.map((bid, i) => {
-// 		if(i != 0){
-// 			return (
-// 				<article key={bid.price.full} className="bid-ask bid">
-// 					<Clickable
-// 						onClick={() => { p.updateTradeOrder(p.outcome.id, bid.shares.value, bid.price.value, 'ask'); }}
-// 					>
-// 						<ValueDenomination className="shares" {...bid.shares} />
-// 					</Clickable>
-// 					<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, bid.price.value); }}>
-// 						<ValueDenomination className="price" {...bid.price} />
-// 					</Clickable>
-// 				</article>
-// 			)
-// 		}
-// 	})}
-// 	{!p.bids.length &&
-// 	<article className="bid-ask ask">
-// 		<ValueDenomination className="price" />
-// 		<ValueDenomination className="shares" formatted="-" />
-// 	</article>
-// 	}
-// </div>
-// <div className="asks">
-// 	{p.asks.map((ask, i) => {
-// 		if (i != 0) {
-// 			return (
-// 				<article key={ask.price.full} className="bid-ask ask">
-// 					<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, ask.price.value); }}>
-// 						<ValueDenomination className="price" {...ask.price} />
-// 					</Clickable>
-// 					<Clickable
-// 						onClick={() => { p.updateTradeOrder(p.outcome.id, ask.shares.value, ask.price.value, 'bid'); }}
-// 					>
-// 						<ValueDenomination className="shares" {...ask.shares} />
-// 					</Clickable>
-// 				</article>
-// 			)
-// 		}
-// 	})}
-// {!p.asks.length &&
-// <article className="bid-ask ask">
-// 	<ValueDenomination className="price" formatted="-" />
-// 	<ValueDenomination className="shares" />
-// </article>
-// }
-// </div>
