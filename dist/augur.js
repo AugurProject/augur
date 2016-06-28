@@ -48122,11 +48122,7 @@ module.exports = {
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buy);
-        console.log("[buy] amount:", amount);
-        console.log("[buy] price:", price);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        console.log("[buy] from:", this.from, this.coinbase);
-        console.log("[buy] tx:", JSON.stringify(tx, null, 2));
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
                 constants.BID,

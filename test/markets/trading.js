@@ -849,27 +849,11 @@ describe("Integration tests", function () {
                     augur.useAccount(accounts[0]);
                     var orderBook = augur.getOrderBook(t.market);
                     var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
-                    console.log("value:", value);
                     var scalarMinMax = {};
                     var marketInfo = augur.getMarketInfo(t.market);
                     if (marketInfo && marketInfo.type === "scalar") {
                         scalarMinMax = marketInfo.events[0];
                     }
-                    console.log("multiTrade inputs:", {
-                        requestId: t.requestId,
-                        market: t.market,
-                        marketOrderBook: orderBook,
-                        userTradeOrdersPerOutcome: [{
-                            type: t.type,
-                            sharesToSell: t.amount,
-                            etherToBuy: value,
-                            limitPrice: t.limitPrice,
-                            outcomeID: t.outcome
-                        }],
-                        positionsPerOutcome: {"1": {qtyShares: 0}},
-                        scalarMinMax: scalarMinMax
-                    });
-                    console.log("augur.from:", augur.from, accounts[0]);
                     augur.multiTrade({
                         requestId: t.requestId,
                         market: t.market,
