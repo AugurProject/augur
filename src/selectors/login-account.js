@@ -40,6 +40,9 @@ loginAccount.editName = (name) => {
 	loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
 };
 
-loginAccount.onChangePass = (password, newPassword, newPassword2) => console.log(`Password: ${password}.`, `New Password: ${newPassword}.`, `Confirmed New Password: ${newPassword2}.`, 'This function would trigger a password change in Augur + validation.');
+loginAccount.onChangePass = (password, newPassword, newPassword2, cb) => {
+	console.log(`Password: ${password}.`, `New Password: ${newPassword}.`, `Confirmed New Password: ${newPassword2}.`, 'This function would trigger a password change in Augur + validation.');
+	cb({ msg: 'your Password has been successfully changed!', editPassword: false });
+};
 
 export default loginAccount;

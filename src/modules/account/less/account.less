@@ -37,9 +37,9 @@
 
 			.item {
 				padding: 0.5em 2em 0.5em 0.5em;
-				border: 1px solid transparent;
-				flex-grow: 1;
-				margin: 0 1vmin;
+				// border: 1px solid transparent;
+				// flex-grow: 1;
+				// margin: 0 1vmin;
 			}
 
 			.input {
@@ -73,7 +73,7 @@
 				.button {
 					font-size: 1.22rem;
 					margin: .25rem .5rem;
-					flex-basis: 25vmin;
+					// flex-basis: 25vmin;
 				}
 			}
 
@@ -130,6 +130,16 @@
 		font-size: 1.5rem;
 	}
 }
+
+.password-msg {
+	text-align: center;
+	font-size: 1.5rem;
+	background-color: @color-success-normal;
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+	padding: 1vmin;
+}
 @media screen and (max-width: @media-small-width) {
 	.account-details > .account-info > .account-info-item {
 		flex-flow: column wrap;
@@ -144,7 +154,7 @@
 	}
 	.account-details > .account-info > .account-info-item > .button {
 		flex-grow: 1;
-		flex-basis: 0;
+		flex-basis: initial;
 	}
 	.account-details > .account-info > .account-info-item > h2 {
 		flex-grow: 1;
