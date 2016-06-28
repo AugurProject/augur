@@ -1,62 +1,60 @@
 import React from 'react';
-import TradePanelItem from './trade-panel-item';
+import TradePanelItems from '../../../modules/trade/components/trade-panel-items';
 import Transaction from '../../transactions/components/transaction';
 import Clickable from '../../common/components/clickable';
 
 const TradePanel = (p) => {
 
-	// console.log('p -- ', p);
+	console.log('TradePanel: p -- ', p);
 
 	return (
 		<section
 			className="trade-panel"
 			onClick={() => p.updateSelectedOutcome(null)}
 		>
-			<div className="trade-builder">
-				<div className="trade-panel-item-header">
-					<span className="outcome-name">&nbsp;</span>
-					<span className="last-price">Last</span>
-					<span className="top-bid">{!!p.selectedOutcomeID ? 'Bid' : 'Top Bid'}</span>
-					<span className="top-ask">{!!p.selectedOutcomeID ? 'Ask' : 'Top Ask'}</span>
-					<span className="num-shares">Side</span>
-					<span className="num-shares">Shares</span>
-					<span className="limit-price">Limit</span>
-					<span className="fee-to-pay">Fee</span>
-					<span className="total-cost">Profit/Loss</span>
-				</div>
-				{p.outcomes && p.outcomes.map(outcome => (
-					<TradePanelItem
-						key={outcome.id}
-						sideOptions={p.sideOptions}
-						updateSelectedOutcome={p.updateSelectedOutcome}
-						selectedOutcomeID={p.selectedOutcomeID}
-						{...outcome}
-						{...outcome.trade}
-					/>
-				))}
-			</div>
+			<table className="trade-builder">
+				<thead className="trade-panel-item-header">
+					<tr>
+						<th className="outcome-name"></th>
+						<th className="last-price">Last</th>
+						<th className="top-bid">{!!p.selectedOutcomeID ? 'Bid' : 'Top Bid'}</th>
+						<th className="top-ask">{!!p.selectedOutcomeID ? 'Ask' : 'Top Ask'}</th>
+						<th className="num-shares">Side</th>
+						<th className="num-shares">Shares</th>
+						<th className="limit-price">Limit</th>
+						<th className="fee-to-pay">Fee</th>
+						<th className="total-cost">Profit/Loss</th>
+					</tr>
+				</thead>
+				<TradePanelItems
+					outcomes={p.outcomes}
+					sideOptions={p.sideOptions}
+					selectedOutcomeID={p.selectedOutcomeID}
+					updateSelectedOutcome={p.updateSelectedOutcome}
+				/>
+			</table>
 
 			{p.tradeOrders && !!p.tradeOrders.length &&
-			<div className="trade-orders">
-				<h5>Trade Summary</h5>
-				{p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
+				<div className="trade-orders">
+					<h5>Trade Summary</h5>
+					{p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
+						<Transaction
+							key={i}
+							className="order"
+							{...tradeOrder}
+							status={undefined}
+						/>
+					))}
+
 					<Transaction
-						key={i}
-						className="order"
-						{...tradeOrder}
+						type="trade_summary"
+						shares={p.totalShares}
+						className="order total"
+						ether={p.totalEther}
+						gas={p.totalGas}
 						status={undefined}
 					/>
-				))}
-
-				<Transaction
-					type="trade_summary"
-					shares={p.totalShares}
-					className="order total"
-					ether={p.totalEther}
-					gas={p.totalGas}
-					status={undefined}
-				/>
-			</div>
+				</div>
 			}
 			<div className="place-trade-container">
 				<button
@@ -78,3 +76,15 @@ TradePanel.propTypes = {
 };
 
 export default TradePanel;
+
+
+// {p.outcomes && p.outcomes.map(outcome => (
+// 	<TradePanelItems
+// 		key={outcome.id}
+// 		sideOptions={p.sideOptions}
+// 		updateSelectedOutcome={p.updateSelectedOutcome}
+// 		selectedOutcomeID={p.selectedOutcomeID}
+// 		{...outcome}
+// 		{...outcome.trade}
+// 	/>
+// ))}
