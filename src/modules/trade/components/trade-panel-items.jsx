@@ -128,8 +128,6 @@ const TradePanelItems = (p) => {
 			});
 		});
 
-		console.log('tableRows -- ', tableRows);
-
 		return tableRows;
 	};
 
