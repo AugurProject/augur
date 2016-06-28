@@ -6,7 +6,7 @@ var tools = require("../test/tools");
 var augur = tools.setup(require("../src"), process.argv.slice(2));
 
 augur.createSingleEventMarket({
-    branchId: augur.branches.dev,
+    branchId: augur.constants.DEFAULT_BRANCH_ID,
     description: "This is a test market",
     expDate: new Date().getTime() / 500,
     minValue: 1,

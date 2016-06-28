@@ -11,7 +11,7 @@ var tools = require("../tools");
 var runner = require("../runner");
 
 describe("Unit tests", function () {
-    runner("eth_call", [{
+    runner("eth_call", "reporting", [{
         method: "getRepBalance",
         parameters: ["hash", "address"]
     }, {
@@ -36,7 +36,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
-    var branchId = augur.branches.dev;
+    var branchId = augur.constants.DEFAULT_BRANCH_ID;
     var reporterIndex = "1";
 
     describe("getTotalRep(" + branchId + ")", function () {

@@ -2,7 +2,7 @@
  * Batch interface:
  * var b = augur.createBatch();
  * b.add("getCashBalance", [augur.coinbase], callback);
- * b.add("getRepBalance", [augur.branches.dev, augur.coinbase], callback);
+ * b.add("getRepBalance", [augur.constants.DEFAULT_BRANCH_ID, augur.coinbase], callback);
  * b.execute();
  */
 
@@ -16,9 +16,9 @@ var Batch = function (tx, rpc) {
     this.txlist = [];
 };
 
-Batch.prototype.add = function (method, params, callback) {
+Batch.prototype.add = function (contract, method, params, callback) {
     if (method) {
-        var tx = clone(this.tx[method]);
+        var tx = clone(this.tx[contract][method]);
         tx.params = params;
         if (callback) tx.callback = callback;
         this.txlist.push(tx);

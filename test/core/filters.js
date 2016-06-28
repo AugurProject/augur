@@ -20,7 +20,7 @@ var augurpath = "../../src/index";
 var augur = tools.setup(require(augurpath), process.argv.slice(2));
 
 var DELAY = 2500;
-var branch = augur.branches.dev;
+var branch = augur.constants.DEFAULT_BRANCH_ID;
 var markets = augur.getMarketsInBranch(branch);
 var numMarkets = markets.length;
 var marketId, marketInfo;

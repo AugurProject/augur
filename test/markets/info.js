@@ -12,7 +12,7 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Info", [{
             method: "getCreator",
             parameters: ["address"]
         }, {
@@ -24,7 +24,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "Info", [{
             method: "setInfo",
             parameters: ["hash", "string", "address", "fixed"]
         }]);
@@ -35,7 +35,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var constants = augur.constants;
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var testAccount = accounts[0];
     var markets = augur.getMarketsInBranch(branchID);

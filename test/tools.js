@@ -161,11 +161,11 @@ module.exports = {
 
     get_balances: function (augur, account, branch) {
         if (augur) {
-            branch = branch || augur.branches.dev;
+            branch = branch || augur.constants.DEFAULT_BRANCH_ID;
             account = account || augur.coinbase;
             return {
                 cash: augur.getCashBalance(account),
-                reputation: augur.getRepBalance(branch || augur.branches.dev, account),
+                reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
                 ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
             };
         }

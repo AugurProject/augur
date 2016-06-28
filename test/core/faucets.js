@@ -7,7 +7,7 @@ var runner = require("../runner");
 var tools = require("../tools");
 
 describe("Unit tests", function () {
-    runner("eth_sendTransaction", [{
+    runner("eth_sendTransaction", "Faucets", [{
         method: "reputationFaucet",
         parameters: ["hash"]
     }, {
@@ -43,7 +43,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         it("reputationFaucet", function (done) {
             this.timeout(tools.TIMEOUT);
             augur.reputationFaucet({
-                branch: augur.branches.dev,
+                branch: augur.constants.DEFAULT_BRANCH_ID,
                 onSent: function (r) {
                     assert.strictEqual(r.callReturn, "1");
                     assert(abi.bignum(r.txHash).toNumber());
@@ -52,7 +52,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     assert.strictEqual(r.callReturn, "1");
                     assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
                     assert.isAbove(abi.number(r.blockNumber), 0);
-                    var rep_balance = augur.getRepBalance(augur.branches.dev, augur.coinbase);
+                    var rep_balance = augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, augur.coinbase);
                     assert.strictEqual(rep_balance, "47");
                     done();
                 },

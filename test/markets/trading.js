@@ -15,11 +15,10 @@ var augurpath = "../../src/index";
 var augur = require(augurpath);
 var runner = require("../runner");
 var tools = require("../tools");
-var rpc = augur.rpc;
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Trades", [{
             method: "makeTradeHash",
             parameters: ["fixed", "fixed", "hashArray"]
         }, {
@@ -43,7 +42,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "Trades", [{
             method: "setInitialTrade",
             parameters: ["hash"]
         }, {
@@ -64,7 +63,8 @@ describe("Unit tests", function () {
         }, {
             method: "fill_trade",
             parameters: ["hash", "fixed"]
-        }, {
+        }]);
+        runner(this.title, "BuyAndSellShares", [{
             method: "cancel",
             parameters: ["hash"]
         }]);
@@ -501,21 +501,23 @@ describe("Integration tests", function () {
 
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
-        var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var branchID = augur.branches.dev;
+        var augur = tools.setup(require(augurpath), process.argv.slice(2));
+        var branchID = augur.constants.DEFAULT_BRANCH_ID;
         var markets = augur.getMarketsInBranch(branchID);
         var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
-        var accounts = rpc.personal("listAccounts");
+        var accounts = augur.rpc.personal("listAccounts");
         var unlockable = [augur.from, accounts[0], accounts[2]];
 
         beforeEach("top up accounts", function (done) {
             this.timeout(tools.TIMEOUT*unlockable.length);
+            augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
             async.eachSeries(unlockable, function (account, nextAccount) {
                 augur.rpc.personal("unlockAccount", [account, password], function (unlocked) {
                     augur.getCashBalance(account, function (cashBalance) {
                         if (parseFloat(cashBalance) > 2500) return nextAccount();
+                        augur.useAccount(account);
                         augur.fundNewAccount({
-                            branch: augur.branches.dev,
+                            branch: augur.constants.DEFAULT_BRANCH_ID,
                             onSent: function (r) {
                                 assert.strictEqual(r.callReturn, "1");
                             },
@@ -684,7 +686,7 @@ describe("Integration tests", function () {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT*4);
                     augur.useAccount(accounts[0]);
-                    var initialTotalTrades = parseInt(augur.get_total_trades(t.market));
+                    var initialTotalTrades = parseInt(augur.Markets.get_total_trades(t.market));
                     augur.buyCompleteSets({
                         market: t.market,
                         amount: t.amount,
@@ -710,27 +712,27 @@ describe("Integration tests", function () {
                                                     max_amount: 0,
                                                     trade_ids: [thisTrade],
                                                     onTradeHash: function (r) {
-                                                        // console.log("tradeHash:", r);
+                                                        console.log("tradeHash:", r);
                                                         assert.notProperty(r, "error");
                                                         assert.isString(r);
                                                     },
                                                     onCommitSent: function (r) {
-                                                        // console.log("commitSent:", r);
+                                                        console.log("commitSent:", r);
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitSuccess: function (r) {
-                                                        // console.log("commitSuccess:", r);
+                                                        console.log("commitSuccess:", r);
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitFailed: nextTrade,
                                                     onTradeSent: function (r) {
-                                                        // console.log("trade sent:", r)
+                                                        console.log("trade sent:", r)
                                                         assert.isArray(r.callReturn);
                                                         assert.strictEqual(r.callReturn[0], 1);
                                                         assert.strictEqual(r.callReturn.length, 3);
                                                     },
                                                     onTradeSuccess: function (r) {
-                                                        // console.log("trade success:", r)
+                                                        console.log("trade success:", r)
                                                         assert.isArray(r.callReturn);
                                                         assert.strictEqual(r.callReturn[0], 1);
                                                         assert.strictEqual(r.callReturn.length, 3);
@@ -740,6 +742,10 @@ describe("Integration tests", function () {
                                                 });
                                             });
                                         }, function (x) {
+                                            console.log("TRADE complete.");
+                                            console.log("nodes:", JSON.stringify(augur.rpc.nodes));
+                                            console.log("wsUrl:", augur.rpc.wsUrl);
+                                            console.log("wsStatus:", augur.rpc.wsStatus);
                                             if (x && x.callReturn) return done();
                                             done(x);
                                         });
@@ -812,6 +818,10 @@ describe("Integration tests", function () {
                                         });
                                     });
                                 }, function (x) {
+                                    console.log("SHORT_SELL complete.");
+                                    console.log("nodes:", JSON.stringify(augur.rpc.nodes));
+                                    console.log("wsUrl:", augur.rpc.wsUrl);
+                                    console.log("wsStatus:", augur.rpc.wsStatus);
                                     if (x && x.callReturn) return done();
                                     done(x);
                                 });
@@ -885,16 +895,10 @@ describe("Integration tests", function () {
                             console.log("buy/sell order placed on the books successfully!");
                             var newOrderBook = augur.getOrderBook(t.market);
                             var orderType = t.type;
-                            console.log(newOrderBook[orderType]);
                             for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
-                                console.log("outcome:", t.outcome, newOrderBook[orderType][i].outcome);
-                                console.log("amount:", t.amount, parseInt(newOrderBook[orderType][i].amount));
-                                console.log("owner:", accounts[0], newOrderBook[orderType][i].owner);
-                                console.log("price:", Math.round(parseFloat(t.limitPrice)*1e6) / 1e6, Math.round(parseFloat(newOrderBook[orderType][i].price)*1e6) / 1e6);
                                 if (t.outcome === newOrderBook[orderType][i].outcome &&
-                                    t.amount === parseInt(newOrderBook[orderType][i].amount) &&
+                                    parseFloat(value) === parseFloat(newOrderBook[orderType][i].amount) &&
                                     accounts[0] === newOrderBook[orderType][i].owner) {
-                                    console.log("found order!", newOrderBook[orderType][i]);
                                     return done();
                                 }
                             }
@@ -917,11 +921,17 @@ describe("Integration tests", function () {
                     });
                 });
             };
-
-            // user wants to buy 1 share of outcome 1 @ limit price 0.6
             test({
                 requestId: 1,
-                market: markets[markets.length - 1],
+                market: markets[markets.length - 3],
+                amount: 1,
+                outcome: "1",
+                limitPrice: "0.001",
+                type: "buy"
+            });
+            test({
+                requestId: 2,
+                market: markets[markets.length - 3],
                 amount: 1,
                 outcome: "1",
                 limitPrice: "0.999",

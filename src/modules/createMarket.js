@@ -53,7 +53,7 @@ module.exports = {
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         description = description.trim();
         expDate = parseInt(expDate);
-        var tx = clone(this.tx.createEvent);
+        var tx = clone(this.tx.CreateMarket.createEvent);
         tx.params = [
             branchId,
             description,
@@ -64,7 +64,7 @@ module.exports = {
             resolution
         ];
         this.transact(tx, utils.noop, function (res) {
-            var tx = clone(self.tx.createMarket);
+            var tx = clone(self.tx.CreateMarket.createMarket);
             tx.params = [
                 branchId,
                 description,
@@ -102,7 +102,7 @@ module.exports = {
                 });
             });
         }, onFailed);
-        // var tx = clone(this.tx.createSingleEventMarket);
+        // var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         // tx.params = [
         //     branchId,
         //     description,
@@ -157,7 +157,7 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        var tx = clone(this.tx.createEvent);
+        var tx = clone(this.tx.CreateMarket.createEvent);
         tx.params = [
             branchId,
             description.trim(),
@@ -203,7 +203,7 @@ module.exports = {
         var bnMakerFee = abi.bignum(makerFee);
         var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-        var tx = clone(this.tx.createMarket);
+        var tx = clone(this.tx.CreateMarket.createMarket);
         description = description.trim();
         tx.params = [
             branchId,
@@ -247,7 +247,7 @@ module.exports = {
     },
 
     updateTradingFee: function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.updateTradingFee);
+        var tx = clone(this.tx.CreateMarket.updateTradingFee);
         var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
@@ -255,7 +255,7 @@ module.exports = {
     },
 
     pushMarketForward: function (branch, market, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.pushMarketForward);
+        var tx = clone(this.tx.CreateMarket.pushMarketForward);
         var unpacked = utils.unpack(branch, utils.labels(this.pushMarketForward), arguments);
         tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));

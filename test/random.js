@@ -46,10 +46,10 @@ module.exports = {
         return arr;
     },
     fixed: function (max) {
-        return this.float(max);
+        return abi.fix(this.float(max), "hex");
     },
     fixedInt: function (min, max) {
-        return this.int(min, max);
+        return abi.fix(this.int(min, max), "hex");
     },
     bool: function () {
         return Math.round(Math.random()).toString();

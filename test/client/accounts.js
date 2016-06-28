@@ -30,7 +30,7 @@ var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 var handle3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
 var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
 
-var markets = augur.getMarketsInBranch(augur.branches.dev);
+var markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
 var market_id = markets[markets.length - 1];
 
 function checkAccount(augur, account) {
@@ -522,7 +522,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     .bignum(augur.rpc.balance(recipient))
                     .dividedBy(constants.ETHER);
                 // console.log("initial balance:", initial_balance.toFixed());
-                augur.web.fund({address: recipient}, augur.branches.dev, {
+                augur.web.fund({address: recipient}, augur.constants.DEFAULT_BRANCH_ID, {
                     onRegistered: function (account) {
                         assert.strictEqual(account.address, recipient);
                     },
@@ -542,7 +542,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     onSuccess: function (response) {
                         assert.notProperty(response, "error");
                         assert.strictEqual(response.callReturn, "1");
-                        augur.getRepBalance(augur.branches.dev, recipient, function (repBalance) {
+                        augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
                             assert.notProperty(repBalance, "error");
                             assert.strictEqual(abi.number(repBalance), 47);
                             augur.getCashBalance(recipient, function (cashBalance) {
@@ -667,7 +667,7 @@ describe("Contract methods", function () {
                     );
                     var count = 0;
                     augur.reputationFaucet({
-                        branch: augur.branches.dev,
+                        branch: augur.constants.DEFAULT_BRANCH_ID,
                         onSent: function (r) {
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
@@ -687,7 +687,7 @@ describe("Contract methods", function () {
                         onFailed: done
                     });
                     augur.reputationFaucet({
-                        branch: augur.branches.dev,
+                        branch: augur.constants.DEFAULT_BRANCH_ID,
                         onSent: function (r) {
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
@@ -735,7 +735,7 @@ describe("Contract methods", function () {
                         augur.tx.getBranches.returns,
                         branches[0]
                     ),
-                    augur.branches.dev
+                    augur.constants.DEFAULT_BRANCH_ID
                 );
 
                 // async
@@ -747,7 +747,7 @@ describe("Contract methods", function () {
                             augur.tx.getBranches.returns,
                             branches[0]
                         ),
-                        augur.branches.dev
+                        augur.constants.DEFAULT_BRANCH_ID
                     );
                     augur.web.logout();
                     done();
@@ -770,7 +770,7 @@ describe("Contract methods", function () {
                         return done(new Error(tools.pp(user)));
                     }
                     var tx = tools.copy(augur.tx.reputationFaucet);
-                    tx.params = augur.branches.dev;
+                    tx.params = augur.constants.DEFAULT_BRANCH_ID;
                     augur.web.invoke(tx, function (txhash) {
                         if (txhash.error) {
                             augur.web.logout();
@@ -808,7 +808,7 @@ describe("Contract methods", function () {
                         augur.web.account.address
                     );
                     augur.reputationFaucet({
-                        branch: augur.branches.dev,
+                        branch: augur.constants.DEFAULT_BRANCH_ID,
                         onSent: function (r) {
                             // sent
                             assert.property(r, "txHash");
