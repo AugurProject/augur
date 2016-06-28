@@ -11,6 +11,7 @@ export default class AuthForm extends Component {
 		isVisibleName: PropTypes.bool,
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
+		isVisibleAccountInfo: PropTypes.bool,
 		clearName: PropTypes.bool,
 		clearPassword: PropTypes.bool,
 		clearCode: PropTypes.bool,
@@ -84,14 +85,14 @@ export default class AuthForm extends Component {
 					</span>
 				}
 				{p.isVisibleAccountInfo &&
-					<div>
-						<br />
-						Secure Login ID: {p.secureID} <br /><br />
-						Password: { this.state.showPass ? p.password : '********' }
-						<button className="button" type="button" onClick={() => this.setState({ showPass: !this.state.showPass })} style={{ margin: '0 1vmin' }}>
+					<div className="account-info-container">
+						<div><h2>Secure Login ID:</h2> {p.secureID}</div>
+						<div>
+							<h2>Password:</h2> { this.state.showPass ? p.password : '********' }
+						</div>
+						<button className="button" type="button" onClick={() => this.setState({ showPass: !this.state.showPass })}>
 							Show Password
 						</button>
-						<br />
 					</div>
 				}
 				<input
