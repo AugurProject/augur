@@ -177,21 +177,21 @@ describe("Integration tests", function () {
 
                                                 // make a trade in the new market
                                                 augur.useAccount(accounts[0]);
-                                                var initialTotalTrades = parseInt(augur.Markets.get_total_trades(t.market));
+                                                var initialTotalTrades = parseInt(augur.Markets.get_total_trades(marketID));
                                                 augur.buyCompleteSets({
-                                                    market: t.market,
-                                                    amount: t.amount,
+                                                    market: marketID,
+                                                    amount: 1,
                                                     onSent: function (r) {},
                                                     onSuccess: function (r) {
                                                         augur.sell({
-                                                            amount: t.amount,
+                                                            amount: 1,
                                                             price: "0.01",
-                                                            market: t.market,
+                                                            market: marketID,
                                                             outcome: t.outcome,
                                                             onSent: function (r) {},
                                                             onSuccess: function (r) {
                                                                 augur.useAccount(accounts[2]);
-                                                                augur.get_trade_ids(t.market, function (trade_ids) {
+                                                                augur.get_trade_ids(marketID, function (trade_ids) {
                                                                     async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
                                                                         augur.get_trade(thisTrade, function (tradeInfo) {
                                                                             if (!tradeInfo) return nextTrade("no trade info found");
