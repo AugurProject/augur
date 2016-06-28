@@ -1,7 +1,6 @@
 import React from 'react';
 import TradePanelItems from '../../../modules/trade/components/trade-panel-items';
 import Transaction from '../../transactions/components/transaction';
-import Clickable from '../../common/components/clickable';
 
 const TradePanel = (p) => (
 	<div
