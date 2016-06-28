@@ -189,7 +189,7 @@ export const assembleMarket = memoizerific(1000)((
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			updateTradeOrder: (outcomeId, shares, limitPrice, side) => dispatch(updateTradesInProgress( marketID, outcome.id, shares, limitPrice, side))
+			updateTradeOrder: (outcomeId, shares, limitPrice, side) => dispatch(updateTradesInProgress(marketID, outcome.id, shares, limitPrice, side))
 		};
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {

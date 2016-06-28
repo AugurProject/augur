@@ -1,7 +1,7 @@
-import * as AugurJS from '../../../services/augurjs';
-import { BRANCH_ID } from '../../app/constants/network';
+// import * as AugurJS from '../../../services/augurjs';
+// import { BRANCH_ID } from '../../app/constants/network';
 import { isMarketDataPreviousReportPeriod } from '../../../utils/is-market-data-open';
-import { updateMarketData } from '../../markets/actions/update-markets-data';
+// import { updateMarketData } from '../../markets/actions/update-markets-data';
 
 export function closeMarkets(marketsData) {
 	return (dispatch, getState) => {
@@ -23,6 +23,7 @@ export function closeMarkets(marketsData) {
 			return;
 		}
 
+		/*
 		(function process() {
 			function next() {
 				if (unparsedMarkets.length) {
@@ -51,5 +52,6 @@ export function closeMarkets(marketsData) {
 				});
 			});
 		}());
+		*/
 	};
 }

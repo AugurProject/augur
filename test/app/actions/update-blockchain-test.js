@@ -24,7 +24,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	store = mockStore(state);
 
 	let mockAugurJS = {};
-	let mockCommitReports = {};
 	let mockPenalize = {};
 	let mockCollectFees = {};
 
@@ -32,16 +31,12 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	mockAugurJS.getReportPeriod = sinon.stub().yields(null, 19);
 	mockAugurJS.getReportPeriod.onCall(1).yields(null, 15);
 	mockAugurJS.incrementPeriodAfterReporting = sinon.stub().yields(null, 'res');
-	mockCommitReports.commitReports = sinon.stub().returns({
-		type: 'COMMIT_REPORTS'
-	});
 	mockCollectFees.collectFees = sinon.stub().returns({
 		type: 'COLLECT_FEES'
 	});
 
 	action = proxyquire('../../../src/modules/app/actions/update-blockchain.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../reports/actions/commit-reports': mockCommitReports,
 		'../../reports/actions/collect-fees': mockCollectFees
 	});
 
@@ -53,7 +48,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	afterEach(() => {
 		store.clearActions();
 		mockAugurJS.loadCurrentBlock.reset();
-		mockCommitReports.commitReports.reset();
 		mockCollectFees.collectFees.reset();
 	});
 
@@ -77,8 +71,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 				reportPeriod: 19
 			}
 		}, {
-			type: 'COMMIT_REPORTS'
-		}, {
 			type: 'COLLECT_FEES'
 		}, {
 			type: 'MOCK_CB_CALLED'
@@ -86,7 +78,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		store.dispatch(action.updateBlockchain(mockCB));
 		assert(mockAugurJS.loadCurrentBlock.calledOnce, `loadCurrentBlock wasn't called once as expected`);
 		assert(mockAugurJS.getReportPeriod.calledOnce, `getReportPeriod wasn't called once as expected`);
-		assert(mockCommitReports.commitReports.calledOnce, `commitReports wasn't called once as expected`);
 		assert(mockCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actons`);
 	});
@@ -111,8 +102,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 				reportPeriod: 19
 			}
 		}, {
-			type: 'COMMIT_REPORTS'
-		}, {
 			type: 'COLLECT_FEES'
 		}, {
 			type: 'MOCK_CB_CALLED'
@@ -123,7 +112,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		assert(mockAugurJS.loadCurrentBlock.calledOnce, `loadCurrentBlock wasn't called once as expected`);
 		// didn't reset teh next one because we need it to yield the expected outputs.
 		assert(mockAugurJS.getReportPeriod.calledThrice, `getReportPeriod wasn't called twice as expected`);
-		assert(mockCommitReports.commitReports.calledOnce, `commitReports wasn't called once as expected`);
 		assert(mockCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
 	});

@@ -11,7 +11,7 @@ import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 
-import { commitReports } from '../../reports/actions/commit-reports';
+// import { commitReports } from '../../reports/actions/commit-reports';
 import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
 import { closeMarkets } from '../../reports/actions/close-markets';
@@ -29,7 +29,7 @@ export function loadLoginAccountDependents() {
 		dispatch(clearReports());
 		dispatch(loadReports(marketsData));
 
-		dispatch(commitReports());
+		// dispatch(commitReports());
 		dispatch(collectFees());
 		dispatch(penalizeWrongReports(marketsData));
 		dispatch(closeMarkets(marketsData));

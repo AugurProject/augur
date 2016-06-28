@@ -519,9 +519,10 @@ ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
 };
 
 ex.penalizeWrong = function penalizeWrong(branchID, period, event, cb) {
-	const self = this;
 	augur.getMarkets(event, markets => {
 		if (!markets || markets.error) return console.error('getMarkets:', markets);
+
+		/*
 		augur.getOutcome(event, outcome => {
 			if (outcome !== '0' && !outcome.error) {
 				console.log('Calling penalizeWrong for:', branchID, period, event);
@@ -552,6 +553,7 @@ ex.penalizeWrong = function penalizeWrong(branchID, period, event, cb) {
 				});
 			}
 		});
+		*/
 	});
 };
 
@@ -605,8 +607,6 @@ ex.getReportPeriod = function getReportPeriod(branchID, cb) {
 	});
 };
 
-ex.getOutcome = augur.getOutcome.bind(augur);
-ex.getEventIndex = augur.getEventIndex.bind(augur);
 ex.submitReport = augur.submitReport.bind(augur);
 ex.getEvents = augur.getEvents.bind(augur);
 ex.rpc = augur.rpc;
