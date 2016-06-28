@@ -9,6 +9,9 @@ import OrderBook from '../../bids-asks/components/order-book';
 
 const TradePanelItem = (p) => {
 	const isOutcomeActive = p.selectedOutcomeID === p.id;
+
+	console.log('p -- ', p);
+
 	return (
 		<div className={classnames('trade-panel-item', p.className, { active: isOutcomeActive })}>
 			<Clickable onClick={() => { p.updateSelectedOutcome(p.id); }}>
@@ -17,10 +20,10 @@ const TradePanelItem = (p) => {
 
 					<ValueDenomination className="last-price" {...p.lastPrice} />
 					<Clickable onClick={() => { p.updateTradeOrder(p.id, undefined, p.topBid.value); }}>
-						<ValueDenomination className="top-bid" {...p.topBid} />
+						<ValueDenomination className="top-bid" {...p.topBid.shares} /> @ <ValueDenomination className="top-bid" {...p.topBid.price} />
 					</Clickable>
 					<Clickable onClick={() => { p.updateTradeOrder(p.id, undefined, p.topAsk.value); }}>
-						<ValueDenomination className="top-ask" {...p.topAsk} />
+						<ValueDenomination className="top-ask" {...p.topAsk.shares} /> @ <ValueDenomination className="top-ask" {...p.topAsk.price} />
 					</Clickable>
 
 					<Dropdown

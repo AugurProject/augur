@@ -208,11 +208,15 @@ function makeMarkets(numMarkets = 25) {
 		function makeOutcomes() {
 			const numOutcomes = randomInt(2, 8);
 			const outcomes = [];
-			let	outcome;
-			let percentLeft = 100;
+			const orderBook = selectOrderBook();
+
+				// console.log('orderbook -- ', orderBook);
+
+			let	outcome,
+				percentLeft = 100;
 
 			for (let i = 0; i < numOutcomes; i++) {
-				outcome = makeOutcome(i, percentLeft);
+				outcome = makeOutcome(i, percentLeft, orderBook);
 				percentLeft = percentLeft - outcome.lastPricePercent.value;
 				outcomes.push(outcome);
 			}
@@ -223,7 +227,7 @@ function makeMarkets(numMarkets = 25) {
 
 			return outcomes.sort((a, b) => b.lastPrice.value - a.lastPrice.value);
 
-			function makeOutcome(index, percentLeft) {
+			function makeOutcome(index, percentLeft, orderBook) {
 				const lastPrice = randomInt(0, percentLeft) / 100;
 				const outcome = {
 					id: index.toString(),
@@ -267,10 +271,17 @@ function makeMarkets(numMarkets = 25) {
 							require('../selectors').update();
 						}
 					},
-					orderBook: selectOrderBook()
+					topBid: {
+						price: orderBook.bids[0].price,
+						shares: orderBook.bids[0].shares
+					},
+					topAsk: {
+						price: orderBook.asks[0].price,
+						shares: orderBook.asks[0].shares
+					},
+					orderBook
 				};
-				outcome.topBid = outcome.orderBook.bids[0].price;
-				outcome.topAsk = outcome.orderBook.asks[0].price;
+
 				return outcome;
 
 				function makeName(index) {
