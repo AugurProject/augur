@@ -12,7 +12,7 @@ var utils = require("../utilities");
 module.exports = {
 
     buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.buyCompleteSets);
+        var tx = clone(this.tx.CompleteSets.buyCompleteSets);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.buyCompleteSets), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");
@@ -20,7 +20,7 @@ module.exports = {
     },
 
     sellCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.sellCompleteSets);
+        var tx = clone(this.tx.CompleteSets.sellCompleteSets);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.sellCompleteSets), arguments);
         tx.params = unpacked.params;
         tx.params[1] = abi.fix(tx.params[1], "hex");

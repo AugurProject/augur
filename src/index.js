@@ -10,14 +10,10 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var modules = [
     require("./modules/connect"),
     require("./modules/transact"),
-    require("./modules/faucets"),
     require("./modules/cash"),
-    require("./modules/info"),
     require("./modules/branches"),
     require("./modules/events"),
-    require("./modules/expiringEvents"),
     require("./modules/markets"),
-    require("./modules/reporting"),
     require("./modules/trades"),
     require("./modules/buyAndSellShares"),
     require("./modules/trade"),
@@ -26,8 +22,6 @@ var modules = [
     require("./modules/sendReputation"),
     require("./modules/makeReports"),
     require("./modules/createMarket"),
-    require("./modules/closeMarket"),
-    require("./modules/consensus"),
     require("./modules/compositeGetters"),
     require("./modules/whitelist"),
     require("./modules/logs"),
@@ -35,7 +29,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.12";
+    this.version = "1.5.0";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -51,9 +45,6 @@ function Augur() {
     this.errors = require("augur-contracts").errors;
     this.rpc = require("ethrpc");
     this.rpc.debug = this.options.debug;
-
-    // Branch IDs
-    this.branches = {dev: this.constants.DEFAULT_BRANCH_ID};
 
     // Load submodules
     for (var i = 0, len = modules.length; i < len; ++i) {

@@ -9,33 +9,18 @@ var runner = require("../runner");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Consensus", [{
             method: "proportionCorrect",
             parameters: ["hash", "hash", "int"]
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
-            method: "moveEventsToCurrentPeriod",
-            parameters: ["hash", "int", "int"]
-        }, {
+        runner(this.title, "Consensus", [{
             method: "incrementPeriodAfterReporting",
-            parameters: ["hash"]
-        }, {
-            method: "penalizeNotEnoughReports",
             parameters: ["hash"]
         }, {
             method: "penalizeWrong",
             parameters: ["hash", "hash"]
-        }, {
-            method: "collectFees",
-            parameters: ["hash"]
-        }, {
-            method: "penalizationCatchup",
-            parameters: ["hash"]
-        }, {
-            method: "slashRep",
-            parameters: ["hash", "int", "fixed", "address", "hash"]
         }]);
     });
 });

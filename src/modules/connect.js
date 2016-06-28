@@ -12,7 +12,82 @@ var utils = require("../utilities");
 
 module.exports = {
 
+    /**
+     * Direct no-frills bindings to Augur's Serpent (contract) API.
+     *  - Parameter positions and types are the same as the underlying
+     *    contract method's parameters.
+     *  - Parameters should be passed in exactly as they would be
+     *    passed to the contract method (e.g., if the contract method
+     *    expects a fixed-point number, you must do that conversion
+     *    yourself and pass the fixed-point number in).
+     */
+    bindContractMethod: function (contract, method) {
+        var self = this;
+        return function (args) {
+            var tx, params, cb, i, onSent, onSuccess, onFailed;
+            tx = clone(self.tx[contract][method]);
+            if (!arguments) {
+                if (!tx.send) return self.fire(tx);
+                return self.transact(tx);
+            }
+            params = Array.prototype.slice.call(arguments);
+            if (!tx.send) {
+                if (params[0] !== undefined && params[0] !== null &&
+                    params[0].constructor === Object) {
+                    cb = params[0].callback || utils.pass;
+                    if (tx.inputs && tx.inputs.length) {
+                        tx.params = new Array(tx.inputs.length);
+                        for (i = 0; i < tx.inputs.length; ++i) {
+                            tx.params[i] = params[0][tx.inputs[i]];
+                        }
+                    }
+                } else {
+                    if (utils.is_function(params[params.length - 1])) {
+                        cb = params.pop();
+                    }
+                    tx.params = params;
+                }
+                return self.fire(tx, cb);
+            }
+            if (params[0] !== undefined && params[0] !== null &&
+                params[0].constructor === Object) {
+                onSent = params[0].onSent || utils.pass;
+                onSuccess = params[0].onSuccess || utils.pass;
+                onFailed = params[0].onFailed || utils.pass;
+                if (tx.inputs && tx.inputs.length) {
+                    tx.params = new Array(tx.inputs.length);
+                    for (i = 0; i < tx.inputs.length; ++i) {
+                        tx.params[i] = params[0][tx.inputs[i]];
+                    }
+                }
+                return self.transact(tx, onSent, onSuccess, onFailed);
+            }
+            cb = [];
+            while (utils.is_function(params[params.length - 1])) {
+                cb.push(params.pop());
+            }
+            tx.params = params;
+            cb.reverse();
+            return self.transact.apply(self, [tx].concat(cb));
+        };
+    },
+    bindContractAPI: function (methods) {
+        var self = this;
+        methods = methods || this.tx;
+        for (var contract in methods) {
+            if (!methods.hasOwnProperty(contract)) continue;
+            this[contract] = {};
+            for (var method in methods[contract]) {
+                if (!methods[contract].hasOwnProperty(method)) continue;
+                this[contract][method] = this.bindContractMethod(contract, method);
+                if (!this[method]) this[method] = this[contract][method];
+            }
+        }
+        return methods;
+    },
+
     sync: function () {
+        var self = this;
         if (connector && connector.constructor === Object) {
             this.network_id = connector.network_id;
             this.from = connector.from;
@@ -20,13 +95,14 @@ module.exports = {
             this.tx = connector.tx;
             this.contracts = connector.contracts;
             this.init_contracts = connector.init_contracts;
+            this.bindContractAPI();
             return true;
         }
         return false;
     },
 
     useAccount: function (account) {
-        this.from = account;
+        connector.from = account;
         connector.from_field_tx(account);
         this.sync();
     },

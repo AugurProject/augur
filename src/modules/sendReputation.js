@@ -14,15 +14,15 @@ module.exports = {
         // branchId: hash id
         // to: ethereum address of recipient
         // value: number -> fixed-point
-        if (branchId && branchId.branchId && branchId.to && branchId.value) {
+        if (branchId && branchId.branchId) {
             to = branchId.to;
             value = branchId.value;
-            if (branchId.onSent) onSent = branchId.onSent;
-            if (branchId.onSuccess) onSuccess = branchId.onSuccess;
-            if (branchId.onFailed) onFailed = branchId.onFailed;
+            onSent = branchId.onSent;
+            onSuccess = branchId.onSuccess;
+            onFailed = branchId.onFailed;
             branchId = branchId.branchId;
         }
-        var tx = clone(this.tx.sendReputation);
+        var tx = clone(this.tx.SendReputation.sendReputation);
         tx.params = [branchId, to, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }

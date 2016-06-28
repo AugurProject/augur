@@ -13,7 +13,7 @@ var runner = require("../runner");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Branches", [{
             method: "getNumBranches",
             parameters: []
         }, {
@@ -29,13 +29,7 @@ describe("Unit tests", function () {
             method: "getVotePeriod",
             parameters: ["hash"]
         }, {
-            method: "getReportPeriod",
-            parameters: ["hash"]
-        }, {
             method: "getNumMarketsBranch",
-            parameters: ["hash"]
-        }, {
-            method: "getNumMarkets",
             parameters: ["hash"]
         }, {
             method: "getMinTradingFee",
@@ -46,11 +40,11 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "Branches", [{
             method: "incrementPeriod",
             parameters: ["hash"]
         }, {
-            method: "addMarket",
+            method: "addMarketToBranch",
             parameters: ["hash", "hash"]
         }]);
     });
@@ -59,7 +53,7 @@ describe("Unit tests", function () {
 describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var branchNumber = "0";
 
     describe("getBranches", function () {

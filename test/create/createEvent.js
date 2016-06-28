@@ -13,7 +13,7 @@ var runner = require("../runner");
 require('it-each')({ testPerIteration: true });
 
 describe("Unit tests", function () {
-    runner("eth_sendTransaction", [{
+    runner("eth_sendTransaction", "CreateMarket", [{
         method: "createEvent",
         parameters: ["hash", "string", "int", "fixed", "fixed", "int", "string"]
     }]);
@@ -28,7 +28,7 @@ describe("Integration tests", function () {
         var numOutcomes = 2;
         var numEvents = 2;
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        var branch = augur.branches.dev;
+        var branch = augur.constants.DEFAULT_BRANCH_ID;
         var period = augur.getVotePeriod(branch);
         var expDate = new Date().getTime()*2;
         var resolution = "https://www.google.com";
@@ -38,7 +38,6 @@ describe("Integration tests", function () {
             it.each(_.range(0, numEvents), "create event %s", ['element'], function (element, next) {
                 this.timeout(tools.TIMEOUT);
                 var description = "€" + Math.random().toString(36).substring(4);
-                console.log("description:", description);
                 augur.createEvent({
                     branchId: branch,
                     description: description,
@@ -48,12 +47,10 @@ describe("Integration tests", function () {
                     numOutcomes: numOutcomes,
                     resolution: resolution,
                     onSent: function (r) {
-                        console.log("sent:", r);
                         assert(r.txHash);
                         assert(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        console.log("success:", r);
                         var eventID = r.callReturn;
                         assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
                         assert.strictEqual(augur.getDescription(eventID), description);

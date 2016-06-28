@@ -12,7 +12,7 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, [{
+        runner(this.title, "Events", [{
             method: "getmode",
             parameters: ["hash"]
         }, {
@@ -48,7 +48,7 @@ describe("Unit tests", function () {
         }]);
     });
     describe("eth_sendTransaction", function () {
-        runner(this.title, [{
+        runner(this.title, "Events", [{
             method: "setOutcome",
             parameters: ["hash", "int"]
         }]);
@@ -59,7 +59,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
     var amount = "1";
-    var branchID = augur.branches.dev;
+    var branchID = augur.constants.DEFAULT_BRANCH_ID;
     var markets = augur.getMarketsInBranch(branchID);
     var marketID = markets[markets.length - 1];
     var eventID = augur.getMarketEvents(marketID)[0];
