@@ -58,8 +58,11 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
+                                onTradeSent(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, function (successResult) {
                             var result = clone(successResult);
                             if (result.callReturn && result.callReturn.constructor === Array) {
@@ -68,8 +71,11 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
+                                onTradeSuccess(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, onTradeFailed);
                     });
                 },
@@ -123,8 +129,11 @@ module.exports = {
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                     result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
                                 }
+                                return onTradeSent(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, function (successResult) {
                             var result = clone(successResult);
                             if (result.callReturn && result.callReturn.constructor === Array) {
@@ -134,8 +143,11 @@ module.exports = {
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                     result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
                                 }
+                                return onTradeSuccess(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, onTradeFailed);
                     });
                 },

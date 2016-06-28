@@ -16650,7 +16650,9 @@ module.exports={
         "int256", 
         "int256", 
         "int256"
-      ]
+      ],
+      "returns": "number",
+      "send": true
     }, 
     "cancel": {
       "inputs": [
@@ -16659,7 +16661,9 @@ module.exports={
       "method": "cancel", 
       "signature": [
         "int256"
-      ]
+      ],
+      "returns": "number",
+      "send": true
     }, 
     "sell": {
       "inputs": [
@@ -16674,7 +16678,9 @@ module.exports={
         "int256", 
         "int256", 
         "int256"
-      ]
+      ],
+      "returns": "number",
+      "send": true
     }
   }, 
   "Cash": {
@@ -20320,9 +20326,11 @@ module.exports={
 module.exports={
     "0x": "no response or bad input",
     "buy": {
+        "0": "couldn't place buy order",
         "-1": "amount/price bad or no market",
         "-2": "oracle-only branch",
-        "-4": "not enough money or shares"
+        "-4": "not enough money or shares",
+        "21": "trade already exists"
     },
     "buyCompleteSets": {
         "0": "market not found",
@@ -20418,9 +20426,12 @@ module.exports={
         "-4": "early resolution already attempted or outcome already exists"
     },
     "sell": {
+        "0": "couldn't place sell order",
         "-1": "amount/price bad or no market",
         "-2": "oracle only branch",
-        "-4": "not enough money or shares"
+        "-3": "bad outcome to trade",
+        "-4": "not enough money or shares",
+        "21": "trade already exists"
     },
     "sellCompleteSets": {
         "-1": "oracle-only branch",
@@ -48111,7 +48122,11 @@ module.exports = {
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buy);
+        console.log("[buy] amount:", amount);
+        console.log("[buy] price:", price);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        console.log("[buy] from:", this.from, this.coinbase);
+        console.log("[buy] tx:", JSON.stringify(tx, null, 2));
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
                 constants.BID,
@@ -48498,7 +48513,7 @@ module.exports = {
     },
 
     useAccount: function (account) {
-        this.from = account;
+        connector.from = account;
         connector.from_field_tx(account);
         this.sync();
     },
@@ -49326,8 +49341,11 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
+                                onTradeSent(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, function (successResult) {
                             var result = clone(successResult);
                             if (result.callReturn && result.callReturn.constructor === Array) {
@@ -49336,8 +49354,11 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
+                                onTradeSuccess(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, onTradeFailed);
                     });
                 },
@@ -49391,8 +49412,11 @@ module.exports = {
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                     result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
                                 }
+                                return onTradeSent(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, function (successResult) {
                             var result = clone(successResult);
                             if (result.callReturn && result.callReturn.constructor === Array) {
@@ -49402,8 +49426,11 @@ module.exports = {
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                     result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
                                 }
+                                return onTradeSuccess(result);
                             }
-                            onTradeSuccess(result);
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }, onTradeFailed);
                     });
                 },
@@ -49497,7 +49524,7 @@ module.exports = {
         if (this.web && this.web.account && this.web.account.address) {
             tx.from = this.web.account.address;
         } else {
-            tx.from = tx.from || this.coinbase;
+            tx.from = tx.from || this.from || this.coinbase;
         }
         return this.rpc.fire(tx, callback);
     },
@@ -49507,7 +49534,7 @@ module.exports = {
             tx.from = this.web.account.address;
             tx.invocation = {invoke: this.web.invoke, context: this.web};
         } else {
-            tx.from = tx.from || this.coinbase;
+            tx.from = tx.from || this.from || this.coinbase;
         }
         this.rpc.transact(tx, onSent, onSuccess, onFailed);
     }
@@ -50188,9 +50215,12 @@ module.exports = {
 
     from_field_tx: function (account) {
         if (account && account !== "0x") {
-            for (var method in this.tx) {
-                if (!this.tx.hasOwnProperty(method)) continue;
-                this.tx[method].from = account;
+            for (var contract in this.tx) {
+                if (!this.tx.hasOwnProperty(contract)) continue;
+                for (var method in this.tx[contract]) {
+                    if (!this.tx[contract].hasOwnProperty(method)) continue;
+                    this.tx[contract][method].from = account;
+                }
             }
         }
     },

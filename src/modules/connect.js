@@ -102,7 +102,7 @@ module.exports = {
     },
 
     useAccount: function (account) {
-        this.from = account;
+        connector.from = account;
         connector.from_field_tx(account);
         this.sync();
     },
