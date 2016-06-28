@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -11,21 +11,21 @@
     "setup": "scripts/setup.js --reset --faucets"
   },
   "dependencies": {
-    "async": "^1.3.0",
-    "augur-abi": "0.4.0",
-    "augur-contracts": "1.0.7",
-    "bignumber.js": "^2.0.7",
-    "browser-request": "^0.3.3",
-    "chalk": "^1.1.1",
-    "clone": "^1.0.2",
-    "ethereumjs-connect": "0.5.5",
-    "ethereumjs-tx": "^1.1.1",
-    "ethereumjs-util": "^4.3.0",
-    "ethrpc": "0.9.17",
+    "async": "1.5.2",
+    "augur-abi": "0.4.2",
+    "augur-contracts": "1.0.8",
+    "bignumber.js": "2.3.0",
+    "browser-request": "0.3.3",
+    "chalk": "1.1.1",
+    "clone": "1.0.2",
+    "ethereumjs-connect": "0.5.6",
+    "ethereumjs-tx": "1.1.1",
+    "ethereumjs-util": "4.3.0",
+    "ethrpc": "1.0.0",
     "keythereum": "0.2.6",
-    "locks": "^0.2.2",
-    "node-localstorage": "^1.1.2",
-    "node-uuid": "^1.4.3"
+    "locks": "0.2.2",
+    "node-localstorage": "1.1.2",
+    "node-uuid": "1.4.7"
   },
   "engines": {
     "node": ">= 4.2.x"
@@ -70,7 +70,7 @@
     "web3": "^0.8.1"
   },
   "optionalDependencies": {
-    "request": "^2.61.0"
+    "request": "2.67.0"
   },
   "author": "Jack Peterson <jack@tinybike.net>",
   "directories": {
