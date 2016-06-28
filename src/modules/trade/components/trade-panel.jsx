@@ -2,14 +2,18 @@ import React from 'react';
 import TradePanelItem from './trade-panel-item';
 import Transaction from '../../transactions/components/transaction';
 
-const TradePanel = (p) => (
+const TradePanel = (p) => {
+
+	console.log('p -- ', p);
+
+	return (
 	<section className="trade-panel">
 		<div className="trade-builder">
 			<div className="trade-panel-item-header">
 				<span className="outcome-name">&nbsp;</span>
 				<span className="last-price">Last</span>
-				<span className="top-bid">Top Bid</span>
-				<span className="top-ask">Top Ask</span>
+				<span className="top-bid">{!!p.selectedOutcomeID ? 'Bid' : 'Top Bid'}</span>
+				<span className="top-ask">{!!p.selectedOutcomeID ? 'Ask' : 'Top Ask'}</span>
 				<span className="num-shares">Side</span>
 				<span className="num-shares">Shares</span>
 				<span className="limit-price">Limit</span>
@@ -29,26 +33,26 @@ const TradePanel = (p) => (
 		</div>
 
 		{p.tradeOrders && !!p.tradeOrders.length &&
-			<div className="trade-orders">
-				<h5>Trade Summary</h5>
-				{p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
-					<Transaction
-						key={i}
-						className="order"
-						{...tradeOrder}
-						status={undefined}
-					/>
-				))}
-
+		<div className="trade-orders">
+			<h5>Trade Summary</h5>
+			{p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
 				<Transaction
-					type="trade_summary"
-					shares={p.totalShares}
-					className="order total"
-					ether={p.totalEther}
-					gas={p.totalGas}
+					key={i}
+					className="order"
+					{...tradeOrder}
 					status={undefined}
 				/>
-			</div>
+			))}
+
+			<Transaction
+				type="trade_summary"
+				shares={p.totalShares}
+				className="order total"
+				ether={p.totalEther}
+				gas={p.totalGas}
+				status={undefined}
+			/>
+		</div>
 		}
 		<div className="place-trade-container">
 			<button
@@ -59,12 +63,14 @@ const TradePanel = (p) => (
 			</button>
 		</div>
 	</section>
-);
+	);
+};
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
 	tradeOrders: React.PropTypes.array,
-	onSubmitPlaceTrade: React.PropTypes.func
+	onSubmitPlaceTrade: React.PropTypes.func,
+	selectedOutcomeID: React.PropTypes.string
 };
 
 export default TradePanel;
