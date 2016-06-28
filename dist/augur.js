@@ -3924,7 +3924,7 @@ module.exports={
         "closeMarketTwo": "0x486b370b1ba29711b683e1e71cc9a7c2a1614e4c",
         "collectFees": "0x0e5816830d327c7272c115348a2dda92e4706b25",
         "completeSets": "0x4f0d1af7d72d72a2e95e1fb9d187e958c07a1084",
-        "compositeGetters": "0xce65c10f58c0ba0fe6dd98c4872af2b14a97a539",
+        "compositeGetters": "0x0d9995e01fd62263a5b52255dc069d70d4edc1a7",
         "consensus": "0xfcd9b63e2a8a2b869db64f8dd25f599b0b172ffd",
         "createBranch": "0xf2fc3c829ad9a271a64e6f437fb6f9e8ed0f9770",
         "createMarket": "0x660cdfdf3d0e7443e7935343a1131b961575ccc7",
@@ -4028,6 +4028,18 @@ module.exports={
         "-1": "we're either already past that date, branch doesn't exist, or description is bad",
         "0": "not enough money to pay fees or event already exists",
         "-2": "max value < min value",
+        "-9": "would expire during non-reporting fork period"
+    },
+    "createSingleEventMarket": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
+        "-2": "max value < min value",
+        "-3": "too many outcomes",
+        "-4": "not enough money",
+        "-5": "fee too low",
+        "-6": "duplicate events",
+        "-7": "event already expired",
+        "-8": "market already exists",
         "-9": "would expire during non-reporting fork period"
     },
     "createMarket": {
@@ -22807,6 +22819,8 @@ var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
 var network_id = "2";
 
+function noop() {}
+
 function is_function(f) {
     return Object.prototype.toString.call(f) === "[object Function]";
 }
@@ -23005,10 +23019,11 @@ module.exports = {
         // if this is the first attempt to connect, connect using the
         // parameters provided by the user exactly
         if ((options.http || options.ipc || options.ws) && !options.attempts) {
-            this.rpc.ipcpath = options.ipc;
+            this.rpc.ipcpath = options.ipc || null;
             this.rpc.nodes.local = options.http;
             this.rpc.nodes.hosted = [];
             this.rpc.wsUrl = options.ws;
+            this.rpc.wsStatus = 0;
 
         // if this is the second attempt to connect, fall back to the
         // default hosted nodes
@@ -23019,39 +23034,15 @@ module.exports = {
             this.rpc.ipcpath = null;
             this.rpc.reset();
             this.rpc.useHostedNode();
+            this.rpc.wsStatus = 0;
             if (this.debug) {
                 console.debug("HTTP RPC:", JSON.stringify(this.rpc.nodes.hosted, null, 2));
                 console.debug("WebSocket:", this.rpc.wsUrl);
             }
         }
 
-        if (is_function(callback)) {
-            async.series([
-                this.detect_network.bind(this),
-                this.get_coinbase.bind(this)
-            ], function (err) {
-                if (err) {
-                    console.warn("[async] Couldn't connect to Ethereum", err, JSON.stringify(options, null, 2));
-                    self.connection = false;
-                    if (!options.attempts) {
-                        options.attempts = 1;
-                        return self.connect(options, callback);
-                    }
-                    return callback(false);
-                }
-                if (options.contracts) {
-
-                } else {
-                    self.update_contracts();
-                }
-                self.connection = true;
-                callback({
-                    http: self.rpc.nodes.local || self.rpc.nodes.hosted,
-                    ws: self.rpc.wsUrl,
-                    ipc: self.rpc.ipcpath
-                });
-            });
-        } else {
+        // synchronous connect sequence
+        if (!is_function(callback)) {
             try {
                 this.detect_network();
                 this.get_coinbase();
@@ -23063,7 +23054,9 @@ module.exports = {
                     ipc: this.rpc.ipcpath
                 };
             } catch (exc) {
-                console.warn("[sync] Couldn't connect to Ethereum", exc, JSON.stringify(options, null, 2));
+                if (this.debug) {
+                    console.warn("[sync] Couldn't connect to Ethereum", exc, JSON.stringify(options, null, 2));
+                }
                 this.connection = false;
                 if (!options.attempts) {
                     options.attempts = 1;
@@ -23072,6 +23065,48 @@ module.exports = {
                 return false;
             }
         }
+
+        // asynchronous connect sequence
+        callback = callback || noop;
+        async.series([
+            function (next) {
+                if (!options.http || !options.ws) return next();
+                var wsUrl = self.rpc.wsUrl;
+                var wsStatus = self.rpc.wsStatus;
+                self.rpc.wsUrl = null;
+                self.rpc.wsStatus = 0;
+                self.detect_network(function (err) {
+                    self.rpc.wsUrl = wsUrl;
+                    self.rpc.wsStatus = wsStatus;
+                    next(err);
+                });
+            },
+            this.detect_network.bind(this),
+            this.get_coinbase.bind(this)
+        ], function (err) {
+            if (err) {
+                if (self.debug) {
+                    console.warn("[async] Couldn't connect to Ethereum", err, JSON.stringify(options, null, 2));
+                }
+                self.connection = false;
+                if (!options.attempts) {
+                    options.attempts = 1;
+                    return self.connect(options, callback);
+                }
+                return callback(false);
+            }
+            if (options.contracts) {
+
+            } else {
+                self.update_contracts();
+            }
+            self.connection = true;
+            callback({
+                http: self.rpc.nodes.local || self.rpc.nodes.hosted,
+                ws: self.rpc.wsUrl,
+                ipc: self.rpc.ipcpath
+            });
+        });
     },
 
     connected: function (f) {
@@ -24319,18 +24354,25 @@ module.exports = {
 
     wsConnect: function (callback) {
         var self = this;
+        var calledCallback = false;
+        if (!this.wsUrl) {
+            this.wsStatus = -1;
+            return callback(false);
+        }
         this.websocket = new W3CWebSocket(this.wsUrl);
         this.websocket.onerror = function () {
-            self.wsStatus = -1;
             if (self.debug.broadcast) {
                 console.error("[ethrpc] WebSocket error", self.wsUrl, self.wsStatus);
             }
+            self.wsStatus = -1;
+            self.wsUrl = null;
         };
         this.websocket.onclose = function () {
-            self.wsStatus = 0;
+            if (self.wsStatus === 1) self.wsStatus = 0;
             if (self.debug.broadcast) {
                 console.warn("[ethrpc] WebSocket closed", self.wsUrl, self.wsStatus);
             }
+            if (!calledCallback) callback(false);
         };
         this.websocket.onmessage = function (msg) {
             if (msg && msg.data && typeof msg.data === "string") {
@@ -24349,13 +24391,14 @@ module.exports = {
         };
         this.websocket.onopen = function () {
             self.wsStatus = 1;
+            calledCallback = true;
             callback(true);
         };
     },
 
     ipcSend: function (command, returns, callback) {
         if (this.debug.broadcast) {
-            console.log("[ethrpc] IPC request to", this.ipcpath + "\n" + JSON.stringify(command));
+            console.log("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
         }
         this.ipcRequests[command.id] = {returns: returns, callback: callback};
         if (this.ipcStatus === 1) this.socket.write(JSON.stringify(command));
@@ -24363,7 +24406,7 @@ module.exports = {
 
     wsSend: function (command, returns, callback) {
         if (this.debug.broadcast) {
-            console.log("[ethrpc] WebSocket request to", this.wsUrl + "\n" + JSON.stringify(command));
+            console.log("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
         }
         this.wsRequests[command.id] = {returns: returns, callback: callback};
         if (this.websocket.readyState === this.websocket.OPEN) {
@@ -24504,7 +24547,6 @@ module.exports = {
         if (isFunction(callback)) {
 
             // use websocket if available
-            if (!this.wsUrl) this.wsStatus = -1;
             switch (this.wsStatus) {
 
             // [0] websocket closed / not connected: try to connect
@@ -25200,9 +25242,8 @@ module.exports = {
                     if (returns && returns !== "string" ||
                         (response && response.constructor === String &&
                         response.slice(0,2) === "0x")) {
-                        var responseNumber = abi.bignum(response);
+                        var responseNumber = abi.bignum(response, "string", true);
                         if (responseNumber) {
-                            responseNumber = abi.string(responseNumber);
                             if (errors[method] && errors[method][responseNumber]) {
                                 response = {
                                     error: responseNumber,
@@ -56498,7 +56539,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.4.10";
+    this.version = "1.4.12";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
