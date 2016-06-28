@@ -172,7 +172,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
 		const outcomeData = marketOutcomes[outcomeID];
-		const	outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
+		const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
 		const outcome = {
 			...outcomeData,
@@ -182,29 +182,18 @@ export const assembleMarket = memoizerific(1000)((
 			lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
 		};
 
-		const outcomeTradeOrders = selectOutcomeTradeOrders(
-																market,
-																outcome,
-																outcomeTradeInProgress,
-																dispatch);
+		const outcomeTradeOrders = selectOutcomeTradeOrders(market, outcome, outcomeTradeInProgress, dispatch);
 
 		outcome.trade = {
 			side: outcomeTradeInProgress && outcomeTradeInProgress.side || BID,
 			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
 			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
 			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			updateTradeOrder: (outcomeId, shares, limitPrice, side) =>
-				dispatch(updateTradesInProgress(
-					marketID,
-					outcome.id,
-					shares,
-					limitPrice,
-					side))
+			updateTradeOrder: (outcomeId, shares, limitPrice, side) => dispatch(updateTradesInProgress( marketID, outcome.id, shares, limitPrice, side))
 		};
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {
-			outcome.position = selectPositionFromOutcomeAccountTrades(
-				marketAccountTrades[outcomeID], outcome.price);
+			outcome.position = selectPositionFromOutcomeAccountTrades(marketAccountTrades[outcomeID], outcome.price);
 			if (outcome.position && outcome.position.qtyShares && outcome.position.qtyShares.value) {
 				positions.qtyShares += outcome.position.qtyShares.value;
 				positions.totalValue += outcome.position.totalValue.value || 0;
