@@ -1,10 +1,5 @@
 import memoizerific from 'memoizerific';
-import {
-	formatEther,
-	formatPercent,
-	formatShares,
-	formatNumber
-} from '../../../utils/format-number';
+import { formatEther, formatPercent, formatShares, formatNumber } from '../../../utils/format-number';
 
 export const selectPositionsSummary = memoizerific(20)((numPositions, qtyShares, totalValue, totalCost) => {
 	const purchasePrice = qtyShares && totalCost / qtyShares || 0;
