@@ -25,12 +25,12 @@ const TradePanelItems = (p) => {
 				>
 					<th className="outcome-name">{outcome.name}</th>
 					<td className="last-price" {...outcome.lastPrice} />
-					<td>
+					<td className='bid'>
 						<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, undefined, outcome.topBid.value); }}>
 							<ValueDenomination className="top-bid" {...outcome.topBid.shares} /> @ <ValueDenomination className="top-bid" {...outcome.topBid.price} />
 						</Clickable>
 					</td>
-					<td>
+					<td className='ask'>
 						<Clickable onClick={() => { outcome.trade.updateTradeOrder(p.id, undefined, outcome.topAsk.value); }}>
 							<ValueDenomination className="top-ask" {...outcome.topAsk.shares} /> @ <ValueDenomination className="top-ask" {...outcome.topAsk.price} />
 						</Clickable>
@@ -81,7 +81,7 @@ const TradePanelItems = (p) => {
 							<td></td>
 							<td>
 								{ outcome.orderBook.bids[i] &&
-									<div className='order-book-data'>
+									<div className='order-book-data bid'>
 										<Clickable onClick={event => {
 											event.stopPropagation();
 
@@ -100,19 +100,19 @@ const TradePanelItems = (p) => {
 							</td>
 							<td>
 								{ outcome.orderBook.asks[i] &&
-									<div className='order-book-data'>
+									<div className='order-book-data ask'>
 										<Clickable onClick={event => {
-											event.stopPropagation();
-
-											outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.asks[i].shares.value, outcome.orderBook.asks[i].price.value, 'bid');
-										}} >
-											<ValueDenomination className="shares" {...outcome.orderBook.asks[i].shares} />
-										</Clickable> @ <Clickable onClick={event => {
 											event.stopPropagation();
 
 											outcome.trade.updateTradeOrder(outcome.id, 0, outcome.orderBook.asks[i].price.value);
 										}} >
 											<ValueDenomination className="price" {...outcome.orderBook.asks[i].price} />
+										</Clickable> @ <Clickable onClick={event => {
+											event.stopPropagation();
+
+											outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.asks[i].shares.value, outcome.orderBook.asks[i].price.value, 'bid');
+										}} >
+											<ValueDenomination className="shares" {...outcome.orderBook.asks[i].shares} />
 										</Clickable>
 									</div>
 								}
