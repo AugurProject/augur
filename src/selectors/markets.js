@@ -306,8 +306,8 @@ function prepareTestTradingTransactions() {
 						outcomeName: 'outcome name',
 						marketDescription: 'marketDescription',
 						txns: [{
-							hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
-							status: "on sent"
+							hash: '0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860',
+							status: 'on sent'
 						}]
 					}
 				}
@@ -323,11 +323,11 @@ function prepareTestTradingTransactions() {
 							outcomeName: 'outcome name',
 							marketDescription: 'marketDescription',
 							txns: [{
-								hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
-								status: "on sent"
+								hash: '0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860',
+								status: 'on sent'
 							}, {
-								hash: "0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717",
-								status: "on sent"
+								hash: '0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717',
+								status: 'on sent'
 							}]
 						}
 					}
@@ -345,11 +345,11 @@ function prepareTestTradingTransactions() {
 							outcomeName: 'outcome name',
 							marketDescription: 'marketDescription',
 							txns: [{
-								hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
-								status: "success"
+								hash: '0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860',
+								status: 'success'
 							}, {
-								hash: "0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717",
-								status: "on sent"
+								hash: '0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717',
+								status: 'on sent'
 							}]
 						}
 					}
@@ -367,11 +367,11 @@ function prepareTestTradingTransactions() {
 							outcomeName: 'outcome name',
 							marketDescription: 'marketDescription',
 							txns: [{
-								hash: "0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860",
-								status: "success"
+								hash: '0x7175b2c708efe960ce8175ffdeb2654e6a6f3fbef312ddf11bbdd89d67c07860',
+								status: 'success'
 							}, {
-								hash: "0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717",
-								status: "success"
+								hash: '0x06870c76d98ddbb11fdd213febf3f6a6e4562bedff5718ec069efe807c2b5717',
+								status: 'success'
 							}]
 						}
 					}
