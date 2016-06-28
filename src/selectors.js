@@ -1,3 +1,4 @@
+import authForm from './selectors/auth-form';
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
 import keywords from './selectors/keywords';
@@ -19,8 +20,10 @@ const selectors = {
 	markets,
 	keywords,
 	filters,
-	createMarketForm
+	createMarketForm,
 };
+selectors.authForm = authForm;
+selectors.authForm.update = selectors.update.bind(this);
 
 selectors.activePage = MARKETS;
 
@@ -33,8 +36,6 @@ selectors.links = {
 	previousLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
 	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
 };
-
-selectors.authForm = { closeLink: { href: '/', onClick: () => {} } };
 
 selectors.transactions = [];
 selectors.transactionsTotals = {

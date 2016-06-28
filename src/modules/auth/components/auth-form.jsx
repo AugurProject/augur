@@ -8,10 +8,10 @@ export default class AuthForm extends Component {
 		title: PropTypes.string,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
-		isVisibleUsername: PropTypes.bool,
+		isVisibleName: PropTypes.bool,
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
-		clearUsername: PropTypes.bool,
+		clearName: PropTypes.bool,
 		clearPassword: PropTypes.bool,
 		clearCode: PropTypes.bool,
 		msg: PropTypes.string,
@@ -29,7 +29,7 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.state = { msg: this.props.msg };
+		this.state = { msg: this.props.msg, showPass: false };
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -37,8 +37,9 @@ export default class AuthForm extends Component {
 	}
 
 	componentDidUpdate() {
-		if (this.props.clearUsername) {
-			this.refs.username.value = '';
+		if (this.props.clearName) {
+			this.refs.name.value = '';
+			this.refs.secureID.value = '';
 		}
 		if (this.props.clearPassword) {
 			this.refs.password.value = '';
@@ -54,7 +55,7 @@ export default class AuthForm extends Component {
 		this.setState({ msg: undefined });
 		setTimeout(() =>
 			this.props.onSubmit(
-				this.refs.username && this.refs.username.value,
+				this.refs.name && this.refs.name.value,
 				this.refs.password && this.refs.password.value,
 				this.refs.password2 && this.refs.password2.value
 			), 100);
@@ -82,12 +83,31 @@ export default class AuthForm extends Component {
 						{this.state.msg}
 					</span>
 				}
+				{p.isVisibleAccountInfo &&
+					<div>
+						<br />
+						Secure Login ID: {p.secureID} <br /><br />
+						Password: { this.state.showPass ? p.password : '********' }
+						<button className="button" type="button" onClick={() => this.setState({ showPass: !this.state.showPass })} style={{ margin: '0 1vmin' }}>
+							Show Password
+						</button>
+						<br />
+					</div>
+				}
 				<input
-					ref="username"
-					className={classnames('auth-input', { displayNone: !p.isVisibleUsername })}
+					ref="name"
+					className={classnames('auth-input', { displayNone: !p.isVisibleName })}
 					type="text"
 					placeholder="name"
 					maxLength="30"
+					autoFocus="autofocus"
+				/>
+				<input
+					ref="secureID"
+					className={classnames('auth-input', { displayNone: !p.isVisibleID })}
+					type="text"
+					placeholder="secure login ID"
+					maxLength="256"
 					autoFocus="autofocus"
 				/>
 				<input
