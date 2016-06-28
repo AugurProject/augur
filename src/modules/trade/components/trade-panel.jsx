@@ -8,12 +8,12 @@ const TradePanel = (p) => {
 	console.log('TradePanel: p -- ', p);
 
 	return (
-		<section
+		<div
 			className="trade-panel"
 			onClick={() => p.updateSelectedOutcome(null)}
 		>
 			<table className="trade-builder">
-				<thead className="trade-panel-item-header">
+				<thead className="trade-panel-header">
 					<tr>
 						<th className="outcome-name"></th>
 						<th className="last-price">Last</th>
@@ -64,7 +64,7 @@ const TradePanel = (p) => {
 					Place Trade
 				</button>
 			</div>
-		</section>
+		</div>
 	);
 };
 

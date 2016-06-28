@@ -5,19 +5,132 @@
     .trade-builder {
         width: 100%;
 
-        .trade-panel-item-row {
-            th, td {
-                text-align: center;
+        .trade-panel-header, .trade-panel-row {
+            white-space: nowrap;
+        }
+
+        .trade-panel-header {
+            margin-bottom: 1em;
+            border-bottom: 1px solid fade(@color-dark-active, 50%);
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+
+            .num-shares, .limit-price {
+                background: @color-dark-hover;
             }
         }
 
-        .order-book-data {
-            text-align: center;
-        }
-    }
+        .trade-panel-row {
+            th, td, td .order-book-data {
+                text-align: center;
+            }
 
-    //.trade-builder {
-    //    .trade-panel-item .trade-panel-item-content, .trade-panel-item-header {
+            .outcome-name {
+                text-align: left;
+                text-transform: uppercase;
+            }
+
+            .fee-to-pay {
+                text-align: right;
+            }
+
+            .total-cost {
+                text-align: right;
+                font-weight: 700;
+                .colorize();
+
+                .value {
+                    font-weight: 900;
+                }
+            }
+
+            .num-shares, .limit-price {
+                color: @color-warning-normal;
+                font-weight: 900;
+            }
+        }
+
+        .trade-orders {
+            padding-top: 0; padding-bottom: 0;
+            line-height: 1.5em;
+            white-space: nowrap;
+
+            h5 {
+                display: block;
+                margin-bottom: 1.4em;
+                padding: 0;
+                border-bottom: 1px solid fade(@color-dark-active, 50%);
+                font-size: 0.7em;
+                font-weight: 400;
+                text-transform: uppercase;
+            }
+
+            .order {
+                display: flex;
+
+                &.total {
+                    padding: 0.8em 0 0 0;
+                    .value-changes {
+                        .value-change {
+                            padding: 0.9em 0;
+                            border-top: 1px solid fade(@color-dark-active, 50%);
+                            font-size: 1.15em;
+                        }
+                    }
+                }
+
+                .description {
+                    display: inline-block;
+                    width: 50%;
+                    margin: auto;
+                    line-height: 1.5em;
+                    text-align: left;
+                    font-weight: 400;
+
+                    > * {
+                        display: inline-block;
+                        margin-right: 0.7em;
+                    }
+
+                    .action, .shares, .avg-price {
+                        font-weight: 700;
+                    }
+
+                    .outcome-name {
+                        text-transform: uppercase;
+                    }
+
+                    .market-description {
+                        display: none;
+                    }
+                }
+                .value-changes {
+                    display: inline-block;
+                    width: 50%;
+                    margin-right: 1.5em;
+                    text-align: right;
+
+                    .value-change {
+                        display: inline-block;
+                        width: 33%;
+                        font-weight: 700;
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
+
+        .place-trade-container {
+            text-align: right;
+            padding: 0.7em 6em 2em 0;
+
+            .button.place-trade {
+                font-size: 0.9em;
+            }
+        }
+
+        //.trade-panel-item .trade-panel-item-content, .trade-panel-item-header {
     //        padding: 0em 0 1em 0;
     //        align-items: center;
     //        white-space: nowrap;
@@ -87,83 +200,5 @@
     //        }
     //    }
     //
-    //    .trade-orders {
-    //        padding-top: 0; padding-bottom: 0;
-    //        line-height: 1.5em;
-    //        white-space: nowrap;
-    //
-    //        h5 {
-    //            display: block;
-    //            margin-bottom: 1.4em;
-    //            padding: 0;
-    //            border-bottom: 1px solid fade(@color-dark-active, 50%);
-    //            font-size: 0.7em;
-    //            font-weight: 400;
-    //            text-transform: uppercase;
-    //        }
-    //
-    //        .order {
-    //            display: flex;
-    //
-    //            &.total {
-    //                padding: 0.8em 0 0 0;
-    //                .value-changes {
-    //                    .value-change {
-    //                        padding: 0.9em 0;
-    //                        border-top: 1px solid fade(@color-dark-active, 50%);
-    //                        font-size: 1.15em;
-    //                    }
-    //                }
-    //            }
-    //
-    //            .description {
-    //                display: inline-block;
-    //                width: 50%;
-    //                margin: auto;
-    //                line-height: 1.5em;
-    //                text-align: left;
-    //                font-weight: 400;
-    //
-    //                > * {
-    //                    display: inline-block;
-    //                    margin-right: 0.7em;
-    //                }
-    //
-    //                .action, .shares, .avg-price {
-    //                    font-weight: 700;
-    //                }
-    //
-    //                .outcome-name {
-    //                    text-transform: uppercase;
-    //                }
-    //
-    //                .market-description {
-    //                    display: none;
-    //                }
-    //            }
-    //            .value-changes {
-    //                display: inline-block;
-    //                width: 50%;
-    //                margin-right: 1.5em;
-    //                text-align: right;
-    //
-    //                .value-change {
-    //                    display: inline-block;
-    //                    width: 33%;
-    //                    font-weight: 700;
-    //                    white-space: nowrap;
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    .place-trade-container {
-    //        text-align: right;
-    //        padding: 0.7em 6em 2em 0;
-    //
-    //        .button.place-trade {
-    //            font-size: 0.9em;
-    //        }
-    //    }
-    //}
+    }
 }

@@ -27,7 +27,7 @@ const TradePanelItems = (p) => {
 			tableRows.push(
 				<tr
 					key={`${outcome.name}`}
-					className="trade-panel-item-row"
+					className="trade-panel-row"
 					onClick={event => {
 						event.stopPropagation();
 
@@ -86,7 +86,7 @@ const TradePanelItems = (p) => {
 					tableRows.push(
 						<tr
 							key={`${outcome.name}-order-book-${i}`}
-							className={classnames({'displayNone': p.selectedOutcomeID === outcome.id ? false : true})}
+							className={classnames('trade-panel-row', {'displayNone': p.selectedOutcomeID === outcome.id ? false : true})}
 						>
 							<td></td>
 							<td></td>
@@ -115,16 +115,15 @@ const TradePanelItems = (p) => {
 										<Clickable onClick={event => {
 											event.stopPropagation();
 
-											outcome.trade.updateTradeOrder(outcome.id, 0, outcome.orderBook.asks[i].price.value);
-										}} >
-											<ValueDenomination className="price" {...outcome.orderBook.asks[i].price} />
-										</Clickable>
-										<Clickable onClick={event => {
-											event.stopPropagation();
-
 											outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.asks[i].shares.value, outcome.orderBook.asks[i].price.value, 'bid');
 										}} >
 											<ValueDenomination className="shares" {...outcome.orderBook.asks[i].shares} />
+										</Clickable> @ <Clickable onClick={event => {
+											event.stopPropagation();
+
+											outcome.trade.updateTradeOrder(outcome.id, 0, outcome.orderBook.asks[i].price.value);
+										}} >
+											<ValueDenomination className="price" {...outcome.orderBook.asks[i].price} />
 										</Clickable>
 									</div>
 								}
