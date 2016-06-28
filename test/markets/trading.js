@@ -22,9 +22,6 @@ describe("Unit tests", function () {
             method: "makeTradeHash",
             parameters: ["fixed", "fixed", "hashArray"]
         }, {
-            method: "getInitialTrade",
-            parameters: ["hash"]
-        }, {
             method: "checkHash",
             parameters: ["hash", "address"]
         }, {
@@ -43,9 +40,6 @@ describe("Unit tests", function () {
     });
     describe("eth_sendTransaction", function () {
         runner(this.title, "Trades", [{
-            method: "setInitialTrade",
-            parameters: ["hash"]
-        }, {
             method: "commitTrade",
             parameters: ["hash"]
         }, {
