@@ -587,13 +587,13 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 },{"bignumber.js":2,"buffer":287,"ethereumjs-abi":3,"js-sha3":55}],2:[function(require,module,exports){
-/*! bignumber.js v2.0.8 https://github.com/MikeMcl/bignumber.js/LICENCE */
+/*! bignumber.js v2.0.7 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (global) {
     'use strict';
 
     /*
-      bignumber.js v2.0.8
+      bignumber.js v2.0.7
       A JavaScript library for arbitrary-precision arithmetic.
       https://github.com/MikeMcl/bignumber.js
       Copyright (c) 2015 Michael Mclaughlin <M8ch88l@gmail.com>
@@ -1889,7 +1889,7 @@ module.exports = {
                             sd -= x.e + 1;
 
                             // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-                            xc[0] = pows10[ ( LOG_BASE - sd % LOG_BASE ) % LOG_BASE ];
+                            xc[0] = pows10[ sd % LOG_BASE ];
                             x.e = -sd || 0;
                         } else {
 
@@ -2942,7 +2942,10 @@ module.exports = {
          * Return the value of this BigNumber converted to a number primitive.
          */
         P.toNumber = function () {
-            return +this;
+            var x = this;
+
+            // Ensure zero has correct sign.
+            return +x || ( x.s ? x.s * 0 : NaN );
         };
 
 
@@ -3071,23 +3074,10 @@ module.exports = {
 
 
         /*
-         * Return as toString, but do not accept a base argument, and include the minus sign for
-         * negative zero.
+         * Return as toString, but do not accept a base argument.
          */
         P.valueOf = P.toJSON = function () {
-            var str,
-                n = this,
-                e = n.e;
-
-            if ( e === null ) return n.toString();
-
-            str = coeffToString( n.c );
-
-            str = e <= TO_EXP_NEG || e >= TO_EXP_POS
-                ? toExponential( str, e )
-                : toFixedPoint( str, e );
-
-            return n.s < 0 ? '-' + str : str;
+            return this.toString();
         };
 
 
@@ -20281,41 +20271,41 @@ module.exports={
         "Trades": "0xdc69ad3331bf69dcc6388be5584b1592826bcc6e"
     },
     "10101": {
-        "BuyAndSellShares": "0x40d785ab77acbb49a98eb20b4fe73f3453c0d9d5",
-        "CloseMarket": "0xb68cdc4eb5979641a07f3163a1dbb3c7b84ae904",
-        "CloseMarketEight": "0x36bbdf2ffb8098de160efd615bdf5d0c4a64be06",
-        "CloseMarketFour": "0xb530068558ed700a0c0e2ca0b43309eca13c6105",
-        "CloseMarketOne": "0x0b4dfc3325fba375bf29ab9308ccded48a1f421c",
-        "CloseMarketTwo": "0x2dc7b2eceb508f39aedf4c98aa07b4b8d20a1a10",
-        "CollectFees": "0x11db70de822bdfbe39dbbf4cbf4a85a26d8e119c",
-        "CompleteSets": "0x47141f262436dbfe525aebd2add23505da94c88e",
-        "CompositeGetters": "0xcc9c7821f8578716ec2ce835b7934084bfe848e8",
-        "Consensus": "0x9adf4105e1b32c0f19fc9c7e7ef83e0c2a055f1b",
-        "CreateBranch": "0x73d8586b84d87aaf97eb342ddd1ee6d365275f92",
-        "CreateMarket": "0x904e460fee914af4163cbfa3886c1a30a9686a0a",
-        "EventResolution": "0x12db03ff2df2ee7107f201d25ad34be48620405d",
-        "Faucets": "0x0e3cdf851bf63a18f03b3915f550d55c45bc916e",
-        "ForkPenalize": "0x71905ebdef1903a2d612dfea00a0c892b8dd814d",
-        "Forking": "0x11c3b17bf4c2812c6f31f5727aa652a50fe4ac71",
-        "MakeReports": "0x0de59e0c1d408a2c874f11527d9dcf822eb24b4e",
-        "PenalizationCatchup": "0x60917879d54e82614d4a67156c22acf4248f4248",
-        "PenalizeNotEnoughReports": "0xe7ece2daa9ca2e5b5dc7de9bd5224444270b8363",
-        "RoundTwo": "0x6ab3c052a2764e3f199fc815a81850c3fac8f94f",
-        "RoundTwoPenalize": "0x298ded7aaba4b17a7591bba07ae2939aa20fbc5f",
-        "SendReputation": "0xdbf05e6e15240803ba22372cd508ab16bf18fa2a",
-        "SlashRep": "0x39ab4024e3c60b13f47893fd7722051b0d3b813c",
-        "Trade": "0x5594de3071683d4bb1c0b91316d1579cbc0cd6e2",
-        "Backstops": "0x9c9ed739a76aa93d376c4e38d4ccf23e258a5943",
-        "Branches": "0xb36248f4284c0135083b01c94280804422dd1a6b",
-        "Cash": "0x388c8f01eb46f0da1fe11f3b9c45433949e6df86",
-        "ConsensusData": "0xe9bd4f50d759f341baf734bdda1e90cd4a0d4cd9",
-        "Events": "0x677d94bc1a28f40f19ba82d9cae8edcfb8999610",
-        "ExpiringEvents": "0x91efa3112ff39d4a638ba80d30b27ef8b7aa610c",
-        "FxpFunctions": "0xa5b9a46218f82414e7339c8aaedbcf0815c025da",
-        "Info": "0x5e1a630c452a911647fb97d488d5f7d71d9685b4",
-        "Markets": "0x89418faf42bbe5eac62ebc7fd53138398ab9c3a7",
-        "Reporting": "0xc1259a0983e75c77f53794829f3d16e4384411b4",
-        "Trades": "0x46ebe9c4a341a9a8d6fb4a3c55b7a7e7c1d38d3f"
+        "BuyAndSellShares": "0xf73976df009da0202d97f272de3453a3a8615f28",
+        "CloseMarket": "0xf7de04c8947352f564f5e87c1656c9c038d5d12e",
+        "CloseMarketOne": "0x4429e13f205099fa2cfb6fbbbef10b043d0bda3d",
+        "CloseMarketTwo": "0xc4f1da9d817dfcf0aeb1b6be181aed5cd26d163c",
+        "CollectFees": "0x1cfc68c9e87d784fd9345edb5809018de5d1f009",
+        "CompleteSets": "0x63104296e75acaa97975541a74d4fc50c2d6d335",
+        "CompositeGetters": "0xf54f0bec13a1da10e551edefa27ee3c1fe6fb042",
+        "Consensus": "0xf24c66409b66b3b2ddcae6c6b0b6f3392beefa4d",
+        "CreateBranch": "0x49e87764a397786f6b0ab1304d5392ef505cfe2f",
+        "CreateMarket": "0xe885d7d7fb4c9852fe8c2b1c7ae1c37f664f77db",
+        "EventResolution": "0x1376507484a9bd57d39e1f5f8baf5d874a047526",
+        "Faucets": "0x098a50da9543734bf64a3233a89222366ac002df",
+        "ForkPenalize": "0x280803c3f84078551aea9f3a0ce43fc23ad712a2",
+        "Forking": "0x2a9ed5076b89823919bb166705c619a6022150f1",
+        "MakeReports": "0x7ccbd931928afd583de6aceac5515e99ab00c969",
+        "PenalizationCatchup": "0x615b6399f527de8f4109d9d2cc769aca1ab71a35",
+        "PenalizeNotEnoughReports": "0x3d6cc569fd7eb08e79f6306b483d4a78c455e940",
+        "ProportionCorrect": "0xba33aaf86d5aa195fca9c4a1186b595358528b91",
+        "ReportingThreshold": "0xe1108076b35b17b9f898a47b6174d3685a4737de",
+        "RoundTwo": "0x31d4da19068c0924d447c36522bdf92a082999c0",
+        "RoundTwoPenalize": "0xe34053af5c08a32941646156bf0a53f8c18cd052",
+        "SendReputation": "0x6dcc7a8226f79da487ed7851b4c99e92c534fa9f",
+        "SlashRep": "0xedf01ca6eaf3508b1b1682bb9a8f89b67fb8fa5f",
+        "Trade": "0xd346e1a51595cf9b194db509bbfbcb36998c033b",
+        "Backstops": "0x47061eca6d532d8854e5c5e18436865cd3a5918c",
+        "Branches": "0xc6001c6016644209f8f63b6b808646ade836d0bf",
+        "Cash": "0x3e9c40b33cda9ce71aaa44a826d365ad2dda7e25",
+        "ConsensusData": "0x023a6649ad54fe8de96f931e20b1eb291bf9d045",
+        "Events": "0x0192544efeffe46300de361b3222ec1d73a78cdc",
+        "ExpiringEvents": "0xc2488c83244c74d15ea9ab643b28966c65f40ba3",
+        "FxpFunctions": "0x03de6b36ff93dd3028323fe8a39b5e6704022e94",
+        "Info": "0x529be8abc731e6441a1095e3d86e9a962269a36e",
+        "Markets": "0x76143b5537b229dc239e8092c2815f5ef44fefb3",
+        "Reporting": "0x0258177fd3a58e5b78b0da4e5121199dbbdcb86f",
+        "Trades": "0x42e470c7c6a2a8cbc9c323b6dd3a9af657f8e426"
     }
 }
 
@@ -48731,7 +48721,7 @@ module.exports = {
                 branchId,
                 description,
                 abi.fix(tradingFee, "hex"),
-                [res.callReturn],
+                res.callReturn,
                 tags[0],
                 tags[1],
                 tags[2],

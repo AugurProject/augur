@@ -69,7 +69,7 @@ module.exports = {
                 branchId,
                 description,
                 abi.fix(tradingFee, "hex"),
-                [res.callReturn],
+                res.callReturn,
                 tags[0],
                 tags[1],
                 tags[2],
