@@ -9,7 +9,7 @@ var runner = require("../runner");
 
 describe("Unit tests", function () {
     describe("eth_call", function () {
-        runner(this.title, "Consensus", [{
+        runner(this.title, "ProportionCorrect", [{
             method: "proportionCorrect",
             parameters: ["hash", "hash", "int"]
         }]);
