@@ -47821,7 +47821,7 @@ function Augur() {
         }
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
-    this.multiTrade = require("./multiTrade").bind(this);
+    this.processOrder = require("./processOrder").bind(this);
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
@@ -47833,7 +47833,7 @@ Augur.prototype.Filters = require("./filters");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./batch":363,"./client/accounts":364,"./client/db":365,"./constants":366,"./filters":367,"./generateOrderBook":368,"./modules/abacus":370,"./modules/branches":371,"./modules/buyAndSellShares":372,"./modules/cash":373,"./modules/completeSets":374,"./modules/compositeGetters":375,"./modules/connect":376,"./modules/createBranch":377,"./modules/createMarket":378,"./modules/events":379,"./modules/logs":380,"./modules/makeReports":381,"./modules/markets":382,"./modules/sendReputation":383,"./modules/trade":384,"./modules/trades":385,"./modules/transact":386,"./modules/whitelist":387,"./multiTrade":388,"./utilities":389,"_process":266,"augur-abi":1,"augur-contracts":59,"ethrpc":392}],370:[function(require,module,exports){
+},{"./batch":363,"./client/accounts":364,"./client/db":365,"./constants":366,"./filters":367,"./generateOrderBook":368,"./modules/abacus":370,"./modules/branches":371,"./modules/buyAndSellShares":372,"./modules/cash":373,"./modules/completeSets":374,"./modules/compositeGetters":375,"./modules/connect":376,"./modules/createBranch":377,"./modules/createMarket":378,"./modules/events":379,"./modules/logs":380,"./modules/makeReports":381,"./modules/markets":382,"./modules/sendReputation":383,"./modules/trade":384,"./modules/trades":385,"./modules/transact":386,"./modules/whitelist":387,"./processOrder":388,"./utilities":389,"_process":266,"augur-abi":1,"augur-contracts":59,"ethrpc":392}],370:[function(require,module,exports){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
  * make RPC requests).
@@ -49610,8 +49610,8 @@ module.exports = {
  * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this method
  * @param {String} market The market ID on which trading occurs
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
- * @param {Object} userTradeOrdersPerOutcome Trade orders to execute (one per outcome) (usually from UI).
- * @param {Object} positionsPerOutcome User's positions per outcome
+ * @param {Object} userTradeOrder Trade order to execute (usually from UI).
+ * @param {Object} userPosition User's position
  * @param {Object} scalarMinMax: {minValue, maxValue} if scalar market; null/undefined otherwise
  * @param {Function} onTradeHash
  * @param {Function} onCommitSent
@@ -49639,7 +49639,7 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = function (
     requestId, market, marketOrderBook,
-    userTradeOrdersPerOutcome, positionsPerOutcome, scalarMinMax,
+    userTradeOrder, userPosition, scalarMinMax,
     onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
     onTradeSent, onTradeSuccess, onTradeFailed,
     onBuySellSent, onBuySellSuccess, onBuySellFailed,
@@ -49650,8 +49650,8 @@ module.exports = function (
     if (requestId.constructor === Object && requestId.requestId) {
         market = requestId.market;
         marketOrderBook = requestId.marketOrderBook;
-        userTradeOrdersPerOutcome = requestId.userTradeOrdersPerOutcome;
-        positionsPerOutcome = requestId.positionsPerOutcome;
+        userTradeOrder = requestId.userTradeOrder;
+        userPosition = requestId.userPosition;
         scalarMinMax = requestId.scalarMinMax;
         onTradeHash = requestId.onTradeHash || utils.noop;
         onCommitSent = requestId.onCommitSent || utils.noop;
@@ -49764,50 +49764,139 @@ module.exports = function (
         }
     }
 
-    userTradeOrdersPerOutcome.forEach(function (userTradeOrder) {
-        if (isScalar) {
-            userTradeOrder.limitPrice = self.adjustScalarPrice(userTradeOrder.type, minValue, maxValue, userTradeOrder.limitPrice);
-        }
-        if (userTradeOrder.type === "buy") {
-            // 1.1/ user wants to buy
-            var matchingSortedAskIds = marketOrderBook.sell
-                .filter(function (ask) {
-                    return ask.outcome === userTradeOrder.outcomeID &&
-                        parseFloat(ask.price) <= userTradeOrder.limitPrice;
-                }, this)
-                .sort(function compareOrdersByPriceAsc(order1, order2) {
-                    return order1.price < order2.price ? -1 : 0;
-                })
-                .map(function (ask) {
-                    return ask.id;
-                });
+    if (isScalar) {
+        userTradeOrder.limitPrice = self.adjustScalarPrice(userTradeOrder.type, minValue, maxValue, userTradeOrder.limitPrice);
+    }
+    if (userTradeOrder.type === "buy") {
+        // 1.1/ user wants to buy
+        var matchingSortedAskIds = marketOrderBook.sell
+            .filter(function (ask) {
+                return ask.outcome === userTradeOrder.outcomeID &&
+                    parseFloat(ask.price) <= userTradeOrder.limitPrice;
+            }, this)
+            .sort(function compareOrdersByPriceAsc(order1, order2) {
+                return order1.price < order2.price ? -1 : 0;
+            })
+            .map(function (ask) {
+                return ask.id;
+            });
 
-            if (matchingSortedAskIds.length === 0) {
-                // 2/ there are no suitable asks on order book
-                this.buy({
-                    amount: userTradeOrder.etherToBuy,
+        if (matchingSortedAskIds.length === 0) {
+            // 2/ there are no suitable asks on order book
+            this.buy({
+                amount: userTradeOrder.etherToBuy,
+                price: userTradeOrder.limitPrice,
+                market: market,
+                outcome: userTradeOrder.outcomeID,
+                onSent: function onBuySentInner(data) {
+                    console.log("[multiTrade] trade: buy: onSent:", data);
+                    onBuySellSent(requestId, data);
+                },
+                onSuccess: function onBuySuccessInner(data) {
+                    console.log("[multiTrade] trade: buy: onSuccess:", data);
+                    onBuySellSuccess(requestId, data);
+                },
+                onFailed: function onBuyFailureInner(data) {
+                    console.log("[multiTrade] trade: buy: onFail:", data);
+                    onBuySellFailed(requestId, data);
+                }
+            });
+        } else {
+            // 3/ there are orders on order book to match
+            this.trade({
+                max_value: userTradeOrder.etherToBuy,
+                max_amount: 0,
+                trade_ids: matchingSortedAskIds,
+                onTradeHash: function (data) {
+                    onTradeHash(requestId, data);
+                },
+                onCommitSent: function (data) {
+                    onCommitSent(requestId, data);
+                },
+                onCommitSuccess: function (data) {
+                    onCommitSuccess(requestId, data);
+                },
+                onCommitFailed: function (data) {
+                    onCommitFailed(requestId, data);
+                },
+                onNextBlock: function (data) {
+                    onNextBlock(requestId, data);
+                },
+                onTradeSent: function (data) {
+                    onTradeSent(requestId, data);
+                },
+                onTradeSuccess: function localOnTradeSuccess(data) {
+                    var etherNotFilled = Number(data.callReturn[1]);
+                    if (etherNotFilled > 0) {
+                        // 3.1/ order was partially filled so place bid on order book
+                        self.buy({
+                            amount: etherNotFilled,
+                            price: userTradeOrder.limitPrice,
+                            market: market,
+                            outcome: userTradeOrder.outcomeID,
+                            onSent: function localOnBuySent(data) {
+                                console.log("[multiTrade] trade: buy: onSent:", data);
+                                onBuySellSent(requestId, data);
+                            },
+                            onSuccess: function localOnBuySuccess(data) {
+                                console.log("[multiTrade] trade: buy: onSuccess:", data);
+                                onBuySellSuccess(requestId, data);
+                            },
+                            onFailed: function localOnBuyFailure(data) {
+                                console.log("[multiTrade] trade: buy: onFail:", data);
+                                onBuySellFailed(requestId, data);
+                            }
+                        });
+                    }
+                    onTradeSuccess(requestId, data);
+                },
+                onTradeFailed: function (data) {
+                    onTradeFailed(requestId, data);
+                }
+            });
+        }
+    } else {
+        // 1.2/ user wants to sell
+        var matchingSortedBidIds = marketOrderBook.buy
+            .filter(function (bid) {
+                return bid.outcome === userTradeOrder.outcomeID &&
+                    parseFloat(bid.price) >= userTradeOrder.limitPrice;
+            })
+            .sort(function compareOrdersByPriceDesc(order1, order2) {
+                return order1.price < order2.price ? 1 : 0;
+            })
+            .map(function (bid) {
+                return bid.id;
+            });
+
+        var hasUserPosition = userPosition && userPosition.qtyShares > 0;
+        if (hasUserPosition) {
+            if (matchingSortedBidIds.length === 0) {
+                // 2/ no bids to match => place ask on order book
+                this.sell({
+                    amount: userTradeOrder.sharesToSell,
                     price: userTradeOrder.limitPrice,
                     market: market,
                     outcome: userTradeOrder.outcomeID,
-                    onSent: function onBuySentInner(data) {
-                        console.log("[multiTrade] trade: buy: onSent:", data);
+                    onSent: function localOnSellSent(data) {
+                        console.log("[multiTrade] trade: sell: onSent:", data);
                         onBuySellSent(requestId, data);
                     },
-                    onSuccess: function onBuySuccessInner(data) {
-                        console.log("[multiTrade] trade: buy: onSuccess:", data);
+                    onSuccess: function localOnSellSuccess(data) {
+                        console.log("[multiTrade] trade: sell: onSuccess:", data);
                         onBuySellSuccess(requestId, data);
                     },
-                    onFailed: function onBuyFailureInner(data) {
-                        console.log("[multiTrade] trade: buy: onFail:", data);
+                    onFailed: function localOnSellFailure(data) {
+                        console.log("[multiTrade] trade: sell: onFail:", data);
                         onBuySellFailed(requestId, data);
                     }
                 });
             } else {
-                // 3/ there are orders on order book to match
+                // 4.1/ there are bids to match
                 this.trade({
-                    max_value: userTradeOrder.etherToBuy,
-                    max_amount: 0,
-                    trade_ids: matchingSortedAskIds,
+                    max_value: 0,
+                    max_amount: userTradeOrder.sharesToSell,
+                    trade_ids: matchingSortedBidIds,
                     onTradeHash: function (data) {
                         onTradeHash(requestId, data);
                     },
@@ -49827,24 +49916,24 @@ module.exports = function (
                         onTradeSent(requestId, data);
                     },
                     onTradeSuccess: function localOnTradeSuccess(data) {
-                        var etherNotFilled = Number(data.callReturn[1]);
-                        if (etherNotFilled > 0) {
-                            // 3.1/ order was partially filled so place bid on order book
-                            self.buy({
-                                amount: etherNotFilled,
+                        var sharesNotSold = Number(data.callReturn[2]);
+                        if (sharesNotSold > 0) {
+                            // 4.1.2 order was partially filled
+                            self.sell({
+                                amount: sharesNotSold,
                                 price: userTradeOrder.limitPrice,
                                 market: market,
                                 outcome: userTradeOrder.outcomeID,
-                                onSent: function localOnBuySent(data) {
-                                    console.log("[multiTrade] trade: buy: onSent:", data);
+                                onSent: function (data) {
+                                    console.log("[multiTrade] trade: sell: onSent:", data);
                                     onBuySellSent(requestId, data);
                                 },
-                                onSuccess: function localOnBuySuccess(data) {
-                                    console.log("[multiTrade] trade: buy: onSuccess:", data);
+                                onSuccess: function (data) {
+                                    console.log("[multiTrade] trade: sell: onSuccess:", data);
                                     onBuySellSuccess(requestId, data);
                                 },
-                                onFailed: function localOnBuyFailure(data) {
-                                    console.log("[multiTrade] trade: buy: onFail:", data);
+                                onFailed: function (data) {
+                                    console.log("[multiTrade] trade: sell: onFail:", data);
                                     onBuySellFailed(requestId, data);
                                 }
                             });
@@ -49857,102 +49946,10 @@ module.exports = function (
                 });
             }
         } else {
-            // 1.2/ user wants to sell
-            var matchingSortedBidIds = marketOrderBook.buy
-                .filter(function (bid) {
-                    return bid.outcome === userTradeOrder.outcomeID &&
-                        parseFloat(bid.price) >= userTradeOrder.limitPrice;
-                })
-                .sort(function compareOrdersByPriceDesc(order1, order2) {
-                    return order1.price < order2.price ? 1 : 0;
-                })
-                .map(function (bid) {
-                    return bid.id;
-                });
-
-            var userPosition = positionsPerOutcome[userTradeOrder.outcomeID];
-            var hasUserPosition = userPosition && userPosition.qtyShares > 0;
-            if (hasUserPosition) {
-                if (matchingSortedBidIds.length === 0) {
-                    // 2/ no bids to match => place ask on order book
-                    this.sell({
-                        amount: userTradeOrder.sharesToSell,
-                        price: userTradeOrder.limitPrice,
-                        market: market,
-                        outcome: userTradeOrder.outcomeID,
-                        onSent: function localOnSellSent(data) {
-                            console.log("[multiTrade] trade: sell: onSent:", data);
-                            onBuySellSent(requestId, data);
-                        },
-                        onSuccess: function localOnSellSuccess(data) {
-                            console.log("[multiTrade] trade: sell: onSuccess:", data);
-                            onBuySellSuccess(requestId, data);
-                        },
-                        onFailed: function localOnSellFailure(data) {
-                            console.log("[multiTrade] trade: sell: onFail:", data);
-                            onBuySellFailed(requestId, data);
-                        }
-                    });
-                } else {
-                    // 4.1/ there are bids to match
-                    this.trade({
-                        max_value: 0,
-                        max_amount: userTradeOrder.sharesToSell,
-                        trade_ids: matchingSortedBidIds,
-                        onTradeHash: function (data) {
-                            onTradeHash(requestId, data);
-                        },
-                        onCommitSent: function (data) {
-                            onCommitSent(requestId, data);
-                        },
-                        onCommitSuccess: function (data) {
-                            onCommitSuccess(requestId, data);
-                        },
-                        onCommitFailed: function (data) {
-                            onCommitFailed(requestId, data);
-                        },
-                        onNextBlock: function (data) {
-                            onNextBlock(requestId, data);
-                        },
-                        onTradeSent: function (data) {
-                            onTradeSent(requestId, data);
-                        },
-                        onTradeSuccess: function localOnTradeSuccess(data) {
-                            var sharesNotSold = Number(data.callReturn[2]);
-                            if (sharesNotSold > 0) {
-                                // 4.1.2 order was partially filled
-                                self.sell({
-                                    amount: sharesNotSold,
-                                    price: userTradeOrder.limitPrice,
-                                    market: market,
-                                    outcome: userTradeOrder.outcomeID,
-                                    onSent: function (data) {
-                                        console.log("[multiTrade] trade: sell: onSent:", data);
-                                        onBuySellSent(requestId, data);
-                                    },
-                                    onSuccess: function (data) {
-                                        console.log("[multiTrade] trade: sell: onSuccess:", data);
-                                        onBuySellSuccess(requestId, data);
-                                    },
-                                    onFailed: function (data) {
-                                        console.log("[multiTrade] trade: sell: onFail:", data);
-                                        onBuySellFailed(requestId, data);
-                                    }
-                                });
-                            }
-                            onTradeSuccess(requestId, data);
-                        },
-                        onTradeFailed: function (data) {
-                            onTradeFailed(requestId, data);
-                        }
-                    });
-                }
-            } else {
-                // 4.2/ no user position
-                shortSellUntilZero(requestId, matchingSortedBidIds, userTradeOrder);
-            }
+            // 4.2/ no user position
+            shortSellUntilZero(requestId, matchingSortedBidIds, userTradeOrder);
         }
-    }, this);
+    }
 };
 
 },{"./constants":366,"./utilities":389,"bignumber.js":64}],389:[function(require,module,exports){

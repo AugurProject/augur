@@ -69,7 +69,7 @@ describe("Unit tests", function () {
             parameters: ["hash"]
         }]);
     });
-    describe("multiTrade", function () {
+    describe("processOrder", function () {
 
         var buy, sell, trade, short_sell, buyCompleteSets;
 
@@ -98,7 +98,7 @@ describe("Unit tests", function () {
             }
         };
 
-        before("multiTrade", function () {
+        before("processOrder", function () {
             buy = augur.buy;
             sell = augur.sell;
             trade = augur.trade;
@@ -106,7 +106,7 @@ describe("Unit tests", function () {
             buyCompleteSets = augur.buyCompleteSets;
         });
 
-        after("multiTrade", function () {
+        after("processOrder", function () {
             assert.strictEqual(Object.keys(requests).length, 0);
             augur.buy = buy;
             augur.sell = sell;
@@ -177,18 +177,18 @@ describe("Unit tests", function () {
                     p.onSuccess({callReturn: "1"});
                 };
                 var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
-                augur.multiTrade({
+                augur.processOrder({
                     requestId: t.requestId,
                     market: t.market,
                     marketOrderBook: t.marketOrderBook,
-                    userTradeOrdersPerOutcome: [{
+                    userTradeOrder: {
                         type: t.type,
                         sharesToSell: t.amount,
                         etherToBuy: value,
                         limitPrice: t.limitPrice,
                         outcomeID: t.outcome
-                    }],
-                    positionsPerOutcome: t.positionsPerOutcome,
+                    },
+                    userPosition: t.userPosition,
                     onTradeHash: t.onTradeHash,
                     onCommitSent: t.onCommitSent,
                     onCommitFailed: t.onCommitFailed || unexpectedEvents.onCommitFailed,
@@ -215,10 +215,7 @@ describe("Unit tests", function () {
             limitPrice: "0.6",
             type: "buy",
             marketOrderBook: {buy: [], sell: []},
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].done();
                 delete requests[requestId];
@@ -234,10 +231,7 @@ describe("Unit tests", function () {
             limitPrice: "0.6",
             type: "buy",
             marketOrderBook: {buy: [], sell: []},
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].done();
                 delete requests[requestId];
@@ -265,10 +259,7 @@ describe("Unit tests", function () {
                     outcome: "1"
                 }]
             },
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onTradeSuccess: function (requestId, res) {
                 requests[requestId].done();
                 delete requests[requestId];
@@ -297,10 +288,7 @@ describe("Unit tests", function () {
                     outcome: "1"
                 }]
             },
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].buySell = true;
             },
@@ -320,10 +308,7 @@ describe("Unit tests", function () {
             limitPrice: "0.6",
             type: "sell",
             marketOrderBook: {buy: [], sell: []},
-            positionsPerOutcome: {
-                "1": {qtyShares: 1},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 1},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].done();
                 delete requests[requestId];
@@ -351,10 +336,7 @@ describe("Unit tests", function () {
                 }],
                 sell: []
             },
-            positionsPerOutcome: {
-                "1": {qtyShares: 1},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 1},
             onTradeSuccess: function (requestId, res) {
                 requests[requestId].done();
                 delete requests[requestId];
@@ -383,10 +365,7 @@ describe("Unit tests", function () {
                 }],
                 sell: []
             },
-            positionsPerOutcome: {
-                "1": {qtyShares: 1},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 1},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].buySell = true;
             },
@@ -406,10 +385,7 @@ describe("Unit tests", function () {
             limitPrice: "0.6",
             type: "sell",
             marketOrderBook: {buy: [], sell: []},
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onBuyCompleteSetsSuccess: function (requestId, res) {
                 requests[requestId].buyCompleteSets = true;
             },
@@ -441,10 +417,7 @@ describe("Unit tests", function () {
                 }],
                 sell: []
             },
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onTradeSuccess: function (requestId, res) {
                 requests[requestId].done();
                 delete requests[requestId];
@@ -481,10 +454,7 @@ describe("Unit tests", function () {
                 }],
                 sell: []
             },
-            positionsPerOutcome: {
-                "1": {qtyShares: 0},
-                "2": {qtyShares: 0}
-            },
+            userPosition: {qtyShares: 0},
             onTradeSuccess: function (requestId, res) {
                 if (!requests[requestId].shortSellCount) {
                     requests[requestId].shortSellCount = 1;
@@ -839,7 +809,7 @@ describe("Integration tests", function () {
             });
         });
 
-        describe("multiTrade", function () {
+        describe("processOrder", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
                     this.timeout(tools.TIMEOUT*10);
@@ -851,18 +821,18 @@ describe("Integration tests", function () {
                     if (marketInfo && marketInfo.type === "scalar") {
                         scalarMinMax = marketInfo.events[0];
                     }
-                    augur.multiTrade({
+                    augur.processOrder({
                         requestId: t.requestId,
                         market: t.market,
                         marketOrderBook: orderBook,
-                        userTradeOrdersPerOutcome: [{
+                        userTradeOrder: {
                             type: t.type,
                             sharesToSell: t.amount,
                             etherToBuy: value,
                             limitPrice: t.limitPrice,
                             outcomeID: t.outcome
-                        }],
-                        positionsPerOutcome: {"1": {qtyShares: 0}},
+                        },
+                        userPosition: {qtyShares: 0},
                         scalarMinMax: scalarMinMax,
                         onTradeHash: function (tradeOrderId, tradeHash) {
                             console.log("tradeHash:", tradeOrderId, tradeHash);
