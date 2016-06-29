@@ -5,7 +5,7 @@ import Input from '../../common/components/input';
 import Dropdown from '../../common/components/dropdown';
 import Clickable from '../../common/components/clickable';
 
-const TradePanelItems = (p) => {
+const TradePanelBody = (p) => {
 	const itemRows = (outcomes, sideOptions) => {
 		let tableRows = [];
 
@@ -154,7 +154,7 @@ const TradePanelItems = (p) => {
 	);
 };
 
-TradePanelItems.propTypes = {
+TradePanelBody.propTypes = {
 	className: PropTypes.string,
 	name: PropTypes.string,
 	numShares: PropTypes.number,
@@ -171,4 +171,4 @@ TradePanelItems.propTypes = {
 	outcomes: PropTypes.array
 };
 
-export default TradePanelItems;
+export default TradePanelBody;
