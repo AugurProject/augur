@@ -37050,6 +37050,9 @@ module.exports = function () {
                 // sign, validate, and send the transaction
                 etx.sign(self.account.privateKey);
 
+                // calculate the cost (in ether) of this transaction
+                var cost = etx.getUpfrontCost().toString();
+
                 // transaction validation
                 if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
 
@@ -37066,8 +37069,6 @@ module.exports = function () {
                             } else if (res.message.indexOf("Nonce too low") > -1 ||
                                 res.message.indexOf("Known transaction") > -1) {
                                 console.debug("bad nonce, retry", res.message);
-                                // packaged.nonce++;
-                                // return self.submitTx(packaged, cb);
                                 return self.getTxNonce(packaged, cb);
                             } else {
                                 err = clone(errors.RAW_TRANSACTION_ERROR);
@@ -37079,7 +37080,10 @@ module.exports = function () {
 
                         // res is the txhash if nothing failed immediately
                         // (even if the tx is nulled, still index the hash)
-                        augur.rpc.rawTxs[res] = {tx: packaged};
+                        augur.rpc.rawTxs[res] = {
+                            tx: packaged,
+                            cost: new BigNumber(cost, 10).dividedBy(augur.rpc.ETHER).toFixed()
+                        };
 
                         // nonce ok, execute callback
                         return cb(res);
@@ -37095,8 +37099,6 @@ module.exports = function () {
             augur.rpc.pendingTxCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
                     packaged.nonce = parseInt(txCount);
-                    // packaged.nonce = Math.max(parseInt(txCount), self.nonce);
-                    // self.nonce = packaged.nonce;
                 }
                 self.submitTx(packaged, cb);
             });
@@ -38127,7 +38129,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.3";
+    this.version = "1.5.4";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;

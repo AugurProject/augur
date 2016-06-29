@@ -601,7 +601,7 @@ describe("Integration tests", function () {
         describe("trade", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
-                    this.timeout(tools.TIMEOUT*4);
+                    this.timeout(tools.TIMEOUT*10);
                     augur.useAccount(accounts[0]);
                     var initialTotalTrades = parseInt(augur.Markets.get_total_trades(t.market));
                     augur.buyCompleteSets({
@@ -686,7 +686,7 @@ describe("Integration tests", function () {
         describe("short_sell", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
-                    this.timeout(tools.TIMEOUT*4);
+                    this.timeout(tools.TIMEOUT*10);
                     augur.useAccount(accounts[0]);
                     var initialTotalTrades = parseInt(augur.get_total_trades(t.market));
                     augur.buy({
@@ -840,7 +840,7 @@ describe("Integration tests", function () {
             };
             test({
                 requestId: 1,
-                market: markets[markets.length - 3],
+                market: markets[markets.length - 1],
                 amount: 1,
                 outcome: "1",
                 limitPrice: "0.001",
@@ -848,10 +848,10 @@ describe("Integration tests", function () {
             });
             test({
                 requestId: 2,
-                market: markets[markets.length - 3],
+                market: markets[markets.length - 1],
                 amount: 1,
                 outcome: "1",
-                limitPrice: "0.999",
+                limitPrice: "0.6",
                 type: "buy"
             });
         });
