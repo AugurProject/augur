@@ -74,7 +74,7 @@ const accountCreated = {
 	isVisiblePassword: false,
 	isVisiblePassword2: false,
 	isVisibleAccountInfo: true,
-	secureID: 'testID123...etc',
+	secureID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUE',
 	title: 'Account Generated',
 	topLinkText: '',
 	topLink: { href: '', onClick: () => {}},
