@@ -8,6 +8,10 @@
         border-collapse: separate;
         border-spacing: 0 0.6rem;
 
+        .shares-at {
+            margin: 0 0.6rem;
+        }
+
         .trade-panel-header, .trade-panel-row {
             white-space: nowrap;
         }
@@ -83,12 +87,6 @@
                     }
                 }
 
-                .bid, .ask {
-                    .shares-at {
-                        margin: 0 0.6rem;
-                    }
-                }
-
                 .bid {
                     text-align: right;
                     padding-right: 1rem;
@@ -105,7 +103,7 @@
     .transaction-summary {
         .summary-title td {
             font-size: 1.2rem;
-            padding: 0.6rem 0;
+            padding: 0.8rem 0;
             border-top: 2px dotted @color-dark-active;
             border-bottom: 2px dotted @color-dark-active;
         }
@@ -113,6 +111,10 @@
         .summary-headers td {
             padding: 0 0 0.6rem;
             border-bottom: 1px solid @color-dark-active;
+        }
+
+        .transaction-type {
+            padding-right: 0.6rem;
         }
     }
 
