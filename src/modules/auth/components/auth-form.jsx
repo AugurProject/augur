@@ -6,6 +6,7 @@ export default class AuthForm extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		title: PropTypes.string,
+		password: PropTypes.string,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
 		isVisibleName: PropTypes.bool,
@@ -30,7 +31,7 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.state = { msg: this.props.msg, showPass: false };
+		this.state = { msg: this.props.msg, showPass: false, password: this.props.password };
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -54,12 +55,11 @@ export default class AuthForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.setState({ msg: undefined });
+		const name = this.refs.name.value;
+		const password = this.refs.password.value;
+		const password2 = this.refs.password2.value;
 		setTimeout(() =>
-			this.props.onSubmit(
-				this.refs.name && this.refs.name.value,
-				this.refs.password && this.refs.password.value,
-				this.refs.password2 && this.refs.password2.value
-			), 100);
+			this.props.onSubmit(name, password, password2), 100);
 	}
 
 	render() {
@@ -86,13 +86,13 @@ export default class AuthForm extends Component {
 				}
 				{p.isVisibleAccountInfo &&
 					<div className="account-info-container">
-						<div><h2>Secure Login ID:</h2> {p.secureID}</div>
+						<div><label>Secure Login ID:</label> {p.secureID}</div>
 						<div>
-							<h2>Password:</h2> { this.state.showPass ? p.password : '********' }
+							<label>Password:</label> {this.state.showPass ? p.password : '********'}
 						</div>
-						<button className="button" type="button" onClick={() => this.setState({ showPass: !this.state.showPass })}>
-							Show Password
-						</button>
+						<span className="text-button" onClick={() => this.setState({ showPass: !this.state.showPass })}>
+							{this.state.showPass ? 'Hide Password' : 'Show Password'}
+						</span>
 					</div>
 				}
 				<input

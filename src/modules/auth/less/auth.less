@@ -26,22 +26,28 @@
         }
 
 				.account-info-container {
-					// margin: 1.6vmin 0;
 					display: flex;
 					flex-flow: row wrap;
 					padding: 1.6vmin;
+					margin: 1.6vmin 0;
 					background: white;
 					border: 1px solid @color-border-dark;
 					border-radius: 1px;
 
-					div {
-						flex-basis: 100%;
-						margin: 1.6vmin 0;
+					label {
+						margin: 0 1vmin 0 0;
+						font-weight: bold;
 					}
 
-					.button {
-						font-size: 1.25rem;
-						margin: 1.6vmin 0;
+					div {
+						margin: 1vmin 0;
+						word-break: break-all;
+						word-wrap: break-word;
+						display: inline;
+					}
+					.text-button {
+						align-self: center;
+						margin: 0 0 0 1vmin;
 					}
 				}
 
