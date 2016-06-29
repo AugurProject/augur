@@ -2,6 +2,7 @@ node_modules
 *.log
 coverage
 overflow
+old
 npm-debug*
 *scratch*
 build

@@ -29,6 +29,7 @@ var modules = [
 ];
 
 function Augur() {
+
     this.version = "1.5.5";
 
     this.options = {debug: {broadcast: false, fallback: false}};

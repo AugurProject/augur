@@ -7,53 +7,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var runner = require("../runner");
 var tools = require("../tools");
-
-describe("Unit tests", function () {
-    describe("eth_call", function () {
-        runner(this.title, "Events", [{
-            method: "getmode",
-            parameters: ["hash"]
-        }, {
-            method: "getUncaughtOutcome",
-            parameters: ["hash"]
-        }, {
-            method: "getMarkets",
-            parameters: ["hash"]
-        }, {
-            method: "getReportingThreshold",
-            parameters: ["hash"]
-        }, {
-            method: "getEventInfo",
-            parameters: ["hash"]
-        }, {
-            method: "getEventBranch",
-            parameters: ["hash"]
-        }, {
-            method: "getExpiration",
-            parameters: ["hash"]
-        }, {
-            method: "getOutcome",
-            parameters: ["hash"]
-        }, {
-            method: "getMinValue",
-            parameters: ["hash"]
-        }, {
-            method: "getMaxValue",
-            parameters: ["hash"]
-        }, {
-            method: "getNumOutcomes",
-            parameters: ["hash"]
-        }]);
-    });
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "Events", [{
-            method: "setOutcome",
-            parameters: ["hash", "int"]
-        }]);
-    });
-});
 
 describe("Integration tests", function () {
 
@@ -93,7 +47,6 @@ describe("Integration tests", function () {
     });
     describe("getEventInfo(" + eventID + ")", function () {
         var test = function (res) {
-            // console.log(res)
             assert.strictEqual(res.length, 7);
             assert(abi.bignum(res[0]).eq(abi.bignum(branchID)));
         };

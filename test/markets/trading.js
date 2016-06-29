@@ -13,56 +13,9 @@ var abi = require("augur-abi");
 var chalk = require("chalk");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
-var runner = require("../runner");
 var tools = require("../tools");
 
 describe("Unit tests", function () {
-    describe("eth_call", function () {
-        runner(this.title, "Trades", [{
-            method: "makeTradeHash",
-            parameters: ["fixed", "fixed", "hashArray"]
-        }, {
-            method: "checkHash",
-            parameters: ["hash", "address"]
-        }, {
-            method: "getID",
-            parameters: ["hash"]
-        }, {
-            method: "get_trade",
-            parameters: ["hash"]
-        }, {
-            method: "get_amount",
-            parameters: ["hash"]
-        }, {
-            method: "get_price",
-            parameters: ["hash"]
-        }]);
-    });
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "Trades", [{
-            method: "commitTrade",
-            parameters: ["hash"]
-        }, {
-            method: "zeroHash",
-            parameters: []
-        }, {
-            method: "saveTrade",
-            parameters: ["hash", "int", "hash", "fixed", "fixed", "address", "int"]
-        }, {
-            method: "update_trade",
-            parameters: ["hash", "fixed"]
-        }, {
-            method: "remove_trade",
-            parameters: ["hash"]
-        }, {
-            method: "fill_trade",
-            parameters: ["hash", "fixed"]
-        }]);
-        runner(this.title, "BuyAndSellShares", [{
-            method: "cancel",
-            parameters: ["hash"]
-        }]);
-    });
     describe("processOrder", function () {
 
         var buy, sell, trade, short_sell, buyCompleteSets;
@@ -648,7 +601,7 @@ describe("Integration tests", function () {
         describe("trade", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
-                    this.timeout(tools.TIMEOUT*4);
+                    this.timeout(tools.TIMEOUT*10);
                     augur.useAccount(accounts[0]);
                     var initialTotalTrades = parseInt(augur.Markets.get_total_trades(t.market));
                     augur.buyCompleteSets({
@@ -733,7 +686,7 @@ describe("Integration tests", function () {
         describe("short_sell", function () {
             var test = function (t) {
                 it(JSON.stringify(t), function (done) {
-                    this.timeout(tools.TIMEOUT*4);
+                    this.timeout(tools.TIMEOUT*10);
                     augur.useAccount(accounts[0]);
                     var initialTotalTrades = parseInt(augur.get_total_trades(t.market));
                     augur.buy({
@@ -887,7 +840,7 @@ describe("Integration tests", function () {
             };
             test({
                 requestId: 1,
-                market: markets[markets.length - 3],
+                market: markets[markets.length - 1],
                 amount: 1,
                 outcome: "1",
                 limitPrice: "0.001",
@@ -895,10 +848,10 @@ describe("Integration tests", function () {
             });
             test({
                 requestId: 2,
-                market: markets[markets.length - 3],
+                market: markets[markets.length - 1],
                 amount: 1,
                 outcome: "1",
-                limitPrice: "0.999",
+                limitPrice: "0.6",
                 type: "buy"
             });
         });

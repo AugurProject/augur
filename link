@@ -4,7 +4,4 @@ npm link ethrpc
 npm link augur-abi
 npm link augur-contracts
 npm link keythereum
-npm link geth
 npm link ethereumjs-connect
-npm link ramble
-npm link fzero

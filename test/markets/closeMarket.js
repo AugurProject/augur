@@ -14,13 +14,6 @@ var tools = require("../tools");
 
 var DEBUG = true;
 
-describe("Unit tests", function () {
-    runner("eth_sendTransaction", [{
-        method: "closeMarket",
-        parameters: ["hash", "hash"]
-    }]);
-});
-
 describe("Integration tests", function () {
 
     if (process.env.AUGURJS_INTEGRATION_TESTS) {

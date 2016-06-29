@@ -3,9 +3,12 @@
 var abi = require("augur-abi");
 var utils = require("../src/utilities");
 
-module.exports = {
+var random = {
     hash: function () {
         return abi.prefix_hex(utils.sha256(Math.random().toString()));
+    },
+    int256: function () {
+        return this.hash();
     },
     address: function () {
         return abi.format_address(Math.floor(Math.random() * 1e24).toString(16));
@@ -58,3 +61,7 @@ module.exports = {
         return this.int(min, max);
     }
 };
+random["int256[]"] = function (size) { return this.hashArray(size); };
+random["bytes"] = function (size) { return this.string(size); };
+
+module.exports = random;

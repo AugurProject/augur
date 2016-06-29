@@ -8,16 +8,11 @@
 var assert = require("chai").assert;
 var augur = require("../../src");
 var random = require("../random");
-var runner = require("../runner");
 var tools = require("../tools");
 
 var noop = function () {};
 
 describe("Unit tests", function () {
-    runner("eth_sendTransaction", [{
-        method: "createSubbranch",
-        parameters: ["string", "int", "hash", "fixed", "bool"]
-    }]);
     describe("createBranch", function () {
         var test = function (params) {
             var count = 0;

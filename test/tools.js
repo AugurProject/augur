@@ -9,6 +9,7 @@ var BigNumber = require("bignumber.js");
 var Decimal = require("decimal.js");
 var abi = require("augur-abi");
 var chalk = require("chalk");
+var clone = require("clone");
 var moment = require("moment");
 var constants = require("../src/constants");
 
@@ -56,7 +57,7 @@ module.exports = {
     },
 
     pp: function (obj, indent) {
-        var o = this.copy(obj);
+        var o = clone(obj);
         for (var k in o) {
             if (!o.hasOwnProperty(k)) continue;
             if (o[k] && o[k].constructor === Function) {

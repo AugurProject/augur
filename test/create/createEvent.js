@@ -9,15 +9,7 @@ var assert = require("chai").assert;
 var _ = require("lodash");
 var abi = require("augur-abi");
 var tools = require("../tools");
-var runner = require("../runner");
 require('it-each')({ testPerIteration: true });
-
-describe("Unit tests", function () {
-    runner("eth_sendTransaction", "CreateMarket", [{
-        method: "createEvent",
-        parameters: ["hash", "string", "int", "fixed", "fixed", "int", "string"]
-    }]);
-});
 
 describe("Integration tests", function () {
 

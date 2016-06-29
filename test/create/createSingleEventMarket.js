@@ -10,7 +10,6 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
-var runner = require("../runner");
 var tools = require("../tools");
 
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
@@ -39,12 +38,10 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         extraInfo: t.extraInfo,
                         resolution: t.resolution,
                         onSent: function (r) {
-                            // console.log(r)
                             assert(r.txHash);
                             assert(r.callReturn);
                         },
                         onSuccess: function (r) {
-                            // console.log(r);
                             var marketID = r.marketID;
                             assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                             assert.strictEqual(augur.getDescription(marketID), t.description);
