@@ -9,19 +9,6 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var contracts = require("augur-contracts");
 var tools = require("../tools");
-var runner = require("../runner");
-
-describe("Unit tests", function () {
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "CompleteSets", [{
-            method: "buyCompleteSets",
-            parameters: ["hash", "fixed"]
-        }, {
-            method: "sellCompleteSets",
-            parameters: ["hash", "fixed"]
-        }]);
-    });
-});
 
 describe("Integration tests", function () {
 

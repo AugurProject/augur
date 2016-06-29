@@ -16425,9 +16425,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Branches": {
@@ -16677,9 +16674,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "BuyAndSellShares": {
@@ -16727,9 +16721,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Cash": {
@@ -16824,9 +16815,6 @@ module.exports={
         "int256"
       ]
     }, 
-    "test_callstack": {
-      "method": "test_callstack"
-    }, 
     "withdrawEther": {
       "inputs": [
         "to", 
@@ -16869,9 +16857,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "CloseMarketOne": {
@@ -16891,15 +16876,9 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "CloseMarketTwo": {
-    "test_callstack": {
-      "method": "test_callstack"
-    }, 
     "twoOutcomes": {
       "inputs": [
         "market", 
@@ -16929,9 +16908,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "CompleteSets": {
@@ -16960,9 +16936,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "CompositeGetters": {
@@ -16991,7 +16964,7 @@ module.exports={
         "marketID"
       ], 
       "method": "getMarketInfoCache", 
-      "returns": "hash[]",
+      "returns": "hash[]", 
       "signature": [
         "int256"
       ]
@@ -17019,9 +16992,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Consensus": {
@@ -17048,9 +17018,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "ConsensusData": {
@@ -17338,9 +17305,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "CreateBranch": {
@@ -17362,9 +17326,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "CreateMarket": {
@@ -17429,9 +17390,6 @@ module.exports={
         "int256"
       ]
     }, 
-    "test_callstack": {
-      "method": "test_callstack"
-    }, 
     "updateTradingFee": {
       "inputs": [
         "branch", 
@@ -17491,9 +17449,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Events": {
@@ -17965,9 +17920,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "ExpiringEvents": {
@@ -18671,9 +18623,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Faucets": {
@@ -18714,9 +18663,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "ForkPenalize": {
@@ -18739,9 +18685,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Forking": {
@@ -18806,9 +18749,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "FxpFunctions": {
@@ -18838,9 +18778,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Info": {
@@ -18899,9 +18836,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "MakeReports": {
@@ -18967,9 +18901,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }, 
     "validateReport": {
       "inputs": [
@@ -19497,9 +19428,6 @@ module.exports={
         "int256", 
         "int256[]"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "PenalizationCatchup": {
@@ -19513,9 +19441,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "PenalizeNotEnoughReports": {
@@ -19533,9 +19458,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "ProportionCorrect": {
@@ -19547,9 +19469,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Reporting": {
@@ -19854,9 +19773,6 @@ module.exports={
         "int256"
       ]
     }, 
-    "test_callstack": {
-      "method": "test_callstack"
-    }, 
     "totalSupply": {
       "inputs": [
         "branch"
@@ -19920,9 +19836,6 @@ module.exports={
       "signature": [
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "RoundTwo": {
@@ -19972,9 +19885,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "RoundTwoPenalize": {
@@ -19988,9 +19898,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "SendReputation": {
@@ -20055,9 +19962,6 @@ module.exports={
         "int256"
       ]
     }, 
-    "test_callstack": {
-      "method": "test_callstack"
-    }, 
     "transfer": {
       "inputs": [
         "branch", 
@@ -20106,9 +20010,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }
   }, 
   "Trade": {
@@ -20124,9 +20025,6 @@ module.exports={
         "int256", 
         "int256"
       ]
-    }, 
-    "test_callstack": {
-      "method": "test_callstack"
     }, 
     "trade": {
       "inputs": [
@@ -20269,9 +20167,6 @@ module.exports={
         "int256"
       ]
     }, 
-    "test_callstack": {
-      "method": "test_callstack"
-    }, 
     "update_trade": {
       "inputs": [
         "id", 
@@ -20331,41 +20226,41 @@ module.exports={
         "Trades": "0x42e470c7c6a2a8cbc9c323b6dd3a9af657f8e426"
     }, 
     "2": {
-        "Backstops": "0xb97511f4bb99fa3dc80b18f3a799cb7396a62a99", 
-        "Branches": "0xd11c526580135487bca0fd2278ed9361eedc7fd6", 
-        "BuyAndSellShares": "0x58b96179e3ee13876e9643b7cc4efc9ec2fe14e9", 
-        "Cash": "0x5135813e07dfc99391bedbca336281d9aea085ba", 
-        "CloseMarket": "0x5ccd1f3aa64da0b4a7278321e8fda80a49ed56eb", 
-        "CloseMarketOne": "0xed6088e1ce234049c07a0be7df3ade06ae295594", 
-        "CloseMarketTwo": "0x482211bfc15fb115e44a5a8d36ad1a7126ef17e4", 
-        "CollectFees": "0xd4f7fc08294dbb9be817798a7f5ee3e8010c5eaf", 
-        "CompleteSets": "0x8256d174e5bbbe0c4a53315009e0b668cb7fef44", 
-        "CompositeGetters": "0x16ca9b6b6d91dd35442d149531269cd6010f1773", 
-        "Consensus": "0xe6e719dbbfe5ce8c468b915479b44787bbcadc2c", 
-        "ConsensusData": "0x9e5af8c0e4e12d409a1b41a624727dfd9081146a", 
-        "CreateBranch": "0x79d90f19cedf27d569431f671ef16e7b1c7a517b", 
-        "CreateMarket": "0x03921882faceffe8d217a0056000dd900939c0fa", 
-        "EventResolution": "0x103e818fc0d9fed970052345cf70cec275d5a17a", 
-        "Events": "0x1e1b6141581b457041798097eeccefa7828486ba", 
-        "ExpiringEvents": "0xd18ddc1b5e075a411212a832adf3b7ab1d778470", 
-        "Faucets": "0xa18bad5a9f6cfe71f7b09fd556b2fcfb487b98cc", 
-        "ForkPenalize": "0xd0c6116ac35dd1f62eaec737d3ed3b58f339b4e1", 
-        "Forking": "0xcc12aad461399c07fc65577de31b6137eda596d5", 
-        "FxpFunctions": "0xdcfe41fd2bfcb1e465a50cf7c48459da82d439de", 
-        "Info": "0x023fa73075134e23638643c98c0bddf0f8ccee1d", 
-        "MakeReports": "0x8a93dfa83932fdb2baa6e108a49e1a28064e1a9d", 
-        "Markets": "0x72938dc762bfff28b6c30b34147885d58c01b096", 
-        "PenalizationCatchup": "0xe354ae922008e82e7059767d05c61adfdd897327", 
-        "PenalizeNotEnoughReports": "0x938762ce431ef3a4da217a25e8108a6ce9241e63", 
-        "ProportionCorrect": "0x10ea922c77170f131bb02b68bc6ba5940bc265da", 
-        "Reporting": "0xf05f0c57aa9bbf9a2765a6a837d05ea5ebf497b5", 
-        "ReportingThreshold": "0x8c343ebc5b3965e63f508bb8dc37b47c31947aaf", 
-        "RoundTwo": "0x7697b3b22a32359675271d0112e8daeb3935976f", 
-        "RoundTwoPenalize": "0xf884e00f8baaa93fefb56fca85bc4038694b09e0", 
-        "SendReputation": "0x7cd93cdf79d835720ea1244e9af32177f8124a24", 
-        "SlashRep": "0xf72b826c9ec088461575f1b3e144ab587edafe1d", 
-        "Trade": "0xbbfccbe12257776a95980119810a8cce3812a3b8", 
-        "Trades": "0xdc69ad3331bf69dcc6388be5584b1592826bcc6e"
+        "Backstops": "0xf9c9a87f339b76dc007848ab50363116ec1af05b", 
+        "Branches": "0x52af2540e03b0d0b73e3c7843c236e82ed959ac6", 
+        "BuyAndSellShares": "0x26bd983a1c87352c96399615c025b175862e7978", 
+        "Cash": "0xee01fd89924dfd409bf1356072f98138c57bd7cc", 
+        "CloseMarket": "0xc9a1dd0bccc72527bc5957daa9677d98862d8932", 
+        "CloseMarketOne": "0x4e433f8bde4a0afc59bec1b4d200b84435aafd9e", 
+        "CloseMarketTwo": "0x5e3972e215854523c977ecb9faa21efeb0bcaa0a", 
+        "CollectFees": "0x59c8771527a8b9f7a8d1686a5d0abee424bee648", 
+        "CompleteSets": "0xf64657c13c7dcae029b84ce099dcc0751fc41cc2", 
+        "CompositeGetters": "0x7398b64f89a59f4651d22a716ded5c68a8397957", 
+        "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
+        "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
+        "CreateBranch": "0x6577c99511bc1d5eb74bfde123881a21428ae812", 
+        "CreateMarket": "0xc9ce26545179816b7a82e161cfbaaab547aa1989", 
+        "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
+        "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
+        "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
+        "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
+        "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
+        "Forking": "0x08a31edc4d5e6b19745ee07345d0052b945f3a0e", 
+        "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
+        "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
+        "MakeReports": "0xf060d000aa0603b4670a0d27afced0047213c023", 
+        "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
+        "PenalizationCatchup": "0x0e92a0e24c4315804b6beeba5bb9eb30b596fd5a", 
+        "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
+        "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
+        "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
+        "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
+        "RoundTwo": "0x915941fcf8fa17b933705f8cff57f852ba524a3e", 
+        "RoundTwoPenalize": "0x39fe055135dbf244e81b7d840d262bba2ef3fc3d", 
+        "SendReputation": "0x4e7ffa77266d9935432348db6dc2fda3d48c3972", 
+        "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
+        "Trade": "0xdf0c814f16e9ecf90f28e22996edadaf702239bd", 
+        "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
     }
 }
 },{}],58:[function(require,module,exports){
@@ -38232,7 +38127,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.2";
+    this.version = "1.5.3";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39181,10 +39076,10 @@ module.exports = {
                 tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
                 self.getPeriodLength(branchId, function (periodLength) {
                     self.transact(tx, onSent, function (res) {
-                        var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                         self.rpc.getBlock(res.blockNumber, false, function (block) {
+                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                             res.marketID = utils.sha3([
-                                tradingPeriod,
+                                futurePeriod,
                                 abi.fix(tradingFee, "hex"),
                                 block.timestamp,
                                 tags[0],
@@ -39199,6 +39094,26 @@ module.exports = {
                         });
                     }, onFailed);
                 });
+                // self.getPeriodLength(branchId, function (periodLength) {
+                //     self.transact(tx, onSent, function (res) {
+                //         var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                //         self.rpc.getBlock(res.blockNumber, false, function (block) {
+                //             res.marketID = utils.sha3([
+                //                 tradingPeriod,
+                //                 abi.fix(tradingFee, "hex"),
+                //                 block.timestamp,
+                //                 tags[0],
+                //                 tags[1],
+                //                 tags[2],
+                //                 expDate,
+                //                 new Buffer(description, "utf8").length,
+                //                 description
+                //             ]);
+                //             res.callReturn = res.marketID;
+                //             onSuccess(res);
+                //         });
+                //     }, onFailed);
+                // });
             });
         }, onFailed);
         // var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
@@ -39321,12 +39236,12 @@ module.exports = {
             tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
             self.getPeriodLength(branchId, function (periodLength) {
                 self.transact(tx, onSent, function (res) {
-                    self.getExpiration(events[0], function (expDate) {
+                    self.getExpiration(events, function (expDate) {
                         expDate = parseInt(expDate);
-                        var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                         self.rpc.getBlock(res.blockNumber, false, function (block) {
+                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                             res.marketID = utils.sha3([
-                                tradingPeriod,
+                                futurePeriod,
                                 abi.fix(tradingFee, "hex"),
                                 block.timestamp,
                                 tags[0],
@@ -39350,13 +39265,6 @@ module.exports = {
         var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    pushMarketForward: function (branch, market, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.CreateMarket.pushMarketForward);
-        var unpacked = utils.unpack(branch, utils.labels(this.pushMarketForward), arguments);
-        tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     }
 };

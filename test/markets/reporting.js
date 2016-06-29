@@ -8,29 +8,6 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var tools = require("../tools");
-var runner = require("../runner");
-
-describe("Unit tests", function () {
-    runner("eth_call", "reporting", [{
-        method: "getRepBalance",
-        parameters: ["hash", "address"]
-    }, {
-        method: "getRepByIndex",
-        parameters: ["hash", "int"]
-    }, {
-        method: "getReporterID",
-        parameters: ["hash", "int"]
-    }, {
-        method: "getNumberReporters",
-        parameters: ["hash"]
-    }, {
-        method: "repIDToIndex",
-        parameters: ["hash", "address"]
-    }, {
-        method: "getTotalRep",
-        parameters: ["hash"]
-    }]);
-});
 
 describe("Integration tests", function () {
 

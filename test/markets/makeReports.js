@@ -14,29 +14,7 @@ var madlibs = require("madlibs");
 var augurpath = "../../src/index";
 var utils = require("../../src/utilities");
 var tools = require("../tools");
-var runner = require("../runner");
-
 var DEBUG = true;
-
-describe("Unit tests", function () {
-
-    describe("eth_call", function () {
-        runner(this.title, "MakeReports", [{
-            method: "validateReport",
-            parameters: ["hash", "hash", "int", "fixed", "int", "int", "int", "fixed"]
-        }]);
-    });
-
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "MakeReports", [{
-            method: "submitReportHash",
-            parameters: ["hash", "hash"]
-        }, {
-            method: "submitReport",
-            parameters: ["hash", "intHexString", "fixed", "fixed"]
-        }]);
-    });
-});
 
 describe("Integration tests", function () {
 

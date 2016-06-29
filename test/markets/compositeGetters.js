@@ -13,7 +13,6 @@ var utils = require("../../src/utilities");
 var contracts = require("augur-contracts");
 var constants = require("../../src/constants");
 var augurpath = "../../src/index";
-var runner = require("../runner");
 var tools = require("../tools");
 
 describe("Integration tests", function () {

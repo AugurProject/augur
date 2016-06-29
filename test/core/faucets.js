@@ -3,21 +3,7 @@
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var augur = require("../../src");
-var runner = require("../runner");
 var tools = require("../tools");
-
-describe("Unit tests", function () {
-    runner("eth_sendTransaction", "Faucets", [{
-        method: "reputationFaucet",
-        parameters: ["hash"]
-    }, {
-        method: "cashFaucet",
-        parameters: []
-    }, {
-        method: "fundNewAccount",
-        parameters: ["hash"]
-    }]);
-});
 
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 

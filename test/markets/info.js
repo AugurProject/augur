@@ -7,29 +7,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var runner = require("../runner");
 var tools = require("../tools");
-
-describe("Unit tests", function () {
-    describe("eth_call", function () {
-        runner(this.title, "Info", [{
-            method: "getCreator",
-            parameters: ["address"]
-        }, {
-            method: "getCreationFee",
-            parameters: ["address"]
-        }, {
-            method: "getDescription",
-            parameters: ["hash"]
-        }]);
-    });
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "Info", [{
-            method: "setInfo",
-            parameters: ["hash", "string", "address", "fixed"]
-        }]);
-    });
-});
 
 describe("Integration tests", function () {
 
@@ -52,7 +30,6 @@ describe("Integration tests", function () {
         }
     }
 
-    // info.se
     describe("info.se", function () {
         describe("getCreator(" + eventID + ") [event]", function () {
             var test = function (r) {

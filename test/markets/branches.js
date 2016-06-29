@@ -9,46 +9,6 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var constants = require("../../src/constants");
 var tools = require("../tools");
-var runner = require("../runner");
-
-describe("Unit tests", function () {
-    describe("eth_call", function () {
-        runner(this.title, "Branches", [{
-            method: "getNumBranches",
-            parameters: []
-        }, {
-            method: "getBranches",
-            parameters: []
-        }, {
-            method: "getMarketsInBranch",
-            parameters: ["hash"]
-        }, {
-            method: "getPeriodLength",
-            parameters: ["hash"]
-        }, {
-            method: "getVotePeriod",
-            parameters: ["hash"]
-        }, {
-            method: "getNumMarketsBranch",
-            parameters: ["hash"]
-        }, {
-            method: "getMinTradingFee",
-            parameters: ["hash"]
-        }, {
-            method: "getBranchByNum",
-            parameters: ["int"]
-        }]);
-    });
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "Branches", [{
-            method: "incrementPeriod",
-            parameters: ["hash"]
-        }, {
-            method: "addMarketToBranch",
-            parameters: ["hash", "hash"]
-        }]);
-    });
-});
 
 describe("Integration tests", function () {
 

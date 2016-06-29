@@ -82,10 +82,10 @@ module.exports = {
                 tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
                 self.getPeriodLength(branchId, function (periodLength) {
                     self.transact(tx, onSent, function (res) {
-                        var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                         self.rpc.getBlock(res.blockNumber, false, function (block) {
+                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                             res.marketID = utils.sha3([
-                                tradingPeriod,
+                                futurePeriod,
                                 abi.fix(tradingFee, "hex"),
                                 block.timestamp,
                                 tags[0],
@@ -100,6 +100,26 @@ module.exports = {
                         });
                     }, onFailed);
                 });
+                // self.getPeriodLength(branchId, function (periodLength) {
+                //     self.transact(tx, onSent, function (res) {
+                //         var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                //         self.rpc.getBlock(res.blockNumber, false, function (block) {
+                //             res.marketID = utils.sha3([
+                //                 tradingPeriod,
+                //                 abi.fix(tradingFee, "hex"),
+                //                 block.timestamp,
+                //                 tags[0],
+                //                 tags[1],
+                //                 tags[2],
+                //                 expDate,
+                //                 new Buffer(description, "utf8").length,
+                //                 description
+                //             ]);
+                //             res.callReturn = res.marketID;
+                //             onSuccess(res);
+                //         });
+                //     }, onFailed);
+                // });
             });
         }, onFailed);
         // var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
@@ -222,12 +242,12 @@ module.exports = {
             tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
             self.getPeriodLength(branchId, function (periodLength) {
                 self.transact(tx, onSent, function (res) {
-                    self.getExpiration(events[0], function (expDate) {
+                    self.getExpiration(events, function (expDate) {
                         expDate = parseInt(expDate);
-                        var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                         self.rpc.getBlock(res.blockNumber, false, function (block) {
+                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                             res.marketID = utils.sha3([
-                                tradingPeriod,
+                                futurePeriod,
                                 abi.fix(tradingFee, "hex"),
                                 block.timestamp,
                                 tags[0],
@@ -251,13 +271,6 @@ module.exports = {
         var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
         tx.params = unpacked.params;
         tx.params[2] = abi.fix(tx.params[2], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    pushMarketForward: function (branch, market, onSent, onSuccess, onFailed) {
-        var tx = clone(this.tx.CreateMarket.pushMarketForward);
-        var unpacked = utils.unpack(branch, utils.labels(this.pushMarketForward), arguments);
-        tx.params = unpacked.params;
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     }
 };

@@ -102,10 +102,11 @@ var run = {
         var method = testCase.method;
         var contract = testCase.contract;
         var numParams = testCase.parameters.length;
+        var unitTestSamples = (numParams) ? tools.UNIT_TEST_SAMPLES : 0;
         var count = 0;
         async.whilst(
             function () {
-                return count < tools.UNIT_TEST_SAMPLES;
+                return count < unitTestSamples;
             },
             function (callback) {
                 ++count;
@@ -153,10 +154,11 @@ var run = {
         var method = testCase.method;
         var contract = testCase.contract;
         var numParams = testCase.parameters.length;
+        var unitTestSamples = (numParams) ? tools.UNIT_TEST_SAMPLES : 0;
         var count = 0;
         async.whilst(
             function () {
-                return count < tools.UNIT_TEST_SAMPLES;
+                return count < unitTestSamples;
             },
             function (callback) {
                 ++count;

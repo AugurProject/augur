@@ -13,56 +13,9 @@ var abi = require("augur-abi");
 var chalk = require("chalk");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
-var runner = require("../runner");
 var tools = require("../tools");
 
 describe("Unit tests", function () {
-    describe("eth_call", function () {
-        runner(this.title, "Trades", [{
-            method: "makeTradeHash",
-            parameters: ["fixed", "fixed", "hashArray"]
-        }, {
-            method: "checkHash",
-            parameters: ["hash", "address"]
-        }, {
-            method: "getID",
-            parameters: ["hash"]
-        }, {
-            method: "get_trade",
-            parameters: ["hash"]
-        }, {
-            method: "get_amount",
-            parameters: ["hash"]
-        }, {
-            method: "get_price",
-            parameters: ["hash"]
-        }]);
-    });
-    describe("eth_sendTransaction", function () {
-        runner(this.title, "Trades", [{
-            method: "commitTrade",
-            parameters: ["hash"]
-        }, {
-            method: "zeroHash",
-            parameters: []
-        }, {
-            method: "saveTrade",
-            parameters: ["hash", "int", "hash", "fixed", "fixed", "address", "int"]
-        }, {
-            method: "update_trade",
-            parameters: ["hash", "fixed"]
-        }, {
-            method: "remove_trade",
-            parameters: ["hash"]
-        }, {
-            method: "fill_trade",
-            parameters: ["hash", "fixed"]
-        }]);
-        runner(this.title, "BuyAndSellShares", [{
-            method: "cancel",
-            parameters: ["hash"]
-        }]);
-    });
     describe("processOrder", function () {
 
         var buy, sell, trade, short_sell, buyCompleteSets;
