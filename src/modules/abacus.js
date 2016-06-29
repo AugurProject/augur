@@ -159,11 +159,11 @@ module.exports = {
             }
 
             // market types: binary, categorical, scalar, combinatorial
-            //if (info.numEvents === 1) {
-            //    info.type = info.events[0].type;
-            //    if (!utils.is_function(callback)) return info;
-            //    return callback(info);
-           // }
+            if (info.numEvents === 1) {
+                info.type = info.events[0].type;
+                if (!utils.is_function(callback)) return info;
+                return callback(info);
+            }
 
             // multi-event (combinatorial) markets: batch event descriptions
             info.type = "combinatorial";
