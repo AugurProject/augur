@@ -27,12 +27,16 @@ const TradePanelItems = (p) => {
 					<td className="last-price" {...outcome.lastPrice} />
 					<td className='bid'>
 						<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, undefined, outcome.topBid.value); }}>
-							<ValueDenomination className="top-bid" {...outcome.topBid.shares} /> @ <ValueDenomination className="top-bid" {...outcome.topBid.price} />
+							<ValueDenomination className="top-bid" {...outcome.topBid.shares} />
+							<span className="shares-at">@</span>
+							<ValueDenomination className="top-bid" {...outcome.topBid.price} />
 						</Clickable>
 					</td>
 					<td className='ask'>
 						<Clickable onClick={() => { outcome.trade.updateTradeOrder(p.id, undefined, outcome.topAsk.value); }}>
-							<ValueDenomination className="top-ask" {...outcome.topAsk.shares} /> @ <ValueDenomination className="top-ask" {...outcome.topAsk.price} />
+							<ValueDenomination className="top-ask" {...outcome.topAsk.price} />
+							<span className="shares-at">@</span>
+							<ValueDenomination className="top-ask" {...outcome.topAsk.shares} />
 						</Clickable>
 					</td>
 
@@ -88,7 +92,9 @@ const TradePanelItems = (p) => {
 											outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.bids[i].shares.value, outcome.orderBook.bids[i].price.value, 'ask');
 										}} >
 											<ValueDenomination className="shares" {...outcome.orderBook.bids[i].shares} />
-										</Clickable> @ <Clickable onClick={event => {
+										</Clickable>
+										<span className="shares-at">@</span>
+										<Clickable onClick={event => {
 											event.stopPropagation();
 
 											outcome.trade.updateTradeOrder(outcome.id, 0, outcome.orderBook.bids[i].price.value);
@@ -107,7 +113,9 @@ const TradePanelItems = (p) => {
 											outcome.trade.updateTradeOrder(outcome.id, 0, outcome.orderBook.asks[i].price.value);
 										}} >
 											<ValueDenomination className="price" {...outcome.orderBook.asks[i].price} />
-										</Clickable> @ <Clickable onClick={event => {
+										</Clickable>
+										<span className="shares-at">@</span>
+										<Clickable onClick={event => {
 											event.stopPropagation();
 
 											outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.asks[i].shares.value, outcome.orderBook.asks[i].price.value, 'bid');
@@ -132,7 +140,7 @@ const TradePanelItems = (p) => {
 	};
 
 	return (
-		<tbody>
+		<tbody className="trade-panel-body">
 			{itemRows(p.outcomes, p.sideOptions)}
 		</tbody>
 	);

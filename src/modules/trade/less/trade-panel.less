@@ -10,52 +10,73 @@
         }
 
         .trade-panel-header {
-            margin-bottom: 1em;
             border-bottom: 1px solid fade(@color-dark-active, 50%);
+            border-collapse: separate;
+            border-spacing: 0 10px;
             font-size: 0.8em;
             font-weight: 700;
             text-transform: uppercase;
+
+            th {
+                padding-bottom: 0.6rem;
+            }
 
             .num-shares, .limit-price {
                 background: @color-dark-hover;
             }
         }
 
-        .trade-panel-row {
-            th, td {
-                text-align: center;
+        .trade-panel-body {
+            &:before {
+                content: '';
+                display: block;
+                height: 1rem;
             }
 
-            .outcome-name {
-                text-align: left;
-                text-transform: uppercase;
-            }
+            .trade-panel-row {
+                th, td {
+                    text-align: center;
+                }
 
-            .fee-to-pay {
-                text-align: right;
-            }
+                .outcome-name {
+                    text-align: left;
+                    text-transform: uppercase;
+                }
 
-            .total-cost {
-                text-align: right;
-                font-weight: 700;
-                .colorize();
+                .fee-to-pay {
+                    text-align: right;
+                }
 
-                .value {
+                .total-cost {
+                    text-align: right;
+                    font-weight: 700;
+                    .colorize();
+
+                    .value {
+                        font-weight: 900;
+                    }
+                }
+
+                .num-shares, .limit-price {
+                    color: @color-warning-normal;
                     font-weight: 900;
                 }
-            }
 
-            .num-shares, .limit-price {
-                color: @color-warning-normal;
-                font-weight: 900;
-            }
+                .bid, .ask {
+                    .shares-at {
+                        margin: 0 0.6rem;
+                    }
+                }
 
-            .bid {
-                text-align: right;
-            }
+                .bid {
+                    text-align: right;
+                    padding-right: 1rem;
+                }
 
-            .ask {
-                text-align: left;
+                .ask {
+                    text-align: left;
+                    padding-left: 1rem;
+                }
             }
         }
 
