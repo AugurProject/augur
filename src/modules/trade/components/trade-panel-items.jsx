@@ -10,8 +10,6 @@ const TradePanelItems = (p) => {
 		let tableRows = [];
 
 		outcomes.map((outcome) => {
-			console.log('outcome -- ', outcome);
-
 			const orderBookMaxRows = outcome.orderBook.bids.length > outcome.orderBook.asks.length ? new Array(outcome.orderBook.bids.length) : new Array(outcome.orderBook.asks.length);
 			orderBookMaxRows.fill('');
 
@@ -75,11 +73,11 @@ const TradePanelItems = (p) => {
 							onChange={(value) => outcome.trade.updateTradeOrder(outcome.id, undefined, parseFloat(value) || 0)}
 						/>
 					</td>
-					<td>
-						<ValueDenomination className="fee-to-pay" {...outcome.trade.feeToPay} />
+					<td className="fee-to-pay" >
+						<ValueDenomination {...outcome.trade.feeToPay} />
 					</td>
-					<td>
-						<ValueDenomination className="total-cost" {...outcome.trade.profitLoss} />
+					<td className="total-cost" >
+						<ValueDenomination {...outcome.trade.profitLoss} />
 					</td>
 				</tr>
 			);
