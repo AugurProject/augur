@@ -2,23 +2,22 @@
     color: @color-light-normal;
     background: @color-dark-hover;
 
-    .trade-builder {
+    .trade-builder { // table
         width: 100%;
+
+        border-collapse: separate;
+        border-spacing: 0 0.6rem;
 
         .trade-panel-header, .trade-panel-row {
             white-space: nowrap;
         }
 
-        .trade-panel-header {
-            border-bottom: 1px solid fade(@color-dark-active, 50%);
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            font-size: 0.8em;
-            font-weight: 700;
-            text-transform: uppercase;
-
+        .trade-panel-header { // thead
             th {
-                padding-bottom: 0.6rem;
+                font-size: 0.8em;
+                font-weight: 700;
+                text-transform: uppercase;
+                border-bottom: solid 1px @color-dark-active;
             }
 
             .num-shares, .limit-price {
@@ -26,13 +25,7 @@
             }
         }
 
-        .trade-panel-body {
-            &:before {
-                content: '';
-                display: block;
-                height: 1rem;
-            }
-
+        .trade-panel-body { // tbody
             .trade-panel-row {
                 th, td {
                     text-align: center;
@@ -62,8 +55,14 @@
                 }
 
                 .num-shares, .limit-price {
-                    color: @color-warning-normal;
-                    font-weight: 900;
+                    .box { // input element
+                        padding: 0.3em 0;
+                        background: fade(@color-dark-active, 30%);
+                        border-top: 0; border-left: 0; border-right: 0;
+                        font-weight: 700;
+                        text-align: center;
+                        color: @color-warning-normal;
+                    }
                 }
 
                 .bid, .ask {
