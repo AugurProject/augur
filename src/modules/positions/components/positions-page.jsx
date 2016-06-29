@@ -16,13 +16,13 @@ const PositionsPage = (p) => (
 
 		<section className="page-content">
 			<div className="l-container">
-				{!!p.markets && !!p.markets.length && p.markets.map(market => (
-					<div key={market.id} className="positions-container">
-						<span className="description">{market.description}</span>
-						{!!market.positionOutcomes && !!market.positionOutcomes.length &&
+				{!!p.positionsMarkets && !!p.positionsMarkets.length && p.positionsMarkets.map(positionsMarket => (
+					<div key={positionsMarket.id} className="positions-container">
+						<span className="description">{positionsMarket.description}</span>
+						{!!positionsMarket.positionOutcomes && !!positionsMarket.positionOutcomes.length &&
 							<Positions
 								className="page-content positions-content"
-								outcomes={market.positionOutcomes}
+								outcomes={positionsMarket.positionOutcomes}
 							/>
 						}
 					</div>
@@ -38,7 +38,7 @@ PositionsPage.propTypes = {
 	className: React.PropTypes.string,
 	siteHeader: React.PropTypes.object,
 	positionsSummary: React.PropTypes.object,
-	markets: React.PropTypes.array
+	positionsMarkets: React.PropTypes.array
 };
 
 export default PositionsPage;

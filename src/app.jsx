@@ -18,7 +18,7 @@ export default function (appElement, selectors) {
 	p.siteHeader = {
 		activePage: p.activePage,
 		loginAccount: p.loginAccount,
-		positionsSummary: p.marketsTotals.positionsSummary,
+		positionsSummary: p.positionsSummary,
 		transactionsTotals: p.transactionsTotals,
 		isTransactionsWorking: p.isTransactionsWorking,
 		marketsLink: p.links && p.links.marketsLink || undefined,
@@ -52,8 +52,8 @@ export default function (appElement, selectors) {
 		node = (
 			<PositionsPage
 				siteHeader={p.siteHeader}
-				positionsSummary={p.marketsTotals.positionsSummary}
-				markets={p.markets}
+				positionsSummary={p.positionsSummary}
+				positionsMarkets={p.positionsMarkets}
 			/>
 		);
 		break;
