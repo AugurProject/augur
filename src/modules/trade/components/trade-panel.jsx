@@ -26,7 +26,7 @@ const TradePanel = (p) => (
 				<tr className={classnames('header-row', 'summary-title')}>
 					<td colSpan="9" >Trade Summary</td>
 				</tr>
-				<tr className="header-row">
+				<tr className={classnames('header-row', 'summary-headers')}>
 					<td>Outcomes</td>
 					<td colSpan="6" className="transactions-header">Transactions</td>
 					<td>Fee</td>
