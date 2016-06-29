@@ -201,7 +201,3 @@ export default class AccountPage extends Component {
 		);
 	}
 }
-// <div className="account-info-item">
-// 	<h2>Password:</h2>
-// 	<div className="item">************</div>
-// </div>
