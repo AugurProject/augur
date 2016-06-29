@@ -16,15 +16,19 @@ const TradePanelItems = (p) => {
 			tableRows.push(
 				<tr
 					key={`${outcome.name}`}
-					className="trade-panel-row"
+					className={classnames('trade-panel-row', 'clickable-row')}
 					onClick={event => {
 						event.stopPropagation();
 
 						p.updateSelectedOutcome(outcome.id);
 					}}
 				>
-					<th className="outcome-name">{outcome.name}</th>
-					<td className="last-price" {...outcome.lastPrice} />
+					<th className="outcome-name">
+						{outcome.name}
+					</th>
+					<td className="last-price">
+						<ValueDenomination {...outcome.lastPrice} />
+					</td>
 					<td className='bid'>
 						<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, undefined, outcome.topBid.value); }}>
 							<ValueDenomination className="top-bid" {...outcome.topBid.shares} />
