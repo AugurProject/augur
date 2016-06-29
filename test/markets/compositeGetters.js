@@ -166,6 +166,37 @@ describe("Integration tests", function () {
             runtests(this.title, test, markets[i]);
         }
     });
+    describe("getMarketInfoCache", function () {
+        var test = function (info) {
+            assert.isObject(info);
+            assert.isString(info.makerFee);
+            assert.isString(info.takerFee);
+            assert.isString(info.tradingFee);
+            assert.isNumber(info.tradingPeriod);
+            assert.isNumber(info.creationTime);
+            assert.isString(info.volume);
+            assert.isArray(info.tags);
+            assert.isNumber(info.endDate);
+            assert.isString(info.description);
+        }
+        it("sync", function (done) {
+            this.timeout(tools.TIMEOUT);
+            for (var i = 0; i < numMarkets; ++i) {
+                test(augur.getMarketInfoCache(markets[i]));
+            }
+            done();
+        });
+
+        it("async", function (done) {
+            this.timeout(tools.TIMEOUT);
+            for (var i = 0; i < numMarkets; ++i) {
+                augur.getMarketInfoCache(markets[i], function (info) {
+                    test(info);
+                });
+            }
+            done();
+        });
+    });
     describe("batchGetMarketInfo", function () {
         var test = function (t, params) {
             for (var market in t.output) {

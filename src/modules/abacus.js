@@ -130,7 +130,7 @@ module.exports = {
                 } else {
                     info.events[i].type = "scalar";
                 }
-                if (info.endDate === null || endDate < info.endDate) {
+                if (info.endDate === null || endDate > info.endDate) {
                     info.endDate = endDate;
                 }
             }
@@ -159,11 +159,11 @@ module.exports = {
             }
 
             // market types: binary, categorical, scalar, combinatorial
-            if (info.numEvents === 1) {
-                info.type = info.events[0].type;
-                if (!utils.is_function(callback)) return info;
-                return callback(info);
-            }
+            //if (info.numEvents === 1) {
+            //    info.type = info.events[0].type;
+            //    if (!utils.is_function(callback)) return info;
+            //    return callback(info);
+           // }
 
             // multi-event (combinatorial) markets: batch event descriptions
             info.type = "combinatorial";
@@ -188,6 +188,48 @@ module.exports = {
             // }
         }
         if (!utils.is_function(callback)) return info;
+        callback(info);
+    },
+
+
+    parseMarketInfoCache: function (rawInfo, callback) {
+        var BASE_CACHE_FIELDS = 10;
+        var info = {};
+        if (!rawInfo || rawInfo.length < BASE_CACHE_FIELDS){
+            return (utils.is_function(callback) ? callback(null) : null);
+        }
+
+        var makerProportionOfFee = abi.unfix(rawInfo[1]);
+        var tradingFee = abi.unfix(rawInfo[3]);
+        var makerFee = tradingFee.times(makerProportionOfFee);
+        var descr_length = parseInt(rawInfo[11]);
+
+        info = {
+            makerFee: makerFee.toFixed(),
+            takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
+            tradingPeriod: abi.number(rawInfo[2]),
+            tradingFee: abi.unfix(rawInfo[3], "string"),
+            creationTime: parseInt(rawInfo[4]),
+            volume: abi.unfix(rawInfo[5], "string"),
+            tags: [
+                this.decodeTag(rawInfo[6]),
+                this.decodeTag(rawInfo[7]),
+                this.decodeTag(rawInfo[8])
+            ],
+            endDate: parseInt(rawInfo[9]),
+            description: null
+        };
+
+        // convert description byte array to unicode
+        try {
+            info.description = abi.bytes_to_utf16(rawInfo.slice(11));
+        } catch (exc) {
+            if (this.options.debug.broadcast) console.error(exc, rawInfo);
+            info.description = "";
+        }
+
+        if (!utils.is_function(callback)) return info;
+
         callback(info);
     },
 
