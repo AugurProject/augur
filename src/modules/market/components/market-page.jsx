@@ -3,7 +3,7 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Basics from '../../market/components/basics';
-import TradePanel from '../../../modules/trade-panel/components/trade-panel';
+import TradePanel from '../../../modules/trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
 import Chart from '../../market/components/chart';

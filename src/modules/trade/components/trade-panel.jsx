@@ -1,7 +1,7 @@
 import React from 'react';
-import TradePanelHeader from '../../../modules/trade-panel/components/trade-panel-header';
-import TradePanelFooter from '../../../modules/trade-panel/components/trade-panel-footer';
-import TradePanelBody from '../../../modules/trade-panel/components/trade-panel-body';
+import TradePanelHeader from '../../../modules/trade/components/trade-panel-header';
+import TradePanelFooter from '../../../modules/trade/components/trade-panel-footer';
+import TradePanelBody from '../../../modules/trade/components/trade-panel-body';
 
 const TradePanel = (p) => (
 		<div
