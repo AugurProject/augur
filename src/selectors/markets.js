@@ -65,13 +65,20 @@ function makeMarkets(numMarkets = 25) {
 
 					const numShares = outcome.trade.numShares;
 					const limitPrice = outcome.trade.limitPrice || 0;
+					const feeToPay = outcome.trade.feeToPay;
+					const profitLoss = outcome.trade.profitLoss;
 					const cost = numShares * limitPrice;
 
 					p.tradeOrders.push({
 						type: BUY_SHARES,
 						shares: makeNumber(numShares),
 						ether: makeNumber(cost),
-						data: { outcomeName: 'MAYBE', marketDescription: m.description }
+						feeToPay,
+						profitLoss,
+						data: {
+							outcomeName: 'MAYBE',
+							marketDescription: m.description
+						}
 					});
 					p.totalShares += numShares;
 					p.totalEther += cost;

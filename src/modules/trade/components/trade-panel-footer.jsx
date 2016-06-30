@@ -34,7 +34,10 @@ const TradePanelFooter = (p) => {
 		}
 
 		transactions.push(
-			<tr key={`${trade.data.outcomeName}${i}`}>
+			<tr
+				key={`${trade.data.outcomeName}${i}`}
+				className='trade-panel-row'
+			>
 				<td>{trade.data.outcomeName}</td>
 				<td colSpan="6">
 					<span className="transaction-type">{type}</span>
@@ -42,8 +45,12 @@ const TradePanelFooter = (p) => {
 					<span className="shares-at">@</span>
 					<ValueDenomination className="price" {...trade.ether} /> eth
 				</td>
-				<td></td>
-				<td></td>
+				<td className="fee-to-pay" >
+					<ValueDenomination {...trade.feeToPay} />
+				</td>
+				<td className="total-cost" >
+					<ValueDenomination {...trade.profitLoss} />
+				</td>
 			</tr>
 		)
 	});

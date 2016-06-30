@@ -45,6 +45,25 @@
             }
         }
 
+        .trade-panel-body, .transaction-summary {
+            .trade-panel-row {
+                .fee-to-pay {
+                    text-align: right;
+                }
+
+                .total-cost {
+                    text-align: right;
+
+                    font-weight: 700;
+                    .colorize();
+
+                    .value {
+                        font-weight: 900;
+                    }
+                }
+            }
+        }
+
         .trade-panel-body { // tbody
             .trade-panel-row {
                 th, td {
@@ -59,21 +78,6 @@
                     text-align: left;
                     text-transform: uppercase;
                     min-width: 12rem;
-                }
-
-                .fee-to-pay {
-                    text-align: right;
-                }
-
-                .total-cost {
-                    text-align: right;
-
-                    font-weight: 700;
-                    .colorize();
-
-                    .value {
-                        font-weight: 900;
-                    }
                 }
 
                 .num-shares, .limit-price {
