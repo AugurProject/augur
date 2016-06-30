@@ -1,9 +1,12 @@
 import selectors from '../src/selectors';
-import tradePanelAssertion from './assertions/trade-panel';
+import * as assertions from './assertions';
 
 describe('trade panel', () => {
-	it('should pass all assertions', () => {
-		let actual = selectors.markets[0];
-		tradePanelAssertion(actual);
-	});
+	let actual = selectors;
+	
+	// outcomes
+	assertions.tradePanel.outcomes(actual);
+
+	// sideOptions
+	assertions.tradePanel.sideOptions(actual);
 });
