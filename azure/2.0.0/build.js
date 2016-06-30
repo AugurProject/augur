@@ -74483,11 +74483,19 @@ ex.getReportPeriod = function getReportPeriod(branchID, cb) {
 	});
 };
 
-ex.submitReport = function (args) {
-	_augur2.default.submitReport.apply(_augur2.default, arguments);
+ex.submitReport = function submitReport() {
+	for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+		args[_key] = arguments[_key];
+	}
+
+	_augur2.default.submitReport.apply(_augur2.default, args);
 };
-ex.getEvents = function (args) {
-	_augur2.default.getEvents.apply(_augur2.default, arguments);
+ex.getEvents = function getEvents() {
+	for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+		args[_key2] = arguments[_key2];
+	}
+
+	_augur2.default.getEvents.apply(_augur2.default, args);
 };
 ex.rpc = _augur2.default.rpc;
 module.exports = ex;

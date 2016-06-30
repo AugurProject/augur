@@ -607,11 +607,11 @@ ex.getReportPeriod = function getReportPeriod(branchID, cb) {
 	});
 };
 
-ex.submitReport = function (args) {
-	augur.submitReport.apply(augur, arguments);
+ex.submitReport = function submitReport(...args) {
+	augur.submitReport.apply(augur, args);
 };
-ex.getEvents = function (args) {
-	augur.getEvents.apply(augur, arguments);
+ex.getEvents = function getEvents(...args) {
+	augur.getEvents.apply(augur, args);
 };
 ex.rpc = augur.rpc;
 module.exports = ex;
