@@ -3,7 +3,7 @@ import { assert } from 'chai';
 function outcomes(actual) {
 	describe('outcomes', () => {
 		let outcomes = actual.markets[0].outcomes; // Simply test the first market object
-		
+
 		it('should exist', () => {
 			assert.isDefined(outcomes, 'outcomes is not defined');
 		});
@@ -26,7 +26,22 @@ function sideOptions(actual) {
 	})
 }
 
+function updateSelectedOutcome(actual){
+	describe('updateSelectedOutcome', () => {
+		let selectedOutcome = actual.selectedOutcome;
+
+		it('should exist', () => {
+			assert.isDefined(selectedOutcome.updateSelectedOutcome, 'updateSelectedOutcome is not a function');
+		});
+
+		it('should be a function', () => {
+			assert(typeof selectedOutcome.updateSelectedOutcome === 'function', 'updateSelectedOutcome is not a function');
+		});
+	});
+}
+
 module.exports = {
 	outcomes,
-	sideOptions
+	sideOptions,
+	updateSelectedOutcome
 };
