@@ -12,4 +12,10 @@ describe('trade panel', () => {
 
 	// updateSelectedOutcome
 	assertions.tradePanel.updateSelectedOutcome(actual);
+
+	// selectedOutcomeID
+	assertions.tradePanel.selectedOutcomeID(actual);
+
+	// tradeOrders
+	assertions.tradePanel.tradeOrders(actual);
 });

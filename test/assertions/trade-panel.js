@@ -40,8 +40,34 @@ function updateSelectedOutcome(actual){
 	});
 }
 
+function selectedOutcomeID(actual){
+	describe('selectedOutcomeID', () => {
+		let selectedOutcomeID = actual.selectedOutcome.selectedOutcomeID;
+
+		it('should exist', () => {
+			assert.isDefined(selectedOutcomeID, 'selectedOutcomeID is not defined');
+		});
+	});
+}
+
+function tradeOrders(actual){
+	describe('tradeOrders', () => {
+		let tradeOrders = actual.markets[0].tradeSummary.tradeOrders;
+
+		it('should exist', () => {
+			assert.isDefined(tradeOrders, 'tradeOrders is not defined');
+		});
+
+		it('should be an array', () => {
+			assert.isArray(tradeOrders, 'tradeOrders is not an array');
+		});
+	});
+}
+
 module.exports = {
 	outcomes,
 	sideOptions,
-	updateSelectedOutcome
+	updateSelectedOutcome,
+	selectedOutcomeID,
+	tradeOrders
 };
