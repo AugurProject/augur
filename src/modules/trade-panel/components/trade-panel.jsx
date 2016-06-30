@@ -34,11 +34,11 @@ const TradePanel = (p) => (
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
+	sideOptions: React.PropTypes.array,
 	updateSelectedOutcome: React.PropTypes.func,
 	selectedOutcomeID: React.PropTypes.string,
 	tradeOrders: React.PropTypes.array,
 	tradeSummary: React.PropTypes.object,
-	sideOptions: React.PropTypes.array,
 	onSubmitPlaceTrade: React.PropTypes.func
 };
 

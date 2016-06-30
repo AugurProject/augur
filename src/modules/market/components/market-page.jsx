@@ -3,7 +3,7 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Basics from '../../market/components/basics';
-import TradePanel from '../../trade/components/trade-panel';
+import TradePanel from '../../../modules/trade-panel/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
 import Chart from '../../market/components/chart';
@@ -51,11 +51,13 @@ export default class MarketPage extends Component {
 				nodes.push(
 					<TradePanel
 						key="trade-panel"
+						outcomes={p.market.outcomes}
 						sideOptions={p.sideOptions}
 						updateSelectedOutcome={p.updateSelectedOutcome}
 						selectedOutcomeID={p.selectedOutcomeID}
-						{...p.market}
-						{...p.market.tradeSummary}
+						tradeOrders={p.market.tradeSummary.tradeOrders}
+						tradeSummary={p.market.tradeSummary}
+						onSubmitPlaceTrade={p.market.tradeSummary.onSubmitPlaceTrade}
 					/>
 				);
 
