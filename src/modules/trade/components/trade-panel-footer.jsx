@@ -85,17 +85,3 @@ TradePanelFooter.propTypes = {
 };
 
 export default TradePanelFooter;
-
-
-// <span className="description">
-// 				<span className="action">{nodes.action}</span>
-// 				<ValueDenomination className="shares" {...p.shares} />
-// 				<span className="at">at</span>
-// 				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
-// 				<span className="of">of</span>
-// 				<span className="outcome-name">{p.data.outcomeName.substring(0, 35) + (p.data.outcomeName.length > 35 && '...' || '')}</span>
-// 				<br />
-// 				<span className="market-description" title={p.data.marketDescription}>
-// 					{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
-// 				</span>
-// 			</span>
