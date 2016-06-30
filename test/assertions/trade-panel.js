@@ -28,14 +28,14 @@ function sideOptions(actual) {
 
 function updateSelectedOutcome(actual){
 	describe('updateSelectedOutcome', () => {
-		let selectedOutcome = actual.selectedOutcome;
+		let updateSelectedOutcome = actual.selectedOutcome.updateSelectedOutcome;
 
 		it('should exist', () => {
-			assert.isDefined(selectedOutcome.updateSelectedOutcome, 'updateSelectedOutcome is not a function');
+			assert.isDefined(updateSelectedOutcome, 'updateSelectedOutcome is not a function');
 		});
 
 		it('should be a function', () => {
-			assert(typeof selectedOutcome.updateSelectedOutcome === 'function', 'updateSelectedOutcome is not a function');
+			assert(typeof updateSelectedOutcome === 'function', 'updateSelectedOutcome is not a function');
 		});
 	});
 }
@@ -64,10 +64,40 @@ function tradeOrders(actual){
 	});
 }
 
+function tradeSummary(actual){
+	describe('tradeSummary', () => {
+		let tradeSummary = actual.markets[0].tradeSummary;
+
+		it('should exist', () => {
+			assert.isDefined(tradeSummary, 'tradeSummary is not defined');
+		});
+
+		it('should be an object', () => {
+			assert.isObject(tradeSummary, 'tradeSummary is not an object');
+		});
+	});
+}
+
+function onSubmitPlaceTrade(actual){
+	describe('onSubmitPlaceTrade', () => {
+		let onSubmitPlaceTrade = actual.markets[0].tradeSummary.onSubmitPlaceTrade;
+
+		it('should exist', () => {
+			assert.isDefined(onSubmitPlaceTrade, 'onSubmitPlaceTrade is not a function');
+		});
+
+		it('should be a function', () => {
+			assert(typeof onSubmitPlaceTrade === 'function', 'onSubmitPlaceTrade is not a function');
+		});
+	});
+}
+
 module.exports = {
 	outcomes,
 	sideOptions,
 	updateSelectedOutcome,
 	selectedOutcomeID,
-	tradeOrders
+	tradeOrders,
+	tradeSummary,
+	onSubmitPlaceTrade
 };

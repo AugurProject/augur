@@ -18,4 +18,10 @@ describe('trade panel', () => {
 
 	// tradeOrders
 	assertions.tradePanel.tradeOrders(actual);
+
+	// tradeSummary
+	assertions.tradePanel.tradeSummary(actual);
+
+	// onSubmitPlaceTrade
+	assertions.tradePanel.onSubmitPlaceTrade(actual);
 });
