@@ -37407,7 +37407,7 @@ module.exports = {
         // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
         price: {
             signature: abi.prefix_hex(abi.keccak_256("log_price(int256,int256,int256,int256,int256,int256,int256)")),
-            contract: "trade"
+            contract: "Trade"
         }
     }
 };
@@ -38214,7 +38214,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.8";
+    this.version = "1.5.9";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;

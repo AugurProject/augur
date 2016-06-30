@@ -93,7 +93,7 @@ module.exports = {
         // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
         price: {
             signature: abi.prefix_hex(abi.keccak_256("log_price(int256,int256,int256,int256,int256,int256,int256)")),
-            contract: "trade"
+            contract: "Trade"
         }
     }
 };

@@ -660,9 +660,6 @@ describe("Integration tests", function () {
                                             });
                                         }, function (x) {
                                             console.log("TRADE complete.");
-                                            console.log("nodes:", JSON.stringify(augur.rpc.nodes));
-                                            console.log("wsUrl:", augur.rpc.wsUrl);
-                                            console.log("wsStatus:", augur.rpc.wsStatus);
                                             if (x && x.callReturn) return done();
                                             done(x);
                                         });
@@ -719,13 +716,13 @@ describe("Integration tests", function () {
                                             },
                                             onCommitFailed: nextTrade,
                                             onTradeSent: function (r) {
-                                                // console.log("trade sent:", r)
+                                                console.log("short sell sent:", r)
                                                 assert.isArray(r.callReturn);
                                                 assert.strictEqual(r.callReturn[0], 1);
                                                 assert.strictEqual(r.callReturn.length, 4);
                                             },
                                             onTradeSuccess: function (r) {
-                                                // console.log("trade success:", r)
+                                                console.log("short sell success:", r)
                                                 assert.isArray(r.callReturn);
                                                 assert.strictEqual(r.callReturn[0], 1);
                                                 assert.strictEqual(r.callReturn.length, 4);
@@ -736,9 +733,6 @@ describe("Integration tests", function () {
                                     });
                                 }, function (x) {
                                     console.log("SHORT_SELL complete.");
-                                    console.log("nodes:", JSON.stringify(augur.rpc.nodes));
-                                    console.log("wsUrl:", augur.rpc.wsUrl);
-                                    console.log("wsStatus:", augur.rpc.wsStatus);
                                     if (x && x.callReturn) return done();
                                     done(x);
                                 });

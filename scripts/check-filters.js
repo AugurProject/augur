@@ -7,12 +7,12 @@ var augur = require("../src");
 augur.connect({http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546"});
 
 augur.filters.listen({
-    block: function (msg) {
-        console.log("block filter:", JSON.stringify(msg, null, 2));
-    },
-    contracts: function (msg) {
-        console.log("contracts filter:", JSON.stringify(msg, null, 2));
-    },
+    // block: function (msg) {
+    //     console.log("block filter:", JSON.stringify(msg, null, 2));
+    // },
+    // contracts: function (msg) {
+    //     console.log("contracts filter:", JSON.stringify(msg, null, 2));
+    // },
     price: function (msg) {
         console.log("price filter:", JSON.stringify(msg, null, 2));
     },
