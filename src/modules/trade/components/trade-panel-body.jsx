@@ -154,20 +154,10 @@ const TradePanelBody = (p) => {
 };
 
 TradePanelBody.propTypes = {
-	className: PropTypes.string,
-	name: PropTypes.string,
-	numShares: PropTypes.number,
-	limitPrice: PropTypes.number,
-	sideOptions: PropTypes.array,
-	lastPrice: PropTypes.object,
-	topBid: PropTypes.object,
-	topAsk: PropTypes.object,
-	feeToPay: PropTypes.object,
-	tradeSummary: PropTypes.object,
-	sharesOwned: PropTypes.number,
-	etherAvailable: PropTypes.number,
-	updateTradeOrder: PropTypes.func,
-	outcomes: PropTypes.array
+	outcomes: React.PropTypes.array,
+	sideOptions: React.PropTypes.array,
+	selectedOutcomeID: React.PropTypes.string,
+	updateSelectedOutcome: React.PropTypes.func
 };
 
 export default TradePanelBody;
