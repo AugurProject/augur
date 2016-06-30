@@ -13,7 +13,7 @@ const TradePanelFooter = (p) => {
 
 	const transactions = [];
 
-	p.transactions.map((trade, i) => {
+	p.summary.tradeOrders.map((trade, i) => {
 		let type = null;
 
 		switch (trade.type) {
@@ -70,15 +70,19 @@ const TradePanelFooter = (p) => {
 			<tr className="summary-totals">
 				<td></td>
 				<td colSpan="6">Total Transactions...TODO</td>
-				<td>Total Fees...TODO</td>
-				<td>Total P/L...TODO</td>
+				<td>
+					<ValueDenomination { ...p.summary.totalFees } />
+				</td>
+				<td>
+					<ValueDenomination { ...p.summary.totalEther } />
+				</td>
 			</tr>
 		</tfoot>
 	)
 };
 
 TradePanelFooter.propTypes = {
-	tradeOrders: React.PropTypes.array
+	summary: React.PropTypes.object
 };
 
 export default TradePanelFooter;

@@ -11,7 +11,7 @@ const TradePanel = (p) => (
 		<table className="trade-builder">
 			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
 			{p.tradeOrders && !!p.tradeOrders.length &&
-				<TradePanelFooter transactions={p.tradeOrders}/>
+				<TradePanelFooter summary={p.tradeSummary} />
 			}
 			<TradePanelBody
 				outcomes={p.outcomes}
