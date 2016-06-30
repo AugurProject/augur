@@ -9,7 +9,7 @@ import {
 } from '../../../modules/transactions/constants/types';
 
 const TradePanelFooter = (p) => {
-	console.log('TradePanelSummary p -- ', p);
+	// console.log('TradePanelSummary p -- ', p);
 
 	const transactions = [];
 
@@ -17,17 +17,11 @@ const TradePanelFooter = (p) => {
 		let type = null;
 
 		switch (trade.type) {
-			case BUY_SHARES:
+			case BID_SHARES:
 				type = 'BUY';
 				break;
-			case BID_SHARES:
-				type = 'BID';
-				break;
-			case SELL_SHARES:
-				type = 'SELL';
-				break;
 			case ASK_SHARES:
-				type = 'ASK';
+				type = 'SELL';
 				break;
 			default:
 				break;

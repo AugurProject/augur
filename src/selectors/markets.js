@@ -5,8 +5,8 @@ import { M } from '../modules/site/constants/pages';
 import {
 	// CREATE_MARKET,
 	BUY_SHARES,
-	// SELL_SHARES,
-	// BID_SHARES,
+	SELL_SHARES,
+	BID_SHARES,
 	// ASK_SHARES,
 	// SUBMIT_REPORT
 } from '../modules/transactions/constants/types';
@@ -59,6 +59,8 @@ function makeMarkets(numMarkets = 25) {
 		Object.defineProperty(m, 'tradeSummary', {
 			get: () => {
 				const tots = m.outcomes.reduce((p, outcome) => {
+					// console.log('outcome for trade summary -- ', outcome);
+
 					if (!outcome.trade || !outcome.trade.numShares) {
 						return p;
 					}
@@ -70,13 +72,13 @@ function makeMarkets(numMarkets = 25) {
 					const cost = numShares * limitPrice;
 
 					p.tradeOrders.push({
-						type: BUY_SHARES,
+						type: outcome.trade.side,
 						shares: makeNumber(numShares),
 						ether: makeNumber(cost),
 						feeToPay,
 						profitLoss,
 						data: {
-							outcomeName: 'MAYBE',
+							outcomeName: outcome.name,
 							marketDescription: m.description
 						}
 					});
@@ -251,7 +253,7 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: 'bid',
+						side: BID_SHARES,
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {
@@ -264,6 +266,8 @@ function makeMarkets(numMarkets = 25) {
 						 +  @param {Number|undefined} limitPrice Pass undefined to keep the value unchanged
 						 */
 						updateTradeOrder: (outcomeId, shares, limitPrice, side) => {
+							console.log('side -- ', side);
+
 							const outcome = m.outcomes.find((outcome) => outcome.id === outcomeId);
 							if (typeof shares !== 'undefined') {
 								outcome.trade.numShares = shares;
