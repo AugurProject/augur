@@ -16,6 +16,29 @@ var augur = require(augurpath);
 var tools = require("../tools");
 
 describe("Unit tests", function () {
+    describe("getTradingActions", function () {
+        it("should return bid action when user wants to buy but there is nothing to buy", function () {
+            var actions = augur.getTradingActions({
+                type: "buy",
+                shares: 5,
+                limitPrice: 0.6,
+                userAddress: "abcd1234",
+                userPositionShares: 0,
+                outcomeId: "outcomeasdf123",
+                marketOrderBook: {
+                    buy: [],
+                    sell: []
+                }
+            });
+
+            assert.isArray(actions);
+            assert.propertyVal(actions[0], "action", "BID");
+            assert.property(actions[0], "fee");
+            assert.property(actions[0], "totalEther");
+            assert.property(actions[0], "avgPrice");
+        });
+    });
+
     describe("processOrder", function () {
 
         var buy, sell, trade, short_sell, buyCompleteSets;
