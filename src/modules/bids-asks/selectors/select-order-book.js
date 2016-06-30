@@ -20,14 +20,14 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrde
 	};
 });
 
-export const selectTopBidPrice = memoizerific(10)((marketOrderBook) => {
+export const selectTopBid = memoizerific(10)((marketOrderBook) => {
 	const topBid = marketOrderBook.bids[0];
-	return topBid != null ? topBid.price : null;
+	return topBid != null ? topBid : null;
 });
 
-export const selectTopAskPrice = memoizerific(10)((marketOrderBook) => {
+export const selectTopAsk = memoizerific(10)((marketOrderBook) => {
 	const topAsk = marketOrderBook.asks[0];
-	return topAsk != null ? topAsk.price : null;
+	return topAsk != null ? topAsk : null;
 });
 
 /**
