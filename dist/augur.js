@@ -20239,7 +20239,7 @@ module.exports={
         "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
         "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
         "CreateBranch": "0x6577c99511bc1d5eb74bfde123881a21428ae812", 
-        "CreateMarket": "0xc9ce26545179816b7a82e161cfbaaab547aa1989", 
+        "CreateMarket": "0x54894e13b69e760e9d0f6af18b9b2c87c5fc5525", 
         "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
         "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
@@ -37350,58 +37350,58 @@ module.exports = {
 
     // event (log) signatures
     LOGS: {
-        // event log_add_tx(market:indexed, sender, type, price, amount, outcome, tradeid)
+        // event log_add_tx(market:indexed, sender:indexed, type, price, amount, outcome, tradeid)
         add_tx: {
             signature: abi.prefix_hex(abi.keccak_256("log_add_tx(int256,int256,int256,int256,int256,int256,int256)")),
-            contract: "buyAndSellShares"
+            contract: "BuyAndSellShares"
         },
         
-        // event log_cancel(market:indexed, sender, price, amount, tradeid, outcome, type)
+        // event log_cancel(market:indexed, sender:indexed, price, amount, tradeid, outcome, type)
         cancel: {
             signature: abi.prefix_hex(abi.keccak_256("log_cancel(int256,int256,int256,int256,int256,int256,int256)")),
-            contract: "buyAndSellShares"
+            contract: "BuyAndSellShares"
         },
 
         // event thru(user:indexed, time)
         thru: {
             signature: abi.prefix_hex(abi.keccak_256("thru(int256,int256)")),
-            contract: "closeMarket"
+            contract: "CloseMarket"
         },
 
         // event penalize(user:indexed, outcome, oldrep, repchange, newafterrep, p, reportValue)
         penalize: {
             signature: abi.prefix_hex(abi.keccak_256("penalize(int256,int256,int256,int256,int256,int256,int256)")),
-            contract: "consensus"
+            contract: "Consensus"
         },
 
         // event marketCreated(marketID)
         marketCreated: {
             signature: abi.prefix_hex(abi.keccak_256("marketCreated(int256)")),
-            contract: "createMarket"
+            contract: "CreateMarket"
         },
 
         // event tradingFeeUpdated(marketID, tradingFee)
         tradingFeeUpdated: {
             signature: abi.prefix_hex(abi.keccak_256("tradingFeeUpdated(int256,int256)")),
-            contract: "createMarket"
+            contract: "CreateMarket"
         },
 
         // event Approval(_owner:indexed, _spender:indexed, value)
         approval: {
             signature: abi.prefix_hex(abi.keccak_256("Approval(int256,int256,int256)")),
-            contract: "sendReputation"
+            contract: "SendReputation"
         },
 
         // event Transfer(_from:indexed, _to:indexed, _value)
         transfer: {
             signature: abi.prefix_hex(abi.keccak_256("Transfer(int256,int256,int256)")),
-            contract: "sendReputation"
+            contract: "SendReputation"
         },
 
         // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
         fill_tx: {
             signature: abi.prefix_hex(abi.keccak_256("log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)")),
-            contract: "trade"
+            contract: "Trade"
         },
 
         // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
@@ -38214,7 +38214,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.7";
+    this.version = "1.5.8";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
