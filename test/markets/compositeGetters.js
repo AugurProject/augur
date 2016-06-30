@@ -21,7 +21,6 @@ describe("Integration tests", function () {
     var amount = "1";
     var branchId = augur.constants.DEFAULT_BRANCH_ID;
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
-    var traderIndex = "1";
     var outcome = 1;
     var markets = augur.getMarketsInBranch(branchId);
     var numMarkets = markets.length;
@@ -95,17 +94,12 @@ describe("Integration tests", function () {
         assert.isObject(r);
         assert.property(r, "network");
         assert(r.network === "7" || r.network === "10101" || r.network === "2");
-        assert.property(r, "traderCount");
-        assert.isAbove(r.traderIndex, -1);
-        assert.strictEqual(parseInt(augur.getCurrentParticipantNumber(market)), r.traderCount);
         assert.property(r, "makerFee");
         assert.isNotNull(r.makerFee);
         assert.property(r, "takerFee");
         assert.isNotNull(r.takerFee);
         assert.property(r, "tags");
         assert.isNotNull(r.tags);
-        assert.property(r, "traderIndex");
-        assert.isAbove(r.traderIndex, -1);
         assert.property(r, "numOutcomes");
         assert.isAbove(r.numOutcomes, 1);
         assert.strictEqual(parseInt(augur.getMarketNumOutcomes(market)), r.numOutcomes);

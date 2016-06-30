@@ -83,10 +83,8 @@ module.exports = {
             var makerFee = tradingFee.times(makerProportionOfFee);
             info = {
                 network: this.network_id,
-                traderCount: parseInt(rawInfo[1]),
                 makerFee: makerFee.toFixed(),
                 takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                traderIndex: abi.unfix(rawInfo[3], "number"),
                 numOutcomes: abi.number(rawInfo[4]),
                 tradingPeriod: abi.number(rawInfo[5]),
                 branchId: rawInfo[7],
