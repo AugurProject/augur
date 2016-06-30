@@ -9,8 +9,6 @@ import {
 } from '../../../modules/transactions/constants/types';
 
 const TradePanelFooter = (p) => {
-	// console.log('TradePanelSummary p -- ', p);
-
 	const transactions = [];
 
 	p.summary.tradeOrders.map((trade, i) => {
@@ -33,19 +31,19 @@ const TradePanelFooter = (p) => {
 				className='trade-panel-row'
 			>
 				<td className="outcome-name">{trade.data.outcomeName}</td>
-				<td
-					colSpan="6"
-					className="individual-transaction-summary"
-				>
-					<span className="transaction-type">{type}</span>
-					<div className="transaction-shares">
-						<ValueDenomination className="shares" {...trade.shares} /> Shares
-					</div>
-					<span className="shares-at">@</span>
-					<div className="transaction-price">
-						<ValueDenomination className="price" {...trade.ether} /> eth
+				<td colSpan="2" >
+					<div className="individual-transaction-summary" >
+						<span className="transaction-type">{type}</span>
+						<div className="transaction-shares">
+							<ValueDenomination className="shares" {...trade.shares} />
+						</div>
+						<span className="shares-at">@</span>
+						<div className="transaction-price">
+							<ValueDenomination className="price" {...trade.ether} />
+						</div>
 					</div>
 				</td>
+				<td colSpan="4" />
 				<td className="fee-to-pay" >
 					<ValueDenomination {...trade.feeToPay} />
 				</td>

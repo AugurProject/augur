@@ -59,8 +59,6 @@ function makeMarkets(numMarkets = 25) {
 		Object.defineProperty(m, 'tradeSummary', {
 			get: () => {
 				const tots = m.outcomes.reduce((p, outcome) => {
-					// console.log('outcome for trade summary -- ', outcome);
-
 					if (!outcome.trade || !outcome.trade.numShares) {
 						return p;
 					}
@@ -73,8 +71,8 @@ function makeMarkets(numMarkets = 25) {
 
 					p.tradeOrders.push({
 						type: outcome.trade.side,
-						shares: makeNumber(numShares),
-						ether: makeNumber(cost),
+						shares: makeNumber(numShares, 'Shares'),
+						ether: makeNumber(limitPrice, 'eth'),
 						feeToPay,
 						profitLoss,
 						data: {
@@ -219,8 +217,6 @@ function makeMarkets(numMarkets = 25) {
 			const outcomes = [];
 			const orderBook = selectOrderBook();
 
-				// console.log('orderbook -- ', orderBook);
-
 			let	outcome,
 				percentLeft = 100;
 
@@ -266,8 +262,6 @@ function makeMarkets(numMarkets = 25) {
 						 +  @param {Number|undefined} limitPrice Pass undefined to keep the value unchanged
 						 */
 						updateTradeOrder: (outcomeId, shares, limitPrice, side) => {
-							console.log('side -- ', side);
-
 							const outcome = m.outcomes.find((outcome) => outcome.id === outcomeId);
 							if (typeof shares !== 'undefined') {
 								outcome.trade.numShares = shares;

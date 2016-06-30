@@ -127,25 +127,28 @@
         }
 
         .individual-transaction-summary {
-            > * {
-                display: inline-block;
-            }
-
-            .transaction-type {
-                min-width: 6rem;
-            }
+            display: flex;
 
             .transaction-shares, .transaction-price {
                 text-align: right;
             }
 
-            //.transaction-shares {
-            //    min-width: 10rem;
-            //}
-            //
-            //.transaction-price {
-            //    min-width: 5rem;
-            //}
+            .transaction-type {
+                flex: 0.5;
+            }
+
+            .shares-at {
+                flex: 0.25;
+                text-align: center;
+            }
+
+            .transaction-shares {
+                flex: 1
+            }
+
+            .transaction-price {
+                flex: 0.5;
+            }
         }
     }
 

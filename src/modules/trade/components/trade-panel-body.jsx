@@ -14,8 +14,6 @@ const TradePanelBody = (p) => {
 		let tableRows = [];
 
 		outcomes.map((outcome) => {
-			// console.log('orderbook -- ', outcome.orderBook);
-
 			const orderBookMaxRows = outcome.orderBook.bids.length > outcome.orderBook.asks.length ? new Array(outcome.orderBook.bids.length) : new Array(outcome.orderBook.asks.length);
 			orderBookMaxRows.fill('');
 
