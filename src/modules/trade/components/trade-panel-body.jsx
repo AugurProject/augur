@@ -89,8 +89,7 @@ const TradePanelBody = (p) => {
 							key={`${outcome.name}-order-book-${i}`}
 							className={classnames('trade-panel-row', {'displayNone': p.selectedOutcomeID === outcome.id ? false : true})}
 						>
-							<td></td>
-							<td></td>
+							<td colSpan="2"></td>
 							<td>
 								{ outcome.orderBook.bids[i] &&
 									<div className='order-book-data bid'>
@@ -133,11 +132,7 @@ const TradePanelBody = (p) => {
 									</div>
 								}
 							</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td colSpan="5"></td>
 						</tr>
 					)
 				}
