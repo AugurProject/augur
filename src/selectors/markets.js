@@ -88,7 +88,7 @@ function makeMarkets(numMarkets = 25) {
 				}, { totalShares: 0, totalEther: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
 
 				tots.totalShares = makeNumber(tots.totalShares);
-				tots.totalEther = makeNumber(tots.totalEther);
+				tots.totalEther = makeNumber(tots.totalEther, 'eth');
 				tots.totalFees = makeNumber(tots.totalFees);
 				tots.totalGas = makeNumber(tots.totalGas);
 				tots.onSubmitPlaceTrade = () => {

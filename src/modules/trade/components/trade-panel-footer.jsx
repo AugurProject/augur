@@ -32,12 +32,19 @@ const TradePanelFooter = (p) => {
 				key={`${trade.data.outcomeName}${i}`}
 				className='trade-panel-row'
 			>
-				<td>{trade.data.outcomeName}</td>
-				<td colSpan="6">
+				<td className="outcome-name">{trade.data.outcomeName}</td>
+				<td
+					colSpan="6"
+					className="individual-transaction-summary"
+				>
 					<span className="transaction-type">{type}</span>
-					<ValueDenomination className="shares" {...trade.shares} /> Shares
+					<div className="transaction-shares">
+						<ValueDenomination className="shares" {...trade.shares} /> Shares
+					</div>
 					<span className="shares-at">@</span>
-					<ValueDenomination className="price" {...trade.ether} /> eth
+					<div className="transaction-price">
+						<ValueDenomination className="price" {...trade.ether} /> eth
+					</div>
 				</td>
 				<td className="fee-to-pay" >
 					<ValueDenomination {...trade.feeToPay} />
@@ -64,10 +71,10 @@ const TradePanelFooter = (p) => {
 			<tr className="summary-totals">
 				<td></td>
 				<td colSpan="6">Total Transactions...TODO</td>
-				<td>
+				<td className="fee-to-pay" >
 					<ValueDenomination { ...p.summary.totalFees } />
 				</td>
-				<td>
+				<td className="total-cost" >
 					<ValueDenomination { ...p.summary.totalEther } />
 				</td>
 			</tr>
