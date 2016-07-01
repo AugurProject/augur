@@ -7,9 +7,9 @@ var augur = require("../src");
 augur.connect({http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546"});
 
 augur.filters.listen({
-    // block: function (msg) {
-    //     console.log("block filter:", JSON.stringify(msg, null, 2));
-    // },
+    block: function (msg) {
+        console.log("block filter:", JSON.stringify(msg, null, 2));
+    },
     // contracts: function (msg) {
     //     console.log("contracts filter:", JSON.stringify(msg, null, 2));
     // },
@@ -19,9 +19,9 @@ augur.filters.listen({
     fill_tx: function (msg) {
         console.log("fill_tx filter:", JSON.stringify(msg, null, 2));
     },
-    add_tx: function (msg) {
-        console.log("add_tx filter:", JSON.stringify(msg, null, 2));
-    },
+    // add_tx: function (msg) {
+    //     console.log("add_tx filter:", JSON.stringify(msg, null, 2));
+    // },
     cancel: function (msg) {
         console.log("cancel filter:", JSON.stringify(msg, null, 2));
     },

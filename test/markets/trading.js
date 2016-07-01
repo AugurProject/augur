@@ -623,22 +623,18 @@ describe("Integration tests", function () {
                                                 if (!tradeInfo) return nextTrade("no trade info found");
                                                 if (tradeInfo.owner === augur.from) return nextTrade();
                                                 if (tradeInfo.type === "buy") return nextTrade();
-                                                console.log("matched trade:", thisTrade, tradeInfo);
                                                 augur.trade({
                                                     max_value: t.max_value,
                                                     max_amount: 0,
                                                     trade_ids: [thisTrade],
                                                     onTradeHash: function (r) {
-                                                        console.log("tradeHash:", r);
                                                         assert.notProperty(r, "error");
                                                         assert.isString(r);
                                                     },
                                                     onCommitSent: function (r) {
-                                                        console.log("commitSent:", r);
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitSuccess: function (r) {
-                                                        console.log("commitSuccess:", r);
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitFailed: nextTrade,
@@ -659,7 +655,6 @@ describe("Integration tests", function () {
                                                 });
                                             });
                                         }, function (x) {
-                                            console.log("TRADE complete.");
                                             if (x && x.callReturn) return done();
                                             done(x);
                                         });
@@ -700,7 +695,6 @@ describe("Integration tests", function () {
                                         if (!tradeInfo) return nextTrade("no trade info found");
                                         if (tradeInfo.owner === augur.from) return nextTrade();
                                         if (tradeInfo.type === "sell") return nextTrade();
-                                        // console.log("matched trade:", thisTrade, tradeInfo);
                                         augur.short_sell({
                                             buyer_trade_id: thisTrade,
                                             max_amount: t.max_amount,
@@ -732,7 +726,6 @@ describe("Integration tests", function () {
                                         });
                                     });
                                 }, function (x) {
-                                    console.log("SHORT_SELL complete.");
                                     if (x && x.callReturn) return done();
                                     done(x);
                                 });

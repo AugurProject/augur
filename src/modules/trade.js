@@ -58,7 +58,7 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
-                                onTradeSent(result);
+                                return onTradeSent(result);
                             }
                             var err = self.rpc.errorCodes("trade", "number", result.callReturn);
                             if (!err) return onTradeFailed(result);
@@ -71,7 +71,7 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
-                                onTradeSuccess(result);
+                                return onTradeSuccess(result);
                             }
                             var err = self.rpc.errorCodes("trade", "number", result.callReturn);
                             if (!err) return onTradeFailed(result);

@@ -38103,10 +38103,10 @@ module.exports = function (p, cb) {
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
+                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
+                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
@@ -38117,7 +38117,7 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
@@ -38135,10 +38135,10 @@ module.exports = function (p, cb) {
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
+                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
+                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
@@ -38149,7 +38149,7 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
@@ -38214,7 +38214,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.9";
+    this.version = "1.5.10";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39824,7 +39824,7 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
-                                onTradeSent(result);
+                                return onTradeSent(result);
                             }
                             var err = self.rpc.errorCodes("trade", "number", result.callReturn);
                             if (!err) return onTradeFailed(result);
@@ -39837,7 +39837,7 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
-                                onTradeSuccess(result);
+                                return onTradeSuccess(result);
                             }
                             var err = self.rpc.errorCodes("trade", "number", result.callReturn);
                             if (!err) return onTradeFailed(result);
