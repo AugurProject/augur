@@ -4,24 +4,25 @@ import * as assertions from './assertions';
 describe('trade', () => {
 	let actual = selectors;
 
-	// outcomes
-	assertions.trade.outcomes(actual);
+	console.log('actual -- ', actual);
+
+
 
 	// sideOptions
-	assertions.trade.sideOptions(actual);
+	assertions.trade.sideOptions(actual.sideOptions);
 
 	// updateSelectedOutcome
-	assertions.trade.updateSelectedOutcome(actual);
+	assertions.trade.updateSelectedOutcome(actual.selectedOutcome);
 
 	// selectedOutcomeID
-	assertions.trade.selectedOutcomeID(actual);
+	assertions.trade.selectedOutcomeID(actual.selectedOutcome);
 
 	// tradeOrders
-	assertions.trade.tradeOrders(actual);
+	assertions.trade.tradeOrders(actual.markets[0].tradeSummary);
 
 	// tradeSummary
-	assertions.trade.tradeSummary(actual);
+	assertions.trade.tradeSummary(actual.markets[0]);
 
 	// onSubmitPlaceTrade
-	assertions.trade.onSubmitPlaceTrade(actual);
+	assertions.trade.onSubmitPlaceTrade(actual.markets[0]);
 });
