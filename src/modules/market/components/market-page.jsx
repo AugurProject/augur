@@ -57,7 +57,7 @@ export default class MarketPage extends Component {
 						selectedOutcomeID={p.selectedOutcomeID}
 						tradeOrders={p.market.tradeSummary.tradeOrders}
 						tradeSummary={p.market.tradeSummary}
-						onSubmitPlaceTrade={p.market.tradeSummary.onSubmitPlaceTrade}
+						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
 					/>
 				);
 

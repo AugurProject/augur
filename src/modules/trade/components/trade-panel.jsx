@@ -24,7 +24,11 @@ const TradePanel = (p) => (
 				<button
 					className="button place-trade"
 					disabled={!p.tradeOrders || !!!p.tradeOrders.length}
-					onClick={p.onSubmitPlaceTrade}
+					onClick={event => {
+						event.stopPropagation();
+
+						p.onSubmitPlaceTrade()
+					}}
 				>
 					Place Trade{p.tradeOrders && p.tradeOrders.length > 1 ? 's' : ''}
 				</button>

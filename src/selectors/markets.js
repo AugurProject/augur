@@ -55,6 +55,14 @@ function makeMarkets(numMarkets = 25) {
 		m.reportableOutcomes = m.outcomes.slice();
 		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
 
+		m.onSubmitPlaceTrade = () => {
+			require('../selectors').update({
+				activePage: TRANSACTIONS
+			});
+
+			prepareTestTradingTransactions();
+		};
+
 		// trade summary
 		Object.defineProperty(m, 'tradeSummary', {
 			get: () => {
@@ -89,8 +97,6 @@ function makeMarkets(numMarkets = 25) {
 				tots.totalEther = makeNumber(tots.totalEther, 'eth');
 				tots.totalFees = makeNumber(tots.totalFees);
 				tots.totalGas = makeNumber(tots.totalGas);
-				tots.onSubmitPlaceTrade = () => {
-				};
 
 				return tots;
 			},
