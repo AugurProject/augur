@@ -17,6 +17,7 @@ var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
+var abacus = require("../modules/abacus");
 
 request = request.defaults({timeout: 120000});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -150,6 +151,9 @@ module.exports = function () {
                             version: 3,
                             id: uuid.v4()
                         };
+												// add base58 encryption
+                      	keystore = abacus.base58Encrypt(keystore);
+
                         augur.db.put(handle, keystore, function (result) {
                             if (!result) return onRegistered(errors.DB_WRITE_FAILED);
                             if (result.error) return onRegistered(result);
@@ -161,6 +165,7 @@ module.exports = function () {
                                 address: keystore.address,
                                 keystore: keystore
                             };
+
                             if (options.persist) {
                                 augur.db.putPersistent(self.account);
                             }

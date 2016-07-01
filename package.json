@@ -16,6 +16,7 @@
     "augur-contracts": "1.1.6",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
+    "bs58": "^3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
     "ethereumjs-connect": "0.5.11",
