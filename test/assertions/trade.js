@@ -80,7 +80,7 @@ function tradeSummary(actual){
 
 function onSubmitPlaceTrade(actual){
 	describe('onSubmitPlaceTrade', () => {
-		let onSubmitPlaceTrade = actual.markets[0].tradeSummary.onSubmitPlaceTrade;
+		let onSubmitPlaceTrade = actual.markets[0].onSubmitPlaceTrade;
 
 		it('should exist', () => {
 			assert.isDefined(onSubmitPlaceTrade, 'onSubmitPlaceTrade is not a function');
