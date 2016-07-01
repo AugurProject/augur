@@ -11,7 +11,7 @@ import {
 
 const TradePanelBody = (p) => {
 	const itemRows = (outcomes, sideOptions) => {
-		let tableRows;
+		const tableRows = [];
 
 		outcomes.map((outcome) => {
 			const orderBookMaxRows = outcome.orderBook.bids.length > outcome.orderBook.asks.length ? new Array(outcome.orderBook.bids.length) : new Array(outcome.orderBook.asks.length);
@@ -95,11 +95,14 @@ const TradePanelBody = (p) => {
 			);
 
 			orderBookMaxRows.map((cV, i) => {
+
+				console.log('selected, current -- ', p.selectedOutcomeID, outcome.id, p.selectedOutcomeID === outcome.id);
+
 				if (i !== 0) {
 					tableRows.push(
 						<tr
 							key={`${outcome.name}-order-book-${i}`}
-							className={classnames('trade-panel-row', { displayNone: p.selectedOutcomeID === outcome.id })}
+							className={classnames('trade-panel-row', { displayNone: !(p.selectedOutcomeID === outcome.id) })}
 						>
 							<td colSpan="2"></td>
 							<td>
