@@ -10405,14 +10405,14 @@ module.exports={
         "CompositeGetters": "0xc42826de38b20a7894cdc1a096bdbcee9c57dbf1", 
         "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
         "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
-        "CreateBranch": "0x6577c99511bc1d5eb74bfde123881a21428ae812", 
+        "CreateBranch": "0xb8613192ef98dfd1fbeedb15c8350c8d3aac9a03", 
         "CreateMarket": "0x54894e13b69e760e9d0f6af18b9b2c87c5fc5525", 
         "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
         "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x08a31edc4d5e6b19745ee07345d0052b945f3a0e", 
+        "Forking": "0x4da58f4c737985e4ab9b89e8ea706b617ba2eb2d", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
         "MakeReports": "0xf060d000aa0603b4670a0d27afced0047213c023", 
@@ -21319,7 +21319,8 @@ module.exports = {
                     delete self.ipcRequests[parsed.id];
                     self.parse(JSON.stringify(parsed), req.returns, req.callback);
                 } else if (parsed.method === "eth_subscription" && parsed.params &&
-                    parsed.params.subscription && parsed.params.result) {
+                    parsed.params.subscription && parsed.params.result &&
+                    self.subscriptions[parsed.params.subscription]) {
                     self.subscriptions[parsed.params.subscription](parsed.params.result);
                 }
                 received = "";
@@ -21377,10 +21378,13 @@ module.exports = {
                     delete self.wsRequests[res.id];
                     self.parse(res, req.returns, req.callback);
                 } else if (res.method === "eth_subscription" && res.params &&
-                    res.params.subscription && res.params.result) {
+                    res.params.subscription && res.params.result &&
+                    self.subscriptions[res.params.subscription]) {
                     self.subscriptions[res.params.subscription](res.params.result);
                 } else {
-                    console.warn("unknown message received:", msg);
+                    if (self.debug.broadcast) {
+                        console.warn("unknown message received:", msg);
+                    }
                 }
             }
         };
@@ -22515,11 +22519,11 @@ module.exports={
         "CloseMarketTwo": "0x5e3972e215854523c977ecb9faa21efeb0bcaa0a", 
         "CollectFees": "0x59c8771527a8b9f7a8d1686a5d0abee424bee648", 
         "CompleteSets": "0xf64657c13c7dcae029b84ce099dcc0751fc41cc2", 
-        "CompositeGetters": "0xe395aebbdd119abdafa93cf73f444971e263b8c1", 
+        "CompositeGetters": "0xc42826de38b20a7894cdc1a096bdbcee9c57dbf1", 
         "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
         "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
         "CreateBranch": "0x6577c99511bc1d5eb74bfde123881a21428ae812", 
-        "CreateMarket": "0xc9ce26545179816b7a82e161cfbaaab547aa1989", 
+        "CreateMarket": "0x54894e13b69e760e9d0f6af18b9b2c87c5fc5525", 
         "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
         "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
@@ -45240,7 +45244,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.9";
+    this.version = "1.5.12";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -46110,6 +46114,7 @@ module.exports = {
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
         oracleOnly = oracleOnly || 0;
+        description = description.trim();
         return this.createSubbranch({
             description: description,
             periodLength: periodLength,
@@ -46120,7 +46125,6 @@ module.exports = {
             onSuccess: function (response) {
                 self.rpc.getBlock(response.blockNumber, false, function (block) {
                     response.branchID = utils.sha3([
-                        0,
                         response.from,
                         "0x2f0000000000000000",
                         periodLength,
@@ -46130,7 +46134,6 @@ module.exports = {
                         oracleOnly,
                         description
                     ]);
-                    response.callReturn = response.branchID;
                     onSuccess(response);
                 });
             },
@@ -46266,68 +46269,8 @@ module.exports = {
                         });
                     }, onFailed);
                 });
-                // self.getPeriodLength(branchId, function (periodLength) {
-                //     self.transact(tx, onSent, function (res) {
-                //         var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-                //         self.rpc.getBlock(res.blockNumber, false, function (block) {
-                //             res.marketID = utils.sha3([
-                //                 tradingPeriod,
-                //                 abi.fix(tradingFee, "hex"),
-                //                 block.timestamp,
-                //                 tags[0],
-                //                 tags[1],
-                //                 tags[2],
-                //                 expDate,
-                //                 new Buffer(description, "utf8").length,
-                //                 description
-                //             ]);
-                //             res.callReturn = res.marketID;
-                //             onSuccess(res);
-                //         });
-                //     }, onFailed);
-                // });
             });
         }, onFailed);
-        // var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
-        // tx.params = [
-        //     branchId,
-        //     description,
-        //     expDate,
-        //     abi.fix(minValue, "hex"),
-        //     abi.fix(maxValue, "hex"),
-        //     numOutcomes,
-        //     resolution,
-        //     abi.fix(tradingFee, "hex"),
-        //     tags[0],
-        //     tags[1],
-        //     tags[2],
-        //     abi.fix(makerProportionOfFee, "hex"),
-        //     extraInfo || ""
-        // ];
-        // this.rpc.gasPrice(function (gasPrice) {
-        //     tx.gasPrice = gasPrice;
-        //     gasPrice = abi.bignum(gasPrice);
-        //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-        //     self.transact(tx, onSent, function (res) {
-        //         self.getPeriodLength(branchId, function (periodLength) {
-        //             self.rpc.getBlock(res.blockNumber, false, function (block) {
-        //                 var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-        //                 res.marketID = utils.sha3([
-        //                     tradingPeriod,
-        //                     abi.fix(tradingFee, "hex"),
-        //                     block.timestamp,
-        //                     tags[0],
-        //                     tags[1],
-        //                     tags[2],
-        //                     expDate,
-        //                     new Buffer(description, "utf8").length,
-        //                     description
-        //                 ]);
-        //                 onSuccess(res);
-        //             });
-        //         });
-        //     }, onFailed);
-        // });
     },
 
     createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
@@ -46544,7 +46487,7 @@ module.exports = {
         var filter = {
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
-            address: this.contracts.trade,
+            address: this.contracts.Trade,
             topics: [constants.LOGS.price.signature, market]
         };
         if (!utils.is_function(cb)) {
@@ -46590,7 +46533,7 @@ module.exports = {
         this.rpc.getLogs({
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
-            address: this.contracts.trade,
+            address: this.contracts.Trade,
             topics: [
                 constants.LOGS.price.signature,
                 null,
@@ -46852,7 +46795,7 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
-                                onTradeSent(result);
+                                return onTradeSent(result);
                             }
                             var err = self.rpc.errorCodes("trade", "number", result.callReturn);
                             if (!err) return onTradeFailed(result);
@@ -46865,7 +46808,7 @@ module.exports = {
                                     result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
                                     result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                                 }
-                                onTradeSuccess(result);
+                                return onTradeSuccess(result);
                             }
                             var err = self.rpc.errorCodes("trade", "number", result.callReturn);
                             if (!err) return onTradeFailed(result);
