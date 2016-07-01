@@ -1,19 +1,5 @@
 import { assert } from 'chai';
 
-function outcomes(actual) {
-	describe('outcomes', () => {
-		let outcomes = actual.markets[0].outcomes; // Simply test the first market object
-
-		it('should exist', () => {
-			assert.isDefined(outcomes, 'outcomes is not defined');
-		});
-
-		it('should be an array', () => {
-			assert.isArray(outcomes, 'outcomes is not an array');
-		});
-	});
-}
-
 function sideOptions(actual) {
 	describe('augur-ui-react-components trade sideOptions state', () => {
 		it('should exist', () => {
@@ -27,8 +13,8 @@ function sideOptions(actual) {
 }
 
 function updateSelectedOutcome(actual){
-	describe('updateSelectedOutcome', () => {
-		let updateSelectedOutcome = actual.selectedOutcome.updateSelectedOutcome;
+	describe('augur-ui-react-components trade updateSelectedOutcome state', () => {
+		let updateSelectedOutcome = actual.updateSelectedOutcome;
 
 		it('should exist', () => {
 			assert.isDefined(updateSelectedOutcome, 'updateSelectedOutcome is not a function');
@@ -41,11 +27,15 @@ function updateSelectedOutcome(actual){
 }
 
 function selectedOutcomeID(actual){
-	describe('selectedOutcomeID', () => {
-		let selectedOutcomeID = actual.selectedOutcome.selectedOutcomeID;
+	describe('augur-ui-react-components trade selectedOutcomeID state', () => {
+		let selectedOutcomeID = actual.selectedOutcomeID;
 
 		it('should exist', () => {
 			assert.isDefined(selectedOutcomeID, 'selectedOutcomeID is not defined');
+		});
+
+		it('initially should be null', () => {
+			assert.isNull(selectedOutcomeID, 'selectedOutcomeID is not null');
 		});
 	});
 }
@@ -93,7 +83,6 @@ function onSubmitPlaceTrade(actual){
 }
 
 module.exports = {
-	outcomes,
 	sideOptions,
 	updateSelectedOutcome,
 	selectedOutcomeID,
