@@ -6,7 +6,7 @@ import {
 	// CREATE_MARKET,
 	BUY_SHARES,
 	SELL_SHARES,
-	BID_SHARES,
+	BID,
 	// ASK_SHARES,
 	// SUBMIT_REPORT
 } from '../modules/transactions/constants/types';
@@ -249,7 +249,7 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: BID_SHARES,
+						side: BID,
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {

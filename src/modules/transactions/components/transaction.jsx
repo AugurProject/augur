@@ -4,8 +4,8 @@ import {
 	CREATE_MARKET,
 	BUY_SHARES,
 	SELL_SHARES,
-	BID_SHARES,
-	ASK_SHARES,
+	BID,
+	ASK,
 	SUBMIT_REPORT,
 	GENERATE_ORDER_BOOK,
 	TRADE_SUMMARY
@@ -18,20 +18,20 @@ const Transaction = (p) => {
 
 	switch (p.type) {
 	case BUY_SHARES:
-	case BID_SHARES:
+	case BID:
 	case SELL_SHARES:
-	case ASK_SHARES:
+	case ASK:
 		switch (p.type) {
 		case BUY_SHARES:
 			nodes.action = 'BUY';
 			break;
-		case BID_SHARES:
+		case BID:
 			nodes.action = 'BID';
 			break;
 		case SELL_SHARES:
 			nodes.action = 'SELL';
 			break;
-		case ASK_SHARES:
+		case ASK:
 			nodes.action = 'ASK';
 			break;
 		default:

@@ -2,10 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import {
-	BUY_SHARES,
-	SELL_SHARES,
-	BID_SHARES,
-	ASK_SHARES
+	BID,
+	ASK
 } from '../../../modules/transactions/constants/types';
 
 const TradePanelFooter = (p) => {
@@ -15,10 +13,10 @@ const TradePanelFooter = (p) => {
 		let type = null;
 
 		switch (trade.type) {
-			case BID_SHARES:
+			case BID:
 				type = 'BUY';
 				break;
-			case ASK_SHARES:
+			case ASK:
 				type = 'SELL';
 				break;
 			default:

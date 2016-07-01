@@ -7,8 +7,8 @@ import createMarketForm from './selectors/create-market-form';
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { LOGIN } from './modules/auth/constants/auth-types';
 import {
-	BID_SHARES,
-	ASK_SHARES
+	BID,
+	ASK
 } from './modules/transactions/constants/types';
 
 const selectors = {
@@ -55,7 +55,7 @@ selectors.searchSort = {
 selectors.marketsHeader = {};
 
 selectors.market = {}; // selected market
-selectors.sideOptions = [{ value: BID_SHARES, label: 'Buy' }, { value: ASK_SHARES, label: 'Sell' }];
+selectors.sideOptions = [{ value: BID, label: 'Buy' }, { value: ASK, label: 'Sell' }];
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {
 		module.exports.update({
