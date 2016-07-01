@@ -15,13 +15,13 @@ function outcomes(actual) {
 }
 
 function sideOptions(actual) {
-	describe('sideOptions', () => {
+	describe('augur-ui-react-components trade sideOptions state', () => {
 		it('should exist', () => {
-			assert.isDefined(actual.sideOptions, 'outcomes is not defined');
+			assert.isDefined(actual, 'outcomes is not defined');
 		});
 
 		it('should be an array', () => {
-			assert.isArray(actual.sideOptions, 'outcomes is not an array');
+			assert.isArray(actual, 'outcomes is not an array');
 		});
 	})
 }
