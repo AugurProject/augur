@@ -17,8 +17,22 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("getTradingActions", function () {
+        var gasPrice;
+        before("getTradingActions", function () {
+            gasPrice = augur.rpc.gasPrice;
+            augur.rpc.gasPrice = function (onGasPrice) {
+                onGasPrice(10);
+            };
+
+            augur.tx = new require('augur-contracts').Tx("2");
+        });
+
+        after("getTradingActions", function () {
+            augur.rpc.gasPrice = gasPrice;
+        });
+
         it("should return bid action when user wants to buy but there is nothing to buy", function () {
-            var actions = augur.getTradingActions({
+            augur.getTradingActions({
                 type: "buy",
                 shares: 5,
                 limitPrice: 0.6,
@@ -28,14 +42,20 @@ describe("Unit tests", function () {
                 marketOrderBook: {
                     buy: [],
                     sell: []
+                },
+                cb: function (actions) {
+                    assert.isArray(actions);
+                    assert.lengthOf(actions, 1, "more actions than expected were created");
+                    var action = actions[0];
+					var expected = {
+                        "action": "BID",
+                        "fee": 31350000,
+                        "totalEther": 3,
+                        "avgPrice": 0.6
+                    };
+                    assert.deepEqual(action, expected)
                 }
             });
-
-            assert.isArray(actions);
-            assert.propertyVal(actions[0], "action", "BID");
-            assert.property(actions[0], "fee");
-            assert.property(actions[0], "totalEther");
-            assert.property(actions[0], "avgPrice");
         });
     });
 
