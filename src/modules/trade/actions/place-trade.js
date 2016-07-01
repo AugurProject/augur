@@ -1,4 +1,7 @@
 import * as AugurJS from '../../../services/augurjs';
+import {
+	BID
+} from '../../transactions/constants/types';
 
 import {
 	TRADING,
@@ -36,7 +39,22 @@ export function processOrder(transactionID, marketID, outcomeID, order) {
 
 		const marketOrderBook = getState().marketOrderBooks[marketID];
 
-		dispatch(updateExistingTransaction(transactionID, { status: TRADING }));
+		const tradeOrders = market.tradeSummary.tradeOrders.map((tradeTransaction) =>
+			({
+				type: tradeTransaction.type === BID ? 'buy' : 'sell',
+				outcomeID: tradeTransaction.data.outcomeID,
+				limitPrice: tradeTransaction.limitPrice,
+				etherToBuy: tradeTransaction.ether.value,
+				sharesToSell: tradeTransaction.shares.value
+			})
+		);
+
+		const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
+			outcomePositions[outcome.id] = outcome.position;
+			return outcomePositions;
+		}, {});
+
+		dispatch(updateExistingTransaction(transactionID, { status: PLACE_MULTI_TRADE }));
 
 		let scalarMinMax;
 		if (market.type === 'scalar') {
