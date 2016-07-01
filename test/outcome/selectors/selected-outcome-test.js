@@ -6,8 +6,6 @@ describe('modules/outcome/selectors/selected-outcome.js', () => {
 	let actual = selector.selectedOutcome,
 		componentAssertions = assertions.trade;
 
-		console.log('componentAssertions -- ', componentAssertions);
-
 	it('should produce the expected initial state', () => {
 		assert.isNull(actual.selectedOutcomeID, 'selectedOutcomeID initial state is not null');
 		assert.typeOf(actual.updateSelectedOutcome, 'function', 'updateSelectedOutcome is not a function');
