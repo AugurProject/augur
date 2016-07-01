@@ -152,10 +152,10 @@ module.exports = function (p, cb) {
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
@@ -166,7 +166,7 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
@@ -184,10 +184,10 @@ module.exports = function (p, cb) {
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
@@ -198,7 +198,7 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
