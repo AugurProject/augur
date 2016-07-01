@@ -596,7 +596,9 @@ describe("Integration tests", function () {
                                     assert(r.txHash);
                                     assert(r.callReturn);
                                     augur.get_trade_ids(t.market, function (trade_ids) {
+                                        console.log("canceling:", trade_ids[0]);
                                         augur.cancel(trade_ids[0], function (r) {
+                                            console.log("Canceled:", r);
                                             assert(r.txHash);
                                             assert.strictEqual(r.callReturn, "1");
                                         }, function (r) {
@@ -646,22 +648,18 @@ describe("Integration tests", function () {
                                                 if (!tradeInfo) return nextTrade("no trade info found");
                                                 if (tradeInfo.owner === augur.from) return nextTrade();
                                                 if (tradeInfo.type === "buy") return nextTrade();
-                                                console.log("matched trade:", thisTrade, tradeInfo);
                                                 augur.trade({
                                                     max_value: t.max_value,
                                                     max_amount: 0,
                                                     trade_ids: [thisTrade],
                                                     onTradeHash: function (r) {
-                                                        console.log("tradeHash:", r);
                                                         assert.notProperty(r, "error");
                                                         assert.isString(r);
                                                     },
                                                     onCommitSent: function (r) {
-                                                        console.log("commitSent:", r);
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitSuccess: function (r) {
-                                                        console.log("commitSuccess:", r);
                                                         assert.strictEqual(r.callReturn, "1");
                                                     },
                                                     onCommitFailed: nextTrade,
@@ -682,7 +680,6 @@ describe("Integration tests", function () {
                                                 });
                                             });
                                         }, function (x) {
-                                            console.log("TRADE complete.");
                                             if (x && x.callReturn) return done();
                                             done(x);
                                         });
@@ -723,7 +720,6 @@ describe("Integration tests", function () {
                                         if (!tradeInfo) return nextTrade("no trade info found");
                                         if (tradeInfo.owner === augur.from) return nextTrade();
                                         if (tradeInfo.type === "sell") return nextTrade();
-                                        // console.log("matched trade:", thisTrade, tradeInfo);
                                         augur.short_sell({
                                             buyer_trade_id: thisTrade,
                                             max_amount: t.max_amount,
@@ -755,7 +751,6 @@ describe("Integration tests", function () {
                                         });
                                     });
                                 }, function (x) {
-                                    console.log("SHORT_SELL complete.");
                                     if (x && x.callReturn) return done();
                                     done(x);
                                 });
@@ -799,34 +794,34 @@ describe("Integration tests", function () {
                         userPosition: {qtyShares: 0},
                         scalarMinMax: scalarMinMax,
                         onTradeHash: function (tradeOrderId, tradeHash) {
-                            console.log("tradeHash:", tradeOrderId, tradeHash);
+                            // console.log("tradeHash:", tradeOrderId, tradeHash);
                         },
                         onCommitSent: function (tradeOrderId, res) {
-                            console.log("commitSent:", tradeOrderId, res);
+                            // console.log("commitSent:", tradeOrderId, res);
                         },
                         onCommitFailed: function (tradeOrderId, err) {
-                            console.error("commit failed:", err);
+                            // console.error("commit failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         },
                         onNextBlock: function (tradeOrderId, block) {
-                            console.log("nextBlock:", tradeOrderId, block);
+                            // console.log("nextBlock:", tradeOrderId, block);
                         },
                         onTradeSent: function (tradeOrderId, res) {
-                            console.log("trade sent:", tradeOrderId, res);
+                            // console.log("trade sent:", tradeOrderId, res);
                         },
                         onTradeSuccess: function (tradeOrderId, res) {
-                            console.log("tradeSuccess:", tradeOrderId, res);
+                            // console.log("tradeSuccess:", tradeOrderId, res);
                             done();
                         },
                         onTradeFailed: function (tradeOrderId, err) {
-                            console.error("trade failed:", err);
+                            // console.error("trade failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         },
                         onBuySellSent: function (requestId, res) {
-                            console.log("buySell sent:", requestId, res);
+                            // console.log("buySell sent:", requestId, res);
                         },
                         onBuySellSuccess: function (requestId, res) {
-                            console.log("buy/sell order placed on the books successfully!");
+                            // console.log("buy/sell order placed on the books successfully!");
                             var newOrderBook = augur.getOrderBook(t.market);
                             var orderType = t.type;
                             for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
@@ -839,17 +834,17 @@ describe("Integration tests", function () {
                             done(new Error("order not found :("));
                         },
                         onBuySellFailed: function (requestId, err) {
-                            console.error("buy/sell failed:", err);
+                            // console.error("buy/sell failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         },
                         onBuyCompleteSetsSent: function (requestId, res) {
-                            console.log("onBuyCompleteSetsSent:", requestId, res);
+                            // console.log("onBuyCompleteSetsSent:", requestId, res);
                         },
                         onBuyCompleteSetsSuccess: function (requestId, res) {
-                            console.log("onBuyCompleteSetsSuccess:", requestId, res);
+                            // console.log("onBuyCompleteSetsSuccess:", requestId, res);
                         },
                         onBuyCompleteSetsFailed: function (requestId, err) {
-                            console.error("buyCompleteSets failed:", err);
+                            // console.error("buyCompleteSets failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         }
                     });

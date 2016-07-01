@@ -49,7 +49,7 @@ module.exports = {
         var filter = {
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
-            address: this.contracts.trade,
+            address: this.contracts.Trade,
             topics: [constants.LOGS.price.signature, market]
         };
         if (!utils.is_function(cb)) {
@@ -95,7 +95,7 @@ module.exports = {
         this.rpc.getLogs({
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
-            address: this.contracts.trade,
+            address: this.contracts.Trade,
             topics: [
                 constants.LOGS.price.signature,
                 null,

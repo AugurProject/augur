@@ -112,7 +112,6 @@ describe("Integration tests", function () {
                             assert.strictEqual(augur.getDescription(newBranchID), branchDescription);
                             var block = augur.rpc.getBlock(res.blockNumber);
                             assert.strictEqual(newBranchID, utils.sha3([
-                                0,
                                 res.from,
                                 abi.fix(47, "hex"),
                                 periodLength,
@@ -161,13 +160,15 @@ describe("Integration tests", function () {
                                                     amount: 1,
                                                     onSent: function (r) {},
                                                     onSuccess: function (r) {
+                                                        console.log("buycompletesets ok:", r);
                                                         augur.sell({
                                                             amount: 1,
                                                             price: "0.01",
                                                             market: marketID,
-                                                            outcome: t.outcome,
+                                                            outcome: "1",
                                                             onSent: function (r) {},
                                                             onSuccess: function (r) {
+                                                                console.log("sell ok:", r);
                                                                 augur.useAccount(accounts[2]);
                                                                 augur.get_trade_ids(marketID, function (trade_ids) {
                                                                     async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
@@ -177,20 +178,20 @@ describe("Integration tests", function () {
                                                                             if (tradeInfo.type === "buy") return nextTrade();
                                                                             console.log("matched trade:", thisTrade, tradeInfo);
                                                                             augur.trade({
-                                                                                max_value: t.max_value,
+                                                                                max_value: 1,
                                                                                 max_amount: 0,
                                                                                 trade_ids: [thisTrade],
                                                                                 onTradeHash: function (r) {
-                                                                                    console.log("tradeHash:", r);
+                                                                                    // console.log("tradeHash:", r);
                                                                                     assert.notProperty(r, "error");
                                                                                     assert.isString(r);
                                                                                 },
                                                                                 onCommitSent: function (r) {
-                                                                                    console.log("commitSent:", r);
+                                                                                    // console.log("commitSent:", r);
                                                                                     assert.strictEqual(r.callReturn, "1");
                                                                                 },
                                                                                 onCommitSuccess: function (r) {
-                                                                                    console.log("commitSuccess:", r);
+                                                                                    // console.log("commitSuccess:", r);
                                                                                     assert.strictEqual(r.callReturn, "1");
                                                                                 },
                                                                                 onCommitFailed: nextTrade,

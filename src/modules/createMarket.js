@@ -100,68 +100,8 @@ module.exports = {
                         });
                     }, onFailed);
                 });
-                // self.getPeriodLength(branchId, function (periodLength) {
-                //     self.transact(tx, onSent, function (res) {
-                //         var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-                //         self.rpc.getBlock(res.blockNumber, false, function (block) {
-                //             res.marketID = utils.sha3([
-                //                 tradingPeriod,
-                //                 abi.fix(tradingFee, "hex"),
-                //                 block.timestamp,
-                //                 tags[0],
-                //                 tags[1],
-                //                 tags[2],
-                //                 expDate,
-                //                 new Buffer(description, "utf8").length,
-                //                 description
-                //             ]);
-                //             res.callReturn = res.marketID;
-                //             onSuccess(res);
-                //         });
-                //     }, onFailed);
-                // });
             });
         }, onFailed);
-        // var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
-        // tx.params = [
-        //     branchId,
-        //     description,
-        //     expDate,
-        //     abi.fix(minValue, "hex"),
-        //     abi.fix(maxValue, "hex"),
-        //     numOutcomes,
-        //     resolution,
-        //     abi.fix(tradingFee, "hex"),
-        //     tags[0],
-        //     tags[1],
-        //     tags[2],
-        //     abi.fix(makerProportionOfFee, "hex"),
-        //     extraInfo || ""
-        // ];
-        // this.rpc.gasPrice(function (gasPrice) {
-        //     tx.gasPrice = gasPrice;
-        //     gasPrice = abi.bignum(gasPrice);
-        //     tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-        //     self.transact(tx, onSent, function (res) {
-        //         self.getPeriodLength(branchId, function (periodLength) {
-        //             self.rpc.getBlock(res.blockNumber, false, function (block) {
-        //                 var tradingPeriod = abi.prefix_hex(new BigNumber(expDate).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-        //                 res.marketID = utils.sha3([
-        //                     tradingPeriod,
-        //                     abi.fix(tradingFee, "hex"),
-        //                     block.timestamp,
-        //                     tags[0],
-        //                     tags[1],
-        //                     tags[2],
-        //                     expDate,
-        //                     new Buffer(description, "utf8").length,
-        //                     description
-        //                 ]);
-        //                 onSuccess(res);
-        //             });
-        //         });
-        //     }, onFailed);
-        // });
     },
 
     createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {

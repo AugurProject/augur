@@ -27,6 +27,7 @@ module.exports = {
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
         oracleOnly = oracleOnly || 0;
+        description = description.trim();
         return this.createSubbranch({
             description: description,
             periodLength: periodLength,
@@ -37,7 +38,6 @@ module.exports = {
             onSuccess: function (response) {
                 self.rpc.getBlock(response.blockNumber, false, function (block) {
                     response.branchID = utils.sha3([
-                        0,
                         response.from,
                         "0x2f0000000000000000",
                         periodLength,
@@ -47,7 +47,6 @@ module.exports = {
                         oracleOnly,
                         description
                     ]);
-                    response.callReturn = response.branchID;
                     onSuccess(response);
                 });
             },

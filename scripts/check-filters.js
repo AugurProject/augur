@@ -16,9 +16,9 @@ augur.filters.listen({
     price: function (msg) {
         console.log("price filter:", JSON.stringify(msg, null, 2));
     },
-    fill_tx: function (msg) {
-        console.log("fill_tx filter:", JSON.stringify(msg, null, 2));
-    },
+    // fill_tx: function (msg) {
+    //     console.log("fill_tx filter:", JSON.stringify(msg, null, 2));
+    // },
     add_tx: function (msg) {
         console.log("add_tx filter:", JSON.stringify(msg, null, 2));
     },
