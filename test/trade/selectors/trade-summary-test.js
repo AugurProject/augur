@@ -4,8 +4,12 @@ import {
 import {
 	selectTradeSummary
 } from '../../../src/modules/trade/selectors/trade-summary';
+import {assertions} from 'augur-ui-react-components';
 
 describe(`modules/trade/selectors/trade-summary.js`, () => {
+	let tradeSummary;
+	let componentAssertions = assertions.trade;
+
 	const tradeOrders = [{
 		shares: {
 			value: 5
@@ -48,6 +52,10 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 		}
 	}];
 
+	before(() => {
+		tradeSummary = selectTradeSummary(tradeOrders);
+	});
+
 	it(`should select trade summary correctly`, () => {
 		const out = {
 			totalShares:
@@ -83,8 +91,12 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 				},
 				tradeOrders
 		};
-		// console.log(selectTradeSummary(tradeOrders));
-		// console.log(tradeOrders);
-		assert.deepEqual(selectTradeSummary(tradeOrders), out, `Didn't produce the correct trade summary info`);
+
+		assert.deepEqual(tradeSummary, out, `Didn't produce the correct trade summary info`);
+	});
+
+	it('should provide the components with the expected object', () => {
+		componentAssertions.tradeSummary(tradeSummary);
+		componentAssertions.tradeOrders(tradeSummary);
 	});
 });
