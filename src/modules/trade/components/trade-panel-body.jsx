@@ -105,7 +105,7 @@ const TradePanelBody = (p) => {
 						>
 							<td colSpan="2"></td>
 							<td>
-								{ outcome.orderBook.bids[i] &&
+								{ !!outcome.orderBook.bids[i] &&
 									<div className='order-book-data bid'>
 										<Clickable onClick={event => {
 											event.stopPropagation();
@@ -126,7 +126,7 @@ const TradePanelBody = (p) => {
 								}
 							</td>
 							<td>
-								{ outcome.orderBook.asks[i] &&
+								{ !!outcome.orderBook.asks[i] &&
 									<div className='order-book-data ask'>
 										<Clickable onClick={event => {
 											event.stopPropagation();
