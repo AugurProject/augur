@@ -6,7 +6,7 @@ const OrderBook = (p) => (
 	<div className="order-book">
 		<div className="bids">
 			{p.bids.map((bid, i) => {
-				if(i != 0){
+				if (i !== 0) {
 					return (
 						<article key={bid.price.full} className="bid-ask bid">
 							<Clickable
@@ -18,8 +18,9 @@ const OrderBook = (p) => (
 								<ValueDenomination className="price" {...bid.price} />
 							</Clickable>
 						</article>
-					)
+					);
 				}
+				return null;
 			})}
 			{!p.bids.length &&
 				<article className="bid-ask ask">
@@ -30,7 +31,7 @@ const OrderBook = (p) => (
 		</div>
 		<div className="asks">
 			{p.asks.map((ask, i) => {
-				if (i != 0) {
+				if (i !== 0) {
 					return (
 						<article key={ask.price.full} className="bid-ask ask">
 							<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, ask.price.value); }}>
@@ -42,8 +43,9 @@ const OrderBook = (p) => (
 								<ValueDenomination className="shares" {...ask.shares} />
 							</Clickable>
 						</article>
-					)
+					);
 				}
+				return null;
 			})}
 			{!p.asks.length &&
 				<article className="bid-ask ask">

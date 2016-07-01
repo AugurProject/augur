@@ -4,8 +4,8 @@ import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 import { M } from '../modules/site/constants/pages';
 import {
 	// CREATE_MARKET,
-	BUY_SHARES,
-	SELL_SHARES,
+	// BUY_SHARES,
+	// SELL_SHARES,
 	BID,
 	// ASK_SHARES,
 	// SUBMIT_REPORT
@@ -223,8 +223,8 @@ function makeMarkets(numMarkets = 25) {
 			const outcomes = [];
 			const orderBook = selectOrderBook();
 
-			let	outcome,
-				percentLeft = 100;
+			let	outcome;
+			let percentLeft = 100;
 
 			for (let i = 0; i < numOutcomes; i++) {
 				outcome = makeOutcome(i, percentLeft, orderBook);

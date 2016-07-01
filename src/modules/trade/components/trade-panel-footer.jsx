@@ -13,20 +13,20 @@ const TradePanelFooter = (p) => {
 		let type = null;
 
 		switch (trade.type) {
-			case BID:
-				type = 'BUY';
-				break;
-			case ASK:
-				type = 'SELL';
-				break;
-			default:
-				break;
+		case BID:
+			type = 'BUY';
+			break;
+		case ASK:
+			type = 'SELL';
+			break;
+		default:
+			break;
 		}
 
 		transactions.push(
 			<tr
 				key={`${trade.data.outcomeName}${i}`}
-				className='trade-panel-row'
+				className="trade-panel-row"
 			>
 				<td className="outcome-name">{trade.data.outcomeName}</td>
 				<td colSpan="2" >
@@ -49,7 +49,9 @@ const TradePanelFooter = (p) => {
 					<ValueDenomination {...trade.profitLoss} />
 				</td>
 			</tr>
-		)
+		);
+
+		return null;
 	});
 
 	return (
@@ -68,14 +70,14 @@ const TradePanelFooter = (p) => {
 				<td></td>
 				<td colSpan="6">Total Transactions...TODO</td>
 				<td className="fee-to-pay" >
-					<ValueDenomination { ...p.summary.totalFees } />
+					<ValueDenomination {...p.summary.totalFees} />
 				</td>
 				<td className="total-cost" >
-					<ValueDenomination { ...p.summary.totalEther } />
+					<ValueDenomination {...p.summary.totalEther} />
 				</td>
 			</tr>
 		</tfoot>
-	)
+	);
 };
 
 TradePanelFooter.propTypes = {

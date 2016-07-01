@@ -61,7 +61,7 @@ selectors.selectedOutcome = {
 		module.exports.update({
 			selectedOutcome: {
 				...selectors.selectedOutcome,
-				selectedOutcomeID: selectedOutcomeID
+				selectedOutcomeID
 			}
 		});
 	},
