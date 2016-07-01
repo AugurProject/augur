@@ -67,8 +67,8 @@ function tradeSummary(actual){
 }
 
 function onSubmitPlaceTrade(actual){
-	describe('onSubmitPlaceTrade', () => {
-		let onSubmitPlaceTrade = actual.markets[0].onSubmitPlaceTrade;
+	describe('augur-ui-react-components trade onSubmitPlaceTrade', () => {
+		let onSubmitPlaceTrade = actual.onSubmitPlaceTrade;
 
 		it('should exist', () => {
 			assert.isDefined(onSubmitPlaceTrade, 'onSubmitPlaceTrade is not a function');
