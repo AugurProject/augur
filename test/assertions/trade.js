@@ -41,8 +41,8 @@ function selectedOutcomeID(actual){
 }
 
 function tradeOrders(actual){
-	describe('tradeOrders', () => {
-		let tradeOrders = actual.markets[0].tradeSummary.tradeOrders;
+	describe('augur-ui-react-components trade tradeOrders', () => {
+		let tradeOrders = actual.tradeOrders;
 
 		it('should exist', () => {
 			assert.isDefined(tradeOrders, 'tradeOrders is not defined');
@@ -55,15 +55,13 @@ function tradeOrders(actual){
 }
 
 function tradeSummary(actual){
-	describe('tradeSummary', () => {
-		let tradeSummary = actual.markets[0].tradeSummary;
-
+	describe('augur-ui-react-components trade tradeSummary', () => {
 		it('should exist', () => {
-			assert.isDefined(tradeSummary, 'tradeSummary is not defined');
+			assert.isDefined(actual, 'tradeSummary is not defined');
 		});
 
 		it('should be an object', () => {
-			assert.isObject(tradeSummary, 'tradeSummary is not an object');
+			assert.isObject(actual, 'tradeSummary is not an object');
 		});
 	});
 }
