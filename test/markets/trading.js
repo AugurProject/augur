@@ -573,7 +573,9 @@ describe("Integration tests", function () {
                                     assert(r.txHash);
                                     assert(r.callReturn);
                                     augur.get_trade_ids(t.market, function (trade_ids) {
+                                        console.log("canceling:", trade_ids[0]);
                                         augur.cancel(trade_ids[0], function (r) {
+                                            console.log("Canceled:", r);
                                             assert(r.txHash);
                                             assert.strictEqual(r.callReturn, "1");
                                         }, function (r) {
@@ -769,34 +771,34 @@ describe("Integration tests", function () {
                         userPosition: {qtyShares: 0},
                         scalarMinMax: scalarMinMax,
                         onTradeHash: function (tradeOrderId, tradeHash) {
-                            console.log("tradeHash:", tradeOrderId, tradeHash);
+                            // console.log("tradeHash:", tradeOrderId, tradeHash);
                         },
                         onCommitSent: function (tradeOrderId, res) {
-                            console.log("commitSent:", tradeOrderId, res);
+                            // console.log("commitSent:", tradeOrderId, res);
                         },
                         onCommitFailed: function (tradeOrderId, err) {
-                            console.error("commit failed:", err);
+                            // console.error("commit failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         },
                         onNextBlock: function (tradeOrderId, block) {
-                            console.log("nextBlock:", tradeOrderId, block);
+                            // console.log("nextBlock:", tradeOrderId, block);
                         },
                         onTradeSent: function (tradeOrderId, res) {
-                            console.log("trade sent:", tradeOrderId, res);
+                            // console.log("trade sent:", tradeOrderId, res);
                         },
                         onTradeSuccess: function (tradeOrderId, res) {
-                            console.log("tradeSuccess:", tradeOrderId, res);
+                            // console.log("tradeSuccess:", tradeOrderId, res);
                             done();
                         },
                         onTradeFailed: function (tradeOrderId, err) {
-                            console.error("trade failed:", err);
+                            // console.error("trade failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         },
                         onBuySellSent: function (requestId, res) {
-                            console.log("buySell sent:", requestId, res);
+                            // console.log("buySell sent:", requestId, res);
                         },
                         onBuySellSuccess: function (requestId, res) {
-                            console.log("buy/sell order placed on the books successfully!");
+                            // console.log("buy/sell order placed on the books successfully!");
                             var newOrderBook = augur.getOrderBook(t.market);
                             var orderType = t.type;
                             for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
@@ -809,17 +811,17 @@ describe("Integration tests", function () {
                             done(new Error("order not found :("));
                         },
                         onBuySellFailed: function (requestId, err) {
-                            console.error("buy/sell failed:", err);
+                            // console.error("buy/sell failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         },
                         onBuyCompleteSetsSent: function (requestId, res) {
-                            console.log("onBuyCompleteSetsSent:", requestId, res);
+                            // console.log("onBuyCompleteSetsSent:", requestId, res);
                         },
                         onBuyCompleteSetsSuccess: function (requestId, res) {
-                            console.log("onBuyCompleteSetsSuccess:", requestId, res);
+                            // console.log("onBuyCompleteSetsSuccess:", requestId, res);
                         },
                         onBuyCompleteSetsFailed: function (requestId, err) {
-                            console.error("buyCompleteSets failed:", err);
+                            // console.error("buyCompleteSets failed:", err);
                             done(new Error(JSON.stringify(err, null, 2)));
                         }
                     });
