@@ -8,7 +8,7 @@ pieces of state come together to make each market.
 IMPORTANT
 The assembleMarket() function (where all the action happens) is heavily memoized, and performance sensitive.
 Doing things sub-optimally here will cause noticeable performance degradation in the app.
-The "trick" is to maximize memoization cache hits as much a spossible, and not have assembleMarket()
+The "trick" is to maximize memoization cache hits as much as possible, and not have assembleMarket()
 run any more than it has to.
 
 To achieve that, we pass in the minimum number of the shallowest arguments possible.
