@@ -1,35 +1,19 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
-import {
-	SUCCESS,
-	CREATING_MARKET,
-	SIMULATED_ORDER_BOOK,
-	COMPLETE_SET_BOUGHT,
-	ORDER_BOOK_ORDER_COMPLETE,
-	ORDER_BOOK_OUTCOME_COMPLETE
-} from '../modules/transactions/constants/statuses';
+import { SUCCESS, CREATING_MARKET, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
+import env from '../env.json';
+
 const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(cb) {
 	const options = {
-		http: process.env.ETHEREUM_HOST_RPC || 'http://127.0.0.1:8545',
-		ws: process.env.ETHEREUM_HOST_WSURL || 'ws://127.0.0.1:8546'
+		http: env.gethHttpURL || 'http://127.0.0.1:8545',
+		ws: env.gethWebsocketsURL || 'ws://127.0.0.1:8546',
+		contracts: env.contracts
 	};
-	if (process.env.ETHEREUM_HOST_RPC) {
-		augur.rpc.nodes.hosted = [process.env.ETHEREUM_HOST_RPC];
-	}
-
-	if (process.env.BUILD_AZURE) {
-		if (process.env.BUILD_AZURE_WSURL && process.env.BUILD_AZURE_WSURL !== 'null') {
-			options.ws = process.env.BUILD_AZURE_WSURL;
-		}
-		if (process.env.BUILD_AZURE_LOCALNODE && process.env.BUILD_AZURE_LOCALNODE !== 'null') {
-			options.http = process.env.BUILD_AZURE_LOCALNODE;
-		}
-		if (process.env.BUILD_AZURE && process.env.BUILD_AZURE_CONTRACTS !== 'null') {
-			options.contracts = JSON.parse(process.env.BUILD_AZURE_CONTRACTS);
-		}
+	if (env.gethHttpURL) {
+		augur.rpc.nodes.hosted = [env.gethHttpURL];
 	}
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
