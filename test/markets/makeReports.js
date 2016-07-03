@@ -280,7 +280,7 @@ describe("Integration tests", function () {
                     if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
                     augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
                         console.log("increment:", res);
-                        // assert.strictEqual(res.callReturn, "1");
+                        assert.strictEqual(res.callReturn, "1");
                         var period = parseInt(augur.getVotePeriod(newBranchID));
                         if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
                         currentPeriod = Math.floor(currentPeriod).toString();
@@ -293,18 +293,19 @@ describe("Integration tests", function () {
                         console.log("diceroll1:", diceroll);
                         var diceroll = augur.rpc.sha3(hashable);
                         console.log("diceroll2:", diceroll);
-                        var target = augur.MakeReports.calculateReportTargetForEvent(newBranchID, eventID, period, augur.from);
+                        var sender = augur.from;
+                        var target = augur.MakeReports.calculateReportTargetForEvent(newBranchID, eventID, period, sender);
+                        var threshold = augur.ExpiringEvents.calculateReportingThreshold(newBranchID, eventID, period, sender);
                         console.log("target:", target);
-                        var threshold = augur.ExpiringEvents.calculateReportingThreshold(newBranchID, eventID, period, augur.from);
                         console.log("threshold:", threshold);
                         var curTime = new Date().getTime() / 1000;
                         if (DEBUG) console.log("Residual:", curTime % periodLength);
                         var currentExpPeriod = curTime / periodLength;
                         if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
-                        // assert.isAtLeast(currentExpPeriod, period + 1);
-                        // assert.isBelow(currentExpPeriod, period + 2);
-                        // console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
-                        // if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+                        assert.isAtLeast(currentExpPeriod, period + 1);
+                        assert.isBelow(currentExpPeriod, period + 2);
+                        console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
+                        if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
                             return augur.submitReportHash({
                                 event: eventID,
                                 reportHash: reportHash,
@@ -344,9 +345,9 @@ describe("Integration tests", function () {
                                     }
                                 }
                             });
-                        // } else {
-                        //     done();
-                        // }
+                        } else {
+                            done();
+                        }
                     }, console.error);
                 }
             });

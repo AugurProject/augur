@@ -69,8 +69,10 @@ function createMarkets(numMarketsToCreate, callback) {
             maxValue: maxValue,
             numOutcomes: numOutcomes,
             resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
-            takerFee: takerFee.toString(),
-            makerFee: makerFee.toString(),
+            // takerFee: takerFee.toString(),
+            // makerFee: makerFee.toString(),
+            takerFee: "0.02",
+            makerFee: "0.01",
             extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
             onSent: function (r) {},
@@ -191,7 +193,7 @@ function timing(maxNumMarkets) {
     }
     createMarkets(maxNumMarkets - numMarkets, function (err) {
         if (err) return console.error(err);
-        time_getMarketsInfo(maxNumMarkets);
+        // time_getMarketsInfo(maxNumMarkets);
     });
 }
 

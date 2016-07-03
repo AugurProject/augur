@@ -17313,7 +17313,7 @@ module.exports={
         "description", 
         "periodLength", 
         "parent", 
-        "mintradingFee", 
+        "minTradingFee", 
         "oracleOnly"
       ], 
       "method": "createSubbranch", 
@@ -17369,6 +17369,39 @@ module.exports={
         "int256", 
         "bytes", 
         "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "createSingleEventMarket": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "expDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution", 
+        "tradingFee", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "extraInfo"
+      ], 
+      "method": "createSingleEventMarket", 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes", 
         "int256", 
         "int256", 
         "int256", 
@@ -20233,33 +20266,33 @@ module.exports={
         "CloseMarket": "0xc9a1dd0bccc72527bc5957daa9677d98862d8932", 
         "CloseMarketOne": "0x4e433f8bde4a0afc59bec1b4d200b84435aafd9e", 
         "CloseMarketTwo": "0x5e3972e215854523c977ecb9faa21efeb0bcaa0a", 
-        "CollectFees": "0x59c8771527a8b9f7a8d1686a5d0abee424bee648", 
+        "CollectFees": "0xb3eeaa1287c59be7dbbf7e5af7b6005882a437d1", 
         "CompleteSets": "0xf64657c13c7dcae029b84ce099dcc0751fc41cc2", 
         "CompositeGetters": "0xc42826de38b20a7894cdc1a096bdbcee9c57dbf1", 
         "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
         "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
         "CreateBranch": "0xb8613192ef98dfd1fbeedb15c8350c8d3aac9a03", 
-        "CreateMarket": "0x54894e13b69e760e9d0f6af18b9b2c87c5fc5525", 
+        "CreateMarket": "0x854cde0fd53ae086342605dbf59a5b2632970fb2", 
         "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
         "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x4da58f4c737985e4ab9b89e8ea706b617ba2eb2d", 
+        "Forking": "0x47de547e9ad873c18b5263543ef7d38a7f2974bf", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0xf060d000aa0603b4670a0d27afced0047213c023", 
+        "MakeReports": "0x3a79c151769141750ea8ca06e4ed9fcef74ec5a9", 
         "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
         "PenalizationCatchup": "0x0e92a0e24c4315804b6beeba5bb9eb30b596fd5a", 
         "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
         "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
         "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
         "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0x915941fcf8fa17b933705f8cff57f852ba524a3e", 
-        "RoundTwoPenalize": "0x39fe055135dbf244e81b7d840d262bba2ef3fc3d", 
-        "SendReputation": "0x4e7ffa77266d9935432348db6dc2fda3d48c3972", 
+        "RoundTwo": "0x6bea17561677b97745180615109a249bd1533e2f", 
+        "RoundTwoPenalize": "0xa7b6681a1202a601c492c92dc6cc3c289e0f2073", 
+        "SendReputation": "0x5fb2d397bd30e9b82219a0ed1d9018312ca51e6c", 
         "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
-        "Trade": "0xdf0c814f16e9ecf90f28e22996edadaf702239bd", 
+        "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
         "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
     }
 }
@@ -38129,7 +38162,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.12";
+    this.version = "1.6.0";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39105,8 +39138,7 @@ module.exports = {
         var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         description = description.trim();
-        expDate = parseInt(expDate);
-        var tx = clone(this.tx.CreateMarket.createEvent);
+        var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
             branchId,
             description,
@@ -39114,47 +39146,38 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution,
+            abi.fix(tradingFee, "hex"),
+            tags[0],
+            tags[1],
+            tags[2],
+            abi.fix(makerProportionOfFee, "hex"),
+            extraInfo || ""
         ];
-        this.transact(tx, utils.noop, function (res) {
-            var tx = clone(self.tx.CreateMarket.createMarket);
-            tx.params = [
-                branchId,
-                description,
-                abi.fix(tradingFee, "hex"),
-                res.callReturn,
-                tags[0],
-                tags[1],
-                tags[2],
-                abi.fix(makerProportionOfFee, "hex"),
-                extraInfo || ""
-            ];
-            self.rpc.gasPrice(function (gasPrice) {
-                tx.gasPrice = gasPrice;
-                gasPrice = abi.bignum(gasPrice);
-                tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+        this.rpc.gasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            gasPrice = abi.bignum(gasPrice);
+            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+            self.transact(tx, onSent, function (res) {
                 self.getPeriodLength(branchId, function (periodLength) {
-                    self.transact(tx, onSent, function (res) {
-                        self.rpc.getBlock(res.blockNumber, false, function (block) {
-                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-                            res.marketID = utils.sha3([
-                                futurePeriod,
-                                abi.fix(tradingFee, "hex"),
-                                block.timestamp,
-                                tags[0],
-                                tags[1],
-                                tags[2],
-                                expDate,
-                                new Buffer(description, "utf8").length,
-                                description
-                            ]);
-                            res.callReturn = res.marketID;
-                            onSuccess(res);
-                        });
-                    }, onFailed);
+                    self.rpc.getBlock(res.blockNumber, false, function (block) {
+                        var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                        res.marketID = utils.sha3([
+                            futurePeriod,
+                            abi.fix(tradingFee, "hex"),
+                            block.timestamp,
+                            tags[0],
+                            tags[1],
+                            tags[2],
+                            expDate,
+                            new Buffer(description, "utf8").length,
+                            description
+                        ]);
+                        onSuccess(res);
+                    });
                 });
-            });
-        }, onFailed);
+            }, onFailed);
+        });
     },
 
     createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
