@@ -61,7 +61,7 @@ describe("Integration tests", function () {
 
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
-        describe("Commit-and-reveal", function () {
+        describe("Report commit-and-reveal", function () {
 
             before(function (done) {
                 this.timeout(tools.TIMEOUT*100);
@@ -152,68 +152,68 @@ describe("Integration tests", function () {
                                                 eventID = augur.getMarketEvents(marketID)[0];
                                                 if (DEBUG) console.log("Event ID:", eventID);
 
-                                                // make a trade in the new market
-                                                augur.useAccount(accounts[0]);
-                                                var initialTotalTrades = parseInt(augur.Markets.get_total_trades(marketID));
-                                                augur.buyCompleteSets({
-                                                    market: marketID,
-                                                    amount: 1,
-                                                    onSent: function (r) {},
-                                                    onSuccess: function (r) {
-                                                        console.log("buycompletesets ok:", r);
-                                                        augur.sell({
-                                                            amount: 1,
-                                                            price: "0.01",
-                                                            market: marketID,
-                                                            outcome: "1",
-                                                            onSent: function (r) {},
-                                                            onSuccess: function (r) {
-                                                                console.log("sell ok:", r);
-                                                                augur.useAccount(accounts[2]);
-                                                                augur.get_trade_ids(marketID, function (trade_ids) {
-                                                                    async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
-                                                                        augur.get_trade(thisTrade, function (tradeInfo) {
-                                                                            if (!tradeInfo) return nextTrade("no trade info found");
-                                                                            if (tradeInfo.owner === augur.from) return nextTrade();
-                                                                            if (tradeInfo.type === "buy") return nextTrade();
-                                                                            console.log("matched trade:", thisTrade, tradeInfo);
-                                                                            augur.trade({
-                                                                                max_value: 1,
-                                                                                max_amount: 0,
-                                                                                trade_ids: [thisTrade],
-                                                                                onTradeHash: function (r) {
-                                                                                    // console.log("tradeHash:", r);
-                                                                                    assert.notProperty(r, "error");
-                                                                                    assert.isString(r);
-                                                                                },
-                                                                                onCommitSent: function (r) {
-                                                                                    // console.log("commitSent:", r);
-                                                                                    assert.strictEqual(r.callReturn, "1");
-                                                                                },
-                                                                                onCommitSuccess: function (r) {
-                                                                                    // console.log("commitSuccess:", r);
-                                                                                    assert.strictEqual(r.callReturn, "1");
-                                                                                },
-                                                                                onCommitFailed: nextTrade,
-                                                                                onTradeSent: function (r) {
-                                                                                    console.log("trade sent:", r)
-                                                                                    assert.isArray(r.callReturn);
-                                                                                    assert.strictEqual(r.callReturn[0], 1);
-                                                                                    assert.strictEqual(r.callReturn.length, 3);
-                                                                                },
-                                                                                onTradeSuccess: function (r) {
-                                                                                    console.log("trade success:", r)
-                                                                                    assert.isArray(r.callReturn);
-                                                                                    assert.strictEqual(r.callReturn[0], 1);
-                                                                                    assert.strictEqual(r.callReturn.length, 3);
-                                                                                    nextTrade(r);
-                                                                                },
-                                                                                onTradeFailed: nextTrade
-                                                                            });
-                                                                        });
-                                                                    }, function (x) {
-                                                                        if (!x) return done(new Error("trade failed"));
-                                                                        if (!x.callReturn) return done(x);
+                                                // // make a trade in the new market
+                                                // augur.useAccount(accounts[0]);
+                                                // var initialTotalTrades = parseInt(augur.Markets.get_total_trades(marketID));
+                                                // augur.buyCompleteSets({
+                                                //     market: marketID,
+                                                //     amount: 1,
+                                                //     onSent: function (r) {},
+                                                //     onSuccess: function (r) {
+                                                //         console.log("buycompletesets ok:", r);
+                                                //         augur.sell({
+                                                //             amount: 1,
+                                                //             price: "0.01",
+                                                //             market: marketID,
+                                                //             outcome: "1",
+                                                //             onSent: function (r) {},
+                                                //             onSuccess: function (r) {
+                                                //                 console.log("sell ok:", r);
+                                                //                 augur.useAccount(accounts[2]);
+                                                //                 augur.get_trade_ids(marketID, function (trade_ids) {
+                                                //                     async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
+                                                //                         augur.get_trade(thisTrade, function (tradeInfo) {
+                                                //                             if (!tradeInfo) return nextTrade("no trade info found");
+                                                //                             if (tradeInfo.owner === augur.from) return nextTrade();
+                                                //                             if (tradeInfo.type === "buy") return nextTrade();
+                                                //                             console.log("matched trade:", thisTrade, tradeInfo);
+                                                //                             augur.trade({
+                                                //                                 max_value: 1,
+                                                //                                 max_amount: 0,
+                                                //                                 trade_ids: [thisTrade],
+                                                //                                 onTradeHash: function (r) {
+                                                //                                     // console.log("tradeHash:", r);
+                                                //                                     assert.notProperty(r, "error");
+                                                //                                     assert.isString(r);
+                                                //                                 },
+                                                //                                 onCommitSent: function (r) {
+                                                //                                     // console.log("commitSent:", r);
+                                                //                                     assert.strictEqual(r.callReturn, "1");
+                                                //                                 },
+                                                //                                 onCommitSuccess: function (r) {
+                                                //                                     // console.log("commitSuccess:", r);
+                                                //                                     assert.strictEqual(r.callReturn, "1");
+                                                //                                 },
+                                                //                                 onCommitFailed: nextTrade,
+                                                //                                 onTradeSent: function (r) {
+                                                //                                     console.log("trade sent:", r)
+                                                //                                     assert.isArray(r.callReturn);
+                                                //                                     assert.strictEqual(r.callReturn[0], 1);
+                                                //                                     assert.strictEqual(r.callReturn.length, 3);
+                                                //                                 },
+                                                //                                 onTradeSuccess: function (r) {
+                                                //                                     console.log("trade success:", r)
+                                                //                                     assert.isArray(r.callReturn);
+                                                //                                     assert.strictEqual(r.callReturn[0], 1);
+                                                //                                     assert.strictEqual(r.callReturn.length, 3);
+                                                //                                     nextTrade(r);
+                                                //                                 },
+                                                //                                 onTradeFailed: nextTrade
+                                                //                             });
+                                                //                         });
+                                                //                     }, function (x) {
+                                                //                         if (!x) return done(new Error("trade failed"));
+                                                //                         if (!x.callReturn) return done(x);
 
                                                                         // fast-forward to the period in which the new event expires
                                                                         var curTime = parseInt(new Date().getTime() / 1000);
@@ -223,14 +223,14 @@ describe("Integration tests", function () {
                                                                             console.log("Waiting", timeToWait, "seconds...");
                                                                         }
                                                                         setTimeout(done, timeToWait*1000);
-                                                                    });
-                                                                });
-                                                            },
-                                                            onFailed: done
-                                                        });
-                                                    },
-                                                    onFailed: done
-                                                });
+                                                //                     });
+                                                //                 });
+                                                //             },
+                                                //             onFailed: done
+                                                //         });
+                                                //     },
+                                                //     onFailed: done
+                                                // });
                                             },
                                             onFailed: function (err) {
                                                 console.error("failed:", err);
@@ -294,60 +294,83 @@ describe("Integration tests", function () {
                         var diceroll = augur.rpc.sha3(hashable);
                         console.log("diceroll2:", diceroll);
                         var sender = augur.from;
-                        var target = augur.MakeReports.calculateReportTargetForEvent(newBranchID, eventID, period, sender);
-                        var threshold = augur.ExpiringEvents.calculateReportingThreshold(newBranchID, eventID, period, sender);
-                        console.log("target:", target);
-                        console.log("threshold:", threshold);
-                        var curTime = new Date().getTime() / 1000;
-                        if (DEBUG) console.log("Residual:", curTime % periodLength);
-                        var currentExpPeriod = curTime / periodLength;
-                        if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
-                        assert.isAtLeast(currentExpPeriod, period + 1);
-                        assert.isBelow(currentExpPeriod, period + 2);
-                        console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
-                        if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
-                            return augur.submitReportHash({
-                                event: eventID,
-                                reportHash: reportHash,
-                                onSent: function (res) {
-                                    if (DEBUG) console.log("submitReportHash sent:", res);
-                                    assert(res.txHash);
-                                    assert.strictEqual(res.callReturn, "1");
-                                },
-                                onSuccess: function (res) {
-                                    if (DEBUG) console.log("submitReportHash success:", res);
-                                    assert(res.txHash);
-                                    assert.strictEqual(res.callReturn, "1");
-                                    done();
-                                },
-                                onFailed: function (err) {
-                                    if (err && err.error === "-9") {
-                                        augur.submitReportHash({
-                                            event: eventID,
-                                            reportHash: reportHash,
-                                            onSent: function (res) {
-                                                if (DEBUG) console.log("submitReportHash sent:", res);
-                                                assert(res.txHash);
-                                                assert.strictEqual(res.callReturn, "1");
-                                            },
-                                            onSuccess: function (res) {
-                                                if (DEBUG) console.log("submitReportHash success:", res);
-                                                assert(res.txHash);
-                                                assert.strictEqual(res.callReturn, "1");
-                                                done();
-                                            },
-                                            onFailed: function (err) {
-                                                if (err && err.error === "-9") {
-                                                    
-                                                }
+                        augur.MakeReports.calculateReportTargetForEvent({
+                            branch: newBranchID,
+                            eventID: eventID,
+                            votePeriod: period,
+                            sender: sender,
+                            onSent: function (r) {
+                                // console.log("calculateReportTargetForEvent sent:", r);
+                            },
+                            onSuccess: function (r) {
+                                var target = r.callReturn;
+                                if (DEBUG) console.log("report target:", target);
+                                console.log("reporting Threshold:", {
+                                    branch: newBranchID,
+                                    eventID: eventID,
+                                    votePeriod: period,
+                                    sender: sender
+                                });
+                                var threshold = augur.ReportingThreshold.calculateReportingThreshold({
+                                    branch: newBranchID,
+                                    eventID: eventID,
+                                    votePeriod: period,
+                                    sender: sender
+                                });
+                                if (DEBUG) console.log("threshold:", threshold);
+                                var curTime = new Date().getTime() / 1000;
+                                if (DEBUG) console.log("Residual:", curTime % periodLength);
+                                var currentExpPeriod = curTime / periodLength;
+                                if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
+                                assert.isAtLeast(currentExpPeriod, period + 1);
+                                assert.isBelow(currentExpPeriod, period + 2);
+                                console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
+                                if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
+                                    return augur.submitReportHash({
+                                        event: eventID,
+                                        reportHash: reportHash,
+                                        onSent: function (res) {
+                                            if (DEBUG) console.log("submitReportHash sent:", res);
+                                            assert(res.txHash);
+                                            assert.strictEqual(res.callReturn, "1");
+                                        },
+                                        onSuccess: function (res) {
+                                            if (DEBUG) console.log("submitReportHash success:", res);
+                                            assert(res.txHash);
+                                            assert.strictEqual(res.callReturn, "1");
+                                            done();
+                                        },
+                                        onFailed: function (err) {
+                                            if (err && err.error === "-9") {
+                                                augur.submitReportHash({
+                                                    event: eventID,
+                                                    reportHash: reportHash,
+                                                    onSent: function (res) {
+                                                        if (DEBUG) console.log("submitReportHash sent:", res);
+                                                        assert(res.txHash);
+                                                        assert.strictEqual(res.callReturn, "1");
+                                                    },
+                                                    onSuccess: function (res) {
+                                                        if (DEBUG) console.log("submitReportHash success:", res);
+                                                        assert(res.txHash);
+                                                        assert.strictEqual(res.callReturn, "1");
+                                                        done();
+                                                    },
+                                                    onFailed: function (err) {
+                                                        if (err && err.error === "-9") {
+                                                            
+                                                        }
+                                                    }
+                                                });
                                             }
-                                        });
-                                    }
+                                        }
+                                    });
+                                } else {
+                                    done();
                                 }
-                            });
-                        } else {
-                            done();
-                        }
+                            },
+                            onFailed: done
+                        });
                     }, console.error);
                 }
             });
