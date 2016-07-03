@@ -7480,7 +7480,7 @@ module.exports={
         "description", 
         "periodLength", 
         "parent", 
-        "mintradingFee", 
+        "minTradingFee", 
         "oracleOnly"
       ], 
       "method": "createSubbranch", 
@@ -7536,6 +7536,39 @@ module.exports={
         "int256", 
         "bytes", 
         "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "createSingleEventMarket": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "expDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution", 
+        "tradingFee", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "extraInfo"
+      ], 
+      "method": "createSingleEventMarket", 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes", 
         "int256", 
         "int256", 
         "int256", 
@@ -9014,6 +9047,8 @@ module.exports={
         "sender"
       ], 
       "method": "calculateReportTargetForEvent", 
+      "returns": "unfix", 
+      "send": true, 
       "signature": [
         "int256", 
         "int256", 
@@ -10400,33 +10435,33 @@ module.exports={
         "CloseMarket": "0xc9a1dd0bccc72527bc5957daa9677d98862d8932", 
         "CloseMarketOne": "0x4e433f8bde4a0afc59bec1b4d200b84435aafd9e", 
         "CloseMarketTwo": "0x5e3972e215854523c977ecb9faa21efeb0bcaa0a", 
-        "CollectFees": "0x59c8771527a8b9f7a8d1686a5d0abee424bee648", 
+        "CollectFees": "0xb3eeaa1287c59be7dbbf7e5af7b6005882a437d1", 
         "CompleteSets": "0xf64657c13c7dcae029b84ce099dcc0751fc41cc2", 
         "CompositeGetters": "0xc42826de38b20a7894cdc1a096bdbcee9c57dbf1", 
         "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
         "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
         "CreateBranch": "0xb8613192ef98dfd1fbeedb15c8350c8d3aac9a03", 
-        "CreateMarket": "0x54894e13b69e760e9d0f6af18b9b2c87c5fc5525", 
+        "CreateMarket": "0x854cde0fd53ae086342605dbf59a5b2632970fb2", 
         "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
         "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x4da58f4c737985e4ab9b89e8ea706b617ba2eb2d", 
+        "Forking": "0x47de547e9ad873c18b5263543ef7d38a7f2974bf", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0xf060d000aa0603b4670a0d27afced0047213c023", 
+        "MakeReports": "0x3a79c151769141750ea8ca06e4ed9fcef74ec5a9", 
         "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
         "PenalizationCatchup": "0x0e92a0e24c4315804b6beeba5bb9eb30b596fd5a", 
         "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
         "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
         "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
         "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0x915941fcf8fa17b933705f8cff57f852ba524a3e", 
-        "RoundTwoPenalize": "0x39fe055135dbf244e81b7d840d262bba2ef3fc3d", 
-        "SendReputation": "0x4e7ffa77266d9935432348db6dc2fda3d48c3972", 
+        "RoundTwo": "0x6bea17561677b97745180615109a249bd1533e2f", 
+        "RoundTwoPenalize": "0xa7b6681a1202a601c492c92dc6cc3c289e0f2073", 
+        "SendReputation": "0x5fb2d397bd30e9b82219a0ed1d9018312ca51e6c", 
         "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
-        "Trade": "0xdf0c814f16e9ecf90f28e22996edadaf702239bd", 
+        "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
         "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
     }
 }
@@ -12239,7 +12274,7 @@ const secp256k1 = require('secp256k1')
 const assert = require('assert')
 const rlp = require('rlp')
 const BN = require('bn.js')
-const crypto = require('crypto')
+const createHash = require('create-hash')
 
 /**
  * the max integer that this VM can handle (a ```BN```)
@@ -12501,7 +12536,7 @@ exports.sha3 = function (a, bytes) {
  */
 exports.sha256 = function (a) {
   a = exports.toBuffer(a)
-  return crypto.createHash('SHA256').update(a).digest()
+  return createHash('sha256').update(a).digest()
 }
 
 /**
@@ -12513,7 +12548,7 @@ exports.sha256 = function (a) {
  */
 exports.ripemd160 = function (a, padded) {
   a = exports.toBuffer(a)
-  var hash = crypto.createHash('rmd160').update(a).digest()
+  var hash = createHash('rmd160').update(a).digest()
   if (padded === true) {
     return exports.setLength(hash, 32)
   } else {
@@ -12542,11 +12577,32 @@ exports.isValidPrivate = function (privateKey) {
 }
 
 /**
+ * Checks if the public key satisfies the rules of the curve secp256k1
+ * and the requirements of Ethereum.
+ * @method isValidPublic
+ * @param {Buffer} publicKey The two points of an uncompressed key, unless sanitize is enabled
+ * @param {Boolean} [sanitize=false] Accept public keys in other formats
+ * @return {Boolean}
+ */
+exports.isValidPublic = function (publicKey, sanitize) {
+  if (publicKey.length === 64) {
+    // Convert to SEC1 for secp256k1
+    return secp256k1.publicKeyVerify(Buffer.concat([ new Buffer([4]), publicKey ]))
+  }
+
+  if (!sanitize) {
+    return false
+  }
+
+  return secp256k1.publicKeyVerify(publicKey)
+}
+
+/**
  * Returns the ethereum address of a given public key.
  * Accepts "Ethereum public keys" and SEC1 encoded keys.
  * @method publicToAddress
  * @param {Buffer} pubKey The two points of an uncompressed key, unless sanitize is enabled
- * @param {Boolean} sanitize Accept public keys in other formats
+ * @param {Boolean} [sanitize=false] Accept public keys in other formats
  * @return {Buffer}
  */
 exports.pubToAddress = exports.publicToAddress = function (pubKey, sanitize) {
@@ -12568,7 +12624,57 @@ exports.pubToAddress = exports.publicToAddress = function (pubKey, sanitize) {
 var privateToPublic = exports.privateToPublic = function (privateKey) {
   privateKey = exports.toBuffer(privateKey)
   // skip the type flag and use the X, Y points
-  return secp256k1.publicKeyConvert(secp256k1.publicKeyCreate(privateKey), false).slice(1)
+  return secp256k1.publicKeyCreate(privateKey, false).slice(1)
+}
+
+/**
+ * Converts a public key to the Ethereum format.
+ * @method importPublic
+ * @param {Buffer} publicKey
+ * @return {Buffer}
+ */
+exports.importPublic = function (publicKey) {
+  publicKey = exports.toBuffer(publicKey)
+  if (publicKey.length !== 64) {
+    publicKey = secp256k1.publicKeyConvert(publicKey, false).slice(1)
+  }
+  return publicKey
+}
+
+/**
+ * ECDSA sign
+ * @method ecsign
+ * @param {Buffer} msgHash
+ * @param {Buffer} privateKey
+ * @return {Object}
+ */
+exports.ecsign = function (msgHash, privateKey) {
+  var sig = secp256k1.sign(msgHash, privateKey)
+
+  var ret = {}
+  ret.r = sig.signature.slice(0, 32)
+  ret.s = sig.signature.slice(32, 64)
+  ret.v = sig.recovery + 27
+  return ret
+}
+
+/**
+ * ECDSA public key recovery from signature
+ * @method ecrecover
+ * @param {Buffer} msgHash
+ * @param {Buffer} v
+ * @param {Buffer} r
+ * @param {Buffer} s
+ * @return {Buffer} publicKey
+ */
+exports.ecrecover = function (msgHash, v, r, s) {
+  var signature = Buffer.concat([exports.setLength(r, 32), exports.setLength(s, 32)], 64)
+  var recovery = exports.bufferToInt(v) - 27
+  if (recovery !== 0 && recovery !== 1) {
+    throw new Error('Invalid signature v value')
+  }
+  var senderPubKey = secp256k1.recover(msgHash, signature, recovery)
+  return secp256k1.publicKeyConvert(senderPubKey, false).slice(1)
 }
 
 /**
@@ -12706,42 +12812,6 @@ exports.padToEven = function (a) {
 }
 
 /**
- * ECDSA sign
- * @method ecsign
- * @param {Buffer} msgHash
- * @param {Buffer} privateKey
- * @return {Object}
- */
-exports.ecsign = function (msgHash, privateKey) {
-  var sig = secp256k1.sign(msgHash, privateKey)
-
-  var ret = {}
-  ret.r = sig.signature.slice(0, 32)
-  ret.s = sig.signature.slice(32, 64)
-  ret.v = sig.recovery + 27
-  return ret
-}
-
-/**
- * ECDSA public key recovery from signature
- * @method ecrecover
- * @param {Buffer} msgHash
- * @param {Buffer} v
- * @param {Buffer} r
- * @param {Buffer} s
- * @return {Buffer} publicKey
- */
-exports.ecrecover = function (msgHash, v, r, s) {
-  var signature = Buffer.concat([exports.setLength(r, 32), exports.setLength(s, 32)], 64)
-  var recovery = exports.bufferToInt(v) - 27
-  if (recovery !== 0 && recovery !== 1) {
-    throw new Error('Invalid signature v value')
-  }
-  var senderPubKey = secp256k1.recover(msgHash, signature, recovery)
-  return secp256k1.publicKeyConvert(senderPubKey, false).slice(1)
-}
-
-/**
  * Converts a `Buffer` or `Array` to JSON
  * @method BAToJSON
  * @param {Buffer|Array} ba
@@ -12867,12 +12937,1412 @@ exports.defineProperties = function (self, fields, data) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"assert":149,"bn.js":20,"buffer":151,"crypto":155,"keccakjs":21,"rlp":24,"secp256k1":25}],20:[function(require,module,exports){
+},{"assert":149,"bn.js":20,"buffer":151,"create-hash":21,"keccakjs":35,"rlp":38,"secp256k1":39}],20:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
 },{"dup":6}],21:[function(require,module,exports){
-module.exports = require('sha3').SHA3Hash
+(function (Buffer){
+'use strict';
+var inherits = require('inherits')
+var md5 = require('./md5')
+var rmd160 = require('ripemd160')
+var sha = require('sha.js')
 
-},{"sha3":22}],22:[function(require,module,exports){
+var Base = require('cipher-base')
+
+function HashNoConstructor(hash) {
+  Base.call(this, 'digest')
+
+  this._hash = hash
+  this.buffers = []
+}
+
+inherits(HashNoConstructor, Base)
+
+HashNoConstructor.prototype._update = function (data) {
+  this.buffers.push(data)
+}
+
+HashNoConstructor.prototype._final = function () {
+  var buf = Buffer.concat(this.buffers)
+  var r = this._hash(buf)
+  this.buffers = null
+
+  return r
+}
+
+function Hash(hash) {
+  Base.call(this, 'digest')
+
+  this._hash = hash
+}
+
+inherits(Hash, Base)
+
+Hash.prototype._update = function (data) {
+  this._hash.update(data)
+}
+
+Hash.prototype._final = function () {
+  return this._hash.digest()
+}
+
+module.exports = function createHash (alg) {
+  alg = alg.toLowerCase()
+  if ('md5' === alg) return new HashNoConstructor(md5)
+  if ('rmd160' === alg || 'ripemd160' === alg) return new HashNoConstructor(rmd160)
+
+  return new Hash(sha(alg))
+}
+
+}).call(this,require("buffer").Buffer)
+
+},{"./md5":23,"buffer":151,"cipher-base":24,"inherits":25,"ripemd160":26,"sha.js":28}],22:[function(require,module,exports){
+(function (Buffer){
+'use strict';
+var intSize = 4;
+var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
+var chrsz = 8;
+
+function toArray(buf, bigEndian) {
+  if ((buf.length % intSize) !== 0) {
+    var len = buf.length + (intSize - (buf.length % intSize));
+    buf = Buffer.concat([buf, zeroBuffer], len);
+  }
+
+  var arr = [];
+  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
+  for (var i = 0; i < buf.length; i += intSize) {
+    arr.push(fn.call(buf, i));
+  }
+  return arr;
+}
+
+function toBuffer(arr, size, bigEndian) {
+  var buf = new Buffer(size);
+  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
+  for (var i = 0; i < arr.length; i++) {
+    fn.call(buf, arr[i], i * 4, true);
+  }
+  return buf;
+}
+
+function hash(buf, fn, hashSize, bigEndian) {
+  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
+  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
+  return toBuffer(arr, hashSize, bigEndian);
+}
+exports.hash = hash;
+}).call(this,require("buffer").Buffer)
+
+},{"buffer":151}],23:[function(require,module,exports){
+'use strict';
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+
+var helpers = require('./helpers');
+
+/*
+ * Calculate the MD5 of an array of little-endian words, and a bit length
+ */
+function core_md5(x, len)
+{
+  /* append padding */
+  x[len >> 5] |= 0x80 << ((len) % 32);
+  x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+  var a =  1732584193;
+  var b = -271733879;
+  var c = -1732584194;
+  var d =  271733878;
+
+  for(var i = 0; i < x.length; i += 16)
+  {
+    var olda = a;
+    var oldb = b;
+    var oldc = c;
+    var oldd = d;
+
+    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
+    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
+    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
+    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
+    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
+    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
+    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
+    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
+    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
+    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
+    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
+    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
+    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
+    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
+    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
+    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
+    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
+    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
+    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
+    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
+    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
+    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
+    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
+    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
+    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
+
+    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
+    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
+    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
+    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
+    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
+    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
+    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
+    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
+    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
+    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
+    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
+    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
+    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
+    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
+    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
+    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
+
+    a = safe_add(a, olda);
+    b = safe_add(b, oldb);
+    c = safe_add(c, oldc);
+    d = safe_add(d, oldd);
+  }
+  return Array(a, b, c, d);
+
+}
+
+/*
+ * These functions implement the four basic operations the algorithm uses.
+ */
+function md5_cmn(q, a, b, x, s, t)
+{
+  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
+}
+function md5_ff(a, b, c, d, x, s, t)
+{
+  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+}
+function md5_gg(a, b, c, d, x, s, t)
+{
+  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+}
+function md5_hh(a, b, c, d, x, s, t)
+{
+  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+}
+function md5_ii(a, b, c, d, x, s, t)
+{
+  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+}
+
+/*
+ * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+ * to work around bugs in some JS interpreters.
+ */
+function safe_add(x, y)
+{
+  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+  return (msw << 16) | (lsw & 0xFFFF);
+}
+
+/*
+ * Bitwise rotate a 32-bit number to the left.
+ */
+function bit_rol(num, cnt)
+{
+  return (num << cnt) | (num >>> (32 - cnt));
+}
+
+module.exports = function md5(buf) {
+  return helpers.hash(buf, core_md5, 16);
+};
+},{"./helpers":22}],24:[function(require,module,exports){
+(function (Buffer){
+var Transform = require('stream').Transform
+var inherits = require('inherits')
+var StringDecoder = require('string_decoder').StringDecoder
+module.exports = CipherBase
+inherits(CipherBase, Transform)
+function CipherBase (hashMode) {
+  Transform.call(this)
+  this.hashMode = typeof hashMode === 'string'
+  if (this.hashMode) {
+    this[hashMode] = this._finalOrDigest
+  } else {
+    this.final = this._finalOrDigest
+  }
+  this._decoder = null
+  this._encoding = null
+}
+CipherBase.prototype.update = function (data, inputEnc, outputEnc) {
+  if (typeof data === 'string') {
+    data = new Buffer(data, inputEnc)
+  }
+  var outData = this._update(data)
+  if (this.hashMode) {
+    return this
+  }
+  if (outputEnc) {
+    outData = this._toString(outData, outputEnc)
+  }
+  return outData
+}
+
+CipherBase.prototype.setAutoPadding = function () {}
+
+CipherBase.prototype.getAuthTag = function () {
+  throw new Error('trying to get auth tag in unsupported state')
+}
+
+CipherBase.prototype.setAuthTag = function () {
+  throw new Error('trying to set auth tag in unsupported state')
+}
+
+CipherBase.prototype.setAAD = function () {
+  throw new Error('trying to set aad in unsupported state')
+}
+
+CipherBase.prototype._transform = function (data, _, next) {
+  var err
+  try {
+    if (this.hashMode) {
+      this._update(data)
+    } else {
+      this.push(this._update(data))
+    }
+  } catch (e) {
+    err = e
+  } finally {
+    next(err)
+  }
+}
+CipherBase.prototype._flush = function (done) {
+  var err
+  try {
+    this.push(this._final())
+  } catch (e) {
+    err = e
+  } finally {
+    done(err)
+  }
+}
+CipherBase.prototype._finalOrDigest = function (outputEnc) {
+  var outData = this._final() || new Buffer('')
+  if (outputEnc) {
+    outData = this._toString(outData, outputEnc, true)
+  }
+  return outData
+}
+
+CipherBase.prototype._toString = function (value, enc, final) {
+  if (!this._decoder) {
+    this._decoder = new StringDecoder(enc)
+    this._encoding = enc
+  }
+  if (this._encoding !== enc) {
+    throw new Error('can\'t switch encodings')
+  }
+  var out = this._decoder.write(value)
+  if (final) {
+    out += this._decoder.end()
+  }
+  return out
+}
+
+}).call(this,require("buffer").Buffer)
+
+},{"buffer":151,"inherits":25,"stream":367,"string_decoder":368}],25:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],26:[function(require,module,exports){
+(function (Buffer){
+/*
+CryptoJS v3.1.2
+code.google.com/p/crypto-js
+(c) 2009-2013 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+/** @preserve
+(c) 2012 by Cédric Mesnil. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+// constants table
+var zl = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
+  3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
+  1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
+  4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13
+]
+
+var zr = [
+  5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
+  6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
+  15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
+  8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
+  12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
+]
+
+var sl = [
+  11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
+  7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
+  11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
+  11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
+  9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6
+]
+
+var sr = [
+  8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
+  9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
+  9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
+  15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
+  8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
+]
+
+var hl = [0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E]
+var hr = [0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000]
+
+function bytesToWords (bytes) {
+  var words = []
+  for (var i = 0, b = 0; i < bytes.length; i++, b += 8) {
+    words[b >>> 5] |= bytes[i] << (24 - b % 32)
+  }
+  return words
+}
+
+function wordsToBytes (words) {
+  var bytes = []
+  for (var b = 0; b < words.length * 32; b += 8) {
+    bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF)
+  }
+  return bytes
+}
+
+function processBlock (H, M, offset) {
+  // swap endian
+  for (var i = 0; i < 16; i++) {
+    var offset_i = offset + i
+    var M_offset_i = M[offset_i]
+
+    // Swap
+    M[offset_i] = (
+      (((M_offset_i << 8) | (M_offset_i >>> 24)) & 0x00ff00ff) |
+      (((M_offset_i << 24) | (M_offset_i >>> 8)) & 0xff00ff00)
+    )
+  }
+
+  // Working variables
+  var al, bl, cl, dl, el
+  var ar, br, cr, dr, er
+
+  ar = al = H[0]
+  br = bl = H[1]
+  cr = cl = H[2]
+  dr = dl = H[3]
+  er = el = H[4]
+
+  // computation
+  var t
+  for (i = 0; i < 80; i += 1) {
+    t = (al + M[offset + zl[i]]) | 0
+    if (i < 16) {
+      t += f1(bl, cl, dl) + hl[0]
+    } else if (i < 32) {
+      t += f2(bl, cl, dl) + hl[1]
+    } else if (i < 48) {
+      t += f3(bl, cl, dl) + hl[2]
+    } else if (i < 64) {
+      t += f4(bl, cl, dl) + hl[3]
+    } else {// if (i<80) {
+      t += f5(bl, cl, dl) + hl[4]
+    }
+    t = t | 0
+    t = rotl(t, sl[i])
+    t = (t + el) | 0
+    al = el
+    el = dl
+    dl = rotl(cl, 10)
+    cl = bl
+    bl = t
+
+    t = (ar + M[offset + zr[i]]) | 0
+    if (i < 16) {
+      t += f5(br, cr, dr) + hr[0]
+    } else if (i < 32) {
+      t += f4(br, cr, dr) + hr[1]
+    } else if (i < 48) {
+      t += f3(br, cr, dr) + hr[2]
+    } else if (i < 64) {
+      t += f2(br, cr, dr) + hr[3]
+    } else {// if (i<80) {
+      t += f1(br, cr, dr) + hr[4]
+    }
+
+    t = t | 0
+    t = rotl(t, sr[i])
+    t = (t + er) | 0
+    ar = er
+    er = dr
+    dr = rotl(cr, 10)
+    cr = br
+    br = t
+  }
+
+  // intermediate hash value
+  t = (H[1] + cl + dr) | 0
+  H[1] = (H[2] + dl + er) | 0
+  H[2] = (H[3] + el + ar) | 0
+  H[3] = (H[4] + al + br) | 0
+  H[4] = (H[0] + bl + cr) | 0
+  H[0] = t
+}
+
+function f1 (x, y, z) {
+  return ((x) ^ (y) ^ (z))
+}
+
+function f2 (x, y, z) {
+  return (((x) & (y)) | ((~x) & (z)))
+}
+
+function f3 (x, y, z) {
+  return (((x) | (~(y))) ^ (z))
+}
+
+function f4 (x, y, z) {
+  return (((x) & (z)) | ((y) & (~(z))))
+}
+
+function f5 (x, y, z) {
+  return ((x) ^ ((y) | (~(z))))
+}
+
+function rotl (x, n) {
+  return (x << n) | (x >>> (32 - n))
+}
+
+function ripemd160 (message) {
+  var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
+
+  if (typeof message === 'string') {
+    message = new Buffer(message, 'utf8')
+  }
+
+  var m = bytesToWords(message)
+
+  var nBitsLeft = message.length * 8
+  var nBitsTotal = message.length * 8
+
+  // Add padding
+  m[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32)
+  m[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
+    (((nBitsTotal << 8) | (nBitsTotal >>> 24)) & 0x00ff00ff) |
+    (((nBitsTotal << 24) | (nBitsTotal >>> 8)) & 0xff00ff00)
+  )
+
+  for (var i = 0; i < m.length; i += 16) {
+    processBlock(H, m, i)
+  }
+
+  // swap endian
+  for (i = 0; i < 5; i++) {
+    // shortcut
+    var H_i = H[i]
+
+    // Swap
+    H[i] = (((H_i << 8) | (H_i >>> 24)) & 0x00ff00ff) |
+      (((H_i << 24) | (H_i >>> 8)) & 0xff00ff00)
+  }
+
+  var digestbytes = wordsToBytes(H)
+  return new Buffer(digestbytes)
+}
+
+module.exports = ripemd160
+
+}).call(this,require("buffer").Buffer)
+
+},{"buffer":151}],27:[function(require,module,exports){
+(function (Buffer){
+// prototype class for hash functions
+function Hash (blockSize, finalSize) {
+  this._block = new Buffer(blockSize)
+  this._finalSize = finalSize
+  this._blockSize = blockSize
+  this._len = 0
+  this._s = 0
+}
+
+Hash.prototype.update = function (data, enc) {
+  if (typeof data === 'string') {
+    enc = enc || 'utf8'
+    data = new Buffer(data, enc)
+  }
+
+  var l = this._len += data.length
+  var s = this._s || 0
+  var f = 0
+  var buffer = this._block
+
+  while (s < l) {
+    var t = Math.min(data.length, f + this._blockSize - (s % this._blockSize))
+    var ch = (t - f)
+
+    for (var i = 0; i < ch; i++) {
+      buffer[(s % this._blockSize) + i] = data[i + f]
+    }
+
+    s += ch
+    f += ch
+
+    if ((s % this._blockSize) === 0) {
+      this._update(buffer)
+    }
+  }
+  this._s = s
+
+  return this
+}
+
+Hash.prototype.digest = function (enc) {
+  // Suppose the length of the message M, in bits, is l
+  var l = this._len * 8
+
+  // Append the bit 1 to the end of the message
+  this._block[this._len % this._blockSize] = 0x80
+
+  // and then k zero bits, where k is the smallest non-negative solution to the equation (l + 1 + k) === finalSize mod blockSize
+  this._block.fill(0, this._len % this._blockSize + 1)
+
+  if (l % (this._blockSize * 8) >= this._finalSize * 8) {
+    this._update(this._block)
+    this._block.fill(0)
+  }
+
+  // to this append the block which is equal to the number l written in binary
+  // TODO: handle case where l is > Math.pow(2, 29)
+  this._block.writeInt32BE(l, this._blockSize - 4)
+
+  var hash = this._update(this._block) || this._hash()
+
+  return enc ? hash.toString(enc) : hash
+}
+
+Hash.prototype._update = function () {
+  throw new Error('_update must be implemented by subclass')
+}
+
+module.exports = Hash
+
+}).call(this,require("buffer").Buffer)
+
+},{"buffer":151}],28:[function(require,module,exports){
+var exports = module.exports = function SHA (algorithm) {
+  algorithm = algorithm.toLowerCase()
+
+  var Algorithm = exports[algorithm]
+  if (!Algorithm) throw new Error(algorithm + ' is not supported (we accept pull requests)')
+
+  return new Algorithm()
+}
+
+exports.sha = require('./sha')
+exports.sha1 = require('./sha1')
+exports.sha224 = require('./sha224')
+exports.sha256 = require('./sha256')
+exports.sha384 = require('./sha384')
+exports.sha512 = require('./sha512')
+
+},{"./sha":29,"./sha1":30,"./sha224":31,"./sha256":32,"./sha384":33,"./sha512":34}],29:[function(require,module,exports){
+(function (Buffer){
+/*
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
+ * in FIPS PUB 180-1
+ * This source code is derived from sha1.js of the same repository.
+ * The difference between SHA-0 and SHA-1 is just a bitwise rotate left
+ * operation was added.
+ */
+
+var inherits = require('inherits')
+var Hash = require('./hash')
+
+var K = [
+  0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0
+]
+
+var W = new Array(80)
+
+function Sha () {
+  this.init()
+  this._w = W
+
+  Hash.call(this, 64, 56)
+}
+
+inherits(Sha, Hash)
+
+Sha.prototype.init = function () {
+  this._a = 0x67452301
+  this._b = 0xefcdab89
+  this._c = 0x98badcfe
+  this._d = 0x10325476
+  this._e = 0xc3d2e1f0
+
+  return this
+}
+
+function rotl5 (num) {
+  return (num << 5) | (num >>> 27)
+}
+
+function rotl30 (num) {
+  return (num << 30) | (num >>> 2)
+}
+
+function ft (s, b, c, d) {
+  if (s === 0) return (b & c) | ((~b) & d)
+  if (s === 2) return (b & c) | (b & d) | (c & d)
+  return b ^ c ^ d
+}
+
+Sha.prototype._update = function (M) {
+  var W = this._w
+
+  var a = this._a | 0
+  var b = this._b | 0
+  var c = this._c | 0
+  var d = this._d | 0
+  var e = this._e | 0
+
+  for (var i = 0; i < 16; ++i) W[i] = M.readInt32BE(i * 4)
+  for (; i < 80; ++i) W[i] = W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16]
+
+  for (var j = 0; j < 80; ++j) {
+    var s = ~~(j / 20)
+    var t = (rotl5(a) + ft(s, b, c, d) + e + W[j] + K[s]) | 0
+
+    e = d
+    d = c
+    c = rotl30(b)
+    b = a
+    a = t
+  }
+
+  this._a = (a + this._a) | 0
+  this._b = (b + this._b) | 0
+  this._c = (c + this._c) | 0
+  this._d = (d + this._d) | 0
+  this._e = (e + this._e) | 0
+}
+
+Sha.prototype._hash = function () {
+  var H = new Buffer(20)
+
+  H.writeInt32BE(this._a | 0, 0)
+  H.writeInt32BE(this._b | 0, 4)
+  H.writeInt32BE(this._c | 0, 8)
+  H.writeInt32BE(this._d | 0, 12)
+  H.writeInt32BE(this._e | 0, 16)
+
+  return H
+}
+
+module.exports = Sha
+
+}).call(this,require("buffer").Buffer)
+
+},{"./hash":27,"buffer":151,"inherits":25}],30:[function(require,module,exports){
+(function (Buffer){
+/*
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
+ * in FIPS PUB 180-1
+ * Version 2.1a Copyright Paul Johnston 2000 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for details.
+ */
+
+var inherits = require('inherits')
+var Hash = require('./hash')
+
+var K = [
+  0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0
+]
+
+var W = new Array(80)
+
+function Sha1 () {
+  this.init()
+  this._w = W
+
+  Hash.call(this, 64, 56)
+}
+
+inherits(Sha1, Hash)
+
+Sha1.prototype.init = function () {
+  this._a = 0x67452301
+  this._b = 0xefcdab89
+  this._c = 0x98badcfe
+  this._d = 0x10325476
+  this._e = 0xc3d2e1f0
+
+  return this
+}
+
+function rotl1 (num) {
+  return (num << 1) | (num >>> 31)
+}
+
+function rotl5 (num) {
+  return (num << 5) | (num >>> 27)
+}
+
+function rotl30 (num) {
+  return (num << 30) | (num >>> 2)
+}
+
+function ft (s, b, c, d) {
+  if (s === 0) return (b & c) | ((~b) & d)
+  if (s === 2) return (b & c) | (b & d) | (c & d)
+  return b ^ c ^ d
+}
+
+Sha1.prototype._update = function (M) {
+  var W = this._w
+
+  var a = this._a | 0
+  var b = this._b | 0
+  var c = this._c | 0
+  var d = this._d | 0
+  var e = this._e | 0
+
+  for (var i = 0; i < 16; ++i) W[i] = M.readInt32BE(i * 4)
+  for (; i < 80; ++i) W[i] = rotl1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+
+  for (var j = 0; j < 80; ++j) {
+    var s = ~~(j / 20)
+    var t = (rotl5(a) + ft(s, b, c, d) + e + W[j] + K[s]) | 0
+
+    e = d
+    d = c
+    c = rotl30(b)
+    b = a
+    a = t
+  }
+
+  this._a = (a + this._a) | 0
+  this._b = (b + this._b) | 0
+  this._c = (c + this._c) | 0
+  this._d = (d + this._d) | 0
+  this._e = (e + this._e) | 0
+}
+
+Sha1.prototype._hash = function () {
+  var H = new Buffer(20)
+
+  H.writeInt32BE(this._a | 0, 0)
+  H.writeInt32BE(this._b | 0, 4)
+  H.writeInt32BE(this._c | 0, 8)
+  H.writeInt32BE(this._d | 0, 12)
+  H.writeInt32BE(this._e | 0, 16)
+
+  return H
+}
+
+module.exports = Sha1
+
+}).call(this,require("buffer").Buffer)
+
+},{"./hash":27,"buffer":151,"inherits":25}],31:[function(require,module,exports){
+(function (Buffer){
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+
+var inherits = require('inherits')
+var Sha256 = require('./sha256')
+var Hash = require('./hash')
+
+var W = new Array(64)
+
+function Sha224 () {
+  this.init()
+
+  this._w = W // new Array(64)
+
+  Hash.call(this, 64, 56)
+}
+
+inherits(Sha224, Sha256)
+
+Sha224.prototype.init = function () {
+  this._a = 0xc1059ed8
+  this._b = 0x367cd507
+  this._c = 0x3070dd17
+  this._d = 0xf70e5939
+  this._e = 0xffc00b31
+  this._f = 0x68581511
+  this._g = 0x64f98fa7
+  this._h = 0xbefa4fa4
+
+  return this
+}
+
+Sha224.prototype._hash = function () {
+  var H = new Buffer(28)
+
+  H.writeInt32BE(this._a, 0)
+  H.writeInt32BE(this._b, 4)
+  H.writeInt32BE(this._c, 8)
+  H.writeInt32BE(this._d, 12)
+  H.writeInt32BE(this._e, 16)
+  H.writeInt32BE(this._f, 20)
+  H.writeInt32BE(this._g, 24)
+
+  return H
+}
+
+module.exports = Sha224
+
+}).call(this,require("buffer").Buffer)
+
+},{"./hash":27,"./sha256":32,"buffer":151,"inherits":25}],32:[function(require,module,exports){
+(function (Buffer){
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+
+var inherits = require('inherits')
+var Hash = require('./hash')
+
+var K = [
+  0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
+  0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
+  0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
+  0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
+  0xE49B69C1, 0xEFBE4786, 0x0FC19DC6, 0x240CA1CC,
+  0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
+  0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7,
+  0xC6E00BF3, 0xD5A79147, 0x06CA6351, 0x14292967,
+  0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
+  0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85,
+  0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3,
+  0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
+  0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5,
+  0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3,
+  0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
+  0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2
+]
+
+var W = new Array(64)
+
+function Sha256 () {
+  this.init()
+
+  this._w = W // new Array(64)
+
+  Hash.call(this, 64, 56)
+}
+
+inherits(Sha256, Hash)
+
+Sha256.prototype.init = function () {
+  this._a = 0x6a09e667
+  this._b = 0xbb67ae85
+  this._c = 0x3c6ef372
+  this._d = 0xa54ff53a
+  this._e = 0x510e527f
+  this._f = 0x9b05688c
+  this._g = 0x1f83d9ab
+  this._h = 0x5be0cd19
+
+  return this
+}
+
+function ch (x, y, z) {
+  return z ^ (x & (y ^ z))
+}
+
+function maj (x, y, z) {
+  return (x & y) | (z & (x | y))
+}
+
+function sigma0 (x) {
+  return (x >>> 2 | x << 30) ^ (x >>> 13 | x << 19) ^ (x >>> 22 | x << 10)
+}
+
+function sigma1 (x) {
+  return (x >>> 6 | x << 26) ^ (x >>> 11 | x << 21) ^ (x >>> 25 | x << 7)
+}
+
+function gamma0 (x) {
+  return (x >>> 7 | x << 25) ^ (x >>> 18 | x << 14) ^ (x >>> 3)
+}
+
+function gamma1 (x) {
+  return (x >>> 17 | x << 15) ^ (x >>> 19 | x << 13) ^ (x >>> 10)
+}
+
+Sha256.prototype._update = function (M) {
+  var W = this._w
+
+  var a = this._a | 0
+  var b = this._b | 0
+  var c = this._c | 0
+  var d = this._d | 0
+  var e = this._e | 0
+  var f = this._f | 0
+  var g = this._g | 0
+  var h = this._h | 0
+
+  for (var i = 0; i < 16; ++i) W[i] = M.readInt32BE(i * 4)
+  for (; i < 64; ++i) W[i] = (gamma1(W[i - 2]) + W[i - 7] + gamma0(W[i - 15]) + W[i - 16]) | 0
+
+  for (var j = 0; j < 64; ++j) {
+    var T1 = (h + sigma1(e) + ch(e, f, g) + K[j] + W[j]) | 0
+    var T2 = (sigma0(a) + maj(a, b, c)) | 0
+
+    h = g
+    g = f
+    f = e
+    e = (d + T1) | 0
+    d = c
+    c = b
+    b = a
+    a = (T1 + T2) | 0
+  }
+
+  this._a = (a + this._a) | 0
+  this._b = (b + this._b) | 0
+  this._c = (c + this._c) | 0
+  this._d = (d + this._d) | 0
+  this._e = (e + this._e) | 0
+  this._f = (f + this._f) | 0
+  this._g = (g + this._g) | 0
+  this._h = (h + this._h) | 0
+}
+
+Sha256.prototype._hash = function () {
+  var H = new Buffer(32)
+
+  H.writeInt32BE(this._a, 0)
+  H.writeInt32BE(this._b, 4)
+  H.writeInt32BE(this._c, 8)
+  H.writeInt32BE(this._d, 12)
+  H.writeInt32BE(this._e, 16)
+  H.writeInt32BE(this._f, 20)
+  H.writeInt32BE(this._g, 24)
+  H.writeInt32BE(this._h, 28)
+
+  return H
+}
+
+module.exports = Sha256
+
+}).call(this,require("buffer").Buffer)
+
+},{"./hash":27,"buffer":151,"inherits":25}],33:[function(require,module,exports){
+(function (Buffer){
+var inherits = require('inherits')
+var SHA512 = require('./sha512')
+var Hash = require('./hash')
+
+var W = new Array(160)
+
+function Sha384 () {
+  this.init()
+  this._w = W
+
+  Hash.call(this, 128, 112)
+}
+
+inherits(Sha384, SHA512)
+
+Sha384.prototype.init = function () {
+  this._ah = 0xcbbb9d5d
+  this._bh = 0x629a292a
+  this._ch = 0x9159015a
+  this._dh = 0x152fecd8
+  this._eh = 0x67332667
+  this._fh = 0x8eb44a87
+  this._gh = 0xdb0c2e0d
+  this._hh = 0x47b5481d
+
+  this._al = 0xc1059ed8
+  this._bl = 0x367cd507
+  this._cl = 0x3070dd17
+  this._dl = 0xf70e5939
+  this._el = 0xffc00b31
+  this._fl = 0x68581511
+  this._gl = 0x64f98fa7
+  this._hl = 0xbefa4fa4
+
+  return this
+}
+
+Sha384.prototype._hash = function () {
+  var H = new Buffer(48)
+
+  function writeInt64BE (h, l, offset) {
+    H.writeInt32BE(h, offset)
+    H.writeInt32BE(l, offset + 4)
+  }
+
+  writeInt64BE(this._ah, this._al, 0)
+  writeInt64BE(this._bh, this._bl, 8)
+  writeInt64BE(this._ch, this._cl, 16)
+  writeInt64BE(this._dh, this._dl, 24)
+  writeInt64BE(this._eh, this._el, 32)
+  writeInt64BE(this._fh, this._fl, 40)
+
+  return H
+}
+
+module.exports = Sha384
+
+}).call(this,require("buffer").Buffer)
+
+},{"./hash":27,"./sha512":34,"buffer":151,"inherits":25}],34:[function(require,module,exports){
+(function (Buffer){
+var inherits = require('inherits')
+var Hash = require('./hash')
+
+var K = [
+  0x428a2f98, 0xd728ae22, 0x71374491, 0x23ef65cd,
+  0xb5c0fbcf, 0xec4d3b2f, 0xe9b5dba5, 0x8189dbbc,
+  0x3956c25b, 0xf348b538, 0x59f111f1, 0xb605d019,
+  0x923f82a4, 0xaf194f9b, 0xab1c5ed5, 0xda6d8118,
+  0xd807aa98, 0xa3030242, 0x12835b01, 0x45706fbe,
+  0x243185be, 0x4ee4b28c, 0x550c7dc3, 0xd5ffb4e2,
+  0x72be5d74, 0xf27b896f, 0x80deb1fe, 0x3b1696b1,
+  0x9bdc06a7, 0x25c71235, 0xc19bf174, 0xcf692694,
+  0xe49b69c1, 0x9ef14ad2, 0xefbe4786, 0x384f25e3,
+  0x0fc19dc6, 0x8b8cd5b5, 0x240ca1cc, 0x77ac9c65,
+  0x2de92c6f, 0x592b0275, 0x4a7484aa, 0x6ea6e483,
+  0x5cb0a9dc, 0xbd41fbd4, 0x76f988da, 0x831153b5,
+  0x983e5152, 0xee66dfab, 0xa831c66d, 0x2db43210,
+  0xb00327c8, 0x98fb213f, 0xbf597fc7, 0xbeef0ee4,
+  0xc6e00bf3, 0x3da88fc2, 0xd5a79147, 0x930aa725,
+  0x06ca6351, 0xe003826f, 0x14292967, 0x0a0e6e70,
+  0x27b70a85, 0x46d22ffc, 0x2e1b2138, 0x5c26c926,
+  0x4d2c6dfc, 0x5ac42aed, 0x53380d13, 0x9d95b3df,
+  0x650a7354, 0x8baf63de, 0x766a0abb, 0x3c77b2a8,
+  0x81c2c92e, 0x47edaee6, 0x92722c85, 0x1482353b,
+  0xa2bfe8a1, 0x4cf10364, 0xa81a664b, 0xbc423001,
+  0xc24b8b70, 0xd0f89791, 0xc76c51a3, 0x0654be30,
+  0xd192e819, 0xd6ef5218, 0xd6990624, 0x5565a910,
+  0xf40e3585, 0x5771202a, 0x106aa070, 0x32bbd1b8,
+  0x19a4c116, 0xb8d2d0c8, 0x1e376c08, 0x5141ab53,
+  0x2748774c, 0xdf8eeb99, 0x34b0bcb5, 0xe19b48a8,
+  0x391c0cb3, 0xc5c95a63, 0x4ed8aa4a, 0xe3418acb,
+  0x5b9cca4f, 0x7763e373, 0x682e6ff3, 0xd6b2b8a3,
+  0x748f82ee, 0x5defb2fc, 0x78a5636f, 0x43172f60,
+  0x84c87814, 0xa1f0ab72, 0x8cc70208, 0x1a6439ec,
+  0x90befffa, 0x23631e28, 0xa4506ceb, 0xde82bde9,
+  0xbef9a3f7, 0xb2c67915, 0xc67178f2, 0xe372532b,
+  0xca273ece, 0xea26619c, 0xd186b8c7, 0x21c0c207,
+  0xeada7dd6, 0xcde0eb1e, 0xf57d4f7f, 0xee6ed178,
+  0x06f067aa, 0x72176fba, 0x0a637dc5, 0xa2c898a6,
+  0x113f9804, 0xbef90dae, 0x1b710b35, 0x131c471b,
+  0x28db77f5, 0x23047d84, 0x32caab7b, 0x40c72493,
+  0x3c9ebe0a, 0x15c9bebc, 0x431d67c4, 0x9c100d4c,
+  0x4cc5d4be, 0xcb3e42b6, 0x597f299c, 0xfc657e2a,
+  0x5fcb6fab, 0x3ad6faec, 0x6c44198c, 0x4a475817
+]
+
+var W = new Array(160)
+
+function Sha512 () {
+  this.init()
+  this._w = W
+
+  Hash.call(this, 128, 112)
+}
+
+inherits(Sha512, Hash)
+
+Sha512.prototype.init = function () {
+  this._ah = 0x6a09e667
+  this._bh = 0xbb67ae85
+  this._ch = 0x3c6ef372
+  this._dh = 0xa54ff53a
+  this._eh = 0x510e527f
+  this._fh = 0x9b05688c
+  this._gh = 0x1f83d9ab
+  this._hh = 0x5be0cd19
+
+  this._al = 0xf3bcc908
+  this._bl = 0x84caa73b
+  this._cl = 0xfe94f82b
+  this._dl = 0x5f1d36f1
+  this._el = 0xade682d1
+  this._fl = 0x2b3e6c1f
+  this._gl = 0xfb41bd6b
+  this._hl = 0x137e2179
+
+  return this
+}
+
+function Ch (x, y, z) {
+  return z ^ (x & (y ^ z))
+}
+
+function maj (x, y, z) {
+  return (x & y) | (z & (x | y))
+}
+
+function sigma0 (x, xl) {
+  return (x >>> 28 | xl << 4) ^ (xl >>> 2 | x << 30) ^ (xl >>> 7 | x << 25)
+}
+
+function sigma1 (x, xl) {
+  return (x >>> 14 | xl << 18) ^ (x >>> 18 | xl << 14) ^ (xl >>> 9 | x << 23)
+}
+
+function Gamma0 (x, xl) {
+  return (x >>> 1 | xl << 31) ^ (x >>> 8 | xl << 24) ^ (x >>> 7)
+}
+
+function Gamma0l (x, xl) {
+  return (x >>> 1 | xl << 31) ^ (x >>> 8 | xl << 24) ^ (x >>> 7 | xl << 25)
+}
+
+function Gamma1 (x, xl) {
+  return (x >>> 19 | xl << 13) ^ (xl >>> 29 | x << 3) ^ (x >>> 6)
+}
+
+function Gamma1l (x, xl) {
+  return (x >>> 19 | xl << 13) ^ (xl >>> 29 | x << 3) ^ (x >>> 6 | xl << 26)
+}
+
+function getCarry (a, b) {
+  return (a >>> 0) < (b >>> 0) ? 1 : 0
+}
+
+Sha512.prototype._update = function (M) {
+  var W = this._w
+
+  var ah = this._ah | 0
+  var bh = this._bh | 0
+  var ch = this._ch | 0
+  var dh = this._dh | 0
+  var eh = this._eh | 0
+  var fh = this._fh | 0
+  var gh = this._gh | 0
+  var hh = this._hh | 0
+
+  var al = this._al | 0
+  var bl = this._bl | 0
+  var cl = this._cl | 0
+  var dl = this._dl | 0
+  var el = this._el | 0
+  var fl = this._fl | 0
+  var gl = this._gl | 0
+  var hl = this._hl | 0
+
+  for (var i = 0; i < 32; i += 2) {
+    W[i] = M.readInt32BE(i * 4)
+    W[i + 1] = M.readInt32BE(i * 4 + 4)
+  }
+  for (; i < 160; i += 2) {
+    var xh = W[i - 15 * 2]
+    var xl = W[i - 15 * 2 + 1]
+    var gamma0 = Gamma0(xh, xl)
+    var gamma0l = Gamma0l(xl, xh)
+
+    xh = W[i - 2 * 2]
+    xl = W[i - 2 * 2 + 1]
+    var gamma1 = Gamma1(xh, xl)
+    var gamma1l = Gamma1l(xl, xh)
+
+    // W[i] = gamma0 + W[i - 7] + gamma1 + W[i - 16]
+    var Wi7h = W[i - 7 * 2]
+    var Wi7l = W[i - 7 * 2 + 1]
+
+    var Wi16h = W[i - 16 * 2]
+    var Wi16l = W[i - 16 * 2 + 1]
+
+    var Wil = (gamma0l + Wi7l) | 0
+    var Wih = (gamma0 + Wi7h + getCarry(Wil, gamma0l)) | 0
+    Wil = (Wil + gamma1l) | 0
+    Wih = (Wih + gamma1 + getCarry(Wil, gamma1l)) | 0
+    Wil = (Wil + Wi16l) | 0
+    Wih = (Wih + Wi16h + getCarry(Wil, Wi16l)) | 0
+
+    W[i] = Wih
+    W[i + 1] = Wil
+  }
+
+  for (var j = 0; j < 160; j += 2) {
+    Wih = W[j]
+    Wil = W[j + 1]
+
+    var majh = maj(ah, bh, ch)
+    var majl = maj(al, bl, cl)
+
+    var sigma0h = sigma0(ah, al)
+    var sigma0l = sigma0(al, ah)
+    var sigma1h = sigma1(eh, el)
+    var sigma1l = sigma1(el, eh)
+
+    // t1 = h + sigma1 + ch + K[j] + W[j]
+    var Kih = K[j]
+    var Kil = K[j + 1]
+
+    var chh = Ch(eh, fh, gh)
+    var chl = Ch(el, fl, gl)
+
+    var t1l = (hl + sigma1l) | 0
+    var t1h = (hh + sigma1h + getCarry(t1l, hl)) | 0
+    t1l = (t1l + chl) | 0
+    t1h = (t1h + chh + getCarry(t1l, chl)) | 0
+    t1l = (t1l + Kil) | 0
+    t1h = (t1h + Kih + getCarry(t1l, Kil)) | 0
+    t1l = (t1l + Wil) | 0
+    t1h = (t1h + Wih + getCarry(t1l, Wil)) | 0
+
+    // t2 = sigma0 + maj
+    var t2l = (sigma0l + majl) | 0
+    var t2h = (sigma0h + majh + getCarry(t2l, sigma0l)) | 0
+
+    hh = gh
+    hl = gl
+    gh = fh
+    gl = fl
+    fh = eh
+    fl = el
+    el = (dl + t1l) | 0
+    eh = (dh + t1h + getCarry(el, dl)) | 0
+    dh = ch
+    dl = cl
+    ch = bh
+    cl = bl
+    bh = ah
+    bl = al
+    al = (t1l + t2l) | 0
+    ah = (t1h + t2h + getCarry(al, t1l)) | 0
+  }
+
+  this._al = (this._al + al) | 0
+  this._bl = (this._bl + bl) | 0
+  this._cl = (this._cl + cl) | 0
+  this._dl = (this._dl + dl) | 0
+  this._el = (this._el + el) | 0
+  this._fl = (this._fl + fl) | 0
+  this._gl = (this._gl + gl) | 0
+  this._hl = (this._hl + hl) | 0
+
+  this._ah = (this._ah + ah + getCarry(this._al, al)) | 0
+  this._bh = (this._bh + bh + getCarry(this._bl, bl)) | 0
+  this._ch = (this._ch + ch + getCarry(this._cl, cl)) | 0
+  this._dh = (this._dh + dh + getCarry(this._dl, dl)) | 0
+  this._eh = (this._eh + eh + getCarry(this._el, el)) | 0
+  this._fh = (this._fh + fh + getCarry(this._fl, fl)) | 0
+  this._gh = (this._gh + gh + getCarry(this._gl, gl)) | 0
+  this._hh = (this._hh + hh + getCarry(this._hl, hl)) | 0
+}
+
+Sha512.prototype._hash = function () {
+  var H = new Buffer(64)
+
+  function writeInt64BE (h, l, offset) {
+    H.writeInt32BE(h, offset)
+    H.writeInt32BE(l, offset + 4)
+  }
+
+  writeInt64BE(this._ah, this._al, 0)
+  writeInt64BE(this._bh, this._bl, 8)
+  writeInt64BE(this._ch, this._cl, 16)
+  writeInt64BE(this._dh, this._dl, 24)
+  writeInt64BE(this._eh, this._el, 32)
+  writeInt64BE(this._fh, this._fl, 40)
+  writeInt64BE(this._gh, this._gl, 48)
+  writeInt64BE(this._hh, this._hl, 56)
+
+  return H
+}
+
+module.exports = Sha512
+
+}).call(this,require("buffer").Buffer)
+
+},{"./hash":27,"buffer":151,"inherits":25}],35:[function(require,module,exports){
+module.exports = require('browserify-sha3').SHA3Hash
+
+},{"browserify-sha3":36}],36:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -12911,7 +14381,7 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":151,"js-sha3":23}],23:[function(require,module,exports){
+},{"buffer":151,"js-sha3":37}],37:[function(require,module,exports){
 (function (global){
 /*
  * js-sha3 v0.3.1
@@ -13348,7 +14818,7 @@ module.exports = {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],24:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -13582,11 +15052,11 @@ function toBuffer (v) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"assert":149,"buffer":151}],25:[function(require,module,exports){
+},{"assert":149,"buffer":151}],39:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
-},{"./lib":28,"./lib/elliptic":27}],26:[function(require,module,exports){
+},{"./lib":42,"./lib/elliptic":41}],40:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -13635,7 +15105,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 
 }).call(this,{"isBuffer":require("../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
 
-},{"../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":349}],27:[function(require,module,exports){
+},{"../../../../../../browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":349}],41:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -13887,7 +15357,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"../messages.json":29,"bn.js":20,"buffer":151,"create-hash":31,"elliptic":45}],28:[function(require,module,exports){
+},{"../messages.json":43,"bn.js":20,"buffer":151,"create-hash":21,"elliptic":45}],42:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var bip66 = require('bip66')
@@ -14208,7 +15678,7 @@ module.exports = function (secp256k1) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"./assert":26,"./messages.json":29,"bip66":30,"buffer":151}],29:[function(require,module,exports){
+},{"./assert":40,"./messages.json":43,"bip66":44,"buffer":151}],43:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -14246,7 +15716,7 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],30:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function (Buffer){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
 // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
@@ -14362,1407 +15832,7 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":151}],31:[function(require,module,exports){
-(function (Buffer){
-'use strict';
-var inherits = require('inherits')
-var md5 = require('./md5')
-var rmd160 = require('ripemd160')
-var sha = require('sha.js')
-
-var Base = require('cipher-base')
-
-function HashNoConstructor(hash) {
-  Base.call(this, 'digest')
-
-  this._hash = hash
-  this.buffers = []
-}
-
-inherits(HashNoConstructor, Base)
-
-HashNoConstructor.prototype._update = function (data) {
-  this.buffers.push(data)
-}
-
-HashNoConstructor.prototype._final = function () {
-  var buf = Buffer.concat(this.buffers)
-  var r = this._hash(buf)
-  this.buffers = null
-
-  return r
-}
-
-function Hash(hash) {
-  Base.call(this, 'digest')
-
-  this._hash = hash
-}
-
-inherits(Hash, Base)
-
-Hash.prototype._update = function (data) {
-  this._hash.update(data)
-}
-
-Hash.prototype._final = function () {
-  return this._hash.digest()
-}
-
-module.exports = function createHash (alg) {
-  alg = alg.toLowerCase()
-  if ('md5' === alg) return new HashNoConstructor(md5)
-  if ('rmd160' === alg || 'ripemd160' === alg) return new HashNoConstructor(rmd160)
-
-  return new Hash(sha(alg))
-}
-
-}).call(this,require("buffer").Buffer)
-
-},{"./md5":33,"buffer":151,"cipher-base":34,"inherits":35,"ripemd160":36,"sha.js":38}],32:[function(require,module,exports){
-(function (Buffer){
-'use strict';
-var intSize = 4;
-var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
-var chrsz = 8;
-
-function toArray(buf, bigEndian) {
-  if ((buf.length % intSize) !== 0) {
-    var len = buf.length + (intSize - (buf.length % intSize));
-    buf = Buffer.concat([buf, zeroBuffer], len);
-  }
-
-  var arr = [];
-  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
-  for (var i = 0; i < buf.length; i += intSize) {
-    arr.push(fn.call(buf, i));
-  }
-  return arr;
-}
-
-function toBuffer(arr, size, bigEndian) {
-  var buf = new Buffer(size);
-  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
-  for (var i = 0; i < arr.length; i++) {
-    fn.call(buf, arr[i], i * 4, true);
-  }
-  return buf;
-}
-
-function hash(buf, fn, hashSize, bigEndian) {
-  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
-  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
-  return toBuffer(arr, hashSize, bigEndian);
-}
-exports.hash = hash;
-}).call(this,require("buffer").Buffer)
-
-},{"buffer":151}],33:[function(require,module,exports){
-'use strict';
-/*
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-
-var helpers = require('./helpers');
-
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length
- */
-function core_md5(x, len)
-{
-  /* append padding */
-  x[len >> 5] |= 0x80 << ((len) % 32);
-  x[(((len + 64) >>> 9) << 4) + 14] = len;
-
-  var a =  1732584193;
-  var b = -271733879;
-  var c = -1732584194;
-  var d =  271733878;
-
-  for(var i = 0; i < x.length; i += 16)
-  {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
-
-    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
-    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
-    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
-    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
-    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
-    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
-    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
-    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
-    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
-    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
-    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
-    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
-    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
-    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
-    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
-    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
-
-    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
-    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
-    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
-    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
-    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
-    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
-    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
-    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
-    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
-    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
-    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
-    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
-    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
-    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
-    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
-    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
-
-    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
-    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
-    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
-    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
-    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
-    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
-    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
-    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
-    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
-    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
-    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
-    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
-    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
-    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
-    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
-    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
-
-    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
-    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
-    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
-    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
-    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
-    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
-    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
-    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
-    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
-    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
-    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
-    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
-    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
-    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
-    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
-    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
-
-    a = safe_add(a, olda);
-    b = safe_add(b, oldb);
-    c = safe_add(c, oldc);
-    d = safe_add(d, oldd);
-  }
-  return Array(a, b, c, d);
-
-}
-
-/*
- * These functions implement the four basic operations the algorithm uses.
- */
-function md5_cmn(q, a, b, x, s, t)
-{
-  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
-}
-function md5_ff(a, b, c, d, x, s, t)
-{
-  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
-}
-function md5_gg(a, b, c, d, x, s, t)
-{
-  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
-}
-function md5_hh(a, b, c, d, x, s, t)
-{
-  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
-}
-function md5_ii(a, b, c, d, x, s, t)
-{
-  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
-}
-
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-function safe_add(x, y)
-{
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return (msw << 16) | (lsw & 0xFFFF);
-}
-
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-function bit_rol(num, cnt)
-{
-  return (num << cnt) | (num >>> (32 - cnt));
-}
-
-module.exports = function md5(buf) {
-  return helpers.hash(buf, core_md5, 16);
-};
-},{"./helpers":32}],34:[function(require,module,exports){
-(function (Buffer){
-var Transform = require('stream').Transform
-var inherits = require('inherits')
-var StringDecoder = require('string_decoder').StringDecoder
-module.exports = CipherBase
-inherits(CipherBase, Transform)
-function CipherBase (hashMode) {
-  Transform.call(this)
-  this.hashMode = typeof hashMode === 'string'
-  if (this.hashMode) {
-    this[hashMode] = this._finalOrDigest
-  } else {
-    this.final = this._finalOrDigest
-  }
-  this._decoder = null
-  this._encoding = null
-}
-CipherBase.prototype.update = function (data, inputEnc, outputEnc) {
-  if (typeof data === 'string') {
-    data = new Buffer(data, inputEnc)
-  }
-  var outData = this._update(data)
-  if (this.hashMode) {
-    return this
-  }
-  if (outputEnc) {
-    outData = this._toString(outData, outputEnc)
-  }
-  return outData
-}
-
-CipherBase.prototype.setAutoPadding = function () {}
-
-CipherBase.prototype.getAuthTag = function () {
-  throw new Error('trying to get auth tag in unsupported state')
-}
-
-CipherBase.prototype.setAuthTag = function () {
-  throw new Error('trying to set auth tag in unsupported state')
-}
-
-CipherBase.prototype.setAAD = function () {
-  throw new Error('trying to set aad in unsupported state')
-}
-
-CipherBase.prototype._transform = function (data, _, next) {
-  var err
-  try {
-    if (this.hashMode) {
-      this._update(data)
-    } else {
-      this.push(this._update(data))
-    }
-  } catch (e) {
-    err = e
-  } finally {
-    next(err)
-  }
-}
-CipherBase.prototype._flush = function (done) {
-  var err
-  try {
-    this.push(this._final())
-  } catch (e) {
-    err = e
-  } finally {
-    done(err)
-  }
-}
-CipherBase.prototype._finalOrDigest = function (outputEnc) {
-  var outData = this._final() || new Buffer('')
-  if (outputEnc) {
-    outData = this._toString(outData, outputEnc, true)
-  }
-  return outData
-}
-
-CipherBase.prototype._toString = function (value, enc, final) {
-  if (!this._decoder) {
-    this._decoder = new StringDecoder(enc)
-    this._encoding = enc
-  }
-  if (this._encoding !== enc) {
-    throw new Error('can\'t switch encodings')
-  }
-  var out = this._decoder.write(value)
-  if (final) {
-    out += this._decoder.end()
-  }
-  return out
-}
-
-}).call(this,require("buffer").Buffer)
-
-},{"buffer":151,"inherits":35,"stream":367,"string_decoder":368}],35:[function(require,module,exports){
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-},{}],36:[function(require,module,exports){
-(function (Buffer){
-/*
-CryptoJS v3.1.2
-code.google.com/p/crypto-js
-(c) 2009-2013 by Jeff Mott. All rights reserved.
-code.google.com/p/crypto-js/wiki/License
-*/
-/** @preserve
-(c) 2012 by Cédric Mesnil. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-    - Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-    - Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-// constants table
-var zl = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-  7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
-  3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
-  1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
-  4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13
-]
-
-var zr = [
-  5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
-  6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
-  15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
-  8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
-  12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
-]
-
-var sl = [
-  11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
-  7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
-  11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
-  11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
-  9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6
-]
-
-var sr = [
-  8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
-  9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
-  9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
-  15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
-  8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
-]
-
-var hl = [0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E]
-var hr = [0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000]
-
-function bytesToWords (bytes) {
-  var words = []
-  for (var i = 0, b = 0; i < bytes.length; i++, b += 8) {
-    words[b >>> 5] |= bytes[i] << (24 - b % 32)
-  }
-  return words
-}
-
-function wordsToBytes (words) {
-  var bytes = []
-  for (var b = 0; b < words.length * 32; b += 8) {
-    bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF)
-  }
-  return bytes
-}
-
-function processBlock (H, M, offset) {
-  // swap endian
-  for (var i = 0; i < 16; i++) {
-    var offset_i = offset + i
-    var M_offset_i = M[offset_i]
-
-    // Swap
-    M[offset_i] = (
-      (((M_offset_i << 8) | (M_offset_i >>> 24)) & 0x00ff00ff) |
-      (((M_offset_i << 24) | (M_offset_i >>> 8)) & 0xff00ff00)
-    )
-  }
-
-  // Working variables
-  var al, bl, cl, dl, el
-  var ar, br, cr, dr, er
-
-  ar = al = H[0]
-  br = bl = H[1]
-  cr = cl = H[2]
-  dr = dl = H[3]
-  er = el = H[4]
-
-  // computation
-  var t
-  for (i = 0; i < 80; i += 1) {
-    t = (al + M[offset + zl[i]]) | 0
-    if (i < 16) {
-      t += f1(bl, cl, dl) + hl[0]
-    } else if (i < 32) {
-      t += f2(bl, cl, dl) + hl[1]
-    } else if (i < 48) {
-      t += f3(bl, cl, dl) + hl[2]
-    } else if (i < 64) {
-      t += f4(bl, cl, dl) + hl[3]
-    } else {// if (i<80) {
-      t += f5(bl, cl, dl) + hl[4]
-    }
-    t = t | 0
-    t = rotl(t, sl[i])
-    t = (t + el) | 0
-    al = el
-    el = dl
-    dl = rotl(cl, 10)
-    cl = bl
-    bl = t
-
-    t = (ar + M[offset + zr[i]]) | 0
-    if (i < 16) {
-      t += f5(br, cr, dr) + hr[0]
-    } else if (i < 32) {
-      t += f4(br, cr, dr) + hr[1]
-    } else if (i < 48) {
-      t += f3(br, cr, dr) + hr[2]
-    } else if (i < 64) {
-      t += f2(br, cr, dr) + hr[3]
-    } else {// if (i<80) {
-      t += f1(br, cr, dr) + hr[4]
-    }
-
-    t = t | 0
-    t = rotl(t, sr[i])
-    t = (t + er) | 0
-    ar = er
-    er = dr
-    dr = rotl(cr, 10)
-    cr = br
-    br = t
-  }
-
-  // intermediate hash value
-  t = (H[1] + cl + dr) | 0
-  H[1] = (H[2] + dl + er) | 0
-  H[2] = (H[3] + el + ar) | 0
-  H[3] = (H[4] + al + br) | 0
-  H[4] = (H[0] + bl + cr) | 0
-  H[0] = t
-}
-
-function f1 (x, y, z) {
-  return ((x) ^ (y) ^ (z))
-}
-
-function f2 (x, y, z) {
-  return (((x) & (y)) | ((~x) & (z)))
-}
-
-function f3 (x, y, z) {
-  return (((x) | (~(y))) ^ (z))
-}
-
-function f4 (x, y, z) {
-  return (((x) & (z)) | ((y) & (~(z))))
-}
-
-function f5 (x, y, z) {
-  return ((x) ^ ((y) | (~(z))))
-}
-
-function rotl (x, n) {
-  return (x << n) | (x >>> (32 - n))
-}
-
-function ripemd160 (message) {
-  var H = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
-
-  if (typeof message === 'string') {
-    message = new Buffer(message, 'utf8')
-  }
-
-  var m = bytesToWords(message)
-
-  var nBitsLeft = message.length * 8
-  var nBitsTotal = message.length * 8
-
-  // Add padding
-  m[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32)
-  m[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
-    (((nBitsTotal << 8) | (nBitsTotal >>> 24)) & 0x00ff00ff) |
-    (((nBitsTotal << 24) | (nBitsTotal >>> 8)) & 0xff00ff00)
-  )
-
-  for (var i = 0; i < m.length; i += 16) {
-    processBlock(H, m, i)
-  }
-
-  // swap endian
-  for (i = 0; i < 5; i++) {
-    // shortcut
-    var H_i = H[i]
-
-    // Swap
-    H[i] = (((H_i << 8) | (H_i >>> 24)) & 0x00ff00ff) |
-      (((H_i << 24) | (H_i >>> 8)) & 0xff00ff00)
-  }
-
-  var digestbytes = wordsToBytes(H)
-  return new Buffer(digestbytes)
-}
-
-module.exports = ripemd160
-
-}).call(this,require("buffer").Buffer)
-
-},{"buffer":151}],37:[function(require,module,exports){
-(function (Buffer){
-// prototype class for hash functions
-function Hash (blockSize, finalSize) {
-  this._block = new Buffer(blockSize)
-  this._finalSize = finalSize
-  this._blockSize = blockSize
-  this._len = 0
-  this._s = 0
-}
-
-Hash.prototype.update = function (data, enc) {
-  if (typeof data === 'string') {
-    enc = enc || 'utf8'
-    data = new Buffer(data, enc)
-  }
-
-  var l = this._len += data.length
-  var s = this._s || 0
-  var f = 0
-  var buffer = this._block
-
-  while (s < l) {
-    var t = Math.min(data.length, f + this._blockSize - (s % this._blockSize))
-    var ch = (t - f)
-
-    for (var i = 0; i < ch; i++) {
-      buffer[(s % this._blockSize) + i] = data[i + f]
-    }
-
-    s += ch
-    f += ch
-
-    if ((s % this._blockSize) === 0) {
-      this._update(buffer)
-    }
-  }
-  this._s = s
-
-  return this
-}
-
-Hash.prototype.digest = function (enc) {
-  // Suppose the length of the message M, in bits, is l
-  var l = this._len * 8
-
-  // Append the bit 1 to the end of the message
-  this._block[this._len % this._blockSize] = 0x80
-
-  // and then k zero bits, where k is the smallest non-negative solution to the equation (l + 1 + k) === finalSize mod blockSize
-  this._block.fill(0, this._len % this._blockSize + 1)
-
-  if (l % (this._blockSize * 8) >= this._finalSize * 8) {
-    this._update(this._block)
-    this._block.fill(0)
-  }
-
-  // to this append the block which is equal to the number l written in binary
-  // TODO: handle case where l is > Math.pow(2, 29)
-  this._block.writeInt32BE(l, this._blockSize - 4)
-
-  var hash = this._update(this._block) || this._hash()
-
-  return enc ? hash.toString(enc) : hash
-}
-
-Hash.prototype._update = function () {
-  throw new Error('_update must be implemented by subclass')
-}
-
-module.exports = Hash
-
-}).call(this,require("buffer").Buffer)
-
-},{"buffer":151}],38:[function(require,module,exports){
-var exports = module.exports = function SHA (algorithm) {
-  algorithm = algorithm.toLowerCase()
-
-  var Algorithm = exports[algorithm]
-  if (!Algorithm) throw new Error(algorithm + ' is not supported (we accept pull requests)')
-
-  return new Algorithm()
-}
-
-exports.sha = require('./sha')
-exports.sha1 = require('./sha1')
-exports.sha224 = require('./sha224')
-exports.sha256 = require('./sha256')
-exports.sha384 = require('./sha384')
-exports.sha512 = require('./sha512')
-
-},{"./sha":39,"./sha1":40,"./sha224":41,"./sha256":42,"./sha384":43,"./sha512":44}],39:[function(require,module,exports){
-(function (Buffer){
-/*
- * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
- * in FIPS PUB 180-1
- * This source code is derived from sha1.js of the same repository.
- * The difference between SHA-0 and SHA-1 is just a bitwise rotate left
- * operation was added.
- */
-
-var inherits = require('inherits')
-var Hash = require('./hash')
-
-var K = [
-  0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0
-]
-
-var W = new Array(80)
-
-function Sha () {
-  this.init()
-  this._w = W
-
-  Hash.call(this, 64, 56)
-}
-
-inherits(Sha, Hash)
-
-Sha.prototype.init = function () {
-  this._a = 0x67452301
-  this._b = 0xefcdab89
-  this._c = 0x98badcfe
-  this._d = 0x10325476
-  this._e = 0xc3d2e1f0
-
-  return this
-}
-
-function rotl5 (num) {
-  return (num << 5) | (num >>> 27)
-}
-
-function rotl30 (num) {
-  return (num << 30) | (num >>> 2)
-}
-
-function ft (s, b, c, d) {
-  if (s === 0) return (b & c) | ((~b) & d)
-  if (s === 2) return (b & c) | (b & d) | (c & d)
-  return b ^ c ^ d
-}
-
-Sha.prototype._update = function (M) {
-  var W = this._w
-
-  var a = this._a | 0
-  var b = this._b | 0
-  var c = this._c | 0
-  var d = this._d | 0
-  var e = this._e | 0
-
-  for (var i = 0; i < 16; ++i) W[i] = M.readInt32BE(i * 4)
-  for (; i < 80; ++i) W[i] = W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16]
-
-  for (var j = 0; j < 80; ++j) {
-    var s = ~~(j / 20)
-    var t = (rotl5(a) + ft(s, b, c, d) + e + W[j] + K[s]) | 0
-
-    e = d
-    d = c
-    c = rotl30(b)
-    b = a
-    a = t
-  }
-
-  this._a = (a + this._a) | 0
-  this._b = (b + this._b) | 0
-  this._c = (c + this._c) | 0
-  this._d = (d + this._d) | 0
-  this._e = (e + this._e) | 0
-}
-
-Sha.prototype._hash = function () {
-  var H = new Buffer(20)
-
-  H.writeInt32BE(this._a | 0, 0)
-  H.writeInt32BE(this._b | 0, 4)
-  H.writeInt32BE(this._c | 0, 8)
-  H.writeInt32BE(this._d | 0, 12)
-  H.writeInt32BE(this._e | 0, 16)
-
-  return H
-}
-
-module.exports = Sha
-
-}).call(this,require("buffer").Buffer)
-
-},{"./hash":37,"buffer":151,"inherits":35}],40:[function(require,module,exports){
-(function (Buffer){
-/*
- * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
- * in FIPS PUB 180-1
- * Version 2.1a Copyright Paul Johnston 2000 - 2002.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for details.
- */
-
-var inherits = require('inherits')
-var Hash = require('./hash')
-
-var K = [
-  0x5a827999, 0x6ed9eba1, 0x8f1bbcdc | 0, 0xca62c1d6 | 0
-]
-
-var W = new Array(80)
-
-function Sha1 () {
-  this.init()
-  this._w = W
-
-  Hash.call(this, 64, 56)
-}
-
-inherits(Sha1, Hash)
-
-Sha1.prototype.init = function () {
-  this._a = 0x67452301
-  this._b = 0xefcdab89
-  this._c = 0x98badcfe
-  this._d = 0x10325476
-  this._e = 0xc3d2e1f0
-
-  return this
-}
-
-function rotl1 (num) {
-  return (num << 1) | (num >>> 31)
-}
-
-function rotl5 (num) {
-  return (num << 5) | (num >>> 27)
-}
-
-function rotl30 (num) {
-  return (num << 30) | (num >>> 2)
-}
-
-function ft (s, b, c, d) {
-  if (s === 0) return (b & c) | ((~b) & d)
-  if (s === 2) return (b & c) | (b & d) | (c & d)
-  return b ^ c ^ d
-}
-
-Sha1.prototype._update = function (M) {
-  var W = this._w
-
-  var a = this._a | 0
-  var b = this._b | 0
-  var c = this._c | 0
-  var d = this._d | 0
-  var e = this._e | 0
-
-  for (var i = 0; i < 16; ++i) W[i] = M.readInt32BE(i * 4)
-  for (; i < 80; ++i) W[i] = rotl1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
-
-  for (var j = 0; j < 80; ++j) {
-    var s = ~~(j / 20)
-    var t = (rotl5(a) + ft(s, b, c, d) + e + W[j] + K[s]) | 0
-
-    e = d
-    d = c
-    c = rotl30(b)
-    b = a
-    a = t
-  }
-
-  this._a = (a + this._a) | 0
-  this._b = (b + this._b) | 0
-  this._c = (c + this._c) | 0
-  this._d = (d + this._d) | 0
-  this._e = (e + this._e) | 0
-}
-
-Sha1.prototype._hash = function () {
-  var H = new Buffer(20)
-
-  H.writeInt32BE(this._a | 0, 0)
-  H.writeInt32BE(this._b | 0, 4)
-  H.writeInt32BE(this._c | 0, 8)
-  H.writeInt32BE(this._d | 0, 12)
-  H.writeInt32BE(this._e | 0, 16)
-
-  return H
-}
-
-module.exports = Sha1
-
-}).call(this,require("buffer").Buffer)
-
-},{"./hash":37,"buffer":151,"inherits":35}],41:[function(require,module,exports){
-(function (Buffer){
-/**
- * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
- * in FIPS 180-2
- * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- *
- */
-
-var inherits = require('inherits')
-var Sha256 = require('./sha256')
-var Hash = require('./hash')
-
-var W = new Array(64)
-
-function Sha224 () {
-  this.init()
-
-  this._w = W // new Array(64)
-
-  Hash.call(this, 64, 56)
-}
-
-inherits(Sha224, Sha256)
-
-Sha224.prototype.init = function () {
-  this._a = 0xc1059ed8
-  this._b = 0x367cd507
-  this._c = 0x3070dd17
-  this._d = 0xf70e5939
-  this._e = 0xffc00b31
-  this._f = 0x68581511
-  this._g = 0x64f98fa7
-  this._h = 0xbefa4fa4
-
-  return this
-}
-
-Sha224.prototype._hash = function () {
-  var H = new Buffer(28)
-
-  H.writeInt32BE(this._a, 0)
-  H.writeInt32BE(this._b, 4)
-  H.writeInt32BE(this._c, 8)
-  H.writeInt32BE(this._d, 12)
-  H.writeInt32BE(this._e, 16)
-  H.writeInt32BE(this._f, 20)
-  H.writeInt32BE(this._g, 24)
-
-  return H
-}
-
-module.exports = Sha224
-
-}).call(this,require("buffer").Buffer)
-
-},{"./hash":37,"./sha256":42,"buffer":151,"inherits":35}],42:[function(require,module,exports){
-(function (Buffer){
-/**
- * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
- * in FIPS 180-2
- * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- *
- */
-
-var inherits = require('inherits')
-var Hash = require('./hash')
-
-var K = [
-  0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
-  0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
-  0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
-  0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
-  0xE49B69C1, 0xEFBE4786, 0x0FC19DC6, 0x240CA1CC,
-  0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
-  0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7,
-  0xC6E00BF3, 0xD5A79147, 0x06CA6351, 0x14292967,
-  0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
-  0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85,
-  0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3,
-  0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
-  0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5,
-  0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3,
-  0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
-  0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2
-]
-
-var W = new Array(64)
-
-function Sha256 () {
-  this.init()
-
-  this._w = W // new Array(64)
-
-  Hash.call(this, 64, 56)
-}
-
-inherits(Sha256, Hash)
-
-Sha256.prototype.init = function () {
-  this._a = 0x6a09e667
-  this._b = 0xbb67ae85
-  this._c = 0x3c6ef372
-  this._d = 0xa54ff53a
-  this._e = 0x510e527f
-  this._f = 0x9b05688c
-  this._g = 0x1f83d9ab
-  this._h = 0x5be0cd19
-
-  return this
-}
-
-function ch (x, y, z) {
-  return z ^ (x & (y ^ z))
-}
-
-function maj (x, y, z) {
-  return (x & y) | (z & (x | y))
-}
-
-function sigma0 (x) {
-  return (x >>> 2 | x << 30) ^ (x >>> 13 | x << 19) ^ (x >>> 22 | x << 10)
-}
-
-function sigma1 (x) {
-  return (x >>> 6 | x << 26) ^ (x >>> 11 | x << 21) ^ (x >>> 25 | x << 7)
-}
-
-function gamma0 (x) {
-  return (x >>> 7 | x << 25) ^ (x >>> 18 | x << 14) ^ (x >>> 3)
-}
-
-function gamma1 (x) {
-  return (x >>> 17 | x << 15) ^ (x >>> 19 | x << 13) ^ (x >>> 10)
-}
-
-Sha256.prototype._update = function (M) {
-  var W = this._w
-
-  var a = this._a | 0
-  var b = this._b | 0
-  var c = this._c | 0
-  var d = this._d | 0
-  var e = this._e | 0
-  var f = this._f | 0
-  var g = this._g | 0
-  var h = this._h | 0
-
-  for (var i = 0; i < 16; ++i) W[i] = M.readInt32BE(i * 4)
-  for (; i < 64; ++i) W[i] = (gamma1(W[i - 2]) + W[i - 7] + gamma0(W[i - 15]) + W[i - 16]) | 0
-
-  for (var j = 0; j < 64; ++j) {
-    var T1 = (h + sigma1(e) + ch(e, f, g) + K[j] + W[j]) | 0
-    var T2 = (sigma0(a) + maj(a, b, c)) | 0
-
-    h = g
-    g = f
-    f = e
-    e = (d + T1) | 0
-    d = c
-    c = b
-    b = a
-    a = (T1 + T2) | 0
-  }
-
-  this._a = (a + this._a) | 0
-  this._b = (b + this._b) | 0
-  this._c = (c + this._c) | 0
-  this._d = (d + this._d) | 0
-  this._e = (e + this._e) | 0
-  this._f = (f + this._f) | 0
-  this._g = (g + this._g) | 0
-  this._h = (h + this._h) | 0
-}
-
-Sha256.prototype._hash = function () {
-  var H = new Buffer(32)
-
-  H.writeInt32BE(this._a, 0)
-  H.writeInt32BE(this._b, 4)
-  H.writeInt32BE(this._c, 8)
-  H.writeInt32BE(this._d, 12)
-  H.writeInt32BE(this._e, 16)
-  H.writeInt32BE(this._f, 20)
-  H.writeInt32BE(this._g, 24)
-  H.writeInt32BE(this._h, 28)
-
-  return H
-}
-
-module.exports = Sha256
-
-}).call(this,require("buffer").Buffer)
-
-},{"./hash":37,"buffer":151,"inherits":35}],43:[function(require,module,exports){
-(function (Buffer){
-var inherits = require('inherits')
-var SHA512 = require('./sha512')
-var Hash = require('./hash')
-
-var W = new Array(160)
-
-function Sha384 () {
-  this.init()
-  this._w = W
-
-  Hash.call(this, 128, 112)
-}
-
-inherits(Sha384, SHA512)
-
-Sha384.prototype.init = function () {
-  this._ah = 0xcbbb9d5d
-  this._bh = 0x629a292a
-  this._ch = 0x9159015a
-  this._dh = 0x152fecd8
-  this._eh = 0x67332667
-  this._fh = 0x8eb44a87
-  this._gh = 0xdb0c2e0d
-  this._hh = 0x47b5481d
-
-  this._al = 0xc1059ed8
-  this._bl = 0x367cd507
-  this._cl = 0x3070dd17
-  this._dl = 0xf70e5939
-  this._el = 0xffc00b31
-  this._fl = 0x68581511
-  this._gl = 0x64f98fa7
-  this._hl = 0xbefa4fa4
-
-  return this
-}
-
-Sha384.prototype._hash = function () {
-  var H = new Buffer(48)
-
-  function writeInt64BE (h, l, offset) {
-    H.writeInt32BE(h, offset)
-    H.writeInt32BE(l, offset + 4)
-  }
-
-  writeInt64BE(this._ah, this._al, 0)
-  writeInt64BE(this._bh, this._bl, 8)
-  writeInt64BE(this._ch, this._cl, 16)
-  writeInt64BE(this._dh, this._dl, 24)
-  writeInt64BE(this._eh, this._el, 32)
-  writeInt64BE(this._fh, this._fl, 40)
-
-  return H
-}
-
-module.exports = Sha384
-
-}).call(this,require("buffer").Buffer)
-
-},{"./hash":37,"./sha512":44,"buffer":151,"inherits":35}],44:[function(require,module,exports){
-(function (Buffer){
-var inherits = require('inherits')
-var Hash = require('./hash')
-
-var K = [
-  0x428a2f98, 0xd728ae22, 0x71374491, 0x23ef65cd,
-  0xb5c0fbcf, 0xec4d3b2f, 0xe9b5dba5, 0x8189dbbc,
-  0x3956c25b, 0xf348b538, 0x59f111f1, 0xb605d019,
-  0x923f82a4, 0xaf194f9b, 0xab1c5ed5, 0xda6d8118,
-  0xd807aa98, 0xa3030242, 0x12835b01, 0x45706fbe,
-  0x243185be, 0x4ee4b28c, 0x550c7dc3, 0xd5ffb4e2,
-  0x72be5d74, 0xf27b896f, 0x80deb1fe, 0x3b1696b1,
-  0x9bdc06a7, 0x25c71235, 0xc19bf174, 0xcf692694,
-  0xe49b69c1, 0x9ef14ad2, 0xefbe4786, 0x384f25e3,
-  0x0fc19dc6, 0x8b8cd5b5, 0x240ca1cc, 0x77ac9c65,
-  0x2de92c6f, 0x592b0275, 0x4a7484aa, 0x6ea6e483,
-  0x5cb0a9dc, 0xbd41fbd4, 0x76f988da, 0x831153b5,
-  0x983e5152, 0xee66dfab, 0xa831c66d, 0x2db43210,
-  0xb00327c8, 0x98fb213f, 0xbf597fc7, 0xbeef0ee4,
-  0xc6e00bf3, 0x3da88fc2, 0xd5a79147, 0x930aa725,
-  0x06ca6351, 0xe003826f, 0x14292967, 0x0a0e6e70,
-  0x27b70a85, 0x46d22ffc, 0x2e1b2138, 0x5c26c926,
-  0x4d2c6dfc, 0x5ac42aed, 0x53380d13, 0x9d95b3df,
-  0x650a7354, 0x8baf63de, 0x766a0abb, 0x3c77b2a8,
-  0x81c2c92e, 0x47edaee6, 0x92722c85, 0x1482353b,
-  0xa2bfe8a1, 0x4cf10364, 0xa81a664b, 0xbc423001,
-  0xc24b8b70, 0xd0f89791, 0xc76c51a3, 0x0654be30,
-  0xd192e819, 0xd6ef5218, 0xd6990624, 0x5565a910,
-  0xf40e3585, 0x5771202a, 0x106aa070, 0x32bbd1b8,
-  0x19a4c116, 0xb8d2d0c8, 0x1e376c08, 0x5141ab53,
-  0x2748774c, 0xdf8eeb99, 0x34b0bcb5, 0xe19b48a8,
-  0x391c0cb3, 0xc5c95a63, 0x4ed8aa4a, 0xe3418acb,
-  0x5b9cca4f, 0x7763e373, 0x682e6ff3, 0xd6b2b8a3,
-  0x748f82ee, 0x5defb2fc, 0x78a5636f, 0x43172f60,
-  0x84c87814, 0xa1f0ab72, 0x8cc70208, 0x1a6439ec,
-  0x90befffa, 0x23631e28, 0xa4506ceb, 0xde82bde9,
-  0xbef9a3f7, 0xb2c67915, 0xc67178f2, 0xe372532b,
-  0xca273ece, 0xea26619c, 0xd186b8c7, 0x21c0c207,
-  0xeada7dd6, 0xcde0eb1e, 0xf57d4f7f, 0xee6ed178,
-  0x06f067aa, 0x72176fba, 0x0a637dc5, 0xa2c898a6,
-  0x113f9804, 0xbef90dae, 0x1b710b35, 0x131c471b,
-  0x28db77f5, 0x23047d84, 0x32caab7b, 0x40c72493,
-  0x3c9ebe0a, 0x15c9bebc, 0x431d67c4, 0x9c100d4c,
-  0x4cc5d4be, 0xcb3e42b6, 0x597f299c, 0xfc657e2a,
-  0x5fcb6fab, 0x3ad6faec, 0x6c44198c, 0x4a475817
-]
-
-var W = new Array(160)
-
-function Sha512 () {
-  this.init()
-  this._w = W
-
-  Hash.call(this, 128, 112)
-}
-
-inherits(Sha512, Hash)
-
-Sha512.prototype.init = function () {
-  this._ah = 0x6a09e667
-  this._bh = 0xbb67ae85
-  this._ch = 0x3c6ef372
-  this._dh = 0xa54ff53a
-  this._eh = 0x510e527f
-  this._fh = 0x9b05688c
-  this._gh = 0x1f83d9ab
-  this._hh = 0x5be0cd19
-
-  this._al = 0xf3bcc908
-  this._bl = 0x84caa73b
-  this._cl = 0xfe94f82b
-  this._dl = 0x5f1d36f1
-  this._el = 0xade682d1
-  this._fl = 0x2b3e6c1f
-  this._gl = 0xfb41bd6b
-  this._hl = 0x137e2179
-
-  return this
-}
-
-function Ch (x, y, z) {
-  return z ^ (x & (y ^ z))
-}
-
-function maj (x, y, z) {
-  return (x & y) | (z & (x | y))
-}
-
-function sigma0 (x, xl) {
-  return (x >>> 28 | xl << 4) ^ (xl >>> 2 | x << 30) ^ (xl >>> 7 | x << 25)
-}
-
-function sigma1 (x, xl) {
-  return (x >>> 14 | xl << 18) ^ (x >>> 18 | xl << 14) ^ (xl >>> 9 | x << 23)
-}
-
-function Gamma0 (x, xl) {
-  return (x >>> 1 | xl << 31) ^ (x >>> 8 | xl << 24) ^ (x >>> 7)
-}
-
-function Gamma0l (x, xl) {
-  return (x >>> 1 | xl << 31) ^ (x >>> 8 | xl << 24) ^ (x >>> 7 | xl << 25)
-}
-
-function Gamma1 (x, xl) {
-  return (x >>> 19 | xl << 13) ^ (xl >>> 29 | x << 3) ^ (x >>> 6)
-}
-
-function Gamma1l (x, xl) {
-  return (x >>> 19 | xl << 13) ^ (xl >>> 29 | x << 3) ^ (x >>> 6 | xl << 26)
-}
-
-function getCarry (a, b) {
-  return (a >>> 0) < (b >>> 0) ? 1 : 0
-}
-
-Sha512.prototype._update = function (M) {
-  var W = this._w
-
-  var ah = this._ah | 0
-  var bh = this._bh | 0
-  var ch = this._ch | 0
-  var dh = this._dh | 0
-  var eh = this._eh | 0
-  var fh = this._fh | 0
-  var gh = this._gh | 0
-  var hh = this._hh | 0
-
-  var al = this._al | 0
-  var bl = this._bl | 0
-  var cl = this._cl | 0
-  var dl = this._dl | 0
-  var el = this._el | 0
-  var fl = this._fl | 0
-  var gl = this._gl | 0
-  var hl = this._hl | 0
-
-  for (var i = 0; i < 32; i += 2) {
-    W[i] = M.readInt32BE(i * 4)
-    W[i + 1] = M.readInt32BE(i * 4 + 4)
-  }
-  for (; i < 160; i += 2) {
-    var xh = W[i - 15 * 2]
-    var xl = W[i - 15 * 2 + 1]
-    var gamma0 = Gamma0(xh, xl)
-    var gamma0l = Gamma0l(xl, xh)
-
-    xh = W[i - 2 * 2]
-    xl = W[i - 2 * 2 + 1]
-    var gamma1 = Gamma1(xh, xl)
-    var gamma1l = Gamma1l(xl, xh)
-
-    // W[i] = gamma0 + W[i - 7] + gamma1 + W[i - 16]
-    var Wi7h = W[i - 7 * 2]
-    var Wi7l = W[i - 7 * 2 + 1]
-
-    var Wi16h = W[i - 16 * 2]
-    var Wi16l = W[i - 16 * 2 + 1]
-
-    var Wil = (gamma0l + Wi7l) | 0
-    var Wih = (gamma0 + Wi7h + getCarry(Wil, gamma0l)) | 0
-    Wil = (Wil + gamma1l) | 0
-    Wih = (Wih + gamma1 + getCarry(Wil, gamma1l)) | 0
-    Wil = (Wil + Wi16l) | 0
-    Wih = (Wih + Wi16h + getCarry(Wil, Wi16l)) | 0
-
-    W[i] = Wih
-    W[i + 1] = Wil
-  }
-
-  for (var j = 0; j < 160; j += 2) {
-    Wih = W[j]
-    Wil = W[j + 1]
-
-    var majh = maj(ah, bh, ch)
-    var majl = maj(al, bl, cl)
-
-    var sigma0h = sigma0(ah, al)
-    var sigma0l = sigma0(al, ah)
-    var sigma1h = sigma1(eh, el)
-    var sigma1l = sigma1(el, eh)
-
-    // t1 = h + sigma1 + ch + K[j] + W[j]
-    var Kih = K[j]
-    var Kil = K[j + 1]
-
-    var chh = Ch(eh, fh, gh)
-    var chl = Ch(el, fl, gl)
-
-    var t1l = (hl + sigma1l) | 0
-    var t1h = (hh + sigma1h + getCarry(t1l, hl)) | 0
-    t1l = (t1l + chl) | 0
-    t1h = (t1h + chh + getCarry(t1l, chl)) | 0
-    t1l = (t1l + Kil) | 0
-    t1h = (t1h + Kih + getCarry(t1l, Kil)) | 0
-    t1l = (t1l + Wil) | 0
-    t1h = (t1h + Wih + getCarry(t1l, Wil)) | 0
-
-    // t2 = sigma0 + maj
-    var t2l = (sigma0l + majl) | 0
-    var t2h = (sigma0h + majh + getCarry(t2l, sigma0l)) | 0
-
-    hh = gh
-    hl = gl
-    gh = fh
-    gl = fl
-    fh = eh
-    fl = el
-    el = (dl + t1l) | 0
-    eh = (dh + t1h + getCarry(el, dl)) | 0
-    dh = ch
-    dl = cl
-    ch = bh
-    cl = bl
-    bh = ah
-    bl = al
-    al = (t1l + t2l) | 0
-    ah = (t1h + t2h + getCarry(al, t1l)) | 0
-  }
-
-  this._al = (this._al + al) | 0
-  this._bl = (this._bl + bl) | 0
-  this._cl = (this._cl + cl) | 0
-  this._dl = (this._dl + dl) | 0
-  this._el = (this._el + el) | 0
-  this._fl = (this._fl + fl) | 0
-  this._gl = (this._gl + gl) | 0
-  this._hl = (this._hl + hl) | 0
-
-  this._ah = (this._ah + ah + getCarry(this._al, al)) | 0
-  this._bh = (this._bh + bh + getCarry(this._bl, bl)) | 0
-  this._ch = (this._ch + ch + getCarry(this._cl, cl)) | 0
-  this._dh = (this._dh + dh + getCarry(this._dl, dl)) | 0
-  this._eh = (this._eh + eh + getCarry(this._el, el)) | 0
-  this._fh = (this._fh + fh + getCarry(this._fl, fl)) | 0
-  this._gh = (this._gh + gh + getCarry(this._gl, gl)) | 0
-  this._hh = (this._hh + hh + getCarry(this._hl, hl)) | 0
-}
-
-Sha512.prototype._hash = function () {
-  var H = new Buffer(64)
-
-  function writeInt64BE (h, l, offset) {
-    H.writeInt32BE(h, offset)
-    H.writeInt32BE(l, offset + 4)
-  }
-
-  writeInt64BE(this._ah, this._al, 0)
-  writeInt64BE(this._bh, this._bl, 8)
-  writeInt64BE(this._ch, this._cl, 16)
-  writeInt64BE(this._dh, this._dl, 24)
-  writeInt64BE(this._eh, this._el, 32)
-  writeInt64BE(this._fh, this._fl, 40)
-  writeInt64BE(this._gh, this._gl, 48)
-  writeInt64BE(this._hh, this._hl, 56)
-
-  return H
-}
-
-module.exports = Sha512
-
-}).call(this,require("buffer").Buffer)
-
-},{"./hash":37,"buffer":151,"inherits":35}],45:[function(require,module,exports){
+},{"buffer":151}],45:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -20962,8 +21032,8 @@ function shr64_lo(ah, al, num) {
 exports.shr64_lo = shr64_lo;
 
 },{"inherits":68}],68:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"dup":35}],69:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],69:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "6.3.1",
@@ -22469,85 +22539,4136 @@ module.exports = {
 }).call(this,require('_process'))
 
 },{"_process":351,"async":2,"augur-abi":3,"augur-contracts":74,"bignumber.js":147,"browser-request":13,"clone":14,"js-sha3":76,"net":148,"request":150,"sync-request":150,"websocket":150}],71:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],72:[function(require,module,exports){
 module.exports={
-    "10101": {
-        "Backstops": "0x2bb90689bc93349e37b0ec7b9d77bd54ab7e28ce", 
-        "Branches": "0xce436603c54c8990b75bd45a56563c1b6f3c53ff", 
-        "BuyAndSellShares": "0x80fcba1394e46de1a6b66c0540d04ca61da41ae9", 
-        "Cash": "0x07564bc74fe4e75c2009e38745e1b347cc5f850c", 
-        "CloseMarket": "0xb80f424b417dd76df321d0b2f54a0874db29bd6b", 
-        "CloseMarketOne": "0xab16062bd3da6cc6abf085afc13c491f56e25f96", 
-        "CloseMarketTwo": "0x9f08e5f1f17d79c7505e47eaf1402c6965c58377", 
-        "CollectFees": "0x4edc1a8480869b6c320226231f9fcdd0ee6afcad", 
-        "CompleteSets": "0xffef3f155ea906fb5442681efce7fd07dece7cef", 
-        "CompositeGetters": "0xe574be585571337819ddba37b7ca84ab69b90e96", 
-        "Consensus": "0xd812515a98a6d8637e65f3333f14b3e889f2c075", 
-        "ConsensusData": "0x3b641b0fa2f11deb3f864613212c1b20a1e57322", 
-        "CreateBranch": "0x78e71b15babbca45632d2d50973e8cebb2b4ecde", 
-        "CreateMarket": "0x00974c541b2b1e59360581f0b4c2eaa41ffdd359", 
-        "EventResolution": "0x3818ef75c135fde069ca86b9f9617cc9a5700a48", 
-        "Events": "0x05377e936e4abbb68efdacfca63653b8bf7c7dc8", 
-        "ExpiringEvents": "0x92ac3bba03fa0cf6a582124030a532368b751f02", 
-        "Faucets": "0xd0d5f9e79b9ccb4557f4d4422e68bfa8cd5f9539", 
-        "ForkPenalize": "0xf5c02f6e5a6296aaf261c957fec41992808b868b", 
-        "Forking": "0x85f8d21a6d1903818789a37d691e131ed1e7f3ff", 
-        "FxpFunctions": "0x3d66c0319ea224d26d68ca41937b5aabd1f3577f", 
-        "Info": "0x1bb46e3a4d936e0b47d3f5f4734a2f5d771de07a", 
-        "MakeReports": "0x322b59779c666690643293b09d848522bcb46662", 
-        "Markets": "0x6d158fae63ee0632418aa67b50fd76816225472e", 
-        "PenalizationCatchup": "0xd960e0d1d1360edcfc77e067911b801aa1e603b4", 
-        "PenalizeNotEnoughReports": "0xa3af36d473f4fbb6874636f0ed684678718fa3ee", 
-        "ProportionCorrect": "0xad3570357dd6c1b1a153c05b627c3a6374368d7b", 
-        "Reporting": "0x9a284f91af1fbc91cdbf0e04a0b04b6218a96b42", 
-        "ReportingThreshold": "0xc59472e2ec310736341b3eb305b18d181dd25896", 
-        "RoundTwo": "0x634f03d331f7da40e09054d5236a53821b09e774", 
-        "RoundTwoPenalize": "0xe8374d6cf11b4758728e300255ca9133d0c715cf", 
-        "SendReputation": "0xcb49bad3a451a138bc2739b75c21d227111d54a4", 
-        "SlashRep": "0xc1cdb84860d7bb4f16025b3bfcc7d932f975925b", 
-        "Trade": "0x562794c3d16767ac4b726b1e63524649f5e7bf46", 
-        "Trades": "0x504256f9405270a90bebca80387c7d4cc897b798"
+  "Backstops": {
+    "adjForkBondPaid": {
+      "inputs": [
+        "event", 
+        "amount"
+      ], 
+      "method": "adjForkBondPaid", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
     }, 
-    "2": {
-        "Backstops": "0xf9c9a87f339b76dc007848ab50363116ec1af05b", 
-        "Branches": "0x52af2540e03b0d0b73e3c7843c236e82ed959ac6", 
-        "BuyAndSellShares": "0x26bd983a1c87352c96399615c025b175862e7978", 
-        "Cash": "0xee01fd89924dfd409bf1356072f98138c57bd7cc", 
-        "CloseMarket": "0xc9a1dd0bccc72527bc5957daa9677d98862d8932", 
-        "CloseMarketOne": "0x4e433f8bde4a0afc59bec1b4d200b84435aafd9e", 
-        "CloseMarketTwo": "0x5e3972e215854523c977ecb9faa21efeb0bcaa0a", 
-        "CollectFees": "0x59c8771527a8b9f7a8d1686a5d0abee424bee648", 
-        "CompleteSets": "0xf64657c13c7dcae029b84ce099dcc0751fc41cc2", 
-        "CompositeGetters": "0xc42826de38b20a7894cdc1a096bdbcee9c57dbf1", 
-        "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
-        "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
-        "CreateBranch": "0x6577c99511bc1d5eb74bfde123881a21428ae812", 
-        "CreateMarket": "0x54894e13b69e760e9d0f6af18b9b2c87c5fc5525", 
-        "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
-        "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
-        "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
-        "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
-        "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x08a31edc4d5e6b19745ee07345d0052b945f3a0e", 
-        "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
-        "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0xf060d000aa0603b4670a0d27afced0047213c023", 
-        "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
-        "PenalizationCatchup": "0x0e92a0e24c4315804b6beeba5bb9eb30b596fd5a", 
-        "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
-        "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
-        "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
-        "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0x915941fcf8fa17b933705f8cff57f852ba524a3e", 
-        "RoundTwoPenalize": "0x39fe055135dbf244e81b7d840d262bba2ef3fc3d", 
-        "SendReputation": "0x4e7ffa77266d9935432348db6dc2fda3d48c3972", 
-        "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
-        "Trade": "0xdf0c814f16e9ecf90f28e22996edadaf702239bd", 
-        "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
+    "doRoundTwoRefund": {
+      "inputs": [
+        "sender", 
+        "event"
+      ], 
+      "method": "doRoundTwoRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBondAmount": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondAmount", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBondPaid": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondPaid", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBondPoster": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondPoster", 
+      "returns": "address", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBondReturned": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBondReturned", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getFinal": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getFinal", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkBondPaid": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkBondPaid", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkBondPoster": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkBondPoster", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkedOverEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkedOverEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMoved": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMoved", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalBranch": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalBranch", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalOutcome", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalVotePeriod": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalVotePeriod", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getResolved": {
+      "inputs": [
+        "branch", 
+        "forkPeriod"
+      ], 
+      "method": "getResolved", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRoundTwo": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRoundTwo", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "increaseBondPaid": {
+      "inputs": [
+        "event", 
+        "amount"
+      ], 
+      "method": "increaseBondPaid", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBondAmount": {
+      "inputs": [
+        "event", 
+        "amount"
+      ], 
+      "method": "setBondAmount", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBondPoster": {
+      "inputs": [
+        "event", 
+        "bondPoster"
+      ], 
+      "method": "setBondPoster", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBondReturned": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setBondReturned", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setFinal": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setFinal", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setForkBondPoster": {
+      "inputs": [
+        "event", 
+        "poster"
+      ], 
+      "method": "setForkBondPoster", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkedOverEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setForkedOverEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setMoved": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setMoved", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setOriginalBranch": {
+      "inputs": [
+        "event", 
+        "branch"
+      ], 
+      "method": "setOriginalBranch", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOriginalEthicality": {
+      "inputs": [
+        "event", 
+        "ethicality"
+      ], 
+      "method": "setOriginalEthicality", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOriginalOutcome": {
+      "inputs": [
+        "event", 
+        "originalOutcome"
+      ], 
+      "method": "setOriginalOutcome", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOriginalVotePeriod": {
+      "inputs": [
+        "event", 
+        "period"
+      ], 
+      "method": "setOriginalVotePeriod", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setResolved": {
+      "inputs": [
+        "branch", 
+        "forkPeriod", 
+        "winner"
+      ], 
+      "method": "setResolved", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRoundTwo": {
+      "inputs": [
+        "event", 
+        "roundTwo"
+      ], 
+      "method": "setRoundTwo", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRoundTwoRefund": {
+      "inputs": [
+        "event", 
+        "amt"
+      ], 
+      "method": "setRoundTwoRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
     }
+  }, 
+  "Branches": {
+    "addMarketToBranch": {
+      "inputs": [
+        "branch", 
+        "market"
+      ], 
+      "method": "addMarketToBranch", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBaseReporters": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getBaseReporters", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranchByNum": {
+      "inputs": [
+        "branchNumber"
+      ], 
+      "method": "getBranchByNum", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranches": {
+      "method": "getBranches", 
+      "returns": "hash[]"
+    }, 
+    "getCreationDate": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getCreationDate", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventForkedOver": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getEventForkedOver", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getForkPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getInitialBalance": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getInitialBalance", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getMarketsInBranch": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getMarketsInBranch", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMinTradingFee": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getMinTradingFee", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumBranches": {
+      "method": "getNumBranches", 
+      "returns": "number"
+    }, 
+    "getNumMarketsBranch": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getNumMarketsBranch", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOracleOnly": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getOracleOnly", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getParent": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getParent", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getParentPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getParentPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getPeriodLength": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getPeriodLength", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getSomeMarketsInBranch": {
+      "inputs": [
+        "branch", 
+        "initial", 
+        "last"
+      ], 
+      "method": "getSomeMarketsInBranch", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getVotePeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getVotePeriod", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "incrementPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "incrementPeriod", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "initDefaultBranch": {
+      "method": "initDefaultBranch", 
+      "returns": "number", 
+      "send": true
+    }, 
+    "initializeBranch": {
+      "inputs": [
+        "ID", 
+        "currentVotePeriod", 
+        "periodLength", 
+        "minTradingFee", 
+        "oracleOnly", 
+        "parentPeriod", 
+        "parent"
+      ], 
+      "method": "initializeBranch", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBaseReporters": {
+      "inputs": [
+        "branch", 
+        "num"
+      ], 
+      "method": "setBaseReporters", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEventForkedOver": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "setEventForkedOver", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "setForkPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setInitialBalance": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "balance"
+      ], 
+      "method": "setInitialBalance", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "BuyAndSellShares": {
+    "buy": {
+      "inputs": [
+        "amount", 
+        "price", 
+        "market", 
+        "outcome"
+      ], 
+      "method": "buy", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "cancel": {
+      "inputs": [
+        "trade_id"
+      ], 
+      "method": "cancel", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "sell": {
+      "inputs": [
+        "amount", 
+        "price", 
+        "market", 
+        "outcome"
+      ], 
+      "method": "sell", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Cash": {
+    "addCash": {
+      "inputs": [
+        "ID", 
+        "amount"
+      ], 
+      "method": "addCash", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "balance": {
+      "inputs": [
+        "address"
+      ], 
+      "method": "balance", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "depositEther": {
+      "method": "depositEther", 
+      "returns": "number", 
+      "send": true
+    }, 
+    "initiateOwner": {
+      "inputs": [
+        "account"
+      ], 
+      "method": "initiateOwner", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "send": {
+      "inputs": [
+        "recver", 
+        "value"
+      ], 
+      "method": "send", 
+      "returns": "unfix", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "sendFrom": {
+      "inputs": [
+        "recver", 
+        "value", 
+        "from"
+      ], 
+      "method": "sendFrom", 
+      "returns": "unfix", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setCash": {
+      "inputs": [
+        "address", 
+        "balance"
+      ], 
+      "method": "setCash", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "subtractCash": {
+      "inputs": [
+        "ID", 
+        "amount"
+      ], 
+      "method": "subtractCash", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "withdrawEther": {
+      "inputs": [
+        "to", 
+        "value"
+      ], 
+      "method": "withdrawEther", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarket": {
+    "claimProceeds": {
+      "inputs": [
+        "branch", 
+        "market"
+      ], 
+      "method": "claimProceeds", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "closeMarket": {
+      "inputs": [
+        "branch", 
+        "market", 
+        "sender"
+      ], 
+      "method": "closeMarket", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarketOne": {
+    "oneOutcome": {
+      "inputs": [
+        "market", 
+        "winningOutcome", 
+        "sender", 
+        "categoricalPointFive", 
+        "numOutcomes"
+      ], 
+      "method": "oneOutcome", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CloseMarketTwo": {
+    "twoOutcomes": {
+      "inputs": [
+        "market", 
+        "winningOutcome", 
+        "event", 
+        "sender"
+      ], 
+      "method": "twoOutcomes", 
+      "signature": [
+        "int256", 
+        "int256[]", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CollectFees": {
+    "collectFees": {
+      "inputs": [
+        "branch", 
+        "sender"
+      ], 
+      "method": "collectFees", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CompleteSets": {
+    "buyCompleteSets": {
+      "inputs": [
+        "market", 
+        "amount"
+      ], 
+      "method": "buyCompleteSets", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "sellCompleteSets": {
+      "inputs": [
+        "market", 
+        "amount"
+      ], 
+      "method": "sellCompleteSets", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CompositeGetters": {
+    "batchGetMarketInfo": {
+      "inputs": [
+        "marketIDs"
+      ], 
+      "method": "batchGetMarketInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256[]"
+      ]
+    }, 
+    "getMarketInfo": {
+      "inputs": [
+        "marketID"
+      ], 
+      "method": "getMarketInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketInfoCache": {
+      "inputs": [
+        "marketID"
+      ], 
+      "method": "getMarketInfoCache", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketsInfo": {
+      "inputs": [
+        "branch", 
+        "offset", 
+        "numMarketsToLoad"
+      ], 
+      "method": "getMarketsInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getOrderBook": {
+      "inputs": [
+        "marketID"
+      ], 
+      "method": "getOrderBook", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Consensus": {
+    "incrementPeriodAfterReporting": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "incrementPeriodAfterReporting", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "penalizeWrong": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "penalizeWrong", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "ConsensusData": {
+    "doRefund": {
+      "inputs": [
+        "sender", 
+        "refunder"
+      ], 
+      "method": "doRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBaseReportersLastPeriod": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getBaseReportersLastPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDenominator": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getDenominator", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getFeeFirst": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getFeeFirst", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getFeesCollected": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "getFeesCollected", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNotEnoughPenalized": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "getNotEnoughPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPenalized": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender", 
+        "event"
+      ], 
+      "method": "getPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPenalizedNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getPenalizedNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPenalizedUpTo": {
+      "inputs": [
+        "branch", 
+        "sender"
+      ], 
+      "method": "getPenalizedUpTo", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPeriodBalance": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getPeriodBalance", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRepRedistributionDone": {
+      "inputs": [
+        "branch", 
+        "reporter"
+      ], 
+      "method": "getRepRedistributionDone", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getSlashed": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "reporter"
+      ], 
+      "method": "getSlashed", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "increaseDenominator": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "amount"
+      ], 
+      "method": "increaseDenominator", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "increasePenalizedNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender", 
+        "amount"
+      ], 
+      "method": "increasePenalizedNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBaseReportersLastPeriod": {
+      "inputs": [
+        "branch", 
+        "amount"
+      ], 
+      "method": "setBaseReportersLastPeriod", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setFeeFirst": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "val"
+      ], 
+      "method": "setFeeFirst", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setFeesCollected": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "setFeesCollected", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setNotEnoughPenalized": {
+      "inputs": [
+        "branch", 
+        "address", 
+        "period"
+      ], 
+      "method": "setNotEnoughPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPenalized": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender", 
+        "event"
+      ], 
+      "method": "setPenalized", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPenalizedUpTo": {
+      "inputs": [
+        "branch", 
+        "sender", 
+        "period"
+      ], 
+      "method": "setPenalizedUpTo", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPeriodBalance": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "balance"
+      ], 
+      "method": "setPeriodBalance", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRefund": {
+      "inputs": [
+        "refunder", 
+        "amt"
+      ], 
+      "method": "setRefund", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setSlashed": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "reporter"
+      ], 
+      "method": "setSlashed", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CreateBranch": {
+    "createSubbranch": {
+      "inputs": [
+        "description", 
+        "periodLength", 
+        "parent", 
+        "minTradingFee", 
+        "oracleOnly"
+      ], 
+      "method": "createSubbranch", 
+      "returns": "hash", 
+      "send": true, 
+      "signature": [
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "CreateMarket": {
+    "createEvent": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "expDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution"
+      ], 
+      "method": "createEvent", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "createMarket": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "tradingFee", 
+        "event", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "extraInfo"
+      ], 
+      "method": "createMarket", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "createSingleEventMarket": {
+      "inputs": [
+        "branch", 
+        "description", 
+        "expDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution", 
+        "tradingFee", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "extraInfo"
+      ], 
+      "method": "createSingleEventMarket", 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "pushMarketForward": {
+      "inputs": [
+        "branch", 
+        "market"
+      ], 
+      "method": "pushMarketForward", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "updateTradingFee": {
+      "inputs": [
+        "branch", 
+        "market", 
+        "tradingFee"
+      ], 
+      "method": "updateTradingFee", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "EventResolution": {
+    "determineWinningOutcomes": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "determineWinningOutcomes", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "resolveBinary": {
+      "inputs": [
+        "event", 
+        "market", 
+        "branch", 
+        "votingPeriodEvent"
+      ], 
+      "method": "resolveBinary", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolveCategoricalOrScalar": {
+      "inputs": [
+        "scaled_min", 
+        "scaled_max", 
+        "event", 
+        "market", 
+        "branch", 
+        "votingPeriodEvent"
+      ], 
+      "method": "resolveCategoricalOrScalar", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Events": {
+    "addMarket": {
+      "inputs": [
+        "event", 
+        "marketID"
+      ], 
+      "method": "addMarket", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addPast24": {
+      "inputs": [
+        "period"
+      ], 
+      "method": "addPast24", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBond": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBond", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranch": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getBranch", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEthical": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEthical", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEthics": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEthics", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventBranch": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventBranch", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventInfo": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventInfo", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventPushedUp": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventPushedUp", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getEventResolution": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getEventResolution", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getExpiration": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getExpiration", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkEthicality": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkEthicality", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkOutcome", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForked": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForked", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getForkedDone": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getForkedDone", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarket": {
+      "inputs": [
+        "event", 
+        "marketIndex"
+      ], 
+      "method": "getMarket", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getMarkets": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMarkets", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMaxValue": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMaxValue", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMinValue": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getMinValue", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumMarkets": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getNumMarkets", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumOutcomes": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getNumOutcomes", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOriginalExpiration": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOriginalExpiration", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getOutcome", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getPast24": {
+      "inputs": [
+        "period"
+      ], 
+      "method": "getPast24", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getRejected": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRejected", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getRejectedPeriod": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRejectedPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getReportingThreshold": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getReportingThreshold", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getResolution": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getResolution", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getUncaughtOutcome": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getUncaughtOutcome", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getmode": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getmode", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "initializeEvent": {
+      "inputs": [
+        "ID", 
+        "branch", 
+        "expirationDate", 
+        "minValue", 
+        "maxValue", 
+        "numOutcomes", 
+        "resolution"
+      ], 
+      "method": "initializeEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes"
+      ]
+    }, 
+    "setBond": {
+      "inputs": [
+        "event", 
+        "bond"
+      ], 
+      "method": "setBond", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBranch": {
+      "inputs": [
+        "event", 
+        "branch"
+      ], 
+      "method": "setBranch", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEthics": {
+      "inputs": [
+        "event", 
+        "ethicality"
+      ], 
+      "method": "setEthics", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEventPushedUp": {
+      "inputs": [
+        "event", 
+        "val"
+      ], 
+      "method": "setEventPushedUp", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setExpiration": {
+      "inputs": [
+        "event", 
+        "date"
+      ], 
+      "method": "setExpiration", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkDone": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setForkDone", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setForkEthicality": {
+      "inputs": [
+        "event", 
+        "value"
+      ], 
+      "method": "setForkEthicality", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForkOutcome": {
+      "inputs": [
+        "event", 
+        "value"
+      ], 
+      "method": "setForkOutcome", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setForked": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setForked", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setOriginalExpiration": {
+      "inputs": [
+        "event", 
+        "date"
+      ], 
+      "method": "setOriginalExpiration", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setOutcome": {
+      "inputs": [
+        "ID", 
+        "outcome"
+      ], 
+      "method": "setOutcome", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRejected": {
+      "inputs": [
+        "event", 
+        "period"
+      ], 
+      "method": "setRejected", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setThreshold": {
+      "inputs": [
+        "event", 
+        "threshold"
+      ], 
+      "method": "setThreshold", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setUncaughtOutcome": {
+      "inputs": [
+        "event", 
+        "outcome"
+      ], 
+      "method": "setUncaughtOutcome", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setmode": {
+      "inputs": [
+        "event", 
+        "mode"
+      ], 
+      "method": "setmode", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "ExpiringEvents": {
+    "addEvent": {
+      "inputs": [
+        "branch", 
+        "futurePeriod", 
+        "eventID", 
+        "subsidy"
+      ], 
+      "method": "addEvent", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addRepEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "event", 
+        "amount"
+      ], 
+      "method": "addRepEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReportToEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID", 
+        "sender"
+      ], 
+      "method": "addReportToEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReportersPaidSoFar": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "addReportersPaidSoFar", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addRoundTwo": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "addRoundTwo", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addToWeightOfReport": {
+      "inputs": [
+        "period", 
+        "event", 
+        "report", 
+        "amount"
+      ], 
+      "method": "addToWeightOfReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "adjustPeriodShareValueOutstanding": {
+      "inputs": [
+        "branch", 
+        "expIndex", 
+        "amount"
+      ], 
+      "method": "adjustPeriodShareValueOutstanding", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "deleteEvent": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "deleteEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getAfterRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getAfterRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBeforeRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getBeforeRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getCurrentMode": {
+      "inputs": [
+        "period", 
+        "event"
+      ], 
+      "method": "getCurrentMode", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getCurrentModeItems": {
+      "inputs": [
+        "period", 
+        "event"
+      ], 
+      "method": "getCurrentModeItems", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEthicReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "sender"
+      ], 
+      "method": "getEthicReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEvent": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "eventIndex"
+      ], 
+      "method": "getEvent", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventIndex": {
+      "inputs": [
+        "period", 
+        "eventID"
+      ], 
+      "method": "getEventIndex", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEvents": {
+      "inputs": [
+        "branch", 
+        "expDateIndex"
+      ], 
+      "method": "getEvents", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventsRange": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "start", 
+        "end"
+      ], 
+      "method": "getEventsRange", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getLesserReportNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "getLesserReportNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumEventsToReportOn": {
+      "inputs": [
+        "branch", 
+        "expDateIndex"
+      ], 
+      "method": "getNumEventsToReportOn", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumRemoved": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getNumRemoved", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumReportsActual": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "getNumReportsActual", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumReportsEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID"
+      ], 
+      "method": "getNumReportsEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumRequired": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getNumRequired", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumRoundTwo": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "getNumRoundTwo", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getNumberEvents": {
+      "inputs": [
+        "branch", 
+        "expDateIndex"
+      ], 
+      "method": "getNumberEvents", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPeriodDormantRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "sender"
+      ], 
+      "method": "getPeriodDormantRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPeriodRepConstant": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "getPeriodRepConstant", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRepEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "event"
+      ], 
+      "method": "getRepEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "sender"
+      ], 
+      "method": "getReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReportHash": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "event"
+      ], 
+      "method": "getReportHash", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReportersPaidSoFar": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "getReportersPaidSoFar", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRequired": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "getRequired", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getSaltyHash": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "event"
+      ], 
+      "method": "getSaltyHash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getShareValue": {
+      "inputs": [
+        "branch", 
+        "expIndex"
+      ], 
+      "method": "getShareValue", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getSubsidy": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "getSubsidy", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getWeightOfReport": {
+      "inputs": [
+        "period", 
+        "event", 
+        "report"
+      ], 
+      "method": "getWeightOfReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "moveEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "moveEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "refundCost": {
+      "inputs": [
+        "to", 
+        "value"
+      ], 
+      "method": "refundCost", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "removeEvent": {
+      "inputs": [
+        "branch", 
+        "period"
+      ], 
+      "method": "removeEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setAfterRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "rep", 
+        "sender"
+      ], 
+      "method": "setAfterRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setBeforeRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "rep", 
+        "sender"
+      ], 
+      "method": "setBeforeRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setCurrentMode": {
+      "inputs": [
+        "period", 
+        "event", 
+        "mode"
+      ], 
+      "method": "setCurrentMode", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setCurrentModeItems": {
+      "inputs": [
+        "period", 
+        "event", 
+        "modeReport"
+      ], 
+      "method": "setCurrentModeItems", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEthicReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "ethics", 
+        "sender"
+      ], 
+      "method": "setEthicReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setEventRequired": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event"
+      ], 
+      "method": "setEventRequired", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setLesserReportNum": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "num"
+      ], 
+      "method": "setLesserReportNum", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setNumEventsToReportOn": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "setNumEventsToReportOn", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setNumReportsEvent": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "eventID", 
+        "num"
+      ], 
+      "method": "setNumReportsEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPeriodDormantRep": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "rep", 
+        "sender"
+      ], 
+      "method": "setPeriodDormantRep", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPeriodRepConstant": {
+      "inputs": [
+        "branch", 
+        "votePeriod", 
+        "sender", 
+        "value"
+      ], 
+      "method": "setPeriodRepConstant", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setReport": {
+      "inputs": [
+        "branch", 
+        "period", 
+        "event", 
+        "report", 
+        "sender"
+      ], 
+      "method": "setReport", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setReportHash": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "reportHash", 
+        "event"
+      ], 
+      "method": "setReportHash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setSaltyHash": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "saltyHash", 
+        "event"
+      ], 
+      "method": "setSaltyHash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Faucets": {
+    "cashFaucet": {
+      "method": "cashFaucet", 
+      "returns": "number", 
+      "send": true
+    }, 
+    "claimInitialRep": {
+      "inputs": [
+        "parent", 
+        "branch"
+      ], 
+      "method": "claimInitialRep", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "fundNewAccount": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "fundNewAccount", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "reputationFaucet": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "reputationFaucet", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "ForkPenalize": {
+    "penalizeOnForkedEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "penalizeOnForkedEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "proportionCorrectForkEvent": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "proportionCorrectForkEvent", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Forking": {
+    "exchangeRate": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "exchangeRate", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "fork": {
+      "inputs": [
+        "event", 
+        "branch", 
+        "forkedOverEthicality"
+      ], 
+      "method": "fork", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "move_event": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "move_event", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "resolveForkEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "resolveForkEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolveForkedEvent": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "resolveForkedEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "resolve_fork": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "resolve_fork", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "FxpFunctions": {
+    "fx_exp": {
+      "inputs": [
+        "x"
+      ], 
+      "method": "fx_exp", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "fx_log": {
+      "inputs": [
+        "x"
+      ], 
+      "method": "fx_log", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "sqrt": {
+      "inputs": [
+        "n"
+      ], 
+      "method": "sqrt", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Info": {
+    "getCreationFee": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getCreationFee", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCreator": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getCreator", 
+      "returns": "address", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDescription": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getDescription", 
+      "returns": "string", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDescriptionLength": {
+      "inputs": [
+        "ID"
+      ], 
+      "method": "getDescriptionLength", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setInfo": {
+      "inputs": [
+        "ID", 
+        "description", 
+        "creator", 
+        "fee"
+      ], 
+      "method": "setInfo", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "MakeReports": {
+    "calculateReportTargetForEvent": {
+      "inputs": [
+        "branch", 
+        "eventID", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "calculateReportTargetForEvent", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "makeHash": {
+      "inputs": [
+        "salt", 
+        "report", 
+        "eventID", 
+        "sender"
+      ], 
+      "method": "makeHash", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "submitReport": {
+      "inputs": [
+        "event", 
+        "salt", 
+        "report", 
+        "ethics"
+      ], 
+      "method": "submitReport", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "submitReportHash": {
+      "inputs": [
+        "event", 
+        "reportHash", 
+        "encryptedSaltyHash"
+      ], 
+      "method": "submitReportHash", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "validateReport": {
+      "inputs": [
+        "eventID", 
+        "branch", 
+        "votePeriod", 
+        "report", 
+        "forkedOverEthicality", 
+        "forkedOverThisEvent", 
+        "roundTwo", 
+        "balance"
+      ], 
+      "method": "validateReport", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Markets": {
+    "addFees": {
+      "inputs": [
+        "market", 
+        "amount"
+      ], 
+      "method": "addFees", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addToMarketsHash": {
+      "inputs": [
+        "branch", 
+        "newHash"
+      ], 
+      "method": "addToMarketsHash", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addTrade": {
+      "inputs": [
+        "market", 
+        "trade_id", 
+        "last_id"
+      ], 
+      "method": "addTrade", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getBondsMan": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getBondsMan", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getBranchID": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getBranchID", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCreationTime": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getCreationTime", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getCumScale": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getCumScale", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getExtraInfo": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getExtraInfo", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getFees": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getFees", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getLastExpDate": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getLastExpDate", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getLastOutcomePrice": {
+      "inputs": [
+        "market", 
+        "outcome"
+      ], 
+      "method": "getLastOutcomePrice", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getLastTrade": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getLastTrade", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMakerFees": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getMakerFees", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketEvent": {
+      "inputs": [
+        "market", 
+        "index"
+      ], 
+      "method": "getMarketEvent", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getMarketEvents": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getMarketEvents", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketNumOutcomes": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getMarketNumOutcomes", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getMarketsHash": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getMarketsHash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumEvents": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getNumEvents", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getOneWinningOutcome": {
+      "inputs": [
+        "market", 
+        "num"
+      ], 
+      "method": "getOneWinningOutcome", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getOriginalTradingPeriod": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getOriginalTradingPeriod", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getParticipantSharesPurchased": {
+      "inputs": [
+        "market", 
+        "trader", 
+        "outcome"
+      ], 
+      "method": "getParticipantSharesPurchased", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getPushedForward": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getPushedForward", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getSender": {
+      "method": "getSender"
+    }, 
+    "getSharesPurchased": {
+      "inputs": [
+        "market", 
+        "outcome"
+      ], 
+      "method": "getSharesPurchased", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getSharesValue": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getSharesValue", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTotalSharesPurchased": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getTotalSharesPurchased", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTradingFee": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getTradingFee", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTradingPeriod": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getTradingPeriod", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getVolume": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getVolume", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getWinningOutcomes": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getWinningOutcomes", 
+      "returns": "number[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_total_trades": {
+      "inputs": [
+        "market_id"
+      ], 
+      "method": "get_total_trades", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_trade_ids": {
+      "inputs": [
+        "market_id"
+      ], 
+      "method": "get_trade_ids", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getgasSubsidy": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "getgasSubsidy", 
+      "returns": "int", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "initializeMarket": {
+      "inputs": [
+        "marketID", 
+        "events", 
+        "tradingPeriod", 
+        "tradingFee", 
+        "branch", 
+        "tag1", 
+        "tag2", 
+        "tag3", 
+        "makerFees", 
+        "cumScale", 
+        "numOutcomes", 
+        "extraInfo", 
+        "gasSubsidy", 
+        "creationFee", 
+        "lastExpDate"
+      ], 
+      "method": "initializeMarket", 
+      "signature": [
+        "int256", 
+        "int256[]", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "bytes", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "modifyParticipantShares": {
+      "inputs": [
+        "marketID", 
+        "trader", 
+        "outcome", 
+        "amount", 
+        "cancel"
+      ], 
+      "method": "modifyParticipantShares", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "modifyShares": {
+      "inputs": [
+        "marketID", 
+        "outcome", 
+        "amount"
+      ], 
+      "method": "modifyShares", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "modifySharesValue": {
+      "inputs": [
+        "marketID", 
+        "amount"
+      ], 
+      "method": "modifySharesValue", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "refundClosing": {
+      "inputs": [
+        "market", 
+        "to"
+      ], 
+      "method": "refundClosing", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "remove_trade_from_market": {
+      "inputs": [
+        "market_id", 
+        "trade_id"
+      ], 
+      "method": "remove_trade_from_market", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "returnTags": {
+      "inputs": [
+        "market"
+      ], 
+      "method": "returnTags", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setPrice": {
+      "inputs": [
+        "market", 
+        "outcome", 
+        "price"
+      ], 
+      "method": "setPrice", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setPushedForward": {
+      "inputs": [
+        "market", 
+        "bool", 
+        "sender"
+      ], 
+      "method": "setPushedForward", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setTradingFee": {
+      "inputs": [
+        "market", 
+        "fee"
+      ], 
+      "method": "setTradingFee", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setTradingPeriod": {
+      "inputs": [
+        "market", 
+        "period"
+      ], 
+      "method": "setTradingPeriod", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setWinningOutcomes": {
+      "inputs": [
+        "market", 
+        "outcomes"
+      ], 
+      "method": "setWinningOutcomes", 
+      "signature": [
+        "int256", 
+        "int256[]"
+      ]
+    }
+  }, 
+  "PenalizationCatchup": {
+    "penalizationCatchup": {
+      "inputs": [
+        "branch", 
+        "sender"
+      ], 
+      "method": "penalizationCatchup", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "PenalizeNotEnoughReports": {
+    "proveReporterDidntReportEnough": {
+      "inputs": [
+        "branch", 
+        "reporter", 
+        "eventExample"
+      ], 
+      "method": "proveReporterDidntReportEnough", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "ProportionCorrect": {
+    "proportionCorrect": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "proportionCorrect", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "Reporting": {
+    "addDormantRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "addDormantRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "addRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "addReporter": {
+      "inputs": [
+        "branch", 
+        "sender", 
+        "amount", 
+        "dormant", 
+        "repToBonderOrBranch"
+      ], 
+      "method": "addReporter", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "adjustActiveRep": {
+      "inputs": [
+        "branch", 
+        "amount"
+      ], 
+      "method": "adjustActiveRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "balanceOf": {
+      "inputs": [
+        "branch", 
+        "address"
+      ], 
+      "method": "balanceOf", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "checkContractWhitelist": {
+      "inputs": [
+        "contract", 
+        "address"
+      ], 
+      "method": "checkContractWhitelist", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "checkWhitelist": {
+      "inputs": [
+        "address"
+      ], 
+      "method": "checkWhitelist", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getActiveRep": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getActiveRep", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getDormantRepByIndex": {
+      "inputs": [
+        "branch", 
+        "repIndex"
+      ], 
+      "method": "getDormantRepByIndex", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getFork": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getFork", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getNumberReporters": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getNumberReporters", 
+      "returns": "number", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getRepBalance": {
+      "inputs": [
+        "branch", 
+        "address"
+      ], 
+      "method": "getRepBalance", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getRepByIndex": {
+      "inputs": [
+        "branch", 
+        "repIndex"
+      ], 
+      "method": "getRepByIndex", 
+      "returns": "unfix", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReporterID": {
+      "inputs": [
+        "branch", 
+        "index"
+      ], 
+      "method": "getReporterID", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getReputation": {
+      "inputs": [
+        "address"
+      ], 
+      "method": "getReputation", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "getTotalRep": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "getTotalRep", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "repIDToIndex": {
+      "inputs": [
+        "branch", 
+        "repID"
+      ], 
+      "method": "repIDToIndex", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setFork": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "setFork", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "setInitialReporters": {
+      "inputs": [
+        "parent", 
+        "branchID"
+      ], 
+      "method": "setInitialReporters", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "newRep"
+      ], 
+      "method": "setRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setSaleDistribution": {
+      "inputs": [
+        "addresses", 
+        "balances", 
+        "branchID"
+      ], 
+      "method": "setSaleDistribution", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256[]", 
+        "int256[]", 
+        "int256"
+      ]
+    }, 
+    "setWhitelist": {
+      "inputs": [
+        "contract", 
+        "addresses"
+      ], 
+      "method": "setWhitelist", 
+      "returns": "string", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256[]"
+      ]
+    }, 
+    "subtractDormantRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "subtractDormantRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "subtractRep": {
+      "inputs": [
+        "branch", 
+        "index", 
+        "value"
+      ], 
+      "method": "subtractRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "totalSupply": {
+      "inputs": [
+        "branch"
+      ], 
+      "method": "totalSupply", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "ReportingThreshold": {
+    "calculateReportingThreshold": {
+      "inputs": [
+        "branch", 
+        "eventID", 
+        "votePeriod", 
+        "sender"
+      ], 
+      "method": "calculateReportingThreshold", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventCanReportOn": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "reporter", 
+        "event"
+      ], 
+      "method": "getEventCanReportOn", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getEventsToReportOn": {
+      "inputs": [
+        "branch", 
+        "expDateIndex", 
+        "sender"
+      ], 
+      "method": "getEventsToReportOn", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "setReportingThreshold": {
+      "inputs": [
+        "event"
+      ], 
+      "method": "setReportingThreshold", 
+      "signature": [
+        "int256"
+      ]
+    }
+  }, 
+  "RoundTwo": {
+    "resolve": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "resolve", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "roundTwoPostBond": {
+      "inputs": [
+        "branch", 
+        "event", 
+        "eventIndex", 
+        "votePeriod"
+      ], 
+      "method": "roundTwoPostBond", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "roundTwoResolve": {
+      "inputs": [
+        "branch", 
+        "event", 
+        "eventIndex", 
+        "sender"
+      ], 
+      "method": "roundTwoResolve", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "RoundTwoPenalize": {
+    "penalizeRoundTwoWrong": {
+      "inputs": [
+        "branch", 
+        "event"
+      ], 
+      "method": "penalizeRoundTwoWrong", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "SendReputation": {
+    "allowance": {
+      "inputs": [
+        "owner", 
+        "spender"
+      ], 
+      "method": "allowance", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "approve": {
+      "inputs": [
+        "branch", 
+        "spender", 
+        "value"
+      ], 
+      "method": "approve", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "convertToActiveRep": {
+      "inputs": [
+        "branch", 
+        "value"
+      ], 
+      "method": "convertToActiveRep", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "convertToDormantRep": {
+      "inputs": [
+        "branch", 
+        "value"
+      ], 
+      "method": "convertToDormantRep", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "sendReputation": {
+      "inputs": [
+        "branch", 
+        "recver", 
+        "value"
+      ], 
+      "method": "sendReputation", 
+      "returns": "unfix", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "transfer": {
+      "inputs": [
+        "branch", 
+        "recver", 
+        "value"
+      ], 
+      "method": "transfer", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "transferFrom": {
+      "inputs": [
+        "branch", 
+        "from", 
+        "recver", 
+        "value"
+      ], 
+      "method": "transferFrom", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "SlashRep": {
+    "slashRep": {
+      "inputs": [
+        "branch", 
+        "salt", 
+        "report", 
+        "reporter", 
+        "eventID"
+      ], 
+      "method": "slashRep", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }
+  }, 
+  "Trade": {
+    "short_sell": {
+      "inputs": [
+        "buyer_trade_id", 
+        "max_amount"
+      ], 
+      "method": "short_sell", 
+      "returns": "hash[]", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "trade": {
+      "inputs": [
+        "max_value", 
+        "max_amount", 
+        "trade_ids"
+      ], 
+      "method": "trade", 
+      "returns": "hash[]", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256[]"
+      ]
+    }
+  }, 
+  "Trades": {
+    "checkHash": {
+      "inputs": [
+        "tradeHash", 
+        "sender"
+      ], 
+      "method": "checkHash", 
+      "returns": "number", 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "commitTrade": {
+      "inputs": [
+        "hash"
+      ], 
+      "method": "commitTrade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "fill_trade": {
+      "inputs": [
+        "id", 
+        "fill"
+      ], 
+      "method": "fill_trade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "getID": {
+      "inputs": [
+        "tradeID"
+      ], 
+      "method": "getID", 
+      "returns": "hash", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_amount": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "get_amount", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_price": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "get_price", 
+      "returns": "unfix", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "get_trade": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "get_trade", 
+      "returns": "hash[]", 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "makeTradeHash": {
+      "inputs": [
+        "max_value", 
+        "max_amount", 
+        "trade_ids"
+      ], 
+      "method": "makeTradeHash", 
+      "returns": "hash", 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256[]"
+      ]
+    }, 
+    "remove_trade": {
+      "inputs": [
+        "id"
+      ], 
+      "method": "remove_trade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256"
+      ]
+    }, 
+    "saveTrade": {
+      "inputs": [
+        "trade_id", 
+        "type", 
+        "market", 
+        "amount", 
+        "price", 
+        "sender", 
+        "outcome"
+      ], 
+      "method": "saveTrade", 
+      "returns": "number", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "update_trade": {
+      "inputs": [
+        "id", 
+        "price"
+      ], 
+      "method": "update_trade", 
+      "send": true, 
+      "signature": [
+        "int256", 
+        "int256"
+      ]
+    }, 
+    "zeroHash": {
+      "method": "zeroHash", 
+      "returns": "number", 
+      "send": true
+    }
+  }
 }
-},{}],73:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
+arguments[4][9][0].apply(exports,arguments)
+},{"dup":9}],73:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
 },{"dup":10}],74:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
@@ -40636,8 +44757,8 @@ arguments[4][66][0].apply(exports,arguments)
 },{"../hash":98,"dup":66}],103:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
 },{"dup":67,"inherits":104}],104:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"dup":35}],105:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],105:[function(require,module,exports){
 module.exports={
   "name": "elliptic",
   "version": "5.2.1",
@@ -45244,7 +49365,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.5.12";
+    this.version = "1.6.1";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -46221,8 +50342,7 @@ module.exports = {
         var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
         var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
         description = description.trim();
-        expDate = parseInt(expDate);
-        var tx = clone(this.tx.CreateMarket.createEvent);
+        var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
             branchId,
             description,
@@ -46230,47 +50350,38 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution,
+            abi.fix(tradingFee, "hex"),
+            tags[0],
+            tags[1],
+            tags[2],
+            abi.fix(makerProportionOfFee, "hex"),
+            extraInfo || ""
         ];
-        this.transact(tx, utils.noop, function (res) {
-            var tx = clone(self.tx.CreateMarket.createMarket);
-            tx.params = [
-                branchId,
-                description,
-                abi.fix(tradingFee, "hex"),
-                res.callReturn,
-                tags[0],
-                tags[1],
-                tags[2],
-                abi.fix(makerProportionOfFee, "hex"),
-                extraInfo || ""
-            ];
-            self.rpc.gasPrice(function (gasPrice) {
-                tx.gasPrice = gasPrice;
-                gasPrice = abi.bignum(gasPrice);
-                tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+        this.rpc.gasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            gasPrice = abi.bignum(gasPrice);
+            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+            self.transact(tx, onSent, function (res) {
                 self.getPeriodLength(branchId, function (periodLength) {
-                    self.transact(tx, onSent, function (res) {
-                        self.rpc.getBlock(res.blockNumber, false, function (block) {
-                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-                            res.marketID = utils.sha3([
-                                futurePeriod,
-                                abi.fix(tradingFee, "hex"),
-                                block.timestamp,
-                                tags[0],
-                                tags[1],
-                                tags[2],
-                                expDate,
-                                new Buffer(description, "utf8").length,
-                                description
-                            ]);
-                            res.callReturn = res.marketID;
-                            onSuccess(res);
-                        });
-                    }, onFailed);
+                    self.rpc.getBlock(res.blockNumber, false, function (block) {
+                        var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                        res.marketID = utils.sha3([
+                            futurePeriod,
+                            abi.fix(tradingFee, "hex"),
+                            block.timestamp,
+                            tags[0],
+                            tags[1],
+                            tags[2],
+                            expDate,
+                            new Buffer(description, "utf8").length,
+                            description
+                        ]);
+                        onSuccess(res);
+                    });
                 });
-            });
-        }, onFailed);
+            }, onFailed);
+        });
     },
 
     createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
@@ -58790,8 +62901,8 @@ exports.hash = hash;
 }).call(this,require("buffer").Buffer)
 
 },{"buffer":151}],281:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"./helpers":280,"dup":33}],282:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"./helpers":280,"dup":23}],282:[function(require,module,exports){
 (function (Buffer){
 var Transform = require('stream').Transform
 var inherits = require('inherits')
@@ -59176,8 +63287,8 @@ module.exports = Hash
 }).call(this,require("buffer").Buffer)
 
 },{"buffer":151}],285:[function(require,module,exports){
-arguments[4][38][0].apply(exports,arguments)
-},{"./sha":286,"./sha1":287,"./sha224":288,"./sha256":289,"./sha384":290,"./sha512":291,"dup":38}],286:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"./sha":286,"./sha1":287,"./sha224":288,"./sha256":289,"./sha384":290,"./sha512":291,"dup":28}],286:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
@@ -62396,8 +66507,8 @@ function isUndefined(arg) {
 }
 
 },{}],348:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"dup":35}],349:[function(require,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],349:[function(require,module,exports){
 /**
  * Determine if an object is Buffer
  *
@@ -67108,6 +71219,11 @@ secureRandom.randomBuffer = function(byteCount) {
 }).call(this,require('_process'),require("buffer").Buffer)
 
 },{"_process":351,"buffer":151,"crypto":150}],391:[function(require,module,exports){
+module.exports={
+   "gethHttpURL": "http://127.0.0.1:8545",
+   "gethWebsocketsURL": "ws://127.0.0.1:8546"
+}
+},{}],392:[function(require,module,exports){
 'use strict';
 
 var _augurUiReactComponents = require('augur-ui-react-components');
@@ -67149,7 +71265,7 @@ window.onpopstate = function (e) {
   _store2.default.dispatch((0, _showLink.showLink)(window.location.pathname + window.location.search));
 };
 
-},{"./modules/app/actions/init-augur":392,"./modules/link/actions/show-link":446,"./selectors":531,"./store":533,"augur-ui-react-components":1}],392:[function(require,module,exports){
+},{"./modules/app/actions/init-augur":393,"./modules/link/actions/show-link":447,"./selectors":532,"./store":534,"augur-ui-react-components":1}],393:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67214,7 +71330,7 @@ function initAugur() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/actions/listen-to-updates":393,"../../app/actions/update-blockchain":394,"../../app/actions/update-branch":395,"../../app/actions/update-connection":396,"../../app/constants/network":397,"../../auth/actions/load-login-account":405,"../../market/actions/load-full-market":450,"../../markets/actions/load-markets":457}],393:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/actions/listen-to-updates":394,"../../app/actions/update-blockchain":395,"../../app/actions/update-branch":396,"../../app/actions/update-connection":397,"../../app/constants/network":398,"../../auth/actions/load-login-account":406,"../../market/actions/load-full-market":451,"../../markets/actions/load-markets":458}],394:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67269,7 +71385,7 @@ function listenToUpdates() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/actions/update-blockchain":394,"../../auth/actions/update-assets":409,"../../market/actions/load-market":451,"../../markets/actions/update-outcome-price":463}],394:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/actions/update-blockchain":395,"../../auth/actions/update-assets":410,"../../market/actions/load-market":452,"../../markets/actions/update-outcome-price":464}],395:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67405,7 +71521,7 @@ function updateBlockchain(cb) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/constants/network":397,"../../reports/actions/collect-fees":504}],395:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/constants/network":398,"../../reports/actions/collect-fees":505}],396:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67418,7 +71534,7 @@ function updateBranch(branch) {
 	return { type: UPDATE_BRANCH, branch: branch };
 }
 
-},{}],396:[function(require,module,exports){
+},{}],397:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67438,7 +71554,7 @@ function updateConnectionStatus(isConnected) {
 	};
 }
 
-},{}],397:[function(require,module,exports){
+},{}],398:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67447,7 +71563,7 @@ Object.defineProperty(exports, "__esModule", {
 var MILLIS_PER_BLOCK = exports.MILLIS_PER_BLOCK = 12000;
 var BRANCH_ID = exports.BRANCH_ID = 1010101;
 
-},{}],398:[function(require,module,exports){
+},{}],399:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67461,7 +71577,7 @@ var M = exports.M = 'm';
 
 var DEFAULT_PAGE = exports.DEFAULT_PAGE = MARKETS;
 
-},{}],399:[function(require,module,exports){
+},{}],400:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67487,7 +71603,7 @@ var _pages = require('../../app/constants/pages');
 
 var _paths = require('../../link/constants/paths');
 
-},{"../../app/constants/pages":398,"../../link/actions/show-link":446,"../../link/constants/paths":448}],400:[function(require,module,exports){
+},{"../../app/constants/pages":399,"../../link/actions/show-link":447,"../../link/constants/paths":449}],401:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67511,7 +71627,7 @@ exports.default = function () {
 
 var _updateBlockchain = require('../../app/actions/update-blockchain');
 
-},{"../../app/actions/update-blockchain":394}],401:[function(require,module,exports){
+},{"../../app/actions/update-blockchain":395}],402:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67534,7 +71650,7 @@ exports.default = function () {
 
 var _updateBranch = require('../../app/actions/update-branch');
 
-},{"../../app/actions/update-branch":395}],402:[function(require,module,exports){
+},{"../../app/actions/update-branch":396}],403:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67562,7 +71678,7 @@ exports.default = function () {
 
 var _updateConnection = require('../../app/actions/update-connection');
 
-},{"../../app/actions/update-connection":396}],403:[function(require,module,exports){
+},{"../../app/actions/update-connection":397}],404:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67583,7 +71699,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../../store":533}],404:[function(require,module,exports){
+},{"../../../store":534}],405:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67596,7 +71712,7 @@ function authError(err) {
 	return { type: AUTH_ERROR, err: err };
 }
 
-},{}],405:[function(require,module,exports){
+},{}],406:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67712,7 +71828,7 @@ function loadLoginAccount() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../auth/actions/update-assets":409,"../../auth/actions/update-login-account":410,"../../markets/actions/update-favorites":460,"../../positions/actions/load-account-trades":498,"../../positions/actions/update-account-trades-data":499,"../../reports/actions/close-markets":503,"../../reports/actions/collect-fees":504,"../../reports/actions/load-reports":505,"../../reports/actions/penalize-wrong-reports":506,"../../reports/actions/update-reports":508,"../../transactions/actions/update-transactions-data":523,"../../transactions/constants/statuses":524}],406:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../auth/actions/update-assets":410,"../../auth/actions/update-login-account":411,"../../markets/actions/update-favorites":461,"../../positions/actions/load-account-trades":499,"../../positions/actions/update-account-trades-data":500,"../../reports/actions/close-markets":504,"../../reports/actions/collect-fees":505,"../../reports/actions/load-reports":506,"../../reports/actions/penalize-wrong-reports":507,"../../reports/actions/update-reports":509,"../../transactions/actions/update-transactions-data":524,"../../transactions/constants/statuses":525}],407:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67755,7 +71871,7 @@ function login(username, password) {
 	};
 }
 
-},{"../../../selectors":531,"../../../services/augurjs":532,"../../auth/actions/auth-error":404,"../../auth/actions/load-login-account":405,"../../auth/actions/update-login-account":410}],407:[function(require,module,exports){
+},{"../../../selectors":532,"../../../services/augurjs":533,"../../auth/actions/auth-error":405,"../../auth/actions/load-login-account":406,"../../auth/actions/update-login-account":411}],408:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67778,7 +71894,7 @@ function logout() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../auth/actions/update-login-account":410}],408:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../auth/actions/update-login-account":411}],409:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67864,7 +71980,7 @@ function register(username, password, password2) {
 	};
 }
 
-},{"../../../selectors":531,"../../../services/augurjs":532,"../../auth/actions/auth-error":404,"../../auth/actions/update-assets":409,"../../auth/actions/update-login-account":410,"../../auth/constants/auth-types":411,"../../auth/constants/form-errors":412,"../../transactions/actions/add-transactions":520,"../../transactions/actions/update-existing-transaction":522,"../../transactions/actions/update-transactions-data":523,"../../transactions/constants/statuses":524}],409:[function(require,module,exports){
+},{"../../../selectors":532,"../../../services/augurjs":533,"../../auth/actions/auth-error":405,"../../auth/actions/update-assets":410,"../../auth/actions/update-login-account":411,"../../auth/constants/auth-types":412,"../../auth/constants/form-errors":413,"../../transactions/actions/add-transactions":521,"../../transactions/actions/update-existing-transaction":523,"../../transactions/actions/update-transactions-data":524,"../../transactions/constants/statuses":525}],410:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67925,7 +72041,7 @@ function updateAssets() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/constants/network":397,"../../auth/actions/update-login-account":410}],410:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/constants/network":398,"../../auth/actions/update-login-account":411}],411:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67944,7 +72060,7 @@ function clearLoginAccount() {
 	return { type: CLEAR_LOGIN_ACCOUNT };
 }
 
-},{}],411:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67962,7 +72078,7 @@ var AUTH_TYPES = exports.AUTH_TYPES = (_AUTH_TYPES = {}, _defineProperty(_AUTH_T
 
 var DEFAULT_AUTH_TYPE = exports.DEFAULT_AUTH_TYPE = REGISTER;
 
-},{}],412:[function(require,module,exports){
+},{}],413:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67977,7 +72093,7 @@ var PASSWORDS_DO_NOT_MATCH = exports.PASSWORDS_DO_NOT_MATCH = 'PASSWORDS_DO_NOT_
 var INVALID_USERNAME = exports.INVALID_USERNAME = 'INVALID_USERNAME';
 var INVALID_USER = exports.INVALID_USER = 'INVALID_USER';
 
-},{}],413:[function(require,module,exports){
+},{}],414:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68015,7 +72131,7 @@ var _showLink = require('../../link/actions/show-link');
 
 var _authError = require('../../auth/actions/auth-error');
 
-},{"../../auth/actions/auth-error":404,"../../auth/constants/auth-types":411,"../../link/actions/show-link":446,"../../link/constants/paths":448}],414:[function(require,module,exports){
+},{"../../auth/actions/auth-error":405,"../../auth/constants/auth-types":412,"../../link/actions/show-link":447,"../../link/constants/paths":449}],415:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68042,7 +72158,7 @@ exports.default = function () {
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":410}],415:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":411}],416:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68171,7 +72287,7 @@ var selectAuthForm = exports.selectAuthForm = (0, _memoizerific2.default)(1)(fun
 	return obj;
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../auth/actions/login":406,"../../auth/actions/register":408,"../../auth/constants/auth-types":411,"../../auth/constants/form-errors":412,"../../link/selectors/links":449,"memoizerific":375}],416:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../auth/actions/login":407,"../../auth/actions/register":409,"../../auth/constants/auth-types":412,"../../auth/constants/form-errors":413,"../../link/selectors/links":450,"memoizerific":375}],417:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68200,7 +72316,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../../store":533,"../../../utils/format-number":539}],417:[function(require,module,exports){
+},{"../../../store":534,"../../../utils/format-number":540}],418:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68286,7 +72402,7 @@ function loadBidsAsks(marketID) {
 // 	};
 // }
 
-},{"../../../services/augurjs":532,"../../market/selectors/market":454,"./update-market-order-book":418}],418:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../market/selectors/market":455,"./update-market-order-book":419}],419:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68299,7 +72415,7 @@ function updateMarketOrderBook(marketId, marketOrderBook) {
 	return { type: UPDATE_MARKET_ORDER_BOOK, marketId: marketId, marketOrderBook: marketOrderBook };
 }
 
-},{}],419:[function(require,module,exports){
+},{}],420:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68308,7 +72424,7 @@ Object.defineProperty(exports, "__esModule", {
 var BID = exports.BID = 'bid';
 var ASK = exports.ASK = 'ask';
 
-},{}],420:[function(require,module,exports){
+},{}],421:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68343,7 +72459,7 @@ var _updateMarketOrderBook = require('../actions/update-market-order-book');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../actions/update-market-order-book":418}],421:[function(require,module,exports){
+},{"../actions/update-market-order-book":419}],422:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68435,7 +72551,7 @@ function sortPricePointsByPriceDesc(pricePoint1, pricePoint2) {
 	return pricePoint2.price.value - pricePoint1.price.value;
 }
 
-},{"../../../utils/format-number":539,"memoizerific":375}],422:[function(require,module,exports){
+},{"../../../utils/format-number":540,"memoizerific":375}],423:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68523,7 +72639,7 @@ function handleGenerateOrderBookResponse(err, res, transactionID, marketData) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../transactions/actions/add-generate-order-book-transaction":517,"../../transactions/actions/update-existing-transaction":522,"../../transactions/constants/statuses":524}],423:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../transactions/actions/add-generate-order-book-transaction":518,"../../transactions/actions/update-existing-transaction":523,"../../transactions/constants/statuses":525}],424:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68617,7 +72733,7 @@ function createMarket(transactionID, newMarket) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/constants/network":397,"../../create-market/actions/generate-order-book":422,"../../create-market/actions/update-make-in-progress":424,"../../link/selectors/links":449,"../../market/actions/load-market":451,"../../markets/constants/market-types":469,"../../transactions/actions/add-create-market-transaction":516,"../../transactions/actions/update-existing-transaction":522,"../../transactions/constants/statuses":524}],424:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/constants/network":398,"../../create-market/actions/generate-order-book":423,"../../create-market/actions/update-make-in-progress":425,"../../link/selectors/links":450,"../../market/actions/load-market":452,"../../markets/constants/market-types":470,"../../transactions/actions/add-create-market-transaction":517,"../../transactions/actions/update-existing-transaction":523,"../../transactions/constants/statuses":525}],425:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68636,7 +72752,7 @@ function clearMakeInProgress() {
 	return { type: CLEAR_MAKE_IN_PROGRESS };
 }
 
-},{}],425:[function(require,module,exports){
+},{}],426:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68682,7 +72798,7 @@ var PRICE_DEPTH_DEFAULT = exports.PRICE_DEPTH_DEFAULT = 0.1; // Not used yet
 
 var IS_SIMULATION = exports.IS_SIMULATION = false; // Not used yet
 
-},{}],426:[function(require,module,exports){
+},{}],427:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68709,7 +72825,7 @@ exports.default = function () {
 
 var _updateMakeInProgress = require('../actions/update-make-in-progress');
 
-},{"../actions/update-make-in-progress":424}],427:[function(require,module,exports){
+},{"../actions/update-make-in-progress":425}],428:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68816,7 +72932,7 @@ var selectCreateMarketForm = exports.selectCreateMarketForm = (0, _memoizerific2
 	});
 });
 
-},{"../../../store":533,"../../create-market/actions/update-make-in-progress":424,"../../create-market/selectors/form-steps/step-2":428,"../../create-market/selectors/form-steps/step-3":429,"../../create-market/selectors/form-steps/step-4":430,"../../create-market/selectors/form-steps/step-5":431,"../../markets/constants/market-types":469,"memoizerific":375}],428:[function(require,module,exports){
+},{"../../../store":534,"../../create-market/actions/update-make-in-progress":425,"../../create-market/selectors/form-steps/step-2":429,"../../create-market/selectors/form-steps/step-3":430,"../../create-market/selectors/form-steps/step-4":431,"../../create-market/selectors/form-steps/step-5":432,"../../markets/constants/market-types":470,"memoizerific":375}],429:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -68986,7 +73102,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../create-market/constants/market-values-constraints":425,"../../../create-market/validators/validate-categorical-outcomes":433,"../../../create-market/validators/validate-description":434,"../../../create-market/validators/validate-end-date":435,"../../../create-market/validators/validate-scalar-big-num":442,"../../../create-market/validators/validate-scalar-small-num":443,"../../../markets/constants/market-types":469}],429:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":426,"../../../create-market/validators/validate-categorical-outcomes":434,"../../../create-market/validators/validate-description":435,"../../../create-market/validators/validate-end-date":436,"../../../create-market/validators/validate-scalar-big-num":443,"../../../create-market/validators/validate-scalar-small-num":444,"../../../markets/constants/market-types":470}],430:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69042,7 +73158,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../create-market/constants/market-values-constraints":425,"../../../create-market/validators/validate-expiry-source":437,"../../../create-market/validators/validate-expiry-source-url":436}],430:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":426,"../../../create-market/validators/validate-expiry-source":438,"../../../create-market/validators/validate-expiry-source-url":437}],431:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69177,7 +73293,7 @@ var errors = exports.errors = function errors(formState) {
 	return errs;
 };
 
-},{"../../../create-market/constants/market-values-constraints":425,"../../../markets/constants/market-types":469,"../../validators/validate-best-starting-quantity":432,"../../validators/validate-initial-fair-prices":438,"../../validators/validate-initial-liquidity":439,"../../validators/validate-maker-fee":440,"../../validators/validate-price-width":441,"../../validators/validate-starting-quantity":444,"../../validators/validate-taker-fee":445}],431:[function(require,module,exports){
+},{"../../../create-market/constants/market-values-constraints":426,"../../../markets/constants/market-types":470,"../../validators/validate-best-starting-quantity":433,"../../validators/validate-initial-fair-prices":439,"../../validators/validate-initial-liquidity":440,"../../validators/validate-maker-fee":441,"../../validators/validate-price-width":442,"../../validators/validate-starting-quantity":445,"../../validators/validate-taker-fee":446}],432:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69257,7 +73373,7 @@ var selectOutcomesFromForm = exports.selectOutcomesFromForm = function selectOut
 	}
 };
 
-},{"../../../../utils/format-date":538,"../../../../utils/format-number":539,"../../../app/constants/network":397,"../../../create-market/actions/submit-new-market":423,"../../../create-market/constants/market-values-constraints":425,"../../../markets/constants/market-types":469}],432:[function(require,module,exports){
+},{"../../../../utils/format-date":539,"../../../../utils/format-number":540,"../../../app/constants/network":398,"../../../create-market/actions/submit-new-market":424,"../../../create-market/constants/market-values-constraints":426,"../../../markets/constants/market-types":470}],433:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69283,7 +73399,7 @@ function validateBestStartingQuantity(bestStartingQuantity) {
 	}
 }
 
-},{"../../../utils/format-number":539,"../../create-market/constants/market-values-constraints":425}],433:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../create-market/constants/market-values-constraints":426}],434:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69315,7 +73431,7 @@ exports.default = function (categoricalOutcomes) {
 	return errors;
 };
 
-},{}],434:[function(require,module,exports){
+},{}],435:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69340,7 +73456,7 @@ exports.default = function (description) {
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../create-market/constants/market-values-constraints":425}],435:[function(require,module,exports){
+},{"../../create-market/constants/market-values-constraints":426}],436:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69354,7 +73470,7 @@ exports.default = function (endDate) {
 	return null;
 };
 
-},{}],436:[function(require,module,exports){
+},{}],437:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69369,7 +73485,7 @@ exports.default = function (expirySourceUrl, expirySource) {
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../create-market/constants/market-values-constraints":425}],437:[function(require,module,exports){
+},{"../../create-market/constants/market-values-constraints":426}],438:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69384,7 +73500,7 @@ exports.default = function (expirySource) {
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../create-market/constants/market-values-constraints":425}],438:[function(require,module,exports){
+},{"../../create-market/constants/market-values-constraints":426}],439:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69430,7 +73546,7 @@ function validateInitialFairPrices(type, initialFairPrices, width, halfWidth, sc
 	}
 }
 
-},{"../../markets/constants/market-types":469}],439:[function(require,module,exports){
+},{"../../markets/constants/market-types":470}],440:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69462,7 +73578,7 @@ function validateInitialLiquidity(type, liquidity, start, best, halfWidth, scala
 	}
 }
 
-},{"../../../utils/format-number":539,"../../create-market/constants/market-values-constraints":425,"../../markets/constants/market-types":469}],440:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../create-market/constants/market-values-constraints":426,"../../markets/constants/market-types":470}],441:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69488,7 +73604,7 @@ var _formatNumber = require('../../../utils/format-number');
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../../utils/format-number":539,"../../create-market/constants/market-values-constraints":425}],441:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../create-market/constants/market-values-constraints":426}],442:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69514,7 +73630,7 @@ function validatePriceWidth(priceWidth) {
 	}
 }
 
-},{"../../../utils/format-number":539,"../../create-market/constants/market-values-constraints":425}],442:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../create-market/constants/market-values-constraints":426}],443:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69536,7 +73652,7 @@ exports.default = function (scalarSmallNum, scalarBigNum) {
 	return null;
 };
 
-},{}],443:[function(require,module,exports){
+},{}],444:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69557,7 +73673,7 @@ exports.default = function (scalarSmallNum, scalarBigNum) {
 	return null;
 };
 
-},{}],444:[function(require,module,exports){
+},{}],445:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69583,7 +73699,7 @@ function validateStartingQuantity(startingQuantity) {
 	}
 }
 
-},{"../../../utils/format-number":539,"../../create-market/constants/market-values-constraints":425}],445:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../create-market/constants/market-values-constraints":426}],446:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69608,7 +73724,7 @@ var _formatNumber = require('../../../utils/format-number');
 
 var _marketValuesConstraints = require('../../create-market/constants/market-values-constraints');
 
-},{"../../../utils/format-number":539,"../../create-market/constants/market-values-constraints":425}],446:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../create-market/constants/market-values-constraints":426}],447:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69660,7 +73776,7 @@ function showPreviousLink(url) {
 	};
 }
 
-},{"../../../utils/parse-url":542,"../../market/actions/load-full-market":450}],447:[function(require,module,exports){
+},{"../../../utils/parse-url":543,"../../market/actions/load-full-market":451}],448:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69675,7 +73791,7 @@ var PAGE_PARAM_NAME = exports.PAGE_PARAM_NAME = 'page';
 var TAGS_PARAM_NAME = exports.TAGS_PARAM_NAME = 'tags';
 var FILTERS_PARAM_NAME = exports.FILTERS_PARAM_NAME = 'filters';
 
-},{}],448:[function(require,module,exports){
+},{}],449:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69712,7 +73828,7 @@ var AUTH_PATHS = exports.AUTH_PATHS = Object.keys(PATHS_AUTH).reduce(function (f
 	return finalObj;
 }, {});
 
-},{"../../app/constants/pages":398,"../../auth/constants/auth-types":411}],449:[function(require,module,exports){
+},{"../../app/constants/pages":399,"../../auth/constants/auth-types":412}],450:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69904,7 +74020,7 @@ var selectCreateMarketLink = exports.selectCreateMarketLink = (0, _memoizerific2
 	};
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../../utils/list-words-under-length":541,"../../../utils/parse-url":542,"../../app/constants/pages":398,"../../auth/actions/logout":407,"../../auth/constants/auth-types":411,"../../link/actions/show-link":446,"../../link/constants/param-names":447,"../../link/constants/paths":448,"../../markets/constants/sort":472,"memoizerific":375}],450:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../../utils/list-words-under-length":542,"../../../utils/parse-url":543,"../../app/constants/pages":399,"../../auth/actions/logout":408,"../../auth/constants/auth-types":412,"../../link/actions/show-link":447,"../../link/constants/param-names":448,"../../link/constants/paths":449,"../../markets/constants/sort":473,"memoizerific":375}],451:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69941,7 +74057,7 @@ function loadFullMarket(marketId) {
 	};
 }
 
-},{"../../bids-asks/actions/load-bids-asks":417,"../../market/actions/load-market":451,"../../market/actions/load-price-history":452}],451:[function(require,module,exports){
+},{"../../bids-asks/actions/load-bids-asks":418,"../../market/actions/load-market":452,"../../market/actions/load-price-history":453}],452:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -69974,7 +74090,7 @@ function loadMarket(marketID, cb) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../markets/actions/update-markets-data":462}],452:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../markets/actions/update-markets-data":463}],453:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70001,7 +74117,7 @@ function loadPriceHistory(marketID) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../market/actions/update-market-price-history":453}],453:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../market/actions/update-market-price-history":454}],454:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70018,7 +74134,7 @@ function updateMarketPriceHistory(marketID, priceHistory) {
   return { type: UPDATE_MARKET_PRICE_HISTORY, marketID: marketID, priceHistory: priceHistory };
 }
 
-},{}],454:[function(require,module,exports){
+},{}],455:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70273,7 +74389,7 @@ var assembleMarket = exports.assembleMarket = (0, _memoizerific2.default)(1000)(
 	return market;
 });
 
-},{"../../../store":533,"../../../utils/format-date":538,"../../../utils/format-number":539,"../../../utils/is-market-data-open":540,"../../bids-asks/constants/bids-asks-types":419,"../../bids-asks/selectors/select-order-book":421,"../../link/selectors/links":449,"../../market/selectors/price-time-series":455,"../../markets/actions/toggle-tag":459,"../../markets/actions/update-favorites":460,"../../markets/constants/market-outcomes":468,"../../markets/constants/market-types":469,"../../positions/selectors/position":501,"../../positions/selectors/positions-summary":502,"../../reports/actions/submit-report":507,"../../trade/actions/place-trade":510,"../../trade/actions/update-trades-in-progress":511,"../../trade/selectors/trade-orders":514,"../../trade/selectors/trade-summary":515,"memoizerific":375}],455:[function(require,module,exports){
+},{"../../../store":534,"../../../utils/format-date":539,"../../../utils/format-number":540,"../../../utils/is-market-data-open":541,"../../bids-asks/constants/bids-asks-types":420,"../../bids-asks/selectors/select-order-book":422,"../../link/selectors/links":450,"../../market/selectors/price-time-series":456,"../../markets/actions/toggle-tag":460,"../../markets/actions/update-favorites":461,"../../markets/constants/market-outcomes":469,"../../markets/constants/market-types":470,"../../positions/selectors/position":502,"../../positions/selectors/positions-summary":503,"../../reports/actions/submit-report":508,"../../trade/actions/place-trade":511,"../../trade/actions/update-trades-in-progress":512,"../../trade/selectors/trade-orders":515,"../../trade/selectors/trade-summary":516,"memoizerific":375}],456:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70322,7 +74438,7 @@ var selectPriceTimeSeries = exports.selectPriceTimeSeries = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../store":533,"../../../utils/date-to-block-to-date":537,"memoizerific":375}],456:[function(require,module,exports){
+},{"../../../store":534,"../../../utils/date-to-block-to-date":538,"memoizerific":375}],457:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70497,7 +74613,7 @@ function loadMarketsInfoForDisplayedMarkets() {
 	};
 }
 
-},{"../../../selectors":531,"../../../services/augurjs":532,"../../markets/actions/update-markets-data":462,"../../markets/actions/update-outcomes-data":464,"../../markets/constants/market-outcomes":468,"../../markets/constants/market-types":469}],457:[function(require,module,exports){
+},{"../../../selectors":532,"../../../services/augurjs":533,"../../markets/actions/update-markets-data":463,"../../markets/actions/update-outcomes-data":465,"../../markets/constants/market-outcomes":469,"../../markets/constants/market-types":470}],458:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70546,7 +74662,7 @@ function loadMarkets() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/constants/network":397,"../../markets/actions/update-markets-data":462}],458:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/constants/network":398,"../../markets/actions/update-markets-data":463}],459:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70571,7 +74687,7 @@ function toggleFilter(filterID) {
 	};
 }
 
-},{"../../../selectors":531,"../../link/actions/show-link":446}],459:[function(require,module,exports){
+},{"../../../selectors":532,"../../link/actions/show-link":447}],460:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70596,7 +74712,7 @@ function toggleTag(filterID) {
 	};
 }
 
-},{"../../../selectors":531,"../../link/actions/show-link":446}],460:[function(require,module,exports){
+},{"../../../selectors":532,"../../link/actions/show-link":447}],461:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70615,7 +74731,7 @@ function toggleFavorite(marketID) {
 	return { type: TOGGLE_FAVORITE, marketID: marketID };
 }
 
-},{}],461:[function(require,module,exports){
+},{}],462:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70640,7 +74756,7 @@ function updateKeywords(keywords) {
 	};
 }
 
-},{"../../../selectors":531,"../../link/actions/show-link":446}],462:[function(require,module,exports){
+},{"../../../selectors":532,"../../link/actions/show-link":447}],463:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70659,7 +74775,7 @@ function updateMarketData(marketData) {
 	return { type: UPDATE_MARKET_DATA, marketData: marketData };
 }
 
-},{}],463:[function(require,module,exports){
+},{}],464:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70672,7 +74788,7 @@ function updateOutcomePrice(marketID, outcomeID, price) {
 	return { type: UPDATE_OUTCOME_PRICE, marketID: marketID, outcomeID: outcomeID, price: price };
 }
 
-},{}],464:[function(require,module,exports){
+},{}],465:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70685,7 +74801,7 @@ function updateOutcomesData(outcomesData) {
 	return { type: UPDATE_OUTCOMES_DATA, outcomesData: outcomesData };
 }
 
-},{}],465:[function(require,module,exports){
+},{}],466:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70698,7 +74814,7 @@ function updateSelectedMarketsHeader(selectedMarketsHeader) {
 	return { type: UPDATED_SELECTED_MARKETS_HEADER, selectedMarketsHeader: selectedMarketsHeader };
 }
 
-},{}],466:[function(require,module,exports){
+},{}],467:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70723,7 +74839,7 @@ function updateSelectedPageNum(selectedPageNum) {
 	};
 }
 
-},{"../../../selectors":531,"../../link/actions/show-link":446}],467:[function(require,module,exports){
+},{"../../../selectors":532,"../../link/actions/show-link":447}],468:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70748,7 +74864,7 @@ function updateSelectedSort(selectedSort) {
 	};
 }
 
-},{"../../../selectors":531,"../../link/actions/show-link":446}],468:[function(require,module,exports){
+},{"../../../selectors":532,"../../link/actions/show-link":447}],469:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70766,7 +74882,7 @@ var SCALAR_UP_ID = exports.SCALAR_UP_ID = 2;
 var INDETERMINATE_OUTCOME_ID = exports.INDETERMINATE_OUTCOME_ID = '1.5';
 var INDETERMINATE_OUTCOME_NAME = exports.INDETERMINATE_OUTCOME_NAME = 'Indeterminate';
 
-},{}],469:[function(require,module,exports){
+},{}],470:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70784,7 +74900,7 @@ var COMBINATORIAL = exports.COMBINATORIAL = 'combinatorial';
 
 var MARKET_TYPES = exports.MARKET_TYPES = (_MARKET_TYPES = {}, _defineProperty(_MARKET_TYPES, BINARY, BINARY), _defineProperty(_MARKET_TYPES, CATEGORICAL, CATEGORICAL), _defineProperty(_MARKET_TYPES, SCALAR, SCALAR), _defineProperty(_MARKET_TYPES, COMBINATORIAL, COMBINATORIAL), _MARKET_TYPES);
 
-},{}],470:[function(require,module,exports){
+},{}],471:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70793,7 +74909,7 @@ Object.defineProperty(exports, "__esModule", {
 var FAVORITES = exports.FAVORITES = 'favorites';
 var PENDING_REPORTS = exports.PENDING_REPORTS = 'pending reports';
 
-},{}],471:[function(require,module,exports){
+},{}],472:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -70804,7 +74920,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 var DEFAULT_PAGE = exports.DEFAULT_PAGE = 1;
 
-},{}],472:[function(require,module,exports){
+},{}],473:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70816,7 +74932,7 @@ Object.defineProperty(exports, "__esModule", {
 var DEFAULT_SORT_PROP = exports.DEFAULT_SORT_PROP = 'volume';
 var DEFAULT_IS_SORT_DESC = exports.DEFAULT_IS_SORT_DESC = true;
 
-},{}],473:[function(require,module,exports){
+},{}],474:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70851,7 +74967,7 @@ exports.default = function () {
 
 var _updateFavorites = require('../../markets/actions/update-favorites');
 
-},{"../../markets/actions/update-favorites":460}],474:[function(require,module,exports){
+},{"../../markets/actions/update-favorites":461}],475:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70885,7 +75001,7 @@ var _showLink = require('../../link/actions/show-link');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":446,"../../link/constants/param-names":447,"../../markets/actions/update-keywords":461}],475:[function(require,module,exports){
+},{"../../link/actions/show-link":447,"../../link/constants/param-names":448,"../../markets/actions/update-keywords":462}],476:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70914,7 +75030,7 @@ var _updateMarketsData = require('../../markets/actions/update-markets-data');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../markets/actions/update-markets-data":462}],476:[function(require,module,exports){
+},{"../../markets/actions/update-markets-data":463}],477:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -70950,7 +75066,7 @@ var _updateOutcomePrice = require('../../markets/actions/update-outcome-price');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../markets/actions/update-outcome-price":463,"../../markets/actions/update-outcomes-data":464}],477:[function(require,module,exports){
+},{"../../markets/actions/update-outcome-price":464,"../../markets/actions/update-outcomes-data":465}],478:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71014,7 +75130,7 @@ var _pagination = require('../../markets/constants/pagination');
 
 var _showLink = require('../../link/actions/show-link');
 
-},{"../../link/actions/show-link":446,"../../link/constants/param-names":447,"../../markets/actions/toggle-filter":458,"../../markets/actions/toggle-tag":459,"../../markets/actions/update-keywords":461,"../../markets/actions/update-selected-markets-header":465,"../../markets/actions/update-selected-page-num":466,"../../markets/actions/update-selected-sort":467,"../../markets/constants/pagination":471}],478:[function(require,module,exports){
+},{"../../link/actions/show-link":447,"../../link/constants/param-names":448,"../../markets/actions/toggle-filter":459,"../../markets/actions/toggle-tag":460,"../../markets/actions/update-keywords":462,"../../markets/actions/update-selected-markets-header":466,"../../markets/actions/update-selected-page-num":467,"../../markets/actions/update-selected-sort":468,"../../markets/constants/pagination":472}],479:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71040,7 +75156,7 @@ var _updateMarketPriceHistory = require('../../market/actions/update-market-pric
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../market/actions/update-market-price-history":453}],479:[function(require,module,exports){
+},{"../../market/actions/update-market-price-history":454}],480:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71085,7 +75201,7 @@ var _toggleFilter = require('../../markets/actions/toggle-filter');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":446,"../../link/constants/param-names":447,"../../markets/actions/toggle-filter":458}],480:[function(require,module,exports){
+},{"../../link/actions/show-link":447,"../../link/constants/param-names":448,"../../markets/actions/toggle-filter":459}],481:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71114,7 +75230,7 @@ var _pages = require('../../app/constants/pages');
 
 var _paths = require('../../link/constants/paths');
 
-},{"../../app/constants/pages":398,"../../link/actions/show-link":446,"../../link/constants/paths":448}],481:[function(require,module,exports){
+},{"../../app/constants/pages":399,"../../link/actions/show-link":447,"../../link/constants/paths":449}],482:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71136,7 +75252,7 @@ exports.default = function () {
 
 var _updateSelectedMarketsHeader = require('../../markets/actions/update-selected-markets-header');
 
-},{"../../markets/actions/update-selected-markets-header":465}],482:[function(require,module,exports){
+},{"../../markets/actions/update-selected-markets-header":466}],483:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71182,7 +75298,7 @@ var _sort = require('../../markets/constants/sort');
 
 var _updateSelectedSort = require('../../markets/actions/update-selected-sort');
 
-},{"../../link/actions/show-link":446,"../../link/constants/param-names":447,"../../markets/actions/update-selected-sort":467,"../../markets/constants/sort":472}],483:[function(require,module,exports){
+},{"../../link/actions/show-link":447,"../../link/constants/param-names":448,"../../markets/actions/update-selected-sort":468,"../../markets/constants/sort":473}],484:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71226,7 +75342,7 @@ var _toggleTag = require('../../markets/actions/toggle-tag');
 
 var _paramNames = require('../../link/constants/param-names');
 
-},{"../../link/actions/show-link":446,"../../link/constants/param-names":447,"../../markets/actions/toggle-tag":459}],484:[function(require,module,exports){
+},{"../../link/actions/show-link":447,"../../link/constants/param-names":448,"../../markets/actions/toggle-tag":460}],485:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71307,7 +75423,7 @@ var selectFilters = exports.selectFilters = (0, _memoizerific2.default)(1)(funct
 	return filters;
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../markets/actions/toggle-tag":459,"memoizerific":375}],485:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../markets/actions/toggle-tag":460,"memoizerific":375}],486:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71347,7 +75463,7 @@ var selectOnChangeKeywords = exports.selectOnChangeKeywords = (0, _memoizerific2
 	};
 });
 
-},{"../../../store":533,"../../markets/actions/update-keywords":461,"memoizerific":375}],486:[function(require,module,exports){
+},{"../../../store":534,"../../markets/actions/update-keywords":462,"memoizerific":375}],487:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71437,7 +75553,7 @@ function cleanSortVal(val) {
 	return val;
 }
 
-},{"../../../store":533,"../../../utils/is-market-data-open":540,"../../market/selectors/market":454,"memoizerific":375}],487:[function(require,module,exports){
+},{"../../../store":534,"../../../utils/is-market-data-open":541,"../../market/selectors/market":455,"memoizerific":375}],488:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71465,7 +75581,7 @@ var selectFavoriteMarkets = exports.selectFavoriteMarkets = (0, _memoizerific2.d
 	});
 });
 
-},{"../../../selectors":531,"memoizerific":375}],488:[function(require,module,exports){
+},{"../../../selectors":532,"memoizerific":375}],489:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71535,7 +75651,7 @@ var isMarketFiltersMatch = exports.isMarketFiltersMatch = (0, _memoizerific2.def
 	}
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../../utils/clean-keywords":536,"memoizerific":375}],489:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../../utils/clean-keywords":537,"memoizerific":375}],490:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71588,7 +75704,7 @@ var selectMarketsHeader = exports.selectMarketsHeader = (0, _memoizerific2.defau
 	return obj;
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../markets/actions/update-selected-markets-header":465,"../../markets/constants/markets-headers":470,"memoizerific":375}],490:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../markets/actions/update-selected-markets-header":466,"../../markets/constants/markets-headers":471,"memoizerific":375}],491:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71650,7 +75766,7 @@ var selectMarketsTotals = exports.selectMarketsTotals = (0, _memoizerific2.defau
 	return totals;
 });
 
-},{"../../../selectors":531,"../../positions/selectors/positions-summary":502,"memoizerific":375}],491:[function(require,module,exports){
+},{"../../../selectors":532,"../../positions/selectors/positions-summary":503,"memoizerific":375}],492:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71716,7 +75832,7 @@ var selectUnpaginatedMarkets = exports.selectUnpaginatedMarkets = (0, _memoizeri
 	return filteredMarkets;
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../app/constants/pages":398,"../../markets/constants/markets-headers":470,"memoizerific":375}],492:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../app/constants/pages":399,"../../markets/constants/markets-headers":471,"memoizerific":375}],493:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71777,7 +75893,7 @@ var selectPaginated = exports.selectPaginated = (0, _memoizerific2.default)(1)(f
 	return markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage);
 });
 
-},{"../../../selectors":531,"../../../store":533,"../../app/constants/pages":398,"../../markets/actions/load-markets-info":456,"../../markets/constants/markets-headers":470,"memoizerific":375}],493:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../app/constants/pages":399,"../../markets/actions/load-markets-info":457,"../../markets/constants/markets-headers":471,"memoizerific":375}],494:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71829,7 +75945,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../../selectors":531,"../../../store":533,"../../markets/actions/update-selected-page-num":466}],494:[function(require,module,exports){
+},{"../../../selectors":532,"../../../store":534,"../../markets/actions/update-selected-page-num":467}],495:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71913,7 +76029,7 @@ var selectOnChangeSort = exports.selectOnChangeSort = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../store":533,"../../markets/actions/update-selected-sort":467,"memoizerific":375}],495:[function(require,module,exports){
+},{"../../../store":534,"../../markets/actions/update-selected-sort":468,"memoizerific":375}],496:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71931,7 +76047,7 @@ exports.default = function (selectedOutcomeID) {
 	};
 };
 
-},{}],496:[function(require,module,exports){
+},{}],497:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71954,7 +76070,7 @@ exports.default = function () {
     * Author: priecint
     */
 
-},{"../../outcome/actions/update-selected-outcome":495}],497:[function(require,module,exports){
+},{"../../outcome/actions/update-selected-outcome":496}],498:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -71991,7 +76107,7 @@ var selectUpdateSelectedOutcome = (0, _memoizerific2.default)(1)(function (dispa
 	};
 });
 
-},{"../../../store":533,"../../outcome/actions/update-selected-outcome":495,"memoizerific":375}],498:[function(require,module,exports){
+},{"../../../store":534,"../../outcome/actions/update-selected-outcome":496,"memoizerific":375}],499:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72060,7 +76176,7 @@ console.log('========loadMeanTradePrices>>>>', err, meanTradePrices);
 }
 */
 
-},{"../../../services/augurjs":532,"../../positions/actions/update-account-trades-data":499}],499:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../positions/actions/update-account-trades-data":500}],500:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72073,7 +76189,7 @@ function updateAccountTradesData(data) {
 	return { type: UPDATE_ACCOUNT_TRADES_DATA, data: data };
 }
 
-},{}],500:[function(require,module,exports){
+},{}],501:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72102,7 +76218,7 @@ var _updateAccountTradesData = require('../../positions/actions/update-account-t
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":410,"../../positions/actions/update-account-trades-data":499}],501:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":411,"../../positions/actions/update-account-trades-data":500}],502:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72138,7 +76254,7 @@ var selectPositionFromOutcomeAccountTrades = exports.selectPositionFromOutcomeAc
 	return position;
 });
 
-},{"../../positions/selectors/positions-summary":502,"memoizerific":375}],502:[function(require,module,exports){
+},{"../../positions/selectors/positions-summary":503,"memoizerific":375}],503:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72173,7 +76289,7 @@ var selectPositionsSummary = exports.selectPositionsSummary = (0, _memoizerific2
 	};
 });
 
-},{"../../../utils/format-number":539,"memoizerific":375}],503:[function(require,module,exports){
+},{"../../../utils/format-number":540,"memoizerific":375}],504:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72239,7 +76355,7 @@ function closeMarkets(marketsData) {
 } // import * as AugurJS from '../../../services/augurjs';
 // import { BRANCH_ID } from '../../app/constants/network';
 
-},{"../../../utils/is-market-data-open":540}],504:[function(require,module,exports){
+},{"../../../utils/is-market-data-open":541}],505:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72276,7 +76392,7 @@ function collectFees() {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../app/constants/network":397,"../../auth/actions/update-assets":409}],505:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../app/constants/network":398,"../../auth/actions/update-assets":410}],506:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72328,7 +76444,7 @@ function loadReports(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../../utils/is-market-data-open":540,"../../app/constants/network":397,"../../reports/actions/update-reports":508}],506:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../../utils/is-market-data-open":541,"../../app/constants/network":398,"../../reports/actions/update-reports":509}],507:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72386,7 +76502,7 @@ function penalizeWrongReports(marketsData) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../../utils/is-market-data-open":540,"../../app/constants/network":397}],507:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../../utils/is-market-data-open":541,"../../app/constants/network":398}],508:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72502,7 +76618,7 @@ function processReport(transactionID, market, reportedOutcomeID, isUnethical) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../../utils/bytes-to-hex":535,"../../app/constants/network":397,"../../link/selectors/links":449,"../../market/selectors/market":454,"../../markets/constants/market-outcomes":468,"../../markets/constants/market-types":469,"../../reports/actions/update-reports":508,"../../transactions/actions/add-report-transaction":518,"../../transactions/actions/update-existing-transaction":522,"../../transactions/constants/statuses":524,"secure-random":390}],508:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../../utils/bytes-to-hex":536,"../../app/constants/network":398,"../../link/selectors/links":450,"../../market/selectors/market":455,"../../markets/constants/market-outcomes":469,"../../markets/constants/market-types":470,"../../reports/actions/update-reports":509,"../../transactions/actions/add-report-transaction":519,"../../transactions/actions/update-existing-transaction":523,"../../transactions/constants/statuses":525,"secure-random":390}],509:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72521,7 +76637,7 @@ function clearReports() {
 	return { type: CLEAR_REPORTS };
 }
 
-},{}],509:[function(require,module,exports){
+},{}],510:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72559,7 +76675,7 @@ exports.default = function () {
 
 var _updateReports = require('../../reports/actions/update-reports');
 
-},{"../../reports/actions/update-reports":508}],510:[function(require,module,exports){
+},{"../../reports/actions/update-reports":509}],511:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72707,7 +76823,7 @@ function multiTrade(transactionID, marketID) {
 	};
 }
 
-},{"../../../services/augurjs":532,"../../link/selectors/links":449,"../../market/selectors/market":454,"../../trade/actions/update-trades-in-progress":511,"../../transactions/actions/add-trade-transaction":519,"../../transactions/actions/add-transactions":520,"../../transactions/actions/update-existing-transaction":522,"../../transactions/constants/statuses":524,"../../transactions/constants/types":525}],511:[function(require,module,exports){
+},{"../../../services/augurjs":533,"../../link/selectors/links":450,"../../market/selectors/market":455,"../../trade/actions/update-trades-in-progress":512,"../../transactions/actions/add-trade-transaction":520,"../../transactions/actions/add-transactions":521,"../../transactions/actions/update-existing-transaction":523,"../../transactions/constants/statuses":525,"../../transactions/constants/types":526}],512:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72763,7 +76879,7 @@ function clearTradeInProgress(marketID) {
 	return { type: CLEAR_TRADE_IN_PROGRESS, marketID: marketID };
 }
 
-},{}],512:[function(require,module,exports){
+},{}],513:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72797,7 +76913,7 @@ var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-},{"../../auth/actions/update-login-account":410,"../../trade/actions/update-trades-in-progress":511}],513:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":411,"../../trade/actions/update-trades-in-progress":512}],514:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72810,7 +76926,7 @@ exports.default = function () {
 
 var _bidsAsksTypes = require('../../bids-asks/constants/bids-asks-types');
 
-},{"../../bids-asks/constants/bids-asks-types":419}],514:[function(require,module,exports){
+},{"../../bids-asks/constants/bids-asks-types":420}],515:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -72978,7 +77094,7 @@ function(market, outcome, numShares, limitPrice, outcomeBids, outcomeAsks, dispa
 });
 */
 
-},{"../../../utils/format-number":539,"../../bids-asks/constants/bids-asks-types":419,"../../transactions/actions/add-trade-transaction":519}],515:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../bids-asks/constants/bids-asks-types":420,"../../transactions/actions/add-trade-transaction":520}],516:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73024,7 +77140,7 @@ var selectTradeSummary = exports.selectTradeSummary = (0, _memoizerific2.default
 	};
 });
 
-},{"../../../utils/format-number":539,"../../transactions/constants/types":525,"memoizerific":375}],516:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../transactions/constants/types":526,"memoizerific":375}],517:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73057,7 +77173,7 @@ var addCreateMarketTransaction = exports.addCreateMarketTransaction = function a
 	};
 };
 
-},{"../../create-market/actions/submit-new-market":423,"../../transactions/actions/add-transactions":520,"../../transactions/constants/types":525}],517:[function(require,module,exports){
+},{"../../create-market/actions/submit-new-market":424,"../../transactions/actions/add-transactions":521,"../../transactions/constants/types":526}],518:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73088,7 +77204,7 @@ var addGenerateOrderBookTransaction = exports.addGenerateOrderBookTransaction = 
 	};
 };
 
-},{"../../create-market/actions/generate-order-book":422,"../../transactions/actions/add-transactions":520,"../../transactions/constants/types":525}],518:[function(require,module,exports){
+},{"../../create-market/actions/generate-order-book":423,"../../transactions/actions/add-transactions":521,"../../transactions/constants/types":526}],519:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73128,7 +77244,7 @@ var addReportTransaction = exports.addReportTransaction = function addReportTran
 	};
 };
 
-},{"../../reports/actions/submit-report":507,"../../transactions/actions/add-transactions":520,"../../transactions/constants/types":525}],519:[function(require,module,exports){
+},{"../../reports/actions/submit-report":508,"../../transactions/actions/add-transactions":521,"../../transactions/constants/types":526}],520:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73190,7 +77306,7 @@ var addTradeTransaction = exports.addTradeTransaction = function addTradeTransac
 	};
 };
 
-},{"../../../utils/format-number":539,"../../trade/actions/place-trade":510,"../../transactions/actions/add-transactions":520,"../../transactions/constants/types":525}],520:[function(require,module,exports){
+},{"../../../utils/format-number":540,"../../trade/actions/place-trade":511,"../../transactions/actions/add-transactions":521,"../../transactions/constants/types":526}],521:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73222,7 +77338,7 @@ function addTransaction(transaction) {
 	return addTransactions([transaction]);
 }
 
-},{"../../transactions/actions/update-transactions-data":523,"../../transactions/constants/statuses":524}],521:[function(require,module,exports){
+},{"../../transactions/actions/update-transactions-data":524,"../../transactions/constants/statuses":525}],522:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73244,7 +77360,7 @@ function processTransactions() {
 	};
 }
 
-},{"../../../selectors":531,"../../transactions/constants/statuses":524}],522:[function(require,module,exports){
+},{"../../../selectors":532,"../../transactions/constants/statuses":525}],523:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73277,7 +77393,7 @@ function updateExistingTransaction(transactionID, newTransactionData) {
 	};
 }
 
-},{"../../auth/actions/update-assets":409,"../../transactions/actions/update-transactions-data":523}],523:[function(require,module,exports){
+},{"../../auth/actions/update-assets":410,"../../transactions/actions/update-transactions-data":524}],524:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73297,7 +77413,7 @@ function updateTransactionsData(transactionsData) {
 	};
 }
 
-},{"../../transactions/actions/process-transactions":521}],524:[function(require,module,exports){
+},{"../../transactions/actions/process-transactions":522}],525:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73323,7 +77439,7 @@ var ORDER_BOOK_OUTCOME_COMPLETE = exports.ORDER_BOOK_OUTCOME_COMPLETE = 'outcome
 // Trading
 var PLACE_MULTI_TRADE = exports.PLACE_MULTI_TRADE = 'placing multi-trade';
 
-},{}],525:[function(require,module,exports){
+},{}],526:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73343,7 +77459,7 @@ var REGISTER_ACCOUNT = exports.REGISTER_ACCOUNT = 'register_account';
 
 var MULTI_TRADE = exports.MULTI_TRADE = 'multi_trade';
 
-},{}],526:[function(require,module,exports){
+},{}],527:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73377,7 +77493,7 @@ var _updateTransactionsData = require('../../transactions/actions/update-transac
 
 var _updateLoginAccount = require('../../auth/actions/update-login-account');
 
-},{"../../auth/actions/update-login-account":410,"../../transactions/actions/update-transactions-data":523}],527:[function(require,module,exports){
+},{"../../auth/actions/update-login-account":411,"../../transactions/actions/update-transactions-data":524}],528:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73411,7 +77527,7 @@ var selectIsWorking = exports.selectIsWorking = (0, _memoizerific2.default)(1)(f
 	});
 });
 
-},{"../../../store":533,"../../transactions/constants/statuses":524,"memoizerific":375}],528:[function(require,module,exports){
+},{"../../../store":534,"../../transactions/constants/statuses":525,"memoizerific":375}],529:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73469,7 +77585,7 @@ var selectTransactionsTotals = exports.selectTransactionsTotals = (0, _memoizeri
 	return o;
 });
 
-},{"../../../selectors":531,"../../transactions/constants/statuses":524,"memoizerific":375}],529:[function(require,module,exports){
+},{"../../../selectors":532,"../../transactions/constants/statuses":525,"memoizerific":375}],530:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -73515,7 +77631,7 @@ var selectTransactions = exports.selectTransactions = (0, _memoizerific2.default
 	});
 });
 
-},{"../../../store":533,"../../../utils/format-number":539,"memoizerific":375}],530:[function(require,module,exports){
+},{"../../../store":534,"../../../utils/format-number":540,"memoizerific":375}],531:[function(require,module,exports){
 'use strict';
 
 var _blockchain = require('./modules/app/reducers/blockchain');
@@ -73649,7 +77765,7 @@ module.exports = {
 	transactionsData: _transactionsData2.default
 };
 
-},{"./modules/app/reducers/active-page":399,"./modules/app/reducers/blockchain":400,"./modules/app/reducers/branch":401,"./modules/app/reducers/connection":402,"./modules/auth/reducers/auth":413,"./modules/auth/reducers/login-account":414,"./modules/bids-asks/reducers/market-order-books":420,"./modules/create-market/reducers/create-market-in-progress":426,"./modules/markets/reducers/favorites":473,"./modules/markets/reducers/keywords":474,"./modules/markets/reducers/markets-data":475,"./modules/markets/reducers/outcomes":476,"./modules/markets/reducers/pagination":477,"./modules/markets/reducers/price-history":478,"./modules/markets/reducers/selected-filters":479,"./modules/markets/reducers/selected-market-id":480,"./modules/markets/reducers/selected-markets-header":481,"./modules/markets/reducers/selected-sort":482,"./modules/markets/reducers/selected-tags":483,"./modules/outcome/reducers/selected-outcome-id":496,"./modules/positions/reducers/account-trades":500,"./modules/reports/reducers/reports":509,"./modules/trade/reducers/trades-in-progress":512,"./modules/transactions/reducers/transactions-data":526}],531:[function(require,module,exports){
+},{"./modules/app/reducers/active-page":400,"./modules/app/reducers/blockchain":401,"./modules/app/reducers/branch":402,"./modules/app/reducers/connection":403,"./modules/auth/reducers/auth":414,"./modules/auth/reducers/login-account":415,"./modules/bids-asks/reducers/market-order-books":421,"./modules/create-market/reducers/create-market-in-progress":427,"./modules/markets/reducers/favorites":474,"./modules/markets/reducers/keywords":475,"./modules/markets/reducers/markets-data":476,"./modules/markets/reducers/outcomes":477,"./modules/markets/reducers/pagination":478,"./modules/markets/reducers/price-history":479,"./modules/markets/reducers/selected-filters":480,"./modules/markets/reducers/selected-market-id":481,"./modules/markets/reducers/selected-markets-header":482,"./modules/markets/reducers/selected-sort":483,"./modules/markets/reducers/selected-tags":484,"./modules/outcome/reducers/selected-outcome-id":497,"./modules/positions/reducers/account-trades":501,"./modules/reports/reducers/reports":510,"./modules/trade/reducers/trades-in-progress":513,"./modules/transactions/reducers/transactions-data":527}],532:[function(require,module,exports){
 'use strict';
 
 var _activePage = require('./modules/app/selectors/active-page');
@@ -73778,7 +77894,7 @@ Object.keys(selectors).forEach(function (selectorKey) {
 	return Object.defineProperty(module.exports, selectorKey, { get: selectors[selectorKey], enumerable: true });
 });
 
-},{"./modules/app/selectors/active-page":403,"./modules/auth/selectors/auth-form":415,"./modules/auth/selectors/login-account":416,"./modules/create-market/selectors/create-market-form":427,"./modules/link/selectors/links":449,"./modules/market/selectors/market":454,"./modules/markets/selectors/filters":484,"./modules/markets/selectors/keywords":485,"./modules/markets/selectors/markets":492,"./modules/markets/selectors/markets-all":486,"./modules/markets/selectors/markets-favorite":487,"./modules/markets/selectors/markets-filtered":488,"./modules/markets/selectors/markets-header":489,"./modules/markets/selectors/markets-totals":490,"./modules/markets/selectors/markets-unpaginated":491,"./modules/markets/selectors/pagination":493,"./modules/markets/selectors/search-sort":494,"./modules/outcome/selectors/selected-outcome":497,"./modules/trade/selectors/side-options":513,"./modules/transactions/selectors/is-transactions-working":527,"./modules/transactions/selectors/transactions":529,"./modules/transactions/selectors/transactions-totals":528}],532:[function(require,module,exports){
+},{"./modules/app/selectors/active-page":404,"./modules/auth/selectors/auth-form":416,"./modules/auth/selectors/login-account":417,"./modules/create-market/selectors/create-market-form":428,"./modules/link/selectors/links":450,"./modules/market/selectors/market":455,"./modules/markets/selectors/filters":485,"./modules/markets/selectors/keywords":486,"./modules/markets/selectors/markets":493,"./modules/markets/selectors/markets-all":487,"./modules/markets/selectors/markets-favorite":488,"./modules/markets/selectors/markets-filtered":489,"./modules/markets/selectors/markets-header":490,"./modules/markets/selectors/markets-totals":491,"./modules/markets/selectors/markets-unpaginated":492,"./modules/markets/selectors/pagination":494,"./modules/markets/selectors/search-sort":495,"./modules/outcome/selectors/selected-outcome":498,"./modules/trade/selectors/side-options":514,"./modules/transactions/selectors/is-transactions-working":528,"./modules/transactions/selectors/transactions":530,"./modules/transactions/selectors/transactions-totals":529}],533:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -73793,6 +77909,10 @@ var _bignumber2 = _interopRequireDefault(_bignumber);
 
 var _statuses = require('../modules/transactions/constants/statuses');
 
+var _env = require('../env.json');
+
+var _env2 = _interopRequireDefault(_env);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TIMEOUT_MILLIS = 50;
@@ -73800,23 +77920,12 @@ var ex = {};
 
 ex.connect = function connect(cb) {
 	var options = {
-		http: undefined || 'http://127.0.0.1:8545',
-		ws: undefined || 'ws://127.0.0.1:8546'
+		http: _env2.default.gethHttpURL,
+		ws: _env2.default.gethWebsocketsURL,
+		contracts: _env2.default.contracts
 	};
-	if (undefined) {
-		_augur2.default.rpc.nodes.hosted = [undefined];
-	}
-
-	if ("true") {
-		if ("{{ $BUILD_AZURE_WSURL }}" && "{{ $BUILD_AZURE_WSURL }}" !== 'null') {
-			options.ws = "{{ $BUILD_AZURE_WSURL }}";
-		}
-		if ("{{ $BUILD_AZURE_LOCALNODE }}" && "{{ $BUILD_AZURE_LOCALNODE }}" !== 'null') {
-			options.http = "{{ $BUILD_AZURE_LOCALNODE }}";
-		}
-		if ("true" && "{{ $BUILD_AZURE_CONTRACTS }}" !== 'null') {
-			options.contracts = JSON.parse("{{ $BUILD_AZURE_CONTRACTS }}");
-		}
+	if (_env2.default.gethHttpURL) {
+		_augur2.default.rpc.nodes.hosted = [_env2.default.gethHttpURL];
 	}
 	_augur2.default.connect(options, function (connection) {
 		if (!connection) return cb('could not connect to ethereum');
@@ -74443,7 +78552,7 @@ ex.getEvents = function getEvents() {
 ex.rpc = _augur2.default.rpc;
 module.exports = ex;
 
-},{"../modules/transactions/constants/statuses":524,"augur.js":126,"bignumber.js":147}],533:[function(require,module,exports){
+},{"../env.json":391,"../modules/transactions/constants/statuses":525,"augur.js":126,"bignumber.js":147}],534:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74505,7 +78614,7 @@ if ("development" !== 'production') {
 // middleware
 exports.default = (0, _redux.createStore)((0, _redux.combineReducers)(_reducers2.default), middleWare);
 
-},{"./reducers":530,"redux":382,"redux-thunk":376}],534:[function(require,module,exports){
+},{"./reducers":531,"redux":382,"redux-thunk":376}],535:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74521,7 +78630,7 @@ exports.default = function (number) {
 	return sides.join('.');
 };
 
-},{}],535:[function(require,module,exports){
+},{}],536:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74534,7 +78643,7 @@ function bytesToHex(byteArray) {
 	}, '');
 }
 
-},{}],536:[function(require,module,exports){
+},{}],537:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74551,7 +78660,7 @@ function cleanKeywordsArray(keywords) {
 	return CleanKeywords ? CleanKeywords.split(' ').sort() : [];
 }
 
-},{}],537:[function(require,module,exports){
+},{}],538:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74586,7 +78695,7 @@ function dateToBlock(date, currentBlock) {
   return currentBlock + blockDelta;
 }
 
-},{"../modules/app/constants/network":397}],538:[function(require,module,exports){
+},{"../modules/app/constants/network":398}],539:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74603,7 +78712,7 @@ function formatDate(d) {
 	};
 }
 
-},{}],539:[function(require,module,exports){
+},{}],540:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74774,7 +78883,7 @@ function formatNumber(num) {
 	return o;
 }
 
-},{"../utils/add-commas-to-number":534}],540:[function(require,module,exports){
+},{"../utils/add-commas-to-number":535}],541:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74790,7 +78899,7 @@ function isMarketDataPreviousReportPeriod(marketData, currentPeriod, periodLengt
 	return parseInt(marketData.endDate, 10) <= (currentPeriod - 2) * periodLength;
 }
 
-},{}],541:[function(require,module,exports){
+},{}],542:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74824,7 +78933,7 @@ function listWordsUnderLength(str, maxLength) {
 	return wordsList;
 }
 
-},{}],542:[function(require,module,exports){
+},{}],543:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -74910,5 +79019,5 @@ function parseURL(url) {
 	return makeLocation(parsed.pathArray, parsed.searchParams);
 }
 
-},{}]},{},[391])
+},{}]},{},[392])
 //# sourceMappingURL=build.js.map

@@ -8,8 +8,8 @@ const ex = {};
 
 ex.connect = function connect(cb) {
 	const options = {
-		http: env.gethHttpURL || 'http://127.0.0.1:8545',
-		ws: env.gethWebsocketsURL || 'ws://127.0.0.1:8546',
+		http: env.gethHttpURL,
+		ws: env.gethWebsocketsURL,
 		contracts: env.contracts
 	};
 	if (env.gethHttpURL) {

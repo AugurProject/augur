@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "augur-ui-react-components": "3.0.6",
-    "augur.js": "1.5.12",
+    "augur.js": "1.6.1",
     "bignumber.js": "2.3.0",
     "memoizerific": "1.8.4",
     "redux": "3.5.2",
@@ -75,7 +75,7 @@
     "coveralls": "2.11.9",
     "derequire": "2.0.3",
     "envify": "3.4.1",
-    "eslint": "3.0.0",
+    "eslint": "2.9.0",
     "eslint-config-airbnb": "9.0.1",
     "eslint-plugin-import": "1.10.0",
     "eslint-plugin-jsx-a11y": "1.5.3",
