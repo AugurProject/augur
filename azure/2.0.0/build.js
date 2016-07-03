@@ -77924,8 +77924,14 @@ ex.connect = function connect(cb) {
 		ws: _env2.default.gethWebsocketsURL,
 		contracts: _env2.default.contracts
 	};
-	if (_env2.default.gethHttpURL) {
-		_augur2.default.rpc.nodes.hosted = [_env2.default.gethHttpURL];
+	if (window.location.protocol === 'https:') {
+		var isEnvHttps = _env2.default.gethHttpURL && _env2.default.gethHttpURL.split('//')[0] === 'https:';
+		var isEnvWss = _env2.default.gethWebsocketsURL && _env2.default.gethWebsocketsURL.split('//')[0] === 'wss:';
+		if (!isEnvHttps) options.http = null;
+		if (!isEnvWss) options.ws = null;
+	}
+	if (options.http) {
+		_augur2.default.rpc.nodes.hosted = [options.http];
 	}
 	_augur2.default.connect(options, function (connection) {
 		if (!connection) return cb('could not connect to ethereum');
