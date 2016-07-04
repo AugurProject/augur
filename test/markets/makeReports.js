@@ -23,7 +23,7 @@ describe("Integration tests", function () {
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var suffix = Math.random().toString(36).substring(4);
     var description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
-    var periodLength = 300;
+    var periodLength = 120;
     var report = 1;
     var salt = "1337";
     var eventID, newBranchID, marketID;
@@ -61,7 +61,7 @@ describe("Integration tests", function () {
 
     if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
-        describe("Commit-and-reveal", function () {
+        describe("Report commit-and-reveal", function () {
 
             before(function (done) {
                 this.timeout(tools.TIMEOUT*100);
@@ -129,7 +129,17 @@ describe("Integration tests", function () {
                                 onSuccess: function (res) {
 
                                     function createSingleEventMarket(newBranchID, description, expDate) {
-                                        if (DEBUG) console.log("Expiration:", parseInt(expDate));
+                                        expDate = parseInt(expDate);
+                                        var currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
+                                        var expirationPeriod = Math.floor(expDate / periodLength);
+                                        var periodsToGo = expirationPeriod - currentPeriod;
+                                        var minutesToGo = (periodsToGo * periodLength) / 60;
+                                        if (DEBUG) {
+                                            console.log("Expiration time:", expDate);
+                                            console.log("Expiration period:", expirationPeriod);
+                                            console.log("Current period:", currentPeriod);
+                                            console.log("Periods to go:", periodsToGo, "(" + minutesToGo + " minutes)");
+                                        }
                                         var createSingleEventMarketParams = {
                                             branchId: newBranchID,
                                             description: description,
@@ -142,102 +152,36 @@ describe("Integration tests", function () {
                                             makerFee: "0.01",
                                             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
                                             extraInfo: madlibs.city() + " " + madlibs.noun() + " " + madlibs.action() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
-                                            onSent: function (res) {
-                                                console.log("sent:", res);
-                                            },
+                                            onSent: function (res) {},
                                             onSuccess: function (res) {
-                                                console.log("success:", res);
                                                 marketID = res.marketID;
                                                 if (DEBUG) console.log("Market ID:", marketID);
                                                 eventID = augur.getMarketEvents(marketID)[0];
                                                 if (DEBUG) console.log("Event ID:", eventID);
 
-                                                // make a trade in the new market
-                                                augur.useAccount(accounts[0]);
-                                                var initialTotalTrades = parseInt(augur.Markets.get_total_trades(marketID));
-                                                augur.buyCompleteSets({
-                                                    market: marketID,
-                                                    amount: 1,
-                                                    onSent: function (r) {},
-                                                    onSuccess: function (r) {
-                                                        console.log("buycompletesets ok:", r);
-                                                        augur.sell({
-                                                            amount: 1,
-                                                            price: "0.01",
-                                                            market: marketID,
-                                                            outcome: "1",
-                                                            onSent: function (r) {},
-                                                            onSuccess: function (r) {
-                                                                console.log("sell ok:", r);
-                                                                augur.useAccount(accounts[2]);
-                                                                augur.get_trade_ids(marketID, function (trade_ids) {
-                                                                    async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
-                                                                        augur.get_trade(thisTrade, function (tradeInfo) {
-                                                                            if (!tradeInfo) return nextTrade("no trade info found");
-                                                                            if (tradeInfo.owner === augur.from) return nextTrade();
-                                                                            if (tradeInfo.type === "buy") return nextTrade();
-                                                                            console.log("matched trade:", thisTrade, tradeInfo);
-                                                                            augur.trade({
-                                                                                max_value: 1,
-                                                                                max_amount: 0,
-                                                                                trade_ids: [thisTrade],
-                                                                                onTradeHash: function (r) {
-                                                                                    // console.log("tradeHash:", r);
-                                                                                    assert.notProperty(r, "error");
-                                                                                    assert.isString(r);
-                                                                                },
-                                                                                onCommitSent: function (r) {
-                                                                                    // console.log("commitSent:", r);
-                                                                                    assert.strictEqual(r.callReturn, "1");
-                                                                                },
-                                                                                onCommitSuccess: function (r) {
-                                                                                    // console.log("commitSuccess:", r);
-                                                                                    assert.strictEqual(r.callReturn, "1");
-                                                                                },
-                                                                                onCommitFailed: nextTrade,
-                                                                                onTradeSent: function (r) {
-                                                                                    console.log("trade sent:", r)
-                                                                                    assert.isArray(r.callReturn);
-                                                                                    assert.strictEqual(r.callReturn[0], 1);
-                                                                                    assert.strictEqual(r.callReturn.length, 3);
-                                                                                },
-                                                                                onTradeSuccess: function (r) {
-                                                                                    console.log("trade success:", r)
-                                                                                    assert.isArray(r.callReturn);
-                                                                                    assert.strictEqual(r.callReturn[0], 1);
-                                                                                    assert.strictEqual(r.callReturn.length, 3);
-                                                                                    nextTrade(r);
-                                                                                },
-                                                                                onTradeFailed: nextTrade
-                                                                            });
-                                                                        });
-                                                                    }, function (x) {
-                                                                        if (!x) return done(new Error("trade failed"));
-                                                                        if (!x.callReturn) return done(x);
-
-                                                                        // fast-forward to the period in which the new event expires
-                                                                        var curTime = parseInt(new Date().getTime() / 1000);
-                                                                        var timeToWait = periodLength - (curTime % periodLength);
-                                                                        if (DEBUG) {
-                                                                            console.log("Current timestamp:", curTime);
-                                                                            console.log("Waiting", timeToWait, "seconds...");
-                                                                        }
-                                                                        setTimeout(done, timeToWait*1000);
-                                                                    });
-                                                                });
-                                                            },
-                                                            onFailed: done
-                                                        });
-                                                    },
-                                                    onFailed: done
-                                                });
+                                                // wait until the period after the new event expires
+                                                var curTime = parseInt(new Date().getTime() / 1000);
+                                                console.log("curTime / periodLength:", curTime / periodLength);
+                                                var currentPeriod = Math.floor(curTime / periodLength);
+                                                var periodsToGo = expirationPeriod - currentPeriod;
+                                                var secondsToGo = periodsToGo*periodLength + periodLength - (curTime % periodLength);
+                                                if (DEBUG) {
+                                                    console.log("Expiration period:", expirationPeriod);
+                                                    console.log("Current period:", currentPeriod);
+                                                    console.log("Periods to go:", periodsToGo, "(" + secondsToGo/60 + " minutes)");
+                                                }
+                                                setTimeout(function () {
+                                                    var currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
+                                                    if (DEBUG) console.log("Wait complete.");
+                                                    assert.strictEqual(currentPeriod, expirationPeriod + 1);
+                                                    done();
+                                                }, secondsToGo*1000);
                                             },
                                             onFailed: function (err) {
                                                 console.error("failed:", err);
                                                 done(new Error("createSingleEventMarket failed"));
                                             }
                                         };
-                                        // console.log("createSingleEventMarket params:", createSingleEventMarketParams);
                                         augur.createSingleEventMarket(createSingleEventMarketParams);
                                     }
 
@@ -252,10 +196,10 @@ describe("Integration tests", function () {
                                         console.log("Next period starts at time", curTime + timeToWait, "(" + timeToWait + " seconds to go)");
                                     }
                                     if (timeToWait > 30) {
-                                        return createSingleEventMarket(newBranchID, description, new Date().getTime() / 975);
+                                        return createSingleEventMarket(newBranchID, description, (new Date().getTime() + 90000) / 1000);
                                     }
                                     setTimeout(function () {
-                                        createSingleEventMarket(newBranchID, description, new Date().getTime() / 975);
+                                        createSingleEventMarket(newBranchID, description, (new Date().getTime() + 90000) / 1000);
                                     }, timeToWait*1000);
                                 },
                                 onFailed: done
@@ -272,83 +216,100 @@ describe("Integration tests", function () {
                 if (DEBUG) console.log("Current time:", curTime + "\tResidual:", curTime % periodLength);
                 var startPeriod = parseInt(augur.getVotePeriod(newBranchID));
                 if (DEBUG) console.log("Events in start period", startPeriod, augur.getEvents(newBranchID, startPeriod));
-                var currentPeriod = augur.getCurrentPeriod(newBranchID);
+                var currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
                 if (DEBUG) console.log("Current period:", currentPeriod);
-                currentPeriod = currentPeriod.toFixed(6);
-                if (DEBUG) console.log("Events in current period", currentPeriod, augur.getEvents(newBranchID, currentPeriod));
-                if (Number(currentPeriod) < startPeriod + 2 || Number(currentPeriod) >= startPeriod + 1) {
-                    if (DEBUG) console.log("Difference", Number(currentPeriod) - startPeriod + ". Incrementing period...");
-                    augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
-                        console.log("increment:", res);
-                        // assert.strictEqual(res.callReturn, "1");
-                        var period = parseInt(augur.getVotePeriod(newBranchID));
-                        if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                        currentPeriod = Math.floor(currentPeriod).toString();
-                        if (DEBUG) console.log("Events in new period", period, augur.getEvents(newBranchID, period));
-                        if (DEBUG) console.log("Difference " + (Number(currentPeriod) - period) + ". Submitting report hash...");
-                        var reportHash = augur.makeHash(salt, report, eventID);
-                        console.log("reportHash:", reportHash);
-                        var hashable = abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID)));
-                        var diceroll = abi.prefix_hex(abi.keccak_256(hashable));
-                        console.log("diceroll1:", diceroll);
-                        var diceroll = augur.rpc.sha3(hashable);
-                        console.log("diceroll2:", diceroll);
-                        var target = augur.MakeReports.calculateReportTargetForEvent(newBranchID, eventID, period, augur.from);
-                        console.log("target:", target);
-                        var threshold = augur.ExpiringEvents.calculateReportingThreshold(newBranchID, eventID, period, augur.from);
-                        console.log("threshold:", threshold);
-                        var curTime = new Date().getTime() / 1000;
-                        if (DEBUG) console.log("Residual:", curTime % periodLength);
-                        var currentExpPeriod = curTime / periodLength;
-                        if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
-                        // assert.isAtLeast(currentExpPeriod, period + 1);
-                        // assert.isBelow(currentExpPeriod, period + 2);
-                        // console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
-                        // if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
-                            return augur.submitReportHash({
-                                event: eventID,
-                                reportHash: reportHash,
-                                onSent: function (res) {
-                                    if (DEBUG) console.log("submitReportHash sent:", res);
-                                    assert(res.txHash);
-                                    assert.strictEqual(res.callReturn, "1");
-                                },
-                                onSuccess: function (res) {
-                                    if (DEBUG) console.log("submitReportHash success:", res);
-                                    assert(res.txHash);
-                                    assert.strictEqual(res.callReturn, "1");
-                                    done();
-                                },
-                                onFailed: function (err) {
-                                    if (err && err.error === "-9") {
-                                        augur.submitReportHash({
-                                            event: eventID,
-                                            reportHash: reportHash,
-                                            onSent: function (res) {
-                                                if (DEBUG) console.log("submitReportHash sent:", res);
-                                                assert(res.txHash);
-                                                assert.strictEqual(res.callReturn, "1");
-                                            },
-                                            onSuccess: function (res) {
-                                                if (DEBUG) console.log("submitReportHash success:", res);
-                                                assert(res.txHash);
-                                                assert.strictEqual(res.callReturn, "1");
-                                                done();
-                                            },
-                                            onFailed: function (err) {
-                                                if (err && err.error === "-9") {
-                                                    
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
+                function submitReportHash() {
+                    var period = parseInt(augur.getVotePeriod(newBranchID));
+                    if (DEBUG) console.log("Difference " + (currentPeriod - period) + ". Submitting report hash...");
+                    var reportHash = augur.makeHash(salt, report, eventID);
+                    console.log("Report hash:", reportHash);
+                    var hashable = abi.hex(abi.bignum(augur.from).plus(abi.bignum(eventID)));
+                    var sender = augur.from;
+                    augur.MakeReports.calculateReportTargetForEvent({
+                        branch: newBranchID,
+                        eventID: eventID,
+                        votePeriod: period,
+                        sender: sender,
+                        onSent: function (r) {},
+                        onSuccess: function (r) {
+                            var target = r.callReturn;
+                            if (DEBUG) console.log("Report target:", target);
+                            console.log("Reporting threshold inputs:", {
+                                branch: newBranchID,
+                                eventID: eventID,
+                                votePeriod: period,
+                                sender: sender
                             });
-                        // } else {
-                        //     done();
-                        // }
-                    }, console.error);
+                            var threshold = augur.ReportingThreshold.calculateReportingThreshold({
+                                branch: newBranchID,
+                                eventID: eventID,
+                                votePeriod: period,
+                                sender: sender
+                            });
+                            if (DEBUG) console.log("threshold:", threshold);
+                            var curTime = new Date().getTime() / 1000;
+                            if (DEBUG) console.log("Residual:", curTime % periodLength);
+                            (function submit() {
+                                console.log("submitReportHash params:", {
+                                    event: eventID,
+                                    reportHash: reportHash,
+                                    encryptedSaltyHash: 0
+                                });
+                                augur.MakeReports.submitReportHash({
+                                    event: eventID,
+                                    reportHash: reportHash,
+                                    encryptedSaltyHash: 0,
+                                    onSent: function (res) {
+                                        if (DEBUG) console.log("submitReportHash sent:", res);
+                                        assert(res.txHash);
+                                        assert(res.callReturn);
+                                    },
+                                    onSuccess: function (res) {
+                                        if (DEBUG) console.log("submitReportHash success:", res);
+                                        assert(res.txHash);
+                                        if (res && res.callReturn === "0") {
+                                            return submit();
+                                        }
+                                        assert.strictEqual(res.callReturn, "1");
+                                        done();
+                                    },
+                                    onFailed: function (err) {
+                                        done(new Error(tools.pp(err)));
+                                    }
+                                });
+                            })();
+                        },
+                        onFailed: done
+                    });
                 }
+                var currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
+                var votePeriod = parseInt(augur.getVotePeriod(newBranchID));
+                var blocktime = new Date().getTime() / 1000;
+                if (currentPeriod > votePeriod + 1) {
+                    if (DEBUG) console.log("Current period AHEAD OF vote period, incrementing vote period...");
+                    function incrementPeriod(period, currentPeriod) {
+                        if (DEBUG) console.log("Difference", currentPeriod - period + ". Incrementing period...");
+                        augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
+                            console.log("incremented:", res.callReturn);
+                            assert.strictEqual(res.callReturn, "1");
+                            augur.getVotePeriod(newBranchID, function (period) {
+                                period = parseInt(period);
+                                if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
+                                currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
+                                augur.getEvents(newBranchID, period, function (eventsInPeriod) {
+                                    if (DEBUG) console.log("Events in new period", period, eventsInPeriod);
+                                    if (eventsInPeriod.length) return submitReportHash();
+                                    if (currentPeriod > period + 1) {
+                                        return incrementPeriod(period, currentPeriod);
+                                    }
+                                    submitReportHash();
+                                });
+                            });
+                        });
+                    }
+                    return incrementPeriod(votePeriod, currentPeriod);
+                }
+                submitReportHash();
             });
 
             it("makeReports.submitReport", function (done) {
@@ -360,7 +321,7 @@ describe("Integration tests", function () {
                 var timeToGo = Math.ceil((periodLength / 2) - (curTime % (periodLength / 2)));
                 if (DEBUG) {
                     console.log("Current time:", curTime);
-                    console.log("Next half-period starts at time", curTime + timeToGo, "(" + timeToGo + " to go)")
+                    console.log("Next half-period starts at time", curTime + timeToGo, "(" + timeToGo/60 + " minutes to go)")
                 }
                 setTimeout(function () {
                     assert.strictEqual(parseInt(augur.getVotePeriod(newBranchID)), period);

@@ -513,7 +513,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
     describe("Fund new account", function () {
 
         it("funding sequence: " + handle, function (done) {
-            this.timeout(tools.TIMEOUT*2);
+            this.timeout(tools.TIMEOUT*4);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(handle, password, function (account) {
                 // console.log("login:", account);
