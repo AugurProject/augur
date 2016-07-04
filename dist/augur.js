@@ -17394,6 +17394,8 @@ module.exports={
         "extraInfo"
       ], 
       "method": "createSingleEventMarket", 
+      "returns": "hash", 
+      "send": true, 
       "signature": [
         "int256", 
         "bytes", 
@@ -20224,41 +20226,41 @@ module.exports={
 },{}],57:[function(require,module,exports){
 module.exports={
     "10101": {
-        "Backstops": "0x2bb90689bc93349e37b0ec7b9d77bd54ab7e28ce", 
-        "Branches": "0xce436603c54c8990b75bd45a56563c1b6f3c53ff", 
-        "BuyAndSellShares": "0x80fcba1394e46de1a6b66c0540d04ca61da41ae9", 
-        "Cash": "0x07564bc74fe4e75c2009e38745e1b347cc5f850c", 
-        "CloseMarket": "0xb80f424b417dd76df321d0b2f54a0874db29bd6b", 
-        "CloseMarketOne": "0xab16062bd3da6cc6abf085afc13c491f56e25f96", 
-        "CloseMarketTwo": "0x9f08e5f1f17d79c7505e47eaf1402c6965c58377", 
-        "CollectFees": "0x4edc1a8480869b6c320226231f9fcdd0ee6afcad", 
-        "CompleteSets": "0xffef3f155ea906fb5442681efce7fd07dece7cef", 
-        "CompositeGetters": "0xe574be585571337819ddba37b7ca84ab69b90e96", 
-        "Consensus": "0xd812515a98a6d8637e65f3333f14b3e889f2c075", 
-        "ConsensusData": "0x3b641b0fa2f11deb3f864613212c1b20a1e57322", 
-        "CreateBranch": "0x78e71b15babbca45632d2d50973e8cebb2b4ecde", 
-        "CreateMarket": "0x00974c541b2b1e59360581f0b4c2eaa41ffdd359", 
-        "EventResolution": "0x3818ef75c135fde069ca86b9f9617cc9a5700a48", 
-        "Events": "0x05377e936e4abbb68efdacfca63653b8bf7c7dc8", 
-        "ExpiringEvents": "0x92ac3bba03fa0cf6a582124030a532368b751f02", 
-        "Faucets": "0xd0d5f9e79b9ccb4557f4d4422e68bfa8cd5f9539", 
-        "ForkPenalize": "0xf5c02f6e5a6296aaf261c957fec41992808b868b", 
-        "Forking": "0x85f8d21a6d1903818789a37d691e131ed1e7f3ff", 
-        "FxpFunctions": "0x3d66c0319ea224d26d68ca41937b5aabd1f3577f", 
-        "Info": "0x1bb46e3a4d936e0b47d3f5f4734a2f5d771de07a", 
-        "MakeReports": "0x322b59779c666690643293b09d848522bcb46662", 
-        "Markets": "0x6d158fae63ee0632418aa67b50fd76816225472e", 
-        "PenalizationCatchup": "0xd960e0d1d1360edcfc77e067911b801aa1e603b4", 
-        "PenalizeNotEnoughReports": "0xa3af36d473f4fbb6874636f0ed684678718fa3ee", 
-        "ProportionCorrect": "0xad3570357dd6c1b1a153c05b627c3a6374368d7b", 
-        "Reporting": "0x9a284f91af1fbc91cdbf0e04a0b04b6218a96b42", 
-        "ReportingThreshold": "0xc59472e2ec310736341b3eb305b18d181dd25896", 
-        "RoundTwo": "0x634f03d331f7da40e09054d5236a53821b09e774", 
-        "RoundTwoPenalize": "0xe8374d6cf11b4758728e300255ca9133d0c715cf", 
-        "SendReputation": "0xcb49bad3a451a138bc2739b75c21d227111d54a4", 
-        "SlashRep": "0xc1cdb84860d7bb4f16025b3bfcc7d932f975925b", 
-        "Trade": "0x562794c3d16767ac4b726b1e63524649f5e7bf46", 
-        "Trades": "0x504256f9405270a90bebca80387c7d4cc897b798"
+        "Backstops": "0xa9c505bfd022d3c7c27d9418193b290fdad57677", 
+        "Branches": "0x6c6609f40bd9147356a4283c54cded5bc2879248", 
+        "BuyAndSellShares": "0xd6d3d499532b3dbb5e22f4e75717d482cb3077e2", 
+        "Cash": "0x0b1786dd0463cfb46fb8f04dd96837f3d28c6020", 
+        "CloseMarket": "0x0c80a339b0c71faf135f823f44da6cf0b01e2308", 
+        "CloseMarketOne": "0x2024774633b2b166155dab84389482dae0ace511", 
+        "CloseMarketTwo": "0xfc2a68f251ffb274774667d6a8bd90a7df80ee5c", 
+        "CollectFees": "0x7c5b5b5adc91c1403163cf67252283cdfd1c34ec", 
+        "CompleteSets": "0x56fa00c4b09433faa20da0e77a03a0252fb4acbb", 
+        "CompositeGetters": "0x2a22fd2a7208a5fe20d493274e71da4f76dec96e", 
+        "Consensus": "0x2af5a707e680b08949852e3bd1157ffc6291fbe6", 
+        "ConsensusData": "0x2cb9c387774a681b422ad475fa5da0fec770a98e", 
+        "CreateBranch": "0x85e889acc0d37064ada68eb196db26fb3d29ac39", 
+        "CreateMarket": "0x941c66ff87670502e68ba2b0e6f610a5f6db3493", 
+        "EventResolution": "0x5370de0ee510750f8965f1e5793abaaa19a75dfc", 
+        "Events": "0x526d9bab171eae0733a81d9d969d861d7049d4c3", 
+        "ExpiringEvents": "0xc005f8870fc8e36a9cd3cd145d02d6aa6f75de0b", 
+        "Faucets": "0x56ec6edf54a157924b82b84c0ad49b7d4df77765", 
+        "ForkPenalize": "0xa27e7a651f8f754e50e44beaad44826f7ca1ac79", 
+        "Forking": "0xa87f4f1dcfca858a7d379662a861e0a8ebfe4252", 
+        "FxpFunctions": "0xe16467198c83ba81b9b93c229bf170cc3d4b9561", 
+        "Info": "0x4924f08488b334db651be22f2eb9c889a9cb0d8b", 
+        "MakeReports": "0x0db6c60a08bee63414e3023c2e1fc82a342607cf", 
+        "Markets": "0x7968a2b7299bd2db7d9cb5bbbec276bec5cf40e5", 
+        "PenalizationCatchup": "0x2df198405f8f65d09f9ad56da9df7d0058d6d3c1", 
+        "PenalizeNotEnoughReports": "0x8af30dbff8d4d80798a6d042c5fb250c96268bc0", 
+        "ProportionCorrect": "0xc0c51ac9f27979236daf6b5e92773c36c626eb79", 
+        "Reporting": "0x9c60a62f663f0920037dda498dccc7de41c3fb9c", 
+        "ReportingThreshold": "0x43e81f639ff9678b8e2ea075ae67601f8599b340", 
+        "RoundTwo": "0x51e006431eccbfd114e347724008a2701546233e", 
+        "RoundTwoPenalize": "0x252c07a39bd648f279975e204343545019415a8f", 
+        "SendReputation": "0x791eaf421663c77f5babd436681bb21a14a0af61", 
+        "SlashRep": "0xceb2cffe7ce34f98f1eadb978cbac7139e7d2607", 
+        "Trade": "0x533ce6a711175791d63a443c88b04b818e210786", 
+        "Trades": "0x5a87c4280c598944bed494c507b12b109dbb9f5e"
     }, 
     "2": {
         "Backstops": "0xf9c9a87f339b76dc007848ab50363116ec1af05b", 
@@ -37334,8 +37336,8 @@ module.exports = function (p, cb) {
         var shares = new BigNumber(0);
         var i, j, buyPrice, sellPrice, outcomeShares;
         for (i = 0; i < numOutcomes; ++i) {
-            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
-                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+            if (marketInfo.type === "scalar") {
+                console.log("priceDepth:", priceDepth.toFixed());
                 console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
                 console.log("minValue:", minValue.toFixed());
                 console.log("maxValue:", maxValue.toFixed());
@@ -37343,6 +37345,9 @@ module.exports = function (p, cb) {
                 console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
                 console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
                 console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+            }
+            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
+                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
                 return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
             }
             if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
@@ -37414,27 +37419,32 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                if (marketInfo.type === "scalar") {
+                                    buyPrice = self.adjustScalarPrice("buy", minValue, maxValue, buyPrice);
+                                } else {
+                                    buyPrice = buyPrice.toFixed();
+                                }
                                 self.buy({
                                     amount: amount.toFixed(),
-                                    price: buyPrice.toFixed(),
+                                    price: buyPrice,
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
+                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
+                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            buyPrice: buyPrice.toFixed()
+                                            buyPrice: buyPrice
                                         });
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
@@ -37446,27 +37456,32 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                if (marketInfo.type === "scalar") {
+                                    sellPrice = self.adjustScalarPrice("sell", minValue, maxValue, sellPrice);
+                                } else {
+                                    sellPrice = sellPrice.toFixed();
+                                }
                                 self.sell({
                                     amount: amount.toFixed(),
-                                    price: sellPrice.toFixed(),
+                                    price: sellPrice,
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
+                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
+                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            sellPrice: sellPrice.toFixed()
+                                            sellPrice: sellPrice
                                         });
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
