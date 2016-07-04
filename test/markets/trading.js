@@ -17,9 +17,11 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("getTradingActions", function () {
-        var gasPrice;
+        var gasPriceOriginal, txOriginal;
         before("getTradingActions", function () {
-            gasPrice = augur.rpc.gasPrice;
+            gasPriceOriginal = augur.rpc.gasPrice;
+            txOriginal = augur.tx;
+
             augur.rpc.gasPrice = function (onGasPrice) {
                 onGasPrice(10);
             };
@@ -28,35 +30,135 @@ describe("Unit tests", function () {
         });
 
         after("getTradingActions", function () {
-            augur.rpc.gasPrice = gasPrice;
+            augur.rpc.gasPrice = gasPriceOriginal;
+            augur.tx = txOriginal;
         });
 
-        it("should return bid action when user wants to buy but there is nothing to buy", function () {
-            augur.getTradingActions({
-                type: "buy",
-                shares: 5,
-                limitPrice: 0.6,
-                userAddress: "abcd1234",
-                userPositionShares: 0,
-                outcomeId: "outcomeasdf123",
-                marketOrderBook: {
-                    buy: [],
-                    sell: []
-                },
-                cb: function (actions) {
-                    assert.isArray(actions);
-                    assert.lengthOf(actions, 1, "more actions than expected were created");
-                    var action = actions[0];
-					var expected = {
-                        "action": "BID",
-                        "fee": 31350000,
-                        "totalEther": 3,
-                        "avgPrice": 0.6
-                    };
-                    assert.deepEqual(action, expected)
-                }
-            });
-        });
+		runTestCase({
+			title: "should return BID action when user wants to buy but there are no asks",
+			type: "buy",
+			shares: 5,
+			limitPrice: 0.6,
+			userAddress: "abcd1234",
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: []
+			},
+			cb: function (actions) {
+				assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var action = actions[0];
+				var expected = {
+					"action": "BID",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.00000000003135",
+					"avgPrice": "0.6"
+				};
+				assert.deepEqual(action, expected)
+			}
+		});
+
+		runTestCase({
+			title: "should return BID action when user wants to buy but there are no suitable asks",
+			type: "buy",
+			shares: 5,
+			limitPrice: 0.6,
+			userAddress: "abcd1234",
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: [
+					{
+						id: "order1",
+						type: "sell",
+						amount: 5,
+						price: 0.7, // price too high
+						outcome: "outcomeasdf123"
+					},
+					{
+						id: "order2",
+						owner: "abcd1234", // user's ask
+						type: "sell",
+						amount: 5,
+						price: 0.6,
+						outcome: "outcomeasdf123"
+					},
+					{
+						id: "order3",
+						type: "sell",
+						amount: 5,
+						price: 0.6,
+						outcome: "differentOutcome" // different outcome
+					}
+				]
+			},
+			cb: function (actions) {
+				assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var action = actions[0];
+				var expected = {
+					"action": "BID",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.00000000003135",
+					"avgPrice": "0.6"
+				};
+				assert.deepEqual(action, expected)
+			}
+		});
+
+		runTestCase({
+			title: "should return BUY action when user wants to buy and there are asks",
+			type: "buy",
+			shares: 5,
+			limitPrice: 0.6,
+			userAddress: "abcd1234",
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: [{
+					id: "order1",
+					type: "sell",
+					amount: 5,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}]
+			},
+			cb: function (actions) {
+                console.log("asdf");
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var action = actions[0];
+				var expected = {
+					"action": "BUY",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.50000000003135",
+					"avgPrice": "0.6"
+				};
+				assert.deepEqual(action, expected)
+			}
+		});
+
+		function runTestCase(testCase) {
+			it(testCase.title, function (done) {
+				augur.getTradingActions({
+					type: testCase.type,
+					shares: testCase.shares,
+					limitPrice: testCase.limitPrice,
+					userAddress: testCase.userAddress,
+					userPositionShares: testCase.userPositionShares,
+					outcomeId: testCase.outcomeId,
+					marketOrderBook: testCase.marketOrderBook,
+					cb: function (actions) {
+                        testCase.cb(actions);
+                        done();
+                    }
+				});
+			});
+		}
     });
 
     describe("processOrder", function () {
