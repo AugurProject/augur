@@ -135,8 +135,11 @@ module.exports = function () {
 
           // blank password
           if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-
-					var unencryptedLoginIDObject = abacus.base58Decrypt(secureLoginID);
+					try {
+						var unencryptedLoginIDObject = abacus.base58Decrypt(secureLoginID);
+					} catch (err) {
+						return cb(errors.BAD_CREDENTIALS);
+					}
 					var keystore = unencryptedLoginIDObject.keystore;
 					var name = unencryptedLoginIDObject.name;
 
