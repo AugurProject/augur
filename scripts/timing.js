@@ -29,26 +29,26 @@ function createMarkets(numMarketsToCreate, callback) {
     console.log(chalk.blue.bold("Creating " + numMarketsToCreate + " markets..."));
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
         var minValue, maxValue, numOutcomes, type;
-        // var rand = Math.random();
-        // if (rand > 0.667) {
+        var rand = Math.random();
+        if (rand > 0.667) {
             // scalar
-            maxValue = Math.round(Math.random() * 500);
+            maxValue = Math.round(Math.random() * 1000);
             minValue = Math.round(Math.random() * maxValue);
             numOutcomes = 2;
             type = "scalar";
-        // } else if (rand < 0.333) {
-        //     // binary
-        //     maxValue = 2;
-        //     minValue = 1;
-        //     numOutcomes = 2;
-        //     type = "binary";
-        // } else {
-        //     // categorical
-        //     maxValue = 2;
-        //     minValue = 1;
-        //     numOutcomes = Math.floor(6*Math.random()) + 2;
-        //     type = "categorical";
-        // }
+        } else if (rand < 0.333) {
+            // binary
+            maxValue = 2;
+            minValue = 1;
+            numOutcomes = 2;
+            type = "binary";
+        } else {
+            // categorical
+            maxValue = 2;
+            minValue = 1;
+            numOutcomes = Math.floor(6*Math.random()) + 2;
+            type = "categorical";
+        }
         var suffix = Math.random().toString(36).substring(4);
         var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
         if (type === "categorical") {
@@ -99,11 +99,11 @@ function createMarkets(numMarketsToCreate, callback) {
                         initialFairPrices = [0.9*avg, 1.1*avg];
                         while (initialFairPrices[0] < minValue + 0.5*parseFloat(orderBookParams.priceWidth)) {
                             initialFairPrices[0] = initialFairPrices[0]*1.01;
-                            console.log("updated left initial fair price:", initialFairPrices[0]);
+                            // console.log("updated left initial fair price:", initialFairPrices[0]);
                         }
                         while (initialFairPrices[1] > maxValue - 0.5*parseFloat(orderBookParams.priceWidth)) {
                             initialFairPrices[1] = initialFairPrices[1]*0.99;
-                            console.log("updated right initial fair price:", initialFairPrices[1]);
+                            // console.log("updated right initial fair price:", initialFairPrices[1]);
                         }
                     } else {
                         orderBookParams.priceWidth = Math.random().toString();
@@ -114,16 +114,16 @@ function createMarkets(numMarketsToCreate, callback) {
                         }
                     }
                     orderBookParams.initialFairPrices = initialFairPrices;
-                    console.log("orderBookParams:", JSON.stringify(orderBookParams, null, 2));
+                    // console.log("orderBookParams:", JSON.stringify(orderBookParams, null, 2));
                     augur.generateOrderBook(orderBookParams, {
                         onBuyCompleteSets: function (res) {
                             // console.log("buyCompleteSets:", res);
                         },
                         onSetupOutcome: function (res) {
-                            console.log("setupOutcome:", res);
+                            // console.log("setupOutcome:", res);
                         },
                         onSetupOrder: function (res) {
-                            console.log("setupOrder:", res);
+                            // console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
                             if (index % 10) return next();

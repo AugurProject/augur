@@ -19474,6 +19474,7 @@ module.exports={
         "sender"
       ], 
       "method": "penalizationCatchup", 
+      "send": true, 
       "signature": [
         "int256", 
         "int256"
@@ -20282,19 +20283,19 @@ module.exports={
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x47de547e9ad873c18b5263543ef7d38a7f2974bf", 
+        "Forking": "0x0311d4eaf3c4c1f04a2f27bff242da4c0cb4ac8a", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0x3a79c151769141750ea8ca06e4ed9fcef74ec5a9", 
+        "MakeReports": "0x862931897a68b82f7204749c712156c670dd33fb", 
         "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
-        "PenalizationCatchup": "0x0e92a0e24c4315804b6beeba5bb9eb30b596fd5a", 
+        "PenalizationCatchup": "0x6f256d44ccb33499d8a4fff683e89bf5b9c7b7ad", 
         "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
         "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
         "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
         "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0x6bea17561677b97745180615109a249bd1533e2f", 
-        "RoundTwoPenalize": "0xa7b6681a1202a601c492c92dc6cc3c289e0f2073", 
-        "SendReputation": "0x5fb2d397bd30e9b82219a0ed1d9018312ca51e6c", 
+        "RoundTwo": "0x515fb30740f42b6e6432c1fb8463d61a34f204f8", 
+        "RoundTwoPenalize": "0x05eb2b8321503daf5fef97dcf22371f4f069f6a5", 
+        "SendReputation": "0x6668959fe7c9088ee4ba1645f3df79092f69f430", 
         "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
         "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
         "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
@@ -20433,7 +20434,6 @@ module.exports={
         "-2": "reporter doesn't exist"
     },
     "submitReportHash": {
-        "0": "not caught up on rep redistributions",
         "-1": "invalid event",
         "-2": "not in first half of period (commit phase)"
     },
@@ -37336,7 +37336,8 @@ module.exports = function (p, cb) {
         var shares = new BigNumber(0);
         var i, j, buyPrice, sellPrice, outcomeShares;
         for (i = 0; i < numOutcomes; ++i) {
-            if (marketInfo.type === "scalar") {
+            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
+                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
                 console.log("priceDepth:", priceDepth.toFixed());
                 console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
                 console.log("minValue:", minValue.toFixed());
@@ -37345,9 +37346,6 @@ module.exports = function (p, cb) {
                 console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
                 console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
                 console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
-            }
-            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
-                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
                 return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
             }
             if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
@@ -37430,10 +37428,10 @@ module.exports = function (p, cb) {
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
@@ -37444,12 +37442,12 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                if (err) console.error("async.each buy:", err);
+                                // if (err) console.error("async.each buy:", err);
                                 callback(err);
                             });
                         },
@@ -37467,10 +37465,10 @@ module.exports = function (p, cb) {
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
@@ -37481,17 +37479,17 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                if (err) console.error("async.each sell:", err);
+                                // if (err) console.error("async.each sell:", err);
                                 callback(err);
                             });
                         }
                     ], function (err) {
-                        if (err) console.error("buy/sell:", err);
+                        // if (err) console.error("buy/sell:", err);
                         onSetupOutcome({market: p.market, outcome: outcome});
                         nextOutcome(err);
                     });
@@ -37546,7 +37544,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.1";
+    this.version = "1.6.2";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
