@@ -249,13 +249,6 @@ describe("Integration tests", function () {
                             if (DEBUG) console.log("threshold:", threshold);
                             var curTime = new Date().getTime() / 1000;
                             if (DEBUG) console.log("Residual:", curTime % periodLength);
-                            // var currentExpPeriod = curTime / periodLength;
-                            // if (DEBUG) console.log("currentExpPeriod:", currentExpPeriod, period, currentExpPeriod >= (period+2), currentExpPeriod < (period+1));
-                            // assert.isAtLeast(currentExpPeriod, period + 1);
-                            // assert.isBelow(currentExpPeriod, period + 2);
-                            // var diceroll = abi.prefix_hex(abi.keccak_256(hashable));
-                            // console.log((abi.bignum(diceroll).lt(abi.bignum(threshold))));
-                            // if (abi.bignum(diceroll).lt(abi.bignum(threshold))) {
                             (function submit() {
                                 console.log("submitReportHash params:", {
                                     event: eventID,
@@ -268,16 +261,16 @@ describe("Integration tests", function () {
                                     encryptedSaltyHash: 0,
                                     onSent: function (res) {
                                         if (DEBUG) console.log("submitReportHash sent:", res);
-                                        // assert(res.txHash);
-                                        // assert.strictEqual(res.callReturn, "1");
+                                        assert(res.txHash);
+                                        assert(res.callReturn);
                                     },
                                     onSuccess: function (res) {
                                         if (DEBUG) console.log("submitReportHash success:", res);
-                                        // assert(res.txHash);
-                                        // assert.strictEqual(res.callReturn, "1");
+                                        assert(res.txHash);
                                         if (res && res.callReturn === "0") {
                                             return submit();
                                         }
+                                        assert.strictEqual(res.callReturn, "1");
                                         done();
                                     },
                                     onFailed: function (err) {
@@ -285,42 +278,28 @@ describe("Integration tests", function () {
                                     }
                                 });
                             })();
-                            // } else {
-                            //     done();
-                            // }
                         },
                         onFailed: done
                     });
                 }
-                // periodLength = c.getPeriodLength(1010101)
-                // i = c.getVotePeriod(1010101)
-                // while i < int((blocktime+1)/c.getPeriodLength(1010101)):
-                //     c.incrementPeriod(1010101)
-                //     i += 1
-                // while(s.block.timestamp%c.getPeriodLength(1010101) > c.getPeriodLength(1010101)/2):
-                //     time.sleep(c.getPeriodLength(1010101)/2)
-                //     s.mine(1)
                 var currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
                 var votePeriod = parseInt(augur.getVotePeriod(newBranchID));
                 var blocktime = new Date().getTime() / 1000;
                 if (currentPeriod > votePeriod + 1) {
-                // if (votePeriod < Math.floor((blocktime + 1) / periodLength)) {
                     if (DEBUG) console.log("Current period AHEAD OF vote period, incrementing vote period...");
                     function incrementPeriod(period, currentPeriod) {
                         if (DEBUG) console.log("Difference", currentPeriod - period + ". Incrementing period...");
                         augur.incrementPeriodAfterReporting(newBranchID, utils.noop, function (res) {
                             console.log("incremented:", res.callReturn);
-                            // assert.strictEqual(res.callReturn, "1");
+                            assert.strictEqual(res.callReturn, "1");
                             augur.getVotePeriod(newBranchID, function (period) {
                                 period = parseInt(period);
                                 if (DEBUG) console.log("Incremented reporting period to " + period + " (current period " + currentPeriod + ")");
-                                // currentPeriod = Math.floor(blocktime / periodLength);
                                 currentPeriod = Math.floor(new Date().getTime() / 1000 / periodLength);
                                 augur.getEvents(newBranchID, period, function (eventsInPeriod) {
                                     if (DEBUG) console.log("Events in new period", period, eventsInPeriod);
                                     if (eventsInPeriod.length) return submitReportHash();
                                     if (currentPeriod > period + 1) {
-                                    // if (period < Math.floor((blocktime + 1) / periodLength)) {
                                         return incrementPeriod(period, currentPeriod);
                                     }
                                     submitReportHash();
@@ -330,57 +309,43 @@ describe("Integration tests", function () {
                     }
                     return incrementPeriod(votePeriod, currentPeriod);
                 }
-                if (new Date().getTime() / 1000 % periodLength > periodLength / 2) {
-                    if (DEBUG) console.log("Current period BEHIND vote period, waiting...");
-                    return setTimeout(submitReportHash, periodLength / 2);
-                    // var expirationPeriod = Math.floor(expDate / periodLength);
-                    // var periodsToGo = expirationPeriod - currentPeriod + 2;
-                    // var secondsToGo = periodsToGo * periodLength;
-                    // if (DEBUG) {
-                    //     console.log("Expiration time:", expDate);
-                    //     console.log("Expiration period:", expirationPeriod);
-                    //     console.log("Current period:", currentPeriod);
-                    //     console.log("Periods to go:", periodsToGo, "(" + secondsToGo/60 + " minutes)");
-                    // }
-                    // setTimeout(submitReportHash, secondsToGo*1000);
-                }
                 submitReportHash();
             });
 
-            // it("makeReports.submitReport", function (done) {
-            //     this.timeout(tools.TIMEOUT*100);
+            it("makeReports.submitReport", function (done) {
+                this.timeout(tools.TIMEOUT*100);
 
-            //     // fast-forward to the second half of the reporting period
-            //     var period = parseInt(augur.getVotePeriod(newBranchID));
-            //     var curTime = new Date().getTime() / 1000;
-            //     var timeToGo = Math.ceil((periodLength / 2) - (curTime % (periodLength / 2)));
-            //     if (DEBUG) {
-            //         console.log("Current time:", curTime);
-            //         console.log("Next half-period starts at time", curTime + timeToGo, "(" + timeToGo + " to go)")
-            //     }
-            //     setTimeout(function () {
-            //         assert.strictEqual(parseInt(augur.getVotePeriod(newBranchID)), period);
-            //         augur.submitReport({
-            //             event: eventID,
-            //             salt: salt,
-            //             report: report,
-            //             ethics: 1,
-            //             isScalar: false,
-            //             onSent: function (res) {
-            //                 if (DEBUG) console.log("submitReport sent:", res);
-            //                 assert(res.txHash);
-            //                 assert.strictEqual(res.callReturn, "1");
-            //             },
-            //             onSuccess: function (res) {
-            //                 if (DEBUG) console.log("submitReport success:", res);
-            //                 assert(res.txHash);
-            //                 assert.strictEqual(res.callReturn, "1");
-            //                 done();
-            //             },
-            //             onFailed: done
-            //         });
-            //     }, timeToGo*1000);
-            // });
+                // fast-forward to the second half of the reporting period
+                var period = parseInt(augur.getVotePeriod(newBranchID));
+                var curTime = new Date().getTime() / 1000;
+                var timeToGo = Math.ceil((periodLength / 2) - (curTime % (periodLength / 2)));
+                if (DEBUG) {
+                    console.log("Current time:", curTime);
+                    console.log("Next half-period starts at time", curTime + timeToGo, "(" + timeToGo/60 + " minutes to go)")
+                }
+                setTimeout(function () {
+                    assert.strictEqual(parseInt(augur.getVotePeriod(newBranchID)), period);
+                    augur.submitReport({
+                        event: eventID,
+                        salt: salt,
+                        report: report,
+                        ethics: 1,
+                        isScalar: false,
+                        onSent: function (res) {
+                            if (DEBUG) console.log("submitReport sent:", res);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                        },
+                        onSuccess: function (res) {
+                            if (DEBUG) console.log("submitReport success:", res);
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                            done();
+                        },
+                        onFailed: done
+                    });
+                }, timeToGo*1000);
+            });
         });
     }
 });
