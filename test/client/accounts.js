@@ -36,35 +36,33 @@ var secureLoginID2;
 var markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
 var market_id = markets[markets.length - 1];
 
-function checkAccount(augur, account, isRegistration) {
+function checkAccount(augur, account) {
     assert.notProperty(account, "error");
-    assert.isTrue(Buffer.isBuffer(account.privateKey));
+    // assert.isTrue(Buffer.isBuffer(account.privateKey));
     assert.isString(account.address);
     assert.isObject(account.keystore);
+    // assert.strictEqual(
+    //     account.privateKey.toString("hex").length,
+    //     constants.KEYSIZE*2
+    // );
+    assert.strictEqual(account.address.length, 42);
+		assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+    assert.isString(augur.web.account.address);
+    assert.isObject(augur.web.account.keystore);
     assert.strictEqual(
-        account.privateKey.toString("hex").length,
+        augur.web.account.privateKey.toString("hex").length,
         constants.KEYSIZE*2
     );
-    assert.strictEqual(account.address.length, 42);
-		if (!isRegistration) {
-			assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
-	    assert.isString(augur.web.account.address);
-	    assert.isObject(augur.web.account.keystore);
-	    assert.strictEqual(
-	        augur.web.account.privateKey.toString("hex").length,
-	        constants.KEYSIZE*2
-	    );
-	    assert.strictEqual(augur.web.account.address.length, 42);
-	    assert.strictEqual(
-	        account.privateKey.toString("hex"),
-	        augur.web.account.privateKey.toString("hex")
-	    );
-	    assert.strictEqual(account.address, augur.web.account.address);
-	    assert.strictEqual(
-	        JSON.stringify(account.keystore),
-	        JSON.stringify(augur.web.account.keystore)
-	    );
-		}
+    assert.strictEqual(augur.web.account.address.length, 42);
+    // assert.strictEqual(
+    //     account.privateKey.toString("hex"),
+    //     augur.web.account.privateKey.toString("hex")
+    // );
+    assert.strictEqual(account.address, augur.web.account.address);
+    assert.strictEqual(
+        JSON.stringify(account.keystore),
+        JSON.stringify(augur.web.account.keystore)
+    );
     assert.strictEqual(account.address.length, 42);
 }
 
@@ -73,7 +71,7 @@ describe("Register", function () {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name, password, function (result) {
-            checkAccount(augur, result, true);
+            checkAccount(augur, result);
 						secureLoginID = result.secureLoginID;
 						var rec = result.keystore;
             assert.notProperty(rec, "error");
@@ -100,7 +98,7 @@ describe("Register", function () {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name2, password2, function (result) {
-            checkAccount(augur, result, true);
+            checkAccount(augur, result);
 						secureLoginID2 = result.secureLoginID;
 						var rec = result.keystore;
             assert(rec.crypto.ciphertext);
@@ -187,11 +185,11 @@ describe("Login", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(secureLoginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.isTrue(Buffer.isBuffer(user.privateKey));
+            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
             assert.isString(user.address);
             assert.isObject(user.keystore);
             assert.strictEqual(
-                user.privateKey.toString("hex").length,
+                augur.web.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
@@ -227,20 +225,21 @@ describe("Login", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(secureLoginID, password, function (user) {
             assert.notProperty(user, "error");
-            assert.isTrue(Buffer.isBuffer(user.privateKey));
+            assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
             assert.isString(user.address);
             assert.isObject(user.keystore);
             assert.strictEqual(
-                user.privateKey.toString("hex").length,
+                augur.web.account.privateKey.toString("hex").length,
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
             augur.web.login(secureLoginID, password, function (same_user) {
                 assert(!same_user.error);
-                assert.strictEqual(
-                    user.privateKey.toString("hex"),
-                    same_user.privateKey.toString("hex")
-                );
+								// since we no longer pass privateKey out to the callback of login, we cannot check if the two objects sent the correct key.
+                // assert.strictEqual(
+                //     user.privateKey.toString("hex"),
+                //     same_user.privateKey.toString("hex")
+                // );
                 assert.strictEqual(user.address, same_user.address);
                 done();
             });
@@ -306,7 +305,7 @@ describe("Login", function () {
     });
 
 });
-
+// Persistence is no longer possible since we are moving away from local storage.
 // describe("Persist", function () {
 //
 //     it("use a stored (persistent) account", function (done) {
@@ -368,9 +367,9 @@ describe("Logout", function () {
 });
 
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
-
-    describe("Duplicate accounts", function () {
-				// should be impossible now with the secureLoginID....
+		// Should be impossible to have duplicate accounts now with secureLoginID...
+		// and no presistence.
+    // describe("Duplicate accounts", function () {
         // it("account 1 + same password", function (done) {
         //     this.timeout(tools.TIMEOUT);
         //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -435,7 +434,6 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         //     });
         // });
 
-				// Should be impossible now with secureLoginID...
         // it("account 2 + different password", function (done) {
         //     this.timeout(tools.TIMEOUT);
         //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -502,7 +500,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         //         });
         //     });
         // });
-    });
+    // });
 
     describe("Fund new account", function () {
 
