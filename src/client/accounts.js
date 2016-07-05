@@ -34,56 +34,41 @@ module.exports = function () {
         // The account object is set when logged in
         account: {},
 
-				setWebAccount: function (name, secureLoginID, privateKey, address, keystore) {
-					var self = this;
-
-					self.account = {
-						name: name,
-						secureLoginID: secureLoginID,
-						privateKey: privateKey,
-						address: address,
-						keystore: keystore
-					};
+        // free (testnet) ether for new accounts on registration
+				fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
+					var url = constants.FAUCET + abi.format_address(registeredAddress);
+					request(url, function (err, response, body) {
+						if (err) return onFailed(err);
+						if (response.statusCode !== 200) {
+								return onFailed(response.statusCode);
+						}
+						console.log("sent ether to account:", registeredAddress);
+						augur.fundNewAccount({
+							branch: branch || augur.constants.DEFAULT_BRANCH_ID,
+							onSent: onSent,
+							onSuccess: onSuccess,
+							onFailed: onFailed
+						});
+					});
 				},
 
-        // free (testnet) ether for new accounts on registration
-        fundAccount: function (account, branch, onSent, onSuccess, onFailed) {
-          var self = this;
-
-          if (process.env.BUILD_AZURE) {
-            var FREEBIE_ETH = 5;
-            augur.rpc.sendEther({
-              to: account.address,
-              value: FREEBIE_ETH,
-              from: augur.coinbase,
-              onFailed: onFailed,
-              onSent: utils.noop,
-              onSuccess: function (res) {
-                augur.fundNewAccount({
-                  branch: branch || augur.constants.DEFAULT_BRANCH_ID,
-                  onSent: onSent,
-                  onSuccess: onSuccess,
-                  onFailed: onFailed
-                });
-              }
-            });
-          } else {
-            var url = constants.FAUCET + abi.format_address(account.address);
-            request(url, function (err, response, body) {
-              if (err) return onFailed(err);
-              if (response.statusCode !== 200) {
-                  return onFailed(response.statusCode);
-              }
-              console.log("sent ether to account:", account);
-              augur.fundNewAccount({
-                branch: branch || augur.constants.DEFAULT_BRANCH_ID,
-                onSent: onSent,
-                onSuccess: onSuccess,
-                onFailed: onFailed
-              });
-            });
-          }
-        },
+				fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
+					augur.rpc.sendEther({
+						to: registeredAddress,
+						value: amount,
+						from: fromAddress,
+						onFailed: onFailed,
+						onSent: utils.noop,
+						onSuccess: function (res) {
+							augur.fundNewAccount({
+								branch: branch || augur.constants.DEFAULT_BRANCH_ID,
+								onSent: onSent,
+								onSuccess: onSuccess,
+								onFailed: onFailed
+							});
+						}
+					});
+				},
 
         register: function (name, password, cb) {
             var i, self = this;
@@ -131,19 +116,6 @@ module.exports = function () {
 								var unsecureLoginIDObject = { name: name, keystore: keystore };
 								var secureLoginID = abacus.base58Encrypt(unsecureLoginIDObject);
 
-								// while logged in, web.account object is set
-								self.setWebAccount(name, secureLoginID, plain.privateKey, keystore.address, keystore);
-								// console.log(self.account);
-								// console.log(plain.privateKey);
-								// console.log(encryptedPrivateKey);
-	              // self.account = {
-								// 	name: name,
-	              //   secureLoginID: secureLoginID,
-	              //   privateKey: plain.privateKey,
-	              //   address: keystore.address,
-	              //   keystore: keystore
-	              // };
-
 								cb({ name: name, secureLoginID: secureLoginID, keystore: keystore, address: keystore.address });
               }); // deriveKey
           }); // create
@@ -185,14 +157,13 @@ module.exports = function () {
               ), "hex");
 
               // while logged in, web.account object is set
-							self.setWebAccount(name, secureLoginID, privateKey, keystore.address, keystore);
-              // self.account = {
-							// 	name: name,
-              //   secureLoginID: secureLoginID,
-              //   privateKey: privateKey,
-              //   address: keystore.address,
-              //   keystore: keystore
-              // };
+              self.account = {
+								name: name,
+                secureLoginID: secureLoginID,
+                privateKey: privateKey,
+                address: keystore.address,
+                keystore: keystore
+              };
 
               cb({ name: name, secureLoginID: secureLoginID, keystore: keystore, address: keystore.address });
             // decryption failure: bad password

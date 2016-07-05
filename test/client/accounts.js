@@ -36,33 +36,26 @@ var secureLoginID2;
 var markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
 var market_id = markets[markets.length - 1];
 
-function checkAccount(augur, account) {
+function checkAccount(augur, account, noWebAccountCheck) {
     assert.notProperty(account, "error");
-    // assert.isTrue(Buffer.isBuffer(account.privateKey));
     assert.isString(account.address);
     assert.isObject(account.keystore);
-    // assert.strictEqual(
-    //     account.privateKey.toString("hex").length,
-    //     constants.KEYSIZE*2
-    // );
     assert.strictEqual(account.address.length, 42);
-		assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
-    assert.isString(augur.web.account.address);
-    assert.isObject(augur.web.account.keystore);
-    assert.strictEqual(
-        augur.web.account.privateKey.toString("hex").length,
-        constants.KEYSIZE*2
-    );
-    assert.strictEqual(augur.web.account.address.length, 42);
-    // assert.strictEqual(
-    //     account.privateKey.toString("hex"),
-    //     augur.web.account.privateKey.toString("hex")
-    // );
-    assert.strictEqual(account.address, augur.web.account.address);
-    assert.strictEqual(
-        JSON.stringify(account.keystore),
-        JSON.stringify(augur.web.account.keystore)
-    );
+		if (!noWebAccountCheck) {
+			assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+	    assert.isString(augur.web.account.address);
+	    assert.isObject(augur.web.account.keystore);
+	    assert.strictEqual(
+	        augur.web.account.privateKey.toString("hex").length,
+	        constants.KEYSIZE*2
+	    );
+	    assert.strictEqual(augur.web.account.address.length, 42);
+	    assert.strictEqual(account.address, augur.web.account.address);
+	    assert.strictEqual(
+	        JSON.stringify(account.keystore),
+	        JSON.stringify(augur.web.account.keystore)
+	    );
+		}
     assert.strictEqual(account.address.length, 42);
 }
 
@@ -71,7 +64,7 @@ describe("Register", function () {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name, password, function (result) {
-            checkAccount(augur, result);
+            checkAccount(augur, result, true);
 						secureLoginID = result.secureLoginID;
 						var rec = result.keystore;
             assert.notProperty(rec, "error");
@@ -98,7 +91,7 @@ describe("Register", function () {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name2, password2, function (result) {
-            checkAccount(augur, result);
+            checkAccount(augur, result, true);
 						secureLoginID2 = result.secureLoginID;
 						var rec = result.keystore;
             assert(rec.crypto.ciphertext);
@@ -504,7 +497,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("Fund new account", function () {
 
-        it("funding sequence: " + secureLoginID, function (done) {
+        it("Faucet: funding sequence: " + secureLoginID, function (done) {
             this.timeout(tools.TIMEOUT*2);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(secureLoginID, password, function (account) {
@@ -515,7 +508,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     .bignum(augur.rpc.balance(recipient))
                     .dividedBy(constants.ETHER);
                 // console.log("initial balance:", initial_balance.toFixed());
-                augur.web.fundAccount({address: recipient}, augur.constants.DEFAULT_BRANCH_ID,
+                augur.web.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
                     function (res) {
                         assert.notProperty(res, "error");
                         assert.strictEqual(res.callReturn, "1");
