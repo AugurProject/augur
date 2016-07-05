@@ -37549,7 +37549,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.4";
+    this.version = "1.6.5";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38981,6 +38981,9 @@ module.exports = {
 
 "use strict";
 
+var async = require("async");
+var utils = require("../utilities");
+
 module.exports = {
 
     getCurrentPeriod: function (periodLength) {
@@ -38995,6 +38998,7 @@ module.exports = {
     // Increment vote period until vote period = current period - 1
     checkVotePeriod: function (branch, periodLength, callback) {
         var self = this;
+
         function incrementPeriod(branch, periodLength, next) {
             self.Consensus.incrementPeriodAfterReporting({
                 branch: branch,
@@ -39008,17 +39012,48 @@ module.exports = {
                 onFailed: next
             });
         }
-        this.getVotePeriod(branch, function (votePeriod) {
-            if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
-                incrementPeriod(branch, periodLength, function (err, votePeriod) {
-                    if (err) return callback(err);
-                    console.log("New vote period:", votePeriod);
-                    self.checkVotePeriod(branch, periodLength, callback);
-                });
-            } else {
-                callback(null, votePeriod);
-            }
-        });
+
+        function checkPenalizeWrong(branch, votePeriod, next) {
+            self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
+                if (!events || events.constructor !== Array || !events.length) {
+                    return next(null);
+                }
+                async.eachSeries(events, function (event, nextEvent) {
+                    self.Consensus.penalizeWrong({
+                        branch: branch,
+                        event: event,
+                        onSent: utils.noop,
+                        onSuccess: function (r) {
+                            console.log("penalizeWrong success:", r.callReturn);
+                            nextEvent();
+                        },
+                        onFailed: nextEvent
+                    });
+                }, next);
+            });
+        }
+
+        function checkIncrementPeriod(branch, periodLength, next, callback) {
+            self.Branches.getVotePeriod(branch, function (votePeriod) {
+                if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+                    incrementPeriod(branch, periodLength, function (err, votePeriod) {
+                        if (err) return next(err);
+                        console.log("New vote period:", votePeriod);
+                        next(null, votePeriod);
+                    });
+                } else {
+                    callback(null, votePeriod);
+                }
+            });
+        }
+
+        checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
+            if (err) return callback(err);
+            checkPenalizeWrong(branch, votePeriod, function (err) {
+                if (err) return callback(err);
+                self.checkVotePeriod(branch, periodLength, callback);
+            });
+        }, callback);
     },
 
     // Make sure current period = expiration period + 1
@@ -39070,7 +39105,7 @@ module.exports = {
     }
 };
 
-},{}],373:[function(require,module,exports){
+},{"../utilities":379,"async":63}],373:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
