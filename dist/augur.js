@@ -16589,7 +16589,7 @@ module.exports={
         "branch"
       ], 
       "method": "getVotePeriod", 
-      "returns": "number", 
+      "returns": "int", 
       "signature": [
         "int256"
       ]
@@ -20227,41 +20227,41 @@ module.exports={
 },{}],57:[function(require,module,exports){
 module.exports={
     "10101": {
-        "Backstops": "0xa9c505bfd022d3c7c27d9418193b290fdad57677", 
-        "Branches": "0x6c6609f40bd9147356a4283c54cded5bc2879248", 
-        "BuyAndSellShares": "0xd6d3d499532b3dbb5e22f4e75717d482cb3077e2", 
-        "Cash": "0x0b1786dd0463cfb46fb8f04dd96837f3d28c6020", 
-        "CloseMarket": "0x0c80a339b0c71faf135f823f44da6cf0b01e2308", 
-        "CloseMarketOne": "0x2024774633b2b166155dab84389482dae0ace511", 
-        "CloseMarketTwo": "0xfc2a68f251ffb274774667d6a8bd90a7df80ee5c", 
-        "CollectFees": "0x7c5b5b5adc91c1403163cf67252283cdfd1c34ec", 
-        "CompleteSets": "0x56fa00c4b09433faa20da0e77a03a0252fb4acbb", 
-        "CompositeGetters": "0x2a22fd2a7208a5fe20d493274e71da4f76dec96e", 
-        "Consensus": "0x2af5a707e680b08949852e3bd1157ffc6291fbe6", 
-        "ConsensusData": "0x2cb9c387774a681b422ad475fa5da0fec770a98e", 
-        "CreateBranch": "0x85e889acc0d37064ada68eb196db26fb3d29ac39", 
-        "CreateMarket": "0x941c66ff87670502e68ba2b0e6f610a5f6db3493", 
-        "EventResolution": "0x5370de0ee510750f8965f1e5793abaaa19a75dfc", 
-        "Events": "0x526d9bab171eae0733a81d9d969d861d7049d4c3", 
-        "ExpiringEvents": "0xc005f8870fc8e36a9cd3cd145d02d6aa6f75de0b", 
-        "Faucets": "0x56ec6edf54a157924b82b84c0ad49b7d4df77765", 
-        "ForkPenalize": "0xa27e7a651f8f754e50e44beaad44826f7ca1ac79", 
-        "Forking": "0xa87f4f1dcfca858a7d379662a861e0a8ebfe4252", 
-        "FxpFunctions": "0xe16467198c83ba81b9b93c229bf170cc3d4b9561", 
-        "Info": "0x4924f08488b334db651be22f2eb9c889a9cb0d8b", 
-        "MakeReports": "0x0db6c60a08bee63414e3023c2e1fc82a342607cf", 
-        "Markets": "0x7968a2b7299bd2db7d9cb5bbbec276bec5cf40e5", 
-        "PenalizationCatchup": "0x2df198405f8f65d09f9ad56da9df7d0058d6d3c1", 
-        "PenalizeNotEnoughReports": "0x8af30dbff8d4d80798a6d042c5fb250c96268bc0", 
-        "ProportionCorrect": "0xc0c51ac9f27979236daf6b5e92773c36c626eb79", 
-        "Reporting": "0x9c60a62f663f0920037dda498dccc7de41c3fb9c", 
-        "ReportingThreshold": "0x43e81f639ff9678b8e2ea075ae67601f8599b340", 
-        "RoundTwo": "0x51e006431eccbfd114e347724008a2701546233e", 
-        "RoundTwoPenalize": "0x252c07a39bd648f279975e204343545019415a8f", 
-        "SendReputation": "0x791eaf421663c77f5babd436681bb21a14a0af61", 
-        "SlashRep": "0xceb2cffe7ce34f98f1eadb978cbac7139e7d2607", 
-        "Trade": "0x533ce6a711175791d63a443c88b04b818e210786", 
-        "Trades": "0x5a87c4280c598944bed494c507b12b109dbb9f5e"
+        "Backstops": "0x0d6100f462e8673897a8af2294a542905c2c4669", 
+        "Branches": "0xaa73c1abe075999ce7dd8fd7f311c26af4ecb412", 
+        "BuyAndSellShares": "0x45337ca8b048ef1c9e2d6a344d37363f3d61916e", 
+        "Cash": "0x653010f2b4d09e2fb3938e90d4914e3f3b52649f", 
+        "CloseMarket": "0xa460d3a8246acd3a40d7da09f79c1b3ed77613ac", 
+        "CloseMarketOne": "0x2c57feb0c6eb05993cf94a152a7a323c105db5d0", 
+        "CloseMarketTwo": "0xb4ad25d0f24839b2de7788ddb1a3868921a49086", 
+        "CollectFees": "0x27442a9c083e651f576030719b095e2cb1d59cce", 
+        "CompleteSets": "0x5c01ef538efc55616dcb977c68fa9c1f84005744", 
+        "CompositeGetters": "0x2924c7b2b8153151ba16568e9c522b1f885f7d80", 
+        "Consensus": "0x74060ea065bd19fae3c5f24aec81511ea8d1c404", 
+        "ConsensusData": "0x6575eb2dc9b2afca07f52480ae6e6e86fb364675", 
+        "CreateBranch": "0xd2a53aa4036276246927cd20172af948527b114e", 
+        "CreateMarket": "0xf8f9eb56210845d8334182dffd1736508755f6e4", 
+        "EventResolution": "0xcf0602a73d78c1269f45e042dcb6763aa6c54e8c", 
+        "Events": "0xb596f4df9ea33dfe729c3240f7b5384011dc4126", 
+        "ExpiringEvents": "0x60eaf6fbc260bb399d169d5ebc014dcbe049429f", 
+        "Faucets": "0x89904e30165ed8d32ca0d49b436cc10c86bebefe", 
+        "ForkPenalize": "0x4d395739be03348465a6c2a0d99ee246dfcd1a81", 
+        "Forking": "0x6c161e7817e4e6d298d8686e580f5294646933ce", 
+        "FxpFunctions": "0xe8a5ccc31fbc3b0f4fe6187ba7896f3878a9c4d6", 
+        "Info": "0x4e41f6b5733191d1f0f0fff26fcff61926885c85", 
+        "MakeReports": "0xbd6f40053cffb017b99cc0427b38611e404554f1", 
+        "Markets": "0xaf2751b0146ab6f846f9f399a3bf0ebb2e425463", 
+        "PenalizationCatchup": "0x0fc1c598469b6fefe3dccca1bb2b96641d215077", 
+        "PenalizeNotEnoughReports": "0x9440afa9204905b721aaf317bc4a3be7d1e824f9", 
+        "ProportionCorrect": "0x1fd628402b00f64562d0b56bb0dc88549f080210", 
+        "Reporting": "0x05ba0acf326532b53c738bf6b28ad523987aa9f5", 
+        "ReportingThreshold": "0x30a6160e55d9af16ef784632e3ddf709d3550abd", 
+        "RoundTwo": "0xb6f31bde9b0a0879866c82d268b4ca839b3bdbb2", 
+        "RoundTwoPenalize": "0x56678a73cbea68580649ed1b5c9b9369419b9bee", 
+        "SendReputation": "0xb1836ac3300b1f5f4445098df6e5c5fdfdd79674", 
+        "SlashRep": "0x9ab5dadbf6c2c3928f5420ea842183ac5e285252", 
+        "Trade": "0xd0473b70530a37743d63268ed9e8544c01c0a7a6", 
+        "Trades": "0x401a31250646bb68e2169bbdc0a8834d0f375ecb"
     }, 
     "2": {
         "Backstops": "0xf9c9a87f339b76dc007848ab50363116ec1af05b", 
@@ -37526,7 +37526,6 @@ var modules = [
     require("./modules/connect"),
     require("./modules/transact"),
     require("./modules/cash"),
-    require("./modules/branches"),
     require("./modules/events"),
     require("./modules/markets"),
     require("./modules/trades"),
@@ -37540,11 +37539,12 @@ var modules = [
     require("./modules/compositeGetters"),
     require("./modules/whitelist"),
     require("./modules/logs"),
-    require("./modules/abacus")
+    require("./modules/abacus"),
+    require("./modules/reportingTools")
 ];
 
 function Augur() {
-    this.version = "1.6.2";
+    this.version = "1.6.3";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37582,7 +37582,7 @@ Augur.prototype.Filters = require("./filters");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./batch":353,"./client/accounts":354,"./client/db":355,"./constants":356,"./filters":357,"./generateOrderBook":358,"./modules/abacus":360,"./modules/branches":361,"./modules/buyAndSellShares":362,"./modules/cash":363,"./modules/completeSets":364,"./modules/compositeGetters":365,"./modules/connect":366,"./modules/createBranch":367,"./modules/createMarket":368,"./modules/events":369,"./modules/logs":370,"./modules/makeReports":371,"./modules/markets":372,"./modules/sendReputation":373,"./modules/trade":374,"./modules/trades":375,"./modules/transact":376,"./modules/whitelist":377,"./processOrder":378,"./utilities":379,"_process":269,"augur-abi":1,"augur-contracts":59,"ethrpc":382}],360:[function(require,module,exports){
+},{"./batch":353,"./client/accounts":354,"./client/db":355,"./constants":356,"./filters":357,"./generateOrderBook":358,"./modules/abacus":360,"./modules/buyAndSellShares":361,"./modules/cash":362,"./modules/completeSets":363,"./modules/compositeGetters":364,"./modules/connect":365,"./modules/createBranch":366,"./modules/createMarket":367,"./modules/events":368,"./modules/logs":369,"./modules/makeReports":370,"./modules/markets":371,"./modules/reportingTools":372,"./modules/sendReputation":373,"./modules/trade":374,"./modules/trades":375,"./modules/transact":376,"./modules/whitelist":377,"./processOrder":378,"./utilities":379,"_process":269,"augur-abi":1,"augur-contracts":59,"ethrpc":382}],360:[function(require,module,exports){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
  * make RPC requests).
@@ -37599,6 +37599,10 @@ var utils = require("../utilities");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
+
+    getCurrentPeriod: function (periodLength) {
+        return Math.floor(new Date().getTime() / 1000 / periodLength);
+    },
 
     // expects BigNumber inputs
     calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
@@ -37863,30 +37867,6 @@ module.exports = {
 "use strict";
 
 var clone = require("clone");
-var utils = require("../utilities");
-
-module.exports = {
-
-    getCurrentPeriod: function (branch, callback) {
-        var self = this;
-        if (!utils.is_function(callback)) {
-            return new Date().getTime() / 1000 / parseInt(this.getPeriodLength(branch));
-        }
-        this.getPeriodLength(branch, function (periodLength) {
-            callback(new Date().getTime() / 1000 / parseInt(periodLength));
-        });
-    }
-};
-
-},{"../utilities":379,"clone":291}],362:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
@@ -37954,7 +37934,7 @@ module.exports = {
     }
 };
 
-},{"../constants":356,"../utilities":379,"augur-abi":1,"clone":291}],363:[function(require,module,exports){
+},{"../constants":356,"../utilities":379,"augur-abi":1,"clone":291}],362:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38021,7 +38001,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"augur-abi":1,"clone":291}],364:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"clone":291}],363:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38052,7 +38032,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"augur-abi":1,"clone":291}],365:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"clone":291}],364:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38208,7 +38188,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"bignumber.js":64,"clone":291}],366:[function(require,module,exports){
+},{"../utilities":379,"bignumber.js":64,"clone":291}],365:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -38383,7 +38363,7 @@ module.exports = {
     }
 };
 
-},{"../constants":356,"../utilities":379,"clone":291,"ethereumjs-connect":380}],367:[function(require,module,exports){
+},{"../constants":356,"../utilities":379,"clone":291,"ethereumjs-connect":380}],366:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38464,7 +38444,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"augur-abi":1,"clone":291}],368:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"clone":291}],367:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript API
@@ -38674,7 +38654,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../utilities":379,"augur-abi":1,"bignumber.js":64,"buffer":69,"clone":291}],369:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"bignumber.js":64,"buffer":69,"clone":291}],368:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38723,7 +38703,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"augur-abi":1,"clone":291}],370:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"clone":291}],369:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38873,7 +38853,7 @@ module.exports = {
     }
 };
 
-},{"../constants":356,"../utilities":379,"augur-abi":1,"bignumber.js":64}],371:[function(require,module,exports){
+},{"../constants":356,"../utilities":379,"augur-abi":1,"bignumber.js":64}],370:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38950,7 +38930,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"augur-abi":1,"augur-contracts":59,"clone":291}],372:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"augur-contracts":59,"clone":291}],371:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38991,7 +38971,89 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"clone":291}],373:[function(require,module,exports){
+},{"../utilities":379,"clone":291}],372:[function(require,module,exports){
+/**
+ * Reporting time/period toolkit
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+module.exports = {
+
+    // Increment vote period until vote period = current period - 1
+    checkVotePeriod: function (branch, periodLength, callback) {
+        var self = this;
+        function incrementPeriod(branch, periodLength, next) {
+            self.Consensus.incrementPeriodAfterReporting({
+                branch: branch,
+                onSent: function (r) {},
+                onSuccess: function (r) {
+                    console.log("Incremented period:", r.callReturn);
+                    self.getVotePeriod(branch, function (votePeriod) {
+                        next(null, votePeriod);
+                    });
+                },
+                onFailed: next
+            });
+        }
+        this.getVotePeriod(branch, function (votePeriod) {
+            if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+                incrementPeriod(branch, periodLength, function (err, votePeriod) {
+                    if (err) return callback(err);
+                    console.log("New vote period:", votePeriod);
+                    self.checkVotePeriod(branch, periodLength, callback);
+                });
+            } else {
+                callback(null, votePeriod);
+            }
+        });
+    },
+
+    // Make sure current period = expiration period + 2
+    // If not, wait until it is:
+    // expPeriod - currentPeriod - 1 periods
+    // t % periodLength seconds
+    checkTime: function (branch, event, periodLength, callback) {
+        var self = this;
+        function wait(branch, secondsToWait, next) {
+            console.log("Waiting", secondsToWait / 60, "minutes...");
+            setTimeout(function () {
+                self.Consensus.incrementPeriodAfterReporting({
+                    branch: branch,
+                    onSent: function (r) {},
+                    onSuccess: function (r) {
+                        console.log("Incremented period:", r.callReturn);
+                        self.getVotePeriod(branch, function (votePeriod) {
+                            next(null, votePeriod);
+                        });
+                    },
+                    onFailed: next
+                });
+            }, secondsToWait*1000);
+        }
+        this.getExpiration(event, function (expTime) {
+            var expPeriod = Math.floor(expTime / periodLength);
+            var currentPeriod = self.getCurrentPeriod(periodLength);
+            if (currentPeriod < expPeriod + 2) {
+                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) - 1;
+                var secondsToWait = periodLength;
+                if (fullPeriodsToWait === 0) {
+                    secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
+                }
+                wait(branch, secondsToWait, function (err, votePeriod) {
+                    if (err) return callback(err);
+                    console.log("New vote period:", votePeriod);
+                    self.checkTime(branch, event, periodLength, callback);
+                });
+            } else {
+                callback(null);
+            }
+        });
+    }
+};
+
+},{}],373:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)

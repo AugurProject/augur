@@ -15,6 +15,10 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    getCurrentPeriod: function (periodLength) {
+        return Math.floor(new Date().getTime() / 1000 / periodLength);
+    },
+
     // expects BigNumber inputs
     calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
         return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));

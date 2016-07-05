@@ -11,7 +11,6 @@ var modules = [
     require("./modules/connect"),
     require("./modules/transact"),
     require("./modules/cash"),
-    require("./modules/branches"),
     require("./modules/events"),
     require("./modules/markets"),
     require("./modules/trades"),
@@ -25,11 +24,12 @@ var modules = [
     require("./modules/compositeGetters"),
     require("./modules/whitelist"),
     require("./modules/logs"),
-    require("./modules/abacus")
+    require("./modules/abacus"),
+    require("./modules/reportingTools")
 ];
 
 function Augur() {
-    this.version = "1.6.2";
+    this.version = "1.6.3";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
