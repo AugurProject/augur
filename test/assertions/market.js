@@ -155,12 +155,192 @@ function marketAssertion(actual) {
 		});
 		
 		describe('outcomes', () => {
+			console.log('outcomes -- ', actual.outcomes);
+
 			it('should exist', () => {
 				assert.isDefined(actual.outcomes, `market.outcomes isn't defined`);
 			});
 
 			it('should be an array', () => {
 				assert.isArray(actual.outcomes, `market.outcomes isn't an array`);
+			});
+
+			actual.outcomes.map((outcome, i) => {
+				describe(`outcome ${i}`, () => {
+					describe('id', () => {
+						it('should exist', () => {
+							assert.isDefined(outcome.id, 'id does not exist');
+						});
+
+						it('should be a string', () => {
+							assert.isString(outcome.id, 'id is not a string');
+						});
+					});
+
+					describe('name', () => {
+						it('should exist', () => {
+							assert.isDefined(outcome.name, 'name does not exist');
+						});
+
+						it('should be a string', () => {
+							assert.isString(outcome.name, 'name is not a string');
+						});
+					});
+
+					describe('price', () => {
+						it('should exist', () => {
+							assert.isDefined(outcome.price, 'price does not exist');
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(outcome.price, 'price is not a number');
+						});
+					});
+
+					describe('marketID', () => {
+						it('should exist', () => {
+							assert.isDefined(outcome.marketID, 'marketID does not exist');
+						});
+
+						it('should be a string', () => {
+							assert.isString(outcome.marketID, 'marketID is not a string');
+						});
+					});
+
+					describe('lastPrice', () => {
+						it('should exist', () => {
+							assert.isDefined(outcome.lastPrice, 'lastPrice does not exist');
+						});
+
+						it('should have the correct shape', () => {
+							numberShape(outcome.lastPrice);
+						});
+					});
+
+					describe('lastPricePercent', () => {
+						it('should exist', () => {
+							assert.isDefined(outcome.lastPricePercent, 'lastPricePercent does not exist');
+						});
+
+						it('should have the correct shape', () => {
+							percentNumberShape(outcome.lastPricePercent);
+						});
+					});
+
+					describe('trade', () => {
+						let trade = outcome.trade;
+
+						it('should exist', () => {
+							assert.isDefined(trade, 'trade does not exist');
+						});
+
+						it('should be an object', () => {
+							assert.isObject(trade, 'trade is not an object');
+						})
+
+						describe('side', () => {
+							it('should exist', () => {
+								assert.isDefined(trade.side, 'side does not exist');
+							});
+
+							it('should be a string', () => {
+								assert.isString(trade.side, 'side is not a string');
+							});
+						});
+
+						describe('numShares', () => {
+							it('should exist', () => {
+								assert.isDefined(trade.numShares, 'numShares does not exist');
+							});
+
+							it('should be a number', () => {
+								assert.isNumber(trade.numShares, 'numShares is not a number');
+							});
+						});
+
+						describe('limitPrice', () => {
+							it('should exist', () => {
+								assert.isDefined(trade.limitPrice, 'limitPrice does not exist');
+							});
+
+							it('should be a number', () => {
+								assert.isNumber(trade.limitPrice, 'limitPrice is not a number');
+							});
+						});
+
+						describe('tradeSummary', () => { // NOTE -- shallow check here due to deep check further down of the same selector method
+							it('should exist', () => {
+								assert.isDefined(trade.tradeSummary, 'tradeSummary does not exist');
+							});
+
+							it('should be a number', () => {
+								assert.isObject(trade.tradeSummary, 'tradeSummary is not a object');
+							});
+						});
+
+						describe('updateTradeOrder', () => {
+							it('should exist', () => {
+								assert.isDefined(trade.updateTradeOrder, 'updateTradeOrder does not exist');
+							});
+
+							it('should be a function', () => {
+								assert.typeOf(trade.updateTradeOrder, 'function', 'updateTradeOrder is not a function');
+							});
+						});
+					});
+
+					describe('orderBook', () => { // NOTE -- shallow check here due to deep check further down of the same selector method
+						let orderBook = outcome.orderBook;
+
+						it('should exist', () => {
+							assert.isDefined(orderBook, 'orderBook does not exist');
+						});
+
+						it('should be a function', () => {
+							assert.isObject(orderBook, 'orderBook is not an object');
+						});
+
+						describe('bids', () => {
+							it('should exist', () => {
+								assert.isDefined(orderBook.bids, `bids isn't defined`);
+							});
+
+							it('should be an array', () => {
+								assert.isArray(orderBook.bids, `bids isn't an array`);
+							});
+						});
+
+						describe('asks', () => {
+							it('should exist', () => {
+								assert.isDefined(orderBook.asks, `asks isn't defined`);
+							});
+
+							it('should be an array', () => {
+								assert.isArray(orderBook.asks, `asks isn't an array`);
+							});
+						});
+					});
+
+					describe('topBid', () => { // NOTE -- shallow check here due to deep check further down of the same selector method
+						it('should exist', () => {
+							assert.isDefined(outcome.topBid, 'topBid does not exist');
+						});
+
+						it('should be a string', () => {
+							assert.isNull(outcome.topBid, 'topBid is not null');
+						});
+					});
+
+					describe('topAsk', () => { // NOTE -- shallow check here due to deep check further down of the same selector method
+						it('should exist', () => {
+							assert.isDefined(outcome.topAsk, 'topAsk does not exist');
+						});
+
+						it('should be a string', () => {
+							assert.isNull(outcome.topAsk, 'topAsk is not null');
+						});
+					});
+				});
 			});
 		});
 
