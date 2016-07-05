@@ -7,6 +7,15 @@
 
 module.exports = {
 
+    getCurrentPeriod: function (periodLength) {
+        return Math.floor(new Date().getTime() / 1000 / periodLength);
+    },
+
+    getCurrentPeriodProgress: function (periodLength) {
+        var t = parseInt(new Date().getTime() / 1000);
+        return 100 * (t % periodLength) / periodLength;
+    },
+
     // Increment vote period until vote period = current period - 1
     checkVotePeriod: function (branch, periodLength, callback) {
         var self = this;
@@ -36,9 +45,9 @@ module.exports = {
         });
     },
 
-    // Make sure current period = expiration period + 2
+    // Make sure current period = expiration period + 1
     // If not, wait until it is:
-    // expPeriod - currentPeriod - 1 periods
+    // expPeriod - currentPeriod periods
     // t % periodLength seconds
     checkTime: function (branch, event, periodLength, callback) {
         var self = this;
@@ -61,12 +70,18 @@ module.exports = {
         this.getExpiration(event, function (expTime) {
             var expPeriod = Math.floor(expTime / periodLength);
             var currentPeriod = self.getCurrentPeriod(periodLength);
-            if (currentPeriod < expPeriod + 2) {
-                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) - 1;
+            console.log("reportingTools.checkTime:");
+            console.log(" - Expiration period:", expPeriod);
+            console.log(" - Current period:   ", currentPeriod);
+            console.log(" - Target period:    ", expPeriod + 1);
+            if (currentPeriod < expPeriod + 1) {
+                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength);
+                console.log("Full periods to wait:", fullPeriodsToWait);
                 var secondsToWait = periodLength;
                 if (fullPeriodsToWait === 0) {
                     secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
                 }
+                console.log("Seconds to wait:", secondsToWait);
                 wait(branch, secondsToWait, function (err, votePeriod) {
                     if (err) return callback(err);
                     console.log("New vote period:", votePeriod);

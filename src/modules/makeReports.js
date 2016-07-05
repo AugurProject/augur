@@ -34,9 +34,9 @@ module.exports = {
             report = event.report;
             ethics = event.ethics;
             isScalar = event.isScalar;
-            if (event.onSent) onSent = event.onSent;
-            if (event.onSuccess) onSuccess = event.onSuccess;
-            if (event.onFailed) onFailed = event.onFailed;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
             event = event.event;
         }
         onSent = onSent || utils.pass;
@@ -55,6 +55,7 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
+        console.log("submitReport tx:", tx.params);
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
