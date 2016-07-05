@@ -5,14 +5,13 @@ import { M } from '../modules/site/constants/pages';
 
 module.exports = makeMarkets();
 
-const constants = {
-	BID: 'bid',
-	ASK: 'ask'
-};
-
 function makeMarkets(numMarkets = 25) {
 	const markets = [];
 	const	types = ['binary', 'categorical', 'scalar'];
+	const constants = {
+		BID: 'bid',
+		ASK: 'ask'
+	};
 
 	for (let i = 0; i < numMarkets; i++) {
 		markets.push(makeMarket(i));

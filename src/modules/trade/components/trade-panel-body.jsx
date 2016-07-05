@@ -91,9 +91,6 @@ const TradePanelBody = (p) => {
 			);
 
 			orderBookMaxRows.map((cV, i) => {
-
-				console.log('selected, current -- ', p.selectedOutcomeID, outcome.id, p.selectedOutcomeID === outcome.id);
-
 				if (i !== 0) {
 					tableRows.push(
 						<tr
