@@ -55,13 +55,7 @@ function makeMarkets(numMarkets = 25) {
 		m.reportableOutcomes = m.outcomes.slice();
 		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
 
-		m.onSubmitPlaceTrade = () => {
-			require('../selectors').update({
-				activePage: TRANSACTIONS
-			});
-
-			prepareTestTradingTransactions();
-		};
+		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
 
 		// trade summary
 		Object.defineProperty(m, 'tradeSummary', {
