@@ -35,17 +35,16 @@ describe("Unit tests", function () {
         });
 
 		runTestCase({
-			title: "should return BID action when user wants to buy but there are no asks",
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
-			userAddress: "abcd1234",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
 				buy: [],
 				sell: []
 			},
+			userAddress: "abcd1234",
 			cb: function (actions) {
 				assert.isArray(actions);
 				assert.lengthOf(actions, 1, "more actions than expected were created");
@@ -61,11 +60,9 @@ describe("Unit tests", function () {
 		});
 
 		runTestCase({
-			title: "should return BID action when user wants to buy but there are no suitable asks",
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
-			userAddress: "abcd1234",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -95,6 +92,7 @@ describe("Unit tests", function () {
 					}
 				]
 			},
+			userAddress: "abcd1234",
 			cb: function (actions) {
 				assert.isArray(actions);
 				assert.lengthOf(actions, 1, "more actions than expected were created");
@@ -110,11 +108,9 @@ describe("Unit tests", function () {
 		});
 
 		runTestCase({
-			title: "should return BUY action when user wants to buy and there are asks",
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
-			userAddress: "abcd1234",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -127,6 +123,7 @@ describe("Unit tests", function () {
 					outcome: "outcomeasdf123"
 				}]
 			},
+			userAddress: "abcd1234",
 			cb: function (actions) {
                 console.log("asdf");
                 assert.isArray(actions);
@@ -143,7 +140,7 @@ describe("Unit tests", function () {
 		});
 
 		function runTestCase(testCase) {
-			it(testCase.title, function (done) {
+			it(JSON.stringify(testCase), function (done) {
 				augur.getTradingActions({
 					type: testCase.type,
 					shares: testCase.shares,
