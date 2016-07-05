@@ -321,10 +321,10 @@ describe("Integration tests", function () {
                     });
                 }
 
-                augur.reportingTools.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
+                augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     if (err) return done(new Error(tools.pp(err)));
                     console.log("vote period = current period - 1:", votePeriod === augur.getCurrentPeriod(periodLength)-1);
-                    augur.reportingTools.checkTime(newBranchID, eventID, periodLength, function (err) {
+                    augur.checkTime(newBranchID, eventID, periodLength, function (err) {
                         if (err) return done(new Error(tools.pp(err)));
                         console.log("current period = expiration period + 2:", augur.getCurrentPeriod(periodLength)+2);
 
