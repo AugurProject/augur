@@ -68,7 +68,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				endDataShape(actual.endDate, 'endData does not have the correct shape')
+				endDataShape(actual.endDate, 'market')
 			});
 		});
 
