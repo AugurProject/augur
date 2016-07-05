@@ -155,8 +155,6 @@ function marketAssertion(actual) {
 		});
 		
 		describe('outcomes', () => {
-			console.log('outcomes -- ', actual.outcomes);
-
 			it('should exist', () => {
 				assert.isDefined(actual.outcomes, `market.outcomes isn't defined`);
 			});
@@ -344,13 +342,45 @@ function marketAssertion(actual) {
 			});
 		});
 
-		describe('reportableOutcomes', () => {
+		describe('reportableOutcomes', () => { // NOTE -- other outcomes reside in this array, only testing unique item
 			it('should exist', () => {
 				assert.isDefined(actual.reportableOutcomes, `market.reportableOutcomes isn't defined`);
 			});
 
 			it('should be an array', () => {
 				assert.isArray(actual.reportableOutcomes, `market.reportableOutcomes isn't an array`);
+			});
+
+			describe('indeterminate outcome', () => {
+				const indeterminateItem = actual.reportableOutcomes[actual.reportableOutcomes.length - 1];
+
+				it('should exist', () => {
+					assert.isDefined(indeterminateItem, 'indeterminateItem does not exist');
+				});
+
+				it('should be an object', () => {
+					assert.isObject(indeterminateItem, 'indeterminateItem is not an object');
+				});
+				
+				describe('id', () => {
+					it('should exist', () => {
+						assert.isDefined(indeterminateItem.id, 'id does not exist');
+					});
+
+					it('should be a string', () => {
+						assert.isString(indeterminateItem.id, 'id is not a string');
+					});
+				});
+
+				describe('name', () => {
+					it('should exist', () => {
+						assert.isDefined(indeterminateItem.name, 'name does not exist');
+					});
+
+					it('should be a string', () => {
+						assert.isString(indeterminateItem.name, 'name is not a string');
+					});
+				});
 			});
 		});
 
