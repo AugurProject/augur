@@ -279,8 +279,8 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
-ex.multiTrade = function multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
-	augur.multiTrade(transactionID, marketId, marketOrderBook, tradeOrders, outcomePositions, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
+ex.processOrder = function processOrder(requestId, market, marketOrderBook, userTradeOrder, userPosition, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
+	augur.processOrder(requestId, market, marketOrderBook, userTradeOrder, userPosition, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
 		onBuySellSent, onBuySellSuccess, onBuySellFailed,
 		onShortSellSent, onShortSellSuccess, onShortSellFailed,
 		onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed);

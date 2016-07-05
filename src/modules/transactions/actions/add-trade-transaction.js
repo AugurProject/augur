@@ -1,19 +1,15 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
 import {
-	MULTI_TRADE,
 	BUY_SHARES,
 	SELL_SHARES,
-// BID_SHARES,
-// ASK_SHARES
 } from '../../transactions/constants/types';
-// import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { multiTrade } from '../../trade/actions/place-trade';
+import { processOrder } from '../../trade/actions/place-trade';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
 export const makeTradeTransaction =
 (isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
 	const totalEther = totalCostWithoutFeeEther + feeEther;
-	const obj = {
+	const txn = {
 		type: !isSell ? BUY_SHARES : SELL_SHARES,
 		shares: numShares,
 		sharesNegative: formatShares(-numShares),
@@ -30,24 +26,18 @@ export const makeTradeTransaction =
 			feeToPay: formatEther(feeEther)
 		},
 		action: (transactionID) => {
-			throw new Error('add-trade-transaction.js -> makeTradeTransaction(): action should not be called');
-			// todo: I think we don't need tradeTransaction anymore, just the data it contains
+			const order = {
+				type: txn.type === BUY_SHARES ? 'buy' : 'sell',
+				outcomeID: txn.data.outcomeID,
+				limitPrice: txn.limitPrice,
+				etherToBuy: txn.ether.value,
+				sharesToSell: txn.shares.value
+			};
+			dispatch(processOrder(transactionID, txn.data.marketID, txn.data.outcomeID, order));
 		}
 	};
-	return obj;
+	return txn;
 };
-
-export function makeMultiTradeTransaction(marketId, dispatch) {
-	return {
-		type: MULTI_TRADE,
-		data: {
-			marketID: marketId
-		},
-		action: (transactionID) => {
-			dispatch(multiTrade(transactionID, marketId));
-		}
-	};
-}
 
 export const addTradeTransaction =
 (isSell, market, outcome, numShares, totalCostWithoutFeeEther, feeEther, gas) =>

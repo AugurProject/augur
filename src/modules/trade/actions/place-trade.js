@@ -1,26 +1,21 @@
 import * as AugurJS from '../../../services/augurjs';
-import {
-	BUY_SHARES
-} from '../../transactions/constants/types';
 
 import {
-	PLACE_MULTI_TRADE,
+	TRADING,
 	SUCCESS,
 	FAILED
 } from '../../transactions/constants/statuses';
-import { addTransaction } from '../../transactions/actions/add-transactions';
-import { makeMultiTradeTransaction } from '../../transactions/actions/add-trade-transaction';
+import { addTransactions } from '../../transactions/actions/add-transactions';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
-// import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 import { selectMarket } from '../../market/selectors/market';
 import { selectTransactionsLink } from '../../link/selectors/links';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		// const market = selectMarket(marketID);
+		const market = selectMarket(marketID);
 
-		dispatch(addTransaction(makeMultiTradeTransaction(marketID, dispatch)));
+		dispatch(addTransactions(market.tradeSummary.tradeOrders));
 
 		dispatch(clearTradeInProgress(marketID));
 
@@ -32,32 +27,18 @@ export function placeTrade(marketID) {
  *
  * @param {Number} transactionID
  * @param {String} marketID
+ * @param {String} outcomeID
+ * @param {Object} order
  */
-export function multiTrade(transactionID, marketID) {
+export function processOrder(transactionID, marketID, outcomeID, order) {
 	return (dispatch, getState) => {
-		let scalarMinMax;
-
 		const market = selectMarket(marketID);
 
 		const marketOrderBook = getState().marketOrderBooks[marketID];
 
-		const tradeOrders = market.tradeSummary.tradeOrders.map((tradeTransaction) =>
-			({
-				type: tradeTransaction.type === BUY_SHARES ? 'buy' : 'sell',
-				outcomeID: tradeTransaction.data.outcomeID,
-				limitPrice: tradeTransaction.limitPrice,
-				etherToBuy: tradeTransaction.ether.value,
-				sharesToSell: tradeTransaction.shares.value
-			})
-		);
+		dispatch(updateExistingTransaction(transactionID, { status: TRADING }));
 
-		const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
-			outcomePositions[outcome.id] = outcome.position;
-			return outcomePositions;
-		}, {});
-
-		dispatch(updateExistingTransaction(transactionID, { status: PLACE_MULTI_TRADE }));
-
+		let scalarMinMax;
 		if (market.type === 'scalar') {
 			scalarMinMax = {
 				minValue: market.minValue,
@@ -65,8 +46,8 @@ export function multiTrade(transactionID, marketID) {
 			};
 		}
 
-		AugurJS.multiTrade(
-			transactionID, marketID, marketOrderBook, tradeOrders, positionPerOutcome, scalarMinMax,
+		AugurJS.processOrder(
+			transactionID, marketID, marketOrderBook, order, market.positionOutcomes[outcomeID], scalarMinMax,
 			(transactionID, res) => {
 				console.log('onTradeHash %o', res);
 				let newTransactionData;
