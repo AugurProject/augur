@@ -97,6 +97,5 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 
 	it('should provide the components with the expected object', () => {
 		componentAssertions.tradeSummary(tradeSummary);
-		componentAssertions.tradeOrders(tradeSummary);
 	});
 });
