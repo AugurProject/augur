@@ -600,12 +600,34 @@ function marketAssertion(actual) {
 		});
 
 		describe('report', () => {
+			const report = actual.report;
+
 			it('should exist', () => {
-				assert.isDefined(actual.report, `market.report isn't defined`);
+				assert.isDefined(report, `market.report isn't defined`);
 			});
 
-			it('should have the correct shape', () => {
-				reportAssertion(actual.report);
+			it('should be an object', () => {
+				assert.isObject(report, 'report is not an object');
+			});
+
+			describe('isUnethical', () => {
+				it('should exist', () => {
+					assert.isDefined(report.isUnethical, `isUnethical isn't defined`);
+				});
+
+				it('should be a boolean', () => {
+					assert.isBoolean(report.isUnethical, `isUnethical isn't a boolean`);
+				});
+			});
+
+			describe('onSubmitReport', () => {
+				it('should exist', () => {
+					assert.isDefined(report.onSubmitReport, `onSubmitReport isn't defined`);
+				});
+
+				it('should be a function', () => {
+					assert.typeOF(report.onSubmitReport, 'function', `onSubmitReport isn't a function`);
+				});
 			});
 		});
 
@@ -631,18 +653,6 @@ function marketAssertion(actual) {
 	});
 }
 
-// report: {
-// 	isUnethical: Boolean,
-// 	onSubmitReport: [Function: onSubmitReport]
-// }
-function reportAssertion(actual) {
-	assert.isDefined(actual, `market doesn't have a report object`);
-	assert.isObject(actual, `market.report isn't an object`);
-	assert.isDefined(actual.isUnethical, `market.report.isUnethical isn't defined`);
-	assert.isBoolean(actual.isUnethical, `market.report.isUnethical isn't a boolean`);
-	assert.isDefined(actual.onSubmitReport, `market.report.onSubmitReport isn't defined`);
-	assert.isFunction(actual.onSubmitReport, `market.report.onSubmitReport isn't a function`);
-}
 // marketLink: {
 // 	text: string,
 //   className: string,
@@ -661,6 +671,5 @@ function marketLinkAssertion(actual) {
 
 module.exports = {
 	marketAssertion,
-	reportAssertion: reportAssertion,
 	marketLinkAssertion: marketLinkAssertion
 };
