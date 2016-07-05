@@ -2,7 +2,6 @@ import { assert } from 'chai';
 
 import endDateShape from '../../test/assertions/common/endDateShape';
 import initialFairPricesShape from '../../test/assertions/common/initialFairPricesShape';
-import percentNumberShape from '../../test/assertions/common/percentNumberShape';
 import numberShape from '../../test/assertions/common/numberShape';
 
 function step1(actual){
@@ -169,13 +168,13 @@ function step5(actual){
 		it('should receive takerFeePercent and be an object with correct shape', () => {
 			assert.isDefined(actual.takerFeePercent, 'takerFeePercent is not defined');
 			assert.isObject(actual.takerFeePercent, 'takerFeePercent is not an object');
-			percentNumberShape(actual.takerFeePercent);
+			numberShape(actual.takerFeePercent);
 		});
 
 		it('should receive makerFeePercent and be an object with correct shape', () => {
 			assert.isDefined(actual.makerFeePercent, 'makerFeePercent is not defined');
 			assert.isObject(actual.makerFeePercent, 'makerFeePercent is not an object');
-			percentNumberShape(actual.makerFeePercent);
+			numberShape(actual.makerFeePercent);
 		});
 
 		it('should receive creatingMarket and be a boolean', () => {

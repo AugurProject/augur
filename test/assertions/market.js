@@ -1,6 +1,4 @@
-var assert = require('chai').assert;
-
-import percentNumberShape from '../../test/assertions/common/percentNumberShape';
+import { assert } from 'chai';
 import numberShape from '../../test/assertions/common/numberShape';
 import endDataShape from '../../test/assertions/common/endDateShape';
 
@@ -26,6 +24,8 @@ import endDataShape from '../../test/assertions/common/endDateShape';
 //  },
 function marketAssertion(actual) {
 	describe('augur-ui-react-components market state', () => {
+		console.log('actual -- ', actual);
+
 		it('should exist', () => {
 			assert.isDefined(actual, `markets is empty.`)
 		});
@@ -90,7 +90,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				percentNumberShape(actual.takerFeePercent);
+				numberShape(actual.takerFeePercent);
 			});
 		});
 
@@ -100,7 +100,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				percentNumberShape(actual.makerFeePercent);
+				numberShape(actual.makerFeePercent);
 			});
 		});
 
@@ -221,7 +221,7 @@ function marketAssertion(actual) {
 						});
 
 						it('should have the correct shape', () => {
-							percentNumberShape(outcome.lastPricePercent);
+							numberShape(outcome.lastPricePercent);
 						});
 					});
 
@@ -508,12 +508,94 @@ function marketAssertion(actual) {
 		});
 
 		describe('positionsSummary', () => {
+			let positionsSummary = actual.positionsSummary;
+
 			it('should exist', () => {
-				assert.isDefined(actual.positionsSummary, `market.positionsSummary isn't defined`);
+				assert.isDefined(positionsSummary, 'positionsSummary is not defined');
 			});
 
 			it('should be an object', () => {
-				assert.isObject(actual.positionsSummary, `market.positionsSummary isn't an object`);
+				assert.isObject(positionsSummary, 'positionsSummary is not an object');
+			});
+
+			describe('numPositions', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.numPositions, 'numPositions is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.numPositions);
+				});
+			});
+
+			describe('qtyShares', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.qtyShares, 'qtyShares is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.qtyShares);
+				});
+			});
+
+			describe('purchasePrice', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.purchasePrice, 'purchasePrice is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.purchasePrice);
+				});
+			});
+
+			describe('totalValue', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.totalValue, 'totalValue is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.totalValue);
+				});
+			});
+
+			describe('totalCost', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.totalCost, 'totalCost is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.totalCost);
+				});
+			});
+
+			describe('shareChange', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.shareChange, 'shareChange is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.shareChange);
+				});
+			});
+
+			describe('gainPercent', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.gainPercent, 'gainPercent is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.gainPercent);
+				});
+			});
+
+			describe('netChange', () => {
+				it('should exist', () => {
+					assert.isDefined(positionsSummary.netChange, 'netChange is not defined');
+				});
+
+				it('should be the correct shape', () => {
+					numberShape(positionsSummary.netChange);
+				});
 			});
 		});
 
