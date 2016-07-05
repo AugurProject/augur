@@ -4,10 +4,6 @@ import ValueDenomination from '../../common/components/value-denomination';
 import Input from '../../common/components/input';
 import Dropdown from '../../common/components/dropdown';
 import Clickable from '../../common/components/clickable';
-import {
-	BID,
-	ASK
-} from '../../../modules/transactions/constants/types';
 
 const TradePanelBody = (p) => {
 	const itemRows = (outcomes, sideOptions) => {
@@ -36,7 +32,7 @@ const TradePanelBody = (p) => {
 					<td className="bid">
 						{!!outcome.topBid &&
 							<div>
-								<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, outcome.topBid.shares.value, outcome.topBid.price.value, ASK); }} >
+								<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, outcome.topBid.shares.value, outcome.topBid.price.value, p.constants.ASK); }} >
 									<ValueDenomination className="top-bid" {...outcome.topBid.shares} />
 								</Clickable>
 								<span className="shares-at">@</span>
@@ -53,7 +49,7 @@ const TradePanelBody = (p) => {
 									<ValueDenomination className="top-ask" {...outcome.topAsk.price} />
 								</Clickable>
 								<span className="shares-at">@</span>
-								<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, outcome.topAsk.shares.value, outcome.topAsk.price.value, BID); }} >
+								<Clickable onClick={() => { outcome.trade.updateTradeOrder(outcome.id, outcome.topAsk.shares.value, outcome.topAsk.price.value, p.constants.BID); }} >
 									<ValueDenomination className="top-ask" {...outcome.topAsk.shares} />
 								</Clickable>
 							</div>
@@ -112,7 +108,7 @@ const TradePanelBody = (p) => {
 											onClick={event => {
 												event.stopPropagation();
 
-												outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.bids[i].shares.value, outcome.orderBook.bids[i].price.value, ASK);
+												outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.bids[i].shares.value, outcome.orderBook.bids[i].price.value, p.constants.ASK);
 											}}
 										>
 											<ValueDenomination className="shares" {...outcome.orderBook.bids[i].shares} />
@@ -147,7 +143,7 @@ const TradePanelBody = (p) => {
 											onClick={event => {
 												event.stopPropagation();
 
-												outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.asks[i].shares.value, outcome.orderBook.asks[i].price.value, BID);
+												outcome.trade.updateTradeOrder(outcome.id, outcome.orderBook.asks[i].shares.value, outcome.orderBook.asks[i].price.value, p.constants.BID);
 											}}
 										>
 											<ValueDenomination className="shares" {...outcome.orderBook.asks[i].shares} />

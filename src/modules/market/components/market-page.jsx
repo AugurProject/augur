@@ -58,6 +58,7 @@ export default class MarketPage extends Component {
 						tradeOrders={p.market.tradeSummary.tradeOrders}
 						tradeSummary={p.market.tradeSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
+						constants={p.market.constants}
 					/>
 				);
 

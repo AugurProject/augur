@@ -2,16 +2,13 @@ import { makeNumber } from '../utils/make-number';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
 import { M } from '../modules/site/constants/pages';
-import {
-	// CREATE_MARKET,
-	// BUY_SHARES,
-	// SELL_SHARES,
-	BID,
-	// ASK_SHARES,
-	// SUBMIT_REPORT
-} from '../modules/transactions/constants/types';
 
 module.exports = makeMarkets();
+
+const constants = {
+	BID: 'bid',
+	ASK: 'ask'
+};
 
 function makeMarkets(numMarkets = 25) {
 	const markets = [];
@@ -42,7 +39,11 @@ function makeMarkets(numMarkets = 25) {
 				className: 'trade',
 				onClick: () => require('../selectors').update({ activePage: M, market: m })
 			},
-			orderBook: {}
+			orderBook: {},
+			constants: {
+				BID: constants.BID,
+				ASK: constants.ASK
+			}
 		};
 
 		// tags
@@ -255,7 +256,7 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: BID,
+						side: constants.BID,
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {

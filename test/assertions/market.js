@@ -131,22 +131,10 @@ function marketAssertion(actual) {
 			assert.isObject(actual.orderBook, `market.orderBook isn't an object`);
 		});
 
-		// it('should receive a sideOptions and be an array', () => {
-		// 	assert.isDefined(actual.sideOptions, 'sideOptions is not defined');
-		// 	assert.isArray(actual.sideOptions, 'sideOptions is not an array');
-		// });
-		//
-		// it('should receive a selectedOutcome and be an object', () => {
-		// 	assert.isDefined(actual.selectedOutcome, 'selectedOutcome is not defined');
-		// 	assert.isArray(actual.selectedOutcome, 'selectedOutcome is not an object');
-		// });
-		//
-		// it('should receive updateSelectedOutcome and be a function', () => {
-		// 	let updateSelectedOutcome = actual.selectedOutcome.updateSelectedOutcome;
-		//
-		// 	assert.isDefined(updateSelectedOutcome, 'updateSelectedOutcome is not a function');
-		// 	assert(typeof updateSelectedOutcome === 'function', 'updateSelectedOutcome is not a function');
-		// });
+		it('should receive constants and be an object', () => {
+			assert.isDefined(actual.constants, 'market.constants is not defined');
+			assert.isObject(actual.constants, 'market.constatn is not an object');
+		});
 	});
 }
 

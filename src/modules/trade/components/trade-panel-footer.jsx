@@ -1,10 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
-import {
-	BID,
-	ASK
-} from '../../../modules/transactions/constants/types';
 
 const TradePanelFooter = (p) => {
 	const transactions = [];
@@ -13,10 +9,10 @@ const TradePanelFooter = (p) => {
 		let type = null;
 
 		switch (trade.type) {
-		case BID:
+		case p.constants.BID:
 			type = 'BUY';
 			break;
-		case ASK:
+		case p.constants.ASK:
 			type = 'SELL';
 			break;
 		default:
