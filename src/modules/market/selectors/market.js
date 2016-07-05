@@ -28,7 +28,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { BID } from '../../bids-asks/constants/bids-asks-types';
+import { BID, ASK } from '../../../modules/transactions/constants/types';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
@@ -137,6 +137,11 @@ export const assembleMarket = memoizerific(1000)((
 	default:
 		break;
 	}
+
+	market.constants = {
+		BID,
+		ASK
+	};
 
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';

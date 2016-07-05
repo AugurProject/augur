@@ -10,7 +10,7 @@ import {
 // 	selectOutcomeAsks
 // } from '../../bids-asks/selectors/select-bids-asks';
 import { makeTradeTransaction } from '../../transactions/actions/add-trade-transaction';
-import { ASK } from '../../bids-asks/constants/bids-asks-types';
+import { ASK } from '../../../modules/transactions/constants/types';
 
 export const selectOutcomeTradeOrders =
 (market, outcome, outcomeTradeInProgress, dispatch) => {

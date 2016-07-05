@@ -1,7 +1,7 @@
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther } from '../../../utils/format-number';
 
-import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
+import { BID, ASK } from '../../../modules/transactions/constants/types';
 
 // import { selectOutcomes } from '../../markets/selectors/select-outcomes';
 export const selectOutcomeBidsAsks = memoizerific(100)((outcomeBidsOrAsks, isSortDesc) => {
