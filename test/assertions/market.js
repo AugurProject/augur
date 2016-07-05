@@ -496,6 +496,8 @@ function marketAssertion(actual) {
 		});
 
 		describe('priceTimeSeries', () => {
+			it('[TODO] flesh out the full shape'); // Holding on this temporarily until we can better test trading
+
 			it('should exist', () => {
 				assert.isDefined(actual.priceTimeSeries, `market.priceTimeSeries isn't defined`);
 			});
