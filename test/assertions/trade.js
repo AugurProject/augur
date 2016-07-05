@@ -51,6 +51,63 @@ function tradeOrders(actual){
 		it('should be an array', () => {
 			assert.isArray(tradeOrders, 'tradeOrders is not an array');
 		});
+
+		tradeOrders.map((trade, i) => {
+			describe(`tradeOrder shape for ${i}`, () => {
+				describe('shares', () => {
+					it('should be defined', () => {
+						assert.isDefined(trade.shares, 'shares is not defined');
+					});
+					it('should be an object', () => {
+						assert.isObject(trade.shares, 'shares is not an object');
+					});
+					describe('value', () => {
+						it('should be defined', () => {
+							assert.isDefined(trade.shares.value, 'shares is not defined');
+						});
+						it('should be an object', () => {
+							assert.isNumber(trade.shares.value, 'shares is not a number');
+						});
+					});
+				});
+				describe('ether', () => {
+					it('should be defined', () => {
+						assert.isDefined(trade.ether, 'ether is not defined');
+					});
+
+					it('should be an object', () => {
+						assert.isObject(trade.ether, 'ether is not an object');
+					});
+					describe('value', () => {
+						it('should be defined', () => {
+							assert.isDefined(trade.ether.value, 'ether is not defined');
+						});
+
+						it('should be an object', () => {
+							assert.isNumber(trade.ether.value, 'ether is not a number');
+						});
+					});
+				});
+				describe('gas', () => {
+					it('should be defined', () => {
+						assert.isDefined(trade.gas, 'gas is not defined');
+					});
+
+					it('should be an object', () => {
+						assert.isObject(trade.gas, 'gas is not an object');
+					});
+					describe('value', () => {
+						it('should be defined', () => {
+							assert.isDefined(trade.gas.value, 'gas is not defined');
+						});
+
+					it('should be an object', () => {
+						assert.isNumber(trade.gas.value, 'gas is not a number');
+					});
+				});
+				});
+			});
+		});
 	});
 }
 
