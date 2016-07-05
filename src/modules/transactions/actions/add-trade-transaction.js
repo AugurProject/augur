@@ -2,7 +2,8 @@ import { formatEther, formatShares } from '../../../utils/format-number';
 import {
 	MULTI_TRADE,
 	BID,
-	ASK
+	ASK,
+	BUY_SHARES
 } from '../../transactions/constants/types';
 import { processOrder } from '../../trade/actions/place-trade';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -10,7 +11,7 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 export const makeTradeTransaction =
 (isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
 	const totalEther = totalCostWithoutFeeEther + feeEther;
-	const obj = {
+	const txn = {
 		type: !isSell ? BID : ASK,
 		shares: numShares,
 		sharesNegative: formatShares(-numShares),

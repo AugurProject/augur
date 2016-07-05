@@ -54,7 +54,7 @@ export function processOrder(transactionID, marketID, outcomeID, order) {
 			return outcomePositions;
 		}, {});
 
-		dispatch(updateExistingTransaction(transactionID, { status: PLACE_MULTI_TRADE }));
+		dispatch(updateExistingTransaction(transactionID, { status: TRADING }));
 
 		let scalarMinMax;
 		if (market.type === 'scalar') {
