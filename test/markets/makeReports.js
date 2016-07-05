@@ -333,10 +333,10 @@ describe("Integration tests", function () {
                             if (DEBUG) console.log("In second half of period; submitting report...");
                             return submitReport(eventID, salt, report, done);
                         }
-                        if (DEBUG) console.log("Not in second half of period.");
+                        if (DEBUG) console.log("Not in second half of period, waiting...");
                         setTimeout(function () {
                             submitReport(eventID, salt, report, done);
-                        }, periodLength / 2);
+                        }, periodLength*500);
                     });
                 });
             });
