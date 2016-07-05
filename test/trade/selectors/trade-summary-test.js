@@ -94,8 +94,4 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 
 		assert.deepEqual(tradeSummary, out, `Didn't produce the correct trade summary info`);
 	});
-
-	it('should provide the components with the expected object', () => {
-		componentAssertions.tradeSummary(tradeSummary);
-	});
 });
