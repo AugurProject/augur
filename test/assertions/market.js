@@ -24,8 +24,6 @@ import endDataShape from '../../test/assertions/common/endDateShape';
 //  },
 function marketAssertion(actual) {
 	describe('augur-ui-react-components market state', () => {
-		console.log('actual -- ', actual);
-
 		it('should exist', () => {
 			assert.isDefined(actual, `markets is empty.`)
 		});
@@ -658,6 +656,8 @@ function marketAssertion(actual) {
 		});
 
 		describe('orderBook', () => {
+			it('[TODO] further assert shape');
+
 			it('should receive an orderBook and be an object', () => {
 				assert.isDefined(actual.orderBook, `market.orderBook isn't defined`);
 			});
@@ -668,13 +668,36 @@ function marketAssertion(actual) {
 		});
 
 		describe('constants', () => {
+			let constants = actual.constants;
+
 			it('should receive constants and be an object', () => {
-				assert.isDefined(actual.constants, 'market.constants is not defined');
+				assert.isDefined(constants, 'market.constants is not defined');
 			});
 
 			it('should be an object', () => {
-				assert.isObject(actual.constants, 'market.constatn is not an object');
+				assert.isObject(constants, 'market.constatn is not an object');
 			});
+
+			describe('BID', () => {
+				it('should exist', () => {
+					assert.isDefined(constants.BID, 'BID is not defined');
+				});
+
+				it("should be a string + equal 'bid'", () => {
+					assert.strictEqual(constants.BID, 'bid', "BID is not strictly equal to 'bid'");
+				});
+			});
+
+			describe('ASK', () => {
+				it('should exist', () => {
+					assert.isDefined(constants.ASK, 'ASK is not defined');
+				});
+
+				it("should be a string + equal 'ask'", () => {
+					assert.strictEqual(constants.ASK, 'ask', "ASK is not strictly equal to 'ask'");
+				});
+			});
+
 		});
 	});
 }
