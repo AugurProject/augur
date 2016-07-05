@@ -23,7 +23,7 @@ describe("Integration tests", function () {
     var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var suffix = Math.random().toString(36).substring(4);
     var description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
-    var periodLength = 180;
+    var periodLength = 300;
     var report = 1;
     var salt = "1337";
     var eventID, newBranchID, marketID;
@@ -323,20 +323,24 @@ describe("Integration tests", function () {
 
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     if (err) return done(new Error(tools.pp(err)));
-                    console.log("vote period = current period - 1:", votePeriod === augur.getCurrentPeriod(periodLength)-1);
+                    if (DEBUG) console.log("vote period = current period - 1:", votePeriod, augur.getCurrentPeriod(periodLength)-1, votePeriod === augur.getCurrentPeriod(periodLength)-1);
                     augur.checkTime(newBranchID, eventID, periodLength, function (err) {
                         if (err) return done(new Error(tools.pp(err)));
-                        console.log("current period = expiration period + 2:", augur.getCurrentPeriod(periodLength)+2);
+                        var expPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
+                        if (DEBUG) console.log("current period = expiration period + 2:", augur.getCurrentPeriod(periodLength), expPeriod + 2, augur.getCurrentPeriod(periodLength) === expPeriod + 2);
 
                         // wait for the second half of the reporting period
-                        if (parseInt(new Date().getTime() / 1000) % periodLength > periodLength / 2) {
+                        var t = parseInt(new Date().getTime() / 1000);
+                        var halfTime = periodLength / 2;
+                        if (t % periodLength >= halfTime) {
                             if (DEBUG) console.log("In second half of period; submitting report...");
                             return submitReport(eventID, salt, report, done);
                         }
-                        if (DEBUG) console.log("Not in second half of period, waiting...");
+                        var secondsToWait = halfTime - (t % periodLength);
+                        if (DEBUG) console.log("Not in second half of period, waiting", secondsToWait / 60, "minutes...");
                         setTimeout(function () {
                             submitReport(eventID, salt, report, done);
-                        }, periodLength*500);
+                        }, secondsToWait*1000);
                     });
                 });
             });
