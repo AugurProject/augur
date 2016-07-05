@@ -145,12 +145,38 @@ function marketAssertion(actual) {
 		});
 
 		describe('tags', () => {
+			let tags = actual.tags;
+
 			it('should exist', () => {
-				assert.isDefined(actual.tags, `market.tags isn't defined`);
+				assert.isDefined(tags, `market.tags isn't defined`);
 			});
 
 			it('should be an array', () => {
-				assert.isArray(actual.tags, `market.tags isn't an array`);
+				assert.isArray(tags, `market.tags isn't an array`);
+			});
+
+			tags.map((tag, i) => {
+				describe(`tag ${i}`, () => {
+					describe('name', () => {
+						it('should exist', () => {
+							assert.isDefined(tag.name, 'name is not defined');
+						});
+
+						it('should be a string', () => {
+							assert.isString(tag.name, 'name is not a string');
+						});
+					});
+
+					describe('onClick', () => {
+						it('should exist', () => {
+							assert.isDefined(tag.onClick, 'onClick is not defined');
+						});
+
+						it('should be a function', () => {
+							assert.typeOf(tag.onClick, 'function', 'name is not a function');
+						});
+					});
+				});
 			});
 		});
 		
@@ -626,7 +652,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be a function', () => {
-					assert.typeOF(report.onSubmitReport, 'function', `onSubmitReport isn't a function`);
+					assert.typeOf(report.onSubmitReport, 'function', `onSubmitReport isn't a function`);
 				});
 			});
 		});
