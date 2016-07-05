@@ -7290,6 +7290,7 @@ module.exports={
         "sender"
       ], 
       "method": "getPenalizedUpTo", 
+      "returns": "int", 
       "signature": [
         "int256", 
         "int256"
@@ -7312,6 +7313,7 @@ module.exports={
         "reporter"
       ], 
       "method": "getRepRedistributionDone", 
+      "returns": "int", 
       "signature": [
         "int256", 
         "int256"
@@ -9641,6 +9643,7 @@ module.exports={
         "sender"
       ], 
       "method": "penalizationCatchup", 
+      "returns": "number", 
       "send": true, 
       "signature": [
         "int256", 
@@ -10450,19 +10453,19 @@ module.exports={
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x0311d4eaf3c4c1f04a2f27bff242da4c0cb4ac8a", 
+        "Forking": "0xb6f0fa68e4a64e365a452bae7bbe2c1a78b4b30c", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0x862931897a68b82f7204749c712156c670dd33fb", 
+        "MakeReports": "0xc1e959e39c9a9dbfaab18fa87f8313d607082fde", 
         "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
         "PenalizationCatchup": "0x6f256d44ccb33499d8a4fff683e89bf5b9c7b7ad", 
         "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
         "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
         "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
         "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0x515fb30740f42b6e6432c1fb8463d61a34f204f8", 
-        "RoundTwoPenalize": "0x05eb2b8321503daf5fef97dcf22371f4f069f6a5", 
-        "SendReputation": "0x6668959fe7c9088ee4ba1645f3df79092f69f430", 
+        "RoundTwo": "0xa847152ce52806089de472ccca22993b4ee9e93c", 
+        "RoundTwoPenalize": "0x215e7f54a86c118e04a9fa5c294f51d32536007b", 
+        "SendReputation": "0xbcc6b8c0681979617318223b9b56d9e17dc40487", 
         "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
         "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
         "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
@@ -10537,7 +10540,9 @@ module.exports={
         "-2": "no money for creation fee or branch already exists"
     },
     "penalizationCatchup": {
-        "-2": "can only be called during the first half of the reporting period"
+        "-1": "not in first half of reporting period",
+        "-2": "doesn't need to be penalized/caught up",
+        "-3": "user isn't behind or reported in the last period (and should thus use the penalization functions in consensus.se)"
     },
     "penalizeOnForkedEvent": {
         "-2": "already past first half of new period and needed to penalize before then",
@@ -45242,7 +45247,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.3";
+    this.version = "1.6.4";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -45298,10 +45303,6 @@ var utils = require("../utilities");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
-
-    getCurrentPeriod: function (periodLength) {
-        return Math.floor(new Date().getTime() / 1000 / periodLength);
-    },
 
     // expects BigNumber inputs
     calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
@@ -46590,9 +46591,9 @@ module.exports = {
             report = event.report;
             ethics = event.ethics;
             isScalar = event.isScalar;
-            if (event.onSent) onSent = event.onSent;
-            if (event.onSuccess) onSuccess = event.onSuccess;
-            if (event.onFailed) onFailed = event.onFailed;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
             event = event.event;
         }
         onSent = onSent || utils.pass;
@@ -46611,6 +46612,7 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
+        console.log("submitReport tx:", tx.params);
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -46681,6 +46683,15 @@ module.exports = {
 
 module.exports = {
 
+    getCurrentPeriod: function (periodLength) {
+        return Math.floor(new Date().getTime() / 1000 / periodLength);
+    },
+
+    getCurrentPeriodProgress: function (periodLength) {
+        var t = parseInt(new Date().getTime() / 1000);
+        return 100 * (t % periodLength) / periodLength;
+    },
+
     // Increment vote period until vote period = current period - 1
     checkVotePeriod: function (branch, periodLength, callback) {
         var self = this;
@@ -46710,9 +46721,9 @@ module.exports = {
         });
     },
 
-    // Make sure current period = expiration period + 2
+    // Make sure current period = expiration period + 1
     // If not, wait until it is:
-    // expPeriod - currentPeriod - 1 periods
+    // expPeriod - currentPeriod periods
     // t % periodLength seconds
     checkTime: function (branch, event, periodLength, callback) {
         var self = this;
@@ -46735,12 +46746,18 @@ module.exports = {
         this.getExpiration(event, function (expTime) {
             var expPeriod = Math.floor(expTime / periodLength);
             var currentPeriod = self.getCurrentPeriod(periodLength);
-            if (currentPeriod < expPeriod + 2) {
-                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) - 1;
+            console.log("reportingTools.checkTime:");
+            console.log(" - Expiration period:", expPeriod);
+            console.log(" - Current period:   ", currentPeriod);
+            console.log(" - Target period:    ", expPeriod + 1);
+            if (currentPeriod < expPeriod + 1) {
+                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength);
+                console.log("Full periods to wait:", fullPeriodsToWait);
                 var secondsToWait = periodLength;
                 if (fullPeriodsToWait === 0) {
                     secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
                 }
+                console.log("Seconds to wait:", secondsToWait);
                 wait(branch, secondsToWait, function (err, votePeriod) {
                     if (err) return callback(err);
                     console.log("New vote period:", votePeriod);
