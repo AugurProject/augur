@@ -77,7 +77,8 @@ const TradePanelFooter = (p) => {
 };
 
 TradePanelFooter.propTypes = {
-	summary: React.PropTypes.object
+	summary: React.PropTypes.object,
+	constants: React.PropTypes.object
 };
 
 export default TradePanelFooter;
