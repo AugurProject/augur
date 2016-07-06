@@ -11,7 +11,7 @@ import { assert } from 'chai';
 //   full: String
 // }
 export default function (actual, refObj) {
-	descirbe(`${refObj}'s numberShape`, () => {
+	describe(`${refObj}'s numberShape`, () => {
 		describe('value', () => {
 			it('should exist', () => {
 				assert.isDefined(actual.value, `value isn't defined`);

@@ -26,7 +26,11 @@ function makeMarkets(numMarkets = 25) {
 			id,
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
-			endDate: { formatted: `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`, full: d.toISOString() },
+			endDate: {
+				value: d,
+				formatted: `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`,
+				full: d.toISOString()
+			},
 			endDateLabel: (d < new Date()) ? 'ended' : 'ends',
 			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
@@ -126,6 +130,11 @@ function makeMarkets(numMarkets = 25) {
 		// positions summary
 		m.positionsSummary = {
 			numPositions: makeNumber(3, 'Positions', true),
+			qtyShares: makeNumber(10, 'Shares'),
+			purchasePrice: makeNumber(0.5, 'eth'),
+			totalCost: makeNumber(5, 'eth'),
+			shareChange: makeNumber(1, 'Shares'),
+			netChange: makeNumber(1, 'eth'),
 			totalValue: makeNumber(985, 'eth'),
 			gainPercent: makeNumber(15, '%')
 		};
@@ -236,6 +245,7 @@ function makeMarkets(numMarkets = 25) {
 				const lastPrice = randomInt(0, percentLeft) / 100;
 				const outcome = {
 					id: index.toString(),
+					marketID: index.toString(),
 					name: makeName(index),
 					lastPrice: makeNumber(lastPrice, 'eth'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),

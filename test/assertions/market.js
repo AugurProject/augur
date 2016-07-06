@@ -209,16 +209,6 @@ function marketAssertion(actual) {
 						});
 					});
 
-					describe('price', () => {
-						it('should exist', () => {
-							assert.isDefined(outcome.price, 'price does not exist');
-						});
-
-						it('should be a number', () => {
-							assert.isNumber(outcome.price, 'price is not a number');
-						});
-					});
-
 					describe('marketID', () => {
 						it('should exist', () => {
 							assert.isDefined(outcome.marketID, 'marketID does not exist');
@@ -347,19 +337,11 @@ function marketAssertion(actual) {
 						it('should exist', () => {
 							assert.isDefined(outcome.topBid, 'topBid does not exist');
 						});
-
-						it('should be a string', () => {
-							assert.isNull(outcome.topBid, 'topBid is not null');
-						});
 					});
 
 					describe('topAsk', () => { // NOTE -- shallow check here due to deep check further down of the same selector method
 						it('should exist', () => {
 							assert.isDefined(outcome.topAsk, 'topAsk does not exist');
-						});
-
-						it('should be a string', () => {
-							assert.isNull(outcome.topAsk, 'topAsk is not null');
 						});
 					});
 				});
