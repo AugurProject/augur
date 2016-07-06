@@ -285,7 +285,7 @@ function makeMarkets(numMarkets = 25) {
 							if (typeof side !== 'undefined') {
 								outcome.trade.side = side;
 							}
-							outcome.trade.tradeSummary.feeToPay = makeNumber(Math.round(.02 * outcome.trade.limitPrice * outcome.trade.numShares * 100) / 100, 'eth');
+							outcome.trade.tradeSummary.feeToPay = makeNumber(Math.round(0.02 * outcome.trade.limitPrice * outcome.trade.numShares * 100) / 100, 'eth');
 
 							const totEth = side === constants.BID ? -(outcome.trade.numShares * outcome.trade.limitPrice) : outcome.trade.numShares * outcome.trade.limitPrice;
 

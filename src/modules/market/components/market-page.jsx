@@ -22,7 +22,7 @@ export default class MarketPage extends Component {
 	}
 
 	render() {
-		const p = this.props;		
+		const p = this.props;
 		const	nodes = [];
 
 		// no market

@@ -42,7 +42,7 @@ const TradePanelFooter = (p) => {
 					<ValueDenomination {...trade.data.feeToPay} />
 				</td>
 				<td className="total-cost" >
-					{ p.constants.BID === trade.type ? <ValueDenomination {...trade.etherNegative} /> : <ValueDenomination {...trade.ether} /> }
+					{p.constants.BID === trade.type ? <ValueDenomination {...trade.etherNegative} /> : <ValueDenomination {...trade.ether} />}
 				</td>
 			</tr>
 		);
