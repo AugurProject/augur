@@ -277,6 +277,778 @@ describe("Unit tests", function () {
 			}
 		});
 
+		runTestCase({
+			type: "buy",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: [{
+					id: "order1",
+					type: "sell",
+					amount: 1,
+					price: 0.4,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order2",
+					type: "sell",
+					amount: 2,
+					price: 0.3,
+					outcome: "outcomeasdf123"
+				}]
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "BUY",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.00000000003135",
+					"avgPrice": "0.33333333"
+				}, {
+					"action": "BID",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.00000000006270",
+					"avgPrice": "0.33333333"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 5,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.00000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.80000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 5,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.50000000003135",
+					"avgPrice": "0.7"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.40000000003135",
+					"avgPrice": "0.7"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.80000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 1,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.8,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "2.30000000003135",
+					"avgPrice": "0.766666666667"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.20000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 0,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 1,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.8,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.9,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "4.10000000003135",
+					"avgPrice": "0.82"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "ASK",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.80000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 5,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}, {
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.80000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.80000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 5,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.40000000003135",
+					"avgPrice": "0.7"
+				}, {
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "2.10000000003135",
+					"avgPrice": "0.7"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.40000000003135",
+					"avgPrice": "0.7"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.80000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 1,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order2",
+					type: "buy",
+					amount: 2,
+					price: 0.8,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 3, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "0.70000000003135",
+					"avgPrice": "0.7"
+				}, {
+					"action": "SHORT_SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "0.80000000003135",
+					"avgPrice": "0.8"
+				}, {
+					"action": "RISKY_SHORT_SELL",
+					"feeEth": "0.00000000006270",
+					"totalEther": "1.20000000006270",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 2,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 1,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order2",
+					type: "buy",
+					amount: 2,
+					price: 0.8,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order3",
+					type: "buy",
+					amount: 2,
+					price: 0.9,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "4.10000000003135",
+					"avgPrice": "0.82"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 3, "more actions than expected were created");
+				var expected = [{
+					"action": "ASK",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.00000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 5,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.00000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.6,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}, {
+					"action": "ASK",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.80000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 5,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "3.50000000003135",
+					"avgPrice": "0.7"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 2,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.40000000003135",
+					"avgPrice": "0.7"
+				}, {
+					"action": "ASK",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.80000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 1,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order2",
+					type: "buy",
+					amount: 2,
+					price: 0.8,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 2, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "2.30000000003135",
+					"avgPrice": "0.7666666667"
+				}, {
+					"action": "ASK",
+					"feeEth": "0.00000000003135",
+					"totalEther": "1.20000000003135",
+					"avgPrice": "0.6"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
+		runTestCase({
+			type: "sell",
+			shares: 5,
+			limitPrice: 0.6,
+			userPositionShares: 5,
+			outcomeId: "outcomeasdf123",
+			marketOrderBook: {
+				buy: [{
+					id: "order1",
+					type: "buy",
+					amount: 1,
+					price: 0.7,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order2",
+					type: "buy",
+					amount: 2,
+					price: 0.8,
+					outcome: "outcomeasdf123"
+				}, {
+					id: "order3",
+					type: "buy",
+					amount: 2,
+					price: 0.9,
+					outcome: "outcomeasdf123"
+				}],
+				sell: []
+			},
+			userAddress: "abcd1234",
+			cb: function (actions) {
+                assert.isArray(actions);
+				assert.lengthOf(actions, 1, "more actions than expected were created");
+				var expected = [{
+					"action": "SELL",
+					"feeEth": "0.00000000003135",
+					"totalEther": "4.10000000003135",
+					"avgPrice": "0.82"
+				}];
+				assert.deepEqual(actions, expected)
+			}
+		});
+
 		function runTestCase(testCase) {
 			it(JSON.stringify(testCase, null, 1), function (done) {
 				augur.getTradingActions({
