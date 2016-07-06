@@ -14,10 +14,9 @@ export default class AuthForm extends Component {
 		isVisibleName: PropTypes.bool,
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
-		// isVisibleAccountInfo: PropTypes.bool,
-		// clearName: PropTypes.bool,
-		// clearPassword: PropTypes.bool,
-		// clearCode: PropTypes.bool,
+		clearName: PropTypes.bool,
+		clearPassword: PropTypes.bool,
+		clearCode: PropTypes.bool,
 		msg: PropTypes.string,
 		msgClass: PropTypes.string,
 		topLinkText: PropTypes.string,
@@ -35,40 +34,33 @@ export default class AuthForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
 			msg: this.props.msg,
-			// showPass: false,
-			name: '',
-			secureID: this.props.secureID,
-			password: this.props.password,
-			password2: ''
+			secureID: this.props.secureID
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		console.log(nextProps);
-		this.setState({ msg: nextProps.msg, password: nextProps.password || '', secureID: nextProps.secureID || ''});
+		this.setState({ msg: nextProps.msg, secureID: nextProps.secureID });
 	}
 
-	// componentDidUpdate() {
-	// 	if (this.props.clearName) {
-	// 		this.refs.name.value = '';
-	// 		this.refs.secureID.value = '';
-	// 	}
-	// 	if (this.props.clearPassword) {
-	// 		this.refs.password.value = '';
-	// 		this.refs.password2.value = '';
-	// 	}
-	// 	if (this.props.clearCode) {
-	// 		this.refs.code.value = '';
-	// 	}
-	// }
+	componentDidUpdate() {
+		if (this.props.clearName) {
+			this.refs.name.value = '';
+		}
+		if (this.props.clearPassword) {
+			this.refs.password.value = '';
+			this.refs.password2.value = '';
+		}
+		if (this.props.clearCode) {
+			this.refs.code.value = '';
+		}
+	}
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(this.state);
-		const name = this.state.name;
-		const password = this.state.password;
-		const password2 = this.state.password2;
-		this.setState({ msg: undefined, name: undefined, password: undefined, password2: undefined });
+		const name = this.refs.name.value;
+		const password = this.refs.password.value;
+		const password2 = this.refs.password2.value;
+		this.setState({ msg: '' });
 		setTimeout(() =>
 			this.props.onSubmit(name, password, password2), 100);
 	}
@@ -78,7 +70,7 @@ export default class AuthForm extends Component {
 		const s = this.state;
 
 		return (
-			<form className={p.className} onSubmit={this.handleSubmit}>
+			<form className={p.className} onSubmit={this.handleSubmit} onChange={this.handleChange} onInput={this.handleInput}>
 				<h1 className="title">
 					{p.title}
 					{p.topLinkText &&
@@ -96,43 +88,38 @@ export default class AuthForm extends Component {
 						{s.msg}
 					</span>
 				}
-				<Input
-					name="name"
+				<input
+					ref="name"
 					className={classnames('auth-input', { displayNone: !p.isVisibleName })}
 					type="text"
 					placeholder="name"
-					value={s.name}
 					maxLength="30"
 					autoFocus="autofocus"
-					onChange={(v) => this.setState({ name: v })}
 				/>
 				<Input
 					name="secureID"
-					className={classnames('auth-input', { displayNone: !p.isVisibleID })}
+					className={classnames('secureID-input', { displayNone: !p.isVisibleID })}
 					type="text"
 					value={s.secureID}
 					placeholder="secure login ID"
 					maxLength="256"
 					autoFocus="autofocus"
-					onChange={(v) => this.setState({ secureID: v })}
+					onChange={() => {}}
 				/>
-				<Input
-					name="password"
+				<input
+					ref="password"
 					className={classnames('auth-input', { displayNone: !p.isVisiblePassword })}
 					type="password"
-					value={s.password}
+					defaultValue={p.password}
 					placeholder={p.passwordPlaceholder || 'password'}
 					maxLength="256"
-					onChange={(v) => this.setState({ password: v })}
 				/>
-				<Input
-					name="password2"
+				<input
+					ref="password2"
 					className={classnames('auth-input', { displayNone: !p.isVisiblePassword2 })}
 					type="password"
-					value={s.password2}
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
-					onChange={(v) => this.setState({ password2: v })}
 				/>
 				{p.bottomLinkText &&
 					<Link
