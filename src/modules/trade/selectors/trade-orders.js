@@ -30,7 +30,7 @@ export const selectOutcomeTradeOrders =
 			outcomeTradeInProgress.limitPrice,
 			totalCost,
 			0, // TODO -- These need to be updated
-			0,// TODO -- These need to be updated
+			0, // TODO -- These need to be updated
 			dispatch
 		);
 

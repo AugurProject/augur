@@ -1,9 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
 import {
-	BID
-} from '../../transactions/constants/types';
-
-import {
 	TRADING,
 	SUCCESS,
 	FAILED
@@ -39,20 +35,20 @@ export function processOrder(transactionID, marketID, outcomeID, order) {
 
 		const marketOrderBook = getState().marketOrderBooks[marketID];
 
-		const tradeOrders = market.tradeSummary.tradeOrders.map((tradeTransaction) =>
-			({
-				type: tradeTransaction.type === BID ? 'buy' : 'sell',
-				outcomeID: tradeTransaction.data.outcomeID,
-				limitPrice: tradeTransaction.limitPrice,
-				etherToBuy: tradeTransaction.ether.value,
-				sharesToSell: tradeTransaction.shares.value
-			})
-		);
+		// const tradeOrders = market.tradeSummary.tradeOrders.map((tradeTransaction) =>
+		// 	({
+		// 		type: tradeTransaction.type === BID ? 'buy' : 'sell',
+		// 		outcomeID: tradeTransaction.data.outcomeID,
+		// 		limitPrice: tradeTransaction.limitPrice,
+		// 		etherToBuy: tradeTransaction.ether.value,
+		// 		sharesToSell: tradeTransaction.shares.value
+		// 	})
+		// );
 
-		const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
-			outcomePositions[outcome.id] = outcome.position;
-			return outcomePositions;
-		}, {});
+		// const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
+		// 	outcomePositions[outcome.id] = outcome.position;
+		// 	return outcomePositions;
+		// }, {});
 
 		dispatch(updateExistingTransaction(transactionID, { status: TRADING }));
 

@@ -1,6 +1,5 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
 import {
-	MULTI_TRADE,
 	BID,
 	ASK,
 	BUY_SHARES

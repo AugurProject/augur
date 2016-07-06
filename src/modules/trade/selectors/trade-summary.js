@@ -26,6 +26,7 @@ export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
 		totalShares: formatShares(totals.shares),
 		totalEther: formatEther(totals.ether),
 		totalGas: formatEther(totals.gas),
+		feeToPay: formatEther(0), // TODO -- waiting on Augur.js implementation
 		tradeOrders
 	};
 });
