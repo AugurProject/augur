@@ -600,8 +600,18 @@ ex.getReportPeriod = function getReportPeriod(branchID, cb) {
 ex.submitReport = function submitReport(...args) {
 	augur.submitReport.apply(augur, args);
 };
+
 ex.getEvents = function getEvents(...args) {
 	augur.getEvents.apply(augur, args);
 };
+
+ex.fundNewAccount = function fundNewAccount(toAddress, branchID, onSent, onSuccess, onFailed) {
+	if (env.fundNewAccountFromAddress) {
+		augur.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
+	} else {
+		augur.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
+	}
+};
+
 ex.rpc = augur.rpc;
 module.exports = ex;
