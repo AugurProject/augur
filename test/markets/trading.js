@@ -128,7 +128,7 @@ describe("Unit tests", function () {
 				var expected = [{
 					"action": "BUY",
 					"feeEth": "0.00000000003135",
-					"totalEther": "3.50000000003135",
+					"totalEther": "3.00000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -307,7 +307,7 @@ describe("Unit tests", function () {
 					"action": "BUY",
 					"feeEth": "0.00000000003135",
 					"totalEther": "1.00000000003135",
-					"avgPrice": "0.33333333"
+					"avgPrice": "0.33333333333333333333"
 				}, {
 					"action": "BID",
 					"feeEth": "0.00000000003135",
@@ -336,7 +336,7 @@ describe("Unit tests", function () {
 					"action": "RISKY_SHORT_SELL",
 					"feeEth": "0.00000000006270",
 					"totalEther": "1.00000000006270",
-					"avgPrice": "0.33333333"
+					"avgPrice": "0.33333333333333333333"
 				}];
 				assert.deepEqual(actions, expected)
 			}
