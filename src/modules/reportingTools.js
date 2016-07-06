@@ -42,23 +42,22 @@ module.exports = {
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
                 console.log("Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
-                    return next(null);
-                    // return self.Consensus.penalizeWrong({
-                    //     branch: branch,
-                    //     event: 0,
-                    //     onSent: function (r) {
-                    //         console.log("penalizeWrong sent:", r);
-                    //     },
-                    //     onSuccess: function (r) {
-                    //         console.log("penalizeWrong(branch, 0) success:", r);
-                    //         console.log(abi.bignum(r.callReturn, "string", true));
-                    //         next(null);
-                    //     },
-                    //     onFailed: function (err) {
-                    //         console.error("penalizeWrong(branch, 0) error:", err);
-                    //         next(err);
-                    //     }
-                    // });
+                    return self.Consensus.penalizeWrong({
+                        branch: branch,
+                        event: 0,
+                        onSent: function (r) {
+                            console.log("penalizeWrong sent:", r);
+                        },
+                        onSuccess: function (r) {
+                            console.log("penalizeWrong(branch, 0) success:", r);
+                            console.log(abi.bignum(r.callReturn, "string", true));
+                            next(null);
+                        },
+                        onFailed: function (err) {
+                            console.error("penalizeWrong(branch, 0) error:", err);
+                            next(err);
+                        }
+                    });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
                     console.log("penalizeWrong:", event);

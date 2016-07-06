@@ -98,9 +98,14 @@ GLOBAL.getMakeReportsLogs = function (branch) {
     filter.topics[0] = abi.prefix_hex(abi.keccak_256("periodCheck(int256,int256,int256)"));
     logs = rpc.getLogs(filter);
     if (logs.length) {
-        var data = rpc.unmarshal(logs[logs.length - 1].data);
-        result.lastPeriodPenalized = parseInt(data[0], 16);
-        result.lastPeriod = parseInt(data[1], 16);
+        var data;
+        result.lastPeriodPenalized = [];
+        result.lastPeriod = [];
+        for (var i = 0; i < logs.length; ++i) {
+            data = rpc.unmarshal(logs[i].data);
+            result.lastPeriodPenalized.push(parseInt(data[0], 16));
+            result.lastPeriod.push(parseInt(data[1], 16));
+        }
     }
 
     filter.topics[0] = abi.prefix_hex(abi.keccak_256("feesCollected(int256,int256)"));
