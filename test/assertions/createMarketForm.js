@@ -38,7 +38,7 @@ function step2(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			initialFairPricesShape(actual.initialFairPrices);
+			initialFairPricesShape(actual.initialFairPrices, 'createMarketForm');
 		});
 
 		it('should receive descriptionPlaceholder and be a string', () => {
@@ -122,7 +122,7 @@ function step4(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			initialFairPricesShape(actual.initialFairPrices);
+			initialFairPricesShape(actual.initialFairPrices, 'createMarketForm');
 		});
 
 		it('should receive bestStartingQuantity and be a number', () => {
@@ -191,7 +191,7 @@ function step5(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			initialFairPricesShape(actual.initialFairPrices);
+			initialFairPricesShape(actual.initialFairPrices, 'createMarketForm');
 		});
 
 		it('should receive bestStartingQuantityFormatted and be an object with correct shape', () => {

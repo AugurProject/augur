@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
-export default function (endDate, refObject){
-	describe(`${refObject}'s endDate`, () => {
+export default function (endDate, refObj){
+	describe(`${refObj}'s endDate`, () => {
 		describe('value', () => {
 			it('should exist', () => {
 				assert.isDefined(endDate.value, 'endDate.value is not defined');
