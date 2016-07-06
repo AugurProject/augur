@@ -66,16 +66,9 @@ const logIn = {
 };
 
 const accountCreated = {
+	...logIn,
 	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
-	isVisibleID: false,
-	isVisibleName: false,
-	isVisiblePassword: false,
-	isVisiblePassword2: false,
-	isVisibleAccountInfo: true,
 	secureID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUE',
-	title: 'Account Generated',
-	topLinkText: '',
-	topLink: { href: '', onClick: () => {} },
 	onSubmit: () => {
 		AuthForm.update({ authForm: {
 			...logIn,
@@ -89,7 +82,6 @@ const accountCreated = {
 function SignUpOnSubmit(name, password, password2) {
 	AuthForm.update({
 		authForm: {
-			...logIn,
 			...accountCreated,
 			password
 		}
