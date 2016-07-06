@@ -431,6 +431,16 @@ function marketAssertion(actual) {
 				});
 			});
 
+			describe('feeToPay', () => {
+				it('should exist', () => {
+					assert.isDefined(tradeSummary.feeToPay, 'feeToPay is not defined');
+				});
+
+				it('should have the correct shape', () => {
+					numberShape(tradeSummary.feeToPay, 'market.tradeSummary.feeToPay');
+				});
+			});
+
 			describe('tradeOrders', () => {
 				let tradeOrders = tradeSummary.tradeOrders;
 
