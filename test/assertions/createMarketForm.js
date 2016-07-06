@@ -162,7 +162,7 @@ function step5(actual){
 		it('should receive endDate and be an object with correct shape', () => {
 			assert.isDefined(actual.endDate, 'endDate is not defined');
 			assert.isObject(actual.endDate, 'endDate is not an array');
-			endDateShape(actual.endDate);
+			endDateShape(actual.endDate, 'createMarketForm');
 		});
 
 		it('should receive takerFeePercent and be an object with correct shape', () => {
