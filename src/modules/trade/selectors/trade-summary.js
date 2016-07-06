@@ -24,7 +24,7 @@ export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
 
 	return {
 		totalShares: formatShares(totals.shares),
-		totalEther: formatEther(totals.ether - totals.gas), // This is the final manipulation of `totalEther` and thus the gas (fee) is reduced from the total here
+		totalEther: formatEther(totals.ether),
 		totalGas: formatEther(totals.gas),
 		tradeOrders
 	};
