@@ -252,13 +252,32 @@ describe("Integration tests", function () {
                                         assert(res.callReturn);
                                     },
                                     onSuccess: function (res) {
-                                        if (DEBUG) console.log("submitReportHash success:", res.callReturn);
+                                        if (DEBUG) {
+                                            console.log("submitReportHash success:", res.callReturn);
+                                            var rrdone = augur.ConsensusData.getRepRedistributionDone(branch, sender);
+                                            var lastPeriod = augur.Branches.getVotePeriod(branch) - 1;
+                                            var lastPeriodPenalized = augur.ConsensusData.getPenalizedUpTo(branch, sender);
+                                            console.log("Rep redistribution done:", rrdone);
+                                            console.log("Vote period:          ", lastPeriod + 1);
+                                            console.log("Expiration period:    ", Math.floor(augur.getExpiration(eventID) / periodLength));
+                                            console.log("Current period:       ", augur.getCurrentPeriod(periodLength));
+                                            console.log("Last period:          ", lastPeriod);
+                                            console.log("Last period penalized:", lastPeriodPenalized);
+                                            var t = parseInt(new Date().getTime() / 1000);
+                                            console.log("Residual:", t % periodLength, "/", periodLength, "(" + augur.getCurrentPeriodProgress(periodLength) + "%)");
+                                            augur.PenalizationCatchup.penalizationCatchup(branch, sender, function (r) { console.log("penalizationCatchup:", r.callReturn); }, console.log, console.error);
+                                        }
                                         assert(res.txHash);
                                         if (res && res.callReturn === "0") {
-                                            return submit();
+                                            augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
+                                                if (err) return callback(err);
+                                                console.log("Checked vote period:", votePeriod);
+                                                submit();
+                                            });
+                                        } else {
+                                            assert.strictEqual(res.callReturn, "1");
+                                            callback(null);
                                         }
-                                        assert.strictEqual(res.callReturn, "1");
-                                        callback(null);
                                     },
                                     onFailed: function (err) {
                                         callback(new Error(tools.pp(err)));
@@ -317,9 +336,13 @@ describe("Integration tests", function () {
                             assert(res.txHash);
                         },
                         onSuccess: function (res) {
-                            if (DEBUG) console.log("submitReport success:", abi.bignum(res.callReturn, "string", true));
-                            assert(res.txHash);
-                            assert.strictEqual(res.callReturn, "1");
+                            if (DEBUG) console.log("submitReport success:", r, abi.bignum(res.callReturn, "string", true));
+                            var votePeriod = augur.getVotePeriod(newBranchID);
+                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, votePeriod-1);
+                            console.log("Vote period:", votePeriod);
+                            console.log("Fees collected:", feesCollected);
+                            // assert(res.txHash);
+                            // assert.strictEqual(res.callReturn, "1");
                             callback();
                         },
                         onFailed: function (err) {
@@ -338,9 +361,11 @@ describe("Integration tests", function () {
                     if (DEBUG) console.log("In second half of period; submitting report...");
                     return submitReport(eventID, salt, report, done);
                 }
-                var secondsToWait = halfTime - (t % periodLength);
+                var secondsToWait = halfTime - (t % periodLength) + 1;
                 if (DEBUG) console.log("Not in second half of period, waiting", secondsToWait, "seconds...");
                 setTimeout(function () {
+                    console.log("In second half:", (t % periodLength > halfTime));
+                    console.log(augur.getCurrentPeriodProgress(periodLength) + "%");
                     submitReport(eventID, salt, report, done);
                 }, secondsToWait*1000);
             });

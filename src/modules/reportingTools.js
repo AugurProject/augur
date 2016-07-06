@@ -5,6 +5,7 @@
 
 "use strict";
 
+var abi = require("augur-abi");
 var async = require("async");
 var utils = require("../utilities");
 
@@ -39,19 +40,40 @@ module.exports = {
 
         function checkPenalizeWrong(branch, votePeriod, next) {
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
+                console.log("Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
                     return next(null);
+                    // return self.Consensus.penalizeWrong({
+                    //     branch: branch,
+                    //     event: 0,
+                    //     onSent: function (r) {
+                    //         console.log("penalizeWrong sent:", r);
+                    //     },
+                    //     onSuccess: function (r) {
+                    //         console.log("penalizeWrong(branch, 0) success:", r);
+                    //         console.log(abi.bignum(r.callReturn, "string", true));
+                    //         next(null);
+                    //     },
+                    //     onFailed: function (err) {
+                    //         console.error("penalizeWrong(branch, 0) error:", err);
+                    //         next(err);
+                    //     }
+                    // });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
+                    console.log("penalizeWrong:", event);
                     self.Consensus.penalizeWrong({
                         branch: branch,
                         event: event,
                         onSent: utils.noop,
                         onSuccess: function (r) {
-                            console.log("penalizeWrong success:", r.callReturn);
+                            console.log("penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                             nextEvent();
                         },
-                        onFailed: nextEvent
+                        onFailed: function (err) {
+                            console.error("penalizeWrong error:", err);
+                            nextEvent(err);
+                        }
                     });
                 }, next);
             });
@@ -73,7 +95,7 @@ module.exports = {
 
         checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
             if (err) return callback(err);
-            checkPenalizeWrong(branch, votePeriod, function (err) {
+            checkPenalizeWrong(branch, votePeriod - 1, function (err) {
                 if (err) return callback(err);
                 self.checkVotePeriod(branch, periodLength, callback);
             });

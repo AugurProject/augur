@@ -20286,19 +20286,19 @@ module.exports={
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0xb6f0fa68e4a64e365a452bae7bbe2c1a78b4b30c", 
+        "Forking": "0x2bffb6035c8e66a2d867b7c72ede8480c2d698c0", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0xc1e959e39c9a9dbfaab18fa87f8313d607082fde", 
+        "MakeReports": "0xae407c905acc2c191a9f6b2d6c4a30adccf8793f", 
         "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
         "PenalizationCatchup": "0x6f256d44ccb33499d8a4fff683e89bf5b9c7b7ad", 
         "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
         "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
         "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
         "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0xa847152ce52806089de472ccca22993b4ee9e93c", 
-        "RoundTwoPenalize": "0x215e7f54a86c118e04a9fa5c294f51d32536007b", 
-        "SendReputation": "0xbcc6b8c0681979617318223b9b56d9e17dc40487", 
+        "RoundTwo": "0xbba3c55f25aa904d30d06b747c0d9d2289effcd9", 
+        "RoundTwoPenalize": "0x897d9467123808da6b5674db9d762aac9143fa48", 
+        "SendReputation": "0x5c0d36c68282f08e96454f3e8b46635fd2bd61d6", 
         "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
         "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
         "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
@@ -20397,7 +20397,8 @@ module.exports={
         "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
         "-5": "already done for all events in this period",
         "-6": "forked events should be penalized using the fork penalization function",
-        "-7": "no outcome"
+        "-7": "no outcome",
+        "-8": "needed to collect fees last period which sets the before/after rep"
     },
     "proveReporterDidntReportEnough": {
         "-1": "already done",
@@ -20451,7 +20452,6 @@ module.exports={
         "-5": "invalid event",
         "-6": "already resolved",
         "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
-        "-8": "fees couldn't be collected",
         "-9": "need to pay not reporting bond"
     },
     "trade": {
@@ -38981,6 +38981,7 @@ module.exports = {
 
 "use strict";
 
+var abi = require("augur-abi");
 var async = require("async");
 var utils = require("../utilities");
 
@@ -39015,19 +39016,40 @@ module.exports = {
 
         function checkPenalizeWrong(branch, votePeriod, next) {
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
+                console.log("Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
                     return next(null);
+                    // return self.Consensus.penalizeWrong({
+                    //     branch: branch,
+                    //     event: 0,
+                    //     onSent: function (r) {
+                    //         console.log("penalizeWrong sent:", r);
+                    //     },
+                    //     onSuccess: function (r) {
+                    //         console.log("penalizeWrong(branch, 0) success:", r);
+                    //         console.log(abi.bignum(r.callReturn, "string", true));
+                    //         next(null);
+                    //     },
+                    //     onFailed: function (err) {
+                    //         console.error("penalizeWrong(branch, 0) error:", err);
+                    //         next(err);
+                    //     }
+                    // });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
+                    console.log("penalizeWrong:", event);
                     self.Consensus.penalizeWrong({
                         branch: branch,
                         event: event,
                         onSent: utils.noop,
                         onSuccess: function (r) {
-                            console.log("penalizeWrong success:", r.callReturn);
+                            console.log("penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                             nextEvent();
                         },
-                        onFailed: nextEvent
+                        onFailed: function (err) {
+                            console.error("penalizeWrong error:", err);
+                            nextEvent(err);
+                        }
                     });
                 }, next);
             });
@@ -39049,7 +39071,7 @@ module.exports = {
 
         checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
             if (err) return callback(err);
-            checkPenalizeWrong(branch, votePeriod, function (err) {
+            checkPenalizeWrong(branch, votePeriod - 1, function (err) {
                 if (err) return callback(err);
                 self.checkVotePeriod(branch, periodLength, callback);
             });
@@ -39105,7 +39127,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"async":63}],373:[function(require,module,exports){
+},{"../utilities":379,"async":63,"augur-abi":1}],373:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
