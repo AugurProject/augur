@@ -88,7 +88,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				numberShape(actual.takerFeePercent);
+				numberShape(actual.takerFeePercent, 'market.takerFeePercent');
 			});
 		});
 
@@ -98,7 +98,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				numberShape(actual.makerFeePercent);
+				numberShape(actual.makerFeePercent, 'market.makerFeePercent');
 			});
 		});
 
@@ -108,7 +108,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				numberShape(actual.volume);
+				numberShape(actual.volume, 'market.volume');
 			});
 		});
 
@@ -235,7 +235,7 @@ function marketAssertion(actual) {
 						});
 
 						it('should have the correct shape', () => {
-							numberShape(outcome.lastPrice);
+							numberShape(outcome.lastPrice, `market.outcomes[${i}].lastPrice`);
 						});
 					});
 
@@ -245,7 +245,7 @@ function marketAssertion(actual) {
 						});
 
 						it('should have the correct shape', () => {
-							numberShape(outcome.lastPricePercent);
+							numberShape(outcome.lastPricePercent, `market.outcomet[${i}].lastPricePercent`);
 						});
 					});
 
@@ -425,7 +425,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should have the correct shape', () => {
-					numberShape(tradeSummary.totalShares, 'totalShares shape is not correct');
+					numberShape(tradeSummary.totalShares, 'market.tradeSummary.totalShares');
 				});
 			});
 
@@ -435,7 +435,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should have the correct shape', () => {
-					numberShape(tradeSummary.totalEther, 'totalEther shape is not correct');
+					numberShape(tradeSummary.totalEther, 'market.tradeSummary.totalEther');
 				});
 			});
 
@@ -445,7 +445,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should have the correct shape', () => {
-					numberShape(tradeSummary.totalGas, 'totalGas shape is not correct');
+					numberShape(tradeSummary.totalGas, 'market.tradeSummary.totalGas');
 				});
 			});
 
@@ -548,7 +548,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.numPositions);
+					numberShape(positionsSummary.numPositions, 'market.positionsSummary.numPositions');
 				});
 			});
 
@@ -558,7 +558,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.qtyShares);
+					numberShape(positionsSummary.qtyShares, 'market.positionsSummary.qtyShares');
 				});
 			});
 
@@ -568,7 +568,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.purchasePrice);
+					numberShape(positionsSummary.purchasePrice, 'market.positionsSummary.purchasePrice');
 				});
 			});
 
@@ -578,7 +578,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.totalValue);
+					numberShape(positionsSummary.totalValue, 'market.positionsSummary.totalValue');
 				});
 			});
 
@@ -588,7 +588,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.totalCost);
+					numberShape(positionsSummary.totalCost, 'market.positionsSummary.totalCost');
 				});
 			});
 
@@ -598,7 +598,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.shareChange);
+					numberShape(positionsSummary.shareChange, 'market.positionsSummary.shareChange');
 				});
 			});
 
@@ -608,7 +608,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.gainPercent);
+					numberShape(positionsSummary.gainPercent, 'market.positionsSummary.gainPercent');
 				});
 			});
 
@@ -618,7 +618,7 @@ function marketAssertion(actual) {
 				});
 
 				it('should be the correct shape', () => {
-					numberShape(positionsSummary.netChange);
+					numberShape(positionsSummary.netChange, 'market.positionsSummary.netChange');
 				});
 			});
 		});

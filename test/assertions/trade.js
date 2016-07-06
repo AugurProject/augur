@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import numberShape from '../../test/assertions/common/numberShape';
 
 function sideOptions(actual) {
 	describe('augur-ui-react-components trade sideOptions state', () => {

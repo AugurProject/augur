@@ -10,23 +10,86 @@ import { assert } from 'chai';
 //   denomination: String,
 //   full: String
 // }
-export default function (actual) {
-	assert.isDefined(actual, `formatted number doesn't exist`);
-	assert.isObject(actual, `formatted number isn't an object`);
-	assert.isDefined(actual.value, `volume formatted number value isn't defined`);
-	assert.isNumber(actual.value, `volume formatted number value isn't a number`);
-	assert.isDefined(actual.formattedValue, `volume formatted number formattedValue isn't defined`);
-	assert.isNumber(actual.formattedValue, `volume formatted number formattedValue isn't a number`);
-	assert.isDefined(actual.formatted, `volume formatted number formatted isn't defined`);
-	assert.isString(actual.formatted, `volume formatted number formatted isn't a string`);
-	assert.isDefined(actual.roundedValue, `volume formatted number roundedValue isn't defined`);
-	assert.isNumber(actual.roundedValue, `volume formatted number roundedValue isn't a number`);
-	assert.isDefined(actual.rounded, `volume formatted number rounded isn't defined`);
-	assert.isString(actual.rounded, `volume formatted number rounded isn't a string`);
-	assert.isDefined(actual.minimized, `volume formatted number minimized isn't defined`);
-	assert.isString(actual.minimized, `volume formatted number minimized isn't a string`);
-	assert.isDefined(actual.denomination, `volume formatted number denomination isn't defined`);
-	assert.isString(actual.denomination, `volume formatted number denomination isn't a String`);
-	assert.isDefined(actual.full, `volume formatted number full isn't defined`);
-	assert.isString(actual.full, `volume formatted number full isn't a string`);
-}
+export default function (actual, refObj) {
+	descirbe(`${refObj}'s numberShape`, () => {
+		describe('value', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.value, `value isn't defined`);
+			});
+
+			it('should be a number', () => {
+				assert.isNumber(actual.value, `value isn't a number`);
+			});
+		});
+
+		describe('formattedValue', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.formattedValue, `formattedValue isn't defined`);
+			});
+
+			it('should be a number', () => {
+				assert.isNumber(actual.formattedValue, `formattedValue isn't a number`);
+			});
+		});
+
+		describe('formatted', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.formatted, `formatted isn't defined`);
+			});
+
+			it('should be a string', () => {
+				assert.isString(actual.formatted, `formatted isn't a string`);
+			});
+		});
+
+		describe('roundedValue', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.roundedValue, `roundedValue isn't defined`);
+			});
+
+			it('should be a number', () => {
+				assert.isNumber(actual.roundedValue, `roundedValue isn't a number`);
+			});
+		});
+
+		describe('rounded', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.rounded, `rounded isn't defined`);
+			});
+
+			it('should be a string', () => {
+				assert.isString(actual.rounded, `rounded isn't a string`);
+			});
+		});
+
+		describe('minimized', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.minimized, `minimized isn't defined`);
+			});
+
+			it('should be a string', () => {
+				assert.isString(actual.minimized, `minimized isn't a string`);
+			});
+		});
+
+		describe('denomination', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.denomination, `denomination isn't defined`);
+			});
+
+			it('should be a string', () => {
+				assert.isString(actual.denomination, `denomination isn't a String`);
+			});
+		});
+
+		describe('full', () => {
+			it('should exist', () => {
+				assert.isDefined(actual.full, `full isn't defined`);
+			});
+
+			it('should be a string', () => {
+				assert.isString(actual.full, `full isn't a string`);
+			});
+		});
+	});
+};
