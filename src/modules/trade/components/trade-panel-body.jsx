@@ -82,7 +82,7 @@ const TradePanelBody = (p) => {
 						/>
 					</td>
 					<td className="fee-to-pay" >
-						<ValueDenomination {...outcome.trade.tradeSummary.totalGas} />
+						<ValueDenomination {...outcome.trade.tradeSummary.feeToPay} />
 					</td>
 					<td className="total-cost" >
 						<ValueDenomination {...outcome.trade.tradeSummary.totalEther} />

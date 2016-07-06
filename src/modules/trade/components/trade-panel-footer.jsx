@@ -39,10 +39,10 @@ const TradePanelFooter = (p) => {
 				</td>
 				<td colSpan="4" />
 				<td className="fee-to-pay" >
-					<ValueDenomination {...trade.feeToPay} />
+					<ValueDenomination {...trade.data.feeToPay} />
 				</td>
 				<td className="total-cost" >
-					<ValueDenomination {...trade.profitLoss} />
+					{ p.constants.BID === trade.type ? <ValueDenomination {...trade.etherNegative} /> : <ValueDenomination {...trade.ether} /> }
 				</td>
 			</tr>
 		);
@@ -63,10 +63,20 @@ const TradePanelFooter = (p) => {
 			</tr>
 			{transactions}
 			<tr className="summary-totals">
-				<td></td>
-				<td colSpan="6">Total Transactions...TODO</td>
+				<td />
+				<td colSpan="2">
+					<div className="total-transaction-summary" >
+						<pre className="transaction-type"></pre>
+						<div className="transaction-shares">
+							<ValueDenomination className="shares" {...p.summary.totalShares} />
+						</div>
+						<pre className="shares-at"></pre>
+						<pre className="transaction-price"></pre>
+					</div>
+				</td>
+				<td colSpan="4" />
 				<td className="fee-to-pay" >
-					<ValueDenomination {...p.summary.totalFees} />
+					<ValueDenomination {...p.summary.feeToPay} />
 				</td>
 				<td className="total-cost" >
 					<ValueDenomination {...p.summary.totalEther} />
