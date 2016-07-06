@@ -29,8 +29,8 @@ export const selectOutcomeTradeOrders =
 			Math.abs(numShares),
 			outcomeTradeInProgress.limitPrice,
 			totalCost,
-			0,
-			0,
+			0, // TODO -- These need to be updated
+			0,// TODO -- These need to be updated
 			dispatch
 		);
 
