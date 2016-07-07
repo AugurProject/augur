@@ -1,3 +1,5 @@
+import loginAccount from './login-account';
+
 const Shared = {
 	msg: null,
 	isVisiblePassword: true,
@@ -63,14 +65,17 @@ const logIn = {
 		console.log('***** user would now be logged in assuming password and secure id are correct. ******');
 		AuthForm.update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
+		loginAccount.signIn();
+		AuthForm.update({ activePage: 'account' });
 	}
 };
 
 const accountCreated = {
 	...logIn,
 	msg: 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
-	secureID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUE',
+	secureID: 'testID123ASDW3N193NF7V123ADW25579130239SE1235189ADJWKRUY8123AOUELOREMIPSUMDOLORSITAMETCONSECTETURADIPISICINGELITSEDDOEIUSMODTEMPORINCIDIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUDEXERCITATIONULLAMCOLABORISNISIUTALIQUIPEXEACOMMODOCONSEQUATDUISAUTEIRUREDOLORINREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOCCAECATCUPIDATATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM',
 };
+
 
 function SignUpOnSubmit(name, password, password2) {
 	AuthForm.update({

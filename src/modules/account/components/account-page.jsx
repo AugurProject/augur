@@ -38,7 +38,7 @@ export default class AccountPage extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-
+		console.log(p);
 		return (
 			<main className="page account">
 				<SiteHeader {...p.siteHeader} />
@@ -46,7 +46,13 @@ export default class AccountPage extends Component {
 				<header className="page-header">
 					<div className="l-container">
 						<div className="sign-out-container">
-							<Link className="button sign-out" title="Click here to Sign Out of your Account." {...p.siteHeader.authLink}>
+							<Link
+								className="button sign-out"
+								title="Click here to Sign Out of your Account."
+								onClick={() => {
+									p.account.signOut();
+									p.siteHeader.authLink.onClick(p.siteHeader.authLink.href);
+							}}>
 								Sign Out
 							</Link>
 						</div>
@@ -74,8 +80,7 @@ export default class AccountPage extends Component {
 									}
 									{!s.editName &&
 										<div
-											className="text-button" o
-											nClick={() => { if (!s.editPassword) this.setState({ editName: true }); }}
+											className="text-button" onClick={() => { if (!s.editPassword) this.setState({ editName: true }); }}
 											title="Click here to change your Account Name"
 										>
 											Change Account Name
@@ -101,7 +106,7 @@ export default class AccountPage extends Component {
 								<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
 									<h2>Secure Login ID:</h2>
 									<div className="item">
-										{s.showFullID ? p.account.id : p.account.prettySecureLoginID}
+										{s.showFullID ? p.account.secureLoginID : p.account.prettySecureLoginID}
 									</div>
 									<div
 										className="text-button"										onClick={() => {

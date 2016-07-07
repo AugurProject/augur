@@ -16,7 +16,6 @@ const selectors = {
 		});
 		selectors.render();
 	},
-	loginAccount,
 	markets,
 	keywords,
 	filters,
@@ -24,6 +23,9 @@ const selectors = {
 };
 selectors.authForm = authForm;
 selectors.authForm.update = selectors.update.bind(this);
+
+selectors.loginAccount = loginAccount;
+selectors.loginAccount.update = selectors.update.bind(this);
 
 selectors.activePage = MARKETS;
 
