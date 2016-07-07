@@ -4,7 +4,9 @@
         background: white;
 
         .transaction-item {
-            padding: 2vh 0 2vh 3%;
+			display: flex;
+			align-items: center;
+			padding: 2vh 0;
             line-height: 2.5rem;
             border-bottom: 1px solid @color-border;
             background: fade(orange, 6%);
@@ -25,6 +27,7 @@
 
             &.pending {
                 background: fade(@color-light-normal, 50%);
+                animation-name: unset;
 				.status-and-message {
 					color: @color-dark-normal;
 				}
@@ -38,13 +41,9 @@
 				}
             }
 
-            .content {
-              display: flex;
-              align-items: center;
-            }
-
             .index {
                 display: inline-block;
+                width: 5%;
                 padding: 0 1% 0 0;
                 text-align: right;
             }
