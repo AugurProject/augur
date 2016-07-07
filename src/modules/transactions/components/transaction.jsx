@@ -53,7 +53,7 @@ const Transaction = (p) => {
 		);
 		if (p.type === BUY_SHARES) {
 			nodes.valueChange = (
-				<span className="value-change">
+				<span className="value-changes">
 					{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 					}
 					{!!p.etherNegative && !!p.etherNegative.value && <ValueDenomination className="value-change ether" {...p.etherNegative} />
@@ -62,7 +62,7 @@ const Transaction = (p) => {
 			);
 		} else {
 			nodes.valueChange = (
-				<span className="value-change">
+				<span className="value-changes">
 					{!!p.sharesNegative && !!p.sharesNegative.value && <ValueDenomination className="value-change shares" {...p.sharesNegative} />
 					}
 					{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -74,7 +74,7 @@ const Transaction = (p) => {
 	case TRADE_SUMMARY:
 		nodes.description = (<span className="description">&nbsp;</span>);
 		nodes.valueChange = (
-			<span className="value-change">
+			<span className="value-changes">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -132,7 +132,7 @@ const Transaction = (p) => {
 	default:
 		nodes.description = (<span className="description">{p.type}</span>);
 		nodes.valueChange = (
-			<span className="value-change">
+			<span className="value-changes">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
