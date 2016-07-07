@@ -116,7 +116,7 @@ module.exports = function () {
 								var unsecureLoginIDObject = { name: name, keystore: keystore };
 								var secureLoginID = abacus.base58Encrypt(unsecureLoginIDObject);
 
-								cb(null, { name: name, secureLoginID: secureLoginID, keystore: keystore, address: keystore.address });
+								cb({ name: name, secureLoginID: secureLoginID, keystore: keystore, address: keystore.address });
               }); // deriveKey
           }); // create
         },
@@ -165,7 +165,7 @@ module.exports = function () {
                 keystore: keystore
               };
 
-              cb(null, { name: name, secureLoginID: secureLoginID, keystore: keystore, address: keystore.address });
+              cb({ name: name, secureLoginID: secureLoginID, keystore: keystore, address: keystore.address });
             // decryption failure: bad password
             } catch (exc) {
               var e = clone(errors.BAD_CREDENTIALS);
