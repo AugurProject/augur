@@ -1,7 +1,8 @@
 var assert = require('chai').assert;
 // loginAccount:
 //  { id: String,
-//    handle: String,
+//    prettySecureLoginID: String,
+//    linkText: String,
 //    rep:
 //     { value: Number,
 //       formattedValue: Number,
@@ -35,9 +36,13 @@ function loginAccountAssertion(actual) {
 	assert.isDefined(actual.id, `loginAccount.id isn't defined`);
 	assert.isString(actual.id, `loginAccount.id isn't a string`);
 
-	// loginAccount.handle
-	assert.isDefined(actual.handle, `loginAccount.handle isn't defined`);
-	assert.isString(actual.handle, `loginAccount.handle isn't a string`);
+	// loginAccount.linkText
+	assert.isDefined(actual.linkText, `loginAccount.linkText isn't defined`);
+	assert.isString(actual.linkText, `loginAccount.linkText isn't a string`);
+
+	// loginAccount.prettySecureLoginID
+	assert.isDefined(actual.prettySecureLoginID, `loginAccount.prettySecureLoginID isn't defined`);
+	assert.isString(actual.prettySecureLoginID, `loginAccount.prettySecureLoginID isn't a string`);
 
 	// loginAccount.rep
 	assert.isDefined(actual.rep, `loginAccount.rep isn't defined`);

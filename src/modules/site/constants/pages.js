@@ -3,4 +3,5 @@ export const MAKE = 'make';
 export const POSITIONS = 'positions';
 export const TRANSACTIONS = 'transactions';
 export const M = 'm';
+export const ACCOUNT = 'account';
 export const DEFAULT_PAGE = MARKETS;

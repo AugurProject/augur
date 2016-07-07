@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { MARKETS, POSITIONS, TRANSACTIONS } from '../../site/constants/pages';
+import { ACCOUNT, MARKETS, POSITIONS, TRANSACTIONS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -62,9 +62,16 @@ const SiteHeader = (p) => (
 						}
 				</Link>
 			}
-			<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
-				{p.loginAccount && p.loginAccount.id ? 'Sign Out' : 'Sign Up / Login'}
-			</Link>
+			{!p.loginAccount && !p.loginAccount.id &&
+				<Link className={classnames('site-nav-link', AUTH_TYPES[p.activePage], { active: !!AUTH_TYPES[p.activePage] })} {...p.authLink}>
+					Sign Up / Login
+				</Link>
+			}
+			{p.loginAccount && p.loginAccount.id &&
+				<Link className={classnames('site-nav-link', ACCOUNT, { active: p.activePage === ACCOUNT })} {...p.accountLink}>
+					{p.accountLinkText}
+				</Link>
+			}
 		</nav>
 	</header>
 );

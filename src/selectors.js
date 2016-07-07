@@ -5,7 +5,7 @@ import keywords from './selectors/keywords';
 import filters from './selectors/filters';
 import createMarketForm from './selectors/create-market-form';
 
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { ACCOUNT, MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { LOGIN } from './modules/auth/constants/auth-types';
 
 const selectors = {
@@ -34,7 +34,8 @@ selectors.links = {
 	transactionsLink: { href: '', onClick: () => module.exports.update({ activePage: TRANSACTIONS }) },
 	marketLink: { href: '', onClick: () => module.exports.update({ activePage: M }) },
 	previousLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
-	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
+	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) },
+	accountLink: { href: '', onClick: () => module.exports.update({ activePage: ACCOUNT }) }
 };
 
 selectors.transactions = [];
