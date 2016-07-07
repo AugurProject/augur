@@ -13,17 +13,21 @@ var BigNumber = require("bignumber.js");
  * @param {String} type buy or sell
  * @param {Number} shares
  * @param {Number} limitPrice
- * @param {String} userAddress To exclude user's orders
+ * @param {String} takerFee Decimal string ("0.02" for 2% fee)
+ * @param {String} makerFee Decimal string ("0.02" for 2% fee)
+ * @param {String} userAddress Address of trader to exclude orders from order book
  * @param {Number} userPositionShares
  * @param {String} outcomeId
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
  * @param {Function} cb
  * @return {Array}
  */
-module.exports = function getTradingActions(type, shares, limitPrice, userAddress, userPositionShares, outcomeId, marketOrderBook, cb) {
+module.exports = function getTradingActions(type, shares, limitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook, cb) {
 	if (type.constructor === Object && type.type) {
 		shares = type.shares;
 		limitPrice = type.limitPrice;
+		takerFee = type.takerFee;
+		makerFee = type.makerFee;
 		userAddress = type.userAddress;
 		userPositionShares = type.userPositionShares;
 		outcomeId = type.outcomeId;
@@ -108,15 +112,17 @@ module.exports = function getTradingActions(type, shares, limitPrice, userAddres
 	 * @param {BigNumber} shares
 	 * @param {BigNumber} limitPrice
 	 * @param {Number} gasPrice
-	 * @return {{action: string, feeEth: string, totalEther: string, avgPrice: string}}
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
 	function getBidAction(shares, limitPrice, gasPrice) {
-		var bidFeeEth = getTxFeeEth(clone(augur.tx.BuyAndSellShares.buy), gasPrice);
+		var bidGasEth = getTxGasEth(clone(augur.tx.BuyAndSellShares.buy), gasPrice);
 		var etherToBid = shares.times(limitPrice);
 		return {
 			action: "BID",
-			feeEth: bidFeeEth.toFixed(),
-			totalEther: etherToBid.add(bidFeeEth).toFixed(),
+			shares: shares.toFixed(),
+			gasEth: bidGasEth.toFixed(),
+			feeEth: "todo",
+			costEth: etherToBid.toFixed(),
 			avgPrice: limitPrice.toFixed()
 		};
 	}
@@ -126,14 +132,16 @@ module.exports = function getTradingActions(type, shares, limitPrice, userAddres
 	 * @param {BigNumber} buyEth
 	 * @param {BigNumber} sharesFilled
 	 * @param {Number} gasPrice
-	 * @return {{action: string, feeEth: string, totalEther: string, avgPrice: string}}
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
 	function getBuyAction(buyEth, sharesFilled, gasPrice) {
-		var tradeFeeEth = getTxFeeEth(clone(augur.tx.Trade.trade), gasPrice);
+		var tradeGasEth = getTxGasEth(clone(augur.tx.Trade.trade), gasPrice);
 		return {
 			action: "BUY",
-			feeEth: tradeFeeEth.toFixed(),
-			totalEther: buyEth.add(tradeFeeEth).toFixed(),
+			shares: sharesFilled.toFixed(),
+			gasEth: tradeGasEth.toFixed(),
+			feeEth: "todo",
+			costEth: buyEth.toFixed(),
 			avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
 		};
 	}
@@ -144,7 +152,7 @@ module.exports = function getTradingActions(type, shares, limitPrice, userAddres
 	 * @param {Number} gasPrice
 	 * @return {BigNumber}
 	 */
-	function getTxFeeEth(tx, gasPrice) {
+	function getTxGasEth(tx, gasPrice) {
 		tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
 		tx.gasPrice = gasPrice;
 		var etx = new ethTx(tx);

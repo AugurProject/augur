@@ -60046,17 +60046,21 @@ var BigNumber = require("bignumber.js");
  * @param {String} type buy or sell
  * @param {Number} shares
  * @param {Number} limitPrice
- * @param {String} userAddress To exclude user's orders
+ * @param {String} takerFee Decimal string ("0.02" for 2% fee)
+ * @param {String} makerFee Decimal string ("0.02" for 2% fee)
+ * @param {String} userAddress Address of trader to exclude orders from order book
  * @param {Number} userPositionShares
  * @param {String} outcomeId
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
  * @param {Function} cb
  * @return {Array}
  */
-module.exports = function getTradingActions(type, shares, limitPrice, userAddress, userPositionShares, outcomeId, marketOrderBook, cb) {
+module.exports = function getTradingActions(type, shares, limitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook, cb) {
 	if (type.constructor === Object && type.type) {
 		shares = type.shares;
 		limitPrice = type.limitPrice;
+		takerFee = type.takerFee;
+		makerFee = type.makerFee;
 		userAddress = type.userAddress;
 		userPositionShares = type.userPositionShares;
 		outcomeId = type.outcomeId;
@@ -60064,82 +60068,131 @@ module.exports = function getTradingActions(type, shares, limitPrice, userAddres
 		cb = type.cb;
 		type = type.type;
 	}
+
+	shares = new BigNumber(shares, 10);
+	limitPrice = new BigNumber(limitPrice, 10);
+
 	var augur = this;
 
 	if (type === "buy") {
 		var matchingSortedAsks = filterAndSortOrders(marketOrderBook.sell, type, limitPrice, outcomeId, userAddress);
 
-		var areSuitableOrders = matchingSortedAsks.length > 0, tx;
+		var areSuitableOrders = matchingSortedAsks.length > 0;
 		if (!areSuitableOrders) {
-			tx = clone(augur.tx.BuyAndSellShares.buy);
-			tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
 			augur.rpc.gasPrice(function (gasPrice) {
 				if (!gasPrice || gasPrice.error) {
 					return cb("ERROR: Cannot get gas price");
 				}
 
-				tx.gasPrice = gasPrice;
-				var etx = new ethTx(tx);
-				var fee = new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(augur.rpc.ETHER);
-
-				var etherToTrade = new BigNumber(shares * limitPrice, 10);
-				cb([{
-					action: "BID",
-					feeEth: fee.toFixed(),
-					totalEther: etherToTrade.add(fee).toFixed(),
-					avgPrice: new BigNumber(limitPrice, 10).toFixed()
-				}]);
+				cb([getBidAction(shares, limitPrice, gasPrice)]);
 			});
 		} else {
-			tx = clone(augur.tx.Trade.trade);
-			tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
 			augur.rpc.gasPrice(function (gasPrice) {
 				if (!gasPrice || gasPrice.error) {
 					return cb("ERROR: Cannot get gas price");
 				}
+				var actions = [];
 
-				tx.gasPrice = gasPrice;
-				var etx = new ethTx(tx);
-				var fee = etx.getUpfrontCost().toString();
-
-				var userWantsToTradeEth = new BigNumber(shares * limitPrice, 10);
-				var tradedEth = constants.ZERO;
+				var etherToTrade = constants.ZERO;
+				var remainingShares = new BigNumber(shares, 10);
 				for (var i = 0, length = matchingSortedAsks.length; i < length; i++) {
 					var order = matchingSortedAsks[i];
-					var orderEthValue = new BigNumber(order.amount * order.price, 10);
+					var orderSharesFilled = BigNumber.min(remainingShares, order.amount);
+					etherToTrade = etherToTrade.add(orderSharesFilled.times(new BigNumber(order.price, 10)));
+					remainingShares = remainingShares.minus(orderSharesFilled);
+					var isUserOrderFilled = remainingShares.equals(constants.ZERO);
+					if (isUserOrderFilled) {
+						break;
+					}
+				}
+				actions.push(getBuyAction(etherToTrade, shares.minus(remainingShares), gasPrice));
+
+				if (!isUserOrderFilled) {
+					actions.push(getBidAction(remainingShares, limitPrice, gasPrice));
 				}
 
-				cb([{
-					action: "BUY",
-					feeEth: new BigNumber(fee, 10).dividedBy(augur.rpc.ETHER).toFixed(),
-					totalEther: userWantsToTradeEth.add(fee).toFixed(),
-					avgPrice: userWantsToTradeEth.dividedBy(new BigNumber(shares, 10)).toFixed()
-				}]);
+				cb(actions);
 			});
 		}
+	} else {
+		cb("todo");
+	}
+
+	/**
+	 *
+	 * @param {Array} orders
+	 * @param {String} type
+	 * @param {BigNumber} limitPrice
+	 * @param {String} outcomeId
+	 * @param {String} userAddress
+	 * @return {Array.<Object>}
+	 */
+	function filterAndSortOrders(orders, type, limitPrice, outcomeId, userAddress) {
+		return orders
+			.filter(function filterOrdersByOutcomeAndOwnerAndPrice(order) {
+				var isMatchingPrice = type === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+				return order.outcome === outcomeId &&
+					order.owner !== userAddress &&
+					isMatchingPrice;
+			})
+			.sort(function compareOrdersByPrice(order1, order2) {
+				return type === "buy" ? order1.price - order2.price : order2.price - order1.price;
+			});
+	}
+
+	/**
+	 *
+	 * @param {BigNumber} shares
+	 * @param {BigNumber} limitPrice
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	function getBidAction(shares, limitPrice, gasPrice) {
+		var bidGasEth = getTxGasEth(clone(augur.tx.BuyAndSellShares.buy), gasPrice);
+		var etherToBid = shares.times(limitPrice);
+		return {
+			action: "BID",
+			shares: shares.toFixed(),
+			gasEth: bidGasEth.toFixed(),
+			feeEth: "todo",
+			costEth: etherToBid.toFixed(),
+			avgPrice: limitPrice.toFixed()
+		};
+	}
+
+	/**
+	 *
+	 * @param {BigNumber} buyEth
+	 * @param {BigNumber} sharesFilled
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	function getBuyAction(buyEth, sharesFilled, gasPrice) {
+		var tradeGasEth = getTxGasEth(clone(augur.tx.Trade.trade), gasPrice);
+		return {
+			action: "BUY",
+			shares: sharesFilled.toFixed(),
+			gasEth: tradeGasEth.toFixed(),
+			feeEth: "todo",
+			costEth: buyEth.toFixed(),
+			avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
+		};
+	}
+
+	/**
+	 *
+	 * @param {Object} tx
+	 * @param {Number} gasPrice
+	 * @return {BigNumber}
+	 */
+	function getTxGasEth(tx, gasPrice) {
+		tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
+		tx.gasPrice = gasPrice;
+		var etx = new ethTx(tx);
+		return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
 	}
 };
 
-/**
- *
- * @param {Array} orders
- * @param {String} type
- * @param {Number} limitPrice
- * @param {String} outcomeId
- * @param {String} userAddress
- */
-function filterAndSortOrders(orders, type, limitPrice, outcomeId, userAddress) {
-	return orders
-		.filter(function filterOrdersByOutcomeAndOwnerAndPrice(order) {
-			var isMatchingPrice = type === "buy" ? parseFloat(order.price) <= limitPrice : parseFloat(order.price) >= limitPrice;
-			return order.outcome === outcomeId &&
-				order.owner !== userAddress &&
-				isMatchingPrice;
-		})
-		.sort(function compareOrdersByPrice(order1, order2) {
-			return type === "buy" ? order1.price - order2.price : order2.price - order1.price;
-		});
-}
 },{"../src/constants":207,"bignumber.js":25,"clone":60,"ethereumjs-tx":101}],231:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";

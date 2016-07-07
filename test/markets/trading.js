@@ -38,6 +38,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -50,8 +52,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "BID",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.00000000003135",
+                    "shares": "5",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -62,6 +66,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -97,8 +103,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "BID",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.00000000003135",
+                    "shares": "5",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -109,6 +117,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -127,8 +137,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "BUY",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.00000000003135",
+                    "shares": "5",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -139,6 +151,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -157,13 +171,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "BUY",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": "2",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.2",
 					"avgPrice": "0.6"
 				}, {
 					"action": "BID",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.80000000003135",
+                    "shares": "3",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.8",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -174,6 +192,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -192,8 +212,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "BUY",
-					"feeEth": "0.00000000003135",
-					"totalEther": "2.00000000003135",
+                    "shares": "5",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "2",
 					"avgPrice": "0.4"
 				}];
 				assert.deepEqual(actions, expected)
@@ -204,6 +226,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -222,13 +246,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "BUY",
-					"feeEth": "0.00000000003135",
-					"totalEther": "0.80000000003135",
+                    "shares": "2",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "0.8",
 					"avgPrice": "0.4"
 				}, {
 					"action": "BID",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.80000000003135",
+                    "shares": "3",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.8",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -239,6 +267,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -269,8 +299,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "BUY",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.40000000003135",
+                    "shares": "5",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.4",
 					"avgPrice": "0.28"
 				}];
 				assert.deepEqual(actions, expected)
@@ -281,6 +313,8 @@ describe("Unit tests", function () {
 			type: "buy",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -305,13 +339,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "BUY",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.00000000003135",
+                    "shares": "3",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1",
 					"avgPrice": "0.33333333333333333333"
 				}, {
 					"action": "BID",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": "2",
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.2",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -322,6 +360,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -334,8 +374,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.00000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.00000000006270",
 					"avgPrice": "0.33333333333333333333"
 				}];
 				assert.deepEqual(actions, expected)
@@ -346,6 +388,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -364,8 +408,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.00000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3.00000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -376,6 +422,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -394,13 +442,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.20000000003135",
 					"avgPrice": "0.6"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.80000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.80000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -411,6 +463,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -429,8 +483,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.50000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3.50000000003135",
 					"avgPrice": "0.7"
 				}];
 				assert.deepEqual(actions, expected)
@@ -441,6 +497,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -459,13 +517,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.40000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.40000000003135",
 					"avgPrice": "0.7"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.80000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.80000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -476,6 +538,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -500,13 +564,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "2.30000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "2.30000000003135",
 					"avgPrice": "0.766666666667"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.20000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.20000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -517,6 +585,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 0,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -547,8 +617,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "4.10000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "4.10000000003135",
 					"avgPrice": "0.82"
 				}];
 				assert.deepEqual(actions, expected)
@@ -559,6 +631,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -571,13 +645,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "ASK",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.20000000003135",
 					"avgPrice": "0.6"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.80000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.80000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -588,6 +666,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -606,13 +686,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.20000000003135",
 					"avgPrice": "0.6"
 				}, {
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.80000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.80000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -623,6 +707,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -641,13 +727,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.20000000003135",
 					"avgPrice": "0.6"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.80000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.80000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -658,6 +748,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -676,13 +768,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.40000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.40000000003135",
 					"avgPrice": "0.7"
 				}, {
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "2.10000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "2.10000000003135",
 					"avgPrice": "0.7"
 				}];
 				assert.deepEqual(actions, expected)
@@ -693,6 +789,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -711,13 +809,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.40000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.40000000003135",
 					"avgPrice": "0.7"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.80000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.80000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -728,6 +830,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -752,18 +856,24 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 3, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "0.70000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "0.70000000003135",
 					"avgPrice": "0.7"
 				}, {
 					"action": "SHORT_SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "0.80000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "0.80000000003135",
 					"avgPrice": "0.8"
 				}, {
 					"action": "RISKY_SHORT_SELL",
-					"feeEth": "0.00000000006270",
-					"totalEther": "1.20000000006270",
+                    "shares": null,
+					"gasEth": "0.00000000006270",
+                    "feeEth": "todo",
+					"costEth": "1.20000000006270",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -774,6 +884,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 2,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -804,8 +916,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "4.10000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "4.10000000003135",
 					"avgPrice": "0.82"
 				}];
 				assert.deepEqual(actions, expected)
@@ -816,6 +930,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -828,8 +944,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 3, "more actions than expected were created");
 				var expected = [{
 					"action": "ASK",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.00000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3.00000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -840,6 +958,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -858,8 +978,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.00000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3.00000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -870,6 +992,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -888,13 +1012,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.20000000003135",
 					"avgPrice": "0.6"
 				}, {
 					"action": "ASK",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.80000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.80000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -905,6 +1033,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -923,8 +1053,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "3.50000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "3.50000000003135",
 					"avgPrice": "0.7"
 				}];
 				assert.deepEqual(actions, expected)
@@ -935,6 +1067,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -953,13 +1087,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.40000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.40000000003135",
 					"avgPrice": "0.7"
 				}, {
 					"action": "ASK",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.80000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.80000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -970,6 +1108,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -994,13 +1134,17 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 2, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "2.30000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "2.30000000003135",
 					"avgPrice": "0.7666666667"
 				}, {
 					"action": "ASK",
-					"feeEth": "0.00000000003135",
-					"totalEther": "1.20000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "1.20000000003135",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1011,6 +1155,8 @@ describe("Unit tests", function () {
 			type: "sell",
 			shares: 5,
 			limitPrice: 0.6,
+            takerFee: "0.02",
+            makerFee: "0.01",
 			userPositionShares: 5,
 			outcomeId: "outcomeasdf123",
 			marketOrderBook: {
@@ -1041,8 +1187,10 @@ describe("Unit tests", function () {
 				assert.lengthOf(actions, 1, "more actions than expected were created");
 				var expected = [{
 					"action": "SELL",
-					"feeEth": "0.00000000003135",
-					"totalEther": "4.10000000003135",
+                    "shares": null,
+					"gasEth": "0.00000000003135",
+                    "feeEth": "todo",
+					"costEth": "4.10000000003135",
 					"avgPrice": "0.82"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1055,6 +1203,8 @@ describe("Unit tests", function () {
 					type: testCase.type,
 					shares: testCase.shares,
 					limitPrice: testCase.limitPrice,
+                    takerFee: testCase.takerFee,
+                    makerFee: testCase.makerFee,
 					userAddress: testCase.userAddress,
 					userPositionShares: testCase.userPositionShares,
 					outcomeId: testCase.outcomeId,
