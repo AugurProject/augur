@@ -29,9 +29,6 @@ function authFormAssertion(actual) {
 		assert.isDefined(actual.isVisiblePassword2, `authForm.isVisiblePassword2 isn't defined`);
 		assert.isBoolean(actual.isVisiblePassword2, `authForm.isVisiblePassword2 isn't a boolean`);
 
-		assert.isDefined(actual.isVisibleAccountInfo, `authForm.isVisibleAccountInfo isn't defined`);
-		assert.isBoolean(actual.isVisibleAccountInfo, `authForm.isVisibleAccountInfo isn't a boolean`);
-
 		assert.isDefined(actual.msgClass, `authForm.msgClass isn't defined`);
 		assert.isString(actual.msgClass, `authForm.msgClass isn't a string`);
 

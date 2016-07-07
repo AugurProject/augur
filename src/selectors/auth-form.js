@@ -42,7 +42,7 @@ const signUp = {
 				},
 				onSubmit: (secureID, password) => {
 					console.log('***** user would now be logged in assuming password and secure id are correct. ******');
-					AuthForm.update({ authForm: { ...signUp, clearPassword: true, clearName: true  } });
+					AuthForm.update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 				}
 			}
 			});
