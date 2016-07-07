@@ -68,6 +68,7 @@ module.exports = function (p, cb) {
         for (i = 0; i < numOutcomes; ++i) {
             if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
                 initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+                console.log("priceDepth:", priceDepth.toFixed());
                 console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
                 console.log("minValue:", minValue.toFixed());
                 console.log("maxValue:", maxValue.toFixed());
@@ -146,69 +147,79 @@ module.exports = function (p, cb) {
                         function (callback) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                if (marketInfo.type === "scalar") {
+                                    buyPrice = self.adjustScalarPrice("buy", minValue, maxValue, buyPrice);
+                                } else {
+                                    buyPrice = buyPrice.toFixed();
+                                }
                                 self.buy({
                                     amount: amount.toFixed(),
-                                    price: buyPrice.toFixed(),
+                                    price: buyPrice,
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "sent:", res);
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "success:", res);
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            buyPrice: buyPrice.toFixed()
+                                            buyPrice: buyPrice
                                         });
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
+                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                if (err) console.error("async.each buy:", err);
+                                // if (err) console.error("async.each buy:", err);
                                 callback(err);
                             });
                         },
                         function (callback) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                if (marketInfo.type === "scalar") {
+                                    sellPrice = self.adjustScalarPrice("sell", minValue, maxValue, sellPrice);
+                                } else {
+                                    sellPrice = sellPrice.toFixed();
+                                }
                                 self.sell({
                                     amount: amount.toFixed(),
-                                    price: sellPrice.toFixed(),
+                                    price: sellPrice,
                                     market: p.market,
                                     outcome: outcome,
                                     onSent: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "sent:", res);
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
                                     },
                                     onSuccess: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "success:", res);
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
                                         onSetupOrder({
                                             tradeId: res.callReturn,
                                             market: p.market,
                                             outcome: outcome,
                                             amount: amount.toFixed(),
-                                            sellPrice: sellPrice.toFixed()
+                                            sellPrice: sellPrice
                                         });
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
+                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                if (err) console.error("async.each sell:", err);
+                                // if (err) console.error("async.each sell:", err);
                                 callback(err);
                             });
                         }
                     ], function (err) {
-                        if (err) console.error("buy/sell:", err);
+                        // if (err) console.error("buy/sell:", err);
                         onSetupOutcome({market: p.market, outcome: outcome});
                         nextOutcome(err);
                     });
