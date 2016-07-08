@@ -14,12 +14,14 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	let store, action, out;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
+
 	let mockAugurJS = {};
 	let mockUpBlockchain = {};
 	let mockListenUp = {};
 	let mockLoginAcc = {};
 	let mockLoadMarkets = {};
 	let mockLoadFullMarket = {};
+
 	mockAugurJS.connect = sinon.stub().yields(null, {
 		connect: 'test'
 	});

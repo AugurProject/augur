@@ -15,16 +15,6 @@
 	<link rel="stylesheet" type="text/css" href="/${build_folder}/styles.css">
 	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:700,900,400">
 
-	<script>
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState === 4 && xhttp.status === 200) {
-				window.env = xhttp.responseText;
-			}
-		};
-		xhttp.open("GET", "/2.0.0/env.json", true);
-		xhttp.send();
-	</script>
 	<script src="/${build_folder}/build.js" defer></script>
 
 	<script src="//www.google-analytics.com/analytics.js" defer></script>
