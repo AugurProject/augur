@@ -17,7 +17,6 @@ export function initAugur() {
 		xhttp.onreadystatechange = () => {
 			if (xhttp.readyState === 4 && xhttp.status === 200) {
 				dispatch(updateEnv(JSON.parse(xhttp.responseText)));
-
 				AugurJS.connect(getState().env, (err, connected) => {
 					if (err) {
 						return console.error('connect failure:', err);
