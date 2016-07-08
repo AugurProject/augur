@@ -38,21 +38,14 @@ export default class AccountPage extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-		console.log(p);
+		// console.log(p);
 		return (
 			<main className="page account">
 				<SiteHeader {...p.siteHeader} />
-
 				<header className="page-header">
 					<div className="l-container">
 						<div className="sign-out-container">
-							<Link
-								className="button sign-out"
-								title="Click here to Sign Out of your Account."
-								onClick={() => {
-									p.account.signOut();
-									p.siteHeader.authLink.onClick(p.siteHeader.authLink.href);
-							}}>
+							<Link className="button sign-out" {...p.siteHeader.authLink}>
 								Sign Out
 							</Link>
 						</div>
@@ -206,3 +199,12 @@ export default class AccountPage extends Component {
 		);
 	}
 }
+// <Link
+// 	className="button sign-out"
+// 	title="Click here to Sign Out of your Account."
+// 	onClick={() => {
+// 		p.account.signOut();
+// 		p.siteHeader.authLink.onClick(p.siteHeader.authLink.href);
+// }}>
+// 	Sign Out
+// </Link>
