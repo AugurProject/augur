@@ -1,7 +1,7 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
 import { SUCCESS, CREATING_MARKET, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
-import env from 'env';
+import env from '../assets/env.json';
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
