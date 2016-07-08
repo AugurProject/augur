@@ -56,12 +56,12 @@ export function register(name, password, password2) {
 				// }
 				return;
 			}
-			console.log('past error');
+			console.log('past error', NEW_REGISTER);
 			// numAssetsLoaded++;
 			// links.marketsLink.onClick();
 			// dispatch(updateTransactionsData({ [transactionID]: makeTransactionUpdate() }));
-			// dispatch(updateLoginAccount(loginAccount));
-			selectAuthLink(NEW_REGISTER, false, dispatch, loginAccount.secureLoginID);
+			dispatch(updateLoginAccount({ secureLoginID: loginAccount.secureLoginID}));
+			selectAuthLink(NEW_REGISTER, false, dispatch).onClick();
 			console.log('past select authLink');
 		});
 		// , () => {

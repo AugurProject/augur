@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { REGISTER, LOGIN } from '../../auth/constants/auth-types';
+import { NEW_REGISTER, REGISTER, LOGIN } from '../../auth/constants/auth-types';
 import {
 	INVALID_USERNAME_OR_PASSWORD,
 	USERNAME_REQUIRED,
@@ -58,7 +58,7 @@ export const selectRegister = (auth, dispatch) => {
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (username, password, password2) => dispatch(register(username, password, password2))
+		onSubmit: (name, password, password2, secureLoginID) => dispatch(register(name, password, password2))
 	};
 };
 
@@ -81,7 +81,7 @@ export const selectLogin = (auth, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (secureLoginID, password) => dispatch(login(secureLoginID, password))
+		onSubmit: (name, password, password2, secureLoginID) => dispatch(login(secureLoginID, password))
 	};
 };
 
@@ -106,7 +106,8 @@ export const selectNewRegister = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (secureLoginID, password) => dispatch(login(secureLoginID, password))
+		onSubmit: (name, password, password2, secureLoginID) =>
+			dispatch(login(secureLoginID, password))
 	};
 };
 
