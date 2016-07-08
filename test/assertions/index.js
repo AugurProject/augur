@@ -17,6 +17,7 @@ var siteHeader = require('./siteHeader');
 var transactions = require('./transactions');
 var transactionsTotals = require('./transactionsTotals');
 var update = require('./update');
+var trade = require('./trade');
 
 module.exports = {
 	activePage: activePage,
@@ -37,5 +38,6 @@ module.exports = {
 	siteHeader: siteHeader,
 	transactions: transactions,
 	transactionsTotals: transactionsTotals,
-	update: update
+	update: update,
+	trade: trade
 };

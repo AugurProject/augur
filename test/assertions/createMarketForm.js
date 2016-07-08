@@ -38,7 +38,7 @@ function step2(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			assertInitialFairPrices(actual.initialFairPrices);
+			assertInitialFairPrices(actual.initialFairPrices, 'createMarketForm');
 		});
 
 		it('should receive descriptionPlaceholder and be a string', () => {
@@ -122,7 +122,7 @@ function step4(actual){
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			assertInitialFairPrices(actual.initialFairPrices);
+			assertInitialFairPrices(actual.initialFairPrices, 'createMarketForm');
 		});
 
 		it('should receive bestStartingQuantity and be a number', () => {
@@ -162,19 +162,19 @@ function step5(actual){
 		it('should receive endDate and be an object with correct shape', () => {
 			assert.isDefined(actual.endDate, 'endDate is not defined');
 			assert.isObject(actual.endDate, 'endDate is not an array');
-			assertEndDate(actual.endDate);
+			assertEndDate(actual.endDate, 'createMarketForm');
 		});
 
 		it('should receive takerFeePercent and be an object with correct shape', () => {
 			assert.isDefined(actual.takerFeePercent, 'takerFeePercent is not defined');
 			assert.isObject(actual.takerFeePercent, 'takerFeePercent is not an object');
-			assertFormattedNumber(actual.takerFeePercent);
+			assertFormattedNumber(actual.takerFeePercent, 'createMarketForm.takerFeePercent');
 		});
 
 		it('should receive makerFeePercent and be an object with correct shape', () => {
 			assert.isDefined(actual.makerFeePercent, 'makerFeePercent is not defined');
 			assert.isObject(actual.makerFeePercent, 'makerFeePercent is not an object');
-			assertFormattedNumber(actual.makerFeePercent);
+			assertFormattedNumber(actual.makerFeePercent, 'createMarketForm.makerFeePercent');
 		});
 
 		it('should receive creatingMarket and be a boolean', () => {
@@ -185,31 +185,31 @@ function step5(actual){
 		it('should receive volume and be an object with correct shape', () => {
 			assert.isDefined(actual.volume, 'volume is not defined');
 			assert.isObject(actual.volume, 'volume is not an object');
-			assertFormattedNumber(actual.volume);
+			assertFormattedNumber(actual.volume, 'createMarketForm.volume');
 		});
 
 		it('should receive initialFairPrices and be an object with correct shape', () => {
 			assert.isDefined(actual.initialFairPrices, 'initialFairPrices is not defined');
 			assert.isObject(actual.initialFairPrices, 'initialFairPrices is not an object');
-			assertInitialFairPrices(actual.initialFairPrices);
+			assertInitialFairPrices(actual.initialFairPrices, 'createMarketForm');
 		});
 
 		it('should receive bestStartingQuantityFormatted and be an object with correct shape', () => {
 			assert.isDefined(actual.bestStartingQuantityFormatted, 'bestStartingQuantityFormatted is not defined');
 			assert.isObject(actual.bestStartingQuantityFormatted, 'bestStartingQuantityFormatted is not an object');
-			assertFormattedNumber(actual.bestStartingQuantityFormatted);
+			assertFormattedNumber(actual.bestStartingQuantityFormatted, 'createMarketForm.bestStartingQuantityFormatted');
 		});
 
 		it('should receive startingQuantityFormatted and be an object with correct shape', () => {
 			assert.isDefined(actual.startingQuantityFormatted, 'startingQuantityFormatted is not defined');
 			assert.isObject(actual.startingQuantityFormatted, 'startingQuantityFormatted is not an object');
-			assertFormattedNumber(actual.startingQuantityFormatted);
+			assertFormattedNumber(actual.startingQuantityFormatted, 'createMarketForm.startingQuantityFormatted');
 		});
 
 		it('should receive priceWidthFormatted and be an object with correct shape', () => {
 			assert.isDefined(actual.priceWidthFormatted, 'priceWidthFormatted is not defined');
 			assert.isObject(actual.priceWidthFormatted, 'priceWidthFormatted is not an object');
-			assertFormattedNumber(actual.priceWidthFormatted);
+			assertFormattedNumber(actual.priceWidthFormatted, 'createMarketForm.priceWidthFormatted');
 		});
 	});
 }
