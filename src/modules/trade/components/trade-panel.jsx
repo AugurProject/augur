@@ -1,70 +1,54 @@
 import React from 'react';
-import TradePanelItem from './trade-panel-item';
-import Transaction from '../../transactions/components/transaction';
+import TradePanelHeader from '../../../modules/trade/components/trade-panel-header';
+import TradePanelFooter from '../../../modules/trade/components/trade-panel-footer';
+import TradePanelBody from '../../../modules/trade/components/trade-panel-body';
 
 const TradePanel = (p) => (
-	<section className="trade-panel">
-		<div className="trade-builder">
-			<div className="trade-panel-item-header">
-				<span className="outcome-name">&nbsp;</span>
-				<span className="last-price">Last</span>
-				<span className="top-bid">Top Bid</span>
-				<span className="top-ask">Top Ask</span>
-				<span className="num-shares">Side</span>
-				<span className="num-shares">Shares</span>
-				<span className="limit-price">Limit</span>
-				<span className="fee-to-pay">Fee</span>
-				<span className="total-cost">Profit/Loss</span>
-			</div>
-			{p.outcomes && p.outcomes.map(outcome => (
-				<TradePanelItem
-					key={outcome.id}
-					sideOptions={p.sideOptions}
-					updateSelectedOutcome={p.updateSelectedOutcome}
-					selectedOutcomeID={p.selectedOutcomeID}
-					{...outcome}
-					{...outcome.trade}
+	<div
+		className="trade-panel"
+		onClick={() => p.updateSelectedOutcome(null)}
+	>
+		<table className="trade-builder">
+			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
+			{p.tradeOrders && !!p.tradeOrders.length &&
+				<TradePanelFooter
+					summary={p.tradeSummary}
+					constants={p.constants}
 				/>
-			))}
-		</div>
-
-		{p.tradeOrders && !!p.tradeOrders.length &&
-			<div className="trade-orders">
-				<h5>Trade Summary</h5>
-				{p.tradeOrders && p.tradeOrders.map((tradeOrder, i) => (
-					<Transaction
-						key={i}
-						className="order"
-						{...tradeOrder}
-						status={undefined}
-					/>
-				))}
-
-				<Transaction
-					type="trade_summary"
-					shares={p.totalShares}
-					className="order total"
-					ether={p.totalEther}
-					gas={p.totalGas}
-					status={undefined}
-				/>
-			</div>
-		}
+			}
+			<TradePanelBody
+				outcomes={p.outcomes}
+				sideOptions={p.sideOptions}
+				selectedOutcomeID={p.selectedOutcomeID}
+				updateSelectedOutcome={p.updateSelectedOutcome}
+				constants={p.constants}
+			/>
+		</table>
 		<div className="place-trade-container">
 			<button
-				className="button place-trade" disabled={!p.tradeOrders || !p.tradeOrders.length}
-				onClick={p.onSubmitPlaceTrade}
+				className="button place-trade"
+				disabled={!p.tradeOrders || !!!p.tradeOrders.length}
+				onClick={event => {
+					event.stopPropagation();
+
+					p.onSubmitPlaceTrade();
+				}}
 			>
-				Place Trade
+				Place Trade{p.tradeOrders && p.tradeOrders.length > 1 ? 's' : ''}
 			</button>
 		</div>
-	</section>
+	</div>
 );
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
+	sideOptions: React.PropTypes.array,
+	updateSelectedOutcome: React.PropTypes.func,
+	selectedOutcomeID: React.PropTypes.string,
 	tradeOrders: React.PropTypes.array,
-	onSubmitPlaceTrade: React.PropTypes.func
+	tradeSummary: React.PropTypes.object,
+	onSubmitPlaceTrade: React.PropTypes.func,
+	constants: React.PropTypes.object
 };
 
 export default TradePanel;

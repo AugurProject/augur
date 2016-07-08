@@ -6,6 +6,10 @@ import createMarketForm from './selectors/create-market-form';
 
 import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { LOGIN } from './modules/auth/constants/auth-types';
+import {
+	BID,
+	ASK
+} from './modules/transactions/constants/types';
 
 const selectors = {
 	update: (newState = {}) => {
@@ -51,13 +55,13 @@ selectors.searchSort = {
 selectors.marketsHeader = {};
 
 selectors.market = {}; // selected market
-selectors.sideOptions = [{ value: 'bid', label: 'Buy' }, { value: 'ask', label: 'Sell' }];
+selectors.sideOptions = [{ value: BID, label: 'Buy' }, { value: ASK, label: 'Sell' }];
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {
 		module.exports.update({
 			selectedOutcome: {
 				...selectors.selectedOutcome,
-				selectedOutcomeID: selectors.selectedOutcome.selectedOutcomeID !== selectedOutcomeID ? selectedOutcomeID : null
+				selectedOutcomeID
 			}
 		});
 	},

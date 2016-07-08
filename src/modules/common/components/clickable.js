@@ -18,9 +18,9 @@ export default class Clickable extends Component {
 		this.onClick = this.onClick.bind(this);
 	}
 
-	onClick = () => {
+	onClick = event => {
 		if (typeof this.props.onClick === 'function') {
-			this.props.onClick();
+			this.props.onClick(event);
 		}
 	}
 
