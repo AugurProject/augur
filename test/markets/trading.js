@@ -17,20 +17,14 @@ var tools = require("../tools");
 
 describe("Unit tests", function () {
     describe("getTradingActions", function () {
-        var gasPriceOriginal, txOriginal;
+        var txOriginal;
         before("getTradingActions", function () {
-            gasPriceOriginal = augur.rpc.gasPrice;
             txOriginal = augur.tx;
-
-            augur.rpc.gasPrice = function (onGasPrice) {
-                onGasPrice(10);
-            };
 
             augur.tx = new require('augur-contracts').Tx("2");
         });
 
         after("getTradingActions", function () {
-            augur.rpc.gasPrice = gasPriceOriginal;
             augur.tx = txOriginal;
         });
 
@@ -47,13 +41,13 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
 				assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "BID",
                     "shares": "5",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "3",
 					"avgPrice": "0.6"
@@ -98,13 +92,13 @@ describe("Unit tests", function () {
 				]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
 				assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "BID",
                     "shares": "5",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "3",
 					"avgPrice": "0.6"
@@ -132,13 +126,13 @@ describe("Unit tests", function () {
 				}]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "BUY",
                     "shares": "5",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "3",
 					"avgPrice": "0.6"
@@ -166,20 +160,20 @@ describe("Unit tests", function () {
 				}]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "BUY",
                     "shares": "2",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "1.2",
 					"avgPrice": "0.6"
 				}, {
 					"action": "BID",
                     "shares": "3",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "1.8",
 					"avgPrice": "0.6"
@@ -207,13 +201,13 @@ describe("Unit tests", function () {
 				}]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "BUY",
                     "shares": "5",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "2",
 					"avgPrice": "0.4"
@@ -241,20 +235,20 @@ describe("Unit tests", function () {
 				}]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "BUY",
                     "shares": "2",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "0.8",
 					"avgPrice": "0.4"
 				}, {
 					"action": "BID",
                     "shares": "3",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "1.8",
 					"avgPrice": "0.6"
@@ -294,13 +288,13 @@ describe("Unit tests", function () {
 				}]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "BUY",
                     "shares": "5",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "1.4",
 					"avgPrice": "0.28"
@@ -334,20 +328,20 @@ describe("Unit tests", function () {
 				}]
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "BUY",
                     "shares": "3",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "1",
 					"avgPrice": "0.33333333333333333333"
 				}, {
 					"action": "BID",
                     "shares": "2",
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
 					"costEth": "1.2",
 					"avgPrice": "0.6"
@@ -369,9 +363,9 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "RISKY_SHORT_SELL",
                     "shares": null,
@@ -403,15 +397,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "3.00000000003135",
+					"costEth": "3.0627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -437,15 +431,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.20000000003135",
+					"costEth": "1.2627",
 					"avgPrice": "0.6"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -478,15 +472,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "3.50000000003135",
+					"costEth": "3.5627",
 					"avgPrice": "0.7"
 				}];
 				assert.deepEqual(actions, expected)
@@ -512,15 +506,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.40000000003135",
+					"costEth": "1.4627",
 					"avgPrice": "0.7"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -559,15 +553,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "2.30000000003135",
+					"costEth": "2.3627",
 					"avgPrice": "0.766666666667"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -612,15 +606,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "4.10000000003135",
+					"costEth": "4.1627",
 					"avgPrice": "0.82"
 				}];
 				assert.deepEqual(actions, expected)
@@ -640,15 +634,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "ASK",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.20000000003135",
+					"costEth": "1.2627",
 					"avgPrice": "0.6"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -681,22 +675,22 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.20000000003135",
+					"costEth": "1.2627",
 					"avgPrice": "0.6"
 				}, {
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.80000000003135",
+					"costEth": "1.8627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -722,15 +716,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.20000000003135",
+					"costEth": "1.2627",
 					"avgPrice": "0.6"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -763,22 +757,22 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.40000000003135",
+					"costEth": "1.4627",
 					"avgPrice": "0.7"
 				}, {
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "2.10000000003135",
+					"costEth": "2.1627",
 					"avgPrice": "0.7"
 				}];
 				assert.deepEqual(actions, expected)
@@ -804,15 +798,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.40000000003135",
+					"costEth": "1.4627",
 					"avgPrice": "0.7"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -851,22 +845,22 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 3, "more actions than expected were created");
+				assert.lengthOf(actions, 3);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "0.70000000003135",
+					"costEth": "0.7627",
 					"avgPrice": "0.7"
 				}, {
 					"action": "SHORT_SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "0.80000000003135",
+					"costEth": "0.8627",
 					"avgPrice": "0.8"
 				}, {
 					"action": "RISKY_SHORT_SELL",
@@ -911,15 +905,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "4.10000000003135",
+					"costEth": "4.1627",
 					"avgPrice": "0.82"
 				}];
 				assert.deepEqual(actions, expected)
@@ -939,15 +933,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 3, "more actions than expected were created");
+				assert.lengthOf(actions, 3);
 				var expected = [{
 					"action": "ASK",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "3.00000000003135",
+					"costEth": "3.0627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -973,15 +967,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "3.00000000003135",
+					"costEth": "3.0627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1007,22 +1001,22 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.20000000003135",
+					"costEth": "1.2627",
 					"avgPrice": "0.6"
 				}, {
 					"action": "ASK",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.80000000003135",
+					"costEth": "1.8627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1048,15 +1042,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "3.50000000003135",
+					"costEth": "3.5627",
 					"avgPrice": "0.7"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1082,22 +1076,22 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.40000000003135",
+					"costEth": "1.4627",
 					"avgPrice": "0.7"
 				}, {
 					"action": "ASK",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.80000000003135",
+					"costEth": "1.8627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1129,22 +1123,22 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 2, "more actions than expected were created");
+				assert.lengthOf(actions, 2);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "2.30000000003135",
+					"costEth": "2.3627",
 					"avgPrice": "0.7666666667"
 				}, {
 					"action": "ASK",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "1.20000000003135",
+					"costEth": "1.2627",
 					"avgPrice": "0.6"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1182,15 +1176,15 @@ describe("Unit tests", function () {
 				sell: []
 			},
 			userAddress: "abcd1234",
-			cb: function (actions) {
+			assertions: function (actions) {
                 assert.isArray(actions);
-				assert.lengthOf(actions, 1, "more actions than expected were created");
+				assert.lengthOf(actions, 1);
 				var expected = [{
 					"action": "SELL",
                     "shares": null,
-					"gasEth": "0.00000000003135",
+					"gasEth": "0.0627",
                     "feeEth": "todo",
-					"costEth": "4.10000000003135",
+					"costEth": "4.1627",
 					"avgPrice": "0.82"
 				}];
 				assert.deepEqual(actions, expected)
@@ -1198,8 +1192,8 @@ describe("Unit tests", function () {
 		});
 
 		function runTestCase(testCase) {
-			it(JSON.stringify(testCase, null, 1), function (done) {
-				augur.getTradingActions({
+			it(JSON.stringify(testCase, null, 1), function () {
+				var actions = augur.getTradingActions({
 					type: testCase.type,
 					shares: testCase.shares,
 					limitPrice: testCase.limitPrice,
@@ -1208,12 +1202,9 @@ describe("Unit tests", function () {
 					userAddress: testCase.userAddress,
 					userPositionShares: testCase.userPositionShares,
 					outcomeId: testCase.outcomeId,
-					marketOrderBook: testCase.marketOrderBook,
-					cb: function (actions) {
-                        testCase.cb(actions);
-                        done();
-                    }
+					marketOrderBook: testCase.marketOrderBook
 				});
+				testCase.assertions(actions);
 			});
 		}
     });

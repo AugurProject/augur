@@ -19,10 +19,9 @@ var BigNumber = require("bignumber.js");
  * @param {Number} userPositionShares
  * @param {String} outcomeId
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
- * @param {Function} cb
  * @return {Array}
  */
-module.exports = function getTradingActions(type, shares, limitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook, cb) {
+module.exports = function getTradingActions(type, shares, limitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
 	if (type.constructor === Object && type.type) {
 		shares = type.shares;
 		limitPrice = type.limitPrice;
@@ -32,7 +31,6 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 		userPositionShares = type.userPositionShares;
 		outcomeId = type.outcomeId;
 		marketOrderBook = type.marketOrderBook;
-		cb = type.cb;
 		type = type.type;
 	}
 
@@ -46,18 +44,9 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 
 		var areSuitableOrders = matchingSortedAsks.length > 0;
 		if (!areSuitableOrders) {
-			augur.rpc.gasPrice(function (gasPrice) {
-				if (!gasPrice || gasPrice.error) {
-					return cb("ERROR: Cannot get gas price");
-				}
 
-				cb([getBidAction(shares, limitPrice, gasPrice)]);
-			});
+				return [getBidAction(shares, limitPrice, augur.rpc.gasPrice)];
 		} else {
-			augur.rpc.gasPrice(function (gasPrice) {
-				if (!gasPrice || gasPrice.error) {
-					return cb("ERROR: Cannot get gas price");
-				}
 				var actions = [];
 
 				var etherToTrade = constants.ZERO;
@@ -72,17 +61,16 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 						break;
 					}
 				}
-				actions.push(getBuyAction(etherToTrade, shares.minus(remainingShares), gasPrice));
+				actions.push(getBuyAction(etherToTrade, shares.minus(remainingShares), augur.rpc.gasPrice));
 
 				if (!isUserOrderFilled) {
-					actions.push(getBidAction(remainingShares, limitPrice, gasPrice));
+					actions.push(getBidAction(remainingShares, limitPrice, augur.rpc.gasPrice));
 				}
 
-				cb(actions);
-			});
+				return actions;
 		}
 	} else {
-		cb("todo");
+		return ["todo"];
 	}
 
 	/**
