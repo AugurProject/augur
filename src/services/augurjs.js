@@ -210,8 +210,8 @@ ex.listenToBidsAsks = function listenToBidsAsks() {
 
 };
 
-ex.login = function login(handle, password, persist, cb) {
-	augur.web.login(handle, password, { persist }, (account) => {
+ex.login = function login(secureLoginID, password, cb) {
+	augur.web.login(secureLoginID, password, (account) => {
 		if (!account) {
 			return cb({ code: 0, message: 'failed to login' });
 		}
@@ -229,9 +229,9 @@ ex.logout = function logout() {
 	augur.web.logout();
 };
 
-ex.register = function register(handle, password, persist, cb, cbExtras) {
-	augur.web.register(handle, password, { persist }, {
-		onRegistered: account => {
+ex.register = function register(name, password, cb) {
+	augur.web.register(name, password,
+		account => {
 			if (!account) {
 				return cb({ code: 0, message: 'failed to register' });
 			}
@@ -242,29 +242,7 @@ ex.register = function register(handle, password, persist, cb, cbExtras) {
 				...account,
 				id: account.address
 			});
-		},
-		onSendEther: res => {
-			if (res.error) {
-				return cb({ code: res.error, message: res.message });
-			}
-			cbExtras(res);
-		},
-		onSent: res => {
-			if (res.error) {
-				return cb({ code: res.error, message: res.message });
-			}
-			cbExtras(res);
-		},
-		onSuccess: res => {
-			if (res.error) {
-				return cb({ code: res.error, message: res.message });
-			}
-			cbExtras(res);
-		},
-		onFailed: err => {
-			cb(err);
-		}
-	});
+		});
 };
 
 ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {

@@ -3,7 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
-import { M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
@@ -26,9 +26,18 @@ export default function () {
 		positionsLink: selectPositionsLink(store.dispatch),
 		transactionsLink: selectTransactionsLink(store.dispatch),
 		marketLink: selectMarketLink(market, store.dispatch),
-		previousLink: selectPreviousLink(store.dispatch)
+		previousLink: selectPreviousLink(store.dispatch),
+		accountLink: selectAccountLink(store.dispatch)
 	};
 }
+
+export const selectAccountLink = memoizerific(1)((dispatch) => {
+	const obj = {
+		href: PAGES_PATHS[ACCOUNT],
+		onClick: (href) => dispatch(showLink(href))
+	};
+	return obj;
+});
 
 export const selectPreviousLink = memoizerific(1)((dispatch) => {
 	const obj = {

@@ -7,10 +7,10 @@ import {
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { authError } from '../../auth/actions/auth-error';
 
-export function login(username, password) {
+export function login(secureLoginID, password) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
-		AugurJS.login(username, password, true, (err, loginAccount) => {
+		AugurJS.login(secureLoginID, password, (err, loginAccount) => {
 			if (err) {
 				return dispatch(authError(err));
 			}
@@ -21,7 +21,7 @@ export function login(username, password) {
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
-			links.marketsLink.onClick();
+			links.accountLink.onClick();
 			return;
 		});
 	};
