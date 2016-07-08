@@ -15,6 +15,28 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    formatTags: function (tags) {
+        if (!tags || tags.constructor !== Array) tags = [];
+        if (tags.length) {
+            for (var i = 0; i < tags.length; ++i) {
+                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                    tags[i] = "0x0";
+                } else {
+                    tags[i] = abi.short_string_to_int256(tags[i]);
+                }
+            }
+        }
+        while (tags.length < 3) {
+            tags.push("0x0");
+        }
+        return tags;
+    },
+
+    calculateRequiredMarketValue: function (gasPrice) {
+        gasPrice = abi.bignum(gasPrice);
+        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    },
+
     // expects BigNumber inputs
     calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
         return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));

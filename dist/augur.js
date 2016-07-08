@@ -17366,6 +17366,7 @@ module.exports={
         "extraInfo"
       ], 
       "method": "createMarket", 
+      "mutable": true, 
       "send": true, 
       "signature": [
         "int256", 
@@ -17396,6 +17397,7 @@ module.exports={
         "extraInfo"
       ], 
       "method": "createSingleEventMarket", 
+      "mutable": true, 
       "returns": "hash", 
       "send": true, 
       "signature": [
@@ -18917,6 +18919,7 @@ module.exports={
         "ethics"
       ], 
       "method": "submitReport", 
+      "mutable": true, 
       "returns": "number", 
       "send": true, 
       "signature": [
@@ -20286,19 +20289,19 @@ module.exports={
         "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
         "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
         "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0x2bffb6035c8e66a2d867b7c72ede8480c2d698c0", 
+        "Forking": "0xad547f769776a72b7218bf81afc541a4705aca21", 
         "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
         "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0xae407c905acc2c191a9f6b2d6c4a30adccf8793f", 
+        "MakeReports": "0xe89775bc665e2c5d140999d593b79a99a01565a4", 
         "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
         "PenalizationCatchup": "0x6f256d44ccb33499d8a4fff683e89bf5b9c7b7ad", 
         "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
         "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
         "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
         "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0xbba3c55f25aa904d30d06b747c0d9d2289effcd9", 
-        "RoundTwoPenalize": "0x897d9467123808da6b5674db9d762aac9143fa48", 
-        "SendReputation": "0x5c0d36c68282f08e96454f3e8b46635fd2bd61d6", 
+        "RoundTwo": "0xeb78999349f48145fadbd4ba8002133f8be0f5f7", 
+        "RoundTwoPenalize": "0x2162c2ac329d3718a791e6f0248687928c73d9e1", 
+        "SendReputation": "0x6a4100d4fe8d6143e72f76f8d8ffab37129138c7", 
         "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
         "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
         "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
@@ -36475,8 +36478,8 @@ module.exports = function () {
                                 err.bubble = res;
                                 err.packaged = packaged;
                                 return cb(err);
-                            } else if (res.message.indexOf("Nonce too low") > -1 ||
-                                res.message.indexOf("Known transaction") > -1) {
+                            } else if (res.message.indexOf("Nonce too low") > -1) {
+                                // res.message.indexOf("Known transaction") > -1) {
                                 console.debug("bad nonce, retry", res.message);
                                 return self.getTxNonce(packaged, cb);
                             } else {
@@ -37605,6 +37608,28 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    formatTags: function (tags) {
+        if (!tags || tags.constructor !== Array) tags = [];
+        if (tags.length) {
+            for (var i = 0; i < tags.length; ++i) {
+                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                    tags[i] = "0x0";
+                } else {
+                    tags[i] = abi.short_string_to_int256(tags[i]);
+                }
+            }
+        }
+        while (tags.length < 3) {
+            tags.push("0x0");
+        }
+        return tags;
+    },
+
+    calculateRequiredMarketValue: function (gasPrice) {
+        gasPrice = abi.bignum(gasPrice);
+        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    },
+
     // expects BigNumber inputs
     calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
         return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
@@ -38446,7 +38471,6 @@ module.exports = {
 };
 
 },{"../utilities":379,"augur-abi":1,"clone":291}],367:[function(require,module,exports){
-(function (Buffer){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38484,22 +38508,9 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        if (!tags || tags.constructor !== Array) tags = [];
-        if (tags.length) {
-            for (var i = 0; i < tags.length; ++i) {
-                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
-                    tags[i] = "0x0";
-                } else {
-                    tags[i] = abi.short_string_to_int256(tags[i]);
-                }
-            }
-        }
-        while (tags.length < 3) {
-            tags.push("0x0");
-        }
-        var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
-        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+        tags = this.formatTags(tags);
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+        expDate = parseInt(expDate);
         description = description.trim();
         var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
@@ -38510,35 +38521,19 @@ module.exports = {
             abi.fix(maxValue, "hex"),
             numOutcomes,
             resolution,
-            abi.fix(tradingFee, "hex"),
+            abi.fix(fees.tradingFee, "hex"),
             tags[0],
             tags[1],
             tags[2],
-            abi.fix(makerProportionOfFee, "hex"),
+            abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
         this.rpc.gasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
-            gasPrice = abi.bignum(gasPrice);
-            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+            tx.value = self.calculateRequiredMarketValue(gasPrice);
             self.transact(tx, onSent, function (res) {
-                self.getPeriodLength(branchId, function (periodLength) {
-                    self.rpc.getBlock(res.blockNumber, false, function (block) {
-                        var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-                        res.marketID = utils.sha3([
-                            futurePeriod,
-                            abi.fix(tradingFee, "hex"),
-                            block.timestamp,
-                            tags[0],
-                            tags[1],
-                            tags[2],
-                            expDate,
-                            new Buffer(description, "utf8").length,
-                            description
-                        ]);
-                        onSuccess(res);
-                    });
-                });
+                res.marketID = res.callReturn;
+                onSuccess(res);
             }, onFailed);
         });
     },
@@ -38569,6 +38564,13 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
+    calculateTradingFees: function (makerFee, takerFee) {
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+    },
+
     createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {
@@ -38586,60 +38588,28 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        if (!tags || tags.constructor !== Array) tags = [];
-        if (tags.length) {
-            for (var i = 0; i < tags.length; ++i) {
-                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
-                    tags[i] = "0x0";
-                } else {
-                    tags[i] = abi.short_string_to_int256(tags[i]);
-                }
-            }
-        }
-        while (tags.length < 3) {
-            tags.push("0x0");
-        }
-        var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
-        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+        tags = this.formatTags(tags);
+        var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
         description = description.trim();
         tx.params = [
             branchId,
             description,
-            abi.fix(tradingFee, "hex"),
+            abi.fix(fees.tradingFee, "hex"),
             events,
             tags[0],
             tags[1],
             tags[2],
-            abi.fix(makerProportionOfFee, "hex"),
+            abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
         this.rpc.gasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
-            gasPrice = abi.bignum(gasPrice);
-            tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
+            tx.value = self.calculateRequiredMarketValue(gasPrice);
             self.getPeriodLength(branchId, function (periodLength) {
                 self.transact(tx, onSent, function (res) {
-                    self.getExpiration(events, function (expDate) {
-                        expDate = parseInt(expDate);
-                        self.rpc.getBlock(res.blockNumber, false, function (block) {
-                            var futurePeriod = abi.prefix_hex(new BigNumber(expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
-                            res.marketID = utils.sha3([
-                                futurePeriod,
-                                abi.fix(tradingFee, "hex"),
-                                block.timestamp,
-                                tags[0],
-                                tags[1],
-                                tags[2],
-                                expDate,
-                                new Buffer(description, "utf8").length,
-                                description
-                            ]);
-                            res.callReturn = res.marketID;
-                            onSuccess(res);
-                        });
-                    });
+                    res.marketID = res.callReturn;
+                    onSuccess(res);
                 }, onFailed);
             });
         });
@@ -38654,8 +38624,7 @@ module.exports = {
     }
 };
 
-}).call(this,require("buffer").Buffer)
-},{"../utilities":379,"augur-abi":1,"bignumber.js":64,"buffer":69,"clone":291}],368:[function(require,module,exports){
+},{"../utilities":379,"augur-abi":1,"bignumber.js":64,"clone":291}],368:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -38912,7 +38881,7 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
-        console.log("submitReport tx:", tx.params);
+        var returns = tx.returns;
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
@@ -39015,38 +38984,41 @@ module.exports = {
         }
 
         function checkPenalizeWrong(branch, votePeriod, next) {
+            console.log("checkPenalizeWrong:");
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
-                console.log("Events in vote period", votePeriod + ":", events);
+                console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
-                    return self.Consensus.penalizeWrong({
-                        branch: branch,
-                        event: 0,
-                        onSent: function (r) {
-                            console.log("penalizeWrong sent:", r);
-                        },
-                        onSuccess: function (r) {
-                            console.log("penalizeWrong(branch, 0) success:", r);
-                            console.log(abi.bignum(r.callReturn, "string", true));
-                            next(null);
-                        },
-                        onFailed: function (err) {
-                            console.error("penalizeWrong(branch, 0) error:", err);
-                            next(err);
-                        }
-                    });
+                    return next(null);
+                    // if > first period, then call penalizeWrong(branch, 0)
+                    // return self.Consensus.penalizeWrong({
+                    //     branch: branch,
+                    //     event: 0,
+                    //     onSent: function (r) {
+                    //         console.log("penalizeWrong sent:", r);
+                    //     },
+                    //     onSuccess: function (r) {
+                    //         console.log("penalizeWrong(branch, 0) success:", r);
+                    //         console.log(abi.bignum(r.callReturn, "string", true));
+                    //         next(null);
+                    //     },
+                    //     onFailed: function (err) {
+                    //         console.error("penalizeWrong(branch, 0) error:", err);
+                    //         next(err);
+                    //     }
+                    // });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
-                    console.log("penalizeWrong:", event);
+                    console.log(" - penalizeWrong:", event);
                     self.Consensus.penalizeWrong({
                         branch: branch,
                         event: event,
                         onSent: utils.noop,
                         onSuccess: function (r) {
-                            console.log("penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                             nextEvent();
                         },
                         onFailed: function (err) {
-                            console.error("penalizeWrong error:", err);
+                            console.error(" - penalizeWrong error:", err);
                             nextEvent(err);
                         }
                     });
@@ -40360,6 +40332,8 @@ var HOSTED_NODES = [
 ];
 var HOSTED_WEBSOCKET = "wss://ws.augur.net";
 
+var noop = function () {};
+
 module.exports = {
 
     debug: {
@@ -41522,20 +41496,17 @@ module.exports = {
         return response;
     },
 
-    fire: function (itx, callback) {
+    fire: function (payload, callback) {
         var self = this;
-        var tx = clone(itx);
+        var tx = clone(payload);
         if (!isFunction(callback)) {
-            var res = this.errorCodes(itx.method, itx.returns, this.applyReturns(itx.returns, this.invoke(tx)));
+            var res = this.errorCodes(tx.method, tx.returns, this.applyReturns(tx.returns, this.invoke(tx)));
             if (res) return res;
             throw new this.Error(errors.NO_RESPONSE);
         }
         this.invoke(tx, function (res) {
-            if (res) {
-                res = self.errorCodes(itx.method, itx.returns, self.applyReturns(itx.returns, res));
-                return callback(res);
-            }
-            callback(errors.NO_RESPONSE);
+            if (res === undefined || res === null) return callback(errors.NO_RESPONSE);
+            return callback(self.errorCodes(tx.method, tx.returns, self.applyReturns(tx.returns, res)));
         });
     },
 
@@ -41543,190 +41514,153 @@ module.exports = {
      * Send-call-confirm callback sequence *
      ***************************************/
 
-    checkBlockHash: function (tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        if (!this.txs[txhash]) this.txs[txhash] = {};
-        if (this.txs[txhash].count === undefined) this.txs[txhash].count = 0;
-        ++this.txs[txhash].count;
-        if (this.debug.tx) console.debug("checkBlockHash:", tx, callreturn, itx);
-        if (tx && tx.blockHash && abi.number(tx.blockHash) !== 0) {
-            tx.callReturn = callreturn;
+    checkBlockHash: function (tx, callback) {
+        if (!this.txs[tx.hash]) this.txs[tx.hash] = {};
+        if (this.txs[tx.hash].count === undefined) this.txs[tx.hash].count = 0;
+        ++this.txs[tx.hash].count;
+        if (this.debug.tx) console.debug("checkBlockHash:", tx);
+        if (tx && tx.blockHash && parseInt(tx.blockHash, 16) !== 0) {
             tx.txHash = tx.hash;
-            delete tx.hash;
-            this.txs[txhash].status = "confirmed";
-            clearTimeout(this.notifications[txhash]);
-            delete this.notifications[txhash];
-            if (isFunction(onSuccess)) onSuccess(tx);
-        } else {
-            var self = this;
-            if (this.txs[txhash].count < this.TX_POLL_MAX) {
-                this.notifications[txhash] = setTimeout(function () {
-                    if (self.txs[txhash].status === "pending") {
-                        self.txNotify(callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
-                    }
-                }, this.TX_POLL_INTERVAL);
-            } else {
-                self.txs[txhash].status = "unconfirmed";
-                if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_CONFIRMED);
-            }
+            this.txs[tx.hash].status = "confirmed";
+            clearTimeout(this.notifications[tx.hash]);
+            delete this.notifications[tx.hash];
+            return callback(null, tx);
         }
+        if (this.txs[tx.hash].count >= this.TX_POLL_MAX) {
+            this.txs[tx.hash].status = "unconfirmed";
+            return callback(errors.TRANSACTION_NOT_CONFIRMED);
+        }
+        var self = this;
+        this.notifications[tx.hash] = setTimeout(function () {
+            if (self.txs[tx.hash].status === "pending") callback(null, null);
+        }, this.TX_POLL_INTERVAL);
     },
 
-    txNotify: function (callreturn, itx, txhash, returns, onSent, onSuccess, onFailed) {
-        var self = this;
-        this.getTx(txhash, function (tx) {
-            if (self.debug.tx) console.debug("txNofity.getTx:", tx);
-            if (tx) {
-                return self.checkBlockHash(tx, callreturn, itx, txhash, returns, onSent, onSuccess, onFailed);
+    getLoggedReturnValue: function (txHash, callback) {
+        this.getTransactionReceipt(txHash, function (receipt) {
+            if (!receipt || !receipt.logs || !receipt.logs.length ||
+                !receipt.logs[0] || receipt.logs[0].data === null ||
+                receipt.logs[0].data === undefined) {
+                return callback(errors.NULL_CALL_RETURN);
             }
-            self.txs[txhash].status = "failed";
-            if (self.debug.tx)
-                console.log("raw transactions:", self.rawTxs);
-
-            // resubmit if this is a raw transaction and has a duplicate nonce
-            if (self.rawTxs[txhash] && self.rawTxs[txhash].tx) {
-                var duplicateNonce;
-                for (var hash in self.rawTxs) {
-                    if (!self.rawTxs.hasOwnProperty(hash)) continue;
-                    if (self.rawTxs[hash].tx.nonce === self.rawTxs[txhash].tx.nonce &&
-                        JSON.stringify(self.rawTxs[hash].tx) !== JSON.stringify(self.rawTxs[txhash].tx)) {
-                        duplicateNonce = true;
-                        break;
-                    }
-                }
-                if (duplicateNonce) {
-                    if (returns) itx.returns = returns;
-                    self.txs[txhash].status = "resubmitted";
-                    return self.transact(itx, onSent, onSuccess, onFailed);
-                } else {
-                    if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_FOUND);
-                }
-            } else {
-                if (isFunction(onFailed)) onFailed(errors.TRANSACTION_NOT_FOUND);
-            }
+            callback(null, receipt.logs[0].data);
         });
     },
 
-    confirmTx: function (tx, txhash, returns, onSent, onSuccess, onFailed) {
+    txNotify: function (txHash, callback) {
         var self = this;
-        if (tx && txhash) {
-            if (errors[txhash]) {
-                if (isFunction(onFailed)) onFailed({
-                    error: txhash,
-                    message: errors[txhash],
-                    tx: tx
-                });
-            } else {
-                if (this.txs[txhash]) {
-                    if (isFunction(onFailed)) onFailed(errors.DUPLICATE_TRANSACTION);
-                } else {
-                    this.txs[txhash] = {hash: txhash, tx: tx, count: 0, status: "pending"};
-                    this.txs[txhash].tx.returns = returns;
-                    return this.getTx(txhash, function (sent) {
-                        if (self.debug.tx) console.debug("sent:", sent);
-                        if (returns !== "null") {
-                            return self.call({
-                                from: sent.from,
-                                to: sent.to || tx.to,
-                                value: sent.value || tx.value,
-                                data: sent.input
-                            }, function (callReturn) {
-                                if (callReturn) {
-                                    if (errors[callReturn]) {
-                                        self.txs[txhash].status = "failed";
-                                        if (isFunction(onFailed)) onFailed({
-                                            error: callReturn,
-                                            message: errors[callReturn],
-                                            tx: tx
-                                        });
-                                    } else {
+        this.getTransaction(txHash, function (tx) {
+            if (self.debug.tx) console.debug("txNotify.getTransaction:", tx);
+            if (tx) return callback(null, tx);
 
-                                        // check if the call return is an error code
-                                        var errorCheck = self.errorCodes(tx.method, tx.returns, callReturn);
-                                        if (errorCheck.constructor === Object && errorCheck.error) {
-                                            self.txs[txhash].status = "failed";
-                                            if (isFunction(onFailed)) onFailed(errorCheck);
-                                        } else if (errors[errorCheck]) {
-                                            self.txs[txhash].status = "failed";
-                                            if (isFunction(onFailed)) onFailed({
-                                                error: errorCheck,
-                                                message: errors[errorCheck],
-                                                tx: tx
-                                            });
-                                        } else {
-                                            try {
+            self.txs[txHash].status = "failed";
+            if (self.debug.tx) console.debug("Raw transactions:", self.rawTxs);
 
-                                                // no errors found, so transform to the requested
-                                                // return type, specified by "returns" parameter
-                                                self.txs[txhash].callReturn = self.applyReturns(returns, callReturn);
-
-                                                // send the transaction hash and return value back
-                                                // to the client, using the onSent callback
-                                                onSent({
-                                                    txHash: txhash,
-                                                    callReturn: self.txs[txhash].callReturn
-                                                });
-
-                                                // if an onSuccess callback was supplied, then
-                                                // poll the network until the transaction is
-                                                // included in a block (i.e., has a non-null
-                                                // blockHash field)
-                                                if (isFunction(onSuccess)) {
-                                                    self.txNotify(
-                                                        self.txs[txhash].callReturn,
-                                                        tx,
-                                                        txhash,
-                                                        returns,
-                                                        onSent,
-                                                        onSuccess,
-                                                        onFailed
-                                                    );
-                                                }
-
-                                            // something went wrong :(
-                                            } catch (e) {
-                                                self.txs[txhash].status = "failed";
-                                                if (isFunction(onFailed)) onFailed(e);
-                                            }
-                                        }
-                                    }
-
-                                // no return value for call
-                                } else {
-                                    self.txs[txhash].status = "failed";
-                                    if (isFunction(onFailed)) onFailed(errors.NULL_CALL_RETURN);
-                                }
-                            });
-                        }
-
-                        // if returns type is null, skip the intermediate call
-                        onSent({ txHash: txhash, callReturn: null });
-                        if (isFunction(onSuccess)) {
-                            self.txNotify(null, tx, txhash, returns, onSent, onSuccess, onFailed);
-                        }
-                    });
+            // resubmit if this is a raw transaction and has a duplicate nonce
+            if (!self.rawTxs[txHash] || !self.rawTxs[txHash].tx) {
+                return callback(errors.TRANSACTION_NOT_FOUND);
+            }
+            var duplicateNonce;
+            for (var hash in self.rawTxs) {
+                if (!self.rawTxs.hasOwnProperty(hash)) continue;
+                if (self.rawTxs[hash].tx.nonce === self.rawTxs[txHash].tx.nonce &&
+                    JSON.stringify(self.rawTxs[hash].tx) !== JSON.stringify(self.rawTxs[txHash].tx)) {
+                    duplicateNonce = true;
+                    break;
                 }
             }
-        }
+            if (!duplicateNonce) return callback(errors.TRANSACTION_NOT_FOUND);
+            self.txs[txHash].status = "resubmitted";
+            return callback(null, null);
+        });
     },
 
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    verifyTxSubmitted: function (payload, txHash, callback) {
         var self = this;
-        var returns = tx.returns;
-        tx.send = true;
-        delete tx.returns;
-        if (!isFunction(onSent)) return this.invoke(tx);
-        this.invoke(tx, function (txhash) {
-            if (self.debug.tx) console.debug("txhash:", txhash);
-            if (txhash) {
-                if (txhash.error) {
-                    if (isFunction(onFailed)) onFailed(txhash);
-                } else {
-                    txhash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txhash)));
-                    self.confirmTx(tx, txhash, returns, onSent, onSuccess, onFailed);
-                }
-            } else {
-                if (isFunction(onFailed)) onFailed(errors.NULL_RESPONSE);
-            }
+        if (!payload || txHash === null || txHash === undefined) {
+            return callback(errors.TRANSACTION_FAILED);
+        }
+        if (this.txs[txHash]) return callback(errors.DUPLICATE_TRANSACTION);
+        this.getTransaction(txHash, function (tx) {
+            if (!tx) return callback(errors.TRANSACTION_FAILED);
+            self.txs[txHash] = {
+                hash: txHash,
+                payload: payload,
+                count: 0,
+                status: "pending"
+            };
+            callback(null);
+        });
+    },
+
+    // poll the network until the transaction is included in a block
+    // (i.e., has a non-null blockHash field)
+    pollForTxConfirmation: function (txHash, callback) {
+        var self = this;
+        this.txNotify(txHash, function (err, tx) {
+            if (err) return callback(err);
+            if (tx === null) return callback(null, null);
+            self.checkBlockHash(tx, function (err, minedTx) {
+                if (err) return callback(err);
+                if (minedTx !== null) return callback(null, minedTx);
+                self.pollForTxConfirmation(txHash, callback);
+            });
+        });
+    },
+
+    transact: function (payload, onSent, onSuccess, onFailed) {
+        var self = this;
+        var returns = payload.returns;
+        payload.send = false;
+        if (!isFunction(onSent)) {
+            payload.send = true;
+            return this.invoke(payload);
+        }
+        onFailed = (isFunction(onFailed)) ? onFailed : noop;
+        onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
+        this.fire(payload, function (callReturn) {
+            if (callReturn && callReturn.error) return onFailed(callReturn);
+            payload.send = true;
+            delete payload.returns;
+            self.invoke(payload, function (txHash) {
+                if (self.debug.tx) console.debug("txHash:", txHash);
+                if (!txHash) return onFailed(errors.NULL_RESPONSE);
+                if (txHash.error) return onFailed(txHash);
+                payload.returns = returns;
+                txHash = abi.prefix_hex(abi.pad_left(abi.strip_0x(txHash)));
+
+                // send the transaction hash and return value back
+                // to the client, using the onSent callback
+                var response = {txHash: txHash, callReturn: callReturn};
+                onSent(response);
+
+                self.verifyTxSubmitted(payload, txHash, function (err) {
+                    if (err) return onFailed(err);
+                    self.pollForTxConfirmation(txHash, function (err, tx) {
+                        if (err) return onFailed(err);
+                        if (tx === null) {
+                            return self.transact(payload, onSent, onSuccess, onFailed);
+                        }
+                        if (!payload.mutable) {
+                            tx.callReturn = callReturn;
+                            return onSuccess(tx);
+                        }
+
+                        // if mutable return value, then lookup logged return
+                        // value in transaction receipt (after confirmation)
+                        self.getLoggedReturnValue(txHash, function (err, loggedReturnValue) {
+                            if (err) return onFailed(err);
+                            loggedReturnValue = self.applyReturns(payload.returns, loggedReturnValue);
+                            loggedReturnValue = self.errorCodes(payload.method, payload.returns, loggedReturnValue);
+                            if (loggedReturnValue && loggedReturnValue.error) {
+                                return onFailed(loggedReturnValue);
+                            }
+                            response.callReturn = loggedReturnValue;
+                            onSuccess(response);
+                        });
+                    });
+                });
+            });
         });
     }
 };

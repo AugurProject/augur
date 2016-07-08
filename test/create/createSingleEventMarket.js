@@ -8,9 +8,12 @@
 var async = require("async");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
 var tools = require("../tools");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
@@ -43,18 +46,35 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                         },
                         onSuccess: function (r) {
                             var marketID = r.marketID;
-                            assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-                            assert.strictEqual(augur.getDescription(marketID), t.description);
-                            augur.getMarketEvents(marketID, function (eventList) {
-                                assert.isArray(eventList);
-                                assert.strictEqual(eventList.length, 1);
-                                augur.getDescription(eventList[0], function (description) {
-                                    assert.strictEqual(description, t.description);
-                                    augur.getMarketInfo(marketID, function (info) {
-                                        if (info.error) return done(info);
-                                        assert.isArray(info.events);
-                                        assert.strictEqual(info.events.length, 1);
-                                        done();
+                            self.getPeriodLength(t.branch, function (periodLength) {
+                                self.rpc.getBlock(r.blockNumber, false, function (block) {
+                                    var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
+                                    var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5"));
+                                    assert.strictEqual(utils.sha3([
+                                        futurePeriod,
+                                        abi.fix(tradingFee, "hex"),
+                                        block.timestamp,
+                                        tags[0],
+                                        tags[1],
+                                        tags[2],
+                                        t.expDate,
+                                        new Buffer(t.description, "utf8").length,
+                                        description
+                                    ]), r.callReturn);
+                                    assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+                                    assert.strictEqual(augur.getDescription(marketID), t.description);
+                                    augur.getMarketEvents(marketID, function (eventList) {
+                                        assert.isArray(eventList);
+                                        assert.strictEqual(eventList.length, 1);
+                                        augur.getDescription(eventList[0], function (description) {
+                                            assert.strictEqual(description, t.description);
+                                            augur.getMarketInfo(marketID, function (info) {
+                                                if (info.error) return done(info);
+                                                assert.isArray(info.events);
+                                                assert.strictEqual(info.events.length, 1);
+                                                done();
+                                            });
+                                        });
                                     });
                                 });
                             });

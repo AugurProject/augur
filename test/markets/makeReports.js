@@ -172,8 +172,6 @@ describe("Integration tests", function () {
                                                         console.log(" - Current period:   ", currentPeriod);
                                                     }
                                                     assert.strictEqual(currentPeriod, expirationPeriod + 1);
-                                                    // augur.ExpiringEvents.getEvents(newBranchID, )
-                                                    // augur.Consensus.penalizeWrong()
                                                     done();
                                                 }, secondsToGo*1000);
                                             },
@@ -234,15 +232,7 @@ describe("Integration tests", function () {
                         sender: sender,
                         onSent: function (r) {},
                         onSuccess: function (r) {
-                            var target = r.callReturn;
-                            // TODO is this needed?
-                            // var threshold = augur.ReportingThreshold.calculateReportingThreshold({
-                            //     branch: branch,
-                            //     eventID: eventID,
-                            //     votePeriod: period,
-                            //     sender: sender
-                            // });
-                            (function submit() {
+                            function submit() {
                                 var params = {
                                     event: eventID,
                                     reportHash: reportHash,
@@ -296,13 +286,32 @@ describe("Integration tests", function () {
                                     console.log("Last period:          ", lastPeriod);
                                     console.log("Last period penalized:", lastPeriodPenalized);
                                     console.log("Report target:", target);
-                                    // console.log("threshold:", threshold);
                                     var t = parseInt(new Date().getTime() / 1000);
                                     console.log("Residual:", t % periodLength, "/", periodLength, "(" + augur.getCurrentPeriodProgress(periodLength) + "%)");
                                     console.log("submitReportHash params:", params);
                                 }
                                 augur.MakeReports.submitReportHash(params);
-                            })();
+                            }
+                            var target = r.callReturn;
+                            augur.tx.ReportingThreshold.calculateReportingThreshold.send = true;
+                            augur.ReportingThreshold.calculateReportingThreshold({
+                                branch: branch,
+                                eventID: eventID,
+                                votePeriod: period,
+                                sender: sender,
+                                onSent: function (r) {
+                                    console.log("reporting threshold sent:", r);
+                                },
+                                onSuccess: function (res) {
+                                    console.log("reporting threshold:", res);
+                                    var periodRepConstant = augur.ExpiringEvents.getPeriodRepConstant(branch, period, sender);
+                                    console.log("periodRepConstant:", periodRepConstant);
+                                    var lesserReportNum = augur.ExpiringEvents.getLesserReportNum(branch, period, eventID);
+                                    console.log("lesserReportNum:", lesserReportNum);
+                                    submit();
+                                },
+                                onFailed: callback
+                            });
                         },
                         onFailed: callback
                     });
