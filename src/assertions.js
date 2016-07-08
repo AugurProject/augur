@@ -12,12 +12,14 @@ import marketsHeader from '../test/assertions/marketsHeader';
 import marketsTotals from '../test/assertions/markets-totals';
 import onChangeSort from '../test/assertions/onChangeSort';
 import pagination from '../test/assertions/pagination';
+import positionsMarkets from '../test/assertions/positions-markets';
+import positionsSummary from '../test/assertions/positions-summary';
 import searchSort from '../test/assertions/searchSort';
 import siteHeader from '../test/assertions/siteHeader';
+import trade from '../test/assertions/trade';
 import transactions from '../test/assertions/transactions';
 import transactionsTotals from '../test/assertions/transactionsTotals';
 import update from '../test/assertions/update';
-import trade from '../test/assertions/trade';
 
 export default {
 	activePage,
@@ -34,10 +36,12 @@ export default {
 	marketsTotals,
 	onChangeSort,
 	pagination,
+	positionsMarkets,
+	positionsSummary,
 	searchSort,
 	siteHeader,
+	trade,
 	transactions,
 	transactionsTotals,
-	update,
-	trade
+	update
 };
