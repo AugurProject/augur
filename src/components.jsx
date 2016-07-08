@@ -2,9 +2,11 @@ import App from './app';
 import * as assertionsRaw from '../test/assertions/';
 
 const assertions = Object.keys(assertionsRaw.default).reduce((p, assertionKey) => {
-	p[assertionKey] = assertions.default[assertionKey];
+	p[assertionKey] = assertionsRaw.default[assertionKey];
 	return p;
 }, {});
+
+console.log(assertions);
 
 const components = {
 	App,
