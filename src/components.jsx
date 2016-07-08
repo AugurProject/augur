@@ -1,5 +1,10 @@
 import App from './app';
-import * as assertions from '../test/assertions/';
+import * as assertionsRaw from '../test/assertions/';
+
+const assertions = Object.keys(assertionsRaw.default).reduce((p, assertionKey) => {
+	p[assertionKey] = assertions.default[assertionKey];
+	return p;
+}, {});
 
 const components = {
 	App,
@@ -8,5 +13,8 @@ const components = {
 export default components;
 
 // also adding this notation to allow for importing specific pieces: import { App } from '...';
-export { App, assertions };
+export {
+	App,
+	assertions
+};
 

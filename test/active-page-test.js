@@ -1,4 +1,4 @@
-import { activePageAssertion } from './assertions/activePage';
+import activePageAssertion from './assertions/activePage';
 import selectors from '../src/selectors';
 
 describe(`selector.activePage tests:`, () => {
