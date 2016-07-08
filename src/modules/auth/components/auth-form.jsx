@@ -58,11 +58,12 @@ export default class AuthForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		const name = this.refs.name.value;
+		const secureID = this.state.secureID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		this.setState({ msg: '' });
 		setTimeout(() =>
-			this.props.onSubmit(name, password, password2), 100);
+			this.props.onSubmit(name, password, password2, secureID), 100);
 	}
 
 	render() {
@@ -102,9 +103,8 @@ export default class AuthForm extends Component {
 					type="text"
 					value={s.secureID}
 					placeholder="secure login ID"
-					maxLength="256"
 					autoFocus="autofocus"
-					onChange={() => {}}
+					onChange={(secureID) => { console.log(secureID); this.setState({ secureID }); }}
 				/>
 				<input
 					ref="password"
