@@ -10,12 +10,6 @@ const TradePanel = (p) => (
 	>
 		<table className="trade-builder">
 			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
-			{p.tradeOrders && !!p.tradeOrders.length &&
-				<TradePanelFooter
-					summary={p.tradeSummary}
-					constants={p.constants}
-				/>
-			}
 			<TradePanelBody
 				outcomes={p.outcomes}
 				sideOptions={p.sideOptions}
@@ -23,6 +17,12 @@ const TradePanel = (p) => (
 				updateSelectedOutcome={p.updateSelectedOutcome}
 				constants={p.constants}
 			/>
+			{p.tradeOrders && !!p.tradeOrders.length &&
+				<TradePanelFooter
+					summary={p.tradeSummary}
+					constants={p.constants}
+				/>
+			}
 		</table>
 		<div className="place-trade-container">
 			<button
