@@ -6,12 +6,12 @@ export default function (positionsSummary) {
 	assert.isObject(positionsSummary, `positionsSummary isn't an object`);
 	assertFormattedNumber(positionsSummary.gainPercent);
 
-	assertFormattedNumber(positionsSummary.netChange);
-	assertFormattedNumber(positionsSummary.numPositions);
-	assertFormattedNumber(positionsSummary.purchasePrice);
-	assertFormattedNumber(positionsSummary.qtyShares);
-	assertFormattedNumber(positionsSummary.shareChange);
-	assertFormattedNumber(positionsSummary.totalCost);
-	assertFormattedNumber(positionsSummary.totalValue);
+	assertFormattedNumber(positionsSummary.netChange, 'netChange');
+	assertFormattedNumber(positionsSummary.numPositions, 'numPositions');
+	assertFormattedNumber(positionsSummary.purchasePrice, 'purchasePrice');
+	assertFormattedNumber(positionsSummary.qtyShares, 'qtyShares');
+	assertFormattedNumber(positionsSummary.shareChange, 'shareChange');
+	assertFormattedNumber(positionsSummary.totalCost, 'totalCost');
+	assertFormattedNumber(positionsSummary.totalValue, 'totalValue');
 };
 
