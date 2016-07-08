@@ -8,7 +8,7 @@ pieces of state come together to make each market.
 IMPORTANT
 The assembleMarket() function (where all the action happens) is heavily memoized, and performance sensitive.
 Doing things sub-optimally here will cause noticeable performance degradation in the app.
-The "trick" is to maximize memoization cache hits as much a spossible, and not have assembleMarket()
+The "trick" is to maximize memoization cache hits as much as possible, and not have assembleMarket()
 run any more than it has to.
 
 To achieve that, we pass in the minimum number of the shallowest arguments possible.
@@ -28,7 +28,7 @@ import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { BID } from '../../bids-asks/constants/bids-asks-types';
+import { BID, ASK } from '../../../modules/transactions/constants/types';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
@@ -47,7 +47,7 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
-import { selectAggregateOrderBook, selectTopBidPrice, selectTopAskPrice } from '../../bids-asks/selectors/select-order-book';
+import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
 
 export default function () {
 	const { selectedMarketID } = store.getState();
@@ -138,6 +138,11 @@ export const assembleMarket = memoizerific(1000)((
 		break;
 	}
 
+	market.constants = {
+		BID,
+		ASK
+	};
+
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
 
@@ -204,8 +209,8 @@ export const assembleMarket = memoizerific(1000)((
 
 		const orderBook = selectAggregateOrderBook(outcome.id, marketOrderBooks);
 		outcome.orderBook = orderBook;
-		outcome.topBid = selectTopBidPrice(orderBook);
-		outcome.topAsk = selectTopAskPrice(orderBook);
+		outcome.topBid = selectTopBid(orderBook);
+		outcome.topAsk = selectTopAsk(orderBook);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 

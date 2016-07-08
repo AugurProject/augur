@@ -1,16 +1,18 @@
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-import {assertions}from 'augur-ui-react-components';
+import {assertions} from 'augur-ui-react-components';
 
 describe(`modules/market/selectors/market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let selector, expected, actual;
-	let { state, store } = mockStore.default;
+	let selector,
+		actual;
+	let { store } = mockStore.default;
 
 	selector = proxyquire('../../../src/modules/market/selectors/market.js', {
-		'../../../store': store,
+		'../../../store': store
 	});
+
+	actual = selector.default();
 
 	beforeEach(() => {
 		store.clearActions();
@@ -20,9 +22,8 @@ describe(`modules/market/selectors/market.js`, () => {
 		store.clearActions();
 	});
 
-	it(`should return an assembled market`, () => {
-		actual = selector.default();
-		// console.log(actual);
+	it(`should return the expected values to components`, () => {
 		assertions.market.marketAssertion(actual);
+		assertions.trade.onSubmitPlaceTrade(actual);
 	});
 });

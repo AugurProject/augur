@@ -4,8 +4,12 @@ import {
 import {
 	selectTradeSummary
 } from '../../../src/modules/trade/selectors/trade-summary';
+import {assertions} from 'augur-ui-react-components';
 
 describe(`modules/trade/selectors/trade-summary.js`, () => {
+	let tradeSummary;
+	let componentAssertions = assertions.trade;
+
 	const tradeOrders = [{
 		shares: {
 			value: 5
@@ -48,6 +52,10 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 		}
 	}];
 
+	before(() => {
+		tradeSummary = selectTradeSummary(tradeOrders);
+	});
+
 	it(`should select trade summary correctly`, () => {
 		const out = {
 			totalShares:
@@ -61,30 +69,39 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 					denomination: 'shares',
 					full: '-586shares'
 				},
-				totalEther: {
-					value: 5670,
-					formattedValue: 5670,
-					formatted: '+5,670.00',
-					roundedValue: 5670,
-					rounded: '+5,670.0',
-					minimized: '+5,670',
-					denomination: 'eth',
-					full: '+5,670.00eth'
-				},
-				totalGas: {
-					value: 101300,
-					formattedValue: 101300,
-					formatted: '+101,300.00',
-					roundedValue: 101300,
-					rounded: '+101,300.0',
-					minimized: '+101,300',
-					denomination: 'eth',
-					full: '+101,300.00eth'
-				},
-				tradeOrders
+			feeToPay: {
+				denomination: "eth",
+				formatted: "0.00",
+				formattedValue: 0,
+				full: "0.00eth",
+				minimized: "0",
+				rounded: "0.0",
+				roundedValue: 0,
+				value: 0
+			},
+			totalEther: {
+				value: 5670,
+				formattedValue: 5670,
+				formatted: '+5,670.00',
+				roundedValue: 5670,
+				rounded: '+5,670.0',
+				minimized: '+5,670',
+				denomination: 'eth',
+				full: '+5,670.00eth'
+			},
+			totalGas: {
+				value: 101300,
+				formattedValue: 101300,
+				formatted: '+101,300.00',
+				roundedValue: 101300,
+				rounded: '+101,300.0',
+				minimized: '+101,300',
+				denomination: 'eth',
+				full: '+101,300.00eth'
+			},
+			tradeOrders
 		};
-		// console.log(selectTradeSummary(tradeOrders));
-		// console.log(tradeOrders);
-		assert.deepEqual(selectTradeSummary(tradeOrders), out, `Didn't produce the correct trade summary info`);
+
+		assert.deepEqual(tradeSummary, out, `Didn't produce the correct trade summary info`);
 	});
 });
