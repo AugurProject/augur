@@ -1,9 +1,9 @@
 import selectors from '../src/selectors';
-import marketsTotalAssertion from './assertions/marketsTotals';
+import assertMarketsTotals from './assertions/markets-totals';
 
 describe(`selectors.marketsTotals tests:`, () => {
 	it(`should contain a marketsTotal and is the expected shape`, () => {
 		let actual = selectors.marketsTotals;
-		marketsTotalAssertion(actual);
+		assertMarketsTotals(actual);
 	});
 });

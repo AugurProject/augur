@@ -1,18 +1,18 @@
 import selectors from '../src/selectors';
-import * as assertions from './assertions';
+import { sideOptions, updateSelectedOutcome, selectedOutcomeID, onSubmitPlaceTrade } from './assertions/trade';
 
 describe('trade', () => {
 	let actual = selectors;
 
 	// sideOptions
-	assertions.trade.sideOptions(actual.sideOptions);
+	sideOptions(actual.sideOptions);
 
 	// updateSelectedOutcome
-	assertions.trade.updateSelectedOutcome(actual.selectedOutcome);
+	updateSelectedOutcome(actual.selectedOutcome);
 
 	// selectedOutcomeID
-	assertions.trade.selectedOutcomeID(actual.selectedOutcome);
+	selectedOutcomeID(actual.selectedOutcome);
 
 	// onSubmitPlaceTrade
-	assertions.trade.onSubmitPlaceTrade(actual.markets[0]);
+	onSubmitPlaceTrade(actual.markets[0]);
 });

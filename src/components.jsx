@@ -1,15 +1,5 @@
 import App from './app';
-import * as assertionsRaw from '../test/assertions/';
-
-const assertions = Object.keys(assertionsRaw.default).reduce((p, assertionKey) => {
-	if (assertionsRaw.default[assertionKey].default) {
-		p[assertionKey] = assertionsRaw.default[assertionKey].default;
-	}
-	else {
-		p[assertionKey] = assertionsRaw.default[assertionKey];
-	}
-	return p;
-}, {});
+import assertions from './assertions';
 
 const components = {
 	App,

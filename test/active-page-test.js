@@ -1,5 +1,5 @@
-import activePageAssertion from './assertions/activePage';
 import selectors from '../src/selectors';
+import activePageAssertion from './assertions/active-page';
 
 describe(`selector.activePage tests:`, () => {
 	// activePage: String,
