@@ -1,8 +1,8 @@
+import { assert } from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
-var assert = require('chai').assert;
 
-function assertion(positionsMarkets) {
+export default function (positionsMarkets) {
 	assert.isDefined(positionsMarkets, `positionsMarkets isn't defined`);
 	assert.isArray(positionsMarkets, `positionsMarkets isn't an array`);
 
@@ -33,5 +33,3 @@ function assertPosition(position) {
 	assertFormattedNumber(position.gainPercent);
 	assertFormattedNumber(position.netChange);
 }
-
-module.exports = assertion;

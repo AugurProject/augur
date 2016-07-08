@@ -1,7 +1,6 @@
-var assert = require('chai').assert;
-// activePage: String,
-function activePageAssertion(actual) {
-	assert.isDefined(actual, `activePage isn't defined`);
-	assert.isString(actual, `activePage isn't a string`);
+import { assert } from 'chai';
+
+export default function (activePage) {
+	assert.isDefined(activePage, `activePage isn't defined`);
+	assert.isString(activePage, `activePage isn't a string`);
 }
-module.exports = activePageAssertion;

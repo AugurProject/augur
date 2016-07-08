@@ -1,18 +1,17 @@
+import { assert } from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
-var assert = require('chai').assert;
+export default function (positionsSummary) {
+	assert.isDefined(positionsSummary, `positionsSummary isn't defined`);
+	assert.isObject(positionsSummary, `positionsSummary isn't an object`);
+	assertFormattedNumber(positionsSummary.gainPercent);
 
-module.exports = function (actual) {
-	assert.isDefined(actual, `positionsSummary isn't defined`);
-	assert.isObject(actual, `positionsSummary isn't an object`);
-	assertFormattedNumber(actual.gainPercent);
-
-	assertFormattedNumber(actual.netChange);
-	assertFormattedNumber(actual.numPositions);
-	assertFormattedNumber(actual.purchasePrice);
-	assertFormattedNumber(actual.qtyShares);
-	assertFormattedNumber(actual.shareChange);
-	assertFormattedNumber(actual.totalCost);
-	assertFormattedNumber(actual.totalValue);
+	assertFormattedNumber(positionsSummary.netChange);
+	assertFormattedNumber(positionsSummary.numPositions);
+	assertFormattedNumber(positionsSummary.purchasePrice);
+	assertFormattedNumber(positionsSummary.qtyShares);
+	assertFormattedNumber(positionsSummary.shareChange);
+	assertFormattedNumber(positionsSummary.totalCost);
+	assertFormattedNumber(positionsSummary.totalValue);
 };
 

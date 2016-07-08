@@ -1,27 +1,7 @@
 var assert = require('chai').assert;
 
-import numberShape from '../../test/assertions/common/formatted-number';
+import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
-// markets:
-//  [ { id: String,
-//      type: String,
-//      description: String,
-//      endDate: Object,
-//			endDateLabel: String,
-//      tradingFeePercent: Object,
-//      volume: Object,
-//      isOpen: Boolean,
-//      isPendingReport: Boolean,
-//      marketLink: Object,
-//      tags: Object,
-//      outcomes: Object,
-//      reportableOutcomes: Object,
-//      tradeSummary: Function,
-//      priceTimeSeries: Object,
-//      positionsSummary: Object,
-//      report: Object },
-// 				...
-// 	]
 function marketAssertion(actual) {
 	assert.isDefined(actual, `markets is empty.`)
 	assert.isObject(actual, `markets[0] (market) isn't an object`);
@@ -43,15 +23,15 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.takerFeePercent, `market.takerFeePercent isn't defined`);
 	assert.isObject(actual.takerFeePercent, `market.takerFeePercent isn't an object`);
-	numberShape(actual.takerFeePercent);
+	assertFormattedNumber(actual.takerFeePercent);
 
 	assert.isDefined(actual.makerFeePercent, `market.makerFeePercent isn't defined`);
 	assert.isObject(actual.makerFeePercent, `market.makerFeePercent isn't an object`);
-	numberShape(actual.makerFeePercent);
+	assertFormattedNumber(actual.makerFeePercent);
 
 	assert.isDefined(actual.volume, `market.volume isn't defined`);
 	assert.isObject(actual.volume, `market.volume isn't an object`);
-	numberShape(actual.volume);
+	assertFormattedNumber(actual.volume);
 
 	assert.isDefined(actual.isOpen, `market.isOpen isn't defined`);
 	assert.isBoolean(actual.isOpen, `market.isOpen isn't a boolean`);
@@ -89,10 +69,6 @@ function marketAssertion(actual) {
 	assert.isObject(actual.orderBook, `market.orderBook isn't an object`);
 }
 
-// report: {
-// 	isUnethical: Boolean,
-// 	onSubmitReport: [Function: onSubmitReport]
-// }
 function reportAssertion(actual) {
 	assert.isDefined(actual, `market doesn't have a report object`);
 	assert.isObject(actual, `market.report isn't an object`);
@@ -101,11 +77,7 @@ function reportAssertion(actual) {
 	assert.isDefined(actual.onSubmitReport, `market.report.onSubmitReport isn't defined`);
 	assert.isFunction(actual.onSubmitReport, `market.report.onSubmitReport isn't a function`);
 }
-// marketLink: {
-// 	text: string,
-//   className: string,
-//   onClick: [Function: onClick]
-// }
+
 function marketLinkAssertion(actual) {
 	assert.isDefined(actual, `market.marketLink isn't defined`);
 	assert.isObject(actual, `market.marketLink isn't an object`);
