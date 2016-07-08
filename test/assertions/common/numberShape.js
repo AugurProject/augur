@@ -1,15 +1,5 @@
 import { assert } from 'chai';
 
-// <formatted number>: {
-// 	 value: Number,
-//   formattedValue: Number,
-//   formatted: String,
-//   roundedValue: Number,
-//   rounded: String,
-//   minimized: String,
-//   denomination: String,
-//   full: String
-// }
 export default function (actual, label = 'Formatted number') {
 	describe(label, () => {
 		describe('value', () => {

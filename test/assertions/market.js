@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
+import assertEndDate from '../../test/assertions/common/end-date';
 
 function marketAssertion(actual) {
 	describe('augur-ui-react-components market state', () => {
@@ -47,7 +48,7 @@ function marketAssertion(actual) {
 			});
 
 			it('should have the correct shape', () => {
-				assertFormattedNumber(actual.endDate, 'market')
+				assertEndDate(actual.endDate, 'market');
 			});
 		});
 
