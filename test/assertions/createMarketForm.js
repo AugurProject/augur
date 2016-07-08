@@ -2,8 +2,8 @@ import { assert } from 'chai';
 
 import endDateShape from '../../test/assertions/common/endDateShape';
 import initialFairPricesShape from '../../test/assertions/common/initialFairPricesShape';
-import percentNumberShape from '../../test/assertions/common/percentNumberShape';
-import numberShape from '../../test/assertions/common/numberShape';
+import percentNumberShape from '../../test/assertions/common/formatted-number';
+import numberShape from '../../test/assertions/common/formatted-number';
 
 function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
@@ -46,7 +46,7 @@ function step2(actual){
 			assert.isDefined(actual.descriptionPlaceholder, 'descriptionPlaceholder is not defined');
 			assert.isString(actual.descriptionPlaceholder, 'descriptionPlaceholder is not a string');
 		});
-		
+
 		it('should receive descriptionMaxLength and be a number', () => {
 			assert.isDefined(actual.descriptionMaxLength, 'descriptionMaxLength is not defined');
 			assert.isNumber(actual.descriptionMaxLength, 'descriptionMaxLength is not a number');

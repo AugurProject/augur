@@ -1,7 +1,6 @@
 var assert = require('chai').assert;
 
-import percentNumberShape from '../../test/assertions/common/percentNumberShape';
-import numberShape from '../../test/assertions/common/numberShape';
+import numberShape from '../../test/assertions/common/formatted-number';
 
 // markets:
 //  [ { id: String,
@@ -44,11 +43,11 @@ function marketAssertion(actual) {
 
 	assert.isDefined(actual.takerFeePercent, `market.takerFeePercent isn't defined`);
 	assert.isObject(actual.takerFeePercent, `market.takerFeePercent isn't an object`);
-	percentNumberShape(actual.takerFeePercent);
+	numberShape(actual.takerFeePercent);
 
 	assert.isDefined(actual.makerFeePercent, `market.makerFeePercent isn't defined`);
 	assert.isObject(actual.makerFeePercent, `market.makerFeePercent isn't an object`);
-	percentNumberShape(actual.makerFeePercent);
+	numberShape(actual.makerFeePercent);
 
 	assert.isDefined(actual.volume, `market.volume isn't defined`);
 	assert.isObject(actual.volume, `market.volume isn't an object`);
