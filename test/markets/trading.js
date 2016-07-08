@@ -30,8 +30,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -48,7 +48,7 @@ describe("Unit tests", function () {
 					"action": "BID",
                     "shares": "5",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.03",
 					"costEth": "3",
 					"avgPrice": "0.6"
 				}];
@@ -58,8 +58,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -99,7 +99,7 @@ describe("Unit tests", function () {
 					"action": "BID",
                     "shares": "5",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.03",
 					"costEth": "3",
 					"avgPrice": "0.6"
 				}];
@@ -109,8 +109,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -133,7 +133,7 @@ describe("Unit tests", function () {
 					"action": "BUY",
                     "shares": "5",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.06",
 					"costEth": "3",
 					"avgPrice": "0.6"
 				}];
@@ -143,8 +143,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -167,14 +167,14 @@ describe("Unit tests", function () {
 					"action": "BUY",
                     "shares": "2",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.024",
 					"costEth": "1.2",
 					"avgPrice": "0.6"
 				}, {
 					"action": "BID",
                     "shares": "3",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.018",
 					"costEth": "1.8",
 					"avgPrice": "0.6"
 				}];
@@ -184,8 +184,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -208,7 +208,7 @@ describe("Unit tests", function () {
 					"action": "BUY",
                     "shares": "5",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.04",
 					"costEth": "2",
 					"avgPrice": "0.4"
 				}];
@@ -218,8 +218,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -242,14 +242,14 @@ describe("Unit tests", function () {
 					"action": "BUY",
                     "shares": "2",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.016",
 					"costEth": "0.8",
 					"avgPrice": "0.4"
 				}, {
 					"action": "BID",
                     "shares": "3",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.018",
 					"costEth": "1.8",
 					"avgPrice": "0.6"
 				}];
@@ -259,8 +259,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -295,7 +295,7 @@ describe("Unit tests", function () {
 					"action": "BUY",
                     "shares": "5",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.028",
 					"costEth": "1.4",
 					"avgPrice": "0.28"
 				}];
@@ -305,8 +305,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "buy",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -335,14 +335,14 @@ describe("Unit tests", function () {
 					"action": "BUY",
                     "shares": "3",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.02",
 					"costEth": "1",
 					"avgPrice": "0.33333333333333333333"
 				}, {
 					"action": "BID",
                     "shares": "2",
 					"gasEth": "0.0627",
-                    "feeEth": "todo",
+                    "feeEth": "0.012",
 					"costEth": "1.2",
 					"avgPrice": "0.6"
 				}];
@@ -352,8 +352,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -380,8 +380,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -414,8 +414,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -455,8 +455,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -489,8 +489,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -530,8 +530,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -577,8 +577,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 0,
@@ -623,8 +623,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -658,8 +658,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -699,8 +699,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -740,8 +740,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -781,8 +781,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -822,8 +822,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -876,8 +876,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 2,
@@ -922,8 +922,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -950,8 +950,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -984,8 +984,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -1025,8 +1025,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -1059,8 +1059,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -1100,8 +1100,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -1147,8 +1147,8 @@ describe("Unit tests", function () {
 
 		runTestCase({
 			type: "sell",
-			shares: 5,
-			limitPrice: 0.6,
+			orderShares: 5,
+			orderLimitPrice: 0.6,
             takerFee: "0.02",
             makerFee: "0.01",
 			userPositionShares: 5,
@@ -1195,8 +1195,8 @@ describe("Unit tests", function () {
 			it(JSON.stringify(testCase, null, 1), function () {
 				var actions = augur.getTradingActions({
 					type: testCase.type,
-					shares: testCase.shares,
-					limitPrice: testCase.limitPrice,
+					orderShares: testCase.orderShares,
+					orderLimitPrice: testCase.orderLimitPrice,
                     takerFee: testCase.takerFee,
                     makerFee: testCase.makerFee,
 					userAddress: testCase.userAddress,

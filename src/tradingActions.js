@@ -11,8 +11,8 @@ var BigNumber = require("bignumber.js");
  * they pay for trading
  *
  * @param {String} type buy or sell
- * @param {Number} shares
- * @param {Number} limitPrice
+ * @param {Number} orderShares
+ * @param {Number} orderLimitPrice
  * @param {String} takerFee Decimal string ("0.02" for 2% fee)
  * @param {String} makerFee Decimal string ("0.02" for 2% fee)
  * @param {String} userAddress Address of trader to exclude orders from order book
@@ -21,10 +21,10 @@ var BigNumber = require("bignumber.js");
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
  * @return {Array}
  */
-module.exports = function getTradingActions(type, shares, limitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
+module.exports = function getTradingActions(type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
 	if (type.constructor === Object && type.type) {
-		shares = type.shares;
-		limitPrice = type.limitPrice;
+		orderShares = type.orderShares;
+		orderLimitPrice = type.orderLimitPrice;
 		takerFee = type.takerFee;
 		makerFee = type.makerFee;
 		userAddress = type.userAddress;
@@ -34,23 +34,24 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 		type = type.type;
 	}
 
-	shares = new BigNumber(shares, 10);
-	limitPrice = new BigNumber(limitPrice, 10);
+	orderShares = new BigNumber(orderShares, 10);
+	orderLimitPrice = new BigNumber(orderLimitPrice, 10);
+	takerFee = new BigNumber(takerFee, 10);
+	makerFee = new BigNumber(makerFee, 10);
 
 	var augur = this;
 
 	if (type === "buy") {
-		var matchingSortedAsks = filterAndSortOrders(marketOrderBook.sell, type, limitPrice, outcomeId, userAddress);
+		var matchingSortedAsks = filterAndSortOrders(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
 
 		var areSuitableOrders = matchingSortedAsks.length > 0;
 		if (!areSuitableOrders) {
-
-				return [getBidAction(shares, limitPrice, augur.rpc.gasPrice)];
+				return [getBidAction(orderShares, orderLimitPrice, makerFee, augur.rpc.gasPrice)];
 		} else {
 				var actions = [];
 
 				var etherToTrade = constants.ZERO;
-				var remainingShares = new BigNumber(shares, 10);
+				var remainingShares = new BigNumber(orderShares, 10);
 				for (var i = 0, length = matchingSortedAsks.length; i < length; i++) {
 					var order = matchingSortedAsks[i];
 					var orderSharesFilled = BigNumber.min(remainingShares, order.amount);
@@ -61,10 +62,10 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 						break;
 					}
 				}
-				actions.push(getBuyAction(etherToTrade, shares.minus(remainingShares), augur.rpc.gasPrice));
+				actions.push(getBuyAction(etherToTrade, orderShares.minus(remainingShares), takerFee, augur.rpc.gasPrice));
 
 				if (!isUserOrderFilled) {
-					actions.push(getBidAction(remainingShares, limitPrice, augur.rpc.gasPrice));
+					actions.push(getBidAction(remainingShares, orderLimitPrice, makerFee, augur.rpc.gasPrice));
 				}
 
 				return actions;
@@ -99,17 +100,18 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 	 *
 	 * @param {BigNumber} shares
 	 * @param {BigNumber} limitPrice
+	 * @param {BigNumber} makerFee
 	 * @param {Number} gasPrice
 	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
-	function getBidAction(shares, limitPrice, gasPrice) {
+	function getBidAction(shares, limitPrice, makerFee, gasPrice) {
 		var bidGasEth = getTxGasEth(clone(augur.tx.BuyAndSellShares.buy), gasPrice);
 		var etherToBid = shares.times(limitPrice);
 		return {
 			action: "BID",
 			shares: shares.toFixed(),
 			gasEth: bidGasEth.toFixed(),
-			feeEth: "todo",
+			feeEth: etherToBid.times(makerFee).toFixed(),
 			costEth: etherToBid.toFixed(),
 			avgPrice: limitPrice.toFixed()
 		};
@@ -119,16 +121,17 @@ module.exports = function getTradingActions(type, shares, limitPrice, takerFee, 
 	 *
 	 * @param {BigNumber} buyEth
 	 * @param {BigNumber} sharesFilled
+	 * @param {BigNumber} takerFee
 	 * @param {Number} gasPrice
 	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
 	 */
-	function getBuyAction(buyEth, sharesFilled, gasPrice) {
+	function getBuyAction(buyEth, sharesFilled, takerFee, gasPrice) {
 		var tradeGasEth = getTxGasEth(clone(augur.tx.Trade.trade), gasPrice);
 		return {
 			action: "BUY",
 			shares: sharesFilled.toFixed(),
 			gasEth: tradeGasEth.toFixed(),
-			feeEth: "todo",
+			feeEth: buyEth.times(takerFee).toFixed(),
 			costEth: buyEth.toFixed(),
 			avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
 		};
