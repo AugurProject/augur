@@ -290,7 +290,7 @@ module.exports = function () {
                 packaged.gasPrice = tx.gasPrice;
                 return this.getTxNonce(packaged, cb);
             }
-            augur.rpc.gasPrice(function (gasPrice) {
+            augur.rpc.getGasPrice(function (gasPrice) {
                 if (!gasPrice || gasPrice.error) {
                     return cb(errors.TRANSACTION_FAILED);
                 }

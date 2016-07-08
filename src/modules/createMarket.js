@@ -68,7 +68,7 @@ module.exports = {
             abi.fix(makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        this.rpc.gasPrice(function (gasPrice) {
+        this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             gasPrice = abi.bignum(gasPrice);
             tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
@@ -166,7 +166,7 @@ module.exports = {
             abi.fix(makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        this.rpc.gasPrice(function (gasPrice) {
+        this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             gasPrice = abi.bignum(gasPrice);
             tx.value = abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("1000000").times(gasPrice).times(new BigNumber(events.length - 1)).plus(new BigNumber("500000").times(gasPrice)))).toString(16));
