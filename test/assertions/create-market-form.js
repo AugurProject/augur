@@ -4,6 +4,10 @@ import assertEndDate from '../../test/assertions/common/end-date';
 import assertInitialFairPrices from '../../test/assertions/common/initial-fair-prices';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
+export default function(createMarketForm) {
+	// implement me
+}
+
 function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
 		it('should receive step and be a number', () => {
@@ -213,11 +217,3 @@ function step5(actual){
 		});
 	});
 }
-
-module.exports = {
-	step1,
-	step2,
-	step3,
-	step4,
-	step5
-};

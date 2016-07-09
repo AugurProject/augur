@@ -3,6 +3,7 @@ export function emptyNumber(denomination) {
 		value: 0,
 		formattedValue: 0,
 		formatted: '-',
+		roundedValue: 0,
 		rounded: '-',
 		minimized: '-',
 		full: '-',

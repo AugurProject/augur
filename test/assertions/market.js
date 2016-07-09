@@ -2,128 +2,135 @@ import { assert } from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 import assertEndDate from '../../test/assertions/common/end-date';
 
-function marketAssertion(actual) {
+export default function(market) {
+
+	// market can be undefined
+	if (!market) {
+		return;
+	}
+
 	describe('augur-ui-react-components market state', () => {
 		it('should exist', () => {
-			assert.isDefined(actual, `markets is empty.`)
+			assert.isDefined(market, `markets is empty.`);
 		});
 
 		it('should be an object', () => {
-			assert.isObject(actual, `markets[0] (market) isn't an object`);
+			assert.isObject(market, `markets[0] (market) isn't an object`);
 		});
 
 		describe('id', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.id, `id isn't defined.`);
+				assert.isDefined(market.id, `id isn't defined.`);
 			});
 
 			it('should be a string', () => {
-				assert.isString(actual.id, `id isn't a string`);
+				assert.isString(market.id, `id isn't a string`);
 			});
 		});
 
 		describe('type', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.type, `type isn't defined.`);
+				assert.isDefined(market.type, `type isn't defined.`);
 			});
 
 			it('should be a string', () => {
-				assert.isString(actual.type, `type isn't a string`);
+				assert.isString(market.type, `type isn't a string`);
 			});
 		});
 
 		describe('description', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.description, `description isn't defined`);
+				assert.isDefined(market.description, `description isn't defined`);
 			});
 
 			it('should be a string', () => {
-				assert.isString(actual.description, `description isn't a string`);
+				assert.isString(market.description, `description isn't a string`);
 			});
 		});
 
 		describe('endDate', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.endDate, `endDate isn't defined`);
+				assert.isDefined(market.endDate, `endDate isn't defined`);
 			});
 
 			it('should have the correct shape', () => {
-				assertEndDate(actual.endDate, 'market');
+				assertEndDate(market.endDate, 'market');
 			});
 		});
 
 		describe('endDateLabel', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.endDateLabel, `market.endDateLabel isn't defined`);
+				assert.isDefined(market.endDateLabel, `market.endDateLabel isn't defined`);
 			});
 
 			it('should be a string', () => {
-				assert.isString(actual.endDateLabel, `market.endDateLabel isn't an string`);
+				assert.isString(market.endDateLabel, `market.endDateLabel isn't an string`);
 			});
 		});
 
 		describe('takerFeePercent', () => {
 			it('should receive a takerFeePercent and be an object', () => {
-				assert.isDefined(actual.takerFeePercent, `market.takerFeePercent isn't defined`);
+				assert.isDefined(market.takerFeePercent, `market.takerFeePercent isn't defined`);
 			});
 
 			it('should have the correct shape', () => {
-				assertFormattedNumber(actual.takerFeePercent, 'market.takerFeePercent');
+				assertFormattedNumber(market.takerFeePercent, 'market.takerFeePercent');
 			});
 		});
 
 		describe('makerFeePercent', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.makerFeePercent, `market.makerFeePercent isn't defined`);
+				assert.isDefined(market.makerFeePercent, `market.makerFeePercent isn't defined`);
 			});
 
 			it('should have the correct shape', () => {
-				assertFormattedNumber(actual.makerFeePercent, 'market.makerFeePercent');
+				assertFormattedNumber(market.makerFeePercent, 'market.makerFeePercent');
 			});
 		});
 
 		describe('volume', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.volume, `market.volume isn't defined`);
+				assert.isDefined(market.volume, `market.volume isn't defined`);
 			});
 
 			it('should have the correct shape', () => {
-				assertFormattedNumber(actual.volume, 'market.volume');
+				assertFormattedNumber(market.volume, 'market.volume');
 			});
 		});
 
 		describe('isOpen', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.isOpen, `market.isOpen isn't defined`);
+				assert.isDefined(market.isOpen, `market.isOpen isn't defined`);
 			});
 
 			it('should be a boolean', () => {
-				assert.isBoolean(actual.isOpen, `market.isOpen isn't a boolean`);
+				assert.isBoolean(market.isOpen, `market.isOpen isn't a boolean`);
 			});
 		});
 
 		describe('isPendingReport', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.isPendingReport, `market.isPendingReport isn't defined`);
+				assert.isDefined(market.isPendingReport, `market.isPendingReport isn't defined`);
 			});
 
 			it('should be a boolean', () => {
-				assert.isBoolean(actual.isPendingReport, `market.isPendingReport isn't a boolean`);
+				assert.isBoolean(market.isPendingReport, `market.isPendingReport isn't a boolean`);
 			});
 		});
 
 		describe('marketLink', () => {
 			it('should receive a marketLink and be an object', () => {
-				assert.isDefined(actual.marketLink, `market.marketLink isn't defined`);
+				assert.isDefined(market.marketLink, `market.marketLink isn't defined`);
 			});
 
 			it('should have the correct shape', () => {
-				marketLinkAssertion(actual.marketLink);
+				assertMarketLink(market.marketLink);
 			});
 		});
 
 		describe('tags', () => {
-			let tags = actual.tags;
+
+			let tags = market.tags;
 
 			it('should exist', () => {
 				assert.isDefined(tags, `market.tags isn't defined`);
@@ -160,14 +167,14 @@ function marketAssertion(actual) {
 
 		describe('outcomes', () => {
 			it('should exist', () => {
-				assert.isDefined(actual.outcomes, `market.outcomes isn't defined`);
+				assert.isDefined(market.outcomes, `market.outcomes isn't defined`);
 			});
 
 			it('should be an array', () => {
-				assert.isArray(actual.outcomes, `market.outcomes isn't an array`);
+				assert.isArray(market.outcomes, `market.outcomes isn't an array`);
 			});
 
-			actual.outcomes.map((outcome, i) => {
+			market.outcomes.map((outcome, i) => {
 				describe(`outcome ${i}`, () => {
 					describe('id', () => {
 						it('should exist', () => {
@@ -228,7 +235,7 @@ function marketAssertion(actual) {
 
 						it('should be an object', () => {
 							assert.isObject(trade, 'trade is not an object');
-						})
+						});
 
 						describe('side', () => {
 							it('should exist', () => {
@@ -330,15 +337,15 @@ function marketAssertion(actual) {
 
 		describe('reportableOutcomes', () => { // NOTE -- other outcomes reside in this array, only testing unique item
 			it('should exist', () => {
-				assert.isDefined(actual.reportableOutcomes, `market.reportableOutcomes isn't defined`);
+				assert.isDefined(market.reportableOutcomes, `market.reportableOutcomes isn't defined`);
 			});
 
 			it('should be an array', () => {
-				assert.isArray(actual.reportableOutcomes, `market.reportableOutcomes isn't an array`);
+				assert.isArray(market.reportableOutcomes, `market.reportableOutcomes isn't an array`);
 			});
 
 			describe('indeterminate outcome', () => {
-				const indeterminateItem = actual.reportableOutcomes[actual.reportableOutcomes.length - 1];
+				const indeterminateItem = market.reportableOutcomes[market.reportableOutcomes.length - 1];
 
 				it('should exist', () => {
 					assert.isDefined(indeterminateItem, 'indeterminateItem does not exist');
@@ -371,7 +378,7 @@ function marketAssertion(actual) {
 		});
 
 		describe('tradeSummary', () => {
-			let tradeSummary = actual.tradeSummary;
+			let tradeSummary = market.tradeSummary;
 
 			it('should exist', () => {
 				assert.isDefined(tradeSummary, 'tradeSummary is not defined');
@@ -495,16 +502,16 @@ function marketAssertion(actual) {
 			it('[TODO] flesh out the full shape'); // Holding on this temporarily until we can better test trading
 
 			it('should exist', () => {
-				assert.isDefined(actual.priceTimeSeries, `market.priceTimeSeries isn't defined`);
+				assert.isDefined(market.priceTimeSeries, `market.priceTimeSeries isn't defined`);
 			});
 
 			it('should be an array', () => {
-				assert.isArray(actual.priceTimeSeries, `market.priceTimeSeries isn't an array`);
+				assert.isArray(market.priceTimeSeries, `market.priceTimeSeries isn't an array`);
 			});
 		});
 
 		describe('positionsSummary', () => {
-			let positionsSummary = actual.positionsSummary;
+			let positionsSummary = market.positionsSummary;
 
 			it('should exist', () => {
 				assert.isDefined(positionsSummary, 'positionsSummary is not defined');
@@ -596,7 +603,7 @@ function marketAssertion(actual) {
 		});
 
 		describe('report', () => {
-			const report = actual.report;
+			const report = market.report;
 
 			it('should exist', () => {
 				assert.isDefined(report, `market.report isn't defined`);
@@ -631,16 +638,16 @@ function marketAssertion(actual) {
 			it('[TODO] further assert shape');
 
 			it('should receive an orderBook and be an object', () => {
-				assert.isDefined(actual.orderBook, `market.orderBook isn't defined`);
+				assert.isDefined(market.orderBook, `market.orderBook isn't defined`);
 			});
 
 			it('should be an object', () => {
-				assert.isObject(actual.orderBook, `market.orderBook isn't an object`);
+				assert.isObject(market.orderBook, `market.orderBook isn't an object`);
 			});
 		});
 
 		describe('constants', () => {
-			let constants = actual.constants;
+			let constants = market.constants;
 
 			it('should receive constants and be an object', () => {
 				assert.isDefined(constants, 'market.constants is not defined');
@@ -674,18 +681,13 @@ function marketAssertion(actual) {
 	});
 }
 
-function marketLinkAssertion(actual) {
-	assert.isDefined(actual, `market.marketLink isn't defined`);
-	assert.isObject(actual, `market.marketLink isn't an object`);
-	assert.isDefined(actual.text, `market.marketLink.text isn't defined`);
-	assert.isString(actual.text, `market.marketLink.text isn't a string`);
-	assert.isDefined(actual.className, `market.marketLink.className isn't defined`);
-	assert.isString(actual.className, `market.marketLink.className isn't a string`);
-	assert.isDefined(actual.onClick, `market.marketLink.onClick isn't defined`);
-	assert.isFunction(actual.onClick, `market.marketLink.onClick isn't a function`);
+function assertMarketLink(marketLink) {
+	assert.isDefined(marketLink, `market.marketLink isn't defined`);
+	assert.isObject(marketLink, `market.marketLink isn't an object`);
+	assert.isDefined(marketLink.text, `market.marketLink.text isn't defined`);
+	assert.isString(marketLink.text, `market.marketLink.text isn't a string`);
+	assert.isDefined(marketLink.className, `market.marketLink.className isn't defined`);
+	assert.isString(marketLink.className, `market.marketLink.className isn't a string`);
+	assert.isDefined(marketLink.onClick, `market.marketLink.onClick isn't defined`);
+	assert.isFunction(marketLink.onClick, `market.marketLink.onClick isn't a function`);
 }
-
-module.exports = {
-	marketAssertion,
-	marketLinkAssertion: marketLinkAssertion
-};

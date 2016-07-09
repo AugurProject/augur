@@ -15,13 +15,6 @@ import {
 } from './modules/transactions/constants/types';
 
 const selectors = {
-	update: (newState = {}) => {
-		console.log('*** update', newState);
-		Object.keys(newState).forEach(key => {
-			selectors[key] = newState[key];
-		});
-		selectors.render();
-	},
 	loginAccount,
 	markets,
 	keywords,
@@ -31,6 +24,19 @@ const selectors = {
 	positionsSummary,
 	positionsMarkets
 };
+
+// add update helper fn to selectors object
+Object.defineProperty(selectors, 'update', {
+	value: (newState = {}) => {
+		console.log('*** update', newState);
+		Object.keys(newState).forEach(key => {
+			selectors[key] = newState[key];
+		});
+		selectors.render();
+	},
+	enumerable: false
+});
+
 
 selectors.activePage = MARKETS;
 
@@ -60,7 +66,7 @@ selectors.searchSort = {
 
 selectors.marketsHeader = {};
 
-selectors.market = {}; // selected market
+selectors.market = undefined; // selected market
 selectors.sideOptions = [{ value: BID, label: 'Buy' }, { value: ASK, label: 'Sell' }];
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {
@@ -74,7 +80,7 @@ selectors.selectedOutcome = {
 	selectedOutcomeID: null
 };
 
-selectors.onChangeSort = (prop, isDesc) => {
+selectors.searchSort.onChangeSort = (prop, isDesc) => {
 	let isDescending = isDesc;
 	if (isDesc !== false && isDesc !== true) {
 		isDescending = selectors.searchSort.selectedSort.isDesc;
@@ -89,7 +95,6 @@ selectors.onChangeSort = (prop, isDesc) => {
 		}
 	});
 };
-selectors.searchSort.onChangeSort = selectors.onChangeSort;
 selectors.pagination = {
 	numPerPage: 10,
 	numPages: 10,
