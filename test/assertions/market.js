@@ -5,7 +5,7 @@ import assertEndDate from '../../test/assertions/common/end-date';
 export default function(market) {
 
 	// market can be undefined
-	if (!market) {
+	if (!market.id) {
 		return;
 	}
 

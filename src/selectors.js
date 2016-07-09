@@ -66,7 +66,7 @@ selectors.searchSort = {
 
 selectors.marketsHeader = {};
 
-selectors.market = undefined; // selected market
+selectors.market = {}; // selected market
 selectors.sideOptions = [{ value: BID, label: 'Buy' }, { value: ASK, label: 'Sell' }];
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {
