@@ -1,14 +1,11 @@
-var assert = require('chai').assert;
-// filters:
-// [ { title: 'Status', options: [ Object, ... ] },
-// 	{ title: 'Type', options: [ Object, ... ] },
-// 	{ title: 'Tags', options: [ Object, ... ] } ],
-function filtersAssertion(actual) {
-	var tags = actual[0];
+import { assert } from 'chai';
 
-	assert.isDefined(actual, `filters isn't defined`);
-	assert.isArray(actual, `filters isn't an array`);
-	assert.equal(actual.length, 1, `filters array isn't the expected length`);
+export default function (filters) {
+	var tags = filters[0];
+
+	assert.isDefined(filters, `filters isn't defined`);
+	assert.isArray(filters, `filters isn't an array`);
+	assert.equal(filters.length, 1, `filters array isn't the expected length`);
 	assert.isObject(tags, `filters[0] isn't an object`);
 
 	// Tags object tests
@@ -36,4 +33,3 @@ function filtersAssertion(actual) {
 	assert.isDefined(tags.options[0].onClick, `[0].options[0].onClick isn't defined`);
 	assert.isFunction(tags.options[0].onClick, `[0].options[0].onClick isn't a function`);
 }
-module.exports = filtersAssertion;

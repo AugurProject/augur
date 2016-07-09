@@ -1,4 +1,9 @@
+
 import { assert } from 'chai';
+
+export default function (pagination) {
+	// implement me
+}
 
 function sideOptions(actual) {
 	describe('augur-ui-react-components trade sideOptions state', () => {
@@ -9,7 +14,7 @@ function sideOptions(actual) {
 		it('should be an array', () => {
 			assert.isArray(actual, 'outcomes is not an array');
 		});
-	})
+	});
 }
 
 function updateSelectedOutcome(actual){
@@ -53,10 +58,3 @@ function onSubmitPlaceTrade(actual){
 		});
 	});
 }
-
-module.exports = {
-	sideOptions,
-	updateSelectedOutcome,
-	selectedOutcomeID,
-	onSubmitPlaceTrade
-};
