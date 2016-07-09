@@ -1,62 +1,61 @@
-var assert = require('chai').assert;
-// authForm: Object,
-function authFormAssertion(actual) {
-	assert.isDefined(actual, `authForm isn't defined`);
-	assert.isObject(actual, `authForm isn't an object`);
+import { assert } from 'chai';
 
-	assert.isDefined(actual.closeLink, `authFrom.closeLink isn't defined`);
-	assert.isObject(actual.closeLink, `authFrom.closeLink isn't an object`);
+export default function(authForm) {
+	assert.isDefined(authForm, `authForm isn't defined`);
+	assert.isObject(authForm, `authForm isn't an object`);
 
-	assert.isDefined(actual.closeLink.href, `authForm.closeLink.href isn't defined`);
-	assert.isString(actual.closeLink.href, `authForm.closeLink.href isn't a string`);
+	assert.isDefined(authForm.closeLink, `authFrom.closeLink isn't defined`);
+	assert.isObject(authForm.closeLink, `authFrom.closeLink isn't an object`);
 
-	assert.isDefined(actual.closeLink.onClick, `authForm.closeLink.onClick isn't defined`);
-	assert.isFunction(actual.closeLink.onClick, `authForm.closeLink.onClick isn't a function`);
+	assert.isDefined(authForm.closeLink.href, `authForm.closeLink.href isn't defined`);
+	assert.isString(authForm.closeLink.href, `authForm.closeLink.href isn't a string`);
 
-	if (actual.title !== undefined) {
-		assert.isDefined(actual.title, `authForm.title isn't defined`);
-		assert.isString(actual.title, `authForm.title isn't a string`);
+	assert.isDefined(authForm.closeLink.onClick, `authForm.closeLink.onClick isn't defined`);
+	assert.isFunction(authForm.closeLink.onClick, `authForm.closeLink.onClick isn't a function`);
+
+	if (authForm.title !== undefined) {
+		assert.isDefined(authForm.title, `authForm.title isn't defined`);
+		assert.isString(authForm.title, `authForm.title isn't a string`);
 		// for some reason augur doesn't pass classname currently...
-		// assert.isDefined(actual.className, `authForm.className isn't defined`);
-		// assert.isString(actual.className, `authForm.className isn't a string`);
+		// assert.isDefined(authForm.className, `authForm.className isn't defined`);
+		// assert.isString(authForm.className, `authForm.className isn't a string`);
 
-		assert.isDefined(actual.isVisibleUsername, `authForm.isVisibleUsername isn't defined`);
-		assert.isBoolean(actual.isVisibleUsername, `authForm.isVisibleUsername isn't a boolean`);
+		assert.isDefined(authForm.isVisibleUsername, `authForm.isVisibleUsername isn't defined`);
+		assert.isBoolean(authForm.isVisibleUsername, `authForm.isVisibleUsername isn't a boolean`);
 
-		assert.isDefined(actual.isVisiblePassword, `authForm.isVisiblePassword isn't defined`);
-		assert.isBoolean(actual.isVisiblePassword, `authForm.isVisiblePassword isn't a boolean`);
+		assert.isDefined(authForm.isVisiblePassword, `authForm.isVisiblePassword isn't defined`);
+		assert.isBoolean(authForm.isVisiblePassword, `authForm.isVisiblePassword isn't a boolean`);
 
-		assert.isDefined(actual.isVisiblePassword2, `authForm.isVisiblePassword2 isn't defined`);
-		assert.isBoolean(actual.isVisiblePassword2, `authForm.isVisiblePassword2 isn't a boolean`);
+		assert.isDefined(authForm.isVisiblePassword2, `authForm.isVisiblePassword2 isn't defined`);
+		assert.isBoolean(authForm.isVisiblePassword2, `authForm.isVisiblePassword2 isn't a boolean`);
 
-		assert.isDefined(actual.msgClass, `authForm.msgClass isn't defined`);
-		assert.isString(actual.msgClass, `authForm.msgClass isn't a string`);
+		assert.isDefined(authForm.msgClass, `authForm.msgClass isn't defined`);
+		assert.isString(authForm.msgClass, `authForm.msgClass isn't a string`);
 
-		assert.isDefined(actual.topLinkText, `authForm.topLinkText isn't defined`);
-		assert.isString(actual.topLinkText, `authForm.topLinkText isn't a string`);
+		assert.isDefined(authForm.topLinkText, `authForm.topLinkText isn't defined`);
+		assert.isString(authForm.topLinkText, `authForm.topLinkText isn't a string`);
 
-		assert.isDefined(actual.topLink, `authForm.topLink isn't defined`);
-		assert.isObject(actual.topLink, `authForm.topLink isn't an object`);
+		assert.isDefined(authForm.topLink, `authForm.topLink isn't defined`);
+		assert.isObject(authForm.topLink, `authForm.topLink isn't an object`);
 
-		assert.isDefined(actual.topLink.href, `authForm.topLink.href isn't defined`);
-		assert.isString(actual.topLink.href, `authForm.topLink.href isn't a string`);
+		assert.isDefined(authForm.topLink.href, `authForm.topLink.href isn't defined`);
+		assert.isString(authForm.topLink.href, `authForm.topLink.href isn't a string`);
 
-		assert.isDefined(actual.topLink.onClick, `authForm.topLink.onClick isn't defined`);
-		assert.isFunction(actual.topLink.onClick, `authForm.topLink.onClick isn't a function`);
+		assert.isDefined(authForm.topLink.onClick, `authForm.topLink.onClick isn't defined`);
+		assert.isFunction(authForm.topLink.onClick, `authForm.topLink.onClick isn't a function`);
 
-		assert.isDefined(actual.submitButtonText, `authForm.submitButtonText isn't defined`);
-		assert.isString(actual.submitButtonText, `authForm.submitButtonText isn't a string`);
+		assert.isDefined(authForm.submitButtonText, `authForm.submitButtonText isn't defined`);
+		assert.isString(authForm.submitButtonText, `authForm.submitButtonText isn't a string`);
 
-		assert.isDefined(actual.submitButtonClass, `authForm.submitButtonClass isn't defined`);
-		assert.isString(actual.submitButtonClass, `authForm.submitButtonClass isn't a string`);
+		assert.isDefined(authForm.submitButtonClass, `authForm.submitButtonClass isn't defined`);
+		assert.isString(authForm.submitButtonClass, `authForm.submitButtonClass isn't a string`);
 
-		assert.isDefined(actual.onSubmit, `authForm.onSubmit isn't defined`);
-		assert.isFunction(actual.onSubmit, `authForm.onSubmit isn't a function`);
+		assert.isDefined(authForm.onSubmit, `authForm.onSubmit isn't defined`);
+		assert.isFunction(authForm.onSubmit, `authForm.onSubmit isn't a function`);
 	}
 
-	if (actual.msgClass === 'error') {
-		assert.isDefined(actual.msg, `error was thrown but authForm.msg isn't defined to display`);
-		assert.isString(actual.msg, `error was thrown but authForm.msg isn't a string`);
+	if (authForm.msgClass === 'error') {
+		assert.isDefined(authForm.msg, `error was thrown but authForm.msg isn't defined to display`);
+		assert.isString(authForm.msg, `error was thrown but authForm.msg isn't a string`);
 	}
 }
-module.exports = authFormAssertion;
