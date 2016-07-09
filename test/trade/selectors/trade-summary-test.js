@@ -1,14 +1,9 @@
-import {
-	assert
-} from 'chai';
-import {
-	selectTradeSummary
-} from '../../../src/modules/trade/selectors/trade-summary';
-import {assertions} from 'augur-ui-react-components';
+import { assert } from 'chai';
+import { selectTradeSummary } from '../../../src/modules/trade/selectors/trade-summary';
+import { assertions } from 'augur-ui-react-components';
 
 describe(`modules/trade/selectors/trade-summary.js`, () => {
 	let tradeSummary;
-	let componentAssertions = assertions.trade;
 
 	const tradeOrders = [{
 		shares: {
@@ -58,17 +53,16 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 
 	it(`should select trade summary correctly`, () => {
 		const out = {
-			totalShares:
-				{
-					value: -586,
-					formattedValue: -586,
-					formatted: '-586',
-					roundedValue: -586,
-					rounded: '-586',
-					minimized: '-586',
-					denomination: 'shares',
-					full: '-586shares'
-				},
+			totalShares: {
+				value: -586,
+				formattedValue: -586,
+				formatted: '-586',
+				roundedValue: -586,
+				rounded: '-586',
+				minimized: '-586',
+				denomination: 'shares',
+				full: '-586shares'
+			},
 			feeToPay: {
 				denomination: "eth",
 				formatted: "0.00",

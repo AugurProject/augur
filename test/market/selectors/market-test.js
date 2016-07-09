@@ -1,6 +1,6 @@
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
-import {assertions} from 'augur-ui-react-components';
+import { assertions } from 'augur-ui-react-components';
 
 describe(`modules/market/selectors/market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -23,7 +23,6 @@ describe(`modules/market/selectors/market.js`, () => {
 	});
 
 	it(`should return the expected values to components`, () => {
-		assertions.market.marketAssertion(actual);
-		assertions.trade.onSubmitPlaceTrade(actual);
+		assertions.assertMarket(actual);
 	});
 });

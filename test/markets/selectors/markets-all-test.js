@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import {assertions} from 'augur-ui-react-components';
+import { assertions } from 'augur-ui-react-components';
 
 let allMarkets;
 describe(`modules/markets/selectors/markets-all.js`, () => {
@@ -102,7 +102,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	it(`should return the correct selectedMarket function`, () => {
 		actual = selector.default();
 
-		assertions.markets(actual);
+		assertions.assertMarkets(actual);
 		assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`);
 	});
 });

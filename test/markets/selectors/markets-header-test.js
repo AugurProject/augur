@@ -4,7 +4,7 @@ import {
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-import {assertions} from 'augur-ui-react-components';
+import { assertions } from 'augur-ui-react-components';
 
 describe(`modules/markets/selectors/markets-header.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -56,7 +56,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
-		assertions.marketsHeader(actual)
+		assertions.assertMarketsHeader(actual)
 
 		actual.onClickAllMarkets();
 		actual.onClickFavorites();
