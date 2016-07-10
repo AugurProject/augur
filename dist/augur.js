@@ -37552,7 +37552,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.6";
+    this.version = "1.6.7";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38438,7 +38438,7 @@ module.exports = {
                 self.rpc.getBlock(response.blockNumber, false, function (block) {
                     response.branchID = utils.sha3([
                         response.from,
-                        "0x2f0000000000000000",
+                        "0x28c418afbbb5c0000",
                         periodLength,
                         block.timestamp,
                         parent,

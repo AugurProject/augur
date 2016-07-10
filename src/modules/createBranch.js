@@ -39,7 +39,7 @@ module.exports = {
                 self.rpc.getBlock(response.blockNumber, false, function (block) {
                     response.branchID = utils.sha3([
                         response.from,
-                        "0x2f0000000000000000",
+                        "0x28c418afbbb5c0000",
                         periodLength,
                         block.timestamp,
                         parent,
