@@ -13,11 +13,20 @@ var constants = require("../../src/constants");
 var augurpath = join(__dirname, "..", "..", "src", "index");
 var augur = tools.setup(require(augurpath), process.argv.slice(2));
 
+var paymentValue = 1;
+var branch = augur.constants.DEFAULT_BRANCH_ID;
+var coinbase = augur.coinbase;
+
+function printBalance(account) {
+    console.log({
+        cash: augur.getCashBalance(account),
+        reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
+        ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
+    });
+}
+
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
-    var paymentValue = 1;
-    var branch = augur.constants.DEFAULT_BRANCH_ID;
-    var coinbase = augur.coinbase;
     var testAccounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
     var receiver = testAccounts[1];
     if (receiver === coinbase) receiver = testAccounts[0];
@@ -27,6 +36,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         var value = 1;
         var weiValue = abi.bignum(value).mul(constants.ETHER).toFixed();
         var initialCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+        var account = augur.coinbase;
+        printBalance(account);
 
         it("deposit/withdrawEther", function (done) {
             this.timeout(tools.TIMEOUT*2);
@@ -42,15 +53,20 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     assert.strictEqual(res.from, augur.coinbase);
                     assert.strictEqual(res.to, augur.contracts.Cash);
                     var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
+                    console.log(afterCash.sub(initialCash).toNumber(), value);
+                    printBalance(account);
                     assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
+                    printBalance(account);
                     augur.withdrawEther({
                         to: augur.coinbase,
                         value: value,
                         onSent: function (res) {
+                            console.log(res)
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                         },
                         onSuccess: function (res) {
+                            printBalance(account);
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                             assert.strictEqual(res.from, augur.coinbase);
