@@ -122,15 +122,6 @@ describe("Integration tests", function () {
             runtests(this.title, test, markets[i]);
         }
     });
-    describe("getCurrentParticipantNumber", function () {
-        var test = function (t) {
-            tools.gteq0(t.output);
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i]);
-        }
-    });
     describe("getMarketNumOutcomes", function () {
         var test = function (t) {
             assert.isAbove(parseInt(t.output), 1);
@@ -165,24 +156,6 @@ describe("Integration tests", function () {
         };
         for (var i = 0; i < numMarkets; ++i) {
             runtests(this.title, test, markets[i]);
-        }
-    });
-    describe("getParticipantNumber", function () {
-        var test = function (t) {
-            tools.gteq0(t.output);
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i], accounts[0]);
-        }
-    });
-    describe("getParticipantID", function () {
-        var test = function (t) {
-            tools.gteq0(t.output);
-            t.done();
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i], traderIndex);
         }
     });
     describe("getCumScale", function () {

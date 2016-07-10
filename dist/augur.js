@@ -36650,10 +36650,12 @@ var abi = require("augur-abi");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
+var ONE = new BigNumber(10).toPower(18); 
+
 module.exports = {
     ZERO: new BigNumber(0),
-    ONE: new BigNumber(2).toPower(64),
-    ETHER: new BigNumber(10).toPower(18),
+    ONE: ONE,
+    ETHER: ONE,
 
     DEFAULT_BRANCH_ID: "0xf69b5",
     BID: 1,
@@ -37552,7 +37554,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.7";
+    this.version = "1.6.8";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37978,9 +37980,25 @@ module.exports = {
 var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 module.exports = {
     
+    depositEther: function (value, onSent, onSuccess, onFailed) {
+        var tx = clone(this.tx.Cash.depositEther);
+        var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
+        tx.value = abi.fix(unpacked.params[0], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    withdrawEther: function (to, value, onSent, onSuccess, onFailed) {
+        var tx = clone(this.tx.Cash.withdrawEther);
+        var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
     setCash: function (address, balance, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Cash.setCash);
         var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);
@@ -38034,7 +38052,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":379,"augur-abi":1,"clone":291}],363:[function(require,module,exports){
+},{"../constants":356,"../utilities":379,"augur-abi":1,"clone":291}],363:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -41619,6 +41637,7 @@ module.exports = {
         onFailed = (isFunction(onFailed)) ? onFailed : noop;
         onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
         this.fire(payload, function (callReturn) {
+            if (returns === "null") callReturn = null;
             if (callReturn && callReturn.error) return onFailed(callReturn);
             payload.send = true;
             delete payload.returns;
@@ -41631,8 +41650,7 @@ module.exports = {
 
                 // send the transaction hash and return value back
                 // to the client, using the onSent callback
-                var response = {txHash: txHash, callReturn: callReturn};
-                onSent(response);
+                onSent({txHash: txHash, callReturn: callReturn});
 
                 self.verifyTxSubmitted(payload, txHash, function (err) {
                     if (err) return onFailed(err);

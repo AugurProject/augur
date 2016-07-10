@@ -40,7 +40,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     assert.strictEqual(res.txHash.length, 66);
                     assert.strictEqual(weiValue, res.callReturn);
                     assert.strictEqual(res.from, augur.coinbase);
-                    assert.strictEqual(res.to, augur.contracts.cash);
+                    assert.strictEqual(res.to, augur.contracts.Cash);
                     var afterCash = abi.bignum(augur.getCashBalance(augur.coinbase));
                     assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
                     augur.withdrawEther({
@@ -54,7 +54,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             assert.strictEqual(res.txHash.length, 66);
                             assert.strictEqual(res.callReturn, "1");
                             assert.strictEqual(res.from, augur.coinbase);
-                            assert.strictEqual(res.to, augur.contracts.cash);
+                            assert.strictEqual(res.to, augur.contracts.Cash);
                             var finalCash = abi.bignum(augur.getCashBalance(augur.coinbase));
                             assert.strictEqual(initialCash.toFixed(), finalCash.toFixed());
                             done();
