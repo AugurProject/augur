@@ -16,7 +16,7 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 module.exports = {
 
     constants: {
-        ONE: (new BigNumber(2)).toPower(64),
+        ONE: (new BigNumber(10)).toPower(18),
         MOD: new BigNumber(2).toPower(256),
         BYTES_32: new BigNumber(2).toPower(252)
     },
@@ -20270,41 +20270,41 @@ module.exports={
         "Trades": "0x401a31250646bb68e2169bbdc0a8834d0f375ecb"
     }, 
     "2": {
-        "Backstops": "0xf9c9a87f339b76dc007848ab50363116ec1af05b", 
-        "Branches": "0x52af2540e03b0d0b73e3c7843c236e82ed959ac6", 
-        "BuyAndSellShares": "0x26bd983a1c87352c96399615c025b175862e7978", 
-        "Cash": "0xee01fd89924dfd409bf1356072f98138c57bd7cc", 
-        "CloseMarket": "0xc9a1dd0bccc72527bc5957daa9677d98862d8932", 
-        "CloseMarketOne": "0x4e433f8bde4a0afc59bec1b4d200b84435aafd9e", 
-        "CloseMarketTwo": "0x5e3972e215854523c977ecb9faa21efeb0bcaa0a", 
-        "CollectFees": "0xb3eeaa1287c59be7dbbf7e5af7b6005882a437d1", 
-        "CompleteSets": "0xf64657c13c7dcae029b84ce099dcc0751fc41cc2", 
-        "CompositeGetters": "0xc42826de38b20a7894cdc1a096bdbcee9c57dbf1", 
-        "Consensus": "0xd752e83681d78c344dc1636f3088294b8573dc49", 
-        "ConsensusData": "0x3ed2cdd6bfbb4368a249368ee681b77fc9965492", 
-        "CreateBranch": "0xb8613192ef98dfd1fbeedb15c8350c8d3aac9a03", 
-        "CreateMarket": "0x854cde0fd53ae086342605dbf59a5b2632970fb2", 
-        "EventResolution": "0x34eea9d6769355b56348f22d6e1e2b25fbd8f513", 
-        "Events": "0xa80cb397a4a0f401980c758fa768d5c0f6d6d5f2", 
-        "ExpiringEvents": "0xd2cfe56ceb218117da138fe6a7450aa8c6b450d2", 
-        "Faucets": "0xf3315a83f8b53fd199e16503f4b905716af4751f", 
-        "ForkPenalize": "0xc3c8471f3721fcf2d0824424c8ab61ff1f054729", 
-        "Forking": "0xad547f769776a72b7218bf81afc541a4705aca21", 
-        "FxpFunctions": "0xdcd34a389bb8e51356bbf3f191682a1a114e1bb0", 
-        "Info": "0x0ec7078eed298506918767f610d0b69fbe80f4fc", 
-        "MakeReports": "0xe89775bc665e2c5d140999d593b79a99a01565a4", 
-        "Markets": "0x35c70a5372d7643739ac1ee6de6ce03311d28c42", 
-        "PenalizationCatchup": "0x6f256d44ccb33499d8a4fff683e89bf5b9c7b7ad", 
-        "PenalizeNotEnoughReports": "0x6a51b8d60052308f84ea652e291e2f39e03a2e0d", 
-        "ProportionCorrect": "0x099c0ac81d1b44e289c7d1a9aab5158e17b476b5", 
-        "Reporting": "0x95b46aa63e212de35607bd867592de7b3886df07", 
-        "ReportingThreshold": "0xf90466aaa6028f5389b9549372aa286ba793ece6", 
-        "RoundTwo": "0xeb78999349f48145fadbd4ba8002133f8be0f5f7", 
-        "RoundTwoPenalize": "0x2162c2ac329d3718a791e6f0248687928c73d9e1", 
-        "SendReputation": "0x6a4100d4fe8d6143e72f76f8d8ffab37129138c7", 
-        "SlashRep": "0x56553d406fdc17e28168e5894c131f6c45e109ae", 
-        "Trade": "0xe0e90fd3c22eebcfb109e9c719b8686f6c61f5df", 
-        "Trades": "0x55d17c58426f7ae2374d882a19b43ae031a63246"
+        "Backstops": "0x953e57d6abd49bf60d6a8403b50b241847b1e50d", 
+        "Branches": "0x5ca040a9b17c85acbfa1fec9eead60457e1da872", 
+        "BuyAndSellShares": "0x770114a2beb82282226d8917f229df6977cd568d", 
+        "Cash": "0x34a382fca0d3a6f318bbe565e4c77c86e3cfb448", 
+        "CloseMarket": "0x857f6cd666934c05a32704109fbee92773454c1f", 
+        "CloseMarketOne": "0xd8d75f35e05ff00065944041d4248c2bae18d418", 
+        "CloseMarketTwo": "0xee856109cd107e5521b86374dd53c8b2120ab14f", 
+        "CollectFees": "0x3bebda7cfc447b2b0c5dcc223c32f3fc469547e6", 
+        "CompleteSets": "0x5485af8bf299235b7fd2e45f13be79cf6064df64", 
+        "CompositeGetters": "0xcd49a9bf994b9cc61a3af5cf70588d9eedd1acc3", 
+        "Consensus": "0xecdc077c4c74590208a8c71038c0ad209c88deec", 
+        "ConsensusData": "0x9011169bf11bc061fdaaf42ec919c81df5b95210", 
+        "CreateBranch": "0xbcfa90799eaf78ea417b94bb62ff2a4373689d6a", 
+        "CreateMarket": "0xb41980c1f8a21090f2d4ef70753fac790d935462", 
+        "EventResolution": "0x7cb6993f9bb9fe65d36565a32658a1e82db73ded", 
+        "Events": "0xc75e4478c92ce6c1473a7be5924b2b1a7aeb64e7", 
+        "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
+        "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
+        "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
+        "Forking": "0xe11d674d19633928a086e7813cb5201dff032445", 
+        "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
+        "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
+        "MakeReports": "0x6beebeb4ec7524d9eecfff938530f90698dd3cf5", 
+        "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
+        "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
+        "PenalizeNotEnoughReports": "0x75a060dd28476323ee02792d0d614f55c4cfb8a3", 
+        "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
+        "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
+        "ReportingThreshold": "0xcd49dba9bfd26e0fef8e540925212da3651a588c", 
+        "RoundTwo": "0xdbd7190d394f35ee910e6ae40ca07ee71421c8b0", 
+        "RoundTwoPenalize": "0x74afc3dc3f75134b5c84cf91a4197a6fa01a82cc", 
+        "SendReputation": "0x9195b1b495a1f8bd29550449b01cfb5bdf3f5f39", 
+        "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
+        "Trade": "0x94fe6678a4387eb175a7d5fadfed7fd83f76d4b1", 
+        "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
     }
 }
 },{}],58:[function(require,module,exports){
@@ -37552,7 +37552,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.5";
+    this.version = "1.6.6";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -37607,6 +37607,13 @@ var utils = require("../utilities");
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
+
+    calculateTradingFees: function (makerFee, takerFee) {
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+    },
 
     formatTags: function (tags) {
         if (!tags || tags.constructor !== Array) tags = [];
@@ -38562,13 +38569,6 @@ module.exports = {
             resolution
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
-    },
-
-    calculateTradingFees: function (makerFee, takerFee) {
-        var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
-        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
 
     createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
@@ -41655,8 +41655,8 @@ module.exports = {
                             if (loggedReturnValue && loggedReturnValue.error) {
                                 return onFailed(loggedReturnValue);
                             }
-                            response.callReturn = loggedReturnValue;
-                            onSuccess(response);
+                            tx.callReturn = loggedReturnValue;
+                            onSuccess(tx);
                         });
                     });
                 });

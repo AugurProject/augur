@@ -15,6 +15,13 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    calculateTradingFees: function (makerFee, takerFee) {
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+    },
+
     formatTags: function (tags) {
         if (!tags || tags.constructor !== Array) tags = [];
         if (tags.length) {

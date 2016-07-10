@@ -91,13 +91,6 @@ module.exports = {
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    calculateTradingFees: function (makerFee, takerFee) {
-        var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
-        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
-    },
-
     createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {

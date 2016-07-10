@@ -11,6 +11,7 @@ var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
+var utils = require("../../src/utilities");
 var tools = require("../tools");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -45,21 +46,22 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             assert(r.callReturn);
                         },
                         onSuccess: function (r) {
-                            var marketID = r.marketID;
-                            self.getPeriodLength(t.branch, function (periodLength) {
-                                self.rpc.getBlock(r.blockNumber, false, function (block) {
+                            assert.strictEqual(r.marketID, r.callReturn);
+                            var marketID = r.callReturn;
+                            augur.getPeriodLength(t.branch, function (periodLength) {
+                                augur.rpc.getBlock(r.blockNumber, false, function (block) {
                                     var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                                     var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5"));
                                     assert.strictEqual(utils.sha3([
                                         futurePeriod,
                                         abi.fix(tradingFee, "hex"),
                                         block.timestamp,
-                                        tags[0],
-                                        tags[1],
-                                        tags[2],
+                                        t.tags[0],
+                                        t.tags[1],
+                                        t.tags[2],
                                         t.expDate,
                                         new Buffer(t.description, "utf8").length,
-                                        description
+                                        t.description
                                     ]), r.callReturn);
                                     assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                                     assert.strictEqual(augur.getDescription(marketID), t.description);
@@ -97,7 +99,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 makerFee: "0.01",
                 extraInfo: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
                 tags: ["space", "Dragon", "ISS"],
-                resolution: "generic"
+                resolution: "google.com"
             });
 
             test({
@@ -108,10 +110,10 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 maxValue: 2,
                 numOutcomes: 4,
                 takerFee: "0.02",
-                makerFee: "0.005",
+                makerFee: "0.001",
                 extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
                 tags: ["politics", "US elections", "political parties"],
-                resolution: "generic"
+                resolution: "google.com"
             });
 
         });
