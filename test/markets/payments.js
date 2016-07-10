@@ -156,16 +156,19 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
             this.timeout(tools.TIMEOUT);
             var augur = tools.setup(require(augurpath), process.argv.slice(2));
             var start_balance = augur.getRepBalance(branch, coinbase);
+            console.log("Start balance:", start_balance);
             start_balance = abi.bignum(start_balance);
             augur.sendReputation({
-                branchId: branch,
-                to: receiver,
+                branch: branch,
+                recver: receiver,
                 value: paymentValue,
                 onSent: function (res) {
+                    console.log(res);
                     assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                 },
                 onSuccess: function (res) {
+                    console.log(res);
                     assert(res.txHash);
                     assert.strictEqual(res.callReturn, paymentValue.toString());
                     var final_balance = augur.getRepBalance(branch, coinbase);

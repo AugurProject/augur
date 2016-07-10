@@ -37554,7 +37554,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.6.8";
+    this.version = "1.6.9";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39129,20 +39129,20 @@ var abi = require("augur-abi");
 
 module.exports = {
 
-    sendReputation: function (branchId, to, value, onSent, onSuccess, onFailed) {
-        // branchId: hash id
-        // to: ethereum address of recipient
+    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
+        // branch: hash id
+        // recver: ethereum address of recipient
         // value: number -> fixed-point
-        if (branchId && branchId.branchId) {
-            to = branchId.to;
-            value = branchId.value;
-            onSent = branchId.onSent;
-            onSuccess = branchId.onSuccess;
-            onFailed = branchId.onFailed;
-            branchId = branchId.branchId;
+        if (branch && branch.branch) {
+            recver = branch.recver;
+            value = branch.value;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            branch = branch.branch;
         }
         var tx = clone(this.tx.SendReputation.sendReputation);
-        tx.params = [branchId, to, abi.fix(value, "hex")];
+        tx.params = [branch, recver, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };
@@ -41495,7 +41495,7 @@ module.exports = {
                         message: errors[response]
                     };
                 } else {
-                    if (returns && returns !== "string" ||
+                    if (returns !== "null" && returns !== "string" ||
                         (response && response.constructor === String &&
                         response.slice(0,2) === "0x")) {
                         var responseNumber = abi.bignum(response, "string", true);
@@ -41518,13 +41518,13 @@ module.exports = {
         var self = this;
         var tx = clone(payload);
         if (!isFunction(callback)) {
-            var res = this.errorCodes(tx.method, tx.returns, this.applyReturns(tx.returns, this.invoke(tx)));
+            var res = this.applyReturns(tx.returns, this.errorCodes(tx.method, tx.returns, this.invoke(tx)));
             if (res) return res;
             throw new this.Error(errors.NO_RESPONSE);
         }
         this.invoke(tx, function (res) {
             if (res === undefined || res === null) return callback(errors.NO_RESPONSE);
-            return callback(self.errorCodes(tx.method, tx.returns, self.applyReturns(tx.returns, res)));
+            return callback(self.applyReturns(tx.returns, self.errorCodes(tx.method, tx.returns, res)));
         });
     },
 
@@ -41668,8 +41668,8 @@ module.exports = {
                         // value in transaction receipt (after confirmation)
                         self.getLoggedReturnValue(txHash, function (err, loggedReturnValue) {
                             if (err) return onFailed(err);
-                            loggedReturnValue = self.applyReturns(payload.returns, loggedReturnValue);
                             loggedReturnValue = self.errorCodes(payload.method, payload.returns, loggedReturnValue);
+                            loggedReturnValue = self.applyReturns(payload.returns, loggedReturnValue);
                             if (loggedReturnValue && loggedReturnValue.error) {
                                 return onFailed(loggedReturnValue);
                             }
