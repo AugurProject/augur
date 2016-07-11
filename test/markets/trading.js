@@ -16,1189 +16,1229 @@ var augur = require(augurpath);
 var tools = require("../tools");
 
 describe("Unit tests", function () {
-    describe("getTradingActions", function () {
-        var txOriginal;
-        before("getTradingActions", function () {
-            txOriginal = augur.tx;
+	describe("getTradingActions", function () {
+		var txOriginal;
+		before("getTradingActions", function () {
+			txOriginal = augur.tx;
 
-            augur.tx = new require('augur-contracts').Tx("2");
-        });
-
-        after("getTradingActions", function () {
-            augur.tx = txOriginal;
-        });
-
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-				assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "BID",
-                    "shares": "5",
-					"gasEth": "0.0627",
-                    "feeEth": "0.03",
-					"costEth": "3",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
+			augur.tx = new require('augur-contracts').Tx("2");
 		});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [
-					{
+		after("getTradingActions", function () {
+			augur.tx = txOriginal;
+		});
+
+		describe("buy actions", function () {
+			runTestCase({
+				description: "no asks",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "BID",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.03",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "no suitable asks",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [
+						{
+							id: "order1",
+							type: "sell",
+							amount: "5",
+							price: "0.7", // price too high
+							outcome: "outcomeasdf123"
+						},
+						{
+							id: "order2",
+							owner: "abcd1234", // user's ask
+							type: "sell",
+							amount: "5",
+							price: "0.6",
+							outcome: "outcomeasdf123"
+						},
+						{
+							id: "order3",
+							type: "sell",
+							amount: "5",
+							price: "0.6",
+							outcome: "differentOutcome" // different outcome
+						}
+					]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "BID",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.03",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "ask with same shares and price",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [{
 						id: "order1",
 						type: "sell",
-						amount: 5,
-						price: 0.7, // price too high
+						amount: "5",
+						price: "0.6",
 						outcome: "outcomeasdf123"
-					},
-					{
-						id: "order2",
-						owner: "abcd1234", // user's ask
+					}]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "BUY",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.06",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "ask with less shares and same price",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [{
+						id: "order1",
 						type: "sell",
-						amount: 5,
-						price: 0.6,
+						amount: "2",
+						price: "0.6",
 						outcome: "outcomeasdf123"
-					},
-					{
+					}]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "BUY",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.024",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}, {
+						"action": "BID",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "ask with same shares and lower price",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [{
+						id: "order1",
+						type: "sell",
+						amount: "5",
+						price: "0.4",
+						outcome: "outcomeasdf123"
+					}]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "BUY",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.04",
+						"costEth": "2",
+						"avgPrice": "0.4"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "ask with less shares and lower price",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [{
+						id: "order1",
+						type: "sell",
+						amount: "2",
+						price: "0.4",
+						outcome: "outcomeasdf123"
+					}]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "BUY",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.016",
+						"costEth": "0.8",
+						"avgPrice": "0.4"
+					}, {
+						"action": "BID",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "asks with same shares and lower prices",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [{
+						id: "order1",
+						type: "sell",
+						amount: "1",
+						price: "0.4",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order2",
+						type: "sell",
+						amount: "2",
+						price: "0.3",
+						outcome: "outcomeasdf123"
+					}, {
 						id: "order3",
 						type: "sell",
-						amount: 5,
-						price: 0.6,
-						outcome: "differentOutcome" // different outcome
-					}
-				]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-				assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "BID",
-                    "shares": "5",
-					"gasEth": "0.0627",
-                    "feeEth": "0.03",
-					"costEth": "3",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
+						amount: "2",
+						price: "0.2",
+						outcome: "outcomeasdf123"
+					}]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "BUY",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.028",
+						"costEth": "1.4",
+						"avgPrice": "0.28"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
+
+			runTestCase({
+				description: "asks with less shares and lower price",
+				type: "buy",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: [{
+						id: "order1",
+						type: "sell",
+						amount: "1",
+						price: "0.4",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order2",
+						type: "sell",
+						amount: "2",
+						price: "0.3",
+						outcome: "outcomeasdf123"
+					}]
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "BUY",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.02",
+						"costEth": "1",
+						"avgPrice": "0.33333333333333333333"
+					}, {
+						"action": "BID",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.012",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 		});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [{
-					id: "order1",
-					type: "sell",
-					amount: 5,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "BUY",
-                    "shares": "5",
-					"gasEth": "0.0627",
-                    "feeEth": "0.06",
-					"costEth": "3",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+		describe("sell actions", function () {
+			runTestCase({
+				description: "no bids, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SHORT_SELL_RISKY",
+						"shares": "5",
+						"gasEth": "0.1254",
+						"feeEth": "0.03",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [{
-					id: "order1",
-					type: "sell",
-					amount: 2,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "BUY",
-                    "shares": "2",
-					"gasEth": "0.0627",
-                    "feeEth": "0.024",
-					"costEth": "1.2",
-					"avgPrice": "0.6"
-				}, {
-					"action": "BID",
-                    "shares": "3",
-					"gasEth": "0.0627",
-                    "feeEth": "0.018",
-					"costEth": "1.8",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with same shares and prices, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "5",
+						price: "0.6",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SHORT_SELL",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.06",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [{
-					id: "order1",
-					type: "sell",
-					amount: 5,
-					price: 0.4,
-					outcome: "outcomeasdf123"
-				}]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "BUY",
-                    "shares": "5",
-					"gasEth": "0.0627",
-                    "feeEth": "0.04",
-					"costEth": "2",
-					"avgPrice": "0.4"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with less amount and same price, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.6",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SHORT_SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.024",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "3",
+						"gasEth": "0.1254",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [{
-					id: "order1",
-					type: "sell",
-					amount: 2,
-					price: 0.4,
-					outcome: "outcomeasdf123"
-				}]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "BUY",
-                    "shares": "2",
-					"gasEth": "0.0627",
-                    "feeEth": "0.016",
-					"costEth": "0.8",
-					"avgPrice": "0.4"
-				}, {
-					"action": "BID",
-                    "shares": "3",
-					"gasEth": "0.0627",
-                    "feeEth": "0.018",
-					"costEth": "1.8",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with same shares and higher price, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "5",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SHORT_SELL",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.07",
+						"costEth": "3.5",
+						"avgPrice": "0.7"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [{
-					id: "order1",
-					type: "sell",
-					amount: 1,
-					price: 0.4,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order2",
-					type: "sell",
-					amount: 2,
-					price: 0.3,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order3",
-					type: "sell",
-					amount: 2,
-					price: 0.2,
-					outcome: "outcomeasdf123"
-				}]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "BUY",
-                    "shares": "5",
-					"gasEth": "0.0627",
-                    "feeEth": "0.028",
-					"costEth": "1.4",
-					"avgPrice": "0.28"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with less shares and higher price, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SHORT_SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.028",
+						"costEth": "1.4",
+						"avgPrice": "0.7"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "3",
+						"gasEth": "0.1254",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "buy",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: [{
-					id: "order1",
-					type: "sell",
-					amount: 1,
-					price: 0.4,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order2",
-					type: "sell",
-					amount: 2,
-					price: 0.3,
-					outcome: "outcomeasdf123"
-				}]
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "BUY",
-                    "shares": "3",
-					"gasEth": "0.0627",
-                    "feeEth": "0.02",
-					"costEth": "1",
-					"avgPrice": "0.33333333333333333333"
-				}, {
-					"action": "BID",
-                    "shares": "2",
-					"gasEth": "0.0627",
-                    "feeEth": "0.012",
-					"costEth": "1.2",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bids with less shares and higher prices, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "1",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.8",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SHORT_SELL",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.046",
+						"costEth": "2.3",
+						"avgPrice": "0.76666666666666666667"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "2",
+						"gasEth": "0.1254",
+						"feeEth": "0.012",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.00000000006270",
-					"avgPrice": "0.33333333333333333333"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bids with same shares and higher prices, no position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "0",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "1",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.8",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.9",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SHORT_SELL",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.082",
+						"costEth": "4.1",
+						"avgPrice": "0.82"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 5,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "3.0627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "no bids, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "ASK",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.012",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "3",
+						"gasEth": "0.1254",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.2627",
-					"avgPrice": "0.6"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.80000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with same shares and price, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "5",
+						price: "0.6",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.024",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}, {
+						"action": "SHORT_SELL",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.036",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 5,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "3.5627",
-					"avgPrice": "0.7"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with less shares and same price, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.6",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.024",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "3",
+						"gasEth": "0.1254",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.4627",
-					"avgPrice": "0.7"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.80000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with same shares and higher price, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "5",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.028",
+						"costEth": "1.4",
+						"avgPrice": "0.7"
+					}, {
+						"action": "SHORT_SELL",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.042",
+						"costEth": "2.1",
+						"avgPrice": "0.7"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 1,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.8,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "2.3627",
-					"avgPrice": "0.766666666667"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.20000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with less shares and higher price, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.028",
+						"costEth": "1.4",
+						"avgPrice": "0.7"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "3",
+						"gasEth": "0.1254",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 0,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 1,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.8,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.9,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "4.1627",
-					"avgPrice": "0.82"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bids with less shares and higher prices, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "1",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order2",
+						type: "buy",
+						amount: "2",
+						price: "0.8",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 3);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.032",
+						"costEth": "1.6",
+						"avgPrice": "0.8"
+					}, {
+						"action": "SHORT_SELL",
+						"shares": "1",
+						"gasEth": "0.0627",
+						"feeEth": "0.014",
+						"costEth": "0.7",
+						"avgPrice": "0.7"
+					}, {
+						"action": "SHORT_SELL_RISKY",
+						"shares": "2",
+						"gasEth": "0.1254",
+						"feeEth": "0.012",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "ASK",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.2627",
-					"avgPrice": "0.6"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.80000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bids with same shares and higher prices, smaller position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "2",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "1",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order2",
+						type: "buy",
+						amount: "2",
+						price: "0.8",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order3",
+						type: "buy",
+						amount: "2",
+						price: "0.9",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.036",
+						"costEth": "1.8",
+						"avgPrice": "0.9"
+					}, {
+						"action": "SHORT_SELL",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.046",
+						"costEth": "2.3",
+						"avgPrice": "0.76666666666666666667"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 5,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.2627",
-					"avgPrice": "0.6"
-				}, {
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.8627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "no bids, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "ASK",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.03",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.2627",
-					"avgPrice": "0.6"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.80000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with same shares and price, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "5",
+						price: "0.6",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SELL",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.06",
+						"costEth": "3",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 5,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.4627",
-					"avgPrice": "0.7"
-				}, {
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "2.1627",
-					"avgPrice": "0.7"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with less shares and same price, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.6",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.024",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}, {
+						"action": "ASK",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.4627",
-					"avgPrice": "0.7"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.80000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with same shares and higher price, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "5",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SELL",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.07",
+						"costEth": "3.5",
+						"avgPrice": "0.7"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 1,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order2",
-					type: "buy",
-					amount: 2,
-					price: 0.8,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 3);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "0.7627",
-					"avgPrice": "0.7"
-				}, {
-					"action": "SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "0.8627",
-					"avgPrice": "0.8"
-				}, {
-					"action": "RISKY_SHORT_SELL",
-                    "shares": null,
-					"gasEth": "0.00000000006270",
-                    "feeEth": "todo",
-					"costEth": "1.20000000006270",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bid with less shares and higher price, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "2",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.028",
+						"costEth": "1.4",
+						"avgPrice": "0.7"
+					}, {
+						"action": "ASK",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.018",
+						"costEth": "1.8",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 2,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 1,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order2",
-					type: "buy",
-					amount: 2,
-					price: 0.8,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order3",
-					type: "buy",
-					amount: 2,
-					price: 0.9,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "4.1627",
-					"avgPrice": "0.82"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
+			runTestCase({
+				description: "bids with less shares and higher prices, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "1",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order2",
+						type: "buy",
+						amount: "2",
+						price: "0.8",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 2);
+					var expected = [{
+						"action": "SELL",
+						"shares": "3",
+						"gasEth": "0.0627",
+						"feeEth": "0.046",
+						"costEth": "2.3",
+						"avgPrice": "0.76666666666666666667"
+					}, {
+						"action": "ASK",
+						"shares": "2",
+						"gasEth": "0.0627",
+						"feeEth": "0.012",
+						"costEth": "1.2",
+						"avgPrice": "0.6"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 3);
-				var expected = [{
-					"action": "ASK",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "3.0627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
-
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 5,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "3.0627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
-
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.6,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.2627",
-					"avgPrice": "0.6"
-				}, {
-					"action": "ASK",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.8627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
-
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 5,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "3.5627",
-					"avgPrice": "0.7"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
-
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 2,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.4627",
-					"avgPrice": "0.7"
-				}, {
-					"action": "ASK",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.8627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
-
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 1,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order2",
-					type: "buy",
-					amount: 2,
-					price: 0.8,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 2);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "2.3627",
-					"avgPrice": "0.7666666667"
-				}, {
-					"action": "ASK",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "1.2627",
-					"avgPrice": "0.6"
-				}];
-				assert.deepEqual(actions, expected)
-			}
-		});
-
-		runTestCase({
-			type: "sell",
-			orderShares: 5,
-			orderLimitPrice: 0.6,
-            takerFee: "0.02",
-            makerFee: "0.01",
-			userPositionShares: 5,
-			outcomeId: "outcomeasdf123",
-			marketOrderBook: {
-				buy: [{
-					id: "order1",
-					type: "buy",
-					amount: 1,
-					price: 0.7,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order2",
-					type: "buy",
-					amount: 2,
-					price: 0.8,
-					outcome: "outcomeasdf123"
-				}, {
-					id: "order3",
-					type: "buy",
-					amount: 2,
-					price: 0.9,
-					outcome: "outcomeasdf123"
-				}],
-				sell: []
-			},
-			userAddress: "abcd1234",
-			assertions: function (actions) {
-                assert.isArray(actions);
-				assert.lengthOf(actions, 1);
-				var expected = [{
-					"action": "SELL",
-                    "shares": null,
-					"gasEth": "0.0627",
-                    "feeEth": "todo",
-					"costEth": "4.1627",
-					"avgPrice": "0.82"
-				}];
-				assert.deepEqual(actions, expected)
-			}
+			runTestCase({
+				description: "bids with same shares and higher prices, same position",
+				type: "sell",
+				orderShares: "5",
+				orderLimitPrice: "0.6",
+				takerFee: "0.02",
+				makerFee: "0.01",
+				userPositionShares: "5",
+				outcomeId: "outcomeasdf123",
+				marketOrderBook: {
+					buy: [{
+						id: "order1",
+						type: "buy",
+						amount: "1",
+						price: "0.7",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order2",
+						type: "buy",
+						amount: "2",
+						price: "0.8",
+						outcome: "outcomeasdf123"
+					}, {
+						id: "order3",
+						type: "buy",
+						amount: "2",
+						price: "0.9",
+						outcome: "outcomeasdf123"
+					}],
+					sell: []
+				},
+				userAddress: "abcd1234",
+				assertions: function (actions) {
+					assert.isArray(actions);
+					assert.lengthOf(actions, 1);
+					var expected = [{
+						"action": "SELL",
+						"shares": "5",
+						"gasEth": "0.0627",
+						"feeEth": "0.082",
+						"costEth": "4.1",
+						"avgPrice": "0.82"
+					}];
+					assert.deepEqual(actions, expected)
+				}
+			});
 		});
 
 		function runTestCase(testCase) {
-			it(JSON.stringify(testCase, null, 1), function () {
+			it(testCase.description, function () {
 				var actions = augur.getTradingActions({
 					type: testCase.type,
 					orderShares: testCase.orderShares,
 					orderLimitPrice: testCase.orderLimitPrice,
-                    takerFee: testCase.takerFee,
-                    makerFee: testCase.makerFee,
+					takerFee: testCase.takerFee,
+					makerFee: testCase.makerFee,
 					userAddress: testCase.userAddress,
 					userPositionShares: testCase.userPositionShares,
 					outcomeId: testCase.outcomeId,
@@ -1207,7 +1247,7 @@ describe("Unit tests", function () {
 				testCase.assertions(actions);
 			});
 		}
-    });
+	});
 
     describe("processOrder", function () {
 
