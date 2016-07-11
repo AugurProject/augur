@@ -10,13 +10,16 @@ const TradePanel = (p) => (
 	>
 		<table className="trade-builder">
 			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
-			<TradePanelBody
-				outcomes={p.outcomes}
-				sideOptions={p.sideOptions}
-				selectedOutcomeID={p.selectedOutcomeID}
-				updateSelectedOutcome={p.updateSelectedOutcome}
-				constants={p.constants}
-			/>
+			{ p.outcomes.map(outcome => (
+				<TradePanelBody
+					key={`${outcome.name}`}
+					outcome={outcome}
+					sideOptions={p.sideOptions}
+					selectedOutcomeID={p.selectedOutcomeID}
+					updateSelectedOutcome={p.updateSelectedOutcome}
+					constants={p.constants}
+				/>
+			))}
 			{p.tradeOrders && !!p.tradeOrders.length &&
 				<TradePanelFooter
 					summary={p.tradeSummary}
