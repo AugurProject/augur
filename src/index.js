@@ -56,6 +56,7 @@ function Augur() {
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
     this.processOrder = require("./processOrder").bind(this);
+    this.getTradingActions = require("./tradingActions").bind(this);
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
