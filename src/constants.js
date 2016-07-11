@@ -9,10 +9,12 @@ var abi = require("augur-abi");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
+var ONE = new BigNumber(10).toPower(18); 
+
 module.exports = {
     ZERO: new BigNumber(0),
-    ONE: new BigNumber(2).toPower(64),
-    ETHER: new BigNumber(10).toPower(18),
+    ONE: ONE,
+    ETHER: ONE,
 
     DEFAULT_BRANCH_ID: "0xf69b5",
     BID: 1,

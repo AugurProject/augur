@@ -652,47 +652,47 @@ describe("Contract methods", function () {
 
     describe("Call", function () {
 
-        // it("call getBranches using web.invoke", function (done) {
-        //     this.timeout(tools.TIMEOUT);
-        //     var augur = tools.setup(require("../../src"), process.argv.slice(2));
-        //     augur.web.login(handle, password, function (user) {
-        //         if (user.error) {
-        //             augur.web.logout();
-        //             return done(new Error(tools.pp(user)));
-        //         }
-        //         assert.strictEqual(
-        //             user.address,
-        //             augur.web.account.address
-        //         );
+        it("call getBranches using web.invoke", function (done) {
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            augur.web.login(handle, password, function (user) {
+                if (user.error) {
+                    augur.web.logout();
+                    return done(new Error(tools.pp(user)));
+                }
+                assert.strictEqual(
+                    user.address,
+                    augur.web.account.address
+                );
 
-        //         // sync
-        //         var branches = augur.web.invoke(augur.tx.Branches.getBranches);
-        //         assert.isAbove(branches.length, 0);
-        //         assert.isArray(branches);
-        //         assert.strictEqual(
-        //             augur.rpc.applyReturns(
-        //                 augur.tx.Branches.getBranches.returns,
-        //                 branches[0]
-        //             ),
-        //             augur.constants.DEFAULT_BRANCH_ID
-        //         );
+                // sync
+                var branches = augur.web.invoke(augur.tx.Branches.getBranches);
+                assert.isAbove(branches.length, 0);
+                assert.isArray(branches);
+                assert.strictEqual(
+                    augur.rpc.applyReturns(
+                        augur.tx.Branches.getBranches.returns,
+                        branches[0]
+                    ),
+                    augur.constants.DEFAULT_BRANCH_ID
+                );
 
-        //         // async
-        //         augur.web.invoke(augur.tx.Branches.getBranches, function (branches) {
-        //             assert.isAbove(branches.length, 0);
-        //             assert.isArray(branches);
-        //             assert.strictEqual(
-        //                 augur.rpc.applyReturns(
-        //                     augur.tx.Branches.getBranches.returns,
-        //                     branches[0]
-        //                 ),
-        //                 augur.constants.DEFAULT_BRANCH_ID
-        //             );
-        //             augur.web.logout();
-        //             done();
-        //         });
-        //     });
-        // });
+                // async
+                augur.web.invoke(augur.tx.Branches.getBranches, function (branches) {
+                    assert.isAbove(branches.length, 0);
+                    assert.isArray(branches);
+                    assert.strictEqual(
+                        augur.rpc.applyReturns(
+                            augur.tx.Branches.getBranches.returns,
+                            branches[0]
+                        ),
+                        augur.constants.DEFAULT_BRANCH_ID
+                    );
+                    augur.web.logout();
+                    done();
+                });
+            });
+        });
 
     });
 
