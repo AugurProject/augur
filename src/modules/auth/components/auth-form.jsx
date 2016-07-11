@@ -71,7 +71,7 @@ export default class AuthForm extends Component {
 		const s = this.state;
 
 		return (
-			<form className={p.className} onSubmit={this.handleSubmit} onChange={this.handleChange} onInput={this.handleInput}>
+			<form className={p.className} onSubmit={this.handleSubmit}>
 				<h1 className="title">
 					{p.title}
 					{p.topLinkText &&
@@ -99,12 +99,13 @@ export default class AuthForm extends Component {
 				/>
 				<Input
 					name="secureID"
+					ref={(ref) => { if (ref && ref.state.value !== s.secureID) { this.setState({ secureID: ref.state.value }); }}}
 					className={classnames('secureID-input', { displayNone: !p.isVisibleID })}
 					type="text"
 					value={s.secureID}
 					placeholder="secure login ID"
 					autoFocus="autofocus"
-					onChange={(secureID) => { console.log(secureID); this.setState({ secureID }); }}
+					onChange={(secureID) => this.setState({ secureID })}
 				/>
 				<input
 					ref="password"
