@@ -6,14 +6,11 @@ const Position = (p) => (
 		<div className="main-group">
 			<span className="position-name">{p.name}</span>
 			<ValueDenomination {...p.qtyShares} />
-			<div className="position-pair gain-percent">
-				<ValueDenomination
-					{...p.gainPercent}
-					formatted={p.gainPercent.minimized}
-				/>
-				&nbsp;
-				<span className="title">{p.gainPercent.value > 0 ? 'gain' : 'loss'}</span>
-			</div>
+			<ValueDenomination
+				{...p.gainPercent}
+				formatted={p.gainPercent.minimized}
+				denomination={`${p.gainPercent.denomination} return`}
+			/>
 		</div>
 		<div className="position-group">
 			<div className="position-pair purchase-price">

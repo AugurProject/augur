@@ -12,7 +12,8 @@ export function makeNumber(num, denomination, omitSign) {
 		denomination: denomination || ''
 	};
 
-	if (!omitSign) {
+	const neverShowPlusSign = true;
+	if (!omitSign && neverShowPlusSign) {
 		if (o.value > 0) {
 			o.formatted = `+${o.formatted}`;
 			o.rounded = `+${o.rounded}`;

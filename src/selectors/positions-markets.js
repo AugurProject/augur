@@ -12,11 +12,11 @@ export default [
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
 					purchasePrice: makeNumber(0.2, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
+					shareChange: makeNumber(-0.1, 'eth'),
 					totalCost: makeNumber(1000, 'eth'),
-					shareChange: makeNumber(-1, 'eth'),
-					gainPercent: makeNumber(-9, '%'),
-					netChange: makeNumber(-900, 'eth')
+					totalValue: makeNumber(100, 'eth'),
+					netChange: makeNumber(-900, 'eth'),
+					gainPercent: makeNumber(-9, '%')
 				},
 				lastPrice: makeNumber(0.1, 'eth')
 			},
@@ -27,11 +27,11 @@ export default [
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
 					purchasePrice: makeNumber(0.2, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
+					shareChange: makeNumber(-0.1, 'eth'),
 					totalCost: makeNumber(1000, 'eth'),
-					shareChange: makeNumber(-1, 'eth'),
-					gainPercent: makeNumber(-9, '%'),
-					netChange: makeNumber(-900, 'eth')
+					totalValue: makeNumber(100, 'eth'),
+					netChange: makeNumber(-900, 'eth'),
+					gainPercent: makeNumber(-9, '%')
 				},
 				lastPrice: makeNumber(0.1, 'eth')
 			}
@@ -48,11 +48,11 @@ export default [
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
 					purchasePrice: makeNumber(0.2, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
+					shareChange: makeNumber(-0.1, 'eth'),
 					totalCost: makeNumber(1000, 'eth'),
-					shareChange: makeNumber(-1, 'eth'),
-					gainPercent: makeNumber(-9, '%'),
-					netChange: makeNumber(-900, 'eth')
+					totalValue: makeNumber(100, 'eth'),
+					netChange: makeNumber(-900, 'eth'),
+					gainPercent: makeNumber(-9, '%')
 				},
 				lastPrice: makeNumber(0.1, 'eth')
 			},
@@ -63,11 +63,11 @@ export default [
 					numPositions: makeNumber(10, 'Positions', true),
 					qtyShares: makeNumber(50, 'shares'),
 					purchasePrice: makeNumber(0.2, 'eth'),
-					totalValue: makeNumber(100, 'eth'),
+					shareChange: makeNumber(-0.1, 'eth'),
 					totalCost: makeNumber(1000, 'eth'),
-					shareChange: makeNumber(-1, 'eth'),
-					gainPercent: makeNumber(-9, '%'),
-					netChange: makeNumber(-900, 'eth')
+					totalValue: makeNumber(100, 'eth'),
+					netChange: makeNumber(-900, 'eth'),
+					gainPercent: makeNumber(-9, '%')
 				},
 				lastPrice: makeNumber(0.1, 'eth')
 			}
