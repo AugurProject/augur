@@ -45,7 +45,6 @@ export function loadLoginAccountLocalStorage(accountID) {
 	return (dispatch, getState) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-
 		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
 			return;
 		}

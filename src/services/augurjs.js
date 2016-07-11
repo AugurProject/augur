@@ -71,7 +71,6 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 };
 
 ex.loadLoginAccount = function loadLoginAccount(cb) {
-	console.log('augur.js loadLoginAccount called!');
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
@@ -109,8 +108,6 @@ ex.loadLoginAccount = function loadLoginAccount(cb) {
 };
 
 ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealEther) {
-	console.log('augur.js loadAssets called!');
-	console.log(accountID);
 	augur.getCashBalance(accountID, (result) => {
 		if (!result || result.error) {
 			return cbEther(result);
@@ -214,9 +211,6 @@ ex.listenToBidsAsks = function listenToBidsAsks() {
 };
 
 ex.login = function login(secureLoginID, password, cb) {
-	console.log('augur.js Login called!');
-	console.log(secureLoginID);
-	console.log(password);
 	augur.web.login(secureLoginID, password, (account) => {
 		if (!account) {
 			return cb({ code: 0, message: 'failed to login' });

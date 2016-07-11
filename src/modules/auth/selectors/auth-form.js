@@ -81,7 +81,10 @@ export const selectLogin = (auth, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, secureLoginID) => dispatch(login(secureLoginID, password))
+		onSubmit: (name, password, password2, secureLoginID) => {
+	console.log(secureLoginID);
+	console.log(password);
+dispatch(login(secureLoginID, password)) }
 	};
 };
 
@@ -106,8 +109,7 @@ export const selectNewRegister = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, secureLoginID) =>
-			dispatch(login(secureLoginID, password))
+		onSubmit: (name, password, password2, secureLoginID) =>		dispatch(login(secureLoginID, password))
 	};
 };
 
