@@ -99,7 +99,7 @@ export default class AuthForm extends Component {
 				/>
 				<Input
 					name="secureID"
-					ref={(ref) => { if (ref && ref.state.value !== s.secureID) { this.setState({ secureID: ref.state.value }); }}}
+					ref={(ref) => { if (ref && ref.state.value !== s.secureID) { this.setState({ secureID: ref.state.value }); } }}
 					className={classnames('secureID-input', { displayNone: !p.isVisibleID })}
 					type="text"
 					value={s.secureID}
