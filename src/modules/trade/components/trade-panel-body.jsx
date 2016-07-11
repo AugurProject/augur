@@ -15,6 +15,7 @@ const TradePanelBody = (p) => {
 				key={`outcome-${i}`}
 				outcome={p.outcome}
 				selectedOutcomeID={p.selectedOutcomeID}
+				constants={p.constants}
 				item={i}
 				type={ORDER}
 			/>
@@ -27,6 +28,7 @@ const TradePanelBody = (p) => {
 				outcome={p.outcome}
 				sideOptions={p.sideOptions}
 				updateSelectedOutcome={p.updateSelectedOutcome}
+				constants={p.constants}
 			/>
 			{ orderBookRows }
 		</tbody>
@@ -37,7 +39,8 @@ TradePanelBody.propTypes = {
 	outcome: React.PropTypes.object,
 	sideOptions: React.PropTypes.array,
 	selectedOutcomeID: React.PropTypes.string,
-	updateSelectedOutcome: React.PropTypes.func
+	updateSelectedOutcome: React.PropTypes.func,
+	constants: React.PropTypes.object
 };
 
 export default TradePanelBody;
