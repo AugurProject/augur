@@ -20,7 +20,7 @@ const TradePanel = (p) => (
 					constants={p.constants}
 				/>
 			))}
-			{p.tradeOrders && !!p.tradeOrders.length &&
+			{ p.tradeOrders && !!p.tradeOrders.length &&
 				<TradePanelFooter
 					summary={p.tradeSummary}
 					constants={p.constants}

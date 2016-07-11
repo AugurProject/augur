@@ -4,7 +4,6 @@ import ValueDenomination from '../../../modules/common/components/value-denomina
 import Input from '../../../modules/common/components/input';
 import Dropdown from '../../../modules/common/components/dropdown';
 import Clickable from '../../../modules/common/components/clickable';
-
 import { OUTCOME, ORDER } from '../../../modules/trade/constants/row-types';
 
 const TradePanelRow = (p) => {
@@ -20,7 +19,7 @@ const TradePanelRow = (p) => {
 					p.updateSelectedOutcome(p.outcome.id);
 				}}
 			>
-				<th className="p.outcome-name">
+				<th className="outcome-name">
 					{p.outcome.name}
 				</th>
 				<td className="last-price">

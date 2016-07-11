@@ -23,7 +23,10 @@ const TradePanelBody = (p) => {
 	}
 
 	return (
-		<tbody className="trade-panel-body" >
+		<tbody
+			id={`${p.outcome.name}-${p.outcome.id}`}
+			className="trade-panel-body"
+		>
 			<TradePanelRow
 				outcome={p.outcome}
 				sideOptions={p.sideOptions}
