@@ -1,15 +1,10 @@
-var assert = require('chai').assert;
-// keywords: {
-// 		value: String,
-// 		onChangeKeywords: [Function: onChangeKeywords]
-// },
-function keywordsAssertion(actual) {
-	assert.isDefined(actual, `keywords isn't defined`);
-	assert.isObject(actual, `keywords isn't an object`);
-	assert.isDefined(actual.value, `keywords.value isn't defined`);
-	assert.isString(actual.value, `keywords.value isn't a string`);
-	assert.isDefined(actual.onChangeKeywords, `keywords.onChangeKeywords isn't defined`);
-	assert.isFunction(actual.onChangeKeywords, `keywords.onChangeKeywords isn't a function`);
-}
+import { assert } from 'chai';
 
-module.exports = keywordsAssertion
+export default function (keywords) {
+	assert.isDefined(keywords, `keywords isn't defined`);
+	assert.isObject(keywords, `keywords isn't an object`);
+	assert.isDefined(keywords.value, `keywords.value isn't defined`);
+	assert.isString(keywords.value, `keywords.value isn't a string`);
+	assert.isDefined(keywords.onChangeKeywords, `keywords.onChangeKeywords isn't defined`);
+	assert.isFunction(keywords.onChangeKeywords, `keywords.onChangeKeywords isn't a function`);
+}

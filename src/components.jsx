@@ -1,5 +1,5 @@
 import App from './app';
-import * as assertions from '../test/assertions/';
+import assertions from './assertions';
 
 const components = {
 	App,
@@ -8,5 +8,8 @@ const components = {
 export default components;
 
 // also adding this notation to allow for importing specific pieces: import { App } from '...';
-export { App, assertions };
+export {
+	App,
+	assertions
+};
 

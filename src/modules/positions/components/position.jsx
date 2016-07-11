@@ -6,41 +6,38 @@ const Position = (p) => (
 		<div className="main-group">
 			<span className="position-name">{p.name}</span>
 			<ValueDenomination {...p.qtyShares} />
-			<div className="position-pair gain-percent">
-				<ValueDenomination
-					{...p.gainPercent}
-					formatted={p.gainPercent.minimized}
-				/>
-				&nbsp;
-				<span className="title">{p.gainPercent.value > 0 ? 'gain' : 'loss'}</span>
-			</div>
+			<ValueDenomination
+				{...p.gainPercent}
+				formatted={p.gainPercent.minimized}
+				denomination={`${p.gainPercent.denomination} return`}
+			/>
 		</div>
 		<div className="position-group">
-			<div className="position-pair per-share-gain">
-				<span className="title">per share gain/loss</span>
-				<ValueDenomination {...p.shareChange} />
+			<div className="position-pair purchase-price">
+				<span className="title">avg. purchase price</span>
+				<ValueDenomination {...p.purchasePrice} />
 			</div>
 			<div className="position-pair last-price">
 				<span className="title">last trade price</span>
 				<ValueDenomination {...p.lastPrice} />
 			</div>
-			<div className="position-pair purchase-price">
-				<span className="title">avg. purchase price</span>
-				<ValueDenomination {...p.purchasePrice} />
+			<div className="position-pair per-share-gain">
+				<span className="title">per share gain/loss</span>
+				<ValueDenomination {...p.shareChange} />
 			</div>
 		</div>
 		<div className="position-group">
-			<div className="position-pair net-change">
-				<span className="title">net gain/loss</span>
-				<ValueDenomination {...p.netChange} />
+			<div className="position-pair total-cost">
+				<span className="title">total cost</span>
+				<ValueDenomination {...p.totalCost} />
 			</div>
 			<div className="position-pair total-value">
 				<span className="title">total value</span>
 				<ValueDenomination {...p.totalValue} />
 			</div>
-			<div className="position-pair total-cost">
-				<span className="title">total cost</span>
-				<ValueDenomination {...p.totalCost} />
+			<div className="position-pair net-change">
+				<span className="title">net gain/loss</span>
+				<ValueDenomination {...p.netChange} />
 			</div>
 		</div>
 	</div>

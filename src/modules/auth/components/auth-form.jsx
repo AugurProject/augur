@@ -149,14 +149,3 @@ export default class AuthForm extends Component {
 		);
 	}
 }
-// {p.isVisibleAccountInfo &&
-// 	<div className="account-info-container">
-// 		<div><label>Secure Login ID:</label> {p.secureID}</div>
-// 		<div>
-// 			<label>Password:</label> {s.showPass ? p.password : '********'}
-// 		</div>
-// 		<span className="text-button" onClick={() => this.setState({ showPass: !s.showPass })}>
-// 			{s.showPass ? 'Hide Password' : 'Show Password'}
-// 		</span>
-// 	</div>
-// }

@@ -4,8 +4,8 @@ import {
 	CREATE_MARKET,
 	BUY_SHARES,
 	SELL_SHARES,
-	BID_SHARES,
-	ASK_SHARES,
+	BID,
+	ASK,
 	SUBMIT_REPORT,
 	GENERATE_ORDER_BOOK,
 	TRADE_SUMMARY
@@ -18,20 +18,20 @@ const Transaction = (p) => {
 
 	switch (p.type) {
 	case BUY_SHARES:
-	case BID_SHARES:
+	case BID:
 	case SELL_SHARES:
-	case ASK_SHARES:
+	case ASK:
 		switch (p.type) {
 		case BUY_SHARES:
 			nodes.action = 'BUY';
 			break;
-		case BID_SHARES:
+		case BID:
 			nodes.action = 'BID';
 			break;
 		case SELL_SHARES:
 			nodes.action = 'SELL';
 			break;
-		case ASK_SHARES:
+		case ASK:
 			nodes.action = 'ASK';
 			break;
 		default:
@@ -53,7 +53,7 @@ const Transaction = (p) => {
 		);
 		if (p.type === BUY_SHARES) {
 			nodes.valueChange = (
-				<span className="value-changes">
+				<span className="value-change">
 					{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 					}
 					{!!p.etherNegative && !!p.etherNegative.value && <ValueDenomination className="value-change ether" {...p.etherNegative} />
@@ -62,7 +62,7 @@ const Transaction = (p) => {
 			);
 		} else {
 			nodes.valueChange = (
-				<span className="value-changes">
+				<span className="value-change">
 					{!!p.sharesNegative && !!p.sharesNegative.value && <ValueDenomination className="value-change shares" {...p.sharesNegative} />
 					}
 					{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -74,7 +74,7 @@ const Transaction = (p) => {
 	case TRADE_SUMMARY:
 		nodes.description = (<span className="description">&nbsp;</span>);
 		nodes.valueChange = (
-			<span className="value-changes">
+			<span className="value-change">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -132,7 +132,7 @@ const Transaction = (p) => {
 	default:
 		nodes.description = (<span className="description">{p.type}</span>);
 		nodes.valueChange = (
-			<span className="value-changes">
+			<span className="value-change">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
