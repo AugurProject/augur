@@ -37,7 +37,7 @@ const TradePanel = (p) => (
 					p.onSubmitPlaceTrade();
 				}}
 			>
-				Place Trade{p.tradeOrders && p.tradeOrders.length > 1 ? 's' : ''}
+				Place Trade
 			</button>
 		</div>
 	</div>
