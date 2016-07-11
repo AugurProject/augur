@@ -25,11 +25,12 @@ var modules = [
     require("./modules/whitelist"),
     require("./modules/logs"),
     require("./modules/abacus"),
-    require("./modules/reportingTools")
+    require("./modules/reportingTools"),
+    require("./modules/tradingActions")
 ];
 
 function Augur() {
-    this.version = "1.7.0";
+    this.version = "1.7.1";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -56,7 +57,6 @@ function Augur() {
     }
     this.generateOrderBook = require("./generateOrderBook").bind(this);
     this.processOrder = require("./processOrder").bind(this);
-    this.getTradingActions = require("./tradingActions").bind(this);
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
