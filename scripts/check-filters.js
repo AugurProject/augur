@@ -6,32 +6,6 @@ var augur = require("../src");
 
 augur.connect({http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546"});
 
-augur.filters.listen({marketCreated: console.log}, console.log);
-
-// augur.C2.set_callee(augur.contracts.C1);
-// augur.rpc.transact({to: augur.contracts.C2, method: "bar", value: 500, send: true}, console.log, console.log, console.log);
-
-// augur.rpc.getLogs({
-//     fromBlock: "0x1",
-//     toBlock: "pending",
-//     address: augur.contracts.C1,
-//     topics: [abi.prefix_hex(abi.keccak_256("Happy(int256)"))]
-// }, console.log);
-
-// augur.rpc.getLogs({
-//     fromBlock: "0x1",
-//     toBlock: "pending",
-//     address: augur.contracts.C2,
-//     topics: [abi.prefix_hex(abi.keccak_256("Happy(int256)"))]
-// }, console.log);
-
-// augur.rpc.getLogs({
-//     fromBlock: "0x1",
-//     toBlock: "pending",
-//     address: augur.contracts.C2,
-//     topics: [abi.prefix_hex(abi.keccak_256("Happeh(int256)"))]
-// }, console.log);
-
 augur.filters.listen({
     // block: function (msg) {
     //     console.log("block filter:", JSON.stringify(msg, null, 2));

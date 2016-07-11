@@ -10,20 +10,20 @@ var abi = require("augur-abi");
 
 module.exports = {
 
-    sendReputation: function (branchId, to, value, onSent, onSuccess, onFailed) {
-        // branchId: hash id
-        // to: ethereum address of recipient
+    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
+        // branch: hash id
+        // recver: ethereum address of recipient
         // value: number -> fixed-point
-        if (branchId && branchId.branchId) {
-            to = branchId.to;
-            value = branchId.value;
-            onSent = branchId.onSent;
-            onSuccess = branchId.onSuccess;
-            onFailed = branchId.onFailed;
-            branchId = branchId.branchId;
+        if (branch && branch.branch) {
+            recver = branch.recver;
+            value = branch.value;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            branch = branch.branch;
         }
         var tx = clone(this.tx.SendReputation.sendReputation);
-        tx.params = [branchId, to, abi.fix(value, "hex")];
+        tx.params = [branch, recver, abi.fix(value, "hex")];
         return this.transact(tx, onSent, onSuccess, onFailed);
     }
 };

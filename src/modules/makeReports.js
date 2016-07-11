@@ -55,7 +55,7 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
-        console.log("submitReport tx:", tx.params);
+        var returns = tx.returns;
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 

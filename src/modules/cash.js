@@ -8,9 +8,25 @@
 var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 module.exports = {
     
+    depositEther: function (value, onSent, onSuccess, onFailed) {
+        var tx = clone(this.tx.Cash.depositEther);
+        var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
+        tx.value = abi.fix(unpacked.params[0], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    withdrawEther: function (to, value, onSent, onSuccess, onFailed) {
+        var tx = clone(this.tx.Cash.withdrawEther);
+        var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
     setCash: function (address, balance, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Cash.setCash);
         var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);

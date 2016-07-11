@@ -39,38 +39,41 @@ module.exports = {
         }
 
         function checkPenalizeWrong(branch, votePeriod, next) {
+            console.log("checkPenalizeWrong:");
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
-                console.log("Events in vote period", votePeriod + ":", events);
+                console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
-                    return self.Consensus.penalizeWrong({
-                        branch: branch,
-                        event: 0,
-                        onSent: function (r) {
-                            console.log("penalizeWrong sent:", r);
-                        },
-                        onSuccess: function (r) {
-                            console.log("penalizeWrong(branch, 0) success:", r);
-                            console.log(abi.bignum(r.callReturn, "string", true));
-                            next(null);
-                        },
-                        onFailed: function (err) {
-                            console.error("penalizeWrong(branch, 0) error:", err);
-                            next(err);
-                        }
-                    });
+                    return next(null);
+                    // if > first period, then call penalizeWrong(branch, 0)
+                    // return self.Consensus.penalizeWrong({
+                    //     branch: branch,
+                    //     event: 0,
+                    //     onSent: function (r) {
+                    //         console.log("penalizeWrong sent:", r);
+                    //     },
+                    //     onSuccess: function (r) {
+                    //         console.log("penalizeWrong(branch, 0) success:", r);
+                    //         console.log(abi.bignum(r.callReturn, "string", true));
+                    //         next(null);
+                    //     },
+                    //     onFailed: function (err) {
+                    //         console.error("penalizeWrong(branch, 0) error:", err);
+                    //         next(err);
+                    //     }
+                    // });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
-                    console.log("penalizeWrong:", event);
+                    console.log(" - penalizeWrong:", event);
                     self.Consensus.penalizeWrong({
                         branch: branch,
                         event: event,
                         onSent: utils.noop,
                         onSuccess: function (r) {
-                            console.log("penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
                             nextEvent();
                         },
                         onFailed: function (err) {
-                            console.error("penalizeWrong error:", err);
+                            console.error(" - penalizeWrong error:", err);
                             nextEvent(err);
                         }
                     });

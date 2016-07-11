@@ -81,38 +81,3 @@ GLOBAL.vote_period = reportingInfo.vote_period;
 GLOBAL.current_period = reportingInfo.current_period;
 GLOBAL.num_events = reportingInfo.num_events;
 GLOBAL.num_reports = reportingInfo.num_reports;
-
-GLOBAL.getMakeReportsLogs = function (branch) {
-
-    var result = {};
-    var filter = {fromBlock: "0x1", toBlock: "pending", address: augur.contracts.MakeReports};
-    filter.topics = [
-        abi.prefix_hex(abi.keccak_256("catchup(int256,int256)")),
-        abi.prefix_hex(abi.pad_left(abi.hex(branch)))
-    ];
-    var logs = rpc.getLogs(filter);
-    if (logs.length) {
-        result.penalizationCatchup = parseInt(logs[logs.length - 1].data, 16);
-    }
-    
-    filter.topics[0] = abi.prefix_hex(abi.keccak_256("periodCheck(int256,int256,int256)"));
-    logs = rpc.getLogs(filter);
-    if (logs.length) {
-        var data;
-        result.lastPeriodPenalized = [];
-        result.lastPeriod = [];
-        for (var i = 0; i < logs.length; ++i) {
-            data = rpc.unmarshal(logs[i].data);
-            result.lastPeriodPenalized.push(parseInt(data[0], 16));
-            result.lastPeriod.push(parseInt(data[1], 16));
-        }
-    }
-
-    filter.topics[0] = abi.prefix_hex(abi.keccak_256("feesCollected(int256,int256)"));
-    logs = rpc.getLogs(filter);
-    if (logs.length) {
-        result.collectFees = parseInt(logs[logs.length - 1].data, 16);
-    }
-
-    return result;
-};
