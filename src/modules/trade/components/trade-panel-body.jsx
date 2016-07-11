@@ -5,11 +5,11 @@ import { ORDER } from '../../../modules/trade/constants/row-types';
 
 const TradePanelBody = (p) => {
 	let orderBookRows = [];
-	let orderBookLength =	p.outcome.orderBook.bids.length > p.outcome.orderBook.asks.length ?
+	const orderBookLength =	p.outcome.orderBook.bids.length > p.outcome.orderBook.asks.length ?
 								p.outcome.orderBook.bids.length :
 								p.outcome.orderBook.asks.length;
 
-	for (let i = 0; i <= orderBookLength; i++){
+	for (let i = 0; i <= orderBookLength; i++) {
 		orderBookRows.push(
 			<TradePanelRow
 				key={`outcome-${i}`}
@@ -19,7 +19,7 @@ const TradePanelBody = (p) => {
 				item={i}
 				type={ORDER}
 			/>
-		)
+		);
 	}
 
 	return (
@@ -33,7 +33,7 @@ const TradePanelBody = (p) => {
 				updateSelectedOutcome={p.updateSelectedOutcome}
 				constants={p.constants}
 			/>
-			{ orderBookRows }
+			{orderBookRows}
 		</tbody>
 	);
 };

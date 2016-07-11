@@ -10,7 +10,7 @@ const TradePanel = (p) => (
 	>
 		<table className="trade-builder">
 			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
-			{ p.outcomes.map(outcome => (
+			{p.outcomes.map(outcome => (
 				<TradePanelBody
 					key={`${outcome.name}`}
 					outcome={outcome}
@@ -20,7 +20,7 @@ const TradePanel = (p) => (
 					constants={p.constants}
 				/>
 			))}
-			{ p.tradeOrders && !!p.tradeOrders.length &&
+			{p.tradeOrders && !!p.tradeOrders.length &&
 				<TradePanelFooter
 					summary={p.tradeSummary}
 					constants={p.constants}
