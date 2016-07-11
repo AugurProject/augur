@@ -13,17 +13,6 @@ describe(`modules/link/selectors/links.js`, () => {
 
 	beforeEach(() => {
 		store.clearActions();
-		// Mock the window object
-		// global.window = {};
-		// global.window.location = {
-		// 	pathname: '/test',
-		// 	search: 'example'
-		// };
-		// global.window.history = {
-		// 	state: [],
-		// 	pushState: (a, b, c) => window.history.state.push(c)
-		// };
-		// global.window.scrollTo = (x, y) => true;
 	});
 
 	afterEach(() => {
@@ -34,6 +23,6 @@ describe(`modules/link/selectors/links.js`, () => {
 	it(`should have the expected shape`, () => {
 		actual = selector.default();
 		// console.log(actual);
-		assertions.links(actual);
+		assertions.assertLinks(actual);
 	});
 });

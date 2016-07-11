@@ -1,4 +1,4 @@
-import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
+import { BID, ASK } from '../../../modules/transactions/constants/types';
 
 export default function () {
 	return [

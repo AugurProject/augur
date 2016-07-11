@@ -4,7 +4,7 @@ import {
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-import {assertions} from 'augur-ui-react-components';
+import { assertions } from 'augur-ui-react-components';
 
 let pagination;
 describe(`modules/markets/selectors/pagination.js`, () => {
@@ -50,7 +50,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			pageNum: 4
 		}];
-		assertions.pagination(actual);
+		assertions.assertPagination(actual);
 		actual.onUpdateSelectedPageNum(4);
 		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
 	});

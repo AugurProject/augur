@@ -35,7 +35,7 @@ describe('modules/markets/selectors/keywords.js', () => {
 		}];
 
 		actual.onChangeKeywords(keywords);
-		assertions.keywords(actual);
+		assertions.assertKeywords(actual);
 
 		assert(mockUpdate.updateKeywords.calledOnce, `updateKeywords wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the correct action when onChangeKeywords was called.`);
