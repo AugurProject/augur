@@ -3,7 +3,7 @@ import store from '../../../store';
 
 export default function () {
 	const { loginAccount } = store.getState();
-	const prettySecureLoginID = loginAccount.secureLoginID ?  `${loginAccount.secureLoginID.substring(0, 4)}...${loginAccount.secureLoginID.substring(loginAccount.secureLoginID.length - 4)}` : undefined;
+	const prettySecureLoginID = loginAccount.secureLoginID ? `${loginAccount.secureLoginID.substring(0, 4)}...${loginAccount.secureLoginID.substring(loginAccount.secureLoginID.length - 4)}` : undefined;
 	return {
 		...loginAccount,
 		prettySecureLoginID,

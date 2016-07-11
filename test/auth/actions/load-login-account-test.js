@@ -113,17 +113,17 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		}, {
 			type: 'LOAD_REPORTS'
 		}, {
-			type: 'COLLECT_FEES'
-		}, {
 			type: 'PENALIZE_WRONG_REPORTS'
 		}, {
 			type: 'CLOSE_MARKETS'
 		}];
-
+		// {
+		// 	type: 'COLLECT_FEES'
+		// },
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
 		assert(fakeClearReports.clearReports.calledOnce, `clearReports wasn't called once as expected.`);
 		assert(fakeLoadReports.loadReports.calledOnce, `loadReports wasn't called once as expected.`);
-		assert(fakeCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected.`);
+		// assert(fakeCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected.`);
 		assert(fakePenalizeWrong.penalizeWrongReports.calledOnce, `penalizeWrongReports wasn't called once as expected.`);
 		assert(fakeCloseMarkets.closeMarkets.calledOnce, `closeMarkets wasn't called once as expected.`);
 

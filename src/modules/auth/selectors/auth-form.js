@@ -81,10 +81,7 @@ export const selectLogin = (auth, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, secureLoginID) => {
-	console.log(secureLoginID);
-	console.log(password);
-dispatch(login(secureLoginID, password)) }
+		onSubmit: (name, password, password2, secureLoginID) =>	dispatch(login(secureLoginID, password))
 	};
 };
 
@@ -101,7 +98,7 @@ export const selectNewRegister = (auth, loginAccount, dispatch) => {
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
 
-		msg: errMsg ? errMsg : 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
+		msg: errMsg || 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
 		secureID: loginAccount.secureLoginID,
 
 		msgClass: errMsg ? 'error' : 'success',

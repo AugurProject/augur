@@ -2,16 +2,17 @@ import {
 	assert
 } from 'chai';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
 describe(`modules/auth/actions/register.js`, () => {
-	proxyquire.noPreserveCache().noCallThru();
+	proxyquire.noPreserveCache();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const fakeAugurJS = {};
-	const fakeAddTransactions = {};
+	const fakeAuthLink = {};
 	const fakeSelectors = {};
 
 	let action, store;
@@ -19,29 +20,31 @@ describe(`modules/auth/actions/register.js`, () => {
 		loginAccount: {}
 	});
 	store = mockStore(thisTestState);
-	fakeAugurJS.register = (usrnm, psswrd, register, cb) => {
+	fakeAugurJS.register = (name, psswrd, cb) => {
 		cb(null, {
 			address: 'test',
 			id: 'test',
-			handle: usrnm,
+			secureLoginID: 'testid',
+			name: name,
 			ether: 0,
 			realEther: 0,
 			rep: 0
 		});
-	};
-	fakeAddTransactions.makeTransactionID = () => {
-		return 1000;
 	};
 	fakeSelectors.links = {
 		marketsLink: {
 			onClick: () => {}
 		}
 	};
+	fakeAuthLink.selectAuthLink = (page, bool, dispatch) => {
+		return { onClick: () => {} };
+	};
+
 
 	action = proxyquire('../../../src/modules/auth/actions/register', {
 		'../../../services/augurjs': fakeAugurJS,
-		'../../transactions/actions/add-transactions': fakeAddTransactions,
-		'../../../selectors': fakeSelectors
+		'../../../selectors': fakeSelectors,
+		'../../link/selectors/links': fakeAuthLink
 	});
 
 	beforeEach(() => {
@@ -51,22 +54,9 @@ describe(`modules/auth/actions/register.js`, () => {
 	it(`should register a new account`, () => {
 		// this should be faster, currently taking to long
 		const expectedOutput = [{
-			type: 'UPDATE_TRANSACTIONS_DATA',
-			transactionsData: {
-				'1000': {
-					type: 'register',
-					status: 'loading ether & rep...'
-				}
-			}
-		}, {
 			type: 'UPDATE_LOGIN_ACCOUNT',
 			data: {
-				address: 'test',
-				id: 'test',
-				handle: 'newUser',
-				ether: 0,
-				realEther: 0,
-				rep: 0
+				secureLoginID: 'testid',
 			}
 		}];
 

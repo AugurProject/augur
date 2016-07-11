@@ -21,7 +21,9 @@ export function login(secureLoginID, password) {
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));
 			dispatch(loadLoginAccountDependents());
-			links.accountLink.onClick(links.accountLink.href);
+			if (links && links.marketsLink)	{
+				links.marketsLink.onClick(links.marketsLink.href);
+			}
 			return;
 		});
 	};
