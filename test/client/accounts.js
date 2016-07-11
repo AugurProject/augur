@@ -628,7 +628,7 @@ describe("Contract methods", function () {
         it("call getBranches using web.invoke", function (done) {
             this.timeout(tools.TIMEOUT);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
-            augur.web.login(name, password, function (user) {
+            augur.web.login(secureLoginID, password, function (user) {
                 if (user.error) {
                     augur.web.logout();
                     return done(new Error(tools.pp(user)));
