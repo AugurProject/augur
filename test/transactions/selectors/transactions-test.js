@@ -85,7 +85,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 		// 		full: '+100Rep'
 		// 	}
 		// }];
-		assertions.assertTransactions(actual);
+		assertions.transactions(actual);
 		// assert.deepEqual(actual, expected, `Didn't return the correct information`);
 	});
 

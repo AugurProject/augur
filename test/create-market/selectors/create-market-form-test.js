@@ -88,7 +88,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			assertions.assertCreateMarketForm(state.createMarketInProgress);
+			assertions.createMarketForm(state.createMarketInProgress);
 		});
 	});
 
@@ -155,7 +155,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 					...actualStep2.select(state.createMarketInProgress)
 				};
 
-				assertions.assertCreateMarketForm(fullTestState);
+				assertions.createMarketForm(fullTestState);
 			});
 		});
 	});
@@ -195,7 +195,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...actualStep3.select(state.createMarketInProgress)
 			};
 
-			assertions.assertCreateMarketForm(fullTestState);
+			assertions.createMarketForm(fullTestState);
 		});
 	});
 
@@ -240,7 +240,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...actualStep4.select(state.createMarketInProgress)
 			};
 
-			assertions.assertCreateMarketForm(fullTestState);
+			assertions.createMarketForm(fullTestState);
 		});
 	});
 
@@ -272,7 +272,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				)
 			};
 
-			assertions.assertCreateMarketForm(fullTestState);
+			assertions.createMarketForm(fullTestState);
 		});
 	});
 });

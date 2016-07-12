@@ -15,6 +15,6 @@ describe('modules/trade/selectors/side-options.js', () => {
 	});
 
 	it('should deliver the correct values to components', () => {
-		assertions.assertSideOptions(actual);
+		assertions.sideOptions(actual);
 	});
 });

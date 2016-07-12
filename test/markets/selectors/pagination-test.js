@@ -50,7 +50,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			pageNum: 4
 		}];
-		assertions.assertPagination(actual);
+		assertions.pagination(actual);
 		actual.onUpdateSelectedPageNum(4);
 		assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
 	});

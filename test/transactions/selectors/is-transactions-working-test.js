@@ -54,7 +54,7 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
 		};
 		actual = selector.selectIsWorking(data);
 
-		assertions.assertIsTransactionsWorking(actual);
+		assertions.isTransactionsWorking(actual);
 		assert.isTrue(actual, `Didn't mark the transaction as working when status was test.`);
 	});
 

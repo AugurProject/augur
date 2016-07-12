@@ -11,6 +11,6 @@ describe('modules/outcome/selectors/selected-outcome.js', () => {
 	});
 
 	it('should provide the expected object to components', () => {
-		assertions.assertSelectedOutcome(actual);
+		assertions.selectedOutcome(actual);
 	});
 });

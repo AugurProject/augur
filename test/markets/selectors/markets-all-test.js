@@ -102,7 +102,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 	it(`should return the correct selectedMarket function`, () => {
 		actual = selector.default();
 
-		assertions.assertMarkets(actual);
+		assertions.markets(actual);
 		assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`);
 	});
 });

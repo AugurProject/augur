@@ -1,6 +1,4 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
@@ -56,7 +54,7 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 			header: 'pending reports'
 		}];
 
-		assertions.assertMarketsHeader(actual)
+		assertions.marketsHeader(actual)
 
 		actual.onClickAllMarkets();
 		actual.onClickFavorites();
