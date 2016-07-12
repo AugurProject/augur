@@ -441,6 +441,7 @@ export default function(market) {
 
 				tradeOrders.map((trade, i) => {
 					describe(`tradeOrder shape for ${i}`, () => {
+						
 						describe('shares', () => {
 							it('should be defined', () => {
 								assert.isDefined(trade.shares, 'shares is not defined');
@@ -448,15 +449,35 @@ export default function(market) {
 							it('should be an object', () => {
 								assert.isObject(trade.shares, 'shares is not an object');
 							});
-							describe('value', () => {
-								it('should be defined', () => {
-									assert.isDefined(trade.shares.value, 'shares is not defined');
-								});
-								it('should be a number', () => {
-									assert.isNumber(trade.shares.value, 'shares is not a number');
-								});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(trade.shares)
 							});
 						});
+
+						describe('sharesNegative', () => {
+							it('should be defined', () => {
+								assert.isDefined(trade.sharesNegative, 'shares is not defined');
+							});
+							it('should be an object', () => {
+								assert.isObject(trade.sharesNegative, 'shares is not an object');
+							});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(trade.sharesNegative)
+							});
+						});
+
+						describe('limitPrice', () => {
+							it('should be defined', () => {
+								assert.isDefined(trade.limitPrice , `limitPrice isn't defined`);
+							});
+
+							it('should be a number', () => {
+								assert.isNumber(trade.limitPrice, `limitPrice isn't a number`);
+							});
+						});
+						
 						describe('ether', () => {
 							it('should be defined', () => {
 								assert.isDefined(trade.ether, 'ether is not defined');
@@ -465,16 +486,54 @@ export default function(market) {
 							it('should be an object', () => {
 								assert.isObject(trade.ether, 'ether is not an object');
 							});
-							describe('value', () => {
-								it('should be defined', () => {
-									assert.isDefined(trade.ether.value, 'ether is not defined');
-								});
 
-								it('should be a number', () => {
-									assert.isNumber(trade.ether.value, 'ether is not a number');
-								});
+							it('should have the correct shape', () => {
+								assertFormattedNumber(trade.ether)
 							});
 						});
+
+						describe('etherNegative', () => {
+							it('should be defined', () => {
+								assert.isDefined(trade.etherNegative, 'etherNegative is not defined');
+							});
+
+							it('should be an object', () => {
+								assert.isObject(trade.etherNegative, 'etherNegative is not an object');
+							});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(trade.etherNegative)
+							});
+						});
+
+						describe('feeToPay', () => {
+							it('should be defined', () => {
+								assert.isDefined(trade.feeToPay, 'feeToPay is not defined');
+							});
+
+							it('should be an object', () => {
+								assert.isObject(trade.feeToPay, 'feeToPay is not an object');
+							});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(trade.feeToPay)
+							});
+						});
+
+						describe('profitLoss', () => {
+							it('should be defined', () => {
+								assert.isDefined(trade.profitLoss, 'profitLoss is not defined');
+							});
+
+							it('should be an object', () => {
+								assert.isObject(trade.profitLoss, 'profitLoss is not an object');
+							});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(trade.profitLoss)
+							});
+						});
+
 						describe('gas', () => {
 							it('should be defined', () => {
 								assert.isDefined(trade.gas, 'gas is not defined');
@@ -490,6 +549,70 @@ export default function(market) {
 
 								it('should be a number', () => {
 									assert.isNumber(trade.gas.value, 'gas is not a number');
+								});
+							});
+						});
+
+						describe('data', () => {
+							it('should be defined', () => {
+								assert.isDefined(trade.data, 'data is not defined');
+							});
+
+							it('should be an object', () => {
+								assert.isObject(trade.data, 'data is not an object');
+							});
+
+							describe('marketID', () => {
+								it('should be defined', () => {
+									assert.isDefined(trade.data.marketID, `marketID is not defined`);
+								});
+
+								it('should be a string', () => {
+									assert.isString(trade.data.marketID, `marketID is not a string`);
+								});
+							});
+
+							describe('outcomeID', () => {
+								it('should be defined', () => {
+									assert.isDefined(trade.data.outcomeID, `outcomeID is not defined`);
+								});
+
+								it('should be a string', () => {
+									assert.isString(trade.data.outcomeID, `outcomeID is not a string`);
+								});
+							});
+
+							describe('marketDescription', () => {
+								it('should be defined', () => {
+									assert.isDefined(trade.data.marketDescription, `marketDescription is not defined`);
+								});
+
+								it('should be a string', () => {
+									assert.isString(trade.data.marketDescription, `marketDescription is not a string`);
+								});
+							});
+
+							describe('outcomeName', () => {
+								it('should be defined', () => {
+									assert.isDefined(trade.data.outcomeName, `outcomeName is not defined`);
+								});
+
+								it('should be a string', () => {
+									assert.isString(trade.data.outcomeName, `outcomeName is not a string`);
+								});
+							});
+
+							describe('avgPrice', () => {
+								it('should be defined', () => {
+									assert.isDefined(trade.data.avgPrice, 'avgPrice is not defined');
+								});
+
+								it('should be an object', () => {
+									assert.isObject(trade.data.avgPrice, 'avgPrice is not an object');
+								});
+
+								it('should have the correct shape', () => {
+									assertFormattedNumber(trade.data.avgPrice)
 								});
 							});
 						});
