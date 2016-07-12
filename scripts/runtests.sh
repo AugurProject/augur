@@ -67,12 +67,4 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${client}" == "1" ] && runtest "client"
 [ "${consensus}" == "1" ] && runtest "consensus"
 
-echo -e " ${TEAL}jshint${NC}\n"
-
-declare -a targets=("gulpfile.js" "src/*.js" "src/client/*.js" "src/modules/*.js" "scripts/setup.js" "test/*.js")
-for target in "${targets[@]}"
-do
-    jshint ${target}
-    echo -e "   \033[1;32m✓${NC}  ${GRAY}${target}${NC}"
-done
 echo

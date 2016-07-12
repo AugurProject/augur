@@ -24,4 +24,5 @@ before_script:
   - npm install
 
 script:
-  - travis_wait 30 istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+  - npm run lint
+  - travis_wait 30 npm run coverage

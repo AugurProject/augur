@@ -7,7 +7,7 @@
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var BigNumber = require("bignumber.js");
-var ethTx = require("ethereumjs-tx");
+var EthTx = require("ethereumjs-tx");
 var keys = require("keythereum");
 var uuid = require("node-uuid");
 var clone = require("clone");
@@ -234,7 +234,7 @@ module.exports = function () {
                 packaged.gasPrice = tx.gasPrice;
                 return this.getTxNonce(packaged, cb);
             }
-            augur.rpc.gasPrice(function (gasPrice) {
+            augur.rpc.getGasPrice(function (gasPrice) {
                 if (!gasPrice || gasPrice.error) {
                     return cb(errors.TRANSACTION_FAILED);
                 }
@@ -255,7 +255,7 @@ module.exports = function () {
                     }
                 }
                 mutex.unlock();
-                var etx = new ethTx(packaged);
+                var etx = new EthTx(packaged);
 
                 // sign, validate, and send the transaction
                 etx.sign(self.account.privateKey);

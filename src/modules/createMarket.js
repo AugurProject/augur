@@ -55,7 +55,7 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        this.rpc.gasPrice(function (gasPrice) {
+        this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
             self.transact(tx, onSent, function (res) {
@@ -123,7 +123,7 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        this.rpc.gasPrice(function (gasPrice) {
+        this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
             self.getPeriodLength(branchId, function (periodLength) {

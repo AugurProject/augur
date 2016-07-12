@@ -25,11 +25,12 @@ var modules = [
     require("./modules/whitelist"),
     require("./modules/logs"),
     require("./modules/abacus"),
-    require("./modules/reportingTools")
+    require("./modules/reportingTools"),
+    require("./modules/tradingActions")
 ];
 
 function Augur() {
-    this.version = "1.7.0";
+    this.version = "1.7.1";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
