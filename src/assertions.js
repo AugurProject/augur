@@ -20,6 +20,7 @@ import assertSideOptions from '../test/assertions/side-options';
 import assertSiteHeader from '../test/assertions/site-header';
 import assertTransactions from '../test/assertions/transactions';
 import assertTransactionsTotals from '../test/assertions/transactions-totals';
+import assertUrl from '../test/assertions/url';
 
 export default {
 	assertActivePage,
@@ -43,5 +44,6 @@ export default {
 	assertSideOptions,
 	assertSiteHeader,
 	assertTransactions,
-	assertTransactionsTotals
+	assertTransactionsTotals,
+	assertUrl
 };
