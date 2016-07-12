@@ -23,7 +23,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'register'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle a login form`, () => {
@@ -32,7 +32,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle a unrecognized authType`, () => {
@@ -41,7 +41,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'some incorrect value'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle invalid user name or password`, () => {
@@ -52,7 +52,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle username missing`, () => {
@@ -63,7 +63,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle passwords not matching`, () => {
@@ -74,7 +74,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle passwords that are too short`, () => {
@@ -86,7 +86,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle taken usernames`, () => {
@@ -97,7 +97,7 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 
 	it(`should handle unrecognized errors gracefully`, () => {
@@ -109,6 +109,6 @@ describe('authForm selectors test: ', () => {
 			selectedAuthType: 'login'
 		};
 		// console.log(authForm.default());
-		assertions.assertAuthForm(authForm.default());
+		assertions.authForm(authForm.default());
 	});
 });

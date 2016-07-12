@@ -152,20 +152,8 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
 	it(`should return the market totals for selected market`, () => {
 		actual = selector.default();
-		// expected = {
-		// 	numAll: 6,
-		// 	numFavorites: 4,
-		// 	numPendingReports: 3,
-		// 	numUnpaginated: 7,
-		// 	numFiltered: 7,
-		// 	positionsSummary: {
-		// 		numPositions: 70,
-		// 		qtyShares: 35,
-		// 		totalValue: 140,
-		// 		totalCost: 297
-		// 	}
-		// };
-		assertions.assertMarketsTotals(actual);
+
+		assertions.marketsTotals(actual);
 	});
 });
 

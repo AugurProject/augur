@@ -22,6 +22,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 	it(`should login an account`, () => {
 		actual = selector.default();
 		// console.log(actual);
-		assertions.assertLoginAccount(actual);
+		assertions.loginAccount(actual);
 	});
 });

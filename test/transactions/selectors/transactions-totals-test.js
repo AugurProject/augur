@@ -56,7 +56,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
 			transactions: undefined,
 			shortTitle: '1 Working'
 		};
-		assertions.assertTransactionsTotals(actual);
+		assertions.transactionsTotals(actual);
 		assert.deepEqual(actual, expected, `Didn't return total info on transactions`);
 	})
 });

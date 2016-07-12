@@ -47,7 +47,7 @@ describe(`modules/markets/selectors/search-sort.js`, () => {
 			}
 		}];
 
-		assertions.assertSearchSort(actual);
+		assertions.searchSort(actual);
 		actual.onChangeSort('endDate', false);
 
 		assert(mockSort.updateSelectedSort.calledOnce, `updateSelectedSort wasn't called once as expected`);
