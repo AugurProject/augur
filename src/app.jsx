@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
-import { NEW_REGISTER, REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
+import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
 import MarketPage from './modules/market/components/market-page';
@@ -38,7 +38,6 @@ export default function (appElement, selectors) {
 
 	switch (p.activePage) {
 	case REGISTER:
-	case NEW_REGISTER:
 	case LOGIN:
 	case LOGOUT:
 		node = (
