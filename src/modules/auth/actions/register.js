@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { NEW_REGISTER } from '../../auth/constants/auth-types';
+import { LOGIN } from '../../auth/constants/auth-types';
 import {
 PASSWORDS_DO_NOT_MATCH,
 USERNAME_REQUIRED
@@ -26,7 +26,8 @@ export function register(name, password, password2) {
 				return;
 			}
 			dispatch(updateLoginAccount({ secureLoginID: loginAccount.secureLoginID }));
-			selectAuthLink(NEW_REGISTER, false, dispatch).onClick();
+			console.log(loginAccount);
+			selectAuthLink(LOGIN, false, dispatch).onClick();
 		});
 	};
 }

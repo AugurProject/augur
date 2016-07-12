@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { NEW_REGISTER, REGISTER, LOGIN } from '../../auth/constants/auth-types';
+import { REGISTER, LOGIN } from '../../auth/constants/auth-types';
 import {
 	INVALID_USERNAME_OR_PASSWORD,
 	USERNAME_REQUIRED,
@@ -62,8 +62,12 @@ export const selectRegister = (auth, dispatch) => {
 	};
 };
 
-export const selectLogin = (auth, dispatch) => {
+export const selectLogin = (auth, loginAccount, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
+	let newAccountMessage = null;
+	if (errMsg === null && loginAccount.secureLoginID) {
+		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
+	}
 	return {
 		title: 'Login',
 
@@ -75,7 +79,8 @@ export const selectLogin = (auth, dispatch) => {
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
 
-		msg: errMsg,
+		secureID: loginAccount.secureLoginID,
+		msg: errMsg || newAccountMessage,
 		msgClass: errMsg ? 'error' : 'success',
 
 		submitButtonText: 'Login',
@@ -115,9 +120,7 @@ export const selectAuthType = (auth, loginAccount, dispatch) => {
 	case REGISTER:
 		return selectRegister(auth, dispatch);
 	case LOGIN:
-		return selectLogin(auth, dispatch);
-	case NEW_REGISTER:
-		return selectNewRegister(auth, loginAccount, dispatch);
+		return selectLogin(auth, loginAccount, dispatch);
 	default:
 		return;
 	}
