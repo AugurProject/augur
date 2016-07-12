@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
+import ValueDate from '../../common/components/value-date';
 import classNames from 'classnames';
 
 const Basics = (p) => (
@@ -18,7 +19,7 @@ const Basics = (p) => (
 			{!!p.endDate &&
 				<li className="property end-date" title={`${p.endDateLabel}: ${p.endDate.full}`}>
 					<span className="property-label">{p.endDateLabel}</span>
-					<ValueDenomination className="property-value" {...p.endDate} />
+					<ValueDate className="property-value" {...p.endDate} />
 				</li>
 			}
 			<li className="property fee" title={`${p.makerFeePercent.full} discounted fee for placing bids or asks on the books`}>
