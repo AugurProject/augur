@@ -106,26 +106,12 @@ input[type=file] {
 }
 
 .link {
+	padding: 0;
 	cursor: pointer;
+	background: none;
+	border: none;
 }
 
 .displayNone {
 	display: none !important;
-}
-
-.text-button {
-	cursor: pointer;
-	color: @color-primary-active;
-	&:before {
-		content: '(';
-	}
-
-	&:after {
-		content: ')';
-	}
-
-	&:hover {
-		color: @color-primary-hover;
-		text-decoration: underline;
-	}
 }

@@ -1,8 +1,10 @@
 import React, { PropTypes, Component } from 'react';
+import classnames from 'classnames';
+
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Link from '../../link/components/link';
-import AugurInput from '../../common/components/input';
+import Input from '../../common/components/input';
 
 export default class AccountPage extends Component {
 	static propTypes = {
@@ -43,153 +45,184 @@ export default class AccountPage extends Component {
 			<main className="page account">
 				<SiteHeader {...p.siteHeader} />
 				<header className="page-header">
-					<div className="l-container">
-						<div className="sign-out-container">
-							<Link className="button sign-out" {...p.siteHeader.authLink}>
-								Sign Out
-							</Link>
-						</div>
-					</div>
+					<span className="big-line">My Account</span>
+					<Link className="button sign-out" {...p.siteHeader.authLink}>
+						Sign Out
+					</Link>
 				</header>
 
 				<section className="page-content">
 					<div className="l-container">
-						<div className="account-details">
-							<h1>Account Information:</h1>
-							<div className="account-info">
-								<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
-									<h2>Account Name:</h2>
-									{s.editName &&
-										<AugurInput
-											type="text"
-											value={p.account.name}
-											onChange={(value) => this.setState({ name: value })}
-										/>
-									}
-									{!s.editName &&
-										<div className="item" title="Click here to add a name to your account.">
-											{p.account.name || 'Click here to add a name.'}
-										</div>
-									}
-									{!s.editName &&
-										<div
-											className="text-button" onClick={() => { if (!s.editPassword) this.setState({ editName: true }); }}
-											title="Click here to change your Account Name"
-										>
-											Change Account Name
-										</div>
-									}
-									{s.editName &&
-										<button
-											className="button make"
-											href=""
-											onClick={() => {
-												if (!s.editPassword) {
-													p.account.editName(s.name);
-													this.setState({ name: '', editName: false });
-												}
-											}}
-											title="Click here to save your new Account Name"
-										>
-											Save Change
-										</button>
-									}
-								</div>
-
-								<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
-									<h2>Secure Login ID:</h2>
-									<div className="item">
-										{s.showFullID ? p.account.secureLoginID : p.account.prettySecureLoginID}
-									</div>
-									<div
-										className="text-button"										onClick={() => {
-											const showHide = !s.showFullID;
-											if (!s.editPassword) this.setState({ showFullID: showHide });
-										}}
-										title={s.showFullID ? 'Click here to hide your Secure Login ID' : 'Click here to show your Secure Login ID'}
-									>
-										{s.showFullID ? 'Hide Secure Login ID' : 'Show Secure Login ID'}
-									</div>
-								</div>
-
-								{!s.editPassword &&
-									<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
-										<h2>Password:</h2>
-										<div
-											className="text-button"
-											onClick={() => this.setState({ editPassword: true })}
-											title="Click here to Change your Password."
-										>
-											Change Password
-										</div>
-									</div>
-								}
-								{!s.editPassword && (s.msg !== '') &&
-									<div className="password-msg" onClick={() => this.setState({ msg: '' })} title="Click here to dismiss this message.">
-										{s.msg}
-									</div>
-								}
-								{s.editPassword &&
-									<form className="change-password-container" onSubmit={this.handleSubmit}>
-										<h2>Password:</h2>
-										<div className="password-input">
-											<label className="passLabel">Current Password:</label>
-											<input
-												className="input box"
-												ref="password"
-												type="password"
-												maxLength="256"
-												placeholder="Current Password"
-												title="Enter your current Password here."
+						<div className="account-section">
+							<h2 className="heading">Credentials</h2>
+							<table className="account-info">
+								<tr className={classnames('account-info-item', { 'fade': s.editPassword })}>
+									<th className="title">Account Name:</th>
+									<td className="item">
+										{s.editName &&
+											<Input
+												type="text"
+												value={p.account.name}
+												isClearable={false}
+												onChange={(value) => this.setState({ name: value })}
 											/>
-										</div>
-										<div className="password-input">
-											<label className="passLabel">Password:</label>
-											<input
-												className="input box"
-												ref="newPassword"
-												type="password"
-												maxLength="256"
-												placeholder="Password"
-												title="Enter your desired new Password here."
-											/>
-										</div>
-										<div className="password-input">
-											<label className="passLabel">Confirm Password:</label>
-											<input
-												className="input box"
-												ref="newPassword2"
-												type="password"
-												maxLength="256"
-												placeholder="Confirm Password"
-												title="Enter your desired new Password here again to confirm the new Password."
-											/>
-										</div>
-										<div className="change-password-actions">
+										}
+										{!s.editName &&
+											<span title="Click here to add a name to your account.">
+												{p.account.name || 'Click here to add a name.'}
+											</span>
+										}
+										{!s.editName &&
+											<button
+												className="link" onClick={() => { if (!s.editPassword) this.setState({ editName: true }); }}
+												title="Click here to change your Account Name"
+											>
+												(change name)
+											</button>
+										}
+										{s.editName &&
+											<button
+												className="button"
+												onClick={() => { this.setState({ name: '', editName: false }); }}
+												title="Cancel without saving new name"
+											>
+												cancel
+											</button>
+										}
+										{s.editName &&
 											<button
 												className="button make"
-												type="submit"
-												title="Click here to save your new Password."
+												onClick={() => {
+													if (!s.editPassword) {
+														p.account.editName(s.name);
+														this.setState({ name: '', editName: false });
+													}
+												}}
+												title="Save new account name"
 											>
-												Confirm Password Change
+												save change
 											</button>
-											<button type="button" className="button" onClick={() => this.setState({ editPassword: false })} title="Click here to cancel the Password change and keep your current Password.">
-												Cancel Password Change
+										}
+									</td>
+								</tr>
+
+								<tr className={classnames('account-info-item', { 'fade': s.editPassword })}>
+									<th className="title">Secure Login ID:</th>
+									<td className="item">
+										{!s.showFullID &&
+											<span>
+												{p.account.prettySecureLoginID}
+											</span>
+										}
+										{s.showFullID &&
+											<textarea className="full-secure-login-id">
+												{p.account.secureLoginID}
+											</textarea>
+										}
+										<button
+											className="link"
+											title={s.showFullID ? 'Hide full id' : 'Show full id'}
+											onClick={() => {
+												const showHide = !s.showFullID;
+												if (!s.editPassword) this.setState({ showFullID: showHide });
+											}}
+										>
+											{s.showFullID ? '(hide id)' : '(show full id)'}
+										</button>
+									</td>
+								</tr>
+
+								<tr className="account-info-item">
+									<th className="title">Password:</th>
+									{!s.editPassword &&
+										<td className="item">
+											<span>************</span>
+											<button
+												className="link"
+												onClick={() => this.setState({ editPassword: true })}
+												title="Click here to Change your Password."
+											>
+												(change password)
 											</button>
-										</div>
-									</form>
-								}
+											{s.msg !== '' &&
+												<div className="password-msg">
+													<span>
+														{s.msg}
+													</span>
+													<span
+														className="dismiss-message"
+														title="Click to dismiss message."
+														onClick={() => this.setState({ msg: '' })}
+													>
+													&#xf057;
+													</span>
+												</div>
+											}
+										</td>
+									}
 
-								<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
-									<h2>Download Account:</h2>
-									<p>
-										If you are running Augur using a local geth node, you can download your account data to login through the node.
-									</p>
-									<button className="button make" title="Click here to Download your Account." >
-										Download Account
-									</button>
-								</div>
 
+									{s.editPassword &&
+										<td className="item password-change-container">
+											<form onSubmit={this.handleSubmit}>
+												<input
+													className="input box"
+													ref="password"
+													type="password"
+													maxLength="256"
+													placeholder="current password"
+													title="enter your current password here"
+												/>
+												<br />
+												<input
+													className="input box"
+													ref="newPassword"
+													type="password"
+													maxLength="256"
+													placeholder="new password"
+													title="enter your desired new password here"
+												/>
+												<br />
+												<input
+													className="input box"
+													ref="newPassword2"
+													type="password"
+													maxLength="256"
+													placeholder="confirm new password"
+													title="re-enter your new password for confirmation"
+												/>
+												<br />
+												<button
+													type="button"
+													title="Cancel password change and keep your current Password."
+													className="button"
+													onClick={() => this.setState({ editPassword: false })}
+												>
+													cancel
+												</button>
+												<button
+													className="button make"
+													type="submit"
+													title="Click here to save your new Password."
+												>
+													confirm password change
+												</button>
+											</form>
+										</td>
+									}
+
+								</tr>
+							</table>
+						</div>
+						<div className="account-section">
+							<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
+								<h2 className="heading">Download Account</h2>
+								<p>
+									If you are running Augur using a local geth node, you can download your account data to login through the node.
+								</p>
+								<button className="button download-account" title="Click here to Download your Account." >
+									Download Account
+								</button>
 							</div>
 						</div>
 					</div>

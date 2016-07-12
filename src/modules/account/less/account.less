@@ -1,166 +1,121 @@
-.account-details {
-	padding: 4% 5%;
-	font-size: 1.5rem;
-	border: 1px solid @color-border;
-	border-radius: 1px;
-	background: white;
-	display: flex;
-	flex-direction: column;
+.account {
+	.page-header {
+		display: flex; flex-wrap: nowrap;
+		width: 100%;
+		.l-container();
 
-	h1 {
-		font-size: 3rem;
+		.big-line {
+			flex: 2;
+		}
+
+		.sign-out {
+			font-size: 0.7em;
+		    &:hover, &:focus, &:active {
+		        background: @color-dark-normal;
+		    }
+		}
 	}
 
-	.account-info {
-		display: flex;
-		flex-direction: column;
-		padding: 2vmin 0;
+	.account-section {
+		padding: 2vmin 6vmin 4vmin 6vmin;
+		background: white;
+		border: 1px solid @color-border;
+		border-radius: 1px;
+		font-size: 1.5rem;
 
-		.fade {
-			opacity: .25;
+		.heading {
+			margin: 2vmin 0;
+			font-size: 1.3em;
 		}
 
-		.account-info-item {
-			display: flex;
-			flex-flow: row wrap;
-			align-items: center;
-			margin: 0.5rem 1vmin;
+		.link {
+			color: @color-primary-active;
 
-			p {
-				margin: 3vmin 0;
-				width: 100%;
-			}
-
-			h2 {
-				flex-basis: 18%;
-			}
-
-			.item {
-				padding: 0.5em 2em 0.5em 0.5em;
-				word-break: break-all;
-				// border: 1px solid transparent;
-				// flex-grow: 1;
-				// margin: 0 1vmin;
-			}
-
-			.input {
-				margin: 0 3vmin;
-				flex-grow: 1;
-			}
-
-			.editable {
-				cursor: pointer;
-			}
-
-			.button {
-				font-size: 1.22rem;
-				flex-basis: 25vmin;
-				text-align: center;
+			&:hover, &:active, &:focus {
+				color: @color-primary-hover;
+				text-decoration: underline;
 			}
 		}
 
-		.change-password-container {
-			display: flex;
-			flex-flow: column wrap;
-			margin: 0.5rem 1vmin;
-			border: 1px solid @color-border-darker;
-			padding: 1vmin;
+		.account-info {
+			padding: 2vmin 0;
 
-			.change-password-actions {
-				display: flex;
-				flex-flow: row-reverse wrap;
-				justify-content: center;
-
-				.button {
-					font-size: 1.22rem;
-					margin: .25rem .5rem;
-					// flex-basis: 25vmin;
-				}
+			.fade {
+				opacity: .25;
 			}
 
-			.password-input {
-				display: flex;
-				flex-flow: row wrap;
-				align-items: center;
+			.account-info-item {
 				margin: 0.5rem 1vmin;
 
-				.passLabel {
-					flex-basis: 25vmin;
-					// flex-grow: 1;
+				p {
+					margin: 3vmin 0;
+					width: 100%;
 				}
 
-				.input {
-					flex-grow: 1;
+				.title {
+					width: 1%;
+					padding-top: 0.8em;
+					text-align: left;
+					vertical-align: top;
+					font-size: 0.8em;
+					white-space: nowrap;
+				}
+
+				.item {
+					padding: 0.5em 0 0.5em 0.5em;
+
+					* {
+						margin-right: 1rem;
+					}
+				}
+
+				.button {
+					font-size: 1.2rem;
 				}
 			}
+
+			.full-secure-login-id {
+				width: 75%;
+				height: 5rem;
+				font-size: 0.8rem;
+				padding: 0.3rem;
+			}
+		}
+
+		.password-change-container {
+			br {
+				display: block;
+				margin: 0.3em 0;
+			}
+		}
+
+		.remember {
+			margin: 1rem 0;
+			p:first-child {
+				font-weight: bold;
+			}
+			p:last-child {
+				font-style: italic;
+				font-weight: bold;
+			}
+		}
+
+		.button.download-account {
+			margin-top: 1em;
+			font-size: 0.8em;
 		}
 	}
 
-	.account-resources {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
+	.password-msg {
+		margin: 0.5em 0;
+		font-size: 0.8em;
+		color: @color-success-normal;
+		font-weight: bold;
 
-		.value-denomination {
-			margin: 1rem 2rem;
-			line-height: 1.5;
-			font-size: 2rem;
+		.dismiss-message {
+			color: @color-dark-active;
+			font-family: FontAwesome;
+			cursor: pointer;
 		}
-	}
-
-	.remember {
-		margin: 1rem 0;
-		p:first-child {
-			font-weight: bold;
-		}
-		p:last-child {
-			font-style: italic;
-			font-weight: bold;
-		}
-	}
-}
-.sign-out-container {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-	align-items: center;
-	padding: 0 2vmin;
-
-	.sign-out {
-		font-size: 1.5rem;
-	}
-}
-
-.password-msg {
-	text-align: center;
-	font-size: 1.5rem;
-	background-color: @color-success-normal;
-	color: white;
-	cursor: pointer;
-	font-weight: bold;
-	padding: 1vmin;
-}
-@media screen and (max-width: @media-small-width) {
-	.account-details > .account-info > .account-info-item {
-		flex-flow: column wrap;
-	}
-	.account-details > .account-info > .account-info-item > .item {
-		padding: 0;
-		margin: 2vmin 0;
-	}
-	.account-details > .account-info > .account-info-item > .input {
-		padding: 0;
-		margin: 2vmin 0;
-	}
-	.account-details > .account-info > .account-info-item > .button {
-		flex-grow: 1;
-		flex-basis: initial;
-	}
-	.account-details > .account-info > .account-info-item > h2 {
-		flex-grow: 1;
-	}
-	.account-details > .account-info > .account-info-item > p {
-		text-align: center;
 	}
 }
