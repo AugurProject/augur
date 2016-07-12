@@ -6,7 +6,7 @@
   "scripts": {
     "test": "scripts/runtests.sh --core --create --markets --client",
     "integration-test": "AUGURJS_INTEGRATION_TESTS=true scripts/runtests.sh --core --create --markets --client",
-    "lint": "scripts/runtests.sh",
+    "lint": "jshint gulpfile.js src/*.js src/client/*.js src/modules/*.js scripts/setup.js test/*.js",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "setup": "scripts/setup.js --reset --faucets"
   },
