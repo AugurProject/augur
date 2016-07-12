@@ -293,7 +293,6 @@ function makeMarkets(numMarkets = 25) {
 							const totEth = side === constants.BID ? -(outcome.trade.numShares * outcome.trade.limitPrice) : outcome.trade.numShares * outcome.trade.limitPrice;
 
 							outcome.trade.tradeSummary.totalEther = makeNumber(Math.round(totEth * 100) / 100, 'eth');
-							// outcome.trade.tradeSummary.trade.profitLoss = makeNumber(Math.round(totEth * 100) / 100, 'eth');
 
 							require('../selectors').update();
 						}
