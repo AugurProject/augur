@@ -1,55 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
+import TradePanelRow from '../../../modules/trade/components/trade-panel-row';
+import { SUMMARY } from '../../../modules/trade/constants/row-types';
 
 const TradePanelFooter = (p) => {
-	const transactions = [];
-
-	p.summary.tradeOrders.map((trade, i) => {
-		let type = null;
-
-		switch (trade.type) {
-		case p.constants.BID:
-			type = 'BUY';
-			break;
-		case p.constants.ASK:
-			type = 'SELL';
-			break;
-		default:
-			break;
-		}
-
-		transactions.push(
-			<tr
-				key={`${trade.data.outcomeName}${i}`}
-				className="trade-panel-row"
-			>
-				<td className="outcome-name">{trade.data.outcomeName}</td>
-				<td colSpan="2" >
-					<div className="individual-transaction-summary" >
-						<span className="transaction-type">{type}</span>
-						<div className="transaction-shares">
-							<ValueDenomination className="shares" {...trade.shares} />
-						</div>
-						<span className="shares-at">@</span>
-						<div className="transaction-price">
-							<ValueDenomination className="price" {...trade.ether} />
-						</div>
-					</div>
-				</td>
-				<td colSpan="4" />
-				<td className="fee-to-pay" >
-					<ValueDenomination {...trade.data.feeToPay} />
-				</td>
-				<td className="total-cost" >
-					{p.constants.BID === trade.type ? <ValueDenomination {...trade.etherNegative} /> : <ValueDenomination {...trade.ether} />}
-				</td>
-			</tr>
-		);
-
-		return null;
-	});
-
 	return (
 		<tfoot className="transaction-summary">
 			<tr className={classnames('header-row', 'summary-title')}>
@@ -61,7 +16,14 @@ const TradePanelFooter = (p) => {
 				<td>Fee</td>
 				<td>Profit/Loss</td>
 			</tr>
-			{transactions}
+			{p.summary.tradeOrders.map((trade, i) => {
+				return	<TradePanelRow
+							key={`${trade.data.outcomeName}-${i}`}
+							trade={trade}
+							constants={p.constants}
+							type={SUMMARY}
+						/>
+			})}
 			<tr className="summary-totals">
 				<td />
 				<td colSpan="2">

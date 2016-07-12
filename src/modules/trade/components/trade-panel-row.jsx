@@ -1,148 +1,31 @@
 import React from 'react';
-import classnames from 'classnames';
-import ValueDenomination from '../../../modules/common/components/value-denomination';
-import Input from '../../../modules/common/components/input';
-import Dropdown from '../../../modules/common/components/dropdown';
-import Clickable from '../../../modules/common/components/clickable';
-import { OUTCOME, ORDER } from '../../../modules/trade/constants/row-types';
+import { OUTCOME, ORDER, SUMMARY } from '../../../modules/trade/constants/row-types';
+import TradePanelRowOutcome from '../../../modules/trade/components/trade-panel-row-outcome';
+import TradePanelRowOrder from '../../../modules/trade/components/trade-panel-row-order';
+import TradePanelRowSummary from '../../../modules/trade/components/trade-panel-row-summary';
 
 const TradePanelRow = (p) => {
 	switch (p.type) {
 	default:
 	case OUTCOME:
-		return (
-			<tr
-				className={classnames('trade-panel-row', 'clickable-row')}
-				onClick={event => {
-					event.stopPropagation();
-
-					p.updateSelectedOutcome(p.outcome.id);
-				}}
-			>
-				<th className="outcome-name">
-					{p.outcome.name}
-				</th>
-				<td className="last-price">
-					<ValueDenomination {...p.outcome.lastPrice} />
-				</td>
-				<td className="bid">
-					{!!p.outcome.topBid &&
-						<div>
-							<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topBid.shares.value, p.outcome.topBid.price.value, p.constants.ASK); }} >
-								<ValueDenomination className="top-bid" {...p.outcome.topBid.shares} />
-							</Clickable>
-							<span className="shares-at">@</span>
-							<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topBid.price.value); }}>
-								<ValueDenomination className="top-bid" {...p.outcome.topBid.price} />
-							</Clickable>
-						</div>
-					}
-				</td>
-				<td className="ask">
-					{!!p.outcome.topAsk &&
-						<div>
-							<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topAsk.price.value); }}>
-								<ValueDenomination className="top-ask" {...p.outcome.topAsk.price} />
-							</Clickable>
-							<span className="shares-at">@</span>
-							<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topAsk.shares.value, p.outcome.topAsk.price.value, p.constants.BID); }} >
-								<ValueDenomination className="top-ask" {...p.outcome.topAsk.shares} />
-							</Clickable>
-						</div>
-					}
-				</td>
-
-				<td>
-					<Dropdown
-						selected={p.sideOptions.find(opt => opt.value === p.outcome.trade.side)}
-						options={p.sideOptions}
-						onChange={(selectedOption) => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, undefined, selectedOption); }}
-					/>
-				</td>
-				<td>
-					<Input
-						className="num-shares"
-						type="text"
-						value={p.outcome.trade.numShares}
-						isClearable={false}
-						onChange={(value) => p.outcome.trade.updateTradeOrder(p.outcome.id, parseFloat(value) || 0, undefined)}
-					/>
-				</td>
-				<td>
-					<Input
-						className="limit-price"
-						type="text"
-						value={p.outcome.trade.limitPrice}
-						isClearable={false}
-						onChange={(value) => p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, parseFloat(value) || 0)}
-					/>
-				</td>
-				<td className="fee-to-pay" >
-					<ValueDenomination {...p.outcome.trade.tradeSummary.feeToPay} />
-				</td>
-				<td className="total-cost" >
-					<ValueDenomination {...p.outcome.trade.tradeSummary.totalEther} />
-				</td>
-			</tr>
-		);
+		return 	<TradePanelRowOutcome
+					outcome={p.outcome}
+					sideOptions={p.sideOptions}
+					updateSelectedOutcome={p.updateSelectedOutcome}
+				/>;
 	case ORDER:
-		return (
-			<tr className={classnames('trade-panel-row', { displayNone: !(p.selectedOutcomeID === p.outcome.id) })} >
-				<td colSpan="2"></td>
-				<td>
-					{!!p.outcome.orderBook.bids[p.item] &&
-						<div className="order-book-data bid">
-							<Clickable
-								onClick={event => {
-									event.stopPropagation();
-
-									p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.bids[p.item].shares.value, p.outcome.orderBook.bids[p.item].price.value, p.constants.ASK);
-								}}
-							>
-								<ValueDenomination className="shares" {...p.outcome.orderBook.bids[p.item].shares} />
-							</Clickable>
-							<span className="shares-at">@</span>
-							<Clickable
-								onClick={event => {
-									event.stopPropagation();
-
-									p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.orderBook.bids[p.item].price.value);
-								}}
-							>
-								<ValueDenomination className="price" {...p.outcome.orderBook.bids[p.item].price} />
-							</Clickable>
-						</div>
-					}
-				</td>
-				<td>
-					{!!p.outcome.orderBook.asks[p.item] &&
-						<div className="order-book-data ask" >
-							<Clickable
-								onClick={event => {
-									event.stopPropagation();
-
-									p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.orderBook.asks[p.item].price.value);
-								}}
-							>
-								<ValueDenomination className="price" {...p.outcome.orderBook.asks[p.item].price} />
-							</Clickable>
-							<span className="shares-at">@</span>
-							<Clickable
-								onClick={event => {
-									event.stopPropagation();
-
-									p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.asks[p.item].shares.value, p.outcome.orderBook.asks[p.item].price.value, p.constants.BID);
-								}}
-							>
-								<ValueDenomination className="shares" {...p.outcome.orderBook.asks[p.item].shares} />
-								<ValueDenomination className="shares" {...p.outcome.orderBook.asks[p.item].shares} />
-							</Clickable>
-						</div>
-					}
-				</td>
-				<td colSpan="5"></td>
-			</tr>
-		);
+		return 	<TradePanelRowOrder
+					outcome={p.outcome}
+					selectedOutcomeID={p.selectedOutcomeID}
+					constants={p.constants}
+					item={p.item}
+				/>;
+	case SUMMARY:
+		return 	<TradePanelRowSummary
+					type={p.type}
+					constants={p.constants}
+					trade={p.trade}
+				/>;
 	}
 };
 
@@ -150,7 +33,9 @@ TradePanelRow.propTypes = {
 	outcomes: React.PropTypes.array,
 	sideOptions: React.PropTypes.array,
 	selectedOutcomeID: React.PropTypes.string,
-	updatedSelectedOutcome: React.PropTypes.func,
+	updateSelectedOutcome: React.PropTypes.func,
+	summary: React.PropTypes.object,
+	constants: React.PropTypes.object,
 	type: React.PropTypes.string,
 	item: React.PropTypes.number
 };
