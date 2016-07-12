@@ -498,6 +498,10 @@ export default function(market) {
 			});
 		});
 
+		describe('openOrders', () => {
+
+		});
+
 		describe('priceTimeSeries', () => {
 			it('[TODO] flesh out the full shape'); // Holding on this temporarily until we can better test trading
 

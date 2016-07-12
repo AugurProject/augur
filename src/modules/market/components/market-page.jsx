@@ -6,6 +6,7 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../../modules/trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
+import OpenOrders from '../../market/components/open-orders';
 import Chart from '../../market/components/chart';
 
 export default class MarketPage extends Component {
@@ -70,6 +71,16 @@ export default class MarketPage extends Component {
 							className="market-positions"
 							positionsSummary={p.market.positionsSummary}
 							positionOutcomes={p.market.positionOutcomes}
+						/>
+					);
+				}
+
+				if (p.market.openOrders && p.market.openOrders.length > 0) {
+					nodes.push(
+						<OpenOrders
+							key="open-orders"
+							onCancelOrder={p.market.onCancelOrder}
+							openOrders={p.market.openOrders}
 						/>
 					);
 				}

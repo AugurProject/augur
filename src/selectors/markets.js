@@ -36,7 +36,7 @@ function makeMarkets(numMarkets = 25) {
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: Math.random() > 0.1,
-			isPendingReport: Math.random() < 0.5,
+			isPendingReport: false,
 			marketLink: {
 				text: 'Trade',
 				className: 'trade',
@@ -128,6 +128,46 @@ function makeMarkets(numMarkets = 25) {
 				color: '#0f0'
 			}
 		];
+
+		m.openOrders = [
+			{
+				id: 'order1',
+				type: 'sell',
+				originalShares: makeNumber(5, 'shares'),
+				avgPrice: makeNumber(0.7, 'ether'),
+				matchedShares: makeNumber(3, 'shares'),
+				unmatchedShares: makeNumber(2, 'shares'),
+				outcome: 'outcomeasdf123',
+				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+			},
+			{
+				id: 'order2',
+				type: 'buy',
+				originalShares: makeNumber(5, 'shares'),
+				avgPrice: makeNumber(0.7, 'ether'),
+				matchedShares: makeNumber(3, 'shares'),
+				unmatchedShares: makeNumber(2, 'shares'),
+				outcome: 'outcomeasdf123',
+				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+			},
+			{
+				id: 'order3',
+				type: 'buy',
+				originalShares: makeNumber(5, 'shares'),
+				avgPrice: makeNumber(0.7, 'ether'),
+				matchedShares: makeNumber(3, 'shares'),
+				unmatchedShares: makeNumber(2, 'shares'),
+				outcome: 'outcomeasdf123',
+				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+			},
+		];
+
+		m.onCancelOrder = (orderId) => {
+			setTimeout(() => {
+				require('../selectors').market.openOrders.find(openOrder => openOrder.id === orderId).isCancelling = true;
+				require('../selectors').update({});
+			}, 1);
+		};
 
 		// positions summary
 		m.positionsSummary = {
