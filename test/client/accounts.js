@@ -470,9 +470,7 @@ describe("Contract methods", function () {
                         branch: augur.constants.DEFAULT_BRANCH_ID,
                         onSent: function (r) {
                             // sent
-														console.log('r: ', r);
-														console.log('rpc.txs: ', augur.rpc.txs);
-														console.log('rpc.rawTxs: ', augur.rpc.rawTxs);
+
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.strictEqual(r.callReturn, "1");
