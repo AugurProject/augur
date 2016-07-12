@@ -2,9 +2,7 @@ import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
 const ValueDenomination = (p) => (
-	<span
-		className={classnames('value-denomination', p.className, { positive: p.formattedValue > 0, negative: p.formattedValue < 0 })}
-	>
+	<span className={classnames('value-denomination', p.className, { positive: p.formattedValue > 0, negative: p.formattedValue < 0 })}>
 		{(p.formatted) &&
 			<span className="value">{p.formatted}</span>
 		}

@@ -1,15 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import {
-	CREATE_MARKET,
-	BUY_SHARES,
-	SELL_SHARES,
-	BID,
-	ASK,
-	SUBMIT_REPORT,
-	GENERATE_ORDER_BOOK,
-	TRADE_SUMMARY
-} from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK, TRADE_SUMMARY } from '../../transactions/constants/types';
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 

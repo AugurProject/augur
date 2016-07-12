@@ -14,6 +14,7 @@ import TransactionsPage from './modules/transactions/components/transactions-pag
 
 export default function (appElement, selectors) {
 	const p = selectors;
+	const url = p.url;
 	let node;
 
 	p.siteHeader = {
@@ -29,6 +30,11 @@ export default function (appElement, selectors) {
 		accountLink: p.links && p.links.accountLink || undefined,
 		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined
 	};
+
+	if (url !== window.location.pathname + window.location.search) {
+		window.history.pushState(null, null, url);
+		window.scrollTo(0, 0);
+	}
 
 	switch (p.activePage) {
 	case REGISTER:
