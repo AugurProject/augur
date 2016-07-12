@@ -85,7 +85,7 @@ export default class Input extends Component {
 				}
 
 				{!p.isMultiline && p.isClearable !== false &&
-					<button className="clear" onClick={this.handleClear}>
+					<button type="button" className="clear" onClick={this.handleClear}>
 						&#xf00d;
 					</button>
 				}

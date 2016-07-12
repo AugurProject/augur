@@ -1,25 +1,25 @@
+import authForm from './selectors/auth-form';
+import createMarketForm from './selectors/create-market-form';
+import filters from './selectors/filters';
+import keywords from './selectors/keywords';
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
-import keywords from './selectors/keywords';
-import filters from './selectors/filters';
-import createMarketForm from './selectors/create-market-form';
 import marketsTotals from './selectors/markets-totals';
-import positionsSummary from './selectors/positions-summary';
 import positionsMarkets from './selectors/positions-markets';
+import positionsSummary from './selectors/positions-summary';
 
-import { MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { ACCOUNT, MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
 import { LOGIN } from './modules/auth/constants/auth-types';
-import {
-	BID,
-	ASK
-} from './modules/transactions/constants/types';
+import { BID, ASK } from './modules/transactions/constants/types';
 
+// all selectors should go here
 const selectors = {
+	authForm,
+	createMarketForm,
+	filters,
+	keywords,
 	loginAccount,
 	markets,
-	keywords,
-	filters,
-	createMarketForm,
 	marketsTotals,
 	positionsSummary,
 	positionsMarkets
@@ -37,7 +37,6 @@ Object.defineProperty(selectors, 'update', {
 	enumerable: false
 });
 
-
 selectors.activePage = MARKETS;
 
 selectors.links = {
@@ -47,10 +46,9 @@ selectors.links = {
 	transactionsLink: { href: '', onClick: () => module.exports.update({ activePage: TRANSACTIONS }) },
 	marketLink: { href: '', onClick: () => module.exports.update({ activePage: M }) },
 	previousLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
-	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) }
+	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) },
+	accountLink: { href: '', onClick: () => module.exports.update({ activePage: ACCOUNT }) }
 };
-
-selectors.authForm = { closeLink: { href: '/', onClick: () => {} } };
 
 selectors.transactions = [];
 selectors.transactionsTotals = {

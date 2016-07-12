@@ -1,0 +1,120 @@
+.account {
+	.page-header {
+		display: flex; flex-wrap: nowrap;
+		width: 100%;
+		.l-container();
+
+		.big-line {
+			flex: 2;
+		}
+
+		.sign-out {
+			font-size: 0.7em;
+		    &:hover, &:focus, &:active {
+		        background: @color-dark-normal;
+		    }
+		}
+	}
+
+	.account-section {
+		padding: 2vmin 6vmin 4vmin 6vmin;
+		background: white;
+		border: 1px solid @color-border;
+		border-radius: 1px;
+		font-size: 1.5rem;
+
+		.heading {
+			margin: 2vmin 0;
+			font-size: 1.3em;
+		}
+
+		.link {
+			color: @color-primary-active;
+
+			&:hover, &:active, &:focus {
+				color: @color-primary-hover;
+				text-decoration: underline;
+			}
+		}
+
+		.account-info {
+			padding: 2vmin 0;
+
+			.fade {
+				opacity: .25;
+			}
+
+			.account-info-item {
+				margin: 0.5rem 1vmin;
+
+				p {
+					margin: 3vmin 0;
+					width: 100%;
+				}
+
+				.title {
+					width: 1%;
+					padding-top: 0.8em;
+					text-align: left;
+					vertical-align: top;
+					font-size: 0.8em;
+					white-space: nowrap;
+				}
+
+				.item {
+					padding: 0.5em 0 0.5em 0.5em;
+
+					* {
+						margin-right: 1rem;
+					}
+				}
+
+				.button {
+					font-size: 1.2rem;
+				}
+			}
+
+			.full-secure-login-id {
+				width: 75%;
+				height: 5rem;
+				font-size: 0.8rem;
+				padding: 0.3rem;
+			}
+		}
+
+		.password-change-container {
+			* {
+				margin: 0.3em 0;
+			}
+		}
+
+		.remember {
+			margin: 1rem 0;
+			p:first-child {
+				font-weight: bold;
+			}
+			p:last-child {
+				font-style: italic;
+				font-weight: bold;
+			}
+		}
+
+		.button.download-account {
+			margin-top: 1em;
+			font-size: 0.8em;
+		}
+	}
+
+	.password-msg {
+		margin: 0.5em 0;
+		font-size: 0.8em;
+		color: @color-success-normal;
+		font-weight: bold;
+
+		.dismiss-message {
+			color: @color-dark-active;
+			font-family: FontAwesome;
+			cursor: pointer;
+		}
+	}
+}

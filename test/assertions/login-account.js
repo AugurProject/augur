@@ -8,8 +8,14 @@ export default function(loginAccount) {
 	assert.isDefined(loginAccount.id, `loginAccount.id isn't defined`);
 	assert.isString(loginAccount.id, `loginAccount.id isn't a string`);
 
-	assert.isDefined(loginAccount.handle, `loginAccount.handle isn't defined`);
-	assert.isString(loginAccount.handle, `loginAccount.handle isn't a string`);
+	assert.isDefined(loginAccount.name, `loginAccount.name isn't defined`);
+	assert.isString(loginAccount.name, `loginAccount.name isn't a string`);
+
+	assert.isDefined(loginAccount.linkText, `loginAccount.linkText isn't defined`);
+	assert.isString(loginAccount.linkText, `loginAccount.linkText isn't a string`);
+
+	assert.isDefined(loginAccount.prettySecureLoginID, `loginAccount.prettySecureLoginID isn't defined`);
+	assert.isString(loginAccount.prettySecureLoginID, `loginAccount.prettySecureLoginID isn't a string`);
 
 	assertFormattedNumber(loginAccount.rep, 'loginAccount.rep');
 	assertFormattedNumber(loginAccount.ether, 'loginAccount.ether');

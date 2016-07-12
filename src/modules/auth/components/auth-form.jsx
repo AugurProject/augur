@@ -1,17 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import Link from '../../link/components/link';
+import Input from '../../common/components/input';
 
 export default class AuthForm extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		title: PropTypes.string,
+		password: PropTypes.string,
+		secureID: PropTypes.string,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
-		isVisibleUsername: PropTypes.bool,
+		isVisibleName: PropTypes.bool,
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
-		clearUsername: PropTypes.bool,
+		clearName: PropTypes.bool,
 		clearPassword: PropTypes.bool,
 		clearCode: PropTypes.bool,
 		msg: PropTypes.string,
@@ -29,16 +32,19 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.state = { msg: this.props.msg };
+		this.state = {
+			msg: this.props.msg,
+			secureID: this.props.secureID
+		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg });
+		this.setState({ msg: nextProps.msg, secureID: nextProps.secureID });
 	}
 
 	componentDidUpdate() {
-		if (this.props.clearUsername) {
-			this.refs.username.value = '';
+		if (this.props.clearName) {
+			this.refs.name.value = '';
 		}
 		if (this.props.clearPassword) {
 			this.refs.password.value = '';
@@ -51,17 +57,18 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		this.setState({ msg: undefined });
+		const name = this.refs.name.value;
+		const secureID = this.state.secureID;
+		const password = this.refs.password.value;
+		const password2 = this.refs.password2.value;
+		this.setState({ msg: '' });
 		setTimeout(() =>
-			this.props.onSubmit(
-				this.refs.username && this.refs.username.value,
-				this.refs.password && this.refs.password.value,
-				this.refs.password2 && this.refs.password2.value
-			), 100);
+			this.props.onSubmit(name, password, password2, secureID), 100);
 	}
 
 	render() {
 		const p = this.props;
+		const s = this.state;
 
 		return (
 			<form className={p.className} onSubmit={this.handleSubmit}>
@@ -77,23 +84,34 @@ export default class AuthForm extends Component {
 						</Link>
 					}
 				</h1>
-				{this.state.msg &&
+				{s.msg &&
 					<span className={classnames('msg', p.msgClass)}>
-						{this.state.msg}
+						{s.msg}
 					</span>
 				}
 				<input
-					ref="username"
-					className={classnames('auth-input', { displayNone: !p.isVisibleUsername })}
+					ref="name"
+					className={classnames('auth-input', { displayNone: !p.isVisibleName })}
 					type="text"
 					placeholder="name"
 					maxLength="30"
 					autoFocus="autofocus"
 				/>
+				<Input
+					name="secureID"
+					ref={(ref) => { if (ref && ref.state.value !== s.secureID) { this.setState({ secureID: ref.state.value }); } }}
+					className={classnames('secureID-input', { displayNone: !p.isVisibleID })}
+					type="text"
+					value={s.secureID}
+					placeholder="secure login ID"
+					autoFocus="autofocus"
+					onChange={(secureID) => this.setState({ secureID })}
+				/>
 				<input
 					ref="password"
 					className={classnames('auth-input', { displayNone: !p.isVisiblePassword })}
 					type="password"
+					defaultValue={p.password}
 					placeholder={p.passwordPlaceholder || 'password'}
 					maxLength="256"
 				/>
