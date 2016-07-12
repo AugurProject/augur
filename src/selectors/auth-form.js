@@ -5,7 +5,7 @@ const Shared = {
 	isVisiblePassword: true,
 	// isVisibleAccountInfo: false,
 	msgClass: 'success',
-	closeLink: { href: '/', onClick: () => AuthForm.update({ activePage: 'markets' }) }
+	closeLink: { href: '/', onClick: () => require('../selectors').update({ activePage: 'markets' }) }
 };
 
 const loginParts = {
@@ -33,18 +33,18 @@ const signUp = {
 	topLink: {
 		href: '/login',
 		onClick: () => {
-			AuthForm.update({ authForm: {
+			require('../selectors').update({ authForm: {
 				...Shared,
 				...loginParts,
 				topLink: {
 					href: '/register',
 					onClick: () => {
-						AuthForm.update({ authForm: { ...signUp, clearName: true, clearPassword: true } });
+						require('../selectors').update({ authForm: { ...signUp, clearName: true, clearPassword: true } });
 					}
 				},
 				onSubmit: (secureID, password) => {
 					console.log('***** user would now be logged in assuming password and secure id are correct. ******');
-					AuthForm.update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
+					require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 				}
 			}
 			});
@@ -58,15 +58,15 @@ const logIn = {
 	topLink: {
 		href: '/register',
 		onClick: () => {
-			AuthForm.update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
+			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 		}
 	},
 	onSubmit: (secureID, password) => {
 		console.log('***** user would now be logged in assuming password and secure id are correct. ******');
-		AuthForm.update({ authForm: { ...signUp, clearName: true,
+		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
 		loginAccount.signIn();
-		AuthForm.update({ activePage: 'account' });
+		require('../selectors').update({ activePage: 'account' });
 	}
 };
 
@@ -78,7 +78,7 @@ const accountCreated = {
 
 
 function SignUpOnSubmit(name, password, password2) {
-	AuthForm.update({
+	require('../selectors').update({
 		authForm: {
 			...accountCreated,
 			// password
@@ -86,8 +86,6 @@ function SignUpOnSubmit(name, password, password2) {
 		}
 	});
 }
-
-// signUp.onSubmit = SignUpOnSubmit;
 
 const AuthForm = {
 	...signUp

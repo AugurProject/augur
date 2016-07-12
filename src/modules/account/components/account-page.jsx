@@ -151,7 +151,7 @@ export default class AccountPage extends Component {
 													</span>
 													<span
 														className="dismiss-message"
-														title="Click to dismiss message."
+														title="Click to dismiss message"
 														onClick={() => this.setState({ msg: '' })}
 													>
 													&#xf057;
