@@ -3,7 +3,7 @@
  */
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
-var ethTx = require("ethereumjs-tx");
+var EthTx = require("ethereumjs-tx");
 var constants = require("../constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -20,7 +20,7 @@ module.exports = {
 	getTxGasEth: function (tx, gasPrice) {
 		tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
 		tx.gasPrice = gasPrice;
-		var etx = new ethTx(tx);
+		var etx = new EthTx(tx);
 		return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
 	},
 

@@ -7,7 +7,7 @@
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var BigNumber = require("bignumber.js");
-var ethTx = require("ethereumjs-tx");
+var EthTx = require("ethereumjs-tx");
 var keys = require("keythereum");
 var uuid = require("node-uuid");
 var clone = require("clone");
@@ -311,7 +311,7 @@ module.exports = function () {
                     }
                 }
                 mutex.unlock();
-                var etx = new ethTx(packaged);
+                var etx = new EthTx(packaged);
 
                 // sign, validate, and send the transaction
                 etx.sign(self.account.privateKey);
