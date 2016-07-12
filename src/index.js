@@ -41,7 +41,6 @@ function Augur() {
     this.constants = require("./constants");
     this.abi = require("augur-abi");
     this.utils = require("./utilities");
-    this.db = require("./client/db");
     this.errors = require("augur-contracts").errors;
     this.rpc = require("ethrpc");
     this.rpc.debug = this.options.debug;

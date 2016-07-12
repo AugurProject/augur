@@ -187,17 +187,8 @@ module.exports = function () {
             }); // deriveKey
         },
 
-        persist: function () {
-            var account = augur.db.getPersistent();
-            if (account && account.privateKey) {
-                this.account = account;
-            }
-            return account;
-        },
-
         logout: function () {
             this.account = {};
-            augur.db.removePersistent();
             augur.rpc.clear();
         },
 

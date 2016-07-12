@@ -25,7 +25,6 @@
     "ethrpc": "1.2.0",
     "keythereum": "0.2.6",
     "locks": "0.2.2",
-    "node-localstorage": "1.1.2",
     "node-uuid": "1.4.7"
   },
   "engines": {
