@@ -8,7 +8,7 @@ export default class AuthForm extends Component {
 		className: PropTypes.string,
 		title: PropTypes.string,
 		password: PropTypes.string,
-		secureID: PropTypes.string,
+		secureLoginID: PropTypes.string,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
 		isVisibleName: PropTypes.bool,
@@ -34,12 +34,12 @@ export default class AuthForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
 			msg: this.props.msg,
-			secureID: this.props.secureID
+			secureLoginID: this.props.secureLoginID
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg, secureID: nextProps.secureID });
+		this.setState({ msg: nextProps.msg, secureLoginID: nextProps.secureLoginID });
 	}
 
 	componentDidUpdate() {
@@ -58,12 +58,12 @@ export default class AuthForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		const name = this.refs.name.value;
-		const secureID = this.state.secureID;
+		const secureLoginID = this.state.secureLoginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		this.setState({ msg: '' });
 		setTimeout(() =>
-			this.props.onSubmit(name, password, password2, secureID), 100);
+			this.props.onSubmit(name, password, password2, secureLoginID), 100);
 	}
 
 	render() {
@@ -98,14 +98,14 @@ export default class AuthForm extends Component {
 					autoFocus="autofocus"
 				/>
 				<Input
-					name="secureID"
-					ref={(ref) => { if (ref && ref.state.value !== s.secureID) { this.setState({ secureID: ref.state.value }); } }}
-					className={classnames('secureID-input', { displayNone: !p.isVisibleID })}
+					name="secureLoginID"
+					ref={(ref) => { if (ref && ref.state.value !== s.secureLoginID) { this.setState({ secureLoginID: ref.state.value }); } }}
+					className={classnames('secureLoginID-input', { displayNone: !p.isVisibleID })}
 					type="text"
-					value={s.secureID}
+					value={s.secureLoginID}
 					placeholder="secure login ID"
 					autoFocus="autofocus"
-					onChange={(secureID) => this.setState({ secureID })}
+					onChange={(secureLoginID) => this.setState({ secureLoginID })}
 				/>
 				<input
 					ref="password"
