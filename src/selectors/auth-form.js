@@ -82,7 +82,7 @@ function SignUpOnSubmit(name, password, password2) {
 		authForm: {
 			...accountCreated,
 			// password
-			clearPassword: true
+			// clearPassword: true
 		}
 	});
 }
