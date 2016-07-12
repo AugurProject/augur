@@ -8,7 +8,8 @@
     "integration-test": "AUGURJS_INTEGRATION_TESTS=true scripts/runtests.sh --core --create --markets --client",
     "lint": "jshint gulpfile.js src/*.js src/client/*.js src/modules/*.js scripts/setup.js test/*.js",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/core test/markets test/client --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "setup": "scripts/setup.js --reset --faucets"
+    "setup": "scripts/setup.js --reset --faucets",
+		"build": "gulp build"
   },
   "dependencies": {
     "async": "1.5.2",
@@ -16,6 +17,7 @@
     "augur-contracts": "1.3.1",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
+    "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
     "ethereumjs-connect": "0.7.2",
@@ -24,7 +26,6 @@
     "ethrpc": "1.2.2",
     "keythereum": "0.2.6",
     "locks": "0.2.2",
-    "node-localstorage": "1.1.2",
     "node-uuid": "1.4.7"
   },
   "engines": {

@@ -10,6 +10,7 @@ var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var bs58 = require("bs58");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -295,5 +296,13 @@ module.exports = {
             totalLen += len;
         }
         return marketsInfo;
-    }
+    },
+
+		base58Decrypt: function (secureLoginID) {
+			return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
+		},
+
+		base58Encrypt: function (keystore) {
+			return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
+		}
 };

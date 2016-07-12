@@ -17,6 +17,7 @@ var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
 var constants = require("../constants");
 var utils = require("../utilities");
+var abacus = require("../modules/abacus");
 
 request = request.defaults({timeout: 120000});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -34,217 +35,160 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fund: function (account, branch, onRegistered, onSendEther, onSent, onSuccess, onFailed) {
-            var self = this;
-            if (onRegistered.constructor === Object && onRegistered.onRegistered) {
-                if (onRegistered.onSendEther) onSendEther = onRegistered.onSendEther;
-                if (onRegistered.onSent) onSent = onRegistered.onSent;
-                if (onRegistered.onSuccess) onSuccess = onRegistered.onSuccess;
-                if (onRegistered.onFailed) onFailed = onRegistered.onFailed;
-                onRegistered = onRegistered.onRegistered;
-            }
-            onRegistered = onRegistered || utils.noop;
-            onSendEther = onSendEther || utils.noop;
-            onSent = onSent || utils.noop;
-            onSuccess = onSuccess || utils.noop;
-            onFailed = onFailed || utils.noop;
-            onRegistered(account);
-            if (process.env.BUILD_AZURE) {
-                var FREEBIE_ETH = 5;
-                augur.rpc.sendEther({
-                    to: account.address,
-                    value: FREEBIE_ETH,
-                    from: augur.coinbase,
-                    onFailed: onFailed,
-                    onSent: utils.noop,
-                    onSuccess: function (res) {
-                        onSendEther(account);
-                        augur.fundNewAccount({
-                            branch: branch || augur.constants.DEFAULT_BRANCH_ID,
-                            onSent: onSent,
-                            onSuccess: onSuccess,
-                            onFailed: onFailed
-                        });
-                    }
+        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
+            var url = constants.FAUCET + abi.format_address(registeredAddress);
+            request(url, function (err, response, body) {
+                if (err) return onFailed(err);
+                if (response.statusCode !== 200) {
+                    return onFailed(response.statusCode);
+                }
+                console.log("sent ether to account:", registeredAddress);
+                augur.fundNewAccount({
+                    branch: branch || constants.DEFAULT_BRANCH_ID,
+                    onSent: onSent,
+                    onSuccess: onSuccess,
+                    onFailed: onFailed
                 });
-            } else {
-                var url = constants.FAUCET + abi.format_address(account.address);
-                request(url, function (err, response, body) {
-                    if (err) return onFailed(err);
-                    if (response.statusCode !== 200) {
-                        return onFailed(response.statusCode);
-                    }
-                    console.log("sent ether to account:", account);
-                    onSendEther(account);
+            });
+        },
+
+        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
+            augur.rpc.sendEther({
+                to: registeredAddress,
+                value: amount,
+                from: fromAddress,
+                onFailed: onFailed,
+                onSent: utils.noop,
+                onSuccess: function (res) {
                     augur.fundNewAccount({
-                        branch: branch || augur.constants.DEFAULT_BRANCH_ID,
+                        branch: branch || constants.DEFAULT_BRANCH_ID,
                         onSent: onSent,
                         onSuccess: onSuccess,
                         onFailed: onFailed
                     });
-                });
-            }
-        },
-
-        // options: {doNotFund, persist}
-        register: function (handle, password, options, onRegistered, onSendEther, onSent, onSuccess, onFailed) {
-            var i, self = this;
-            if (!onRegistered && options) {
-                if (utils.is_function(options)) {
-                    onRegistered = options;
-                    options = {};
                 }
-            }
-            if (onRegistered && onRegistered.constructor === Object && onRegistered.onRegistered) {
-                if (onRegistered.onSendEther) onSendEther = onRegistered.onSendEther;
-                if (onRegistered.onSent) onSent = onRegistered.onSent;
-                if (onRegistered.onSuccess) onSuccess = onRegistered.onSuccess;
-                if (onRegistered.onFailed) onFailed = onRegistered.onFailed;
-                onRegistered = onRegistered.onRegistered;
-            }
-            onRegistered = onRegistered || utils.noop;
-            onSendEther = onSendEther || utils.noop;
-            onSent = onSent || utils.noop;
-            onSuccess = onSuccess || utils.noop;
-            onFailed = onFailed || utils.noop;
-            options = options || {};
-            if (!password || password.length < 6) return onRegistered(errors.PASSWORD_TOO_SHORT);
-            augur.db.get(handle, function (record) {
-                if (!record || !record.error) return onRegistered(errors.HANDLE_TAKEN);
-
-                // generate ECDSA private key and initialization vector
-                keys.create(null, function (plain) {
-                    if (plain.error) return onRegistered(plain);
-
-                    // derive secret key from password
-                    keys.deriveKey(password, plain.salt, null, function (derivedKey) {
-                        if (derivedKey.error) return onRegistered(derivedKey);
-
-                        if (!Buffer.isBuffer(derivedKey)) {
-                            derivedKey = new Buffer(derivedKey, "hex");
-                        }
-
-                        var encryptedPrivateKey = new Buffer(keys.encrypt(
-                            plain.privateKey,
-                            derivedKey.slice(0, 16),
-                            plain.iv
-                        ), "base64").toString("hex");
-
-                        // encrypt private key using derived key and IV, then
-                        // store encrypted key & IV, indexed by handle
-                        var keystore = {
-                            address: abi.format_address(keys.privateKeyToAddress(plain.privateKey)),
-                            crypto: {
-                                cipher: keys.constants.cipher,
-                                ciphertext: encryptedPrivateKey,
-                                cipherparams: {iv: plain.iv.toString("hex")},
-                                kdf: constants.KDF,
-                                kdfparams: {
-                                    c: keys.constants[constants.KDF].c,
-                                    dklen: keys.constants[constants.KDF].dklen,
-                                    prf: keys.constants[constants.KDF].prf,
-                                    salt: plain.salt.toString("hex")
-                                },
-                                mac: keys.getMAC(derivedKey, encryptedPrivateKey)
-                            },
-                            version: 3,
-                            id: uuid.v4()
-                        };
-                        augur.db.put(handle, keystore, function (result) {
-                            if (!result) return onRegistered(errors.DB_WRITE_FAILED);
-                            if (result.error) return onRegistered(result);
-
-                            // set web.account object
-                            self.account = {
-                                handle: handle,
-                                privateKey: plain.privateKey,
-                                address: keystore.address,
-                                keystore: keystore
-                            };
-                            if (options.persist) {
-                                augur.db.putPersistent(self.account);
-                            }
-
-                            if (options.doNotFund) return onRegistered(self.account);
-                            self.fund(self.account, augur.constants.DEFAULT_BRANCH_ID, onRegistered, onSendEther, onSent, onSuccess, onFailed);
-
-                        }); // augur.db.put
-                    }); // deriveKey
-                }); // create
-            }); // augur.db.get
+            });
         },
 
-        login: function (handle, password, options, cb) {
+        register: function (name, password, cb) {
+            var i, self = this;
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
+            if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
+
+            // generate ECDSA private key and initialization vector
+            keys.create(null, function (plain) {
+                if (plain.error) return cb(plain);
+
+                // derive secret key from password
+                keys.deriveKey(password, plain.salt, null, function (derivedKey) {
+                    if (derivedKey.error) return cb(derivedKey);
+
+                    if (!Buffer.isBuffer(derivedKey)) {
+                        derivedKey = new Buffer(derivedKey, "hex");
+                    }
+
+                    var encryptedPrivateKey = new Buffer(keys.encrypt(
+                        plain.privateKey,
+                        derivedKey.slice(0, 16),
+                        plain.iv
+                    ), "base64").toString("hex");
+
+                    // encrypt private key using derived key and IV, then
+                    // store encrypted key & IV, indexed by handle
+                    var keystore = {
+                        address: abi.format_address(keys.privateKeyToAddress(plain.privateKey)),
+                        crypto: {
+                            cipher: keys.constants.cipher,
+                            ciphertext: encryptedPrivateKey,
+                            cipherparams: {iv: plain.iv.toString("hex")},
+                            kdf: constants.KDF,
+                            kdfparams: {
+                                c: keys.constants[constants.KDF].c,
+                                dklen: keys.constants[constants.KDF].dklen,
+                                prf: keys.constants[constants.KDF].prf,
+                                salt: plain.salt.toString("hex")
+                            },
+                            mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+                        },
+                        version: 3,
+                        id: uuid.v4()
+                    };
+                    var unsecureLoginIDObject = {name: name, keystore: keystore};
+                    var secureLoginID = abacus.base58Encrypt(unsecureLoginIDObject);
+
+                    cb({
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        keystore: keystore,
+                        address: keystore.address
+                    });
+                }); // deriveKey
+            }); // create
+        },
+
+        login: function (secureLoginID, password, cb) {
             var self = this;
-            if (!cb && utils.is_function(options)) {
-                cb = options;
-                options = {};
-            }
-            options = options || {};
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
 
             // blank password
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-
-            // retrieve account info from database
-            augur.db.get(handle, function (keystore) {
-                if (!keystore || keystore.error) return cb(errors.BAD_CREDENTIALS);
-
-                // derive secret key from password
-                keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derived) {
-                    if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
-
-                    // verify that message authentication codes match
-                    var storedKey = keystore.crypto.ciphertext;
-                    if (keys.getMAC(derived, storedKey) !== keystore.crypto.mac.toString("hex")) {
-                        return cb(errors.BAD_CREDENTIALS);
-                    }
-
-                    if (!Buffer.isBuffer(derived)) {
-                        derived = new Buffer(derived, "hex");
-                    }
-
-                    // decrypt stored private key using secret key
-                    try {
-                        var privateKey = new Buffer(keys.decrypt(
-                            storedKey,
-                            derived.slice(0, 16),
-                            keystore.crypto.cipherparams.iv
-                        ), "hex");
-
-                        // while logged in, web.account object is set
-                        self.account = {
-                            handle: handle,
-                            privateKey: privateKey,
-                            address: keystore.address,
-                            keystore: keystore
-                        };
-                        if (options.persist) {
-                            augur.db.putPersistent(self.account);
-                        }
-
-                        cb(self.account);
-
-                    // decryption failure: bad password
-                    } catch (exc) {
-                        var e = clone(errors.BAD_CREDENTIALS);
-                        e.bubble = exc;
-                        if (utils.is_function(cb)) cb(e);
-                    }
-                }); // deriveKey
-            }); // augur.db.get
-        },
-
-        persist: function () {
-            var account = augur.db.getPersistent();
-            if (account && account.privateKey) {
-                this.account = account;
+            var unencryptedLoginIDObject;
+            try {
+                unencryptedLoginIDObject = abacus.base58Decrypt(secureLoginID);
+            } catch (err) {
+                return cb(errors.BAD_CREDENTIALS);
             }
-            return account;
+            var keystore = unencryptedLoginIDObject.keystore;
+            var name = unencryptedLoginIDObject.name;
+
+            // derive secret key from password
+            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derived) {
+                if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
+
+                // verify that message authentication codes match
+                var storedKey = keystore.crypto.ciphertext;
+                if (keys.getMAC(derived, storedKey) !== keystore.crypto.mac.toString("hex")) {
+                    return cb(errors.BAD_CREDENTIALS);
+                }
+
+                if (!Buffer.isBuffer(derived)) {
+                    derived = new Buffer(derived, "hex");
+                }
+
+                // decrypt stored private key using secret key
+                try {
+                    var privateKey = new Buffer(keys.decrypt(
+                        storedKey,
+                        derived.slice(0, 16),
+                        keystore.crypto.cipherparams.iv
+                    ), "hex");
+
+                    // while logged in, web.account object is set
+                    self.account = {
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        privateKey: privateKey,
+                        address: keystore.address,
+                        keystore: keystore
+                    };
+
+                    cb({
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        keystore: keystore, address: keystore.address
+                    });
+
+                // decryption failure: bad password
+                } catch (exc) {
+                    var e = clone(errors.BAD_CREDENTIALS);
+                    e.bubble = exc;
+                    cb(e);
+                }
+            }); // deriveKey
         },
 
         logout: function () {
             this.account = {};
-            augur.db.removePersistent();
             augur.rpc.clear();
         },
 
