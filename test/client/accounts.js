@@ -476,7 +476,6 @@ describe("Contract methods", function () {
                             assert.strictEqual(r.callReturn, "1");
                             assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
                             assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
-                            assert.strictEqual(augur.rpc.txs[r.txHash].status, "pending");
                         },
                         onSuccess: function (r) {
                             // success
