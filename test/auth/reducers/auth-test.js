@@ -10,8 +10,8 @@ import {
 	PATHS_AUTH
 } from '../../../src/modules/link/constants/paths';
 import {
-	SHOW_LINK
-} from '../../../src/modules/link/actions/show-link';
+	UPDATE_URL
+} from '../../../src/modules/link/actions/update-url';
 import {
 	AUTH_ERROR
 } from '../../../src/modules/auth/actions/auth-error';
@@ -21,7 +21,7 @@ describe(`modules/auth/reducers/auth.js`, () => {
 	let thisTestState = Object.assign({}, testState);
 	it(`should change selected auth type`, () => {
 		action = {
-			type: SHOW_LINK,
+			type: UPDATE_URL,
 			parsedURL: {
 				pathArray: ['/login']
 			}

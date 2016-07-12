@@ -1,4 +1,4 @@
-import { SHOW_LINK } from '../../link/actions/show-link';
+import { UPDATE_URL } from '../../link/actions/update-url';
 import { SORT_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
 
@@ -16,7 +16,7 @@ export default function (selectedSort = {
 			...action.selectedSort
 		};
 
-	case SHOW_LINK:
+	case UPDATE_URL:
 		params = action.parsedURL.searchParams;
 		if (params[SORT_PARAM_NAME] != null && params[SORT_PARAM_NAME] !== '') {
 			const sortSplit = params[SORT_PARAM_NAME].split('|');

@@ -12,14 +12,14 @@ import sinon from 'sinon';
 describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 	let { state, store } = mockStore.default;
 	let out, action;
-	let mockShowLink = { showLink: () => {} };
+	let mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockShowLink, 'showLink', (href) => {
-		return { type: 'SHOW_LINK', href };
+	sinon.stub(mockUpdateURL, 'updateURL', (href) => {
+		return { type: 'UPDATE_URL', href };
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
-		'../../link/actions/show-link': mockShowLink
+		'../../link/actions/update-url': mockUpdateURL
 	});
 
 	beforeEach(() => {
@@ -41,23 +41,23 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 		global.window = {};
 	});
 
-	it(`should return a func. which dispatches UPDATE_SELECTED_PAGE_NUM and SHOW_LINK actions`, () => {
+	it(`should return a func. which dispatches UPDATE_SELECTED_PAGE_NUM and UPDATE_URL actions`, () => {
 		out = [{
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			selectedPageNum: 2
 		}, {
-			type: 'SHOW_LINK',
+			type: 'UPDATE_URL',
 			href: '/?filters=isOpen'
 		}, {
 			type: 'UPDATE_SELECTED_PAGE_NUM',
 			selectedPageNum: 5
 		}, {
-			type: 'SHOW_LINK',
+			type: 'UPDATE_URL',
 			href: '/?filters=isOpen'
 		}];
 		store.dispatch(action.updateSelectedPageNum(2));
 		store.dispatch(action.updateSelectedPageNum(5));
 
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch an update selected page number action or a show link action as expected`);
+		assert.deepEqual(store.getActions(), out, `Didn't dispatch an update selected page number action or a update url action as expected`);
 	});
 });

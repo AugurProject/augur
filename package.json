@@ -13,6 +13,7 @@
   },
   "scripts": {
     "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
+		"watch:noUp": "clear; echo '* CLEAN * HTML * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "augur-ui-webserver -d './build'",
     "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
