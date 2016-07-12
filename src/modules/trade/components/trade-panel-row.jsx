@@ -8,24 +8,30 @@ const TradePanelRow = (p) => {
 	switch (p.type) {
 	default:
 	case OUTCOME:
-		return 	<TradePanelRowOutcome
-					outcome={p.outcome}
-					sideOptions={p.sideOptions}
-					updateSelectedOutcome={p.updateSelectedOutcome}
-				/>;
+		return (
+			<TradePanelRowOutcome
+				outcome={p.outcome}
+				sideOptions={p.sideOptions}
+				updateSelectedOutcome={p.updateSelectedOutcome}
+			/>
+		);
 	case ORDER:
-		return 	<TradePanelRowOrder
-					outcome={p.outcome}
-					selectedOutcomeID={p.selectedOutcomeID}
-					constants={p.constants}
-					item={p.item}
-				/>;
+		return (
+			<TradePanelRowOrder
+				outcome={p.outcome}
+				selectedOutcomeID={p.selectedOutcomeID}
+				constants={p.constants}
+				item={p.item}
+			/>
+		);
 	case SUMMARY:
-		return 	<TradePanelRowSummary
-					type={p.type}
-					constants={p.constants}
-					trade={p.trade}
-				/>;
+		return (
+			<TradePanelRowSummary
+				type={p.type}
+				constants={p.constants}
+				trade={p.trade}
+			/>
+		);
 	}
 };
 

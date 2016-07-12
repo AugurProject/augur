@@ -22,28 +22,28 @@ const TradePanelRowOutcome = (p) => (
 		</td>
 		<td className="bid">
 			{!!p.outcome.topBid &&
-			<div>
-				<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topBid.shares.value, p.outcome.topBid.price.value, p.constants.ASK); }} >
-					<ValueDenomination className="top-bid" {...p.outcome.topBid.shares} />
-				</Clickable>
-				<span className="shares-at">@</span>
-				<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topBid.price.value); }}>
-					<ValueDenomination className="top-bid" {...p.outcome.topBid.price} />
-				</Clickable>
-			</div>
+				<div>
+					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topBid.shares.value, p.outcome.topBid.price.value, p.constants.ASK); }} >
+						<ValueDenomination className="top-bid" {...p.outcome.topBid.shares} />
+					</Clickable>
+					<span className="shares-at">@</span>
+					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topBid.price.value); }}>
+						<ValueDenomination className="top-bid" {...p.outcome.topBid.price} />
+					</Clickable>
+				</div>
 			}
 		</td>
 		<td className="ask">
 			{!!p.outcome.topAsk &&
-			<div>
-				<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topAsk.price.value); }}>
-					<ValueDenomination className="top-ask" {...p.outcome.topAsk.price} />
-				</Clickable>
-				<span className="shares-at">@</span>
-				<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topAsk.shares.value, p.outcome.topAsk.price.value, p.constants.BID); }} >
-					<ValueDenomination className="top-ask" {...p.outcome.topAsk.shares} />
-				</Clickable>
-			</div>
+				<div>
+					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topAsk.price.value); }}>
+						<ValueDenomination className="top-ask" {...p.outcome.topAsk.price} />
+					</Clickable>
+					<span className="shares-at">@</span>
+					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topAsk.shares.value, p.outcome.topAsk.price.value, p.constants.BID); }} >
+						<ValueDenomination className="top-ask" {...p.outcome.topAsk.shares} />
+					</Clickable>
+				</div>
 			}
 		</td>
 

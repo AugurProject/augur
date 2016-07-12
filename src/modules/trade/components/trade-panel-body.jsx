@@ -9,7 +9,7 @@ const TradePanelBody = (p) => {
 								p.outcome.orderBook.asks.length;
 
 	for (let i = 0; i <= orderBookLength; i++) {
-		if(i !== 0){
+		if (i !== 0) {
 			orderBookRows.push(
 				<TradePanelRow
 					key={`outcome-${i}`}

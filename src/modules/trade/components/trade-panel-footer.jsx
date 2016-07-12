@@ -15,14 +15,14 @@ const TradePanelFooter = (p) => (
 			<td>Fee</td>
 			<td>Profit/Loss</td>
 		</tr>
-		{p.summary.tradeOrders.map((trade, i) => {
-			return	<TradePanelRow
-						key={`${trade.data.outcomeName}-${i}`}
-						trade={trade}
-						constants={p.constants}
-						type={SUMMARY}
-					/>
-		})}
+		{p.summary.tradeOrders.map((trade, i) => (
+			<TradePanelRow
+				key={`${trade.data.outcomeName}-${i}`}
+				trade={trade}
+				constants={p.constants}
+				type={SUMMARY}
+			/>
+		))}
 		<tr className="summary-totals">
 			<td />
 			<td colSpan="2">
