@@ -52,7 +52,6 @@ const TradePanelRowOrder = (p) => (
 					}}
 				>
 					<ValueDenomination className="shares" {...p.outcome.orderBook.asks[p.item].shares} />
-					<ValueDenomination className="shares" {...p.outcome.orderBook.asks[p.item].shares} />
 				</Clickable>
 			</div>
 			}
