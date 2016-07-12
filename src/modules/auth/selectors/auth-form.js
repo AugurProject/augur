@@ -79,7 +79,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
 
-		secureID: loginAccount.secureLoginID,
+		secureLoginID: loginAccount.secureLoginID,
 		msg: errMsg || newAccountMessage,
 		msgClass: errMsg ? 'error' : 'success',
 
@@ -87,31 +87,6 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		submitButtonClass: 'login-button',
 
 		onSubmit: (name, password, password2, secureLoginID) =>	dispatch(login(secureLoginID, password))
-	};
-};
-
-export const selectNewRegister = (auth, loginAccount, dispatch) => {
-	const errMsg = selectErrMsg(auth.err);
-	return {
-		title: 'Login',
-
-		isVisibleName: false,
-		isVisibleID: true,
-		isVisiblePassword: true,
-		isVisiblePassword2: false,
-
-		topLinkText: 'Sign Up',
-		topLink: selectAuthLink(REGISTER, false, dispatch),
-
-		msg: errMsg || 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*',
-		secureID: loginAccount.secureLoginID,
-
-		msgClass: errMsg ? 'error' : 'success',
-
-		submitButtonText: 'Login',
-		submitButtonClass: 'login-button',
-
-		onSubmit: (name, password, password2, secureLoginID) =>		dispatch(login(secureLoginID, password))
 	};
 };
 
