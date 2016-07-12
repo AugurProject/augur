@@ -72,28 +72,30 @@ function makeMarkets(numMarkets = 25) {
 					const feeToPay = 0.02 * outcome.trade.numShares * outcome.trade.limitPrice;
 					const numShares = outcome.trade.numShares;
 					const limitPrice = outcome.trade.limitPrice || 0;
-					const profitLoss = outcome.trade.profitLoss;
+					const profitLoss = outcome.trade.side === constants.BID ? -(numShares * limitPrice) : numShares * limitPrice;
 					const cost = numShares * limitPrice;
+
+					p.feeToPay += feeToPay;
+					p.totalShares += outcome.trade.side === constants.BID ? numShares : -numShares;
+					p.totalEther += outcome.trade.side === constants.BID ? -cost : cost;
 
 					p.tradeOrders.push({
 						type: outcome.trade.side,
 						shares: makeNumber(numShares, 'Shares'),
 						ether: makeNumber(limitPrice, 'eth'),
-						profitLoss,
+						feeToPay: makeNumber(feeToPay, 'eth'),
+						profitLoss: makeNumber(profitLoss, 'eth'),
 						data: {
 							outcomeName: outcome.name,
 							marketDescription: m.description
 						}
 					});
-					p.feeToPay += feeToPay;
-					p.totalShares += outcome.trade.side === constants.BID ? numShares : -numShares;
-					p.totalEther += outcome.trade.side === constants.BID ? -cost : cost;
 
 					return p;
 				}, { feeToPay: 0, totalShares: 0, totalEther: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
 
 				tots.feeToPay = makeNumber(tots.feeToPay, 'eth');
-				tots.totalShares = makeNumber(tots.totalShares);
+				tots.totalShares = makeNumber(tots.totalShares, 'Shares');
 				tots.totalEther = makeNumber(tots.totalEther, 'eth');
 				tots.totalFees = makeNumber(tots.totalFees);
 				tots.totalGas = makeNumber(tots.totalGas);
@@ -276,8 +278,9 @@ function makeMarkets(numMarkets = 25) {
 						 */
 						updateTradeOrder: (outcomeId, shares, limitPrice, side) => {
 							const outcome = m.outcomes.find((outcome) => outcome.id === outcomeId);
+
 							if (typeof shares !== 'undefined') {
-								outcome.trade.numShares = side === constants.BID ? shares : -shares;
+								outcome.trade.numShares = shares;
 							}
 							if (typeof limitPrice !== 'undefined') {
 								outcome.trade.limitPrice = limitPrice;
@@ -290,6 +293,7 @@ function makeMarkets(numMarkets = 25) {
 							const totEth = side === constants.BID ? -(outcome.trade.numShares * outcome.trade.limitPrice) : outcome.trade.numShares * outcome.trade.limitPrice;
 
 							outcome.trade.tradeSummary.totalEther = makeNumber(Math.round(totEth * 100) / 100, 'eth');
+							// outcome.trade.tradeSummary.trade.profitLoss = makeNumber(Math.round(totEth * 100) / 100, 'eth');
 
 							require('../selectors').update();
 						}
