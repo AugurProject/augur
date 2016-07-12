@@ -82,7 +82,7 @@ const TradePanelRowOutcome = (p) => (
 );
 
 TradePanelRowOutcome.propTypes = {
-	outcomes: React.PropTypes.array,
+	outcome: React.PropTypes.object,
 	sideOptions: React.PropTypes.array,
 	updateSelectedOutcome: React.PropTypes.func
 };
