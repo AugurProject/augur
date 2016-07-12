@@ -678,6 +678,18 @@ export default function(market) {
 			});
 
 		});
+
+		describe('onSubmitPlaceTrade', () => {
+			let onSubmitPlaceTrade = market.onSubmitPlaceTrade;
+
+			it('should exist', () => {
+				assert.isDefined(onSubmitPlaceTrade, `onSubmitPlaceTrade isn't a function`);
+			});
+
+			it('should be a function', () => {
+				assert.isFunction(onSubmitPlaceTrade, `onSubmitPlaceTrade isn't a function`);
+			});
+		});
 	});
 }
 

@@ -1,13 +1,13 @@
 import { assert } from 'chai';
 
 export default function(sideOptions) {
-	describe('augur-ui-react-components trade sideOptions state', () => {
+	describe('sideOptions', () => {
 		it('should exist', () => {
-			assert.isDefined(sideOptions, 'outcomes is not defined');
+			assert.isDefined(sideOptions, `sideOptions isn't defined`);
 		});
 
 		it('should be an array', () => {
-			assert.isArray(sideOptions, 'outcomes is not an array');
+			assert.isArray(sideOptions, `sideOptions isn't an array`);
 		});
 	});
 }
