@@ -26,7 +26,6 @@ export function register(name, password, password2) {
 				return;
 			}
 			dispatch(updateLoginAccount({ secureLoginID: loginAccount.secureLoginID }));
-			console.log(loginAccount);
 			selectAuthLink(LOGIN, false, dispatch).onClick();
 		});
 	};
