@@ -23,6 +23,6 @@ describe(`modules/market/selectors/market.js`, () => {
 	});
 
 	it(`should return the expected values to components`, () => {
-		assertions.assertMarket(actual);
+		assertions.market(actual);
 	});
 });

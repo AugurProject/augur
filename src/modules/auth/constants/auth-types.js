@@ -3,7 +3,7 @@ export const LOGIN = 'login';
 
 export const AUTH_TYPES = {
 	[REGISTER]: REGISTER,
-	[LOGIN]: LOGIN
+	[LOGIN]: LOGIN,
 };
 
 export const DEFAULT_AUTH_TYPE = REGISTER;
