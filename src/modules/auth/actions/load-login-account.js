@@ -70,16 +70,23 @@ export function loadLoginAccountLocalStorage(accountID) {
 
 export function loadLoginAccount() {
 	return (dispatch) => {
+		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+
 		AugurJS.loadLoginAccount((err, loginAccount) => {
 			if (err) {
 				return console.error('ERR loadLoginAccount():', err);
 			}
-			if (!loginAccount || !loginAccount.id) {
+			let localLoginAccount = loginAccount;
+
+			if (!loginAccount && !loginAccount.id && localStorageRef && localStorageRef.getItem) {
+				localLoginAccount = JSON.parse(localStorageRef.getItem('account'));
+			}
+			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
 
-			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
-			dispatch(updateLoginAccount(loginAccount));
+			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
+			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
 			return;
 		});

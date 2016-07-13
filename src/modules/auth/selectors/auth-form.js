@@ -86,7 +86,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, secureLoginID) =>	dispatch(login(secureLoginID, password))
+		onSubmit: (name, password, password2, secureLoginID, rememberMe) =>	dispatch(login(secureLoginID, password, rememberMe))
 	};
 };
 
