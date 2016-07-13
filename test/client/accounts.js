@@ -59,6 +59,8 @@ function checkAccount(augur, account, noWebAccountCheck) {
     assert.strictEqual(account.address.length, 42);
 }
 
+afterEach(function () { augur.web.logout(); });
+
 describe("Register", function () {
     it("register account 1: " + name + " / " + password, function (done) {
         this.timeout(tools.TIMEOUT);
