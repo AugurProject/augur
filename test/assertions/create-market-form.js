@@ -6,156 +6,155 @@ import assertFormattedNumber from '../../test/assertions/common/formatted-number
 
 export default function(createMarketForm) {
 	describe('createMarketForm', () => {
-		switch(createMarketForm.step){
-		case 1:
-			describe('step 1 state', () => {
-				describe('step', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.step, `'step' is not defined`);
+		describe(`step ${createMarketForm.step} state`, () => {
+			switch(createMarketForm.step){
+				case 1:
+					describe('step', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.step, `'step' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.step, `'step' is not a number`);
+						});
 					});
 
-					it('should be a number', () => {
-						assert.isNumber(createMarketForm.step, `'step' is not a number`);
-					});
-				});
+					describe('creatingMarket', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.creatingMarket, `'creatingMarket' is not defined`);
+						});
 
-				describe('creatingMarket', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.creatingMarket, `'creatingMarket' is not defined`);
-					});
-
-					it('should be a boolean', () => {
-						assert.isBoolean(createMarketForm.creatingMarket, `'creatingMarket' is not a boolean`);
-					});
-				});
-
-				describe('errors', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.errors, `'errors' is not defined`);
+						it('should be a boolean', () => {
+							assert.isBoolean(createMarketForm.creatingMarket, `'creatingMarket' is not a boolean`);
+						});
 					});
 
-					it('should be a object', () => {
-						assert.isObject(createMarketForm.errors, `'errors' is not an object`);
-					});
-				});
+					describe('errors', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.errors, `'errors' is not defined`);
+						});
 
-				describe('onValuesUpdated', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.onValuesUpdated, `'onValuesUpdated' is not defined`);
-					});
-
-					it('should be a function', () => {
-						assert.isFunction(createMarketForm.onValuesUpdated, `onValuesUpdated' is not a function`);
-					});
-				});
-			});
-			break;
-		case 2:
-			describe('step 2 state', () => {
-				describe('type', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.type, `'type' is not defined`);
+						it('should be a object', () => {
+							assert.isObject(createMarketForm.errors, `'errors' is not an object`);
+						});
 					});
 
-					it('should be a string', () => {
-						assert.isString(createMarketForm.type, `'type' is not a string`);
-					});
-				});
+					describe('onValuesUpdated', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.onValuesUpdated, `'onValuesUpdated' is not defined`);
+						});
 
-				describe('initialFairPrices', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+						it('should be a function', () => {
+							assert.isFunction(createMarketForm.onValuesUpdated, `onValuesUpdated' is not a function`);
+						});
 					});
+					break;
+				case 2:
+					describe('type', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.type, `'type' is not defined`);
+						});
 
-					it('should be an object', () => {
-						assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
-					});
-
-					it('should have the correct shape', () => {
-						assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm');
-					});
-				});
-
-				describe('descriptionPlaceholder', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.descriptionPlaceholder, `'descriptionPlaceholder' is not defined`);
+						it('should be a string', () => {
+							assert.isString(createMarketForm.type, `'type' is not a string`);
+						});
 					});
 
-					it('should be a string', () => {
-						assert.isString(createMarketForm.descriptionPlaceholder, `'descriptionPlaceholder' is not a string`);
-					});
-				});
+					describe('initialFairPrices', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+						});
 
-				describe('descriptionMaxLength', () => {
-					it('should be defined', () => {
-						assert.isDefined(createMarketForm.descriptionMaxLength, `'descriptionMaxLength' is not defined`);
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm');
+						});
 					});
 
-					it('should be a number', () => {
-						assert.isNumber(createMarketForm.descriptionMaxLength, `'descriptionMaxLength' is not a number`);
-					});
-				});
+					describe('descriptionPlaceholder', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.descriptionPlaceholder, `'descriptionPlaceholder' is not defined`);
+						});
 
-				describe(`type: ${createMarketForm.type}`, () => {
-					switch(createMarketForm.type){
-						case 'categorical':
-							describe('categoricalOutcomesMinNum', () => {
-								it('should be defined', () => {
-									assert.isDefined(createMarketForm.categoricalOutcomesMinNum, `'categoricalOutcomesMinNum' is not defined`);
+						it('should be a string', () => {
+							assert.isString(createMarketForm.descriptionPlaceholder, `'descriptionPlaceholder' is not a string`);
+						});
+					});
+
+					describe('descriptionMaxLength', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.descriptionMaxLength, `'descriptionMaxLength' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.descriptionMaxLength, `'descriptionMaxLength' is not a number`);
+						});
+					});
+
+					describe(`type: ${createMarketForm.type}`, () => {
+						switch(createMarketForm.type){
+							case 'categorical':
+								describe('categoricalOutcomesMinNum', () => {
+									it('should be defined', () => {
+										assert.isDefined(createMarketForm.categoricalOutcomesMinNum, `'categoricalOutcomesMinNum' is not defined`);
+									});
+
+									it('should be a number', () => {
+										assert.isNumber(createMarketForm.categoricalOutcomesMinNum, `'categoricalOutcomesMinNum' is not a number`);
+									});
 								});
 
-								it('should be a number', () => {
-									assert.isNumber(createMarketForm.categoricalOutcomesMinNum, `'categoricalOutcomesMinNum' is not a number`);
-								});
-							});
+								describe('categoricalOutcomesMaxNum', () => {
+									it('should be defined', () => {
+										assert.isDefined(createMarketForm.categoricalOutcomesMaxNum, `'categoricalOutcomesMaxNum' is not defined`);
+									});
 
-							describe('categoricalOutcomesMaxNum', () => {
-								it('should be defined', () => {
-									assert.isDefined(createMarketForm.categoricalOutcomesMaxNum, `'categoricalOutcomesMaxNum' is not defined`);
-								});
-								
-								it('should be a number', () => {
-									assert.isNumber(createMarketForm.categoricalOutcomesMaxNum, `'categoricalOutcomesMaxNum' is not a number`);
-								});
-							});
-
-							describe('categoricalOutcomeMaxLength', () => {
-								it('should be defined', () => {
-									assert.isDefined(createMarketForm.categoricalOutcomeMaxLength, `'categoricalOutcomeMaxLength' is not defined`);
+									it('should be a number', () => {
+										assert.isNumber(createMarketForm.categoricalOutcomesMaxNum, `'categoricalOutcomesMaxNum' is not a number`);
+									});
 								});
 
-								it('should be a number', () => {
-									assert.isNumber(createMarketForm.categoricalOutcomeMaxLength, `'categoricalOutcomeMaxLength' is not a number`);
+								describe('categoricalOutcomeMaxLength', () => {
+									it('should be defined', () => {
+										assert.isDefined(createMarketForm.categoricalOutcomeMaxLength, `'categoricalOutcomeMaxLength' is not defined`);
+									});
+
+									it('should be a number', () => {
+										assert.isNumber(createMarketForm.categoricalOutcomeMaxLength, `'categoricalOutcomeMaxLength' is not a number`);
+									});
 								});
-							});
-							break;
-						case 'scalar':
-							describe('scalarSmallNum', () => {
-								it('should be defined', () => {
-									assert.isDefined(createMarketForm.scalarSmallNum, `'scalarSmallNum' is not defined`);
+								break;
+							case 'scalar':
+								describe('scalarSmallNum', () => {
+									it('should be defined', () => {
+										assert.isDefined(createMarketForm.scalarSmallNum, `'scalarSmallNum' is not defined`);
+									});
+
+									it('should be a number', () => {
+										assert.isNumber(createMarketForm.scalarSmallNum, `'scalarSmallNum' is not a number`);
+									});
 								});
 
-								it('should be a number', () => {
-									assert.isNumber(createMarketForm.scalarSmallNum, `'scalarSmallNum' is not a number`);
-								});
-							});
+								describe('scalarBigNum', () => {
+									it('should be defined', () => {
+										assert.isDefined(createMarketForm.scalarBigNum, `'scalarBigNum' is not defined`);
+									});
 
-							describe('scalarBigNum', () => {
-								it('should be defined', () => {
-									assert.isDefined(createMarketForm.scalarBigNum, `'scalarBigNum' is not defined`);
+									it('should be a number', () => {
+										assert.isNumber(createMarketForm.scalarBigNum, `'scalarBigNum' is not a number`);
+									});
 								});
-
-								it('should be a number', () => {
-									assert.isNumber(createMarketForm.scalarBigNum, `'scalarBigNum' is not a number`);
-								});
-							});
-							break;
-					}
-				});
-			});
-			break;
-		}
-
+								break;
+						}
+					});
+					break;
+				case 3:
+					break;
+			}
+		});
 	});
 }
 
