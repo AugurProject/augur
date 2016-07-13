@@ -43,7 +43,7 @@ function makeMarkets(numMarkets = 25) {
 				onClick: () => require('../selectors').update({ activePage: M, market: m })
 			},
 			orderBook: {},
-			constants: {
+			orderSides: {
 				BID: constants.BID,
 				ASK: constants.ASK
 			}

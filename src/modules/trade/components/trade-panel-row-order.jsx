@@ -13,7 +13,7 @@ const TradePanelRowOrder = (p) => (
 						onClick={event => {
 							event.stopPropagation();
 
-							p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.bids[p.itemIndex].shares.value, p.outcome.orderBook.bids[p.itemIndex].price.value, p.constants.ASK);
+							p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.bids[p.itemIndex].shares.value, p.outcome.orderBook.bids[p.itemIndex].price.value, p.orderSides.ASK);
 						}}
 					>
 						<ValueDenomination className="shares" {...p.outcome.orderBook.bids[p.itemIndex].shares} />
@@ -21,6 +21,7 @@ const TradePanelRowOrder = (p) => (
 					<span className="shares-at">@</span>
 					<Clickable
 						onClick={event => {
+							event.stopPropagation();
 							event.stopPropagation();
 
 							p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.orderBook.bids[p.itemIndex].price.value);
@@ -48,7 +49,7 @@ const TradePanelRowOrder = (p) => (
 						onClick={event => {
 							event.stopPropagation();
 
-							p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.asks[p.itemIndex].shares.value, p.outcome.orderBook.asks[p.itemIndex].price.value, p.constants.BID);
+							p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.asks[p.itemIndex].shares.value, p.outcome.orderBook.asks[p.itemIndex].price.value, p.orderSides.BID);
 						}}
 					>
 						<ValueDenomination className="shares" {...p.outcome.orderBook.asks[p.itemIndex].shares} />
@@ -63,6 +64,7 @@ const TradePanelRowOrder = (p) => (
 TradePanelRowOrder.propTypes = {
 	outcomes: React.PropTypes.array,
 	selectedOutcomeID: React.PropTypes.string,
+	orderSides: React.PropTypes.object,
 	itemIndex: React.PropTypes.number
 };
 

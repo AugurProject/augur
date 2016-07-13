@@ -19,7 +19,7 @@ const TradePanelFooter = (p) => (
 			<TradePanelRow
 				key={`${trade.data.outcomeName}-${i}`}
 				trade={trade}
-				constants={p.constants}
+				orderSides={p.orderSides}
 				type={SUMMARY}
 			/>
 		))}
@@ -48,7 +48,7 @@ const TradePanelFooter = (p) => (
 
 TradePanelFooter.propTypes = {
 	summary: React.PropTypes.object,
-	constants: React.PropTypes.object
+	orderSides: React.PropTypes.object
 };
 
 export default TradePanelFooter;

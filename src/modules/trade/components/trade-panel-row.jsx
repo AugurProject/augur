@@ -20,7 +20,7 @@ const TradePanelRow = (p) => {
 			<TradePanelRowOrder
 				outcome={p.outcome}
 				selectedOutcomeID={p.selectedOutcomeID}
-				constants={p.constants}
+				orderSides={p.orderSides}
 				itemIndex={p.itemIndex}
 			/>
 		);
@@ -28,7 +28,7 @@ const TradePanelRow = (p) => {
 		return (
 			<TradePanelRowSummary
 				type={p.type}
-				constants={p.constants}
+				orderSides={p.orderSides}
 				trade={p.trade}
 			/>
 		);
@@ -41,7 +41,7 @@ TradePanelRow.propTypes = {
 	selectedOutcomeID: React.PropTypes.string,
 	updateSelectedOutcome: React.PropTypes.func,
 	summary: React.PropTypes.object,
-	constants: React.PropTypes.object,
+	orderSides: React.PropTypes.object,
 	type: React.PropTypes.string,
 	itemIndex: React.PropTypes.number
 };

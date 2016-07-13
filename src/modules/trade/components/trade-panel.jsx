@@ -17,13 +17,13 @@ const TradePanel = (p) => (
 					sideOptions={p.sideOptions}
 					selectedOutcomeID={p.selectedOutcomeID}
 					updateSelectedOutcome={p.updateSelectedOutcome}
-					constants={p.constants}
+					orderSides={p.orderSides}
 				/>
 			))}
 			{p.tradeOrders && !!p.tradeOrders.length &&
 				<TradePanelFooter
 					summary={p.tradeSummary}
-					constants={p.constants}
+					orderSides={p.orderSides}
 				/>
 			}
 		</table>
@@ -51,7 +51,7 @@ TradePanel.propTypes = {
 	tradeOrders: React.PropTypes.array,
 	tradeSummary: React.PropTypes.object,
 	onSubmitPlaceTrade: React.PropTypes.func,
-	constants: React.PropTypes.object
+	orderSides: React.PropTypes.object
 };
 
 export default TradePanel;

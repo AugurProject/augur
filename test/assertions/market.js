@@ -769,34 +769,34 @@ export default function(market) {
 			});
 		});
 
-		describe('constants', () => {
-			let constants = market.constants;
+		describe('orderSides', () => {
+			let orderSides = market.orderSides;
 
 			it('should receive constants and be an object', () => {
-				assert.isDefined(constants, 'market.constants is not defined');
+				assert.isDefined(orderSides, 'market.orderSides is not defined');
 			});
 
 			it('should be an object', () => {
-				assert.isObject(constants, 'market.constatn is not an object');
+				assert.isObject(orderSides, 'market.orderSides is not an object');
 			});
 
 			describe('BID', () => {
 				it('should exist', () => {
-					assert.isDefined(constants.BID, 'BID is not defined');
+					assert.isDefined(orderSides.BID, 'BID is not defined');
 				});
 
 				it("should be a string + equal 'bid'", () => {
-					assert.strictEqual(constants.BID, 'bid', "BID is not strictly equal to 'bid'");
+					assert.strictEqual(orderSides.BID, 'bid', "BID is not strictly equal to 'bid'");
 				});
 			});
 
 			describe('ASK', () => {
 				it('should exist', () => {
-					assert.isDefined(constants.ASK, 'ASK is not defined');
+					assert.isDefined(orderSides.ASK, 'ASK is not defined');
 				});
 
 				it("should be a string + equal 'ask'", () => {
-					assert.strictEqual(constants.ASK, 'ask', "ASK is not strictly equal to 'ask'");
+					assert.strictEqual(orderSides.ASK, 'ask', "ASK is not strictly equal to 'ask'");
 				});
 			});
 

@@ -5,10 +5,10 @@ const TradePanelRowSummary = (p) => {
 	let type = null;
 
 	switch (p.trade.type) {
-	case p.constants.BID:
+	case p.orderSides.BID:
 		type = 'BUY';
 		break;
-	case p.constants.ASK:
+	case p.orderSides.ASK:
 		type = 'SELL';
 		break;
 	default:
@@ -43,7 +43,7 @@ const TradePanelRowSummary = (p) => {
 
 TradePanelRowSummary.propTypes = {
 	trade: React.PropTypes.object,
-	constants: React.PropTypes.object
+	orderSides: React.PropTypes.object
 };
 
 export default TradePanelRowSummary;

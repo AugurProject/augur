@@ -23,7 +23,7 @@ const TradePanelRowOutcome = (p) => (
 		<td className="bid">
 			{!!p.outcome.topBid &&
 				<div>
-					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topBid.shares.value, p.outcome.topBid.price.value, p.constants.ASK); }} >
+					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topBid.shares.value, p.outcome.topBid.price.value, p.orderSides.ASK); }} >
 						<ValueDenomination className="top-bid" {...p.outcome.topBid.shares} />
 					</Clickable>
 					<span className="shares-at">@</span>
@@ -40,7 +40,7 @@ const TradePanelRowOutcome = (p) => (
 						<ValueDenomination className="top-ask" {...p.outcome.topAsk.price} />
 					</Clickable>
 					<span className="shares-at">@</span>
-					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topAsk.shares.value, p.outcome.topAsk.price.value, p.constants.BID); }} >
+					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topAsk.shares.value, p.outcome.topAsk.price.value, p.orderSides.BID); }} >
 						<ValueDenomination className="top-ask" {...p.outcome.topAsk.shares} />
 					</Clickable>
 				</div>
@@ -84,6 +84,7 @@ const TradePanelRowOutcome = (p) => (
 TradePanelRowOutcome.propTypes = {
 	outcome: React.PropTypes.object,
 	sideOptions: React.PropTypes.array,
+	orderSides: React.PropTypes.object,
 	updateSelectedOutcome: React.PropTypes.func
 };
 
