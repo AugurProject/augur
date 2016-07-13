@@ -4,23 +4,20 @@ import { ORDER } from '../../../modules/trade/constants/row-types';
 
 const TradePanelBody = (p) => {
 	let orderBookRows = [];
-	const orderBookLength =	p.outcome.orderBook.bids.length > p.outcome.orderBook.asks.length ?
-								p.outcome.orderBook.bids.length :
-								p.outcome.orderBook.asks.length;
+	const orderBookLength =	Math.max(p.outcome.orderBook.bids.length, p.outcome.orderBook.asks.length);
+	const secondItemIndex = 1; // first item is displayed in different row
 
-	for (let i = 0; i <= orderBookLength; i++) {
-		if (i !== 0) {
-			orderBookRows.push(
-				<TradePanelRow
-					key={`outcome-${i}`}
-					outcome={p.outcome}
-					selectedOutcomeID={p.selectedOutcomeID}
-					constants={p.constants}
-					item={i}
-					type={ORDER}
-				/>
-			);
-		}
+	for (let i = secondItemIndex; i < orderBookLength; i++) {
+		orderBookRows.push(
+			<TradePanelRow
+				key={`outcome-${i}`}
+				outcome={p.outcome}
+				selectedOutcomeID={p.selectedOutcomeID}
+				constants={p.constants}
+				itemIndex={i}
+				type={ORDER}
+			/>
+		);
 	}
 
 	return (

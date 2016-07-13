@@ -69,6 +69,7 @@
     "inline-source-cli": "1.1.1",
     "less": "2.7.1",
     "mocha": "2.5.3",
+    "moment": "2.14.1",
     "npm-check-updates": "^2.7.0",
     "onchange": "2.5.0",
     "react": "15.2.1",

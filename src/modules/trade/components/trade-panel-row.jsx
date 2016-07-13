@@ -21,7 +21,7 @@ const TradePanelRow = (p) => {
 				outcome={p.outcome}
 				selectedOutcomeID={p.selectedOutcomeID}
 				constants={p.constants}
-				item={p.item}
+				itemIndex={p.itemIndex}
 			/>
 		);
 	case SUMMARY:
@@ -43,7 +43,7 @@ TradePanelRow.propTypes = {
 	summary: React.PropTypes.object,
 	constants: React.PropTypes.object,
 	type: React.PropTypes.string,
-	item: React.PropTypes.number
+	itemIndex: React.PropTypes.number
 };
 
 export default TradePanelRow;
