@@ -23,6 +23,6 @@ describe(`modules/link/selectors/links.js`, () => {
 	it(`should have the expected shape`, () => {
 		actual = selector.default();
 		// console.log(actual);
-		assertions.assertLinks(actual);
+		assertions.links(actual);
 	});
 });

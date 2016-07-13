@@ -9,7 +9,7 @@ import {
 import { PAGE_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_PAGE } from '../../markets/constants/pagination';
 
-import { SHOW_LINK } from '../../link/actions/show-link';
+import { UPDATE_URL } from '../../link/actions/update-url';
 
 export default function (pagination = { selectedPageNum: DEFAULT_PAGE, numPerPage: 10 }, action) {
 	let params;
@@ -31,7 +31,7 @@ export default function (pagination = { selectedPageNum: DEFAULT_PAGE, numPerPag
 			selectedPageNum: DEFAULT_PAGE
 		};
 
-	case SHOW_LINK:
+	case UPDATE_URL:
 		params = action.parsedURL.searchParams;
 		newPageNum = params[PAGE_PARAM_NAME];
 		if (newPageNum != null && newPageNum !== '' && parseInt(newPageNum, 10) !== DEFAULT_PAGE) {

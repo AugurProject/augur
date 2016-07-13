@@ -13,7 +13,7 @@ import { updateTransactionsData } from '../../transactions/actions/update-transa
 
 // import { commitReports } from '../../reports/actions/commit-reports';
 import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
-import { collectFees } from '../../reports/actions/collect-fees';
+// import { collectFees } from '../../reports/actions/collect-fees';
 import { closeMarkets } from '../../reports/actions/close-markets';
 
 export function loadLoginAccountDependents() {
@@ -23,14 +23,13 @@ export function loadLoginAccountDependents() {
 		// dispatch(loadMeanTradePrices());
 		dispatch(updateAssets());
 		dispatch(loadAccountTrades());
-
 		// clear and load reports for any markets that have been loaded
 		// (partly to handle signing out of one account and into another)
 		dispatch(clearReports());
 		dispatch(loadReports(marketsData));
 
 		// dispatch(commitReports());
-		dispatch(collectFees());
+		// dispatch(collectFees());
 		dispatch(penalizeWrongReports(marketsData));
 		dispatch(closeMarkets(marketsData));
 	};
@@ -39,7 +38,6 @@ export function loadLoginAccountDependents() {
 export function loadLoginAccountLocalStorage(accountID) {
 	return (dispatch, getState) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
 
 		if (!localStorageRef || !localStorageRef.getItem || !accountID) {
 			return;

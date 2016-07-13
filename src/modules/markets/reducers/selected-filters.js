@@ -1,4 +1,4 @@
-import { SHOW_LINK } from '../../link/actions/show-link';
+import { UPDATE_URL } from '../../link/actions/update-url';
 import { TOGGLE_FILTER } from '../../markets/actions/toggle-filter';
 import { FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 
@@ -17,7 +17,7 @@ export default function (selectedFilters = { isOpen: true }, action) {
 		}
 		return newSelectedFilters;
 
-	case SHOW_LINK:
+	case UPDATE_URL:
 		if (!action.parsedURL.searchParams[FILTERS_PARAM_NAME]) {
 			return {};
 		}

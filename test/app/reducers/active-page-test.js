@@ -2,8 +2,8 @@ import {
 	assert
 } from 'chai';
 import {
-	SHOW_LINK
-} from '../../../src/modules/link/actions/show-link';
+	UPDATE_URL
+} from '../../../src/modules/link/actions/update-url';
 import reducer from '../../../src/modules/app/reducers/active-page';
 import testState from '../../testState';
 
@@ -13,7 +13,7 @@ describe(`modules/app/reducers/active-page.js`, () => {
 
 	it(`should update activepage`, () => {
 		action = {
-			type: SHOW_LINK,
+			type: UPDATE_URL,
 			parsedURL: {
 				pathArray: ['/login']
 			}

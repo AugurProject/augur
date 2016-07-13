@@ -13,6 +13,7 @@
   },
   "scripts": {
     "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
+		"watch:noUp": "clear; echo '* CLEAN * HTML * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "augur-ui-webserver -d './build'",
     "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
@@ -53,7 +54,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "augur-ui-react-components": "3.0.10",
+    "augur-ui-react-components": "3.0.11",
     "augur.js": "1.7.1",
     "bignumber.js": "2.3.0",
     "memoizerific": "1.8.4",
@@ -63,7 +64,7 @@
   },
   "devDependencies": {
     "augur-ui-webserver": "1.1.0",
-    "babel-eslint": "6.1.1",
+    "babel-eslint": "6.1.2",
     "babel-plugin-transform-remove-console": "6.8.0",
     "babel-preset-es2015": "6.9.0",
     "babel-preset-react": "6.11.1",
@@ -74,7 +75,7 @@
     "browserify-shim": "3.8.12",
     "chai": "3.5.0",
     "clean-css": "3.4.18",
-    "coveralls": "2.11.9",
+    "coveralls": "2.11.11",
     "derequire": "2.0.3",
     "envify": "3.4.1",
     "eslint": "2.x.x",

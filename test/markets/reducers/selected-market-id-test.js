@@ -2,8 +2,8 @@ import {
 	assert
 } from 'chai';
 import {
-	SHOW_LINK
-} from '../../../src/modules/link/actions/show-link';
+	UPDATE_URL
+} from '../../../src/modules/link/actions/update-url';
 import reducer from '../../../src/modules/markets/reducers/selected-market-id';
 import testState from '../../testState';
 
@@ -13,7 +13,7 @@ describe(`modules/markets/reducers/selected-market-id.js`, () => {
 
 	it(`should change the selected market id`, () => {
 		action = {
-			type: SHOW_LINK,
+			type: UPDATE_URL,
 			parsedURL: {
 				pathArray: ['/m', '_test']
 			}
