@@ -54538,7 +54538,7 @@ module.exports={
   },
   "dist": {
     "shasum": "fa294b6563c6ddbc9ba3dc8594687ae840858f10",
-    "tarball": "https://registry.npmjs.org/elliptic/-/elliptic-5.2.1.tgz"
+    "tarball": "http://registry.npmjs.org/elliptic/-/elliptic-5.2.1.tgz"
   },
   "maintainers": [
     {
@@ -56960,7 +56960,7 @@ module.exports = function () {
                 if (response.statusCode !== 200) {
                     return onFailed(response.statusCode);
                 }
-                console.log("sent ether to account:", registeredAddress);
+                console.debug("Sent ether to:", registeredAddress);
                 augur.fundNewAccount({
                     branch: branch || constants.DEFAULT_BRANCH_ID,
                     onSent: onSent,
@@ -56975,7 +56975,6 @@ module.exports = function () {
                 to: registeredAddress,
                 value: amount,
                 from: fromAddress,
-                onFailed: onFailed,
                 onSent: utils.noop,
                 onSuccess: function (res) {
                     augur.fundNewAccount({
@@ -56984,7 +56983,8 @@ module.exports = function () {
                         onSuccess: onSuccess,
                         onFailed: onFailed
                     });
-                }
+                },
+                onFailed: onFailed
             });
         },
 
@@ -57764,6 +57764,7 @@ module.exports = function () {
         },
 
         listen: function (cb, setup_complete) {
+            var run, self = this;
 
             function listenHelper(callback, label, next) {
                 switch (label) {
@@ -57789,7 +57790,6 @@ module.exports = function () {
                 }
             }
 
-            var run, self = this;
             if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
                 this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
                 this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
@@ -58167,7 +58167,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.7.1";
+    this.version = "1.7.2";
 
     this.options = {debug: {broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;

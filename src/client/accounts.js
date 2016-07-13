@@ -42,7 +42,7 @@ module.exports = function () {
                 if (response.statusCode !== 200) {
                     return onFailed(response.statusCode);
                 }
-                console.log("sent ether to account:", registeredAddress);
+                console.debug("Sent ether to:", registeredAddress);
                 augur.fundNewAccount({
                     branch: branch || constants.DEFAULT_BRANCH_ID,
                     onSent: onSent,
@@ -57,7 +57,6 @@ module.exports = function () {
                 to: registeredAddress,
                 value: amount,
                 from: fromAddress,
-                onFailed: onFailed,
                 onSent: utils.noop,
                 onSuccess: function (res) {
                     augur.fundNewAccount({
@@ -66,7 +65,8 @@ module.exports = function () {
                         onSuccess: onSuccess,
                         onFailed: onFailed
                     });
-                }
+                },
+                onFailed: onFailed
             });
         },
 
