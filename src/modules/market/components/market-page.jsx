@@ -12,7 +12,7 @@ export default class MarketPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		siteHeader: PropTypes.object,
-		sideOptions: PropTypes.object,
+		sideOptions: PropTypes.array,
 		market: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number
