@@ -1,12 +1,4 @@
-import {
-    TAKER_FEE_DEFAULT,
-    MAKER_FEE_DEFAULT,
-    INITIAL_LIQUIDITY_DEFAULT,
-    STARTING_QUANTITY_DEFAULT,
-    BEST_STARTING_QUANTITY_DEFAULT,
-    PRICE_WIDTH_DEFAULT,
-    SEPARATION_DEFAULT
-} from '../modules/create-market/constants/market-values-constraints';
+import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, INITIAL_LIQUIDITY_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT, SEPARATION_DEFAULT } from '../modules/create-market/constants/market-values-constraints';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
 

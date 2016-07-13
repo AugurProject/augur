@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
-import { NEW_REGISTER, REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
+import { REGISTER, LOGIN, LOGOUT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
 import MarketPage from './modules/market/components/market-page';
@@ -14,6 +14,7 @@ import TransactionsPage from './modules/transactions/components/transactions-pag
 
 export default function (appElement, selectors) {
 	const p = selectors;
+	const url = p.url;
 	let node;
 
 	p.siteHeader = {
@@ -30,9 +31,13 @@ export default function (appElement, selectors) {
 		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined
 	};
 
+	if (url !== window.location.pathname + window.location.search) {
+		window.history.pushState(null, null, url);
+		window.scrollTo(0, 0);
+	}
+
 	switch (p.activePage) {
 	case REGISTER:
-	case NEW_REGISTER:
 	case LOGIN:
 	case LOGOUT:
 		node = (

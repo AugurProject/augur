@@ -1,28 +1,32 @@
+import activePage from './selectors/active-page';
 import authForm from './selectors/auth-form';
 import createMarketForm from './selectors/create-market-form';
 import filters from './selectors/filters';
 import keywords from './selectors/keywords';
+import links from './selectors/links';
 import loginAccount from './selectors/login-account';
 import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
 import positionsMarkets from './selectors/positions-markets';
 import positionsSummary from './selectors/positions-summary';
+import url from './selectors/url';
 
-import { ACCOUNT, MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
-import { LOGIN } from './modules/auth/constants/auth-types';
 import { BID, ASK } from './modules/transactions/constants/types';
 
 // all selectors should go here
 const selectors = {
+	activePage,
 	authForm,
 	createMarketForm,
 	filters,
 	keywords,
+	links,
 	loginAccount,
 	markets,
 	marketsTotals,
 	positionsSummary,
-	positionsMarkets
+	positionsMarkets,
+	url
 };
 
 // add update helper fn to selectors object
@@ -36,19 +40,6 @@ Object.defineProperty(selectors, 'update', {
 	},
 	enumerable: false
 });
-
-selectors.activePage = MARKETS;
-
-selectors.links = {
-	authLink: { href: '', onClick: () => module.exports.update({ activePage: LOGIN }) },
-	marketsLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
-	positionsLink: { href: '', onClick: () => module.exports.update({ activePage: POSITIONS }) },
-	transactionsLink: { href: '', onClick: () => module.exports.update({ activePage: TRANSACTIONS }) },
-	marketLink: { href: '', onClick: () => module.exports.update({ activePage: M }) },
-	previousLink: { href: '', onClick: () => module.exports.update({ activePage: MARKETS }) },
-	createMarketLink: { href: '', onClick: () => module.exports.update({ activePage: MAKE }) },
-	accountLink: { href: '', onClick: () => module.exports.update({ activePage: ACCOUNT }) }
-};
 
 selectors.transactions = [];
 selectors.transactionsTotals = {

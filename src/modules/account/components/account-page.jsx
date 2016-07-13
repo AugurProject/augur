@@ -56,162 +56,162 @@ export default class AccountPage extends Component {
 						<div className="account-section">
 							<h2 className="heading">Credentials</h2>
 							<table className="account-info">
-								<tr className={classnames('account-info-item', { fade: s.editPassword })}>
-									<th className="title">Account Name:</th>
-									<td className="item">
-										{s.editName &&
-											<Input
-												type="text"
-												value={p.account.name}
-												isClearable={false}
-												onChange={(value) => this.setState({ name: value })}
-											/>
-										}
-										{!s.editName &&
-											<span title="Click here to add a name to your account.">
-												{p.account.name || 'Click here to add a name.'}
-											</span>
-										}
-										{!s.editName &&
-											<button
-												className="link" onClick={() => { if (!s.editPassword) this.setState({ editName: true }); }}
-												title="Click here to change your Account Name"
-											>
-												(change name)
-											</button>
-										}
-										{s.editName &&
-											<button
-												className="button"
-												onClick={() => { this.setState({ name: '', editName: false }); }}
-												title="Cancel without saving new name"
-											>
-												cancel
-											</button>
-										}
-										{s.editName &&
-											<button
-												className="button make"
-												onClick={() => {
-													if (!s.editPassword) {
-														p.account.editName(s.name);
-														this.setState({ name: '', editName: false });
-													}
-												}}
-												title="Save new account name"
-											>
-												save change
-											</button>
-										}
-									</td>
-								</tr>
-
-								<tr className={classnames('account-info-item', { fade: s.editPassword })}>
-									<th className="title">Secure Login ID:</th>
-									<td className="item">
-										{!s.showFullID &&
-											<span>
-												{p.account.prettySecureLoginID}
-											</span>
-										}
-										{s.showFullID &&
-											<textarea className="full-secure-login-id">
-												{p.account.secureLoginID}
-											</textarea>
-										}
-										<button
-											className="link"
-											title={s.showFullID ? 'Hide full id' : 'Show full id'}
-											onClick={() => {
-												const showHide = !s.showFullID;
-												if (!s.editPassword) this.setState({ showFullID: showHide });
-											}}
-										>
-											{s.showFullID ? '(hide id)' : '(show full id)'}
-										</button>
-									</td>
-								</tr>
-
-								<tr className="account-info-item">
-									<th className="title">Password:</th>
-									{!s.editPassword &&
+								<tbody>
+									<tr className={classnames('account-info-item', { fade: s.editPassword })}>
+										<th className="title">Account Name:</th>
 										<td className="item">
-											<span>************</span>
-											<button
-												className="link"
-												onClick={() => this.setState({ editPassword: true })}
-												title="Click here to Change your Password."
-											>
-												(change password)
-											</button>
-											{s.msg !== '' &&
-												<div className="password-msg">
-													<span>
-														{s.msg}
-													</span>
-													<span
-														className="dismiss-message"
-														title="Click to dismiss message"
-														onClick={() => this.setState({ msg: '' })}
-													>
-													&#xf057;
-													</span>
-												</div>
+											{s.editName &&
+												<Input
+													type="text"
+													value={p.account.name}
+													isClearable={false}
+													onChange={(value) => this.setState({ name: value })}
+												/>
 											}
-										</td>
-									}
-
-
-									{s.editPassword &&
-										<td className="item password-change-container">
-											<form onSubmit={this.handleSubmit}>
-												<input
-													className="input box"
-													ref="password"
-													type="password"
-													maxLength="256"
-													placeholder="current password"
-													title="enter your current password here"
-												/>
-												<br />
-												<input
-													className="input box"
-													ref="newPassword"
-													type="password"
-													maxLength="256"
-													placeholder="new password"
-													title="enter your desired new password here"
-												/>
-												<br />
-												<input
-													className="input box"
-													ref="newPassword2"
-													type="password"
-													maxLength="256"
-													placeholder="confirm new password"
-													title="re-enter your new password for confirmation"
-												/>
-												<br />
+											{!s.editName &&
+												<span title="Click here to add a name to your account.">
+													{p.account.name || 'Click here to add a name.'}
+												</span>
+											}
+											{!s.editName &&
 												<button
-													type="button"
-													title="Cancel password change and keep your current Password."
+													className="link" onClick={() => { if (!s.editPassword) this.setState({ editName: true }); }}
+													title="Click here to change your Account Name"
+												>
+													(change name)
+												</button>
+											}
+											{s.editName &&
+												<button
 													className="button"
-													onClick={() => this.setState({ editPassword: false })}
+													onClick={() => { this.setState({ name: '', editName: false }); }}
+													title="Cancel without saving new name"
 												>
 													cancel
 												</button>
+											}
+											{s.editName &&
 												<button
 													className="button make"
-													type="submit"
-													title="Click here to save your new Password."
+													onClick={() => {
+														if (!s.editPassword) {
+															p.account.editName(s.name);
+															this.setState({ name: '', editName: false });
+														}
+													}}
+													title="Save new account name"
 												>
-													confirm password change
+													save change
 												</button>
-											</form>
+											}
 										</td>
-									}
+									</tr>
 
-								</tr>
+									<tr className={classnames('account-info-item', { fade: s.editPassword })}>
+										<th className="title">Secure Login ID:</th>
+										<td className="item">
+											{!s.showFullID &&
+												<span>
+													{p.account.prettySecureLoginID}
+												</span>
+											}
+											{s.showFullID &&
+												<textarea className="full-secure-login-id" value={p.account.secureLoginID} readOnly />
+											}
+											<button
+												className="link"
+												title={s.showFullID ? 'Hide full id' : 'Show full id'}
+												onClick={() => {
+													const showHide = !s.showFullID;
+													if (!s.editPassword) this.setState({ showFullID: showHide });
+												}}
+											>
+												{s.showFullID ? '(hide id)' : '(show full id)'}
+											</button>
+										</td>
+									</tr>
+
+									<tr className="account-info-item">
+										<th className="title">Password:</th>
+										{!s.editPassword &&
+											<td className="item">
+												<span>************</span>
+												<button
+													className="link"
+													onClick={() => this.setState({ editPassword: true })}
+													title="Click here to Change your Password."
+												>
+													(change password)
+												</button>
+												{s.msg !== '' &&
+													<div className="password-msg">
+														<span>
+															{s.msg}
+														</span>
+														<span
+															className="dismiss-message"
+															title="Click to dismiss message"
+															onClick={() => this.setState({ msg: '' })}
+														>
+														&#xf057;
+														</span>
+													</div>
+												}
+											</td>
+										}
+
+
+										{s.editPassword &&
+											<td className="item password-change-container">
+												<form onSubmit={this.handleSubmit}>
+													<input
+														className="input box"
+														ref="password"
+														type="password"
+														maxLength="256"
+														placeholder="current password"
+														title="enter your current password here"
+													/>
+													<br />
+													<input
+														className="input box"
+														ref="newPassword"
+														type="password"
+														maxLength="256"
+														placeholder="new password"
+														title="enter your desired new password here"
+													/>
+													<br />
+													<input
+														className="input box"
+														ref="newPassword2"
+														type="password"
+														maxLength="256"
+														placeholder="confirm new password"
+														title="re-enter your new password for confirmation"
+													/>
+													<br />
+													<button
+														type="button"
+														title="Cancel password change and keep your current Password."
+														className="button"
+														onClick={() => this.setState({ editPassword: false })}
+													>
+														cancel
+													</button>
+													<button
+														className="button make"
+														type="submit"
+														title="Click here to save your new Password."
+													>
+														confirm password change
+													</button>
+												</form>
+											</td>
+										}
+
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div className="account-section">
@@ -232,12 +232,3 @@ export default class AccountPage extends Component {
 		);
 	}
 }
-// <Link
-// 	className="button sign-out"
-// 	title="Click here to Sign Out of your Account."
-// 	onClick={() => {
-// 		p.account.signOut();
-// 		p.siteHeader.authLink.onClick(p.siteHeader.authLink.href);
-// }}>
-// 	Sign Out
-// </Link>
