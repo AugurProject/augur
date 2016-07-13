@@ -2,18 +2,21 @@ import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import Link from '../../link/components/link';
 import Input from '../../common/components/input';
+import Checkbox from '../../common/components/checkbox';
 
 export default class AuthForm extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		title: PropTypes.string,
-		password: PropTypes.string,
 		secureLoginID: PropTypes.string,
+		rememberMe: PropTypes.bool,
 		passwordPlaceholder: PropTypes.string,
 		password2Placeholder: PropTypes.string,
 		isVisibleName: PropTypes.bool,
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
+		isVisibleID: PropTypes.bool,
+		isVisibleRememberMe: PropTypes.bool,
 		clearName: PropTypes.bool,
 		clearPassword: PropTypes.bool,
 		clearCode: PropTypes.bool,
@@ -29,17 +32,22 @@ export default class AuthForm extends Component {
 		onSubmit: PropTypes.func
 	};
 
+	static defaultProps = {
+		rememberMe: false
+	};
+
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
 			msg: this.props.msg,
-			secureLoginID: this.props.secureLoginID
+			secureLoginID: this.props.secureLoginID,
+			rememberMe: this.props.rememberMe
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg, secureLoginID: nextProps.secureLoginID });
+		this.setState({ msg: nextProps.msg, secureLoginID: nextProps.secureLoginID, rememberMe: nextProps.rememberMe });
 	}
 
 	componentDidUpdate() {
@@ -61,9 +69,10 @@ export default class AuthForm extends Component {
 		const secureLoginID = this.state.secureLoginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
+		const rememberMe = this.state.rememberMe;
 		this.setState({ msg: '' });
 		setTimeout(() =>
-			this.props.onSubmit(name, password, password2, secureLoginID), 100);
+			this.props.onSubmit(name, password, password2, secureLoginID, rememberMe), 100);
 	}
 
 	render() {
@@ -121,6 +130,13 @@ export default class AuthForm extends Component {
 					type="password"
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
+				/>
+				<Checkbox
+					className={classnames('', { displayNone: !p.isVisibleRememberMe })}
+					title="Click Here to remember your account information locally."
+					text="Remember Me"
+					isChecked={s.rememberMe}
+					onClick={() => this.setState({rememberMe: !s.rememberMe})}
 				/>
 				{p.bottomLinkText &&
 					<Link
