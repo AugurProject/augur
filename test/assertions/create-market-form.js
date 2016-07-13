@@ -49,6 +49,111 @@ export default function(createMarketForm) {
 					});
 				});
 			});
+			break;
+		case 2:
+			describe('step 2 state', () => {
+				describe('type', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.type, `'type' is not defined`);
+					});
+
+					it('should be a string', () => {
+						assert.isString(createMarketForm.type, `'type' is not a string`);
+					});
+				});
+
+				describe('initialFairPrices', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+					});
+
+					it('should be an object', () => {
+						assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
+					});
+
+					it('should have the correct shape', () => {
+						assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm');
+					});
+				});
+
+				describe('descriptionPlaceholder', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.descriptionPlaceholder, `'descriptionPlaceholder' is not defined`);
+					});
+
+					it('should be a string', () => {
+						assert.isString(createMarketForm.descriptionPlaceholder, `'descriptionPlaceholder' is not a string`);
+					});
+				});
+
+				describe('descriptionMaxLength', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.descriptionMaxLength, `'descriptionMaxLength' is not defined`);
+					});
+
+					it('should be a number', () => {
+						assert.isNumber(createMarketForm.descriptionMaxLength, `'descriptionMaxLength' is not a number`);
+					});
+				});
+
+				describe(`type: ${createMarketForm.type}`, () => {
+					switch(createMarketForm.type){
+						case 'categorical':
+							describe('categoricalOutcomesMinNum', () => {
+								it('should be defined', () => {
+									assert.isDefined(createMarketForm.categoricalOutcomesMinNum, `'categoricalOutcomesMinNum' is not defined`);
+								});
+
+								it('should be a number', () => {
+									assert.isNumber(createMarketForm.categoricalOutcomesMinNum, `'categoricalOutcomesMinNum' is not a number`);
+								});
+							});
+
+							describe('categoricalOutcomesMaxNum', () => {
+								it('should be defined', () => {
+									assert.isDefined(createMarketForm.categoricalOutcomesMaxNum, `'categoricalOutcomesMaxNum' is not defined`);
+								});
+								
+								it('should be a number', () => {
+									assert.isNumber(createMarketForm.categoricalOutcomesMaxNum, `'categoricalOutcomesMaxNum' is not a number`);
+								});
+							});
+
+							describe('categoricalOutcomeMaxLength', () => {
+								it('should be defined', () => {
+									assert.isDefined(createMarketForm.categoricalOutcomeMaxLength, `'categoricalOutcomeMaxLength' is not defined`);
+								});
+
+								it('should be a number', () => {
+									assert.isNumber(createMarketForm.categoricalOutcomeMaxLength, `'categoricalOutcomeMaxLength' is not a number`);
+								});
+							});
+							break;
+						case 'scalar':
+							describe('scalarSmallNum', () => {
+								it('should be defined', () => {
+									assert.isDefined(createMarketForm.scalarSmallNum, `'scalarSmallNum' is not defined`);
+								});
+
+								it('should be a number', () => {
+									assert.isNumber(createMarketForm.scalarSmallNum, `'scalarSmallNum' is not a number`);
+								});
+							});
+
+							describe('scalarBigNum', () => {
+								it('should be defined', () => {
+									assert.isDefined(createMarketForm.scalarBigNum, `'scalarBigNum' is not defined`);
+								});
+
+								it('should be a number', () => {
+									assert.isNumber(createMarketForm.scalarBigNum, `'scalarBigNum' is not a number`);
+								});
+							});
+							break;
+					}
+				});
+			});
+			break;
 		}
 
 	});
