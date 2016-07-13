@@ -5,7 +5,53 @@ import assertInitialFairPrices from '../../test/assertions/common/initial-fair-p
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
 export default function(createMarketForm) {
-	// implement me
+	describe('createMarketForm', () => {
+		switch(createMarketForm.step){
+		case 1:
+			describe('step 1 state', () => {
+				describe('step', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.step, `'step' is not defined`);
+					});
+
+					it('should be a number', () => {
+						assert.isNumber(createMarketForm.step, `'step' is not a number`);
+					});
+				});
+
+				describe('creatingMarket', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.creatingMarket, `'creatingMarket' is not defined`);
+					});
+
+					it('should be a boolean', () => {
+						assert.isBoolean(createMarketForm.creatingMarket, `'creatingMarket' is not a boolean`);
+					});
+				});
+
+				describe('errors', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.errors, `'errors' is not defined`);
+					});
+
+					it('should be a object', () => {
+						assert.isObject(createMarketForm.errors, `'errors' is not an object`);
+					});
+				});
+
+				describe('onValuesUpdated', () => {
+					it('should be defined', () => {
+						assert.isDefined(createMarketForm.onValuesUpdated, `'onValuesUpdated' is not defined`);
+					});
+
+					it('should be a function', () => {
+						assert.isFunction(createMarketForm.onValuesUpdated, `onValuesUpdated' is not a function`);
+					});
+				});
+			});
+		}
+
+	});
 }
 
 function step1(actual){
