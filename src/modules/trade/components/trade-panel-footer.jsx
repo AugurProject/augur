@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
-import TradePanelRow from '../../../modules/trade/components/trade-panel-row';
+import TradePanelRowSummary from '../../../modules/trade/components/trade-panel-row-summary';
 import { SUMMARY } from '../../../modules/trade/constants/row-types';
 
 const TradePanelFooter = (p) => (
@@ -16,11 +16,10 @@ const TradePanelFooter = (p) => (
 			<td>Profit/Loss</td>
 		</tr>
 		{p.summary.tradeOrders.map((trade, i) => (
-			<TradePanelRow
+			<TradePanelRowSummary
 				key={`${trade.data.outcomeName}-${i}`}
 				trade={trade}
 				orderSides={p.orderSides}
-				type={SUMMARY}
 			/>
 		))}
 		<tr className="summary-totals">

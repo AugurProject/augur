@@ -1,5 +1,6 @@
 import React from 'react';
-import TradePanelRow from '../../../modules/trade/components/trade-panel-row';
+import TradePanelRowOutcome from '../../../modules/trade/components/trade-panel-row-outcome';
+import TradePanelRowOrder from '../../../modules/trade/components/trade-panel-row-order';
 import { ORDER } from '../../../modules/trade/constants/row-types';
 
 const TradePanelBody = (p) => {
@@ -9,13 +10,12 @@ const TradePanelBody = (p) => {
 
 	for (let i = secondItemIndex; i < orderBookLength; i++) {
 		orderBookRows.push(
-			<TradePanelRow
+			<TradePanelRowOrder
 				key={`outcome-${i}`}
 				outcome={p.outcome}
 				selectedOutcomeID={p.selectedOutcomeID}
 				orderSides={p.orderSides}
 				itemIndex={i}
-				type={ORDER}
 			/>
 		);
 	}
@@ -25,7 +25,7 @@ const TradePanelBody = (p) => {
 			id={`${p.outcome.name}-${p.outcome.id}`}
 			className="trade-panel-body"
 		>
-			<TradePanelRow
+			<TradePanelRowOutcome
 				outcome={p.outcome}
 				sideOptions={p.sideOptions}
 				updateSelectedOutcome={p.updateSelectedOutcome}
