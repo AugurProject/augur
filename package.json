@@ -94,6 +94,7 @@
     "proxyquire": "1.7.10",
     "redux-mock-store": "1.1.2",
     "rimraf": "2.5.3",
+    "shared-git-hooks": "1.2.1",
     "sinon": "1.17.4",
     "uglify-js": "2.7.0",
     "watchify": "3.7.0"
