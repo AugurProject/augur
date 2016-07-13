@@ -36,7 +36,7 @@ function makeMarkets(numMarkets = 25) {
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: Math.random() > 0.1,
-			isPendingReport: false,
+			isPendingReport: Math.random() < 0.5,
 			marketLink: {
 				text: 'Trade',
 				className: 'trade',
@@ -129,8 +129,31 @@ function makeMarkets(numMarkets = 25) {
 			}
 		];
 
-		m.openOrders = [
-			{
+		m.openOrders = {
+			onCancelOrder: (orderId) => {
+				console.log('cancelling order %o', orderId);
+				setTimeout(() => {
+					require('../selectors').market.openOrders.items.find(openOrder => openOrder.id === orderId).isCancelling = true;
+					require('../selectors').update({});
+					setTimeout(() => {
+						const index = require('../selectors').market.openOrders.items.findIndex(openOrder => openOrder.id === orderId);
+						require('../selectors').market.openOrders.items.splice(index, 1);
+						require('../selectors').update({});
+					}, 2000);
+				}, 1);
+			},
+			onCancelAllOrders: () => {
+				console.log('todo: onCancelAllOrders');
+			},
+			onCancelAllBids: () => {
+				console.log('todo: onCancelAllBids');
+			},
+			onCancelAllAsks: () => {
+				console.log('todo: onCancelAllAsks');
+			},
+			bidsCount: 2,
+			asksCount: 1,
+			items: [{
 				id: 'order1',
 				type: 'sell',
 				originalShares: makeNumber(5, 'shares'),
@@ -159,14 +182,7 @@ function makeMarkets(numMarkets = 25) {
 				unmatchedShares: makeNumber(2, 'shares'),
 				outcome: 'outcomeasdf123',
 				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-			},
-		];
-
-		m.onCancelOrder = (orderId) => {
-			setTimeout(() => {
-				require('../selectors').market.openOrders.find(openOrder => openOrder.id === orderId).isCancelling = true;
-				require('../selectors').update({});
-			}, 1);
+			}]
 		};
 
 		// positions summary

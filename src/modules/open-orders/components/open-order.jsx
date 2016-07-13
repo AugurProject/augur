@@ -3,26 +3,35 @@
  */
 
 import React from 'react';
+import classnames from 'classnames';
 
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = (p) => (
-	<tr className="open-order">
+	<tr className={classnames('open-order', { isCancelling: p.isCancelling })}>
 		<td>
 			{p.type}
 		</td>
 		<td>
-			<ValueDenomination {...p.originalShares}/>
+			<ValueDenomination {...p.originalShares} />
 		</td>
 		<td>
-			<ValueDenomination {...p.avgPrice}/>
+			<ValueDenomination {...p.avgPrice} />
 		</td>
 		<td>
-			<ValueDenomination {...p.matchedShares}/>
+			<ValueDenomination {...p.matchedShares} />
 		</td>
 		<td>
-			<ValueDenomination {...p.unmatchedShares}/>
-			<button className="cancel-order-action" disabled={p.isCancelling} title="Cancel order" onClick={p.onCancelOrder(p.id)}>x</button>
+			<ValueDenomination {...p.unmatchedShares} />
+		</td>
+		<td>
+			<button
+				className="button cancel-order-action"
+				disabled={p.isCancelling}
+				title="Cancel order"
+				onClick={(event) => { p.onCancelOrder(p.id); }}
+			>x</button>
+
 		</td>
 	</tr>
 );

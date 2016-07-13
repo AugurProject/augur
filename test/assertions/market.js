@@ -499,7 +499,49 @@ export default function(market) {
 		});
 
 		describe('openOrders', () => {
+			it('should exist', () => {
+				assert.isDefined(market.openOrders);
+			});
 
+			it('should be object', () => {
+				assert.isObject(market.openOrders);
+			});
+
+			describe('onCancelOrder', () => {
+				it('should be function', () => {
+					assert.isFunction(market.openOrders.onCancelOrder);
+				});
+			});
+
+			describe('onCancelAllOrders', () => {
+				it('should be function', () => {
+					assert.isFunction(market.openOrders.onCancelAllOrders);
+				});
+			});
+
+			describe('onCancelAllBids', () => {
+				it('should be function', () => {
+					assert.isFunction(market.openOrders.onCancelAllBids);
+				});
+			});
+
+			describe('onCancelAllAsks', () => {
+				it('should be function', () => {
+					assert.isFunction(market.openOrders.onCancelAllAsks);
+				});
+			});
+
+			describe('items', () => {
+				assert.isArray(market.openOrders.items);
+			});
+
+			describe('asksCount', () => {
+				assert.isNumber(market.openOrders.asksCount);
+			});
+
+			describe('bidsCount', () => {
+				assert.isNumber(market.openOrders.bidsCount);
+			});
 		});
 
 		describe('priceTimeSeries', () => {
