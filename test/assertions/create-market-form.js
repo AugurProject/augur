@@ -152,6 +152,35 @@ export default function(createMarketForm) {
 					});
 					break;
 				case 3:
+					describe('description', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.description, `'description' is not defined`);
+						});
+
+						it('should be a string', () => {
+							assert.isString(createMarketForm.description, `'description' is not a string`);
+						});
+					});
+
+					describe('tagsMaxNum', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.tagsMaxNum, `'tagsMaxNum' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.tagsMaxNum, `'tagsMaxNum' is not a number`);
+						});
+					});
+
+					describe('tagMaxLength', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.tagMaxLength, `'tagsMaxLength' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.tagMaxLength, `'tagsMaxLength' is not a number`);
+						});
+					});
 					break;
 			}
 		});
