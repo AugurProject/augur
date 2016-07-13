@@ -683,7 +683,6 @@ describe("Integration tests", function () {
                 ipc: null
             };
             augur.connect(connectParams, function (connection) {
-                augur.rpc.debug.tx = true;
                 assert.deepEqual(connection, connectParams);
                 augur.web.login(secureLoginID, password, function (user) {
                     assert.notProperty(user, "error");
