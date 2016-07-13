@@ -65,8 +65,8 @@ describe("Register", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name, password, function (result) {
             checkAccount(augur, result, true);
-                        secureLoginID = result.secureLoginID;
-                        var rec = result.keystore;
+            secureLoginID = result.secureLoginID;
+            var rec = result.keystore;
             assert.notProperty(rec, "error");
             assert(rec.crypto.ciphertext);
             assert(rec.crypto.cipherparams.iv);
@@ -92,8 +92,8 @@ describe("Register", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name2, password2, function (result) {
             checkAccount(augur, result, true);
-                        secureLoginID2 = result.secureLoginID;
-                        var rec = result.keystore;
+            secureLoginID2 = result.secureLoginID;
+            var rec = result.keystore;
             assert(rec.crypto.ciphertext);
             assert(rec.crypto.cipherparams.iv);
             assert(rec.crypto.kdfparams.salt);
@@ -241,11 +241,49 @@ describe("Logout", function () {
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
     describe("Fund new account", function () {
-
-        it("Faucet: funding sequence: " + secureLoginID, function (done) {
+        it("Address funding sequence", function (done) {
             this.timeout(tools.TIMEOUT*4);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(secureLoginID, password, function (account) {
+                // console.log("login:", account);
+                checkAccount(augur, account);
+                var recipient = account.address;
+                var initial_balance = abi
+                    .bignum(augur.rpc.balance(recipient))
+                    .dividedBy(constants.ETHER);
+                // console.log("initial balance:", initial_balance.toFixed());
+                augur.web.fundNewAccountFromAddress(augur.from, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
+                    function (res) {
+                        assert.notProperty(res, "error");
+                        assert.strictEqual(res.callReturn, "1");
+                    },
+                    function (response) {
+                        assert.notProperty(response, "error");
+                        assert.strictEqual(response.callReturn, "1");
+                        var final_balance = abi
+                            .bignum(augur.rpc.balance(recipient))
+                            .dividedBy(constants.ETHER);
+                        // console.log("final balance:", final_balance.toFixed());
+                        assert.isAbove(final_balance.toNumber(), 0);
+                        assert.isAbove(final_balance.minus(initial_balance).toNumber(), 0);
+                        augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
+                            assert.notProperty(repBalance, "error");
+                            assert.strictEqual(abi.number(repBalance), 47);
+                            augur.getCashBalance(recipient, function (cashBalance) {
+                                assert.notProperty(cashBalance, "error");
+                                assert.strictEqual(parseInt(cashBalance), 10000);
+                                done();
+                            });
+                        });
+                    },
+                    done
+                );
+            });
+        });
+        it("Faucet funding sequence", function (done) {
+            this.timeout(tools.TIMEOUT*4);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            augur.web.login(secureLoginID2, password2, function (account) {
                 // console.log("login:", account);
                 checkAccount(augur, account);
                 var recipient = account.address;
@@ -261,16 +299,19 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     function (response) {
                         assert.notProperty(response, "error");
                         assert.strictEqual(response.callReturn, "1");
+                        var final_balance = abi
+                            .bignum(augur.rpc.balance(recipient))
+                            .dividedBy(constants.ETHER);
+                        // console.log("final balance:", final_balance.toFixed());
+                        assert.isAbove(final_balance.toNumber(), 0);
+                        assert.isAbove(final_balance.minus(initial_balance).toNumber(), 0);
                         augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
                             assert.notProperty(repBalance, "error");
                             assert.strictEqual(abi.number(repBalance), 47);
                             augur.getCashBalance(recipient, function (cashBalance) {
                                 assert.notProperty(cashBalance, "error");
-                                assert.strictEqual(abi.number(cashBalance), 10000);
-                                augur.getCashBalance(augur.coinbase, function (balance) {
-                                    augur.web.logout();
-                                    done();
-                                });
+                                assert.strictEqual(parseInt(cashBalance), 10000);
+                                done();
                             });
                         });
                     },
@@ -374,14 +415,8 @@ describe("Contract methods", function () {
             this.timeout(tools.TIMEOUT);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(secureLoginID, password, function (user) {
-                if (user.error) {
-                    augur.web.logout();
-                    return done(new Error(tools.pp(user)));
-                }
-                assert.strictEqual(
-                    user.address,
-                    augur.web.account.address
-                );
+                assert.notProperty(user, "error");
+                assert.strictEqual(user.address, augur.web.account.address);
 
                 // sync
                 var branches = augur.web.invoke(augur.tx.Branches.getBranches);
