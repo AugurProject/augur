@@ -1,7 +1,6 @@
 import React from 'react';
 import TradePanelRowOutcome from '../../../modules/trade/components/trade-panel-row-outcome';
 import TradePanelRowOrder from '../../../modules/trade/components/trade-panel-row-order';
-import { ORDER } from '../../../modules/trade/constants/row-types';
 
 const TradePanelBody = (p) => {
 	let orderBookRows = [];

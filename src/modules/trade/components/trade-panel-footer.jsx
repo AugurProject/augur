@@ -2,7 +2,6 @@ import React from 'react';
 import classnames from 'classnames';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import TradePanelRowSummary from '../../../modules/trade/components/trade-panel-row-summary';
-import { SUMMARY } from '../../../modules/trade/constants/row-types';
 
 const TradePanelFooter = (p) => (
 	<tfoot className="transaction-summary">
