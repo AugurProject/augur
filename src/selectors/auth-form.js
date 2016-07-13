@@ -26,6 +26,7 @@ const signUp = {
 	isVisibleName: true,
 	isVisibleID: false,
 	isVisiblePassword2: true,
+	isVisibleRememberMe: false,
 	topLinkText: 'login',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
