@@ -57762,22 +57762,12 @@ module.exports = function () {
                 });
             }
         },
+
         listen: function (cb, setup_complete) {
             var run, self = this;
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
-                run = async.parallel;
-            } else {
-                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
-                run = async.series;
-            }
-            async.forEachOfSeries(cb, function (callback, label, next) {
-                if (self.filter[label].id === null && callback) {
-                    switch (label) {
+
+            function listenHelper(callback, label, next) {
+                switch (label) {
                     case "contracts":
                         self.start_contracts_listener(function () {
                             self.pacemaker({contracts: callback});
@@ -57797,7 +57787,31 @@ module.exports = function () {
                             self.pacemaker(p);
                             next(null, [label, self.filter[label].id]);
                         });
-                    }
+                }
+            }
+
+            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+                run = async.parallel;
+            } else {
+                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+                run = async.series;
+            }
+            async.forEachOfSeries(cb, function (callback, label, next) {
+                if (!self.filter[label] || !callback){
+                    //skip invalid labels, undefined callbacks
+                    next(null, null);
+                } else if (self.filter[label].id === null && callback) {
+                    listenHelper(callback, label, next);
+                } else if (self.filter[label].id && callback){
+                    //callback already registered. uninstall, and reinstall new callback.
+                    self.clear_filter(label, function () {
+                        listenHelper(callback, label, next);
+                    });
                 }
             }, function (err) {
                 if (err) console.error(err);

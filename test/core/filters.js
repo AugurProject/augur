@@ -587,13 +587,32 @@ describe("Unit tests", function () {
     });
 
     describe("listen", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function () {
 
+        it("ignores invalid label", function (done) {
+            this.timeout(tools.TIMEOUT);
+            augur.filters.listen({
+                invalidFilterLabel: function (msg) {}
+            }, function (filters) {
+                done();
             });
-        };
-        // test();
-    });
+        });
+
+        it("doesn't hang on same label", function (done) {
+            this.timeout(tools.TIMEOUT);
+
+            augur.filters.listen({
+                marketCreated: {}
+            }, function (filters) {
+                var id = filters.marketCreated.id;
+                augur.filters.listen({
+                    marketCreated: {}
+                }, function (filters) {
+                    assert.notStrictEqual(id, filters.marketCreated.id);
+                    done();
+                });
+            });
+        });
+    }),
 
     describe("all_filters_removed", function () {
         var test = function (t) {
@@ -612,6 +631,7 @@ describe("Unit tests", function () {
         };
         // test();
     });
+
 });
 
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
