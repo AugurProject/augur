@@ -51,7 +51,6 @@ module.exports = {
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
             topics: [this.api.events.Trade.log_price.signature, market]
-            // topics: [constants.LOGS.price.signature, market]
         };
         if (!utils.is_function(cb)) {
             return parsePriceLogs(this.rpc.getLogs(filter));

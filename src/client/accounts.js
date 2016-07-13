@@ -229,8 +229,6 @@ module.exports = function () {
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
                     var err;
                     if (res) {
-                        console.log("sendRawTx packaged:", packaged);
-                        console.log("sendRawTx response:", res);
                         if (res.error) {
                             if (res.message.indexOf("rlp") > -1) {
                                 err = clone(errors.RLP_ENCODING_ERROR);

@@ -36689,8 +36689,6 @@ module.exports = function () {
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
                     var err;
                     if (res) {
-                        console.log("sendRawTx packaged:", packaged);
-                        console.log("sendRawTx response:", res);
                         if (res.error) {
                             if (res.message.indexOf("rlp") > -1) {
                                 err = clone(errors.RLP_ENCODING_ERROR);
@@ -36823,69 +36821,6 @@ module.exports = {
 
     // Morden testnet faucet endpoint
     FAUCET: "https://faucet.augur.net/faucet/"
-
-    // // event (log) signatures
-    // LOGS: {
-    //     // event log_add_tx(market:indexed, sender:indexed, type, price, amount, outcome, tradeid)
-    //     add_tx: {
-    //         signature: abi.prefix_hex(abi.keccak_256("log_add_tx(int256,int256,int256,int256,int256,int256,int256)")),
-    //         contract: "BuyAndSellShares"
-    //     },
-        
-    //     // event log_cancel(market:indexed, sender:indexed, price, amount, tradeid, outcome, type)
-    //     cancel: {
-    //         signature: abi.prefix_hex(abi.keccak_256("log_cancel(int256,int256,int256,int256,int256,int256,int256)")),
-    //         contract: "BuyAndSellShares"
-    //     },
-
-    //     // event thru(user:indexed, time)
-    //     thru: {
-    //         signature: abi.prefix_hex(abi.keccak_256("thru(int256,int256)")),
-    //         contract: "CloseMarket"
-    //     },
-
-    //     // event penalize(user:indexed, outcome, oldrep, repchange, newafterrep, p, reportValue)
-    //     penalize: {
-    //         signature: abi.prefix_hex(abi.keccak_256("penalize(int256,int256,int256,int256,int256,int256,int256)")),
-    //         contract: "Consensus"
-    //     },
-
-    //     // event marketCreated(marketID)
-    //     marketCreated: {
-    //         signature: abi.prefix_hex(abi.keccak_256("marketCreated(int256)")),
-    //         contract: "CreateMarket"
-    //     },
-
-    //     // event tradingFeeUpdated(marketID, tradingFee)
-    //     tradingFeeUpdated: {
-    //         signature: abi.prefix_hex(abi.keccak_256("tradingFeeUpdated(int256,int256)")),
-    //         contract: "CreateMarket"
-    //     },
-
-    //     // event Approval(_owner:indexed, _spender:indexed, value)
-    //     approval: {
-    //         signature: abi.prefix_hex(abi.keccak_256("Approval(int256,int256,int256)")),
-    //         contract: "SendReputation"
-    //     },
-
-    //     // event Transfer(_from:indexed, _to:indexed, _value)
-    //     transfer: {
-    //         signature: abi.prefix_hex(abi.keccak_256("Transfer(int256,int256,int256)")),
-    //         contract: "SendReputation"
-    //     },
-
-    //     // event log_fill_tx(market:indexed, sender:indexed, owner:indexed, type, price, amount, tradeid, outcome)
-    //     fill_tx: {
-    //         signature: abi.prefix_hex(abi.keccak_256("log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)")),
-    //         contract: "Trade"
-    //     },
-
-    //     // event log_price(market:indexed, type, price, amount, timestamp, outcome, trader:indexed)
-    //     price: {
-    //         signature: abi.prefix_hex(abi.keccak_256("log_price(int256,int256,int256,int256,int256,int256,int256)")),
-    //         contract: "Trade"
-    //     }
-    // }
 };
 
 },{"augur-abi":1,"bignumber.js":64}],357:[function(require,module,exports){
@@ -37714,7 +37649,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.7.3";
+    this.version = "1.7.4";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38915,7 +38850,6 @@ module.exports = {
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
             topics: [this.api.events.Trade.log_price.signature, market]
-            // topics: [constants.LOGS.price.signature, market]
         };
         if (!utils.is_function(cb)) {
             return parsePriceLogs(this.rpc.getLogs(filter));
