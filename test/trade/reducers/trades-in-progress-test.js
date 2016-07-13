@@ -13,9 +13,9 @@ import {
 	CLEAR_LOGIN_ACCOUNT
 } from '../../../src/modules/auth/actions/update-login-account';
 import {
-	SHOW_LINK
+	UPDATE_URL
 }
-from '../../../src/modules/link/actions/show-link';
+from '../../../src/modules/link/actions/update-url';
 
 describe(`modules/trade/reducers/trade-in-progress.js`, () => {
 	const testState = {
@@ -33,9 +33,9 @@ describe(`modules/trade/reducers/trade-in-progress.js`, () => {
 		}
 	};
 
-	it('should be able to handle SHOW_LINK', () => {
+	it('should be able to handle UPDATE_URL', () => {
 		const testAction = {
-			type: SHOW_LINK,
+			type: UPDATE_URL,
 			parsedURL: {
 				pathArray: ['/register']
 			}

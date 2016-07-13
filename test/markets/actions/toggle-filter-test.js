@@ -7,14 +7,14 @@ import * as mockStore from '../../mockStore';
 describe(`modules/markets/actions/toggle-filter.js`, () => {
 	let { state, store } = mockStore.default;
 	let out, action
-	let mockShowLink = { showLink: () => {} };
+	let mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockShowLink, 'showLink', (href, options) => {
-		return { type: 'SHOW_LINK', href, options };
+	sinon.stub(mockUpdateURL, 'updateURL', (href, options) => {
+		return { type: 'UPDATE_URL', href };
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/toggle-filter', {
-		'../../link/actions/show-link': mockShowLink
+		'../../link/actions/update-url': mockUpdateURL
 	});
 
 	beforeEach(() => {
@@ -42,9 +42,8 @@ describe(`modules/markets/actions/toggle-filter.js`, () => {
 			type: 'TOGGLE_FILTER',
 			filterID: '123test456'
 		}, {
-			type: 'SHOW_LINK',
-			href: '/?filters=isOpen',
-			options: {preventScrollTop: true}
+			type: 'UPDATE_URL',
+			href: '/?filters=isOpen'
 		}];
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions for toggle-filter`);

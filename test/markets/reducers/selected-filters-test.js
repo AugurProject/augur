@@ -5,8 +5,8 @@
 // 	TOGGLE_FILTER
 // } from '../../../src/modules/markets/actions/toggle-filter';
 // import {
-// 	SHOW_LINK
-// } from '../../../src/modules/link/actions/show-link';
+// 	UPDATE_URL
+// } from '../../../src/modules/link/actions/update-url';
 // import reducer from '../../../src/modules/markets/reducers/selected-filters';
 // import testState from '../../testState';
 //
@@ -30,9 +30,9 @@
 // 		assert.deepEqual(test, thisTestState.selectedFilters, `Didn't remove the test filter`);
 // 	});
 //
-// 	it(`should handle a SHOW_LINK action by adding selectedFilters if need be`, () => {
+// 	it(`should handle a UPDATE_URL action by adding selectedFilters if need be`, () => {
 // 		action = {
-// 			type: SHOW_LINK,
+// 			type: UPDATE_URL,
 // 			parsedURL: {
 // 				searchParams: {
 // 					isOpen: 'true',

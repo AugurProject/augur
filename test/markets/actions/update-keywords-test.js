@@ -8,14 +8,14 @@ import * as mockStore from '../../mockStore';
 describe(`modules/markets/actions/update-keywords.js`, () => {
 	let out, action;
 	let { state, store } = mockStore.default;
-	let mockShowLink = { showLink: () => {} };
+	let mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockShowLink, 'showLink', (href, options) => {
-		return { type: 'SHOW_LINK', href, options };
+	sinon.stub(mockUpdateURL, 'updateURL', (href) => {
+		return { type: 'UPDATE_URL', href };
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/update-keywords', {
-		'../../link/actions/show-link': mockShowLink
+		'../../link/actions/update-url': mockUpdateURL
 	});
 
 	beforeEach(() => {
@@ -43,9 +43,8 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 			type: 'UPDATE_KEYWORDS',
 			keywords: ['key', 'words']
 		}, {
-			type: 'SHOW_LINK',
-			href: '/?filters=isOpen',
-			options: { preventScrollTop: true }
+			type: 'UPDATE_URL',
+			href: '/?filters=isOpen'
 		}];
 
 		store.dispatch(action.updateKeywords(keywords));

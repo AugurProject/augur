@@ -152,7 +152,6 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
 	it(`should return the market totals for selected market`, () => {
 		actual = selector.default();
-
 		assertions.marketsTotals(actual);
 	});
 });

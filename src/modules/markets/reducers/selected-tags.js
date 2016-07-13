@@ -1,4 +1,4 @@
-import { SHOW_LINK } from '../../link/actions/show-link';
+import { UPDATE_URL } from '../../link/actions/update-url';
 import { TOGGLE_TAG } from '../../markets/actions/toggle-tag';
 import { TAGS_PARAM_NAME } from '../../link/constants/param-names';
 
@@ -16,7 +16,7 @@ export default function (selectedTags = {}, action) {
 		}
 		return newSelectedTags;
 
-	case SHOW_LINK:
+	case UPDATE_URL:
 		if (!action.parsedURL.searchParams[TAGS_PARAM_NAME]) {
 			return {};
 		}

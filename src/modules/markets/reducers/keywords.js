@@ -1,5 +1,5 @@
 import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
-import { SHOW_LINK } from '../../link/actions/show-link';
+import { UPDATE_URL } from '../../link/actions/update-url';
 import { SEARCH_PARAM_NAME } from '../../link/constants/param-names';
 
 export default function (keywords = '', action) {
@@ -8,7 +8,7 @@ export default function (keywords = '', action) {
 	case UPDATE_KEYWORDS:
 		return action.keywords;
 
-	case SHOW_LINK:
+	case UPDATE_URL:
 		params = action.parsedURL.searchParams;
 		if (params[SEARCH_PARAM_NAME] != null && params[SEARCH_PARAM_NAME] !== '') {
 			return params[SEARCH_PARAM_NAME];

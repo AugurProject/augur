@@ -79,15 +79,15 @@ ex.loadLoginAccount = function loadLoginAccount(cb) {
 		});
 	}
 
-	// if the user has a persistent login, use it
-	const account = augur.web.persist();
-	if (account && account.privateKey) {
-		console.log('using persistent login:', account);
-		return cb(null, {
-			...augur.web.account,
-			id: augur.web.account.address
-		});
-	}
+	// // if the user has a persistent login, use it
+	// const account = augur.web.persist();
+	// if (account && account.privateKey) {
+	// 	console.log('using persistent login:', account);
+	// 	return cb(null, {
+	// 		...augur.web.account,
+	// 		id: augur.web.account.address
+	// 	});
+	// }
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
