@@ -422,6 +422,7 @@ module.exports = function () {
         },
 
         listen: function (cb, setup_complete) {
+            var run, self = this;
 
             function listenHelper(callback, label, next) {
                 switch (label) {
@@ -447,7 +448,6 @@ module.exports = function () {
                 }
             }
 
-            var run, self = this;
             if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
                 this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
                 this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
