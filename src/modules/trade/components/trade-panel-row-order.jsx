@@ -22,7 +22,6 @@ const TradePanelRowOrder = (p) => (
 					<Clickable
 						onClick={event => {
 							event.stopPropagation();
-							event.stopPropagation();
 
 							p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.orderBook.bids[p.itemIndex].price.value);
 						}}
