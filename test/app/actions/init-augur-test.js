@@ -14,12 +14,14 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	let store, action, out;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
+
 	let mockAugurJS = {};
 	let mockUpBlockchain = {};
 	let mockListenUp = {};
 	let mockLoginAcc = {};
 	let mockLoadMarkets = {};
 	let mockLoadFullMarket = {};
+
 	mockAugurJS.connect = sinon.stub().yields(null, {
 		connect: 'test'
 	});
@@ -53,14 +55,20 @@ describe(`modules/app/actions/init-augur.js`, () => {
 
 	beforeEach(() => {
 		store.clearActions();
+		global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
+		const requests = global.requests = [];
+		global.XMLHttpRequest.onCreate = function (xhr) {
+			requests.push(xhr);
+		};
 	});
 
 	afterEach(() => {
+		global.XMLHttpRequest.restore();
 		store.clearActions();
 	});
 
 	it(`should initiate the augur app`, () => {
-		out = [{
+		out = [{ type: 'UPDATE_ENV', env: { test: 'hello world' } }, {
 			isConnected: {
 				connect: 'test'
 			},
@@ -83,6 +91,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		}];
 
 		store.dispatch(action.initAugur());
+
+		global.requests[0].respond(200, { contentType: 'text/json' }, `{ "test": "hello world" }`);
 
 		assert(mockAugurJS.connect.calledOnce, `Didn't call AugurJS.connect() exactly once`);
 		assert(mockAugurJS.loadBranch.calledOnce, `Didn't call AugurJS.loadBranch()  exactly once`);

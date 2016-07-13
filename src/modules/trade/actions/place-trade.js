@@ -1,5 +1,4 @@
 import * as AugurJS from '../../../services/augurjs';
-
 import {
 	TRADING,
 	SUCCESS,
@@ -35,6 +34,21 @@ export function processOrder(transactionID, marketID, outcomeID, order) {
 		const market = selectMarket(marketID);
 
 		const marketOrderBook = getState().marketOrderBooks[marketID];
+
+		// const tradeOrders = market.tradeSummary.tradeOrders.map((tradeTransaction) =>
+		// 	({
+		// 		type: tradeTransaction.type === BID ? 'buy' : 'sell',
+		// 		outcomeID: tradeTransaction.data.outcomeID,
+		// 		limitPrice: tradeTransaction.limitPrice,
+		// 		etherToBuy: tradeTransaction.ether.value,
+		// 		sharesToSell: tradeTransaction.shares.value
+		// 	})
+		// );
+
+		// const positionPerOutcome = market.positionOutcomes.reduce((outcomePositions, outcome) => {
+		// 	outcomePositions[outcome.id] = outcome.position;
+		// 	return outcomePositions;
+		// }, {});
 
 		dispatch(updateExistingTransaction(transactionID, { status: TRADING }));
 

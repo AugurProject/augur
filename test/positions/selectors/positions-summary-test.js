@@ -13,6 +13,6 @@ describe(`modules/positions/selectors/positions-summary.js`, () => {
 
 		actual = selector.selectPositionsSummary(numPositions, qtyShares, totalValue, totalCost, positions);
 
-		assertions.marketsTotals.positionsSummaryAssertion(actual);
+		assertions.positionsSummary(actual);
 	});
 });

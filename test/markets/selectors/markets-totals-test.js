@@ -1,10 +1,8 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
-import {assertions} from 'augur-ui-react-components';
+import { assertions } from 'augur-ui-react-components';
 
 let marketsTotals;
 describe(`modules/markets/selectors/markets-totals.js`, () => {
@@ -154,20 +152,7 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
 	it(`should return the market totals for selected market`, () => {
 		actual = selector.default();
-		// expected = {
-		// 	numAll: 6,
-		// 	numFavorites: 4,
-		// 	numPendingReports: 3,
-		// 	numUnpaginated: 7,
-		// 	numFiltered: 7,
-		// 	positionsSummary: {
-		// 		numPositions: 70,
-		// 		qtyShares: 35,
-		// 		totalValue: 140,
-		// 		totalCost: 297
-		// 	}
-		// };
-		assertions.marketsTotals.marketsTotalsAssertion(actual);
+		assertions.marketsTotals(actual);
 	});
 });
 

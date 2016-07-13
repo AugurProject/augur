@@ -1,12 +1,11 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
 import { SUCCESS, CREATING_MARKET, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
-import env from '../env.json';
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
 
-ex.connect = function connect(cb) {
+ex.connect = function connect(env, cb) {
 	const options = {
 		http: env.gethHttpURL,
 		ws: env.gethWebsocketsURL,
@@ -80,15 +79,15 @@ ex.loadLoginAccount = function loadLoginAccount(cb) {
 		});
 	}
 
-	// if the user has a persistent login, use it
-	const account = augur.web.persist();
-	if (account && account.privateKey) {
-		console.log('using persistent login:', account);
-		return cb(null, {
-			...augur.web.account,
-			id: augur.web.account.address
-		});
-	}
+	// // if the user has a persistent login, use it
+	// const account = augur.web.persist();
+	// if (account && account.privateKey) {
+	// 	console.log('using persistent login:', account);
+	// 	return cb(null, {
+	// 		...augur.web.account,
+	// 		id: augur.web.account.address
+	// 	});
+	// }
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
@@ -210,8 +209,8 @@ ex.listenToBidsAsks = function listenToBidsAsks() {
 
 };
 
-ex.login = function login(handle, password, persist, cb) {
-	augur.web.login(handle, password, { persist }, (account) => {
+ex.login = function login(secureLoginID, password, cb) {
+	augur.web.login(secureLoginID, password, (account) => {
 		if (!account) {
 			return cb({ code: 0, message: 'failed to login' });
 		}
@@ -229,9 +228,9 @@ ex.logout = function logout() {
 	augur.web.logout();
 };
 
-ex.register = function register(handle, password, persist, cb, cbExtras) {
-	augur.web.register(handle, password, { persist }, {
-		onRegistered: account => {
+ex.register = function register(name, password, cb) {
+	augur.web.register(name, password,
+		account => {
 			if (!account) {
 				return cb({ code: 0, message: 'failed to register' });
 			}
@@ -242,29 +241,7 @@ ex.register = function register(handle, password, persist, cb, cbExtras) {
 				...account,
 				id: account.address
 			});
-		},
-		onSendEther: res => {
-			if (res.error) {
-				return cb({ code: res.error, message: res.message });
-			}
-			cbExtras(res);
-		},
-		onSent: res => {
-			if (res.error) {
-				return cb({ code: res.error, message: res.message });
-			}
-			cbExtras(res);
-		},
-		onSuccess: res => {
-			if (res.error) {
-				return cb({ code: res.error, message: res.message });
-			}
-			cbExtras(res);
-		},
-		onFailed: err => {
-			cb(err);
-		}
-	});
+		});
 };
 
 ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {

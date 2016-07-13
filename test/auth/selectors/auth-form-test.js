@@ -1,20 +1,11 @@
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
-import {
-	INVALID_USERNAME_OR_PASSWORD,
-	USERNAME_REQUIRED,
-	PASSWORDS_DO_NOT_MATCH,
-	PASSWORD_TOO_SHORT,
-	USERNAME_TAKEN
-} from '../../../src/modules/auth/constants/form-errors';
+import { INVALID_USERNAME_OR_PASSWORD, USERNAME_REQUIRED, PASSWORDS_DO_NOT_MATCH, PASSWORD_TOO_SHORT, USERNAME_TAKEN } from '../../../src/modules/auth/constants/form-errors';
 import { assertions } from 'augur-ui-react-components';
 
 describe('authForm selectors test: ', () => {
 	proxyquire.noPreserveCache().noCallThru();
-	let {
-		store,
-		state
-	} = mockStore.default;
+	let { store, state } = mockStore.default;
 	const authForm = proxyquire('../../../src/modules/auth/selectors/auth-form', {
 		'../../../store': store
 	});

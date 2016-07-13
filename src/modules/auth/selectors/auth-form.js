@@ -13,9 +13,9 @@ import { login } from '../../auth/actions/login';
 import { selectAuthLink } from '../../link/selectors/links';
 
 export default function () {
-	const { auth } = store.getState();
+	const { auth, loginAccount } = store.getState();
 	const { links } = require('../../../selectors');
-	return selectAuthForm(auth, links, store.dispatch);
+	return selectAuthForm(auth, loginAccount, links, store.dispatch);
 }
 
 export const selectErrMsg = (err) => {
@@ -44,7 +44,8 @@ export const selectRegister = (auth, dispatch) => {
 	return {
 		title: 'Sign Up',
 
-		isVisibleUsername: true,
+		isVisibleName: true,
+		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
 
@@ -57,46 +58,52 @@ export const selectRegister = (auth, dispatch) => {
 		submitButtonText: 'Sign Up',
 		submitButtonClass: 'register-button',
 
-		onSubmit: (username, password, password2) => dispatch(register(username, password, password2))
+		onSubmit: (name, password, password2, secureLoginID) => dispatch(register(name, password, password2))
 	};
 };
 
-export const selectLogin = (auth, dispatch) => {
+export const selectLogin = (auth, loginAccount, dispatch) => {
 	const errMsg = selectErrMsg(auth.err);
+	let newAccountMessage = null;
+	if (errMsg === null && loginAccount.secureLoginID) {
+		newAccountMessage = 'Success! Your account has been generated locally. We do not retain a copy. *It is critical that you save this information in a safe place.*';
+	}
 	return {
 		title: 'Login',
 
-		isVisibleUsername: true,
+		isVisibleName: false,
+		isVisibleID: true,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
 
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
 
-		msg: errMsg,
+		secureLoginID: loginAccount.secureLoginID,
+		msg: errMsg || newAccountMessage,
 		msgClass: errMsg ? 'error' : 'success',
 
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (username, password) => dispatch(login(username, password))
+		onSubmit: (name, password, password2, secureLoginID) =>	dispatch(login(secureLoginID, password))
 	};
 };
 
-export const selectAuthType = (auth, dispatch) => {
+export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
 	case REGISTER:
 		return selectRegister(auth, dispatch);
 	case LOGIN:
-		return selectLogin(auth, dispatch);
+		return selectLogin(auth, loginAccount, dispatch);
 	default:
 		return;
 	}
 };
 
-export const selectAuthForm = memoizerific(1)((auth, link, dispatch) => {
+export const selectAuthForm = memoizerific(1)((auth, loginAccount, link, dispatch) => {
 	const obj = {
-		...selectAuthType(auth, dispatch),
+		...selectAuthType(auth, loginAccount, dispatch),
 		closeLink: link.previousLink
 	};
 	return obj;

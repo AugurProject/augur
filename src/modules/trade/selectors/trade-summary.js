@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 import { formatShares, formatEther } from '../../../utils/format-number';
-import { BUY_SHARES } from '../../transactions/constants/types';
+import { BID } from '../../transactions/constants/types';
 
 export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
 	const totals = { shares: 0, ether: 0, gas: 0 };
@@ -17,8 +17,8 @@ export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
 		ether = (tradeOrder.ether && tradeOrder.ether.value) || 0;
 		gas = (tradeOrder.gas && tradeOrder.gas.value) || 0;
 
-		totals.shares += tradeOrder.type === BUY_SHARES ? shares : -shares;
-		totals.ether += tradeOrder.type === BUY_SHARES ? -ether : ether;
+		totals.shares += tradeOrder.type === BID ? shares : -shares;
+		totals.ether += tradeOrder.type === BID ? -ether : ether;
 		totals.gas += gas;
 	}
 
@@ -26,6 +26,7 @@ export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
 		totalShares: formatShares(totals.shares),
 		totalEther: formatEther(totals.ether),
 		totalGas: formatEther(totals.gas),
+		feeToPay: formatEther(0), // TODO -- waiting on Augur.js implementation
 		tradeOrders
 	};
 });

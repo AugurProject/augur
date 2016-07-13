@@ -1,14 +1,7 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import * as selector from '../../../src/modules/transactions/selectors/transactions-totals';
-import {
-	PENDING,
-	SUCCESS,
-	FAILED,
-	INTERRUPTED
-} from '../../../src/modules/transactions/constants/statuses';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../../src/modules/transactions/constants/statuses';
 import { assertions } from 'augur-ui-react-components';
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {

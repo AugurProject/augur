@@ -48,7 +48,10 @@ const testState = {
 	loginAccount: {
 		address: '0xtest123',
 		id: '0xtest123',
-		handle: 'testTesterson',
+		name: 'testTesterson',
+		secureLoginID: 'testSecureID',
+		linkText: 'testTesterson',
+		prettySecureLoginID: 'test...reID',
 		ether: 0,
 		realEther: 0,
 		rep: 0,

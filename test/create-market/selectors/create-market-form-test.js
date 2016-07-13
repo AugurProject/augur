@@ -31,8 +31,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		step5,
 		types = [ BINARY, CATEGORICAL, SCALAR ],
 		returnObj = {},
-		state = Object.assign({}, testState),
-		componentAssertions = assertions.createMarketForm;
+		state = Object.assign({}, testState);
 
 	store = mockStore(state);
 
@@ -89,7 +88,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 		});
 
 		it('should deliver the correct values to components', () => {
-			componentAssertions.step1(state.createMarketInProgress);
+			assertions.createMarketForm(state.createMarketInProgress);
 		});
 	});
 
@@ -156,7 +155,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 					...actualStep2.select(state.createMarketInProgress)
 				};
 
-				componentAssertions.step2(fullTestState);
+				assertions.createMarketForm(fullTestState);
 			});
 		});
 	});
@@ -196,7 +195,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...actualStep3.select(state.createMarketInProgress)
 			};
 
-			componentAssertions.step3(fullTestState);
+			assertions.createMarketForm(fullTestState);
 		});
 	});
 
@@ -241,7 +240,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				...actualStep4.select(state.createMarketInProgress)
 			};
 
-			componentAssertions.step4(fullTestState);
+			assertions.createMarketForm(fullTestState);
 		});
 	});
 
@@ -273,7 +272,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 				)
 			};
 
-			componentAssertions.step5(fullTestState);
+			assertions.createMarketForm(fullTestState);
 		});
 	});
 });

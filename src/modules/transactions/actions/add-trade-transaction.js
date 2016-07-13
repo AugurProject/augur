@@ -1,7 +1,8 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
 import {
-	BUY_SHARES,
-	SELL_SHARES,
+	BID,
+	ASK,
+	BUY_SHARES
 } from '../../transactions/constants/types';
 import { processOrder } from '../../trade/actions/place-trade';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -9,21 +10,24 @@ import { addTransaction } from '../../transactions/actions/add-transactions';
 export const makeTradeTransaction =
 (isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
 	const totalEther = totalCostWithoutFeeEther + feeEther;
+	const profitLoss = !isSell ? -(numShares * limitPrice) : numShares * limitPrice;
+
 	const txn = {
-		type: !isSell ? BUY_SHARES : SELL_SHARES,
+		type: !isSell ? BID : ASK,
 		shares: numShares,
 		sharesNegative: formatShares(-numShares),
 		limitPrice,
 		ether: totalEther,
 		etherNegative: formatEther(-totalEther),
+		feeToPay: formatEther(0),
+		profitLoss: formatEther(profitLoss),
 		gas,
 		data: {
 			marketID: market.id,
 			outcomeID: outcome.id,
 			marketDescription: market.description,
 			outcomeName: outcome.name,
-			avgPrice: formatEther(totalCostWithoutFeeEther / numShares),
-			feeToPay: formatEther(feeEther)
+			avgPrice: formatEther(totalCostWithoutFeeEther / numShares)
 		},
 		action: (transactionID) => {
 			const order = {

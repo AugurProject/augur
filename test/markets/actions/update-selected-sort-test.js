@@ -1,6 +1,4 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from '../../mockStore';
@@ -12,14 +10,14 @@ import * as mockStore from '../../mockStore';
 describe('modules/markets/actions/update-selected-sort', () => {
 	let { state, store } = mockStore.default;
 	let out, action;
-	let mockShowLink = { showLink: () => {} };
+	let mockUpdateURL = { updateURL: () => {} };
 
-	sinon.stub(mockShowLink, 'showLink', (href, options) => {
-		return { type: 'SHOW_LINK', href, options };
+	sinon.stub(mockUpdateURL, 'updateURL', (href) => {
+		return { type: 'UPDATE_URL', href };
 	});
 
 	action = proxyquire('../../../src/modules/markets/actions/update-selected-sort', {
-		'../../link/actions/show-link': mockShowLink
+		'../../link/actions/update-url': mockUpdateURL
 	});
 
 	beforeEach(() => {
@@ -48,9 +46,8 @@ describe('modules/markets/actions/update-selected-sort', () => {
 			type: 'UPDATE_SELECTED_SORT',
 			selectedSort: 'puppies'
 		}, {
-			type: 'SHOW_LINK',
-			href: '/?filters=isOpen',
-			options: { preventScrollTop: true }
+			type: 'UPDATE_URL',
+			href: '/?filters=isOpen'
 		}];
 
 		assert.deepEqual(store.getActions(), out, `Didn't return the correct action object`);

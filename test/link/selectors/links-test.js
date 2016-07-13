@@ -13,17 +13,6 @@ describe(`modules/link/selectors/links.js`, () => {
 
 	beforeEach(() => {
 		store.clearActions();
-		// Mock the window object
-		// global.window = {};
-		// global.window.location = {
-		// 	pathname: '/test',
-		// 	search: 'example'
-		// };
-		// global.window.history = {
-		// 	state: [],
-		// 	pushState: (a, b, c) => window.history.state.push(c)
-		// };
-		// global.window.scrollTo = (x, y) => true;
 	});
 
 	afterEach(() => {

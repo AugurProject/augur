@@ -1,6 +1,8 @@
+import env from './modules/app/reducers/env';
 import blockchain from './modules/app/reducers/blockchain';
 import branch from './modules/app/reducers/branch';
 import connection from './modules/app/reducers/connection';
+import url from './modules/link/reducers/url';
 
 import auth from './modules/auth/reducers/auth';
 import loginAccount from './modules/auth/reducers/login-account';
@@ -30,9 +32,11 @@ import priceHistory from './modules/markets/reducers/price-history';
 import selectedOutcomeID from './modules/outcome/reducers/selected-outcome-id';
 
 module.exports = {
+	env,
 	blockchain,
 	branch,
 	connection,
+	url,
 
 	auth,
 	loginAccount,
