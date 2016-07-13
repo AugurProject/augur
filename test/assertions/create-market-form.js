@@ -48,6 +48,7 @@ export default function(createMarketForm) {
 							assert.isFunction(createMarketForm.onValuesUpdated, `onValuesUpdated' is not a function`);
 						});
 					});
+
 					break;
 				case 2:
 					describe('type', () => {
@@ -150,6 +151,7 @@ export default function(createMarketForm) {
 								break;
 						}
 					});
+
 					break;
 				case 3:
 					describe('description', () => {
@@ -181,6 +183,93 @@ export default function(createMarketForm) {
 							assert.isNumber(createMarketForm.tagMaxLength, `'tagsMaxLength' is not a number`);
 						});
 					});
+
+					break;
+				case 4:
+					describe('takerFee', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.takerFee, `'takerFee' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.takerFee, `'takerFee' is not a number`);
+						});
+					});
+
+					describe('makerFee', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.makerFee, `'makerFee' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.makerFee, `'makerFee' is not a number`);
+						});
+					});
+
+					describe('initialLiquidity', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.initialLiquidity, `'initialLiquidity' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.initialLiquidity, `'initialLiquidity' is not a number`);
+						});
+					});
+
+					describe('initialFairPrices', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm');
+						});
+					});
+
+					describe('bestStartingQuantity', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.bestStartingQuantity, `'bestStartingQuantity' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.bestStartingQuantity, `'bestStartingQuantity' is not a number`);
+						});
+					});
+
+					describe('startingQuantity', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.startingQuantity, `'startingQuantity' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.startingQuantity, `'startingQuantity' is not a number`);
+						});
+					});
+
+					describe('priceWidth', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.priceWidth, `'priceWidth' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.priceWidth, `'priceWidth' is not a number`);
+						});
+					});
+
+					describe('priceDepth', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.priceDepth, `'priceDepth' is not defined`);
+						});
+
+						it('should be a number', () => {
+							assert.isNumber(createMarketForm.priceDepth, `'priceDepth' is not a number`);
+						});
+					});
+
 					break;
 			}
 		});
