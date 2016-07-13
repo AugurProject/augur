@@ -13,10 +13,10 @@ var constants = require("./constants");
 var FILTER_LABELS = [
     "block",
     "contracts",
-    "price",
-    "fill_tx",
-    "add_tx",
-    "cancel",
+    "log_price",
+    "log_fill_tx",
+    "log_add_tx",
+    "log_cancel",
     "thru",
     "penalize",
     "marketCreated",
@@ -233,7 +233,7 @@ module.exports = function () {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
-                case "price":
+                case "log_price":
                     callback = function (msg) {
                         self.parse_price_message(msg, onMessage);
                     };
@@ -274,7 +274,7 @@ module.exports = function () {
         setup_event_filter: function (contract, label, f) {
             return this.subscribeLogs({
                 address: augur.contracts[contract],
-                topics: [constants.LOGS[label].signature]
+                topics: [augur.api.events[contract][label].signature]
             }, f);
         },
         setup_contracts_filter: function (f) {
@@ -353,20 +353,18 @@ module.exports = function () {
         },
         start_contracts_listener: function (cb) {
             if (this.filter.contracts.id === null) {
-                if (utils.is_function(cb)) {
-                    this.setup_contracts_filter(cb);
-                } else {
+                if (!utils.is_function(cb)) {
                     return this.setup_contracts_filter();
                 }
+                this.setup_contracts_filter(cb);
             }
         },
         start_block_listener: function (cb) {
             if (this.filter.block.id === null) {
-                if (utils.is_function(cb)) {
-                    this.setup_block_filter(cb);
-                } else {
+                if (!utils.is_function(cb)) {
                     return this.setup_block_filter();
                 }
+                this.setup_block_filter(cb);
             }
         },
 
@@ -401,9 +399,9 @@ module.exports = function () {
                                 self.parse_contracts_message(msg, callback);
                             };
                             break;
-                        case "price":
-                            callback = cb.price;
-                            cb.price = function (msg) {
+                        case "log_price":
+                            callback = cb.log_price;
+                            cb.log_price = function (msg) {
                                 self.parse_price_message(msg, callback);
                             };
                             break;
@@ -460,13 +458,15 @@ module.exports = function () {
                 run = async.series;
             }
             async.forEachOfSeries(cb, function (callback, label, next) {
-                if (!self.filter[label] || !callback){
-                    //skip invalid labels, undefined callbacks
+
+                // skip invalid labels, undefined callbacks
+                if (!self.filter[label] || !callback) {
                     next(null, null);
                 } else if (self.filter[label].id === null && callback) {
                     listenHelper(callback, label, next);
-                } else if (self.filter[label].id && callback){
-                    //callback already registered. uninstall, and reinstall new callback.
+
+                // callback already registered. uninstall, and reinstall new callback.
+                } else if (self.filter[label].id && callback) {
                     self.clear_filter(label, function () {
                         listenHelper(callback, label, next);
                     });
@@ -476,6 +476,7 @@ module.exports = function () {
                 if (utils.is_function(setup_complete)) setup_complete(self.filter);
             });
         },
+
         all_filters_removed: function () {
             var f, isRemoved = true;
             for (var label in this.filter) {
@@ -533,14 +534,11 @@ module.exports = function () {
             }
             if (uninstall) {
                 async.forEachOfSeries(this.filter, function (filter, label, next) {
-                    if (filter.id !== null) {
-                        self.clear_filter(label, function (uninst) {
-                            cleared(uninst, cb[label], complete);
-                            next();
-                        });
-                    } else {
+                    if (filter.id === null) return next();
+                    self.clear_filter(label, function (uninst) {
+                        cleared(uninst, cb[label], complete);
                         next();
-                    }
+                    });
                 });
             }
         }

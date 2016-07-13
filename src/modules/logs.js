@@ -50,7 +50,8 @@ module.exports = {
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
-            topics: [constants.LOGS.price.signature, market]
+            topics: [this.api.events.Trade.log_price.signature, market]
+            // topics: [constants.LOGS.price.signature, market]
         };
         if (!utils.is_function(cb)) {
             return parsePriceLogs(this.rpc.getLogs(filter));
@@ -97,9 +98,9 @@ module.exports = {
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
             topics: [
-                constants.LOGS.price.signature,
+                this.api.events.Trade.log_price.signature,
                 null,
-                abi.prefix_hex(abi.pad_left(account))
+                abi.format_int256(account)
             ],
             timeout: 480000
         }, function (logs) {

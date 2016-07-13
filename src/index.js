@@ -30,9 +30,9 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.7.2";
+    this.version = "1.7.3";
 
-    this.options = {debug: {broadcast: false, fallback: false}};
+    this.options = {debug: {abi: false, broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
 
     this.connection = null;
@@ -44,6 +44,7 @@ function Augur() {
     this.utils = require("./utilities");
     this.errors = require("augur-contracts").errors;
     this.rpc = require("ethrpc");
+    this.abi.debug = this.options.debug.abi;
     this.rpc.debug = this.options.debug;
 
     // Load submodules

@@ -21,7 +21,7 @@ function printBalance(account) {
     console.log({
         cash: augur.getCashBalance(account),
         reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
-        ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
+        ether: abi.unfix(augur.rpc.balance(account), "string")
     });
 }
 
