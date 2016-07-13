@@ -331,6 +331,71 @@ export default function(market) {
 							assert.isDefined(outcome.topAsk, 'topAsk does not exist');
 						});
 					});
+
+					describe('openOrders', () => {
+						const openOrders = outcome.openOrders;
+						it('should exist', () => {
+							assert.isDefined(openOrders);
+						});
+
+						it('should be object', () => {
+							assert.isObject(openOrders);
+						});
+
+						describe('items', () => {
+							it('should be array', () => {
+								assert.isArray(openOrders.items);
+							});
+						});
+
+						describe('asksCount', () => {
+							it('should be number', () => {
+								assert.isNumber(openOrders.asksCount);
+							});
+						});
+
+						describe('bidsCount', () => {
+							it('should be number', () => {
+								assert.isNumber(openOrders.bidsCount);
+							});
+						});
+
+						describe('isMarketOpenOrdersOpen', () => {
+							it('should be boolean', () => {
+								assert.isBoolean(openOrders.isMarketOpenOrdersOpen);
+							});
+						});
+
+						describe('toggleGroupOpen', () => {
+							it('should be function', () => {
+								assert.isFunction(openOrders.toggleGroupOpen);
+							});
+						});
+
+						describe('onCancelOrder', () => {
+							it('should be function', () => {
+								assert.isFunction(openOrders.onCancelOrder);
+							});
+						});
+
+						describe('onCancelAllOrders', () => {
+							it('should be function', () => {
+								assert.isFunction(openOrders.onCancelAllOrders);
+							});
+						});
+
+						describe('onCancelAllBids', () => {
+							it('should be function', () => {
+								assert.isFunction(openOrders.onCancelAllBids);
+							});
+						});
+
+						describe('onCancelAllAsks', () => {
+							it('should be function', () => {
+								assert.isFunction(openOrders.onCancelAllAsks);
+							});
+						});
+					});
 				});
 			});
 		});
@@ -495,52 +560,6 @@ export default function(market) {
 						});
 					});
 				});
-			});
-		});
-
-		describe('openOrders', () => {
-			it('should exist', () => {
-				assert.isDefined(market.openOrders);
-			});
-
-			it('should be object', () => {
-				assert.isObject(market.openOrders);
-			});
-
-			describe('onCancelOrder', () => {
-				it('should be function', () => {
-					assert.isFunction(market.openOrders.onCancelOrder);
-				});
-			});
-
-			describe('onCancelAllOrders', () => {
-				it('should be function', () => {
-					assert.isFunction(market.openOrders.onCancelAllOrders);
-				});
-			});
-
-			describe('onCancelAllBids', () => {
-				it('should be function', () => {
-					assert.isFunction(market.openOrders.onCancelAllBids);
-				});
-			});
-
-			describe('onCancelAllAsks', () => {
-				it('should be function', () => {
-					assert.isFunction(market.openOrders.onCancelAllAsks);
-				});
-			});
-
-			describe('items', () => {
-				assert.isArray(market.openOrders.items);
-			});
-
-			describe('asksCount', () => {
-				assert.isNumber(market.openOrders.asksCount);
-			});
-
-			describe('bidsCount', () => {
-				assert.isNumber(market.openOrders.bidsCount);
 			});
 		});
 

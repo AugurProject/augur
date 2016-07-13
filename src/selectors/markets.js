@@ -36,7 +36,7 @@ function makeMarkets(numMarkets = 25) {
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
 			isOpen: Math.random() > 0.1,
-			isPendingReport: Math.random() < 0.5,
+			isPendingReport: Math.random() < 0.1,
 			marketLink: {
 				text: 'Trade',
 				className: 'trade',
@@ -54,6 +54,8 @@ function makeMarkets(numMarkets = 25) {
 
 		// outcomes
 		m.outcomes = makeOutcomes();
+
+		m.openOrdersOutcomes = m.outcomes.slice();
 
 		// reportable outcomes
 		m.reportableOutcomes = m.outcomes.slice();
@@ -128,62 +130,6 @@ function makeMarkets(numMarkets = 25) {
 				color: '#0f0'
 			}
 		];
-
-		m.openOrders = {
-			onCancelOrder: (orderId) => {
-				console.log('cancelling order %o', orderId);
-				setTimeout(() => {
-					require('../selectors').market.openOrders.items.find(openOrder => openOrder.id === orderId).isCancelling = true;
-					require('../selectors').update({});
-					setTimeout(() => {
-						const index = require('../selectors').market.openOrders.items.findIndex(openOrder => openOrder.id === orderId);
-						require('../selectors').market.openOrders.items.splice(index, 1);
-						require('../selectors').update({});
-					}, 2000);
-				}, 1);
-			},
-			onCancelAllOrders: () => {
-				console.log('todo: onCancelAllOrders');
-			},
-			onCancelAllBids: () => {
-				console.log('todo: onCancelAllBids');
-			},
-			onCancelAllAsks: () => {
-				console.log('todo: onCancelAllAsks');
-			},
-			bidsCount: 2,
-			asksCount: 1,
-			items: [{
-				id: 'order1',
-				type: 'sell',
-				originalShares: makeNumber(5, 'shares'),
-				avgPrice: makeNumber(0.7, 'ether'),
-				matchedShares: makeNumber(3, 'shares'),
-				unmatchedShares: makeNumber(2, 'shares'),
-				outcome: 'outcomeasdf123',
-				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-			},
-			{
-				id: 'order2',
-				type: 'buy',
-				originalShares: makeNumber(5, 'shares'),
-				avgPrice: makeNumber(0.7, 'ether'),
-				matchedShares: makeNumber(3, 'shares'),
-				unmatchedShares: makeNumber(2, 'shares'),
-				outcome: 'outcomeasdf123',
-				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-			},
-			{
-				id: 'order3',
-				type: 'buy',
-				originalShares: makeNumber(5, 'shares'),
-				avgPrice: makeNumber(0.7, 'ether'),
-				matchedShares: makeNumber(3, 'shares'),
-				unmatchedShares: makeNumber(2, 'shares'),
-				outcome: 'outcomeasdf123',
-				owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-			}]
-		};
 
 		// positions summary
 		m.positionsSummary = {
@@ -359,6 +305,69 @@ function makeMarkets(numMarkets = 25) {
 						shares: orderBook.asks[0].shares
 					},
 					orderBook
+				};
+
+				outcome.openOrders = {
+					isMarketOpenOrdersOpen: false,
+					bidsCount: 2,
+					asksCount: 1,
+					items: [
+						{
+							id: 'order1',
+							type: 'sell',
+							originalShares: makeNumber(5, 'shares'),
+							avgPrice: makeNumber(0.7, 'ether'),
+							matchedShares: makeNumber(3, 'shares'),
+							unmatchedShares: makeNumber(2, 'shares'),
+							outcome: 'outcomeasdf123',
+							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+						},
+						{
+							id: 'order2',
+							type: 'buy',
+							originalShares: makeNumber(5, 'shares'),
+							avgPrice: makeNumber(0.7, 'ether'),
+							matchedShares: makeNumber(3, 'shares'),
+							unmatchedShares: makeNumber(2, 'shares'),
+							outcome: 'outcomeasdf123',
+							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+						},
+						{
+							id: 'order3',
+							type: 'buy',
+							originalShares: makeNumber(5, 'shares'),
+							avgPrice: makeNumber(0.7, 'ether'),
+							matchedShares: makeNumber(3, 'shares'),
+							unmatchedShares: makeNumber(2, 'shares'),
+							outcome: 'outcomeasdf123',
+							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+						}
+					],
+					toggleGroupOpen: () => {
+						outcome.openOrders.isMarketOpenOrdersOpen = !outcome.openOrders.isMarketOpenOrdersOpen;
+						require('../selectors').update({});
+					},
+					onCancelOrder: (orderId) => {
+						console.log('cancelling order %o', orderId);
+						setTimeout(() => {
+							outcome.openOrders.items.find(openOrder => openOrder.id === orderId).isCancelling = true;
+							require('../selectors').update({});
+							setTimeout(() => {
+								const index = outcome.openOrders.items.findIndex(openOrder => openOrder.id === orderId);
+								outcome.openOrders.items.splice(index, 1);
+								require('../selectors').update({});
+							}, 2000);
+						}, 1);
+					},
+					onCancelAllOrders: () => {
+						console.log('todo: onCancelAllOrders in outcome %o', outcome.id);
+					},
+					onCancelAllBids: () => {
+						console.log('todo: onCancelAllBids in outcome %o', outcome.id);
+					},
+					onCancelAllAsks: () => {
+						console.log('todo: onCancelAllAsks in outcome %o', outcome.id);
+					}
 				};
 
 				return outcome;

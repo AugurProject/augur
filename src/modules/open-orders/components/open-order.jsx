@@ -43,7 +43,8 @@ OpenOrder.propTypes = {
 	avgPrice: React.PropTypes.object,
 	matchedShares: React.PropTypes.object,
 	unmatchedShares: React.PropTypes.object,
-	isCancelling: React.PropTypes.bool
+	isCancelling: React.PropTypes.bool,
+	onCancelOrder: React.PropTypes.func
 };
 
 export default OpenOrder;

@@ -1,8 +1,17 @@
+.market {
+  .open-orders {
+    padding: 4vmin 6vmin;
+  }
 
-.open-order:not(:hover) .cancel-order-action {
-  display: none;
-}
+  .open-order {
+    height: 27px; // same height as when action is visible
+  }
 
-.open-order.isCancelling {
-  text-decoration: line-through;
+  .open-order:not(:hover) .cancel-order-action {
+    display: none;
+  }
+
+  .open-order.isCancelling {
+    text-decoration: line-through;
+  }
 }

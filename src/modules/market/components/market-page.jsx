@@ -75,15 +75,12 @@ export default class MarketPage extends Component {
 					);
 				}
 
-				if (p.market.openOrders && p.market.openOrders.items.length > 0) {
-					nodes.push(
-						<OpenOrders
-							key="open-orders"
-							onCancelOrder={p.market.onCancelOrder}
-							openOrders={p.market.openOrders}
-						/>
-					);
-				}
+				nodes.push(
+					<OpenOrders
+						key="open-orders"
+						outcomes={p.market.outcomes}
+					/>
+				);
 
 				// chart
 				nodes.push(
