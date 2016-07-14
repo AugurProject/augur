@@ -28,45 +28,15 @@ const OpenOrdersGroup = (p) => (
 					</tr>
 					{
 						p.openOrders.items.map(openOrder => (
-								<OpenOrder
-									key={openOrder.id}
-									{...openOrder}
-									onCancelOrder={p.openOrders.onCancelOrder}
-								/>
+							<OpenOrder
+								key={openOrder.id}
+								{...openOrder}
+								onCancelOrder={p.openOrders.onCancelOrder}
+							/>
 							)
 						)
 					}
 				</tbody>
-				<tfoot>
-					<tr>
-						<td colSpan="5">
-							{
-								p.openOrders.items.length > 0 &&
-								<button className="button" onClick={(event) => {
-									p.openOrders.onCancelAllOrders();
-								}}>
-									Cancel all
-								</button>
-							}
-							{
-								p.openOrders.bidsCount > 0 &&
-								<button className="button" onClick={(event) => {
-									p.openOrders.onCancelAllBids();
-								}}>
-									Cancel all bids
-								</button>
-							}
-							{
-								p.openOrders.asksCount > 0 &&
-								<button className="button" onClick={(event) => {
-									p.openOrders.onCancelAllAsks();
-								}}>
-									Cancel all asks
-								</button>
-							}
-						</td>
-					</tr>
-				</tfoot>
 			</table>
 		</Collapse>
 	</div>

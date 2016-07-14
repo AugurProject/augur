@@ -7,17 +7,17 @@ const OpenOrders = (p) => (
 		<h2>Open orders</h2>
 		{
 			p.outcomes.map(outcome => {
-				if (outcome.openOrders.items.length > 0) {
-					return (
-						<OpenOrdersGroup
-							key={outcome.id}
-							name={outcome.name}
-							openOrders={outcome.openOrders}
-						/>
-					)
-				} else {
+				if (outcome.openOrders.items.length === 0) {
 					return (<div>No open orders</div>);
 				}
+
+				return (
+					<OpenOrdersGroup
+						key={outcome.id}
+						name={outcome.name}
+						openOrders={outcome.openOrders}
+					/>
+				);
 			})
 		}
 	</div>
