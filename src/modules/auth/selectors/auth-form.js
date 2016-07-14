@@ -48,6 +48,7 @@ export const selectRegister = (auth, dispatch) => {
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
+		isVisibleRememberMe: false,
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
@@ -75,6 +76,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		isVisibleID: true,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
+		isVisibleRememberMe: true,
 
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),

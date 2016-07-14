@@ -77,11 +77,9 @@ export function loadLoginAccount() {
 				return console.error('ERR loadLoginAccount():', err);
 			}
 			let localLoginAccount = loginAccount;
-
-			if (!loginAccount && !loginAccount.id && localStorageRef && localStorageRef.getItem) {
+			if ((!loginAccount || !loginAccount.id) && localStorageRef && localStorageRef.getItem) {
 				localLoginAccount = JSON.parse(localStorageRef.getItem('account'));
-			}
-			if (!localLoginAccount || !localLoginAccount.id) {
+			} else if (!loginAccount || loginAccount.id) {
 				return;
 			}
 

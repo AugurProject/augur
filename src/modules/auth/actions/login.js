@@ -11,6 +11,7 @@ export function login(secureLoginID, password, rememberMe) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+
 		AugurJS.login(secureLoginID, password, (err, loginAccount) => {
 			if (err) {
 				return dispatch(authError(err));
