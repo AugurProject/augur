@@ -115,7 +115,7 @@ export default class AccountPage extends Component {
 							</table>
 						</div>
 						<div className="account-section">
-							<div className={classnames('account-info-item')}>
+							<div className="account-info-item">
 								<h2 className="heading">Download Account</h2>
 								<p>
 									If you are running Augur using a local geth node, you can download your account data to login through the node.
