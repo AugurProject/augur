@@ -271,10 +271,167 @@ export default function(createMarketForm) {
 					});
 
 					break;
+				default:
+				case 5:
+					describe('description', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.description, `'description' is not defined`);
+						});
+
+						it('should be a string', () => {
+							assert.isString(createMarketForm.description, `'description' is not a string`);
+						});
+					});
+
+					describe('outcomes', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.outcomes, `'outcomes' is not defined`);
+						});
+
+						it('should be an array', () => {
+							assert.isArray(createMarketForm.outcomes, `'outcomes' is not an array`);
+						});
+					});
+
+					describe('endDate', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.endDate, `'endDate' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.endDate, `'endDate' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertEndDate(createMarketForm.endDate, 'createMarketForm');
+						});
+					});
+
+					describe('takerFeePercent', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.takerFeePercent, `'takerFeePercent' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.takerFeePercent, `'takerFeePercent' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertFormattedNumber(createMarketForm.takerFeePercent, 'createMarketForm.takerFeePercent');
+						});
+					});
+
+					describe('makerFeePercent', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.makerFeePercent, `'makerFeePercent' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.makerFeePercent, `'makerFeePercent' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertFormattedNumber(createMarketForm.makerFeePercent, 'createMarketForm.makerFeePercent');
+						});
+					});
+
+					describe('creatingMarket', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.creatingMarket, `'creatingMarket' is not defined`);
+						});
+
+						it('should be a boolean', () => {
+							assert.isBoolean(createMarketForm.creatingMarket, `'creatingMarket' is not a boolean`);
+						});
+					});
+
+					describe('volume', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.volume, `'volume' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.volume, `'volume' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertFormattedNumber(createMarketForm.volume, 'createMarketForm.volume');
+						});
+					});
+
+					describe('initialFairPrices', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm.initialFairPrices');
+						});
+					});
+
+					describe('bestStartingQuantityFormatted', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.bestStartingQuantityFormatted, `'bestStartingQuantityFormatted' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.bestStartingQuantityFormatted, `'bestStartingQuantityFormatted' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertFormattedNumber(createMarketForm.bestStartingQuantityFormatted, 'createMarketForm.bestStartingQuantityFormatted');
+						});
+					});
+
+					describe('startingQuantityFormatted', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.startingQuantityFormatted, `'startingQuantityFormatted' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.startingQuantityFormatted, `'startingQuantityFormatted' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertFormattedNumber(createMarketForm.startingQuantityFormatted, 'createMarketForm.startingQuantityFormatted');
+						});
+					});
+
+					describe('priceWidthFormatted', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.priceWidthFormatted, `'priceWidthFormatted' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.priceWidthFormatted, `'priceWidthFormatted' is not an object`);
+						});
+
+						it('should have the correct shape', () => {
+							assertFormattedNumber(createMarketForm.priceWidthFormatted, 'createMarketForm.priceWidthFormatted');
+						});
+					});
 			}
 		});
 	});
 }
+
+describe('takerFeePercent', () => {
+	it('should be defined', () => {
+
+	});
+
+	it('should be an object', () => {
+
+	});
+
+	it('should have the correct shape', () => {
+
+	});
+});
 
 function step1(actual){
 	describe('augur-ui-react-components createMarketForm step-1 initial state', () => {
