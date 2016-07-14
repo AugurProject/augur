@@ -74,12 +74,17 @@ export function loadLoginAccount() {
 
 		AugurJS.loadLoginAccount((err, loginAccount) => {
 			let localLoginAccount = loginAccount;
+
 			if (err) {
 				return console.error('ERR loadLoginAccount():', err);
 			}
-			if ((!loginAccount || !loginAccount.id) && localStorageRef && localStorageRef.getItem) {
-				localLoginAccount = JSON.parse(localStorageRef.getItem('account'));
-			} else if (!loginAccount || !loginAccount.id) {
+
+			if (!localLoginAccount && localStorageRef && localStorageRef.getItem) {
+				const account = localStorageRef.getItem('account');
+				if (account !== null)	localLoginAccount = JSON.parse(account);
+			}
+
+			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
 
