@@ -55,7 +55,7 @@ selectors.searchSort = {
 
 selectors.marketsHeader = {};
 
-selectors.market = {}; // selected market
+selectors.market = markets[0]; // selected market -- set to the first market for tests
 selectors.sideOptions = [{ value: BID, label: 'Buy' }, { value: ASK, label: 'Sell' }];
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {

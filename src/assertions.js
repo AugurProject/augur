@@ -18,7 +18,6 @@ import searchSort from '../test/assertions/search-sort';
 import selectedOutcome from '../test/assertions/selected-outcome';
 import sideOptions from '../test/assertions/side-options';
 import siteHeader from '../test/assertions/site-header';
-import trade from '../test/assertions/trade';
 import transactions from '../test/assertions/transactions';
 import transactionsTotals from '../test/assertions/transactions-totals';
 import url from '../test/assertions/url';
@@ -44,7 +43,6 @@ export default {
 	selectedOutcome,
 	sideOptions,
 	siteHeader,
-	trade,
 	transactions,
 	transactionsTotals,
 	url

@@ -1,6 +1,6 @@
 {
   "name": "augur-ui-react-components",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "description": "Augur UI React Components",
   "author": "Baz (@thinkloop)",
   "license": "AAL",
@@ -69,6 +69,7 @@
     "inline-source-cli": "1.1.1",
     "less": "2.7.1",
     "mocha": "2.5.3",
+    "moment": "2.14.1",
     "npm-check-updates": "^2.7.0",
     "onchange": "2.5.0",
     "react": "15.2.1",
