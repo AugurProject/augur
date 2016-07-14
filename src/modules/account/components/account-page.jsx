@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import classnames from 'classnames';
 
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
@@ -57,7 +56,7 @@ export default class AccountPage extends Component {
 							<h2 className="heading">Credentials</h2>
 							<table className="account-info">
 								<tbody>
-									<tr className={classnames('account-info-item', { fade: s.editPassword })}>
+									<tr className="account-info-item">
 										<th className="title">Account Name:</th>
 										<td className="item">
 											{s.editName &&
@@ -107,7 +106,7 @@ export default class AccountPage extends Component {
 										</td>
 									</tr>
 
-									<tr className={classnames('account-info-item', { fade: s.editPassword })}>
+									<tr className="account-info-item">
 										<th className="title">Secure Login ID:</th>
 										<td className="item">
 											{!s.showFullID &&
@@ -215,7 +214,7 @@ export default class AccountPage extends Component {
 							</table>
 						</div>
 						<div className="account-section">
-							<div className={s.editPassword ? 'account-info-item fade' : 'account-info-item'}>
+							<div className="account-info-item">
 								<h2 className="heading">Download Account</h2>
 								<p>
 									If you are running Augur using a local geth node, you can download your account data to login through the node.

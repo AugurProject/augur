@@ -14,6 +14,7 @@ const loginParts = {
 	isVisibleName: false,
 	isVisibleID: true,
 	isVisiblePassword2: false,
+	isVisibleRememberMe: true,
 	topLinkText: 'Sign Up',
 };
 
@@ -25,6 +26,7 @@ const signUp = {
 	isVisibleName: true,
 	isVisibleID: false,
 	isVisiblePassword2: true,
+	isVisibleRememberMe: false,
 	topLinkText: 'login',
 	onSubmit: SignUpOnSubmit,
 	topLink: {
@@ -57,7 +59,7 @@ const logIn = {
 			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
 		}
 	},
-	onSubmit: (secureLoginID, password) => {
+	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
 		loginAccount.signIn();
