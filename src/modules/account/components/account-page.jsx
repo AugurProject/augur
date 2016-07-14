@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Link from '../../link/components/link';
@@ -117,7 +116,7 @@ export default class AccountPage extends Component {
 							</table>
 						</div>
 						<div className="account-section">
-							<div className={'account-info-item'}>
+							<div className={classnames('account-info-item')}>
 								<h2 className="heading">Download Account</h2>
 								<p>
 									If you are running Augur using a local geth node, you can download your account data to login through the node.

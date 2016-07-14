@@ -1,24 +1,36 @@
-import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, INITIAL_LIQUIDITY_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT, SEPARATION_DEFAULT } from '../modules/create-market/constants/market-values-constraints';
-
 import { BINARY, CATEGORICAL, SCALAR } from '../modules/markets/constants/market-types';
 
 import { makeNumber } from '../utils/make-number';
 
 function createMarketForm() {
+	const CONSTANTS = {
+		TAKER_FEE_DEFAULT: 2,
+		MAKER_FEE_DEFAULT: 1,
+		INITIAL_LIQUIDITY_DEFAULT: 500,
+		STARTING_QUANTITY_DEFAULT: 10,
+		BEST_STARTING_QUANTITY_DEFAULT: 20,
+		PRICE_WIDTH_DEFAULT: 0.1,
+		EXPIRY_SOURCE_GENERIC: 'generic',
+		EXPIRY_SOURCE_SPECIFIC: 'specific'
+	};
+
 	let form = {
 		creatingMarket: true,
 		step: 1,
 		errors: {},
 		isValid: true,
-		takerFee: TAKER_FEE_DEFAULT,
-		makerFee: MAKER_FEE_DEFAULT,
-		initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+		takerFee: CONSTANTS.TAKER_FEE_DEFAULT,
+		makerFee: CONSTANTS.MAKER_FEE_DEFAULT,
+		initialLiquidity: CONSTANTS.INITIAL_LIQUIDITY_DEFAULT,
+		expirySourceTypes: {
+			generic: CONSTANTS.EXPIRY_SOURCE_GENERIC,
+			specific: CONSTANTS.EXPIRY_SOURCE_SPECIFIC,
+		},
 		// Advanced Market Creation
 		initialFairPrices: {},
-		startingQuantity: STARTING_QUANTITY_DEFAULT,
-		bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-		priceWidth: PRICE_WIDTH_DEFAULT,
-		separation: SEPARATION_DEFAULT,
+		startingQuantity: CONSTANTS.STARTING_QUANTITY_DEFAULT,
+		bestStartingQuantity: CONSTANTS.BEST_STARTING_QUANTITY_DEFAULT,
+		priceWidth: CONSTANTS.PRICE_WIDTH_DEFAULT,
 		onValuesUpdated: newValues => updateForm(newValues)
 	};
 
