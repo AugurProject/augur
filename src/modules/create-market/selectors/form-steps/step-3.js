@@ -1,4 +1,4 @@
-import { TAGS_MAX_NUM, TAGS_MAX_LENGTH,	RESOURCES_MAX_NUM, RESOURCES_MAX_LENGTH } from '../../../create-market/constants/market-values-constraints';
+import { TAGS_MAX_NUM, TAGS_MAX_LENGTH,	RESOURCES_MAX_NUM, RESOURCES_MAX_LENGTH, EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../../create-market/constants/market-values-constraints';
 import validateExpirySource from '../../../create-market/validators/validate-expiry-source';
 import validateExpirySourceUrl from '../../../create-market/validators/validate-expiry-source-url';
 
@@ -7,7 +7,11 @@ export const select = (formState) => {
 		tagsMaxNum: TAGS_MAX_NUM,
 		tagMaxLength: TAGS_MAX_LENGTH,
 		resourcesMaxNum: RESOURCES_MAX_NUM,
-		resourceMaxLength: RESOURCES_MAX_LENGTH
+		resourceMaxLength: RESOURCES_MAX_LENGTH,
+		expirySourceTypes: {
+			generic: EXPIRY_SOURCE_GENERIC,
+			specific: EXPIRY_SOURCE_SPECIFIC
+		}
 	};
 	return obj;
 };
