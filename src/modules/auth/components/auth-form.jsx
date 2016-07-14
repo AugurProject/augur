@@ -132,7 +132,7 @@ export default class AuthForm extends Component {
 					maxLength="256"
 				/>
 				<Checkbox
-					className={classnames('', { displayNone: !p.isVisibleRememberMe })}
+					className={classnames({ displayNone: !p.isVisibleRememberMe })}
 					title="Click Here to remember your account information locally."
 					text="Remember Me"
 					isChecked={s.rememberMe}
