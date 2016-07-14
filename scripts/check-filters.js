@@ -37,10 +37,13 @@ augur.filters.listen({
     tradingFeeUpdated: function (msg) {
         console.log("tradingFeeUpdated filter:", JSON.stringify(msg, null, 2));
     },
-    approval: function (msg) {
+    returnValue: function (msg) {
+        console.log("returnValue filter:", JSON.stringify(msg, null, 2));
+    },
+    Approval: function (msg) {
         console.log("approval filter:", JSON.stringify(msg, null, 2));
     },
-    transfer: function (msg) {
+    Transfer: function (msg) {
         console.log("transfer filter:", JSON.stringify(msg, null, 2));
     },
 }, function (filters) {

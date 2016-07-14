@@ -6,27 +6,22 @@
 
 var async = require("async");
 var abi = require("augur-abi");
-var errors = require("augur-contracts").errors;
+var augur_contracts = require("augur-contracts");
 var utils = require("./utilities");
 var constants = require("./constants");
+var errors = augur_contracts.errors;
 
-var FILTER_LABELS = [
-    "block",
-    "contracts",
-    "log_price",
-    "log_fill_tx",
-    "log_add_tx",
-    "log_cancel",
-    "thru",
-    "penalize",
-    "marketCreated",
-    "tradingFeeUpdated",
-    "approval",
-    "transfer"
-];
-var filters = {};
-for (var i = 0, n = FILTER_LABELS.length; i < n; ++i) {
-    filters[FILTER_LABELS[i]] = {id: null, heartbeat: null};
+// non-event filters
+var filters = {
+    block: {id: null, heartbeat: null},
+    contracts: {id: null, heartbeat: null}
+};
+
+// event filters
+var events_api = new augur_contracts.Tx().events;
+for (var label in events_api) {
+    if (!events_api.hasOwnProperty(label)) continue;
+    filters[label] = {id: null, heartbeat: null};
 }
 
 module.exports = function () {
@@ -274,7 +269,7 @@ module.exports = function () {
         setup_event_filter: function (contract, label, f) {
             return this.subscribeLogs({
                 address: augur.contracts[contract],
-                topics: [augur.api.events[contract][label].signature]
+                topics: [augur.api.events[label].signature]
             }, f);
         },
         setup_contracts_filter: function (f) {
@@ -322,7 +317,7 @@ module.exports = function () {
         // start listeners
         start_event_listener: function (label, cb) {
             var self = this;
-            var contract = constants.LOGS[label].contract;
+            var contract = augur.api.events[label].contract;
             if (this.filter[label] && this.filter[label].id) {
                 if (!utils.is_function(cb)) return this.filter[label].id;
                 return cb(this.filter[label].id);
