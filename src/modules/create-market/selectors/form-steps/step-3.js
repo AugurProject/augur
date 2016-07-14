@@ -8,8 +8,10 @@ export const select = (formState) => {
 		tagMaxLength: TAGS_MAX_LENGTH,
 		resourcesMaxNum: RESOURCES_MAX_NUM,
 		resourceMaxLength: RESOURCES_MAX_LENGTH,
-		expirySourceGeneric: EXPIRY_SOURCE_GENERIC,
-		expirySourceSpecific: EXPIRY_SOURCE_SPECIFIC
+		expirySourceTypes: {
+			generic: EXPIRY_SOURCE_GENERIC,
+			specific: EXPIRY_SOURCE_SPECIFIC
+		}
 	};
 	return obj;
 };
