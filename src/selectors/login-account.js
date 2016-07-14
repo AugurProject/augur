@@ -19,7 +19,6 @@ loginAccount.signIn = (name = loginAccount.name) => {
 		name,
 		update: loginAccount.update,
 		editName: loginAccount.editName,
-		onChangePass: loginAccount.onChangePass,
 		signOut: loginAccount.signOut
 	}
 	});
@@ -31,18 +30,12 @@ loginAccount.editName = (name) => {
 	loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
 };
 
-loginAccount.onChangePass = (password, newPassword, newPassword2, cb) => {
-	console.log(`Password: ${password}.`, `New Password: ${newPassword}.`, `Confirmed New Password: ${newPassword2}.`, 'This function would trigger a password change in Augur + validation.');
-	cb({ msg: 'your Password has been successfully changed!', editPassword: false });
-};
-
 loginAccount.signIn = (name = loginAccount.name) => {
 	loginAccount.update({ loginAccount: {
 		...loginAccount,
 		name,
 		update: loginAccount.update,
 		editName: loginAccount.editName,
-		onChangePass: loginAccount.onChangePass,
 		signOut: loginAccount.signOut
 	}
 	});
