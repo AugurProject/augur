@@ -19,7 +19,9 @@ describe(`modules/create-market/selectors/form-steps/step-3.js`, () => {
 			tagsMaxNum: TAGS_MAX_NUM,
 			tagMaxLength: TAGS_MAX_LENGTH,
 			resourcesMaxNum: RESOURCES_MAX_NUM,
-			resourceMaxLength: RESOURCES_MAX_LENGTH
+			resourceMaxLength: RESOURCES_MAX_LENGTH,
+			expirySourceGeneric: EXPIRY_SOURCE_GENERIC,
+			expirySourceSpecific: EXPIRY_SOURCE_SPECIFIC
 		};
 		assert.deepEqual(selector.select('test'), out, `Didn't return the expected output for select()`);
 	});
