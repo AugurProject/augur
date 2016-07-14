@@ -11,23 +11,23 @@ const CreateMarketForm4 = (p) => (
 			<h4>What is the source of expiry information for your question?</h4>
 			<span className="expiry-source-option">
 				<input
-					value={p.expirySourceGeneric}
+					value={p.expirySourceTypes.generic}
 					type="radio"
-					checked={p.expirySource === p.expirySourceGeneric}
-					onChange={() => p.onValuesUpdated({ expirySource: p.expirySourceGeneric })}
+					checked={p.expirySource === p.expirySourceTypes.generic}
+					onChange={() => p.onValuesUpdated({ expirySource: p.expirySourceTypes.generic })}
 				/>
 				<span>Outcome will be covered by local, national or international news media.</span>
 			</span>
 			<span className="expiry-source-option">
 				<input
-					value={p.expirySourceSpecific}
+					value={p.expirySourceTypes.specific}
 					type="radio"
-					checked={p.expirySource === p.expirySourceSpecific}
-					onChange={() => p.onValuesUpdated({ expirySource: p.expirySourceSpecific })}
+					checked={p.expirySource === p.expirySourceTypes.specific}
+					onChange={() => p.onValuesUpdated({ expirySource: p.expirySourceTypes.specific })}
 				/>
 				<span>Outcome will be detailed on a specific publicly available website:</span>
 			</span>
-			<div className={classnames('expiry-source-url', { displayNone: p.expirySource !== p.expirySourceSpecific })}>
+			<div className={classnames('expiry-source-url', { displayNone: p.expirySource !== p.expirySourceTypes.specific })}>
 				<Input
 					type="text"
 					value={p.expirySourceUrl}
@@ -79,8 +79,7 @@ const CreateMarketForm4 = (p) => (
 CreateMarketForm4.propTypes = {
 	expirySource: PropTypes.string,
 	expirySourceUrl: PropTypes.string,
-	expirySourceGeneric: PropTypes.string,
-	expirySourceSpecific: PropTypes.string,
+	expirySourceTypes: PropTypes.object,
 	tags: PropTypes.array,
 	tagsMaxNum: PropTypes.number,
 	tagMaxLength: PropTypes.number,

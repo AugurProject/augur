@@ -22,8 +22,10 @@ function createMarketForm() {
 		takerFee: CONSTANTS.TAKER_FEE_DEFAULT,
 		makerFee: CONSTANTS.MAKER_FEE_DEFAULT,
 		initialLiquidity: CONSTANTS.INITIAL_LIQUIDITY_DEFAULT,
-		expirySourceGeneric: CONSTANTS.EXPIRY_SOURCE_GENERIC,
-		expirySourceSpecific: CONSTANTS.EXPIRY_SOURCE_SPECIFIC,
+		expirySourceTypes: {
+			generic: CONSTANTS.EXPIRY_SOURCE_GENERIC,
+			specific: CONSTANTS.EXPIRY_SOURCE_SPECIFIC,
+		},
 		// Advanced Market Creation
 		initialFairPrices: {},
 		startingQuantity: CONSTANTS.STARTING_QUANTITY_DEFAULT,

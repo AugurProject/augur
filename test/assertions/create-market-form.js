@@ -184,23 +184,25 @@ export default function(createMarketForm) {
 						});
 					});
 
-					describe('expirySourceGeneric', () => {
-						it('should be defined', () => {
-							assert.isDefined(createMarketForm.expirySourceGeneric, `'expirySourceGeneric' is not defined`);
+					describe('expirySourceTypes', () => {
+						describe('generic', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.expirySourceTypes.generic, `'expirySourceTypes.generic' is not defined`);
+							});
+
+							it('should be a string', () => {
+								assert.isString(createMarketForm.expirySourceTypes.generic, `'expirySourceTypes.generic' is not a string`);
+							});
 						});
 
-						it('shoudl be a string', () => {
-							assert.isString(createMarketForm.expirySourceGeneric, `'expirySourceGeneric' is not a string`);
-						});
-					});
+						describe('specific', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.expirySourceTypes.specific, `'expirySourceTypes.specific' is not defined`);
+							});
 
-					describe('expirySourceSpecific', () => {
-						it('should be defined', () => {
-							assert.isDefined(createMarketForm.expirySourceSpecific, `'expirySourceSpecific' is not defined`);
-						});
-
-						it('shoudl be a string', () => {
-							assert.isString(createMarketForm.expirySourceSpecific, `'expirySourceSpecific' is not a string`);
+							it('should be a string', () => {
+								assert.isString(createMarketForm.expirySourceTypes.specific, `'expirySourceTypes.specific' is not a string`);
+							});
 						});
 					});
 
