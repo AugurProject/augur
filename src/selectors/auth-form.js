@@ -62,7 +62,7 @@ const logIn = {
 	onSubmit: (name, password, password2, secureLoginID, rememberMe) => {
 		require('../selectors').update({ authForm: { ...signUp, clearName: true,
 		clearPassword: true } });
-		console.log(`will this account presist? `);
+		console.log('will this account presist?');
 		console.log(rememberMe);
 		loginAccount.signIn();
 		require('../selectors').update({ activePage: 'account' });
