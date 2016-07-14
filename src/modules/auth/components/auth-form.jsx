@@ -47,7 +47,7 @@ export default class AuthForm extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({ msg: nextProps.msg, secureLoginID: nextProps.secureLoginID, rememberMe: nextProps.rememberMe });
+		this.setState({ msg: nextProps.msg, secureLoginID: nextProps.secureLoginID });
 	}
 
 	componentDidUpdate() {
@@ -136,7 +136,7 @@ export default class AuthForm extends Component {
 					title="Click Here to remember your account information locally."
 					text="Remember Me"
 					isChecked={s.rememberMe}
-					onClick={() => this.setState({rememberMe: !s.rememberMe})}
+					onClick={() => this.setState({ rememberMe: !s.rememberMe })}
 				/>
 				{p.bottomLinkText &&
 					<Link
