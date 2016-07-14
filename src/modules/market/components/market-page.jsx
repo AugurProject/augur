@@ -13,6 +13,7 @@ export default class MarketPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		siteHeader: PropTypes.object,
+		sideOptions: PropTypes.array,
 		market: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number
@@ -59,7 +60,7 @@ export default class MarketPage extends Component {
 						tradeOrders={p.market.tradeSummary.tradeOrders}
 						tradeSummary={p.market.tradeSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
-						constants={p.market.constants}
+						orderSides={p.market.orderSides}
 					/>
 				);
 

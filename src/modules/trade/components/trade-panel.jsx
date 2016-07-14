@@ -10,19 +10,22 @@ const TradePanel = (p) => (
 	>
 		<table className="trade-builder">
 			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
+			{p.outcomes.map(outcome => (
+				<TradePanelBody
+					key={`${outcome.name}`}
+					outcome={outcome}
+					sideOptions={p.sideOptions}
+					selectedOutcomeID={p.selectedOutcomeID}
+					updateSelectedOutcome={p.updateSelectedOutcome}
+					orderSides={p.orderSides}
+				/>
+			))}
 			{p.tradeOrders && !!p.tradeOrders.length &&
 				<TradePanelFooter
 					summary={p.tradeSummary}
-					constants={p.constants}
+					orderSides={p.orderSides}
 				/>
 			}
-			<TradePanelBody
-				outcomes={p.outcomes}
-				sideOptions={p.sideOptions}
-				selectedOutcomeID={p.selectedOutcomeID}
-				updateSelectedOutcome={p.updateSelectedOutcome}
-				constants={p.constants}
-			/>
 		</table>
 		<div className="place-trade-container">
 			<button
@@ -34,7 +37,7 @@ const TradePanel = (p) => (
 					p.onSubmitPlaceTrade();
 				}}
 			>
-				Place Trade{p.tradeOrders && p.tradeOrders.length > 1 ? 's' : ''}
+				Place Trade
 			</button>
 		</div>
 	</div>
@@ -48,7 +51,7 @@ TradePanel.propTypes = {
 	tradeOrders: React.PropTypes.array,
 	tradeSummary: React.PropTypes.object,
 	onSubmitPlaceTrade: React.PropTypes.func,
-	constants: React.PropTypes.object
+	orderSides: React.PropTypes.object
 };
 
 export default TradePanel;
