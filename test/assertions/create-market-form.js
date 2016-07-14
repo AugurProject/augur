@@ -189,7 +189,7 @@ export default function(createMarketForm) {
 							assert.isDefined(createMarketForm.expirySourceTypes, `'expirySourceTypes' is not defined`);
 						});
 
-						it('should be a string', () => {
+						it('should be an object', () => {
 							assert.isObject(createMarketForm.expirySourceTypes, `'expirySourceTypes' is not an object`);
 						});
 
