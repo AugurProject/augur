@@ -59,14 +59,16 @@ function checkAccount(augur, account, noWebAccountCheck) {
     assert.strictEqual(account.address.length, 42);
 }
 
+afterEach(function () { augur.web.logout(); });
+
 describe("Register", function () {
     it("register account 1: " + name + " / " + password, function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name, password, function (result) {
             checkAccount(augur, result, true);
-                        secureLoginID = result.secureLoginID;
-                        var rec = result.keystore;
+            secureLoginID = result.secureLoginID;
+            var rec = result.keystore;
             assert.notProperty(rec, "error");
             assert(rec.crypto.ciphertext);
             assert(rec.crypto.cipherparams.iv);
@@ -92,8 +94,8 @@ describe("Register", function () {
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
           augur.web.register(name2, password2, function (result) {
             checkAccount(augur, result, true);
-                        secureLoginID2 = result.secureLoginID;
-                        var rec = result.keystore;
+            secureLoginID2 = result.secureLoginID;
+            var rec = result.keystore;
             assert(rec.crypto.ciphertext);
             assert(rec.crypto.cipherparams.iv);
             assert(rec.crypto.kdfparams.salt);
@@ -129,7 +131,6 @@ describe("Login", function () {
                 constants.KEYSIZE*2
             );
             assert.strictEqual(user.address.length, 42);
-            augur.web.logout();
             done();
         });
     });
@@ -221,10 +222,7 @@ describe("Logout", function () {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
         augur.web.login(secureLoginID, password, function (user) {
-            if (user.error) {
-                augur.web.logout();
-                return done(new Error(tools.pp(user)));
-            }
+            assert.notProperty(user, "error");
             assert.strictEqual(user.secureLoginID, secureLoginID);
             for (var i = 0; i < 2; ++i) {
                 augur.web.logout();
@@ -237,49 +235,6 @@ describe("Logout", function () {
     });
 
 });
-
-if (process.env.AUGURJS_INTEGRATION_TESTS) {
-
-    describe("Fund new account", function () {
-
-        it("Faucet: funding sequence: " + secureLoginID, function (done) {
-            this.timeout(tools.TIMEOUT*4);
-            var augur = tools.setup(require("../../src"), process.argv.slice(2));
-            augur.web.login(secureLoginID, password, function (account) {
-                // console.log("login:", account);
-                checkAccount(augur, account);
-                var recipient = account.address;
-                var initial_balance = abi
-                    .bignum(augur.rpc.balance(recipient))
-                    .dividedBy(constants.ETHER);
-                // console.log("initial balance:", initial_balance.toFixed());
-                augur.web.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
-                    function (res) {
-                        assert.notProperty(res, "error");
-                        assert.strictEqual(res.callReturn, "1");
-                    },
-                    function (response) {
-                        assert.notProperty(response, "error");
-                        assert.strictEqual(response.callReturn, "1");
-                        augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
-                            assert.notProperty(repBalance, "error");
-                            assert.strictEqual(abi.number(repBalance), 47);
-                            augur.getCashBalance(recipient, function (cashBalance) {
-                                assert.notProperty(cashBalance, "error");
-                                assert.strictEqual(abi.number(cashBalance), 10000);
-                                augur.getCashBalance(augur.coinbase, function (balance) {
-                                    augur.web.logout();
-                                    done();
-                                });
-                            });
-                        });
-                    },
-                    done
-                );
-            });
-        });
-    });
-}
 
 describe("Transaction signing", function () {
 
@@ -366,154 +321,372 @@ describe("Transaction signing", function () {
 
 });
 
-describe("Contract methods", function () {
+describe("eth_call", function () {
+    it("call getBranches using web.invoke", function (done) {
+        this.timeout(tools.TIMEOUT);
+        var augur = tools.setup(require("../../src"), process.argv.slice(2));
+        augur.web.login(secureLoginID, password, function (user) {
+            assert.notProperty(user, "error");
+            assert.strictEqual(user.address, augur.web.account.address);
 
-    describe("Call", function () {
+            // sync
+            var branches = augur.web.invoke(augur.tx.Branches.getBranches);
+            assert.notProperty(branches, "error");
+            assert.isAbove(branches.length, 0);
+            assert.isArray(branches);
+            assert.strictEqual(
+                abi.format_int256(branches[0]),
+                abi.format_int256(augur.constants.DEFAULT_BRANCH_ID)
+            );
 
-        it("call getBranches using web.invoke", function (done) {
-            this.timeout(tools.TIMEOUT);
-            var augur = tools.setup(require("../../src"), process.argv.slice(2));
-            augur.web.login(secureLoginID, password, function (user) {
-                if (user.error) {
-                    augur.web.logout();
-                    return done(new Error(tools.pp(user)));
-                }
-                assert.strictEqual(
-                    user.address,
-                    augur.web.account.address
-                );
-
-                // sync
-                var branches = augur.web.invoke(augur.tx.Branches.getBranches);
+            // async
+            augur.web.invoke(augur.tx.Branches.getBranches, function (branches) {
+                assert.notProperty(branches, "error");
                 assert.isAbove(branches.length, 0);
                 assert.isArray(branches);
                 assert.strictEqual(
-                    augur.rpc.applyReturns(
-                        augur.tx.Branches.getBranches.returns,
-                        branches[0]
-                    ),
-                    augur.constants.DEFAULT_BRANCH_ID
+                    abi.format_int256(branches[0]),
+                    abi.format_int256(augur.constants.DEFAULT_BRANCH_ID)
                 );
-
-                // async
-                augur.web.invoke(augur.tx.Branches.getBranches, function (branches) {
-                    assert.isAbove(branches.length, 0);
-                    assert.isArray(branches);
-                    assert.strictEqual(
-                        augur.rpc.applyReturns(
-                            augur.tx.Branches.getBranches.returns,
-                            branches[0]
-                        ),
-                        augur.constants.DEFAULT_BRANCH_ID
-                    );
-                    augur.web.logout();
-                    done();
-                });
+                done();
             });
         });
+    });
+});
 
+describe("Integration tests", function () {
+    if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
+
+    describe("Fund new account", function () {
+        it("Address funding sequence", function (done) {
+            this.timeout(tools.TIMEOUT*4);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            augur.web.login(secureLoginID, password, function (account) {
+                // console.log("login:", account);
+                checkAccount(augur, account);
+                var recipient = account.address;
+                var initial_balance = abi.fix(augur.rpc.balance(recipient));
+                // console.log("initial balance:", initial_balance.toFixed());
+                augur.web.fundNewAccountFromAddress(augur.from, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
+                    function (res) {
+                        assert.notProperty(res, "error");
+                        assert.strictEqual(res.callReturn, "1");
+                    },
+                    function (response) {
+                        assert.notProperty(response, "error");
+                        assert.strictEqual(response.callReturn, "1");
+                        var final_balance = abi.fix(augur.rpc.balance(recipient));
+                        // console.log("final balance:", final_balance.toFixed());
+                        assert.isAbove(final_balance.toNumber(), 0);
+                        assert.isAbove(final_balance.minus(initial_balance).toNumber(), 0);
+                        augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
+                            assert.notProperty(repBalance, "error");
+                            assert.strictEqual(abi.number(repBalance), 47);
+                            augur.getCashBalance(recipient, function (cashBalance) {
+                                assert.notProperty(cashBalance, "error");
+                                assert.strictEqual(parseInt(cashBalance), 10000);
+                                done();
+                            });
+                        });
+                    },
+                    done
+                );
+            });
+        });
+        it("Faucet funding sequence", function (done) {
+            this.timeout(tools.TIMEOUT*4);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            augur.web.login(secureLoginID2, password2, function (account) {
+                // console.log("login:", account);
+                checkAccount(augur, account);
+                var recipient = account.address;
+                var initial_balance = abi.unfix(augur.rpc.balance(recipient));
+                // console.log("initial balance:", initial_balance.toFixed());
+                augur.web.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
+                    function (res) {
+                        assert.notProperty(res, "error");
+                        assert.strictEqual(res.callReturn, "1");
+                    },
+                    function (response) {
+                        assert.notProperty(response, "error");
+                        assert.strictEqual(response.callReturn, "1");
+                        var final_balance = abi.unfix(augur.rpc.balance(recipient));
+                        // console.log("final balance:", final_balance.toFixed());
+                        assert.isAbove(final_balance.toNumber(), 0);
+                        assert.isAbove(final_balance.minus(initial_balance).toNumber(), 0);
+                        augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
+                            assert.notProperty(repBalance, "error");
+                            assert.strictEqual(abi.number(repBalance), 47);
+                            augur.getCashBalance(recipient, function (cashBalance) {
+                                assert.notProperty(cashBalance, "error");
+                                assert.strictEqual(parseInt(cashBalance), 10000);
+                                done();
+                            });
+                        });
+                    },
+                    done
+                );
+            });
+        });
     });
 
-    if (process.env.AUGURJS_INTEGRATION_TESTS) {
-
-        describe("Send transaction", function () {
-
-            it("sign and send transaction using account 1", function (done) {
-                this.timeout(tools.TIMEOUT);
-                var augur = tools.setup(require("../../src"), process.argv.slice(2));
-                augur.web.login(secureLoginID, password, function (user) {
-                    if (user.error) {
-                        augur.web.logout();
-                        return done(new Error(tools.pp(user)));
-                    }
-                    var tx = clone(augur.tx.Faucets.reputationFaucet);
-                    tx.params = augur.constants.DEFAULT_BRANCH_ID;
-                    augur.web.invoke(tx, function (txhash) {
-                        if (txhash.error) {
-                            augur.web.logout();
-                            return done(txhash);
-                        }
-                        assert(txhash);
-                        assert.isObject(augur.rpc.rawTxs[txhash].tx);
-                        assert.isAbove(parseFloat(augur.rpc.rawTxs[txhash].cost), 0);
-                        augur.rpc.getTx(txhash, function (confirmTx) {
-                            if (confirmTx.error) {
-                                augur.web.logout();
-                                return done(confirmTx);
-                            }
-                            assert(confirmTx.hash);
-                            assert(confirmTx.from);
-                            assert(confirmTx.to);
-                            assert.strictEqual(txhash, confirmTx.hash);
-                            assert.strictEqual(confirmTx.from, user.address);
-                            assert.strictEqual(confirmTx.to, tx.to);
-                            augur.web.logout();
-                            done();
-                        });
+    describe("Send transaction", function () {
+        it("sign and send transaction using account 1", function (done) {
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            augur.web.login(secureLoginID, password, function (user) {
+                assert.notProperty(user, "error");
+                var tx = clone(augur.tx.Faucets.reputationFaucet);
+                tx.params = augur.constants.DEFAULT_BRANCH_ID;
+                augur.web.invoke(tx, function (txhash) {
+                    assert.notProperty(txhash, "error");
+                    assert(txhash);
+                    assert.isObject(augur.rpc.rawTxs[txhash].tx);
+                    assert.isAbove(parseFloat(augur.rpc.rawTxs[txhash].cost), 0);
+                    augur.rpc.getTx(txhash, function (confirmTx) {
+                        assert.notProperty(confirmTx, "error");
+                        assert(confirmTx.hash);
+                        assert(confirmTx.from);
+                        assert(confirmTx.to);
+                        assert.strictEqual(txhash, confirmTx.hash);
+                        assert.strictEqual(confirmTx.from, user.address);
+                        assert.strictEqual(confirmTx.to, tx.to);
+                        done();
                     });
                 });
             });
-
-            it("detect logged in user and default to web.invoke", function (done) {
-                this.timeout(tools.TIMEOUT*4);
-                var augur = tools.setup(require("../../src"), process.argv.slice(2));
+        });
+        it("detect logged in user and default to web.invoke", function (done) {
+            this.timeout(tools.TIMEOUT);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            augur.web.login(secureLoginID, password, function (user) {
+                assert.notProperty(user, "error");
+                assert.strictEqual(user.address, augur.web.account.address);
+                augur.reputationFaucet({
+                    branch: augur.constants.DEFAULT_BRANCH_ID,
+                    onSent: function (r) {
+                        // sent
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                        assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
+                        assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
+                    },
+                    onSuccess: function (r) {
+                        // success
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.callReturn, "1");
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.Faucets);
+                        assert.strictEqual(Number(r.value), 0);
+                        assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
+                        assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
+                        assert.strictEqual(augur.rpc.txs[r.txHash].status, "confirmed");
+                        done();
+                    },
+                    onFailed: done
+                });
+            });
+        });
+    });
+    describe("Concurrent transactions", function () {
+        it("staggered", function (done) {
+            this.timeout(tools.TIMEOUT*2);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            var connectParams = {
+                http: augur.rpc.nodes.local || augur.rpc.nodes.hosted[0],
+                ws: augur.rpc.wsUrl,
+                ipc: null
+            };
+            augur.connect(connectParams, function (connection) {
+                assert.deepEqual(connection, connectParams);
                 augur.web.login(secureLoginID, password, function (user) {
-                    if (user.error) {
-                        augur.web.logout();
-                        return done(new Error(tools.pp(user)));
-                    }
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
-                    augur.reputationFaucet({
-                        branch: augur.constants.DEFAULT_BRANCH_ID,
-                        onSent: function (r) {
-                            // sent
-
+                    assert.notProperty(user, "error");
+                    assert.strictEqual(user.address, augur.web.account.address);
+                    var count = 0;
+                    var tx1 = clone(augur.tx.Faucets.reputationFaucet);
+                    var tx2 = clone(augur.tx.Faucets.fundNewAccount);
+                    tx1.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    tx2.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+                    tx1.nonce = txCount;
+                    tx2.nonce = txCount + 1;
+                    augur.transact(tx1, function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                        augur.transact(tx2, function (r) {
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.strictEqual(r.callReturn, "1");
-                            assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
-                            assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
-                        },
-                        onSuccess: function (r) {
-                            // success
+                        }, function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
                             assert.property(r, "blockNumber");
                             assert.isAbove(parseInt(r.blockNumber), 0);
-                            assert.strictEqual(r.callReturn, "1");
                             assert.strictEqual(r.from, user.address);
                             assert.strictEqual(r.to, augur.contracts.Faucets);
                             assert.strictEqual(Number(r.value), 0);
-                            assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
-                            assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
-                            assert.strictEqual(augur.rpc.txs[r.txHash].status, "confirmed");
-                            done();
-                        },
-                        onFailed: done
+                            if (count === 2) done();
+                        }, function (err) {
+                            done(new Error(JSON.stringify(err)));
+                        });
+                    }, function (r) {
+                        ++count;
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.Faucets);
+                        assert.strictEqual(Number(r.value), 0);
+                        if (count === 2) done();
+                    }, function (err) {
+                        done(new Error(JSON.stringify(err)));
                     });
                 });
             });
-
         });
-
-        describe("Set transaction nonce", function () {
-
-            it("duplicate transaction: invoke reputationFaucet twice", function (done) {
-                this.timeout(tools.TIMEOUT*2);
-                var augur = tools.setup(require("../../src"), process.argv.slice(2));
+        it("simultaneous", function (done) {
+            this.timeout(tools.TIMEOUT*2);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            var connectParams = {
+                http: augur.rpc.nodes.local || augur.rpc.nodes.hosted[0],
+                ws: augur.rpc.wsUrl,
+                ipc: null
+            };
+            augur.connect(connectParams, function (connection) {
+                assert.deepEqual(connection, connectParams);
                 augur.web.login(secureLoginID, password, function (user) {
-                    if (user.error) {
-                        augur.web.logout();
-                        return done(new Error(tools.pp(user)));
-                    }
-                    assert.strictEqual(
-                        user.address,
-                        augur.web.account.address
-                    );
+                    assert.notProperty(user, "error");
+                    assert.strictEqual(user.address, augur.web.account.address);
+                    var count = 0;
+                    var tx1 = clone(augur.tx.Faucets.reputationFaucet);
+                    var tx2 = clone(augur.tx.Faucets.fundNewAccount);
+                    tx1.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    tx2.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+                    tx1.nonce = txCount;
+                    tx2.nonce = txCount + 1;
+                    augur.transact(tx1, function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    }, function (r) {
+                        ++count;
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.Faucets);
+                        assert.strictEqual(Number(r.value), 0);
+                        if (count === 2) done();
+                    }, function (err) {
+                        done(new Error(JSON.stringify(err)));
+                    });
+                    augur.transact(tx2, function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    }, function (r) {
+                        ++count;
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.Faucets);
+                        assert.strictEqual(Number(r.value), 0);
+                        if (count === 2) done();
+                    }, function (err) {
+                        done(new Error(JSON.stringify(err)));
+                    });
+                });
+            });
+        });
+        it("duplicate nonce", function (done) {
+            this.timeout(tools.TIMEOUT*2);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            var connectParams = {
+                http: augur.rpc.nodes.local || augur.rpc.nodes.hosted[0],
+                ws: augur.rpc.wsUrl,
+                ipc: null
+            };
+            augur.connect(connectParams, function (connection) {
+                assert.deepEqual(connection, connectParams);
+                augur.web.login(secureLoginID, password, function (user) {
+                    assert.notProperty(user, "error");
+                    assert.strictEqual(user.address, augur.web.account.address);
+                    var count = 0;
+                    var tx1 = clone(augur.tx.Faucets.reputationFaucet);
+                    var tx2 = clone(augur.tx.Faucets.fundNewAccount);
+                    tx1.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    tx2.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+                    tx1.nonce = txCount;
+                    tx2.nonce = txCount;
+                    augur.transact(tx1, function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    }, function (r) {
+                        ++count;
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.Faucets);
+                        assert.strictEqual(Number(r.value), 0);
+                        if (count === 2) done();
+                    }, function (err) {
+                        done(new Error(JSON.stringify(err)));
+                    });
+                    augur.transact(tx2, function (r) {
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.strictEqual(r.callReturn, "1");
+                    }, function (r) {
+                        ++count;
+                        assert.property(r, "txHash");
+                        assert.property(r, "callReturn");
+                        assert.property(r, "blockHash");
+                        assert.property(r, "blockNumber");
+                        assert.isAbove(parseInt(r.blockNumber), 0);
+                        assert.strictEqual(r.from, user.address);
+                        assert.strictEqual(r.to, augur.contracts.Faucets);
+                        assert.strictEqual(Number(r.value), 0);
+                        if (count === 2) done();
+                    }, function (err) {
+                        done(new Error(JSON.stringify(err)));
+                    });
+                });
+            });
+        });
+        it("duplicate payload", function (done) {
+            this.timeout(tools.TIMEOUT*2);
+            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            var connectParams = {
+                http: augur.rpc.nodes.local || augur.rpc.nodes.hosted[0],
+                ws: augur.rpc.wsUrl,
+                ipc: null
+            };
+            augur.connect(connectParams, function (connection) {
+                assert.deepEqual(connection, connectParams);
+                augur.web.login(secureLoginID, password, function (user) {
+                    assert.notProperty(user, "error");
+                    assert.strictEqual(user.address, augur.web.account.address);
                     var count = 0;
                     augur.reputationFaucet({
                         branch: augur.constants.DEFAULT_BRANCH_ID,
@@ -523,6 +696,7 @@ describe("Contract methods", function () {
                             assert.strictEqual(r.callReturn, "1");
                         },
                         onSuccess: function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
@@ -531,9 +705,16 @@ describe("Contract methods", function () {
                             assert.strictEqual(r.from, user.address);
                             assert.strictEqual(r.to, augur.contracts.Faucets);
                             assert.strictEqual(Number(r.value), 0);
-                            if (++count === 2) done();
+                            if (count === 2) done();
                         },
-                        onFailed: done
+                        onFailed: function (err) {
+                            if (++count === 2) {
+                                assert.strictEqual(err.error, -32000);
+                                assert.isAbove(err.message.indexOf("Known transaction"), -1);
+                                return done();
+                            }
+                            done(new Error(JSON.stringify(err)));
+                        }
                     });
                     augur.reputationFaucet({
                         branch: augur.constants.DEFAULT_BRANCH_ID,
@@ -543,6 +724,7 @@ describe("Contract methods", function () {
                             assert.strictEqual(r.callReturn, "1");
                         },
                         onSuccess: function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
@@ -551,12 +733,19 @@ describe("Contract methods", function () {
                             assert.strictEqual(r.from, user.address);
                             assert.strictEqual(r.to, augur.contracts.Faucets);
                             assert.strictEqual(Number(r.value), 0);
-                            if (++count === 2) done();
+                            if (count === 2) done();
                         },
-                        onFailed: done
+                        onFailed: function (err) {
+                            if (++count === 2) {
+                                assert.strictEqual(err.error, -32000);
+                                assert.isAbove(err.message.indexOf("Known transaction"), -1);
+                                return done();
+                            }
+                            done(new Error(JSON.stringify(err)));
+                        }
                     });
                 });
             });
         });
-    }
+    });
 });

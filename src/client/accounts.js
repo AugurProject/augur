@@ -36,13 +36,20 @@ module.exports = function () {
 
         // free (testnet) ether for new accounts on registration
         fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
+            onSent = onSent || utils.pass;
+            onSuccess = onSuccess || utils.pass;
+            onFailed = onFailed || utils.pass;
+            if (registeredAddress === undefined || registeredAddress === null ||
+                registeredAddress.constructor !== String) {
+                return onFailed(registeredAddress);
+            }
             var url = constants.FAUCET + abi.format_address(registeredAddress);
             request(url, function (err, response, body) {
                 if (err) return onFailed(err);
                 if (response.statusCode !== 200) {
                     return onFailed(response.statusCode);
                 }
-                console.log("sent ether to account:", registeredAddress);
+                console.debug("Sent ether to:", registeredAddress);
                 augur.fundNewAccount({
                     branch: branch || constants.DEFAULT_BRANCH_ID,
                     onSent: onSent,
@@ -53,11 +60,13 @@ module.exports = function () {
         },
 
         fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
+            onSent = onSent || utils.pass;
+            onSuccess = onSuccess || utils.pass;
+            onFailed = onFailed || utils.pass;
             augur.rpc.sendEther({
                 to: registeredAddress,
                 value: amount,
                 from: fromAddress,
-                onFailed: onFailed,
                 onSent: utils.noop,
                 onSuccess: function (res) {
                     augur.fundNewAccount({
@@ -66,7 +75,8 @@ module.exports = function () {
                         onSuccess: onSuccess,
                         onFailed: onFailed
                     });
-                }
+                },
+                onFailed: onFailed
             });
         },
 
@@ -192,57 +202,6 @@ module.exports = function () {
             augur.rpc.clear();
         },
 
-        invoke: function (itx, cb) {
-            var self = this;
-            var tx, packaged;
-
-            // if this is just a call, use ethrpc's regular invoke method
-            if (!itx.send) return augur.rpc.fire(itx, cb);
-
-            cb = cb || utils.pass;
-            if (!this.account.address) return cb(errors.NOT_LOGGED_IN);
-            if (!this.account.privateKey || !itx || itx.constructor !== Object) {
-                return cb(errors.TRANSACTION_FAILED);
-            }
-
-            // parse and serialize transaction parameters
-            tx = clone(itx);
-            if (tx.params === undefined || tx.params === null) {
-                tx.params = [];
-            } else if (tx.params.constructor !== Array) {
-                tx.params = [tx.params];
-            }
-            for (var j = 0; j < tx.params.length; ++j) {
-                if (tx.params[j] !== undefined && tx.params[j] !== null &&
-                    tx.params[j].constructor === Number) {
-                    tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
-                }
-            }
-            if (tx.to) tx.to = abi.prefix_hex(tx.to);
-
-            // package up the transaction and submit it to the network
-            packaged = {
-                to: tx.to,
-                from: this.account.address,
-                gasLimit: tx.gas || constants.DEFAULT_GAS,
-                nonce: 0,
-                value: tx.value || "0x0",
-                data: abi.encode(tx)
-            };
-            if (tx.timeout) packaged.timeout = tx.timeout;
-            if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
-                packaged.gasPrice = tx.gasPrice;
-                return this.getTxNonce(packaged, cb);
-            }
-            augur.rpc.getGasPrice(function (gasPrice) {
-                if (!gasPrice || gasPrice.error) {
-                    return cb(errors.TRANSACTION_FAILED);
-                }
-                packaged.gasPrice = gasPrice;
-                self.getTxNonce(packaged, cb);
-            });
-        },
-
         submitTx: function (packaged, cb) {
             var self = this;
             var mutex = locks.createMutex();
@@ -277,28 +236,21 @@ module.exports = function () {
                                 err.packaged = packaged;
                                 return cb(err);
                             } else if (res.message.indexOf("Nonce too low") > -1) {
-                                // res.message.indexOf("Known transaction") > -1) {
-                                console.debug("bad nonce, retry", res.message);
+                                console.debug("Bad nonce, retrying:", res.message, packaged);
+                                delete packaged.nonce;
                                 return self.getTxNonce(packaged, cb);
-                            } else {
-                                err = clone(errors.RAW_TRANSACTION_ERROR);
-                                err.bubble = res;
-                                err.packaged = packaged;
-                                return cb(err);
                             }
+                            return cb(err);
                         }
 
                         // res is the txhash if nothing failed immediately
                         // (even if the tx is nulled, still index the hash)
-                        augur.rpc.rawTxs[res] = {
-                            tx: packaged,
-                            cost: new BigNumber(cost, 10).dividedBy(augur.rpc.ETHER).toFixed()
-                        };
+                        augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
 
                         // nonce ok, execute callback
                         return cb(res);
                     }
-                    cb(errors.TRANSACTION_FAILED);
+                    cb(errors.RAW_TRANSACTION_ERROR);
                 });
             });
         },
@@ -306,11 +258,64 @@ module.exports = function () {
         // get nonce: number of transactions
         getTxNonce: function (packaged, cb) {
             var self = this;
+            if (packaged.nonce) return this.submitTx(packaged, cb);
             augur.rpc.pendingTxCount(self.account.address, function (txCount) {
                 if (txCount && !txCount.error && !(txCount instanceof Error)) {
-                    packaged.nonce = parseInt(txCount);
+                    packaged.nonce = parseInt(txCount, 16);
                 }
                 self.submitTx(packaged, cb);
+            });
+        },
+
+        invoke: function (payload, cb) {
+            var self = this;
+            var tx, packaged;
+
+            // if this is just a call, use ethrpc's regular invoke method
+            if (!payload.send) return augur.rpc.fire(payload, cb);
+
+            cb = cb || utils.pass;
+            if (!this.account.address || !this.account.privateKey) {
+                return cb(errors.NOT_LOGGED_IN);
+            }
+            if (!payload || payload.constructor !== Object) {
+                return cb(errors.TRANSACTION_FAILED);
+            }
+
+            // parse and serialize transaction parameters
+            tx = clone(payload);
+            if (tx.params === undefined || tx.params === null) {
+                tx.params = [];
+            } else if (tx.params.constructor !== Array) {
+                tx.params = [tx.params];
+            }
+            for (var j = 0; j < tx.params.length; ++j) {
+                if (tx.params[j] !== undefined && tx.params[j] !== null &&
+                    tx.params[j].constructor === Number) {
+                    tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
+                }
+            }
+
+            // package up the transaction and submit it to the network
+            packaged = {
+                to: abi.format_address(tx.to),
+                from: abi.format_address(this.account.address),
+                gasLimit: tx.gas || constants.DEFAULT_GAS,
+                nonce: tx.nonce || 0,
+                value: tx.value || "0x0",
+                data: abi.encode(tx)
+            };
+            if (tx.timeout) packaged.timeout = tx.timeout;
+            if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
+                packaged.gasPrice = tx.gasPrice;
+                return this.getTxNonce(packaged, cb);
+            }
+            augur.rpc.getGasPrice(function (gasPrice) {
+                if (!gasPrice || gasPrice.error) {
+                    return cb(errors.TRANSACTION_FAILED);
+                }
+                packaged.gasPrice = gasPrice;
+                self.getTxNonce(packaged, cb);
             });
         }
 

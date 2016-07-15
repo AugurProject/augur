@@ -25,7 +25,7 @@ module.exports = {
         var self = this;
         return function (args) {
             var tx, params, cb, i, onSent, onSuccess, onFailed;
-            tx = clone(self.tx[contract][method]);
+            tx = clone(self.api.functions[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
                 return self.transact(tx);
@@ -72,8 +72,7 @@ module.exports = {
         };
     },
     bindContractAPI: function (methods) {
-        var self = this;
-        methods = methods || this.tx;
+        methods = methods || this.api.functions;
         for (var contract in methods) {
             if (!methods.hasOwnProperty(contract)) continue;
             this[contract] = {};
@@ -87,11 +86,11 @@ module.exports = {
     },
 
     sync: function () {
-        var self = this;
         if (connector && connector.constructor === Object) {
             this.network_id = connector.network_id;
             this.from = connector.from;
             this.coinbase = connector.coinbase;
+            this.api = connector.api;
             this.tx = connector.tx;
             this.contracts = connector.contracts;
             this.init_contracts = connector.init_contracts;

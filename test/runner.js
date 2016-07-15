@@ -9,7 +9,8 @@ var random = require("./random");
 var tools = require("./tools");
 var utils = require("../src/utilities");
 var augur = require("../src");
-augur.tx = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || "2");
+augur.api = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || "2");
+augur.tx = augur.api.functions;
 augur.bindContractAPI();
 
 var noop = function () {};

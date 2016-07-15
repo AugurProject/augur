@@ -6,27 +6,22 @@
 
 var async = require("async");
 var abi = require("augur-abi");
-var errors = require("augur-contracts").errors;
+var augur_contracts = require("augur-contracts");
 var utils = require("./utilities");
 var constants = require("./constants");
+var errors = augur_contracts.errors;
 
-var FILTER_LABELS = [
-    "block",
-    "contracts",
-    "price",
-    "fill_tx",
-    "add_tx",
-    "cancel",
-    "thru",
-    "penalize",
-    "marketCreated",
-    "tradingFeeUpdated",
-    "approval",
-    "transfer"
-];
-var filters = {};
-for (var i = 0, n = FILTER_LABELS.length; i < n; ++i) {
-    filters[FILTER_LABELS[i]] = {id: null, heartbeat: null};
+// non-event filters
+var filters = {
+    block: {id: null, heartbeat: null},
+    contracts: {id: null, heartbeat: null}
+};
+
+// event filters
+var events_api = new augur_contracts.Tx().events;
+for (var label in events_api) {
+    if (!events_api.hasOwnProperty(label)) continue;
+    filters[label] = {id: null, heartbeat: null};
 }
 
 module.exports = function () {
@@ -233,7 +228,7 @@ module.exports = function () {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
-                case "price":
+                case "log_price":
                     callback = function (msg) {
                         self.parse_price_message(msg, onMessage);
                     };
@@ -274,7 +269,7 @@ module.exports = function () {
         setup_event_filter: function (contract, label, f) {
             return this.subscribeLogs({
                 address: augur.contracts[contract],
-                topics: [constants.LOGS[label].signature]
+                topics: [augur.api.events[label].signature]
             }, f);
         },
         setup_contracts_filter: function (f) {
@@ -322,7 +317,7 @@ module.exports = function () {
         // start listeners
         start_event_listener: function (label, cb) {
             var self = this;
-            var contract = constants.LOGS[label].contract;
+            var contract = augur.api.events[label].contract;
             if (this.filter[label] && this.filter[label].id) {
                 if (!utils.is_function(cb)) return this.filter[label].id;
                 return cb(this.filter[label].id);
@@ -353,20 +348,18 @@ module.exports = function () {
         },
         start_contracts_listener: function (cb) {
             if (this.filter.contracts.id === null) {
-                if (utils.is_function(cb)) {
-                    this.setup_contracts_filter(cb);
-                } else {
+                if (!utils.is_function(cb)) {
                     return this.setup_contracts_filter();
                 }
+                this.setup_contracts_filter(cb);
             }
         },
         start_block_listener: function (cb) {
             if (this.filter.block.id === null) {
-                if (utils.is_function(cb)) {
-                    this.setup_block_filter(cb);
-                } else {
+                if (!utils.is_function(cb)) {
                     return this.setup_block_filter();
                 }
+                this.setup_block_filter(cb);
             }
         },
 
@@ -401,9 +394,9 @@ module.exports = function () {
                                 self.parse_contracts_message(msg, callback);
                             };
                             break;
-                        case "price":
-                            callback = cb.price;
-                            cb.price = function (msg) {
+                        case "log_price":
+                            callback = cb.log_price;
+                            cb.log_price = function (msg) {
                                 self.parse_price_message(msg, callback);
                             };
                             break;
@@ -420,22 +413,12 @@ module.exports = function () {
                 });
             }
         },
+
         listen: function (cb, setup_complete) {
             var run, self = this;
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
-                run = async.parallel;
-            } else {
-                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
-                run = async.series;
-            }
-            async.forEachOfSeries(cb, function (callback, label, next) {
-                if (self.filter[label].id === null && callback) {
-                    switch (label) {
+
+            function listenHelper(callback, label, next) {
+                switch (label) {
                     case "contracts":
                         self.start_contracts_listener(function () {
                             self.pacemaker({contracts: callback});
@@ -455,13 +438,40 @@ module.exports = function () {
                             self.pacemaker(p);
                             next(null, [label, self.filter[label].id]);
                         });
-                    }
+                }
+            }
+
+            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+                run = async.parallel;
+            } else {
+                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+                run = async.series;
+            }
+            async.forEachOfSeries(cb, function (callback, label, next) {
+
+                // skip invalid labels, undefined callbacks
+                if (!self.filter[label] || !callback) {
+                    next(null, null);
+                } else if (self.filter[label].id === null && callback) {
+                    listenHelper(callback, label, next);
+
+                // callback already registered. uninstall, and reinstall new callback.
+                } else if (self.filter[label].id && callback) {
+                    self.clear_filter(label, function () {
+                        listenHelper(callback, label, next);
+                    });
                 }
             }, function (err) {
                 if (err) console.error(err);
                 if (utils.is_function(setup_complete)) setup_complete(self.filter);
             });
         },
+
         all_filters_removed: function () {
             var f, isRemoved = true;
             for (var label in this.filter) {
@@ -519,14 +529,11 @@ module.exports = function () {
             }
             if (uninstall) {
                 async.forEachOfSeries(this.filter, function (filter, label, next) {
-                    if (filter.id !== null) {
-                        self.clear_filter(label, function (uninst) {
-                            cleared(uninst, cb[label], complete);
-                            next();
-                        });
-                    } else {
+                    if (filter.id === null) return next();
+                    self.clear_filter(label, function (uninst) {
+                        cleared(uninst, cb[label], complete);
                         next();
-                    }
+                    });
                 });
             }
         }
