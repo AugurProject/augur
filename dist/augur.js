@@ -37639,7 +37639,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.7.5";
+    this.version = "1.7.6";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -40752,6 +40752,12 @@ function isFunction(f) {
     return Object.prototype.toString.call(f) === "[object Function]";
 }
 
+function wait(delay) {
+    var until = new Date().getTime() + delay;
+    while (new Date().getTime() < until) {}
+    return;
+}
+
 var HOSTED_NODES = [
     // "https://morden-state.ether.camp/api/v1/transaction/submit"
     "https://eth3.augur.net"
@@ -41964,19 +41970,37 @@ module.exports = {
             this.txs[tx.hash].status = "confirmed";
             clearTimeout(this.notifications[tx.hash]);
             delete this.notifications[tx.hash];
+            if (!isFunction(callback)) return tx;
             return callback(null, tx);
         }
         if (this.txs[tx.hash].count >= this.TX_POLL_MAX) {
             this.txs[tx.hash].status = "unconfirmed";
+            if (!isFunction(callback)) {
+                throw new Error(errors.TRANSACTION_NOT_CONFIRMED);
+            }
             return callback(errors.TRANSACTION_NOT_CONFIRMED);
         }
-        var self = this;
-        this.notifications[tx.hash] = setTimeout(function () {
-            if (self.txs[tx.hash].status === "pending") callback(null, null);
-        }, this.TX_POLL_INTERVAL);
+        if (!isFunction(callback)) {
+            wait(this.TX_POLL_INTERVAL);
+            if (this.txs[tx.hash].status === "pending") return null;
+        } else {
+            var self = this;
+            this.notifications[tx.hash] = setTimeout(function () {
+                if (self.txs[tx.hash].status === "pending") callback(null, null);
+            }, this.TX_POLL_INTERVAL);
+        }
     },
 
     getLoggedReturnValue: function (txHash, callback) {
+        if (!isFunction(callback)) {
+            var receipt = this.getTransactionReceipt(txHash);
+            if (!receipt || !receipt.logs || !receipt.logs.length ||
+                !receipt.logs[0] || receipt.logs[0].data === null ||
+                receipt.logs[0].data === undefined) {
+                throw new this.Error(errors.NULL_CALL_RETURN);
+            }
+            return receipt.logs[0].data;
+        }
         this.getTransactionReceipt(txHash, function (receipt) {
             if (!receipt || !receipt.logs || !receipt.logs.length ||
                 !receipt.logs[0] || receipt.logs[0].data === null ||
@@ -41989,6 +42013,31 @@ module.exports = {
 
     txNotify: function (txHash, callback) {
         var self = this;
+        if (!isFunction(callback)) {
+            var tx = this.getTransaction(txHash);
+            if (this.debug.tx) console.debug("txNotify.getTransaction:", tx);
+            if (tx) return tx;
+
+            this.txs[txHash].status = "failed";
+            if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
+
+            // resubmit if this is a raw transaction and has a duplicate nonce
+            if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
+                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            }
+            var duplicateNonce;
+            for (var hash in this.rawTxs) {
+                if (!this.rawTxs.hasOwnProperty(hash)) continue;
+                if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
+                    JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
+                    duplicateNonce = true;
+                    break;
+                }
+            }
+            if (!duplicateNonce) throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            this.txs[txHash].status = "resubmitted";
+            return null;
+        }
         this.getTransaction(txHash, function (tx) {
             if (self.debug.tx) console.debug("txNotify.getTransaction:", tx);
             if (tx) return callback(null, tx);
@@ -42017,6 +42066,21 @@ module.exports = {
 
     verifyTxSubmitted: function (payload, txHash, callback) {
         var self = this;
+        if (!isFunction(callback)) {
+            if (!payload || txHash === null || txHash === undefined) {
+                throw new this.Error(errors.TRANSACTION_FAILED);
+            }
+            if (this.txs[txHash]) throw new this.Error(errors.DUPLICATE_TRANSACTION);
+            var tx = this.getTransaction(txHash);
+            if (!tx) throw new this.Error(errors.TRANSACTION_FAILED);
+            this.txs[txHash] = {
+                hash: txHash,
+                payload: payload,
+                count: 0,
+                status: "pending"
+            };
+            return;
+        }
         if (!payload || txHash === null || txHash === undefined) {
             return callback(errors.TRANSACTION_FAILED);
         }
@@ -42037,6 +42101,13 @@ module.exports = {
     // (i.e., has a non-null blockHash field)
     pollForTxConfirmation: function (txHash, callback) {
         var self = this;
+        if (!isFunction(callback)) {
+            var tx = this.txNotify(txHash);
+            if (tx === null) return null;
+            var minedTx = this.checkBlockHash(tx);
+            if (minedTx !== null) return minedTx;
+            return this.pollForTxConfirmation(txHash);
+        }
         this.txNotify(txHash, function (err, tx) {
             if (err) return callback(err);
             if (tx === null) return callback(null, null);
@@ -42050,15 +42121,54 @@ module.exports = {
 
     transact: function (payload, onSent, onSuccess, onFailed) {
         var self = this;
+        if (this.debug.tx) console.debug("payload transact:", payload);
         var returns = payload.returns;
         payload.send = false;
+
+        // synchronous: block until the transaction is confirmed or fails
+        // (don't use this in the browser or you will be a sad panda)
         if (!isFunction(onSent)) {
+            var callReturn = this.fire(payload);
+            if (this.debug.tx) console.debug("callReturn:", callReturn);
+            if (callReturn === undefined || callReturn === null) {
+                throw new this.Error(errors.NULL_CALL_RETURN);
+            }
+            if (returns === "null" && callReturn.error === "0x") {
+                callReturn = null;
+            } else if (callReturn.error) {
+                throw new this.Error(callReturn);
+            }
             payload.send = true;
-            return this.invoke(payload);
+            delete payload.returns;
+            var txHash = this.invoke(payload);
+            if (this.debug.tx) console.debug("txHash:", txHash);
+            if (!txHash) throw new this.Error(errors.NULL_RESPONSE);
+            if (txHash.error) throw new this.Error(txHash);
+            payload.returns = returns;
+            txHash = abi.format_int256(txHash);
+            this.verifyTxSubmitted(payload, txHash);
+            var tx = this.pollForTxConfirmation(txHash);
+            if (tx === null) return this.transact(payload);
+            if (!payload.mutable) {
+                tx.callReturn = callReturn;
+                return tx;
+            }
+
+            // if mutable return value, then lookup logged return
+            // value in transaction receipt (after confirmation)
+            var loggedReturnValue = this.getLoggedReturnValue(txHash);
+            var e = this.errorCodes(payload.method, payload.returns, loggedReturnValue);
+            if (e && e.error) throw new Error(e);
+            tx.callReturn = this.applyReturns(payload.returns, loggedReturnValue);
+            return tx;
         }
+
+        // asynchronous / non-blocking:
+        //  - call onSent when the transaction is broadcast to the network
+        //  - call onSuccess when the transaction is successfully mined
+        //  - call onFailed if the transaction fails
         onFailed = (isFunction(onFailed)) ? onFailed : noop;
         onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
-        if (self.debug.tx) console.debug("payload transact:", payload);
         this.fire(payload, function (callReturn) {
             if (self.debug.tx) console.debug("callReturn:", callReturn);
             if (callReturn === undefined || callReturn === null) {
