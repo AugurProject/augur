@@ -98,6 +98,8 @@ describe("Integration tests", function () {
         assert.isNotNull(r.makerFee);
         assert.property(r, "takerFee");
         assert.isNotNull(r.takerFee);
+        assert.property(r, "tradingFee");
+        assert.isNotNull(r.tradingFee);
         assert.property(r, "tags");
         assert.isNotNull(r.tags);
         assert.property(r, "numOutcomes");
