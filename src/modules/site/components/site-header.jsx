@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ACCOUNT, MARKETS, POSITIONS, TRANSACTIONS } from '../../site/constants/pages';
+import { ACCOUNT, MARKETS, POSITIONS, TRANSACTIONS, PORTFOLIO } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -11,6 +11,12 @@ const SiteHeader = (p) => (
 			<Link className={classnames('site-nav-link', 'augur', { active: p.activePage === MARKETS })} {...p.marketsLink}>augur</Link>
 
 			<span className="spacer">&nbsp;</span>
+			
+			{!!p.loginAccount && !!p.loginAccount.id &&
+				<Link className={classnames('site-nav-link', PORTFOLIO, { active: p.activePage === PORTFOLIO })} {...p.portfolioLink}>
+					Portfolio
+				</Link>
+			}
 
 			{!!p.loginAccount && !!p.loginAccount.id && !!p.positionsSummary && !!p.positionsSummary.numPositions &&
 				<Link className={classnames('site-nav-link', POSITIONS, { active: p.activePage === POSITIONS })} {...p.positionsLink}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M, PORTFOLIO } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -10,6 +10,7 @@ import CreateMarketPage from './modules/create-market/components/create-market-p
 import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
 import PositionsPage from './modules/positions/components/positions-page';
+import PortfolioPage from './modules/portfolio/components/portfolio-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
 export default function (appElement, selectors) {
@@ -28,7 +29,8 @@ export default function (appElement, selectors) {
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
 		authLink: p.links && p.links.authLink || undefined,
 		accountLink: p.links && p.links.accountLink || undefined,
-		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined
+		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined,
+		portfolioLink: p.links && p.links.portfolioLink || undefined
 	};
 
 	switch (p.activePage) {
@@ -72,6 +74,15 @@ export default function (appElement, selectors) {
 			/>
 		);
 		break;
+
+	case PORTFOLIO:
+		node = (
+			<PortfolioPage
+				siteHeader={p.siteHeader}
+			/>
+		);
+		break;
+
 
 	case TRANSACTIONS:
 		node = (
