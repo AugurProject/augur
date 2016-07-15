@@ -11,6 +11,12 @@ const SiteHeader = (p) => (
 			<Link className={classnames('site-nav-link', 'augur', { active: p.activePage === MARKETS })} {...p.marketsLink}>augur</Link>
 
 			<span className="spacer">&nbsp;</span>
+			
+			{!!p.loginAccount && !!p.loginAccount.id &&
+				<Link className={classnames('site-nav-link', PORTFOLIO, { active: p.activePage === PORTFOLIO })} {...p.portfolioLink}>
+					Portfolio
+				</Link>
+			}
 
 			{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
