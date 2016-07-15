@@ -236,6 +236,24 @@ describe("Logout", function () {
 
 });
 
+describe("Change Account Name", function () {
+
+	it("Should be able to update the account object", function () {
+		this.timeout(tools.TIMEOUT);
+		var augur = tools.setup(require("../../src"), process.argv.slice(2));
+		augur.web.login(secureLoginID, password, function (user) {
+			var privateKey = augur.web.account.privateKey;
+			augur.web.changeAccountName('testingName', function (updatedUser) {
+				assert.strictEqual(user.keystore, updatedUser.keystore);
+				assert.strictEqual(updatedUser.name, 'testingName');
+				assert.strictEqual(user.address, updatedUser.address);
+				assert.strictEqual(privateKey, augur.web.account.privateKey);
+			});
+		});
+	});
+
+});
+
 describe("Transaction signing", function () {
 
     // sign tx with private key

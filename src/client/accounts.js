@@ -80,6 +80,35 @@ module.exports = function () {
             });
         },
 
+				changeAccountName: function (newName, cb) {
+					var i, self = this;
+					// now set vars based on what is currently in place
+					var keystore = self.account.keystore;
+					var privateKey = self.account.privateKey;
+					// preparing to redo the secureLoginID to use the new name
+					var unsecureLoginIDObject = {
+						name: newName,
+						keystore: keystore
+					};
+					var secureLoginID = abacus.base58Encrypt(unsecureLoginIDObject);
+
+          // web.account object is set to use new values
+          self.account = {
+              name: newName,
+              secureLoginID: secureLoginID,
+              privateKey: privateKey,
+              address: keystore.address,
+              keystore: keystore
+          };
+					// send back the new updated loginAccount object.
+          cb({
+              name: newName,
+              secureLoginID: secureLoginID,
+              keystore: keystore,
+							address: keystore.address
+          });
+				},
+
         register: function (name, password, cb) {
             var i, self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
