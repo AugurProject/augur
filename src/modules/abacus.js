@@ -115,6 +115,7 @@ module.exports = {
                 network: this.network_id,
                 makerFee: makerFee.toFixed(),
                 takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
+                tradingFee: abi.unfix(rawInfo[6], "string"),
                 numOutcomes: abi.number(rawInfo[4]),
                 tradingPeriod: abi.number(rawInfo[5]),
                 branchId: rawInfo[7],
