@@ -332,67 +332,37 @@ export default function(market) {
 						});
 					});
 
-					describe('openOrders', () => {
-						const openOrders = outcome.openOrders;
+					describe('userOpenOrders', () => {
+						const userOpenOrders = outcome.userOpenOrders;
 						it('should exist', () => {
-							assert.isDefined(openOrders);
+							assert.isDefined(userOpenOrders);
 						});
 
 						it('should be object', () => {
-							assert.isObject(openOrders);
+							assert.isObject(userOpenOrders);
 						});
 
 						describe('items', () => {
 							it('should be array', () => {
-								assert.isArray(openOrders.items);
-							});
-						});
-
-						describe('asksCount', () => {
-							it('should be number', () => {
-								assert.isNumber(openOrders.asksCount);
-							});
-						});
-
-						describe('bidsCount', () => {
-							it('should be number', () => {
-								assert.isNumber(openOrders.bidsCount);
+								assert.isArray(userOpenOrders.items);
 							});
 						});
 
 						describe('isMarketOpenOrdersOpen', () => {
 							it('should be boolean', () => {
-								assert.isBoolean(openOrders.isMarketOpenOrdersOpen);
+								assert.isBoolean(userOpenOrders.isMarketOpenOrdersOpen);
 							});
 						});
 
 						describe('toggleGroupOpen', () => {
 							it('should be function', () => {
-								assert.isFunction(openOrders.toggleGroupOpen);
+								assert.isFunction(userOpenOrders.toggleGroupOpen);
 							});
 						});
 
-						describe('onCancelOrder', () => {
+						describe('cancelOrder', () => {
 							it('should be function', () => {
-								assert.isFunction(openOrders.onCancelOrder);
-							});
-						});
-
-						describe('onCancelAllOrders', () => {
-							it('should be function', () => {
-								assert.isFunction(openOrders.onCancelAllOrders);
-							});
-						});
-
-						describe('onCancelAllBids', () => {
-							it('should be function', () => {
-								assert.isFunction(openOrders.onCancelAllBids);
-							});
-						});
-
-						describe('onCancelAllAsks', () => {
-							it('should be function', () => {
-								assert.isFunction(openOrders.onCancelAllAsks);
+								assert.isFunction(userOpenOrders.cancelOrder);
 							});
 						});
 					});

@@ -11,11 +11,11 @@ import OpenOrder from '../../open-orders/components/open-order';
 
 const OpenOrdersGroup = (p) => (
 	<div>
-		<Clickable component="h3" onClick={(event) => p.openOrders.toggleGroupOpen()}>
+		<Clickable component="h3" onClick={(event) => p.userOpenOrders.toggleGroupOpen()}>
 			{p.name}
 		</Clickable>
 
-		<Collapse isOpen={p.openOrders.isMarketOpenOrdersOpen}>
+		<Collapse isOpen={p.userOpenOrders.isMarketOpenOrdersOpen}>
 			<table>
 				<tbody>
 					<tr>
@@ -27,11 +27,11 @@ const OpenOrdersGroup = (p) => (
 						<th>&nbsp;</th>
 					</tr>
 					{
-						p.openOrders.items.map(openOrder => (
+						p.userOpenOrders.items.map(openOrder => (
 							<OpenOrder
 								key={openOrder.id}
 								{...openOrder}
-								onCancelOrder={p.openOrders.onCancelOrder}
+								cancelOrder={p.userOpenOrders.cancelOrder}
 							/>
 							)
 						)
@@ -43,7 +43,7 @@ const OpenOrdersGroup = (p) => (
 );
 
 OpenOrdersGroup.propTypes = {
-	openOrders: React.PropTypes.object,
+	userOpenOrders: React.PropTypes.object,
 	name: React.PropTypes.string
 };
 

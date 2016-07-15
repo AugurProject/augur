@@ -7,15 +7,15 @@ const OpenOrders = (p) => (
 		<h2>Open orders</h2>
 		{
 			p.outcomes.map(outcome => {
-				if (outcome.openOrders.items.length === 0) {
-					return (<div>No open orders</div>);
+				if (outcome.userOpenOrders.items.length === 0) {
+					return null;
 				}
 
 				return (
 					<OpenOrdersGroup
 						key={outcome.id}
 						name={outcome.name}
-						openOrders={outcome.openOrders}
+						userOpenOrders={outcome.userOpenOrders}
 					/>
 				);
 			})

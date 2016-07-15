@@ -55,8 +55,6 @@ function makeMarkets(numMarkets = 25) {
 		// outcomes
 		m.outcomes = makeOutcomes();
 
-		m.openOrdersOutcomes = m.outcomes.slice();
-
 		// reportable outcomes
 		m.reportableOutcomes = m.outcomes.slice();
 		m.reportableOutcomes.push({ id: '1.5', name: 'indeterminate' });
@@ -310,7 +308,7 @@ function makeMarkets(numMarkets = 25) {
 					orderBook
 				};
 
-				outcome.openOrders = {
+				outcome.userOpenOrders = {
 					isMarketOpenOrdersOpen: false,
 					bidsCount: 2,
 					asksCount: 1,
@@ -347,29 +345,20 @@ function makeMarkets(numMarkets = 25) {
 						}
 					],
 					toggleGroupOpen: () => {
-						outcome.openOrders.isMarketOpenOrdersOpen = !outcome.openOrders.isMarketOpenOrdersOpen;
+						outcome.userOpenOrders.isMarketOpenOrdersOpen = !outcome.userOpenOrders.isMarketOpenOrdersOpen;
 						require('../selectors').update({});
 					},
-					onCancelOrder: (orderId) => {
+					cancelOrder: (orderId) => {
 						console.log('cancelling order %o', orderId);
 						setTimeout(() => {
-							outcome.openOrders.items.find(openOrder => openOrder.id === orderId).isCancelling = true;
+							outcome.userOpenOrders.items.find(openOrder => openOrder.id === orderId).isCancelling = true;
 							require('../selectors').update({});
 							setTimeout(() => {
-								const index = outcome.openOrders.items.findIndex(openOrder => openOrder.id === orderId);
-								outcome.openOrders.items.splice(index, 1);
+								const index = outcome.userOpenOrders.items.findIndex(openOrder => openOrder.id === orderId);
+								outcome.userOpenOrders.items.splice(index, 1);
 								require('../selectors').update({});
 							}, 2000);
 						}, 1);
-					},
-					onCancelAllOrders: () => {
-						console.log('todo: onCancelAllOrders in outcome %o', outcome.id);
-					},
-					onCancelAllBids: () => {
-						console.log('todo: onCancelAllBids in outcome %o', outcome.id);
-					},
-					onCancelAllAsks: () => {
-						console.log('todo: onCancelAllAsks in outcome %o', outcome.id);
 					}
 				};
 

@@ -29,7 +29,7 @@ const OpenOrder = (p) => (
 				className="button cancel-order-action"
 				disabled={p.isCancelling}
 				title="Cancel order"
-				onClick={(event) => { p.onCancelOrder(p.id); }}
+				onClick={(event) => { p.cancelOrder(p.id); }}
 			>x</button>
 
 		</td>
