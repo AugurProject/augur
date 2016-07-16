@@ -17,10 +17,13 @@ module.exports = {
 
     debug: false,
 
+    version: "0.5.0",
+
     constants: {
-        ONE: (new BigNumber(10)).toPower(18),
-        MOD: new BigNumber(2).toPower(256),
-        BYTES_32: new BigNumber(2).toPower(252)
+        ONE: new BigNumber(10).toPower(new BigNumber(18)),
+        BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
+        MAX: new BigNumber(2).toPower(new BigNumber(255)),
+        MOD: new BigNumber(2).toPower(new BigNumber(256))
     },
 
     abi: ethabi,
@@ -373,7 +376,7 @@ module.exports = {
                     }
             }
             if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
-                if (wrap && bn.gte(this.constants.BYTES_32)) {
+                if (wrap && bn.gte(this.constants.MAX)) {
                     bn = bn.sub(this.constants.MOD);
                 }
                 if (encoding) {
@@ -392,7 +395,7 @@ module.exports = {
         }
     },
 
-    fix: function (n, encode) {
+    fix: function (n, encode, wrap) {
         var fixed;
         if (n && n !== "0x" && !n.error && !n.message) {
             if (encode && n.constructor === String) {
@@ -410,7 +413,7 @@ module.exports = {
                 } else {
                     fixed = this.bignum(n).mul(this.constants.ONE).round();
                 }
-                if (fixed && fixed.gte(this.constants.BYTES_32)) {
+                if (wrap && fixed && fixed.gte(this.constants.MAX)) {
                     fixed = fixed.sub(this.constants.MOD);
                 }
                 if (encode) {
@@ -20807,19 +20810,19 @@ module.exports={
         "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
         "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
         "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0xe11d674d19633928a086e7813cb5201dff032445", 
+        "Forking": "0x8b09f112a796649be21dd2f366f7ec2cedc1aff0", 
         "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
         "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x6beebeb4ec7524d9eecfff938530f90698dd3cf5", 
+        "MakeReports": "0x68f38103dd7117aa4f48e1d6ca96309a62103e0a", 
         "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
         "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
-        "PenalizeNotEnoughReports": "0x75a060dd28476323ee02792d0d614f55c4cfb8a3", 
+        "PenalizeNotEnoughReports": "0x37559e7ac8996ecde73a0ff540b80c2ea571007d", 
         "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
         "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
-        "ReportingThreshold": "0xcd49dba9bfd26e0fef8e540925212da3651a588c", 
-        "RoundTwo": "0xdbd7190d394f35ee910e6ae40ca07ee71421c8b0", 
-        "RoundTwoPenalize": "0x74afc3dc3f75134b5c84cf91a4197a6fa01a82cc", 
-        "SendReputation": "0x9195b1b495a1f8bd29550449b01cfb5bdf3f5f39", 
+        "ReportingThreshold": "0xa1403d56612f0d220fca243ef33bd7c9385d3e33", 
+        "RoundTwo": "0x0a88f1833724cb1031b4d922ee0629f67dbc3bcf", 
+        "RoundTwoPenalize": "0x9b47c87998df6ed34f1cd526a28f1a94d619370d", 
+        "SendReputation": "0x57c4287a96be06f7620deb1984c6820148338beb", 
         "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
         "Trade": "0x94fe6678a4387eb175a7d5fadfed7fd83f76d4b1", 
         "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
@@ -20961,8 +20964,7 @@ module.exports={
         "-2": "reporter doesn't exist"
     },
     "submitReportHash": {
-        "-1": "invalid event",
-        "-2": "not in first half of period (commit phase)"
+        "-1": "invalid event"
     },
     "submitReport": {
         "0": "reporter doesn't exist or has <1 rep",
@@ -37639,7 +37641,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.7.6";
+    this.version = "1.7.7";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38020,6 +38022,19 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        if (!utils.is_function(onSent)) {
+            var res = this.transact(tx);
+            res.callReturn = utils.sha3([
+                constants.BID,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                res.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            return res;
+        }
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
                 constants.BID,
@@ -38372,7 +38387,7 @@ module.exports = {
             if (!tx.send) {
                 if (params[0] !== undefined && params[0] !== null &&
                     params[0].constructor === Object) {
-                    cb = params[0].callback || utils.pass;
+                    cb = params[0].callback;
                     if (tx.inputs && tx.inputs.length) {
                         tx.params = new Array(tx.inputs.length);
                         for (i = 0; i < tx.inputs.length; ++i) {
@@ -38389,9 +38404,9 @@ module.exports = {
             }
             if (params[0] !== undefined && params[0] !== null &&
                 params[0].constructor === Object) {
-                onSent = params[0].onSent || utils.pass;
-                onSuccess = params[0].onSuccess || utils.pass;
-                onFailed = params[0].onFailed || utils.pass;
+                onSent = params[0].onSent;
+                onSuccess = params[0].onSuccess;
+                onFailed = params[0].onFailed;
                 if (tx.inputs && tx.inputs.length) {
                     tx.params = new Array(tx.inputs.length);
                     for (i = 0; i < tx.inputs.length; ++i) {
@@ -38523,28 +38538,53 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    createBranch: function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
         var self = this;
         if (description && description.parent) {
             periodLength = description.periodLength;
             parent = description.parent;
-            tradingFee = description.tradingFee;
+            minTradingFee = description.minTradingFee;
             oracleOnly = description.oracleOnly;
-            if (description.onSent) onSent = description.onSent;
-            if (description.onSuccess) onSuccess = description.onSuccess;
-            if (description.onFailed) onFailed = description.onFailed;
+            onSent = description.onSent;
+            onSuccess = description.onSuccess;
+            onFailed = description.onFailed;
             description = description.description;
         }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
         oracleOnly = oracleOnly || 0;
         description = description.trim();
-        return this.createSubbranch({
+        if (!utils.is_function(onSent)) {
+            console.log({
+                description: description,
+                periodLength: periodLength,
+                parent: parent,
+                minTradingFee: minTradingFee,
+                oracleOnly: oracleOnly
+            });
+            var response = this.CreateBranch.createSubbranch({
+                description: description,
+                periodLength: periodLength,
+                parent: parent,
+                minTradingFee: abi.fix(minTradingFee, "hex"),
+                oracleOnly: oracleOnly
+            });
+            var block = this.rpc.getBlock(response.blockNumber);
+            response.branchID = utils.sha3([
+                response.from,
+                "0x28c418afbbb5c0000",
+                periodLength,
+                block.timestamp,
+                parent,
+                abi.fix(minTradingFee, "hex"),
+                oracleOnly,
+                description
+            ]);
+            return response;
+        }
+        this.createSubbranch({
             description: description,
             periodLength: periodLength,
             parent: parent,
-            tradingFee: tradingFee,
+            minTradingFee: minTradingFee,
             oracleOnly: oracleOnly,
             onSent: onSent,
             onSuccess: function (response) {
@@ -38555,7 +38595,7 @@ module.exports = {
                         periodLength,
                         block.timestamp,
                         parent,
-                        abi.fix(tradingFee, "hex"),
+                        abi.fix(minTradingFee, "hex"),
                         oracleOnly,
                         description
                     ]);
@@ -38566,24 +38606,24 @@ module.exports = {
         });
     },
 
-    createSubbranch: function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
         if (description && description.parent) {
             periodLength = description.periodLength;
             parent = description.parent;
-            tradingFee = description.tradingFee;
+            minTradingFee = description.minTradingFee;
             oracleOnly = description.oracleOnly;
-            if (description.onSent) onSent = description.onSent;
-            if (description.onSuccess) onSuccess = description.onSuccess;
-            if (description.onFailed) onFailed = description.onFailed;
+            onSent = description.onSent;
+            onSuccess = description.onSuccess;
+            onFailed = description.onFailed;
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
         var tx = clone(this.tx.CreateBranch.createSubbranch);
         tx.params = [
-            description,
+            description.trim(),
             periodLength,
             parent,
-            abi.fix(tradingFee, "hex"),
+            abi.fix(minTradingFee, "hex"),
             oracleOnly
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
@@ -38625,9 +38665,6 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
@@ -38648,6 +38685,14 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            var res = this.transact(tx);
+            res.marketID = res.callReturn;
+            return res;
+        }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
@@ -38716,6 +38761,15 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            var periodLength = this.getPeriodLength(branchId);
+            var res = this.transact(tx);
+            res.marketID = res.callReturn;
+            return res;
+        }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
@@ -38966,8 +39020,69 @@ module.exports = {
         ]);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed) {
+    submitReportHash: function (event, reportHash, encryptedSaltyHash, branch, period, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
+        if (event.constructor === Object && event.event) {
+            reportHash = event.reportHash;
+            encryptedSaltyHash = event.encryptedSaltyHash;
+            branch = event.branch;
+            period = event.period;
+            periodLength = event.periodLength;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
+            event = event.event;
+        }
+        console.log("\n*** Progress:", this.getCurrentPeriodProgress(periodLength) + "% ***");
+        if (this.getCurrentPeriodProgress(periodLength) >= 50) {
+            return onFailed({"-2": "not in first half of period (commit phase)"});
+        }
+        var tx = clone(this.tx.MakeReports.submitReportHash);
+        tx.params = [event, reportHash, encryptedSaltyHash || 0];
+        return this.transact(tx, onSent, function (res) {
+            console.log("submitReportHash:", res);
+            res.callReturn = abi.bignum(res.callReturn, "string", true);
+            if (res.callReturn === "0") {
+                return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
+                    if (err) return onFailed(err);
+                    console.log("Checked period:", newPeriod);
+                    return self.submitReportHash({
+                        event: event,
+                        reportHash: reportHash,
+                        encryptedSaltyHash: encryptedSaltyHash,
+                        branch: branch,
+                        period: period,
+                        periodLength: periodLength,
+                        onSent: onSent,
+                        onSuccess: onSuccess,
+                        onFailed: onFailed
+                    });
+                });
+            }
+            console.log("get RH:", {
+                branch: branch,
+                expDateIndex: period,
+                reporter: res.from,
+                event: event
+            });
+            if (res.callReturn !== "-2") return onSuccess(res);
+            self.ExpiringEvents.getReportHash({
+                branch: branch,
+                expDateIndex: period,
+                reporter: res.from,
+                event: event,
+                callback: function (storedReportHash) {
+                    console.log("stored report hash:", storedReportHash, parseInt(storedReportHash, 16));
+                    if (parseInt(storedReportHash, 16)) {
+                        res.callReturn = "1";
+                    }
+                    onSuccess(res);
+                }
+            });
+        }, onFailed);
+    },
+
+    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed) {
         if (event.constructor === Object && event.event) {
             salt = event.salt;
             report = event.report;
@@ -38994,16 +39109,15 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
-        var returns = tx.returns;
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    validateReport: function (eventID, branch, reportPeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
+    validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
         var tx = clone(this.tx.MakeReports.validateReport);
         tx.params = [
             eventID,
             branch,
-            reportPeriod,
+            votePeriod,
             abi.fix(report, "hex"),
             forkedOverEthicality,
             forkedOverThisEvent,
@@ -39187,7 +39301,7 @@ module.exports = {
         this.getExpiration(event, function (expTime) {
             var expPeriod = Math.floor(expTime / periodLength);
             var currentPeriod = self.getCurrentPeriod(periodLength);
-            console.log("reportingTools.checkTime:");
+            console.log("\nreportingTools.checkTime:");
             console.log(" - Expiration period:", expPeriod);
             console.log(" - Current period:   ", currentPeriod);
             console.log(" - Target period:    ", expPeriod + 1);
@@ -39808,7 +39922,7 @@ module.exports = {
         } else {
             tx.from = tx.from || this.from || this.coinbase;
         }
-        this.rpc.transact(tx, onSent, onSuccess, onFailed);
+        return this.rpc.transact(tx, onSent, onSuccess, onFailed);
     }
 };
 
@@ -40342,44 +40456,52 @@ module.exports = {
         return crypto.createHash("sha256").update(x).digest("hex");
     },
 
-    sha3: function (hashable) {
-        var x = clone(hashable);
-        if (x && x.constructor === Array) {
-            var digest, cat = "";
-            for (var i = 0, n = x.length; i < n; ++i) {
-                if (x[i] !== null && x[i] !== undefined) {
+    serialize: function (x) {
+        var serialized;
+        if (x !== null && x !== undefined) {
 
-                    // array element is a javascript number
-                    // (base-10 numbers)
-                    if (x[i].constructor === Number) {
-                        x[i] = abi.bignum(x[i]);
-                        if (x[i].lt(constants.ZERO)) {
-                            x[i] = x[i].add(abi.constants.MOD);
-                        }
-                        cat += abi.encode_int(x[i]);
+            // array element is a javascript number
+            // (base-10 numbers)
+            if (x.constructor === Number) {
+                x = abi.bignum(x);
+                if (x.lt(constants.ZERO)) {
+                    x = x.add(abi.constants.MOD);
+                }
+                serialized = abi.encode_int(x);
 
-                    // array element is a string: text or hex
-                    } else if (x[i].constructor === String) {
+            // array element is a string: text or hex
+            } else if (x.constructor === String) {
 
-                        // negative hex
-                        if (x[i].slice(0,1) === '-') {
-                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
-                            cat += abi.encode_int(x[i]);
+                // negative hex
+                if (x.slice(0,1) === '-') {
+                    x = abi.bignum(x).add(abi.constants.MOD).toFixed();
+                    serialized = abi.encode_int(x);
 
-                        // positive hex
-                        } else if (x[i].slice(0,2) === "0x") {
-                            cat += abi.pad_left(x[i].slice(2));
+                // positive hex
+                } else if (x.slice(0,2) === "0x") {
+                    serialized = abi.pad_left(x.slice(2));
 
-                        // text string
-                        } else {
-                            cat += new Buffer(x[i], "utf8").toString("hex");
-                        }
-                    }
+                // text string
+                } else {
+                    serialized = new Buffer(x, "utf8").toString("hex");
                 }
             }
-            return abi.prefix_hex(this.sha3(cat));
         }
-        return abi.sha3(hashable);
+        return serialized;
+    },
+
+    sha3: function (hashable) {
+        var x = clone(hashable);
+        var serialized;
+        if (x && x.constructor === Array) {
+            serialized = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                serialized += this.serialize(x[i]);
+            }
+        } else {
+            serialized = this.serialize(x);
+        }
+        return abi.prefix_hex(abi.sha3(serialized));
     }
 
 };
@@ -40684,7 +40806,7 @@ module.exports = {
                 }
                 return callback(false);
             }
-            if (!options.contracts) self.update_contracts();
+            self.update_contracts();
             self.connection = true;
             callback({
                 http: self.rpc.nodes.local || self.rpc.nodes.hosted,
@@ -41964,7 +42086,7 @@ module.exports = {
         if (!this.txs[tx.hash]) this.txs[tx.hash] = {};
         if (this.txs[tx.hash].count === undefined) this.txs[tx.hash].count = 0;
         ++this.txs[tx.hash].count;
-        if (this.debug.tx) console.debug("checkBlockHash:", tx);
+        if (this.debug.tx) console.debug("checkBlockHash:", tx.blockHash);
         if (tx && tx.blockHash && parseInt(tx.blockHash, 16) !== 0) {
             tx.txHash = tx.hash;
             this.txs[tx.hash].status = "confirmed";
@@ -42015,7 +42137,6 @@ module.exports = {
         var self = this;
         if (!isFunction(callback)) {
             var tx = this.getTransaction(txHash);
-            if (this.debug.tx) console.debug("txNotify.getTransaction:", tx);
             if (tx) return tx;
 
             this.txs[txHash].status = "failed";
@@ -42039,7 +42160,6 @@ module.exports = {
             return null;
         }
         this.getTransaction(txHash, function (tx) {
-            if (self.debug.tx) console.debug("txNotify.getTransaction:", tx);
             if (tx) return callback(null, tx);
 
             self.txs[txHash].status = "failed";

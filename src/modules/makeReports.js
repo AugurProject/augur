@@ -27,8 +27,69 @@ module.exports = {
         ]);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed) {
+    submitReportHash: function (event, reportHash, encryptedSaltyHash, branch, period, periodLength, onSent, onSuccess, onFailed) {
         var self = this;
+        if (event.constructor === Object && event.event) {
+            reportHash = event.reportHash;
+            encryptedSaltyHash = event.encryptedSaltyHash;
+            branch = event.branch;
+            period = event.period;
+            periodLength = event.periodLength;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
+            event = event.event;
+        }
+        console.log("\n*** Progress:", this.getCurrentPeriodProgress(periodLength) + "% ***");
+        if (this.getCurrentPeriodProgress(periodLength) >= 50) {
+            return onFailed({"-2": "not in first half of period (commit phase)"});
+        }
+        var tx = clone(this.tx.MakeReports.submitReportHash);
+        tx.params = [event, reportHash, encryptedSaltyHash || 0];
+        return this.transact(tx, onSent, function (res) {
+            console.log("submitReportHash:", res);
+            res.callReturn = abi.bignum(res.callReturn, "string", true);
+            if (res.callReturn === "0") {
+                return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
+                    if (err) return onFailed(err);
+                    console.log("Checked period:", newPeriod);
+                    return self.submitReportHash({
+                        event: event,
+                        reportHash: reportHash,
+                        encryptedSaltyHash: encryptedSaltyHash,
+                        branch: branch,
+                        period: period,
+                        periodLength: periodLength,
+                        onSent: onSent,
+                        onSuccess: onSuccess,
+                        onFailed: onFailed
+                    });
+                });
+            }
+            console.log("get RH:", {
+                branch: branch,
+                expDateIndex: period,
+                reporter: res.from,
+                event: event
+            });
+            if (res.callReturn !== "-2") return onSuccess(res);
+            self.ExpiringEvents.getReportHash({
+                branch: branch,
+                expDateIndex: period,
+                reporter: res.from,
+                event: event,
+                callback: function (storedReportHash) {
+                    console.log("stored report hash:", storedReportHash, parseInt(storedReportHash, 16));
+                    if (parseInt(storedReportHash, 16)) {
+                        res.callReturn = "1";
+                    }
+                    onSuccess(res);
+                }
+            });
+        }, onFailed);
+    },
+
+    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed) {
         if (event.constructor === Object && event.event) {
             salt = event.salt;
             report = event.report;
@@ -55,16 +116,15 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
-        var returns = tx.returns;
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
 
-    validateReport: function (eventID, branch, reportPeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
+    validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
         var tx = clone(this.tx.MakeReports.validateReport);
         tx.params = [
             eventID,
             branch,
-            reportPeriod,
+            votePeriod,
             abi.fix(report, "hex"),
             forkedOverEthicality,
             forkedOverThisEvent,

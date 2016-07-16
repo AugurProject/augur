@@ -28,6 +28,19 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        if (!utils.is_function(onSent)) {
+            var res = this.transact(tx);
+            res.callReturn = utils.sha3([
+                constants.BID,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                res.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            return res;
+        }
         this.transact(tx, onSent, function (res) {
             res.callReturn = utils.sha3([
                 constants.BID,

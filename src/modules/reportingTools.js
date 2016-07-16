@@ -129,7 +129,7 @@ module.exports = {
         this.getExpiration(event, function (expTime) {
             var expPeriod = Math.floor(expTime / periodLength);
             var currentPeriod = self.getCurrentPeriod(periodLength);
-            console.log("reportingTools.checkTime:");
+            console.log("\nreportingTools.checkTime:");
             console.log(" - Expiration period:", expPeriod);
             console.log(" - Current period:   ", currentPeriod);
             console.log(" - Target period:    ", expPeriod + 1);

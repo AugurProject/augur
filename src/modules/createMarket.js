@@ -32,9 +32,6 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
@@ -55,6 +52,14 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            var res = this.transact(tx);
+            res.marketID = res.callReturn;
+            return res;
+        }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
@@ -123,6 +128,15 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            var periodLength = this.getPeriodLength(branchId);
+            var res = this.transact(tx);
+            res.marketID = res.callReturn;
+            return res;
+        }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
