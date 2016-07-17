@@ -40,19 +40,16 @@ module.exports = {
             onFailed = event.onFailed;
             event = event.event;
         }
-        console.log("\n*** Progress:", this.getCurrentPeriodProgress(periodLength) + "% ***");
         if (this.getCurrentPeriodProgress(periodLength) >= 50) {
             return onFailed({"-2": "not in first half of period (commit phase)"});
         }
         var tx = clone(this.tx.MakeReports.submitReportHash);
         tx.params = [event, reportHash, encryptedSaltyHash || 0];
         return this.transact(tx, onSent, function (res) {
-            console.log("submitReportHash:", res);
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
                 return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
                     if (err) return onFailed(err);
-                    console.log("Checked period:", newPeriod);
                     return self.submitReportHash({
                         event: event,
                         reportHash: reportHash,
@@ -66,12 +63,6 @@ module.exports = {
                     });
                 });
             }
-            console.log("get RH:", {
-                branch: branch,
-                expDateIndex: period,
-                reporter: res.from,
-                event: event
-            });
             if (res.callReturn !== "-2") return onSuccess(res);
             self.ExpiringEvents.getReportHash({
                 branch: branch,
@@ -79,7 +70,6 @@ module.exports = {
                 reporter: res.from,
                 event: event,
                 callback: function (storedReportHash) {
-                    console.log("stored report hash:", storedReportHash, parseInt(storedReportHash, 16));
                     if (parseInt(storedReportHash, 16)) {
                         res.callReturn = "1";
                     }

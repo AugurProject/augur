@@ -20,6 +20,12 @@ module.exports = {
         return 100 * (t % periodLength) / periodLength;
     },
 
+    hashSenderPlusEvent: function (sender, event) {
+        return abi.wrap(
+            utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
+        ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
+    },
+
     // Increment vote period until vote period = current period - 1
     checkVotePeriod: function (branch, periodLength, callback) {
         var self = this;

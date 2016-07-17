@@ -17,12 +17,14 @@ module.exports = {
 
     debug: false,
 
-    version: "0.5.0",
+    version: "0.5.2",
 
     constants: {
         ONE: new BigNumber(10).toPower(new BigNumber(18)),
         BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
-        MAX: new BigNumber(2).toPower(new BigNumber(255)),
+        // Serpent integers are bounded by [-2^255, 2^255-1]
+        SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
+        SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
         MOD: new BigNumber(2).toPower(new BigNumber(256))
     },
 
@@ -212,7 +214,11 @@ module.exports = {
                     h = this.bignum(n, "hex", wrap);
                     break;
                 case BigNumber:
-                    h = n.toString(16);
+                    if (wrap) {
+                        h = this.wrap(n.floor()).toString(16);
+                    } else {
+                        h = n.floor().toString(16);
+                    }
                     break;
                 case String:
                     if (n === "-0x0") {
@@ -220,7 +226,7 @@ module.exports = {
                     } else if (n === "-0") {
                         h = "0";
                     } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
-                        h = n;
+                        h = this.bignum(n, "hex", wrap);
                     } else {
                         if (isFinite(n)) {
                             h = this.bignum(n, "hex", wrap);
@@ -376,16 +382,14 @@ module.exports = {
                     }
             }
             if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
-                if (wrap && bn.gte(this.constants.MAX)) {
-                    bn = bn.sub(this.constants.MOD);
-                }
+                if (wrap) bn = this.wrap(bn);
                 if (encoding) {
                     if (encoding === "number") {
                         bn = bn.toNumber();
                     } else if (encoding === "string") {
                         bn = bn.toFixed();
                     } else if (encoding === "hex") {
-                        bn = this.prefix_hex(bn.toString(16));
+                        bn = this.prefix_hex(bn.floor().toString(16));
                     }
                 }
             }
@@ -393,6 +397,17 @@ module.exports = {
         } else {
             return n;
         }
+    },
+
+    wrap: function (bn) {
+        if (bn === undefined || bn === null) return bn;
+        if (bn.constructor !== BigNumber) bn = this.bignum(bn);
+        if (bn.gt(this.constants.SERPINT_MAX)) {
+            return bn.sub(this.constants.MOD);
+        } else if (bn.lt(this.constants.SERPINT_MIN)) {
+            return bn.plus(this.constants.MOD);
+        }
+        return bn;
     },
 
     fix: function (n, encode, wrap) {
@@ -413,9 +428,7 @@ module.exports = {
                 } else {
                     fixed = this.bignum(n).mul(this.constants.ONE).round();
                 }
-                if (wrap && fixed && fixed.gte(this.constants.MAX)) {
-                    fixed = fixed.sub(this.constants.MOD);
-                }
+                if (wrap) fixed = this.wrap(fixed);
                 if (encode) {
                     if (encode === "string") {
                         fixed = fixed.toFixed();
@@ -17436,7 +17449,7 @@ module.exports={
           "period"
         ], 
         "method": "getFeesCollected", 
-        "returns": "int256", 
+        "returns": "number", 
         "signature": [
           "int256", 
           "int256", 
@@ -18629,7 +18642,7 @@ module.exports={
           "event"
         ], 
         "method": "getLesserReportNum", 
-        "returns": "int256", 
+        "returns": "unfix", 
         "signature": [
           "int256", 
           "int256", 
@@ -18745,7 +18758,7 @@ module.exports={
           "sender"
         ], 
         "method": "getPeriodRepConstant", 
-        "returns": "int256", 
+        "returns": "unfix", 
         "signature": [
           "int256", 
           "int256", 
@@ -18774,7 +18787,7 @@ module.exports={
           "sender"
         ], 
         "method": "getReport", 
-        "returns": "int256", 
+        "returns": "unfix", 
         "signature": [
           "int256", 
           "int256", 
@@ -18790,7 +18803,7 @@ module.exports={
           "event"
         ], 
         "method": "getReportHash", 
-        "returns": "hash", 
+        "returns": "int256", 
         "signature": [
           "int256", 
           "int256", 
@@ -20810,19 +20823,19 @@ module.exports={
         "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
         "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
         "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0x8b09f112a796649be21dd2f366f7ec2cedc1aff0", 
+        "Forking": "0x567062d3af0e0d7f679eaeaf3ad1cc620dc181fb", 
         "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
         "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x68f38103dd7117aa4f48e1d6ca96309a62103e0a", 
+        "MakeReports": "0x2a06345f0cec09c6fac74b748cd5c6c9ebdad8d2", 
         "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
         "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
-        "PenalizeNotEnoughReports": "0x37559e7ac8996ecde73a0ff540b80c2ea571007d", 
+        "PenalizeNotEnoughReports": "0xc0156f4ccdda75bf2b68108afede37231427f9cf", 
         "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
         "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
-        "ReportingThreshold": "0xa1403d56612f0d220fca243ef33bd7c9385d3e33", 
-        "RoundTwo": "0x0a88f1833724cb1031b4d922ee0629f67dbc3bcf", 
-        "RoundTwoPenalize": "0x9b47c87998df6ed34f1cd526a28f1a94d619370d", 
-        "SendReputation": "0x57c4287a96be06f7620deb1984c6820148338beb", 
+        "ReportingThreshold": "0x2e62815bd0b6191fd025480742703756deb496e3", 
+        "RoundTwo": "0xcf62e2f89af7c133544544a4f3d0212bed800d0c", 
+        "RoundTwoPenalize": "0x9ac73518e2c5aaf3815323a1c02a6653ff53179f", 
+        "SendReputation": "0xcf67d7f7247f7990f6819f37bae2286f206a3f50", 
         "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
         "Trade": "0x94fe6678a4387eb175a7d5fadfed7fd83f76d4b1", 
         "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
@@ -37641,7 +37654,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.7.8";
+    this.version = "1.8.0";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39034,19 +39047,16 @@ module.exports = {
             onFailed = event.onFailed;
             event = event.event;
         }
-        console.log("\n*** Progress:", this.getCurrentPeriodProgress(periodLength) + "% ***");
         if (this.getCurrentPeriodProgress(periodLength) >= 50) {
             return onFailed({"-2": "not in first half of period (commit phase)"});
         }
         var tx = clone(this.tx.MakeReports.submitReportHash);
         tx.params = [event, reportHash, encryptedSaltyHash || 0];
         return this.transact(tx, onSent, function (res) {
-            console.log("submitReportHash:", res);
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
                 return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
                     if (err) return onFailed(err);
-                    console.log("Checked period:", newPeriod);
                     return self.submitReportHash({
                         event: event,
                         reportHash: reportHash,
@@ -39060,12 +39070,6 @@ module.exports = {
                     });
                 });
             }
-            console.log("get RH:", {
-                branch: branch,
-                expDateIndex: period,
-                reporter: res.from,
-                event: event
-            });
             if (res.callReturn !== "-2") return onSuccess(res);
             self.ExpiringEvents.getReportHash({
                 branch: branch,
@@ -39073,7 +39077,6 @@ module.exports = {
                 reporter: res.from,
                 event: event,
                 callback: function (storedReportHash) {
-                    console.log("stored report hash:", storedReportHash, parseInt(storedReportHash, 16));
                     if (parseInt(storedReportHash, 16)) {
                         res.callReturn = "1";
                     }
@@ -39191,6 +39194,12 @@ module.exports = {
     getCurrentPeriodProgress: function (periodLength) {
         var t = parseInt(new Date().getTime() / 1000);
         return 100 * (t % periodLength) / periodLength;
+    },
+
+    hashSenderPlusEvent: function (sender, event) {
+        return abi.wrap(
+            utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
+        ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
     },
 
     // Increment vote period until vote period = current period - 1
