@@ -184,6 +184,36 @@ export default function(createMarketForm) {
 						});
 					});
 
+					describe('expirySourceTypes', () => {
+						it('should be defined', () => {
+							assert.isDefined(createMarketForm.expirySourceTypes, `'expirySourceTypes' is not defined`);
+						});
+
+						it('should be an object', () => {
+							assert.isObject(createMarketForm.expirySourceTypes, `'expirySourceTypes' is not an object`);
+						});
+
+						describe('generic', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.expirySourceTypes.generic, `'expirySourceTypes.generic' is not defined`);
+							});
+
+							it('should be a string', () => {
+								assert.isString(createMarketForm.expirySourceTypes.generic, `'expirySourceTypes.generic' is not a string`);
+							});
+						});
+
+						describe('specific', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.expirySourceTypes.specific, `'expirySourceTypes.specific' is not defined`);
+							});
+
+							it('should be a string', () => {
+								assert.isString(createMarketForm.expirySourceTypes.specific, `'expirySourceTypes.specific' is not a string`);
+							});
+						});
+					});
+
 					break;
 				case 4:
 					describe('takerFee', () => {

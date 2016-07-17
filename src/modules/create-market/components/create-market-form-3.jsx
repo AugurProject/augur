@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from '../../create-market/constants/market-values-constraints';
 import InputList from '../../common/components/input-list';
 import FormButtons from '../../create-market/components/create-market-form-buttons';
 import Input from '../../common/components/input';
@@ -12,23 +11,23 @@ const CreateMarketForm4 = (p) => (
 			<h4>What is the source of expiry information for your question?</h4>
 			<span className="expiry-source-option">
 				<input
-					value={EXPIRY_SOURCE_GENERIC}
+					value={p.expirySourceTypes.generic}
 					type="radio"
-					checked={p.expirySource === EXPIRY_SOURCE_GENERIC}
-					onChange={() => p.onValuesUpdated({ expirySource: EXPIRY_SOURCE_GENERIC })}
+					checked={p.expirySource === p.expirySourceTypes.generic}
+					onChange={() => p.onValuesUpdated({ expirySource: p.expirySourceTypes.generic })}
 				/>
 				<span>Outcome will be covered by local, national or international news media.</span>
 			</span>
 			<span className="expiry-source-option">
 				<input
-					value={EXPIRY_SOURCE_SPECIFIC}
+					value={p.expirySourceTypes.specific}
 					type="radio"
-					checked={p.expirySource === EXPIRY_SOURCE_SPECIFIC}
-					onChange={() => p.onValuesUpdated({ expirySource: EXPIRY_SOURCE_SPECIFIC })}
+					checked={p.expirySource === p.expirySourceTypes.specific}
+					onChange={() => p.onValuesUpdated({ expirySource: p.expirySourceTypes.specific })}
 				/>
 				<span>Outcome will be detailed on a specific publicly available website:</span>
 			</span>
-			<div className={classnames('expiry-source-url', { displayNone: p.expirySource !== EXPIRY_SOURCE_SPECIFIC })}>
+			<div className={classnames('expiry-source-url', { displayNone: p.expirySource !== p.expirySourceTypes.specific })}>
 				<Input
 					type="text"
 					value={p.expirySourceUrl}
@@ -80,6 +79,7 @@ const CreateMarketForm4 = (p) => (
 CreateMarketForm4.propTypes = {
 	expirySource: PropTypes.string,
 	expirySourceUrl: PropTypes.string,
+	expirySourceTypes: PropTypes.object,
 	tags: PropTypes.array,
 	tagsMaxNum: PropTypes.number,
 	tagMaxLength: PropTypes.number,
