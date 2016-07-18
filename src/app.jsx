@@ -79,6 +79,7 @@ export default function (appElement, selectors) {
 		node = (
 			<PortfolioPage
 				portfolio={p.portfolio}
+				activePage={p.activePage}
 				siteHeader={p.siteHeader}
 				keywords={p.keywords && p.keywords.value}
 				selectedSort={p.searchSort.selectedSort}
