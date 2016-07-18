@@ -49,24 +49,24 @@ module.exports = {
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
-                    return next(null);
+                    // return next(null);
                     // if > first period, then call penalizeWrong(branch, 0)
-                    // return self.Consensus.penalizeWrong({
-                    //     branch: branch,
-                    //     event: 0,
-                    //     onSent: function (r) {
-                    //         console.log("penalizeWrong sent:", r);
-                    //     },
-                    //     onSuccess: function (r) {
-                    //         console.log("penalizeWrong(branch, 0) success:", r);
-                    //         console.log(abi.bignum(r.callReturn, "string", true));
-                    //         next(null);
-                    //     },
-                    //     onFailed: function (err) {
-                    //         console.error("penalizeWrong(branch, 0) error:", err);
-                    //         next(err);
-                    //     }
-                    // });
+                    return self.Consensus.penalizeWrong({
+                        branch: branch,
+                        event: 0,
+                        onSent: function (r) {
+                            console.log("penalizeWrong sent:", r);
+                        },
+                        onSuccess: function (r) {
+                            console.log("penalizeWrong(branch, 0) success:", r);
+                            console.log(abi.bignum(r.callReturn, "string", true));
+                            next(null);
+                        },
+                        onFailed: function (err) {
+                            console.error("penalizeWrong(branch, 0) error:", err);
+                            next(null);
+                        }
+                    });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
                     console.log(" - penalizeWrong:", event);
@@ -110,12 +110,17 @@ module.exports = {
         }, callback);
     },
 
-    // Make sure current period = expiration period + 1
+    // Make sure current period = expiration period + periodGap
     // If not, wait until it is:
     // expPeriod - currentPeriod periods
     // t % periodLength seconds
-    checkTime: function (branch, event, periodLength, callback) {
+    checkTime: function (branch, event, periodLength, periodGap, callback) {
         var self = this;
+        if (!callback && utils.is_function(periodGap)) {
+            callback = periodGap;
+            periodGap = null;
+        }
+        periodGap = periodGap || 1;
         function wait(branch, secondsToWait, next) {
             console.log("Waiting", secondsToWait / 60, "minutes...");
             setTimeout(function () {
@@ -138,9 +143,9 @@ module.exports = {
             console.log("\nreportingTools.checkTime:");
             console.log(" - Expiration period:", expPeriod);
             console.log(" - Current period:   ", currentPeriod);
-            console.log(" - Target period:    ", expPeriod + 1);
-            if (currentPeriod < expPeriod + 1) {
-                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength);
+            console.log(" - Target period:    ", expPeriod + periodGap);
+            if (currentPeriod < expPeriod + periodGap) {
+                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
                 console.log("Full periods to wait:", fullPeriodsToWait);
                 var secondsToWait = periodLength;
                 if (fullPeriodsToWait === 0) {

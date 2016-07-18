@@ -171,10 +171,12 @@ describe("Report commit-and-reveal", function () {
             });
         }, function (err) {
             assert.isNull(err);
+            augur.useAccount(unlockable[0]);
 
             // create a new branch
             if (DEBUG) {
                 console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"))
+                console.log(chalk.white.dim("Account:"), chalk.green(augur.from));
             }
             augur.createBranch({
                 description: branchDescription,
@@ -343,14 +345,16 @@ describe("Report commit-and-reveal", function () {
                                         branch: branch,
                                         sender: sender,
                                         onSent: function (r) {
-                                            console.log("penalizationCatchup sent:", r);
+                                            console.log(chalk.red.bold("penalizationCatchup sent:"), r);
                                         },
                                         onSuccess: function (r) {
-                                            console.log("penalizationCatchup success:", r);
+                                            console.log(chalk.red.bold("penalizationCatchup success:"), r);
                                             callback(null);
                                         },
                                         onFailed: function (err) {
-                                            console.log("penalizationCatchup failed:", err);
+                                            console.log(chalk.white.dim("penalizationCatchup:"), chalk.cyan.dim(JSON.stringify(err)));
+                                            assert.strictEqual(err.error, "-2");
+                                            assert.strictEqual(err.message, augur.errors.penalizationCatchup["-2"]);
                                             callback(null);
                                         }
                                     });
@@ -405,8 +409,8 @@ describe("Report commit-and-reveal", function () {
                         var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period-1);
                         console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
                         printReportingStatus(event, "submitReport complete");
-                        console.log(chalk.white.dim(" - Fees collected:"), chalk.cyan(feesCollected));
-                        console.log(chalk.white.dim(" - Stored report: "), chalk.cyan(storedReport));
+                        console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+                        console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
                     }
                     assert(res.txHash);
                     assert.strictEqual(res.callReturn, "1");

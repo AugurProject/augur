@@ -17387,6 +17387,7 @@ module.exports={
           "event"
         ], 
         "method": "penalizeWrong", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -20823,19 +20824,19 @@ module.exports={
         "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
         "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
         "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0x567062d3af0e0d7f679eaeaf3ad1cc620dc181fb", 
+        "Forking": "0xf7c63c73594fbbcb333d48c4bc38d61a45e41228", 
         "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
         "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x2a06345f0cec09c6fac74b748cd5c6c9ebdad8d2", 
+        "MakeReports": "0x83154bf0e8f7ba87c4ee32adbe8f126ec3e3cb0d", 
         "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
         "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
         "PenalizeNotEnoughReports": "0xc0156f4ccdda75bf2b68108afede37231427f9cf", 
         "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
         "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
         "ReportingThreshold": "0x2e62815bd0b6191fd025480742703756deb496e3", 
-        "RoundTwo": "0xcf62e2f89af7c133544544a4f3d0212bed800d0c", 
-        "RoundTwoPenalize": "0x9ac73518e2c5aaf3815323a1c02a6653ff53179f", 
-        "SendReputation": "0xcf67d7f7247f7990f6819f37bae2286f206a3f50", 
+        "RoundTwo": "0x0d27ff98c45b9f96d9223e82e09ccca0449f186d", 
+        "RoundTwoPenalize": "0x8bf8bf8ff22d944139afdda28662f5695c506bcd", 
+        "SendReputation": "0x1f5aeb73c2e3c9bb959b6e2e1aeee1e2b9a43e05", 
         "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
         "Trade": "0x94fe6678a4387eb175a7d5fadfed7fd83f76d4b1", 
         "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
@@ -37654,7 +37655,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.0";
+    this.version = "1.8.1";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39225,24 +39226,24 @@ module.exports = {
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
-                    return next(null);
+                    // return next(null);
                     // if > first period, then call penalizeWrong(branch, 0)
-                    // return self.Consensus.penalizeWrong({
-                    //     branch: branch,
-                    //     event: 0,
-                    //     onSent: function (r) {
-                    //         console.log("penalizeWrong sent:", r);
-                    //     },
-                    //     onSuccess: function (r) {
-                    //         console.log("penalizeWrong(branch, 0) success:", r);
-                    //         console.log(abi.bignum(r.callReturn, "string", true));
-                    //         next(null);
-                    //     },
-                    //     onFailed: function (err) {
-                    //         console.error("penalizeWrong(branch, 0) error:", err);
-                    //         next(err);
-                    //     }
-                    // });
+                    return self.Consensus.penalizeWrong({
+                        branch: branch,
+                        event: 0,
+                        onSent: function (r) {
+                            console.log("penalizeWrong sent:", r);
+                        },
+                        onSuccess: function (r) {
+                            console.log("penalizeWrong(branch, 0) success:", r);
+                            console.log(abi.bignum(r.callReturn, "string", true));
+                            next(null);
+                        },
+                        onFailed: function (err) {
+                            console.error("penalizeWrong(branch, 0) error:", err);
+                            next(null);
+                        }
+                    });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
                     console.log(" - penalizeWrong:", event);
@@ -39286,12 +39287,17 @@ module.exports = {
         }, callback);
     },
 
-    // Make sure current period = expiration period + 1
+    // Make sure current period = expiration period + periodGap
     // If not, wait until it is:
     // expPeriod - currentPeriod periods
     // t % periodLength seconds
-    checkTime: function (branch, event, periodLength, callback) {
+    checkTime: function (branch, event, periodLength, periodGap, callback) {
         var self = this;
+        if (!callback && utils.is_function(periodGap)) {
+            callback = periodGap;
+            periodGap = null;
+        }
+        periodGap = periodGap || 1;
         function wait(branch, secondsToWait, next) {
             console.log("Waiting", secondsToWait / 60, "minutes...");
             setTimeout(function () {
@@ -39314,9 +39320,9 @@ module.exports = {
             console.log("\nreportingTools.checkTime:");
             console.log(" - Expiration period:", expPeriod);
             console.log(" - Current period:   ", currentPeriod);
-            console.log(" - Target period:    ", expPeriod + 1);
-            if (currentPeriod < expPeriod + 1) {
-                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength);
+            console.log(" - Target period:    ", expPeriod + periodGap);
+            if (currentPeriod < expPeriod + periodGap) {
+                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
                 console.log("Full periods to wait:", fullPeriodsToWait);
                 var secondsToWait = periodLength;
                 if (fullPeriodsToWait === 0) {
