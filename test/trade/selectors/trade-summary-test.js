@@ -95,7 +95,6 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 			},
 			tradeOrders
 		};
-		assertions.trade(tradeSummary);
 		assert.deepEqual(tradeSummary, out, `Didn't produce the correct trade summary info`);
 	});
 });

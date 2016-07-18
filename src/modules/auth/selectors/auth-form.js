@@ -48,6 +48,7 @@ export const selectRegister = (auth, dispatch) => {
 		isVisibleID: false,
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
+		isVisibleRememberMe: false,
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
@@ -75,6 +76,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		isVisibleID: true,
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
+		isVisibleRememberMe: true,
 
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
@@ -86,7 +88,7 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		submitButtonText: 'Login',
 		submitButtonClass: 'login-button',
 
-		onSubmit: (name, password, password2, secureLoginID) =>	dispatch(login(secureLoginID, password))
+		onSubmit: (name, password, password2, secureLoginID, rememberMe) =>	dispatch(login(secureLoginID, password, rememberMe))
 	};
 };
 

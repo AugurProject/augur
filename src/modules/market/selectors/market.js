@@ -138,7 +138,7 @@ export const assembleMarket = memoizerific(1000)((
 		break;
 	}
 
-	market.constants = {
+	market.orderSides = {
 		BID,
 		ASK
 	};
