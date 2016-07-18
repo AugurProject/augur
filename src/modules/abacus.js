@@ -8,13 +8,25 @@
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
+var bs58 = require("bs58");
 var abi = require("augur-abi");
 var utils = require("../utilities");
-var bs58 = require("bs58");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
+
+    makeTradeHash: function (max_value, max_amount, trade_ids) {
+        var trades = new BigNumber(0);
+        for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
+            trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
+        }
+        return utils.sha3([
+            abi.hex(trades, true),
+            abi.fix(max_amount, "hex"),
+            abi.fix(max_value, "hex")
+        ]);
+    },
 
     calculateTradingFees: function (makerFee, takerFee) {
         var bnMakerFee = abi.bignum(makerFee);
@@ -299,11 +311,11 @@ module.exports = {
         return marketsInfo;
     },
 
-		base58Decrypt: function (secureLoginID) {
-			return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
-		},
+    base58Decrypt: function (secureLoginID) {
+        return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
+    },
 
-		base58Encrypt: function (keystore) {
-			return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
-		}
+    base58Encrypt: function (keystore) {
+        return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
+    }
 };

@@ -207,6 +207,9 @@ describe("Reporting sequence", function () {
                                                                         assert.strictEqual(r.callReturn, "1");
                                                                     },
                                                                     onCommitFailed: nextTrade,
+                                                                    onNextBlock: function (block) {
+                                                                        if (DEBUG) printResidual(periodLength, "Got block " + block);
+                                                                    },
                                                                     onTradeSent: function (r) {
                                                                         assert.isArray(r.callReturn);
                                                                         assert.strictEqual(r.callReturn[0], 1);
@@ -233,8 +236,8 @@ describe("Reporting sequence", function () {
                                                             var secondsToGo = periodsToGo*periodLength + periodLength - (t % periodLength);
                                                             if (DEBUG) {
                                                                 printReportingStatus(eventID, "Waiting until period after new event expires...");
-                                                                console.log(chalk.white.dim(" - Periods to go:"), chalk.red(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
-                                                                console.log(chalk.white.dim(" - Minutes to go:"), chalk.red(secondsToGo / 60));
+                                                                console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
+                                                                console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
                                                             }
                                                             setTimeout(function () {
                                                                 assert.strictEqual(augur.getCurrentPeriod(periodLength), expirationPeriod + 1);
@@ -243,7 +246,16 @@ describe("Reporting sequence", function () {
                                                         });
                                                     });
                                                 },
-                                                onFailed: done
+                                                onFailed: function (err) {
+                                                    console.log(chalk.red.bold("sell failed:"), {
+                                                        amount: 1,
+                                                        price: "0.01",
+                                                        market: marketID,
+                                                        outcome: 1
+                                                    });
+                                                    console.error(err);
+                                                    done(new Error(tools.pp(err)));
+                                                }
                                             });
                                         },
                                         onFailed: done
@@ -418,7 +430,7 @@ describe("Reporting sequence", function () {
                         console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
                     }
                     assert(res.txHash);
-                    assert.strictEqual(res.callReturn, "1");
+                    assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
                     assert.strictEqual(parseInt(storedReport), report);
                     done();
                 },
@@ -451,15 +463,17 @@ describe("Reporting sequence", function () {
                 market: marketID,
                 sender: augur.from,
                 onSent: function (res) {
-                    if (DEBUG) console.log("closeMarket sent:", res);
-                    // assert(res.txHash);
-                    // assert.strictEqual(res.callReturn, "1");
+                    assert(res.txHash);
+                    assert.strictEqual(res.callReturn, "1");
                 },
                 onSuccess: function (res) {
                     if (DEBUG) console.log("closeMarket success:", res);
-                    // assert(res.txHash);
-                    // assert.strictEqual(res.callReturn, "1");
-                    if (DEBUG) printReportingStatus(eventID, "Market closed");
+                    assert.strictEqual(res.callReturn, "1");
+                    if (DEBUG) {
+                        printReportingStatus(eventID, "Market closed");
+                        console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
+                        console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
+                    }
                     augur.getWinningOutcomes(marketID, function (winningOutcomes) {
                         if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
                         // assert.strictEqual(winningOutcomes[report-1], "1");
@@ -468,21 +482,21 @@ describe("Reporting sequence", function () {
                             branch: newBranchID,
                             event: eventID,
                             onSent: function (res) {
-                                if (DEBUG) console.log("penalizeWrong sent:", res);
-                                // assert(res.txHash);
-                                // assert.strictEqual(res.callReturn, "1");
+                                assert.strictEqual(res.callReturn, "1");
                             },
                             onSuccess: function (res) {
-                                // assert(res.txHash);
-                                // assert.strictEqual(res.callReturn, "1");
+                                assert.strictEqual(res.callReturn, "1");
                                 if (DEBUG) {
-                                    console.log("penalizeWrong success:", res);
                                     printReportingStatus(eventID, "Event " + eventID + " penalized");
+                                    console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
                                 }
                                 done();
                             },
                             onFailed: function (err) {
-                                if (DEBUG) console.error("penalizeWrong failed:", err);
+                                if (DEBUG) {
+                                    printReportingStatus(eventID, "penalizeWrong failed");
+                                    console.error(chalk.red.bold("penalizeWrong error:"), err);
+                                }
                                 done(new Error(tools.pp(err)));
                             }
                         });
@@ -505,7 +519,7 @@ describe("Reporting sequence", function () {
                 if (DEBUG) printReportingStatus(eventID, "In second half of third period");
                 return done();
             }
-            var secondsToWait = halfTime - (t % periodLength) + 1;
+            var secondsToWait = halfTime - (t % periodLength) + 30;
             if (DEBUG) printReportingStatus(eventID, "Not in second half of third period, waiting " + secondsToWait + " seconds...");
             setTimeout(function () {
                 if (DEBUG) {
@@ -516,6 +530,7 @@ describe("Reporting sequence", function () {
             }, secondsToWait*1000);
         });
         it("CollectFees.collectFees", function (done) {
+            this.timeout(tools.TIMEOUT);
             augur.collectFees({
                 branch: newBranchID,
                 sender: augur.from,

@@ -14,14 +14,15 @@ var chalk = require("chalk");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
 var tools = require("../tools");
+var random = require("../random");
 
 describe("Unit tests", function () {
+
 	describe("getTradingActions", function () {
 		var txOriginal;
 		before("getTradingActions", function () {
 			txOriginal = augur.tx;
-
-			augur.tx = new require('augur-contracts').Tx("2");
+			augur.tx = new require('augur-contracts').Tx("2").functions;
 		});
 
 		after("getTradingActions", function () {
@@ -1645,6 +1646,52 @@ describe("Unit tests", function () {
             }
         });
     });
+
+	describe("makeTradeHash", function () {
+		var augur;
+		before(function () {
+			augur = tools.setup(require(augurpath), process.argv.slice(2));
+		});
+		var test = function (t) {
+			it(JSON.stringify(t), function () {
+				var trade_ids = t.trade_ids || random.hashArray(t.numTrades || random.int(1, 100));
+				var tradeHash = augur.makeTradeHash(t.max_value, t.max_amount, trade_ids);
+				var contractTradeHash = augur.Trades.makeTradeHash({
+					max_value: abi.fix(t.max_value, "hex"),
+					max_amount: abi.fix(t.max_amount, "hex"),
+					trade_ids: trade_ids
+				});
+				if (tradeHash !== contractTradeHash) {
+					console.log("tradeHash:", tradeHash);
+					console.log("contract: ", contractTradeHash);
+				}
+				assert.strictEqual(tradeHash, contractTradeHash);
+			});
+		};
+		test({max_value: 1, max_amount: 0, trade_ids: ["0xb5865502c4ce95c1fd5178c975863dd9d412363934a7072fa4bad093190c786a"]});
+		test({max_value: 0, max_amount: 1, trade_ids: ["0xb5865502c4ce95c1fd5178c975863dd9d412363934a7072fa4bad093190c786a"]});
+		test({max_value: 1, max_amount: 0, trade_ids: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]});
+		test({max_value: 0, max_amount: 1, trade_ids: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]});
+		test({max_value: 1, max_amount: 0, trade_ids: ["-0x8000000000000000000000000000000000000000000000000000000000000000"]});
+		test({max_value: 0, max_amount: 1, trade_ids: ["-0x8000000000000000000000000000000000000000000000000000000000000000"]});
+		test({max_value: "0x0", max_amount: "0x1", trade_ids: ["0xb5865502c4ce95c1fd5178c975863dd9d412363934a7072fa4bad093190c786a"]});
+		test({max_value: "0x1", max_amount: "0x0", trade_ids: ["0xb5865502c4ce95c1fd5178c975863dd9d412363934a7072fa4bad093190c786a"]});
+		test({max_value: "0x0", max_amount: "0x1", trade_ids: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]});
+		test({max_value: "0x1", max_amount: "0x0", trade_ids: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]});
+		test({max_value: "0x0", max_amount: "0x1", trade_ids: ["-0x4a79aafd3b316a3e02ae87368a79c2262bedc9c6cb58f8d05b452f6ce6f38796"]});
+		test({max_value: "0x1", max_amount: "0x0", trade_ids: ["-0x4a79aafd3b316a3e02ae87368a79c2262bedc9c6cb58f8d05b452f6ce6f38796"]});
+		test({max_value: "0x0", max_amount: "0x1", trade_ids: ["-0x8000000000000000000000000000000000000000000000000000000000000000"]});
+		test({max_value: "0x1", max_amount: "0x0", trade_ids: ["-0x8000000000000000000000000000000000000000000000000000000000000000"]});
+		for (var i = 0; i < 5; ++i) {
+			for (var j = 0; j < 5; ++j) {
+				for (var k = 0; k < 5; ++k) {
+					test({max_value: i, max_amount: j, numTrades: k + 1});
+					test({max_value: i, max_amount: j});
+					test({max_value: random.int(0, i), max_amount: random.int(0, j), numTrades: random.int(1, k + 1)});
+				}
+			}
+		}
+	});
 });
 
 describe("Integration tests", function () {

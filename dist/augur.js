@@ -16357,43 +16357,13 @@ module.exports={
       "contract": "Consensus", 
       "inputs": [
         {
-          "indexed": true, 
-          "name": "user", 
-          "type": "int256"
-        }, 
-        {
           "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "oldrep", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "repchange", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "newafterrep", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "p", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "reportValue", 
+          "name": "x", 
           "type": "int256"
         }
       ], 
-      "name": "penalize(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x3253564cd022a8ec496277f26ccdaddf64e75973423eda45df329f60b2a0c6a7"
+      "name": "penalize(int256)", 
+      "signature": "0x47471d3c43bf6848bb5a5b5b607af9a50395288681419dd20aa0b89501cb476f"
     }, 
     "returnValue": {
       "contract": "MakeReports", 
@@ -20812,10 +20782,10 @@ module.exports={
         "CloseMarket": "0x857f6cd666934c05a32704109fbee92773454c1f", 
         "CloseMarketOne": "0xd8d75f35e05ff00065944041d4248c2bae18d418", 
         "CloseMarketTwo": "0xee856109cd107e5521b86374dd53c8b2120ab14f", 
-        "CollectFees": "0x3bebda7cfc447b2b0c5dcc223c32f3fc469547e6", 
+        "CollectFees": "0x43940cb8a1b20b96a1b2c5d3b63861a583af2b48", 
         "CompleteSets": "0x5485af8bf299235b7fd2e45f13be79cf6064df64", 
         "CompositeGetters": "0xcd49a9bf994b9cc61a3af5cf70588d9eedd1acc3", 
-        "Consensus": "0xecdc077c4c74590208a8c71038c0ad209c88deec", 
+        "Consensus": "0xd75138a01cc0d56d6bfc4e00088458e501657579", 
         "ConsensusData": "0x9011169bf11bc061fdaaf42ec919c81df5b95210", 
         "CreateBranch": "0xbcfa90799eaf78ea417b94bb62ff2a4373689d6a", 
         "CreateMarket": "0xb41980c1f8a21090f2d4ef70753fac790d935462", 
@@ -20824,21 +20794,21 @@ module.exports={
         "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
         "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
         "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0xf7c63c73594fbbcb333d48c4bc38d61a45e41228", 
+        "Forking": "0x019dd83fa5b15f87a52a543db5212170ab3e8e4e", 
         "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
         "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x83154bf0e8f7ba87c4ee32adbe8f126ec3e3cb0d", 
+        "MakeReports": "0x50ca322daefbc1c11a37a157eda2fe7e29602e2d", 
         "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
         "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
         "PenalizeNotEnoughReports": "0xc0156f4ccdda75bf2b68108afede37231427f9cf", 
         "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
         "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
         "ReportingThreshold": "0x2e62815bd0b6191fd025480742703756deb496e3", 
-        "RoundTwo": "0x0d27ff98c45b9f96d9223e82e09ccca0449f186d", 
-        "RoundTwoPenalize": "0x8bf8bf8ff22d944139afdda28662f5695c506bcd", 
-        "SendReputation": "0x1f5aeb73c2e3c9bb959b6e2e1aeee1e2b9a43e05", 
+        "RoundTwo": "0x77e15352aa4175ee8d1e175a2ded18d941a66a49", 
+        "RoundTwoPenalize": "0xabadb8643974315cbc03843c8e0c7c2843545f01", 
+        "SendReputation": "0xd7a9d8850fe40c80874febb84e0f8b05da52ecef", 
         "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
-        "Trade": "0x94fe6678a4387eb175a7d5fadfed7fd83f76d4b1", 
+        "Trade": "0x5a7db1c09e32c63cd1346d32d156d00fb8fa716d", 
         "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
     }
 }
@@ -20989,6 +20959,7 @@ module.exports={
         "-5": "invalid event",
         "-6": "already resolved",
         "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
+        "-8": "fees couldn't be collected",
         "-9": "need to pay not reporting bond"
     },
     "trade": {
@@ -36760,10 +36731,19 @@ module.exports = function () {
             } else if (tx.params.constructor !== Array) {
                 tx.params = [tx.params];
             }
-            for (var j = 0; j < tx.params.length; ++j) {
-                if (tx.params[j] !== undefined && tx.params[j] !== null &&
-                    tx.params[j].constructor === Number) {
-                    tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
+            for (var j = 0, numParams = tx.params.length; j < numParams; ++j) {
+                if (tx.params[j] !== undefined && tx.params[j] !== null) {
+                    if (tx.params[j].constructor === Number) {
+                        tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
+                    }
+                    if (tx.signature[j] === "int256") {
+                        tx.params[j] = abi.unfork(tx.params[j], true);
+                    } else if (tx.signature[j] === "int256[]" &&
+                        tx.params[j].constructor === Array && tx.params[j].length) {
+                        for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
+                            tx.params[j][k] = abi.unfork(tx.params[j][k], true);
+                        }
+                    }
                 }
             }
 
@@ -37705,13 +37685,25 @@ module.exports = new Augur();
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
+var bs58 = require("bs58");
 var abi = require("augur-abi");
 var utils = require("../utilities");
-var bs58 = require("bs58");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
+
+    makeTradeHash: function (max_value, max_amount, trade_ids) {
+        var trades = new BigNumber(0);
+        for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
+            trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
+        }
+        return utils.sha3([
+            abi.hex(trades, true),
+            abi.fix(max_amount, "hex"),
+            abi.fix(max_value, "hex")
+        ]);
+    },
 
     calculateTradingFees: function (makerFee, takerFee) {
         var bnMakerFee = abi.bignum(makerFee);
@@ -37996,13 +37988,13 @@ module.exports = {
         return marketsInfo;
     },
 
-		base58Decrypt: function (secureLoginID) {
-			return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
-		},
+    base58Decrypt: function (secureLoginID) {
+        return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
+    },
 
-		base58Encrypt: function (keystore) {
-			return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
-		}
+    base58Encrypt: function (keystore) {
+        return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
+    }
 };
 
 }).call(this,require("buffer").Buffer)
@@ -39226,23 +39218,27 @@ module.exports = {
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
-                    // return next(null);
                     // if > first period, then call penalizeWrong(branch, 0)
-                    return self.Consensus.penalizeWrong({
-                        branch: branch,
-                        event: 0,
-                        onSent: function (r) {
-                            console.log("penalizeWrong sent:", r);
-                        },
-                        onSuccess: function (r) {
-                            console.log("penalizeWrong(branch, 0) success:", r);
-                            console.log(abi.bignum(r.callReturn, "string", true));
-                            next(null);
-                        },
-                        onFailed: function (err) {
-                            console.error("penalizeWrong(branch, 0) error:", err);
-                            next(null);
+                    return self.ConsensusData.getPenalizedUpTo(branch, self.from, function (lastPeriodPenalized) {
+                        lastPeriodPenalized = parseInt(lastPeriodPenalized);
+                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) { return next(null);
                         }
+                        self.Consensus.penalizeWrong({
+                            branch: branch,
+                            event: 0,
+                            onSent: function (r) {
+                                console.log("penalizeWrong sent:", r);
+                            },
+                            onSuccess: function (r) {
+                                console.log("penalizeWrong(branch, 0) success:", r);
+                                console.log(abi.bignum(r.callReturn, "string", true));
+                                next(null);
+                            },
+                            onFailed: function (err) {
+                                console.error("penalizeWrong(branch, 0) error:", err);
+                                next(null);
+                            }
+                        });
                     });
                 }
                 async.eachSeries(events, function (event, nextEvent) {
@@ -39410,52 +39406,51 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        this.makeTradeHash(max_value, max_amount, trade_ids, function (tradeHash) {
-            onTradeHash(tradeHash);
-            self.commitTrade({
-                hash: tradeHash,
-                onSent: onCommitSent,
-                onSuccess: function (res) {
-                    onCommitSuccess(res);
-                    self.rpc.fastforward(1, function (blockNumber) {
-                        onNextBlock(blockNumber);
-                        var tx = clone(self.tx.Trade.trade);
-                        tx.params = [
-                            abi.fix(max_value, "hex"),
-                            abi.fix(max_amount, "hex"),
-                            trade_ids
-                        ];
-                        self.transact(tx, function (sentResult) {
-                            var result = clone(sentResult);
-                            if (result.callReturn && result.callReturn.constructor === Array) {
-                                result.callReturn[0] = parseInt(result.callReturn[0]);
-                                if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                    result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                    result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                }
-                                return onTradeSent(result);
+        var tradeHash = this.makeTradeHash(max_value, max_amount, trade_ids);
+        onTradeHash(tradeHash);
+        this.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                self.rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.Trade.trade);
+                    tx.params = [
+                        abi.fix(max_value, "hex"),
+                        abi.fix(max_amount, "hex"),
+                        trade_ids
+                    ];
+                    self.transact(tx, function (sentResult) {
+                        var result = clone(sentResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                             }
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }, function (successResult) {
-                            var result = clone(successResult);
-                            if (result.callReturn && result.callReturn.constructor === Array) {
-                                result.callReturn[0] = parseInt(result.callReturn[0]);
-                                if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                    result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                    result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                }
-                                return onTradeSuccess(result);
+                            return onTradeSent(result);
+                        }
+                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                        if (!err) return onTradeFailed(result);
+                        onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                    }, function (successResult) {
+                        var result = clone(successResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
                             }
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }, onTradeFailed);
-                    });
-                },
-                onFailed: onCommitFailed
-            });
+                            return onTradeSuccess(result);
+                        }
+                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                        if (!err) return onTradeFailed(result);
+                        onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                    }, onTradeFailed);
+                });
+            },
+            onFailed: onCommitFailed
         });
     },
 
@@ -39481,53 +39476,52 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        this.makeTradeHash(0, max_amount, [buyer_trade_id], function (tradeHash) {
-            onTradeHash(tradeHash);
-            self.commitTrade({
-                hash: tradeHash,
-                onSent: onCommitSent,
-                onSuccess: function (res) {
-                    onCommitSuccess(res);
-                    self.rpc.fastforward(1, function (blockNumber) {
-                        onNextBlock(blockNumber);
-                        var tx = clone(self.tx.Trade.short_sell);
-                        tx.params = [
-                            buyer_trade_id,
-                            abi.fix(max_amount, "hex")
-                        ];
-                        self.transact(tx, function (sentResult) {
-                            var result = clone(sentResult);
-                            if (result.callReturn && result.callReturn.constructor === Array) {
-                                result.callReturn[0] = parseInt(result.callReturn[0]);
-                                if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                    result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                    result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                    result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
-                                }
-                                return onTradeSent(result);
+        var tradeHash = this.makeTradeHash(0, max_amount, [buyer_trade_id]);
+        onTradeHash(tradeHash);
+        this.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                self.rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.Trade.short_sell);
+                    tx.params = [
+                        buyer_trade_id,
+                        abi.fix(max_amount, "hex")
+                    ];
+                    self.transact(tx, function (sentResult) {
+                        var result = clone(sentResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
                             }
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }, function (successResult) {
-                            var result = clone(successResult);
-                            if (result.callReturn && result.callReturn.constructor === Array) {
-                                result.callReturn[0] = parseInt(result.callReturn[0]);
-                                if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                    result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                    result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                    result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
-                                }
-                                return onTradeSuccess(result);
+                            return onTradeSent(result);
+                        }
+                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                        if (!err) return onTradeFailed(result);
+                        onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                    }, function (successResult) {
+                        var result = clone(successResult);
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0]);
+                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
+                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
+                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
                             }
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }, onTradeFailed);
-                    });
-                },
-                onFailed: onCommitFailed
-            });
+                            return onTradeSuccess(result);
+                        }
+                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                        if (!err) return onTradeFailed(result);
+                        onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                    }, onTradeFailed);
+                });
+            },
+            onFailed: onCommitFailed
         });
     }
 };
@@ -39545,12 +39539,6 @@ var abi = require("augur-abi");
 var utils = require("../utilities");
 
 module.exports = {
-
-    makeTradeHash: function (max_value, max_amount, trade_ids, callback) {
-        var tx = clone(this.tx.Trades.makeTradeHash);
-        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
-        return this.fire(tx, callback);
-    },
 
     saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Trades.saveTrade);
@@ -40908,8 +40896,7 @@ module.exports = {
 
     debug: {
         tx: false,
-        broadcast: false,
-        logs: false
+        broadcast: false
     },
 
     // geth IPC endpoint (Node-only)
@@ -41031,7 +41018,9 @@ module.exports = {
     parse: function (origResponse, returns, callback) {
         var results, len, err;
         var response = clone(origResponse);
-        if (response && response.error) console.log("response:", response);
+        if ((response && response.error) || this.debug.broadcast) {
+            console.debug("[ethrpc] response:", response);
+        }
         try {
             if (response && typeof response === "string") {
                 response = JSON.parse(response);
@@ -41206,7 +41195,7 @@ module.exports = {
 
     ipcSend: function (command, returns, callback) {
         if (this.debug.broadcast) {
-            console.log("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
+            console.debug("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
         }
         this.ipcRequests[command.id] = {returns: returns, callback: callback};
         if (this.ipcStatus === 1) this.socket.write(JSON.stringify(command));
@@ -41214,7 +41203,7 @@ module.exports = {
 
     wsSend: function (command, returns, callback) {
         if (this.debug.broadcast) {
-            console.log("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
+            console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
         }
         this.wsRequests[command.id] = {returns: returns, callback: callback};
         if (this.websocket.readyState === this.websocket.OPEN) {
@@ -41258,7 +41247,7 @@ module.exports = {
             timeout = this.POST_TIMEOUT;
         }
         if (this.debug.broadcast) {
-            console.log("[ethrpc] Asynchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
+            console.debug("[ethrpc] Asynchronous HTTP request to", rpcUrl + "\n" + JSON.stringify(command));
         }
         request({
             url: rpcUrl,
@@ -41374,18 +41363,7 @@ module.exports = {
             default:
                 async.eachSeries(nodes, function (node, nextNode) {
                     if (!completed) {
-                        if (self.debug.logs) {
-                            console.log("nodes:", JSON.stringify(nodes));
-                            console.log("post", command.method, "to:", node);
-                        }
                         self.post(node, command, returns, function (res) {
-                            if (self.debug.logs) {
-                                if (res && res.constructor === BigNumber) {
-                                    console.log(node, "response:", abi.string(res));
-                                } else {
-                                    console.log(node, "response:", res);
-                                }
-                            }
                             if (node === nodes[nodes.length - 1] ||
                                 (res !== undefined && res !== null &&
                                 !res.error && res !== "0x")) {
@@ -41405,10 +41383,6 @@ module.exports = {
         } else {
             for (var j = 0, len = nodes.length; j < len; ++j) {
                 try {
-                    if (this.debug.logs) {
-                        console.log("nodes:", JSON.stringify(nodes));
-                        console.log("synchronous post", command.method, "to:", nodes[j]);
-                    }
                     result = this.postSync(nodes[j], command, returns);
                 } catch (e) {
                     if (this.nodes.local) {
@@ -41878,54 +41852,53 @@ module.exports = {
      * }
      */
     invoke: function (payload, f) {
-        var tx, dataAbi, packaged, invocation, invoked, err;
-        if (payload) {
-            if (payload.send && payload.invocation && isFunction(payload.invocation.invoke)) {
-                return payload.invocation.invoke.call(payload.invocation.context, payload, f);
-            } else {
-                tx = clone(payload);
-                if (tx.params === undefined || tx.params === null) {
-                    tx.params = [];
-                } else if (tx.params.constructor !== Array) {
-                    tx.params = [tx.params];
+        var tx, packaged, invocation;
+        if (!payload || payload.constructor !== Object) {
+            if (!isFunction(f)) return errors.TRANSACTION_FAILED;
+            return f(errors.TRANSACTION_FAILED);
+        }
+        if (payload.send && payload.invocation && isFunction(payload.invocation.invoke)) {
+            return payload.invocation.invoke.call(payload.invocation.context, payload, f);
+        }
+        tx = clone(payload);
+        if (tx.params === undefined || tx.params === null) {
+            tx.params = [];
+        } else if (tx.params.constructor !== Array) {
+            tx.params = [tx.params];
+        }
+        for (var j = 0, numParams = tx.params.length; j < numParams; ++j) {
+            if (tx.params[j] !== undefined && tx.params[j] !== null) {
+                if (tx.params[j].constructor === Number) {
+                    tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
                 }
-                for (var j = 0; j < tx.params.length; ++j) {
-                    if (tx.params[j] !== undefined && tx.params[j] !== null &&
-                        tx.params[j].constructor === Number) {
-                        tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
+                if (tx.signature[j] === "int256") {
+                    tx.params[j] = abi.unfork(tx.params[j], true);
+                } else if (tx.signature[j] === "int256[]" &&
+                    tx.params[j].constructor === Array && tx.params[j].length) {
+                    for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
+                        tx.params[j][k] = abi.unfork(tx.params[j][k], true);
                     }
-                }
-                if (tx.to) tx.to = abi.format_address(tx.to);
-                if (tx.from) tx.from = abi.format_address(tx.from);
-                dataAbi = abi.encode(tx);
-                if (dataAbi) {
-                    packaged = {
-                        from: tx.from,
-                        to: tx.to,
-                        data: dataAbi,
-                        gas: tx.gas || this.DEFAULT_GAS,
-                        gasPrice: tx.gasPrice
-                    };
-                    if (tx.timeout) packaged.timeout = tx.timeout;
-                    if (tx.value) packaged.value = tx.value;
-                    if (tx.returns) packaged.returns = tx.returns;
-                    if (this.debug.broadcast) {
-                        packaged.debug = clone(tx);
-                        packaged.debug.batch = false;
-                    }
-                    invocation = (tx.send) ? this.sendTx : this.call;
-                    invoked = true;
-                    return invocation.call(this, packaged, f);
                 }
             }
         }
-        if (!invoked) {
-            err = clone(errors.TRANSACTION_FAILED);
-            err.bubble = "!invoked";
-            err.payload = payload;
-            if (isFunction(f)) return f(err);
-            return err;
+        if (tx.to) tx.to = abi.format_address(tx.to);
+        if (tx.from) tx.from = abi.format_address(tx.from);
+        packaged = {
+            from: tx.from,
+            to: tx.to,
+            data: abi.encode(tx),
+            gas: tx.gas || this.DEFAULT_GAS,
+            gasPrice: tx.gasPrice
+        };
+        if (tx.timeout) packaged.timeout = tx.timeout;
+        if (tx.value) packaged.value = tx.value;
+        if (tx.returns) packaged.returns = tx.returns;
+        if (this.debug.broadcast) {
+            packaged.debug = clone(tx);
+            packaged.debug.batch = false;
         }
+        invocation = (tx.send) ? this.sendTx : this.call;
+        return invocation.call(this, packaged, f);
     },
 
     /**
@@ -41935,7 +41908,7 @@ module.exports = {
         var self = this;
         var numCommands, rpclist, callbacks, tx, dataAbi, packaged, invocation, returns;
         if (txlist.constructor !== Array) {
-            if (this.debug.logs) {
+            if (this.debug.broadcast) {
                 console.warn("expected array for batch RPC, invoking instead");
             }
             return this.invoke(txlist, f);
@@ -41954,6 +41927,14 @@ module.exports = {
             for (var j = 0; j < tx.params.length; ++j) {
                 if (tx.params[j].constructor === Number) {
                     tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
+                }
+                if (tx.signature[j] === "int256") {
+                    tx.params[j] = abi.unfork(tx.params[j], true);
+                } else if (tx.signature[j] === "int256[]" &&
+                    tx.params[j].constructor === Array && tx.params[j].length) {
+                    for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
+                        tx.params[j][k] = abi.unfork(tx.params[j][k], true);
+                    }
                 }
             }
             if (tx.from) tx.from = abi.format_address(tx.from);
@@ -42266,13 +42247,15 @@ module.exports = {
         if (!isFunction(onSent)) {
             var callReturn = this.fire(payload);
             if (this.debug.tx) console.debug("callReturn:", callReturn);
-            if (callReturn === undefined || callReturn === null) {
-                throw new this.Error(errors.NULL_CALL_RETURN);
-            }
-            if (returns === "null" && callReturn.error === "0x") {
-                callReturn = null;
-            } else if (callReturn.error) {
-                throw new this.Error(callReturn);
+            if (!payload.mutable) {
+                if (callReturn === undefined || callReturn === null) {
+                    throw new this.Error(errors.NULL_CALL_RETURN);
+                }
+                if (returns === "null" && callReturn.error === "0x") {
+                    callReturn = null;
+                } else if (callReturn.error) {
+                    throw new this.Error(callReturn);
+                }
             }
             payload.send = true;
             delete payload.returns;
@@ -42307,13 +42290,15 @@ module.exports = {
         onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
         this.fire(payload, function (callReturn) {
             if (self.debug.tx) console.debug("callReturn:", callReturn);
-            if (callReturn === undefined || callReturn === null) {
-                return onFailed(errors.NULL_CALL_RETURN);
-            }
-            if (returns === "null" && callReturn.error === "0x") {
-                callReturn = null;
-            } else if (callReturn.error) {
-                return onFailed(callReturn);
+            if (!payload.mutable) {
+                if (callReturn === undefined || callReturn === null) {
+                    return onFailed(errors.NULL_CALL_RETURN);
+                }
+                if (returns === "null" && callReturn.error === "0x") {
+                    callReturn = null;
+                } else if (callReturn.error) {
+                    return onFailed(callReturn);
+                }
             }
             payload.send = true;
             delete payload.returns;
