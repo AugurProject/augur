@@ -14,7 +14,7 @@ import { PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../module
 const PortfolioPage = (p) => {
 	let node;
 
-	switch (p.activePage) {
+	switch (p.siteHeader.activePage) {
 	default:
 	case PORTFOLIO:
 	case MY_POSITIONS:
@@ -52,7 +52,10 @@ const PortfolioPage = (p) => {
 
 				<Filters filters={p.filters} />
 
-				<TabNavigation navItems={p.portfolio.navItems} />
+				<TabNavigation
+					activePage={p.activePage}
+					navItems={p.portfolio.navItems}
+				/>
 
 				{node}
 			</section>
@@ -64,7 +67,6 @@ const PortfolioPage = (p) => {
 
 PortfolioPage.propTypes = {
 	portfolio: React.PropTypes.object,
-	activePage: React.PropTypes.string,
 	siteHeader: React.PropTypes.object,
 	keywords: React.PropTypes.string,
 	selectedSort: React.PropTypes.object,
