@@ -1,0 +1,29 @@
+.portfolio-summary {
+    display: flex;
+    align-content: stretch;
+    width: 100%;
+
+    margin: 0.8rem;
+
+    .summary-item {
+        flex: 1;
+
+        border: 1px solid @color-border-dark;
+        &:not(:last-of-type) {
+            border-right: none;
+        }
+
+        .summary-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            height: 100%;
+
+            .summary-value {
+                font-weight: @font-weight-bold;
+                margin-left: 0.5rem;
+            }
+        }
+    }
+}

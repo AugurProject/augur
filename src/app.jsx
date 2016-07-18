@@ -79,10 +79,14 @@ export default function (appElement, selectors) {
 		node = (
 			<PortfolioPage
 				siteHeader={p.siteHeader}
+				keywords={p.keywords && p.keywords.value}
+				selectedSort={p.searchSort.selectedSort}
+				sortOptions={p.searchSort.sortOptions}
+				onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
+				onChangeSort={p.searchSort.onChangeSort}
 			/>
 		);
 		break;
-
 
 	case TRANSACTIONS:
 		node = (

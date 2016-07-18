@@ -6,7 +6,7 @@ import Link from '../../link/components/link';
 
 const Markets = (p) => (
 	<section className={p.className}>
-		<div className="markets-header-bar">
+		<div className="component-header">
 			<Link className="button make" {...p.createMarketLink}>
 				Make a Market
 			</Link>
