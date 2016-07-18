@@ -14,6 +14,7 @@ import positionsSummary from './selectors/positions-summary';
 import transactions from './selectors/transactions';
 import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
+import portfolio from './selectors/portfolio';
 
 // all selectors should go here
 const selectors = {
@@ -32,7 +33,8 @@ const selectors = {
 	positionsMarkets,
 	transactions,
 	transactionsTotals,
-	url
+	url,
+	portfolio
 };
 
 // add update helper fn to selectors object
