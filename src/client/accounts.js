@@ -126,6 +126,15 @@ module.exports = function () {
                     var unsecureLoginIDObject = {name: name, keystore: keystore};
                     var secureLoginID = abacus.base58Encrypt(unsecureLoginIDObject);
 
+										// while logged in, web.account object is set
+                    self.account = {
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        privateKey: privateKey,
+                        address: keystore.address,
+                        keystore: keystore
+                    };
+
                     cb({
                         name: name,
                         secureLoginID: secureLoginID,
