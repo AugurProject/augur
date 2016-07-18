@@ -20,7 +20,7 @@ const PortfolioSummary = () => {
 			label: 'Fees Earned',
 			value: '1.77 ETH'
 		},
-	]
+	];
 
 	return (
 		<div className="portfolio-summary" >
@@ -32,7 +32,7 @@ const PortfolioSummary = () => {
 				/>
 			))}
 		</div>
-	)
+	);
 };
 
 export default PortfolioSummary;
