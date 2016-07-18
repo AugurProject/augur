@@ -42,6 +42,7 @@ import { selectMarketLink } from '../../link/selectors/links';
 import { selectOutcomeTradeOrders } from '../../trade/selectors/trade-orders';
 import { selectTradeSummary } from '../../trade/selectors/trade-summary';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
+import selectUserOpenOrders from '../../user-open-orders/selectors/user-open-orders';
 
 import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
 
@@ -211,6 +212,8 @@ export const assembleMarket = memoizerific(1000)((
 		outcome.orderBook = orderBook;
 		outcome.topBid = selectTopBid(orderBook);
 		outcome.topAsk = selectTopAsk(orderBook);
+
+		outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBook);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 

@@ -18,6 +18,7 @@ import outcomes from './modules/markets/reducers/outcomes';
 import marketOrderBooks from './modules/bids-asks/reducers/market-order-books';
 import accountTrades from './modules/positions/reducers/account-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
+import selectedUserOpenOrdersGroup from './modules/user-open-orders/reducers/selected-user-open-orders-group';
 
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
@@ -63,5 +64,6 @@ module.exports = {
 	outcomes,
 	marketOrderBooks,
 	accountTrades,
-	transactionsData
+	transactionsData,
+	selectedUserOpenOrdersGroup
 };
