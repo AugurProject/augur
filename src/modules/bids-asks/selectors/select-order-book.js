@@ -1,5 +1,7 @@
 import memoizerific from 'memoizerific';
 
+import store from '../../../store';
+
 import { formatShares, formatEther } from '../../../utils/format-number';
 
 /**
@@ -40,14 +42,22 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 	if (orders == null) {
 		return [];
 	}
+
+	const currentUserAddress = store.getState().loginAccount.address;
+
 	const shareCountPerPrice = orders
 		.filter(order => order.outcome === outcomeId)
+		.map(order => ({
+			...order,
+			isOfCurrentUser: currentUserAddress != null && order.owner === currentUserAddress
+		}))
 		.reduce(reduceSharesCountByPrice, {});
 
 	return Object.keys(shareCountPerPrice)
 		.map((price) => {
 			const obj = {
-				shares: formatShares(shareCountPerPrice[price]),
+				isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
+				shares: formatShares(shareCountPerPrice[price].shares),
 				price: formatEther(parseFloat(price))
 			};
 			return obj;
@@ -64,10 +74,14 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
 	const key = parseFloat(order.price).toString(); // parseFloat("0.10000000000000000002").toString() => "0.1"
 	if (aggregateOrdersPerPrice[key] == null) {
-		aggregateOrdersPerPrice[key] = 0;
+		aggregateOrdersPerPrice[key] = {
+			shares: 0,
+			isOfCurrentUser: false
+		};
 	}
 
-	aggregateOrdersPerPrice[key] += parseFloat(order.amount);
+	aggregateOrdersPerPrice[key].shares += parseFloat(order.amount);
+	aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
 	return aggregateOrdersPerPrice;
 }
 
