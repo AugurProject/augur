@@ -14,6 +14,7 @@ const OpenOrders = (p) => (
 				return (
 					<OpenOrdersGroup
 						key={outcome.id}
+						id={outcome.id}
 						name={outcome.name}
 						userOpenOrders={outcome.userOpenOrders}
 					/>

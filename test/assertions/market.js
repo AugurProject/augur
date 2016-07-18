@@ -348,15 +348,17 @@ export default function(market) {
 							});
 						});
 
-						describe('isMarketOpenOrdersOpen', () => {
-							it('should be boolean', () => {
-								assert.isBoolean(userOpenOrders.isMarketOpenOrdersOpen);
+						describe('selectedUserOpenOrdersGroup', () => {
+							it('should be null or string', () => {
+								const isNull = userOpenOrders.selectedUserOpenOrdersGroup === null;
+								const isString = typeof userOpenOrders.selectedUserOpenOrdersGroup === "string";
+								assert(isNull || isString, 'selectedUserOpenOrdersGroup is not null or string');
 							});
 						});
 
-						describe('toggleGroupOpen', () => {
+						describe('updateSelectedOpenOrdersGroup', () => {
 							it('should be function', () => {
-								assert.isFunction(userOpenOrders.toggleGroupOpen);
+								assert.isFunction(userOpenOrders.updateSelectedOpenOrdersGroup);
 							});
 						});
 

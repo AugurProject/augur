@@ -11,11 +11,11 @@ import OpenOrder from '../../open-orders/components/open-order';
 
 const OpenOrdersGroup = (p) => (
 	<div>
-		<Clickable component="h3" onClick={(event) => p.userOpenOrders.toggleGroupOpen()}>
+		<Clickable component="h3" onClick={(event) => p.userOpenOrders.updateSelectedOpenOrdersGroup(p.id)}>
 			{p.name}
 		</Clickable>
 
-		<Collapse isOpen={p.userOpenOrders.isMarketOpenOrdersOpen}>
+		<Collapse isOpen={p.id === p.userOpenOrders.selectedUserOpenOrdersGroup}>
 			<table>
 				<tbody>
 					<tr>

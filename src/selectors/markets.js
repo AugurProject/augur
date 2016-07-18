@@ -309,7 +309,7 @@ function makeMarkets(numMarkets = 25) {
 				};
 
 				outcome.userOpenOrders = {
-					isMarketOpenOrdersOpen: false,
+					selectedUserOpenOrdersGroup: null,
 					bidsCount: 2,
 					asksCount: 1,
 					items: [
@@ -344,8 +344,8 @@ function makeMarkets(numMarkets = 25) {
 							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
 						}
 					],
-					toggleGroupOpen: () => {
-						outcome.userOpenOrders.isMarketOpenOrdersOpen = !outcome.userOpenOrders.isMarketOpenOrdersOpen;
+					updateSelectedOpenOrdersGroup: () => {
+						outcome.userOpenOrders.selectedUserOpenOrdersGroup = !outcome.userOpenOrders.selectedUserOpenOrdersGroup;
 						require('../selectors').update({});
 					},
 					cancelOrder: (orderId) => {
