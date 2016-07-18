@@ -1,28 +1,27 @@
-.portfolio-summary {
-    display: flex;
-    align-content: stretch;
-    width: 100%;
+.component-header {
+    .portfolio-summary {
+        align-content: stretch;
+        padding: 0;
 
-    margin: 0.8rem;
+        .summary-item {
+            flex: 1;
 
-    .summary-item {
-        flex: 1;
+            border: 1px solid @color-border-dark;
+            &:not(:last-of-type) {
+                border-right: none;
+            }
 
-        border: 1px solid @color-border-dark;
-        &:not(:last-of-type) {
-            border-right: none;
-        }
+            .summary-content {
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
-        .summary-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+                height: 100%;
 
-            height: 100%;
-
-            .summary-value {
-                font-weight: @font-weight-bold;
-                margin-left: 0.5rem;
+                .summary-value {
+                    font-weight: @font-weight-bold;
+                    margin-left: 0.5rem;
+                }
             }
         }
     }

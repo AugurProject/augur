@@ -22,7 +22,7 @@ export default class MarketsHeader extends Component {
 	render() {
 		const p = this.props;
 		return (
-			<header className="markets-header">
+			<header className="header-bar markets-header">
 				<div className={classnames('markets-header-item', 'all-markets', { active: !p.selectedMarketsHeader })} onClick={p.onClickAllMarkets}>
 					<span className="name">Markets</span>
 

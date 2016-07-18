@@ -3,7 +3,7 @@ import SummaryItem from '../../../modules/portfolio/components/summary-item';
 
 
 const PortfolioSummary = (p) => (
-	<div className="portfolio-summary" >
+	<header className="header-bar portfolio-summary" >
 		{p.summaries.map((summary, i) => (
 			<SummaryItem
 				key={`${summary.label}-${i}`}
@@ -11,7 +11,7 @@ const PortfolioSummary = (p) => (
 				value={summary.value}
 			/>
 		))}
-	</div>
+	</header>
 );
 
 PortfolioSummary.propTypes = {
