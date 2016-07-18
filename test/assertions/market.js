@@ -351,7 +351,7 @@ export default function(market) {
 						describe('selectedUserOpenOrdersGroup', () => {
 							it('should be null or string', () => {
 								const isNull = userOpenOrders.selectedUserOpenOrdersGroup === null;
-								const isString = typeof userOpenOrders.selectedUserOpenOrdersGroup === "string";
+								const isString = typeof userOpenOrders.selectedUserOpenOrdersGroup === 'string';
 								assert(isNull || isString, 'selectedUserOpenOrdersGroup is not null or string');
 							});
 						});
