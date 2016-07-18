@@ -20,7 +20,7 @@ describe(`modules/auth/actions/register.js`, () => {
 		loginAccount: {}
 	});
 	store = mockStore(thisTestState);
-	fakeAugurJS.register = (name, psswrd, cb) => {
+	fakeAugurJS.register = (env, branchID, name, psswrd, cb, onFundSent, onFundSuccess, onFundFailed) => {
 		cb(null, {
 			address: 'test',
 			id: 'test',

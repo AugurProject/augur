@@ -228,7 +228,7 @@ ex.logout = function logout() {
 	augur.web.logout();
 };
 
-ex.register = function register(name, password, cb) {
+ex.register = function register(env, branchID, name, password, cb, onFundSent, onFundSuccess, onFundFailed) {
 	augur.web.register(name, password,
 		account => {
 			if (!account) {
@@ -237,6 +237,7 @@ ex.register = function register(name, password, cb) {
 			if (account.error) {
 				return cb({ code: account.error, message: account.message });
 			}
+			ex.fundNewAccount(env, account.address, branchID, onFundSent, onFundSuccess, onFundFailed);
 			return cb(null, {
 				...account,
 				id: account.address
@@ -582,7 +583,7 @@ ex.getEvents = function getEvents(...args) {
 	augur.getEvents.apply(augur, args);
 };
 
-ex.fundNewAccount = function fundNewAccount(toAddress, branchID, onSent, onSuccess, onFailed) {
+ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
 	if (env.fundNewAccountFromAddress) {
 		augur.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
 	} else {
