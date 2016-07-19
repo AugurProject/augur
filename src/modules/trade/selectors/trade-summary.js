@@ -21,7 +21,15 @@ export const selectTradeSummary = memoizerific(5)((tradeOrders) => {
 		totals.ether += tradeOrder.type === BID ? -ether : ether;
 		totals.gas += gas;
 	}
-
+	/*
+	console.log('------------->', {
+		totalShares: formatShares(totals.shares),
+		totalEther: formatEther(totals.ether),
+		totalGas: formatEther(totals.gas),
+		feeToPay: formatEther(0), // TODO -- waiting on Augur.js implementation
+		tradeOrders
+	});
+	*/
 	return {
 		totalShares: formatShares(totals.shares),
 		totalEther: formatEther(totals.ether),

@@ -15,16 +15,16 @@ describe(`modules/market/actions/load-full-market.js`, () => {
 	// let state = Object.assign({}, testState);
 	// store = mockStore(state);
 	// let mockAugurJS = {};
-	// let mockLoadMarket = {};
+	// let mockLoadMarketsInfo = {};
 	// let mockPriceHistory= {};
 	// let mockMarketsData = {};
-	// loadMarket
+	// loadMarketsInfo
 	// loadPriceHistory
 	// updateMarketsData
 
 	// action = proxyquire('../../../src/modules/market/actions/load-full-market', {
 	//   '../../../services/augurjs': mockAugurJS,
-	//   '../../market/actions/load-market': mockLoadMarket,
+	//   '../../markets/actions/load-markets-info': mockLoadMarketsInfo,
 	//   '../../market/actions/load-price-history': mockPriceHistory,
 	//   '../../markets/actions/update-markets-data': mockMarketsData
 	// });
@@ -39,8 +39,8 @@ describe(`modules/market/actions/load-full-market.js`, () => {
 	//       example: 'test info'
 	//     }
 	//   }];
-	//   store.dispatch(action.loadMarket('test'));
-	//   assert(mockAugurJS.loadMarket.calledOnce, `AugurJS.loadMarket() wasn't called.`);
+	//   store.dispatch(action.loadMarketsInfo('test'));
+	//   assert(mockAugurJS.batchGetMarketInfo.calledOnce, `AugurJS.batchGetMarketInfo() wasn't called.`);
 	//   assert(mockParse.ParseMarketsData.calledOnce, `ParseMarketsData didn't get called.`);
 	//   assert.deepEqual(store.getActions(), out, `Didn't properly dispatch an update markets data action`);
 	// });

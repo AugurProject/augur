@@ -171,15 +171,6 @@ ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
 	});
 };
 
-ex.loadMarket = function loadMarket(marketID, cb) {
-	augur.getMarketInfo(marketID, marketInfo => {
-		if (marketInfo && marketInfo.error) {
-			return cb(marketInfo);
-		}
-		cb(null, marketInfo);
-	});
-};
-
 ex.listenToUpdates = function listenToUpdates(cbBlock, cbContracts, cbPrice, cbCreation) {
 	augur.filters.listen({
 		// listen for new blocks
