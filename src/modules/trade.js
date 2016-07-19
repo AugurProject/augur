@@ -50,20 +50,7 @@ module.exports = {
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, function (sentResult) {
-                        var result = clone(sentResult);
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0]);
-                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                            }
-                            return onTradeSent(result);
-                        }
-                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                        if (!err) return onTradeFailed(result);
-                        onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                    }, function (successResult) {
+                    self.transact(tx, onTradeSent, function (successResult) {
                         var result = clone(successResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
@@ -119,21 +106,7 @@ module.exports = {
                         buyer_trade_id,
                         abi.fix(max_amount, "hex")
                     ];
-                    self.transact(tx, function (sentResult) {
-                        var result = clone(sentResult);
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0]);
-                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
-                            }
-                            return onTradeSent(result);
-                        }
-                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                        if (!err) return onTradeFailed(result);
-                        onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                    }, function (successResult) {
+                    self.transact(tx, onTradeSent, function (successResult) {
                         var result = clone(successResult);
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);

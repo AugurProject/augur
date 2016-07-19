@@ -2,45 +2,42 @@
 
 process.env.AUGURJS_INTEGRATION_TESTS = true;
 
-GLOBAL.path = require("path");
-GLOBAL.join = require("path").join;
-GLOBAL.fs = require("fs");
-GLOBAL.BigNumber = require("bignumber.js");
-GLOBAL.Decimal = require("decimal.js");
-GLOBAL.scrypt = require("./lib/scrypt");
-GLOBAL.keccak = require("./lib/keccak");
-GLOBAL.uuid = require("node-uuid");
-GLOBAL._ = require("lodash");
-GLOBAL.assert = require("chai").assert;
-GLOBAL.chalk = require("chalk");
-GLOBAL.moment = require("moment");
-GLOBAL.EthTx = require("ethereumjs-tx");
-GLOBAL.EthUtil = require("ethereumjs-util");
-GLOBAL.web3 = require("web3");
-GLOBAL.contracts = require("augur-contracts");
-GLOBAL.abi = require("augur-abi");
-GLOBAL.request = require("request");
-GLOBAL.constants = require("./src/constants");
-GLOBAL.utils = require("./src/utilities");
-GLOBAL.tools = require("./test/tools");
-GLOBAL.Tx = contracts.Tx;
-GLOBAL.augur = (GLOBAL.reload = function () {
+global.path = require("path");
+global.join = require("path").join;
+global.fs = require("fs");
+global.BigNumber = require("bignumber.js");
+global.scrypt = require("./lib/scrypt");
+global.keccak = require("./lib/keccak");
+global.uuid = require("node-uuid");
+global.assert = require("chai").assert;
+global.chalk = require("chalk");
+global.EthTx = require("ethereumjs-tx");
+global.EthUtil = require("ethereumjs-util");
+global.web3 = require("web3");
+global.contracts = require("augur-contracts");
+global.abi = require("augur-abi");
+global.request = require("request");
+global.constants = require("./src/constants");
+global.utils = require("./src/utilities");
+global.tools = require("./test/tools");
+global.Tx = contracts.Tx;
+global.augur = (global.reload = function () {
     return tools.setup(tools.reset("./src/index"), process.argv.slice(2));
 })();
-GLOBAL.comments = augur.comments;
-GLOBAL.b = augur.constants.DEFAULT_BRANCH_ID
-GLOBAL.log = console.log;
-GLOBAL.rpc = augur.rpc;
+global.comments = augur.comments;
+global.b = augur.constants.DEFAULT_BRANCH_ID
+global.log = console.log;
+global.rpc = augur.rpc;
 try {
-    GLOBAL.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
-    GLOBAL.accounts = rpc.personal("listAccounts");
+    global.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
+    global.accounts = rpc.personal("listAccounts");
 } catch (exc) {
     console.log(exc);
 }
 
 web3.setProvider(new web3.providers.HttpProvider(process.env.AUGUR_HOST));
 
-GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
+global.balances = (global.balance = function (account, branch) {
     account = account || augur.from;
     var balances = {
         cash: augur.getCashBalance(account),
@@ -50,9 +47,9 @@ GLOBAL.balances = (GLOBAL.balance = function (account, branch) {
     console.log(balances);
     return balances;
 })();
-GLOBAL.markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
+global.markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
 if (markets && markets.constructor === Array && markets.length) {
-    GLOBAL.market = markets[markets.length - 1];
+    global.market = markets[markets.length - 1];
 }
 
 console.log(chalk.cyan("Network"), chalk.green(augur.network_id));
@@ -62,7 +59,7 @@ console.log("Cash:       " + chalk.green(balances.cash));
 console.log("Reputation: " + chalk.green(balances.reputation));
 console.log("Ether:      " + chalk.green(balances.ether));
 
-var reportingInfo = (GLOBAL.reporting = function (branch) {
+var reportingInfo = (global.reporting = function (branch) {
     var info = {
         vote_period: augur.getVotePeriod(b),
         current_period: augur.getCurrentPeriod(b),
@@ -77,7 +74,7 @@ console.log("Current period:     ", chalk.green(reportingInfo.current_period));
 console.log("Number of events:   ", chalk.green(reportingInfo.num_events));
 console.log("Number of reporters:", chalk.green(reportingInfo.num_reports));
 
-GLOBAL.vote_period = reportingInfo.vote_period;
-GLOBAL.current_period = reportingInfo.current_period;
-GLOBAL.num_events = reportingInfo.num_events;
-GLOBAL.num_reports = reportingInfo.num_reports;
+global.vote_period = reportingInfo.vote_period;
+global.current_period = reportingInfo.current_period;
+global.num_events = reportingInfo.num_events;
+global.num_reports = reportingInfo.num_reports;

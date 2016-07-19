@@ -18,9 +18,17 @@ module.exports = {
 
     makeTradeHash: function (max_value, max_amount, trade_ids) {
         var trades = new BigNumber(0);
+        // console.log("max value: ", max_value);
+        // console.log("max amount:", max_amount);
+        // console.log("trade IDs: ", trade_ids);
         for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
             trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
         }
+        // console.log([
+        //     abi.hex(trades, true),
+        //     abi.fix(max_amount, "hex"),
+        //     abi.fix(max_value, "hex")
+        // ]);
         return utils.sha3([
             abi.hex(trades, true),
             abi.fix(max_amount, "hex"),

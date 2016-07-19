@@ -1654,6 +1654,7 @@ describe("Unit tests", function () {
 		});
 		var test = function (t) {
 			it(JSON.stringify(t), function () {
+				this.timeout(tools.TIMEOUT);
 				var trade_ids = t.trade_ids || random.hashArray(t.numTrades || random.int(1, 100));
 				var tradeHash = augur.makeTradeHash(t.max_value, t.max_amount, trade_ids);
 				var contractTradeHash = augur.Trades.makeTradeHash({
@@ -1661,10 +1662,6 @@ describe("Unit tests", function () {
 					max_amount: abi.fix(t.max_amount, "hex"),
 					trade_ids: trade_ids
 				});
-				if (tradeHash !== contractTradeHash) {
-					console.log("tradeHash:", tradeHash);
-					console.log("contract: ", contractTradeHash);
-				}
 				assert.strictEqual(tradeHash, contractTradeHash);
 			});
 		};
@@ -1682,12 +1679,12 @@ describe("Unit tests", function () {
 		test({max_value: "0x1", max_amount: "0x0", trade_ids: ["-0x4a79aafd3b316a3e02ae87368a79c2262bedc9c6cb58f8d05b452f6ce6f38796"]});
 		test({max_value: "0x0", max_amount: "0x1", trade_ids: ["-0x8000000000000000000000000000000000000000000000000000000000000000"]});
 		test({max_value: "0x1", max_amount: "0x0", trade_ids: ["-0x8000000000000000000000000000000000000000000000000000000000000000"]});
-		for (var i = 0; i < 5; ++i) {
-			for (var j = 0; j < 5; ++j) {
-				for (var k = 0; k < 5; ++k) {
-					test({max_value: i, max_amount: j, numTrades: k + 1});
+		for (var i = 1; i < 5; ++i) {
+			for (var j = 1; j < 5; ++j) {
+				for (var k = 1; k < 5; ++k) {
+					test({max_value: i, max_amount: j, numTrades: k});
 					test({max_value: i, max_amount: j});
-					test({max_value: random.int(0, i), max_amount: random.int(0, j), numTrades: random.int(1, k + 1)});
+					test({max_value: random.int(1, i), max_amount: random.int(1, j), numTrades: random.int(1, k)});
 				}
 			}
 		}
@@ -1705,7 +1702,7 @@ describe("Integration tests", function () {
     var accounts = augur.rpc.personal("listAccounts");
     var unlockable = [augur.from, accounts[0], accounts[2]];
 
-    beforeEach("top up accounts", function (done) {
+    before("top up accounts", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length);
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
         async.eachSeries(unlockable, function (account, nextAccount) {

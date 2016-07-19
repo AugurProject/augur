@@ -90,6 +90,7 @@ module.exports = {
             this.network_id = connector.network_id;
             this.from = connector.from;
             this.coinbase = connector.coinbase;
+            this.rpc = connector.rpc;
             this.api = connector.api;
             this.tx = connector.tx;
             this.contracts = connector.contracts;

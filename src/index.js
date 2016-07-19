@@ -20,6 +20,7 @@ var modules = [
     require("./modules/createBranch"),
     require("./modules/sendReputation"),
     require("./modules/makeReports"),
+    require("./modules/collectFees"),
     require("./modules/createMarket"),
     require("./modules/compositeGetters"),
     require("./modules/whitelist"),
@@ -30,9 +31,9 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.1";
+    this.version = "1.8.2";
 
-    this.options = {debug: {abi: false, broadcast: false, fallback: false}};
+    this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
 
     this.connection = null;
