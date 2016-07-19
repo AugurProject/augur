@@ -13,7 +13,7 @@ const SiteHeader = (p) => (
 			<span className="spacer">&nbsp;</span>
 			
 			{!!p.loginAccount && !!p.loginAccount.id &&
-				<Link className={classnames('site-nav-link', PORTFOLIO, { active: p.activePage === PORTFOLIO })} {...p.portfolioLink}>
+				<Link className={classnames('site-nav-link', PORTFOLIO, { active: [PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.portfolioLink}>
 					Portfolio
 				</Link>
 			}
