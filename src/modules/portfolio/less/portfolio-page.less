@@ -1,0 +1,52 @@
+.portfolio {
+  .portfolio-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    .l-container();
+
+    .portfolio-item {
+      flex: 2;
+      line-height: 2.5em;
+      overflow: hidden;
+      margin: 1vmin;
+    }
+  }
+}
+
+@media only screen and (max-width: @media-small-width) {
+  .markets {
+    .portfolio-content {
+      .component-header {
+        .button.make {
+          width: auto;
+          padding: 0 4vmin;
+          font-size: 1.6rem;
+        }
+        .header-bar {
+          font-size: 1.6rem;
+        }
+      }
+
+      .portfolio-item {
+        flex: unset;
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: @media-mobile-width) {
+  .portfolio {
+    .page-content {
+      .component-header {
+        .button.make {
+          font-size: 3.5vmin;
+        }
+        .header-bar {
+          font-size: 3.5vmin;
+        }
+      }
+    }
+  }
+}

@@ -1,18 +1,22 @@
 import links from '../selectors/links';
+import { PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/pages';
 
 const NAV_ITEMS = [
 	{
 		default: true,
 		label: 'My Positions',
 		link: links.myPositionsLink,
+		page: [PORTFOLIO, MY_POSITIONS]
 	},
 	{
 		label: 'My Markets',
-		link: links.myMarketsLink
+		link: links.myMarketsLink,
+		page: [MY_MARKETS]
 	},
 	{
 		label: 'My Reports',
-		link: links.myReportsLink
+		link: links.myReportsLink,
+		page: [MY_REPORTS]
 	},
 ];
 
@@ -35,9 +39,9 @@ const SUMMARIES = [
 	},
 ];
 
-const PORTFOLIO = {
+const PORTFOLIO_OBJECT = {
 	navItems: NAV_ITEMS,
 	summaries: SUMMARIES
 };
 
-export default PORTFOLIO;
+export default PORTFOLIO_OBJECT;

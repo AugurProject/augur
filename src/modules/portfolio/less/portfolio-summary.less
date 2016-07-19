@@ -1,78 +1,27 @@
-.portfolio {
-    .portfolio-content {
-        display: flex; flex-wrap: wrap;
-        width: 100%;
-        .l-container();
+.component-header {
+    .portfolio-summary {
+        align-content: stretch;
+        margin: 0 5vmin;
+        padding: 0;
 
-        .component-header {
-            .portfolio-summary {
-                align-content: stretch;
-                margin: 0 5vmin;
-                padding: 0;
+        .summary-item {
+            flex: 1;
 
-                .summary-item {
-                    flex: 1;
-
-                    border: 1px solid @color-border-dark;
-                    &:not(:last-of-type) {
-                        border-right: none;
-                    }
-
-                    .summary-content {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-
-                        height: 100%;
-
-                        .summary-value {
-                            font-weight: @font-weight-bold;
-                            margin-left: 0.5rem;
-                        }
-                    }
-                }
-            }
-        }
-
-        .portfolio-item {
-            flex: 2;
-            line-height: 2.5em;
-            overflow: hidden;
-        }
-    }
-}
-
-@media only screen and (max-width: @media-small-width) {
-    .markets {
-        .portfolio-content {
-            .component-header {
-                .button.make {
-                    width: auto;
-                    padding: 0 4vmin;
-                    font-size: 1.6rem;
-                }
-                .header-bar {
-                    font-size: 1.6rem;
-                }
+            border: 1px solid @color-border-dark;
+            &:not(:last-of-type) {
+                border-right: none;
             }
 
-            .markets-list {
-                flex: unset;
-                width: 100%;
-            }
-        }
-    }
-}
+            .summary-content {
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
-@media only screen and (max-width: @media-mobile-width) {
-    .portfolio {
-        .page-content {
-            .component-header {
-                .button.make {
-                    font-size: 3.5vmin;
-                }
-                .header-bar {
-                    font-size: 3.5vmin;
+                height: 100%;
+
+                .summary-value {
+                    font-weight: @font-weight-bold;
+                    margin-left: 0.5rem;
                 }
             }
         }
