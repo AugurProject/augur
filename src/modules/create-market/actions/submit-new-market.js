@@ -1,11 +1,7 @@
 import makeDescription from '../../../utils/make-description';
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import {
-	SUCCESS,
-	FAILED,
-	CREATING_MARKET
-} from '../../transactions/constants/statuses';
+import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 
 import AugurJS from '../../../services/augurjs';
 
