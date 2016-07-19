@@ -1,17 +1,56 @@
 .portfolio {
-  .portfolio-content {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    .l-container();
+    .portfolio-content {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        .l-container();
 
-    .portfolio-item {
-      flex: 2;
-      line-height: 2.5em;
-      overflow: hidden;
-      margin: 1vmin;
+        .portfolio-item {
+            flex: 2;
+            line-height: 2.5em;
+            overflow: hidden;
+            margin: 1vmin;
+
+            .search-sort {
+                padding: 0;
+                margin: 1vmin 0;
+
+                background-color: transparent;
+
+                .sort-container {
+                    .title {
+                        top: -0.7rem;
+
+                        color: @color-dark-normal;
+                    }
+
+                    .sort {
+                        background-color: white;
+
+                        color: @color-dark-normal;
+
+                        .options {
+                            background-color: white;
+
+                            color: @color-dark-normal;
+
+                            .option {
+                                &:hover, &:focus, &:active{
+                                    background-color: @color-dark-active;
+
+                                    color: @color-light-normal;
+                                }
+                            }
+                        }
+                    }
+
+                    .sort-direction-button {
+                        color: @color-dark-normal;
+                    }
+                }
+            }
+        }
     }
-  }
 }
 
 @media only screen and (max-width: @media-small-width) {

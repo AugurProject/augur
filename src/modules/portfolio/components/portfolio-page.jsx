@@ -33,14 +33,6 @@ const PortfolioPage = (p) => {
 			<SiteHeader {...p.siteHeader} />
 
 			<div className="page-content">
-				<SearchSort
-					keywords={p.keywords}
-					selectedSort={p.selectedSort}
-					sortOptions={p.sortOptions}
-					onChangeKeywords={p.onChangeKeywords}
-					onChangeSort={p.onChangeSort}
-				/>
-
 				<section className="page-content portfolio-content">
 					<div className="component-header">
 						<Link className="button make" {...p.createMarketLink} >
@@ -55,6 +47,14 @@ const PortfolioPage = (p) => {
 						<TabNavigation
 							activePage={p.siteHeader.activePage}
 							navItems={p.portfolio.navItems}
+						/>
+
+						<SearchSort
+							keywords={p.keywords}
+							selectedSort={p.selectedSort}
+							sortOptions={p.sortOptions}
+							onChangeKeywords={p.onChangeKeywords}
+							onChangeSort={p.onChangeSort}
 						/>
 
 						{node}
