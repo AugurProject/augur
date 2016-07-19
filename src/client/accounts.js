@@ -130,7 +130,7 @@ module.exports = function () {
                     self.account = {
                         name: name,
                         secureLoginID: secureLoginID,
-                        privateKey: encryptedPrivateKey,
+                        privateKey: plain.privateKey,
                         address: keystore.address,
                         keystore: keystore
                     };
