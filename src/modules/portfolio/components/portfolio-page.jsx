@@ -29,10 +29,10 @@ const PortfolioPage = (p) => {
 	}
 
 	return (
-		<main className="page portfolio-page">
+		<main className="page portfolio">
 			<SiteHeader {...p.siteHeader} />
 
-			<section className="page-content">
+			<div className="page-content">
 				<SearchSort
 					keywords={p.keywords}
 					selectedSort={p.selectedSort}
@@ -41,24 +41,27 @@ const PortfolioPage = (p) => {
 					onChangeSort={p.onChangeSort}
 				/>
 
-				<div className="l-container">
+				<section className="page-content portfolio-content">
 					<div className="component-header">
-						<Link className="button make" {...p.createMarketLink}>
+						<Link className="button make" {...p.createMarketLink} >
 							Make a Market
 						</Link>
 						<PortfolioSummary summaries={p.portfolio.summaries} />
 					</div>
-				</div>
 
-				<Filters filters={p.filters} />
+					<Filters filters={p.filters} />
 
-				<TabNavigation
-					activePage={p.activePage}
-					navItems={p.portfolio.navItems}
-				/>
+					<div className="portfolio-item">
+						<TabNavigation
+							activePage={p.siteHeader.activePage}
+							navItems={p.portfolio.navItems}
+						/>
 
-				{node}
-			</section>
+						{node}
+					</div>
+				</section>
+
+			</div>
 
 			<SiteFooter />
 		</main>

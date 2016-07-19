@@ -1,26 +1,78 @@
-.component-header {
-    .portfolio-summary {
-        align-content: stretch;
-        padding: 0;
+.portfolio {
+    .portfolio-content {
+        display: flex; flex-wrap: wrap;
+        width: 100%;
+        .l-container();
 
-        .summary-item {
-            flex: 1;
+        .component-header {
+            .portfolio-summary {
+                align-content: stretch;
+                margin: 0 5vmin;
+                padding: 0;
 
-            border: 1px solid @color-border-dark;
-            &:not(:last-of-type) {
-                border-right: none;
+                .summary-item {
+                    flex: 1;
+
+                    border: 1px solid @color-border-dark;
+                    &:not(:last-of-type) {
+                        border-right: none;
+                    }
+
+                    .summary-content {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        height: 100%;
+
+                        .summary-value {
+                            font-weight: @font-weight-bold;
+                            margin-left: 0.5rem;
+                        }
+                    }
+                }
+            }
+        }
+
+        .portfolio-item {
+            flex: 2;
+            line-height: 2.5em;
+            overflow: hidden;
+        }
+    }
+}
+
+@media only screen and (max-width: @media-small-width) {
+    .markets {
+        .portfolio-content {
+            .component-header {
+                .button.make {
+                    width: auto;
+                    padding: 0 4vmin;
+                    font-size: 1.6rem;
+                }
+                .header-bar {
+                    font-size: 1.6rem;
+                }
             }
 
-            .summary-content {
-                display: flex;
-                justify-content: center;
-                align-items: center;
+            .markets-list {
+                flex: unset;
+                width: 100%;
+            }
+        }
+    }
+}
 
-                height: 100%;
-
-                .summary-value {
-                    font-weight: @font-weight-bold;
-                    margin-left: 0.5rem;
+@media only screen and (max-width: @media-mobile-width) {
+    .portfolio {
+        .page-content {
+            .component-header {
+                .button.make {
+                    font-size: 3.5vmin;
+                }
+                .header-bar {
+                    font-size: 3.5vmin;
                 }
             }
         }
