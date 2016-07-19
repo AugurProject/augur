@@ -10,11 +10,14 @@ import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { selectAuthLink } from '../../link/selectors/links';
 // import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+// import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 // import { makeTransactionID } from '../../transactions/actions/add-transactions';
+import { updateAssets } from '../../auth/actions/update-assets';
 
 export function register(name, password, password2) {
 	return (dispatch, getState) => {
 		// const transactionID = makeTransactionID();
+
 		if (!name || !name.length) {
 			return dispatch(authError({ code: USERNAME_REQUIRED }));
 		}
@@ -35,17 +38,18 @@ export function register(name, password, password2) {
 		},
 		(transaction) => {
 			console.log(transaction);
-			// dispatch(updateExistingTransaction(transactionID, { status: PENDING }));
+			// dispatch(updateTransactionsData({ [transactionID]: { type: 'fund account', status: PENDING } }));
 			console.log(getState().transactionsData);
 		},
 		(succesfulTransaction) => {
 			console.log(succesfulTransaction);
-			// dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+			// dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, type: 'fund account' }));
 			console.log(getState().transactionsData);
+			dispatch(updateAssets());
 		},
 		(failedTransaction) => {
 			console.log(failedTransaction);
-			// dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
+			// dispatch(updateExistingTransaction(transactionID, { status: FAILED, type: 'fund account' }));
 			console.log(getState().transactionsData);
 		}
 		);
