@@ -91,15 +91,17 @@ module.exports = {
             options = null;
         }
         options = options || {};
+
         if (!account || !utils.is_function(cb)) return;
+
         this.rpc.getLogs({
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
             topics: [
-                this.api.events.log_price.signature,
+                this.api.events.log_fill_tx.signature,
                 null,
-                abi.format_int256(account)
+                abi.format_int256(account),
             ],
             timeout: 480000
         }, function (logs) {
@@ -121,7 +123,7 @@ module.exports = {
                         market: market,
                         price: abi.unfix(parsed[1], "string"),
                         shares: abi.unfix(parsed[2], "string"),
-                        timestamp: parseInt(parsed[3], 16),
+                        trade_id: parsed[3],
                         blockNumber: parseInt(logs[i].blockNumber, 16)
                     });
                 }
