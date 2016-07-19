@@ -321,7 +321,7 @@ ex.get_trade = function getTrade(orderID, cb) {
 
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
-		description: newMarket.description,
+		description: newMarket.formattedDescription,
 		expDate: newMarket.endDate.value.getTime() / 1000,
 		minValue: newMarket.minValue,
 		maxValue: newMarket.maxValue,

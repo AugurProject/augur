@@ -15,6 +15,7 @@ import {
 	SUCCESS,
 	FAILED
 } from '../../../src/modules/transactions/constants/statuses';
+import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../../src/modules/markets/constants/market-outcomes';
 
 describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -301,11 +302,12 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a categorical market', () => {
 			marketData = {
+				description: 'test',
 				type: CATEGORICAL,
 				outcomes: [
-					'outcome1',
-					'outcome2',
-					'outcome3'
+					{ id: 0, name: 'outcome1'},
+					{ id: 1, name: 'outcome2'},
+					{ id: 2, name: 'outcome3'}
 				]
 			};
 
@@ -336,11 +338,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				description: 'test',
+				formattedDescription: `test${CATEGORICAL_OUTCOMES_SEPARATOR}${marketData.outcomes[0].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[1].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[2].name}`,
 				type: CATEGORICAL,
 				outcomes: [
-					'outcome1',
-					'outcome2',
-					'outcome3'
+					{ id: 0, name: 'outcome1'},
+					{ id: 1, name: 'outcome2'},
+					{ id: 2, name: 'outcome3'}
 				],
 				minValue: 1,
 				maxValue: 2,
