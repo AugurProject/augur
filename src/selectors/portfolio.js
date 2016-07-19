@@ -1,21 +1,18 @@
-import { myPositionsLink, myMarketsLink, myReportsLink } from '../selectors/links';
+import links from '../selectors/links';
 
 const NAV_ITEMS = [
 	{
-		href: '/my-positions',
+		default: true,
 		label: 'My Positions',
-		link: myPositionsLink,
-		default: true
+		link: links.myPositionsLink,
 	},
 	{
-		href: '/my-markets',
 		label: 'My Markets',
-		link: myMarketsLink
+		link: links.myMarketsLink
 	},
 	{
-		href: '/my-reports',
 		label: 'My Reports',
-		link: myReportsLink
+		link: links.myReportsLink
 	},
 ];
 

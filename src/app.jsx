@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M, PORTFOLIO } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -76,6 +76,9 @@ export default function (appElement, selectors) {
 		break;
 
 	case PORTFOLIO:
+	case MY_POSITIONS:
+	case MY_MARKETS:
+	case MY_REPORTS:
 		node = (
 			<PortfolioPage
 				portfolio={p.portfolio}
