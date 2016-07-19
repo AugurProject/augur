@@ -213,7 +213,7 @@ export const assembleMarket = memoizerific(1000)((
 		outcome.topBid = selectTopBid(orderBook);
 		outcome.topAsk = selectTopAsk(orderBook);
 
-		outcome.userOpenOrders = selectUserOpenOrders(outcomeID, orderBook);
+		outcome.userOpenOrders = selectUserOpenOrders(outcomeID, marketOrderBooks);
 
 		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
 

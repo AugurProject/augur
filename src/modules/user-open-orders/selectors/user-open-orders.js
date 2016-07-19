@@ -3,66 +3,55 @@
  */
 import memoizerific from 'memoizerific';
 import store from '../../../store';
-import updateSelectedOpenOrdersGroup from '../actions/update-selected-user-open-orders-group';
+import { isOrderOfUser } from '../../bids-asks/selectors/is-order-of-user';
 import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
+import { CANCELLING, CANCELLED } from '../../bids-asks/constants/order-status';
+import { formatNone, formatEther, formatShares } from '../../../utils/format-number';
 
-export default function (outcomeId, outcomeOrderBook) {
+export default function (outcomeId, marketOrderBook) {
 	const { loginAccount } = store.getState();
 
-	return selectUserOpenOrders(outcomeId, loginAccount, outcomeOrderBook);
+	return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook);
 }
 
-export const selectUserOpenOrders = memoizerific(10)((outcomeId, loginAccount, outcomeOrderBook) => {
-	const isUserLoggedIn = loginAccount != null;
+export const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook) => {
+	const isUserLoggedIn = loginAccount != null && loginAccount.address != null;
 
-	if (!isUserLoggedIn || outcomeOrderBook == null || (outcomeOrderBook.bids.length === 0 && outcomeOrderBook.asks.length === 0)) {
-		return {
-			items: [],
-			selectedUserOpenOrdersGroup: store.getState().selectedUserOpenOrdersGroup,
-			cancelOrder: selectCancelOrder(outcomeId),
-			updateSelectedOpenOrdersGroup: selectUpdateSelectedOpenOrdersGroup(store.dispatch)
-		};
+	if (!isUserLoggedIn || marketOrderBook == null) {
+		return [];
 	}
 
-	const userBids = outcomeOrderBook.bids
-		.filter(userOrderFilter)
-		.map(order => {
-			const type = BID;
-			// todo
-			return {
-				type
-			};
-		});
+	const userBids = marketOrderBook.buy == null ? [] : marketOrderBook.buy
+		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, loginAccount.address))
+		.map(order => (
+			{
+				id: order.id,
+				marketID: order.market,
+				type: BID,
+				isCancelling: order.status === CANCELLING,
+				isCancelled: order.status === CANCELLED,
+				originalShares: formatNone(),
+				avgPrice: formatEther(order.price),
+				matchedShares: formatNone(),
+				unmatchedShares: formatShares(order.amount)
+			}
+	));
 
-	const userAsks = outcomeOrderBook.asks
-		.filter(userOrderFilter)
-		.map(order => {
-			// todo
-			const type = ASK;
-			return {
-				type
-			};
-		});
+	const userAsks = marketOrderBook.sell == null ? [] : marketOrderBook.sell
+		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, loginAccount.address))
+		.map(order => (
+			{
+				id: order.id,
+				marketID: order.market,
+				type: ASK,
+				isCancelling: order.status === CANCELLING,
+				isCancelled: order.status === CANCELLED,
+				originalShares: formatNone(),
+				avgPrice: formatEther(order.price),
+				matchedShares: formatNone(),
+				unmatchedShares: formatShares(order.amount)
+			}
+		));
 
-	return {
-		items: userBids.concat(userAsks),
-		selectedUserOpenOrdersGroup: store.getState().selectedUserOpenOrdersGroup,
-		cancelOrder: selectCancelOrder(outcomeId),
-		updateSelectedOpenOrdersGroup: selectUpdateSelectedOpenOrdersGroup(store.dispatch)
-	};
+	return userBids.concat(userAsks);
 });
-
-export const selectUpdateSelectedOpenOrdersGroup = memoizerific(1)((dispatch) => (
-	outcomeId => dispatch(updateSelectedOpenOrdersGroup(outcomeId))
-));
-
-export const selectCancelOrder = memoizerific(1)((dispatch) => (
-	(orderId) => console.log('cancelling %o', orderId)
-	// return (orderId) => dispatch(cancelOrder(orderId));
-));
-
-function userOrderFilter(order) {
-	return (
-		order.isOfCurrentUser
-	);
-}

@@ -17,3 +17,4 @@ export const ORDER_BOOK_OUTCOME_COMPLETE = 'outcome creation complete';
 
 // Trading
 export const TRADING = 'placing trade';
+export const CANCELLING_ORDER = 'cancelling order';

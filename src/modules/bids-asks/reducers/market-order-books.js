@@ -1,7 +1,8 @@
 /*
  * Author: priecint
  */
-import { UPDATE_MARKET_ORDER_BOOK } from '../actions/update-market-order-book';
+import { UPDATE_MARKET_ORDER_BOOK } from '../../bids-asks/actions/update-market-order-book';
+import { UPDATE_ORDER_STATUS } from '../../bids-asks/actions/update-order';
 
 /**
  * @param {Object} marketOrderBooks
@@ -14,6 +15,19 @@ export default function (marketOrderBooks = {}, action) {
 		return {
 			...marketOrderBooks,
 			[action.marketId]: action.marketOrderBook
+		};
+	case UPDATE_ORDER_STATUS:
+		return {
+			...marketOrderBooks,
+			[action.marketID]: {
+				...marketOrderBooks[action.marketID],
+				[action.orderType]: marketOrderBooks[action.marketID][action.orderType].map(order => {
+					if (order.id === action.orderID) {
+						order.status = action.status;
+					}
+					return order;
+				})
+			}
 		};
 	default:
 		return marketOrderBooks;

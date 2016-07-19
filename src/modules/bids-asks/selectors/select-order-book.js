@@ -1,8 +1,8 @@
 import memoizerific from 'memoizerific';
 
 import store from '../../../store';
-
 import { formatShares, formatEther } from '../../../utils/format-number';
+import { isOrderOfUser } from '../../bids-asks/selectors/is-order-of-user';
 
 /**
  * @param {String} outcomeId
@@ -49,7 +49,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 		.filter(order => order.outcome === outcomeId)
 		.map(order => ({
 			...order,
-			isOfCurrentUser: currentUserAddress != null && order.owner === currentUserAddress
+			isOfCurrentUser: isOrderOfUser(order, currentUserAddress)
 		}))
 		.reduce(reduceSharesCountByPrice, {});
 

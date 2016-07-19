@@ -318,6 +318,10 @@ ex.get_trade = function getTrade(orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
 
+ex.cancel = function cancel(orderId, onSent, onSuccess, onFailure) {
+	augur.cancel(orderId, onSent, onSuccess, onFailure);
+};
+
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
 		description: newMarket.formattedDescription,
