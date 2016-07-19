@@ -51,6 +51,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 
 		beforeEach(() => {
 			formState = {
+				description: 'test',
 				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
 				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
@@ -124,6 +125,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
     
 			out = {
 				type: BINARY,
+				description: 'test',
+				formattedDescription: 'test',
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
@@ -296,6 +299,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 
 			out = {
 				type: CATEGORICAL,
+				description: 'test',
+				formattedDescription: 'test',
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {
@@ -483,6 +488,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 
 			out = {
 				type: SCALAR,
+				description: 'test',
+				formattedDescription: 'test',
 				expirySource: 'testing',
 				makerFee: MAKER_FEE_DEFAULT,
 				endDate: {

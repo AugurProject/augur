@@ -7,4 +7,4 @@ export default function makeDescription(market) {
 		market.outcomes.map(outcome =>
 			outcome.name).join(CATEGORICAL_CHOICE_SEPARATOR);
 	return description;
-};
+}
