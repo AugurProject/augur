@@ -36,7 +36,7 @@ export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedF
 	}
 
 	function canDisplay(market) {
-		if (!market.malFormed && !market.isRequiredToReportByAccount) {
+		if (!market.isMalFormed && !market.isRequiredToReportByAccount) {
 			return true;
 		}
 	}

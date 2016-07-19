@@ -34,7 +34,7 @@ export function loadMarketsInfo(marketIDs) {
 				// transform array of outcomes into an object and add their names
 				finalOutcomesData[marketID] = parseOutcomes(marketData);
 				if (finalOutcomesData[marketID] === undefined) { // Data object is mal-formed if outcomes are unable to be parsed.
-					marketData.malFormed = true;
+					marketData.isMalFormed = true;
 				}
 
 				// mark that details have been loaded
