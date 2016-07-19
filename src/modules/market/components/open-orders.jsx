@@ -7,7 +7,7 @@ const OpenOrders = (p) => (
 		<h2>Open orders</h2>
 		{
 			p.outcomes.map(outcome => {
-				if (outcome.userOpenOrders.items.length === 0) {
+				if (outcome.userOpenOrders.length === 0) {
 					return null;
 				}
 
@@ -17,6 +17,9 @@ const OpenOrders = (p) => (
 						id={outcome.id}
 						name={outcome.name}
 						userOpenOrders={outcome.userOpenOrders}
+						selectedUserOpenOrdersGroupID={p.selectedUserOpenOrdersGroupID}
+						updateSelectedUserOpenOrdersGroup={p.updateSelectedUserOpenOrdersGroup}
+						cancelOrder={p.cancelOrder}
 					/>
 				);
 			})
@@ -25,7 +28,10 @@ const OpenOrders = (p) => (
 );
 
 OpenOrders.propTypes = {
-	outcomes: React.PropTypes.array
+	outcomes: React.PropTypes.array,
+	updateSelectedUserOpenOrdersGroup: React.PropTypes.func.isRequired,
+	cancelOrder: React.PropTypes.func.isRequired,
+	selectedUserOpenOrdersGroupID: React.PropTypes.string
 };
 
 export default OpenOrders;

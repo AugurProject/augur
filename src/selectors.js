@@ -10,6 +10,7 @@ import marketsTotals from './selectors/markets-totals';
 import positionsMarkets from './selectors/positions-markets';
 import positionsSummary from './selectors/positions-summary';
 import url from './selectors/url';
+import selectedUserOpenOrdersGroup from './selectors/selected-user-open-orders-group';
 
 import { BID, ASK } from './modules/transactions/constants/types';
 
@@ -26,7 +27,8 @@ const selectors = {
 	marketsTotals,
 	positionsSummary,
 	positionsMarkets,
-	url
+	url,
+	selectedUserOpenOrdersGroup
 };
 
 // add update helper fn to selectors object
@@ -67,6 +69,32 @@ selectors.selectedOutcome = {
 		});
 	},
 	selectedOutcomeID: null
+};
+
+selectors.cancelOrder = (orderId) => {
+	setTimeout(() => {
+		selectors.markets.forEach((market) => {
+			market.outcomes.forEach(outcome => {
+				const order = outcome.userOpenOrders.find(openOrder => openOrder.id === orderId);
+				if (order != null) {
+					order.isCancelling = true;
+					module.exports.update({});
+				}
+			});
+		});
+		setTimeout(() => {
+			selectors.markets.forEach((market) => {
+				market.outcomes.forEach(outcome => {
+					const order = outcome.userOpenOrders.find(openOrder => openOrder.id === orderId);
+					if (order != null) {
+						const index = outcome.userOpenOrders.findIndex(openOrder => openOrder.id === orderId);
+						outcome.userOpenOrders.splice(index, 1);
+						module.exports.update({});
+					}
+				});
+			});
+		}, 2000);
+	}, 1);
 };
 
 selectors.searchSort.onChangeSort = (prop, isDesc) => {

@@ -338,34 +338,8 @@ export default function(market) {
 							assert.isDefined(userOpenOrders);
 						});
 
-						it('should be object', () => {
-							assert.isObject(userOpenOrders);
-						});
-
-						describe('items', () => {
-							it('should be array', () => {
-								assert.isArray(userOpenOrders.items);
-							});
-						});
-
-						describe('selectedUserOpenOrdersGroup', () => {
-							it('should be null or string', () => {
-								const isNull = userOpenOrders.selectedUserOpenOrdersGroup === null;
-								const isString = typeof userOpenOrders.selectedUserOpenOrdersGroup === 'string';
-								assert(isNull || isString, 'selectedUserOpenOrdersGroup is not null or string');
-							});
-						});
-
-						describe('updateSelectedOpenOrdersGroup', () => {
-							it('should be function', () => {
-								assert.isFunction(userOpenOrders.updateSelectedOpenOrdersGroup);
-							});
-						});
-
-						describe('cancelOrder', () => {
-							it('should be function', () => {
-								assert.isFunction(userOpenOrders.cancelOrder);
-							});
+						it('should be array', () => {
+							assert.isArray(userOpenOrders);
 						});
 					});
 				});

@@ -16,7 +16,10 @@ export default class MarketPage extends Component {
 		sideOptions: PropTypes.array,
 		market: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
-		numPendingReports: PropTypes.number
+		numPendingReports: PropTypes.number,
+		updateSelectedUserOpenOrdersGroup: PropTypes.func.isRequired,
+		cancelOrder: PropTypes.func.isRequired,
+		selectedUserOpenOrdersGroupID: PropTypes.string
 	};
 	constructor(props) {
 		super(props);
@@ -80,6 +83,9 @@ export default class MarketPage extends Component {
 					<OpenOrders
 						key="open-orders"
 						outcomes={p.market.outcomes}
+						selectedUserOpenOrdersGroupID={p.selectedUserOpenOrdersGroupID}
+						updateSelectedUserOpenOrdersGroup={p.updateSelectedUserOpenOrdersGroup}
+						cancelOrder={p.cancelOrder}
 					/>
 				);
 

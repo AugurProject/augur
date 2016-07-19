@@ -308,59 +308,47 @@ function makeMarkets(numMarkets = 25) {
 					orderBook
 				};
 
-				outcome.userOpenOrders = {
-					selectedUserOpenOrdersGroup: null,
-					bidsCount: 2,
-					asksCount: 1,
-					items: [
-						{
-							id: 'order1',
-							type: 'sell',
-							originalShares: makeNumber(5, 'shares'),
-							avgPrice: makeNumber(0.7, 'ether'),
-							matchedShares: makeNumber(3, 'shares'),
-							unmatchedShares: makeNumber(2, 'shares'),
-							outcome: 'outcomeasdf123',
-							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-						},
-						{
-							id: 'order2',
-							type: 'buy',
-							originalShares: makeNumber(5, 'shares'),
-							avgPrice: makeNumber(0.7, 'ether'),
-							matchedShares: makeNumber(3, 'shares'),
-							unmatchedShares: makeNumber(2, 'shares'),
-							outcome: 'outcomeasdf123',
-							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-						},
-						{
-							id: 'order3',
-							type: 'buy',
-							originalShares: makeNumber(5, 'shares'),
-							avgPrice: makeNumber(0.7, 'ether'),
-							matchedShares: makeNumber(3, 'shares'),
-							unmatchedShares: makeNumber(2, 'shares'),
-							outcome: 'outcomeasdf123',
-							owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-						}
-					],
-					updateSelectedOpenOrdersGroup: () => {
-						outcome.userOpenOrders.selectedUserOpenOrdersGroup = !outcome.userOpenOrders.selectedUserOpenOrdersGroup;
-						require('../selectors').update({});
+				outcome.userOpenOrders = [
+					{
+						id: `${m.id}${outcome.id}order1`,
+						type: 'sell',
+						marketID: m.id,
+						isCancelling: false,
+						isCancelled: false,
+						originalShares: makeNumber(5, 'shares'),
+						avgPrice: makeNumber(0.7, 'ether'),
+						matchedShares: makeNumber(3, 'shares'),
+						unmatchedShares: makeNumber(2, 'shares'),
+						outcome: 'outcomeasdf123',
+						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
 					},
-					cancelOrder: (orderId) => {
-						console.log('cancelling order %o', orderId);
-						setTimeout(() => {
-							outcome.userOpenOrders.items.find(openOrder => openOrder.id === orderId).isCancelling = true;
-							require('../selectors').update({});
-							setTimeout(() => {
-								const index = outcome.userOpenOrders.items.findIndex(openOrder => openOrder.id === orderId);
-								outcome.userOpenOrders.items.splice(index, 1);
-								require('../selectors').update({});
-							}, 2000);
-						}, 1);
+					{
+						id: `${m.id}${outcome.id}order2`,
+						type: 'buy',
+						marketID: m.id,
+						isCancelling: false,
+						isCancelled: false,
+						originalShares: makeNumber(5, 'shares'),
+						avgPrice: makeNumber(0.7, 'ether'),
+						matchedShares: makeNumber(3, 'shares'),
+						unmatchedShares: makeNumber(2, 'shares'),
+						outcome: 'outcomeasdf123',
+						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
+					},
+					{
+						id: `${m.id}${outcome.id}order3`,
+						type: 'buy',
+						marketID: m.id,
+						isCancelling: false,
+						isCancelled: false,
+						originalShares: makeNumber(5, 'shares'),
+						avgPrice: makeNumber(0.7, 'ether'),
+						matchedShares: makeNumber(3, 'shares'),
+						unmatchedShares: makeNumber(2, 'shares'),
+						outcome: 'outcomeasdf123',
+						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
 					}
-				};
+				];
 
 				return outcome;
 
