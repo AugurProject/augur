@@ -95,7 +95,7 @@ module.exports = {
         }
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
-            if (!require.main && !displayed_connection_info) {
+            if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
                 console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
                 console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
                 console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
