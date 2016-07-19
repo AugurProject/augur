@@ -585,9 +585,9 @@ ex.getEvents = function getEvents(...args) {
 
 ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
 	if (env.fundNewAccountFromAddress) {
-		augur.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
+		augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
 	} else {
-		augur.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
+		augur.web.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
 	}
 };
 
