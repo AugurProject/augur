@@ -23,6 +23,8 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 	o.volume = formatNumber(0);
 	o.expirySource = formState.expirySource === EXPIRY_SOURCE_SPECIFIC ? formState.expirySourceUrl : formState.expirySource;
 
+	o.formattedDescription = o.description;
+
 	o.outcomes = selectOutcomesFromForm(
 		formState.type,
 		formState.categoricalOutcomes,

@@ -1,4 +1,4 @@
-// import { makeDescriptionFromCategoricalOutcomeNames } from '../../../utils/parse-market-data';
+import makeDescription from '../../../utils/make-description';
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import {
@@ -40,7 +40,7 @@ export function createMarket(transactionID, newMarket) {
 			newMarket.minValue = 1;
 			newMarket.maxValue = 2;
 			newMarket.numOutcomes = newMarket.outcomes.length;
-			// newMarket.description = makeDescriptionFromCategoricalOutcomeNames(newMarket);
+			newMarket.formattedDescription = makeDescription(newMarket);
 		} else {
 			console.warn('createMarket unsupported type:', newMarket.type);
 			return;
