@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ACCOUNT, MARKETS, TRANSACTIONS, PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
+import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -13,7 +13,7 @@ const SiteHeader = (p) => (
 			<span className="spacer">&nbsp;</span>
 			
 			{!!p.loginAccount && !!p.loginAccount.id &&
-				<Link className={classnames('site-nav-link', PORTFOLIO, { active: [PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.portfolioLink}>
+				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
 					Portfolio
 				</Link>
 			}
@@ -67,7 +67,7 @@ SiteHeader.propTypes = {
 	transactionsTotals: React.PropTypes.object,
 	isTransactionsWorking: React.PropTypes.bool,
 	marketsLink: React.PropTypes.object,
-	positionsLink: React.PropTypes.object,
+	myPositionsLink: React.PropTypes.object,
 	transactionsLink: React.PropTypes.object,
 	authLink: React.PropTypes.object
 };

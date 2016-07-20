@@ -25,12 +25,11 @@ export default function (appElement, selectors) {
 		transactionsTotals: p.transactionsTotals,
 		isTransactionsWorking: p.isTransactionsWorking,
 		marketsLink: p.links && p.links.marketsLink || undefined,
-		positionsLink: p.links && p.links.positionsLink || undefined,
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
 		authLink: p.links && p.links.authLink || undefined,
 		accountLink: p.links && p.links.accountLink || undefined,
 		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined,
-		portfolioLink: p.links && p.links.portfolioLink || undefined
+		myPositionsLink: p.links && p.links.myPositionsLink || undefined
 	};
 
 	switch (p.activePage) {
