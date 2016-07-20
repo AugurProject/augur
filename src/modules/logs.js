@@ -86,6 +86,35 @@ module.exports = {
 
     getAccountTrades: function (account, options, cb) {
         var self = this;
+
+        function parseLogs(logs, trades, callback) {
+            //console.log(logs);
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return callback();
+            }
+            if (logs.error) return cb(logs);
+            
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    var market = logs[i].topics[1];
+                    if (!trades[market]) trades[market] = {};
+                    var parsed = self.rpc.unmarshal(logs[i].data);
+                    var outcome = parseInt(parsed[4]);
+                    if (!trades[market][outcome]) trades[market][outcome] = [];
+                    trades[market][outcome].push({
+                        type: parseInt(parsed[0], 16),
+                        market: market,
+                        price: abi.unfix(parsed[1], "string"),
+                        shares: abi.unfix(parsed[2], "string"),
+                        trade_id: parsed[3],
+                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                    });
+                }
+            }
+            return callback();
+        }
+
         if (!cb && utils.is_function(options)) {
             cb = options;
             options = null;
@@ -101,34 +130,31 @@ module.exports = {
             topics: [
                 this.api.events.log_fill_tx.signature,
                 null,
-                abi.format_int256(account),
+                null,
+                abi.format_int256(account)
             ],
             timeout: 480000
         }, function (logs) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return cb(null);
-            }
-            if (logs.error) return cb(logs);
-            var market, outcome, parsed, price, timestamp, shares, type, trades = {};
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    market = logs[i].topics[1];
-                    if (!trades[market]) trades[market] = {};
-                    parsed = self.rpc.unmarshal(logs[i].data);
-                    outcome = parseInt(parsed[4]);
-                    if (!trades[market][outcome]) trades[market][outcome] = [];
-                    trades[market][outcome].push({
-                        type: parseInt(parsed[0], 16),
-                        market: market,
-                        price: abi.unfix(parsed[1], "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16)
+            var trades = {};
+            parseLogs(logs, trades, function () {
+                self.rpc.getLogs({
+                fromBlock: options.fromBlock || "0x1",
+                toBlock: options.toBlock || "latest",
+                address: self.contracts.Trade,
+                topics: [
+                    self.api.events.log_fill_tx.signature,
+                    null,
+                    abi.format_int256(account),
+                    null
+                ],
+                timeout: 480000
+                }, function (logs) {
+                    parseLogs(logs, trades, function () {
+                        if (Object.keys(trades).length === 0) return cb(null);
+                        cb(trades);
                     });
-                }
-            }
-            cb(trades);
+                });              
+            });
         });
     },
 
