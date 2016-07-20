@@ -45,15 +45,19 @@ module.exports = {
         }
 
         function checkPenalizeWrong(branch, votePeriod, next) {
-            console.log("checkPenalizeWrong:");
+            console.log("checking penalizeWrong for period", votePeriod);
             self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
                     // if > first period, then call penalizeWrong(branch, 0)
+                    console.log("No events found for this period");
                     return self.ConsensusData.getPenalizedUpTo(branch, self.from, function (lastPeriodPenalized) {
                         lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) { return next(null);
+                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
+                            console.log("Penalizations caught up!");
+                            return next(null);
                         }
+                        console.log("Calling penalizeWrong(branch, 0)...");
                         self.Consensus.penalizeWrong({
                             branch: branch,
                             event: 0,
@@ -72,6 +76,7 @@ module.exports = {
                         });
                     });
                 }
+                console.log("Events found, looping through...");
                 async.eachSeries(events, function (event, nextEvent) {
                     console.log(" - penalizeWrong:", event);
                     self.Consensus.penalizeWrong({
@@ -106,8 +111,10 @@ module.exports = {
         }
 
         checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
+            console.log("checkIncrementPeriod:", err, votePeriod);
             if (err) return callback(err);
             checkPenalizeWrong(branch, votePeriod - 1, function (err) {
+                console.log("checkPenalizeWrong:", err);
                 if (err) return callback(err);
                 self.checkVotePeriod(branch, periodLength, callback);
             });

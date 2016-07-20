@@ -13,31 +13,29 @@ runtest()
     echo -e " ${TEAL}test/${1}${NC}"
 
     if [ "${coverage}" == "1" ]; then
-        istanbul cover -x **/lib/**,**/scripts/**,**/dist/** _mocha test/${1} --gospel -- -R ${reporter}
+        istanbul cover -x **/lib/**,**/scripts/**,**/dist/** _mocha test/${1} -- -R ${reporter}
     else
-        mocha -R ${reporter} test/${1} ${gospel}
+        mocha -R ${reporter} test/${1}
     fi
 }
 
 reporter="progress"
-gospel=''
 coverage=0
 core=0
 create=0
 markets=0
-consensus=0
-client=0
+reporting=0
+trading=0
 
 for arg in "$@"; do
     shift
     case "$arg" in
-        "--gospel") set -- "$@" "-g" ;;
         "--coverage") set -- "$@" "-v" ;;
         "--core") set -- "$@" "-c" ;;
         "--create") set -- "$@" "-r" ;;
         "--markets") set -- "$@" "-m" ;;
-        "--consensus") set -- "$@" "-s" ;;
-        "--client") set -- "$@" "-l" ;;
+        "--reporting") set -- "$@" "-s" ;;
+        "--trading") set -- "$@" "-l" ;;
         "--spec") set -- "$@" "-k" ;;
         *) set -- "$@" "$arg"
     esac
@@ -50,8 +48,8 @@ while getopts "gvocrmslk" opt; do
         c) core=1 ;;
         r) create=1 ;;
         m) markets=1 ;;
-        s) consensus=1 ;;
-        l) client=1 ;;
+        s) reporting=1 ;;
+        l) trading=1 ;;
         k) reporter="spec" ;;
     esac
 done
@@ -64,7 +62,7 @@ echo -e "+${GRAY}================${NC}+\n"
 [ "${create}" == "1" ] && runtest "create"
 [ "${markets}" == "1" ] && runtest "markets"
 [ "${core}" == "1" ] && runtest "core"
-[ "${client}" == "1" ] && runtest "client"
-[ "${consensus}" == "1" ] && runtest "consensus"
+[ "${trading}" == "1" ] && runtest "trading"
+[ "${reporting}" == "1" ] && runtest "reporting"
 
 echo

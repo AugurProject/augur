@@ -1,7 +1,0 @@
-#!/bin/bash
-
-npm link ethrpc
-npm link augur-abi
-npm link augur-contracts
-npm link keythereum
-npm link ethereumjs-connect

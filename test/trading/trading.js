@@ -1702,7 +1702,7 @@ describe("Integration tests", function () {
     var accounts = augur.rpc.personal("listAccounts");
     var unlockable = [augur.from, accounts[0], accounts[2]];
 
-    before("top up accounts", function (done) {
+    beforeEach("top up accounts", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length);
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
         async.eachSeries(unlockable, function (account, nextAccount) {
@@ -1918,13 +1918,11 @@ describe("Integration tests", function () {
                                                 },
                                                 onCommitFailed: nextTrade,
                                                 onTradeSent: function (r) {
-                                                    console.log("trade sent:", r)
-                                                    assert.isArray(r.callReturn);
-                                                    assert.strictEqual(r.callReturn[0], 1);
-                                                    assert.strictEqual(r.callReturn.length, 3);
+                                                    // console.log("trade sent:", r)
+                                                    assert.isNull(r.callReturn);
                                                 },
                                                 onTradeSuccess: function (r) {
-                                                    console.log("trade success:", r)
+                                                    // console.log("trade success:", r)
                                                     assert.isArray(r.callReturn);
                                                     assert.strictEqual(r.callReturn[0], 1);
                                                     assert.strictEqual(r.callReturn.length, 3);
@@ -1989,13 +1987,11 @@ describe("Integration tests", function () {
                                         },
                                         onCommitFailed: nextTrade,
                                         onTradeSent: function (r) {
-                                            console.log("short sell sent:", r)
-                                            assert.isArray(r.callReturn);
-                                            assert.strictEqual(r.callReturn[0], 1);
-                                            assert.strictEqual(r.callReturn.length, 4);
+                                            // console.log("short sell sent:", r)
+                                            assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            console.log("short sell success:", r)
+                                            // console.log("short sell success:", r)
                                             assert.isArray(r.callReturn);
                                             assert.strictEqual(r.callReturn[0], 1);
                                             assert.strictEqual(r.callReturn.length, 4);
@@ -2022,103 +2018,103 @@ describe("Integration tests", function () {
         });
     });
 
-    describe("processOrder", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT*10);
-                augur.useAccount(accounts[0]);
-                var orderBook = augur.getOrderBook(t.market);
-                var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
-                var scalarMinMax = {};
-                var marketInfo = augur.getMarketInfo(t.market);
-                if (marketInfo && marketInfo.type === "scalar") {
-                    scalarMinMax = marketInfo.events[0];
-                }
-                augur.processOrder({
-                    requestId: t.requestId,
-                    market: t.market,
-                    marketOrderBook: orderBook,
-                    userTradeOrder: {
-                        type: t.type,
-                        sharesToSell: t.amount,
-                        etherToBuy: value,
-                        limitPrice: t.limitPrice,
-                        outcomeID: t.outcome
-                    },
-                    userPosition: {qtyShares: 0},
-                    scalarMinMax: scalarMinMax,
-                    onTradeHash: function (tradeOrderId, tradeHash) {
-                        // console.log("tradeHash:", tradeOrderId, tradeHash);
-                    },
-                    onCommitSent: function (tradeOrderId, res) {
-                        // console.log("commitSent:", tradeOrderId, res);
-                    },
-                    onCommitFailed: function (tradeOrderId, err) {
-                        // console.error("commit failed:", err);
-                        done(new Error(JSON.stringify(err, null, 2)));
-                    },
-                    onNextBlock: function (tradeOrderId, block) {
-                        // console.log("nextBlock:", tradeOrderId, block);
-                    },
-                    onTradeSent: function (tradeOrderId, res) {
-                        // console.log("trade sent:", tradeOrderId, res);
-                    },
-                    onTradeSuccess: function (tradeOrderId, res) {
-                        // console.log("tradeSuccess:", tradeOrderId, res);
-                        done();
-                    },
-                    onTradeFailed: function (tradeOrderId, err) {
-                        // console.error("trade failed:", err);
-                        done(new Error(JSON.stringify(err, null, 2)));
-                    },
-                    onBuySellSent: function (requestId, res) {
-                        // console.log("buySell sent:", requestId, res);
-                    },
-                    onBuySellSuccess: function (requestId, res) {
-                        // console.log("buy/sell order placed on the books successfully!");
-                        var newOrderBook = augur.getOrderBook(t.market);
-                        var orderType = t.type;
-                        for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
-                            if (t.outcome === newOrderBook[orderType][i].outcome &&
-                                parseFloat(value) === parseFloat(newOrderBook[orderType][i].amount) &&
-                                accounts[0] === newOrderBook[orderType][i].owner) {
-                                return done();
-                            }
-                        }
-                        done(new Error("order not found :("));
-                    },
-                    onBuySellFailed: function (requestId, err) {
-                        // console.error("buy/sell failed:", err);
-                        done(new Error(JSON.stringify(err, null, 2)));
-                    },
-                    onBuyCompleteSetsSent: function (requestId, res) {
-                        // console.log("onBuyCompleteSetsSent:", requestId, res);
-                    },
-                    onBuyCompleteSetsSuccess: function (requestId, res) {
-                        // console.log("onBuyCompleteSetsSuccess:", requestId, res);
-                    },
-                    onBuyCompleteSetsFailed: function (requestId, err) {
-                        // console.error("buyCompleteSets failed:", err);
-                        done(new Error(JSON.stringify(err, null, 2)));
-                    }
-                });
-            });
-        };
-        test({
-            requestId: 1,
-            market: markets[markets.length - 1],
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.001",
-            type: "buy"
-        });
-        test({
-            requestId: 2,
-            market: markets[markets.length - 1],
-            amount: 1,
-            outcome: "1",
-            limitPrice: "0.6",
-            type: "buy"
-        });
-    });
+    // describe("processOrder", function () {
+    //     var test = function (t) {
+    //         it(JSON.stringify(t), function (done) {
+    //             this.timeout(tools.TIMEOUT*10);
+    //             augur.useAccount(accounts[0]);
+    //             var orderBook = augur.getOrderBook(t.market);
+    //             var value = abi.bignum(t.amount).times(abi.bignum(t.limitPrice)).toFixed();
+    //             var scalarMinMax = {};
+    //             var marketInfo = augur.getMarketInfo(t.market);
+    //             if (marketInfo && marketInfo.type === "scalar") {
+    //                 scalarMinMax = marketInfo.events[0];
+    //             }
+    //             augur.processOrder({
+    //                 requestId: t.requestId,
+    //                 market: t.market,
+    //                 marketOrderBook: orderBook,
+    //                 userTradeOrder: {
+    //                     type: t.type,
+    //                     sharesToSell: t.amount,
+    //                     etherToBuy: value,
+    //                     limitPrice: t.limitPrice,
+    //                     outcomeID: t.outcome
+    //                 },
+    //                 userPosition: {qtyShares: 0},
+    //                 scalarMinMax: scalarMinMax,
+    //                 onTradeHash: function (tradeOrderId, tradeHash) {
+    //                     // console.log("tradeHash:", tradeOrderId, tradeHash);
+    //                 },
+    //                 onCommitSent: function (tradeOrderId, res) {
+    //                     // console.log("commitSent:", tradeOrderId, res);
+    //                 },
+    //                 onCommitFailed: function (tradeOrderId, err) {
+    //                     // console.error("commit failed:", err);
+    //                     done(new Error(JSON.stringify(err, null, 2)));
+    //                 },
+    //                 onNextBlock: function (tradeOrderId, block) {
+    //                     // console.log("nextBlock:", tradeOrderId, block);
+    //                 },
+    //                 onTradeSent: function (tradeOrderId, res) {
+    //                     // console.log("trade sent:", tradeOrderId, res);
+    //                 },
+    //                 onTradeSuccess: function (tradeOrderId, res) {
+    //                     // console.log("tradeSuccess:", tradeOrderId, res);
+    //                     done();
+    //                 },
+    //                 onTradeFailed: function (tradeOrderId, err) {
+    //                     // console.error("trade failed:", err);
+    //                     done(new Error(JSON.stringify(err, null, 2)));
+    //                 },
+    //                 onBuySellSent: function (requestId, res) {
+    //                     // console.log("buySell sent:", requestId, res);
+    //                 },
+    //                 onBuySellSuccess: function (requestId, res) {
+    //                     // console.log("buy/sell order placed on the books successfully!");
+    //                     var newOrderBook = augur.getOrderBook(t.market);
+    //                     var orderType = t.type;
+    //                     for (var i = 0, n = newOrderBook[orderType].length; i < n; ++i) {
+    //                         if (t.outcome === newOrderBook[orderType][i].outcome &&
+    //                             parseFloat(value) === parseFloat(newOrderBook[orderType][i].amount) &&
+    //                             accounts[0] === newOrderBook[orderType][i].owner) {
+    //                             return done();
+    //                         }
+    //                     }
+    //                     done(new Error("order not found :("));
+    //                 },
+    //                 onBuySellFailed: function (requestId, err) {
+    //                     // console.error("buy/sell failed:", err);
+    //                     done(new Error(JSON.stringify(err, null, 2)));
+    //                 },
+    //                 onBuyCompleteSetsSent: function (requestId, res) {
+    //                     // console.log("onBuyCompleteSetsSent:", requestId, res);
+    //                 },
+    //                 onBuyCompleteSetsSuccess: function (requestId, res) {
+    //                     // console.log("onBuyCompleteSetsSuccess:", requestId, res);
+    //                 },
+    //                 onBuyCompleteSetsFailed: function (requestId, err) {
+    //                     // console.error("buyCompleteSets failed:", err);
+    //                     done(new Error(JSON.stringify(err, null, 2)));
+    //                 }
+    //             });
+    //         });
+    //     };
+    //     test({
+    //         requestId: 1,
+    //         market: markets[markets.length - 1],
+    //         amount: 1,
+    //         outcome: "1",
+    //         limitPrice: "0.001",
+    //         type: "buy"
+    //     });
+    //     test({
+    //         requestId: 2,
+    //         market: markets[markets.length - 1],
+    //         amount: 1,
+    //         outcome: "1",
+    //         limitPrice: "0.6",
+    //         type: "buy"
+    //     });
+    // });
 });

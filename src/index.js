@@ -31,7 +31,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.2";
+    this.version = "1.8.3";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -63,7 +63,7 @@ function Augur() {
     this.filters = this.Filters();
 }
 
-Augur.prototype.Accounts = require("./client/accounts");
+Augur.prototype.Accounts = require("./accounts");
 Augur.prototype.Filters = require("./filters");
 
 module.exports = new Augur();
