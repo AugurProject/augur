@@ -138,16 +138,16 @@ module.exports = {
             var trades = {};
             parseLogs(logs, trades, function () {
                 self.rpc.getLogs({
-                fromBlock: options.fromBlock || "0x1",
-                toBlock: options.toBlock || "latest",
-                address: self.contracts.Trade,
-                topics: [
-                    self.api.events.log_fill_tx.signature,
-                    null,
-                    abi.format_int256(account),
-                    null
-                ],
-                timeout: 480000
+                    fromBlock: options.fromBlock || "0x1",
+                    toBlock: options.toBlock || "latest",
+                    address: self.contracts.Trade,
+                    topics: [
+                        self.api.events.log_fill_tx.signature,
+                        null,
+                        abi.format_int256(account),
+                        null
+                    ],
+                    timeout: 480000
                 }, function (logs) {
                     parseLogs(logs, trades, function () {
                         if (Object.keys(trades).length === 0) return cb(null);
