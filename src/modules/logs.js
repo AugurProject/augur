@@ -87,8 +87,7 @@ module.exports = {
     getAccountTrades: function (account, options, cb) {
         var self = this;
 
-        function parseLogs(logs, trades, callback) {
-            //console.log(logs);
+        function parseLogs(logs, trades, maker, callback) {
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return callback();
             }
@@ -104,11 +103,11 @@ module.exports = {
                     if (!trades[market][outcome]) trades[market][outcome] = [];
                     trades[market][outcome].push({
                         type: parseInt(parsed[0], 16),
-                        market: market,
                         price: abi.unfix(parsed[1], "string"),
                         shares: abi.unfix(parsed[2], "string"),
                         trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                        blockNumber: parseInt(logs[i].blockNumber, 16),
+                        maker: maker
                     });
                 }
             }
@@ -136,7 +135,7 @@ module.exports = {
             timeout: 480000
         }, function (logs) {
             var trades = {};
-            parseLogs(logs, trades, function () {
+            parseLogs(logs, trades, true, function () {
                 self.rpc.getLogs({
                     fromBlock: options.fromBlock || "0x1",
                     toBlock: options.toBlock || "latest",
@@ -149,7 +148,7 @@ module.exports = {
                     ],
                     timeout: 480000
                 }, function (logs) {
-                    parseLogs(logs, trades, function () {
+                    parseLogs(logs, trades, false, function () {
                         if (Object.keys(trades).length === 0) return cb(null);
                         cb(trades);
                     });

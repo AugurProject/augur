@@ -14,7 +14,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "0.5.3",
-    "augur-contracts": "1.4.5",
+    "augur-contracts": "1.4.7",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
