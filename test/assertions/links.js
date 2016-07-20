@@ -20,14 +20,6 @@ export default function(links) {
 	assert.isDefined(marketsLink.onClick, `links.marketsLink.onClick isn't defined`);
 	assert.isFunction(marketsLink.onClick, `links.marketsLink.onClick isn't a function`);
 
-	var positionsLink = links.positionsLink;
-	assert.isDefined(positionsLink, `links.positionsLink isn't defined`);
-	assert.isObject(positionsLink, `links.positionsLink isn't an object`);
-	assert.isDefined(positionsLink.href, `links.positionsLink.href isn't defined`);
-	assert.isString(positionsLink.href, `links.positionsLink.href isn't a string`);
-	assert.isDefined(positionsLink.onClick, `links.positionsLink.onClick isn't defined`);
-	assert.isFunction(positionsLink.onClick, `links.positionsLink.onClick isn't a function`);
-
 	var transactionsLink = links.transactionsLink;
 	assert.isDefined(transactionsLink, `links.transactionsLink isn't defined`);
 	assert.isObject(transactionsLink, `links.transactionsLink isn't an object`);

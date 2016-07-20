@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ACCOUNT, MARKETS, POSITIONS, TRANSACTIONS, PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
+import { ACCOUNT, MARKETS, TRANSACTIONS, PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
