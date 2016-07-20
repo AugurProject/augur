@@ -70,6 +70,25 @@ export default function (appElement, selectors) {
 		);
 		break;
 
+	case MY_POSITIONS:
+	case MY_MARKETS:
+	case MY_REPORTS:
+		node = (
+			<PortfolioPage
+				portfolio={p.portfolio}
+				siteHeader={p.siteHeader}
+				keywords={p.keywords && p.keywords.value}
+				selectedSort={p.searchSort.selectedSort}
+				sortOptions={p.searchSort.sortOptions}
+				onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
+				onChangeSort={p.searchSort.onChangeSort}
+				filters={p.filters}
+				positionsSummary={p.positionsSummary}
+				positionsMarkets={p.positionsMarkets}
+			/>
+		);
+		break;
+
 	case TRANSACTIONS:
 		node = (
 			<TransactionsPage
