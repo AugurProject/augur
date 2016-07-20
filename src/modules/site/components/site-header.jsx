@@ -18,28 +18,6 @@ const SiteHeader = (p) => (
 				</Link>
 			}
 
-			{!!p.loginAccount && !!p.loginAccount.id && !!p.positionsSummary && !!p.positionsSummary.numPositions &&
-				<Link className={classnames('site-nav-link', POSITIONS, { active: p.activePage === POSITIONS })} {...p.positionsLink}>
-
-					{!!p.positionsSummary &&
-						<ValueDenomination
-							className="positions-num"
-							{...p.positionsSummary.numPositions}
-							formatted={p.positionsSummary.numPositions.rounded}
-							formattedValue={p.positionsSummary.numPositions.roundedValue}
-						/>
-					}
-
-					{!!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.numPositions.roundedValue > 0 &&
-						<ValueDenomination
-							className="positions-gain"
-							{...p.positionsSummary.gainPercent}
-							formatted={p.positionsSummary.gainPercent.rounded}
-							formattedValue={p.positionsSummary.gainPercent.roundedValue}
-						/>
-					}
-				</Link>
-			}
 			{(!!p.loginAccount && !!p.loginAccount.id || !!p.transactionsTotals.numTotal) &&
 				<Link
 					className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
