@@ -17,7 +17,13 @@ const PortfolioPage = (p) => {
 	switch (p.siteHeader.activePage) {
 	default:
 	case MY_POSITIONS:
-		node = <Positions />;
+		node = (
+			<Positions
+				siteHeader={p.siteHeader}
+				positionsSummary={p.positionsSummary}
+				positionsMarkets={p.positionsMarkets}
+			/>
+		);
 		break;
 	case MY_MARKETS:
 		node = <Markets />;
@@ -75,7 +81,9 @@ PortfolioPage.propTypes = {
 	sortOptions: React.PropTypes.array,
 	onChangeKeywords: React.PropTypes.func,
 	onChangeSort: React.PropTypes.func,
-	filters: React.PropTypes.array
+	filters: React.PropTypes.array,
+	positionsSummary: React.PropTypes.object,
+	positionsMarkets: React.PropTypes.array
 };
 
 export default PortfolioPage;

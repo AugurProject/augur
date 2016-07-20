@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -9,7 +9,6 @@ import MarketPage from './modules/market/components/market-page';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
 import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
-import PositionsPage from './modules/positions/components/positions-page';
 import PortfolioPage from './modules/portfolio/components/portfolio-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
@@ -64,17 +63,6 @@ export default function (appElement, selectors) {
 		);
 		break;
 
-	case POSITIONS:
-		node = (
-			<PositionsPage
-				siteHeader={p.siteHeader}
-				positionsSummary={p.positionsSummary}
-				positionsMarkets={p.positionsMarkets}
-			/>
-		);
-		break;
-
-	case PORTFOLIO:
 	case MY_POSITIONS:
 	case MY_MARKETS:
 	case MY_REPORTS:
@@ -88,6 +76,8 @@ export default function (appElement, selectors) {
 				onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
 				onChangeSort={p.searchSort.onChangeSort}
 				filters={p.filters}
+				positionsSummary={p.positionsSummary}
+				positionsMarkets={p.positionsMarkets}
 			/>
 		);
 		break;
