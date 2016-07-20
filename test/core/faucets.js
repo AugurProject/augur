@@ -7,10 +7,9 @@ var tools = require("../tools");
 
 if (process.env.AUGURJS_INTEGRATION_TESTS) {
 
-    describe("Integration tests", function () {
+    var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
-        var augur = tools.setup(require("../../src"), process.argv.slice(2));
-
+    if (augur.Cash.balance(augur.from) === "0") {
         it("cashFaucet", function (done) {
             this.timeout(tools.TIMEOUT);
             augur.cashFaucet({
@@ -25,25 +24,25 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 onFailed: done
             });
         });
+    }
 
-        it("reputationFaucet", function (done) {
-            this.timeout(tools.TIMEOUT);
-            augur.reputationFaucet({
-                branch: augur.constants.DEFAULT_BRANCH_ID,
-                onSent: function (r) {
-                    assert.strictEqual(r.callReturn, "1");
-                    assert(abi.bignum(r.txHash).toNumber());
-                },
-                onSuccess: function (r) {
-                    assert.strictEqual(r.callReturn, "1");
-                    assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
-                    assert.isAbove(abi.number(r.blockNumber), 0);
-                    var rep_balance = augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, augur.coinbase);
-                    assert.strictEqual(rep_balance, "47");
-                    done();
-                },
-                onFailed: done
-            });
+    it("reputationFaucet", function (done) {
+        this.timeout(tools.TIMEOUT);
+        augur.reputationFaucet({
+            branch: augur.constants.DEFAULT_BRANCH_ID,
+            onSent: function (r) {
+                assert.strictEqual(r.callReturn, "1");
+                assert(abi.bignum(r.txHash).toNumber());
+            },
+            onSuccess: function (r) {
+                assert.strictEqual(r.callReturn, "1");
+                assert.notStrictEqual(abi.bignum(r.blockHash).toNumber(), 0);
+                assert.isAbove(abi.number(r.blockNumber), 0);
+                var rep_balance = augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, augur.coinbase);
+                assert.strictEqual(rep_balance, "47");
+                done();
+            },
+            onFailed: done
         });
     });
-}
+});
