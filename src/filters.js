@@ -194,6 +194,7 @@ module.exports = function () {
                                 data_array.length > 1) {
                                 onMessage({
                                     marketId: message[i].topics[1],
+                                    type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
                                     taker: abi.format_address(message[i].topics[2]),
                                     maker: abi.format_address(message[i].topics[3]),
                                     price: abi.unfix(data_array[1], "string"),

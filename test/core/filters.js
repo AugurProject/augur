@@ -474,6 +474,7 @@ describe("Unit tests", function () {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_fill_tx_message(msg, function (parsed) {
                     assert.property(parsed, "marketId");
+                    assert.property(parsed, "type");
                     assert.property(parsed, "taker");
                     assert.property(parsed, "maker");
                     assert.property(parsed, "price");
