@@ -15,9 +15,8 @@ var locks = require("locks");
 var request = (NODE_JS) ? require("request") : require("browser-request");
 var abi = require("augur-abi");
 var errors = require("augur-contracts").errors;
-var constants = require("../constants");
-var utils = require("../utilities");
-var abacus = require("../modules/abacus");
+var constants = require("./constants");
+var utils = require("./utilities");
 
 request = request.defaults({timeout: 120000});
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -124,7 +123,7 @@ module.exports = function () {
                         id: uuid.v4()
                     };
                     var unsecureLoginIDObject = {name: name, keystore: keystore};
-                    var secureLoginID = abacus.base58Encrypt(unsecureLoginIDObject);
+                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
 
 										// while logged in, web.account object is set
                     self.account = {
@@ -153,7 +152,7 @@ module.exports = function () {
             if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
             var unencryptedLoginIDObject;
             try {
-                unencryptedLoginIDObject = abacus.base58Decrypt(secureLoginID);
+                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
             } catch (err) {
                 return cb(errors.BAD_CREDENTIALS);
             }

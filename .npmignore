@@ -2,9 +2,9 @@ node_modules
 .gitignore
 .npmignore
 .travis.yml
-lib/contracts
-lib/solidity
-lib/utils
+data
+old
+lib
 test
 scripts
 env.js
