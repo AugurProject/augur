@@ -1,7 +1,7 @@
 import React from 'react';
 
 const PortfolioReports = () => (
-	<span>PORTFOLIO REPORTS</span>
+	<span>PORTFOLIO REPORTS -- TODO</span>
 );
 
 export default PortfolioReports;

@@ -1,7 +1,6 @@
 import React from 'react';
 import SummaryItem from '../../../modules/portfolio/components/summary-item';
 
-
 const PortfolioSummary = (p) => (
 	<header className="header-bar portfolio-summary" >
 		{p.summaries.map((summary, i) => (
