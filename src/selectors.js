@@ -9,6 +9,8 @@ import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
 import positionsMarkets from './selectors/positions-markets';
 import positionsSummary from './selectors/positions-summary';
+import transactions from './selectors/transactions';
+import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
 
 import { BID, ASK } from './modules/transactions/constants/types';
@@ -26,6 +28,8 @@ const selectors = {
 	marketsTotals,
 	positionsSummary,
 	positionsMarkets,
+	transactions,
+	transactionsTotals,
 	url
 };
 
@@ -41,10 +45,6 @@ Object.defineProperty(selectors, 'update', {
 	enumerable: false
 });
 
-selectors.transactions = [];
-selectors.transactionsTotals = {
-	title: '0 Transactions'
-};
 selectors.isTransactionsWorking = false;
 
 
