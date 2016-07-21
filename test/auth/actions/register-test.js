@@ -14,6 +14,7 @@ describe(`modules/auth/actions/register.js`, () => {
 	const fakeAugurJS = {};
 	const fakeAuthLink = {};
 	const fakeSelectors = {};
+	const fakeFund = {};
 
 	let action, store;
 	let thisTestState = Object.assign({}, testState, {
@@ -39,15 +40,21 @@ describe(`modules/auth/actions/register.js`, () => {
 	fakeAuthLink.selectAuthLink = (page, bool, dispatch) => {
 		return { onClick: () => {} };
 	};
+	fakeFund.addFundNewAccount = sinon.stub().returns({ type: 'FUND_NEW_ACCOUNT' });
 
 
 	action = proxyquire('../../../src/modules/auth/actions/register', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../../selectors': fakeSelectors,
-		'../../link/selectors/links': fakeAuthLink
+		'../../link/selectors/links': fakeAuthLink,
+		'../../transactions/actions/add-fund-new-account-transaction': fakeFund
 	});
 
 	beforeEach(() => {
+		store.clearActions();
+	});
+
+	afterEach(() => {
 		store.clearActions();
 	});
 
@@ -58,10 +65,10 @@ describe(`modules/auth/actions/register.js`, () => {
 			data: {
 				secureLoginID: 'testid',
 			}
-		}];
+		}, { type: 'FUND_NEW_ACCOUNT' }];
 
 		store.dispatch(action.register('newUser', 'testing', 'testing'));
-
+		assert(fakeFund.addFundNewAccount.calledOnce, `addFundNewAccount wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
 	});
 
