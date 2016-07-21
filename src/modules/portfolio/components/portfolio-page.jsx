@@ -43,7 +43,9 @@ const PortfolioPage = (p) => {
 						<Link className="button make" {...p.createMarketLink} >
 							Make a Market
 						</Link>
-						<PortfolioSummary summaries={p.portfolio.summaries} />
+						{!!p.portfolio && !!p.portfolio.summaries &&
+							<PortfolioSummary summaries={p.portfolio.summaries} />
+						}
 					</div>
 
 					<Filters filters={p.filters} />

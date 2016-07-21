@@ -63,7 +63,6 @@ const SiteHeader = (p) => (
 SiteHeader.propTypes = {
 	activePage: React.PropTypes.string,
 	loginAccount: React.PropTypes.object,
-	positionsSummary: React.PropTypes.object,
 	transactionsTotals: React.PropTypes.object,
 	isTransactionsWorking: React.PropTypes.bool,
 	marketsLink: React.PropTypes.object,
