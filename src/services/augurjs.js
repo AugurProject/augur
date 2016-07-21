@@ -483,6 +483,18 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 	});
 };
 
+ex.getFees = function getFees(marketID) {
+	return augur.getFees(marketID);
+};
+
+ex.getVolume = function getVolume(marketID) {
+	return augur.getVolume(marketID);
+};
+
+ex.get_total_trades = function getTotalTrades(marketID) {
+	return augur.get_total_trades(marketID);
+};
+
 ex.collectFees = function collectFees(branchID, cb) {
 	augur.getPeriodLength(branchID, periodLength => {
 		augur.collectFees({
