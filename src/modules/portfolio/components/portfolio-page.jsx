@@ -12,8 +12,6 @@ import TabNavigation from '../../../modules/common/components/tab-navigation';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/pages';
 
 const PortfolioPage = (p) => {
-	console.log('PortfolioPage -- ', p);
-
 	let node;
 
 	switch (p.siteHeader.activePage) {
@@ -28,7 +26,7 @@ const PortfolioPage = (p) => {
 		);
 		break;
 	case MY_MARKETS:
-		node = <Markets />;
+		node = <Markets markets={p.portfolio.myMarkets} />;
 		break;
 	case MY_REPORTS:
 		node = <Reports />;
