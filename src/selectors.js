@@ -26,6 +26,8 @@ import filters from './modules/markets/selectors/filters';
 import searchSort from './modules/markets/selectors/search-sort';
 import keywords from './modules/markets/selectors/keywords';
 
+import portfolio from './modules/portfolio/selectors/portfolio';
+
 import transactions from './modules/transactions/selectors/transactions';
 import transactionsTotals from './modules/transactions/selectors/transactions-totals';
 import isTransactionsWorking from './modules/transactions/selectors/is-transactions-working';
@@ -61,6 +63,8 @@ const selectors = {
 	filters,
 	searchSort,
 	keywords,
+
+	portfolio,
 
 	transactions,
 	transactionsTotals,
