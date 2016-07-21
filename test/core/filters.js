@@ -473,6 +473,19 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_fill_tx_message(msg, function (parsed) {
+                    assert.property(parsed, "marketId");
+                    assert.property(parsed, "type");
+                    assert.property(parsed, "taker");
+                    assert.property(parsed, "maker");
+                    assert.property(parsed, "price");
+                    assert.property(parsed, "shares");
+                    assert.property(parsed, "trade_id");
+                    assert.property(parsed, "outcome");
+                    assert.property(parsed, "blockNumber");
+                    assert.deepEqual(msg[0].topics[1], parsed['marketId']);
+                    assert.deepEqual(abi.format_address(msg[0].topics[2]), parsed['taker']);
+                    assert.deepEqual(abi.format_address(msg[0].topics[3]), parsed['maker']);
+                    assert.deepEqual(msg[0].blockNumber, parsed['blockNumber']);
                     console.log("parse_fill_tx_message:", parsed);
                     done();
                 });
@@ -482,7 +495,7 @@ describe("Unit tests", function () {
             address: '0x13cef2d86d4024f102e480627239359b5cb7bf52',
             blockHash: '0x8171815b23ee1e0cf62e331f283c6d977689a93e3574b2ca35f75c19804914ef',
             blockNumber: '0x11941e',
-            data: '0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000028f5c28f5c28f5c0000000000000000000000000000000000000000000000010000000000000000dd122c8309edd6025b07038ed4225c5c906ff0a7694814da88abf978e22af13b0000000000000000000000000000000000000000000000000000000000000001',
+            data: '0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000000de0b6b3a7640000640ce61af3b560a54f2f41dcba10ef6337df02e650c30f651789a090b02c312f0000000000000000000000000000000000000000000000000000000000000001',
             logIndex: '0x0',
             topics: [
                 '0x715b9a9cb6dfb4fa9cb1ebc2eba40d2a7bd66aa8cef75f87a77d1ff05d29a3b6',
@@ -687,7 +700,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 }
             });
         });
-
+    
         describe("Account trade list", function () {
             var account = augur.coinbase;
             it("getAccountTrades(" + account + ")", function (done) {
@@ -700,10 +713,10 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             assert.isArray(trades[marketId][outcomeId]);
                             for (var i = 0; i < trades[marketId][outcomeId].length; ++i) {
                                 assert.property(trades[marketId][outcomeId][i], "price");
+                                assert.property(trades[marketId][outcomeId][i], "type");
+                                assert.property(trades[marketId][outcomeId][i], "shares");
+                                assert.property(trades[marketId][outcomeId][i], "maker");
                                 assert.property(trades[marketId][outcomeId][i], "blockNumber");
-                                assert.property(trades[marketId][outcomeId][i], "market");
-                                assert.property(trades[marketId][outcomeId][i], "amount");
-                                assert.isAbove(trades[marketId][outcomeId][i].market.length, 64);
                                 assert.isAbove(trades[marketId][outcomeId][i].blockNumber, 0);
                             }
                         }
