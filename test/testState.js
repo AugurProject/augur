@@ -1,5 +1,7 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
+import env from '../src/env.json';
+
 const testState = {
 	accountTrades: {},
 	activePage: 'markets',
@@ -45,6 +47,7 @@ const testState = {
 	favorites: {
 		testMarketID: true
 	},
+	env,
 	loginAccount: {
 		address: '0xtest123',
 		id: '0xtest123',
