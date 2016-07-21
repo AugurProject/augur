@@ -61,7 +61,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_add_tx_message: function (message, onMessage) {
+        parse_log_add_tx_message: function (message, onMessage) {
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -77,7 +77,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_cancel_message: function (message, onMessage) {
+        parse_log_cancel_message: function (message, onMessage) {
             console.log("cancel:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
@@ -184,7 +184,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_fill_tx_message: function (message, onMessage) {
+        parse_log_fill_tx_message: function (message, onMessage) {
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -211,7 +211,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_price_message: function (message, onMessage) {
+        parse_log_price_message: function (message, onMessage) {
             if (message && message.length) {
                 for (var i = 0, len = message.length; i < len; ++i) {
                     if (message[i] && message[i].topics && message[i].topics.length === 3) {
@@ -238,9 +238,14 @@ module.exports = function () {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
+                case "log_fill_tx":
+                    callback = function (msg) {
+                        self.parse_log_fill_tx_message(msg, onMessage);
+                    };
+                    break;
                 case "log_price":
                     callback = function (msg) {
-                        self.parse_price_message(msg, onMessage);
+                        self.parse_log_price_message(msg, onMessage);
                     };
                     break;
                 case "contracts":
@@ -404,10 +409,16 @@ module.exports = function () {
                                 self.parse_contracts_message(msg, callback);
                             };
                             break;
+                        case "log_fill_tx":
+                            callback = cb.log_fill_tx;
+                            cb.log_fill_tx = function (msg) {
+                                self.parse_log_fill_tx_message(msg, callback);
+                            };
+                            break;
                         case "log_price":
                             callback = cb.log_price;
                             cb.log_price = function (msg) {
-                                self.parse_price_message(msg, callback);
+                                self.parse_log_price_message(msg, callback);
                             };
                             break;
                         case "marketCreated":

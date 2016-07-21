@@ -242,11 +242,11 @@ describe("Unit tests", function () {
             "transactionIndex": "0x3"
         }]);
     });
-    describe("parse_add_tx_message", function () {
+    describe("parse_log_add_tx_message", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
-                augur.filters.parse_add_tx_message(msg, function (parsed) {
-                    console.log("parse_add_tx_message:", parsed);
+                augur.filters.parse_log_add_tx_message(msg, function (parsed) {
+                    console.log("parse_log_add_tx_message:", parsed);
                     done();
                 });
             });
@@ -330,11 +330,11 @@ describe("Unit tests", function () {
             transactionIndex: '0x3'
         }]);
     });
-    describe("parse_cancel_message", function () {
+    describe("parse_log_cancel_message", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
-                augur.filters.parse_cancel_message(msg, function (parsed) {
-                    console.log("parse_cancel_message:", parsed);
+                augur.filters.parse_log_cancel_message(msg, function (parsed) {
+                    console.log("parse_log_cancel_message:", parsed);
                     done();
                 });
             });
@@ -353,11 +353,11 @@ describe("Unit tests", function () {
             transactionIndex: '0x2'
         }]);
     });
-    describe("parse_price_message", function () {
+    describe("parse_log_price_message", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
-                augur.filters.parse_price_message(msg, function (parsed) {
-                    console.log("parse_price_message:", parsed);
+                augur.filters.parse_log_price_message(msg, function (parsed) {
+                    console.log("parse_log_price_message:", parsed);
                     done();
                 });
             });
@@ -469,10 +469,10 @@ describe("Unit tests", function () {
         };
         // test();
     });
-    describe("parse_fill_tx_message", function () {
+    describe("parse_log_fill_tx_message", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
-                augur.filters.parse_fill_tx_message(msg, function (parsed) {
+                augur.filters.parse_log_fill_tx_message(msg, function (parsed) {
                     assert.property(parsed, "marketId");
                     assert.property(parsed, "type");
                     assert.property(parsed, "taker");
@@ -486,7 +486,7 @@ describe("Unit tests", function () {
                     assert.deepEqual(abi.format_address(msg[0].topics[2]), parsed['taker']);
                     assert.deepEqual(abi.format_address(msg[0].topics[3]), parsed['maker']);
                     assert.deepEqual(msg[0].blockNumber, parsed['blockNumber']);
-                    console.log("parse_fill_tx_message:", parsed);
+                    console.log("parse_log_fill_tx_message:", parsed);
                     done();
                 });
             });
