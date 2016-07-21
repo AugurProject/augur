@@ -5,12 +5,14 @@ var abi = require("augur-abi");
 var augur = require("../../src");
 var tools = require("../tools");
 
-if (process.env.AUGURJS_INTEGRATION_TESTS) {
+describe("Faucets", function () {
+
+    if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
 
     var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
     if (augur.Cash.balance(augur.from) === "0") {
-        it("cashFaucet", function (done) {
+        it("Faucets.cashFaucet", function (done) {
             this.timeout(tools.TIMEOUT);
             augur.cashFaucet({
                 onSent: function (r) {
@@ -26,7 +28,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
         });
     }
 
-    it("reputationFaucet", function (done) {
+    it("Faucets.reputationFaucet", function (done) {
         this.timeout(tools.TIMEOUT);
         augur.reputationFaucet({
             branch: augur.constants.DEFAULT_BRANCH_ID,
