@@ -228,7 +228,7 @@ ex.logout = function logout() {
 	augur.web.logout();
 };
 
-ex.register = function register(env, branchID, name, password, cb, onFundSent, onFundSuccess, onFundFailed) {
+ex.register = function register(name, password, cb) {
 	augur.web.register(name, password,
 		account => {
 			if (!account) {
@@ -237,7 +237,6 @@ ex.register = function register(env, branchID, name, password, cb, onFundSent, o
 			if (account.error) {
 				return cb({ code: account.error, message: account.message });
 			}
-			ex.fundNewAccount(env, account.address, branchID, onFundSent, onFundSuccess, onFundFailed);
 			return cb(null, {
 				...account,
 				id: account.address
