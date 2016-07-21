@@ -1,26 +1,26 @@
 import links from '../selectors/links';
-import { PORTFOLIO, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/pages';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/pages';
 
-const NAV_ITEMS = [
+const navItems = [
 	{
 		default: true,
 		label: 'My Positions',
 		link: links.myPositionsLink,
-		page: [PORTFOLIO, MY_POSITIONS]
+		page: MY_POSITIONS
 	},
 	{
 		label: 'My Markets',
 		link: links.myMarketsLink,
-		page: [MY_MARKETS]
+		page: MY_MARKETS
 	},
 	{
 		label: 'My Reports',
 		link: links.myReportsLink,
-		page: [MY_REPORTS]
+		page: MY_REPORTS
 	},
 ];
 
-const SUMMARIES = [
+const summaries = [
 	{
 		label: 'Total Value',
 		value: '212.38 ETH'
@@ -36,12 +36,10 @@ const SUMMARIES = [
 	{
 		label: 'Fees Earned',
 		value: '1.77 ETH'
-	},
+	}
 ];
 
-const PORTFOLIO_OBJECT = {
-	navItems: NAV_ITEMS,
-	summaries: SUMMARIES
+export default {
+	navItems,
+	summaries
 };
-
-export default PORTFOLIO_OBJECT;

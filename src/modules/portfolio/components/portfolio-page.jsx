@@ -12,6 +12,8 @@ import TabNavigation from '../../../modules/common/components/tab-navigation';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/pages';
 
 const PortfolioPage = (p) => {
+	console.log('PortfolioPage -- ', p);
+
 	let node;
 
 	switch (p.siteHeader.activePage) {
@@ -36,14 +38,13 @@ const PortfolioPage = (p) => {
 	return (
 		<main className="page portfolio">
 			<SiteHeader {...p.siteHeader} />
-
 			<div className="page-content">
 				<section className="page-content portfolio-content">
 					<div className="component-header">
 						<Link className="button make" {...p.createMarketLink} >
 							Make a Market
 						</Link>
-						{!!p.portfolio && !!p.portfolio.summaries &&
+						{!!p.portfolio && !!p.portfolio.summaries.length &&
 							<PortfolioSummary summaries={p.portfolio.summaries} />
 						}
 					</div>
@@ -51,10 +52,12 @@ const PortfolioPage = (p) => {
 					<Filters filters={p.filters} />
 
 					<div className="portfolio-item">
-						<TabNavigation
-							activePage={p.siteHeader.activePage}
-							navItems={p.portfolio.navItems}
-						/>
+						{!!p.portfolio && !!p.portfolio.navItems.length &&
+							<TabNavigation
+								activePage={p.siteHeader.activePage}
+								navItems={p.portfolio.navItems}
+							/>
+						}
 
 						<SearchSort
 							keywords={p.keywords}
@@ -67,9 +70,7 @@ const PortfolioPage = (p) => {
 						{node}
 					</div>
 				</section>
-
 			</div>
-
 			<SiteFooter />
 		</main>
 	);

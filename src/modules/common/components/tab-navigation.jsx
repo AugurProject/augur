@@ -4,16 +4,20 @@ import classnames from 'classnames';
 
 const TabNavigation = (p) => (
 	<div className="tab-navigator">
-		{p.navItems.map((navItem, i) => (
-			<Link
-				key={`${i}`}
-				className={classnames('nav-item', { active: navItem.page.indexOf(p.activePage) > -1 })}
-				href={navItem.link.href}
-				onClick={navItem.link.onClick}
-			>
-				{navItem.label}
-			</Link>
-		))}
+		{!!p.navItems && p.navItems.map((navItem, i) => {
+			if (typeof navItem.page === 'string') navItem.page = [navItem.page];
+
+			return (
+				<Link
+					key={`${i}`}
+					className={classnames('nav-item', { active: navItem.page.indexOf(p.activePage) > -1 })}
+					href={navItem.link.href}
+					onClick={navItem.link.onClick}
+				>
+					{navItem.label}
+				</Link>
+			);
+		})}
 	</div>
 );
 
