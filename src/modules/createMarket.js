@@ -149,11 +149,31 @@ module.exports = {
         });
     },
 
-    updateTradingFee: function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
+    updateTradingFee: function (branchId, market, tradingFee, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (branchId.constructor === Object && branchId.branchId) {
+            market = branchId.market;         // string
+            tradingFee = branchId.tradingFee;
+            onSent = branchId.onSent;         // function
+            onSuccess = branchId.onSuccess;   // function
+            onFailed = branchId.onFailed;     // function
+            branchId = branchId.branchId;     // sha256 hash
+        }
         var tx = clone(this.tx.CreateMarket.updateTradingFee);
-        var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
-        tx.params = unpacked.params;
-        tx.params[2] = abi.fix(tx.params[2], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
+
+        tx.params = [
+            branchId,
+            market,
+            abi.fix(tradingFee, "hex")
+        ];
+
+        if (!utils.is_function(onSent)) {
+            var res = this.transact(tx);
+            return res;
+        }
+
+        self.transact(tx, onSent, function (res) {
+            onSuccess(res);
+        }, onFailed);
     }
 };
