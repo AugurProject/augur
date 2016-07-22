@@ -156,7 +156,9 @@ describe("Reporting sequence", function () {
                                 makerFee: "0.01",
                                 tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
                                 extraInfo: madlibs.city() + " " + madlibs.noun() + " " + madlibs.action() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
-                                onSent: function (res) {},
+                                onSent: function (res) {
+                                    console.log("createSingleEventMarket sent:", res);
+                                },
                                 onSuccess: function (res) {
                                     marketID = res.marketID;
                                     if (DEBUG) console.log(chalk.white.dim("Market ID:"), chalk.green(marketID));
