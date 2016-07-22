@@ -581,5 +581,14 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 	}
 };
 
+ex.changeAccountName = function changeAccountName(name, cb) {
+	augur.web.changeAccountName(name, account => {
+		if (!account) {
+			return cb({ code: 0, message: 'failed to edit account name' });
+		}
+		return cb(null, account);
+	});
+};
+
 ex.rpc = augur.rpc;
 module.exports = ex;
