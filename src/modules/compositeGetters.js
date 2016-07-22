@@ -75,24 +75,6 @@ module.exports = {
         }
     },
 
-    getMarketInfoCache: function (market, callback) {
-        var self = this;
-        var tx = clone(this.tx.CompositeGetters.getMarketInfoCache);
-        var unpacked = utils.unpack(market, utils.labels(this.getMarketInfoCache), arguments);
-        tx.params = unpacked.params;
-        tx.timeout = 45000;
-        if (unpacked && utils.is_function(unpacked.cb[0])) {
-            return this.fire(tx, function (marketInfo) {
-                if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
-                self.parseMarketInfoCache(marketInfo, function (info) {
-                    unpacked.cb[0](info);
-                });
-            });
-        }
-        var marketInfo = this.parseMarketInfoCache(this.fire(tx));
-        return marketInfo;
-    },
-
     batchGetMarketInfo: function (marketIDs, callback) {
         var self = this;
         function batchGetMarketInfo(marketsArray) {
@@ -109,7 +91,7 @@ module.exports = {
                 rawInfo = marketsArray.slice(shift, shift + len - 1);
                 marketID = marketsArray[shift];
                 info = self.parseMarketInfo(rawInfo);
-                if (info && parseInt(info.numEvents) && info.numOutcomes) {
+                if (info && info.numOutcomes) {
                     marketsInfo[marketID] = info;
                     marketsInfo[marketID].sortOrder = i;
                 }

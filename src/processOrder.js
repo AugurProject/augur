@@ -119,31 +119,24 @@ module.exports = function (
                 buyer_trade_id: firstBuyerTradeId,
                 max_amount: sharesLeft,
                 onTradeHash: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onTradeHash:", data);
                     onTradeHash(tradeOrderId, data);
                 },
                 onCommitSent: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onCommitSent:", data);
                     onCommitSent(tradeOrderId, data);
                 },
                 onCommitSuccess: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onCommitSuccess:", data);
                     onCommitSuccess(tradeOrderId, data);
                 },
                 onCommitFailed: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onCommitFailed:", data);
                     onCommitFailed(tradeOrderId, data);
                 },
                 onNextBlock: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onNextBlock:", data);
                     onNextBlock(tradeOrderId, data);
                 },
                 onTradeSent: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onTradeSent:", data);
                     onTradeSent(tradeOrderId, data);
                 },
                 onTradeSuccess: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onTradeSuccess:", data);
                     onTradeSuccess(tradeOrderId, data);
                     var newSharesLeft = new BigNumber(data.callReturn[1], 10);
                     if (newSharesLeft.gt(constants.ZERO)) {
@@ -153,7 +146,6 @@ module.exports = function (
                     }
                 },
                 onTradeFailed: function (data) {
-                    console.log("[multiTrade] shortSellUntilZero: onTradeFailed:", data);
                     onTradeFailed(tradeOrderId, data);
                 }
             });
@@ -215,15 +207,12 @@ module.exports = function (
                 market: market,
                 outcome: userTradeOrder.outcomeID,
                 onSent: function onBuySentInner(data) {
-                    console.log("[multiTrade] trade: buy: onSent:", data);
                     onBuySellSent(requestId, data);
                 },
                 onSuccess: function onBuySuccessInner(data) {
-                    console.log("[multiTrade] trade: buy: onSuccess:", data);
                     onBuySellSuccess(requestId, data);
                 },
                 onFailed: function onBuyFailureInner(data) {
-                    console.log("[multiTrade] trade: buy: onFail:", data);
                     onBuySellFailed(requestId, data);
                 }
             });
@@ -261,15 +250,12 @@ module.exports = function (
                             market: market,
                             outcome: userTradeOrder.outcomeID,
                             onSent: function localOnBuySent(data) {
-                                console.log("[multiTrade] trade: buy: onSent:", data);
                                 onBuySellSent(requestId, data);
                             },
                             onSuccess: function localOnBuySuccess(data) {
-                                console.log("[multiTrade] trade: buy: onSuccess:", data);
                                 onBuySellSuccess(requestId, data);
                             },
                             onFailed: function localOnBuyFailure(data) {
-                                console.log("[multiTrade] trade: buy: onFail:", data);
                                 onBuySellFailed(requestId, data);
                             }
                         });
@@ -305,15 +291,12 @@ module.exports = function (
                     market: market,
                     outcome: userTradeOrder.outcomeID,
                     onSent: function localOnSellSent(data) {
-                        console.log("[multiTrade] trade: sell: onSent:", data);
                         onBuySellSent(requestId, data);
                     },
                     onSuccess: function localOnSellSuccess(data) {
-                        console.log("[multiTrade] trade: sell: onSuccess:", data);
                         onBuySellSuccess(requestId, data);
                     },
                     onFailed: function localOnSellFailure(data) {
-                        console.log("[multiTrade] trade: sell: onFail:", data);
                         onBuySellFailed(requestId, data);
                     }
                 });
@@ -351,15 +334,12 @@ module.exports = function (
                                 market: market,
                                 outcome: userTradeOrder.outcomeID,
                                 onSent: function (data) {
-                                    console.log("[multiTrade] trade: sell: onSent:", data);
                                     onBuySellSent(requestId, data);
                                 },
                                 onSuccess: function (data) {
-                                    console.log("[multiTrade] trade: sell: onSuccess:", data);
                                     onBuySellSuccess(requestId, data);
                                 },
                                 onFailed: function (data) {
-                                    console.log("[multiTrade] trade: sell: onFail:", data);
                                     onBuySellFailed(requestId, data);
                                 }
                             });

@@ -23,6 +23,6 @@ module.exports = {
         } else {
             tx.from = tx.from || this.from || this.coinbase;
         }
-        this.rpc.transact(tx, onSent, onSuccess, onFailed);
+        return this.rpc.transact(tx, onSent, onSuccess, onFailed);
     }
 };

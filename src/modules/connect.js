@@ -34,7 +34,7 @@ module.exports = {
             if (!tx.send) {
                 if (params[0] !== undefined && params[0] !== null &&
                     params[0].constructor === Object) {
-                    cb = params[0].callback || utils.pass;
+                    cb = params[0].callback;
                     if (tx.inputs && tx.inputs.length) {
                         tx.params = new Array(tx.inputs.length);
                         for (i = 0; i < tx.inputs.length; ++i) {
@@ -51,9 +51,9 @@ module.exports = {
             }
             if (params[0] !== undefined && params[0] !== null &&
                 params[0].constructor === Object) {
-                onSent = params[0].onSent || utils.pass;
-                onSuccess = params[0].onSuccess || utils.pass;
-                onFailed = params[0].onFailed || utils.pass;
+                onSent = params[0].onSent;
+                onSuccess = params[0].onSuccess;
+                onFailed = params[0].onFailed;
                 if (tx.inputs && tx.inputs.length) {
                     tx.params = new Array(tx.inputs.length);
                     for (i = 0; i < tx.inputs.length; ++i) {
@@ -90,6 +90,7 @@ module.exports = {
             this.network_id = connector.network_id;
             this.from = connector.from;
             this.coinbase = connector.coinbase;
+            this.rpc = connector.rpc;
             this.api = connector.api;
             this.tx = connector.tx;
             this.contracts = connector.contracts;

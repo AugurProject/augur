@@ -61,7 +61,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_add_tx_message: function (message, onMessage) {
+        parse_log_add_tx_message: function (message, onMessage) {
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -77,7 +77,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_cancel_message: function (message, onMessage) {
+        parse_log_cancel_message: function (message, onMessage) {
             console.log("cancel:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
@@ -184,15 +184,26 @@ module.exports = function () {
                 }
             }
         },
-        parse_fill_tx_message: function (message, onMessage) {
+        parse_log_fill_tx_message: function (message, onMessage) {
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                        if (message[i] && message[i].topics && message[i].topics.length === 4) {
+                            var data_array = augur.rpc.unmarshal(message[i].data);
+                            if (data_array && data_array.constructor === Array && 
+                                data_array.length > 1) {
+                                onMessage({
+                                    marketId: message[i].topics[1],
+                                    type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
+                                    taker: abi.format_address(message[i].topics[2]),
+                                    maker: abi.format_address(message[i].topics[3]),
+                                    price: abi.unfix(data_array[1], "string"),
+                                    shares: abi.unfix(data_array[2], "string"),
+                                    trade_id: data_array[3],
+                                    outcome: parseInt(data_array[4]),
+                                    blockNumber: message[i].blockNumber
+                                });
                             }
-                            if (onMessage) onMessage(message[i]);
                         }
                     }
                 } else {
@@ -200,12 +211,11 @@ module.exports = function () {
                 }
             }
         },
-        parse_price_message: function (message, onMessage) {
-            var data_array, market, marketplus, outcome;
+        parse_log_price_message: function (message, onMessage) {
             if (message && message.length) {
                 for (var i = 0, len = message.length; i < len; ++i) {
                     if (message[i] && message[i].topics && message[i].topics.length === 3) {
-                        data_array = augur.rpc.unmarshal(message[i].data);
+                        var data_array = augur.rpc.unmarshal(message[i].data);
                         if (data_array && data_array.constructor === Array &&
                             data_array.length > 1) {
                             onMessage({
@@ -228,9 +238,14 @@ module.exports = function () {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
+                case "log_fill_tx":
+                    callback = function (msg) {
+                        self.parse_log_fill_tx_message(msg, onMessage);
+                    };
+                    break;
                 case "log_price":
                     callback = function (msg) {
-                        self.parse_price_message(msg, onMessage);
+                        self.parse_log_price_message(msg, onMessage);
                     };
                     break;
                 case "contracts":
@@ -394,10 +409,16 @@ module.exports = function () {
                                 self.parse_contracts_message(msg, callback);
                             };
                             break;
+                        case "log_fill_tx":
+                            callback = cb.log_fill_tx;
+                            cb.log_fill_tx = function (msg) {
+                                self.parse_log_fill_tx_message(msg, callback);
+                            };
+                            break;
                         case "log_price":
                             callback = cb.log_price;
                             cb.log_price = function (msg) {
-                                self.parse_price_message(msg, callback);
+                                self.parse_log_price_message(msg, callback);
                             };
                             break;
                         case "marketCreated":

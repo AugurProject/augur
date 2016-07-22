@@ -11,12 +11,6 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    makeTradeHash: function (max_value, max_amount, trade_ids, callback) {
-        var tx = clone(this.tx.Trades.makeTradeHash);
-        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
-        return this.fire(tx, callback);
-    },
-
     saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
         var tx = clone(this.tx.Trades.saveTrade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.saveTrade), arguments);

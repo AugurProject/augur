@@ -22,7 +22,7 @@ describe("Unit tests", function () {
                     assert.strictEqual(params.description, subparams.description);
                     assert.strictEqual(params.periodLength, subparams.periodLength);
                     assert.strictEqual(params.parent, subparams.parent);
-                    assert.strictEqual(params.tradingFee, subparams.tradingFee);
+                    assert.strictEqual(params.minTradingFee, subparams.minTradingFee);
                     assert.strictEqual(params.oracleOnly || 0, subparams.oracleOnly);
                     assert.isFunction(subparams.onSent);
                     assert.isFunction(subparams.onSuccess);
@@ -40,7 +40,7 @@ describe("Unit tests", function () {
                 params.description,
                 params.periodLength,
                 params.parent,
-                params.tradingFee,
+                params.minTradingFee,
                 params.oracleOnly,
                 noop,
                 noop,
@@ -52,7 +52,7 @@ describe("Unit tests", function () {
                 description: random.string(),
                 periodLength: random.int(),
                 parent: random.hash(),
-                tradingFee: random.fixed(),
+                minTradingFee: random.fixed(),
                 oracleOnly: random.bool()
             });
         }

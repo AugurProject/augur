@@ -11,28 +11,53 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    createBranch: function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
         var self = this;
         if (description && description.parent) {
             periodLength = description.periodLength;
             parent = description.parent;
-            tradingFee = description.tradingFee;
+            minTradingFee = description.minTradingFee;
             oracleOnly = description.oracleOnly;
-            if (description.onSent) onSent = description.onSent;
-            if (description.onSuccess) onSuccess = description.onSuccess;
-            if (description.onFailed) onFailed = description.onFailed;
+            onSent = description.onSent;
+            onSuccess = description.onSuccess;
+            onFailed = description.onFailed;
             description = description.description;
         }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
         oracleOnly = oracleOnly || 0;
         description = description.trim();
-        return this.createSubbranch({
+        if (!utils.is_function(onSent)) {
+            console.log({
+                description: description,
+                periodLength: periodLength,
+                parent: parent,
+                minTradingFee: minTradingFee,
+                oracleOnly: oracleOnly
+            });
+            var response = this.CreateBranch.createSubbranch({
+                description: description,
+                periodLength: periodLength,
+                parent: parent,
+                minTradingFee: abi.fix(minTradingFee, "hex"),
+                oracleOnly: oracleOnly
+            });
+            var block = this.rpc.getBlock(response.blockNumber);
+            response.branchID = utils.sha3([
+                response.from,
+                "0x28c418afbbb5c0000",
+                periodLength,
+                block.timestamp,
+                parent,
+                abi.fix(minTradingFee, "hex"),
+                oracleOnly,
+                description
+            ]);
+            return response;
+        }
+        this.createSubbranch({
             description: description,
             periodLength: periodLength,
             parent: parent,
-            tradingFee: tradingFee,
+            minTradingFee: minTradingFee,
             oracleOnly: oracleOnly,
             onSent: onSent,
             onSuccess: function (response) {
@@ -43,7 +68,7 @@ module.exports = {
                         periodLength,
                         block.timestamp,
                         parent,
-                        abi.fix(tradingFee, "hex"),
+                        abi.fix(minTradingFee, "hex"),
                         oracleOnly,
                         description
                     ]);
@@ -54,24 +79,24 @@ module.exports = {
         });
     },
 
-    createSubbranch: function (description, periodLength, parent, tradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
         if (description && description.parent) {
             periodLength = description.periodLength;
             parent = description.parent;
-            tradingFee = description.tradingFee;
+            minTradingFee = description.minTradingFee;
             oracleOnly = description.oracleOnly;
-            if (description.onSent) onSent = description.onSent;
-            if (description.onSuccess) onSuccess = description.onSuccess;
-            if (description.onFailed) onFailed = description.onFailed;
+            onSent = description.onSent;
+            onSuccess = description.onSuccess;
+            onFailed = description.onFailed;
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
         var tx = clone(this.tx.CreateBranch.createSubbranch);
         tx.params = [
-            description,
+            description.trim(),
             periodLength,
             parent,
-            abi.fix(tradingFee, "hex"),
+            abi.fix(minTradingFee, "hex"),
             oracleOnly
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);

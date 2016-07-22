@@ -32,13 +32,11 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
-        description = description.trim();
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
             branchId,
@@ -55,6 +53,14 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            var res = this.transact(tx);
+            res.marketID = res.callReturn;
+            return res;
+        }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
@@ -79,9 +85,11 @@ module.exports = {
             branchId = branchId.branchId;               // sha256 hash
         }
         var tx = clone(this.tx.CreateMarket.createEvent);
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         tx.params = [
             branchId,
-            description.trim(),
+            description,
             parseInt(expDate),
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
@@ -111,7 +119,7 @@ module.exports = {
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
-        description = description.trim();
+        if (description) description = description.trim();
         tx.params = [
             branchId,
             description,
@@ -123,6 +131,15 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            var periodLength = this.getPeriodLength(branchId);
+            var res = this.transact(tx);
+            res.marketID = res.callReturn;
+            return res;
+        }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);

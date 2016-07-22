@@ -314,67 +314,12 @@ describe("utilities.sha256", function () {
         digest: "0x538aa2dd26a5d1db8c1f6bdfb315adc33fb5379a18825e6fe3ef14b8b59b797",
     });
     test({
-        hashable: [
-            0,
-            "0xf69b5", // branch
-            1898028, // expiration block
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
-            abi.fix(42, "hex"), // creation fee
-            0, // minimum value
-            120, // maximum value
-            2 // number of outcomes
-        ],
-        digest: "-0x2bae070a9240691ee2f3f411b1991c8a352b1f8fd62c36a87e39a29b76d7005d"
-    });
-    test({
         hashable: ["0x7400000000000000000000000000000000000000000000000000000000000000"],
         digest: "-0x2e8c29d90f159b09eef703e9a8cfed11abf3e215b8b8008d4073df0e6756592e"
     });
     test({
         hashable: ["test"],
         digest: "-0x60792f7e77b3829a65d0155f3aa52fea5c40b0e4d4f47dd32ea293ea4f0ff5f8"
-    });
-    test({
-        hashable: [
-            0,
-            "0xf69b5", // branch
-            1898028, // expiration block
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
-            abi.fix(42, "hex"), // creation fee
-            0, // minimum value
-            120, // maximum value
-            2, // number of outcomes
-            "test"
-        ],
-        digest: "0x4a9b8e665ea0913ce571407c493a5f45d8f0a7c45fbad55c6168e8f4408086f6"
-    });
-    test({
-        hashable: [
-            0,
-            "0xf69b5", // branch
-            1898028, // expiration block
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1", // creator address
-            abi.fix(42, "hex"), // creation fee
-            0, // minimum value
-            120, // maximum value
-            2, // number of outcomes
-            "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
-        ],
-        digest: "-0x5fea28275da61ee79ac4410c00c593b09b3a35372b6d76498cb874714a04f5ee"
-    });
-    test({
-        hashable: [
-            0,
-            "0xf69b5", // branch
-            1898028, // expiration block
-            "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b", // creator address
-            abi.fix(42, "hex"), // creation fee
-            0, // minimum value
-            120, // maximum value
-            2, // number of outcomes
-            "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
-        ],
-        digest: "-0x5b9fcc7b08c38be45843adb61ef9ff62aa9ac003440d83112173367f88fcbe2e"
     });
     test({
         hashable: [0, "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1"],
@@ -488,37 +433,6 @@ describe("utilities.sha256", function () {
         digest: "-0x77012e8c44fe594ddf290b54d2aefb581f1585d618c4d79223835dcb777e1f11"
     });
     test({
-        hashable: [
-            0,
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            abi.fix(47, "hex"),
-            "radical-accelerations-56zrpywcyuv7vi"
-        ],
-        digest: "-0x45cfde42e0d42c3e8f8b77fca226e5a65be055afd79123b327bfdfc8cc0a7c0e"
-    });
-    test({
-        hashable: [
-            0,
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            abi.fix(47, "hex"),
-            100,
-            "radical-accelerations-56zrpywcyuv7vi"
-        ],
-        digest: "-0x35ffdee7abecb2a7255c5bb7fc6246026c470a3bb1f35499519ceb8817c2613e"
-    });
-    test({
-        hashable: [
-            0,
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            abi.fix(47, "hex"),
-            100,
-            9309,
-            "0xf69b5",
-            "radical-accelerations-56zrpywcyuv7vi"
-        ],
-        digest: "-0x1ec61c05b221190459cb312e873c551fc236e036e9b65016b85ece9b52bfedb3"
-    });
-    test({
         hashable: [1844674407370955162],
         digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
     });
@@ -529,51 +443,6 @@ describe("utilities.sha256", function () {
     test({
         hashable: [1844674407370955300],
         digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
-    });
-    test({
-        hashable: [parseInt(abi.fix("0.1", "hex"))],
-        digest: "0x73bdea1ea123ffac86b53fa7bbe69d258087aabbca3d9207932977bd3e9f654c"
-    });
-    test({
-        hashable: [
-            0,
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            abi.fix(47, "hex"),
-            100,
-            9309,
-            "0xf69b5",
-            parseInt(abi.fix("0.1", "hex")),
-            "radical-accelerations-56zrpywcyuv7vi"
-        ],
-        digest: "0x23ced47cb8e8b3d906a1c38a76bea3f70a81b139a8a02828d8ed4b5c4cb30f3e"
-    });
-    test({
-        hashable: [
-            0,
-            "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-            abi.fix(47, "hex"), // creation fee
-            100, // period length
-            9309, // block number
-            "0xf69b5", // parent branch ID
-            parseInt(abi.fix("0.1", "hex")), // trading fee
-            0, // oracle only
-            "radical-accelerations-56zrpywcyuv7vi"
-        ],
-        digest: "0x47f06a5aa972f67b86e0906d683e77254a8c1a3511a3ff37dfbe509d38ce1d03"
-    });
-    test({
-        hashable: [
-            0,
-            "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-            abi.fix(47, "hex"), // creation fee
-            100, // period length
-            9309, // block number
-            "0xf69b5", // parent branch ID
-            parseInt(abi.fix("0.1", "hex")), // trading fee
-            0, // oracle only
-            "radical-accelerations-56zrpywcyuv7vi"
-        ],
-        digest: "-0x5627db537a9449dfb609e836c32728d30bac7db248deb0d405c5585017db524c"
     });
 });
 
@@ -635,7 +504,7 @@ describe("utilities.sha3", function () {
             120, // maximum value
             2 // number of outcomes
         ],
-        digest: abi.unfork("-0x6a4e63db92ef93c72f58d31f4087133f9f6bd5dde2fb7121e0e7f0367129487a", true)
+        digest: abi.unfork("0x751b23d114539a8c91a7b0671820324fc6300ab4ef1e090db5c71dd0d1dd0e14", true)
     });
     test({
         hashable: ["0x7400000000000000000000000000000000000000000000000000000000000000"],
@@ -653,7 +522,7 @@ describe("utilities.sha3", function () {
             2, // number of outcomes
             "test"
         ],
-        digest: abi.unfork("-0x3b420ea3067eaf07e2bb780e883ecbe5bb297175825d9cac35a2e5887b4f3b6c", true)
+        digest: abi.unfork("-0x30ad844951eec4d0b5d543252391a6d4bb23b9f67f406f3f8a4203652b0d8cb3", true)
     });
     test({
         hashable: [
@@ -667,7 +536,7 @@ describe("utilities.sha3", function () {
             2, // number of outcomes
             "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2016?"
         ],
-        digest: abi.unfork("0x3306d0657ca9c8be885b642db527f7f7058edf01e723a3a38162745132326866", true)
+        digest: abi.unfork("0x4da29b50a48cab4bd45d4bbef3a671083467a415109896a35c8e390bc561b237", true)
     });
     test({
         hashable: ["为什么那么认真？"],
@@ -704,5 +573,9 @@ describe("utilities.sha3", function () {
             "なぜそんなに真剣なんだ？ €☃..."
         ],
         digest: abi.unfork("0x2901f3d513d2259272700e2487c075e50c206a24069a3c83eb19de1738439508", true)
+    });
+    test({
+        hashable: "-0x076627fd562b1cc22a6e53ae38d5d421fb3af7fe6c1f18164d097100fba627c54",
+        digest: abi.unfork("-0x1de19444afd83f9be817472f4dc48418cbe33a43a02c2288c5b4ebb12aafc147", true)
     });
 });

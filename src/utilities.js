@@ -107,44 +107,52 @@ module.exports = {
         return crypto.createHash("sha256").update(x).digest("hex");
     },
 
-    sha3: function (hashable) {
-        var x = clone(hashable);
-        if (x && x.constructor === Array) {
-            var digest, cat = "";
-            for (var i = 0, n = x.length; i < n; ++i) {
-                if (x[i] !== null && x[i] !== undefined) {
+    serialize: function (x) {
+        var serialized;
+        if (x !== null && x !== undefined) {
 
-                    // array element is a javascript number
-                    // (base-10 numbers)
-                    if (x[i].constructor === Number) {
-                        x[i] = abi.bignum(x[i]);
-                        if (x[i].lt(constants.ZERO)) {
-                            x[i] = x[i].add(abi.constants.MOD);
-                        }
-                        cat += abi.encode_int(x[i]);
+            // array element is a javascript number
+            // (base-10 numbers)
+            if (x.constructor === Number) {
+                x = abi.bignum(x);
+                if (x.lt(constants.ZERO)) {
+                    x = x.add(abi.constants.MOD);
+                }
+                serialized = abi.encode_int(x);
 
-                    // array element is a string: text or hex
-                    } else if (x[i].constructor === String) {
+            // array element is a string: text or hex
+            } else if (x.constructor === String) {
 
-                        // negative hex
-                        if (x[i].slice(0,1) === '-') {
-                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
-                            cat += abi.encode_int(x[i]);
+                // negative hex
+                if (x.slice(0,1) === '-') {
+                    x = abi.bignum(x).add(abi.constants.MOD).toFixed();
+                    serialized = abi.encode_int(x);
 
-                        // positive hex
-                        } else if (x[i].slice(0,2) === "0x") {
-                            cat += abi.pad_left(x[i].slice(2));
+                // positive hex
+                } else if (x.slice(0,2) === "0x") {
+                    serialized = abi.pad_left(x.slice(2));
 
-                        // text string
-                        } else {
-                            cat += new Buffer(x[i], "utf8").toString("hex");
-                        }
-                    }
+                // text string
+                } else {
+                    serialized = new Buffer(x, "utf8").toString("hex");
                 }
             }
-            return abi.prefix_hex(this.sha3(cat));
         }
-        return abi.sha3(hashable);
+        return serialized;
+    },
+
+    sha3: function (hashable) {
+        var x = clone(hashable);
+        var serialized;
+        if (x && x.constructor === Array) {
+            serialized = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                serialized += this.serialize(x[i]);
+            }
+        } else {
+            serialized = this.serialize(x);
+        }
+        return abi.prefix_hex(abi.sha3(serialized));
     }
 
 };
