@@ -24,7 +24,7 @@ export default class AccountPage extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-
+		console.log(p.account);
 		return (
 			<main className="page account">
 				<SiteHeader {...p.siteHeader} />
