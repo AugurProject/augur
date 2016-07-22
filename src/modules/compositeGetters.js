@@ -91,7 +91,7 @@ module.exports = {
                 rawInfo = marketsArray.slice(shift, shift + len - 1);
                 marketID = marketsArray[shift];
                 info = self.parseMarketInfo(rawInfo);
-                if (info && parseInt(info.numEvents) && info.numOutcomes) {
+                if (info && info.numOutcomes) {
                     marketsInfo[marketID] = info;
                     marketsInfo[marketID].sortOrder = i;
                 }

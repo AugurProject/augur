@@ -188,19 +188,24 @@ module.exports = {
             // convert description byte array to unicode
             var descriptionLength = parseInt(rawInfo[index], 16);
             ++index;
-            info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
-            index += descriptionLength;
+            if (descriptionLength) {
+                info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+                index += descriptionLength;
+            }
 
             // convert resolution byte array to unicode
             var resolutionLength = parseInt(rawInfo[index], 16);
             ++index;
-            info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
-            index += resolutionLength;
+            if (resolutionLength) {
+                info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+                index += resolutionLength;
+            }
 
             // convert extraInfo byte array to unicode
             var extraInfoLength = parseInt(rawInfo[index], 16);
-            ++index;
-            info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+            if (extraInfoLength) {
+                info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+            }
 
             if (!utils.is_function(callback)) return info;
             return callback(info);

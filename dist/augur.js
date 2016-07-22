@@ -20896,7 +20896,7 @@ module.exports={
         "CloseMarketTwo": "0x47a36d7161cae2334c46caf2a9cadba3e150a53f", 
         "CollectFees": "0xc452a66ea65b4ac76d87171ed969a4f07f6ad621", 
         "CompleteSets": "0x15c8df240ef26a69226c84588de21302dcd26b9c", 
-        "CompositeGetters": "0x1d79bfb44277d534f2cee14e9bee36732280f976", 
+        "CompositeGetters": "0x2b94719fa4fe3ca680a7edba668a5d86b7c1b3a6", 
         "Consensus": "0x90236a526dcd40a8fbe4b139e2596d3983071598", 
         "ConsensusData": "0x0f2fdb5399fad3ca0780f3de3d80b984a4b4cf6a", 
         "CreateBranch": "0x5f58749dfdbe0a367f30d84ab4c04145acea200c", 
@@ -38083,7 +38083,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.8";
+    this.version = "1.8.10";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38313,19 +38313,24 @@ module.exports = {
             // convert description byte array to unicode
             var descriptionLength = parseInt(rawInfo[index], 16);
             ++index;
-            info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
-            index += descriptionLength;
+            if (descriptionLength) {
+                info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+                index += descriptionLength;
+            }
 
             // convert resolution byte array to unicode
             var resolutionLength = parseInt(rawInfo[index], 16);
             ++index;
-            info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
-            index += resolutionLength;
+            if (resolutionLength) {
+                info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+                index += resolutionLength;
+            }
 
             // convert extraInfo byte array to unicode
             var extraInfoLength = parseInt(rawInfo[index], 16);
-            ++index;
-            info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+            if (extraInfoLength) {
+                info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+            }
 
             if (!utils.is_function(callback)) return info;
             return callback(info);
@@ -38734,7 +38739,7 @@ module.exports = {
                 rawInfo = marketsArray.slice(shift, shift + len - 1);
                 marketID = marketsArray[shift];
                 info = self.parseMarketInfo(rawInfo);
-                if (info && parseInt(info.numEvents) && info.numOutcomes) {
+                if (info && info.numOutcomes) {
                     marketsInfo[marketID] = info;
                     marketsInfo[marketID].sortOrder = i;
                 }
