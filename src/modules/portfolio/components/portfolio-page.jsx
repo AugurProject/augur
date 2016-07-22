@@ -26,7 +26,7 @@ const PortfolioPage = (p) => {
 		);
 		break;
 	case MY_MARKETS:
-		node = <Markets markets={p.portfolio.myMarkets} />;
+		node = <Markets markets={p.portfolio.loginAccountMarkets} />;
 		break;
 	case MY_REPORTS:
 		node = <Reports />;

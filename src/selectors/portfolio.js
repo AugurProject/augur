@@ -41,7 +41,7 @@ const summaries = [
 	}
 ];
 
-const myMarkets = [
+const loginAccountMarkets = [
 	{
 		description: 'Will the shoop, shoop de woop?',
 		endDate: makeDate(new Date('2017/12/12')),
@@ -74,5 +74,5 @@ const myMarkets = [
 export default {
 	navItems,
 	summaries,
-	myMarkets
+	loginAccountMarkets
 };
