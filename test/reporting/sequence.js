@@ -162,7 +162,7 @@ describe("Reporting sequence", function () {
                                 onSuccess: function (res) {
                                     marketID = res.marketID;
                                     if (DEBUG) console.log(chalk.white.dim("Market ID:"), chalk.green(marketID));
-                                    eventID = augur.getMarketEvents(marketID)[0];
+                                    eventID = augur.getMarketEvent(marketID, 0);
                                     if (DEBUG) console.log(chalk.white.dim("Event ID: "), chalk.green(eventID));
                                     augur.useAccount(accounts[0]);
                                     var initialTotalTrades = parseInt(augur.Markets.get_total_trades(marketID));

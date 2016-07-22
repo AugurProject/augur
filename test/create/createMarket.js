@@ -55,19 +55,15 @@ describe("CreateMarket.createMarket", function () {
                                 var marketID = res.marketID;
                                 assert.strictEqual(augur.getCreator(marketID), augur.from);
                                 assert.strictEqual(augur.getDescription(marketID), t.description);
-                                augur.getMarketEvents(marketID, function (eventList) {
-                                    assert.isArray(eventList);
-                                    assert.strictEqual(eventList.length, 1);
-                                    assert.strictEqual(eventList[0], eventID);
-                                    augur.getMarketInfo(marketID, function (info) {
-                                        if (info.error) return done(info);
-                                        assert.isArray(info.events);
-                                        assert.strictEqual(info.events.length, 1);
-                                        assert.strictEqual(info.events[0].type, "categorical");
-                                        assert.strictEqual(info.type, "categorical");
-                                        done();
-                                    });
-                                }); // markets.getMarketEvents
+                                assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
+                                augur.getMarketInfo(marketID, function (info) {
+                                    if (info.error) return done(info);
+                                    assert.isArray(info.events);
+                                    assert.strictEqual(info.events.length, 1);
+                                    assert.strictEqual(info.events[0].type, "categorical");
+                                    assert.strictEqual(info.type, "categorical");
+                                    done();
+                                });
                             },
                             onFailed: function (err) {
                                 done(new Error(tools.pp(err)));
@@ -141,8 +137,7 @@ describe("CreateMarket.createMarket", function () {
             takerFee: "0.02",
             makerFee: "0.005",
             extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
-            tags: ["politics", "US elections", "president"],
-            resolution: "generic"
+            tags: ["politics", "US elections", "president"]
         });
         test({
             branch: augur.constants.DEFAULT_BRANCH_ID,
@@ -152,8 +147,7 @@ describe("CreateMarket.createMarket", function () {
             maxValue: 20,
             numOutcomes: 4,
             takerFee: "0.02",
-            makerFee: "0.005",
-            resolution: "generic"
+            makerFee: "0.005"
         });
         test({
             branch: augur.constants.DEFAULT_BRANCH_ID,
@@ -163,8 +157,7 @@ describe("CreateMarket.createMarket", function () {
             maxValue: 1,
             numOutcomes: 8,
             takerFee: "0.03",
-            makerFee: "0.005",
-            resolution: "generic"
+            makerFee: "0.005"
         });
     });
 
@@ -205,19 +198,15 @@ describe("CreateMarket.createMarket", function () {
                                 augur.getMarketInfo(marketID);
                                 assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
                                 assert.strictEqual(augur.getDescription(marketID), t.description);
-                                augur.getMarketEvents(marketID, function (eventList) {
-                                    assert.isArray(eventList);
-                                    assert.strictEqual(eventList.length, 1);
-                                    assert.strictEqual(eventList[0], eventID);
-                                    augur.getMarketInfo(marketID, function (info) {
-                                        if (info.error) return done(info);
-                                        assert.isArray(info.events);
-                                        assert.strictEqual(info.events.length, 1);
-                                        assert.strictEqual(info.events[0].type, "scalar");
-                                        assert.strictEqual(info.type, "scalar");
-                                        done();
-                                    });
-                                }); // markets.getMarketEvents
+                                assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
+                                augur.getMarketInfo(marketID, function (info) {
+                                    if (info.error) return done(info);
+                                    assert.isArray(info.events);
+                                    assert.strictEqual(info.events.length, 1);
+                                    assert.strictEqual(info.events[0].type, "scalar");
+                                    assert.strictEqual(info.type, "scalar");
+                                    done();
+                                });
                             },
                             onFailed: function (err) {
                                 done(new Error(tools.pp(err)));
@@ -271,7 +260,7 @@ describe("CreateMarket.createMarket", function () {
         ], [
             "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
             new Date("1-1-2019").getTime()/1000 + new Date().getTime()/1000*Math.random(),
-            "generic",
+            "http://www.spacex.com",
             {
                 extraInfo: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
                 tags: ["space", "Dragon", "ISS"]
@@ -279,7 +268,7 @@ describe("CreateMarket.createMarket", function () {
         ], [
             "Will the Larsen B ice shelf collapse by November 1, 2017?",
             new Date("11-2-2017").getTime()/1000 + new Date().getTime()/1000*Math.random(),
-            "generic"
+            "http://lmgtfy.com"
         ], [
             "Will Hillary Clinton win the 2016 U.S. Presidential Election?",
             new Date("1-2-2017").getTime()/1000 + new Date().getTime()/1000*Math.random(),
@@ -287,7 +276,7 @@ describe("CreateMarket.createMarket", function () {
         ], [
             "Will Bernie Sanders win the 2016 Democratic nomination for U.S. President?",
             new Date("7-29-2016").getTime()/1000 + new Date().getTime()/1000*Math.random(),
-            ""
+            "http://lmgtfy.com"
         ]];
         it.each(events, "%s", ["element"], function (element, next) {
             this.timeout(tools.TIMEOUT*2);
@@ -351,28 +340,15 @@ describe("CreateMarket.createMarket", function () {
                             }
                             assert.strictEqual(creator, augur.coinbase);
                             assert.strictEqual(augur.getDescription(marketID), description);
-
-                            augur.getMarketEvents(marketID, function (eventList) {
-                                if (!eventList || !eventList.length) {
-                                    console.log("\n  markets.getMarketEvents:", tools.pp(eventList));
-                                    console.log("  getMarketInfo:", tools.pp(augur.getMarketInfo(marketID)));
-                                    console.log("  description:", tools.pp(augur.getDescription(marketID)));
-                                    next(new Error("event list"));
-                                }
-                                assert(eventList);
-                                assert.isArray(eventList);
-                                assert.strictEqual(eventList.length, 1);
-                                assert.strictEqual(eventList[0], eventID);
-                                augur.getMarketInfo(marketID, function (info) {
-                                    if (info.error) return next(info);
-                                    assert.isArray(info.events);
-                                    assert.strictEqual(info.events.length, 1);
-                                    assert.strictEqual(info.events[0].type, "binary");
-                                    assert.strictEqual(info.type, "binary");
-                                    next();
-                                });
-                            }); // markets.getMarketEvents
-
+                            assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
+                            augur.getMarketInfo(marketID, function (info) {
+                                if (info.error) return next(info);
+                                assert.isArray(info.events);
+                                assert.strictEqual(info.events.length, 1);
+                                assert.strictEqual(info.events[0].type, "binary");
+                                assert.strictEqual(info.type, "binary");
+                                next();
+                            });
                         },
                         onFailed: next
                     }); // createMarket.createMarket

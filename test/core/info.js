@@ -21,7 +21,7 @@ describe("Integration tests", function () {
     var market_creator_1 = testAccount;
     var marketID2 = markets[1];
     var market_creator_2 = testAccount;
-    var eventID = augur.getMarketEvents(marketID)[0];
+    var eventID = augur.getMarketEvent(marketID, 0);
 
     function check_account(account, testAccount) {
         assert.isAbove(abi.bignum(account).toNumber(), 0);

@@ -82,25 +82,6 @@ describe("Integration tests", function () {
             }
         });
     };
-
-    describe("getMarketEvents", function () {
-        var test = function (t) {
-            assert.isArray(t.output);
-            assert.isAbove(t.output.length, 0);
-            assert.isBelow(t.output.length, 4);
-            async.each(t.output, function (event, nextEvent) {
-                augur.getDescription(event, function (desc) {
-                    if (desc.error) return nextEvent(desc);
-                    assert.isString(desc);
-                    assert.isAbove(desc.length, 0);
-                    nextEvent();
-                });
-            }, t.done);
-        };
-        for (var i = 0; i < numMarkets; ++i) {
-            runtests(this.title, test, markets[i]);
-        }
-    });
     describe("getNumEvents", function () {
         var test = function (t) {
             var output = parseInt(t.output);

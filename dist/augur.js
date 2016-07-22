@@ -18042,16 +18042,6 @@ module.exports={
           "int256"
         ]
       }, 
-      "getEventResolution": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventResolution", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
       "getExpiration": {
         "inputs": [
           "event"
@@ -18234,6 +18224,16 @@ module.exports={
           "int256"
         ]
       }, 
+      "getResolutionLength": {
+        "inputs": [
+          "event"
+        ], 
+        "method": "getResolutionLength", 
+        "returns": "int", 
+        "signature": [
+          "int256"
+        ]
+      }, 
       "getUncaughtOutcome": {
         "inputs": [
           "event"
@@ -18266,6 +18266,7 @@ module.exports={
         ], 
         "method": "initializeEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -19408,7 +19409,7 @@ module.exports={
           "ID"
         ], 
         "method": "getDescriptionLength", 
-        "returns": "int256", 
+        "returns": "int", 
         "signature": [
           "int256"
         ]
@@ -19591,6 +19592,16 @@ module.exports={
         ], 
         "method": "getExtraInfo", 
         "returns": "string", 
+        "signature": [
+          "int256"
+        ]
+      }, 
+      "getExtraInfoLength": {
+        "inputs": [
+          "market"
+        ], 
+        "method": "getExtraInfoLength", 
+        "returns": "int", 
         "signature": [
           "int256"
         ]
@@ -20876,41 +20887,41 @@ module.exports={
         "Trades": "0x401a31250646bb68e2169bbdc0a8834d0f375ecb"
     }, 
     "2": {
-        "Backstops": "0x953e57d6abd49bf60d6a8403b50b241847b1e50d", 
-        "Branches": "0x5ca040a9b17c85acbfa1fec9eead60457e1da872", 
-        "BuyAndSellShares": "0x3d3fbd1d793ad8e69fe4c9f7b5336aec6676cff3", 
-        "Cash": "0x34a382fca0d3a6f318bbe565e4c77c86e3cfb448", 
-        "CloseMarket": "0x857f6cd666934c05a32704109fbee92773454c1f", 
-        "CloseMarketOne": "0xd8d75f35e05ff00065944041d4248c2bae18d418", 
-        "CloseMarketTwo": "0xee856109cd107e5521b86374dd53c8b2120ab14f", 
-        "CollectFees": "0xa5f4f3b326e1719b9ece4058aceaf771a483d012", 
-        "CompleteSets": "0x5485af8bf299235b7fd2e45f13be79cf6064df64", 
-        "CompositeGetters": "0xaa92f7eee84df93a70f42e863cb5fe5ed0366cb2", 
-        "Consensus": "0xd75138a01cc0d56d6bfc4e00088458e501657579", 
-        "ConsensusData": "0x9011169bf11bc061fdaaf42ec919c81df5b95210", 
-        "CreateBranch": "0xbcfa90799eaf78ea417b94bb62ff2a4373689d6a", 
-        "CreateMarket": "0xb41980c1f8a21090f2d4ef70753fac790d935462", 
-        "EventResolution": "0x7cb6993f9bb9fe65d36565a32658a1e82db73ded", 
-        "Events": "0xc75e4478c92ce6c1473a7be5924b2b1a7aeb64e7", 
-        "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
-        "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
-        "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0x3389c07e61f5c8f87d66de0dd438dc591396f572", 
-        "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
-        "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x7e87e288bb31c0560bc15317b03e0702581782f3", 
-        "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
-        "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
-        "PenalizeNotEnoughReports": "0x471217d136b802ad4302b974ca85743490189c3c", 
-        "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
-        "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
-        "ReportingThreshold": "0xffcee834d25a40393067bccb2edef4677c6c223c", 
-        "RoundTwo": "0x79ce9677bba520f24076ab62d1359c2f2ab5e232", 
-        "RoundTwoPenalize": "0x7d61418a1d9cbb5ec4a3abf1f8c946968dac24c3", 
-        "SendReputation": "0xd91f2edf360a469080421997c5b77a2ea01fa514", 
-        "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
-        "Trade": "0x1ff370645d7965cf52ca344964cab8bc91be7adf", 
-        "Trades": "0x1bca253519f1374aed3b85c1d7c22175a42d9042"
+        "Backstops": "0xa2ac6ef02115a2bf2743432760e81939890a25b5", 
+        "Branches": "0xb7ea151417bc5d1da98d0b9fcbf40cfb117365b4", 
+        "BuyAndSellShares": "0x9c7615be3fd8dbb2bc43df602c460d5cc33954c6", 
+        "Cash": "0xca2591192a379e04960941693fca04e51031aae4", 
+        "CloseMarket": "0xd68c8eca9d58bdf56ec30c2d47837da12f9bc0e8", 
+        "CloseMarketOne": "0x660ba541bd81f76b53b6f47f93f91b2d450a1db0", 
+        "CloseMarketTwo": "0x47a36d7161cae2334c46caf2a9cadba3e150a53f", 
+        "CollectFees": "0xc452a66ea65b4ac76d87171ed969a4f07f6ad621", 
+        "CompleteSets": "0x15c8df240ef26a69226c84588de21302dcd26b9c", 
+        "CompositeGetters": "0x1d79bfb44277d534f2cee14e9bee36732280f976", 
+        "Consensus": "0x90236a526dcd40a8fbe4b139e2596d3983071598", 
+        "ConsensusData": "0x0f2fdb5399fad3ca0780f3de3d80b984a4b4cf6a", 
+        "CreateBranch": "0x5f58749dfdbe0a367f30d84ab4c04145acea200c", 
+        "CreateMarket": "0x1d4360f8273e6994b29f470f2f2aa12b7adad889", 
+        "EventResolution": "0x5a5eb923bc11d6a0add6c25e42a4538a9abece03", 
+        "Events": "0xe59fe52605286adcf28cf7bd09e185e3956ecc9b", 
+        "ExpiringEvents": "0x341c0fdb0aacd27b5c67ba76f03bf9b9168e13f5", 
+        "Faucets": "0xade25ba83d0d50af1849ae5f0babc8ab78f943b5", 
+        "ForkPenalize": "0x0bf4a51bab506d808b0a16ea07fec0021cbd63e7", 
+        "Forking": "0x649d198148deaea0bf9fe6f791f1f757f0477824", 
+        "FxpFunctions": "0x76392853727bc3ff1bd2cb32f8514ea2efdb4ca9", 
+        "Info": "0x348d61b348e5ae8a9c1a7ff5d5d5d504f4892ad8", 
+        "MakeReports": "0x960712738bab34a3c9f02d5d7e8abc16abb2d861", 
+        "Markets": "0xaecd771f40705ec1edb1463d7002f047af5b05df", 
+        "PenalizationCatchup": "0x922d1ba60106116fe967657983dc4d062f7a9d2e", 
+        "PenalizeNotEnoughReports": "0x02ac92da923764e3e6066e13ce53a09e0ad1cd77", 
+        "ProportionCorrect": "0x751b418c97255fc5f0291daeb12384c1bcb1a887", 
+        "Reporting": "0x5e01114ea15cdbe85e286e65e6101c2f1ff58c60", 
+        "ReportingThreshold": "0xf02e7a2dd5c184fc113d691c97bef00d5327af80", 
+        "RoundTwo": "0xf497ed178ab344804546c573e496358134ef1365", 
+        "RoundTwoPenalize": "0xaff8b68e930e74574caaefd4ebf3664e23d3eed2", 
+        "SendReputation": "0xdf1e80450ad1f0f088210b34b3bbce486bfdb7d1", 
+        "SlashRep": "0x8c6f8d0d7f505c1a4b235bf39a7625cfbcdeff8e", 
+        "Trade": "0xf4b27c97c26cc72c9173b239e9a6350cbea5da98", 
+        "Trades": "0xbab4f1b6c234a37cef62f15d91593ce7510c5263"
     }
 }
 },{}],57:[function(require,module,exports){
@@ -38072,7 +38083,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.7";
+    this.version = "1.8.8";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38219,84 +38230,74 @@ module.exports = {
         var WINNING_OUTCOMES_FIELDS = 8;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
-
-            // all-inclusive except price history
-            // info[1] = self.Markets[marketID].currentParticipant
-            // info[2] = self.Markets[marketID].makerFees
-            // info[3] = participantNumber
-            // info[4] = self.Markets[marketID].numOutcomes
-            // info[5] = self.Markets[marketID].tradingPeriod
-            // info[6] = self.Markets[marketID].tradingFee
-            // info[7] = self.Markets[marketID].branch
-            // info[8] = self.Markets[marketID].lenEvents
-            // info[9] = self.Markets[marketID].cumulativeScale
-            // info[10] = self.Markets[marketID].blockNum
-            // info[11] = self.Markets[marketID].volume
-            // info[12] = INFO.getCreationFee(marketID)
-            // info[13] = INFO.getCreator(marketID)
-            // info[14] = self.Markets[marketID].tag1
-            // info[15] = self.Markets[marketID].tag2
-            // info[16] = self.Markets[marketID].tag3
-            var index = 17;
-            var makerProportionOfFee = abi.unfix(rawInfo[2]);
-            var tradingFee = abi.unfix(rawInfo[6]);
+            // marketInfo[0] = marketID
+            // marketInfo[1] = MARKETS.getMakerFees(marketID)
+            // marketInfo[2] = numOutcomes
+            // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+            // marketInfo[4] = MARKETS.getTradingFee(marketID)
+            // marketInfo[5] = MARKETS.getBranchID(marketID)
+            // marketInfo[6] = MARKETS.getCumScale(marketID)
+            // marketInfo[7] = MARKETS.getCreationTime(marketID)
+            // marketInfo[8] = MARKETS.getVolume(marketID)
+            // marketInfo[9] = INFO.getCreationFee(marketID)
+            // marketInfo[10] = INFO.getCreator(marketID)
+            // tags = MARKETS.returnTags(marketID, outitems=3)
+            // marketInfo[11] = tags[0]
+            // marketInfo[12] = tags[1]
+            // marketInfo[13] = tags[2]
+            var index = 14;
+            var makerProportionOfFee = abi.unfix(rawInfo[1]);
+            var tradingFee = abi.unfix(rawInfo[4]);
             var makerFee = tradingFee.times(makerProportionOfFee);
             info = {
                 network: this.network_id,
                 makerFee: makerFee.toFixed(),
                 takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
                 tradingFee: tradingFee.toFixed(),
-                numOutcomes: abi.number(rawInfo[4]),
-                tradingPeriod: abi.number(rawInfo[5]),
-                branchId: rawInfo[7],
-                numEvents: parseInt(rawInfo[8]),
-                cumulativeScale: abi.unfix(rawInfo[9], "string"),
-                creationTime: parseInt(rawInfo[10]),
-                volume: abi.unfix(rawInfo[11], "string"),
-                creationFee: abi.unfix(rawInfo[12], "string"),
-                author: abi.format_address(rawInfo[13]),
+                numOutcomes: parseInt(rawInfo[2], 16),
+                tradingPeriod: parseInt(rawInfo[3], 16),
+                branchId: rawInfo[5],
+                numEvents: 1,
+                cumulativeScale: abi.unfix(rawInfo[6], "string"),
+                creationTime: parseInt(rawInfo[7], 16),
+                volume: abi.unfix(rawInfo[8], "string"),
+                creationFee: abi.unfix(rawInfo[9], "string"),
+                author: abi.format_address(rawInfo[10]),
                 tags: [
-                    this.decodeTag(rawInfo[14]),
-                    this.decodeTag(rawInfo[15]),
-                    this.decodeTag(rawInfo[16])
+                    this.decodeTag(rawInfo[11]),
+                    this.decodeTag(rawInfo[12]),
+                    this.decodeTag(rawInfo[13])
                 ],
-                type: null,
-                endDate: null,
-                winningOutcomes: [],
-                description: null
+                winningOutcomes: []
             };
             info.outcomes = new Array(info.numOutcomes);
-            info.events = new Array(info.numEvents);
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var endDate;
-            for (var i = 0; i < info.numEvents; ++i) {
-                endDate = parseInt(rawInfo[i*EVENTS_FIELDS + index + 1]);
-                info.events[i] = {
-                    id: rawInfo[i*EVENTS_FIELDS + index],
-                    endDate: endDate,
-                    outcome: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 2], "string"),
-                    minValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 3], "string"),
-                    maxValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 4], "string"),
-                    numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
-                };
-                // market type: binary, categorical, or scalar
-                if (info.events[i].numOutcomes !== 2) {
-                    info.events[i].type = "categorical";
-                } else if (info.events[i].minValue === '1' && info.events[i].maxValue === '2') {
-                    info.events[i].type = "binary";
-                } else {
-                    info.events[i].type = "scalar";
-                }
-                if (info.endDate === null || endDate > info.endDate) {
-                    info.endDate = endDate;
-                }
+            var event = {
+                id: rawInfo[index],
+                endDate: parseInt(rawInfo[index + 1], 16),
+                outcome: abi.unfix(rawInfo[index + 2], "string"),
+                minValue: abi.unfix(rawInfo[index + 3], "string"),
+                maxValue: abi.unfix(rawInfo[index + 4], "string"),
+                numOutcomes: parseInt(rawInfo[index + 5], 16)
+            };
+
+            // event type: binary, categorical, or scalar
+            if (event.numOutcomes !== 2) {
+                event.type = "categorical";
+            } else if (event.minValue === '1' && event.maxValue === '2') {
+                event.type = "binary";
+            } else {
+                event.type = "scalar";
             }
+            info.type = event.type;
+            info.endDate = event.endDate;
+            info.events = [event];
+            index += EVENTS_FIELDS;
 
             // organize outcome info
-            index += info.numEvents*EVENTS_FIELDS;
-            for (i = 0; i < info.numOutcomes; ++i) {
+            for (var i = 0; i < info.numOutcomes; ++i) {
                 info.outcomes[i] = {
                     id: i + 1,
                     outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
@@ -38310,41 +38311,24 @@ module.exports = {
             index += WINNING_OUTCOMES_FIELDS;
 
             // convert description byte array to unicode
-            try {
-                info.description = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - parseInt(rawInfo[index])));
-            } catch (exc) {
-                if (this.options.debug.broadcast) console.error(exc, rawInfo);
-                info.description = "";
-            }
+            var descriptionLength = parseInt(rawInfo[index], 16);
+            ++index;
+            info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+            index += descriptionLength;
 
-            // market types: binary, categorical, scalar, combinatorial
-            if (info.numEvents === 1) {
-                info.type = info.events[0].type;
-                if (!utils.is_function(callback)) return info;
-                return callback(info);
-            }
+            // convert resolution byte array to unicode
+            var resolutionLength = parseInt(rawInfo[index], 16);
+            ++index;
+            info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+            index += resolutionLength;
 
-            // multi-event (combinatorial) markets: batch event descriptions
-            info.type = "combinatorial";
-            // if (options && options.combinatorial) {
-            //     var txList = new Array(info.numEvents);
-            //     for (i = 0; i < info.numEvents; ++i) {
-            //         txList[i] = clone(this.tx.getDescription);
-            //         txList[i].params = info.events[i].id;
-            //     }
-            //     if (utils.is_function(callback)) {
-            //         return rpc.batch(txList, function (response) {
-            //             for (var i = 0, len = response.length; i < len; ++i) {
-            //                 info.events[i].description = response[i];
-            //             }
-            //             callback(info);
-            //         });
-            //     }
-            //     var response = rpc.batch(txList);
-            //     for (i = 0; i < response.length; ++i) {
-            //         info.events[i].description = response[i];
-            //     }
-            // }
+            // convert extraInfo byte array to unicode
+            var extraInfoLength = parseInt(rawInfo[index], 16);
+            ++index;
+            info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+
+            if (!utils.is_function(callback)) return info;
+            return callback(info);
         }
         if (!utils.is_function(callback)) return info;
         callback(info);
@@ -39113,7 +39097,8 @@ module.exports = {
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
-        description = description.trim();
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
             branchId,
@@ -39162,9 +39147,11 @@ module.exports = {
             branchId = branchId.branchId;               // sha256 hash
         }
         var tx = clone(this.tx.CreateMarket.createEvent);
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         tx.params = [
             branchId,
-            description.trim(),
+            description,
             parseInt(expDate),
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
@@ -39194,7 +39181,7 @@ module.exports = {
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
-        description = description.trim();
+        if (description) description = description.trim();
         tx.params = [
             branchId,
             description,

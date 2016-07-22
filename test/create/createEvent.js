@@ -41,6 +41,7 @@ describe("CreateMarket.createEvent", function () {
                 },
                 onSuccess: function (r) {
                     var eventID = r.callReturn;
+                    assert.strictEqual(augur.Events.getResolution(eventID), resolution);
                     assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
                     assert.strictEqual(augur.getDescription(eventID), description);
                     next();

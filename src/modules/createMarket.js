@@ -35,7 +35,8 @@ module.exports = {
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
-        description = description.trim();
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
             branchId,
@@ -84,9 +85,11 @@ module.exports = {
             branchId = branchId.branchId;               // sha256 hash
         }
         var tx = clone(this.tx.CreateMarket.createEvent);
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         tx.params = [
             branchId,
-            description.trim(),
+            description,
             parseInt(expDate),
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
@@ -116,7 +119,7 @@ module.exports = {
         tags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
-        description = description.trim();
+        if (description) description = description.trim();
         tx.params = [
             branchId,
             description,

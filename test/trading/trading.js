@@ -2043,9 +2043,7 @@ describe("Integration tests", function () {
                                 assert(r.txHash);
                                 assert(r.callReturn);
                                 augur.get_trade_ids(t.market, function (trade_ids) {
-                                    console.log("canceling:", trade_ids[0]);
                                     augur.cancel(trade_ids[0], function (r) {
-                                        console.log("Canceled:", r);
                                         assert(r.txHash);
                                         assert.strictEqual(r.callReturn, "1");
                                     }, function (r) {
@@ -2111,11 +2109,9 @@ describe("Integration tests", function () {
                                                 },
                                                 onCommitFailed: nextTrade,
                                                 onTradeSent: function (r) {
-                                                    // console.log("trade sent:", r)
                                                     assert.isNull(r.callReturn);
                                                 },
                                                 onTradeSuccess: function (r) {
-                                                    // console.log("trade success:", r)
                                                     assert.isArray(r.callReturn);
                                                     assert.strictEqual(r.callReturn[0], 1);
                                                     assert.strictEqual(r.callReturn.length, 3);
@@ -2180,11 +2176,9 @@ describe("Integration tests", function () {
                                         },
                                         onCommitFailed: nextTrade,
                                         onTradeSent: function (r) {
-                                            // console.log("short sell sent:", r)
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            // console.log("short sell success:", r)
                                             assert.isArray(r.callReturn);
                                             assert.strictEqual(r.callReturn[0], 1);
                                             assert.strictEqual(r.callReturn.length, 4);
