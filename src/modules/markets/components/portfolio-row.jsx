@@ -2,8 +2,8 @@ import React from 'react';
 
 const PortfolioMarketsRow = (p) => (
 	<tbody>
-		<tr>
-			<th>{p.market.description}</th>
+		<tr className="cells-bordered solid dark">
+			<th className="cell-left-aligned">{p.market.description}</th>
 			<td>{p.market.endDate.formatted}</td>
 			<td>{p.market.fees.full}</td>
 			<td>{p.market.volume.formatted}</td>

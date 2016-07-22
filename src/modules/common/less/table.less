@@ -1,0 +1,60 @@
+// MIXINS
+.border-width(@width) {
+    border-width: @width;
+}
+
+// Applies Border styles to immediate descendants
+.bordered(@width, @isCell) when (@isCell = false){
+    & > * {
+        .border-width(@width);
+    }
+
+    // Border Draw Styles
+    &.solid > * {
+        border-style: solid;
+    }
+
+    // Border Colors
+    &.dark > * {
+        border-color: @color-border-dark;
+    }
+}
+
+// Applies styles directly to element
+.bordered(@width, @isCell) when (@isCell = true){
+    .border-width(@width);
+
+    // Border Draw Styles
+    &.solid {
+        border-style: solid;
+    }
+
+    // Border Colors
+    &.dark {
+        border-color: @color-border-dark;
+    }
+}
+
+.cell-bordered {
+    .bordered(1px, true);
+}
+
+.row-bordered {
+    .bordered(1px, true);
+}
+
+.cells-bordered {
+    .bordered(1px, false);
+}
+
+.full-width-table {
+    width: 100%;
+}
+
+.cell-left-aligned {
+    text-align: left;
+}
+
+.no-cell-border {
+    border: 0px none transparent;
+}

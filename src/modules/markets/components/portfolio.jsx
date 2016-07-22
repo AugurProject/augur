@@ -5,20 +5,22 @@ const PortfolioMarkets = (p) => {
 	console.log('PortfolioMarkets -- ', p);
 
 	return (
-		<table>
+		<table className="full-width-table">
 			<thead>
-				<tr>
-					<th></th>
+				<tr className="cells-bordered solid dark">
+					<th className="no-cell-border"></th>
 					<th>Ends</th>
 					<th>Fees Collected</th>
 					<th>Volume</th>
 					<th># Trades</th>
 				</tr>
 			</thead>
-			{p.markets.map(market => (
-				<PortfolioMarketsRow market={market} />
+			{p.markets.map((market, id) => (
+				<PortfolioMarketsRow
+					key={id}
+					market={market}
+				/>
 			))}
-			<tfoot></tfoot>
 		</table>
 	);
 };
