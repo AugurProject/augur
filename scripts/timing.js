@@ -77,11 +77,11 @@ function createMarkets(numMarketsToCreate, callback) {
                 augur.getMarketInfo(r.marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
-                        return augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                        return augur.setCash(augur.from, "10000000000000",
                             function (r) {},
                             function (r) { next(); },
                             function (err) {
-                                console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                console.error(chalk.red.bold("setCash failed:"), err);
                                 next();
                             }
                         );
@@ -127,22 +127,22 @@ function createMarkets(numMarketsToCreate, callback) {
                         },
                         onSuccess: function (res) {
                             if (index % 10) return next();
-                            augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                            augur.setCash(augur.from, "10000000000000",
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
-                                    console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                    console.error(chalk.red.bold("setCash failed:"), err);
                                     next();
                                 }
                             );
                         },
                         onFailed: function (err) {
                             console.error(chalk.red.bold("generateOrderBook failed:"), err);
-                            augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                            augur.setCash(augur.from, "10000000000000",
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
-                                    console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                    console.error(chalk.red.bold("setCash failed:"), err);
                                     next();
                                 }
                             );
@@ -152,11 +152,11 @@ function createMarkets(numMarketsToCreate, callback) {
             },
             onFailed: function (err) {
                 console.error(chalk.red.bold("createSingleEventMarket failed:"), err);
-                augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                augur.setCash(augur.from, "10000000000000",
                     function (r) {},
                     function (r) { next(); },
                     function (err) {
-                        console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                        console.error(chalk.red.bold("setCash failed:"), err);
                         next();
                     }
                 );
