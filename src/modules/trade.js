@@ -39,6 +39,7 @@ module.exports = {
         onTradeHash(tradeHash);
         this.commitTrade({
             hash: tradeHash,
+            id: this.sumTrades(trade_ids),
             onSent: onCommitSent,
             onSuccess: function (res) {
                 onCommitSuccess(res);
@@ -96,6 +97,7 @@ module.exports = {
         onTradeHash(tradeHash);
         this.commitTrade({
             hash: tradeHash,
+            id: buyer_trade_id,
             onSent: onCommitSent,
             onSuccess: function (res) {
                 onCommitSuccess(res);

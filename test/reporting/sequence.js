@@ -209,7 +209,6 @@ describe("Reporting sequence", function () {
                                                                     onCommitFailed: nextTrade,
                                                                     onNextBlock: function (block) {
                                                                         if (DEBUG) printResidual(periodLength, "Got block " + block);
-                                                                        augur.rpc.debug.tx = true;
                                                                     },
                                                                     onTradeSent: function (r) {
                                                                         if (DEBUG) console.log(chalk.white.dim(" - Trade sent:"), r.callReturn);
@@ -234,7 +233,6 @@ describe("Reporting sequence", function () {
                                                         }, function (x) {
                                                             if (!x) return done(new Error("No trade found"));
                                                             if (!x.callReturn) return done(x);
-                                                            augur.rpc.debug.tx = false;
 
                                                             // wait until the period after the new event expires
                                                             var t = parseInt(new Date().getTime() / 1000);
