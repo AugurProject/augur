@@ -44,27 +44,24 @@ const summaries = [
 const myMarkets = [
 	{
 		description: 'market 1',
-		endData: makeDate(new Date('2017/12/12')),
-		fees: makeNumber(Math.random() * 10),
-		volume: makeNumber(Math.random() * 100),
-		numberOfTrades: makeNumber(Math.random() * 1000),
-		openVolume: makeNumber(Math.random() * 10000)
+		endDate: makeDate(new Date('2017/12/12')),
+		fees: makeNumber(Math.random() * 10, 'ETH', true),
+		volume: makeNumber(Math.random() * 100, null, true),
+		numberOfTrades: makeNumber(Math.random() * 1000, null, true)
 	},
 	{
 		description: 'market 2',
-		endData: makeDate(new Date('2017/12/12')),
-		fees: makeNumber(Math.random() * 10),
-		volume: makeNumber(Math.random() * 100),
-		numberOfTrades: makeNumber(Math.random() * 1000),
-		openVolume: makeNumber(Math.random() * 10000)
+		endDate: makeDate(new Date('2017/12/12')),
+		fees: makeNumber(Math.random() * 10, 'ETH', true),
+		volume: makeNumber(Math.random() * 100, null, true),
+		numberOfTrades: makeNumber(Math.random() * 1000, null, true)
 	},
 	{
 		description: 'market 3',
-		endData: makeDate(new Date('2017/12/12')),
-		fees: makeNumber(Math.random() * 10),
-		volume: makeNumber(Math.random() * 100),
-		numberOfTrades: makeNumber(Math.random() * 1000),
-		openVolume: makeNumber(Math.random() * 10000)
+		endDate: makeDate(new Date('2017/12/12')),
+		fees: makeNumber(Math.random() * 10, 'ETH'),
+		volume: makeNumber(Math.random() * 100, null, true),
+		numberOfTrades: makeNumber(Math.random() * 1000, null, true)
 	}
 ];
 
