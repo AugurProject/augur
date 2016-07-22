@@ -10,7 +10,6 @@ import marketsTotals from './selectors/markets-totals';
 import positionsMarkets from './selectors/positions-markets';
 import positionsSummary from './selectors/positions-summary';
 import url from './selectors/url';
-import selectedUserOpenOrdersGroup from './selectors/selected-user-open-orders-group';
 
 import { BID, ASK } from './modules/transactions/constants/types';
 
@@ -27,8 +26,7 @@ const selectors = {
 	marketsTotals,
 	positionsSummary,
 	positionsMarkets,
-	url,
-	selectedUserOpenOrdersGroup
+	url
 };
 
 // add update helper fn to selectors object

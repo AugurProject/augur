@@ -83,8 +83,7 @@ export default class MarketPage extends Component {
 					<OpenOrders
 						key="open-orders"
 						outcomes={p.market.outcomes}
-						selectedUserOpenOrdersGroupID={p.selectedUserOpenOrdersGroupID}
-						updateSelectedUserOpenOrdersGroup={p.updateSelectedUserOpenOrdersGroup}
+						userOpenOrdersSummary={p.market.userOpenOrdersSummary}
 						cancelOrder={p.cancelOrder}
 					/>
 				);

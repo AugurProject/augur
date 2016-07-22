@@ -143,6 +143,12 @@ function makeMarkets(numMarkets = 25) {
 			gainPercent: makeNumber(15, '%')
 		};
 
+		m.userOpenOrdersSummary = {
+			openOrdersCount: m.outcomes.reduce((openOrdersCount, outcome) => (
+				openOrdersCount + outcome.userOpenOrders.length
+			), 0)
+		};
+
 		// report
 		m.report = {
 			isUnethical: true,
@@ -315,9 +321,7 @@ function makeMarkets(numMarkets = 25) {
 						marketID: m.id,
 						isCancelling: false,
 						isCancelled: false,
-						originalShares: makeNumber(5, 'shares'),
 						avgPrice: makeNumber(0.7, 'ether'),
-						matchedShares: makeNumber(3, 'shares'),
 						unmatchedShares: makeNumber(2, 'shares'),
 						outcome: 'outcomeasdf123',
 						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
@@ -328,9 +332,7 @@ function makeMarkets(numMarkets = 25) {
 						marketID: m.id,
 						isCancelling: false,
 						isCancelled: false,
-						originalShares: makeNumber(5, 'shares'),
 						avgPrice: makeNumber(0.7, 'ether'),
-						matchedShares: makeNumber(3, 'shares'),
 						unmatchedShares: makeNumber(2, 'shares'),
 						outcome: 'outcomeasdf123',
 						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
@@ -341,9 +343,7 @@ function makeMarkets(numMarkets = 25) {
 						marketID: m.id,
 						isCancelling: false,
 						isCancelled: false,
-						originalShares: makeNumber(5, 'shares'),
 						avgPrice: makeNumber(0.7, 'ether'),
-						matchedShares: makeNumber(3, 'shares'),
 						unmatchedShares: makeNumber(2, 'shares'),
 						outcome: 'outcomeasdf123',
 						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'

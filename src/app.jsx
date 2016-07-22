@@ -94,8 +94,6 @@ export default function (appElement, selectors) {
 				sideOptions={p.sideOptions}
 				updateSelectedOutcome={p.selectedOutcome.updateSelectedOutcome}
 				selectedOutcomeID={p.selectedOutcome.selectedOutcomeID}
-				updateSelectedUserOpenOrdersGroup={p.selectedUserOpenOrdersGroup.updateSelectedUserOpenOrdersGroup}
-				selectedUserOpenOrdersGroupID={p.selectedUserOpenOrdersGroup.selectedUserOpenOrdersGroupID}
 				cancelOrder={p.cancelOrder}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}

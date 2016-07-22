@@ -10,19 +10,16 @@ import ValueDenomination from '../../common/components/value-denomination';
 const OpenOrder = (p) => (
 	<tr className={classnames('open-order', { isDisabled: p.isCancelling || p.isCancelled })}>
 		<td>
+			{p.outcomeName}
+		</td>
+		<td>
 			{p.type}
 		</td>
 		<td>
-			<ValueDenomination {...p.originalShares} />
+			<ValueDenomination {...p.unmatchedShares} />
 		</td>
 		<td>
 			<ValueDenomination {...p.avgPrice} />
-		</td>
-		<td>
-			<ValueDenomination {...p.matchedShares} />
-		</td>
-		<td>
-			<ValueDenomination {...p.unmatchedShares} />
 		</td>
 		<td>
 			<button
@@ -39,10 +36,9 @@ const OpenOrder = (p) => (
 OpenOrder.propTypes = {
 	id: React.PropTypes.string.isRequired,
 	marketID: React.PropTypes.string.isRequired,
+	outcomeName: React.PropTypes.string.isRequired,
 	type: React.PropTypes.string.isRequired,
-	originalShares: React.PropTypes.object.isRequired,
 	avgPrice: React.PropTypes.object.isRequired,
-	matchedShares: React.PropTypes.object.isRequired,
 	unmatchedShares: React.PropTypes.object.isRequired,
 	isCancelling: React.PropTypes.bool.isRequired,
 	isCancelled: React.PropTypes.bool.isRequired,

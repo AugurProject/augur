@@ -187,6 +187,65 @@ export default function (market) {
 					assert.isDefined(userOpenOrders);
 					assert.isArray(userOpenOrders);
 				});
+
+				it(`market.outcomes[${i}].userOpenOrders`, () => {
+					assert.isDefined(userOpenOrders);
+					assert.isArray(userOpenOrders);
+				});
+
+				userOpenOrders.forEach((openOrder, j) => {
+					it(`market.outcomes[${i}].userOpenOrders[${j}]`, () => {
+						assert.isDefined(openOrder);
+						assert.isObject(openOrder);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].id`, () => {
+						assert.isDefined(openOrder.id);
+						assert.isObject(openOrder.id);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].marketID`, () => {
+						assert.isDefined(openOrder.marketID);
+						assert.isString(openOrder.marketID);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].outcomeName`, () => {
+						assert.isDefined(openOrder.outcomeName);
+						assert.isString(openOrder.outcomeName);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].type`, () => {
+						assert.isDefined(openOrder.type);
+						assert.isString(openOrder.type);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].avgPrice`, () => {
+						assert.isDefined(openOrder.avgPrice);
+						assert.isObject(openOrder.avgPrice);
+						assertFormattedNumber(openOrder.avgPrice);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].unmatchedShares`, () => {
+						assert.isDefined(openOrder.unmatchedShares);
+						assert.isObject(openOrder.unmatchedShares);
+						assertFormattedNumber(openOrder.unmatchedShares);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].isCancelling`, () => {
+						assert.isDefined(openOrder.isCancelling);
+						assert.isBoolean(openOrder.isCancelling);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].isCancelled`, () => {
+						assert.isDefined(openOrder.isCancelled);
+						assert.isBoolean(openOrder.isCancelled);
+					});
+
+					it(`market.outcomes[${i}].userOpenOrders[${j}].cancelOrder`, () => {
+						assert.isDefined(openOrder.cancelOrder);
+						assert.isFunction(openOrder.cancelOrder);
+					});
+				});
 			});
 		});
 
@@ -334,7 +393,16 @@ export default function (market) {
 			assert.isArray(market.priceTimeSeries);
 		});
 
+		const userOpenOrdersSummary = market.userOpenOrdersSummary;
+		it('market.userOpenOrdersSummary', () => {
+			assert.isDefined(market.userOpenOrdersSummary);
+			assert.isObject(market.userOpenOrdersSummary);
+		});
 
+		it('market.userOpenOrdersSummary.openOrdersCount', () => {
+			assert.isDefined(market.userOpenOrdersSummary.openOrdersCount);
+			assert.isNumber(market.userOpenOrdersSummary.openOrdersCount);
+		});
 
 		const positionsSummary = market.positionsSummary;
 		it('market.positionSummary', () => {
