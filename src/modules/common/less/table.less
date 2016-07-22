@@ -3,10 +3,15 @@
     border-width: @width;
 }
 
+.bordered-cell-padding() {
+    padding: 0.5rem;
+}
+
 // Applies Border styles to immediate descendants
 .bordered(@width, @isCell) when (@isCell = false){
     & > * {
         .border-width(@width);
+        .bordered-cell-padding();
     }
 
     // Border Draw Styles
@@ -23,6 +28,7 @@
 // Applies styles directly to element
 .bordered(@width, @isCell) when (@isCell = true){
     .border-width(@width);
+    .bordered-cell-padding();
 
     // Border Draw Styles
     &.solid {

@@ -13,6 +13,8 @@ const PortfolioMarkets = (p) => {
 					<th>Fees Collected</th>
 					<th>Volume</th>
 					<th># Trades</th>
+					<th>Avg Trade Size</th>
+					<th>Open Volume</th>
 				</tr>
 			</thead>
 			{p.markets.map((market, id) => (

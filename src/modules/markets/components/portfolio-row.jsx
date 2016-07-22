@@ -8,6 +8,8 @@ const PortfolioMarketsRow = (p) => (
 			<td>{p.market.fees.full}</td>
 			<td>{p.market.volume.formatted}</td>
 			<td>{p.market.numberOfTrades.formatted}</td>
+			<td>{p.market.averageTradeSize.full}</td>
+			<td>{p.market.openVolume.formatted}</td>
 		</tr>
 	</tbody>
 );
