@@ -36,7 +36,7 @@ module.exports = {
 	 * @return {Array.<Object>}
 	 */
 	filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
-		var isMarketOrder = limitPrice == null;
+		var isMarketOrder = limitPrice === null || limitPrice === undefined;
 		return orders
 			.filter(function (order) {
 				var isMatchingPrice;
@@ -206,11 +206,11 @@ module.exports = {
 		}
 
 		orderShares = new BigNumber(orderShares, 10);
-		orderLimitPrice = orderLimitPrice == null ? null : new BigNumber(orderLimitPrice, 10);
+		orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
 		takerFee = new BigNumber(takerFee, 10);
 		makerFee = new BigNumber(makerFee, 10);
 		userPositionShares = new BigNumber(userPositionShares, 10);
-		isMarketOrder = orderLimitPrice == null;
+		isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
 
 		var augur = this;
 		var gasPrice = augur.rpc.gasPrice;
