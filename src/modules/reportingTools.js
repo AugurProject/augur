@@ -58,22 +58,23 @@ module.exports = {
                             return next(null);
                         }
                         console.log("Calling penalizeWrong(branch, 0)...");
-                        self.Consensus.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            onSent: function (r) {
-                                console.log("penalizeWrong sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("penalizeWrong(branch, 0) success:", r);
-                                console.log(abi.bignum(r.callReturn, "string", true));
-                                next(null);
-                            },
-                            onFailed: function (err) {
-                                console.error("penalizeWrong(branch, 0) error:", err);
-                                next(null);
-                            }
-                        });
+                        next(null);
+                        // self.Consensus.penalizeWrong({
+                        //     branch: branch,
+                        //     event: 0,
+                        //     onSent: function (r) {
+                        //         console.log("penalizeWrong sent:", r);
+                        //     },
+                        //     onSuccess: function (r) {
+                        //         console.log("penalizeWrong(branch, 0) success:", r);
+                        //         console.log(abi.bignum(r.callReturn, "string", true));
+                        //         next(null);
+                        //     },
+                        //     onFailed: function (err) {
+                        //         console.error("penalizeWrong(branch, 0) error:", err);
+                        //         next(null);
+                        //     }
+                        // });
                     });
                 }
                 console.log("Events found, looping through...");

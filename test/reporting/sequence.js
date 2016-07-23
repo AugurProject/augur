@@ -165,7 +165,6 @@ describe("Reporting sequence", function () {
                                     eventID = augur.getMarketEvent(marketID, 0);
                                     if (DEBUG) console.log(chalk.white.dim("Event ID: "), chalk.green(eventID));
                                     augur.useAccount(accounts[0]);
-                                    var initialTotalTrades = parseInt(augur.Markets.get_total_trades(marketID));
                                     if (DEBUG) printReportingStatus(eventID, "Buying complete set");
                                     augur.buyCompleteSets({
                                         market: marketID,

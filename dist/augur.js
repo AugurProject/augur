@@ -17,7 +17,7 @@ module.exports = {
 
     debug: false,
 
-    version: "0.5.4",
+    version: "0.5.6",
 
     constants: {
         ONE: new BigNumber(10).toPower(new BigNumber(18)),
@@ -464,7 +464,7 @@ module.exports = {
                 }
                 if (unfixed && encode) {
                     if (encode === "hex") {
-                        unfixed = this.prefix_hex(unfixed);
+                        unfixed = this.prefix_hex(unfixed.round());
                     } else if (encode === "string") {
                         unfixed = unfixed.toFixed();
                     } else if (encode === "number") {
@@ -16242,6 +16242,18 @@ module.exports={
       "name": "Transfer(int256,int256,int256)", 
       "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
     }, 
+    "closeMarketReturnValue": {
+      "contract": "CloseMarket", 
+      "inputs": [
+        {
+          "indexed": false, 
+          "name": "returnValue", 
+          "type": "int256"
+        }
+      ], 
+      "name": "closeMarketReturnValue(int256)", 
+      "signature": "0x12001df5d02ab705b944c0f9c4f14add3fab5b10a103f442b911f7a8b00eda7a"
+    }, 
     "log_add_tx": {
       "contract": "BuyAndSellShares", 
       "inputs": [
@@ -17291,6 +17303,7 @@ module.exports={
           "sender"
         ], 
         "method": "closeMarket", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -20891,13 +20904,13 @@ module.exports={
         "Branches": "0xb7ea151417bc5d1da98d0b9fcbf40cfb117365b4", 
         "BuyAndSellShares": "0x9c7615be3fd8dbb2bc43df602c460d5cc33954c6", 
         "Cash": "0xca2591192a379e04960941693fca04e51031aae4", 
-        "CloseMarket": "0xd68c8eca9d58bdf56ec30c2d47837da12f9bc0e8", 
+        "CloseMarket": "0x2baa265c61f077484669350f3c50f59a3746b727", 
         "CloseMarketOne": "0x660ba541bd81f76b53b6f47f93f91b2d450a1db0", 
         "CloseMarketTwo": "0x47a36d7161cae2334c46caf2a9cadba3e150a53f", 
         "CollectFees": "0xc452a66ea65b4ac76d87171ed969a4f07f6ad621", 
         "CompleteSets": "0x15c8df240ef26a69226c84588de21302dcd26b9c", 
         "CompositeGetters": "0x2b94719fa4fe3ca680a7edba668a5d86b7c1b3a6", 
-        "Consensus": "0x90236a526dcd40a8fbe4b139e2596d3983071598", 
+        "Consensus": "0x6c63af66786b184949d3b198aaf987f791394fb3", 
         "ConsensusData": "0x0f2fdb5399fad3ca0780f3de3d80b984a4b4cf6a", 
         "CreateBranch": "0x5f58749dfdbe0a367f30d84ab4c04145acea200c", 
         "CreateMarket": "0x1d4360f8273e6994b29f470f2f2aa12b7adad889", 
@@ -38083,7 +38096,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.10";
+    this.version = "1.8.11";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39684,22 +39697,23 @@ module.exports = {
                             return next(null);
                         }
                         console.log("Calling penalizeWrong(branch, 0)...");
-                        self.Consensus.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            onSent: function (r) {
-                                console.log("penalizeWrong sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("penalizeWrong(branch, 0) success:", r);
-                                console.log(abi.bignum(r.callReturn, "string", true));
-                                next(null);
-                            },
-                            onFailed: function (err) {
-                                console.error("penalizeWrong(branch, 0) error:", err);
-                                next(null);
-                            }
-                        });
+                        next(null);
+                        // self.Consensus.penalizeWrong({
+                        //     branch: branch,
+                        //     event: 0,
+                        //     onSent: function (r) {
+                        //         console.log("penalizeWrong sent:", r);
+                        //     },
+                        //     onSuccess: function (r) {
+                        //         console.log("penalizeWrong(branch, 0) success:", r);
+                        //         console.log(abi.bignum(r.callReturn, "string", true));
+                        //         next(null);
+                        //     },
+                        //     onFailed: function (err) {
+                        //         console.error("penalizeWrong(branch, 0) error:", err);
+                        //         next(null);
+                        //     }
+                        // });
                     });
                 }
                 console.log("Events found, looping through...");
@@ -41458,49 +41472,48 @@ module.exports = {
         if ((response && response.error) || this.debug.broadcast) {
             console.debug("[ethrpc] response:", response);
         }
-        try {
-            if (response && typeof response === "string") {
+        if (response && typeof response === "string") {
+            try {
                 response = JSON.parse(response);
+            } catch (e) {
+                err = e;
+                if (e && e.name === "SyntaxError") {
+                    err = errors.INVALID_RESPONSE;
+                }
+                if (isFunction(callback)) return callback(err);
+                throw new this.Error(err);
             }
-            if (response !== undefined && typeof response === "object" && response !== null) {
-                if (response.error) {
-                    response = {
-                        error: response.error.code,
-                        message: response.error.message
-                    };
-                    if (!callback) return response;
-                    callback(response);
-                } else if (response.result !== undefined) {
-                    if (!callback) return response.result;
-                    callback(response.result);
-                } else if (response.constructor === Array && response.length) {
-                    len = response.length;
-                    results = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        results[i] = response[i].result;
-                        if (response.error || (response[i] && response[i].error)) {
-                            if (this.debug.broadcast) {
-                                if (isFunction(callback)) return callback(response.error);
-                                throw new this.Error(response.error);
-                            }
+        }
+        if (response !== undefined && typeof response === "object" && response !== null) {
+            if (response.error) {
+                response = {
+                    error: response.error.code,
+                    message: response.error.message
+                };
+                if (!isFunction(callback)) return response;
+                return callback(response);
+            } else if (response.result !== undefined) {
+                if (!isFunction(callback)) return response.result;
+                return callback(response.result);
+            } else if (response.constructor === Array && response.length) {
+                len = response.length;
+                results = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    results[i] = response[i].result;
+                    if (response.error || (response[i] && response[i].error)) {
+                        if (this.debug.broadcast) {
+                            if (isFunction(callback)) return callback(response.error);
+                            throw new this.Error(response.error);
                         }
                     }
-                    if (!isFunction(callback)) return results;
-                    callback(results);
-
-                // no result or error field
-                } else {
-                    err = errors.NO_RESPONSE;
-                    err.bubble = response;
-                    if (isFunction(callback)) return callback(err);
-                    throw new this.Error(err);
                 }
+                if (!isFunction(callback)) return results;
+                return callback(results);
             }
-        } catch (e) {
-            err = e;
-            if (e && e.name === "SyntaxError") {
-                err = errors.INVALID_RESPONSE;
-            }
+
+            // no result or error field
+            err = errors.NO_RESPONSE;
+            err.bubble = response;
             if (isFunction(callback)) return callback(err);
             throw new this.Error(err);
         }
@@ -41583,6 +41596,30 @@ module.exports = {
         });
     },
 
+    wsMessageAction: function (msg) {
+        if (msg.constructor === Array) {
+            for (var i = 0, n = msg.length; i < n; ++i) {
+                this.wsMessageAction(msg[i]);
+            }
+        } else {
+            if (msg.id !== undefined && msg.id !== null) {
+                if (this.debug.broadcast) {
+                    console.debug("[ethrpc] matched message ID", msg.id, "to", this.wsRequests);
+                }
+                var req = this.wsRequests[msg.id];
+                delete this.wsRequests[msg.id];
+                return this.parse(msg, req.returns, req.callback);
+            } else if (msg.method === "eth_subscription" && msg.params &&
+                msg.params.subscription && msg.params.result &&
+                this.subscriptions[msg.params.subscription]) {
+                return this.subscriptions[msg.params.subscription](msg.params.result);
+            }
+            if (this.debug.broadcast) {
+                console.warn("[ethrpc] Unknown message received:", msg.data || msg);
+            }
+        }
+    },
+
     wsConnect: function (callback) {
         var self = this;
         var calledCallback = false;
@@ -41607,20 +41644,7 @@ module.exports = {
         };
         this.websocket.onmessage = function (msg) {
             if (msg && msg.data && typeof msg.data === "string") {
-                var res = JSON.parse(msg.data);
-                if (res.id !== undefined && res.id !== null) {
-                    var req = self.wsRequests[res.id];
-                    delete self.wsRequests[res.id];
-                    self.parse(res, req.returns, req.callback);
-                } else if (res.method === "eth_subscription" && res.params &&
-                    res.params.subscription && res.params.result &&
-                    self.subscriptions[res.params.subscription]) {
-                    self.subscriptions[res.params.subscription](res.params.result);
-                } else {
-                    if (self.debug.broadcast) {
-                        console.warn("unknown message received:", msg);
-                    }
-                }
+                return self.wsMessageAction(JSON.parse(msg.data));
             }
         };
         this.websocket.onopen = function () {
@@ -41639,12 +41663,36 @@ module.exports = {
     },
 
     wsSend: function (command, returns, callback) {
+        var self = this;
         if (this.debug.broadcast) {
             console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
         }
-        this.wsRequests[command.id] = {returns: returns, callback: callback};
-        if (this.websocket.readyState === this.websocket.OPEN) {
-            this.websocket.send(JSON.stringify(command));
+        if (command.constructor === Array) {
+            var commandList = [];
+            for (var i = 0, n = command.length; i < n; ++i) {
+                commandList.push({command: command[i], returns: returns[i], callback: callback[i]});
+            }
+            async.each(commandList, function (thisCommand, nextCommand) {
+                if (!thisCommand.returns) {
+                    self.wsRequests[thisCommand.command.id] = {returns: thisCommand.returns, callback: thisCommand.callback};
+                } else {
+                    self.wsRequests[thisCommand.command.id] = {returns: thisCommand.returns, callback: function (res) {
+                        thisCommand.callback(self.applyReturns(thisCommand.returns, res));
+                    }};
+                }
+                nextCommand();
+            }, function (err) {
+                if (err) return console.error("wsSend failed:", err);
+                self.wsRequests[command.id] = {returns: returns, callback: callback};
+                if (self.websocket.readyState === self.websocket.OPEN) {
+                    self.websocket.send(JSON.stringify(command));
+                }
+            });
+        } else {
+            this.wsRequests[command.id] = {returns: returns, callback: callback};
+            if (this.websocket.readyState === this.websocket.OPEN) {
+                this.websocket.send(JSON.stringify(command));
+            }
         }
     },
 
@@ -41778,7 +41826,7 @@ module.exports = {
         nodes = this.selectNodes();
 
         // asynchronous request if callback exists
-        if (isFunction(callback)) {
+        if (callback) {
 
             // use websocket if available
             switch (this.wsStatus) {
@@ -42404,6 +42452,9 @@ module.exports = {
                 return rpclist;
             }
         }
+        if (this.wsUrl) {
+            return this.broadcast(rpclist, (f === true) ? callbacks : f);
+        }
         if (!f) {
             var res = this.broadcast(rpclist);
             var result = new Array(numCommands);
@@ -42713,7 +42764,13 @@ module.exports = {
                         // value in transaction receipt (after confirmation)
                         self.getLoggedReturnValue(txHash, function (err, loggedReturnValue) {
                             if (self.debug.tx) console.debug("loggedReturnValue:", err, loggedReturnValue);
-                            if (err) return onFailed(err);
+                            if (err) {
+                                payload.send = false;
+                                self.fire(payload, function (callReturn) {
+                                    console.debug("getLoggedReturnValue failed, fire returns:", callReturn);
+                                    return onFailed(err);
+                                });
+                            }
                             var e = self.errorCodes(payload.method, payload.returns, loggedReturnValue);
                             if (e && e.error) return onFailed(e);
                             tx.callReturn = self.applyReturns(payload.returns, loggedReturnValue);
@@ -42799,8 +42856,624 @@ module.exports = {
 },{"_process":185,"async":255,"augur-abi":256,"augur-contracts":58,"bignumber.js":257,"browser-request":261,"clone":264,"js-sha3":295,"net":111,"request":85,"sync-request":85,"websocket":85}],255:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
 },{"_process":185,"dup":77}],256:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"bignumber.js":257,"buffer":114,"dup":1,"ethereumjs-abi":285,"js-sha3":295}],257:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+var ethabi = require("ethereumjs-abi");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    debug: false,
+
+    version: "0.5.4",
+
+    constants: {
+        ONE: new BigNumber(10).toPower(new BigNumber(18)),
+        BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
+        // Serpent integers are bounded by [-2^255, 2^255-1]
+        SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
+        SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
+        MOD: new BigNumber(2).toPower(new BigNumber(256))
+    },
+
+    abi: ethabi,
+
+    keccak_256: keccak_256,
+
+    // Convert hex to byte array for sha3
+    // (https://github.com/ethereum/dapp-bin/blob/master/ether_ad/scripts/sha3.min.js)
+    hex_to_bytes: function (s) {
+        var o = [];
+        var alpha = "0123456789abcdef";
+        for (var i = (s.substr(0, 2) === "0x" ? 2 : 0); i < s.length; i += 2) {
+            var index1 = alpha.indexOf(s[i]);
+            var index2 = alpha.indexOf(s[i + 1]);
+            if (index1 < 0 || index2 < 0) {
+                throw("Bad input to hex decoding: " + s + " " + i + " " + index1 + " " + index2);
+            }
+            o.push(16*index1 + index2);
+        }
+        return o;
+    },
+
+    bytes_to_hex: function (b) {
+        var hexbyte, h = "";
+        for (var i = 0, n = b.length; i < n; ++i) {
+            hexbyte = this.strip_0x(b[i].toString(16));
+            if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+            h += hexbyte;
+        }
+        return h;
+    },
+
+    sha3: function (hexstr) {
+        return keccak_256(this.hex_to_bytes(hexstr));
+    },
+
+    copy: function (obj) {
+        if (null === obj || "object" !== typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
+
+    is_numeric: function (n) {
+        return Number(parseFloat(n)) == n;
+    },
+
+    remove_leading_zeros: function (h) {
+        var hex = h.toString();
+        if (hex.slice(0, 2) === "0x") {
+            hex = hex.slice(2);
+        }
+        if (!/^0+$/.test(hex)) {
+            while (hex.slice(0, 2) === "00") {
+                hex = hex.slice(2);
+            }
+        }
+        return hex;
+    },
+
+    remove_trailing_zeros: function (h, utf8) {
+        var hex = h.toString();
+        if (utf8) {
+            while (hex.slice(-1) === "\u0000") {
+                hex = hex.slice(0, -1);
+            }
+        } else {
+            while (hex.slice(-2) === "00") {
+                hex = hex.slice(0, -2);
+            }
+        }
+        return hex;
+    },
+
+    bytes_to_utf16: function (bytearray) {
+        if (bytearray.constructor === Array) {
+            var tmp = '';
+            for (var i = 0; i < bytearray.length; ++i) {
+                if (bytearray[i] !== undefined && bytearray[i] !== null) {
+                    if (bytearray[i].constructor === String) {
+                        tmp += this.strip_0x(bytearray[i]);
+                    } else if (bytearray[i].constructor === Number) {
+                        tmp += bytearray[i].toString(16);
+                    } else if (Buffer.isBuffer(bytearray[i])) {
+                        tmp += bytearray[i].toString("hex");
+                    }
+                }
+            }
+            bytearray = tmp;
+        }
+        if (bytearray.constructor === String) {
+            bytearray = this.strip_0x(bytearray);
+        }
+        if (!Buffer.isBuffer(bytearray)) {
+            bytearray = new Buffer(bytearray, "hex");
+        }
+        return bytearray.toString("utf8");
+    },
+
+    short_string_to_int256: function (s) {
+        if (s.length > 32) s = s.slice(0, 32);
+        return this.prefix_hex(this.pad_right(new Buffer(s, "utf8").toString("hex")));
+    },
+
+    int256_to_short_string: function (n) {
+        return new Buffer(this.strip_0x(this.remove_trailing_zeros(n)), "hex").toString("utf8");
+    },
+
+    decode_hex: function (h, strip) {
+        var hex = h.toString();
+        var str = '';
+        if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+        // first 32 bytes = offset
+        // second 32 bytes = string length
+        if (strip) {
+            hex = hex.slice(128);
+            hex = this.remove_trailing_zeros(hex);
+        }
+        for (var i = 0, l = hex.length; i < l; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    },
+
+    // convert bytes to hex
+    encode_hex: function (str, toArray) {
+        var hexbyte, hex, i, len;
+        if (str && str.constructor === Object || str.constructor === Array) {
+            str = JSON.stringify(str);
+        }
+        len = str.length;
+        if (toArray) {
+            hex = [];
+            for (i = 0; i < len; ++i) {
+                hexbyte = str.charCodeAt(i).toString(16);
+                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+                hex.push(this.prefix_hex(hexbyte));
+            }
+        } else {
+            hex = '';
+            for (i = 0; i < len; ++i) {
+                hexbyte = str.charCodeAt(i).toString(16);
+                if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+                hex += hexbyte;
+            }
+        }
+        return hex;
+    },
+
+    raw_encode_hex: function (str) {
+        return ethabi.rawEncode(["string"], [str]).toString("hex");
+    },
+
+    raw_decode_hex: function (hex) {
+        if (!Buffer.isBuffer(hex)) hex = new Buffer(this.strip_0x(hex), "hex");
+        return ethabi.rawDecode(["string"], hex)[0];
+    },
+
+    unfork: function (forked, prefix) {
+        if (forked !== null && forked !== undefined) {
+            var unforked = this.bignum(forked);
+            var superforked = unforked.plus(this.constants.MOD);
+            if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+                unforked = superforked;
+            }
+            if (forked.constructor === BigNumber) return unforked;
+            unforked = this.pad_left(unforked.toString(16));
+            if (prefix) unforked = this.prefix_hex(unforked);
+            return unforked;
+        }
+    },
+
+    hex: function (n, wrap) {
+        var h;
+        if (n !== undefined && n !== null && n.constructor) {
+            switch (n.constructor) {
+                case Buffer:
+                    h = n.toString("hex");
+                    break;
+                case Object:
+                    h = this.encode_hex(JSON.stringify(n));
+                    break;
+                case Array:
+                    h = this.bignum(n, "hex", wrap);
+                    break;
+                case BigNumber:
+                    if (wrap) {
+                        h = this.wrap(n.floor()).toString(16);
+                    } else {
+                        h = n.floor().toString(16);
+                    }
+                    break;
+                case String:
+                    if (n === "-0x0") {
+                        h = "0x0";
+                    } else if (n === "-0") {
+                        h = "0";
+                    } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+                        h = this.bignum(n, "hex", wrap);
+                    } else {
+                        if (isFinite(n)) {
+                            h = this.bignum(n, "hex", wrap);
+                        } else {
+                            h = this.encode_hex(n);
+                        }
+                    }
+                    break;
+                case Boolean:
+                    h = (n) ? "0x1" : "0x0";
+                    break;
+                default:
+                    h = this.bignum(n, "hex", wrap);
+            }
+        }
+        return this.prefix_hex(h);
+    },
+
+    is_hex: function (str) {
+        if (str && str.constructor === String) {
+            if (str.slice(0, 1) === '-' && str.length > 1) {
+                return /^[0-9A-F]+$/i.test(str.slice(1));
+            }
+            return /^[0-9A-F]+$/i.test(str);
+        }
+        return false;
+    },
+
+    format_int256: function (s) {
+        if (s === undefined || s === null || s === "0x") return s;
+        if (Buffer.isBuffer(s)) s = s.toString("hex");
+        if (s.constructor !== String) s = s.toString(16);
+        s = this.strip_0x(s);
+        if (s.length > 64) {
+            if (this.debug) {
+                var overflow = (s.length / 2) - 32;
+                console.warn("input " + overflow + " bytes too large for int256, truncating");
+            }
+            s = s.slice(0, 64);
+        }
+        return this.prefix_hex(this.pad_left(s));
+    },
+
+    format_address: function (addr) {
+        if (addr && addr.constructor === String) {
+            addr = this.strip_0x(addr);
+            while (addr.length > 40 && addr.slice(0, 1) === "0") {
+                addr = addr.slice(1);
+            }
+            while (addr.length < 40) {
+                addr = "0" + addr;
+            }
+            return this.prefix_hex(addr);
+        }
+    },
+
+    strip_0x: function (str) {
+        if (str && str.constructor === String && str.length >= 2) {
+            var h = str;
+            if (h === "-0x0" || h === "0x0") {
+                return "0";
+            }
+            if (h.slice(0, 2) === "0x" && h.length > 2) {
+                h = h.slice(2);
+            } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+                h = '-' + h.slice(3);
+            }
+            if (this.is_hex(h)) return h;
+        }
+        return str;
+    },
+
+    zero_prefix: function (h) {
+        if (h !== undefined && h !== null && h.constructor === String) {
+            h = this.strip_0x(h);
+            if (h.length % 2) h = "0" + h;
+            if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+                if (h.slice(0,1) === '-') {
+                    h = "-0x" + h.slice(1);
+                } else {
+                    h = "0x" + h;
+                }
+            }
+        }
+        return h;
+    },
+
+    prefix_hex: function (n) {
+        if (n === undefined || n === null || n === "") return n;
+        if (n.constructor === Number || n.constructor === BigNumber) {
+            n = n.toString(16);
+        }
+        if (n.constructor === String && n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+            if (n.slice(0,1) === '-') {
+                n = "-0x" + n.slice(1);
+            } else {
+                n = "0x" + n;
+            }
+        }
+        return n;
+    },
+
+    bignum: function (n, encoding, wrap) {
+        var bn, len;
+        if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+            switch (n.constructor) {
+                case BigNumber:
+                    bn = n;
+                    break;
+                case Number:
+                    if (Math.floor(Math.log(n) / Math.log(10) + 1) <= 15) {
+                        bn = new BigNumber(n, 10);
+                    } else {
+                        n = n.toString();
+                        try {
+                            bn = new BigNumber(n, 10);
+                        } catch (exc) {
+                            if (this.is_hex(n)) {
+                                bn = new BigNumber(n, 16);
+                            } else {
+                                return n;
+                            }
+                        }
+                    }
+                    break;
+                case String:
+                    try {
+                        bn = new BigNumber(n, 10);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
+                    }
+                    break;
+                case Array:
+                    len = n.length;
+                    bn = new Array(len);
+                    for (var i = 0; i < len; ++i) {
+                        bn[i] = this.bignum(n[i], encoding, wrap);
+                    }
+                    break;
+                default:
+                    try {
+                        bn = new BigNumber(n, 10);
+                    } catch (ex) {
+                        try {
+                            bn = new BigNumber(n, 16);
+                        } catch (exc) {
+                            return n;
+                        }
+                    }
+            }
+            if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+                if (wrap) bn = this.wrap(bn);
+                if (encoding) {
+                    if (encoding === "number") {
+                        bn = bn.toNumber();
+                    } else if (encoding === "string") {
+                        bn = bn.toFixed();
+                    } else if (encoding === "hex") {
+                        bn = this.prefix_hex(bn.floor().toString(16));
+                    }
+                }
+            }
+            return bn;
+        } else {
+            return n;
+        }
+    },
+
+    wrap: function (bn) {
+        if (bn === undefined || bn === null) return bn;
+        if (bn.constructor !== BigNumber) bn = this.bignum(bn);
+        if (bn.gt(this.constants.SERPINT_MAX)) {
+            return bn.sub(this.constants.MOD);
+        } else if (bn.lt(this.constants.SERPINT_MIN)) {
+            return bn.plus(this.constants.MOD);
+        }
+        return bn;
+    },
+
+    fix: function (n, encode, wrap) {
+        var fixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode && n.constructor === String) {
+                encode = encode.toLowerCase();
+            }
+            if (n.constructor === Array) {
+                var len = n.length;
+                fixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    fixed[i] = this.fix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    fixed = n.mul(this.constants.ONE).round();
+                } else {
+                    fixed = this.bignum(n).mul(this.constants.ONE).round();
+                }
+                if (wrap) fixed = this.wrap(fixed);
+                if (encode) {
+                    if (encode === "string") {
+                        fixed = fixed.toFixed();
+                    } else if (encode === "hex") {
+                        if (fixed.constructor === BigNumber) {
+                            fixed = fixed.toString(16);
+                        }
+                        fixed = this.prefix_hex(fixed);
+                    }
+                }
+            }
+            return fixed;
+        } else {
+            return n;
+        }
+    },
+
+    unfix: function (n, encode) {
+        var unfixed;
+        if (n && n !== "0x" && !n.error && !n.message) {
+            if (encode) encode = encode.toLowerCase();
+            if (n.constructor === Array) {
+                var len = n.length;
+                unfixed = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    unfixed[i] = this.unfix(n[i], encode);
+                }
+            } else {
+                if (n.constructor === BigNumber) {
+                    unfixed = n.dividedBy(this.constants.ONE);
+                } else {
+                    unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+                }
+                if (unfixed && encode) {
+                    if (encode === "hex") {
+                        unfixed = this.prefix_hex(unfixed);
+                    } else if (encode === "string") {
+                        unfixed = unfixed.toFixed();
+                    } else if (encode === "number") {
+                        unfixed = unfixed.toNumber();
+                    }
+                }
+            }
+            return unfixed;
+        } else {
+            return n;
+        }
+    },
+
+    string: function (n, wrap) {
+        return this.bignum(n, "string", wrap);
+    },
+
+    number: function (s, wrap) {
+        return this.bignum(s, "number", wrap);
+    },
+
+    chunk: function (total_len, chunk_len) {
+        chunk_len = chunk_len || 64;
+        return Math.ceil(total_len / chunk_len);
+    },
+
+    pad_right: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+        while (s.length < multiple) {
+            s += '0';
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    pad_left: function (s, chunk_len, prefix) {
+        chunk_len = chunk_len || 64;
+        s = this.strip_0x(s);
+        var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+        while (s.length < multiple) {
+            s = '0' + s;
+        }
+        if (prefix) s = this.prefix_hex(s);
+        return s;
+    },
+
+    encode_prefix: function (funcname, signature) {
+        signature = signature || "";
+        var summary = funcname + "(";
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            switch (signature[i]) {
+                case 's':
+                    summary += "bytes";
+                    break;
+                case 'b':
+                    summary += "bytes";
+                    var j = 1;
+                    while (this.is_numeric(signature[i+j])) {
+                        summary += signature[i+j].toString();
+                        j++;
+                    }
+                    i += j;
+                    break;
+                case 'i':
+                    summary += "int256";
+                    break;
+                case 'a':
+                    summary += "int256[]";
+                    break;
+                default:
+                    summary += "weird";
+            }
+            if (i !== len - 1) summary += ",";
+        }
+        var prefix = keccak_256(summary + ")").slice(0, 8);
+        while (prefix.slice(0, 1) === '0') {
+            prefix = prefix.slice(1);
+        }
+        return this.pad_left(prefix, 8, true);
+    },
+
+    parse_signature: function (signature) {
+        var types = [];
+        for (var i = 0, len = signature.length; i < len; ++i) {
+            if (this.is_numeric(signature[i])) {
+                types[types.length - 1] += signature[i].toString();
+            } else {
+                if (signature[i] === 's') {
+                    types.push("bytes");
+                } else if (signature[i] === 'b') {
+                    types.push("bytes");
+                } else if (signature[i] === 'a') {
+                    types.push("int256[]");
+                } else {
+                    types.push("int256");
+                }
+            }
+        }
+        return types;
+    },
+
+    parse_params: function (params) {
+        if (params !== undefined && params !== null &&
+            params !== [] && params !== "")
+        {
+            if (params.constructor === String) {
+                if (params.slice(0,1) === "[" &&
+                    params.slice(-1) === "]")
+                {
+                    params = JSON.parse(params);
+                }
+                if (params.constructor === String) {
+                    params = [params];
+                }
+            } else if (params.constructor === Number) {
+                params = [params];
+            }
+        } else {
+            params = [];
+        }
+        return params;
+    },
+
+    encode_int: function (value) {
+        var cs, x, output;
+        cs = [];
+        x = new BigNumber(value);
+        while (x.gt(new BigNumber(0))) {
+            cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+            x = x.dividedBy(new BigNumber(256)).floor();
+        }
+        output = this.encode_hex((cs.reverse()).join(''));
+        while (output.length < 64) {
+            output = '0' + output;
+        }
+        return output;
+    },
+
+    // hex-encode a function's ABI data and return it
+    encode: function (tx) {
+        tx.signature = tx.signature || [];
+        return this.prefix_hex(Buffer.concat([
+            ethabi.methodID(tx.method, tx.signature),
+            ethabi.rawEncode(tx.signature, tx.params)
+        ]).toString("hex"));
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":257,"buffer":114,"ethereumjs-abi":285,"js-sha3":295}],257:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
 },{"dup":2}],258:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
