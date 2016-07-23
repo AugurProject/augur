@@ -5,6 +5,7 @@ import filters from './selectors/filters';
 import keywords from './selectors/keywords';
 import links from './selectors/links';
 import loginAccount from './selectors/login-account';
+import market from './selectors/market';
 import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
 import positionsMarkets from './selectors/positions-markets';
@@ -12,8 +13,6 @@ import positionsSummary from './selectors/positions-summary';
 import transactions from './selectors/transactions';
 import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
-
-import { BID, ASK } from './modules/transactions/constants/types';
 
 // all selectors should go here
 const selectors = {
@@ -24,6 +23,7 @@ const selectors = {
 	keywords,
 	links,
 	loginAccount,
+	market,
 	markets,
 	marketsTotals,
 	positionsSummary,
@@ -47,7 +47,6 @@ Object.defineProperty(selectors, 'update', {
 
 selectors.isTransactionsWorking = false;
 
-
 selectors.searchSort = {
 	selectedSort: { prop: 'creationDate', isDesc: true },
 	sortOptions: [{ label: 'Creation Date', value: 'creationDate' }, { label: 'End Date', value: 'endDate' }, { label: 'Highest Maker Fee', value: 'makerFeePercent' }]
@@ -55,8 +54,6 @@ selectors.searchSort = {
 
 selectors.marketsHeader = {};
 
-selectors.market = markets[0]; // selected market -- set to the first market for tests
-selectors.sideOptions = [{ value: BID, label: 'Buy' }, { value: ASK, label: 'Sell' }];
 selectors.selectedOutcome = {
 	updateSelectedOutcome: (selectedOutcomeID) => {
 		module.exports.update({

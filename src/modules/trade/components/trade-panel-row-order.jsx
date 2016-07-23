@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
+
 import ValueDenomination from '../../../modules/common/components/value-denomination';
-import Clickable from '../../../modules/common/components/clickable';
 
 const TradePanelRowOrder = (p) => (
 	<tr className={classnames('trade-panel-row', { displayNone: !(p.selectedOutcomeID === p.outcome.id) })} >
@@ -9,50 +9,37 @@ const TradePanelRowOrder = (p) => (
 		<td>
 			{!!p.outcome.orderBook.bids[p.itemIndex] &&
 				<div className="order-book-data bid">
-					<Clickable
-						onClick={event => {
-							event.stopPropagation();
+					<ValueDenomination
+						className={classnames('shares')}
+						{...p.outcome.orderBook.bids[p.itemIndex].shares}
+						denomination={undefined}
+					/>
 
-							p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.bids[p.itemIndex].shares.value, p.outcome.orderBook.bids[p.itemIndex].price.value, p.orderSides.ASK);
-						}}
-					>
-						<ValueDenomination className="shares" {...p.outcome.orderBook.bids[p.itemIndex].shares} />
-					</Clickable>
 					<span className="shares-at">@</span>
-					<Clickable
-						onClick={event => {
-							event.stopPropagation();
 
-							p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.orderBook.bids[p.itemIndex].price.value);
-						}}
-					>
-						<ValueDenomination className="price" {...p.outcome.orderBook.bids[p.itemIndex].price} />
-					</Clickable>
+					<ValueDenomination
+						className={classnames('price')}
+						{...p.outcome.orderBook.bids[p.itemIndex].price}
+					/>
 				</div>
 			}
 		</td>
 		<td>
 			{!!p.outcome.orderBook.asks[p.itemIndex] &&
-				<div className="order-book-data ask" >
-					<Clickable
-						onClick={event => {
-							event.stopPropagation();
+				<div className="order-book-data ask">
 
-							p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.orderBook.asks[p.itemIndex].price.value);
-						}}
-					>
-						<ValueDenomination className="price" {...p.outcome.orderBook.asks[p.itemIndex].price} />
-					</Clickable>
+					<ValueDenomination
+						className={classnames('shares')}
+						{...p.outcome.orderBook.asks[p.itemIndex].shares}
+						denomination={undefined}
+					/>
+
 					<span className="shares-at">@</span>
-					<Clickable
-						onClick={event => {
-							event.stopPropagation();
 
-							p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.orderBook.asks[p.itemIndex].shares.value, p.outcome.orderBook.asks[p.itemIndex].price.value, p.orderSides.BID);
-						}}
-					>
-						<ValueDenomination className="shares" {...p.outcome.orderBook.asks[p.itemIndex].shares} />
-					</Clickable>
+					<ValueDenomination
+						className={classnames('price')}
+						{...p.outcome.orderBook.asks[p.itemIndex].price}
+					/>
 				</div>
 			}
 		</td>
@@ -63,7 +50,6 @@ const TradePanelRowOrder = (p) => (
 TradePanelRowOrder.propTypes = {
 	outcomes: React.PropTypes.array,
 	selectedOutcomeID: React.PropTypes.string,
-	orderSides: React.PropTypes.object,
 	itemIndex: React.PropTypes.number
 };
 

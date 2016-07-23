@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import Clickable from '../../common/components/clickable';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OrderBook = (p) => (
@@ -9,14 +8,8 @@ const OrderBook = (p) => (
 				if (i !== 0) {
 					return (
 						<article key={bid.price.full} className="bid-ask bid">
-							<Clickable
-								onClick={() => { p.updateTradeOrder(p.outcome.id, bid.shares.value, bid.price.value, 'ask'); }}
-							>
-								<ValueDenomination className="shares" {...bid.shares} />
-							</Clickable>
-							<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, bid.price.value); }}>
-								<ValueDenomination className="price" {...bid.price} />
-							</Clickable>
+							<ValueDenomination className="shares clickable" {...bid.shares} onClick={() => p.updateTradeOrder(p.outcome.id, bid.shares.value, bid.price.value, 'ask')} />
+							<ValueDenomination className="price clickable" {...bid.price} onClick={() => p.updateTradeOrder(p.outcome.id, 0, bid.price.value)} />
 						</article>
 					);
 				}
@@ -34,14 +27,8 @@ const OrderBook = (p) => (
 				if (i !== 0) {
 					return (
 						<article key={ask.price.full} className="bid-ask ask">
-							<Clickable onClick={() => { p.updateTradeOrder(p.outcome.id, 0, ask.price.value); }}>
-								<ValueDenomination className="price" {...ask.price} />
-							</Clickable>
-							<Clickable
-								onClick={() => { p.updateTradeOrder(p.outcome.id, ask.shares.value, ask.price.value, 'bid'); }}
-							>
-								<ValueDenomination className="shares" {...ask.shares} />
-							</Clickable>
+							<ValueDenomination className="price clickable" {...ask.price} onClick={() => p.updateTradeOrder(p.outcome.id, 0, ask.price.value)} />
+							<ValueDenomination className="shares clickable" {...ask.shares} onClick={() => p.updateTradeOrder(p.outcome.id, ask.shares.value, ask.price.value, 'bid')} />
 						</article>
 					);
 				}

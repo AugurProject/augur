@@ -13,7 +13,6 @@
 
     .trade-builder { // table
         width: 100%;
-
         border-collapse: separate;
         border-spacing: 0 0.6rem;
 
@@ -26,49 +25,65 @@
         }
 
         .header-row{
-            th, td {
+            th {
                 font-size: 0.8em;
                 font-weight: 700;
                 text-transform: uppercase;
-                text-align: center;
+                border-bottom: solid 1px @color-dark-active;
             }
         }
 
-        .trade-panel-header { // thead
-            th {
-                border-bottom: solid 1px @color-dark-active;
-            }
+        th, td {
+            padding: 0 0.5em;
+        }
 
-            .num-shares, .limit-price {
-                background: @color-dark-hover;
-            }
+        .outcome-name {
+            text-align: left;
+        }
 
-            .top-bid {
-                text-align: right;
-                padding-right: 4rem;
-            }
+        .last-price {
+            text-align: right;
+        }
 
-            .top-ask {
-                text-align: left;
-                padding-left: 4rem;
-            }
+        .buy-sell-button {
+            width: 3em;
+        }
+
+        .num-shares {
+            max-width: 4em;
+            text-align: center;
+            background: @color-dark-hover;
+        }
+
+        .limit-price {
+            max-width: 4em;
+            text-align: center;
+            background: @color-dark-hover;
+        }
+
+        .bid {
+            text-align: center;
+        }
+
+        .ask {
+            text-align: center;
+        }
+
+        .fee-to-pay {
+            text-align: right;
+        }
+
+        .total-cost {
+            text-align: right;
         }
 
         .trade-panel-body, .transaction-summary {
             .trade-panel-row, .summary-totals {
                 .outcome-name {
-                    text-align: left;
                     text-transform: uppercase;
-                    min-width: 12rem;
-                }
-
-                .fee-to-pay {
-                    text-align: right;
                 }
 
                 .total-cost {
-                    text-align: right;
-
                     font-weight: 700;
                     .colorize();
 
@@ -76,19 +91,21 @@
                         font-weight: 900;
                     }
                 }
+
+                .buy-toggle, .sell-toggle {
+                    padding: 0.3em 0.8em;
+                }
+            	.buy-toggle {
+            		background: @color-success-hover;
+            	}
+        		.sell-toggle {
+        			background: @color-danger-dark;
+        		}
             }
         }
 
         .trade-panel-body { // tbody
             .trade-panel-row {
-                th, td {
-                    text-align: center;
-                }
-
-                &.clickable-row {
-                    cursor: pointer;
-                }
-
                 .num-shares, .limit-price {
                     .box { // input element
                         padding: 0.3em 0;
@@ -100,14 +117,20 @@
                     }
                 }
 
-                .bid {
-                    text-align: right;
-                    padding-right: 1rem;
+                .input {
+                    display: block;
                 }
 
-                .ask {
-                    text-align: left;
-                    padding-left: 1rem;
+                .order-book-data {
+                    display: flex;
+                    .shares {
+                        flex: 2;
+                        text-align: right;
+                    }
+                    .price {
+                        flex: 2;
+                        text-align: left;
+                    }
                 }
             }
         }

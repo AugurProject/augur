@@ -1,81 +1,82 @@
 import React from 'react';
 import classnames from 'classnames';
+
+import { BUY, SELL } from '../../trade/constants/types';
+
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import Input from '../../../modules/common/components/input';
-import Dropdown from '../../../modules/common/components/dropdown';
-import Clickable from '../../../modules/common/components/clickable';
 
 const TradePanelRowOutcome = (p) => (
 	<tr
-		className={classnames('trade-panel-row', 'clickable-row')}
+		className={classnames('trade-panel-row')}
 		onClick={event => {
 			event.stopPropagation();
-
 			p.updateSelectedOutcome(p.outcome.id);
 		}}
 	>
-		<th className="outcome-name">
+		<td className={classnames('outcome-name', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id })}>
 			{p.outcome.name}
-		</th>
-		<td className="last-price">
+		</td>
+		<td className={classnames('last-price', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id })}>
 			<ValueDenomination {...p.outcome.lastPrice} />
 		</td>
-		<td className="bid">
+		<td className={classnames('bid', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id })}>
 			{!!p.outcome.topBid &&
-				<div>
-					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topBid.shares.value, p.outcome.topBid.price.value, p.orderSides.ASK); }} >
-						<ValueDenomination className="top-bid" {...p.outcome.topBid.shares} />
-					</Clickable>
+				<div className="order-book-data bid">
+					<ValueDenomination className="shares" {...p.outcome.topBid.shares} denomination={undefined} />
 					<span className="shares-at">@</span>
-					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topBid.price.value); }}>
-						<ValueDenomination className="top-bid" {...p.outcome.topBid.price} />
-					</Clickable>
+					<ValueDenomination className="price" {...p.outcome.topBid.price} />
 				</div>
 			}
 		</td>
-		<td className="ask">
+		<td className={classnames('ask', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id })}>
 			{!!p.outcome.topAsk &&
-				<div>
-					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, p.outcome.topAsk.price.value); }}>
-						<ValueDenomination className="top-ask" {...p.outcome.topAsk.price} />
-					</Clickable>
+				<div className="order-book-data ask">
+					<ValueDenomination className="shares" {...p.outcome.topAsk.shares} denomination={undefined} />
 					<span className="shares-at">@</span>
-					<Clickable onClick={() => { p.outcome.trade.updateTradeOrder(p.outcome.id, p.outcome.topAsk.shares.value, p.outcome.topAsk.price.value, p.orderSides.BID); }} >
-						<ValueDenomination className="top-ask" {...p.outcome.topAsk.shares} />
-					</Clickable>
+					<ValueDenomination className="price" {...p.outcome.topAsk.price} />
 				</div>
 			}
 		</td>
 
-		<td>
-			<Dropdown
-				selected={p.sideOptions.find(opt => opt.value === p.outcome.trade.side)}
-				options={p.sideOptions}
-				onChange={(selectedOption) => { p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, undefined, selectedOption); }}
-			/>
+		<td className={classnames('buy-sell-button', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id && !p.outcome.trade.numShares })}>
+			{p.outcome.trade.side === BUY &&
+				<span
+					className="clickable buy-toggle"
+					onClick={(selectedOption) => p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, undefined, SELL)}
+				>
+					Buy
+				</span>
+			}
+			{p.outcome.trade.side === SELL &&
+				<span
+					className="clickable sell-toggle"
+					onClick={(selectedOption) => p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, undefined, BUY)}
+				>
+					Sell
+				</span>
+			}
 		</td>
-		<td>
+		<td className={classnames('num-shares', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id && !p.outcome.trade.numShares })}>
 			<Input
-				className="num-shares"
 				type="text"
 				value={p.outcome.trade.numShares}
 				isClearable={false}
 				onChange={(value) => p.outcome.trade.updateTradeOrder(p.outcome.id, parseFloat(value) || 0, undefined)}
 			/>
 		</td>
-		<td>
+		<td className={classnames('limit-price', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id && !p.outcome.trade.numShares })}>
 			<Input
-				className="limit-price"
 				type="text"
 				value={p.outcome.trade.limitPrice}
 				isClearable={false}
 				onChange={(value) => p.outcome.trade.updateTradeOrder(p.outcome.id, undefined, parseFloat(value) || 0)}
 			/>
 		</td>
-		<td className="fee-to-pay" >
+		<td className={classnames('fee-to-pay', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id && !p.outcome.trade.numShares })}>
 			<ValueDenomination {...p.outcome.trade.tradeSummary.feeToPay} />
 		</td>
-		<td className="total-cost" >
+		<td className={classnames('total-cost', { fade: p.selectedOutcomeID && p.selectedOutcomeID !== p.outcome.id && !p.outcome.trade.numShares })}>
 			<ValueDenomination {...p.outcome.trade.tradeSummary.totalEther} />
 		</td>
 	</tr>
@@ -83,8 +84,7 @@ const TradePanelRowOutcome = (p) => (
 
 TradePanelRowOutcome.propTypes = {
 	outcome: React.PropTypes.object,
-	sideOptions: React.PropTypes.array,
-	orderSides: React.PropTypes.object,
+	selectedOutcomeID: React.PropTypes.string,
 	updateSelectedOutcome: React.PropTypes.func
 };
 

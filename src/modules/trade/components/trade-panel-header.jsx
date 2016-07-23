@@ -5,13 +5,13 @@ const TradePanelHeader = (p) => (
 		<tr className="header-row">
 			<th className="outcome-name">Outcomes</th>
 			<th className="last-price">Last</th>
-			<th className="top-bid">{!!p.selectedOutcomeID ? 'Bid' : 'Top Bid'}</th>
-			<th className="top-ask">{!!p.selectedOutcomeID ? 'Ask' : 'Top Ask'}</th>
-			<th className="num-shares">Side</th>
+			<th className="bid">{!!p.selectedOutcomeID ? 'Bids' : 'Top Bid'}</th>
+			<th className="ask">{!!p.selectedOutcomeID ? 'Asks' : 'Top Ask'}</th>
+			<th className="buy-sell-button"></th>
 			<th className="num-shares">Shares</th>
 			<th className="limit-price">Limit</th>
 			<th className="fee-to-pay">Fee</th>
-			<th className="total-cost">Profit/Loss</th>
+			<th className="total-cost">Cost</th>
 		</tr>
 	</thead>
 );

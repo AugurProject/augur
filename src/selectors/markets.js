@@ -2,16 +2,13 @@ import { makeNumber } from '../utils/make-number';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
 import { M } from '../modules/site/constants/pages';
+import { BUY } from '../modules/trade/constants/types';
 
 module.exports = makeMarkets();
 
 function makeMarkets(numMarkets = 25) {
 	const markets = [];
-	const	types = ['binary', 'categorical', 'scalar'];
-	const constants = {
-		BID: 'bid',
-		ASK: 'ask'
-	};
+	const types = ['binary', 'categorical', 'scalar'];
 
 	for (let i = 0; i < numMarkets; i++) {
 		markets.push(makeMarket(i));
@@ -35,18 +32,14 @@ function makeMarkets(numMarkets = 25) {
 			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
-			isOpen: Math.random() > 0.1,
-			isPendingReport: Math.random() < 0.5,
+			isOpen: randomInt(0, 100) > 5,
+			isPendingReport: index > 0 && index % 4 === 0,
 			marketLink: {
 				text: 'Trade',
 				className: 'trade',
-				onClick: () => require('../selectors').update({ activePage: M, market: m })
+				onClick: () => require('../selectors').update({ activePage: M, market: m, url: `/m/${id}` })
 			},
-			orderBook: {},
-			orderSides: {
-				BID: constants.BID,
-				ASK: constants.ASK
-			}
+			orderBook: {}
 		};
 
 		// tags
@@ -72,12 +65,12 @@ function makeMarkets(numMarkets = 25) {
 					const feeToPay = 0.02 * outcome.trade.numShares * outcome.trade.limitPrice;
 					const numShares = outcome.trade.numShares;
 					const limitPrice = outcome.trade.limitPrice || 0;
-					const profitLoss = outcome.trade.side === constants.BID ? -(numShares * limitPrice) : numShares * limitPrice;
+					const profitLoss = outcome.trade.side === BUY ? -(numShares * limitPrice) : numShares * limitPrice;
 					const cost = numShares * limitPrice;
 
 					p.feeToPay += feeToPay;
-					p.totalShares += outcome.trade.side === constants.BID ? numShares : -numShares;
-					p.totalEther += outcome.trade.side === constants.BID ? -cost : cost;
+					p.totalShares += outcome.trade.side === BUY ? numShares : -numShares;
+					p.totalEther += outcome.trade.side === BUY ? -cost : cost;
 
 					p.tradeOrders.push({
 						type: outcome.trade.side,
@@ -263,7 +256,7 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: constants.BID,
+						side: BUY,
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {
@@ -272,12 +265,12 @@ function makeMarkets(numMarkets = 25) {
 						},
 						/**
 						 +
-						 +  @param {Number} outcomeId
+						 +  @param {Number} outcomeID
 						 +  @param {Number|undefined} shares Pass undefined to keep the value unchanged
 						 +  @param {Number|undefined} limitPrice Pass undefined to keep the value unchanged
 						 */
-						updateTradeOrder: (outcomeId, shares, limitPrice, side) => {
-							const outcome = m.outcomes.find((outcome) => outcome.id === outcomeId);
+						updateTradeOrder: (outcomeID, shares, limitPrice, side) => {
+							const outcome = m.outcomes.find((outcome) => outcome.id === outcomeID);
 
 							if (typeof shares !== 'undefined') {
 								outcome.trade.numShares = shares;
@@ -290,7 +283,7 @@ function makeMarkets(numMarkets = 25) {
 							}
 							outcome.trade.tradeSummary.feeToPay = makeNumber(Math.round(0.02 * outcome.trade.limitPrice * outcome.trade.numShares * 100) / 100, 'eth');
 
-							const totEth = side === constants.BID ? -(outcome.trade.numShares * outcome.trade.limitPrice) : outcome.trade.numShares * outcome.trade.limitPrice;
+							const totEth = side === BUY ? -(outcome.trade.numShares * outcome.trade.limitPrice) : outcome.trade.numShares * outcome.trade.limitPrice;
 
 							outcome.trade.tradeSummary.totalEther = makeNumber(Math.round(totEth * 100) / 100, 'eth');
 

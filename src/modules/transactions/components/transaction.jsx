@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY_SHARES, SELL_SHARES, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK, TRADE_SUMMARY } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK, TRADE_SUMMARY } from '../../transactions/constants/types';
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
@@ -8,18 +8,18 @@ const Transaction = (p) => {
 	const nodes = {};
 
 	switch (p.type) {
-	case BUY_SHARES:
+	case BUY:
 	case BID:
-	case SELL_SHARES:
+	case SELL:
 	case ASK:
 		switch (p.type) {
-		case BUY_SHARES:
+		case BUY:
 			nodes.action = 'BUY';
 			break;
 		case BID:
 			nodes.action = 'BID';
 			break;
-		case SELL_SHARES:
+		case SELL:
 			nodes.action = 'SELL';
 			break;
 		case ASK:
@@ -42,7 +42,7 @@ const Transaction = (p) => {
 				</span>
 			</span>
 		);
-		if (p.type === BUY_SHARES) {
+		if (p.type === BUY) {
 			nodes.valueChange = (
 				<span className="value-change">
 					{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
