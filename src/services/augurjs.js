@@ -309,6 +309,9 @@ ex.get_trade = function getTrade(orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
 
+ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
+ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
+
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
 		description: newMarket.formattedDescription,
@@ -320,7 +323,7 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		takerFee: newMarket.takerFee / 100,
 		tags: newMarket.tags,
 		makerFee: newMarket.makerFee / 100,
-		extraInfo: newMarket.extraInfo,
+		extraInfo: newMarket.detailsText,
 		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
 		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
 		onFailed: r => cb(r),
