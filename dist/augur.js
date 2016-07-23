@@ -16242,6 +16242,18 @@ module.exports={
       "name": "Transfer(int256,int256,int256)", 
       "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
     }, 
+    "buyAndSellSharesReturnValue": {
+      "contract": "BuyAndSellShares", 
+      "inputs": [
+        {
+          "indexed": false, 
+          "name": "returnValue", 
+          "type": "int256"
+        }
+      ], 
+      "name": "buyAndSellSharesReturnValue(int256)", 
+      "signature": "0x4363ec7f4cdb74de22356b0fd0efd40de1583e0a6063d274ca13639255274f5b"
+    }, 
     "closeMarketReturnValue": {
       "contract": "CloseMarket", 
       "inputs": [
@@ -16253,6 +16265,18 @@ module.exports={
       ], 
       "name": "closeMarketReturnValue(int256)", 
       "signature": "0x12001df5d02ab705b944c0f9c4f14add3fab5b10a103f442b911f7a8b00eda7a"
+    }, 
+    "completeSetsReturnValue": {
+      "contract": "CompleteSets", 
+      "inputs": [
+        {
+          "indexed": false, 
+          "name": "returnValue", 
+          "type": "int256"
+        }
+      ], 
+      "name": "completeSetsReturnValue(int256)", 
+      "signature": "0x32348dd50bf89583815c8079ab320bd35e5c4d65691fbca91a16348a7f0cbfe2"
     }, 
     "log_add_tx": {
       "contract": "BuyAndSellShares", 
@@ -17137,6 +17161,7 @@ module.exports={
           "outcome"
         ], 
         "method": "buy", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -17151,6 +17176,7 @@ module.exports={
           "trade_id"
         ], 
         "method": "cancel", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -17165,6 +17191,7 @@ module.exports={
           "outcome"
         ], 
         "method": "sell", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -17373,6 +17400,7 @@ module.exports={
           "amount"
         ], 
         "method": "buyCompleteSets", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -17386,6 +17414,7 @@ module.exports={
           "amount"
         ], 
         "method": "sellCompleteSets", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -20902,13 +20931,13 @@ module.exports={
     "2": {
         "Backstops": "0xa2ac6ef02115a2bf2743432760e81939890a25b5", 
         "Branches": "0xb7ea151417bc5d1da98d0b9fcbf40cfb117365b4", 
-        "BuyAndSellShares": "0x9c7615be3fd8dbb2bc43df602c460d5cc33954c6", 
+        "BuyAndSellShares": "0xe5e416c0699106420e54d0e5d8753201129e7031", 
         "Cash": "0xca2591192a379e04960941693fca04e51031aae4", 
         "CloseMarket": "0x2baa265c61f077484669350f3c50f59a3746b727", 
         "CloseMarketOne": "0x660ba541bd81f76b53b6f47f93f91b2d450a1db0", 
         "CloseMarketTwo": "0x47a36d7161cae2334c46caf2a9cadba3e150a53f", 
         "CollectFees": "0xc452a66ea65b4ac76d87171ed969a4f07f6ad621", 
-        "CompleteSets": "0x15c8df240ef26a69226c84588de21302dcd26b9c", 
+        "CompleteSets": "0xcf0f5a0e242090e764f4ea4aff2b443dd0cb4c9d", 
         "CompositeGetters": "0x2b94719fa4fe3ca680a7edba668a5d86b7c1b3a6", 
         "Consensus": "0x6c63af66786b184949d3b198aaf987f791394fb3", 
         "ConsensusData": "0x0f2fdb5399fad3ca0780f3de3d80b984a4b4cf6a", 
@@ -38096,7 +38125,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.11";
+    this.version = "1.8.12";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39697,23 +39726,22 @@ module.exports = {
                             return next(null);
                         }
                         console.log("Calling penalizeWrong(branch, 0)...");
-                        next(null);
-                        // self.Consensus.penalizeWrong({
-                        //     branch: branch,
-                        //     event: 0,
-                        //     onSent: function (r) {
-                        //         console.log("penalizeWrong sent:", r);
-                        //     },
-                        //     onSuccess: function (r) {
-                        //         console.log("penalizeWrong(branch, 0) success:", r);
-                        //         console.log(abi.bignum(r.callReturn, "string", true));
-                        //         next(null);
-                        //     },
-                        //     onFailed: function (err) {
-                        //         console.error("penalizeWrong(branch, 0) error:", err);
-                        //         next(null);
-                        //     }
-                        // });
+                        self.Consensus.penalizeWrong({
+                            branch: branch,
+                            event: 0,
+                            onSent: function (r) {
+                                console.log("penalizeWrong sent:", r);
+                            },
+                            onSuccess: function (r) {
+                                console.log("penalizeWrong(branch, 0) success:", r);
+                                console.log(abi.bignum(r.callReturn, "string", true));
+                                next(null);
+                            },
+                            onFailed: function (err) {
+                                console.error("penalizeWrong(branch, 0) error:", err);
+                                next(null);
+                            }
+                        });
                     });
                 }
                 console.log("Events found, looping through...");
@@ -41871,7 +41899,10 @@ module.exports = {
                     result = this.postSync(nodes[j], command, returns);
                 } catch (e) {
                     if (this.nodes.local) {
-                        throw new this.Error(errors.LOCAL_NODE_FAILURE);
+                        var err = errors.LOCAL_NODE_FAILURE;
+                        err.bubble = e;
+                        err.command = command;
+                        throw new this.Error(err);
                     }
                 }
                 if (result !== undefined) return result;
