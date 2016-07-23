@@ -1932,7 +1932,7 @@ describe("Integration tests", function () {
                         outcome: t.outcome,
                         onSent: function (r) {
                             assert.isString(r.txHash);
-                            assert.isString(r.callReturn);
+                            assert.isNull(r.callReturn);
                         },
                         onSuccess: function (r) {
                             augur.get_trade(r.callReturn, function (trade) {
@@ -1984,7 +1984,7 @@ describe("Integration tests", function () {
                                 outcome: t.outcome,
                                 onSent: function (r) {
                                     assert.isString(r.txHash);
-                                    assert.isString(r.callReturn);
+                                    assert.isNull(r.callReturn);
                                 },
                                 onSuccess: function (r) {
                                     augur.get_trade(r.callReturn, function (trade) {
@@ -2037,7 +2037,7 @@ describe("Integration tests", function () {
                             outcome: t.outcome,
                             onSent: function (r) {
                                 assert(r.txHash);
-                                assert(r.callReturn);
+                                assert.isNull(r.callReturn);
                             },
                             onSuccess: function (r) {
                                 assert(r.txHash);

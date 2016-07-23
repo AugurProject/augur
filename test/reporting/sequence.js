@@ -445,7 +445,6 @@ describe("Reporting sequence", function () {
                 sender: augur.from,
                 onSent: function (res) {
                     assert(res.txHash);
-                    assert.strictEqual(res.callReturn, "1");
                 },
                 onSuccess: function (res) {
                     if (DEBUG) console.log("closeMarket success:", res);
