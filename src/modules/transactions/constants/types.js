@@ -1,5 +1,5 @@
-export const BUY_SHARES = 'buy_shares';
-export const SELL_SHARES = 'sell_shares';
+export const BUY = 'buy';
+export const SELL = 'sell';
 export const TRADE_SUMMARY = 'trade_summary';
 export const BID = 'bid';
 export const ASK = 'ask';

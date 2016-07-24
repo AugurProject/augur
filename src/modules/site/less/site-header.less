@@ -30,6 +30,11 @@
                 background: fade(@color-dark-hover, 20%);
             }
 
+            &.active {
+                background: @color-dark-hover;
+                color: @color-light-normal;
+            }
+
             &:focus {
                 text-shadow: 0 0 @color-light-normal;
             }
@@ -38,11 +43,6 @@
             	font-family: CoreMellow;
                 font-size: 2em;
                 font-weight: 700;
-            }
-
-            &.active {
-                background: @color-dark-hover;
-                color: @color-light-normal;
             }
 
             &.positions {

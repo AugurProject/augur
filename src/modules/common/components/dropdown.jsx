@@ -2,13 +2,13 @@ import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
 const Dropdown = (p) => (
-	<span className={classnames('drop-down', p.className)}>
+	<span className={classnames('dropdown', p.className)}>
 		{!!p.selected &&
-			<span className="selected">{p.selected.label}</span>
+			<span className={classnames('selected', p.selected.value)}>{p.selected.label}</span>
 		}
 		<ul className="options">
-			{p.options.filter(option => option.value !== p.selected.value).map(option => (
-				<li key={option.value} className="option" onClick={() => p.onChange(option.value)}>{option.label}</li>
+			{p.options.filter(option => !p.selected || option.value !== p.selected.value).map(option => (
+				<li key={option.value} className={classnames('option', option.value)} onClick={() => p.onChange(option.value)}>{option.label}</li>
 			))}
 		</ul>
 	</span>

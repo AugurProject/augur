@@ -441,7 +441,7 @@ export default function(market) {
 
 				tradeOrders.map((trade, i) => {
 					describe(`tradeOrder shape for ${i}`, () => {
-						
+
 						describe('shares', () => {
 							it('should be defined', () => {
 								assert.isDefined(trade.shares, 'shares is not defined');
@@ -477,7 +477,7 @@ export default function(market) {
 								assert.isNumber(trade.limitPrice, `limitPrice isn't a number`);
 							});
 						});
-						
+
 						describe('ether', () => {
 							it('should be defined', () => {
 								assert.isDefined(trade.ether, 'ether is not defined');
@@ -767,39 +767,6 @@ export default function(market) {
 			it('should be an object', () => {
 				assert.isObject(market.orderBook, `market.orderBook isn't an object`);
 			});
-		});
-
-		describe('orderSides', () => {
-			let orderSides = market.orderSides;
-
-			it('should receive constants and be an object', () => {
-				assert.isDefined(orderSides, 'market.orderSides is not defined');
-			});
-
-			it('should be an object', () => {
-				assert.isObject(orderSides, 'market.orderSides is not an object');
-			});
-
-			describe('BID', () => {
-				it('should exist', () => {
-					assert.isDefined(orderSides.BID, 'BID is not defined');
-				});
-
-				it("should be a string + equal 'bid'", () => {
-					assert.strictEqual(orderSides.BID, 'bid', "BID is not strictly equal to 'bid'");
-				});
-			});
-
-			describe('ASK', () => {
-				it('should exist', () => {
-					assert.isDefined(orderSides.ASK, 'ASK is not defined');
-				});
-
-				it("should be a string + equal 'ask'", () => {
-					assert.strictEqual(orderSides.ASK, 'ask', "ASK is not strictly equal to 'ask'");
-				});
-			});
-
 		});
 
 		describe('onSubmitPlaceTrade', () => {

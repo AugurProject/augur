@@ -16,7 +16,6 @@ import positionsMarkets from '../test/assertions/positions-markets';
 import positionsSummary from '../test/assertions/positions-summary';
 import searchSort from '../test/assertions/search-sort';
 import selectedOutcome from '../test/assertions/selected-outcome';
-import sideOptions from '../test/assertions/side-options';
 import siteHeader from '../test/assertions/site-header';
 import transactions from '../test/assertions/transactions';
 import transactionsTotals from '../test/assertions/transactions-totals';
@@ -41,7 +40,6 @@ export default {
 	positionsSummary,
 	searchSort,
 	selectedOutcome,
-	sideOptions,
 	siteHeader,
 	transactions,
 	transactionsTotals,

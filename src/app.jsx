@@ -31,11 +31,6 @@ export default function (appElement, selectors) {
 		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined
 	};
 
-	if (url !== window.location.pathname + window.location.search) {
-		window.history.pushState(null, null, url);
-		window.scrollTo(0, 0);
-	}
-
 	switch (p.activePage) {
 	case REGISTER:
 	case LOGIN:
@@ -91,9 +86,7 @@ export default function (appElement, selectors) {
 		node = (
 			<MarketPage
 				siteHeader={p.siteHeader}
-				sideOptions={p.sideOptions}
-				updateSelectedOutcome={p.selectedOutcome.updateSelectedOutcome}
-				selectedOutcomeID={p.selectedOutcome.selectedOutcomeID}
+				selectedOutcome={p.selectedOutcome}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
 			/>
@@ -124,4 +117,10 @@ export default function (appElement, selectors) {
 		node,
 		appElement
 	);
+
+
+	if (url !== window.location.pathname + window.location.search) {
+		window.history.pushState(null, null, url);
+		window.scrollTo(0, 0);
+	}
 }

@@ -9,7 +9,6 @@ const BidsAsks = (p) => (
 				<OrderBook
 					key={`order-book-${outcome.id}`}
 					outcome={outcome}
-					updateTradeOrder={outcome.trade.updateTradeOrder}
 					bids={outcome.orderBook.bids}
 					asks={outcome.orderBook.asks}
 				/>

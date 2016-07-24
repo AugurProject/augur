@@ -1,4 +1,4 @@
-.drop-down {
+.dropdown {
 	display: inline-block; position: relative;
 	color: @color-light-normal;
 	background: @color-dark-hover;
@@ -12,7 +12,7 @@
 
 	.selected {
 		display: block;
-		padding: 0.5rem 1.2rem;
+		padding: 0.5em 1.2em;
 	}
 
 	.options {
@@ -25,16 +25,11 @@
 
 		.option {
 			display: block;
-			padding: 0.5rem 1.4rem;
-			font-size: 0.8em;
+			padding: 0.5em 1.2em;
 
 			&:hover, &:focus, &:active {
 				color: white;
 				background: @color-dark-active;
-			}
-
-			&:last-child {
-				padding-bottom: 1rem;
 			}
 		}
 	}

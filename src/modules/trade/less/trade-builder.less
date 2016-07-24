@@ -1,0 +1,113 @@
+.trade-builder {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.6rem;
+
+    th {
+        padding: 0 0.5em;
+        font-size: 0.8em;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-bottom: solid 1px @color-dark-active;
+    }
+
+    td {
+        vertical-align: top;
+        padding: 0.2em 0.3em 0 0.3em;
+    }
+
+    .outcome-name {
+        text-align: left;
+    }
+
+    .last-price {
+        text-align: right;
+    }
+
+    .buy-sell-toggle {
+        width: 3em;
+        padding-top: 0; padding-bottom: 0;
+
+        .toggle {
+            padding: 0.3em 0.8em;
+
+        	&.buy {
+        		background: @color-success-hover;
+        	}
+    		&.sell {
+    			background: @color-danger-dark;
+    		}
+        }
+    }
+
+    .num-shares {
+        max-width: 4em;
+        padding-top: 0; padding-bottom: 0;
+        text-align: center;
+        background: @color-dark-hover;
+    }
+
+    .limit-price {
+        max-width: 4em;
+        padding-top: 0; padding-bottom: 0;
+        text-align: center;
+        background: @color-dark-hover;
+    }
+
+    .bid {
+        text-align: center;
+    }
+
+    .ask {
+        text-align: center;
+    }
+
+    .fee-to-pay {
+        text-align: right;
+    }
+
+    .total-cost {
+        text-align: right;
+    }
+
+
+    .trade-builder-bid-ask {
+        display: flex;
+        .shares {
+            flex: 1.6;
+            text-align: right;
+        }
+        .price {
+            flex: 2;
+            text-align: left;
+        }
+        .shares-at {
+            margin: 0 0.6rem;
+        }
+    }
+
+    .trade-builder-body {
+        .outcome-name {
+            text-transform: uppercase;
+        }
+
+        .total-cost {
+            font-weight: 700;
+            .colorize();
+
+            .value {
+                font-weight: 900;
+            }
+        }
+
+        input.box {
+            display: block;
+            padding: 0.3em 0;
+            background: fade(@color-dark-active, 30%);
+            border-top: 0; border-left: 0; border-right: 0;
+            font-weight: 700;
+            text-align: center;
+            color: @color-warning-normal;
+        }
+    }
+}

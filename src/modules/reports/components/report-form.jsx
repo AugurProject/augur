@@ -41,7 +41,7 @@ export default class ReportForm extends React.Component {
 
 		return (
 			<section className={classnames('report-form', { reported: s.isReported })}>
-				<div ref="outcomeOptions" className="outcome-options">
+				<div className="outcome-options">
 					<h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
 
 					{(p.reportableOutcomes || []).map(outcome => (
@@ -64,7 +64,6 @@ export default class ReportForm extends React.Component {
 					<h4>Is this question unethical?</h4>
 
 					<Checkbox
-						ref="unethical"
 						className={classnames('unethical-checkbox', { disabled: s.isReported })}
 						text="Yes, this question is unethical"
 						isChecked={!!s.isUnethical}

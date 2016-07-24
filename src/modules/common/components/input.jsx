@@ -10,7 +10,8 @@ export default class Input extends Component {
 		isMultiline: PropTypes.bool,
 		isClearable: PropTypes.bool,
 		debounceMS: PropTypes.number,
-		onChange: PropTypes.func
+		onChange: PropTypes.func,
+		onBlur: PropTypes.func
 	};
 
 	constructor(props) {
@@ -47,6 +48,7 @@ export default class Input extends Component {
 			clearTimeout(this.state.timeoutID);
 			this.sendValue(this.state.value);
 		}
+		this.props.onBlur && this.props.onBlur();
 	}
 
 	handleClear = () => {

@@ -13,7 +13,7 @@ export function makeNumber(num, denomination, omitSign) {
 	};
 
 	const neverShowPlusSign = true;
-	if (!omitSign && neverShowPlusSign) {
+	if (!omitSign && !neverShowPlusSign) {
 		if (o.value > 0) {
 			o.formatted = `+${o.formatted}`;
 			o.rounded = `+${o.rounded}`;

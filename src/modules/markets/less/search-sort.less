@@ -52,8 +52,20 @@
 						font-size: 1.55em;
 						white-space: nowrap;
 
-						.option {
-							white-space: nowrap;
+						.selected {
+							padding: 0.5rem 1.2rem;
+						}
+
+						.options {
+							.option {
+								padding: 0.5rem 1.4rem;
+								white-space: nowrap;
+								font-size: 0.8em;
+							}
+
+							&:last-child {
+								padding-bottom: 1rem;
+							}
 						}
 					}
 
