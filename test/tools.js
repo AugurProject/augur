@@ -36,7 +36,7 @@ module.exports = {
     top_up: function (augur, accounts, password, callback) {
         var unlocked = [];
         async.eachSeries(accounts, function (account, nextAccount) {
-            augur.rpc.personal("unlockAccount", [account, password], function (unlocked) {
+            augur.rpc.personal("unlockAccount", [account, password], function () {
                 augur.Cash.balance(account, function (cashBalance) {
                     if (parseFloat(cashBalance) >= 10000000000) return nextAccount();
                     augur.useAccount(account);
