@@ -4,10 +4,7 @@ import TradePanelBody from '../../../modules/trade/components/trade-panel-body';
 import TradeSummary from '../../../modules/trade/components/trade-summary';
 
 const TradePanel = (p) => (
-	<div
-		className="trade-panel"
-		onClick={() => p.updateSelectedOutcome(null)}
-	>
+	<div className="trade-panel">
 		<table className="trade-builder">
 			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
 			{p.outcomes.map(outcome => (

@@ -47,6 +47,7 @@ export default class Input extends Component {
 			clearTimeout(this.state.timeoutID);
 			this.sendValue(this.state.value);
 		}
+		this.props.onBlur && this.props.onBlur();
 	}
 
 	handleClear = () => {

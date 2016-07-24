@@ -106,25 +106,20 @@
 
         .trade-panel-body { // tbody
             .trade-panel-row {
-                .num-shares, .limit-price {
-                    .box { // input element
-                        padding: 0.3em 0;
-                        background: fade(@color-dark-active, 30%);
-                        border-top: 0; border-left: 0; border-right: 0;
-                        font-weight: 700;
-                        text-align: center;
-                        color: @color-warning-normal;
-                    }
-                }
-
-                .input {
+                input.box {
                     display: block;
+                    padding: 0.3em 0;
+                    background: fade(@color-dark-active, 30%);
+                    border-top: 0; border-left: 0; border-right: 0;
+                    font-weight: 700;
+                    text-align: center;
+                    color: @color-warning-normal;
                 }
 
                 .order-book-data {
                     display: flex;
                     .shares {
-                        flex: 2;
+                        flex: 1.6;
                         text-align: right;
                     }
                     .price {
