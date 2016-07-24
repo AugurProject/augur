@@ -4,14 +4,17 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var fs = (NODE_JS) ? require("fs") : null;
 var path = (NODE_JS) ? require("path") : null;
-var assert = (NODE_JS) ? require("assert") : console.assert;
+var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var Decimal = require("decimal.js");
 var abi = require("augur-abi");
+var madlibs = require("madlibs");
+var async = require("async");
 var chalk = require("chalk");
 var clone = require("clone");
 var moment = require("moment");
 var constants = require("../src/constants");
+var DEBUG = false;
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -29,6 +32,148 @@ module.exports = {
 
     // approximately equals threshold
     EPSILON: 1e-6,
+
+    top_up: function (augur, accounts, password, callback) {
+        var unlocked = [];
+        async.eachSeries(accounts, function (account, nextAccount) {
+            augur.rpc.personal("unlockAccount", [account, password], function (unlocked) {
+                augur.Cash.balance(account, function (cashBalance) {
+                    if (parseFloat(cashBalance) >= 10000000000) return nextAccount();
+                    augur.useAccount(account);
+                    augur.setCash({
+                        address: account,
+                        balance: "10000000000",
+                        onSent: augur.utils.noop,
+                        onSuccess: function (r) {
+                            if (r.callReturn === "1") unlocked.push(account);
+                            nextAccount();
+                        },
+                        onFailed: function (err) {
+                            console.log("Couldn't unlock account:", account, err);
+                            nextAccount();
+                        }
+                    });
+                });
+            });
+        }, function (err) {
+            if (err) return callback(err);
+            if (unlocked.length) augur.useAccount(unlocked[0]);
+            callback(null, unlocked);
+        });
+    },
+
+    create_each_market_type: function (augur, callback) {
+        var self = this;
+        function is_created(markets) {
+            return markets.scalar && markets.categorical && markets.binary;
+        }
+
+        // markets have matching descriptions, tags, fees, etc.
+        var branchID = augur.constants.DEFAULT_BRANCH_ID;
+        var streetName = madlibs.streetName();
+        var action = madlibs.action();
+        var city = madlibs.city();
+        var description = "Will " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
+        var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
+        var tags = [streetName, action, city];
+        var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
+        var expDate = parseInt(new Date().getTime() / 995);
+        var takerFee = "0.02";
+        var makerFee = "0.01";
+        var numCategories = 7;
+        var categories = new Array(numCategories);
+        for (var i = 0; i < numCategories; ++i) {
+            categories[i] = madlibs.action();
+        }
+        var markets = {};
+
+        // create a binary market
+        augur.createSingleEventMarket({
+            branchId: branchID,
+            description: description,
+            expDate: expDate,
+            minValue: 1,
+            maxValue: 2,
+            numOutcomes: 2,
+            resolution: resolution,
+            takerFee: takerFee,
+            makerFee: makerFee,
+            tags: tags,
+            extraInfo: extraInfo,
+            onSent: function (res) {
+                if (DEBUG) console.debug("binary createSingleEventMarket sent:", res.txHash);
+                assert.isNull(res.callReturn);
+
+                // create a categorical market
+                augur.createSingleEventMarket({
+                    branchId: branchID,
+                    description: description + "~|>" + categories.join('|'),
+                    expDate: expDate,
+                    minValue: 1,
+                    maxValue: 2,
+                    numOutcomes: 6,
+                    resolution: resolution,
+                    takerFee: takerFee,
+                    makerFee: makerFee,
+                    tags: tags,
+                    extraInfo: extraInfo,
+                    onSent: function (res) {
+                        if (DEBUG) console.debug("categorical createSingleEventMarket sent:", res.txHash);
+                        assert.isNull(res.callReturn);
+
+                        // create a scalar market
+                        augur.createSingleEventMarket({
+                            branchId: branchID,
+                            description: description,
+                            expDate: expDate,
+                            minValue: 5,
+                            maxValue: 10,
+                            numOutcomes: 2,
+                            resolution: resolution,
+                            takerFee: takerFee,
+                            makerFee: makerFee,
+                            tags: tags,
+                            extraInfo: extraInfo,
+                            onSent: function (res) {
+                                if (DEBUG) console.debug("scalar createSingleEventMarket sent:", res.txHash);
+                                assert.isNull(res.callReturn);
+                            },
+                            onSuccess: function (res) {
+                                if (DEBUG) console.debug("Scalar market ID:", res.callReturn);
+                                assert.isNotNull(res.callReturn);
+                                markets.scalar = res.callReturn;
+                                if (is_created(markets)) callback(null, markets);
+                            },
+                            onFailed: function (err) {
+                                if (DEBUG) console.error("createSingleEventMarket failed:", err);
+                                callback(new Error(self.pp(err)));
+                            }
+                        });
+                    },
+                    onSuccess: function (res) {
+                        if (DEBUG) console.debug("Categorical market ID:", res.callReturn);
+                        assert.isNotNull(res.callReturn);
+                        markets.categorical = res.callReturn;
+                        if (is_created(markets)) callback(null, markets);
+                    },
+                    onFailed: function (err) {
+                        if (DEBUG) console.error("createSingleEventMarket failed:", err);
+                        callback(new Error(self.pp(err)));
+                    }
+                });
+            },
+            onSuccess: function (res) {
+                if (DEBUG) console.debug("Binary market ID:", res.callReturn);
+                assert.isNotNull(res.callReturn);
+                markets.binary = res.callReturn;
+                if (is_created(markets)) callback(null, markets);
+            },
+            onFailed: function (err) {
+                if (DEBUG) console.error("createSingleEventMarket failed:", err);
+                callback(new Error(self.pp(err)));
+            }
+        });
+    },
 
     chunk32: function (string, stride, offset) {
         var elements, chunked, position;

@@ -39,67 +39,19 @@ module.exports = {
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
 
-    formatTags: function (tags) {
-        if (!tags || tags.constructor !== Array) tags = [];
-        if (tags.length) {
-            for (var i = 0; i < tags.length; ++i) {
-                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
-                    tags[i] = "0x0";
-                } else {
-                    tags[i] = abi.short_string_to_int256(tags[i]);
-                }
-            }
-        }
-        while (tags.length < 3) {
-            tags.push("0x0");
-        }
-        return tags;
-    },
-
-    calculateRequiredMarketValue: function (gasPrice) {
-        gasPrice = abi.bignum(gasPrice);
-        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-    },
-
-    // expects BigNumber inputs
-    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-    },
-
-    // type: "buy" or "sell"
-    // minValue, maxValue as BigNumber
-    // price: unadjusted price
-    adjustScalarPrice: function (type, minValue, maxValue, price) {
-        if (type === "buy") {
-            return new BigNumber(price, 10).minus(minValue).toFixed();
-        }
-        return maxValue.minus(new BigNumber(price, 10)).toFixed();
-    },
-
-    parseTradeInfo: function (trade) {
+    // expects fixed-point inputs
+    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
+        makerProportionOfFee = abi.unfix(tradingFee);
+        tradingFee = abi.unfix(makerProportionOfFee);
+        var makerFee = tradingFee.times(makerProportionOfFee);
         return {
-            id: trade[0],
-            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
-            market: trade[2],
-            amount: abi.unfix(trade[3], "string"),
-            price: abi.unfix(trade[4], "string"),
-            owner: abi.format_address(trade[5], true),
-            block: parseInt(trade[6]),
-            outcome: abi.string(trade[7])
+            trading: tradingFee.toFixed(),
+            maker: makerFee.toFixed(),
+            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
         };
     },
 
-    decodeTag: function (tag) {
-        try {
-            return (tag && tag !== "0x0" && tag !== "0x") ?
-                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
-        } catch (exc) {
-            if (this.options.debug.broadcast) console.error(exc, tag);
-            return null;
-        }
-    },
-
-    parseMarketInfo: function (rawInfo, options, callback) {
+    parseMarketInfo: function (rawInfo) {
         var EVENTS_FIELDS = 6;
         var OUTCOMES_FIELDS = 2;
         var WINNING_OUTCOMES_FIELDS = 8;
@@ -121,14 +73,12 @@ module.exports = {
             // marketInfo[12] = tags[1]
             // marketInfo[13] = tags[2]
             var index = 14;
-            var makerProportionOfFee = abi.unfix(rawInfo[1]);
-            var tradingFee = abi.unfix(rawInfo[4]);
-            var makerFee = tradingFee.times(makerProportionOfFee);
+            var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
             info = {
                 network: this.network_id,
-                makerFee: makerFee.toFixed(),
-                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                tradingFee: tradingFee.toFixed(),
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                tradingFee: fees.trading,
                 numOutcomes: parseInt(rawInfo[2], 16),
                 tradingPeriod: parseInt(rawInfo[3], 16),
                 branchId: rawInfo[5],
@@ -206,49 +156,68 @@ module.exports = {
             if (extraInfoLength) {
                 info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
             }
-
-            if (!utils.is_function(callback)) return info;
-            return callback(info);
         }
-        if (!utils.is_function(callback)) return info;
-        callback(info);
+        return info;
     },
 
-    parseMarketsArray: function (marketsArray) {
-        var numMarkets, marketsInfo, totalLen, len, shift, marketID;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
+    formatTags: function (tags) {
+        if (!tags || tags.constructor !== Array) tags = [];
+        if (tags.length) {
+            for (var i = 0; i < tags.length; ++i) {
+                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
+                    tags[i] = "0x0";
+                } else {
+                    tags[i] = abi.short_string_to_int256(tags[i]);
+                }
+            }
         }
-        numMarkets = parseInt(marketsArray.shift());
-        marketsInfo = {};
-        totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            marketID = marketsArray[shift];
-            var makerProportionOfFee = abi.unfix(marketsArray[shift + 9]);
-            var tradingFee = abi.unfix(marketsArray[shift + 2]);
-            var makerFee = tradingFee.times(makerProportionOfFee);
-            marketsInfo[marketID] = {
-                _id: marketID,
-                sortOrder: i,
-                tradingPeriod: parseInt(marketsArray[shift + 1]),
-                tradingFee: abi.unfix(marketsArray[shift + 2], "string"),
-                creationTime: parseInt(marketsArray[shift + 3]),
-                volume: abi.unfix(marketsArray[shift + 4], "string"),
-                tags: [
-                    this.decodeTag(marketsArray[shift + 5]),
-                    this.decodeTag(marketsArray[shift + 6]),
-                    this.decodeTag(marketsArray[shift + 7])
-                ],
-                endDate: parseInt(marketsArray[shift + 8]),
-                makerFee: makerFee.toFixed(),
-                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
-            };
-            totalLen += len;
+        while (tags.length < 3) {
+            tags.push("0x0");
         }
-        return marketsInfo;
+        return tags;
+    },
+
+    calculateRequiredMarketValue: function (gasPrice) {
+        gasPrice = abi.bignum(gasPrice);
+        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    },
+
+    // expects BigNumber inputs
+    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
+    },
+
+    // type: "buy" or "sell"
+    // minValue, maxValue as BigNumber
+    // price: unadjusted price
+    adjustScalarPrice: function (type, minValue, maxValue, price) {
+        if (type === "buy") {
+            return new BigNumber(price, 10).minus(minValue).toFixed();
+        }
+        return maxValue.minus(new BigNumber(price, 10)).toFixed();
+    },
+
+    parseTradeInfo: function (trade) {
+        return {
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            outcome: abi.string(trade[7])
+        };
+    },
+
+    decodeTag: function (tag) {
+        try {
+            return (tag && tag !== "0x0" && tag !== "0x") ?
+                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+        } catch (exc) {
+            if (this.options.debug.broadcast) console.error(exc, tag);
+            return null;
+        }
     },
 
     base58Decrypt: function (secureLoginID) {
