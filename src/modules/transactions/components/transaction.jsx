@@ -32,40 +32,31 @@ const Transaction = (p) => {
 			<span className="description">
 				<span className="action">{nodes.action}</span>
 				<ValueDenomination className="shares" {...p.shares} />
-				<span className="at">at</span>
-				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
 				<span className="of">of</span>
 				<span className="outcome-name">{p.data.outcomeName.substring(0, 35) + (p.data.outcomeName.length > 35 && '...' || '')}</span>
+				<span className="at">@</span>
+				<ValueDenomination className="avgPrice" {...p.data.avgPrice} />
 				<br />
 				<span className="market-description" title={p.data.marketDescription}>
 					{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
 				</span>
 			</span>
 		);
-		if (p.type === BUY) {
-			nodes.valueChange = (
-				<span className="value-change">
-					{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
-					}
-					{!!p.etherNegative && !!p.etherNegative.value && <ValueDenomination className="value-change ether" {...p.etherNegative} />
-					}
-				</span>
-			);
-		} else {
-			nodes.valueChange = (
-				<span className="value-change">
-					{!!p.sharesNegative && !!p.sharesNegative.value && <ValueDenomination className="value-change shares" {...p.sharesNegative} />
-					}
-					{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
-					}
-				</span>
-			);
-		}
+		nodes.valueChange = (
+			<span className="value-changes">
+				{!!p.shares && !!p.shares.value &&
+					<ValueDenomination className="value-change shares" {...p.shares} />
+				}
+				{!!p.ether && !!p.ether.value &&
+					<ValueDenomination className="value-change ether" {...p.ether} />
+				}
+			</span>
+		);
 		break;
 	case TRADE_SUMMARY:
 		nodes.description = (<span className="description">&nbsp;</span>);
 		nodes.valueChange = (
-			<span className="value-change">
+			<span className="value-changes">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
@@ -123,7 +114,7 @@ const Transaction = (p) => {
 	default:
 		nodes.description = (<span className="description">{p.type}</span>);
 		nodes.valueChange = (
-			<span className="value-change">
+			<span className="value-changes">
 				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
 				}
 				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />

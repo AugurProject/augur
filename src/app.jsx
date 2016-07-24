@@ -86,8 +86,7 @@ export default function (appElement, selectors) {
 		node = (
 			<MarketPage
 				siteHeader={p.siteHeader}
-				updateSelectedOutcome={p.selectedOutcome.updateSelectedOutcome}
-				selectedOutcomeID={p.selectedOutcome.selectedOutcomeID}
+				selectedOutcome={p.selectedOutcome}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
 			/>

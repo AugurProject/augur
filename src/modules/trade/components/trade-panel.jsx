@@ -1,23 +1,15 @@
 import React from 'react';
-import TradePanelHeader from '../../../modules/trade/components/trade-panel-header';
-import TradePanelBody from '../../../modules/trade/components/trade-panel-body';
+import TradeBuilder from '../../../modules/trade/components/trade-builder';
 import TradeSummary from '../../../modules/trade/components/trade-summary';
 
 const TradePanel = (p) => (
-	<div className="trade-panel">
-		<table className="trade-builder">
-			<TradePanelHeader selectedOutcomeID={p.selectedOutcomeID} />
-			{p.outcomes.map(outcome => (
-				<TradePanelBody
-					key={`${outcome.name}`}
-					outcome={outcome}
-					selectedOutcomeID={p.selectedOutcomeID}
-					updateSelectedOutcome={p.updateSelectedOutcome}
-				/>
-			))}
-		</table>
+	<div className="trade-panel" onClick={() => p.selectedOutcome.updateSelectedOutcome(null)}>
+		<TradeBuilder
+			outcomes={p.outcomes}
+			selectedOutcome={p.selectedOutcome}
+		/>
 
-		{p.tradeOrders && !!p.tradeOrders.length &&
+		{!!p.tradeSummary && !!p.tradeOrders && !!p.tradeOrders.length &&
 			<TradeSummary summary={p.tradeSummary} />
 		}
 
@@ -38,8 +30,7 @@ const TradePanel = (p) => (
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
-	updateSelectedOutcome: React.PropTypes.func,
-	selectedOutcomeID: React.PropTypes.string,
+	selectedOutcome: React.PropTypes.object,
 	tradeOrders: React.PropTypes.array,
 	tradeSummary: React.PropTypes.object,
 	onSubmitPlaceTrade: React.PropTypes.func
