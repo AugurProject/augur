@@ -8,8 +8,8 @@ const OrderBook = (p) => (
 				if (i !== 0) {
 					return (
 						<article key={bid.price.full} className="bid-ask bid">
-							<ValueDenomination className="shares clickable" {...bid.shares} onClick={() => p.updateTradeOrder(p.outcome.id, bid.shares.value, bid.price.value, 'ask')} />
-							<ValueDenomination className="price clickable" {...bid.price} onClick={() => p.updateTradeOrder(p.outcome.id, 0, bid.price.value)} />
+							<ValueDenomination className="shares clickable" {...bid.shares} />
+							<ValueDenomination className="price clickable" {...bid.price} />
 						</article>
 					);
 				}
@@ -27,8 +27,8 @@ const OrderBook = (p) => (
 				if (i !== 0) {
 					return (
 						<article key={ask.price.full} className="bid-ask ask">
-							<ValueDenomination className="price clickable" {...ask.price} onClick={() => p.updateTradeOrder(p.outcome.id, 0, ask.price.value)} />
-							<ValueDenomination className="shares clickable" {...ask.shares} onClick={() => p.updateTradeOrder(p.outcome.id, ask.shares.value, ask.price.value, 'bid')} />
+							<ValueDenomination className="price clickable" {...ask.price} />
+							<ValueDenomination className="shares clickable" {...ask.shares} />
 						</article>
 					);
 				}
@@ -46,7 +46,6 @@ const OrderBook = (p) => (
 
 OrderBook.propTypes = {
 	outcome: PropTypes.object,
-	updateTradeOrder: PropTypes.func,
 	bids: PropTypes.array,
 	asks: PropTypes.array
 };

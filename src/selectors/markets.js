@@ -204,10 +204,11 @@ function makeMarkets(numMarkets = 25) {
 			return outcomes.sort((a, b) => b.lastPrice.value - a.lastPrice.value);
 
 			function makeOutcome(index, percentLeft, orderBook) {
+				const outcomeID = index.toString();
 				const lastPrice = randomInt(0, percentLeft) / 100;
 				const outcome = {
 					id: index.toString(),
-					marketID: index.toString(),
+					marketID: outcomeID,
 					name: makeName(index),
 					lastPrice: makeNumber(lastPrice, 'eth'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),
@@ -225,7 +226,7 @@ function makeMarkets(numMarkets = 25) {
 						numShares: 0,
 						limitPrice: 0,
 						tradeSummary: {},
-						updateTradeOrder: (outcomeID, shares, limitPrice, side) => {
+						updateTradeOrder: (shares, limitPrice, side) => {
 							const outcome = {
 								...m.outcomes.find((outcome) => outcome.id === outcomeID)
 							};
