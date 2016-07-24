@@ -68,13 +68,13 @@ describe("CreateMarket.createMarket", function () {
                             onFailed: function (err) {
                                 done(new Error(tools.pp(err)));
                             }
-                        }); // createMarket.createMarket
+                        }); // CreateMarket.createMarket
 
                     },
                     onFailed: function (err) {
                         done(new Error(tools.pp(err)));
                     }
-                }); // createEvent.createEvent
+                }); // CreateMarket.createEvent
             });
         };
         test({
@@ -211,13 +211,13 @@ describe("CreateMarket.createMarket", function () {
                             onFailed: function (err) {
                                 done(new Error(tools.pp(err)));
                             }
-                        }); // createMarket.createMarket
+                        }); // CreateMarket.createMarket
 
                     },
                     onFailed: function (err) {
                         done(new Error(tools.pp(err)));
                     }
-                }); // createEvent.createEvent
+                }); // CreateMarket.createEvent
             });
         };
 
@@ -311,7 +311,7 @@ describe("CreateMarket.createMarket", function () {
                     var eventID = r.callReturn;
                     var creator = augur.getCreator(eventID);
                     if (creator !== augur.coinbase) {
-                        console.log("\n  createEvent.createEvent:", tools.pp(r));
+                        console.log("\n  createEvent:", tools.pp(r));
                     }
                     assert.strictEqual(creator, augur.coinbase);
                     assert.strictEqual(augur.getDescription(eventID), description);
@@ -334,7 +334,7 @@ describe("CreateMarket.createMarket", function () {
                             var marketID = res.callReturn;
                             var creator = augur.getCreator(marketID);
                             if (creator !== augur.coinbase) {
-                                console.log("\n  createMarket.createMarket:", tools.pp(res));
+                                console.log("\n  createMarket:", tools.pp(res));
                                 console.log("  getMarketInfo:", tools.pp(augur.getMarketInfo(marketID)));
                                 console.log("  description:", tools.pp(augur.getDescription(marketID)));
                             }
@@ -351,11 +351,11 @@ describe("CreateMarket.createMarket", function () {
                             });
                         },
                         onFailed: next
-                    }); // createMarket.createMarket
+                    }); // CreateMarket.createMarket
 
                 },
                 onFailed: next
-            }); // createEvent.createEvent
+            }); // CreateMarket.createEvent
         });
     });
 });

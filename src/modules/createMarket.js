@@ -32,7 +32,7 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        tags = this.formatTags(tags);
+        var formattedTags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
         if (description) description = description.trim();
@@ -45,11 +45,11 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution,
+            resolution || "",
             abi.fix(fees.tradingFee, "hex"),
-            tags[0],
-            tags[1],
-            tags[2],
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
@@ -94,7 +94,7 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution || ""
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
@@ -116,7 +116,7 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        tags = this.formatTags(tags);
+        var formattedTags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
         if (description) description = description.trim();
@@ -125,9 +125,9 @@ module.exports = {
             description,
             abi.fix(fees.tradingFee, "hex"),
             events,
-            tags[0],
-            tags[1],
-            tags[2],
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];

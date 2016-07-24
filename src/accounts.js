@@ -35,9 +35,9 @@ module.exports = function () {
 
         // free (testnet) ether for new accounts on registration
         fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             if (registeredAddress === undefined || registeredAddress === null ||
                 registeredAddress.constructor !== String) {
                 return onFailed(registeredAddress);
@@ -59,9 +59,9 @@ module.exports = function () {
         },
 
         fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             augur.rpc.sendEther({
                 to: registeredAddress,
                 value: amount,

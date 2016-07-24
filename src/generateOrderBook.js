@@ -172,12 +172,12 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                // if (err) console.error("async.each buy:", err);
+                                if (err) console.error("async.each buy:", err);
                                 callback(err);
                             });
                         },
@@ -209,12 +209,12 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                // if (err) console.error("async.each sell:", err);
+                                if (err) console.error("async.each sell:", err);
                                 callback(err);
                             });
                         }

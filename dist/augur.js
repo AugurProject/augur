@@ -61021,9 +61021,9 @@ module.exports = function () {
 
         // free (testnet) ether for new accounts on registration
         fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             if (registeredAddress === undefined || registeredAddress === null ||
                 registeredAddress.constructor !== String) {
                 return onFailed(registeredAddress);
@@ -61045,9 +61045,9 @@ module.exports = function () {
         },
 
         fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             augur.rpc.sendEther({
                 to: registeredAddress,
                 value: amount,
@@ -62173,12 +62173,12 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                // if (err) console.error("async.each buy:", err);
+                                if (err) console.error("async.each buy:", err);
                                 callback(err);
                             });
                         },
@@ -62210,12 +62210,12 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                // if (err) console.error("async.each sell:", err);
+                                if (err) console.error("async.each sell:", err);
                                 callback(err);
                             });
                         }
@@ -62277,7 +62277,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.10";
+    this.version = "1.9.1";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -62358,67 +62358,19 @@ module.exports = {
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
 
-    formatTags: function (tags) {
-        if (!tags || tags.constructor !== Array) tags = [];
-        if (tags.length) {
-            for (var i = 0; i < tags.length; ++i) {
-                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
-                    tags[i] = "0x0";
-                } else {
-                    tags[i] = abi.short_string_to_int256(tags[i]);
-                }
-            }
-        }
-        while (tags.length < 3) {
-            tags.push("0x0");
-        }
-        return tags;
-    },
-
-    calculateRequiredMarketValue: function (gasPrice) {
-        gasPrice = abi.bignum(gasPrice);
-        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-    },
-
-    // expects BigNumber inputs
-    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-    },
-
-    // type: "buy" or "sell"
-    // minValue, maxValue as BigNumber
-    // price: unadjusted price
-    adjustScalarPrice: function (type, minValue, maxValue, price) {
-        if (type === "buy") {
-            return new BigNumber(price, 10).minus(minValue).toFixed();
-        }
-        return maxValue.minus(new BigNumber(price, 10)).toFixed();
-    },
-
-    parseTradeInfo: function (trade) {
+    // expects fixed-point inputs
+    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
+        makerProportionOfFee = abi.unfix(tradingFee);
+        tradingFee = abi.unfix(makerProportionOfFee);
+        var makerFee = tradingFee.times(makerProportionOfFee);
         return {
-            id: trade[0],
-            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
-            market: trade[2],
-            amount: abi.unfix(trade[3], "string"),
-            price: abi.unfix(trade[4], "string"),
-            owner: abi.format_address(trade[5], true),
-            block: parseInt(trade[6]),
-            outcome: abi.string(trade[7])
+            trading: tradingFee.toFixed(),
+            maker: makerFee.toFixed(),
+            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
         };
     },
 
-    decodeTag: function (tag) {
-        try {
-            return (tag && tag !== "0x0" && tag !== "0x") ?
-                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
-        } catch (exc) {
-            if (this.options.debug.broadcast) console.error(exc, tag);
-            return null;
-        }
-    },
-
-    parseMarketInfo: function (rawInfo, options, callback) {
+    parseMarketInfo: function (rawInfo) {
         var EVENTS_FIELDS = 6;
         var OUTCOMES_FIELDS = 2;
         var WINNING_OUTCOMES_FIELDS = 8;
@@ -62440,14 +62392,12 @@ module.exports = {
             // marketInfo[12] = tags[1]
             // marketInfo[13] = tags[2]
             var index = 14;
-            var makerProportionOfFee = abi.unfix(rawInfo[1]);
-            var tradingFee = abi.unfix(rawInfo[4]);
-            var makerFee = tradingFee.times(makerProportionOfFee);
+            var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
             info = {
                 network: this.network_id,
-                makerFee: makerFee.toFixed(),
-                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                tradingFee: tradingFee.toFixed(),
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                tradingFee: fees.trading,
                 numOutcomes: parseInt(rawInfo[2], 16),
                 tradingPeriod: parseInt(rawInfo[3], 16),
                 branchId: rawInfo[5],
@@ -62525,49 +62475,69 @@ module.exports = {
             if (extraInfoLength) {
                 info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
             }
-
-            if (!utils.is_function(callback)) return info;
-            return callback(info);
         }
-        if (!utils.is_function(callback)) return info;
-        callback(info);
+        return info;
     },
 
-    parseMarketsArray: function (marketsArray) {
-        var numMarkets, marketsInfo, totalLen, len, shift, marketID;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
+    formatTags: function (tags) {
+        var formattedTags = clone(tags);
+        if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+        if (formattedTags.length) {
+            for (var i = 0; i < formattedTags.length; ++i) {
+                if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
+                    formattedTags[i] = "0x0";
+                } else {
+                    formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
+                }
+            }
         }
-        numMarkets = parseInt(marketsArray.shift());
-        marketsInfo = {};
-        totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            marketID = marketsArray[shift];
-            var makerProportionOfFee = abi.unfix(marketsArray[shift + 9]);
-            var tradingFee = abi.unfix(marketsArray[shift + 2]);
-            var makerFee = tradingFee.times(makerProportionOfFee);
-            marketsInfo[marketID] = {
-                _id: marketID,
-                sortOrder: i,
-                tradingPeriod: parseInt(marketsArray[shift + 1]),
-                tradingFee: abi.unfix(marketsArray[shift + 2], "string"),
-                creationTime: parseInt(marketsArray[shift + 3]),
-                volume: abi.unfix(marketsArray[shift + 4], "string"),
-                tags: [
-                    this.decodeTag(marketsArray[shift + 5]),
-                    this.decodeTag(marketsArray[shift + 6]),
-                    this.decodeTag(marketsArray[shift + 7])
-                ],
-                endDate: parseInt(marketsArray[shift + 8]),
-                makerFee: makerFee.toFixed(),
-                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
-            };
-            totalLen += len;
+        while (formattedTags.length < 3) {
+            formattedTags.push("0x0");
         }
-        return marketsInfo;
+        return formattedTags;
+    },
+
+    calculateRequiredMarketValue: function (gasPrice) {
+        gasPrice = abi.bignum(gasPrice);
+        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    },
+
+    // expects BigNumber inputs
+    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
+    },
+
+    // type: "buy" or "sell"
+    // minValue, maxValue as BigNumber
+    // price: unadjusted price
+    adjustScalarPrice: function (type, minValue, maxValue, price) {
+        if (type === "buy") {
+            return new BigNumber(price, 10).minus(minValue).toFixed();
+        }
+        return maxValue.minus(new BigNumber(price, 10)).toFixed();
+    },
+
+    parseTradeInfo: function (trade) {
+        return {
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            outcome: abi.string(trade[7])
+        };
+    },
+
+    decodeTag: function (tag) {
+        try {
+            return (tag && tag !== "0x0" && tag !== "0x") ?
+                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+        } catch (exc) {
+            if (this.options.debug.broadcast) console.error(exc, tag);
+            return null;
+        }
     },
 
     base58Decrypt: function (secureLoginID) {
@@ -62849,135 +62819,154 @@ module.exports = {
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
+var abi = require("augur-abi");
 var utils = require("../utilities");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    parseOrderBook: function (orderArray, scalarMinMax) {
+        if (!orderArray || orderArray.error) return orderArray;
+        var minValue, maxValue, order;
+        var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
+        if (isScalar) {
+            minValue = new BigNumber(scalarMinMax.minValue, 10);
+            maxValue = new BigNumber(scalarMinMax.maxValue, 10);
+        }
+        var numOrders = orderArray.length / 8;
+        var orderBook = {buy: [], sell: []};
+        for (var i = 0; i < numOrders; ++i) {
+            order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+            if (isScalar) {
+                order.price = this.adjustScalarPrice(order.type, minValue, maxValue, order.price);
+            }
+            orderBook[order.type].push(order);
+        }
+        return orderBook;
+    },
+
     // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-    getOrderBook: function (marketID, scalarMinMax, callback) {
+    getOrderBook: function (market, scalarMinMax, callback) {
         var self = this;
         if (!callback && utils.is_function(scalarMinMax)) {
             callback = scalarMinMax;
             scalarMinMax = null;
         }
-        var isScalar = scalarMinMax &&
-            scalarMinMax.minValue !== undefined &&
-            scalarMinMax.maxValue !== undefined;
-        function getOrderBook(orderArray) {
-            if (!orderArray || orderArray.error) return orderArray;
-            var minValue, maxValue, numOrders, order;
-            if (isScalar) {
-                minValue = new BigNumber(scalarMinMax.minValue, 10);
-                maxValue = new BigNumber(scalarMinMax.maxValue, 10);
-            }
-            numOrders = orderArray.length / 8;
-            var orderBook = {buy: [], sell: []};
-            for (var i = 0; i < numOrders; ++i) {
-                order = self.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-                if (isScalar) {
-                    order.price = self.adjustScalarPrice(order.type, minValue, maxValue, order.price);
-                }
-                orderBook[order.type].push(order);
-            }
-            return orderBook;
+        if (market && market.market) {
+            scalarMinMax = market.scalarMinMax;
+            callback = callback || market.callback;
+            market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = marketID;
-        if (!utils.is_function(callback)) return getOrderBook(this.fire(tx));
-        this.fire(tx, function (orderArray) {
-            callback(getOrderBook(orderArray));
-        });
+        tx.params = market;
+        return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
+    },
+
+    validateMarketInfo: function (marketInfo) {
+        if (!marketInfo) return null;
+        var parsedMarketInfo = this.parseMarketInfo(marketInfo);
+        if (!parsedMarketInfo.numOutcomes) return null;
+        return parsedMarketInfo;
     },
 
     getMarketInfo: function (market, callback) {
         var self = this;
+        if (market && market.market) {
+            callback = callback || market.callback;
+            market = market.market;
+        }
         var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        var unpacked = utils.unpack(market, utils.labels(this.getMarketInfo), arguments);
-        tx.params = unpacked.params;
+        tx.params = market;
         tx.timeout = 45000;
-        if (unpacked && utils.is_function(unpacked.cb[0])) {
-            return this.fire(tx, function (marketInfo) {
-                if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
-                self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
-                    if (info.numEvents && info.numOutcomes) {
-                        unpacked.cb[0](info);
-                    } else {
-                        unpacked.cb[0](null);
-                    }
-                });
-            });
+        return this.fire(tx, callback, this.validateMarketInfo);
+    },
+
+    parseBatchMarketInfo: function (marketsArray, numMarkets) {
+        var len, shift, rawInfo, info, marketID;
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
         }
-        var marketInfo = this.parseMarketInfo(this.fire(tx));
-        if (marketInfo.numOutcomes && marketInfo.numEvents) {
-            return marketInfo;
-        } else {
-            return null;
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            rawInfo = marketsArray.slice(shift, shift + len - 1);
+            marketID = marketsArray[shift];
+            info = this.parseMarketInfo(rawInfo);
+            if (info && info.numOutcomes) {
+                marketsInfo[marketID] = info;
+                marketsInfo[marketID].sortOrder = i;
+            }
+            totalLen += len;
         }
+        return marketsInfo;
     },
 
     batchGetMarketInfo: function (marketIDs, callback) {
-        var self = this;
-        function batchGetMarketInfo(marketsArray) {
-            var len, shift, rawInfo, info, marketID;
-            if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-                return marketsArray;
-            }
-            var numMarkets = marketIDs.length;
-            var marketsInfo = {};
-            var totalLen = 0;
-            for (var i = 0; i < numMarkets; ++i) {
-                len = parseInt(marketsArray[totalLen]);
-                shift = totalLen + 1;
-                rawInfo = marketsArray.slice(shift, shift + len - 1);
-                marketID = marketsArray[shift];
-                info = self.parseMarketInfo(rawInfo);
-                if (info && info.numOutcomes) {
-                    marketsInfo[marketID] = info;
-                    marketsInfo[marketID].sortOrder = i;
-                }
-                totalLen += len;
-            }
-            return marketsInfo;
-        }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs];
-        if (!utils.is_function(callback)) {
-            return batchGetMarketInfo(this.fire(tx));
-        }
-        this.fire(tx, function (marketsArray) {
-            callback(batchGetMarketInfo(marketsArray));
-        });
+        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
-    getMarketsInfo: function (options, callback) {
-        // options: {branch, offset, numMarketsToLoad, callback}
+    parseMarketsInfo: function (marketsArray) {
+        var len, shift, marketID, fees;// makerProportionOfFee, tradingFee, makerFee;
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
+        }
+        var numMarkets = parseInt(marketsArray.shift(), 16);
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            marketID = marketsArray[shift];
+            fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
+            marketsInfo[marketID] = {
+                sortOrder: i,
+                tradingPeriod: parseInt(marketsArray[shift + 1], 16),
+                tradingFee: fees.trading,
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                creationTime: parseInt(marketsArray[shift + 3], 16),
+                volume: abi.unfix(marketsArray[shift + 4], "string"),
+                tags: [
+                    this.decodeTag(marketsArray[shift + 5]),
+                    this.decodeTag(marketsArray[shift + 6]),
+                    this.decodeTag(marketsArray[shift + 7])
+                ],
+                endDate: parseInt(marketsArray[shift + 8], 16),
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
+            };
+            totalLen += len;
+        }
+        return marketsInfo;
+    },
+
+    getMarketsInfo: function (branch, offset, numMarketsToLoad, callback) {
         var self = this;
-        if (utils.is_function(options) && !callback) {
-            callback = options;
-            options = {};
+        if (!callback && utils.is_function(offset)) {
+            callback = offset;
+            offset = null;
         }
-        options = options || {};
-        var branch = options.branch || this.constants.DEFAULT_BRANCH_ID;
-        var offset = options.offset || 0;
-        var numMarketsToLoad = options.numMarketsToLoad || 0;
-        if (!callback && utils.is_function(options.callback)) {
-            callback = options.callback;
+        if (branch && branch.branch) {
+            offset = branch.offset;
+            numMarketsToLoad = branch.numMarketsToLoad;
+            callback = callback || branch.callback;
+            branch = branch.branch;
         }
+        branch = branch || this.constants.DEFAULT_BRANCH_ID;
+        offset = offset || 0;
+        numMarketsToLoad = numMarketsToLoad || 0;
         var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
         tx.params = [branch, offset, numMarketsToLoad];
         tx.timeout = 240000;
-        if (!utils.is_function(callback)) {
-            return this.parseMarketsArray(this.fire(tx));
-        }
-        this.fire(tx, function (marketsArray) {
-            callback(self.parseMarketsArray(marketsArray));
-        });
+        return this.fire(tx, callback, this.parseMarketsInfo);
     }
 };
 
-},{"../utilities":389,"bignumber.js":13,"clone":242}],374:[function(require,module,exports){
+},{"../utilities":389,"augur-abi":3,"bignumber.js":13,"clone":242}],374:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -63293,7 +63282,7 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        tags = this.formatTags(tags);
+        var formattedTags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
         if (description) description = description.trim();
@@ -63306,11 +63295,11 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution,
+            resolution || "",
             abi.fix(fees.tradingFee, "hex"),
-            tags[0],
-            tags[1],
-            tags[2],
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
@@ -63355,7 +63344,7 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution || ""
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
@@ -63377,7 +63366,7 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        tags = this.formatTags(tags);
+        var formattedTags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
         if (description) description = description.trim();
@@ -63386,9 +63375,9 @@ module.exports = {
             description,
             abi.fix(fees.tradingFee, "hex"),
             events,
-            tags[0],
-            tags[1],
-            tags[2],
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
@@ -64561,13 +64550,13 @@ module.exports = {
 
 module.exports = {
 
-    fire: function (tx, callback) {
+    fire: function (tx, callback, wrapper, aux) {
         if (this.web && this.web.account && this.web.account.address) {
             tx.from = this.web.account.address;
         } else {
             tx.from = tx.from || this.from || this.coinbase;
         }
-        return this.rpc.fire(tx, callback);
+        return this.rpc.fire(tx, callback, wrapper, aux);
     },
 
     transact: function (tx, onSent, onSuccess, onFailed) {
