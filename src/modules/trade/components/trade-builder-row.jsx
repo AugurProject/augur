@@ -34,7 +34,7 @@ const TradeBuilderRow = (p) => {
 				{!!p.trade && p.trade.side &&
 					<div
 						className={classnames('clickable', 'toggle', p.trade.side)}
-						onClick={(e) => { e.stopPropagation(); p.trade.updateTradeOrder(undefined, undefined, p.trade.side === BUY ? SELL : BUY); p.updateSelectedOutcome(); }}
+						onClick={(e) => { e.stopPropagation(); p.trade.updateTradeOrder(undefined, undefined, p.trade.side === BUY ? SELL : BUY); p.updateSelectedOutcome(p.id); }}
 					>
 						{p.trade.side === BUY ? 'buy' : 'sell'}
 					</div>
@@ -46,7 +46,7 @@ const TradeBuilderRow = (p) => {
 					value={p.trade.numShares}
 					isClearable={false}
 					onChange={(value) => p.trade.updateTradeOrder(parseFloat(value) || 0)}
-					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(); }}
+					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 				/>
 			</td>
 			<td className={classnames('limit-price', { fade: p.isFaded && !p.trade.numShares })}>
@@ -55,7 +55,7 @@ const TradeBuilderRow = (p) => {
 					value={p.trade.limitPrice}
 					isClearable={false}
 					onChange={(value) => p.trade.updateTradeOrder(undefined, parseFloat(value) || 0)}
-					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(); }}
+					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 				/>
 			</td>
 			<td className={classnames('fee-to-pay', { fade: p.isFaded && !p.trade.numShares })}>
@@ -71,6 +71,7 @@ const TradeBuilderRow = (p) => {
 TradeBuilderRow.propTypes = {
 	name: React.PropTypes.string,
 	lastPrice: React.PropTypes.object,
+	id: React.PropTypes.string,
 	trade: React.PropTypes.object,
 	orderBook: React.PropTypes.object,
 	isFaded: React.PropTypes.bool,
