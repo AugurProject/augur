@@ -39,7 +39,10 @@ module.exports = {
             augur.rpc.personal("unlockAccount", [account, password], function (res) {
                 if (res && res.error) return nextAccount();
                 augur.Cash.balance(account, function (cashBalance) {
-                    if (parseFloat(cashBalance) >= 10000000000) return nextAccount();
+                    if (parseFloat(cashBalance) >= 10000000000) {
+                        unlocked.push(account);
+                        return nextAccount();
+                    }
                     augur.useAccount(account);
                     augur.setCash({
                         address: account,

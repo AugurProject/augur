@@ -161,20 +161,21 @@ module.exports = {
     },
 
     formatTags: function (tags) {
-        if (!tags || tags.constructor !== Array) tags = [];
-        if (tags.length) {
-            for (var i = 0; i < tags.length; ++i) {
-                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
-                    tags[i] = "0x0";
+        var formattedTags = clone(tags);
+        if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+        if (formattedTags.length) {
+            for (var i = 0; i < formattedTags.length; ++i) {
+                if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
+                    formattedTags[i] = "0x0";
                 } else {
-                    tags[i] = abi.short_string_to_int256(tags[i]);
+                    formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
                 }
             }
         }
-        while (tags.length < 3) {
-            tags.push("0x0");
+        while (formattedTags.length < 3) {
+            formattedTags.push("0x0");
         }
-        return tags;
+        return formattedTags;
     },
 
     calculateRequiredMarketValue: function (gasPrice) {
