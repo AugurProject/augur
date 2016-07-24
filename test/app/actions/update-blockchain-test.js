@@ -27,6 +27,8 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	let mockPenalize = {};
 	let mockCollectFees = {};
 
+	mockAugurJS.getCurrentPeriod = sinon.stub().returns(2);
+	mockAugurJS.getCurrentPeriodProgress = sinon.stub().returns(42);
 	mockAugurJS.loadCurrentBlock = sinon.stub().yields(10000);
 	mockAugurJS.getReportPeriod = sinon.stub().yields(null, 19);
 	mockAugurJS.getReportPeriod.onCall(1).yields(null, 15);

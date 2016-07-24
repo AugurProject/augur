@@ -73,9 +73,10 @@ export function updateBlockchain(cb) {
 		// load latest block number
 		AugurJS.loadCurrentBlock(currentBlockNumber => {
 			const { branch, blockchain } = getState();
-			const currentPeriod = Math.floor(currentBlockNumber / branch.periodLength);
+			const currentPeriod = AugurJS.getCurrentPeriod(branch.periodLength);
+			const currentPeriodProgress = AugurJS.getCurrentPeriodProgress(branch.periodLength);
 			const isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod;
-			const isReportConfirmationPhase = (currentBlockNumber % branch.periodLength) > (branch.periodLength / 2);
+			const isReportConfirmationPhase = currentPeriodProgress > 50;
 			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
 
 			if (!currentBlockNumber || currentBlockNumber !== parseInt(currentBlockNumber, 10)) {

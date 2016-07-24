@@ -287,7 +287,7 @@ ex.getSimulatedSell = function getSimulatedSell(marketID, outcomeID, numShares) 
 
 ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	if (!marketID) {
-		cb('ERROR: loadPriceHistory() marketID required');
+		return cb('ERROR: loadPriceHistory() marketID required');
 	}
 	augur.getMarketPriceHistory(marketID, (priceHistory) => {
 		if (priceHistory && priceHistory.error) {
@@ -309,6 +309,9 @@ ex.get_trade = function getTrade(orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
 
+ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
+ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
+
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
 		description: newMarket.formattedDescription,
@@ -320,7 +323,7 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		takerFee: newMarket.takerFee / 100,
 		tags: newMarket.tags,
 		makerFee: newMarket.makerFee / 100,
-		extraInfo: newMarket.extraInfo,
+		extraInfo: newMarket.detailsText,
 		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
 		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
 		onFailed: r => cb(r),
@@ -351,63 +354,8 @@ ex.getReport = function getReport(branchID, reportPeriod, eventID) {
 		console.log('*************report', report));
 };
 
-ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(
-		eventIDs,
-		accountID,
-		reportPeriod,
-		branchID,
-		cb
-	) {
-	const pendingReportEventIDs = {};
-
-	if (!eventIDs || !eventIDs.length) {
-		return cb(null, {});
-	}
-
-	// load market-ids related to each event-id one at a time
-	(function processEventID() {
-		const eventID = eventIDs.pop();
-		const randomNumber = augur.abi.hex(augur.abi.bignum(accountID).plus(augur.abi.bignum(eventID)));
-		const diceroll = augur.rpc.sha3(randomNumber, true);
-
-		function finish() {
-			// if there are more event ids, re-run this function to get their market ids
-			if (eventIDs.length) {
-				setTimeout(processEventID, TIMEOUT_MILLIS);
-			} else {
-			// if no more event ids to process, exit this loop and callback
-				cb(null, pendingReportEventIDs);
-			}
-		}
-
-		if (!diceroll) {
-			console.log('WARN: couldn\'t get sha3 for', randomNumber, diceroll);
-			return finish();
-		}
-
-		augur.calculateReportingThreshold(branchID, eventID, reportPeriod, threshold => {
-			if (!threshold) {
-				console.log('WARN: couldn\'t get reporting threshold for', eventID);
-				return finish();
-			}
-			if (threshold.error) {
-				console.log('ERROR: calculateReportingThreshold', threshold);
-				return finish();
-			}
-			if (augur.abi.bignum(diceroll).lt(augur.abi.bignum(threshold))) {
-				augur.getReportHash(branchID, reportPeriod, accountID, eventID, (reportHash) => {
-					if (reportHash && reportHash !== '0x0') {
-						pendingReportEventIDs[eventID] = { reportHash };
-					} else {
-						pendingReportEventIDs[eventID] = { reportHash: null };
-					}
-					finish();
-				});
-			} else {
-				finish();
-			}
-		});
-	}());
+ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(eventIDs, accountID, reportPeriod, branchID, cb) {
+	return cb(null, {});
 };
 
 ex.submitReportHash = function submitReportHash(branchID, accountID, event, report, cb) {
@@ -519,6 +467,7 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 	augur.closeMarket({
 		branch: branchID,
 		market: marketID,
+		sender: augur.from,
 		onSent: res => {
 			// console.log('closeMarket sent:', res);
 		},
@@ -534,16 +483,20 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 };
 
 ex.collectFees = function collectFees(branchID, cb) {
-	augur.collectFees({
-		branch: branchID,
-		onSent: res => {
-		},
-		onSuccess: res => {
-			cb(null, res);
-		},
-		onFailed: err => {
-			cb(err);
-		}
+	augur.getPeriodLength(branchID, periodLength => {
+		augur.collectFees({
+			branch: branchID,
+			sender: augur.from,
+			periodLength,
+			onSent: res => {
+			},
+			onSuccess: res => {
+				cb(null, res);
+			},
+			onFailed: err => {
+				cb(err);
+			}
+		});
 	});
 };
 
@@ -557,7 +510,7 @@ ex.incrementPeriodAfterReporting = function incrementPeriodAfterReporting(branch
 };
 
 ex.getReportPeriod = function getReportPeriod(branchID, cb) {
-	augur.getReportPeriod(branchID, (res) => {
+	augur.getVotePeriod(branchID, (res) => {
 		if (res.error) {
 			return cb(res);
 		}
