@@ -45,7 +45,7 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution,
+            resolution || "",
             abi.fix(fees.tradingFee, "hex"),
             tags[0],
             tags[1],
@@ -94,7 +94,7 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution || ""
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },

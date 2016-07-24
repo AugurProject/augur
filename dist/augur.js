@@ -38121,7 +38121,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.0";
+    this.version = "1.9.1";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39138,7 +39138,7 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution,
+            resolution || "",
             abi.fix(fees.tradingFee, "hex"),
             tags[0],
             tags[1],
@@ -39187,7 +39187,7 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution || ""
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
