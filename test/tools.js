@@ -36,7 +36,8 @@ module.exports = {
     top_up: function (augur, accounts, password, callback) {
         var unlocked = [];
         async.eachSeries(accounts, function (account, nextAccount) {
-            augur.rpc.personal("unlockAccount", [account, password], function () {
+            augur.rpc.personal("unlockAccount", [account, password], function (isUnlocked) {
+                if (!isUnlocked) return nextAccount();
                 augur.Cash.balance(account, function (cashBalance) {
                     if (parseFloat(cashBalance) >= 10000000000) return nextAccount();
                     augur.useAccount(account);
@@ -49,7 +50,7 @@ module.exports = {
                             nextAccount();
                         },
                         onFailed: function (err) {
-                            console.log("Couldn't unlock account:", account, err);
+                            if (DEBUG) console.debug("Couldn't unlock account:", account, err);
                             nextAccount();
                         }
                     });
@@ -57,7 +58,10 @@ module.exports = {
             });
         }, function (err) {
             if (err) return callback(err);
-            if (unlocked.length) augur.useAccount(unlocked[0]);
+            if (unlocked.length) {
+                if (DEBUG) console.debug("Using account:", unlocked[0]);
+                augur.useAccount(unlocked[0]);
+            }
             callback(null, unlocked);
         });
     },

@@ -1898,6 +1898,9 @@ describe("Integration tests", function () {
         this.timeout(tools.TIMEOUT*unlockable.length + tools.TIMEOUT*3);
         tools.top_up(augur, unlockable, password, function (err, unlocked) {
             assert.isNull(err);
+            assert.isArray(unlocked);
+            assert.isAbove(unlocked.length, 0);
+            assert.strictEqual(augur.from, unlocked[0]);
             unlockable = clone(unlocked);
             tools.create_each_market_type(augur, function (err, newMarkets) {
                 assert.isNull(err);
@@ -1916,8 +1919,11 @@ describe("Integration tests", function () {
 
     beforeEach("Top-up accounts", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length);
-        tools.top_up(augur, unlockable, password, function (err) {
+        tools.top_up(augur, unlockable, password, function (err, unlocked) {
             assert.isNull(err);
+            assert.isArray(unlocked);
+            assert.isAbove(unlocked.length, 0);
+            assert.strictEqual(augur.from, unlocked[0]);
             done();
         });
     });
