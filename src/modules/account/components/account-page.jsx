@@ -16,6 +16,7 @@ export default class AccountPage extends Component {
 			name: this.props.account.name,
 			editName: false,
 			showFullID: false,
+			showFullAddress: false,
 			msg: ''
 		};
 	}
@@ -23,7 +24,7 @@ export default class AccountPage extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-
+		console.log(p.account);
 		return (
 			<main className="page account">
 				<SiteHeader {...p.siteHeader} />
@@ -85,6 +86,30 @@ export default class AccountPage extends Component {
 													save change
 												</button>
 											}
+										</td>
+									</tr>
+
+									<tr className="account-info-item">
+										<th className="title">Account Address:</th>
+										<td className="item">
+											{!s.showFullAddress &&
+												<span>
+													{p.account.prettyAddress}
+												</span>
+											}
+											{s.showFullAddress &&
+												<textarea className="full-secure-login-id" value={p.account.id} readOnly />
+											}
+											<button
+												className="link"
+												title={s.showFullID ? 'Hide full address' : 'Show full address'}
+												onClick={() => {
+													const showHide = !s.showFullAddress;
+													this.setState({ showFullAddress: showHide });
+												}}
+											>
+												{s.showFullAddress ? '(hide address)' : '(show full address)'}
+											</button>
 										</td>
 									</tr>
 
