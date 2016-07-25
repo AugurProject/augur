@@ -287,30 +287,27 @@ module.exports = function () {
 
                 // send the raw signed transaction to geth
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                    var err;
-                    if (res) {
-                        if (res.error) {
-                            if (res.message.indexOf("rlp") > -1) {
-                                err = clone(errors.RLP_ENCODING_ERROR);
-                                err.bubble = res;
-                                err.packaged = packaged;
-                                return cb(err);
-                            } else if (res.message.indexOf("Nonce too low") > -1) {
-                                console.debug("Bad nonce, retrying:", res.message, packaged);
-                                delete packaged.nonce;
-                                return self.getTxNonce(packaged, cb);
-                            }
+                    if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
+                    if (res.error) {
+                        if (res.message.indexOf("rlp") > -1) {
+                            var err = clone(errors.RLP_ENCODING_ERROR);
+                            err.bubble = res;
+                            err.packaged = packaged;
                             return cb(err);
+                        } else if (res.message.indexOf("Nonce too low") > -1) {
+                            console.debug("Bad nonce, retrying:", res.message, packaged);
+                            delete packaged.nonce;
+                            return self.getTxNonce(packaged, cb);
                         }
-
-                        // res is the txhash if nothing failed immediately
-                        // (even if the tx is nulled, still index the hash)
-                        augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-                        // nonce ok, execute callback
                         return cb(res);
                     }
-                    cb(errors.RAW_TRANSACTION_ERROR);
+
+                    // res is the txhash if nothing failed immediately
+                    // (even if the tx is nulled, still index the hash)
+                    augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
+
+                    // nonce ok, execute callback
+                    return cb(res);
                 });
             });
         },

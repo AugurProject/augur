@@ -708,11 +708,11 @@ describe("Integration tests", function () {
                     augur.reputationFaucet({
                         branch: branch,
                         onSent: function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                         },
                         onSuccess: function (r) {
-                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
@@ -736,11 +736,11 @@ describe("Integration tests", function () {
                     augur.reputationFaucet({
                         branch: branch,
                         onSent: function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                         },
                         onSuccess: function (r) {
-                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");

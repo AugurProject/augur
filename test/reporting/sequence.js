@@ -454,34 +454,35 @@ describe("Reporting sequence", function () {
                         console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
                         console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
                     }
-                    augur.getWinningOutcomes(marketID, function (winningOutcomes) {
-                        if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
-                        // assert.strictEqual(winningOutcomes[report-1], "1");
-                        if (DEBUG) printReportingStatus(eventID, "Penalizing incorrect reports for event " + eventID);
-                        augur.penalizeWrong({
-                            branch: newBranchID,
-                            event: eventID,
-                            onSent: function (res) {
-                                console.log("penalizeWrong sent:", res);
-                                // assert.strictEqual(res.callReturn, "1");
-                            },
-                            onSuccess: function (res) {
-                                // assert.strictEqual(res.callReturn, "1");
-                                console.log("penalizeWrong success:", res);
-                                if (DEBUG) {
-                                    printReportingStatus(eventID, "Event " + eventID + " penalized");
-                                    console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
-                                }
-                                done();
-                            },
-                            onFailed: function (err) {
-                                if (DEBUG) {
-                                    printReportingStatus(eventID, "penalizeWrong failed");
-                                    console.error(chalk.red.bold("penalizeWrong error:"), err);
-                                }
-                                done(new Error(tools.pp(err)));
+                    var winningOutcomes = augur.getWinningOutcomes(marketID);
+                    if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
+                    var eventOutcome = augur.getOutcome(eventID);
+                    if (DEBUG) console.log("event", eventID, "outcome:", eventOutcome);
+                    // assert.strictEqual(winningOutcomes[report-1], "1");
+                    if (DEBUG) printReportingStatus(eventID, "Penalizing incorrect reports for event " + eventID);
+                    augur.penalizeWrong({
+                        branch: newBranchID,
+                        event: eventID,
+                        onSent: function (res) {
+                            console.log("penalizeWrong sent:", res);
+                            // assert.strictEqual(res.callReturn, "1");
+                        },
+                        onSuccess: function (res) {
+                            // assert.strictEqual(res.callReturn, "1");
+                            console.log("penalizeWrong success:", res);
+                            if (DEBUG) {
+                                printReportingStatus(eventID, "Event " + eventID + " penalized");
+                                console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
                             }
-                        });
+                            done();
+                        },
+                        onFailed: function (err) {
+                            if (DEBUG) {
+                                printReportingStatus(eventID, "penalizeWrong failed");
+                                console.error(chalk.red.bold("penalizeWrong error:"), err);
+                            }
+                            done(new Error(tools.pp(err)));
+                        }
                     });
                 },
                 onFailed: function (err) {

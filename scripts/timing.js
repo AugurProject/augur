@@ -73,8 +73,13 @@ function createMarkets(numMarketsToCreate, callback) {
             tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
             onSent: function (r) {},
             onSuccess: function (r) {
-                console.log("[" + type + "]", chalk.green(r.marketID), chalk.cyan.dim(description));
-                augur.getMarketInfo(r.marketID, function (marketInfo) {
+                var marketID = r.callReturn;
+                if (!marketID) {
+                    console.log("No market ID found:", r);
+                    return process.exit(1);
+                }
+                console.log("[" + type + "]", chalk.green(marketID), chalk.cyan.dim(description));
+                augur.getMarketInfo(marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
                         return augur.setCash(augur.from, "10000000000000",
@@ -87,7 +92,7 @@ function createMarkets(numMarketsToCreate, callback) {
                         );
                     }
                     var orderBookParams = {
-                        market: r.marketID,
+                        market: marketID,
                         liquidity: Math.floor(400*Math.random()) + 100,
                         startingQuantity: Math.floor(40*Math.random()) + 10,
                         bestStartingQuantity: Math.floor(40*Math.random()) + 10

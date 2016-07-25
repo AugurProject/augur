@@ -2136,11 +2136,12 @@ describe("Integration tests", function () {
                             },
                             onSuccess: function (r) {
                                 assert(r.txHash);
-                                assert.strictEqual(r.callReturn, "1");
+                                assert.isNotNull(r.callReturn);
                                 var trade_ids = augur.get_trade_ids(markets[t.market]);
-                                assert.include(r.callReturn, trade_ids);
+                                console.log("haystack:", trade_ids);
+                                console.log("needle:", r.callReturn);
+                                assert.include(trade_ids, r.callReturn);
                                 augur.cancel(r.callReturn, function (r) {
-                                    assert(r.txHash);
                                     assert.isNull(r.callReturn);
                                 }, function (r) {
                                     assert(r.txHash);
