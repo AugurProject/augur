@@ -144,9 +144,9 @@ function makeMarkets(numMarkets = 25) {
 		};
 
 		m.userOpenOrdersSummary = {
-			openOrdersCount: m.outcomes.reduce((openOrdersCount, outcome) => (
+			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
 				openOrdersCount + outcome.userOpenOrders.length
-			), 0)
+			), 0), 'Open Orders')
 		};
 
 		// report

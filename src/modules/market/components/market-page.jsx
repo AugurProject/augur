@@ -77,7 +77,7 @@ export default class MarketPage extends Component {
 					);
 				}
 
-				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount > 0) {
+				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount != null && p.market.userOpenOrdersSummary.openOrdersCount.value > 0) {
 					nodes.push(
 						<MarketOpenOrders
 							key="market-open-orders"

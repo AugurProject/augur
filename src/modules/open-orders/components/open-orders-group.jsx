@@ -10,31 +10,30 @@ const OpenOrdersGroup = (p) => {
 	if (p.userOpenOrders == null || p.userOpenOrders.length === 0) {
 		return null;
 	}
+
 	return (
-		<div>
-			<table>
-				<tbody>
-					<tr>
-						<th>Outcome</th>
-						<th>Type</th>
-						<th>Shares</th>
-						<th>Price</th>
-						<th>&nbsp;</th>
-					</tr>
-					{
-						p.userOpenOrders.map(openOrder => (
-							<OpenOrder
-								key={openOrder.id}
-								outcomeName={p.name}
-								{...openOrder}
-								cancelOrder={p.cancelOrder}
-							/>
-							)
+		<table className="open-orders-group">
+			<tbody>
+				<tr>
+					<th>Outcome</th>
+					<th>Type</th>
+					<th>Shares</th>
+					<th>Price</th>
+					<th>&nbsp;</th>
+				</tr>
+				{
+					p.userOpenOrders.map(openOrder => (
+						<OpenOrder
+							key={openOrder.id}
+							outcomeName={p.name}
+							{...openOrder}
+							cancelOrder={p.cancelOrder}
+						/>
 						)
-					}
-				</tbody>
-			</table>
-		</div>
+					)
+				}
+			</tbody>
+		</table>
 	);
 };
 

@@ -9,7 +9,7 @@ import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = (p) => (
 	<tr className={classnames('open-order', { isDisabled: p.isCancelling || p.isCancelled })}>
-		<td>
+		<td className="outcome-name">
 			{p.outcomeName}
 		</td>
 		<td>
@@ -27,7 +27,7 @@ const OpenOrder = (p) => (
 				disabled={p.isCancelling || p.isCancelled}
 				title="Cancel order"
 				onClick={(event) => { p.cancelOrder(p.id, p.marketID, p.type); }}
-			>x</button>
+			>Cancel</button>
 
 		</td>
 	</tr>

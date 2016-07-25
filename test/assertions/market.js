@@ -401,7 +401,7 @@ export default function (market) {
 
 		it('market.userOpenOrdersSummary.openOrdersCount', () => {
 			assert.isDefined(market.userOpenOrdersSummary.openOrdersCount);
-			assert.isNumber(market.userOpenOrdersSummary.openOrdersCount);
+			assertFormattedNumber(market.userOpenOrdersSummary.openOrdersCount);
 		});
 
 		const positionsSummary = market.positionsSummary;

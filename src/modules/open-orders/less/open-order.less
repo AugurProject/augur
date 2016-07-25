@@ -3,15 +3,22 @@
 }
 
 .market-open-orders {
-  .open-order {
-    height: 27px; // same height as when action is visible
-  }
-
-  .open-order:not(:hover) .cancel-order-action {
-    display: none;
+  .open-orders-group {
+    display: inline-block;
+    margin-top: 3px;
   }
 
   .open-order.isDisabled {
     text-decoration: line-through;
+  }
+
+  .open-order td {
+    padding: 1px 5px;
+  }
+
+  .open-order .outcome-name {
+    text-align: left;
+    text-transform: uppercase;
+    min-width: 9rem;
   }
 }
