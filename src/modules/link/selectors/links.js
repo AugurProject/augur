@@ -13,6 +13,8 @@ import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants
 import { updateURL } from '../../link/actions/update-url';
 import { logout } from '../../auth/actions/logout';
 
+import { loadFullLoginAccountMarkets } from '../../../modules/portfolio/actions/load-full-login-acccount-markets';
+
 import store from '../../../store';
 // import * as selectors from '../../../selectors';
 
@@ -156,7 +158,10 @@ export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
 	const href = PAGES_PATHS[MY_MARKETS];
 	return {
 		href,
-		onClick: () => dispatch(updateURL(href))
+		onClick: () => {
+			dispatch(loadFullLoginAccountMarkets());
+			dispatch(updateURL(href));
+		}
 	};
 });
 

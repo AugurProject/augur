@@ -1,15 +1,15 @@
 import selectPortfolioNavItems from '../../../modules/portfolio/selectors/nav-items';
 import selectPortfolioSummaries from '../../../modules/portfolio/selectors/summaries';
-import selectMyMarkets from '../../../modules/portfolio/selectors/my-markets';
+import selectLoginAccountMarkets from '../../../modules/portfolio/selectors/login-account-markets';
 
 export default function () {
 	const navItems = selectPortfolioNavItems();
 	const summaries = selectPortfolioSummaries();
-	const myMarkets = selectMyMarkets();
+	const loginAccountMarkets = selectLoginAccountMarkets();
 
 	return {
 		navItems,
 		summaries,
-		myMarkets
+		loginAccountMarkets
 	};
 }
