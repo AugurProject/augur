@@ -13,8 +13,8 @@ export default class MarketPage extends Component {
 	static propTypes = {
 		className: PropTypes.string,
 		siteHeader: PropTypes.object,
-		sideOptions: PropTypes.array,
 		market: PropTypes.object,
+		selectedOutcome: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
 		cancelOrder: PropTypes.func.isRequired
@@ -55,13 +55,10 @@ export default class MarketPage extends Component {
 					<TradePanel
 						key="trade-panel"
 						outcomes={p.market.outcomes}
-						sideOptions={p.sideOptions}
-						updateSelectedOutcome={p.updateSelectedOutcome}
-						selectedOutcomeID={p.selectedOutcomeID}
+						selectedOutcome={p.selectedOutcome}
 						tradeOrders={p.market.tradeSummary.tradeOrders}
 						tradeSummary={p.market.tradeSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
-						orderSides={p.market.orderSides}
 					/>
 				);
 
@@ -99,7 +96,7 @@ export default class MarketPage extends Component {
 		}
 
 		return (
-			<main className="page market">
+			<main className="page market" onClick={() => p.selectedOutcome.updateSelectedOutcome(null)}>
 				<SiteHeader {...p.siteHeader} />
 
 				<article className="page-content">

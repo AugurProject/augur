@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import classnames from 'classnames';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Link from '../../link/components/link';
@@ -16,6 +17,7 @@ export default class AccountPage extends Component {
 			name: this.props.account.name,
 			editName: false,
 			showFullID: false,
+			showFullAddress: false,
 			msg: ''
 		};
 	}
@@ -40,7 +42,7 @@ export default class AccountPage extends Component {
 							<h2 className="heading">Credentials</h2>
 							<table className="account-info">
 								<tbody>
-									<tr className="account-info-item">
+									<tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
 										<th className="title">Account Name:</th>
 										<td className="item">
 											{s.editName &&
@@ -89,6 +91,30 @@ export default class AccountPage extends Component {
 									</tr>
 
 									<tr className="account-info-item">
+										<th className="title">Account Address:</th>
+										<td className="item">
+											{!s.showFullAddress &&
+												<span>
+													{p.account.prettyAddress}
+												</span>
+											}
+											{s.showFullAddress &&
+												<textarea className="full-secure-login-id" value={p.account.id} readOnly />
+											}
+											<button
+												className="link"
+												title={s.showFullID ? 'Hide full address' : 'Show full address'}
+												onClick={() => {
+													const showHide = !s.showFullAddress;
+													this.setState({ showFullAddress: showHide });
+												}}
+											>
+												{s.showFullAddress ? '(hide address)' : '(show full address)'}
+											</button>
+										</td>
+									</tr>
+
+									<tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
 										<th className="title">Secure Login ID:</th>
 										<td className="item">
 											{!s.showFullID &&
@@ -114,13 +140,13 @@ export default class AccountPage extends Component {
 								</tbody>
 							</table>
 						</div>
-						<div className="account-section">
+						<div className={classnames('account-section', { displayNone: p.account.localNode })}>
 							<div className="account-info-item">
 								<h2 className="heading">Download Account</h2>
 								<p>
 									If you are running Augur using a local geth node, you can download your account data to login through the node.
 								</p>
-								<button className="button download-account" title="Click here to Download your Account." >
+								<button className="button download-account" title="Click here to Download your Account." onClick={() => p.account.downloadAccount()}>
 									Download Account
 								</button>
 							</div>

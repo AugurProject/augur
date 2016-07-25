@@ -2,19 +2,23 @@ import { makeNumber } from '../utils/make-number';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
 import { M } from '../modules/site/constants/pages';
+import { BUY } from '../modules/trade/constants/types';
 
 module.exports = makeMarkets();
 
-function makeMarkets(numMarkets = 25) {
+function makeMarkets(numMarkets = 50) {
 	const markets = [];
-	const	types = ['binary', 'categorical', 'scalar'];
-	const constants = {
-		BID: 'bid',
-		ASK: 'ask'
-	};
+	const types = ['binary', 'categorical', 'scalar'];
 
-	for (let i = 0; i < numMarkets; i++) {
+	for (let i = 0; i < 5; i++) {
 		markets.push(makeMarket(i));
+	}
+
+	for (let i = 5; i < numMarkets; i++) {
+		setTimeout(() => {
+			markets.push(makeMarket(i));
+			require('../selectors').update({ markets });
+		}, (i - 4) * 500);
 	}
 
 	return markets;
@@ -22,7 +26,7 @@ function makeMarkets(numMarkets = 25) {
 	function makeMarket(index) {
 		const id = index.toString();
 		const d = new Date('2017/12/12/');
-		const	m = {
+		const m = {
 			id,
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
@@ -35,18 +39,14 @@ function makeMarkets(numMarkets = 25) {
 			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),
 			volume: makeNumber(randomInt(0, 10000), 'shares', true),
-			isOpen: Math.random() > 0.1,
-			isPendingReport: Math.random() < 0.1,
+			isOpen: randomInt(0, 100) > 5,
+			isPendingReport: index > 0 && index % 4 === 0,
 			marketLink: {
 				text: 'Trade',
 				className: 'trade',
-				onClick: () => require('../selectors').update({ activePage: M, market: m })
+				onClick: () => require('../selectors').update({ activePage: M, market: m, url: `/m/${id}` })
 			},
-			orderBook: {},
-			orderSides: {
-				BID: constants.BID,
-				ASK: constants.ASK
-			}
+			orderBook: {}
 		};
 
 		// tags
@@ -62,48 +62,13 @@ function makeMarkets(numMarkets = 25) {
 		m.onSubmitPlaceTrade = () => {}; // No action in dummy selector
 
 		// trade summary
-		Object.defineProperty(m, 'tradeSummary', {
-			get: () => {
-				const tots = m.outcomes.reduce((p, outcome) => {
-					if (!outcome.trade || !outcome.trade.numShares) {
-						return p;
-					}
-
-					const feeToPay = 0.02 * outcome.trade.numShares * outcome.trade.limitPrice;
-					const numShares = outcome.trade.numShares;
-					const limitPrice = outcome.trade.limitPrice || 0;
-					const profitLoss = outcome.trade.side === constants.BID ? -(numShares * limitPrice) : numShares * limitPrice;
-					const cost = numShares * limitPrice;
-
-					p.feeToPay += feeToPay;
-					p.totalShares += outcome.trade.side === constants.BID ? numShares : -numShares;
-					p.totalEther += outcome.trade.side === constants.BID ? -cost : cost;
-
-					p.tradeOrders.push({
-						type: outcome.trade.side,
-						shares: makeNumber(numShares, 'Shares'),
-						ether: makeNumber(limitPrice, 'eth'),
-						feeToPay: makeNumber(feeToPay, 'eth'),
-						profitLoss: makeNumber(profitLoss, 'eth'),
-						data: {
-							outcomeName: outcome.name,
-							marketDescription: m.description
-						}
-					});
-
-					return p;
-				}, { feeToPay: 0, totalShares: 0, totalEther: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
-
-				tots.feeToPay = makeNumber(tots.feeToPay, 'eth');
-				tots.totalShares = makeNumber(tots.totalShares, 'Shares');
-				tots.totalEther = makeNumber(tots.totalEther, 'eth');
-				tots.totalFees = makeNumber(tots.totalFees);
-				tots.totalGas = makeNumber(tots.totalGas);
-
-				return tots;
-			},
-			enumerable: true
-		});
+		m.tradeSummary = {
+			totalShares: makeNumber(0, 'shares'),
+			totalEther: makeNumber(0, 'eth'),
+			totalGas: makeNumber(0, 'eth'),
+			feeToPay: makeNumber(0, 'eth'),
+			tradeOrders: []
+		};
 
 		// price history
 		const dayMillis = 24 * 60 * 60 * 1000;
@@ -134,10 +99,10 @@ function makeMarkets(numMarkets = 25) {
 		// positions summary
 		m.positionsSummary = {
 			numPositions: makeNumber(3, 'Positions', true),
-			qtyShares: makeNumber(10, 'Shares'),
+			qtyShares: makeNumber(10, 'shares'),
 			purchasePrice: makeNumber(0.5, 'eth'),
 			totalCost: makeNumber(5, 'eth'),
-			shareChange: makeNumber(1, 'Shares'),
+			shareChange: makeNumber(1, 'shares'),
 			netChange: makeNumber(1, 'eth'),
 			totalValue: makeNumber(985, 'eth'),
 			gainPercent: makeNumber(15, '%')
@@ -252,10 +217,11 @@ function makeMarkets(numMarkets = 25) {
 			return outcomes.sort((a, b) => b.lastPrice.value - a.lastPrice.value);
 
 			function makeOutcome(index, percentLeft, orderBook) {
+				const outcomeID = index.toString();
 				const lastPrice = randomInt(0, percentLeft) / 100;
 				const outcome = {
 					id: index.toString(),
-					marketID: index.toString(),
+					marketID: outcomeID,
 					name: makeName(index),
 					lastPrice: makeNumber(lastPrice, 'eth'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),
@@ -269,21 +235,15 @@ function makeMarkets(numMarkets = 25) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: constants.BID,
+						side: BUY,
 						numShares: 0,
 						limitPrice: 0,
-						tradeSummary: {
-							totalEther: makeNumber(0, 'eth'),
-							feeToPay: makeNumber(0, 'eth')
-						},
-						/**
-						 +
-						 +  @param {Number} outcomeId
-						 +  @param {Number|undefined} shares Pass undefined to keep the value unchanged
-						 +  @param {Number|undefined} limitPrice Pass undefined to keep the value unchanged
-						 */
-						updateTradeOrder: (outcomeId, shares, limitPrice, side) => {
-							const outcome = m.outcomes.find((outcome) => outcome.id === outcomeId);
+						tradeSummary: {},
+						updateTradeOrder: (shares, limitPrice, side) => {
+							console.log('update trade order:', shares, limitPrice, side);
+							const outcome = {
+								...m.outcomes.find((outcome) => outcome.id === outcomeID)
+							};
 
 							if (typeof shares !== 'undefined') {
 								outcome.trade.numShares = shares;
@@ -294,13 +254,57 @@ function makeMarkets(numMarkets = 25) {
 							if (typeof side !== 'undefined') {
 								outcome.trade.side = side;
 							}
-							outcome.trade.tradeSummary.feeToPay = makeNumber(Math.round(0.02 * outcome.trade.limitPrice * outcome.trade.numShares * 100) / 100, 'eth');
 
-							const totEth = side === constants.BID ? -(outcome.trade.numShares * outcome.trade.limitPrice) : outcome.trade.numShares * outcome.trade.limitPrice;
+							const randLimitPrice = randomInt(1, 100) / 100;
+							const totEth = outcome.trade.numShares * (outcome.trade.limitPrice || randLimitPrice);
+							const totEthFinal = outcome.trade.side === BUY ? -1 * totEth : totEth;
+							outcome.trade.tradeSummary.feeToPay = makeNumber(Math.round(0.02 * (outcome.trade.limitPrice || randLimitPrice) * outcome.trade.numShares * 100) / 100, 'eth');
+							const feeForTotalEther = -1 * outcome.trade.tradeSummary.feeToPay.value;
+							outcome.trade.tradeSummary.totalEther = makeNumber(Math.round((totEthFinal + feeForTotalEther) * 100) / 100, 'eth');
 
-							outcome.trade.tradeSummary.totalEther = makeNumber(Math.round(totEth * 100) / 100, 'eth');
+							m.outcomes = m.outcomes.map(currentOutcome => {
+								if (currentOutcome.id === outcomeID) {
+									return outcome;
+								}
+								return currentOutcome;
+							});
 
-							require('../selectors').update();
+							m.tradeSummary = m.outcomes.reduce((p, outcome) => {
+								if (!outcome.trade || !outcome.trade.numShares) {
+									return p;
+								}
+
+								p.totalShares += outcome.trade.side === BUY ? outcome.trade.numShares : -1 * outcome.trade.numShares;
+								p.totalEther += outcome.trade.tradeSummary.totalEther.value;
+
+								p.tradeOrders.push({
+									type: outcome.trade.side,
+									shares: makeNumber(outcome.trade.numShares, 'shares'),
+									ether: outcome.trade.tradeSummary.totalEther,
+									data: {
+										outcomeName: outcome.name,
+										marketDescription: m.description,
+										avgPrice: makeNumber(Math.round((outcome.trade.tradeSummary.totalEther.value / outcome.trade.numShares) * 100) / 100, 'eth'),
+									}
+								});
+
+								return p;
+							}, { feeToPay: 0, totalShares: 0, totalEther: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
+
+							m.tradeSummary.feeToPay = makeNumber(outcome.trade.tradeSummary.feeToPay, 'eth');
+							m.tradeSummary.totalShares = makeNumber(outcome.trade.tradeSummary.totalShares, 'shares');
+							m.tradeSummary.totalEther = makeNumber(outcome.trade.tradeSummary.totalEther, 'eth');
+							m.tradeSummary.totalFees = makeNumber(outcome.trade.tradeSummary.totalFees);
+							m.tradeSummary.totalGas = makeNumber(outcome.trade.tradeSummary.totalGas);
+
+							require('../selectors').update({
+								markets: markets.map(currentMarket => {
+									if (currentMarket.id === m.id) {
+										return m;
+									}
+									return currentMarket;
+								})
+							});
 						}
 					},
 					topBid: {

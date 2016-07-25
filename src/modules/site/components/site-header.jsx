@@ -34,7 +34,7 @@ const SiteHeader = (p) => (
 					}
 				</Link>
 			}
-			{!!p.loginAccount && !!p.loginAccount.id &&
+			{(!!p.loginAccount && !!p.loginAccount.id || p.transactionsTotals.numTotal) &&
 				<Link
 					className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
 					title={p.loginAccount.realEther && `real ether: ${p.loginAccount.realEther.full}`}
