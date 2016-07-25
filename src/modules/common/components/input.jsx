@@ -23,8 +23,7 @@ export default class Input extends Component {
 		};
 		this.shouldComponentUpdate = shouldComponentUpdatePure;
 		this.componentWillReceiveProps = (nextProps) => {
-			if ((nextProps.value || nextProps.value === 0) && nextProps.value !== this.state.value) {
-				clearTimeout(this.state.timeoutID);
+			if ((nextProps.value || nextProps.value === 0) && nextProps.value !== this.state.value && nextProps.value !== this.props.value) {
 				this.setState({ value: nextProps.value });
 			}
 		};
