@@ -10,7 +10,7 @@ function makeMarkets(numMarkets = 50) {
 	const markets = [];
 	const types = ['binary', 'categorical', 'scalar'];
 
-	for (let i = 0; i < 10; i++) {
+	for (let i = 0; i < 5; i++) {
 		markets.push(makeMarket(i));
 	}
 
