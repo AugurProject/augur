@@ -73,8 +73,7 @@ const testState = {
 			makerFee: 0.02,
 			takerFee: 0.05,
 			volume: 500,
-			tags: ['tag1', 'tag2', 'tag3'],
-			orderBook: {}
+			tags: ['tag1', 'tag2', 'tag3']
 		}
 	},
 	marketOrderBooks: {
