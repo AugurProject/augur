@@ -17,6 +17,23 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 
 	const linkText = localNode ? prettyAddress : loginAccount.name || prettySecureLoginID;
 
+	const downloadAccount = () => {
+		const theDocument = typeof document !== 'undefined' && document;
+		const link = theDocument.createElement('a');
+		const date = new Date()
+			.toISOString()
+			.split(':')
+			.join('-');
+		const filename = `UTC--${date}--${loginAccount.address}`;
+		const accountData = encodeURIComponent(JSON.stringify({
+			...loginAccount.keystore
+		}));
+		const accountFile = `data:text/json;charset=utf-8,${accountData}`;
+		link.download = filename;
+		link.href = accountFile;
+		link.click();
+	};
+
 	return {
 		...loginAccount,
 		prettySecureLoginID,
@@ -24,6 +41,7 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		localNode,
 		linkText,
 		editName: (name) => dispatch(changeAccountName(name)),
+		downloadAccount: () => downloadAccount(),
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
 		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 0 })
