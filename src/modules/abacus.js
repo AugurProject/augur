@@ -41,8 +41,8 @@ module.exports = {
 
     // expects fixed-point inputs
     calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
-        makerProportionOfFee = abi.unfix(tradingFee);
-        tradingFee = abi.unfix(makerProportionOfFee);
+        tradingFee = abi.unfix(tradingFee);
+        makerProportionOfFee = abi.unfix(makerProportionOfFee);
         var makerFee = tradingFee.times(makerProportionOfFee);
         return {
             trading: tradingFee.toFixed(),

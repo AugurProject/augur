@@ -99,7 +99,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray) {
-        var len, shift, marketID, fees;// makerProportionOfFee, tradingFee, makerFee;
+        var len, shift, marketID, fees;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return marketsArray;
         }
