@@ -79,6 +79,35 @@ module.exports = function () {
             });
         },
 
+				changeAccountName: function (newName, cb) {
+					var i, self = this;
+					// now set vars based on what is currently in place
+					var keystore = self.account.keystore;
+					var privateKey = self.account.privateKey;
+					// preparing to redo the secureLoginID to use the new name
+					var unsecureLoginIDObject = {
+						name: newName,
+						keystore: keystore
+					};
+					var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+          // web.account object is set to use new values
+          self.account = {
+              name: newName,
+              secureLoginID: secureLoginID,
+              privateKey: privateKey,
+              address: keystore.address,
+              keystore: keystore
+          };
+					// send back the new updated loginAccount object.
+          cb({
+              name: newName,
+              secureLoginID: secureLoginID,
+              keystore: keystore,
+							address: keystore.address
+          });
+				},
+
         register: function (name, password, cb) {
             var i, self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
@@ -144,6 +173,27 @@ module.exports = function () {
             }); // create
         },
 
+				loadLocalLoginAccount: function (localAccount, cb) {
+					var self = this;
+					cb = (utils.is_function(cb)) ? cb : utils.pass;
+
+					self.account = {
+							name: localAccount.name,
+							secureLoginID: localAccount.secureLoginID,
+							privateKey: localAccount.privateKey,
+							address: localAccount.keystore.address,
+							keystore: localAccount.keystore
+					};
+
+					cb({
+							name: localAccount.name,
+							secureLoginID: localAccount.secureLoginID,
+							privateKey: localAccount.privateKey,
+							address: localAccount.keystore.address,
+							keystore: localAccount.keystore
+					});
+				},
+
         login: function (secureLoginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
@@ -193,7 +243,9 @@ module.exports = function () {
                     cb({
                         name: name,
                         secureLoginID: secureLoginID,
-                        keystore: keystore, address: keystore.address
+                        keystore: keystore,
+												address: keystore.address,
+												privateKey: privateKey
                     });
 
                 // decryption failure: bad password
