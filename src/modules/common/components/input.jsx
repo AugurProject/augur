@@ -29,35 +29,33 @@ export default class Input extends Component {
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.handleOnBlur = this.handleOnBlur.bind(this);
 		this.handleClear = this.handleClear.bind(this);
-		this.sendValue = this.sendValue.bind(this);
 	}
 
 	handleOnChange = (e) => {
 		const newValue = e.target.value;
+		if (newValue === this.props.value) {
+			return;
+		}
 		if (this.props.debounceMS !== 0) {
 			clearTimeout(this.state.timeoutID);
-			this.setState({ timeoutID: setTimeout(() => this.sendValue(newValue), this.props.debounceMS || 750) });
+			this.setState({ timeoutID: setTimeout(() => this.props.onChange(newValue), this.props.debounceMS || 750) });
 		} else {
-			this.sendValue(newValue);
+			this.props.onChange(newValue);
 		}
 		this.setState({ value: newValue });
 	}
 
 	handleOnBlur = () => {
-		if (this.props.debounceMS !== 0) {
+		if (this.props.debounceMS !== 0 && this.state.value !== this.props.value) {
 			clearTimeout(this.state.timeoutID);
-			this.sendValue(this.state.value);
+			this.props.onChange(this.state.value);
 		}
 		this.props.onBlur && this.props.onBlur();
 	}
 
 	handleClear = () => {
 		this.setState({ value: '' });
-		this.sendValue('');
-	}
-
-	sendValue = (value) => {
-		this.props.onChange(value);
+		this.props.onChange('');
 	}
 
 	render() {

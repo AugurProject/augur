@@ -227,6 +227,7 @@ function makeMarkets(numMarkets = 25) {
 						limitPrice: 0,
 						tradeSummary: {},
 						updateTradeOrder: (shares, limitPrice, side) => {
+							console.log('update trade order:', shares, limitPrice, side);
 							const outcome = {
 								...m.outcomes.find((outcome) => outcome.id === outcomeID)
 							};

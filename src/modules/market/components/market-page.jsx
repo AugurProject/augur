@@ -83,7 +83,7 @@ export default class MarketPage extends Component {
 		}
 
 		return (
-			<main className="page market">
+			<main className="page market" onClick={() => p.selectedOutcome.updateSelectedOutcome(null)}>
 				<SiteHeader {...p.siteHeader} />
 
 				<article className="page-content">

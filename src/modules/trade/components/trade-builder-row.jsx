@@ -45,7 +45,7 @@ const TradeBuilderRow = (p) => {
 					type="text"
 					value={p.trade.numShares}
 					isClearable={false}
-					onChange={(value) => p.trade.updateTradeOrder(parseFloat(value) || 0)}
+					onChange={(value) => p.trade.updateTradeOrder(parseFloat(value) || 0, undefined, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 				/>
 			</td>
@@ -54,7 +54,7 @@ const TradeBuilderRow = (p) => {
 					type="text"
 					value={p.trade.limitPrice}
 					isClearable={false}
-					onChange={(value) => p.trade.updateTradeOrder(undefined, parseFloat(value) || 0)}
+					onChange={(value) => p.trade.updateTradeOrder(undefined, parseFloat(value) || 0, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 				/>
 			</td>
