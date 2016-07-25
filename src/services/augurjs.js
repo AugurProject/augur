@@ -70,6 +70,7 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 };
 
 ex.loadLoginAccount = function loadLoginAccount(cb) {
+	const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
@@ -78,16 +79,15 @@ ex.loadLoginAccount = function loadLoginAccount(cb) {
 			id: augur.web.account.address
 		});
 	}
+	// if the user has a persistent login, use it
+	if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
+		const account = JSON.parse(localStorageRef.getItem('account'));
 
-	// // if the user has a persistent login, use it
-	// const account = augur.web.persist();
-	// if (account && account.privateKey) {
-	// 	console.log('using persistent login:', account);
-	// 	return cb(null, {
-	// 		...augur.web.account,
-	// 		id: augur.web.account.address
-	// 	});
-	// }
+		if (account && account.privateKey) {
+			augur.web.loadLocalLoginAccount(account, (loginAccount) => cb(null, loginAccount));
+		}
+	}
+
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
