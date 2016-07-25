@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import classnames from 'classnames';
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Link from '../../link/components/link';
@@ -24,7 +25,7 @@ export default class AccountPage extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-		console.log(p.account);
+
 		return (
 			<main className="page account">
 				<SiteHeader {...p.siteHeader} />
@@ -41,7 +42,7 @@ export default class AccountPage extends Component {
 							<h2 className="heading">Credentials</h2>
 							<table className="account-info">
 								<tbody>
-									<tr className="account-info-item">
+									<tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
 										<th className="title">Account Name:</th>
 										<td className="item">
 											{s.editName &&
@@ -113,7 +114,7 @@ export default class AccountPage extends Component {
 										</td>
 									</tr>
 
-									<tr className="account-info-item">
+									<tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
 										<th className="title">Secure Login ID:</th>
 										<td className="item">
 											{!s.showFullID &&
@@ -139,7 +140,7 @@ export default class AccountPage extends Component {
 								</tbody>
 							</table>
 						</div>
-						<div className="account-section">
+						<div className={classnames('account-section', { displayNone: p.account.localNode })}>
 							<div className="account-info-item">
 								<h2 className="heading">Download Account</h2>
 								<p>
