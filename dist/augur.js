@@ -17037,7 +17037,7 @@ module.exports={
           "branch"
         ], 
         "method": "getPeriodLength", 
-        "returns": "number", 
+        "returns": "int", 
         "signature": [
           "int256"
         ]
@@ -20948,22 +20948,22 @@ module.exports={
         "Branches": "0x7527ae8d20708d50a2005fb53cf91cc294c6f389", 
         "BuyAndSellShares": "0xba2aed1512fbeb937a72a9ee3e8e78b55f76c5b2", 
         "Cash": "0x7d5c6a01380fa372944d86172e384deede4ccc54", 
-        "CloseMarket": "0x8c838f26245ac58fe50d3533c37579891176ded0", 
+        "CloseMarket": "0x1f4df47cd0fe31bf91ed93acac3d0e2a583a1c91", 
         "CloseMarketOne": "0x55d582bf0927fdb161d60e77f9f87ac487c29a0b", 
         "CloseMarketTwo": "0x586bbdc91ca260302ef2f6203d0924d7a19ca2a7", 
         "CollectFees": "0xc46a6d22dc298568c7307267d5d3c64d091bbfe4", 
         "CompleteSets": "0x082903620c90eb37497de0546b1730be0082fcf7", 
         "CompositeGetters": "0xe73b19668e632a4a2cae1cd9de3a3e96633d513b", 
-        "Consensus": "0x338ea9637195970e82c2b76609944efe16bb2266", 
+        "Consensus": "0xf175f841005caaba37b3b4227caefb2f8746f712", 
         "ConsensusData": "0xc1ebb32c9e4721cf5c940e8b0725d6338e9f790a", 
         "CreateBranch": "0x23232edbf6e403952b13afb40eed42ba6ef6d0c1", 
         "CreateMarket": "0x76993f8c6a9de03c1842432d52809407f97dfc79", 
-        "EventResolution": "0x52fb4755f15d2b63a22a61357c0171a3faaf0904", 
+        "EventResolution": "0xa90d23984776dc864d39cf03256420534fc5cd7b", 
         "Events": "0xb6f6696265e2aa52d19420f58214fbf238b4d5cc", 
         "ExpiringEvents": "0xf5f1a584881aa99c2421b3f77d14359ecc6d9965", 
         "Faucets": "0x7a96d7b893375c7e979b3fa19e84e28cb9fc9aef", 
         "ForkPenalize": "0xe43eb99d00e2d4e1aa158b4c1a4b052528d63d78", 
-        "Forking": "0x0da20fa13cfa6564c776e129645e707d8d67d482", 
+        "Forking": "0x5a287171c0dc90d36035ee4321f813f4abfbe6e5", 
         "FxpFunctions": "0x16c219643a3993ad44c334feeb3fd7f6808736af", 
         "Info": "0x62495cfb22a42da3c4a1a941df4f18a5ce387758", 
         "MakeReports": "0x0552a24d5c60f13b90e2e531e310308175f6de28", 
@@ -20973,8 +20973,8 @@ module.exports={
         "ProportionCorrect": "0x4221cecf200b12d32e5fde46454b0cdf3c5c2a40", 
         "Reporting": "0x0c3971fe2a5dcb15aab82a018a8554ed14038c65", 
         "ReportingThreshold": "0x788f0aed6d79fa74601bbdababcd99f91d19a592", 
-        "RoundTwo": "0xeae85341f3448ead4865f0c4bd4c3596df8bd79d", 
-        "RoundTwoPenalize": "0xcfff950e594fe52d56e7acbeecbbd3e26fa886e7", 
+        "RoundTwo": "0x92e2b3b3c587f9e688263f482b297da0c669be65", 
+        "RoundTwoPenalize": "0xc2cd9c548e7ae88e58e6f1c3fd2e2ae4b2a9b55d", 
         "SendReputation": "0x5e77fca2b21b9c5983468df99bf2d2c84db1b7c1", 
         "SlashRep": "0x7263d1f2bbf89315f2190d629fb418254aa1c8cd", 
         "Trade": "0x9a6464b2b2006f8ae491b0418f455c30db448e15", 
@@ -38185,7 +38185,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.4";
+    this.version = "1.9.6";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38268,8 +38268,8 @@ module.exports = {
 
     // expects fixed-point inputs
     calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
-        makerProportionOfFee = abi.unfix(tradingFee);
-        tradingFee = abi.unfix(makerProportionOfFee);
+        tradingFee = abi.unfix(tradingFee);
+        makerProportionOfFee = abi.unfix(makerProportionOfFee);
         var makerFee = tradingFee.times(makerProportionOfFee);
         return {
             trading: tradingFee.toFixed(),
@@ -38819,7 +38819,7 @@ module.exports = {
     },
 
     parseMarketsInfo: function (marketsArray) {
-        var len, shift, marketID, fees;// makerProportionOfFee, tradingFee, makerFee;
+        var len, shift, marketID, fees;
         if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
             return marketsArray;
         }
@@ -42712,46 +42712,47 @@ module.exports = {
             var tx = this.getTransaction(txHash);
             if (tx) return tx;
 
-            this.txs[txHash].status = "failed";
-            if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
+            // this.txs[txHash].status = "failed";
+            // if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
 
             // resubmit if this is a raw transaction and has a duplicate nonce
-            if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
-                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-            }
-            var duplicateNonce;
-            for (var hash in this.rawTxs) {
-                if (!this.rawTxs.hasOwnProperty(hash)) continue;
-                if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
-                    JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
-                    duplicateNonce = true;
-                    break;
-                }
-            }
-            if (!duplicateNonce) throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            // if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
+            //     throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            // }
+            // var duplicateNonce;
+            // for (var hash in this.rawTxs) {
+            //     if (!this.rawTxs.hasOwnProperty(hash)) continue;
+            //     if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
+            //         JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
+            //         duplicateNonce = true;
+            //         break;
+            //     }
+            // }
+            // if (!duplicateNonce) throw new this.Error(errors.TRANSACTION_NOT_FOUND);
             this.txs[txHash].status = "resubmitted";
             return null;
         }
         this.getTransaction(txHash, function (tx) {
             if (tx) return callback(null, tx);
 
-            self.txs[txHash].status = "failed";
-            if (self.debug.tx) console.debug("Raw transactions:", self.rawTxs);
+            // self.txs[txHash].status = "failed";
+            // if (self.debug.tx) console.debug("Raw transactions:", self.rawTxs);
 
             // resubmit if this is a raw transaction and has a duplicate nonce
-            if (!self.rawTxs[txHash] || !self.rawTxs[txHash].tx) {
-                return callback(errors.TRANSACTION_NOT_FOUND);
-            }
-            var duplicateNonce;
-            for (var hash in self.rawTxs) {
-                if (!self.rawTxs.hasOwnProperty(hash)) continue;
-                if (self.rawTxs[hash].tx.nonce === self.rawTxs[txHash].tx.nonce &&
-                    JSON.stringify(self.rawTxs[hash].tx) !== JSON.stringify(self.rawTxs[txHash].tx)) {
-                    duplicateNonce = true;
-                    break;
-                }
-            }
-            if (!duplicateNonce) return callback(errors.TRANSACTION_NOT_FOUND);
+            // if (!self.rawTxs[txHash] || !self.rawTxs[txHash].tx) {
+            //     return callback(errors.TRANSACTION_NOT_FOUND);
+            // }
+            // var duplicateNonce;
+            // for (var hash in self.rawTxs) {
+            //     if (!self.rawTxs.hasOwnProperty(hash)) continue;
+            //     if (self.rawTxs[hash].tx.nonce === self.rawTxs[txHash].tx.nonce &&
+            //         JSON.stringify(self.rawTxs[hash].tx) !== JSON.stringify(self.rawTxs[txHash].tx)) {
+            //         duplicateNonce = true;
+            //         break;
+            //     }
+            // }
+            // if (!duplicateNonce) return callback(errors.TRANSACTION_NOT_FOUND);
+            console.debug(" *** Re-submitting transaction:", txHash);
             self.txs[txHash].status = "resubmitted";
             return callback(null, null);
         });

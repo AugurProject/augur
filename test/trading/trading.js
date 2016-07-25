@@ -1902,7 +1902,8 @@ describe("Integration tests", function () {
             assert.isAbove(unlocked.length, 0);
             assert.strictEqual(augur.from, unlocked[0]);
             unlockable = clone(unlocked);
-            tools.create_each_market_type(augur, function (err, newMarkets) {
+            var expiration = parseInt(new Date().getTime() / 995);
+            tools.create_each_market_type(augur, null, expiration, function (err, newMarkets) {
                 assert.isNull(err);
                 assert.isObject(newMarkets);
                 assert.isString(newMarkets.binary);
@@ -1940,12 +1941,10 @@ describe("Integration tests", function () {
                         market: markets[t.market],
                         outcome: t.outcome,
                         onSent: function (r) {
-                            if (DEBUG) console.log("buy sent:", r.txHash);
                             assert.isString(r.txHash);
                             assert.isNull(r.callReturn);
                         },
                         onSuccess: function (r) {
-                            if (DEBUG) console.log("buy success:", r.callReturn);
                             augur.get_trade(r.callReturn, function (trade) {
                                 assert.isObject(trade);
                                 assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
@@ -2026,8 +2025,13 @@ describe("Integration tests", function () {
                 augur.buyCompleteSets({
                     market: markets[t.market],
                     amount: t.amount,
-                    onSent: function (r) {},
+                    onSent: function (r) {
+                        assert.isNull(r.callReturn);
+                    },
                     onSuccess: function (r) {
+                        var shares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+                        assert.strictEqual(parseFloat(shares), parseFloat(t.amount));
+                        var cash = augur.Cash.balance(augur.from);
                         augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
                             initialTotalTrades = parseInt(initialTotalTrades);
                             augur.sell({
@@ -2075,7 +2079,7 @@ describe("Integration tests", function () {
         test({
             market: "binary",
             amount: "1.5",
-            price: "0.1",
+            price: "0.9",
             outcome: "2"
         });
         test({
@@ -2093,7 +2097,7 @@ describe("Integration tests", function () {
         test({
             market: "categorical",
             amount: "1.5",
-            price: "0.1",
+            price: "0.9",
             outcome: "7"
         });
         test({
@@ -2137,10 +2141,7 @@ describe("Integration tests", function () {
                             onSuccess: function (r) {
                                 assert(r.txHash);
                                 assert.isNotNull(r.callReturn);
-                                var trade_ids = augur.get_trade_ids(markets[t.market]);
-                                console.log("haystack:", trade_ids);
-                                console.log("needle:", r.callReturn);
-                                assert.include(trade_ids, r.callReturn);
+                                assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
                                 augur.cancel(r.callReturn, function (r) {
                                     assert.isNull(r.callReturn);
                                 }, function (r) {
@@ -2237,7 +2238,7 @@ describe("Integration tests", function () {
                                             if (!tradeInfo) return nextTrade("no trade info found");
                                             if (tradeInfo.owner === augur.from) return nextTrade();
                                             if (tradeInfo.type === "buy") return nextTrade();
-                                            if (DEBUG) console.log("prices:", tradeInfo.price, t.price);
+                                            if (tradeInfo.price !== t.price) return nextTrade();
                                             augur.trade({
                                                 max_value: t.amount,
                                                 max_amount: 0,
@@ -2318,7 +2319,7 @@ describe("Integration tests", function () {
                                     if (!tradeInfo) return nextTrade("no trade info found");
                                     if (tradeInfo.owner === augur.from) return nextTrade();
                                     if (tradeInfo.type === "sell") return nextTrade();
-                                    if (DEBUG) console.log("prices:", tradeInfo.price, t.price);
+                                    if (tradeInfo.price !== t.price) return nextTrade();
                                     augur.short_sell({
                                         buyer_trade_id: thisTrade,
                                         max_amount: t.amount,

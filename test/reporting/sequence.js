@@ -7,6 +7,7 @@
 
 var join = require("path").join;
 var fs = require("fs");
+var clone = require("clone");
 var async = require("async");
 var chalk = require("chalk");
 var assert = require("chai").assert;
@@ -17,6 +18,7 @@ var constants = require("../../src/constants");
 var utils = require("../../src/utilities");
 var tools = require("../tools");
 var DEBUG = true;
+tools.DEBUG = DEBUG;
 
 var augur = tools.setup(require(augurpath), process.argv.slice(2));
 var branchID = constants.DEFAULT_BRANCH_ID;
@@ -56,13 +58,15 @@ function printReportingStatus(eventID, label) {
 describe("Reporting sequence", function () {
     if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
 
+    var markets = {};
+    var events = {};
+
     before("Setup/first period", function (done) {
         this.timeout(tools.TIMEOUT*100);
 
         var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + suffix + "]";
         var tradingFee = "0.01";                
         var branchID = constants.DEFAULT_BRANCH_ID;
-        var markets = augur.getMarketsInBranch(branchID);
         var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
         var accounts = augur.rpc.personal("listAccounts");
         var unlockable = [augur.from, accounts[0], accounts[2]];
@@ -138,138 +142,30 @@ describe("Reporting sequence", function () {
                             var expDate = parseInt(t + untilNextPeriod + 1);
                             var expirationPeriod = Math.floor(expDate / periodLength);
                             if (DEBUG) {
-                                console.log(chalk.blue.bold("\nCreating event and market..."));
+                                console.log(chalk.blue.bold("\nCreating events/markets..."));
                                 console.log(chalk.white.dim("Next period starts at time"), chalk.cyan(parseInt(t) + untilNextPeriod + " (" + untilNextPeriod + " seconds to go)"));
                                 console.log(chalk.white.dim("Current timestamp:"), chalk.cyan(parseInt(t)));
                                 console.log(chalk.white.dim("Expiration time:  "), chalk.cyan(expDate));
                                 console.log(chalk.white.dim("Expiration period:"), chalk.blue(expirationPeriod));
                             }
-                            augur.createSingleEventMarket({
-                                branchId: newBranchID,
-                                description: description,
-                                expDate: expDate,
-                                minValue: 1,
-                                maxValue: 2,
-                                numOutcomes: 2,
-                                resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
-                                takerFee: "0.02",
-                                makerFee: "0.01",
-                                tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
-                                extraInfo: madlibs.city() + " " + madlibs.noun() + " " + madlibs.action() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
-                                onSent: function (res) {
-                                    console.log("createSingleEventMarket sent:", res);
-                                },
-                                onSuccess: function (res) {
-                                    marketID = res.marketID;
-                                    if (DEBUG) console.log(chalk.white.dim("Market ID:"), chalk.green(marketID));
-                                    eventID = augur.getMarketEvent(marketID, 0);
-                                    if (DEBUG) console.log(chalk.white.dim("Event ID: "), chalk.green(eventID));
-                                    augur.useAccount(accounts[0]);
-                                    if (DEBUG) printReportingStatus(eventID, "Buying complete set");
-                                    augur.buyCompleteSets({
-                                        market: marketID,
-                                        amount: 1,
-                                        onSent: function (r) {},
-                                        onSuccess: function (r) {
-                                            if (DEBUG) printResidual(periodLength, "Placing sell order");
-                                            augur.sell({
-                                                amount: 1,
-                                                price: "0.01",
-                                                market: marketID,
-                                                outcome: 1,
-                                                onSent: function (r) {},
-                                                onSuccess: function (r) {
-                                                    augur.useAccount(accounts[2]);
-                                                    if (DEBUG) printResidual(periodLength, "Searching for trade...");
-                                                    augur.get_trade_ids(marketID, function (trade_ids) {
-                                                        async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
-                                                            augur.get_trade(thisTrade, function (tradeInfo) {
-                                                                if (!tradeInfo) return nextTrade("no trade info found");
-                                                                if (tradeInfo.owner === augur.from) return nextTrade();
-                                                                if (tradeInfo.type === "buy") return nextTrade();
-                                                                if (DEBUG) printResidual(periodLength, "Trading");
-                                                                augur.trade({
-                                                                    max_value: 1,
-                                                                    max_amount: 0,
-                                                                    trade_ids: [thisTrade],
-                                                                    onTradeHash: function (tradeHash) {
-                                                                        if (DEBUG) {
-                                                                            printResidual(periodLength, "Trade hash");
-                                                                            console.log(chalk.white.dim(" - Hash:"), chalk.green(tradeHash));
-                                                                        }
-                                                                        assert.notProperty(tradeHash, "error");
-                                                                        assert.isString(tradeHash);
-                                                                    },
-                                                                    onCommitSent: function (r) {
-                                                                        assert.strictEqual(r.callReturn, "1");
-                                                                    },
-                                                                    onCommitSuccess: function (r) {
-                                                                        if (DEBUG) printResidual(periodLength, "Trade committed");
-                                                                        assert.strictEqual(r.callReturn, "1");
-                                                                    },
-                                                                    onCommitFailed: nextTrade,
-                                                                    onNextBlock: function (block) {
-                                                                        if (DEBUG) printResidual(periodLength, "Got block " + block);
-                                                                    },
-                                                                    onTradeSent: function (r) {
-                                                                        if (DEBUG) console.log(chalk.white.dim(" - Trade sent:"), r.callReturn);
-                                                                    },
-                                                                    onTradeSuccess: function (r) {
-                                                                        if (DEBUG) {
-                                                                            printResidual(periodLength, "Trade complete");
-                                                                            console.log(chalk.white.dim(" - Logged return value:"), r.callReturn);
-                                                                        }
-                                                                        assert.isArray(r.callReturn);
-                                                                        assert.strictEqual(r.callReturn[0], 1);
-                                                                        assert.strictEqual(r.callReturn[2], "0");
-                                                                        assert.strictEqual(r.callReturn.length, 3);
-                                                                        nextTrade(r);
-                                                                    },
-                                                                    onTradeFailed: function (err) {
-                                                                        console.log("trade failed:", err);
-                                                                        nextTrade(err);
-                                                                    }
-                                                                });
-                                                            });
-                                                        }, function (x) {
-                                                            if (!x) return done(new Error("No trade found"));
-                                                            if (!x.callReturn) return done(x);
-
-                                                            // wait until the period after the new event expires
-                                                            var t = parseInt(new Date().getTime() / 1000);
-                                                            var currentPeriod = augur.getCurrentPeriod(periodLength);
-                                                            var periodsToGo = expirationPeriod - currentPeriod;
-                                                            var secondsToGo = periodsToGo*periodLength + periodLength - (t % periodLength);
-                                                            if (DEBUG) {
-                                                                printReportingStatus(eventID, "Waiting until period after new event expires...");
-                                                                console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
-                                                                console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
-                                                            }
-                                                            setTimeout(function () {
-                                                                assert.strictEqual(augur.getCurrentPeriod(periodLength), expirationPeriod + 1);
-                                                                done();
-                                                            }, secondsToGo*1000);
-                                                        });
-                                                    });
-                                                },
-                                                onFailed: function (err) {
-                                                    console.log(chalk.red.bold("sell failed:"), {
-                                                        amount: 1,
-                                                        price: "0.01",
-                                                        market: marketID,
-                                                        outcome: 1
-                                                    });
-                                                    console.error(err);
-                                                    done(new Error(tools.pp(err)));
-                                                }
-                                            });
-                                        },
-                                        onFailed: done
-                                    });
-                                },
-                                onFailed: function (err) {
-                                    done(new Error("createSingleEventMarket failed: " + JSON.stringify(err)));
+                            tools.create_each_market_type(augur, newBranchID, expDate, function (err, newMarkets) {
+                                assert.isNull(err);
+                                markets = clone(newMarkets);
+                                for (var type in markets) {
+                                    if (!markets.hasOwnProperty(type)) continue;
+                                    events[type] = augur.getMarketEvent(markets[type], 0);
                                 }
+                                marketID = markets.binary;
+                                eventID = events.binary;
+                                if (DEBUG) console.log(chalk.white.dim("Events: "), events);
+
+                                // make a single trade in each new market
+                                tools.trade_in_each_market(augur, markets, accounts[0], accounts[2], function (err) {
+                                    assert.isNull(err);
+
+                                    // wait until the period after the new events expire
+                                    tools.wait_until_expiration(augur, events.binary, done);
+                                });
                             });
                         },
                         onFailed: done
@@ -298,13 +194,15 @@ describe("Reporting sequence", function () {
             var branch = newBranchID;
             var sender = augur.from;
             var period = parseInt(augur.getVotePeriod(branch));
-            var reportHash = augur.makeHash(salt, report, eventID);
-            if (DEBUG) {
-                printReportingStatus(eventID, "Difference " + (augur.getCurrentPeriod(periodLength) - period) + ". Submitting report hash...");
-                console.log(chalk.white.dim("Report hash:"), chalk.green(reportHash));
-                console.log(chalk.white.dim("Events in period ") + chalk.cyan(period) + chalk.white.dim(":"), augur.ExpiringEvents.getEvents(branch, period));
-            }
-            augur.getEventsToReportOn(branch, period, sender, 0, function (eventsToReportOn) {
+            async.forEachOf(events, function (eventID, type, nextEvent) {
+                var reportHash = augur.makeHash(salt, report, eventID);
+                if (DEBUG) {
+                    printReportingStatus(eventID, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period) + ". Submitting report hash...");
+                    console.log(chalk.white.dim("Report hash:"), chalk.green(reportHash));
+                    console.log(chalk.white.dim("Events in period ") + chalk.cyan(period) + chalk.white.dim(":"), augur.ExpiringEvents.getEvents(branch, period));
+                }
+                var eventsToReportOn = augur.getEventsToReportOn(branch, period, sender, 0);
+                assert.include(eventsToReportOn, abi.hex(eventID));
                 if (DEBUG) {
                     console.log(chalk.white.dim("Events to report on:"), eventsToReportOn);
                     var periodRepConstant = augur.ExpiringEvents.getPeriodRepConstant(branch, period, sender);
@@ -332,7 +230,7 @@ describe("Reporting sequence", function () {
                         if (DEBUG) {
                             console.log(chalk.white.dim("\nsubmitReportHash return value:"), chalk.cyan(res.callReturn));
                             console.log(chalk.white.dim("Stored report hash:"), chalk.green(storedReportHash));
-                            printReportingStatus(eventID, "submitReportHash success");
+                            printReportingStatus(eventID, "[" + type  + "] submitReportHash success");
                         }
                         assert.strictEqual(res.callReturn, "1");
                         assert.strictEqual(storedReportHash, reportHash);
@@ -340,26 +238,23 @@ describe("Reporting sequence", function () {
                             branch: branch,
                             sender: sender,
                             onSent: function (r) {
-                                console.log(chalk.red.bold("penalizationCatchup sent:"), r);
+                                console.log(chalk.red.bold("[" + type  + "] penalizationCatchup sent:"), r);
                             },
                             onSuccess: function (r) {
-                                console.log(chalk.red.bold("penalizationCatchup success:"), r);
-                                done();
+                                console.log(chalk.red.bold("[" + type  + "] penalizationCatchup success:"), r);
+                                nextEvent();
                             },
                             onFailed: function (err) {
                                 console.log(chalk.white.dim(" - penalizationCatchup:"), chalk.cyan.dim(JSON.stringify(err)));
                                 assert.strictEqual(err.error, "-2");
                                 assert.strictEqual(err.message, augur.errors.penalizationCatchup["-2"]);
-                                done();
+                                nextEvent();
                             }
                         });
                     },
-                    onFailed: function (err) {
-                        if (DEBUG) console.error(chalk.red.bold("SRH failed:"), err);
-                        done(new Error(tools.pp(err)));
-                    }
+                    onFailed: nextEvent
                 });
-            });
+            }, done);
         });
     });
     
@@ -384,42 +279,41 @@ describe("Reporting sequence", function () {
         });
         it("makeReports.submitReport", function (done) {
             this.timeout(tools.TIMEOUT*100);
-            if (DEBUG) printReportingStatus(eventID, "Submitting report");
-            augur.submitReport({
-                event: eventID,
-                salt: salt,
-                report: report,
-                ethics: 1,
-                isScalar: false,
-                onSent: function (res) {
-                    assert(res.txHash);
-                    console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
-                },
-                onSuccess: function (res) {
-                    var period = augur.Branches.getVotePeriod(newBranchID);
-                    var storedReport = augur.ExpiringEvents.getReport({
-                        branch: newBranchID,
-                        period: period,
-                        event: eventID,
-                        sender: augur.from
-                    });
-                    if (DEBUG) {
-                        var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period-1);
-                        console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
-                        printReportingStatus(eventID, "submitReport complete");
-                        console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                        console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
-                    }
-                    assert(res.txHash);
-                    assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                    assert.strictEqual(parseInt(storedReport), report);
-                    done();
-                },
-                onFailed: function (err) {
-                    console.log(chalk.red.bold("submitReport failed:"), err);
-                    done(new Error(tools.pp(err)));
-                }
-            });
+            if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Submitting report");
+            async.forEachOf(events, function (eventID, type, nextEvent) {
+                augur.submitReport({
+                    event: eventID,
+                    salt: salt,
+                    report: report,
+                    ethics: 1,
+                    isScalar: false,
+                    onSent: function (res) {
+                        assert(res.txHash);
+                        console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
+                    },
+                    onSuccess: function (res) {
+                        var period = augur.Branches.getVotePeriod(newBranchID);
+                        var storedReport = augur.ExpiringEvents.getReport({
+                            branch: newBranchID,
+                            period: period,
+                            event: eventID,
+                            sender: augur.from
+                        });
+                        if (DEBUG) {
+                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period-1);
+                            console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
+                            printReportingStatus(eventID, "[" + type  + "] submitReport complete");
+                            console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+                            console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
+                        }
+                        assert(res.txHash);
+                        assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
+                        assert.strictEqual(parseInt(storedReport), report);
+                        nextEvent();
+                    },
+                    onFailed: nextEvent
+                });
+            }, done);
         });
     });
 
@@ -438,58 +332,57 @@ describe("Reporting sequence", function () {
         });
         it("closeMarket + penalizeWrong", function (done) {
             this.timeout(tools.TIMEOUT*100);
-            if (DEBUG) printReportingStatus(eventID, "Closing market " + marketID);
-            augur.closeMarket({
-                branch: newBranchID,
-                market: marketID,
-                sender: augur.from,
-                onSent: function (res) {
-                    assert(res.txHash);
-                },
-                onSuccess: function (res) {
-                    if (DEBUG) console.log("closeMarket success:", res);
-                    assert.strictEqual(res.callReturn, "1");
-                    if (DEBUG) {
-                        printReportingStatus(eventID, "Market closed");
-                        console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
-                        console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
-                    }
-                    var winningOutcomes = augur.getWinningOutcomes(marketID);
-                    if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
-                    var eventOutcome = augur.getOutcome(eventID);
-                    if (DEBUG) console.log("event", eventID, "outcome:", eventOutcome);
-                    // assert.strictEqual(winningOutcomes[report-1], "1");
-                    if (DEBUG) printReportingStatus(eventID, "Penalizing incorrect reports for event " + eventID);
-                    augur.penalizeWrong({
-                        branch: newBranchID,
-                        event: eventID,
-                        onSent: function (res) {
-                            console.log("penalizeWrong sent:", res);
-                            // assert.strictEqual(res.callReturn, "1");
-                        },
-                        onSuccess: function (res) {
-                            // assert.strictEqual(res.callReturn, "1");
-                            console.log("penalizeWrong success:", res);
-                            if (DEBUG) {
-                                printReportingStatus(eventID, "Event " + eventID + " penalized");
-                                console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
-                            }
-                            done();
-                        },
-                        onFailed: function (err) {
-                            if (DEBUG) {
-                                printReportingStatus(eventID, "penalizeWrong failed");
-                                console.error(chalk.red.bold("penalizeWrong error:"), err);
-                            }
-                            done(new Error(tools.pp(err)));
+            async.forEachOf(events, function (eventID, type, nextEvent) {
+                if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Penalizing incorrect reports for event " + eventID);
+                augur.penalizeWrong({
+                    branch: newBranchID,
+                    event: eventID,
+                    onSent: function (res) {
+                        console.log("[" + type  + "] penalizeWrong sent:", res);
+                    },
+                    onSuccess: function (res) {
+                        // assert.strictEqual(res.callReturn, "1");
+                        console.log("[" + type  + "] penalizeWrong success:", res);
+                        if (DEBUG) {
+                            printReportingStatus(eventID, "[" + type  + "] Event " + eventID + " penalized");
+                            console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
                         }
-                    });
-                },
-                onFailed: function (err) {
-                    if (DEBUG) console.error("closeMarket failed:", err);
-                    done(new Error(tools.pp(err)));
-                }
-            });
+                        if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Closing market " + market[type]);
+                        augur.closeMarket({
+                            branch: newBranchID,
+                            market: market[type],
+                            sender: augur.from,
+                            onSent: function (res) {
+                                assert(res.txHash);
+                            },
+                            onSuccess: function (res) {
+                                if (DEBUG) console.log("[" + type  + "] closeMarket success:", res);
+                                // assert.strictEqual(res.callReturn, "1");
+                                if (DEBUG) {
+                                    printReportingStatus(eventID, "[" + type  + "] Market closed");
+                                    console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
+                                    console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
+                                }
+                                var winningOutcomes = augur.getWinningOutcomes(market[type]);
+                                if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
+                                var eventOutcome = augur.getOutcome(eventID);
+                                if (DEBUG) console.log("event", eventID, "outcome:", eventOutcome);
+                                // assert.strictEqual(winningOutcomes[report-1], "1");
+                                nextEvent();
+                                
+                            },
+                            onFailed: nextEvent
+                        });
+                    },
+                    onFailed: function (err) {
+                        if (DEBUG) {
+                            printReportingStatus(eventID, "penalizeWrong failed");
+                            console.error(chalk.red.bold("penalizeWrong error:"), err);
+                        }
+                        nextEvent(new Error(tools.pp(err)));
+                    }
+                });
+            }, done);
         });
     });
 
@@ -513,31 +406,33 @@ describe("Reporting sequence", function () {
             }, secondsToWait*1000);
         });
         it("CollectFees.collectFees", function (done) {
-            this.timeout(tools.TIMEOUT);
-            augur.collectFees({
-                branch: newBranchID,
-                sender: augur.from,
-                periodLength: periodLength,
-                onSent: function (r) {
-                    if (DEBUG) console.log("collectFees sent:", r);
-                },
-                onSuccess: function (r) {
-                    if (DEBUG) {
-                        console.log("collectFees success:", r);
-                        printReportingStatus(eventID, "Fees collected for " + r.from);
+            this.timeout(tools.TIMEOUT*3);
+            async.forEachOf(events, function (eventID, type, nextEvent) {
+                augur.collectFees({
+                    branch: newBranchID,
+                    sender: augur.from,
+                    periodLength: periodLength,
+                    onSent: function (r) {
+                        if (DEBUG) console.log("[" + type  + "] collectFees sent:", r);
+                    },
+                    onSuccess: function (r) {
+                        if (DEBUG) {
+                            console.log("collectFees success:", r);
+                            printReportingStatus(eventID, "[" + type  + "] Fees collected for " + r.from);
+                        }
+                        var period = augur.Branches.getVotePeriod(newBranchID);
+                        var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period - 1);
+                        console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
+                        assert.strictEqual(feesCollected, "1");
+                        nextEvent();
+                    },
+                    onFailed: function (err) {
+                        if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
+                        if (DEBUG) printReportingStatus(eventID, "[" + type  + "] collectFees failed");
+                        nextEvent(err);
                     }
-                    var period = augur.Branches.getVotePeriod(newBranchID);
-                    var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period - 1);
-                    console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
-                    assert.strictEqual(feesCollected, "1");
-                    done();
-                },
-                onFailed: function (err) {
-                    if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
-                    if (DEBUG) printReportingStatus(eventID, "collectFees failed");
-                    done(err);
-                }
-            });
+                });
+            }, done);
         });
     });
 });
