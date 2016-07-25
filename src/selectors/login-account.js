@@ -27,6 +27,20 @@ loginAccount.signIn = (name = loginAccount.name) => {
 	loginAccount.editName(name);
 };
 
+loginAccount.downloadAccount = () => {
+	const theDocument = typeof document !== 'undefined' && document;
+	const link = theDocument.createElement('a');
+	const date = new Date()
+		.toISOString()
+		.split(':')
+		.join('-');
+	const filename = `UTC--${date}--${loginAccount.address}`;
+	const accountFile = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(loginAccount))}`;
+	link.download = filename;
+	link.href = accountFile;
+	link.click();
+};
+
 loginAccount.editName = (name) => {
 	loginAccount.name = (name && name !== '') ? name : undefined;
 	loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
