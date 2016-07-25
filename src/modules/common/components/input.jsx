@@ -16,6 +16,7 @@ export default class Input extends Component {
 
 	constructor(props) {
 		super(props);
+		this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 750;
 		this.state = {
 			value: this.props.value || '',
 			timeoutID: ''
@@ -33,22 +34,23 @@ export default class Input extends Component {
 
 	handleOnChange = (e) => {
 		const newValue = e.target.value;
-		if (newValue === this.props.value) {
-			return;
-		}
-		if (this.props.debounceMS !== 0) {
+		if (this.finalDebounceMS) {
 			clearTimeout(this.state.timeoutID);
-			this.setState({ timeoutID: setTimeout(() => this.props.onChange(newValue), this.props.debounceMS || 750) });
-		} else {
+			if (newValue !== this.props.value) {
+				this.setState({ timeoutID: setTimeout(() => this.props.onChange(newValue), this.finalDebounceMS) });
+			}
+		} else if (newValue !== this.props.value) {
 			this.props.onChange(newValue);
 		}
 		this.setState({ value: newValue });
 	}
 
 	handleOnBlur = () => {
-		if (this.props.debounceMS !== 0 && this.state.value !== this.props.value) {
+		if (this.finalDebounceMS) {
 			clearTimeout(this.state.timeoutID);
-			this.props.onChange(this.state.value);
+			if (this.state.value !== this.props.value) {
+				this.props.onChange(this.state.value);
+			}
 		}
 		this.props.onBlur && this.props.onBlur();
 	}
