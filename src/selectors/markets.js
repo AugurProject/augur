@@ -10,7 +10,7 @@ function makeMarkets(numMarkets = 50) {
 	const markets = [];
 	const types = ['binary', 'categorical', 'scalar'];
 
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < 10; i++) {
 		markets.push(makeMarket(i));
 	}
 
@@ -18,7 +18,7 @@ function makeMarkets(numMarkets = 50) {
 		setTimeout(() => {
 			markets.push(makeMarket(i));
 			require('../selectors').update({ markets });
-		}, (i - 5) * 500);
+		}, (i - 4) * 500);
 	}
 
 	return markets;
