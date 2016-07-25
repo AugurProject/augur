@@ -145,7 +145,7 @@ module.exports = {
                     expDate: expDate,
                     minValue: 1,
                     maxValue: 2,
-                    numOutcomes: 7,
+                    numOutcomes: numCategories,
                     resolution: resolution,
                     takerFee: takerFee,
                     makerFee: makerFee,

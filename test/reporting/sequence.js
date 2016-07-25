@@ -210,6 +210,14 @@ describe("Reporting sequence", function () {
                     console.log(chalk.white.dim("Period Rep constant:"), chalk.cyan(periodRepConstant));
                     console.log(chalk.white.dim("Lesser report num:  "), chalk.cyan(lesserReportNum));
                 }
+                console.log("SRH:", {
+                    event: eventID,
+                    reportHash: reportHash,
+                    encryptedSaltyHash: 0,
+                    branch: branch,
+                    period: period,
+                    periodLength: periodLength
+                });
                 augur.submitReportHash({
                     event: eventID,
                     reportHash: reportHash,
@@ -218,6 +226,7 @@ describe("Reporting sequence", function () {
                     period: period,
                     periodLength: periodLength,
                     onSent: function (res) {
+                        console.log("SRH sent:", res);
                         assert(res.txHash);
                     },
                     onSuccess: function (res) {
@@ -258,181 +267,181 @@ describe("Reporting sequence", function () {
         });
     });
     
-    describe("Second period (phase 2)", function () {
-        before("Wait for second half of second period", function (done) {
-            this.timeout(tools.TIMEOUT*100);
-            var t = parseInt(new Date().getTime() / 1000);
-            var halfTime = periodLength / 2;
-            if (t % periodLength > halfTime) {
-                if (DEBUG) printReportingStatus(eventID, "In second half of second period");
-                return done();
-            }
-            var secondsToWait = halfTime - (t % periodLength) + 1;
-            if (DEBUG) printReportingStatus(eventID, "Not in second half of second period, waiting " + secondsToWait + " seconds...");
-            setTimeout(function () {
-                if (DEBUG) {
-                    var t = parseInt(new Date().getTime() / 1000);
-                    printReportingStatus(eventID, "In second half of second period: " + (t % periodLength > halfTime));
-                }
-                done();
-            }, secondsToWait*1000);
-        });
-        it("makeReports.submitReport", function (done) {
-            this.timeout(tools.TIMEOUT*100);
-            if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Submitting report");
-            async.forEachOf(events, function (eventID, type, nextEvent) {
-                augur.submitReport({
-                    event: eventID,
-                    salt: salt,
-                    report: report,
-                    ethics: 1,
-                    isScalar: false,
-                    onSent: function (res) {
-                        assert(res.txHash);
-                        console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
-                    },
-                    onSuccess: function (res) {
-                        var period = augur.Branches.getVotePeriod(newBranchID);
-                        var storedReport = augur.ExpiringEvents.getReport({
-                            branch: newBranchID,
-                            period: period,
-                            event: eventID,
-                            sender: augur.from
-                        });
-                        if (DEBUG) {
-                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period-1);
-                            console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
-                            printReportingStatus(eventID, "[" + type  + "] submitReport complete");
-                            console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                            console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
-                        }
-                        assert(res.txHash);
-                        assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                        assert.strictEqual(parseInt(storedReport), report);
-                        nextEvent();
-                    },
-                    onFailed: nextEvent
-                });
-            }, done);
-        });
-    });
+    // describe("Second period (phase 2)", function () {
+    //     before("Wait for second half of second period", function (done) {
+    //         this.timeout(tools.TIMEOUT*100);
+    //         var t = parseInt(new Date().getTime() / 1000);
+    //         var halfTime = periodLength / 2;
+    //         if (t % periodLength > halfTime) {
+    //             if (DEBUG) printReportingStatus(eventID, "In second half of second period");
+    //             return done();
+    //         }
+    //         var secondsToWait = halfTime - (t % periodLength) + 1;
+    //         if (DEBUG) printReportingStatus(eventID, "Not in second half of second period, waiting " + secondsToWait + " seconds...");
+    //         setTimeout(function () {
+    //             if (DEBUG) {
+    //                 var t = parseInt(new Date().getTime() / 1000);
+    //                 printReportingStatus(eventID, "In second half of second period: " + (t % periodLength > halfTime));
+    //             }
+    //             done();
+    //         }, secondsToWait*1000);
+    //     });
+    //     it("makeReports.submitReport", function (done) {
+    //         this.timeout(tools.TIMEOUT*100);
+    //         if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Submitting report");
+    //         async.forEachOf(events, function (eventID, type, nextEvent) {
+    //             augur.submitReport({
+    //                 event: eventID,
+    //                 salt: salt,
+    //                 report: report,
+    //                 ethics: 1,
+    //                 isScalar: false,
+    //                 onSent: function (res) {
+    //                     assert(res.txHash);
+    //                     console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
+    //                 },
+    //                 onSuccess: function (res) {
+    //                     var period = augur.Branches.getVotePeriod(newBranchID);
+    //                     var storedReport = augur.ExpiringEvents.getReport({
+    //                         branch: newBranchID,
+    //                         period: period,
+    //                         event: eventID,
+    //                         sender: augur.from
+    //                     });
+    //                     if (DEBUG) {
+    //                         var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period-1);
+    //                         console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
+    //                         printReportingStatus(eventID, "[" + type  + "] submitReport complete");
+    //                         console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+    //                         console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
+    //                     }
+    //                     assert(res.txHash);
+    //                     assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
+    //                     assert.strictEqual(parseInt(storedReport), report);
+    //                     nextEvent();
+    //                 },
+    //                 onFailed: nextEvent
+    //             });
+    //         }, done);
+    //     });
+    // });
 
-    describe("Third period (phase 1)", function () {
-        before("Wait for third period", function (done) {
-            this.timeout(tools.TIMEOUT*100);
-            if (DEBUG) printReportingStatus(eventID, "Before third period checks");
-            augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
-                assert.isNull(err);
-                if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
-                augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
-                    assert.isNull(err);
-                    done();
-                });
-            });
-        });
-        it("closeMarket + penalizeWrong", function (done) {
-            this.timeout(tools.TIMEOUT*100);
-            async.forEachOf(events, function (eventID, type, nextEvent) {
-                if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Penalizing incorrect reports for event " + eventID);
-                augur.penalizeWrong({
-                    branch: newBranchID,
-                    event: eventID,
-                    onSent: function (res) {
-                        console.log("[" + type  + "] penalizeWrong sent:", res);
-                    },
-                    onSuccess: function (res) {
-                        // assert.strictEqual(res.callReturn, "1");
-                        console.log("[" + type  + "] penalizeWrong success:", res);
-                        if (DEBUG) {
-                            printReportingStatus(eventID, "[" + type  + "] Event " + eventID + " penalized");
-                            console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
-                        }
-                        if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Closing market " + market[type]);
-                        augur.closeMarket({
-                            branch: newBranchID,
-                            market: market[type],
-                            sender: augur.from,
-                            onSent: function (res) {
-                                assert(res.txHash);
-                            },
-                            onSuccess: function (res) {
-                                if (DEBUG) console.log("[" + type  + "] closeMarket success:", res);
-                                // assert.strictEqual(res.callReturn, "1");
-                                if (DEBUG) {
-                                    printReportingStatus(eventID, "[" + type  + "] Market closed");
-                                    console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
-                                    console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
-                                }
-                                var winningOutcomes = augur.getWinningOutcomes(market[type]);
-                                if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
-                                var eventOutcome = augur.getOutcome(eventID);
-                                if (DEBUG) console.log("event", eventID, "outcome:", eventOutcome);
-                                // assert.strictEqual(winningOutcomes[report-1], "1");
-                                nextEvent();
+    // describe("Third period (phase 1)", function () {
+    //     before("Wait for third period", function (done) {
+    //         this.timeout(tools.TIMEOUT*100);
+    //         if (DEBUG) printReportingStatus(eventID, "Before third period checks");
+    //         augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
+    //             assert.isNull(err);
+    //             if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
+    //             augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
+    //                 assert.isNull(err);
+    //                 done();
+    //             });
+    //         });
+    //     });
+    //     it("closeMarket + penalizeWrong", function (done) {
+    //         this.timeout(tools.TIMEOUT*100);
+    //         async.forEachOf(events, function (eventID, type, nextEvent) {
+    //             if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Penalizing incorrect reports for event " + eventID);
+    //             augur.penalizeWrong({
+    //                 branch: newBranchID,
+    //                 event: eventID,
+    //                 onSent: function (res) {
+    //                     console.log("[" + type  + "] penalizeWrong sent:", res);
+    //                 },
+    //                 onSuccess: function (res) {
+    //                     // assert.strictEqual(res.callReturn, "1");
+    //                     console.log("[" + type  + "] penalizeWrong success:", res);
+    //                     if (DEBUG) {
+    //                         printReportingStatus(eventID, "[" + type  + "] Event " + eventID + " penalized");
+    //                         console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
+    //                     }
+    //                     if (DEBUG) printReportingStatus(eventID, "[" + type  + "] Closing market " + market[type]);
+    //                     augur.closeMarket({
+    //                         branch: newBranchID,
+    //                         market: market[type],
+    //                         sender: augur.from,
+    //                         onSent: function (res) {
+    //                             assert(res.txHash);
+    //                         },
+    //                         onSuccess: function (res) {
+    //                             if (DEBUG) console.log("[" + type  + "] closeMarket success:", res);
+    //                             // assert.strictEqual(res.callReturn, "1");
+    //                             if (DEBUG) {
+    //                                 printReportingStatus(eventID, "[" + type  + "] Market closed");
+    //                                 console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
+    //                                 console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
+    //                             }
+    //                             var winningOutcomes = augur.getWinningOutcomes(market[type]);
+    //                             if (DEBUG) console.log("winningOutcomes:", winningOutcomes);
+    //                             var eventOutcome = augur.getOutcome(eventID);
+    //                             if (DEBUG) console.log("event", eventID, "outcome:", eventOutcome);
+    //                             // assert.strictEqual(winningOutcomes[report-1], "1");
+    //                             nextEvent();
                                 
-                            },
-                            onFailed: nextEvent
-                        });
-                    },
-                    onFailed: function (err) {
-                        if (DEBUG) {
-                            printReportingStatus(eventID, "penalizeWrong failed");
-                            console.error(chalk.red.bold("penalizeWrong error:"), err);
-                        }
-                        nextEvent(new Error(tools.pp(err)));
-                    }
-                });
-            }, done);
-        });
-    });
+    //                         },
+    //                         onFailed: nextEvent
+    //                     });
+    //                 },
+    //                 onFailed: function (err) {
+    //                     if (DEBUG) {
+    //                         printReportingStatus(eventID, "penalizeWrong failed");
+    //                         console.error(chalk.red.bold("penalizeWrong error:"), err);
+    //                     }
+    //                     nextEvent(new Error(tools.pp(err)));
+    //                 }
+    //             });
+    //         }, done);
+    //     });
+    // });
 
-    describe("Third period (phase 2)", function () {
-        before("Wait for second half of third period", function (done) {
-            this.timeout(tools.TIMEOUT*100);
-            var t = parseInt(new Date().getTime() / 1000);
-            var halfTime = periodLength / 2;
-            if (t % periodLength > halfTime) {
-                if (DEBUG) printReportingStatus(eventID, "In second half of third period");
-                return done();
-            }
-            var secondsToWait = halfTime - (t % periodLength) + 60;
-            if (DEBUG) printReportingStatus(eventID, "Not in second half of third period, waiting " + secondsToWait + " seconds...");
-            setTimeout(function () {
-                if (DEBUG) {
-                    var t = parseInt(new Date().getTime() / 1000);
-                    printReportingStatus(eventID, "In second half of third period: " + (t % periodLength > halfTime));
-                }
-                done();
-            }, secondsToWait*1000);
-        });
-        it("CollectFees.collectFees", function (done) {
-            this.timeout(tools.TIMEOUT*3);
-            async.forEachOf(events, function (eventID, type, nextEvent) {
-                augur.collectFees({
-                    branch: newBranchID,
-                    sender: augur.from,
-                    periodLength: periodLength,
-                    onSent: function (r) {
-                        if (DEBUG) console.log("[" + type  + "] collectFees sent:", r);
-                    },
-                    onSuccess: function (r) {
-                        if (DEBUG) {
-                            console.log("collectFees success:", r);
-                            printReportingStatus(eventID, "[" + type  + "] Fees collected for " + r.from);
-                        }
-                        var period = augur.Branches.getVotePeriod(newBranchID);
-                        var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period - 1);
-                        console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
-                        assert.strictEqual(feesCollected, "1");
-                        nextEvent();
-                    },
-                    onFailed: function (err) {
-                        if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
-                        if (DEBUG) printReportingStatus(eventID, "[" + type  + "] collectFees failed");
-                        nextEvent(err);
-                    }
-                });
-            }, done);
-        });
-    });
+    // describe("Third period (phase 2)", function () {
+    //     before("Wait for second half of third period", function (done) {
+    //         this.timeout(tools.TIMEOUT*100);
+    //         var t = parseInt(new Date().getTime() / 1000);
+    //         var halfTime = periodLength / 2;
+    //         if (t % periodLength > halfTime) {
+    //             if (DEBUG) printReportingStatus(eventID, "In second half of third period");
+    //             return done();
+    //         }
+    //         var secondsToWait = halfTime - (t % periodLength) + 60;
+    //         if (DEBUG) printReportingStatus(eventID, "Not in second half of third period, waiting " + secondsToWait + " seconds...");
+    //         setTimeout(function () {
+    //             if (DEBUG) {
+    //                 var t = parseInt(new Date().getTime() / 1000);
+    //                 printReportingStatus(eventID, "In second half of third period: " + (t % periodLength > halfTime));
+    //             }
+    //             done();
+    //         }, secondsToWait*1000);
+    //     });
+    //     it("CollectFees.collectFees", function (done) {
+    //         this.timeout(tools.TIMEOUT*3);
+    //         async.forEachOf(events, function (eventID, type, nextEvent) {
+    //             augur.collectFees({
+    //                 branch: newBranchID,
+    //                 sender: augur.from,
+    //                 periodLength: periodLength,
+    //                 onSent: function (r) {
+    //                     if (DEBUG) console.log("[" + type  + "] collectFees sent:", r);
+    //                 },
+    //                 onSuccess: function (r) {
+    //                     if (DEBUG) {
+    //                         console.log("collectFees success:", r);
+    //                         printReportingStatus(eventID, "[" + type  + "] Fees collected for " + r.from);
+    //                     }
+    //                     var period = augur.Branches.getVotePeriod(newBranchID);
+    //                     var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, augur.from, period - 1);
+    //                     console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
+    //                     assert.strictEqual(feesCollected, "1");
+    //                     nextEvent();
+    //                 },
+    //                 onFailed: function (err) {
+    //                     if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
+    //                     if (DEBUG) printReportingStatus(eventID, "[" + type  + "] collectFees failed");
+    //                     nextEvent(err);
+    //                 }
+    //             });
+    //         }, done);
+    //     });
+    // });
 });
