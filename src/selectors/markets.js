@@ -6,12 +6,15 @@ import { BUY } from '../modules/trade/constants/types';
 
 module.exports = makeMarkets();
 
-function makeMarkets(numMarkets = 25) {
+function makeMarkets(numMarkets = 50) {
 	const markets = [];
 	const types = ['binary', 'categorical', 'scalar'];
 
 	for (let i = 0; i < numMarkets; i++) {
-		markets.push(makeMarket(i));
+		setTimeout(() => {
+			markets.push(makeMarket(i));
+			require('../selectors').update({ markets });
+		}, i * 500);
 	}
 
 	return markets;
