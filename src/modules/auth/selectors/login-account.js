@@ -12,12 +12,18 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 
 	const prettySecureLoginID = loginAccount.secureLoginID ? `${loginAccount.secureLoginID.substring(0, 4)}...${loginAccount.secureLoginID.substring(loginAccount.secureLoginID.length - 4)}` : undefined;
 
+	// if secureLoginID is not defined it must be a local geth node account, otherwise it's a hosted node.
+	const localNode = !loginAccount.secureLoginID;
+
+	const linkText = localNode ? prettyAddress : loginAccount.name || prettySecureLoginID;
+
 	return {
 		...loginAccount,
 		prettySecureLoginID,
 		prettyAddress,
+		localNode,
+		linkText,
 		editName: (name) => dispatch(changeAccountName(name)),
-		linkText: loginAccount.name || prettySecureLoginID || prettyAddress,
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
 		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 0 })
