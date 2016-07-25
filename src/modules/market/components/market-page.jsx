@@ -6,7 +6,7 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../../modules/trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
-import OpenOrders from '../../market/components/open-orders';
+import MarketOpenOrders from '../../market/components/market-open-orders';
 import Chart from '../../market/components/chart';
 
 export default class MarketPage extends Component {
@@ -17,9 +17,7 @@ export default class MarketPage extends Component {
 		market: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
-		updateSelectedUserOpenOrdersGroup: PropTypes.func.isRequired,
-		cancelOrder: PropTypes.func.isRequired,
-		selectedUserOpenOrdersGroupID: PropTypes.string
+		cancelOrder: PropTypes.func.isRequired
 	};
 	constructor(props) {
 		super(props);
@@ -79,14 +77,16 @@ export default class MarketPage extends Component {
 					);
 				}
 
-				nodes.push(
-					<OpenOrders
-						key="open-orders"
-						outcomes={p.market.outcomes}
-						userOpenOrdersSummary={p.market.userOpenOrdersSummary}
-						cancelOrder={p.cancelOrder}
-					/>
-				);
+				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount > 0) {
+					nodes.push(
+						<MarketOpenOrders
+							key="market-open-orders"
+							userOpenOrdersSummary={p.market.userOpenOrdersSummary}
+							outcomes={p.market.outcomes}
+							cancelOrder={p.cancelOrder}
+						/>
+					);
+				}
 
 				// chart
 				nodes.push(
