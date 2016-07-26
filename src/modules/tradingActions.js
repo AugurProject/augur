@@ -29,15 +29,18 @@ module.exports = {
 	 *
 	 * @param {Array} orders Bids or asks
 	 * @param {String} traderOrderType What trader want to do (buy or sell)
-	 * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's
-	 * null order is considered to be market order
+	 * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
+	 *     it's null order is considered to be market order
 	 * @param {String} outcomeId
 	 * @param {String} userAddress
 	 * @return {Array.<Object>}
 	 */
 	filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
 		var isMarketOrder = limitPrice === null || limitPrice === undefined;
-		return orders
+		return Object.keys(orders)
+			.map(function (orderId) {
+				return orders[orderId];
+			})
 			.filter(function (order) {
 				var isMatchingPrice;
 				if (isMarketOrder) {
@@ -177,8 +180,8 @@ module.exports = {
 	},
 
 	/**
-	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how much
-	 * they pay for trading
+	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
+	 * much they pay for trading
 	 *
 	 * @param {String} type 'buy' or 'sell'
 	 * @param {String|BigNumber} orderShares

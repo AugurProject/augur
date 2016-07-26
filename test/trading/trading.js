@@ -41,8 +41,8 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: []
+                    buy: {},
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -70,8 +70,8 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: []
+                    buy: {},
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -90,16 +90,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [
-                        {
+                    buy: {},
+                    sell: {
+                        "order1": {
                             id: "order1",
                             type: "sell",
                             amount: "5",
                             price: "0.7", // price too high
                             outcome: "outcomeasdf123"
                         },
-                        {
+                        "order2": {
                             id: "order2",
                             owner: "abcd1234", // user's ask
                             type: "sell",
@@ -107,14 +107,14 @@ describe("Unit tests", function () {
                             price: "0.6",
                             outcome: "outcomeasdf123"
                         },
-                        {
+                        "order3": {
                             id: "order3",
                             type: "sell",
                             amount: "5",
                             price: "0.6",
                             outcome: "differentOutcome" // different outcome
                         }
-                    ]
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -142,14 +142,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "5",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "5",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -177,14 +179,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "2",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "2",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -219,14 +223,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "5",
-                        price: "0.4",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "5",
+                            price: "0.4",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -254,14 +260,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "2",
-                        price: "0.4",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "2",
+                            price: "0.4",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -296,26 +304,30 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "1",
-                        price: "0.4",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "sell",
-                        amount: "2",
-                        price: "0.3",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order3",
-                        type: "sell",
-                        amount: "2",
-                        price: "0.2",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "1",
+                            price: "0.4",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "sell",
+                            amount: "2",
+                            price: "0.3",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "sell",
+                            amount: "2",
+                            price: "0.2",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -343,20 +355,23 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "1",
-                        price: "0.4",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "sell",
-                        amount: "2",
-                        price: "0.3",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "1",
+                            price: "0.4",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "sell",
+                            amount: "2",
+                            price: "0.3",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -391,20 +406,23 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: [{
-                        id: "order1",
-                        type: "sell",
-                        amount: "1",
-                        price: "0.4",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "sell",
-                        amount: "2",
-                        price: "0.3",
-                        outcome: "outcomeasdf123"
-                    }]
+                    buy: {},
+                    sell: {
+                        "order1": {
+                            id: "order1",
+                            type: "sell",
+                            amount: "1",
+                            price: "0.4",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "sell",
+                            amount: "2",
+                            price: "0.3",
+                            outcome: "outcomeasdf123"
+                        }
+                    }
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -434,8 +452,8 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: []
+                    buy: {},
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -463,14 +481,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "5",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "5",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -498,14 +518,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -540,14 +562,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "5",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "5",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -575,14 +599,16 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -617,20 +643,23 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -665,26 +694,30 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.9",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.9",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -712,26 +745,30 @@ describe("Unit tests", function () {
                 userPositionShares: "0",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.9",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.9",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -750,8 +787,8 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: []
+                    buy: {},
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -786,14 +823,16 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "5",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "5",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -828,14 +867,16 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -870,14 +911,16 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "5",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "5",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -912,14 +955,16 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -954,20 +999,23 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1009,26 +1057,30 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order3",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.9",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.9",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1063,26 +1115,30 @@ describe("Unit tests", function () {
                 userPositionShares: "2",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order3",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.9",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.9",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1110,8 +1166,8 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [],
-                    sell: []
+                    buy: {},
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1139,14 +1195,16 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "5",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "5",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1174,14 +1232,16 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.6",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.6",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1216,14 +1276,16 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "5",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "5",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1251,14 +1313,16 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1293,20 +1357,23 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1341,26 +1408,30 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order3",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.9",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.9",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1388,26 +1459,30 @@ describe("Unit tests", function () {
                 userPositionShares: "5",
                 outcomeId: "outcomeasdf123",
                 marketOrderBook: {
-                    buy: [{
-                        id: "order1",
-                        type: "buy",
-                        amount: "1",
-                        price: "0.7",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order2",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.8",
-                        outcome: "outcomeasdf123"
-                    }, {
-                        id: "order3",
-                        type: "buy",
-                        amount: "2",
-                        price: "0.9",
-                        outcome: "outcomeasdf123"
-                    }],
-                    sell: []
+                    buy: {
+                        "order1": {
+                            id: "order1",
+                            type: "buy",
+                            amount: "1",
+                            price: "0.7",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order2": {
+                            id: "order2",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.8",
+                            outcome: "outcomeasdf123"
+                        },
+                        "order3": {
+                            id: "order3",
+                            type: "buy",
+                            amount: "2",
+                            price: "0.9",
+                            outcome: "outcomeasdf123"
+                        }
+                    },
+                    sell: {}
                 },
                 userAddress: "abcd1234",
                 assertions: function (actions) {
@@ -1540,7 +1615,9 @@ describe("Unit tests", function () {
                     assert.isFunction(p.onTradeSuccess);
                     assert.isFunction(p.onTradeFailed);
                     var index = requests[t.requestId].shortSellCount || 0;
-                    var sharesLeft = abi.bignum(p.max_amount).minus(abi.bignum(t.marketOrderBook.buy[index].amount)).toFixed();
+                    // this is really clumsy way how to get the order...
+                    var order = t.marketOrderBook.buy[Object.keys(t.marketOrderBook.buy)[index]];
+                    var sharesLeft = abi.bignum(p.max_amount).minus(abi.bignum(order.amount)).toFixed();
                     p.onTradeSuccess({callReturn: [, sharesLeft]});
                 };
                 augur.buyCompleteSets = function (p) {
@@ -1589,7 +1666,7 @@ describe("Unit tests", function () {
             outcome: "1",
             limitPrice: "0.6",
             type: "buy",
-            marketOrderBook: {buy: [], sell: []},
+            marketOrderBook: {buy: {}, sell: {}},
             userPosition: {qtyShares: 0},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].done();
@@ -1605,7 +1682,7 @@ describe("Unit tests", function () {
             outcome: "2",
             limitPrice: "0.6",
             type: "buy",
-            marketOrderBook: {buy: [], sell: []},
+            marketOrderBook: {buy: {}, sell: {}},
             userPosition: {qtyShares: 0},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].done();
@@ -1622,17 +1699,19 @@ describe("Unit tests", function () {
             limitPrice: "0.9",
             type: "buy",
             marketOrderBook: {
-                buy: [],
-                sell: [{
-                    id: "0x123456789abcdef",
-                    type: "sell",
-                    market: "0xdeadbeef",
-                    amount: "1",
-                    price: "0.9",
-                    owner: "0x0000000000000000000000000000000000001337",
-                    block: 1117314,
-                    outcome: "1"
-                }]
+                buy: {},
+                sell: {
+                    "0x123456789abcdef": {
+                        id: "0x123456789abcdef",
+                        type: "sell",
+                        market: "0xdeadbeef",
+                        amount: "1",
+                        price: "0.9",
+                        owner: "0x0000000000000000000000000000000000001337",
+                        block: 1117314,
+                        outcome: "1"
+                    }
+                }
             },
             userPosition: {qtyShares: 0},
             onTradeSuccess: function (requestId, res) {
@@ -1651,17 +1730,19 @@ describe("Unit tests", function () {
             type: "buy",
             etherNotFilled: "0.4",
             marketOrderBook: {
-                buy: [],
-                sell: [{
-                    id: "0x123456789abcdef",
-                    type: "sell",
-                    market: "0xdeadbeef",
-                    amount: "0.5",
-                    price: "0.9",
-                    owner: "0x0000000000000000000000000000000000001337",
-                    block: 1117314,
-                    outcome: "1"
-                }]
+                buy: {},
+                sell: {
+                    "0x123456789abcdef": {
+                        id: "0x123456789abcdef",
+                        type: "sell",
+                        market: "0xdeadbeef",
+                        amount: "0.5",
+                        price: "0.9",
+                        owner: "0x0000000000000000000000000000000000001337",
+                        block: 1117314,
+                        outcome: "1"
+                    }
+                }
             },
             userPosition: {qtyShares: 0},
             onBuySellSuccess: function (requestId, res) {
@@ -1682,7 +1763,7 @@ describe("Unit tests", function () {
             outcome: "1",
             limitPrice: "0.6",
             type: "sell",
-            marketOrderBook: {buy: [], sell: []},
+            marketOrderBook: {buy: {}, sell: {}},
             userPosition: {qtyShares: 1},
             onBuySellSuccess: function (requestId, res) {
                 requests[requestId].done();
@@ -1699,17 +1780,19 @@ describe("Unit tests", function () {
             limitPrice: "0.1",
             type: "sell",
             marketOrderBook: {
-                buy: [{
-                    id: "0x123456789abcdef",
-                    type: "buy",
-                    market: "0xdeadbeef",
-                    amount: "1",
-                    price: "0.1",
-                    owner: "0x0000000000000000000000000000000000001337",
-                    block: 1117314,
-                    outcome: "1"
-                }],
-                sell: []
+                buy: {
+                    "0x123456789abcdef": {
+                        id: "0x123456789abcdef",
+                        type: "buy",
+                        market: "0xdeadbeef",
+                        amount: "1",
+                        price: "0.1",
+                        owner: "0x0000000000000000000000000000000000001337",
+                        block: 1117314,
+                        outcome: "1"
+                    }
+                },
+                sell: {}
             },
             userPosition: {qtyShares: 1},
             onTradeSuccess: function (requestId, res) {
@@ -1728,17 +1811,19 @@ describe("Unit tests", function () {
             type: "sell",
             sharesNotSold: "0.5",
             marketOrderBook: {
-                buy: [{
-                    id: "0x123456789abcdef",
-                    type: "buy",
-                    market: "0xdeadbeef",
-                    amount: "0.5",
-                    price: "0.5",
-                    owner: "0x0000000000000000000000000000000000001337",
-                    block: 1117314,
-                    outcome: "1"
-                }],
-                sell: []
+                buy: {
+                    "0x123456789abcdef": {
+                        id: "0x123456789abcdef",
+                        type: "buy",
+                        market: "0xdeadbeef",
+                        amount: "0.5",
+                        price: "0.5",
+                        owner: "0x0000000000000000000000000000000000001337",
+                        block: 1117314,
+                        outcome: "1"
+                    }
+            },
+                sell: {}
             },
             userPosition: {qtyShares: 1},
             onBuySellSuccess: function (requestId, res) {
@@ -1759,7 +1844,7 @@ describe("Unit tests", function () {
             outcome: "1",
             limitPrice: "0.6",
             type: "sell",
-            marketOrderBook: {buy: [], sell: []},
+            marketOrderBook: {buy: {}, sell: {}},
             userPosition: {qtyShares: 0},
             onBuyCompleteSetsSuccess: function (requestId, res) {
                 requests[requestId].buyCompleteSets = true;
@@ -1780,17 +1865,19 @@ describe("Unit tests", function () {
             limitPrice: "0.6",
             type: "sell",
             marketOrderBook: {
-                buy: [{
-                    id: "0x123456789abcdef",
-                    type: "buy",
-                    market: "0xdeadbeef",
-                    amount: "1",
-                    price: "0.6",
-                    owner: "0x0000000000000000000000000000000000001337",
-                    block: 1117314,
-                    outcome: "1"
-                }],
-                sell: []
+                buy: {
+                    "0x123456789abcdef": {
+                        id: "0x123456789abcdef",
+                        type: "buy",
+                        market: "0xdeadbeef",
+                        amount: "1",
+                        price: "0.6",
+                        owner: "0x0000000000000000000000000000000000001337",
+                        block: 1117314,
+                        outcome: "1"
+                    }
+                },
+                sell: {}
             },
             userPosition: {qtyShares: 0},
             onTradeSuccess: function (requestId, res) {
@@ -1808,26 +1895,29 @@ describe("Unit tests", function () {
             limitPrice: "0.6",
             type: "sell",
             marketOrderBook: {
-                buy: [{
-                    id: "0x123456789abcdef",
-                    type: "buy",
-                    market: "0xdeadbeef",
-                    amount: "0.6",
-                    price: "0.6",
-                    owner: "0x0000000000000000000000000000000000001337",
-                    block: 1117314,
-                    outcome: "1"
-                }, {
-                    id: "0x123456789abcdef0",
-                    type: "buy",
-                    market: "0xdeadbeef",
-                    amount: "0.4",
-                    price: "0.6",
-                    owner: "0x0000000000000000000000000000000000001338",
-                    block: 1117314,
-                    outcome: "1"
-                }],
-                sell: []
+                buy: {
+                    "0x123456789abcdef": {
+                        id: "0x123456789abcdef",
+                        type: "buy",
+                        market: "0xdeadbeef",
+                        amount: "0.6",
+                        price: "0.6",
+                        owner: "0x0000000000000000000000000000000000001337",
+                        block: 1117314,
+                        outcome: "1"
+                    },
+                    "0x123456789abcdef0": {
+                        id: "0x123456789abcdef0",
+                        type: "buy",
+                        market: "0xdeadbeef",
+                        amount: "0.4",
+                        price: "0.6",
+                        owner: "0x0000000000000000000000000000000000001338",
+                        block: 1117314,
+                        outcome: "1"
+                    }
+                },
+                sell: {}
             },
             userPosition: {qtyShares: 0},
             onTradeSuccess: function (requestId, res) {
