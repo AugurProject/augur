@@ -53,7 +53,7 @@ function makeMarkets(numMarkets = 50) {
 		m.tags = makeTags();
 
 		// outcomes
-		m.outcomes = makeOutcomes();
+		m.outcomes = makeOutcomes(index);
 
 		// reportable outcomes
 		m.reportableOutcomes = m.outcomes.slice();
@@ -196,7 +196,7 @@ function makeMarkets(numMarkets = 50) {
 			return finalTags;
 		}
 
-		function makeOutcomes() {
+		function makeOutcomes(marketIndex) {
 			const numOutcomes = randomInt(2, 8);
 			const outcomes = [];
 			const orderBook = selectOrderBook();
@@ -318,41 +318,19 @@ function makeMarkets(numMarkets = 50) {
 					orderBook
 				};
 
-				outcome.userOpenOrders = [
+				outcome.userOpenOrders = marketIndex === 5 ? [] : [...new Array(randomInt(1, 6)).keys()].map(index => (
 					{
-						id: `${m.id}${outcome.id}order1`,
-						type: 'sell',
+						id: `${m.id}${outcome.id}order${index}`,
+						type: parseInt(index, 10) % 2 === 1 ? 'buy' : 'sell',
 						marketID: m.id,
 						isCancelling: false,
 						isCancelled: false,
-						avgPrice: makeNumber(0.7, 'ether'),
-						unmatchedShares: makeNumber(2, 'shares'),
-						outcome: 'outcomeasdf123',
-						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-					},
-					{
-						id: `${m.id}${outcome.id}order2`,
-						type: 'buy',
-						marketID: m.id,
-						isCancelling: false,
-						isCancelled: false,
-						avgPrice: makeNumber(0.7, 'ether'),
-						unmatchedShares: makeNumber(2, 'shares'),
-						outcome: 'outcomeasdf123',
-						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
-					},
-					{
-						id: `${m.id}${outcome.id}order3`,
-						type: 'buy',
-						marketID: m.id,
-						isCancelling: false,
-						isCancelled: false,
-						avgPrice: makeNumber(0.7, 'ether'),
-						unmatchedShares: makeNumber(2, 'shares'),
-						outcome: 'outcomeasdf123',
+						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), 'ether'),
+						unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
+						outcome: outcomeID,
 						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'
 					}
-				];
+				));
 
 				return outcome;
 
