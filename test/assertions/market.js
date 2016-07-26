@@ -240,11 +240,6 @@ export default function (market) {
 						assert.isDefined(openOrder.isCancelled);
 						assert.isBoolean(openOrder.isCancelled);
 					});
-
-					it(`market.outcomes[${i}].userOpenOrders[${j}].cancelOrder`, () => {
-						assert.isDefined(openOrder.cancelOrder);
-						assert.isFunction(openOrder.cancelOrder);
-					});
 				});
 			});
 		});
