@@ -89,13 +89,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		}
 	);
 
-	let stubbedLoadMarketsInfo = {
-		loadMarketsInfo: () => {}
-	};
-	stubbedLoadMarketsInfo.loadMarketsInfo = sinon.stub().returns({
-		type: 'loadMarketsInfo'
-	});
-
 	let stubbedGenerateOrderBook = {
 		submitGenerateOrderBook: () => {}
 	};
@@ -120,7 +113,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			'../../transactions/actions/add-create-market-transaction': stubbedNewMarketTransactions,
 			'../../transactions/actions/update-existing-transaction': stubbedUpdateExistingTransaction,
 			'../../../services/augurjs': stubbedAugurJS,
-			'../../markets/actions/load-markets-info': stubbedLoadMarketsInfo,
 			'../../create-market/actions/generate-order-book': stubbedGenerateOrderBook,
 			'../../link/selectors/links': stubbedLink
 		}
@@ -235,9 +227,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'submitGenerateOrderBook'
-				},
-				{
-					type: 'loadMarketsInfo'
 				}
 			];
 
@@ -280,9 +269,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'submitGenerateOrderBook'
-				},
-				{
-					type: 'loadMarketsInfo'
 				}
 			];
 
@@ -331,9 +317,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'submitGenerateOrderBook'
-				},
-				{
-					type: 'loadMarketsInfo'
 				}
 			];
 
