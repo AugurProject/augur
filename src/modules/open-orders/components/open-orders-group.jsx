@@ -15,23 +15,20 @@ const OpenOrdersGroup = (p) => {
 		<table className="open-orders-group">
 			<tbody>
 				<tr>
-					<th>Outcome</th>
-					<th>Type</th>
-					<th>Shares</th>
-					<th>Price</th>
-					<th>&nbsp;</th>
+					<th className="outcome-name">Outcome</th>
+					<th className="type">Type</th>
+					<th className="shares">Shares</th>
+					<th className="price">Price</th>
+					<th className="cancel">&nbsp;</th>
 				</tr>
-				{
-					p.userOpenOrders.map(openOrder => (
-						<OpenOrder
-							key={openOrder.id}
-							outcomeName={p.name}
-							{...openOrder}
-							cancelOrder={p.cancelOrder}
-						/>
-						)
-					)
-				}
+				{ p.userOpenOrders.map(openOrder => (
+					<OpenOrder
+						key={openOrder.id}
+						outcomeName={p.name}
+						{...openOrder}
+						cancelOrder={p.cancelOrder}
+					/>
+				))}
 			</tbody>
 		</table>
 	);

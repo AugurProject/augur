@@ -8,20 +8,20 @@ import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = (p) => (
-	<tr className={classnames('open-order', { isDisabled: p.isCancelling || p.isCancelled })}>
+	<tr className={classnames('open-order', { 'is-disabled': p.isCancelling || p.isCancelled })}>
 		<td className="outcome-name">
 			{p.outcomeName}
 		</td>
-		<td>
+		<td className="type">
 			{p.type}
 		</td>
-		<td>
+		<td className="shares">
 			<ValueDenomination {...p.unmatchedShares} />
 		</td>
-		<td>
+		<td className="price">
 			<ValueDenomination {...p.avgPrice} />
 		</td>
-		<td>
+		<td className="cancel">
 			<button
 				className="button cancel-order-action"
 				disabled={p.isCancelling || p.isCancelled}
