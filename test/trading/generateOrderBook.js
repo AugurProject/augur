@@ -174,8 +174,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                 assert(res.sellPrice || res.buyPrice);
                             },
                             onSuccess: function (res) {
-                                assert.isArray(res.buy);
-                                assert.isArray(res.sell);
+                                assert.isObject(res.buy);
+                                assert.isObject(res.sell);
                                 done();
                             },
                             onFailed: done
@@ -235,8 +235,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                 assert(res.sellPrice || res.buyPrice);
                             },
                             onSuccess: function (res) {
-                                assert.isArray(res.buy);
-                                assert.isArray(res.sell);
+                                assert.isObject(res.buy);
+                                assert.isObject(res.sell);
                                 done();
                             },
                             onFailed: done
