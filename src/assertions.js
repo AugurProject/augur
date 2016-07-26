@@ -20,6 +20,8 @@ import siteHeader from '../test/assertions/site-header';
 import transactions from '../test/assertions/transactions';
 import transactionsTotals from '../test/assertions/transactions-totals';
 import url from '../test/assertions/url';
+import selectedUserOpenOrdersGroup from '../test/assertions/selected-user-open-orders-group';
+import cancelOrder from '../test/assertions/cancel-order';
 
 export default {
 	activePage,
@@ -43,5 +45,7 @@ export default {
 	siteHeader,
 	transactions,
 	transactionsTotals,
-	url
+	url,
+	selectedUserOpenOrdersGroup,
+	cancelOrder
 };

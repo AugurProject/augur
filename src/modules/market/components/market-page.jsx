@@ -6,6 +6,7 @@ import Basics from '../../market/components/basics';
 import TradePanel from '../../../modules/trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
+import MarketOpenOrders from '../../market/components/market-open-orders';
 import Chart from '../../market/components/chart';
 
 export default class MarketPage extends Component {
@@ -15,7 +16,8 @@ export default class MarketPage extends Component {
 		market: PropTypes.object,
 		selectedOutcome: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
-		numPendingReports: PropTypes.number
+		numPendingReports: PropTypes.number,
+		cancelOrder: PropTypes.func.isRequired
 	};
 	constructor(props) {
 		super(props);
@@ -59,6 +61,18 @@ export default class MarketPage extends Component {
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
 					/>
 				);
+
+				// open orders
+				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount != null && p.market.userOpenOrdersSummary.openOrdersCount.value != null) {
+					nodes.push(
+						<MarketOpenOrders
+							key="market-open-orders"
+							userOpenOrdersSummary={p.market.userOpenOrdersSummary}
+							outcomes={p.market.outcomes}
+							cancelOrder={p.cancelOrder}
+						/>
+					);
+				}
 
 				// positions
 				if (p.market.positionsSummary && p.market.positionsSummary.numPositions && p.market.positionsSummary.numPositions.value) {

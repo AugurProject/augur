@@ -8,5 +8,8 @@ Object.defineProperty(selectors, 'render', {
 
 Object.keys(selectors).forEach(selectorKey => {
 	console.log('-->', selectorKey);
+	if (typeof assertions[selectorKey] !== 'function') {
+		throw new Error(`missing assertion ${selectorKey}`)
+	}
 	assertions[selectorKey](selectors[selectorKey]);
 });

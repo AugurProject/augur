@@ -1,0 +1,73 @@
+.market-open-orders {
+	.open-orders-list {
+		margin: 0 0 0 -1.5em;
+		padding: 4vmin 6vmin;
+
+		.open-orders-group {
+			display: inline-block;
+			margin: 0 0 2em 0;
+			padding: 0 1.5em;
+			vertical-align: top;
+			border-right: 1px solid @color-border;
+
+			td {
+				padding: 0.1em 0.5em;
+			}
+
+			.outcome-name {
+				min-width: 9rem;
+				text-align: left;
+			}
+			.type {
+				text-align: right;
+			}
+			.shares {
+				text-align: right;
+			}
+			.price {
+				text-align: right;
+			}
+			.cancel {
+				padding: 0.1em 0em;
+				text-align: left;
+
+				.cancel-order-action {
+					padding: 0;
+					height: unset;
+					line-height: unset;
+					text-align: left;
+					color: @color-danger-active;
+					background: transparent;
+					font-size: 0.6em;
+
+					&:before {
+						content: '\f00d';
+						display: inline-block; position: relative;
+						left: -0.2em;
+						font-family: FontAwesome;
+						font-weight: 700;
+
+					}
+
+					&:hover, &:active {
+						font-weight: 900;
+					}
+
+					&[disabled] {
+						color: @color-muted-active !important;
+						background: transparent !important;
+					}
+				}
+			}
+
+			.open-order {
+				.outcome-name {
+					text-transform: uppercase;
+				}
+				.is-disabled {
+					text-decoration: line-through;
+				}
+			}
+		}
+	}
+}
