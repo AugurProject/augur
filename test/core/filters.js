@@ -440,12 +440,22 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_tradingFeeUpdated_message(msg, function (parsed) {
+                    assert.property(parsed, "marketId");
+                    assert.property(parsed, "tradingFee");
+                    assert.deepEqual(parsed['marketId'], "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b");
                     console.log("parse_tradingFeeUpdated_message:", parsed);
                     done();
                 });
             });
         };
-        // test();
+        test([ { address: '0x181ab5cfb79c3a4edd7b4556412b40453edeec32',
+            blockHash: '0x5f725f19f6e8d250ebaffdc3e9ce898dfd1c1aca2f33d760015148110df16e25',
+            blockNumber: '0x15074b',
+            data: '0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b000000000000000000000000000000000000000000000000009c51c4521e0000',
+            logIndex: '0x0',
+            topics: [ '0xb8c735cc6495f8dac2581d532413dea78d7e03e0ff0880c32b4648c2145fba41' ],
+            transactionHash: '0xdd394f14b92162c5b29011512513fff0188c5cff9b4d0d453b40175db6f9e868',
+            transactionIndex: '0x0' } ]);
     });
     describe("parse_approval_message", function () {
         var test = function (msg) {
