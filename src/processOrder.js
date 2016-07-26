@@ -183,7 +183,7 @@ module.exports = function (
     }
 
     if (isScalar) {
-        userTradeOrder.limitPrice = self.adjustScalarPrice(userTradeOrder.type, minValue, maxValue, userTradeOrder.limitPrice);
+        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
     }
     if (userTradeOrder.type === "buy") {
         // 1.1/ user wants to buy

@@ -188,14 +188,16 @@ module.exports = {
         return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
     },
 
-    // type: "buy" or "sell"
-    // minValue, maxValue as BigNumber
-    // price: unadjusted price
-    adjustScalarPrice: function (type, minValue, maxValue, price) {
-        if (type === "buy") {
-            return new BigNumber(price, 10).minus(minValue).toFixed();
-        }
-        return maxValue.minus(new BigNumber(price, 10)).toFixed();
+    shrinkScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.minus(minValue).toFixed();
+    },
+
+    expandScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.plus(minValue).toFixed();
     },
 
     parseTradeInfo: function (trade) {

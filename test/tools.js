@@ -207,7 +207,7 @@ module.exports = {
         });
     },
 
-    trade_in_each_market: function (augur, markets, maker, taker, callback) {
+    trade_in_each_market: function (augur, amountPerMarket, markets, maker, taker, callback) {
         var self = this;
         var branch = augur.getBranchID(markets.binary);
         var periodLength = augur.getPeriodLength(branch);
@@ -216,7 +216,7 @@ module.exports = {
             if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
             augur.buyCompleteSets({
                 market: market,
-                amount: 1,
+                amount: amountPerMarket,
                 onSent: function (r) {
                     assert.isNull(r.callReturn);
                 },
@@ -224,7 +224,7 @@ module.exports = {
                     assert.strictEqual(r.callReturn, "1");
                     if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
                     augur.sell({
-                        amount: 1,
+                        amount: amountPerMarket,
                         price: "0.99",
                         market: market,
                         outcome: 1,
@@ -243,63 +243,67 @@ module.exports = {
         }, function (err) {
             assert.isNull(err);
             augur.useAccount(taker);
+            var trades = [];
             async.forEachOf(markets, function (market, type, nextMarket) {
                 if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
-                var trade_ids = augur.get_trade_ids(market);
-                async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
+                var marketTrades = augur.get_trade_ids(market);
+                if (!marketTrades || !marketTrades.length) {
+                    return nextMarket("no trades found for " + market);
+                }
+                async.eachSeries(marketTrades, function (thisTrade, nextTrade) {
                     var tradeInfo = augur.get_trade(thisTrade);
                     if (!tradeInfo) return nextTrade("no trade info found");
-                    if (tradeInfo.owner === augur.from) return nextTrade();
-                    if (tradeInfo.type === "buy") return nextTrade();
+                    if (tradeInfo.owner === augur.from) return nextTrade(null);
+                    if (tradeInfo.type === "buy") return nextTrade(null);
                     if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
-                    augur.trade({
-                        max_value: 1,
-                        max_amount: 0,
-                        trade_ids: [thisTrade],
-                        onTradeHash: function (tradeHash) {
-                            if (self.DEBUG) {
-                                self.print_residual(periodLength, "[" + type  + "] Trade hash");
-                                console.log(chalk.white.dim(" - Hash:"), chalk.green(tradeHash));
-                            }
-                            assert.notProperty(tradeHash, "error");
-                            assert.isString(tradeHash);
-                        },
-                        onCommitSent: function (r) {
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onCommitSuccess: function (r) {
-                            if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trade committed");
-                            assert.strictEqual(r.callReturn, "1");
-                        },
-                        onCommitFailed: nextTrade,
-                        onNextBlock: function (block) {
-                            if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Got block " + block);
-                        },
-                        onTradeSent: function (r) {
-                            assert.isNull(r.callReturn);
-                        },
-                        onTradeSuccess: function (r) {
-                            if (self.DEBUG) {
-                                self.print_residual(periodLength, "[" + type  + "] Trade complete");
-                                console.log(chalk.white.dim(" - Logged return value:"), r.callReturn);
-                            }
-                            assert.isArray(r.callReturn);
-                            assert.strictEqual(r.callReturn[0], 1);
-                            assert.strictEqual(r.callReturn[2], "0");
-                            assert.strictEqual(r.callReturn.length, 3);
-                            nextTrade(r);
-                        },
-                        onTradeFailed: nextTrade
-                    });
-                }, function (res) {
-                    if (!res) return nextMarket(new Error("No trade found"));
-                    if (!res.callReturn) return nextMarket(res);
+                    nextTrade(thisTrade);
+                }, function (trade) {
+                    assert.isNotNull(trade);
+                    trades.push(trade);
                     nextMarket(null);
                 });
             }, function (err) {
+                if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
                 assert.isNull(err);
-                augur.useAccount(maker);
-                callback(null);
+                assert.strictEqual(trades.length, Object.keys(markets).length);
+                augur.trade({
+                    max_value: Object.keys(markets).length*amountPerMarket,
+                    max_amount: 0,
+                    trade_ids: trades,
+                    onTradeHash: function (tradeHash) {
+                        if (self.DEBUG) {
+                            self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                        }
+                        assert.notProperty(tradeHash, "error");
+                        assert.isString(tradeHash);
+                    },
+                    onCommitSent: function (r) {
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onCommitSuccess: function (r) {
+                        if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onCommitFailed: callback,
+                    onNextBlock: function (block) {
+                        if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
+                    },
+                    onTradeSent: function (r) {
+                        assert.isNull(r.callReturn);
+                    },
+                    onTradeSuccess: function (r) {
+                        if (self.DEBUG) {
+                            self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r.callReturn));
+                        }
+                        assert.isArray(r.callReturn);
+                        assert.strictEqual(r.callReturn[0], 1);
+                        assert.strictEqual(r.callReturn[2], "0");
+                        assert.strictEqual(r.callReturn.length, 3);
+                        augur.useAccount(maker);
+                        callback(null);
+                    },
+                    onTradeFailed: callback
+                });
             });
         });
     },
@@ -385,6 +389,7 @@ module.exports = {
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
         }
+        augur.rpc.retryDroppedTxs = true;
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
             if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {

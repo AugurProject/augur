@@ -85,7 +85,9 @@ module.exports = function (p, cb) {
             buyPrice = initialFairPrices[i].minus(halfPriceWidth);
             sellPrice = initialFairPrices[i].plus(halfPriceWidth);
             numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+            if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
             numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+            if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
             outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
             if (outcomeShares.gt(shares)) shares = outcomeShares;
             numSellOrders[i] = numSellOrders[i].toNumber();
@@ -96,9 +98,6 @@ module.exports = function (p, cb) {
                 if (buyPrices[i][j].lte(minValue)) {
                     buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
                 }
-                if (marketInfo.type === "scalar") {
-                    buyPrices[i][j] = buyPrices[i][j].minus(minValue);
-                }
             }
             sellPrices[i] = new Array(numSellOrders[i]);
             sellPrices[i][0] = sellPrice;
@@ -106,9 +105,6 @@ module.exports = function (p, cb) {
                 sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
                 if (sellPrices[i][j].gte(maxValue)) {
                     sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-                if (marketInfo.type === "scalar") {
-                    sellPrices[i][j] = maxValue.minus(sellPrices[i][j]);
                 }
             }
         }
@@ -148,7 +144,7 @@ module.exports = function (p, cb) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
-                                    buyPrice = self.adjustScalarPrice("buy", minValue, maxValue, buyPrice);
+                                    buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
                                 } else {
                                     buyPrice = buyPrice.toFixed();
                                 }
@@ -185,7 +181,7 @@ module.exports = function (p, cb) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
-                                    sellPrice = self.adjustScalarPrice("sell", minValue, maxValue, sellPrice);
+                                    sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
                                 } else {
                                     sellPrice = sellPrice.toFixed();
                                 }

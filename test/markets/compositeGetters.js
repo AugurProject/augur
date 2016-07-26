@@ -231,38 +231,62 @@ describe("getMarketsInfo", function () {
         });
     });
 });
-describe("adjustScalarPrice", function () {
+describe("shrink/expandScalarPrice", function () {
     var test = function (t) {
-        it(JSON.stringify(t), function (done) {
-            var adjustedPrice = augur.adjustScalarPrice(t.type, t.minValue, t.maxValue, t.price);
-            assert.isString(adjustedPrice);
-            if (t.type === "buy") {
-                assert(abi.bignum(adjustedPrice).lte(abi.bignum(t.price)));
-            } else {
-                assert(abi.bignum(adjustedPrice).gte(abi.bignum(t.price)));
-            }
+        it(JSON.stringify(t), function () {
+            var smallPrice = augur.shrinkScalarPrice(t.minValue, t.price);
+            assert.strictEqual(smallPrice, t.expected);
+            assert.strictEqual(augur.expandScalarPrice(t.minValue, smallPrice), t.price);
+            assert.isAtMost(parseFloat(smallPrice), abi.bignum(t.maxValue).minus(abi.bignum(t.minValue)).toNumber());
         });
     };
-    async.eachSeries(markets, function (market, next) {
-        augur.getMarketInfo(market, function (marketInfo) {
-            if (!marketInfo) return next(market);
-            if (marketInfo.type !== "scalar") return next();
-            augur.getOrderBook(market, function (rawOrderBook) {
-                for (var type in rawOrderBook) {
-                    if (!rawOrderBook.hasOwnProperty(type)) continue;
-                    for (var i = 0; i < rawOrderBook[type].length; ++i) {
-                        assert.strictEqual(type, rawOrderBook[type][i].type);
-                        test({
-                            type: type,
-                            minValue: abi.bignum(marketInfo.events[0].minValue),
-                            maxValue: abi.bignum(marketInfo.events[0].maxValue),
-                            price: rawOrderBook[type][i].price
-                        });
-                    }
-                }
-                next();
-            });
-        });
+    test({
+        maxValue: "10",
+        minValue: "5",
+        price: "10",
+        expected: "5"
+    });
+    test({
+        maxValue: "10",
+        minValue: "5",
+        price: "5",
+        expected: "0"
+    });
+    test({
+        maxValue: "10",
+        minValue: "5",
+        price: "7.5",
+        expected: "2.5"
+    });
+    test({
+        maxValue: "5",
+        minValue: "-3",
+        price: "4",
+        expected: "7"
+    });
+    test({
+        maxValue: "4",
+        minValue: "-12",
+        price: "3",
+        expected: "15"
+    });
+    test({
+        maxValue: "-2",
+        minValue: "-3",
+        price: "-2.1",
+        expected: "0.9"
+    });
+    test({
+        maxValue: "0",
+        minValue: "-1000",
+        price: "-10",
+        expected: "990"
+    });
+    test({
+        maxValue: "50000",
+        minValue: "2000",
+        price: "2001",
+        expected: "1"
     });
 });
 describe("getOrderBook", function () {

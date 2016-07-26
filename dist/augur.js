@@ -20753,27 +20753,23 @@ module.exports={
       "checkHash": {
         "inputs": [
           "tradeHash", 
-          "sender", 
-          "id"
+          "sender"
         ], 
         "method": "checkHash", 
         "returns": "number", 
         "signature": [
-          "int256", 
           "int256", 
           "int256"
         ]
       }, 
       "commitTrade": {
         "inputs": [
-          "hash", 
-          "id"
+          "hash"
         ], 
         "method": "commitTrade", 
         "returns": "number", 
         "send": true, 
         "signature": [
-          "int256", 
           "int256"
         ]
       }, 
@@ -20891,15 +20887,9 @@ module.exports={
         ]
       }, 
       "zeroHash": {
-        "inputs": [
-          "id"
-        ], 
         "method": "zeroHash", 
         "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
+        "send": true
       }
     }
   }
@@ -20944,41 +20934,41 @@ module.exports={
         "Trades": "0x401a31250646bb68e2169bbdc0a8834d0f375ecb"
     }, 
     "2": {
-        "Backstops": "0x64a96d58fa5f1c2cf76406341c1e5e1aacc19ab8", 
-        "Branches": "0x27c9cc437fc194adbda0c4ffec219dd7324f0ce0", 
-        "BuyAndSellShares": "0x7688b85b19eb4a70f64fdc06016785b638c110bc", 
-        "Cash": "0x608860bfe615a015ac932584af522fb8abc0a146", 
-        "CloseMarket": "0x500bc52ec182b5c2415b5f3516514fb5f7be3b91", 
-        "CloseMarketOne": "0xbac61edf59b180798622865b3a8654dd077137c4", 
-        "CloseMarketTwo": "0x8b6fcb35e3c9a0a16163c3146bb513e8398016e4", 
-        "CollectFees": "0x752c950054dc880bdd8f3e81b81ce5b004396c62", 
-        "CompleteSets": "0xc190f5d4a804f68b33515ba083a6be586b2ee5a7", 
-        "CompositeGetters": "0xfac9c6d2ac546b56eb5bf319d6d55395a8131dd1", 
-        "Consensus": "0x7cba62847fe1a039d8fddb75a7f16da434619736", 
-        "ConsensusData": "0xb696237ab1b5cf54d84b64a4fb62e01b486a98e4", 
-        "CreateBranch": "0xeaed7c2b9270177483040d397748868b567cbd4b", 
-        "CreateMarket": "0x393790a38ef07d008995595167d4d0ed810be2cf", 
-        "EventResolution": "0x0bee9657646ec1a14f7a271d0346093eddedc024", 
-        "Events": "0xc9b3674cf37eb269b424646a1fe20f114c50293e", 
-        "ExpiringEvents": "0x954a91f82c6cc653f2cb42b1499e3b3b0a751afc", 
-        "Faucets": "0x6de7e107189944815afe1fb57d9e09b46c543b13", 
-        "ForkPenalize": "0xa54018d4998c760fe3d06d66f064555b4f698343", 
-        "Forking": "0xe60c06e45a7b3025ef5dbc23d7d2ffbe92f05eef", 
-        "FxpFunctions": "0x8267f73e0b6ba42b22cfb54468794a14c62b97d9", 
-        "Info": "0x56ecd4ddfff49633a7d3bb4f11892635da112f6b", 
-        "MakeReports": "0x9413fda0fe1d59dab4a3c4264c98b54d872ccb06", 
-        "Markets": "0x189759f9fb3f39ea5c9c0b8fe02492c41b6592bd", 
-        "PenalizationCatchup": "0x9c75a05bf896b6fba48d45cb3a49f17181f546ef", 
-        "PenalizeNotEnoughReports": "0xc3b8e0b9ae13c527b33a6949bfb138943bf7ee1c", 
-        "ProportionCorrect": "0x541aaebd1f687fbdd76f701eafc013e24ee9b0f9", 
-        "Reporting": "0x81244a8b9412658e7d939fbe6f268116002c3c87", 
-        "ReportingThreshold": "0x330e5b236e4852533ac9d43aca3a9a59a71bd5db", 
-        "RoundTwo": "0xaf361167a63e197903f1806484ec36b33024288f", 
-        "RoundTwoPenalize": "0x839877eef032e9c63b7b5aa2ac2e4df9f4030e36", 
-        "SendReputation": "0xc2d5538a4dfd292bfcf487e71ab4adf11901e6c1", 
-        "SlashRep": "0x57841a9c25e5fc3dfa3d626a18619c01b75fa312", 
-        "Trade": "0xed0c6c8aedb021433baf244bf33041c706f98520", 
-        "Trades": "0x0a84f6239215fcdd9c7149221029e34e2bc9fe96"
+        "Backstops": "0x67902c540b7865e3a4fb546850b032aea40b76b4", 
+        "Branches": "0x2473b25dd76ced83065b71d7836dc91a4a6ea206", 
+        "BuyAndSellShares": "0x60cc4627cbd4895205158a2df55f583f384c87c5", 
+        "Cash": "0x63f021dbfeb3d81bfcd5b746965ff2e298931adb", 
+        "CloseMarket": "0x3d94bf370756c64daa0548a7bbe06ea06dc9d9a5", 
+        "CloseMarketOne": "0x28e9b0f0a09e6cbd19a415d0bde09960e8d7db54", 
+        "CloseMarketTwo": "0x14f94d42656cbffbd976a9193d425c1e99d44dba", 
+        "CollectFees": "0x616f45a0fddb225c34d7b62b9c09d4413b985330", 
+        "CompleteSets": "0x5b3d5c92865042c836f3fd0c2d2722bdfd4e6f9d", 
+        "CompositeGetters": "0x5254d23734bcd452490d1f9b9f01f29f85ce9037", 
+        "Consensus": "0x06274ed2098301ab5e3692a5a8a699ff3cc9d97e", 
+        "ConsensusData": "0xd4c2cf748cefce4d003a2964b62ff72d3e7e5cc7", 
+        "CreateBranch": "0x8b3831855fb3957745a4bc8fe7b47c58df812f49", 
+        "CreateMarket": "0x181ab5cfb79c3a4edd7b4556412b40453edeec32", 
+        "EventResolution": "0x2bd7cd93b738b08d4bf45ff81cbf3af12b040cb5", 
+        "Events": "0x3f555874b5e9b24232020241684672ae252b2408", 
+        "ExpiringEvents": "0x471efb3f5e1fa7ba8e5c0dd8212273a745fdeb2f", 
+        "Faucets": "0xe6c4afd17c291eaba28283be18466516e7cbe66d", 
+        "ForkPenalize": "0x0afc4c1c0f972de34d9cb7dd01d20763a18f5da3", 
+        "Forking": "0x90d4121a8b6d95fb4cd8a7b8b178cb2a993aaaa0", 
+        "FxpFunctions": "0x473a03dc4a2e0b9a6a3dee98e60dd1f6f2367e7f", 
+        "Info": "0xd44fc8a7f4fad09b03ce8c8faf553f1c460bb72b", 
+        "MakeReports": "0x2555c1400360b2a72a435a7ee865ec4148df2304", 
+        "Markets": "0x0021916b0510038d709da50bb5ca52a803b260e8", 
+        "PenalizationCatchup": "0x8e185b097420747dbb4277e2a88d77deaab185c9", 
+        "PenalizeNotEnoughReports": "0x6a29642d21c58947dbe94e9d653e24a6aa78c5b0", 
+        "ProportionCorrect": "0x02d8cd4ef37fbbb4b8136a5b1bb3c47c0575862c", 
+        "Reporting": "0x7da19e143eec8a3befddcc8d4407fca5fd3c75f3", 
+        "ReportingThreshold": "0x3357f32e4e69929ac5ba615a7bb379e00c590440", 
+        "RoundTwo": "0x9b8c62d83db48ece72c106aaab6df846fe0dcf40", 
+        "RoundTwoPenalize": "0xf4cddddc63ee4dbedfd26fdd2b8cc27b019788e8", 
+        "SendReputation": "0xa7a02a64bca52b010abae80e9b21c438f1709068", 
+        "SlashRep": "0x5e948be7a66379ecb94d3229bb4fbcbad6fabb9c", 
+        "Trade": "0x21f61bde7303389db1b27419c8d4e7ff4b02fe06", 
+        "Trades": "0x9f5b20b5c77f82a0ccfd6ae05e1e6ab2903e044a"
     }
 }
 },{}],57:[function(require,module,exports){
@@ -37994,7 +37984,9 @@ module.exports = function (p, cb) {
             buyPrice = initialFairPrices[i].minus(halfPriceWidth);
             sellPrice = initialFairPrices[i].plus(halfPriceWidth);
             numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+            if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
             numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+            if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
             outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
             if (outcomeShares.gt(shares)) shares = outcomeShares;
             numSellOrders[i] = numSellOrders[i].toNumber();
@@ -38005,9 +37997,6 @@ module.exports = function (p, cb) {
                 if (buyPrices[i][j].lte(minValue)) {
                     buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
                 }
-                if (marketInfo.type === "scalar") {
-                    buyPrices[i][j] = buyPrices[i][j].minus(minValue);
-                }
             }
             sellPrices[i] = new Array(numSellOrders[i]);
             sellPrices[i][0] = sellPrice;
@@ -38015,9 +38004,6 @@ module.exports = function (p, cb) {
                 sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
                 if (sellPrices[i][j].gte(maxValue)) {
                     sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-                if (marketInfo.type === "scalar") {
-                    sellPrices[i][j] = maxValue.minus(sellPrices[i][j]);
                 }
             }
         }
@@ -38057,7 +38043,7 @@ module.exports = function (p, cb) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
-                                    buyPrice = self.adjustScalarPrice("buy", minValue, maxValue, buyPrice);
+                                    buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
                                 } else {
                                     buyPrice = buyPrice.toFixed();
                                 }
@@ -38094,7 +38080,7 @@ module.exports = function (p, cb) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
-                                    sellPrice = self.adjustScalarPrice("sell", minValue, maxValue, sellPrice);
+                                    sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
                                 } else {
                                     sellPrice = sellPrice.toFixed();
                                 }
@@ -38185,7 +38171,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.7";
+    this.version = "1.9.8";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -38415,14 +38401,16 @@ module.exports = {
         return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
     },
 
-    // type: "buy" or "sell"
-    // minValue, maxValue as BigNumber
-    // price: unadjusted price
-    adjustScalarPrice: function (type, minValue, maxValue, price) {
-        if (type === "buy") {
-            return new BigNumber(price, 10).minus(minValue).toFixed();
-        }
-        return maxValue.minus(new BigNumber(price, 10)).toFixed();
+    shrinkScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.minus(minValue).toFixed();
+    },
+
+    expandScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.plus(minValue).toFixed();
     },
 
     parseTradeInfo: function (trade) {
@@ -38736,19 +38724,14 @@ module.exports = {
 
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
-        var minValue, maxValue, order;
+        var minValue, order;
         var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
-        if (isScalar) {
-            minValue = new BigNumber(scalarMinMax.minValue, 10);
-            maxValue = new BigNumber(scalarMinMax.maxValue, 10);
-        }
+        if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
         var numOrders = orderArray.length / 8;
         var orderBook = {buy: [], sell: []};
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-            if (isScalar) {
-                order.price = this.adjustScalarPrice(order.type, minValue, maxValue, order.price);
-            }
+            if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
             orderBook[order.type].push(order);
         }
         return orderBook;
@@ -39965,7 +39948,6 @@ module.exports = {
         onTradeHash(tradeHash);
         this.commitTrade({
             hash: tradeHash,
-            id: this.sumTrades(trade_ids),
             onSent: onCommitSent,
             onSuccess: function (res) {
                 onCommitSuccess(res);
@@ -39977,13 +39959,14 @@ module.exports = {
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, onTradeSent, function (successResult) {
-                        var result = clone(successResult);
+                    self.transact(tx, onTradeSent, function (result) {
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                return onTradeSuccess({
+                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                    unmatchedShares: abi.unfix(result.callReturn[2], "string")
+                                });
                             }
                             return onTradeSuccess(result);
                         }
@@ -40023,7 +40006,6 @@ module.exports = {
         onTradeHash(tradeHash);
         this.commitTrade({
             hash: tradeHash,
-            id: buyer_trade_id,
             onSent: onCommitSent,
             onSuccess: function (res) {
                 onCommitSuccess(res);
@@ -40034,14 +40016,15 @@ module.exports = {
                         buyer_trade_id,
                         abi.fix(max_amount, "hex")
                     ];
-                    self.transact(tx, onTradeSent, function (successResult) {
-                        var result = clone(successResult);
+                    self.transact(tx, onTradeSent, function (result) {
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
+                                return onTradeSuccess({
+                                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                                    matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    price: abi.unfix(result.callReturn[3], "string")
+                                });
                             }
                             return onTradeSuccess(result);
                         }
@@ -40702,7 +40685,7 @@ module.exports = function (
     }
 
     if (isScalar) {
-        userTradeOrder.limitPrice = self.adjustScalarPrice(userTradeOrder.type, minValue, maxValue, userTradeOrder.limitPrice);
+        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
     }
     if (userTradeOrder.type === "buy") {
         // 1.1/ user wants to buy
@@ -41426,6 +41409,8 @@ module.exports = {
         tx: false,
         broadcast: false
     },
+
+    retryDroppedTxs: false,
 
     // geth IPC endpoint (Node-only)
     ipcpath: null,
@@ -42706,55 +42691,60 @@ module.exports = {
         });
     },
 
+    checkDroppedTxForDuplicateNonce: function (txHash, callback) {
+        var duplicateNonce;
+        if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
+        if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
+            if (!isFunction(callback)) {
+                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            }
+            return callback(errors.TRANSACTION_NOT_FOUND);
+        }
+        for (var hash in this.rawTxs) {
+            if (!this.rawTxs.hasOwnProperty(hash)) continue;
+            if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
+                JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
+                duplicateNonce = true;
+                console.warn("Warning: duplicate nonce found on raw tx:", txHash);
+                break;
+            }
+        }
+        if (!duplicateNonce) {
+            if (!isFunction(callback)) {
+                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            }
+            return callback(errors.TRANSACTION_NOT_FOUND);
+        }
+        if (!isFunction(callback)) return null;
+        callback(null);
+    },
+
     txNotify: function (txHash, callback) {
         var self = this;
         if (!isFunction(callback)) {
             var tx = this.getTransaction(txHash);
             if (tx) return tx;
+            this.txs[txHash].status = "failed";
 
-            // this.txs[txHash].status = "failed";
-            // if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
+            // only resubmit if this is a raw transaction and has a duplicate nonce
+            if (!this.retryDroppedTxs) this.checkDroppedTxForDuplicateNonce(txHash);
 
-            // resubmit if this is a raw transaction and has a duplicate nonce
-            // if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
-            //     throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-            // }
-            // var duplicateNonce;
-            // for (var hash in this.rawTxs) {
-            //     if (!this.rawTxs.hasOwnProperty(hash)) continue;
-            //     if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
-            //         JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
-            //         duplicateNonce = true;
-            //         break;
-            //     }
-            // }
-            // if (!duplicateNonce) throw new this.Error(errors.TRANSACTION_NOT_FOUND);
             this.txs[txHash].status = "resubmitted";
             return null;
         }
         this.getTransaction(txHash, function (tx) {
             if (tx) return callback(null, tx);
+            self.txs[txHash].status = "failed";
+            if (!self.retryDroppedTxs) {
 
-            // self.txs[txHash].status = "failed";
-            // if (self.debug.tx) console.debug("Raw transactions:", self.rawTxs);
-
-            // resubmit if this is a raw transaction and has a duplicate nonce
-            // if (!self.rawTxs[txHash] || !self.rawTxs[txHash].tx) {
-            //     return callback(errors.TRANSACTION_NOT_FOUND);
-            // }
-            // var duplicateNonce;
-            // for (var hash in self.rawTxs) {
-            //     if (!self.rawTxs.hasOwnProperty(hash)) continue;
-            //     if (self.rawTxs[hash].tx.nonce === self.rawTxs[txHash].tx.nonce &&
-            //         JSON.stringify(self.rawTxs[hash].tx) !== JSON.stringify(self.rawTxs[txHash].tx)) {
-            //         duplicateNonce = true;
-            //         break;
-            //     }
-            // }
-            // if (!duplicateNonce) return callback(errors.TRANSACTION_NOT_FOUND);
-            console.debug(" *** Re-submitting transaction:", txHash);
-            self.txs[txHash].status = "resubmitted";
-            return callback(null, null);
+                // only resubmit if this is a raw transaction and has a duplicate nonce
+                self.checkDroppedTxForDuplicateNonce(txHash, function (err) {
+                    if (err !== null) return callback(err);
+                    console.debug(" *** Re-submitting transaction:", txHash);
+                    self.txs[txHash].status = "resubmitted";
+                    return callback(null, null);
+                });
+            }
         });
     },
 

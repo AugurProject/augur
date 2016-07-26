@@ -1949,7 +1949,7 @@ describe("Integration tests", function () {
                                 assert.isObject(trade);
                                 assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
                                 assert.approximately(Number(trade.price), Number(t.price), tools.EPSILON);
-                                assert.strictEqual(trade.market, markets[t.market]);
+                                assert.strictEqual(abi.format_int256(trade.market), markets[t.market]);
                                 assert.strictEqual(trade.outcome, t.outcome);
                                 augur.get_total_trades(markets[t.market], function (totalTrades) {
                                     assert.isAbove(parseInt(totalTrades), initialTotalTrades);
@@ -2022,6 +2022,7 @@ describe("Integration tests", function () {
         var test = function (t) {
             it(JSON.stringify(t), function (done) {
                 this.timeout(tools.TIMEOUT);
+                var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
                 augur.buyCompleteSets({
                     market: markets[t.market],
                     amount: t.amount,
@@ -2029,9 +2030,8 @@ describe("Integration tests", function () {
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        var shares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
-                        assert.strictEqual(parseFloat(shares), parseFloat(t.amount));
-                        var cash = augur.Cash.balance(augur.from);
+                        var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+                        assert.strictEqual(parseFloat(finalShares - initShares), parseFloat(t.amount));
                         augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
                             initialTotalTrades = parseInt(initialTotalTrades);
                             augur.sell({
@@ -2048,7 +2048,7 @@ describe("Integration tests", function () {
                                         assert.isObject(trade);
                                         assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
                                         assert.approximately(Number(trade.price), Number(t.price), tools.EPSILON);
-                                        assert.strictEqual(trade.market, markets[t.market]);
+                                        assert.strictEqual(abi.format_int256(trade.market), markets[t.market]);
                                         assert.strictEqual(trade.outcome, t.outcome);
                                         augur.get_total_trades(markets[t.market], function (totalTrades) {
                                             assert.isAbove(parseInt(totalTrades), initialTotalTrades);
@@ -2258,16 +2258,20 @@ describe("Integration tests", function () {
                                                     assert.isNull(r.callReturn);
                                                 },
                                                 onTradeSuccess: function (r) {
-                                                    assert.isArray(r.callReturn);
-                                                    assert.strictEqual(r.callReturn[0], 1);
-                                                    assert.strictEqual(r.callReturn.length, 3);
+                                                    console.log("trade succeeded:", r);
+                                                    assert.isObject(r);
+                                                    assert.notProperty(r, "error");
+                                                    assert.property(r, "unmatchedCash");
+                                                    assert.property(r, "unmatchedShares");
+                                                    assert.isAtMost(abi.number(r.unmatchedCash), t.unmatchedCash);
+                                                    assert.strictEqual(abi.number(r.unmatchedShares), t.unmatchedShares);
                                                     nextTrade(r);
                                                 },
                                                 onTradeFailed: nextTrade
                                             });
                                         });
                                     }, function (x) {
-                                        if (x && x.callReturn) return done();
+                                        if (x && x.unmatchedCash) return done();
                                         done(x);
                                     });
                                 });
@@ -2283,19 +2287,31 @@ describe("Integration tests", function () {
             market: "binary",
             amount: 1,
             outcome: "1",
-            price: "0.1"
+            price: "0.1",
+            expected: {
+                unmatchedCash: 0.9,
+                unmatchedShares: 0
+            }
         });
         test({
             market: "categorical",
             amount: 1,
             outcome: "3",
-            price: "0.1"
+            price: "0.1",
+            expected: {
+                unmatchedCash: 0.9,
+                unmatchedShares: 0
+            }
         });
         test({
             market: "scalar",
             amount: 1,
             outcome: "1",
-            price: "3.4"
+            price: "3.4",
+            expected: {
+                unmatchedCash: 0,
+                unmatchedShares: 0
+            }
         });
     });
 
@@ -2338,16 +2354,22 @@ describe("Integration tests", function () {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            assert.isArray(r.callReturn);
-                                            assert.strictEqual(r.callReturn[0], 1);
-                                            assert.strictEqual(r.callReturn.length, 4);
+                                            console.log("short_sell succeeded:", r);
+                                            assert.isObject(r);
+                                            assert.notProperty(r, "error");
+                                            assert.property(r, "matchedShares");
+                                            assert.property(r, "unmatchedShares");
+                                            assert.property(r, "price");
+                                            assert.strictEqual(abi.number(r.matchedShares), t.expected.matchedShares);
+                                            assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
+                                            assert.strictEqual(abi.number(r.price), t.expected.price);
                                             nextTrade(r);
                                         },
                                         onTradeFailed: nextTrade
                                     });
                                 });
                             }, function (x) {
-                                if (x && x.callReturn) return done();
+                                if (x && x.price) return done();
                                 done(x);
                             });
                         });
@@ -2360,19 +2382,34 @@ describe("Integration tests", function () {
             market: "binary",
             amount: 1,
             outcome: "1",
-            price: "0.1"
+            price: "0.1",
+            expected: {
+                unmatchedShares: 0,
+                matchedShares: 1,
+                price: 0.1
+            }
         });
         test({
             market: "categorical",
             amount: 1,
             outcome: "3",
-            price: "0.1"
+            price: "0.1",
+            expected: {
+                unmatchedShares: 0,
+                matchedShares: 1,
+                price: 0.1
+            }
         });
         test({
             market: "scalar",
             amount: 1,
             outcome: "1",
-            price: "3.4"
+            price: "3.4",
+            expected: {
+                unmatchedShares: 0,
+                matchedShares: 1,
+                price: 3.4
+            }
         });
     });
 });
