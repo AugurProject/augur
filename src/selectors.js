@@ -1,5 +1,6 @@
 import activePage from './selectors/active-page';
 import authForm from './selectors/auth-form';
+import { cancelOrder } from './selectors/cancel-order';
 import createMarketForm from './selectors/create-market-form';
 import filters from './selectors/filters';
 import keywords from './selectors/keywords';
@@ -18,6 +19,7 @@ import url from './selectors/url';
 const selectors = {
 	activePage,
 	authForm,
+	cancelOrder,
 	createMarketForm,
 	filters,
 	keywords,
@@ -64,32 +66,6 @@ selectors.selectedOutcome = {
 		});
 	},
 	selectedOutcomeID: null
-};
-
-selectors.cancelOrder = (orderId) => {
-	setTimeout(() => {
-		selectors.markets.forEach((market) => {
-			market.outcomes.forEach(outcome => {
-				const order = outcome.userOpenOrders.find(openOrder => openOrder.id === orderId);
-				if (order != null) {
-					order.isCancelling = true;
-					module.exports.update({});
-				}
-			});
-		});
-		setTimeout(() => {
-			selectors.markets.forEach((market) => {
-				market.outcomes.forEach(outcome => {
-					const order = outcome.userOpenOrders.find(openOrder => openOrder.id === orderId);
-					if (order != null) {
-						const index = outcome.userOpenOrders.findIndex(openOrder => openOrder.id === orderId);
-						outcome.userOpenOrders.splice(index, 1);
-						module.exports.update({});
-					}
-				});
-			});
-		}, 2000);
-	}, 1);
 };
 
 selectors.searchSort.onChangeSort = (prop, isDesc) => {
