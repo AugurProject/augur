@@ -20,19 +20,6 @@ var tools = require("../tools");
 var DEBUG = true;
 tools.DEBUG = DEBUG;
 
-var augur = tools.setup(require(augurpath), process.argv.slice(2));
-var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
-var accounts = augur.rpc.personal("listAccounts");
-var unlockable = [augur.from, accounts[0], accounts[2]];
-var branchID = constants.DEFAULT_BRANCH_ID;
-var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
-var suffix = Math.random().toString(36).substring(4);
-var description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
-var periodLength = 600;
-var report = 1;
-var salt = "1337";
-var eventID, newBranchID, marketID;
-
 function printResidual(periodLength, label) {
     var t = parseInt(new Date().getTime() / 1000);
     periodLength = parseInt(periodLength);
@@ -58,11 +45,23 @@ function printReportingStatus(eventID, label) {
     printResidual(periodLength);
 }
 
-var markets = {};
-var events = {};
-
 describe("Reporting sequence", function () {
     if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
+
+    var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
+    var accounts = augur.rpc.personal("listAccounts");
+    var unlockable = [augur.from, accounts[0], accounts[2]];
+    var branchID = constants.DEFAULT_BRANCH_ID;
+    var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
+    var suffix = Math.random().toString(36).substring(4);
+    var description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
+    var periodLength = 600;
+    var report = 1;
+    var salt = "1337";
+    var eventID, newBranchID, marketID;
+    var markets = {};
+    var events = {};
 
     before("Setup/first period", function (done) {
         this.timeout(tools.TIMEOUT*100);
