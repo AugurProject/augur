@@ -62,6 +62,18 @@ export default class MarketPage extends Component {
 					/>
 				);
 
+				// open orders
+				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount != null && p.market.userOpenOrdersSummary.openOrdersCount.value > 0) {
+					nodes.push(
+						<MarketOpenOrders
+							key="market-open-orders"
+							userOpenOrdersSummary={p.market.userOpenOrdersSummary}
+							outcomes={p.market.outcomes}
+							cancelOrder={p.cancelOrder}
+						/>
+					);
+				}
+
 				// positions
 				if (p.market.positionsSummary && p.market.positionsSummary.numPositions && p.market.positionsSummary.numPositions.value) {
 					nodes.push(
@@ -70,17 +82,6 @@ export default class MarketPage extends Component {
 							className="market-positions"
 							positionsSummary={p.market.positionsSummary}
 							positionOutcomes={p.market.positionOutcomes}
-						/>
-					);
-				}
-
-				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount != null && p.market.userOpenOrdersSummary.openOrdersCount.value != null) {
-					nodes.push(
-						<MarketOpenOrders
-							key="market-open-orders"
-							userOpenOrdersSummary={p.market.userOpenOrdersSummary}
-							outcomes={p.market.outcomes}
-							cancelOrder={p.cancelOrder}
 						/>
 					);
 				}
