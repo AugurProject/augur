@@ -61,7 +61,6 @@ export function createMarket(transactionID, newMarket) {
 
 				if (res.status === SUCCESS) {
 					dispatch(clearMakeInProgress());
-					setTimeout(() => dispatch(loadMarketsInfo([res.marketID])), 5000);
 
 					const updatedNewMarket = {
 						...newMarket,
