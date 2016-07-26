@@ -25484,8 +25484,15 @@ utils.intFromLE = intFromLE;
 module.exports={
   "_args": [
     [
-      "elliptic@^6.2.3",
-      "/home/abc/work/augur/augur.js/node_modules/secp256k1"
+      {
+        "name": "elliptic",
+        "raw": "elliptic@^6.2.3",
+        "rawSpec": "^6.2.3",
+        "scope": null,
+        "spec": ">=6.2.3 <7.0.0",
+        "type": "range"
+      },
+      "/Users/k_day/src/augur/augur.js/node_modules/secp256k1"
     ]
   ],
   "_from": "elliptic@>=6.2.3 <7.0.0",
@@ -25521,7 +25528,7 @@ module.exports={
   "_shasum": "17781f2109ab0ec686b146bdcff5d2e8c6aeceda",
   "_shrinkwrap": null,
   "_spec": "elliptic@^6.2.3",
-  "_where": "/home/abc/work/augur/augur.js/node_modules/secp256k1",
+  "_where": "/Users/k_day/src/augur/augur.js/node_modules/secp256k1",
   "author": {
     "email": "fedor@indutny.com",
     "name": "Fedor Indutny"
@@ -48939,8 +48946,15 @@ utils.intFromLE = intFromLE;
 module.exports={
   "_args": [
     [
-      "elliptic@^5.1.0",
-      "/home/abc/work/augur/augur.js/node_modules/keythereum"
+      {
+        "name": "elliptic",
+        "raw": "elliptic@^5.1.0",
+        "rawSpec": "^5.1.0",
+        "scope": null,
+        "spec": ">=5.1.0 <6.0.0",
+        "type": "range"
+      },
+      "/Users/k_day/src/augur/augur.js/node_modules/keythereum"
     ]
   ],
   "_from": "elliptic@>=5.1.0 <6.0.0",
@@ -48971,7 +48985,7 @@ module.exports={
   "_shasum": "fa294b6563c6ddbc9ba3dc8594687ae840858f10",
   "_shrinkwrap": null,
   "_spec": "elliptic@^5.1.0",
-  "_where": "/home/abc/work/augur/augur.js/node_modules/keythereum",
+  "_where": "/Users/k_day/src/augur/augur.js/node_modules/keythereum",
   "author": {
     "email": "fedor@indutny.com",
     "name": "Fedor Indutny"
@@ -57824,10 +57838,14 @@ module.exports = function () {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
                         if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            var data_array = augur.rpc.unmarshal(message[i].data);
+                            if (data_array && data_array.constructor === Array && 
+                                data_array.length > 1) {
+                                onMessage({
+                                    marketId: data_array[0],
+                                    tradingFee: abi.unfix(data_array[1], "string")
+                                });
                             }
-                            if (onMessage) onMessage(message[i]);
                         }
                     }
                 } else {
@@ -57941,6 +57959,11 @@ module.exports = function () {
                 case "block":
                     callback = function (msg) {
                         self.parse_block_message(msg, onMessage);
+                    };
+                    break;
+                case "tradingFeeUpdated":
+                    callback = function (msg) {
+                        self.parse_tradingFeeUpdated_message(msg, onMessage);
                     };
                     break;
                 default:
@@ -58110,6 +58133,12 @@ module.exports = function () {
                             callback = cb.marketCreated;
                             cb.marketCreated = function (msg) {
                                 self.parse_marketCreated_message(msg, callback);
+                            };
+                            break;
+                        case "tradingFeeUpdated":
+                            callback = cb.tradingFeeUpdated;
+                            cb.tradingFeeUpdated = function (msg) {
+                                self.parse_tradingFeeUpdated_message(msg, callback);
                             };
                             break;
                         }
@@ -58521,7 +58550,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.8";
+    this.version = "1.9.11";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -59643,12 +59672,36 @@ module.exports = {
         });
     },
 
-    updateTradingFee: function (branch, market, tradingFee, onSent, onSuccess, onFailed) {
+    updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (branchId.constructor === Object && branchId.branchId) {
+            market = branchId.market;         // string
+            takerFee = branchId.takerFee;
+            makerFee = branchId.makerFee;
+            onSent = branchId.onSent;         // function
+            onSuccess = branchId.onSuccess;   // function
+            onFailed = branchId.onFailed;     // function
+            branchId = branchId.branchId;     // sha256 hash
+        }
         var tx = clone(this.tx.CreateMarket.updateTradingFee);
-        var unpacked = utils.unpack(branch, utils.labels(this.updateTradingFee), arguments);
-        tx.params = unpacked.params;
-        tx.params[2] = abi.fix(tx.params[2], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
+
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+
+        tx.params = [
+            branchId,
+            market,
+            abi.fix(fees.tradingFee, "hex"),
+            abi.fix(fees.makerProportionOfFee, "hex"),
+        ];
+
+        if (!utils.is_function(onSent)) {
+            var res = this.transact(tx);
+            return res;
+        }
+
+        self.transact(tx, onSent, function (res) {
+            onSuccess(res);
+        }, onFailed);
     }
 };
 

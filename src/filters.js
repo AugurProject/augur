@@ -262,6 +262,11 @@ module.exports = function () {
                         self.parse_block_message(msg, onMessage);
                     };
                     break;
+                case "tradingFeeUpdated":
+                    callback = function (msg) {
+                        self.parse_tradingFeeUpdated_message(msg, onMessage);
+                    };
+                    break;
                 default:
                     callback = onMessage;
                 }
@@ -429,6 +434,12 @@ module.exports = function () {
                             callback = cb.marketCreated;
                             cb.marketCreated = function (msg) {
                                 self.parse_marketCreated_message(msg, callback);
+                            };
+                            break;
+                        case "tradingFeeUpdated":
+                            callback = cb.tradingFeeUpdated;
+                            cb.tradingFeeUpdated = function (msg) {
+                                self.parse_tradingFeeUpdated_message(msg, callback);
                             };
                             break;
                         }
