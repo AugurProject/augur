@@ -5,7 +5,6 @@ import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/s
 
 import AugurJS from '../../../services/augurjs';
 
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addCreateMarketTransaction } from '../../transactions/actions/add-create-market-transaction';
 
@@ -61,7 +60,6 @@ export function createMarket(transactionID, newMarket) {
 
 				if (res.status === SUCCESS) {
 					dispatch(clearMakeInProgress());
-					setTimeout(() => dispatch(loadMarketsInfo(res.marketID)), 5000);
 
 					const updatedNewMarket = {
 						...newMarket,
