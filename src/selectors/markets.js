@@ -64,7 +64,7 @@ function makeMarkets(numMarkets = 50) {
 		// trade summary
 		m.tradeSummary = {
 			totalShares: makeNumber(0, 'shares'),
-			totalEth: makeNumber(0, 'eth'),
+			totalCost: makeNumber(0, 'eth'),
 			totalGas: makeNumber(0, 'eth'),
 			totalFee: makeNumber(0, 'eth'),
 			tradeOrders: []
@@ -260,7 +260,7 @@ function makeMarkets(numMarkets = 50) {
 							const totEthFinal = outcome.trade.side === BUY ? -1 * totEth : totEth;
 							outcome.trade.tradeSummary.totalFee = makeNumber(Math.round(0.02 * (outcome.trade.limitPrice || randLimitPrice) * outcome.trade.numShares * 100) / 100, 'eth');
 							const feeFortotalEth = -1 * outcome.trade.tradeSummary.totalFee.value;
-							outcome.trade.tradeSummary.totalEth = makeNumber(Math.round((totEthFinal + feeFortotalEth) * 100) / 100, 'eth');
+							outcome.trade.tradeSummary.totalCost = makeNumber(Math.round((totEthFinal + feeFortotalEth) * 100) / 100, 'eth');
 
 							m.outcomes = m.outcomes.map(currentOutcome => {
 								if (currentOutcome.id === outcomeID) {
@@ -275,24 +275,24 @@ function makeMarkets(numMarkets = 50) {
 								}
 
 								p.totalShares += outcome.trade.side === BUY ? outcome.trade.numShares : -1 * outcome.trade.numShares;
-								p.totalEth += outcome.trade.tradeSummary.totalEth.value;
+								p.totalCost += outcome.trade.tradeSummary.totalCost.value;
 
 								p.tradeOrders.push({
 									type: outcome.trade.side,
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
-									ether: outcome.trade.tradeSummary.totalEth,
+									ether: outcome.trade.tradeSummary.totalCost,
 									data: {
 										outcomeName: outcome.name,
 										marketDescription: m.description,
-										avgPrice: makeNumber(Math.round((outcome.trade.tradeSummary.totalEth.value / outcome.trade.numShares) * 100) / 100, 'eth'),
+										avgPrice: makeNumber(Math.round((outcome.trade.tradeSummary.totalCost.value / outcome.trade.numShares) * 100) / 100, 'eth'),
 									}
 								});
 
 								return p;
-							}, { totalFee: 0, totalShares: 0, totalEth: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
+							}, { totalFee: 0, totalShares: 0, totalCost: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
 
 							m.tradeSummary.totalShares = makeNumber(outcome.trade.tradeSummary.totalShares, 'shares');
-							m.tradeSummary.totalEth = makeNumber(outcome.trade.tradeSummary.totalEth, 'eth');
+							m.tradeSummary.totalCost = makeNumber(outcome.trade.tradeSummary.totalCost, 'eth');
 							m.tradeSummary.totalFee = makeNumber(outcome.trade.tradeSummary.totalFee, 'eth');
 							m.tradeSummary.totalGas = makeNumber(outcome.trade.tradeSummary.totalGas);
 
