@@ -20,11 +20,11 @@ module.exports = {
         var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
         if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
         var numOrders = orderArray.length / 8;
-        var orderBook = {buy: [], sell: []};
+        var orderBook = {buy: {}, sell: {}};
         for (var i = 0; i < numOrders; ++i) {
             order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
             if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
-            orderBook[order.type].push(order);
+            orderBook[order.type][order.id] = order;
         }
         return orderBook;
     },

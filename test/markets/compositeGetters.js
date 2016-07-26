@@ -295,21 +295,23 @@ describe("getOrderBook", function () {
         assert.isObject(t.output);
         for (var type in t.output) {
             if (!t.output.hasOwnProperty(type)) continue;
-            assert.isArray(t.output[type]);
-            for (var i = 0; i < t.output[type]; ++i) {
-                marketInfo = augur.getMarketInfo(t.output[type][i].market);
+            assert.isObject(t.output[type]);
+            for (var orderId in t.output[type]) {
+                if (!t.output[type].hasOwnProperty(orderId)) continue;
+                var order = t.output[type][orderId];
+                marketInfo = augur.getMarketInfo(order.market);
                 assert.isNotNull(marketInfo);
                 assert.isString(marketInfo.type);
-                assert.strictEqual(type, t.output[type][i].type);
-                assert.isString(t.output[type][i].id);
-                assert.isString(t.output[type][i].market);
-                assert.isString(t.output[type][i].amount);
-                assert.isString(t.output[type][i].price);
-                assert.isString(t.output[type][i].owner);
-                assert.strictEqual(t.output[type][i].owner, abi.format_address(t.output[type][i].owner));
-                assert.isNumber(t.output[type][i].block);
-                assert.isString(t.output[type][i].outcome);
-                assert.deepEqual(augur.get_trade(t.output[type][i].id), t.output[type][i]);
+                assert.strictEqual(type, order.type);
+                assert.isString(order.id);
+                assert.isString(order.market);
+                assert.isString(order.amount);
+                assert.isString(order.price);
+                assert.isString(order.owner);
+                assert.strictEqual(order.owner, abi.format_address(order.owner));
+                assert.isNumber(order.block);
+                assert.isString(order.outcome);
+                assert.deepEqual(augur.get_trade(order.id), order);
             }
         }
         t.done();
