@@ -30,31 +30,35 @@ function createMarkets(numMarketsToCreate, callback) {
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
         var minValue, maxValue, numOutcomes, type;
         var rand = Math.random();
+        var prefix;
         if (rand > 0.667) {
             // scalar
             maxValue = Math.round(Math.random() * 25);
             minValue = Math.round(Math.random() * maxValue);
             numOutcomes = 2;
+            prefix = "How much";
             type = "scalar";
         } else if (rand < 0.333) {
             // binary
             maxValue = 2;
             minValue = 1;
             numOutcomes = 2;
+            prefix = "Will";
             type = "binary";
         } else {
             // categorical
             maxValue = 2;
             minValue = 1;
-            numOutcomes = Math.floor(6*Math.random()) + 2;
+            numOutcomes = Math.floor(6*Math.random()) + 3;
+            prefix = "Which";
             type = "categorical";
         }
         var streetName = madlibs.streetName();
         var action = madlibs.action();
         var city = madlibs.city();
-        var description = "Will " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
+        var description = prefix + " " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
         var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
-        var tags = [streetName, action, city];
+        var tags = [streetName, madlibs.noun(), city];
         var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
         if (type === "categorical") {
             var choices = new Array(numOutcomes);
@@ -63,7 +67,7 @@ function createMarkets(numMarketsToCreate, callback) {
             }
             description += "~|>" + choices.join('|');
         }
-        var expDate = Math.round(new Date().getTime() / 900);
+        var expDate = Math.round(new Date().getTime() / 995);
         var createSingleEventMarketParams = {
             branchId: augur.constants.DEFAULT_BRANCH_ID,
             description: description,
@@ -95,9 +99,9 @@ function createMarkets(numMarketsToCreate, callback) {
                     }
                     var orderBookParams = {
                         market: marketID,
-                        liquidity: Math.floor(400*Math.random()) + 100,
-                        startingQuantity: Math.floor(40*Math.random()) + 10,
-                        bestStartingQuantity: Math.floor(40*Math.random()) + 10
+                        liquidity: Math.floor(400*Math.random()) + 10000,
+                        startingQuantity: Math.floor(40*Math.random()) + 1000,
+                        bestStartingQuantity: Math.floor(40*Math.random()) + 1000
                     };
                     var initialFairPrices = new Array(numOutcomes);
                     if (type === "scalar") {
@@ -121,16 +125,16 @@ function createMarkets(numMarketsToCreate, callback) {
                     orderBookParams.initialFairPrices = initialFairPrices;
                     augur.generateOrderBook(orderBookParams, {
                         onSimulate: function (sim) {
-                            // console.log("simulation:", sim);
+                            console.log("simulation:", sim);
                         },
                         onBuyCompleteSets: function (res) {
                             // console.log("buyCompleteSets:", res);
                         },
                         onSetupOutcome: function (res) {
-                            // console.log("setupOutcome:", res);
+                            console.log("setupOutcome:", res);
                         },
                         onSetupOrder: function (res) {
-                            // console.log("setupOrder:", res);
+                            console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
                             if (index % 10) return next();

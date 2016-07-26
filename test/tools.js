@@ -295,10 +295,10 @@ module.exports = {
                         if (self.DEBUG) {
                             self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r.callReturn));
                         }
-                        assert.isArray(r.callReturn);
-                        assert.strictEqual(r.callReturn[0], 1);
-                        assert.strictEqual(r.callReturn[2], "0");
-                        assert.strictEqual(r.callReturn.length, 3);
+                        assert.isObject(r);
+                        assert.notProperty(r, "error");
+                        assert.property(r, "unmatchedCash");
+                        assert.property(r, "unmatchedShares");
                         augur.useAccount(maker);
                         callback(null);
                     },
