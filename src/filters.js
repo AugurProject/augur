@@ -134,7 +134,6 @@ module.exports = function () {
             }
         },
         parse_tradingFeeUpdated_message: function (message, onMessage) {
-            console.log("tradingFeeUpdated:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
