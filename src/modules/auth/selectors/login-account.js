@@ -36,7 +36,6 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		downloadAccountFileName,
 		downloadAccountDataString,
 		editName: (name) => dispatch(changeAccountName(name)),
-		downloadAccount: () => downloadAccount(),
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
 		realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 0 })
