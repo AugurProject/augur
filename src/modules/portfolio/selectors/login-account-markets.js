@@ -17,22 +17,17 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 	const markets = [];
 
 	authorOwnedMarkets.forEach((market) => {
-		// store.dispatch(loadFullMarket(market.id));
-
 		const fees = formatEther(AugurJS.getFees(market.id));
-		const volume = formatNumber(AugurJS.getVolume(market.id));
 		const numberOfTrades = formatNumber(AugurJS.get_total_trades(market.id));
 
-		const averageTradeSize = formatEther(0);
+		const averageTradeSize = formatNumber(selectAverageTradeSize(market.marketPriceHistory));
 		const openVolume = formatNumber(selectOpenVolume(market));
-
-		// selectAverageTradeSize(market);
 
 		markets.push({
 			description: market.description,
 			endDate: market.endDate,
+			volume: market.volume,
 			fees,
-			volume,
 			numberOfTrades,
 			averageTradeSize,
 			openVolume
@@ -56,9 +51,29 @@ export const selectOpenVolume = market => {
 	return openVolume;
 };
 
-export const selectAverageTradeSize = market => {
-	// const { marketOrderBooks } = store.getState();
+export const selectAverageTradeSize = marketPriceHistory => {
+	if (marketPriceHistory == null) {
+		return 0;
+	}
 
-	console.log('MARKET -- ', market);
-	// console.log('marketOrderBook -- ', marketOrderBooks);
+	const initialState = {
+		shares: 0,
+		trades: 0
+	};
+
+	const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
+		const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => {
+			return {
+				shares: outcomeTotals.shares + Number(trade.shares),
+				trades: outcomeTotals.trades + 1
+			};
+		}, initialState);
+
+		return {
+			shares: historyTotals.shares + outcomeTotals.shares,
+			trades: historyTotals.trades + outcomeTotals.trades
+		};
+	}, initialState);
+
+	return priceHistoryTotals.shares / priceHistoryTotals.trades;
 };

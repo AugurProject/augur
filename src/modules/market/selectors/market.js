@@ -205,6 +205,8 @@ export const assembleMarket = memoizerific(1000)((
 		return obj;
 	}).filter(tag => !!tag.name);
 
+	market.marketPriceHistory = marketPriceHistory;
+
 	market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
 	market.reportableOutcomes = market.outcomes.slice();
