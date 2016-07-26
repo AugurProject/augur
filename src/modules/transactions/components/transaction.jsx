@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK, TRADE_SUMMARY } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK } from '../../transactions/constants/types';
 import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
@@ -40,27 +40,6 @@ const Transaction = (p) => {
 				<span className="market-description" title={p.data.marketDescription}>
 					{p.data.marketDescription.substring(0, 100) + (p.data.marketDescription.length > 100 && '...' || '')}
 				</span>
-			</span>
-		);
-		nodes.valueChange = (
-			<span className="value-changes">
-				{!!p.shares && !!p.shares.value &&
-					<ValueDenomination className="value-change shares" {...p.shares} />
-				}
-				{!!p.ether && !!p.ether.value &&
-					<ValueDenomination className="value-change ether" {...p.ether} />
-				}
-			</span>
-		);
-		break;
-	case TRADE_SUMMARY:
-		nodes.description = (<span className="description">&nbsp;</span>);
-		nodes.valueChange = (
-			<span className="value-changes">
-				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
-				}
-				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
-				}
 			</span>
 		);
 		break;
@@ -113,14 +92,6 @@ const Transaction = (p) => {
 		break;
 	default:
 		nodes.description = (<span className="description">{p.type}</span>);
-		nodes.valueChange = (
-			<span className="value-changes">
-				{!!p.shares && !!p.shares.value && <ValueDenomination className="value-change shares" {...p.shares} />
-				}
-				{!!p.ether && !!p.ether.value && <ValueDenomination className="value-change ether" {...p.ether} />
-				}
-			</span>
-		);
 		break;
 	}
 
@@ -129,8 +100,21 @@ const Transaction = (p) => {
 			{p.index &&
 				<span className="index">{`${p.index}.`}</span>
 			}
+
 			{nodes.description}
-			{nodes.valueChange}
+
+			<span className="value-changes">
+				{!!p.shares && !!p.shares.value &&
+					<ValueDenomination className="value-change shares" {...p.shares} />
+				}
+				{!!p.gasEth && !!p.gasEth.value &&
+					<ValueDenomination className="value-change gas" {...p.gasEth} />
+				}
+				{!!p.totalEth && !!p.totalEth.value &&
+					<ValueDenomination className="value-change ether" {...p.totalEth} />
+				}
+			</span>
+
 			{p.status &&
 				<div className="status-and-message"><span className="status">{p.status}</span><br /><span className="message">{p.message}</span></div>
 			}
@@ -145,7 +129,8 @@ Transaction.propTypes = {
 	status: React.PropTypes.string,
 	data: React.PropTypes.object,
 	shares: React.PropTypes.object,
-	ether: React.PropTypes.object,
+	totalEth: React.PropTypes.object,
+	gasEth: React.PropTypes.object,
 	asksToBuy: React.PropTypes.array
 };
 

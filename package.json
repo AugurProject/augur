@@ -76,7 +76,7 @@
     "react-datetime": "2.3.2",
     "react-dom": "15.2.1",
     "react-highcharts": "9.0.0",
-    "rimraf": "2.5.3",
+    "rimraf": "2.5.4",
     "shared-git-hooks": "1.2.1",
     "uglify-js": "2.7.0",
     "watchify": "3.7.0"

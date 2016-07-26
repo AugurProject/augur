@@ -277,9 +277,9 @@ export default function (market) {
 			assertFormattedNumber(tradeSummary.totalShares);
 		});
 
-		it('market.tradeSummary.totalEther', () => {
-			assert.isDefined(tradeSummary.totalEther);
-			assertFormattedNumber(tradeSummary.totalEther);
+		it('market.tradeSummary.totalEth', () => {
+			assert.isDefined(tradeSummary.totalEth);
+			assertFormattedNumber(tradeSummary.totalEth);
 		});
 
 		it('market.tradeSummary.totalGas', () => {
@@ -287,9 +287,9 @@ export default function (market) {
 			assertFormattedNumber(tradeSummary.totalGas);
 		});
 
-		it('market.tradeSummary.feeToPay', () => {
-			assert.isDefined(tradeSummary.feeToPay);
-			assertFormattedNumber(tradeSummary.feeToPay);
+		it('market.tradeSummary.totalFee', () => {
+			assert.isDefined(tradeSummary.totalFee);
+			assertFormattedNumber(tradeSummary.totalFee);
 		});
 
 		const tradeOrders = tradeSummary.tradeOrders;
@@ -305,12 +305,6 @@ export default function (market) {
 				assertFormattedNumber(trade.shares);
 			});
 
-			it(`market.tradeSummary.tradeOrders${i}.sharesNegative`, () => {
-				assert.isDefined(trade.sharesNegative);
-				assert.isObject(trade.sharesNegative);
-				assertFormattedNumber(trade.sharesNegative);
-			});
-
 			it(`market.tradeSummary.tradeOrders${i}.limitPrice`, () => {
 				assert.isDefined(trade.limitPrice);
 				assert.isNumber(trade.limitPrice);
@@ -322,22 +316,9 @@ export default function (market) {
 				assertFormattedNumber(trade.ether);
 			});
 
-			it(`market.tradeSummary.tradeOrders${i}.etherNegative`, () => {
-				assert.isDefined(trade.etherNegative);
-				assert.isObject(trade.etherNegative);
-				assertFormattedNumber(trade.etherNegative);
-			});
-
-			it(`market.tradeSummary.tradeOrders${i}.feeToPay`, () => {
-				assert.isDefined(trade.feeToPay);
-				assert.isObject(trade.feeToPay);
-				assertFormattedNumber(trade.feeToPay);
-			});
-
-			it(`market.tradeSummary.tradeOrders${i}.profitLoss`, () => {
-				assert.isDefined(trade.profitLoss);
-				assert.isObject(trade.profitLoss);
-				assertFormattedNumber(trade.profitLoss);
+			it('market.tradeSummary.totalFee', () => {
+				assert.isDefined(tradeSummary.totalFee);
+				assertFormattedNumber(tradeSummary.totalFee);
 			});
 
 			it(`market.tradeSummary.tradeOrders${i}.gas`, () => {

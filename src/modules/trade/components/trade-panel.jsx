@@ -2,36 +2,38 @@ import React from 'react';
 import TradeBuilder from '../../../modules/trade/components/trade-builder';
 import TradeSummary from '../../../modules/trade/components/trade-summary';
 
-const TradePanel = (p) => (
-	<div className="trade-panel">
-		<TradeBuilder
-			outcomes={p.outcomes}
-			selectedOutcome={p.selectedOutcome}
-		/>
+const TradePanel = (p) => {
+	const showTradeSummary = !!p.tradeSummary && !!p.tradeSummary.tradeOrders && !!p.tradeSummary.tradeOrders.length;
+	return (
+		<div className="trade-panel">
+			<TradeBuilder
+				outcomes={p.outcomes}
+				selectedOutcome={p.selectedOutcome}
+			/>
 
-		{!!p.tradeSummary && !!p.tradeOrders && !!p.tradeOrders.length &&
-			<TradeSummary summary={p.tradeSummary} />
-		}
+			{showTradeSummary &&
+				<TradeSummary tradeSummary={p.tradeSummary} />
+			}
 
-		<div className="place-trade-container">
-			<button
-				className="button place-trade"
-				disabled={!p.tradeOrders || !!!p.tradeOrders.length}
-				onClick={event => {
-					event.stopPropagation();
-					p.onSubmitPlaceTrade();
-				}}
-			>
-				Place Trade
-			</button>
+			<div className="place-trade-container">
+				<button
+					className="button place-trade"
+					disabled={!showTradeSummary}
+					onClick={event => {
+						event.stopPropagation();
+						p.onSubmitPlaceTrade();
+					}}
+				>
+					Place Trade
+				</button>
+			</div>
 		</div>
-	</div>
-);
+	);
+};
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
 	selectedOutcome: React.PropTypes.object,
-	tradeOrders: React.PropTypes.array,
 	tradeSummary: React.PropTypes.object,
 	onSubmitPlaceTrade: React.PropTypes.func
 };

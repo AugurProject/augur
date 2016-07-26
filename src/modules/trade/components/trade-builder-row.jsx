@@ -59,10 +59,10 @@ const TradeBuilderRow = (p) => {
 				/>
 			</td>
 			<td className={classnames('fee-to-pay', { fade: p.isFaded && !p.trade.numShares })}>
-				<ValueDenomination {...p.trade.tradeSummary.feeToPay} />
+				<ValueDenomination {...p.trade.tradeSummary.totalFee} />
 			</td>
 			<td className={classnames('total-cost', { fade: p.isFaded && !p.trade.numShares })}>
-				<ValueDenomination {...p.trade.tradeSummary.totalEther} />
+				<ValueDenomination {...p.trade.tradeSummary.totalEth} />
 			</td>
 		</tr>
 	);

@@ -64,9 +64,9 @@ function makeMarkets(numMarkets = 50) {
 		// trade summary
 		m.tradeSummary = {
 			totalShares: makeNumber(0, 'shares'),
-			totalEther: makeNumber(0, 'eth'),
+			totalEth: makeNumber(0, 'eth'),
 			totalGas: makeNumber(0, 'eth'),
-			feeToPay: makeNumber(0, 'eth'),
+			totalFee: makeNumber(0, 'eth'),
 			tradeOrders: []
 		};
 
@@ -258,9 +258,9 @@ function makeMarkets(numMarkets = 50) {
 							const randLimitPrice = randomInt(1, 100) / 100;
 							const totEth = outcome.trade.numShares * (outcome.trade.limitPrice || randLimitPrice);
 							const totEthFinal = outcome.trade.side === BUY ? -1 * totEth : totEth;
-							outcome.trade.tradeSummary.feeToPay = makeNumber(Math.round(0.02 * (outcome.trade.limitPrice || randLimitPrice) * outcome.trade.numShares * 100) / 100, 'eth');
-							const feeForTotalEther = -1 * outcome.trade.tradeSummary.feeToPay.value;
-							outcome.trade.tradeSummary.totalEther = makeNumber(Math.round((totEthFinal + feeForTotalEther) * 100) / 100, 'eth');
+							outcome.trade.tradeSummary.totalFee = makeNumber(Math.round(0.02 * (outcome.trade.limitPrice || randLimitPrice) * outcome.trade.numShares * 100) / 100, 'eth');
+							const feeFortotalEth = -1 * outcome.trade.tradeSummary.totalFee.value;
+							outcome.trade.tradeSummary.totalEth = makeNumber(Math.round((totEthFinal + feeFortotalEth) * 100) / 100, 'eth');
 
 							m.outcomes = m.outcomes.map(currentOutcome => {
 								if (currentOutcome.id === outcomeID) {
@@ -275,26 +275,25 @@ function makeMarkets(numMarkets = 50) {
 								}
 
 								p.totalShares += outcome.trade.side === BUY ? outcome.trade.numShares : -1 * outcome.trade.numShares;
-								p.totalEther += outcome.trade.tradeSummary.totalEther.value;
+								p.totalEth += outcome.trade.tradeSummary.totalEth.value;
 
 								p.tradeOrders.push({
 									type: outcome.trade.side,
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
-									ether: outcome.trade.tradeSummary.totalEther,
+									ether: outcome.trade.tradeSummary.totalEth,
 									data: {
 										outcomeName: outcome.name,
 										marketDescription: m.description,
-										avgPrice: makeNumber(Math.round((outcome.trade.tradeSummary.totalEther.value / outcome.trade.numShares) * 100) / 100, 'eth'),
+										avgPrice: makeNumber(Math.round((outcome.trade.tradeSummary.totalEth.value / outcome.trade.numShares) * 100) / 100, 'eth'),
 									}
 								});
 
 								return p;
-							}, { feeToPay: 0, totalShares: 0, totalEther: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
+							}, { totalFee: 0, totalShares: 0, totalEth: 0, totalFees: 0, totalGas: 0, tradeOrders: [] });
 
-							m.tradeSummary.feeToPay = makeNumber(outcome.trade.tradeSummary.feeToPay, 'eth');
 							m.tradeSummary.totalShares = makeNumber(outcome.trade.tradeSummary.totalShares, 'shares');
-							m.tradeSummary.totalEther = makeNumber(outcome.trade.tradeSummary.totalEther, 'eth');
-							m.tradeSummary.totalFees = makeNumber(outcome.trade.tradeSummary.totalFees);
+							m.tradeSummary.totalEth = makeNumber(outcome.trade.tradeSummary.totalEth, 'eth');
+							m.tradeSummary.totalFee = makeNumber(outcome.trade.tradeSummary.totalFee, 'eth');
 							m.tradeSummary.totalGas = makeNumber(outcome.trade.tradeSummary.totalGas);
 
 							require('../selectors').update({
@@ -325,7 +324,7 @@ function makeMarkets(numMarkets = 50) {
 						marketID: m.id,
 						isCancelling: false,
 						isCancelled: false,
-						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), 'ether'),
+						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), 'eth'),
 						unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
 						outcome: outcomeID,
 						owner: '0x45a153fdd97836c2b349a5f53970dc44b0ef1efa'

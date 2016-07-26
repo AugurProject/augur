@@ -56,7 +56,6 @@ export default class MarketPage extends Component {
 						key="trade-panel"
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
-						tradeOrders={p.market.tradeSummary.tradeOrders}
 						tradeSummary={p.market.tradeSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
 					/>
