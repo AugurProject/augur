@@ -466,22 +466,6 @@ export default function (market) {
 			assert.isFunction(report.onSubmitReport);
 		});
 
-		const orderSides = market.orderSides;
-		it('market.orderSides', () => {
-			assert.isDefined(orderSides);
-			assert.isObject(orderSides);
-		});
-
-		it('market.orderSides.BID', () => {
-			assert.isDefined(orderSides.BID);
-			assert.strictEqual(orderSides.BID, 'bid');
-		});
-
-		it('market.orderSides.ASK', () => {
-			assert.isDefined(orderSides.ASK);
-			assert.strictEqual(orderSides.ASK, 'ask');
-		});
-
 		const onSubmitPlaceTrade = market.onSubmitPlaceTrade;
 		it('market.onSubmitPlaceTrade', () => {
 			assert.isDefined(onSubmitPlaceTrade);
