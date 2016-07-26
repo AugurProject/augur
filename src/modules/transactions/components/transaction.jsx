@@ -107,11 +107,11 @@ const Transaction = (p) => {
 				{!!p.shares && !!p.shares.value &&
 					<ValueDenomination className="value-change shares" {...p.shares} />
 				}
-				{!!p.gasEth && !!p.gasEth.value &&
-					<ValueDenomination className="value-change gas" {...p.gasEth} />
+				{!!p.gas && !!p.gas.value &&
+					<ValueDenomination className="value-change gas" {...p.gas} />
 				}
-				{!!p.totalEth && !!p.totalEth.value &&
-					<ValueDenomination className="value-change ether" {...p.totalEth} />
+				{!!p.ether && !!p.ether.value &&
+					<ValueDenomination className="value-change ether" {...p.ether} />
 				}
 			</span>
 
@@ -129,9 +129,8 @@ Transaction.propTypes = {
 	status: React.PropTypes.string,
 	data: React.PropTypes.object,
 	shares: React.PropTypes.object,
-	totalEth: React.PropTypes.object,
-	gasEth: React.PropTypes.object,
-	asksToBuy: React.PropTypes.array
+	ether: React.PropTypes.object,
+	gas: React.PropTypes.object
 };
 
 export default Transaction;
