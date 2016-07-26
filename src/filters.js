@@ -139,10 +139,14 @@ module.exports = function () {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
                         if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
+                            var data_array = augur.rpc.unmarshal(message[i].data);
+                            if (data_array && data_array.constructor === Array && 
+                                data_array.length > 1) {
+                                onMessage({
+                                    marketId: data_array[0],
+                                    tradingFee: abi.unfix(data_array[1], "string")
+                                });
                             }
-                            if (onMessage) onMessage(message[i]);
                         }
                     }
                 } else {

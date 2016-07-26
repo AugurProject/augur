@@ -152,11 +152,12 @@ module.exports = {
         });
     },
 
-    updateTradingFee: function (branchId, market, tradingFee, onSent, onSuccess, onFailed) {
+    updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
         var self = this;
         if (branchId.constructor === Object && branchId.branchId) {
             market = branchId.market;         // string
-            tradingFee = branchId.tradingFee;
+            takerFee = branchId.takerFee;
+            makerFee = branchId.makerFee;
             onSent = branchId.onSent;         // function
             onSuccess = branchId.onSuccess;   // function
             onFailed = branchId.onFailed;     // function
@@ -164,10 +165,13 @@ module.exports = {
         }
         var tx = clone(this.tx.CreateMarket.updateTradingFee);
 
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+
         tx.params = [
             branchId,
             market,
-            abi.fix(tradingFee, "hex")
+            abi.fix(fees.tradingFee, "hex"),
+            abi.fix(fees.makerProportionOfFee, "hex"),
         ];
 
         if (!utils.is_function(onSent)) {
