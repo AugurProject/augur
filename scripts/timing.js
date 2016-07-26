@@ -30,27 +30,32 @@ function createMarkets(numMarketsToCreate, callback) {
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
         var minValue, maxValue, numOutcomes, type;
         var rand = Math.random();
-        // if (rand > 0.667) {
+        if (rand > 0.667) {
             // scalar
             maxValue = Math.round(Math.random() * 25);
             minValue = Math.round(Math.random() * maxValue);
             numOutcomes = 2;
             type = "scalar";
-        // } else if (rand < 0.333) {
-        //     // binary
-        //     maxValue = 2;
-        //     minValue = 1;
-        //     numOutcomes = 2;
-        //     type = "binary";
-        // } else {
-        //     // categorical
-        //     maxValue = 2;
-        //     minValue = 1;
-        //     numOutcomes = Math.floor(6*Math.random()) + 2;
-        //     type = "categorical";
-        // }
-        var suffix = Math.random().toString(36).substring(4);
-        var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+        } else if (rand < 0.333) {
+            // binary
+            maxValue = 2;
+            minValue = 1;
+            numOutcomes = 2;
+            type = "binary";
+        } else {
+            // categorical
+            maxValue = 2;
+            minValue = 1;
+            numOutcomes = Math.floor(6*Math.random()) + 2;
+            type = "categorical";
+        }
+        var streetName = madlibs.streetName();
+        var action = madlibs.action();
+        var city = madlibs.city();
+        var description = "Will " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
+        var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
+        var tags = [streetName, action, city];
+        var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
         if (type === "categorical") {
             var choices = new Array(numOutcomes);
             for (var i = 0; i < numOutcomes; ++i) {
@@ -66,18 +71,15 @@ function createMarkets(numMarketsToCreate, callback) {
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
-            resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
+            resolution: resolution,
             takerFee: "0.02",
             makerFee: "0.01",
-            extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
-            tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
+            extraInfo: extraInfo,
+            tags: tags,
             onSent: function (r) {},
             onSuccess: function (r) {
                 var marketID = r.callReturn;
-                if (!marketID) {
-                    console.log("No market ID found:", r);
-                    return next();
-                }
+                if (!marketID) return next();
                 console.log("[" + type + "]", chalk.green(marketID), chalk.cyan.dim(description));
                 augur.getMarketInfo(marketID, function (marketInfo) {
                     if (marketInfo === null) {
