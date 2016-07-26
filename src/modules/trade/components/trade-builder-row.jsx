@@ -19,12 +19,12 @@ const TradeBuilderRow = (p) => {
 			<td className={classnames('last-price', { fade: p.isFaded })}>
 				<ValueDenomination {...p.lastPrice} />
 			</td>
-			<td className={classnames('bid', { fade: p.isFaded })}>
+			<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === BUY) })}>
 				{!!bids && bids.map((bid, i) => (
 					<TradeBuilderBidAsk key={i} bidAsk={bid} />
 				))}
 			</td>
-			<td className={classnames('ask', { fade: p.isFaded })}>
+			<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === SELL) })}>
 				{!!asks && asks.map((ask, i) => (
 					<TradeBuilderBidAsk key={i} bidAsk={ask} />
 				))}
