@@ -277,9 +277,9 @@ export default function (market) {
 			assertFormattedNumber(tradeSummary.totalShares);
 		});
 
-		it('market.tradeSummary.totalEth', () => {
-			assert.isDefined(tradeSummary.totalEth);
-			assertFormattedNumber(tradeSummary.totalEth);
+		it('market.tradeSummary.totalCost', () => {
+			assert.isDefined(tradeSummary.totalCost);
+			assertFormattedNumber(tradeSummary.totalCost);
 		});
 
 		it('market.tradeSummary.totalGas', () => {
