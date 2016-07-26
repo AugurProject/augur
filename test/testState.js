@@ -73,7 +73,8 @@ const testState = {
 			makerFee: 0.02,
 			takerFee: 0.05,
 			volume: 500,
-			tags: ['tag1', 'tag2', 'tag3']
+			tags: ['tag1', 'tag2', 'tag3'],
+			orderBook: {} // todo: delete when AURC > v3.0.20 - assertion will be fixed there
 		}
 	},
 	marketOrderBooks: {
