@@ -5,7 +5,6 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/
 
 const navItems = [
 	{
-		default: true,
 		label: 'My Positions',
 		link: links.myPositionsLink,
 		page: MY_POSITIONS
