@@ -1,7 +1,6 @@
 import memoizerific from 'memoizerific';
 import AugurJS from '../../../services/augurjs';
 import { formatNumber, formatEther } from '../../../utils/format-number';
-import { loadFullMarket } from '../../market/actions/load-full-market';
 
 export default function () {
 	const { allMarkets, loginAccount } = require('../../../selectors');
