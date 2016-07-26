@@ -34,13 +34,15 @@ export const selectTopAsk = memoizerific(10)((marketOrderBook) => {
  * Selects price points with aggregated amount of shares
  *
  * @param {String} outcomeId
- * @param {Array} orders
+ * @param {{String, Object}} orders Key is order ID, value is order
  */
 const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 	if (orders == null) {
 		return [];
 	}
-	const shareCountPerPrice = orders
+
+	const shareCountPerPrice = Object.keys(orders)
+		.map(orderId => orders[orderId])
 		.filter(order => order.outcome === outcomeId)
 		.reduce(reduceSharesCountByPrice, {});
 
