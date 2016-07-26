@@ -4,7 +4,7 @@ var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":215}],2:[function(require,module,exports){
+},{"./src/index":205}],2:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -78,7 +78,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":2,"inherits":126,"vm":209}],4:[function(require,module,exports){
+},{"../asn1":2,"inherits":116,"vm":199}],4:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -196,7 +196,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":5,"buffer":60,"inherits":126}],5:[function(require,module,exports){
+},{"../base":5,"buffer":60,"inherits":116}],5:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -835,7 +835,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":5,"minimalistic-assert":161}],7:[function(require,module,exports){
+},{"../base":5,"minimalistic-assert":151}],7:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -958,7 +958,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":126}],8:[function(require,module,exports){
+},{"inherits":116}],8:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -1347,7 +1347,7 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":2,"inherits":126}],11:[function(require,module,exports){
+},{"../../asn1":2,"inherits":116}],11:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
@@ -1404,7 +1404,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":10,"buffer":60,"inherits":126}],13:[function(require,module,exports){
+},{"./der":10,"buffer":60,"inherits":116}],13:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -1699,7 +1699,7 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":2,"buffer":60,"inherits":126}],14:[function(require,module,exports){
+},{"../../asn1":2,"buffer":60,"inherits":116}],14:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
@@ -1728,7 +1728,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":13,"inherits":126}],16:[function(require,module,exports){
+},{"./der":13,"inherits":116}],16:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -2089,7 +2089,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":207}],17:[function(require,module,exports){
+},{"util/":197}],17:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -3358,7 +3358,7 @@ var objectKeys = Object.keys || function (obj) {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":170}],18:[function(require,module,exports){
+},{"_process":160}],18:[function(require,module,exports){
 (function (Buffer){
 /**
  * Ethereum contract ABI data serialization.
@@ -3377,7 +3377,7 @@ module.exports = {
 
     debug: false,
 
-    version: "0.5.2",
+    version: "0.5.7",
 
     constants: {
         ONE: new BigNumber(10).toPower(new BigNumber(18)),
@@ -3487,13 +3487,14 @@ module.exports = {
         return bytearray.toString("utf8");
     },
 
-    short_string_to_int256: function (s) {
-        if (s.length > 32) s = s.slice(0, 32);
-        return this.prefix_hex(this.pad_right(new Buffer(s, "utf8").toString("hex")));
+    short_string_to_int256: function (shortstring) {
+        var int256 = shortstring;
+        if (int256.length > 32) int256 = int256.slice(0, 32);
+        return this.prefix_hex(this.pad_right(new Buffer(int256, "utf8").toString("hex")));
     },
 
-    int256_to_short_string: function (n) {
-        return new Buffer(this.strip_0x(this.remove_trailing_zeros(n)), "hex").toString("utf8");
+    int256_to_short_string: function (int256) {
+        return new Buffer(this.strip_0x(this.remove_trailing_zeros(int256)), "hex").toString("utf8");
     },
 
     decode_hex: function (h, strip) {
@@ -3824,7 +3825,7 @@ module.exports = {
                 }
                 if (unfixed && encode) {
                     if (encode === "hex") {
-                        unfixed = this.prefix_hex(unfixed);
+                        unfixed = this.prefix_hex(unfixed.round());
                     } else if (encode === "string") {
                         unfixed = unfixed.toFixed();
                     } else if (encode === "number") {
@@ -3976,7 +3977,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"bignumber.js":26,"buffer":60,"ethereumjs-abi":100,"js-sha3":129}],19:[function(require,module,exports){
+},{"bignumber.js":26,"buffer":60,"ethereumjs-abi":100,"js-sha3":119}],19:[function(require,module,exports){
 module.exports={
   "events": {
     "Approval": {
@@ -4022,6 +4023,42 @@ module.exports={
       ], 
       "name": "Transfer(int256,int256,int256)", 
       "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
+    }, 
+    "buyAndSellSharesReturnValue": {
+      "contract": "BuyAndSellShares", 
+      "inputs": [
+        {
+          "indexed": false, 
+          "name": "returnValue", 
+          "type": "int256"
+        }
+      ], 
+      "name": "buyAndSellSharesReturnValue(int256)", 
+      "signature": "0x4363ec7f4cdb74de22356b0fd0efd40de1583e0a6063d274ca13639255274f5b"
+    }, 
+    "closeMarketReturnValue": {
+      "contract": "CloseMarket", 
+      "inputs": [
+        {
+          "indexed": false, 
+          "name": "returnValue", 
+          "type": "int256"
+        }
+      ], 
+      "name": "closeMarketReturnValue(int256)", 
+      "signature": "0x12001df5d02ab705b944c0f9c4f14add3fab5b10a103f442b911f7a8b00eda7a"
+    }, 
+    "completeSetsReturnValue": {
+      "contract": "CompleteSets", 
+      "inputs": [
+        {
+          "indexed": false, 
+          "name": "returnValue", 
+          "type": "int256"
+        }
+      ], 
+      "name": "completeSetsReturnValue(int256)", 
+      "signature": "0x32348dd50bf89583815c8079ab320bd35e5c4d65691fbca91a16348a7f0cbfe2"
     }, 
     "log_add_tx": {
       "contract": "BuyAndSellShares", 
@@ -4781,7 +4818,7 @@ module.exports={
           "branch"
         ], 
         "method": "getPeriodLength", 
-        "returns": "number", 
+        "returns": "int", 
         "signature": [
           "int256"
         ]
@@ -4906,6 +4943,7 @@ module.exports={
           "outcome"
         ], 
         "method": "buy", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -4920,6 +4958,7 @@ module.exports={
           "trade_id"
         ], 
         "method": "cancel", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -4934,6 +4973,7 @@ module.exports={
           "outcome"
         ], 
         "method": "sell", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -5072,6 +5112,7 @@ module.exports={
           "sender"
         ], 
         "method": "closeMarket", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -5141,6 +5182,7 @@ module.exports={
           "amount"
         ], 
         "method": "buyCompleteSets", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -5154,6 +5196,7 @@ module.exports={
           "amount"
         ], 
         "method": "sellCompleteSets", 
+        "mutable": true, 
         "returns": "number", 
         "send": true, 
         "signature": [
@@ -5670,12 +5713,14 @@ module.exports={
         "inputs": [
           "branch", 
           "market", 
-          "tradingFee"
+          "tradingFee", 
+          "makerFees"
         ], 
         "method": "updateTradingFee", 
         "returns": "number", 
         "send": true, 
         "signature": [
+          "int256", 
           "int256", 
           "int256", 
           "int256"
@@ -5819,16 +5864,6 @@ module.exports={
         ], 
         "method": "getEventPushedUp", 
         "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventResolution": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventResolution", 
-        "returns": "string", 
         "signature": [
           "int256"
         ]
@@ -6015,6 +6050,16 @@ module.exports={
           "int256"
         ]
       }, 
+      "getResolutionLength": {
+        "inputs": [
+          "event"
+        ], 
+        "method": "getResolutionLength", 
+        "returns": "int", 
+        "signature": [
+          "int256"
+        ]
+      }, 
       "getUncaughtOutcome": {
         "inputs": [
           "event"
@@ -6047,6 +6092,7 @@ module.exports={
         ], 
         "method": "initializeEvent", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256", 
@@ -7189,7 +7235,7 @@ module.exports={
           "ID"
         ], 
         "method": "getDescriptionLength", 
-        "returns": "int256", 
+        "returns": "int", 
         "signature": [
           "int256"
         ]
@@ -7372,6 +7418,16 @@ module.exports={
         ], 
         "method": "getExtraInfo", 
         "returns": "string", 
+        "signature": [
+          "int256"
+        ]
+      }, 
+      "getExtraInfoLength": {
+        "inputs": [
+          "market"
+        ], 
+        "method": "getExtraInfoLength", 
+        "returns": "int", 
         "signature": [
           "int256"
         ]
@@ -7746,6 +7802,18 @@ module.exports={
         "method": "returnTags", 
         "returns": "hash[]", 
         "signature": [
+          "int256"
+        ]
+      }, 
+      "setMakerFees": {
+        "inputs": [
+          "market", 
+          "makerFees"
+        ], 
+        "method": "setMakerFees", 
+        "returns": "int256", 
+        "signature": [
+          "int256", 
           "int256"
         ]
       }, 
@@ -8647,41 +8715,41 @@ module.exports={
         "Trades": "0x401a31250646bb68e2169bbdc0a8834d0f375ecb"
     }, 
     "2": {
-        "Backstops": "0x953e57d6abd49bf60d6a8403b50b241847b1e50d", 
-        "Branches": "0x5ca040a9b17c85acbfa1fec9eead60457e1da872", 
-        "BuyAndSellShares": "0x770114a2beb82282226d8917f229df6977cd568d", 
-        "Cash": "0x34a382fca0d3a6f318bbe565e4c77c86e3cfb448", 
-        "CloseMarket": "0x857f6cd666934c05a32704109fbee92773454c1f", 
-        "CloseMarketOne": "0xd8d75f35e05ff00065944041d4248c2bae18d418", 
-        "CloseMarketTwo": "0xee856109cd107e5521b86374dd53c8b2120ab14f", 
-        "CollectFees": "0xa5f4f3b326e1719b9ece4058aceaf771a483d012", 
-        "CompleteSets": "0x5485af8bf299235b7fd2e45f13be79cf6064df64", 
-        "CompositeGetters": "0xc5318e0ae3ef2f6883d12f88ac16896074f22c0d", 
-        "Consensus": "0xd75138a01cc0d56d6bfc4e00088458e501657579", 
-        "ConsensusData": "0x9011169bf11bc061fdaaf42ec919c81df5b95210", 
-        "CreateBranch": "0xbcfa90799eaf78ea417b94bb62ff2a4373689d6a", 
-        "CreateMarket": "0xb41980c1f8a21090f2d4ef70753fac790d935462", 
-        "EventResolution": "0x7cb6993f9bb9fe65d36565a32658a1e82db73ded", 
-        "Events": "0xc75e4478c92ce6c1473a7be5924b2b1a7aeb64e7", 
-        "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
-        "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
-        "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0x3389c07e61f5c8f87d66de0dd438dc591396f572", 
-        "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
-        "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x7e87e288bb31c0560bc15317b03e0702581782f3", 
-        "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
-        "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
-        "PenalizeNotEnoughReports": "0x471217d136b802ad4302b974ca85743490189c3c", 
-        "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
-        "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
-        "ReportingThreshold": "0xffcee834d25a40393067bccb2edef4677c6c223c", 
-        "RoundTwo": "0x79ce9677bba520f24076ab62d1359c2f2ab5e232", 
-        "RoundTwoPenalize": "0x7d61418a1d9cbb5ec4a3abf1f8c946968dac24c3", 
-        "SendReputation": "0xd91f2edf360a469080421997c5b77a2ea01fa514", 
-        "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
-        "Trade": "0x6dd4e090d133706c2bcc147a61bd80cc69275128", 
-        "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
+        "Backstops": "0x67902c540b7865e3a4fb546850b032aea40b76b4", 
+        "Branches": "0x2473b25dd76ced83065b71d7836dc91a4a6ea206", 
+        "BuyAndSellShares": "0x60cc4627cbd4895205158a2df55f583f384c87c5", 
+        "Cash": "0x63f021dbfeb3d81bfcd5b746965ff2e298931adb", 
+        "CloseMarket": "0x3d94bf370756c64daa0548a7bbe06ea06dc9d9a5", 
+        "CloseMarketOne": "0x28e9b0f0a09e6cbd19a415d0bde09960e8d7db54", 
+        "CloseMarketTwo": "0x14f94d42656cbffbd976a9193d425c1e99d44dba", 
+        "CollectFees": "0x616f45a0fddb225c34d7b62b9c09d4413b985330", 
+        "CompleteSets": "0x5b3d5c92865042c836f3fd0c2d2722bdfd4e6f9d", 
+        "CompositeGetters": "0x5254d23734bcd452490d1f9b9f01f29f85ce9037", 
+        "Consensus": "0x06274ed2098301ab5e3692a5a8a699ff3cc9d97e", 
+        "ConsensusData": "0xd4c2cf748cefce4d003a2964b62ff72d3e7e5cc7", 
+        "CreateBranch": "0x8b3831855fb3957745a4bc8fe7b47c58df812f49", 
+        "CreateMarket": "0x181ab5cfb79c3a4edd7b4556412b40453edeec32", 
+        "EventResolution": "0x2bd7cd93b738b08d4bf45ff81cbf3af12b040cb5", 
+        "Events": "0x3f555874b5e9b24232020241684672ae252b2408", 
+        "ExpiringEvents": "0x471efb3f5e1fa7ba8e5c0dd8212273a745fdeb2f", 
+        "Faucets": "0xe6c4afd17c291eaba28283be18466516e7cbe66d", 
+        "ForkPenalize": "0x0afc4c1c0f972de34d9cb7dd01d20763a18f5da3", 
+        "Forking": "0x90d4121a8b6d95fb4cd8a7b8b178cb2a993aaaa0", 
+        "FxpFunctions": "0x473a03dc4a2e0b9a6a3dee98e60dd1f6f2367e7f", 
+        "Info": "0xd44fc8a7f4fad09b03ce8c8faf553f1c460bb72b", 
+        "MakeReports": "0x2555c1400360b2a72a435a7ee865ec4148df2304", 
+        "Markets": "0x0021916b0510038d709da50bb5ca52a803b260e8", 
+        "PenalizationCatchup": "0x8e185b097420747dbb4277e2a88d77deaab185c9", 
+        "PenalizeNotEnoughReports": "0x6a29642d21c58947dbe94e9d653e24a6aa78c5b0", 
+        "ProportionCorrect": "0x02d8cd4ef37fbbb4b8136a5b1bb3c47c0575862c", 
+        "Reporting": "0x7da19e143eec8a3befddcc8d4407fca5fd3c75f3", 
+        "ReportingThreshold": "0x3357f32e4e69929ac5ba615a7bb379e00c590440", 
+        "RoundTwo": "0x9b8c62d83db48ece72c106aaab6df846fe0dcf40", 
+        "RoundTwoPenalize": "0xf4cddddc63ee4dbedfd26fdd2b8cc27b019788e8", 
+        "SendReputation": "0xa7a02a64bca52b010abae80e9b21c438f1709068", 
+        "SlashRep": "0x5e948be7a66379ecb94d3229bb4fbcbad6fabb9c", 
+        "Trade": "0x21f61bde7303389db1b27419c8d4e7ff4b02fe06", 
+        "Trades": "0x9f5b20b5c77f82a0ccfd6ae05e1e6ab2903e044a"
     }
 }
 },{}],21:[function(require,module,exports){
@@ -8952,10 +9020,6 @@ module.exports={
     "RLP_ENCODING_ERROR": {
         "error": 504,
         "message": "RLP encoding error"
-    },
-    "NO_MARKET_INFO": {
-        "error": 505,
-        "message": "could not retrieve market data"
     },
     "RPC_TIMEOUT": {
         "error": 599,
@@ -16336,7 +16400,7 @@ function xorTest (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":32,"./ghash":37,"buffer":60,"buffer-xor":59,"cipher-base":61,"inherits":126}],34:[function(require,module,exports){
+},{"./aes":32,"./ghash":37,"buffer":60,"buffer-xor":59,"cipher-base":61,"inherits":116}],34:[function(require,module,exports){
 var ciphers = require('./encrypter')
 exports.createCipher = exports.Cipher = ciphers.createCipher
 exports.createCipheriv = exports.Cipheriv = ciphers.createCipheriv
@@ -16490,7 +16554,7 @@ exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":32,"./authCipher":33,"./modes":38,"./modes/cbc":39,"./modes/cfb":40,"./modes/cfb1":41,"./modes/cfb8":42,"./modes/ctr":43,"./modes/ecb":44,"./modes/ofb":45,"./streamCipher":46,"buffer":60,"cipher-base":61,"evp_bytestokey":117,"inherits":126}],36:[function(require,module,exports){
+},{"./aes":32,"./authCipher":33,"./modes":38,"./modes/cbc":39,"./modes/cfb":40,"./modes/cfb1":41,"./modes/cfb8":42,"./modes/ctr":43,"./modes/ecb":44,"./modes/ofb":45,"./streamCipher":46,"buffer":60,"cipher-base":61,"evp_bytestokey":107,"inherits":116}],36:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -16616,7 +16680,7 @@ exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":32,"./authCipher":33,"./modes":38,"./modes/cbc":39,"./modes/cfb":40,"./modes/cfb1":41,"./modes/cfb8":42,"./modes/ctr":43,"./modes/ecb":44,"./modes/ofb":45,"./streamCipher":46,"buffer":60,"cipher-base":61,"evp_bytestokey":117,"inherits":126}],37:[function(require,module,exports){
+},{"./aes":32,"./authCipher":33,"./modes":38,"./modes/cbc":39,"./modes/cfb":40,"./modes/cfb1":41,"./modes/cfb8":42,"./modes/ctr":43,"./modes/ecb":44,"./modes/ofb":45,"./streamCipher":46,"buffer":60,"cipher-base":61,"evp_bytestokey":107,"inherits":116}],37:[function(require,module,exports){
 (function (Buffer){
 var zeros = new Buffer(16)
 zeros.fill(0)
@@ -17094,7 +17158,7 @@ StreamCipher.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":32,"buffer":60,"cipher-base":61,"inherits":126}],47:[function(require,module,exports){
+},{"./aes":32,"buffer":60,"cipher-base":61,"inherits":116}],47:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -17169,7 +17233,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":34,"browserify-aes/modes":38,"browserify-des":48,"browserify-des/modes":49,"evp_bytestokey":117}],48:[function(require,module,exports){
+},{"browserify-aes/browser":34,"browserify-aes/modes":38,"browserify-des":48,"browserify-des/modes":49,"evp_bytestokey":107}],48:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -17216,7 +17280,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"cipher-base":61,"des.js":71,"inherits":126}],49:[function(require,module,exports){
+},{"buffer":60,"cipher-base":61,"des.js":71,"inherits":116}],49:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -17286,7 +17350,7 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":28,"buffer":60,"randombytes":177}],51:[function(require,module,exports){
+},{"bn.js":28,"buffer":60,"randombytes":167}],51:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -17324,7 +17388,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"js-sha3":129}],52:[function(require,module,exports){
+},{"buffer":60,"js-sha3":119}],52:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 exports['RSA-SHA224'] = exports.sha224WithRSAEncryption = {
@@ -17507,7 +17571,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algos":52,"./sign":55,"./verify":56,"buffer":60,"create-hash":65,"inherits":126,"stream":203}],54:[function(require,module,exports){
+},{"./algos":52,"./sign":55,"./verify":56,"buffer":60,"create-hash":65,"inherits":116,"stream":193}],54:[function(require,module,exports){
 'use strict'
 exports['1.3.132.0.10'] = 'secp256k1'
 
@@ -17710,7 +17774,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":54,"bn.js":28,"browserify-rsa":50,"buffer":60,"create-hmac":68,"elliptic":81,"parse-asn1":166}],56:[function(require,module,exports){
+},{"./curves":54,"bn.js":28,"browserify-rsa":50,"buffer":60,"create-hmac":68,"elliptic":81,"parse-asn1":156}],56:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var curves = require('./curves')
@@ -17817,7 +17881,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":54,"bn.js":28,"buffer":60,"elliptic":81,"parse-asn1":166}],57:[function(require,module,exports){
+},{"./curves":54,"bn.js":28,"buffer":60,"elliptic":81,"parse-asn1":156}],57:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
 },{"dup":31}],58:[function(require,module,exports){
 var basex = require('base-x')
@@ -19395,7 +19459,7 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":25,"ieee754":124,"isarray":128}],61:[function(require,module,exports){
+},{"base64-js":25,"ieee754":114,"isarray":118}],61:[function(require,module,exports){
 (function (Buffer){
 var Transform = require('stream').Transform
 var inherits = require('inherits')
@@ -19489,7 +19553,7 @@ CipherBase.prototype._toString = function (value, enc, final) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"inherits":126,"stream":203,"string_decoder":204}],62:[function(require,module,exports){
+},{"buffer":60,"inherits":116,"stream":193,"string_decoder":194}],62:[function(require,module,exports){
 (function (Buffer){
 var clone = (function() {
 'use strict';
@@ -19764,7 +19828,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":127}],64:[function(require,module,exports){
+},{"../../is-buffer/index.js":117}],64:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -19946,7 +20010,7 @@ module.exports = function createHash (alg) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./md5":67,"buffer":60,"cipher-base":61,"inherits":126,"ripemd160":188,"sha.js":196}],66:[function(require,module,exports){
+},{"./md5":67,"buffer":60,"cipher-base":61,"inherits":116,"ripemd160":178,"sha.js":186}],66:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var intSize = 4;
@@ -20212,7 +20276,7 @@ module.exports = function createHmac(alg, key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"create-hash/browser":65,"inherits":126,"stream":203}],69:[function(require,module,exports){
+},{"buffer":60,"create-hash/browser":65,"inherits":116,"stream":193}],69:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -20291,7 +20355,7 @@ var publicEncrypt = require('public-encrypt')
   }
 })
 
-},{"browserify-cipher":47,"browserify-sign":53,"browserify-sign/algos":52,"create-ecdh":64,"create-hash":65,"create-hmac":68,"diffie-hellman":77,"pbkdf2":168,"public-encrypt":171,"randombytes":177}],70:[function(require,module,exports){
+},{"browserify-cipher":47,"browserify-sign":53,"browserify-sign/algos":52,"create-ecdh":64,"create-hash":65,"create-hmac":68,"diffie-hellman":77,"pbkdf2":158,"public-encrypt":161,"randombytes":167}],70:[function(require,module,exports){
 /*!
  * depd
  * Copyright(c) 2015 Douglas Christopher Wilson
@@ -20448,7 +20512,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":126,"minimalistic-assert":161}],73:[function(require,module,exports){
+},{"inherits":116,"minimalistic-assert":151}],73:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -20591,7 +20655,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":161}],74:[function(require,module,exports){
+},{"minimalistic-assert":151}],74:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -20736,7 +20800,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":71,"inherits":126,"minimalistic-assert":161}],75:[function(require,module,exports){
+},{"../des":71,"inherits":116,"minimalistic-assert":151}],75:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -20793,7 +20857,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":71,"inherits":126,"minimalistic-assert":161}],76:[function(require,module,exports){
+},{"../des":71,"inherits":116,"minimalistic-assert":151}],76:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -21265,7 +21329,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":79,"bn.js":28,"buffer":60,"miller-rabin":160,"randombytes":177}],79:[function(require,module,exports){
+},{"./generatePrime":79,"bn.js":28,"buffer":60,"miller-rabin":150,"randombytes":167}],79:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -21372,7 +21436,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":28,"miller-rabin":160,"randombytes":177}],80:[function(require,module,exports){
+},{"bn.js":28,"miller-rabin":150,"randombytes":167}],80:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -22235,7 +22299,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":81,"../curve":84,"bn.js":28,"inherits":126}],84:[function(require,module,exports){
+},{"../../elliptic":81,"../curve":84,"bn.js":28,"inherits":116}],84:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -22427,7 +22491,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":81,"../curve":84,"bn.js":28,"inherits":126}],86:[function(require,module,exports){
+},{"../../elliptic":81,"../curve":84,"bn.js":28,"inherits":116}],86:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -23367,7 +23431,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":81,"../curve":84,"bn.js":28,"inherits":126}],87:[function(require,module,exports){
+},{"../../elliptic":81,"../curve":84,"bn.js":28,"inherits":116}],87:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -23574,7 +23638,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":81,"./precomputed/secp256k1":95,"hash.js":118}],88:[function(require,module,exports){
+},{"../elliptic":81,"./precomputed/secp256k1":95,"hash.js":108}],88:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -24178,7 +24242,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":81,"./key":92,"./signature":93,"hash.js":118}],92:[function(require,module,exports){
+},{"../../elliptic":81,"./key":92,"./signature":93,"hash.js":108}],92:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -24460,7 +24524,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"../elliptic":81,"hash.js":118}],95:[function(require,module,exports){
+},{"../elliptic":81,"hash.js":108}],95:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -25420,15 +25484,8 @@ utils.intFromLE = intFromLE;
 module.exports={
   "_args": [
     [
-      {
-        "name": "elliptic",
-        "raw": "elliptic@^6.2.3",
-        "rawSpec": "^6.2.3",
-        "scope": null,
-        "spec": ">=6.2.3 <7.0.0",
-        "type": "range"
-      },
-      "/Users/k_day/src/augur/augur.js/node_modules/secp256k1"
+      "elliptic@^6.2.3",
+      "/home/abc/work/augur/augur.js/node_modules/secp256k1"
     ]
   ],
   "_from": "elliptic@>=6.2.3 <7.0.0",
@@ -25464,7 +25521,7 @@ module.exports={
   "_shasum": "17781f2109ab0ec686b146bdcff5d2e8c6aeceda",
   "_shrinkwrap": null,
   "_spec": "elliptic@^6.2.3",
-  "_where": "/Users/k_day/src/augur/augur.js/node_modules/secp256k1",
+  "_where": "/home/abc/work/augur/augur.js/node_modules/secp256k1",
   "author": {
     "email": "fedor@indutny.com",
     "name": "Fedor Indutny"
@@ -26290,7 +26347,7 @@ ABI.toSerpent = function (types) {
 module.exports = ABI
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":28,"buffer":60,"ethereumjs-util":109}],102:[function(require,module,exports){
+},{"bn.js":28,"buffer":60,"ethereumjs-util":104}],102:[function(require,module,exports){
 /**
  * Basic Ethereum connection tasks.
  * @author Jack Peterson (jack@tinybike.net)
@@ -26615,4731 +26672,7 @@ module.exports = {
 
 };
 
-},{"async":17,"augur-contracts":106,"ethrpc":110}],103:[function(require,module,exports){
-module.exports={
-  "events": {
-    "Approval": {
-      "contract": "SendReputation", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "_owner", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "_spender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "value", 
-          "type": "int256"
-        }
-      ], 
-      "name": "Approval(int256,int256,int256)", 
-      "signature": "0xe64e66bf3e94c88742c041103133494023640d143db88ec4aec44744744d85f1"
-    }, 
-    "Transfer": {
-      "contract": "SendReputation", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "_from", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "_to", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "_value", 
-          "type": "int256"
-        }
-      ], 
-      "name": "Transfer(int256,int256,int256)", 
-      "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
-    }, 
-    "log_add_tx": {
-      "contract": "BuyAndSellShares", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "sender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradeid", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x8dbed7bffe37a9907a92186110f23d8104f5967a71fb059f3b907ca9001fd160"
-    }, 
-    "log_cancel": {
-      "contract": "BuyAndSellShares", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "sender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradeid", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_cancel(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x9ecf4903f3efaf1549dc51545bd945f94d51923f37ce198a3b838125a2f397d5"
-    }, 
-    "log_fill_tx": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "sender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "owner", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradeid", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x715b9a9cb6dfb4fa9cb1ebc2eba40d2a7bd66aa8cef75f87a77d1ff05d29a3b6"
-    }, 
-    "log_price": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "timestamp", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "trader", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_price(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0xf448ecd2d0b1133184bb354020b9e90e2810dbc78102637d9a054ed06e8506d3"
-    }, 
-    "marketCreated": {
-      "contract": "CreateMarket", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "marketID", 
-          "type": "int256"
-        }
-      ], 
-      "name": "marketCreated(int256)", 
-      "signature": "0x63f140d7adcc464732c9379020aa9e5ce1b1e350796814d780ea3ca41d62a36b"
-    }, 
-    "penalize": {
-      "contract": "Consensus", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "x", 
-          "type": "int256"
-        }
-      ], 
-      "name": "penalize(int256)", 
-      "signature": "0x47471d3c43bf6848bb5a5b5b607af9a50395288681419dd20aa0b89501cb476f"
-    }, 
-    "returnValue": {
-      "contract": "MakeReports", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "x", 
-          "type": "int256"
-        }
-      ], 
-      "name": "returnValue(int256)", 
-      "signature": "0x8bc92e9868f513a8fbcf983ca23f542d05ea98a0e6e3c107c013a07651f59383"
-    }, 
-    "tradeArrayReturnValue": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnArray", 
-          "type": "int256[]"
-        }
-      ], 
-      "name": "tradeArrayReturnValue(int256[])", 
-      "signature": "0xd7ce642fce46a6671b3eb36cf4beeb0d607384f3b8fe09ff9a2d8a0c5d9c0228"
-    }, 
-    "tradeReturnValue": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "tradeReturnValue(int256)", 
-      "signature": "0x34c6d329415f0bdc7259314b660b88f78542d86bd671077ccfba3deeceb4748b"
-    }, 
-    "tradingFeeUpdated": {
-      "contract": "CreateMarket", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "marketID", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradingFee", 
-          "type": "int256"
-        }
-      ], 
-      "name": "tradingFeeUpdated(int256,int256)", 
-      "signature": "0xb8c735cc6495f8dac2581d532413dea78d7e03e0ff0880c32b4648c2145fba41"
-    }
-  }, 
-  "functions": {
-    "Backstops": {
-      "adjForkBondPaid": {
-        "inputs": [
-          "event", 
-          "amount"
-        ], 
-        "method": "adjForkBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "doRoundTwoRefund": {
-        "inputs": [
-          "sender", 
-          "event"
-        ], 
-        "method": "doRoundTwoRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBondAmount": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondAmount", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBondPaid": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBondPoster": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondPoster", 
-        "returns": "address", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBondReturned": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondReturned", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getFinal": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getFinal", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkBondPaid": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkBondPoster": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkBondPoster", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkedOverEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkedOverEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMoved": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMoved", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalBranch": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalVotePeriod": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalVotePeriod", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getResolved": {
-        "inputs": [
-          "branch", 
-          "forkPeriod"
-        ], 
-        "method": "getResolved", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRoundTwo": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRoundTwo", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "increaseBondPaid": {
-        "inputs": [
-          "event", 
-          "amount"
-        ], 
-        "method": "increaseBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBondAmount": {
-        "inputs": [
-          "event", 
-          "amount"
-        ], 
-        "method": "setBondAmount", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBondPoster": {
-        "inputs": [
-          "event", 
-          "bondPoster"
-        ], 
-        "method": "setBondPoster", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBondReturned": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setBondReturned", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setFinal": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setFinal", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setForkBondPoster": {
-        "inputs": [
-          "event", 
-          "poster"
-        ], 
-        "method": "setForkBondPoster", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkedOverEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setForkedOverEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setMoved": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setMoved", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setOriginalBranch": {
-        "inputs": [
-          "event", 
-          "branch"
-        ], 
-        "method": "setOriginalBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOriginalEthicality": {
-        "inputs": [
-          "event", 
-          "ethicality"
-        ], 
-        "method": "setOriginalEthicality", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOriginalOutcome": {
-        "inputs": [
-          "event", 
-          "originalOutcome"
-        ], 
-        "method": "setOriginalOutcome", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOriginalVotePeriod": {
-        "inputs": [
-          "event", 
-          "period"
-        ], 
-        "method": "setOriginalVotePeriod", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setResolved": {
-        "inputs": [
-          "branch", 
-          "forkPeriod", 
-          "winner"
-        ], 
-        "method": "setResolved", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRoundTwo": {
-        "inputs": [
-          "event", 
-          "roundTwo"
-        ], 
-        "method": "setRoundTwo", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRoundTwoRefund": {
-        "inputs": [
-          "event", 
-          "amt"
-        ], 
-        "method": "setRoundTwoRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Branches": {
-      "addMarketToBranch": {
-        "inputs": [
-          "branch", 
-          "market"
-        ], 
-        "method": "addMarketToBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBaseReporters": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getBaseReporters", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranchByNum": {
-        "inputs": [
-          "branchNumber"
-        ], 
-        "method": "getBranchByNum", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranches": {
-        "method": "getBranches", 
-        "returns": "hash[]"
-      }, 
-      "getCreationDate": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getCreationDate", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventForkedOver": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getEventForkedOver", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getForkPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getInitialBalance": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getInitialBalance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getMarketsInBranch": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getMarketsInBranch", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMinTradingFee": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getMinTradingFee", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumBranches": {
-        "method": "getNumBranches", 
-        "returns": "number"
-      }, 
-      "getNumMarketsBranch": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getNumMarketsBranch", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOracleOnly": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getOracleOnly", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getParent": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getParent", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getParentPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getParentPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getPeriodLength": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getPeriodLength", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getSomeMarketsInBranch": {
-        "inputs": [
-          "branch", 
-          "initial", 
-          "last"
-        ], 
-        "method": "getSomeMarketsInBranch", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getVotePeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getVotePeriod", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "incrementPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "incrementPeriod", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "initDefaultBranch": {
-        "method": "initDefaultBranch", 
-        "returns": "number", 
-        "send": true
-      }, 
-      "initializeBranch": {
-        "inputs": [
-          "ID", 
-          "currentVotePeriod", 
-          "periodLength", 
-          "minTradingFee", 
-          "oracleOnly", 
-          "parentPeriod", 
-          "parent"
-        ], 
-        "method": "initializeBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBaseReporters": {
-        "inputs": [
-          "branch", 
-          "num"
-        ], 
-        "method": "setBaseReporters", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEventForkedOver": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "setEventForkedOver", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "setForkPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setInitialBalance": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "balance"
-        ], 
-        "method": "setInitialBalance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "BuyAndSellShares": {
-      "buy": {
-        "inputs": [
-          "amount", 
-          "price", 
-          "market", 
-          "outcome"
-        ], 
-        "method": "buy", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "cancel": {
-        "inputs": [
-          "trade_id"
-        ], 
-        "method": "cancel", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "sell": {
-        "inputs": [
-          "amount", 
-          "price", 
-          "market", 
-          "outcome"
-        ], 
-        "method": "sell", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Cash": {
-      "addCash": {
-        "inputs": [
-          "ID", 
-          "amount"
-        ], 
-        "method": "addCash", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "balance": {
-        "inputs": [
-          "address"
-        ], 
-        "method": "balance", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "depositEther": {
-        "method": "depositEther", 
-        "returns": "number", 
-        "send": true
-      }, 
-      "initiateOwner": {
-        "inputs": [
-          "account"
-        ], 
-        "method": "initiateOwner", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "send": {
-        "inputs": [
-          "recver", 
-          "value"
-        ], 
-        "method": "send", 
-        "returns": "unfix", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "sendFrom": {
-        "inputs": [
-          "recver", 
-          "value", 
-          "from"
-        ], 
-        "method": "sendFrom", 
-        "returns": "unfix", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setCash": {
-        "inputs": [
-          "address", 
-          "balance"
-        ], 
-        "method": "setCash", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "subtractCash": {
-        "inputs": [
-          "ID", 
-          "amount"
-        ], 
-        "method": "subtractCash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "withdrawEther": {
-        "inputs": [
-          "to", 
-          "value"
-        ], 
-        "method": "withdrawEther", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarket": {
-      "claimProceeds": {
-        "inputs": [
-          "branch", 
-          "market"
-        ], 
-        "method": "claimProceeds", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "closeMarket": {
-        "inputs": [
-          "branch", 
-          "market", 
-          "sender"
-        ], 
-        "method": "closeMarket", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarketOne": {
-      "oneOutcome": {
-        "inputs": [
-          "market", 
-          "winningOutcome", 
-          "sender", 
-          "categoricalPointFive", 
-          "numOutcomes"
-        ], 
-        "method": "oneOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarketTwo": {
-      "twoOutcomes": {
-        "inputs": [
-          "market", 
-          "winningOutcome", 
-          "event", 
-          "sender"
-        ], 
-        "method": "twoOutcomes", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CollectFees": {
-      "collectFees": {
-        "inputs": [
-          "branch", 
-          "sender"
-        ], 
-        "method": "collectFees", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CompleteSets": {
-      "buyCompleteSets": {
-        "inputs": [
-          "market", 
-          "amount"
-        ], 
-        "method": "buyCompleteSets", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "sellCompleteSets": {
-        "inputs": [
-          "market", 
-          "amount"
-        ], 
-        "method": "sellCompleteSets", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CompositeGetters": {
-      "batchGetMarketInfo": {
-        "inputs": [
-          "marketIDs"
-        ], 
-        "method": "batchGetMarketInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256[]"
-        ]
-      }, 
-      "getMarketInfo": {
-        "inputs": [
-          "marketID"
-        ], 
-        "method": "getMarketInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketInfoCache": {
-        "inputs": [
-          "marketID"
-        ], 
-        "method": "getMarketInfoCache", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketsInfo": {
-        "inputs": [
-          "branch", 
-          "offset", 
-          "numMarketsToLoad"
-        ], 
-        "method": "getMarketsInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getOrderBook": {
-        "inputs": [
-          "marketID"
-        ], 
-        "method": "getOrderBook", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Consensus": {
-      "incrementPeriodAfterReporting": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "incrementPeriodAfterReporting", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "penalizeWrong": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "penalizeWrong", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "ConsensusData": {
-      "doRefund": {
-        "inputs": [
-          "sender", 
-          "refunder"
-        ], 
-        "method": "doRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBaseReportersLastPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getBaseReportersLastPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDenominator": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getDenominator", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getFeeFirst": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getFeeFirst", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getFeesCollected": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "getFeesCollected", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNotEnoughPenalized": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "getNotEnoughPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPenalized": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "event"
-        ], 
-        "method": "getPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPenalizedNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getPenalizedNum", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPenalizedUpTo": {
-        "inputs": [
-          "branch", 
-          "sender"
-        ], 
-        "method": "getPenalizedUpTo", 
-        "returns": "int", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPeriodBalance": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getPeriodBalance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRepRedistributionDone": {
-        "inputs": [
-          "branch", 
-          "reporter"
-        ], 
-        "method": "getRepRedistributionDone", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getSlashed": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "reporter"
-        ], 
-        "method": "getSlashed", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "increaseDenominator": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "amount"
-        ], 
-        "method": "increaseDenominator", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "increasePenalizedNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "amount"
-        ], 
-        "method": "increasePenalizedNum", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBaseReportersLastPeriod": {
-        "inputs": [
-          "branch", 
-          "amount"
-        ], 
-        "method": "setBaseReportersLastPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setFeeFirst": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "val"
-        ], 
-        "method": "setFeeFirst", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setFeesCollected": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "setFeesCollected", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setNotEnoughPenalized": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "setNotEnoughPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPenalized": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "event"
-        ], 
-        "method": "setPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPenalizedUpTo": {
-        "inputs": [
-          "branch", 
-          "sender", 
-          "period"
-        ], 
-        "method": "setPenalizedUpTo", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPeriodBalance": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "balance"
-        ], 
-        "method": "setPeriodBalance", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRefund": {
-        "inputs": [
-          "refunder", 
-          "amt"
-        ], 
-        "method": "setRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setSlashed": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "reporter"
-        ], 
-        "method": "setSlashed", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CreateBranch": {
-      "createSubbranch": {
-        "inputs": [
-          "description", 
-          "periodLength", 
-          "parent", 
-          "minTradingFee", 
-          "oracleOnly"
-        ], 
-        "method": "createSubbranch", 
-        "returns": "hash", 
-        "send": true, 
-        "signature": [
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CreateMarket": {
-      "createEvent": {
-        "inputs": [
-          "branch", 
-          "description", 
-          "expDate", 
-          "minValue", 
-          "maxValue", 
-          "numOutcomes", 
-          "resolution"
-        ], 
-        "method": "createEvent", 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "createMarket": {
-        "inputs": [
-          "branch", 
-          "description", 
-          "tradingFee", 
-          "event", 
-          "tag1", 
-          "tag2", 
-          "tag3", 
-          "makerFees", 
-          "extraInfo"
-        ], 
-        "method": "createMarket", 
-        "mutable": true, 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "createSingleEventMarket": {
-        "inputs": [
-          "branch", 
-          "description", 
-          "expDate", 
-          "minValue", 
-          "maxValue", 
-          "numOutcomes", 
-          "resolution", 
-          "tradingFee", 
-          "tag1", 
-          "tag2", 
-          "tag3", 
-          "makerFees", 
-          "extraInfo"
-        ], 
-        "method": "createSingleEventMarket", 
-        "mutable": true, 
-        "returns": "hash", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "pushMarketForward": {
-        "inputs": [
-          "branch", 
-          "market"
-        ], 
-        "method": "pushMarketForward", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "updateTradingFee": {
-        "inputs": [
-          "branch", 
-          "market", 
-          "tradingFee"
-        ], 
-        "method": "updateTradingFee", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "EventResolution": {
-      "determineWinningOutcomes": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "determineWinningOutcomes", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "resolveBinary": {
-        "inputs": [
-          "event", 
-          "market", 
-          "branch", 
-          "votingPeriodEvent"
-        ], 
-        "method": "resolveBinary", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "resolveCategoricalOrScalar": {
-        "inputs": [
-          "scaled_min", 
-          "scaled_max", 
-          "event", 
-          "market", 
-          "branch", 
-          "votingPeriodEvent"
-        ], 
-        "method": "resolveCategoricalOrScalar", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Events": {
-      "addMarket": {
-        "inputs": [
-          "event", 
-          "marketID"
-        ], 
-        "method": "addMarket", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addPast24": {
-        "inputs": [
-          "period"
-        ], 
-        "method": "addPast24", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBond": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBond", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranch": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEthical": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEthical", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEthics": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEthics", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventBranch": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventBranch", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventInfo": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventPushedUp": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventPushedUp", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventResolution": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventResolution", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getExpiration": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getExpiration", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForked": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForked", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkedDone": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkedDone", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarket": {
-        "inputs": [
-          "event", 
-          "marketIndex"
-        ], 
-        "method": "getMarket", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getMarkets": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMarkets", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMaxValue": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMaxValue", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMinValue": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMinValue", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumMarkets": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getNumMarkets", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumOutcomes": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getNumOutcomes", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalExpiration": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalExpiration", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOutcome", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getPast24": {
-        "inputs": [
-          "period"
-        ], 
-        "method": "getPast24", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getRejected": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRejected", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getRejectedPeriod": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRejectedPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getReportingThreshold": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getReportingThreshold", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getResolution": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getResolution", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getUncaughtOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getUncaughtOutcome", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getmode": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getmode", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "initializeEvent": {
-        "inputs": [
-          "ID", 
-          "branch", 
-          "expirationDate", 
-          "minValue", 
-          "maxValue", 
-          "numOutcomes", 
-          "resolution"
-        ], 
-        "method": "initializeEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "setBond": {
-        "inputs": [
-          "event", 
-          "bond"
-        ], 
-        "method": "setBond", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBranch": {
-        "inputs": [
-          "event", 
-          "branch"
-        ], 
-        "method": "setBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEthics": {
-        "inputs": [
-          "event", 
-          "ethicality"
-        ], 
-        "method": "setEthics", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEventPushedUp": {
-        "inputs": [
-          "event", 
-          "val"
-        ], 
-        "method": "setEventPushedUp", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setExpiration": {
-        "inputs": [
-          "event", 
-          "date"
-        ], 
-        "method": "setExpiration", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkDone": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setForkDone", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setForkEthicality": {
-        "inputs": [
-          "event", 
-          "value"
-        ], 
-        "method": "setForkEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkOutcome": {
-        "inputs": [
-          "event", 
-          "value"
-        ], 
-        "method": "setForkOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForked": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setForked", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setOriginalExpiration": {
-        "inputs": [
-          "event", 
-          "date"
-        ], 
-        "method": "setOriginalExpiration", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOutcome": {
-        "inputs": [
-          "ID", 
-          "outcome"
-        ], 
-        "method": "setOutcome", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRejected": {
-        "inputs": [
-          "event", 
-          "period"
-        ], 
-        "method": "setRejected", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setThreshold": {
-        "inputs": [
-          "event", 
-          "threshold"
-        ], 
-        "method": "setThreshold", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setUncaughtOutcome": {
-        "inputs": [
-          "event", 
-          "outcome"
-        ], 
-        "method": "setUncaughtOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setmode": {
-        "inputs": [
-          "event", 
-          "mode"
-        ], 
-        "method": "setmode", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "ExpiringEvents": {
-      "addEvent": {
-        "inputs": [
-          "branch", 
-          "futurePeriod", 
-          "eventID", 
-          "subsidy"
-        ], 
-        "method": "addEvent", 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addRepEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "event", 
-          "amount"
-        ], 
-        "method": "addRepEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addReportToEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "eventID", 
-          "sender"
-        ], 
-        "method": "addReportToEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addReportersPaidSoFar": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "addReportersPaidSoFar", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addRoundTwo": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "addRoundTwo", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addToWeightOfReport": {
-        "inputs": [
-          "period", 
-          "event", 
-          "report", 
-          "amount"
-        ], 
-        "method": "addToWeightOfReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "adjustPeriodShareValueOutstanding": {
-        "inputs": [
-          "branch", 
-          "expIndex", 
-          "amount"
-        ], 
-        "method": "adjustPeriodShareValueOutstanding", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "deleteEvent": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "deleteEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getAfterRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getAfterRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBeforeRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getBeforeRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getCurrentMode": {
-        "inputs": [
-          "period", 
-          "event"
-        ], 
-        "method": "getCurrentMode", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getCurrentModeItems": {
-        "inputs": [
-          "period", 
-          "event"
-        ], 
-        "method": "getCurrentModeItems", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEthicReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "sender"
-        ], 
-        "method": "getEthicReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEvent": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "eventIndex"
-        ], 
-        "method": "getEvent", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventIndex": {
-        "inputs": [
-          "period", 
-          "eventID"
-        ], 
-        "method": "getEventIndex", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEvents": {
-        "inputs": [
-          "branch", 
-          "expDateIndex"
-        ], 
-        "method": "getEvents", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventsRange": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "start", 
-          "end"
-        ], 
-        "method": "getEventsRange", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getLesserReportNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "getLesserReportNum", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumEventsToReportOn": {
-        "inputs": [
-          "branch", 
-          "expDateIndex"
-        ], 
-        "method": "getNumEventsToReportOn", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumRemoved": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getNumRemoved", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumReportsActual": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "getNumReportsActual", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumReportsEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "eventID"
-        ], 
-        "method": "getNumReportsEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumRequired": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getNumRequired", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumRoundTwo": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getNumRoundTwo", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumberEvents": {
-        "inputs": [
-          "branch", 
-          "expDateIndex"
-        ], 
-        "method": "getNumberEvents", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPeriodDormantRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getPeriodDormantRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPeriodRepConstant": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "getPeriodRepConstant", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRepEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "event"
-        ], 
-        "method": "getRepEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "sender"
-        ], 
-        "method": "getReport", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReportHash": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "event"
-        ], 
-        "method": "getReportHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReportersPaidSoFar": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "getReportersPaidSoFar", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRequired": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRequired", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getSaltyHash": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "event"
-        ], 
-        "method": "getSaltyHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getShareValue": {
-        "inputs": [
-          "branch", 
-          "expIndex"
-        ], 
-        "method": "getShareValue", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getSubsidy": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "getSubsidy", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getWeightOfReport": {
-        "inputs": [
-          "period", 
-          "event", 
-          "report"
-        ], 
-        "method": "getWeightOfReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "moveEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "moveEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "refundCost": {
-        "inputs": [
-          "to", 
-          "value"
-        ], 
-        "method": "refundCost", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "removeEvent": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "removeEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setAfterRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "rep", 
-          "sender"
-        ], 
-        "method": "setAfterRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBeforeRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "rep", 
-          "sender"
-        ], 
-        "method": "setBeforeRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setCurrentMode": {
-        "inputs": [
-          "period", 
-          "event", 
-          "mode"
-        ], 
-        "method": "setCurrentMode", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setCurrentModeItems": {
-        "inputs": [
-          "period", 
-          "event", 
-          "modeReport"
-        ], 
-        "method": "setCurrentModeItems", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEthicReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "ethics", 
-          "sender"
-        ], 
-        "method": "setEthicReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEventRequired": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "setEventRequired", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setLesserReportNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "num"
-        ], 
-        "method": "setLesserReportNum", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setNumEventsToReportOn": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "setNumEventsToReportOn", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setNumReportsEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "eventID", 
-          "num"
-        ], 
-        "method": "setNumReportsEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPeriodDormantRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "rep", 
-          "sender"
-        ], 
-        "method": "setPeriodDormantRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPeriodRepConstant": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "sender", 
-          "value"
-        ], 
-        "method": "setPeriodRepConstant", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "report", 
-          "sender"
-        ], 
-        "method": "setReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setReportHash": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "reportHash", 
-          "event"
-        ], 
-        "method": "setReportHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setSaltyHash": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "saltyHash", 
-          "event"
-        ], 
-        "method": "setSaltyHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Faucets": {
-      "cashFaucet": {
-        "method": "cashFaucet", 
-        "returns": "number", 
-        "send": true
-      }, 
-      "claimInitialRep": {
-        "inputs": [
-          "parent", 
-          "branch"
-        ], 
-        "method": "claimInitialRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "fundNewAccount": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "fundNewAccount", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "reputationFaucet": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "reputationFaucet", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "ForkPenalize": {
-      "penalizeOnForkedEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "penalizeOnForkedEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "proportionCorrectForkEvent": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "proportionCorrectForkEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Forking": {
-      "exchangeRate": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "exchangeRate", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "fork": {
-        "inputs": [
-          "event", 
-          "branch", 
-          "forkedOverEthicality"
-        ], 
-        "method": "fork", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "move_event": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "move_event", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "resolveForkEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "resolveForkEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "resolveForkedEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "resolveForkedEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "resolve_fork": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "resolve_fork", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "FxpFunctions": {
-      "fx_exp": {
-        "inputs": [
-          "x"
-        ], 
-        "method": "fx_exp", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "fx_log": {
-        "inputs": [
-          "x"
-        ], 
-        "method": "fx_log", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "sqrt": {
-        "inputs": [
-          "n"
-        ], 
-        "method": "sqrt", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Info": {
-      "getCreationFee": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getCreationFee", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getCreator": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getCreator", 
-        "returns": "address", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDescription": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getDescription", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDescriptionLength": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getDescriptionLength", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setInfo": {
-        "inputs": [
-          "ID", 
-          "description", 
-          "creator", 
-          "fee"
-        ], 
-        "method": "setInfo", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "MakeReports": {
-      "makeHash": {
-        "inputs": [
-          "salt", 
-          "report", 
-          "eventID", 
-          "sender"
-        ], 
-        "method": "makeHash", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "submitReport": {
-        "inputs": [
-          "event", 
-          "salt", 
-          "report", 
-          "ethics"
-        ], 
-        "method": "submitReport", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "submitReportHash": {
-        "inputs": [
-          "event", 
-          "reportHash", 
-          "encryptedSaltyHash"
-        ], 
-        "method": "submitReportHash", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "validateReport": {
-        "inputs": [
-          "eventID", 
-          "branch", 
-          "votePeriod", 
-          "report", 
-          "forkedOverEthicality", 
-          "forkedOverThisEvent", 
-          "roundTwo", 
-          "balance"
-        ], 
-        "method": "validateReport", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Markets": {
-      "addFees": {
-        "inputs": [
-          "market", 
-          "amount"
-        ], 
-        "method": "addFees", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addToMarketsHash": {
-        "inputs": [
-          "branch", 
-          "newHash"
-        ], 
-        "method": "addToMarketsHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addTrade": {
-        "inputs": [
-          "market", 
-          "trade_id", 
-          "last_id"
-        ], 
-        "method": "addTrade", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBondsMan": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getBondsMan", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranchID": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getBranchID", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getCreationTime": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getCreationTime", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getCumScale": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getCumScale", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getExtraInfo": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getExtraInfo", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getFees": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getFees", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getLastExpDate": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getLastExpDate", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getLastOutcomePrice": {
-        "inputs": [
-          "market", 
-          "outcome"
-        ], 
-        "method": "getLastOutcomePrice", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getLastTrade": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getLastTrade", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMakerFees": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getMakerFees", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketEvent": {
-        "inputs": [
-          "market", 
-          "index"
-        ], 
-        "method": "getMarketEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getMarketEvents": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getMarketEvents", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketNumOutcomes": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getMarketNumOutcomes", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketsHash": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getMarketsHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumEvents": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getNumEvents", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOneWinningOutcome": {
-        "inputs": [
-          "market", 
-          "num"
-        ], 
-        "method": "getOneWinningOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getOriginalTradingPeriod": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getOriginalTradingPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getParticipantSharesPurchased": {
-        "inputs": [
-          "market", 
-          "trader", 
-          "outcome"
-        ], 
-        "method": "getParticipantSharesPurchased", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPushedForward": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getPushedForward", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getSender": {
-        "method": "getSender", 
-        "returns": "int256"
-      }, 
-      "getSharesPurchased": {
-        "inputs": [
-          "market", 
-          "outcome"
-        ], 
-        "method": "getSharesPurchased", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getSharesValue": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getSharesValue", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTotalSharesPurchased": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getTotalSharesPurchased", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTradingFee": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getTradingFee", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTradingPeriod": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getTradingPeriod", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getVolume": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getVolume", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getWinningOutcomes": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getWinningOutcomes", 
-        "returns": "number[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_total_trades": {
-        "inputs": [
-          "market_id"
-        ], 
-        "method": "get_total_trades", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_trade_ids": {
-        "inputs": [
-          "market_id"
-        ], 
-        "method": "get_trade_ids", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getgasSubsidy": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getgasSubsidy", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "initializeMarket": {
-        "inputs": [
-          "marketID", 
-          "events", 
-          "tradingPeriod", 
-          "tradingFee", 
-          "branch", 
-          "tag1", 
-          "tag2", 
-          "tag3", 
-          "makerFees", 
-          "cumScale", 
-          "numOutcomes", 
-          "extraInfo", 
-          "gasSubsidy", 
-          "creationFee", 
-          "lastExpDate"
-        ], 
-        "method": "initializeMarket", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "modifyParticipantShares": {
-        "inputs": [
-          "marketID", 
-          "trader", 
-          "outcome", 
-          "amount", 
-          "cancel"
-        ], 
-        "method": "modifyParticipantShares", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "modifyShares": {
-        "inputs": [
-          "marketID", 
-          "outcome", 
-          "amount"
-        ], 
-        "method": "modifyShares", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "modifySharesValue": {
-        "inputs": [
-          "marketID", 
-          "amount"
-        ], 
-        "method": "modifySharesValue", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "refundClosing": {
-        "inputs": [
-          "market", 
-          "to"
-        ], 
-        "method": "refundClosing", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "remove_trade_from_market": {
-        "inputs": [
-          "market_id", 
-          "trade_id"
-        ], 
-        "method": "remove_trade_from_market", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "returnTags": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "returnTags", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setPrice": {
-        "inputs": [
-          "market", 
-          "outcome", 
-          "price"
-        ], 
-        "method": "setPrice", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPushedForward": {
-        "inputs": [
-          "market", 
-          "bool", 
-          "sender"
-        ], 
-        "method": "setPushedForward", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setTradingFee": {
-        "inputs": [
-          "market", 
-          "fee"
-        ], 
-        "method": "setTradingFee", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setTradingPeriod": {
-        "inputs": [
-          "market", 
-          "period"
-        ], 
-        "method": "setTradingPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setWinningOutcomes": {
-        "inputs": [
-          "market", 
-          "outcomes"
-        ], 
-        "method": "setWinningOutcomes", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]"
-        ]
-      }
-    }, 
-    "PenalizationCatchup": {
-      "penalizationCatchup": {
-        "inputs": [
-          "branch", 
-          "sender"
-        ], 
-        "method": "penalizationCatchup", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "PenalizeNotEnoughReports": {
-      "proveReporterDidntReportEnough": {
-        "inputs": [
-          "branch", 
-          "reporter", 
-          "eventExample"
-        ], 
-        "method": "proveReporterDidntReportEnough", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "ProportionCorrect": {
-      "proportionCorrect": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "proportionCorrect", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Reporting": {
-      "addDormantRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "addDormantRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "addRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addReporter": {
-        "inputs": [
-          "branch", 
-          "sender", 
-          "amount", 
-          "dormant", 
-          "repToBonderOrBranch"
-        ], 
-        "method": "addReporter", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "adjustActiveRep": {
-        "inputs": [
-          "branch", 
-          "amount"
-        ], 
-        "method": "adjustActiveRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "balanceOf": {
-        "inputs": [
-          "branch", 
-          "address"
-        ], 
-        "method": "balanceOf", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "checkContractWhitelist": {
-        "inputs": [
-          "contract", 
-          "address"
-        ], 
-        "method": "checkContractWhitelist", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "checkWhitelist": {
-        "inputs": [
-          "address"
-        ], 
-        "method": "checkWhitelist", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getActiveRep": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getActiveRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDormantRepByIndex": {
-        "inputs": [
-          "branch", 
-          "repIndex"
-        ], 
-        "method": "getDormantRepByIndex", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getFork": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getFork", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumberReporters": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getNumberReporters", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getRepBalance": {
-        "inputs": [
-          "branch", 
-          "address"
-        ], 
-        "method": "getRepBalance", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRepByIndex": {
-        "inputs": [
-          "branch", 
-          "repIndex"
-        ], 
-        "method": "getRepByIndex", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReporterID": {
-        "inputs": [
-          "branch", 
-          "index"
-        ], 
-        "method": "getReporterID", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReputation": {
-        "inputs": [
-          "address"
-        ], 
-        "method": "getReputation", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTotalRep": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getTotalRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "repIDToIndex": {
-        "inputs": [
-          "branch", 
-          "repID"
-        ], 
-        "method": "repIDToIndex", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setFork": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "setFork", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setInitialReporters": {
-        "inputs": [
-          "parent", 
-          "branchID"
-        ], 
-        "method": "setInitialReporters", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "newRep"
-        ], 
-        "method": "setRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setSaleDistribution": {
-        "inputs": [
-          "addresses", 
-          "balances", 
-          "branchID"
-        ], 
-        "method": "setSaleDistribution", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256[]", 
-          "int256[]", 
-          "int256"
-        ]
-      }, 
-      "setWhitelist": {
-        "inputs": [
-          "contract", 
-          "addresses"
-        ], 
-        "method": "setWhitelist", 
-        "returns": "string", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256[]"
-        ]
-      }, 
-      "subtractDormantRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "subtractDormantRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "subtractRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "subtractRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "totalSupply": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "totalSupply", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "ReportingThreshold": {
-      "calculateReportTargetForEvent": {
-        "inputs": [
-          "branch", 
-          "eventID", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "calculateReportTargetForEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "calculateReportingThreshold": {
-        "inputs": [
-          "branch", 
-          "eventID", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "calculateReportingThreshold", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventCanReportOn": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "event"
-        ], 
-        "method": "getEventCanReportOn", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventsToReportOn": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "start"
-        ], 
-        "method": "getEventsToReportOn", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setReportingThreshold": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setReportingThreshold", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "RoundTwo": {
-      "resolve": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "resolve", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "roundTwoPostBond": {
-        "inputs": [
-          "branch", 
-          "event", 
-          "eventIndex", 
-          "votePeriod"
-        ], 
-        "method": "roundTwoPostBond", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "roundTwoResolve": {
-        "inputs": [
-          "branch", 
-          "event", 
-          "eventIndex", 
-          "sender"
-        ], 
-        "method": "roundTwoResolve", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "RoundTwoPenalize": {
-      "penalizeRoundTwoWrong": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "penalizeRoundTwoWrong", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "SendReputation": {
-      "allowance": {
-        "inputs": [
-          "owner", 
-          "spender"
-        ], 
-        "method": "allowance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "approve": {
-        "inputs": [
-          "branch", 
-          "spender", 
-          "value"
-        ], 
-        "method": "approve", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "convertToActiveRep": {
-        "inputs": [
-          "branch", 
-          "value"
-        ], 
-        "method": "convertToActiveRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "convertToDormantRep": {
-        "inputs": [
-          "branch", 
-          "value"
-        ], 
-        "method": "convertToDormantRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "sendReputation": {
-        "inputs": [
-          "branch", 
-          "recver", 
-          "value"
-        ], 
-        "method": "sendReputation", 
-        "returns": "unfix", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "transfer": {
-        "inputs": [
-          "branch", 
-          "recver", 
-          "value"
-        ], 
-        "method": "transfer", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "transferFrom": {
-        "inputs": [
-          "branch", 
-          "from", 
-          "recver", 
-          "value"
-        ], 
-        "method": "transferFrom", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "SlashRep": {
-      "slashRep": {
-        "inputs": [
-          "branch", 
-          "salt", 
-          "report", 
-          "reporter", 
-          "eventID"
-        ], 
-        "method": "slashRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Trade": {
-      "short_sell": {
-        "inputs": [
-          "buyer_trade_id", 
-          "max_amount"
-        ], 
-        "method": "short_sell", 
-        "mutable": true, 
-        "returns": "hash[]", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "trade": {
-        "inputs": [
-          "max_value", 
-          "max_amount", 
-          "trade_ids"
-        ], 
-        "method": "trade", 
-        "mutable": true, 
-        "returns": "hash[]", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256[]"
-        ]
-      }
-    }, 
-    "Trades": {
-      "checkHash": {
-        "inputs": [
-          "tradeHash", 
-          "sender"
-        ], 
-        "method": "checkHash", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "commitTrade": {
-        "inputs": [
-          "hash"
-        ], 
-        "method": "commitTrade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "fill_trade": {
-        "inputs": [
-          "id", 
-          "fill"
-        ], 
-        "method": "fill_trade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getID": {
-        "inputs": [
-          "tradeID"
-        ], 
-        "method": "getID", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_amount": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "get_amount", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_price": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "get_price", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_trade": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "get_trade", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "makeTradeHash": {
-        "inputs": [
-          "max_value", 
-          "max_amount", 
-          "trade_ids"
-        ], 
-        "method": "makeTradeHash", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256[]"
-        ]
-      }, 
-      "remove_trade": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "remove_trade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "saveTrade": {
-        "inputs": [
-          "trade_id", 
-          "type", 
-          "market", 
-          "amount", 
-          "price", 
-          "sender", 
-          "outcome"
-        ], 
-        "method": "saveTrade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "update_trade": {
-        "inputs": [
-          "id", 
-          "price"
-        ], 
-        "method": "update_trade", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "zeroHash": {
-        "method": "zeroHash", 
-        "returns": "number", 
-        "send": true
-      }
-    }
-  }
-}
-},{}],104:[function(require,module,exports){
-module.exports={
-    "10101": {
-        "Backstops": "0x0d6100f462e8673897a8af2294a542905c2c4669", 
-        "Branches": "0xaa73c1abe075999ce7dd8fd7f311c26af4ecb412", 
-        "BuyAndSellShares": "0x45337ca8b048ef1c9e2d6a344d37363f3d61916e", 
-        "Cash": "0x653010f2b4d09e2fb3938e90d4914e3f3b52649f", 
-        "CloseMarket": "0xa460d3a8246acd3a40d7da09f79c1b3ed77613ac", 
-        "CloseMarketOne": "0x2c57feb0c6eb05993cf94a152a7a323c105db5d0", 
-        "CloseMarketTwo": "0xb4ad25d0f24839b2de7788ddb1a3868921a49086", 
-        "CollectFees": "0x27442a9c083e651f576030719b095e2cb1d59cce", 
-        "CompleteSets": "0x5c01ef538efc55616dcb977c68fa9c1f84005744", 
-        "CompositeGetters": "0x2924c7b2b8153151ba16568e9c522b1f885f7d80", 
-        "Consensus": "0x74060ea065bd19fae3c5f24aec81511ea8d1c404", 
-        "ConsensusData": "0x6575eb2dc9b2afca07f52480ae6e6e86fb364675", 
-        "CreateBranch": "0xd2a53aa4036276246927cd20172af948527b114e", 
-        "CreateMarket": "0xf8f9eb56210845d8334182dffd1736508755f6e4", 
-        "EventResolution": "0xcf0602a73d78c1269f45e042dcb6763aa6c54e8c", 
-        "Events": "0xb596f4df9ea33dfe729c3240f7b5384011dc4126", 
-        "ExpiringEvents": "0x60eaf6fbc260bb399d169d5ebc014dcbe049429f", 
-        "Faucets": "0x89904e30165ed8d32ca0d49b436cc10c86bebefe", 
-        "ForkPenalize": "0x4d395739be03348465a6c2a0d99ee246dfcd1a81", 
-        "Forking": "0x6c161e7817e4e6d298d8686e580f5294646933ce", 
-        "FxpFunctions": "0xe8a5ccc31fbc3b0f4fe6187ba7896f3878a9c4d6", 
-        "Info": "0x4e41f6b5733191d1f0f0fff26fcff61926885c85", 
-        "MakeReports": "0xbd6f40053cffb017b99cc0427b38611e404554f1", 
-        "Markets": "0xaf2751b0146ab6f846f9f399a3bf0ebb2e425463", 
-        "PenalizationCatchup": "0x0fc1c598469b6fefe3dccca1bb2b96641d215077", 
-        "PenalizeNotEnoughReports": "0x9440afa9204905b721aaf317bc4a3be7d1e824f9", 
-        "ProportionCorrect": "0x1fd628402b00f64562d0b56bb0dc88549f080210", 
-        "Reporting": "0x05ba0acf326532b53c738bf6b28ad523987aa9f5", 
-        "ReportingThreshold": "0x30a6160e55d9af16ef784632e3ddf709d3550abd", 
-        "RoundTwo": "0xb6f31bde9b0a0879866c82d268b4ca839b3bdbb2", 
-        "RoundTwoPenalize": "0x56678a73cbea68580649ed1b5c9b9369419b9bee", 
-        "SendReputation": "0xb1836ac3300b1f5f4445098df6e5c5fdfdd79674", 
-        "SlashRep": "0x9ab5dadbf6c2c3928f5420ea842183ac5e285252", 
-        "Trade": "0xd0473b70530a37743d63268ed9e8544c01c0a7a6", 
-        "Trades": "0x401a31250646bb68e2169bbdc0a8834d0f375ecb"
-    }, 
-    "2": {
-        "Backstops": "0x953e57d6abd49bf60d6a8403b50b241847b1e50d", 
-        "Branches": "0x5ca040a9b17c85acbfa1fec9eead60457e1da872", 
-        "BuyAndSellShares": "0x770114a2beb82282226d8917f229df6977cd568d", 
-        "Cash": "0x34a382fca0d3a6f318bbe565e4c77c86e3cfb448", 
-        "CloseMarket": "0x857f6cd666934c05a32704109fbee92773454c1f", 
-        "CloseMarketOne": "0xd8d75f35e05ff00065944041d4248c2bae18d418", 
-        "CloseMarketTwo": "0xee856109cd107e5521b86374dd53c8b2120ab14f", 
-        "CollectFees": "0xa5f4f3b326e1719b9ece4058aceaf771a483d012", 
-        "CompleteSets": "0x5485af8bf299235b7fd2e45f13be79cf6064df64", 
-        "CompositeGetters": "0xcd49a9bf994b9cc61a3af5cf70588d9eedd1acc3", 
-        "Consensus": "0xd75138a01cc0d56d6bfc4e00088458e501657579", 
-        "ConsensusData": "0x9011169bf11bc061fdaaf42ec919c81df5b95210", 
-        "CreateBranch": "0xbcfa90799eaf78ea417b94bb62ff2a4373689d6a", 
-        "CreateMarket": "0xb41980c1f8a21090f2d4ef70753fac790d935462", 
-        "EventResolution": "0x7cb6993f9bb9fe65d36565a32658a1e82db73ded", 
-        "Events": "0xc75e4478c92ce6c1473a7be5924b2b1a7aeb64e7", 
-        "ExpiringEvents": "0x27567dac23fe3be89f41a5d724f6e903272377f7", 
-        "Faucets": "0x5bf6b43d07e14500b3e4778dd0023867f9ef6859", 
-        "ForkPenalize": "0x0d803b4410934550b074f57f55122dfeaec07704", 
-        "Forking": "0xbacb6b7afadf8389e0f18a48c1f288a2d0a26a32", 
-        "FxpFunctions": "0x8c95444ae1158d100c47916a4993fb5fc7120e1e", 
-        "Info": "0x7aeafdab70724be8197e463f915ffdca875af2ff", 
-        "MakeReports": "0x13e172c4adaa3fb2103dfdbce551317bb2ec72f5", 
-        "Markets": "0xd0e24e62c19dcfea860b3dee17aae2b452f8f76b", 
-        "PenalizationCatchup": "0x391de4ed048a55fe10dc4de197d7fc1354d6cb6f", 
-        "PenalizeNotEnoughReports": "0x0e9245380a2f5d6bb35a7aa3a0f32883c28ad3ae", 
-        "ProportionCorrect": "0xb71ee9e32e1526a76351ad85d867c8631d405dd9", 
-        "Reporting": "0xa92cabf7894f84e30e7fc843eee79e1ef02cfd42", 
-        "ReportingThreshold": "0xf8d65a6721bff0d7d56ab237fdccfb3f07a211f2", 
-        "RoundTwo": "0x3c02505057402741deef3b78382bf49feb2e4332", 
-        "RoundTwoPenalize": "0xa3201ff76316a0288770e839d015b38d0ad55936", 
-        "SendReputation": "0x1a200c76a6c9c62272ca83a1b77ed8aa53ff097d", 
-        "SlashRep": "0xd60c8a0d8ed5bfa78aea6d6c7b254a6b722d1969", 
-        "Trade": "0x6dd4e090d133706c2bcc147a61bd80cc69275128", 
-        "Trades": "0x4dff0fa805d9ea5570873cc80d480681dde8e0c1"
-    }
-}
-},{}],105:[function(require,module,exports){
-arguments[4][21][0].apply(exports,arguments)
-},{"dup":21}],106:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"./contracts":104,"./errors":105,"./tx":107,"dup":22}],107:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"./api":103,"./contracts":104,"clone":62,"dup":23}],108:[function(require,module,exports){
+},{"async":17,"augur-contracts":22,"ethrpc":105}],103:[function(require,module,exports){
 (function (global,Buffer){
 const ethUtil = require('ethereumjs-util')
 const fees = require('ethereum-common/params')
@@ -31599,7 +26932,7 @@ Transaction.prototype.validate = function (stringError) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"buffer":60,"ethereum-common/params":99,"ethereumjs-util":109}],109:[function(require,module,exports){
+},{"buffer":60,"ethereum-common/params":99,"ethereumjs-util":104}],104:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -32268,7 +27601,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":16,"bn.js":28,"buffer":60,"create-hash":65,"keccakjs":130,"rlp":189,"secp256k1":190}],110:[function(require,module,exports){
+},{"assert":16,"bn.js":28,"buffer":60,"create-hash":65,"keccakjs":120,"rlp":179,"secp256k1":180}],105:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -32328,6 +27661,8 @@ module.exports = {
         tx: false,
         broadcast: false
     },
+
+    retryDroppedTxs: false,
 
     // geth IPC endpoint (Node-only)
     ipcpath: null,
@@ -32451,49 +27786,48 @@ module.exports = {
         if ((response && response.error) || this.debug.broadcast) {
             console.debug("[ethrpc] response:", response);
         }
-        try {
-            if (response && typeof response === "string") {
+        if (response && typeof response === "string") {
+            try {
                 response = JSON.parse(response);
+            } catch (e) {
+                err = e;
+                if (e && e.name === "SyntaxError") {
+                    err = errors.INVALID_RESPONSE;
+                }
+                if (isFunction(callback)) return callback(err);
+                throw new this.Error(err);
             }
-            if (response !== undefined && typeof response === "object" && response !== null) {
-                if (response.error) {
-                    response = {
-                        error: response.error.code,
-                        message: response.error.message
-                    };
-                    if (!callback) return response;
-                    callback(response);
-                } else if (response.result !== undefined) {
-                    if (!callback) return response.result;
-                    callback(response.result);
-                } else if (response.constructor === Array && response.length) {
-                    len = response.length;
-                    results = new Array(len);
-                    for (var i = 0; i < len; ++i) {
-                        results[i] = response[i].result;
-                        if (response.error || (response[i] && response[i].error)) {
-                            if (this.debug.broadcast) {
-                                if (isFunction(callback)) return callback(response.error);
-                                throw new this.Error(response.error);
-                            }
+        }
+        if (response !== undefined && typeof response === "object" && response !== null) {
+            if (response.error) {
+                response = {
+                    error: response.error.code,
+                    message: response.error.message
+                };
+                if (!isFunction(callback)) return response;
+                return callback(response);
+            } else if (response.result !== undefined) {
+                if (!isFunction(callback)) return response.result;
+                return callback(response.result);
+            } else if (response.constructor === Array && response.length) {
+                len = response.length;
+                results = new Array(len);
+                for (var i = 0; i < len; ++i) {
+                    results[i] = response[i].result;
+                    if (response.error || (response[i] && response[i].error)) {
+                        if (this.debug.broadcast) {
+                            if (isFunction(callback)) return callback(response.error);
+                            throw new this.Error(response.error);
                         }
                     }
-                    if (!isFunction(callback)) return results;
-                    callback(results);
-
-                // no result or error field
-                } else {
-                    err = errors.NO_RESPONSE;
-                    err.bubble = response;
-                    if (isFunction(callback)) return callback(err);
-                    throw new this.Error(err);
                 }
+                if (!isFunction(callback)) return results;
+                return callback(results);
             }
-        } catch (e) {
-            err = e;
-            if (e && e.name === "SyntaxError") {
-                err = errors.INVALID_RESPONSE;
-            }
+
+            // no result or error field
+            err = errors.NO_RESPONSE;
+            err.bubble = response;
             if (isFunction(callback)) return callback(err);
             throw new this.Error(err);
         }
@@ -32576,6 +27910,30 @@ module.exports = {
         });
     },
 
+    wsMessageAction: function (msg) {
+        if (msg.constructor === Array) {
+            for (var i = 0, n = msg.length; i < n; ++i) {
+                this.wsMessageAction(msg[i]);
+            }
+        } else {
+            if (msg.id !== undefined && msg.id !== null) {
+                if (this.debug.broadcast) {
+                    console.debug("[ethrpc] matched message ID", msg.id, "to", this.wsRequests);
+                }
+                var req = this.wsRequests[msg.id];
+                delete this.wsRequests[msg.id];
+                return this.parse(msg, req.returns, req.callback);
+            } else if (msg.method === "eth_subscription" && msg.params &&
+                msg.params.subscription && msg.params.result &&
+                this.subscriptions[msg.params.subscription]) {
+                return this.subscriptions[msg.params.subscription](msg.params.result);
+            }
+            if (this.debug.broadcast) {
+                console.warn("[ethrpc] Unknown message received:", msg.data || msg);
+            }
+        }
+    },
+
     wsConnect: function (callback) {
         var self = this;
         var calledCallback = false;
@@ -32600,20 +27958,7 @@ module.exports = {
         };
         this.websocket.onmessage = function (msg) {
             if (msg && msg.data && typeof msg.data === "string") {
-                var res = JSON.parse(msg.data);
-                if (res.id !== undefined && res.id !== null) {
-                    var req = self.wsRequests[res.id];
-                    delete self.wsRequests[res.id];
-                    self.parse(res, req.returns, req.callback);
-                } else if (res.method === "eth_subscription" && res.params &&
-                    res.params.subscription && res.params.result &&
-                    self.subscriptions[res.params.subscription]) {
-                    self.subscriptions[res.params.subscription](res.params.result);
-                } else {
-                    if (self.debug.broadcast) {
-                        console.warn("unknown message received:", msg);
-                    }
-                }
+                return self.wsMessageAction(JSON.parse(msg.data));
             }
         };
         this.websocket.onopen = function () {
@@ -32632,12 +27977,36 @@ module.exports = {
     },
 
     wsSend: function (command, returns, callback) {
+        var self = this;
         if (this.debug.broadcast) {
             console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
         }
-        this.wsRequests[command.id] = {returns: returns, callback: callback};
-        if (this.websocket.readyState === this.websocket.OPEN) {
-            this.websocket.send(JSON.stringify(command));
+        if (command.constructor === Array) {
+            var commandList = [];
+            for (var i = 0, n = command.length; i < n; ++i) {
+                commandList.push({command: command[i], returns: returns[i], callback: callback[i]});
+            }
+            async.each(commandList, function (thisCommand, nextCommand) {
+                if (!thisCommand.returns) {
+                    self.wsRequests[thisCommand.command.id] = {returns: thisCommand.returns, callback: thisCommand.callback};
+                } else {
+                    self.wsRequests[thisCommand.command.id] = {returns: thisCommand.returns, callback: function (res) {
+                        thisCommand.callback(self.applyReturns(thisCommand.returns, res));
+                    }};
+                }
+                nextCommand();
+            }, function (err) {
+                if (err) return console.error("wsSend failed:", err);
+                self.wsRequests[command.id] = {returns: returns, callback: callback};
+                if (self.websocket.readyState === self.websocket.OPEN) {
+                    self.websocket.send(JSON.stringify(command));
+                }
+            });
+        } else {
+            this.wsRequests[command.id] = {returns: returns, callback: callback};
+            if (this.websocket.readyState === this.websocket.OPEN) {
+                this.websocket.send(JSON.stringify(command));
+            }
         }
     },
 
@@ -32689,9 +28058,6 @@ module.exports = {
             if (err) {
                 self.primaryNode = null;
                 if (self.nodes.local) {
-                    if (self.nodes.local === self.localnode) {
-                        self.nodes.local = null;
-                    }
                     e = errors.LOCAL_NODE_FAILURE;
                     e.bubble = err;
                     e.command = command;
@@ -32771,7 +28137,7 @@ module.exports = {
         nodes = this.selectNodes();
 
         // asynchronous request if callback exists
-        if (isFunction(callback)) {
+        if (callback) {
 
             // use websocket if available
             switch (this.wsStatus) {
@@ -32816,7 +28182,10 @@ module.exports = {
                     result = this.postSync(nodes[j], command, returns);
                 } catch (e) {
                     if (this.nodes.local) {
-                        throw new this.Error(errors.LOCAL_NODE_FAILURE);
+                        var err = errors.LOCAL_NODE_FAILURE;
+                        err.bubble = e;
+                        err.command = command;
+                        throw new this.Error(err);
                     }
                 }
                 if (result !== undefined) return result;
@@ -33397,6 +28766,9 @@ module.exports = {
                 return rpclist;
             }
         }
+        if (this.wsUrl) {
+            return this.broadcast(rpclist, (f === true) ? callbacks : f);
+        }
         if (!f) {
             var res = this.broadcast(rpclist);
             var result = new Array(numCommands);
@@ -33482,7 +28854,8 @@ module.exports = {
         return response;
     },
 
-    fire: function (payload, callback) {
+    // callback/wrapper composition: callback(wrapper(result, aux))
+    fire: function (payload, callback, wrapper, aux) {
         var self = this;
         var tx = clone(payload);
         if (!isFunction(callback)) {
@@ -33492,7 +28865,9 @@ module.exports = {
             }
             var err = this.errorCodes(tx.method, tx.returns, res);
             if (err && err.error) throw new this.Error(err);
-            return this.applyReturns(tx.returns, res);
+            var converted = this.applyReturns(tx.returns, res);
+            if (isFunction(wrapper)) return wrapper(converted, aux);
+            return converted;
         }
         this.invoke(tx, function (res) {
             if (self.debug.tx) console.debug("invoked (fire):", res);
@@ -33501,7 +28876,9 @@ module.exports = {
             }
             var err = self.errorCodes(tx.method, tx.returns, res);
             if (err && err.error) return callback(err);
-            return callback(self.applyReturns(tx.returns, res));
+            var converted = self.applyReturns(tx.returns, res);
+            if (isFunction(wrapper)) converted = wrapper(converted, aux);
+            return callback(converted);
         });
     },
 
@@ -33566,54 +28943,60 @@ module.exports = {
         });
     },
 
+    checkDroppedTxForDuplicateNonce: function (txHash, callback) {
+        var duplicateNonce;
+        if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
+        if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
+            if (!isFunction(callback)) {
+                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            }
+            return callback(errors.TRANSACTION_NOT_FOUND);
+        }
+        for (var hash in this.rawTxs) {
+            if (!this.rawTxs.hasOwnProperty(hash)) continue;
+            if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
+                JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
+                duplicateNonce = true;
+                console.warn("Warning: duplicate nonce found on raw tx:", txHash);
+                break;
+            }
+        }
+        if (!duplicateNonce) {
+            if (!isFunction(callback)) {
+                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            }
+            return callback(errors.TRANSACTION_NOT_FOUND);
+        }
+        if (!isFunction(callback)) return null;
+        callback(null);
+    },
+
     txNotify: function (txHash, callback) {
         var self = this;
         if (!isFunction(callback)) {
             var tx = this.getTransaction(txHash);
             if (tx) return tx;
-
             this.txs[txHash].status = "failed";
-            if (this.debug.tx) console.debug("Raw transactions:", this.rawTxs);
 
-            // resubmit if this is a raw transaction and has a duplicate nonce
-            if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
-                throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-            }
-            var duplicateNonce;
-            for (var hash in this.rawTxs) {
-                if (!this.rawTxs.hasOwnProperty(hash)) continue;
-                if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
-                    JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
-                    duplicateNonce = true;
-                    break;
-                }
-            }
-            if (!duplicateNonce) throw new this.Error(errors.TRANSACTION_NOT_FOUND);
+            // only resubmit if this is a raw transaction and has a duplicate nonce
+            if (!this.retryDroppedTxs) this.checkDroppedTxForDuplicateNonce(txHash);
+
             this.txs[txHash].status = "resubmitted";
             return null;
         }
         this.getTransaction(txHash, function (tx) {
             if (tx) return callback(null, tx);
-
             self.txs[txHash].status = "failed";
-            if (self.debug.tx) console.debug("Raw transactions:", self.rawTxs);
+            if (!self.retryDroppedTxs) {
 
-            // resubmit if this is a raw transaction and has a duplicate nonce
-            if (!self.rawTxs[txHash] || !self.rawTxs[txHash].tx) {
-                return callback(errors.TRANSACTION_NOT_FOUND);
+                // only resubmit if this is a raw transaction and has a duplicate nonce
+                self.checkDroppedTxForDuplicateNonce(txHash, function (err) {
+                    if (err !== null) return callback(err);
+                    console.debug(" *** Re-submitting transaction:", txHash);
+                    self.txs[txHash].status = "resubmitted";
+                    return callback(null, null);
+                });
             }
-            var duplicateNonce;
-            for (var hash in self.rawTxs) {
-                if (!self.rawTxs.hasOwnProperty(hash)) continue;
-                if (self.rawTxs[hash].tx.nonce === self.rawTxs[txHash].tx.nonce &&
-                    JSON.stringify(self.rawTxs[hash].tx) !== JSON.stringify(self.rawTxs[txHash].tx)) {
-                    duplicateNonce = true;
-                    break;
-                }
-            }
-            if (!duplicateNonce) return callback(errors.TRANSACTION_NOT_FOUND);
-            self.txs[txHash].status = "resubmitted";
-            return callback(null, null);
         });
     },
 
@@ -33672,134 +29055,138 @@ module.exports = {
         });
     },
 
-    transact: function (payload, onSent, onSuccess, onFailed) {
+    /**
+     * asynchronous / non-blocking transact:
+     *  - call onSent when the transaction is broadcast to the network
+     *  - call onSuccess when the transaction is successfully mined
+     *  - call onFailed if the transaction fails
+     */
+    transactAsync: function (payload, callReturn, onSent, onSuccess, onFailed) {
         var self = this;
+        payload.send = true;
+        var returns = payload.returns;
+        delete payload.returns;
+        this.invoke(payload, function (txHash) {
+            if (self.debug.tx) console.debug("txHash:", txHash);
+            if (!txHash) return onFailed(errors.NULL_RESPONSE);
+            if (txHash.error) return onFailed(txHash);
+            payload.returns = returns;
+            txHash = abi.format_int256(txHash);
 
-        function asyncTransact(payload, callReturn, onSent, onSuccess, onFailed) {
-            payload.send = true;
-            var returns = payload.returns;
-            delete payload.returns;
-            self.invoke(payload, function (txHash) {
-                if (self.debug.tx) console.debug("txHash:", txHash);
-                if (!txHash) return onFailed(errors.NULL_RESPONSE);
-                if (txHash.error) return onFailed(txHash);
-                payload.returns = returns;
-                txHash = abi.format_int256(txHash);
+            // send the transaction hash and return value back
+            // to the client, using the onSent callback
+            onSent({txHash: txHash, callReturn: callReturn});
 
-                // send the transaction hash and return value back
-                // to the client, using the onSent callback
-                onSent({txHash: txHash, callReturn: callReturn});
-
-                self.verifyTxSubmitted(payload, txHash, function (err) {
+            self.verifyTxSubmitted(payload, txHash, function (err) {
+                if (err) return onFailed(err);
+                self.pollForTxConfirmation(txHash, function (err, tx) {
                     if (err) return onFailed(err);
-                    self.pollForTxConfirmation(txHash, function (err, tx) {
-                        if (err) return onFailed(err);
-                        if (tx === null) {
-                            return self.transact(payload, onSent, onSuccess, onFailed);
-                        }
-                        if (!payload.mutable) {
-                            tx.callReturn = callReturn;
-                            return onSuccess(tx);
-                        }
+                    if (tx === null) {
+                        return self.transact(payload, onSent, onSuccess, onFailed);
+                    }
+                    if (!payload.mutable) {
+                        tx.callReturn = callReturn;
+                        return onSuccess(tx);
+                    }
 
-                        // if mutable return value, then lookup logged return
-                        // value in transaction receipt (after confirmation)
-                        self.getLoggedReturnValue(txHash, function (err, loggedReturnValue) {
-                            if (self.debug.tx) console.debug("loggedReturnValue:", loggedReturnValue);
-                            if (err) return onFailed(err);
-                            var e = self.errorCodes(payload.method, payload.returns, loggedReturnValue);
-                            if (e && e.error) return onFailed(e);
-                            tx.callReturn = self.applyReturns(payload.returns, loggedReturnValue);
-                            onSuccess(tx);
-                        });
+                    // if mutable return value, then lookup logged return
+                    // value in transaction receipt (after confirmation)
+                    self.getLoggedReturnValue(txHash, function (err, loggedReturnValue) {
+                        if (self.debug.tx) console.debug("loggedReturnValue:", err, loggedReturnValue);
+                        if (err) {
+                            payload.send = false;
+                            self.fire(payload, function (callReturn) {
+                                console.debug("getLoggedReturnValue failed, fire returns:", callReturn);
+                                return onFailed(err);
+                            });
+                        }
+                        var e = self.errorCodes(payload.method, payload.returns, loggedReturnValue);
+                        if (e && e.error) return onFailed(e);
+                        tx.callReturn = self.applyReturns(payload.returns, loggedReturnValue);
+                        onSuccess(tx);
                     });
                 });
             });
-        }
+        });
+    },
 
-        if (this.debug.tx) console.debug("payload transact:", payload);
-        payload.send = false;
-
-        // synchronous: block until the transaction is confirmed or fails
-        // (don't use this in the browser or you will be a sad panda)
-        if (!isFunction(onSent)) {
-            var returns = payload.returns;
-            var callReturn;
-            if (payload.mutable) {
+    /**
+     * synchronous transact: block until the transaction is confirmed or fails
+     * (don't use this in the browser or you will be a sad panda)
+     */
+    transactSync: function (payload) {
+        var callReturn;
+        if (payload.mutable || payload.returns === "null") {
+            callReturn = null;
+        } else {
+            callReturn = this.fire(payload);
+            if (this.debug.tx) console.debug("callReturn:", callReturn);
+            if (callReturn === undefined || callReturn === null) {
+                throw new this.Error(errors.NULL_CALL_RETURN);
+            } else if (callReturn.error === "0x") {
                 callReturn = null;
-            } else {
-                callReturn = this.fire(payload);
-                if (this.debug.tx) console.debug("callReturn:", callReturn);
-                if (callReturn === undefined || callReturn === null) {
-                    throw new this.Error(errors.NULL_CALL_RETURN);
-                }
-                if (returns === "null" && callReturn.error === "0x") {
-                    callReturn = null;
-                } else if (callReturn.error) {
-                    throw new this.Error(callReturn);
-                }
+            } else if (callReturn.error) {
+                throw new this.Error(callReturn);
             }
-            payload.send = true;
-            delete payload.returns;
-            var txHash = this.invoke(payload);
-            if (this.debug.tx) console.debug("txHash:", txHash);
-            if (!txHash) throw new this.Error(errors.NULL_RESPONSE);
-            if (txHash.error) throw new this.Error(txHash);
-            payload.returns = returns;
-            txHash = abi.format_int256(txHash);
-            this.verifyTxSubmitted(payload, txHash);
-            var tx = this.pollForTxConfirmation(txHash);
-            if (tx === null) return this.transact(payload);
-            if (!payload.mutable) {
-                tx.callReturn = callReturn;
-                return tx;
-            }
-
-            // if mutable return value, then lookup logged return
-            // value in transaction receipt (after confirmation)
-            var loggedReturnValue = this.getLoggedReturnValue(txHash);
-            var e = this.errorCodes(payload.method, payload.returns, loggedReturnValue);
-            if (e && e.error) throw new Error(e);
-            tx.callReturn = this.applyReturns(payload.returns, loggedReturnValue);
+        }
+        payload.send = true;
+        var returns = payload.returns;
+        delete payload.returns;
+        var txHash = this.invoke(payload);
+        if (this.debug.tx) console.debug("txHash:", txHash);
+        if (!txHash) throw new this.Error(errors.NULL_RESPONSE);
+        if (txHash.error) throw new this.Error(txHash);
+        payload.returns = returns;
+        txHash = abi.format_int256(txHash);
+        this.verifyTxSubmitted(payload, txHash);
+        var tx = this.pollForTxConfirmation(txHash);
+        if (tx === null) return this.transact(payload);
+        if (!payload.mutable) {
+            tx.callReturn = callReturn;
             return tx;
         }
 
-        // asynchronous / non-blocking:
-        //  - call onSent when the transaction is broadcast to the network
-        //  - call onSuccess when the transaction is successfully mined
-        //  - call onFailed if the transaction fails
+        // if mutable return value, then lookup logged return
+        // value in transaction receipt (after confirmation)
+        var loggedReturnValue = this.getLoggedReturnValue(txHash);
+        var e = this.errorCodes(payload.method, payload.returns, loggedReturnValue);
+        if (e && e.error) {
+            callReturn = this.fire(payload);
+            console.debug("getLoggedReturnValue failed, fire returns:", callReturn);
+            throw new Error(e);
+        }
+        tx.callReturn = this.applyReturns(payload.returns, loggedReturnValue);
+        return tx;
+    },
+
+    transact: function (payload, onSent, onSuccess, onFailed) {
+        var self = this;
+        if (this.debug.tx) console.debug("payload transact:", payload);
+        payload.send = false;
+
+        // synchronous / blocking transact sequence
+        if (!isFunction(onSent)) return this.transactSync(payload);
+
+        // asynchronous / non-blocking transact sequence
         onSuccess = (isFunction(onSuccess)) ? onSuccess : noop;
         onFailed = (isFunction(onFailed)) ? onFailed : noop;
-        if (payload.mutable) {
-            return asyncTransact(payload, null, onSent, onSuccess, onFailed);
+        if (payload.mutable || payload.returns === "null") {
+            return this.transactAsync(payload, null, onSent, onSuccess, onFailed);
         }
         this.fire(payload, function (callReturn) {
             if (self.debug.tx) console.debug("callReturn:", callReturn);
             if (callReturn === undefined || callReturn === null) {
                 return onFailed(errors.NULL_CALL_RETURN);
-            }
-            if (returns === "null" && callReturn.error === "0x") {
-                callReturn = null;
             } else if (callReturn.error) {
                 return onFailed(callReturn);
             }
-            asyncTransact(payload, callReturn, onSent, onSuccess, onFailed);
+            self.transactAsync(payload, callReturn, onSent, onSuccess, onFailed);
         });
     }
 };
 
 }).call(this,require('_process'))
-},{"_process":170,"async":17,"augur-abi":18,"augur-contracts":114,"bignumber.js":26,"browser-request":30,"clone":62,"js-sha3":129,"net":57,"request":31,"sync-request":31,"websocket":31}],111:[function(require,module,exports){
-arguments[4][103][0].apply(exports,arguments)
-},{"dup":103}],112:[function(require,module,exports){
-arguments[4][104][0].apply(exports,arguments)
-},{"dup":104}],113:[function(require,module,exports){
-arguments[4][21][0].apply(exports,arguments)
-},{"dup":21}],114:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"./contracts":112,"./errors":113,"./tx":115,"dup":22}],115:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"./api":111,"./contracts":112,"clone":62,"dup":23}],116:[function(require,module,exports){
+},{"_process":160,"async":17,"augur-abi":18,"augur-contracts":22,"bignumber.js":26,"browser-request":30,"clone":62,"js-sha3":119,"net":57,"request":31,"sync-request":31,"websocket":31}],106:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -34103,7 +29490,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],117:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function (Buffer){
 var md5 = require('create-hash/md5')
 module.exports = EVP_BytesToKey
@@ -34175,7 +29562,7 @@ function EVP_BytesToKey (password, salt, keyLen, ivLen) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"create-hash/md5":67}],118:[function(require,module,exports){
+},{"buffer":60,"create-hash/md5":67}],108:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -34192,7 +29579,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":119,"./hash/hmac":120,"./hash/ripemd":121,"./hash/sha":122,"./hash/utils":123}],119:[function(require,module,exports){
+},{"./hash/common":109,"./hash/hmac":110,"./hash/ripemd":111,"./hash/sha":112,"./hash/utils":113}],109:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 var assert = utils.assert;
@@ -34285,7 +29672,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"../hash":118}],120:[function(require,module,exports){
+},{"../hash":108}],110:[function(require,module,exports){
 var hmac = exports;
 
 var hash = require('../hash');
@@ -34335,7 +29722,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"../hash":118}],121:[function(require,module,exports){
+},{"../hash":108}],111:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 
@@ -34481,7 +29868,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"../hash":118}],122:[function(require,module,exports){
+},{"../hash":108}],112:[function(require,module,exports){
 var hash = require('../hash');
 var utils = hash.utils;
 var assert = utils.assert;
@@ -35047,7 +30434,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../hash":118}],123:[function(require,module,exports){
+},{"../hash":108}],113:[function(require,module,exports){
 var utils = exports;
 var inherits = require('inherits');
 
@@ -35306,7 +30693,7 @@ function shr64_lo(ah, al, num) {
 };
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":126}],124:[function(require,module,exports){
+},{"inherits":116}],114:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -35392,7 +30779,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],125:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -35403,7 +30790,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],126:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -35428,7 +30815,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],127:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 /**
  * Determine if an object is Buffer
  *
@@ -35447,14 +30834,14 @@ module.exports = function (obj) {
     ))
 }
 
-},{}],128:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],129:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 (function (global){
 /*
  * js-sha3 v0.3.1
@@ -35890,10 +31277,10 @@ module.exports = Array.isArray || function (arr) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],130:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = require('browserify-sha3').SHA3Hash
 
-},{"browserify-sha3":51}],131:[function(require,module,exports){
+},{"browserify-sha3":51}],121:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -36499,7 +31886,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":132,"./lib/scrypt":133,"_process":170,"buffer":60,"crypto":69,"elliptic":136,"ethereumjs-util":153,"fs":57,"node-uuid":162,"path":167,"validator":208}],132:[function(require,module,exports){
+},{"./lib/keccak":122,"./lib/scrypt":123,"_process":160,"buffer":60,"crypto":69,"elliptic":126,"ethereumjs-util":143,"fs":57,"node-uuid":152,"path":157,"validator":198}],122:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -36693,7 +32080,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],133:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -48414,7 +43801,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/node_modules/keythereum/lib")
-},{"_process":170,"fs":57,"path":167}],134:[function(require,module,exports){
+},{"_process":160,"fs":57,"path":157}],124:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -50863,7 +46250,7 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],135:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -50889,9 +46276,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"js-sha3":129}],136:[function(require,module,exports){
+},{"buffer":60,"js-sha3":119}],126:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../package.json":152,"./elliptic/curve":139,"./elliptic/curves":142,"./elliptic/ec":143,"./elliptic/eddsa":146,"./elliptic/hmac-drbg":149,"./elliptic/utils":151,"brorand":29,"dup":81}],137:[function(require,module,exports){
+},{"../package.json":142,"./elliptic/curve":129,"./elliptic/curves":132,"./elliptic/ec":133,"./elliptic/eddsa":136,"./elliptic/hmac-drbg":139,"./elliptic/utils":141,"brorand":29,"dup":81}],127:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -51244,7 +46631,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":136,"bn.js":134}],138:[function(require,module,exports){
+},{"../../elliptic":126,"bn.js":124}],128:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -51652,9 +47039,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":136,"../curve":139,"bn.js":134,"inherits":126}],139:[function(require,module,exports){
+},{"../../elliptic":126,"../curve":129,"bn.js":124,"inherits":116}],129:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"./base":137,"./edwards":138,"./mont":140,"./short":141,"dup":84}],140:[function(require,module,exports){
+},{"./base":127,"./edwards":128,"./mont":130,"./short":131,"dup":84}],130:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -51832,7 +47219,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":136,"../curve":139,"bn.js":134,"inherits":126}],141:[function(require,module,exports){
+},{"../../elliptic":126,"../curve":129,"bn.js":124,"inherits":116}],131:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -52741,9 +48128,9 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":136,"../curve":139,"bn.js":134,"inherits":126}],142:[function(require,module,exports){
+},{"../../elliptic":126,"../curve":129,"bn.js":124,"inherits":116}],132:[function(require,module,exports){
 arguments[4][87][0].apply(exports,arguments)
-},{"../elliptic":136,"./precomputed/secp256k1":150,"dup":87,"hash.js":118}],143:[function(require,module,exports){
+},{"../elliptic":126,"./precomputed/secp256k1":140,"dup":87,"hash.js":108}],133:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -52955,7 +48342,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":136,"./key":144,"./signature":145,"bn.js":134}],144:[function(require,module,exports){
+},{"../../elliptic":126,"./key":134,"./signature":135,"bn.js":124}],134:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -53064,7 +48451,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":134}],145:[function(require,module,exports){
+},{"bn.js":124}],135:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -53201,9 +48588,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":136,"bn.js":134}],146:[function(require,module,exports){
+},{"../../elliptic":126,"bn.js":124}],136:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"../../elliptic":136,"./key":147,"./signature":148,"dup":91,"hash.js":118}],147:[function(require,module,exports){
+},{"../../elliptic":126,"./key":137,"./signature":138,"dup":91,"hash.js":108}],137:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -53301,7 +48688,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":136}],148:[function(require,module,exports){
+},{"../../elliptic":126}],138:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -53369,11 +48756,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":136,"bn.js":134}],149:[function(require,module,exports){
+},{"../../elliptic":126,"bn.js":124}],139:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"../elliptic":136,"dup":94,"hash.js":118}],150:[function(require,module,exports){
+},{"../elliptic":126,"dup":94,"hash.js":108}],140:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"dup":95}],151:[function(require,module,exports){
+},{"dup":95}],141:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -53548,19 +48935,12 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":134}],152:[function(require,module,exports){
+},{"bn.js":124}],142:[function(require,module,exports){
 module.exports={
   "_args": [
     [
-      {
-        "name": "elliptic",
-        "raw": "elliptic@^5.1.0",
-        "rawSpec": "^5.1.0",
-        "scope": null,
-        "spec": ">=5.1.0 <6.0.0",
-        "type": "range"
-      },
-      "/Users/k_day/src/augur/augur.js/node_modules/keythereum"
+      "elliptic@^5.1.0",
+      "/home/abc/work/augur/augur.js/node_modules/keythereum"
     ]
   ],
   "_from": "elliptic@>=5.1.0 <6.0.0",
@@ -53591,7 +48971,7 @@ module.exports={
   "_shasum": "fa294b6563c6ddbc9ba3dc8594687ae840858f10",
   "_shrinkwrap": null,
   "_spec": "elliptic@^5.1.0",
-  "_where": "/Users/k_day/src/augur/augur.js/node_modules/keythereum",
+  "_where": "/home/abc/work/augur/augur.js/node_modules/keythereum",
   "author": {
     "email": "fedor@indutny.com",
     "name": "Fedor Indutny"
@@ -53650,7 +49030,7 @@ module.exports={
   "version": "5.2.1"
 }
 
-},{}],153:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -54027,7 +49407,7 @@ function padToEven (a) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":16,"bn.js":134,"buffer":60,"elliptic":136,"rlp":154,"sha3":135}],154:[function(require,module,exports){
+},{"assert":16,"bn.js":124,"buffer":60,"elliptic":126,"rlp":144,"sha3":125}],144:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -54256,7 +49636,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":16,"buffer":60}],155:[function(require,module,exports){
+},{"assert":16,"buffer":60}],145:[function(require,module,exports){
 var Semaphore = require('./lib/Semaphore');
 var CondVariable = require('./lib/CondVariable');
 var Mutex = require('./lib/Mutex');
@@ -54285,7 +49665,7 @@ exports.createReadWriteLock = function () {
 	return new ReadWriteLock();
 };
 
-},{"./lib/CondVariable":156,"./lib/Mutex":157,"./lib/ReadWriteLock":158,"./lib/Semaphore":159}],156:[function(require,module,exports){
+},{"./lib/CondVariable":146,"./lib/Mutex":147,"./lib/ReadWriteLock":148,"./lib/Semaphore":149}],146:[function(require,module,exports){
 function CondVariable(initialValue) {
 	this._value = initialValue;
 	this._waiting = [];
@@ -54345,7 +49725,7 @@ CondVariable.prototype.set = function (value) {
 	}
 };
 
-},{}],157:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 function Mutex() {
 	this.isLocked = false;
 	this._waiting = [];
@@ -54417,7 +49797,7 @@ Mutex.prototype.unlock = function () {
 	}
 };
 
-},{}],158:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 function ReadWriteLock() {
 	this.isLocked = false;
 	this._readLocks = 0;
@@ -54574,7 +49954,7 @@ ReadWriteLock.prototype.unlock = function () {
 	}
 };
 
-},{}],159:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 function Semaphore(initialCount) {
 	this._count = initialCount || 1;
 	this._waiting = [];
@@ -54605,7 +49985,7 @@ Semaphore.prototype.signal = function () {
 	}
 };
 
-},{}],160:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -54720,7 +50100,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":28,"brorand":29}],161:[function(require,module,exports){
+},{"bn.js":28,"brorand":29}],151:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -54733,7 +50113,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],162:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 (function (Buffer){
 //     uuid.js
 //
@@ -55009,7 +50389,7 @@ assert.equal = function assertEqual(l, r, msg) {
 })('undefined' !== typeof window ? window : null);
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"crypto":69}],163:[function(require,module,exports){
+},{"buffer":60,"crypto":69}],153:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -55023,7 +50403,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],164:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 
@@ -55142,7 +50522,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"asn1.js":2}],165:[function(require,module,exports){
+},{"asn1.js":2}],155:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED\r?\nDEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\r?\n\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n/m
@@ -55176,7 +50556,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":34,"buffer":60,"evp_bytestokey":117}],166:[function(require,module,exports){
+},{"browserify-aes":34,"buffer":60,"evp_bytestokey":107}],156:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -55281,7 +50661,7 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":163,"./asn1":164,"./fixProc":165,"browserify-aes":34,"buffer":60,"pbkdf2":168}],167:[function(require,module,exports){
+},{"./aesid.json":153,"./asn1":154,"./fixProc":155,"browserify-aes":34,"buffer":60,"pbkdf2":158}],157:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -55509,7 +50889,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":170}],168:[function(require,module,exports){
+},{"_process":160}],158:[function(require,module,exports){
 (function (Buffer){
 var createHmac = require('create-hmac')
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
@@ -55593,7 +50973,7 @@ function pbkdf2Sync (password, salt, iterations, keylen, digest) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"create-hmac":68}],169:[function(require,module,exports){
+},{"buffer":60,"create-hmac":68}],159:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -55640,7 +51020,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":170}],170:[function(require,module,exports){
+},{"_process":160}],160:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -55693,7 +51073,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = cachedSetTimeout(cleanUpNextTick);
+    var timeout = cachedSetTimeout.call(null, cleanUpNextTick);
     draining = true;
 
     var len = queue.length;
@@ -55710,7 +51090,7 @@ function drainQueue() {
     }
     currentQueue = null;
     draining = false;
-    cachedClearTimeout(timeout);
+    cachedClearTimeout.call(null, timeout);
 }
 
 process.nextTick = function (fun) {
@@ -55722,7 +51102,7 @@ process.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        cachedSetTimeout(drainQueue, 0);
+        cachedSetTimeout.call(null, drainQueue, 0);
     }
 };
 
@@ -55761,7 +51141,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],171:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -55772,7 +51152,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":173,"./publicEncrypt":174}],172:[function(require,module,exports){
+},{"./privateDecrypt":163,"./publicEncrypt":164}],162:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -55791,7 +51171,7 @@ function i2ops(c) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":60,"create-hash":65}],173:[function(require,module,exports){
+},{"buffer":60,"create-hash":65}],163:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -55902,7 +51282,7 @@ function compare(a, b){
   return dif;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":172,"./withPublic":175,"./xor":176,"bn.js":28,"browserify-rsa":50,"buffer":60,"create-hash":65,"parse-asn1":166}],174:[function(require,module,exports){
+},{"./mgf":162,"./withPublic":165,"./xor":166,"bn.js":28,"browserify-rsa":50,"buffer":60,"create-hash":65,"parse-asn1":156}],164:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -56000,7 +51380,7 @@ function nonZero(len, crypto) {
   return out;
 }
 }).call(this,require("buffer").Buffer)
-},{"./mgf":172,"./withPublic":175,"./xor":176,"bn.js":28,"browserify-rsa":50,"buffer":60,"create-hash":65,"parse-asn1":166,"randombytes":177}],175:[function(require,module,exports){
+},{"./mgf":162,"./withPublic":165,"./xor":166,"bn.js":28,"browserify-rsa":50,"buffer":60,"create-hash":65,"parse-asn1":156,"randombytes":167}],165:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -56013,7 +51393,7 @@ function withPublic(paddedMsg, key) {
 
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
-},{"bn.js":28,"buffer":60}],176:[function(require,module,exports){
+},{"bn.js":28,"buffer":60}],166:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -56022,7 +51402,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],177:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 (function (process,global,Buffer){
 'use strict'
 
@@ -56062,10 +51442,10 @@ function randomBytes (size, cb) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":170,"buffer":60}],178:[function(require,module,exports){
+},{"_process":160,"buffer":60}],168:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":179}],179:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":169}],169:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -56141,7 +51521,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":181,"./_stream_writable":183,"core-util-is":63,"inherits":126,"process-nextick-args":169}],180:[function(require,module,exports){
+},{"./_stream_readable":171,"./_stream_writable":173,"core-util-is":63,"inherits":116,"process-nextick-args":159}],170:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -56168,7 +51548,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":182,"core-util-is":63,"inherits":126}],181:[function(require,module,exports){
+},{"./_stream_transform":172,"core-util-is":63,"inherits":116}],171:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -57051,7 +52431,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":179,"_process":170,"buffer":60,"core-util-is":63,"events":116,"inherits":126,"isarray":128,"process-nextick-args":169,"string_decoder/":204,"util":31}],182:[function(require,module,exports){
+},{"./_stream_duplex":169,"_process":160,"buffer":60,"core-util-is":63,"events":106,"inherits":116,"isarray":118,"process-nextick-args":159,"string_decoder/":194,"util":31}],172:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -57232,7 +52612,7 @@ function done(stream, er) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":179,"core-util-is":63,"inherits":126}],183:[function(require,module,exports){
+},{"./_stream_duplex":169,"core-util-is":63,"inherits":116}],173:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -57751,10 +53131,10 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":179,"_process":170,"buffer":60,"core-util-is":63,"events":116,"inherits":126,"process-nextick-args":169,"util-deprecate":205}],184:[function(require,module,exports){
+},{"./_stream_duplex":169,"_process":160,"buffer":60,"core-util-is":63,"events":106,"inherits":116,"process-nextick-args":159,"util-deprecate":195}],174:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":180}],185:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":170}],175:[function(require,module,exports){
 var Stream = (function (){
   try {
     return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
@@ -57768,13 +53148,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":179,"./lib/_stream_passthrough.js":180,"./lib/_stream_readable.js":181,"./lib/_stream_transform.js":182,"./lib/_stream_writable.js":183}],186:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":169,"./lib/_stream_passthrough.js":170,"./lib/_stream_readable.js":171,"./lib/_stream_transform.js":172,"./lib/_stream_writable.js":173}],176:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":182}],187:[function(require,module,exports){
+},{"./lib/_stream_transform.js":172}],177:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":183}],188:[function(require,module,exports){
+},{"./lib/_stream_writable.js":173}],178:[function(require,module,exports){
 (function (Buffer){
 /*
 CryptoJS v3.1.2
@@ -57988,7 +53368,7 @@ function ripemd160 (message) {
 module.exports = ripemd160
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60}],189:[function(require,module,exports){
+},{"buffer":60}],179:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -58221,11 +53601,11 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":16,"buffer":60}],190:[function(require,module,exports){
+},{"assert":16,"buffer":60}],180:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
-},{"./lib":193,"./lib/elliptic":192}],191:[function(require,module,exports){
+},{"./lib":183,"./lib/elliptic":182}],181:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -58273,7 +53653,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":127}],192:[function(require,module,exports){
+},{"../../is-buffer/index.js":117}],182:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -58524,7 +53904,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"../messages.json":194,"bn.js":28,"buffer":60,"create-hash":65,"elliptic":81}],193:[function(require,module,exports){
+},{"../messages.json":184,"bn.js":28,"buffer":60,"create-hash":65,"elliptic":81}],183:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var bip66 = require('bip66')
@@ -58844,7 +54224,7 @@ module.exports = function (secp256k1) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./assert":191,"./messages.json":194,"bip66":27,"buffer":60}],194:[function(require,module,exports){
+},{"./assert":181,"./messages.json":184,"bip66":27,"buffer":60}],184:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -58882,7 +54262,7 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],195:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 (function (Buffer){
 // prototype class for hash functions
 function Hash (blockSize, finalSize) {
@@ -58955,7 +54335,7 @@ Hash.prototype._update = function () {
 module.exports = Hash
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":60}],196:[function(require,module,exports){
+},{"buffer":60}],186:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -58972,7 +54352,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":197,"./sha1":198,"./sha224":199,"./sha256":200,"./sha384":201,"./sha512":202}],197:[function(require,module,exports){
+},{"./sha":187,"./sha1":188,"./sha224":189,"./sha256":190,"./sha384":191,"./sha512":192}],187:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
@@ -59069,7 +54449,7 @@ Sha.prototype._hash = function () {
 module.exports = Sha
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":195,"buffer":60,"inherits":126}],198:[function(require,module,exports){
+},{"./hash":185,"buffer":60,"inherits":116}],188:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -59171,7 +54551,7 @@ Sha1.prototype._hash = function () {
 module.exports = Sha1
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":195,"buffer":60,"inherits":126}],199:[function(require,module,exports){
+},{"./hash":185,"buffer":60,"inherits":116}],189:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -59227,7 +54607,7 @@ Sha224.prototype._hash = function () {
 module.exports = Sha224
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":195,"./sha256":200,"buffer":60,"inherits":126}],200:[function(require,module,exports){
+},{"./hash":185,"./sha256":190,"buffer":60,"inherits":116}],190:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -59365,7 +54745,7 @@ Sha256.prototype._hash = function () {
 module.exports = Sha256
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":195,"buffer":60,"inherits":126}],201:[function(require,module,exports){
+},{"./hash":185,"buffer":60,"inherits":116}],191:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
@@ -59425,7 +54805,7 @@ Sha384.prototype._hash = function () {
 module.exports = Sha384
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":195,"./sha512":202,"buffer":60,"inherits":126}],202:[function(require,module,exports){
+},{"./hash":185,"./sha512":192,"buffer":60,"inherits":116}],192:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var Hash = require('./hash')
@@ -59688,7 +55068,7 @@ Sha512.prototype._hash = function () {
 module.exports = Sha512
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":195,"buffer":60,"inherits":126}],203:[function(require,module,exports){
+},{"./hash":185,"buffer":60,"inherits":116}],193:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -59817,7 +55197,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":116,"inherits":126,"readable-stream/duplex.js":178,"readable-stream/passthrough.js":184,"readable-stream/readable.js":185,"readable-stream/transform.js":186,"readable-stream/writable.js":187}],204:[function(require,module,exports){
+},{"events":106,"inherits":116,"readable-stream/duplex.js":168,"readable-stream/passthrough.js":174,"readable-stream/readable.js":175,"readable-stream/transform.js":176,"readable-stream/writable.js":177}],194:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -60040,7 +55420,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":60}],205:[function(require,module,exports){
+},{"buffer":60}],195:[function(require,module,exports){
 (function (global){
 
 /**
@@ -60111,14 +55491,14 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],206:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],207:[function(require,module,exports){
+},{}],197:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -60708,7 +56088,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":206,"_process":170,"inherits":126}],208:[function(require,module,exports){
+},{"./support/isBuffer":196,"_process":160,"inherits":116}],198:[function(require,module,exports){
 (function (process){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
@@ -61693,7 +57073,7 @@ function hasOwnProperty(obj, prop) {
 });
 
 }).call(this,require('_process'))
-},{"_process":170,"depd":70}],209:[function(require,module,exports){
+},{"_process":160,"depd":70}],199:[function(require,module,exports){
 var indexOf = require('indexof');
 
 var Object_keys = function (obj) {
@@ -61833,7 +57213,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":125}],210:[function(require,module,exports){
+},{"indexof":115}],200:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * Client-side accounts
@@ -61872,9 +57252,9 @@ module.exports = function () {
 
         // free (testnet) ether for new accounts on registration
         fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             if (registeredAddress === undefined || registeredAddress === null ||
                 registeredAddress.constructor !== String) {
                 return onFailed(registeredAddress);
@@ -61896,9 +57276,9 @@ module.exports = function () {
         },
 
         fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             augur.rpc.sendEther({
                 to: registeredAddress,
                 value: amount,
@@ -61915,6 +57295,35 @@ module.exports = function () {
                 onFailed: onFailed
             });
         },
+
+				changeAccountName: function (newName, cb) {
+					var i, self = this;
+					// now set vars based on what is currently in place
+					var keystore = self.account.keystore;
+					var privateKey = self.account.privateKey;
+					// preparing to redo the secureLoginID to use the new name
+					var unsecureLoginIDObject = {
+						name: newName,
+						keystore: keystore
+					};
+					var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+          // web.account object is set to use new values
+          self.account = {
+              name: newName,
+              secureLoginID: secureLoginID,
+              privateKey: privateKey,
+              address: keystore.address,
+              keystore: keystore
+          };
+					// send back the new updated loginAccount object.
+          cb({
+              name: newName,
+              secureLoginID: secureLoginID,
+              keystore: keystore,
+							address: keystore.address
+          });
+				},
 
         register: function (name, password, cb) {
             var i, self = this;
@@ -61981,6 +57390,27 @@ module.exports = function () {
             }); // create
         },
 
+				loadLocalLoginAccount: function (localAccount, cb) {
+					var self = this;
+					cb = (utils.is_function(cb)) ? cb : utils.pass;
+
+					self.account = {
+							name: localAccount.name,
+							secureLoginID: localAccount.secureLoginID,
+							privateKey: localAccount.privateKey,
+							address: localAccount.keystore.address,
+							keystore: localAccount.keystore
+					};
+
+					cb({
+							name: localAccount.name,
+							secureLoginID: localAccount.secureLoginID,
+							privateKey: localAccount.privateKey,
+							address: localAccount.keystore.address,
+							keystore: localAccount.keystore
+					});
+				},
+
         login: function (secureLoginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
@@ -62030,7 +57460,9 @@ module.exports = function () {
                     cb({
                         name: name,
                         secureLoginID: secureLoginID,
-                        keystore: keystore, address: keystore.address
+                        keystore: keystore,
+												address: keystore.address,
+												privateKey: privateKey
                     });
 
                 // decryption failure: bad password
@@ -62072,30 +57504,27 @@ module.exports = function () {
 
                 // send the raw signed transaction to geth
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                    var err;
-                    if (res) {
-                        if (res.error) {
-                            if (res.message.indexOf("rlp") > -1) {
-                                err = clone(errors.RLP_ENCODING_ERROR);
-                                err.bubble = res;
-                                err.packaged = packaged;
-                                return cb(err);
-                            } else if (res.message.indexOf("Nonce too low") > -1) {
-                                console.debug("Bad nonce, retrying:", res.message, packaged);
-                                delete packaged.nonce;
-                                return self.getTxNonce(packaged, cb);
-                            }
+                    if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
+                    if (res.error) {
+                        if (res.message.indexOf("rlp") > -1) {
+                            var err = clone(errors.RLP_ENCODING_ERROR);
+                            err.bubble = res;
+                            err.packaged = packaged;
                             return cb(err);
+                        } else if (res.message.indexOf("Nonce too low") > -1) {
+                            console.debug("Bad nonce, retrying:", res.message, packaged);
+                            delete packaged.nonce;
+                            return self.getTxNonce(packaged, cb);
                         }
-
-                        // res is the txhash if nothing failed immediately
-                        // (even if the tx is nulled, still index the hash)
-                        augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-                        // nonce ok, execute callback
                         return cb(res);
                     }
-                    cb(errors.RAW_TRANSACTION_ERROR);
+
+                    // res is the txhash if nothing failed immediately
+                    // (even if the tx is nulled, still index the hash)
+                    augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
+
+                    // nonce ok, execute callback
+                    return cb(res);
                 });
             });
         },
@@ -62177,7 +57606,7 @@ module.exports = function () {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":212,"./utilities":237,"_process":170,"augur-abi":18,"augur-contracts":22,"bignumber.js":26,"browser-request":30,"buffer":60,"clone":62,"ethereumjs-tx":108,"keythereum":131,"locks":155,"node-uuid":162,"request":31}],211:[function(require,module,exports){
+},{"./constants":202,"./utilities":227,"_process":160,"augur-abi":18,"augur-contracts":22,"bignumber.js":26,"browser-request":30,"buffer":60,"clone":62,"ethereumjs-tx":103,"keythereum":121,"locks":145,"node-uuid":152,"request":31}],201:[function(require,module,exports){
 /**
  * Batch interface:
  * var b = augur.createBatch();
@@ -62213,7 +57642,7 @@ module.exports = function () {
     return new Batch(this.tx, this.rpc);
 };
 
-},{"clone":62}],212:[function(require,module,exports){
+},{"clone":62}],202:[function(require,module,exports){
 /** 
  * augur.js constants
  */
@@ -62253,7 +57682,7 @@ module.exports = {
     FAUCET: "https://faucet.augur.net/faucet/"
 };
 
-},{"augur-abi":18,"bignumber.js":26}],213:[function(require,module,exports){
+},{"augur-abi":18,"bignumber.js":26}],203:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -62317,7 +57746,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_add_tx_message: function (message, onMessage) {
+        parse_log_add_tx_message: function (message, onMessage) {
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -62333,7 +57762,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_cancel_message: function (message, onMessage) {
+        parse_log_cancel_message: function (message, onMessage) {
             console.log("cancel:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
@@ -62440,7 +57869,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_fill_tx_message: function (message, onMessage) {
+        parse_log_fill_tx_message: function (message, onMessage) {
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -62467,7 +57896,7 @@ module.exports = function () {
                 }
             }
         },
-        parse_price_message: function (message, onMessage) {
+        parse_log_price_message: function (message, onMessage) {
             if (message && message.length) {
                 for (var i = 0, len = message.length; i < len; ++i) {
                     if (message[i] && message[i].topics && message[i].topics.length === 3) {
@@ -62494,9 +57923,14 @@ module.exports = function () {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
+                case "log_fill_tx":
+                    callback = function (msg) {
+                        self.parse_log_fill_tx_message(msg, onMessage);
+                    };
+                    break;
                 case "log_price":
                     callback = function (msg) {
-                        self.parse_price_message(msg, onMessage);
+                        self.parse_log_price_message(msg, onMessage);
                     };
                     break;
                 case "contracts":
@@ -62660,10 +58094,16 @@ module.exports = function () {
                                 self.parse_contracts_message(msg, callback);
                             };
                             break;
+                        case "log_fill_tx":
+                            callback = cb.log_fill_tx;
+                            cb.log_fill_tx = function (msg) {
+                                self.parse_log_fill_tx_message(msg, callback);
+                            };
+                            break;
                         case "log_price":
                             callback = cb.log_price;
                             cb.log_price = function (msg) {
-                                self.parse_price_message(msg, callback);
+                                self.parse_log_price_message(msg, callback);
                             };
                             break;
                         case "marketCreated":
@@ -62806,7 +58246,7 @@ module.exports = function () {
     };
 };
 
-},{"./constants":212,"./utilities":237,"async":17,"augur-abi":18,"augur-contracts":22}],214:[function(require,module,exports){
+},{"./constants":202,"./utilities":227,"async":17,"augur-abi":18,"augur-contracts":22}],204:[function(require,module,exports){
 /**
  * generateOrderBook: convenience method for generating an initial order book
  * for a newly created market. generateOrderBook calculates the number of
@@ -62894,7 +58334,9 @@ module.exports = function (p, cb) {
             buyPrice = initialFairPrices[i].minus(halfPriceWidth);
             sellPrice = initialFairPrices[i].plus(halfPriceWidth);
             numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+            if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
             numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+            if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
             outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
             if (outcomeShares.gt(shares)) shares = outcomeShares;
             numSellOrders[i] = numSellOrders[i].toNumber();
@@ -62905,9 +58347,6 @@ module.exports = function (p, cb) {
                 if (buyPrices[i][j].lte(minValue)) {
                     buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
                 }
-                if (marketInfo.type === "scalar") {
-                    buyPrices[i][j] = buyPrices[i][j].minus(minValue);
-                }
             }
             sellPrices[i] = new Array(numSellOrders[i]);
             sellPrices[i][0] = sellPrice;
@@ -62915,9 +58354,6 @@ module.exports = function (p, cb) {
                 sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
                 if (sellPrices[i][j].gte(maxValue)) {
                     sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-                if (marketInfo.type === "scalar") {
-                    sellPrices[i][j] = maxValue.minus(sellPrices[i][j]);
                 }
             }
         }
@@ -62957,7 +58393,7 @@ module.exports = function (p, cb) {
                             async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
-                                    buyPrice = self.adjustScalarPrice("buy", minValue, maxValue, buyPrice);
+                                    buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
                                 } else {
                                     buyPrice = buyPrice.toFixed();
                                 }
@@ -62981,12 +58417,12 @@ module.exports = function (p, cb) {
                                         nextBuyPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
                                         nextBuyPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                // if (err) console.error("async.each buy:", err);
+                                if (err) console.error("async.each buy:", err);
                                 callback(err);
                             });
                         },
@@ -62994,7 +58430,7 @@ module.exports = function (p, cb) {
                             async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
                                 var amount = (!i) ? bestStartingQuantity : startingQuantity;
                                 if (marketInfo.type === "scalar") {
-                                    sellPrice = self.adjustScalarPrice("sell", minValue, maxValue, sellPrice);
+                                    sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
                                 } else {
                                     sellPrice = sellPrice.toFixed();
                                 }
@@ -63018,12 +58454,12 @@ module.exports = function (p, cb) {
                                         nextSellPrice();
                                     },
                                     onFailed: function (err) {
-                                        // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
                                         nextSellPrice(err);
                                     }
                                 });
                             }, function (err) {
-                                // if (err) console.error("async.each sell:", err);
+                                if (err) console.error("async.each sell:", err);
                                 callback(err);
                             });
                         }
@@ -63050,7 +58486,7 @@ module.exports = function (p, cb) {
     });
 };
 
-},{"./constants":212,"async":17,"augur-abi":18,"bignumber.js":26}],215:[function(require,module,exports){
+},{"./constants":202,"async":17,"augur-abi":18,"bignumber.js":26}],205:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript API
@@ -63085,7 +58521,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.8.4";
+    this.version = "1.9.8";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -63123,7 +58559,7 @@ Augur.prototype.Filters = require("./filters");
 module.exports = new Augur();
 
 }).call(this,require('_process'))
-},{"./accounts":210,"./batch":211,"./constants":212,"./filters":213,"./generateOrderBook":214,"./modules/abacus":216,"./modules/buyAndSellShares":217,"./modules/cash":218,"./modules/collectFees":219,"./modules/completeSets":220,"./modules/compositeGetters":221,"./modules/connect":222,"./modules/createBranch":223,"./modules/createMarket":224,"./modules/events":225,"./modules/logs":226,"./modules/makeReports":227,"./modules/markets":228,"./modules/reportingTools":229,"./modules/sendReputation":230,"./modules/trade":231,"./modules/trades":232,"./modules/tradingActions":233,"./modules/transact":234,"./modules/whitelist":235,"./processOrder":236,"./utilities":237,"_process":170,"augur-abi":18,"augur-contracts":22,"ethrpc":110}],216:[function(require,module,exports){
+},{"./accounts":200,"./batch":201,"./constants":202,"./filters":203,"./generateOrderBook":204,"./modules/abacus":206,"./modules/buyAndSellShares":207,"./modules/cash":208,"./modules/collectFees":209,"./modules/completeSets":210,"./modules/compositeGetters":211,"./modules/connect":212,"./modules/createBranch":213,"./modules/createMarket":214,"./modules/events":215,"./modules/logs":216,"./modules/makeReports":217,"./modules/markets":218,"./modules/reportingTools":219,"./modules/sendReputation":220,"./modules/trade":221,"./modules/trades":222,"./modules/tradingActions":223,"./modules/transact":224,"./modules/whitelist":225,"./processOrder":226,"./utilities":227,"_process":160,"augur-abi":18,"augur-contracts":22,"ethrpc":105}],206:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -63143,21 +58579,17 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
-    makeTradeHash: function (max_value, max_amount, trade_ids) {
+    sumTrades: function (trade_ids) {
         var trades = new BigNumber(0);
-        // console.log("max value: ", max_value);
-        // console.log("max amount:", max_amount);
-        // console.log("trade IDs: ", trade_ids);
         for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
             trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
         }
-        // console.log([
-        //     abi.hex(trades, true),
-        //     abi.fix(max_amount, "hex"),
-        //     abi.fix(max_value, "hex")
-        // ]);
+        return abi.hex(trades, true);
+    },
+
+    makeTradeHash: function (max_value, max_amount, trade_ids) {
         return utils.sha3([
-            abi.hex(trades, true),
+            this.sumTrades(trade_ids),
             abi.fix(max_amount, "hex"),
             abi.fix(max_value, "hex")
         ]);
@@ -63170,21 +58602,143 @@ module.exports = {
         return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
     },
 
+    // expects fixed-point inputs
+    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
+        tradingFee = abi.unfix(tradingFee);
+        makerProportionOfFee = abi.unfix(makerProportionOfFee);
+        var makerFee = tradingFee.times(makerProportionOfFee);
+        return {
+            trading: tradingFee.toFixed(),
+            maker: makerFee.toFixed(),
+            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
+        };
+    },
+
+    parseMarketInfo: function (rawInfo) {
+        var EVENTS_FIELDS = 6;
+        var OUTCOMES_FIELDS = 2;
+        var WINNING_OUTCOMES_FIELDS = 8;
+        var info = {};
+        if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
+            // marketInfo[0] = marketID
+            // marketInfo[1] = MARKETS.getMakerFees(marketID)
+            // marketInfo[2] = numOutcomes
+            // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+            // marketInfo[4] = MARKETS.getTradingFee(marketID)
+            // marketInfo[5] = MARKETS.getBranchID(marketID)
+            // marketInfo[6] = MARKETS.getCumScale(marketID)
+            // marketInfo[7] = MARKETS.getCreationTime(marketID)
+            // marketInfo[8] = MARKETS.getVolume(marketID)
+            // marketInfo[9] = INFO.getCreationFee(marketID)
+            // marketInfo[10] = INFO.getCreator(marketID)
+            // tags = MARKETS.returnTags(marketID, outitems=3)
+            // marketInfo[11] = tags[0]
+            // marketInfo[12] = tags[1]
+            // marketInfo[13] = tags[2]
+            var index = 14;
+            var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+            info = {
+                network: this.network_id,
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                tradingFee: fees.trading,
+                numOutcomes: parseInt(rawInfo[2], 16),
+                tradingPeriod: parseInt(rawInfo[3], 16),
+                branchId: rawInfo[5],
+                numEvents: 1,
+                cumulativeScale: abi.unfix(rawInfo[6], "string"),
+                creationTime: parseInt(rawInfo[7], 16),
+                volume: abi.unfix(rawInfo[8], "string"),
+                creationFee: abi.unfix(rawInfo[9], "string"),
+                author: abi.format_address(rawInfo[10]),
+                tags: [
+                    this.decodeTag(rawInfo[11]),
+                    this.decodeTag(rawInfo[12]),
+                    this.decodeTag(rawInfo[13])
+                ],
+                winningOutcomes: []
+            };
+            info.outcomes = new Array(info.numOutcomes);
+
+            // organize event info
+            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+            var event = {
+                id: rawInfo[index],
+                endDate: parseInt(rawInfo[index + 1], 16),
+                outcome: abi.unfix(rawInfo[index + 2], "string"),
+                minValue: abi.unfix(rawInfo[index + 3], "string"),
+                maxValue: abi.unfix(rawInfo[index + 4], "string"),
+                numOutcomes: parseInt(rawInfo[index + 5], 16)
+            };
+
+            // event type: binary, categorical, or scalar
+            if (event.numOutcomes !== 2) {
+                event.type = "categorical";
+            } else if (event.minValue === '1' && event.maxValue === '2') {
+                event.type = "binary";
+            } else {
+                event.type = "scalar";
+            }
+            info.type = event.type;
+            info.endDate = event.endDate;
+            info.events = [event];
+            index += EVENTS_FIELDS;
+
+            // organize outcome info
+            for (var i = 0; i < info.numOutcomes; ++i) {
+                info.outcomes[i] = {
+                    id: i + 1,
+                    outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
+                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
+                };
+            }
+            index += info.numOutcomes*OUTCOMES_FIELDS;
+            info.winningOutcomes = abi.string(
+                rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
+            );
+            index += WINNING_OUTCOMES_FIELDS;
+
+            // convert description byte array to unicode
+            var descriptionLength = parseInt(rawInfo[index], 16);
+            ++index;
+            if (descriptionLength) {
+                info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+                index += descriptionLength;
+            }
+
+            // convert resolution byte array to unicode
+            var resolutionLength = parseInt(rawInfo[index], 16);
+            ++index;
+            if (resolutionLength) {
+                info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+                index += resolutionLength;
+            }
+
+            // convert extraInfo byte array to unicode
+            var extraInfoLength = parseInt(rawInfo[index], 16);
+            if (extraInfoLength) {
+                info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+            }
+        }
+        return info;
+    },
+
     formatTags: function (tags) {
-        if (!tags || tags.constructor !== Array) tags = [];
-        if (tags.length) {
-            for (var i = 0; i < tags.length; ++i) {
-                if (tags[i] === null || tags[i] === undefined || tags[i] === "") {
-                    tags[i] = "0x0";
+        var formattedTags = clone(tags);
+        if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+        if (formattedTags.length) {
+            for (var i = 0; i < formattedTags.length; ++i) {
+                if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
+                    formattedTags[i] = "0x0";
                 } else {
-                    tags[i] = abi.short_string_to_int256(tags[i]);
+                    formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
                 }
             }
         }
-        while (tags.length < 3) {
-            tags.push("0x0");
+        while (formattedTags.length < 3) {
+            formattedTags.push("0x0");
         }
-        return tags;
+        return formattedTags;
     },
 
     calculateRequiredMarketValue: function (gasPrice) {
@@ -63197,14 +58751,16 @@ module.exports = {
         return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
     },
 
-    // type: "buy" or "sell"
-    // minValue, maxValue as BigNumber
-    // price: unadjusted price
-    adjustScalarPrice: function (type, minValue, maxValue, price) {
-        if (type === "buy") {
-            return new BigNumber(price, 10).minus(minValue).toFixed();
-        }
-        return maxValue.minus(new BigNumber(price, 10)).toFixed();
+    shrinkScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.minus(minValue).toFixed();
+    },
+
+    expandScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.plus(minValue).toFixed();
     },
 
     parseTradeInfo: function (trade) {
@@ -63230,180 +58786,6 @@ module.exports = {
         }
     },
 
-    parseMarketInfo: function (rawInfo, options, callback) {
-        var EVENTS_FIELDS = 6;
-        var OUTCOMES_FIELDS = 2;
-        var WINNING_OUTCOMES_FIELDS = 8;
-        var info = {};
-        if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
-
-            // all-inclusive except price history
-            // info[1] = self.Markets[marketID].currentParticipant
-            // info[2] = self.Markets[marketID].makerFees
-            // info[3] = participantNumber
-            // info[4] = self.Markets[marketID].numOutcomes
-            // info[5] = self.Markets[marketID].tradingPeriod
-            // info[6] = self.Markets[marketID].tradingFee
-            // info[7] = self.Markets[marketID].branch
-            // info[8] = self.Markets[marketID].lenEvents
-            // info[9] = self.Markets[marketID].cumulativeScale
-            // info[10] = self.Markets[marketID].blockNum
-            // info[11] = self.Markets[marketID].volume
-            // info[12] = INFO.getCreationFee(marketID)
-            // info[13] = INFO.getCreator(marketID)
-            // info[14] = self.Markets[marketID].tag1
-            // info[15] = self.Markets[marketID].tag2
-            // info[16] = self.Markets[marketID].tag3
-            var index = 17;
-            var makerProportionOfFee = abi.unfix(rawInfo[2]);
-            var tradingFee = abi.unfix(rawInfo[6]);
-            var makerFee = tradingFee.times(makerProportionOfFee);
-            info = {
-                network: this.network_id,
-                makerFee: makerFee.toFixed(),
-                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                tradingFee: tradingFee.toFixed(),
-                numOutcomes: abi.number(rawInfo[4]),
-                tradingPeriod: abi.number(rawInfo[5]),
-                branchId: rawInfo[7],
-                numEvents: parseInt(rawInfo[8]),
-                cumulativeScale: abi.unfix(rawInfo[9], "string"),
-                creationTime: parseInt(rawInfo[10]),
-                volume: abi.unfix(rawInfo[11], "string"),
-                creationFee: abi.unfix(rawInfo[12], "string"),
-                author: abi.format_address(rawInfo[13]),
-                tags: [
-                    this.decodeTag(rawInfo[14]),
-                    this.decodeTag(rawInfo[15]),
-                    this.decodeTag(rawInfo[16])
-                ],
-                type: null,
-                endDate: null,
-                winningOutcomes: [],
-                description: null
-            };
-            info.outcomes = new Array(info.numOutcomes);
-            info.events = new Array(info.numEvents);
-
-            // organize event info
-            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var endDate;
-            for (var i = 0; i < info.numEvents; ++i) {
-                endDate = parseInt(rawInfo[i*EVENTS_FIELDS + index + 1]);
-                info.events[i] = {
-                    id: rawInfo[i*EVENTS_FIELDS + index],
-                    endDate: endDate,
-                    outcome: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 2], "string"),
-                    minValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 3], "string"),
-                    maxValue: abi.unfix(rawInfo[i*EVENTS_FIELDS + index + 4], "string"),
-                    numOutcomes: abi.number(rawInfo[i*EVENTS_FIELDS + index + 5])
-                };
-                // market type: binary, categorical, or scalar
-                if (info.events[i].numOutcomes !== 2) {
-                    info.events[i].type = "categorical";
-                } else if (info.events[i].minValue === '1' && info.events[i].maxValue === '2') {
-                    info.events[i].type = "binary";
-                } else {
-                    info.events[i].type = "scalar";
-                }
-                if (info.endDate === null || endDate > info.endDate) {
-                    info.endDate = endDate;
-                }
-            }
-
-            // organize outcome info
-            index += info.numEvents*EVENTS_FIELDS;
-            for (i = 0; i < info.numOutcomes; ++i) {
-                info.outcomes[i] = {
-                    id: i + 1,
-                    outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
-                };
-            }
-            index += info.numOutcomes*OUTCOMES_FIELDS;
-            info.winningOutcomes = abi.string(
-                rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
-            );
-            index += WINNING_OUTCOMES_FIELDS;
-
-            // convert description byte array to unicode
-            try {
-                info.description = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - parseInt(rawInfo[index])));
-            } catch (exc) {
-                if (this.options.debug.broadcast) console.error(exc, rawInfo);
-                info.description = "";
-            }
-
-            // market types: binary, categorical, scalar, combinatorial
-            if (info.numEvents === 1) {
-                info.type = info.events[0].type;
-                if (!utils.is_function(callback)) return info;
-                return callback(info);
-            }
-
-            // multi-event (combinatorial) markets: batch event descriptions
-            info.type = "combinatorial";
-            // if (options && options.combinatorial) {
-            //     var txList = new Array(info.numEvents);
-            //     for (i = 0; i < info.numEvents; ++i) {
-            //         txList[i] = clone(this.tx.getDescription);
-            //         txList[i].params = info.events[i].id;
-            //     }
-            //     if (utils.is_function(callback)) {
-            //         return rpc.batch(txList, function (response) {
-            //             for (var i = 0, len = response.length; i < len; ++i) {
-            //                 info.events[i].description = response[i];
-            //             }
-            //             callback(info);
-            //         });
-            //     }
-            //     var response = rpc.batch(txList);
-            //     for (i = 0; i < response.length; ++i) {
-            //         info.events[i].description = response[i];
-            //     }
-            // }
-        }
-        if (!utils.is_function(callback)) return info;
-        callback(info);
-    },
-
-    parseMarketsArray: function (marketsArray) {
-        var numMarkets, marketsInfo, totalLen, len, shift, marketID;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
-        }
-        numMarkets = parseInt(marketsArray.shift());
-        marketsInfo = {};
-        totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            marketID = marketsArray[shift];
-            var makerProportionOfFee = abi.unfix(marketsArray[shift + 9]);
-            var tradingFee = abi.unfix(marketsArray[shift + 2]);
-            var makerFee = tradingFee.times(makerProportionOfFee);
-            marketsInfo[marketID] = {
-                _id: marketID,
-                sortOrder: i,
-                tradingPeriod: parseInt(marketsArray[shift + 1]),
-                tradingFee: abi.unfix(marketsArray[shift + 2], "string"),
-                creationTime: parseInt(marketsArray[shift + 3]),
-                volume: abi.unfix(marketsArray[shift + 4], "string"),
-                tags: [
-                    this.decodeTag(marketsArray[shift + 5]),
-                    this.decodeTag(marketsArray[shift + 6]),
-                    this.decodeTag(marketsArray[shift + 7])
-                ],
-                endDate: parseInt(marketsArray[shift + 8]),
-                makerFee: makerFee.toFixed(),
-                takerFee: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed(),
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
-            };
-            totalLen += len;
-        }
-        return marketsInfo;
-    },
-
     base58Decrypt: function (secureLoginID) {
         return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
     },
@@ -63414,7 +58796,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"../utilities":237,"async":17,"augur-abi":18,"bignumber.js":26,"bs58":58,"buffer":60,"clone":62}],217:[function(require,module,exports){
+},{"../utilities":227,"async":17,"augur-abi":18,"bignumber.js":26,"bs58":58,"buffer":60,"clone":62}],207:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -63503,7 +58885,7 @@ module.exports = {
     }
 };
 
-},{"../constants":212,"../utilities":237,"augur-abi":18,"clone":62}],218:[function(require,module,exports){
+},{"../constants":202,"../utilities":227,"augur-abi":18,"clone":62}],208:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -63586,7 +58968,7 @@ module.exports = {
     }
 };
 
-},{"../constants":212,"../utilities":237,"augur-abi":18,"clone":62}],219:[function(require,module,exports){
+},{"../constants":202,"../utilities":227,"augur-abi":18,"clone":62}],209:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -63642,7 +59024,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"bignumber.js":26,"clone":62}],220:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"bignumber.js":26,"clone":62}],210:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -63673,7 +59055,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"clone":62}],221:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"clone":62}],211:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -63683,135 +59065,149 @@ module.exports = {
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
+var abi = require("augur-abi");
 var utils = require("../utilities");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
+    parseOrderBook: function (orderArray, scalarMinMax) {
+        if (!orderArray || orderArray.error) return orderArray;
+        var minValue, order;
+        var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
+        if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
+        var numOrders = orderArray.length / 8;
+        var orderBook = {buy: {}, sell: {}};
+        for (var i = 0; i < numOrders; ++i) {
+            order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+            if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
+            orderBook[order.type][order.id] = order;
+        }
+        return orderBook;
+    },
+
     // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-    getOrderBook: function (marketID, scalarMinMax, callback) {
+    getOrderBook: function (market, scalarMinMax, callback) {
         var self = this;
         if (!callback && utils.is_function(scalarMinMax)) {
             callback = scalarMinMax;
             scalarMinMax = null;
         }
-        var isScalar = scalarMinMax &&
-            scalarMinMax.minValue !== undefined &&
-            scalarMinMax.maxValue !== undefined;
-        function getOrderBook(orderArray) {
-            if (!orderArray || orderArray.error) return orderArray;
-            var minValue, maxValue, numOrders, order;
-            if (isScalar) {
-                minValue = new BigNumber(scalarMinMax.minValue, 10);
-                maxValue = new BigNumber(scalarMinMax.maxValue, 10);
-            }
-            numOrders = orderArray.length / 8;
-            var orderBook = {buy: [], sell: []};
-            for (var i = 0; i < numOrders; ++i) {
-                order = self.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-                if (isScalar) {
-                    order.price = self.adjustScalarPrice(order.type, minValue, maxValue, order.price);
-                }
-                orderBook[order.type].push(order);
-            }
-            return orderBook;
+        if (market && market.market) {
+            scalarMinMax = market.scalarMinMax;
+            callback = callback || market.callback;
+            market = market.market;
         }
         var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = marketID;
-        if (!utils.is_function(callback)) return getOrderBook(this.fire(tx));
-        this.fire(tx, function (orderArray) {
-            callback(getOrderBook(orderArray));
-        });
+        tx.params = market;
+        return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
+    },
+
+    validateMarketInfo: function (marketInfo) {
+        if (!marketInfo) return null;
+        var parsedMarketInfo = this.parseMarketInfo(marketInfo);
+        if (!parsedMarketInfo.numOutcomes) return null;
+        return parsedMarketInfo;
     },
 
     getMarketInfo: function (market, callback) {
         var self = this;
+        if (market && market.market) {
+            callback = callback || market.callback;
+            market = market.market;
+        }
         var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        var unpacked = utils.unpack(market, utils.labels(this.getMarketInfo), arguments);
-        tx.params = unpacked.params;
+        tx.params = market;
         tx.timeout = 45000;
-        if (unpacked && utils.is_function(unpacked.cb[0])) {
-            return this.fire(tx, function (marketInfo) {
-                if (!marketInfo) return callback(self.errors.NO_MARKET_INFO);
-                self.parseMarketInfo(marketInfo, {combinatorial: true}, function (info) {
-                    if (info.numEvents && info.numOutcomes) {
-                        unpacked.cb[0](info);
-                    } else {
-                        unpacked.cb[0](null);
-                    }
-                });
-            });
+        return this.fire(tx, callback, this.validateMarketInfo);
+    },
+
+    parseBatchMarketInfo: function (marketsArray, numMarkets) {
+        var len, shift, rawInfo, info, marketID;
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
         }
-        var marketInfo = this.parseMarketInfo(this.fire(tx));
-        if (marketInfo.numOutcomes && marketInfo.numEvents) {
-            return marketInfo;
-        } else {
-            return null;
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            rawInfo = marketsArray.slice(shift, shift + len - 1);
+            marketID = marketsArray[shift];
+            info = this.parseMarketInfo(rawInfo);
+            if (info && info.numOutcomes) {
+                marketsInfo[marketID] = info;
+                marketsInfo[marketID].sortOrder = i;
+            }
+            totalLen += len;
         }
+        return marketsInfo;
     },
 
     batchGetMarketInfo: function (marketIDs, callback) {
-        var self = this;
-        function batchGetMarketInfo(marketsArray) {
-            var len, shift, rawInfo, info, marketID;
-            if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-                return marketsArray;
-            }
-            var numMarkets = marketIDs.length;
-            var marketsInfo = {};
-            var totalLen = 0;
-            for (var i = 0; i < numMarkets; ++i) {
-                len = parseInt(marketsArray[totalLen]);
-                shift = totalLen + 1;
-                rawInfo = marketsArray.slice(shift, shift + len - 1);
-                marketID = marketsArray[shift];
-                info = self.parseMarketInfo(rawInfo);
-                if (info && parseInt(info.numEvents) && info.numOutcomes) {
-                    marketsInfo[marketID] = info;
-                    marketsInfo[marketID].sortOrder = i;
-                }
-                totalLen += len;
-            }
-            return marketsInfo;
-        }
         var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
         tx.params = [marketIDs];
-        if (!utils.is_function(callback)) {
-            return batchGetMarketInfo(this.fire(tx));
-        }
-        this.fire(tx, function (marketsArray) {
-            callback(batchGetMarketInfo(marketsArray));
-        });
+        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
     },
 
-    getMarketsInfo: function (options, callback) {
-        // options: {branch, offset, numMarketsToLoad, callback}
+    parseMarketsInfo: function (marketsArray) {
+        var len, shift, marketID, fees;
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
+        }
+        var numMarkets = parseInt(marketsArray.shift(), 16);
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            marketID = marketsArray[shift];
+            fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
+            marketsInfo[marketID] = {
+                sortOrder: i,
+                tradingPeriod: parseInt(marketsArray[shift + 1], 16),
+                tradingFee: fees.trading,
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                creationTime: parseInt(marketsArray[shift + 3], 16),
+                volume: abi.unfix(marketsArray[shift + 4], "string"),
+                tags: [
+                    this.decodeTag(marketsArray[shift + 5]),
+                    this.decodeTag(marketsArray[shift + 6]),
+                    this.decodeTag(marketsArray[shift + 7])
+                ],
+                endDate: parseInt(marketsArray[shift + 8], 16),
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
+            };
+            totalLen += len;
+        }
+        return marketsInfo;
+    },
+
+    getMarketsInfo: function (branch, offset, numMarketsToLoad, callback) {
         var self = this;
-        if (utils.is_function(options) && !callback) {
-            callback = options;
-            options = {};
+        if (!callback && utils.is_function(offset)) {
+            callback = offset;
+            offset = null;
         }
-        options = options || {};
-        var branch = options.branch || this.constants.DEFAULT_BRANCH_ID;
-        var offset = options.offset || 0;
-        var numMarketsToLoad = options.numMarketsToLoad || 0;
-        if (!callback && utils.is_function(options.callback)) {
-            callback = options.callback;
+        if (branch && branch.branch) {
+            offset = branch.offset;
+            numMarketsToLoad = branch.numMarketsToLoad;
+            callback = callback || branch.callback;
+            branch = branch.branch;
         }
+        branch = branch || this.constants.DEFAULT_BRANCH_ID;
+        offset = offset || 0;
+        numMarketsToLoad = numMarketsToLoad || 0;
         var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
         tx.params = [branch, offset, numMarketsToLoad];
         tx.timeout = 240000;
-        if (!utils.is_function(callback)) {
-            return this.parseMarketsArray(this.fire(tx));
-        }
-        this.fire(tx, function (marketsArray) {
-            callback(self.parseMarketsArray(marketsArray));
-        });
+        return this.fire(tx, callback, this.parseMarketsInfo);
     }
 };
 
-},{"../utilities":237,"bignumber.js":26,"clone":62}],222:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"bignumber.js":26,"clone":62}],212:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -63986,7 +59382,7 @@ module.exports = {
     }
 };
 
-},{"../constants":212,"../utilities":237,"clone":62,"ethereumjs-connect":102}],223:[function(require,module,exports){
+},{"../constants":202,"../utilities":227,"clone":62,"ethereumjs-connect":102}],213:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64092,7 +59488,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"clone":62}],224:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"clone":62}],214:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64127,10 +59523,11 @@ module.exports = {
             onFailed = branchId.onFailed;               // function
             branchId = branchId.branchId;               // sha256 hash
         }
-        tags = this.formatTags(tags);
+        var formattedTags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         expDate = parseInt(expDate);
-        description = description.trim();
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
         tx.params = [
             branchId,
@@ -64139,11 +59536,11 @@ module.exports = {
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution,
+            resolution || "",
             abi.fix(fees.tradingFee, "hex"),
-            tags[0],
-            tags[1],
-            tags[2],
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
@@ -64179,14 +59576,16 @@ module.exports = {
             branchId = branchId.branchId;               // sha256 hash
         }
         var tx = clone(this.tx.CreateMarket.createEvent);
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
         tx.params = [
             branchId,
-            description.trim(),
+            description,
             parseInt(expDate),
             abi.fix(minValue, "hex"),
             abi.fix(maxValue, "hex"),
             numOutcomes,
-            resolution
+            resolution || ""
         ];
         return this.transact(tx, onSent, onSuccess, onFailed);
     },
@@ -64208,18 +59607,18 @@ module.exports = {
         onSent = onSent || utils.noop;
         onSuccess = onSuccess || utils.noop;
         onFailed = onFailed || utils.noop;
-        tags = this.formatTags(tags);
+        var formattedTags = this.formatTags(tags);
         var fees = this.calculateTradingFees(makerFee, takerFee);
         var tx = clone(this.tx.CreateMarket.createMarket);
-        description = description.trim();
+        if (description) description = description.trim();
         tx.params = [
             branchId,
             description,
             abi.fix(fees.tradingFee, "hex"),
             events,
-            tags[0],
-            tags[1],
-            tags[2],
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
@@ -64253,7 +59652,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"bignumber.js":26,"clone":62}],225:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"bignumber.js":26,"clone":62}],215:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64302,7 +59701,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"clone":62}],226:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"clone":62}],216:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64479,7 +59878,7 @@ module.exports = {
     }
 };
 
-},{"../constants":212,"../utilities":237,"augur-abi":18,"bignumber.js":26}],227:[function(require,module,exports){
+},{"../constants":202,"../utilities":227,"augur-abi":18,"bignumber.js":26}],217:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64607,7 +60006,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"augur-contracts":22,"clone":62}],228:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"augur-contracts":22,"clone":62}],218:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64648,7 +60047,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"clone":62}],229:[function(require,module,exports){
+},{"../utilities":227,"clone":62}],219:[function(require,module,exports){
 /**
  * Reporting time/period toolkit
  * @author Jack Peterson (jack@tinybike.net)
@@ -64826,7 +60225,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"async":17,"augur-abi":18}],230:[function(require,module,exports){
+},{"../utilities":227,"async":17,"augur-abi":18}],220:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64857,7 +60256,7 @@ module.exports = {
     }
 };
 
-},{"augur-abi":18,"clone":62}],231:[function(require,module,exports){
+},{"augur-abi":18,"clone":62}],221:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -64910,13 +60309,14 @@ module.exports = {
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, onTradeSent, function (successResult) {
-                        var result = clone(successResult);
+                    self.transact(tx, onTradeSent, function (result) {
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                return onTradeSuccess({
+                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                    unmatchedShares: abi.unfix(result.callReturn[2], "string")
+                                });
                             }
                             return onTradeSuccess(result);
                         }
@@ -64966,14 +60366,15 @@ module.exports = {
                         buyer_trade_id,
                         abi.fix(max_amount, "hex")
                     ];
-                    self.transact(tx, onTradeSent, function (successResult) {
-                        var result = clone(successResult);
+                    self.transact(tx, onTradeSent, function (result) {
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
+                                return onTradeSuccess({
+                                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                                    matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    price: abi.unfix(result.callReturn[3], "string")
+                                });
                             }
                             return onTradeSuccess(result);
                         }
@@ -64988,7 +60389,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"clone":62,"ethrpc":110}],232:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"clone":62,"ethrpc":105}],222:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -65052,7 +60453,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"clone":62}],233:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"clone":62}],223:[function(require,module,exports){
 /*
  * Author: priecint
  */
@@ -65084,15 +60485,25 @@ module.exports = {
 	 *
 	 * @param {Array} orders Bids or asks
 	 * @param {String} traderOrderType What trader want to do (buy or sell)
-	 * @param {BigNumber} limitPrice When buying it's max price to buy at, when selling it min price to sell at
+	 * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
+	 *     it's null order is considered to be market order
 	 * @param {String} outcomeId
 	 * @param {String} userAddress
 	 * @return {Array.<Object>}
 	 */
 	filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
-		return orders
+		var isMarketOrder = limitPrice === null || limitPrice === undefined;
+		return Object.keys(orders)
+			.map(function (orderId) {
+				return orders[orderId];
+			})
 			.filter(function (order) {
-				var isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+				var isMatchingPrice;
+				if (isMarketOrder) {
+					isMatchingPrice = true;
+				} else {
+					isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+				}
 				return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
 			})
 			.sort(function compareOrdersByPrice(order1, order2) {
@@ -65225,12 +60636,12 @@ module.exports = {
 	},
 
 	/**
-	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how much
-	 * they pay for trading
+	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
+	 * much they pay for trading
 	 *
 	 * @param {String} type 'buy' or 'sell'
 	 * @param {String|BigNumber} orderShares
-	 * @param {String|BigNumber} orderLimitPrice
+	 * @param {String|BigNumber=} orderLimitPrice null value results in market order
 	 * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
 	 * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
 	 * @param {String} userAddress Address of trader to exclude orders from order book
@@ -65240,7 +60651,7 @@ module.exports = {
 	 * @return {Array}
 	 */
 	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
-		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount;
+		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;
 			orderLimitPrice = type.orderLimitPrice;
@@ -65254,10 +60665,11 @@ module.exports = {
 		}
 
 		orderShares = new BigNumber(orderShares, 10);
-		orderLimitPrice = new BigNumber(orderLimitPrice, 10);
+		orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
 		takerFee = new BigNumber(takerFee, 10);
 		makerFee = new BigNumber(makerFee, 10);
 		userPositionShares = new BigNumber(userPositionShares, 10);
+		isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
 
 		var augur = this;
 		var gasPrice = augur.rpc.gasPrice;
@@ -65266,6 +60678,10 @@ module.exports = {
 
 			var areSuitableOrders = matchingSortedAsks.length > 0;
 			if (!areSuitableOrders) {
+				if (isMarketOrder) {
+					return [];
+				}
+
 				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
 			} else {
 				var buyActions = [];
@@ -65284,7 +60700,7 @@ module.exports = {
 				}
 				buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
 
-				if (!remainingOrderShares.equals(constants.ZERO)) {
+				if (!remainingOrderShares.equals(constants.ZERO) && !isMarketOrder) {
 					buyActions.push(augur.getBidAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
 				}
 
@@ -65327,17 +60743,23 @@ module.exports = {
 
 					sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
 				} else {
-					var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
-					remainingOrderShares = remainingOrderShares.minus(askShares);
-					remainingPositionShares = remainingPositionShares.minus(askShares);
-					sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
+					if (!isMarketOrder) {
+						var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
+						remainingOrderShares = remainingOrderShares.minus(askShares);
+						remainingPositionShares = remainingPositionShares.minus(askShares);
+						sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
+					}
 				}
 
-				if (remainingOrderShares.greaterThan(constants.ZERO)) {
+				if (remainingOrderShares.greaterThan(constants.ZERO) && !isMarketOrder) {
 					// recursion
 					sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, {buy: matchingSortedBids}));
 				}
 			} else {
+				if (isMarketOrder) {
+					return sellActions;
+				}
+
 				var etherToShortSell = constants.ZERO;
 				remainingOrderShares = orderShares;
 				if (areSuitableBids) {
@@ -65362,7 +60784,7 @@ module.exports = {
 	}
 };
 
-},{"../constants":212,"bignumber.js":26,"clone":62,"ethereumjs-tx":108}],234:[function(require,module,exports){
+},{"../constants":202,"bignumber.js":26,"clone":62,"ethereumjs-tx":103}],224:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -65372,13 +60794,13 @@ module.exports = {
 
 module.exports = {
 
-    fire: function (tx, callback) {
+    fire: function (tx, callback, wrapper, aux) {
         if (this.web && this.web.account && this.web.account.address) {
             tx.from = this.web.account.address;
         } else {
             tx.from = tx.from || this.from || this.coinbase;
         }
-        return this.rpc.fire(tx, callback);
+        return this.rpc.fire(tx, callback, wrapper, aux);
     },
 
     transact: function (tx, onSent, onSuccess, onFailed) {
@@ -65392,7 +60814,7 @@ module.exports = {
     }
 };
 
-},{}],235:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 /**
  * Testing-only: these methods are whitelisted on production contracts!
  */
@@ -65430,7 +60852,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":237,"augur-abi":18,"clone":62}],236:[function(require,module,exports){
+},{"../utilities":227,"augur-abi":18,"clone":62}],226:[function(require,module,exports){
 /**
  * multiTrade: allows trading multiple outcomes in market.
  *
@@ -65462,11 +60884,12 @@ module.exports = {
  *          4.1.2/ if order was partially filled place ask to order book. exit
  *      4.2/ if user doesn't have position do short sell
  *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares after filling it try again
- *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants, which
- *          results in the equal position
+ *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants,
+ * which results in the equal position
  *
  *
- * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this method
+ * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this
+ *     method
  * @param {String} market The market ID on which trading occurs
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
  * @param {Object} userTradeOrder Trade order to execute (usually from UI).
@@ -65616,11 +61039,14 @@ module.exports = function (
     }
 
     if (isScalar) {
-        userTradeOrder.limitPrice = self.adjustScalarPrice(userTradeOrder.type, minValue, maxValue, userTradeOrder.limitPrice);
+        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
     }
     if (userTradeOrder.type === "buy") {
         // 1.1/ user wants to buy
-        var matchingSortedAskIds = marketOrderBook.sell
+        var matchingSortedAskIds = Object.keys(marketOrderBook.sell)
+            .map(function (askId) {
+                return marketOrderBook.sell[askId];
+            })
             .filter(function (ask) {
                 return ask.outcome === userTradeOrder.outcomeID &&
                     parseFloat(ask.price) <= userTradeOrder.limitPrice;
@@ -65702,7 +61128,10 @@ module.exports = function (
         }
     } else {
         // 1.2/ user wants to sell
-        var matchingSortedBidIds = marketOrderBook.buy
+        var matchingSortedBidIds = Object.keys(marketOrderBook.buy)
+            .map(function (buyId) {
+                return marketOrderBook.buy[buyId];
+            })
             .filter(function (bid) {
                 return bid.outcome === userTradeOrder.outcomeID &&
                     parseFloat(bid.price) >= userTradeOrder.limitPrice;
@@ -65791,7 +61220,7 @@ module.exports = function (
     }
 };
 
-},{"./constants":212,"./utilities":237,"bignumber.js":26}],237:[function(require,module,exports){
+},{"./constants":202,"./utilities":227,"bignumber.js":26}],227:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
@@ -65953,4 +61382,4 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":212,"_process":170,"augur-abi":18,"bignumber.js":26,"buffer":60,"clone":62,"crypto":69}]},{},[1]);
+},{"./constants":202,"_process":160,"augur-abi":18,"bignumber.js":26,"buffer":60,"clone":62,"crypto":69}]},{},[1]);

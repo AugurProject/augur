@@ -29,11 +29,12 @@
  *          4.1.2/ if order was partially filled place ask to order book. exit
  *      4.2/ if user doesn't have position do short sell
  *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares after filling it try again
- *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants, which
- *          results in the equal position
+ *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants,
+ * which results in the equal position
  *
  *
- * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this method
+ * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this
+ *     method
  * @param {String} market The market ID on which trading occurs
  * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
  * @param {Object} userTradeOrder Trade order to execute (usually from UI).
@@ -183,11 +184,14 @@ module.exports = function (
     }
 
     if (isScalar) {
-        userTradeOrder.limitPrice = self.adjustScalarPrice(userTradeOrder.type, minValue, maxValue, userTradeOrder.limitPrice);
+        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
     }
     if (userTradeOrder.type === "buy") {
         // 1.1/ user wants to buy
-        var matchingSortedAskIds = marketOrderBook.sell
+        var matchingSortedAskIds = Object.keys(marketOrderBook.sell)
+            .map(function (askId) {
+                return marketOrderBook.sell[askId];
+            })
             .filter(function (ask) {
                 return ask.outcome === userTradeOrder.outcomeID &&
                     parseFloat(ask.price) <= userTradeOrder.limitPrice;
@@ -269,7 +273,10 @@ module.exports = function (
         }
     } else {
         // 1.2/ user wants to sell
-        var matchingSortedBidIds = marketOrderBook.buy
+        var matchingSortedBidIds = Object.keys(marketOrderBook.buy)
+            .map(function (buyId) {
+                return marketOrderBook.buy[buyId];
+            })
             .filter(function (bid) {
                 return bid.outcome === userTradeOrder.outcomeID &&
                     parseFloat(bid.price) >= userTradeOrder.limitPrice;

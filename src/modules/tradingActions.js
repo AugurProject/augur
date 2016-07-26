@@ -29,15 +29,25 @@ module.exports = {
 	 *
 	 * @param {Array} orders Bids or asks
 	 * @param {String} traderOrderType What trader want to do (buy or sell)
-	 * @param {BigNumber} limitPrice When buying it's max price to buy at, when selling it min price to sell at
+	 * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
+	 *     it's null order is considered to be market order
 	 * @param {String} outcomeId
 	 * @param {String} userAddress
 	 * @return {Array.<Object>}
 	 */
 	filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
-		return orders
+		var isMarketOrder = limitPrice === null || limitPrice === undefined;
+		return Object.keys(orders)
+			.map(function (orderId) {
+				return orders[orderId];
+			})
 			.filter(function (order) {
-				var isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+				var isMatchingPrice;
+				if (isMarketOrder) {
+					isMatchingPrice = true;
+				} else {
+					isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+				}
 				return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
 			})
 			.sort(function compareOrdersByPrice(order1, order2) {
@@ -170,12 +180,12 @@ module.exports = {
 	},
 
 	/**
-	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how much
-	 * they pay for trading
+	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
+	 * much they pay for trading
 	 *
 	 * @param {String} type 'buy' or 'sell'
 	 * @param {String|BigNumber} orderShares
-	 * @param {String|BigNumber} orderLimitPrice
+	 * @param {String|BigNumber=} orderLimitPrice null value results in market order
 	 * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
 	 * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
 	 * @param {String} userAddress Address of trader to exclude orders from order book
@@ -185,7 +195,7 @@ module.exports = {
 	 * @return {Array}
 	 */
 	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
-		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount;
+		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;
 			orderLimitPrice = type.orderLimitPrice;
@@ -199,10 +209,11 @@ module.exports = {
 		}
 
 		orderShares = new BigNumber(orderShares, 10);
-		orderLimitPrice = new BigNumber(orderLimitPrice, 10);
+		orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
 		takerFee = new BigNumber(takerFee, 10);
 		makerFee = new BigNumber(makerFee, 10);
 		userPositionShares = new BigNumber(userPositionShares, 10);
+		isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
 
 		var augur = this;
 		var gasPrice = augur.rpc.gasPrice;
@@ -211,6 +222,10 @@ module.exports = {
 
 			var areSuitableOrders = matchingSortedAsks.length > 0;
 			if (!areSuitableOrders) {
+				if (isMarketOrder) {
+					return [];
+				}
+
 				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
 			} else {
 				var buyActions = [];
@@ -229,7 +244,7 @@ module.exports = {
 				}
 				buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
 
-				if (!remainingOrderShares.equals(constants.ZERO)) {
+				if (!remainingOrderShares.equals(constants.ZERO) && !isMarketOrder) {
 					buyActions.push(augur.getBidAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
 				}
 
@@ -272,17 +287,23 @@ module.exports = {
 
 					sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
 				} else {
-					var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
-					remainingOrderShares = remainingOrderShares.minus(askShares);
-					remainingPositionShares = remainingPositionShares.minus(askShares);
-					sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
+					if (!isMarketOrder) {
+						var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
+						remainingOrderShares = remainingOrderShares.minus(askShares);
+						remainingPositionShares = remainingPositionShares.minus(askShares);
+						sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
+					}
 				}
 
-				if (remainingOrderShares.greaterThan(constants.ZERO)) {
+				if (remainingOrderShares.greaterThan(constants.ZERO) && !isMarketOrder) {
 					// recursion
 					sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, {buy: matchingSortedBids}));
 				}
 			} else {
+				if (isMarketOrder) {
+					return sellActions;
+				}
+
 				var etherToShortSell = constants.ZERO;
 				remainingOrderShares = orderShares;
 				if (areSuitableBids) {

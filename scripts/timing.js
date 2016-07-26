@@ -30,27 +30,36 @@ function createMarkets(numMarketsToCreate, callback) {
     async.forEachOfSeries(new Array(numMarketsToCreate), function (_, index, next) {
         var minValue, maxValue, numOutcomes, type;
         var rand = Math.random();
+        var prefix;
         if (rand > 0.667) {
             // scalar
             maxValue = Math.round(Math.random() * 25);
             minValue = Math.round(Math.random() * maxValue);
             numOutcomes = 2;
+            prefix = "How much";
             type = "scalar";
         } else if (rand < 0.333) {
             // binary
             maxValue = 2;
             minValue = 1;
             numOutcomes = 2;
+            prefix = "Will";
             type = "binary";
         } else {
             // categorical
             maxValue = 2;
             minValue = 1;
-            numOutcomes = Math.floor(6*Math.random()) + 2;
+            numOutcomes = Math.floor(6*Math.random()) + 3;
+            prefix = "Which";
             type = "categorical";
         }
-        var suffix = Math.random().toString(36).substring(4);
-        var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
+        var streetName = madlibs.streetName();
+        var action = madlibs.action();
+        var city = madlibs.city();
+        var description = prefix + " " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
+        var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
+        var tags = [streetName, madlibs.noun(), city];
+        var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
         if (type === "categorical") {
             var choices = new Array(numOutcomes);
             for (var i = 0; i < numOutcomes; ++i) {
@@ -58,7 +67,7 @@ function createMarkets(numMarketsToCreate, callback) {
             }
             description += "~|>" + choices.join('|');
         }
-        var expDate = Math.round(new Date().getTime() / 900);
+        var expDate = Math.round(new Date().getTime() / 995);
         var createSingleEventMarketParams = {
             branchId: augur.constants.DEFAULT_BRANCH_ID,
             description: description,
@@ -66,44 +75,44 @@ function createMarkets(numMarketsToCreate, callback) {
             minValue: minValue,
             maxValue: maxValue,
             numOutcomes: numOutcomes,
-            resolution: madlibs.action() + "." + madlibs.noun() + "." + madlibs.tld(),
+            resolution: resolution,
             takerFee: "0.02",
             makerFee: "0.01",
-            extraInfo: madlibs.city() + " " + madlibs.verb() + " " + madlibs.adjective() + " " + madlibs.noun() + "!",
-            tags: [madlibs.adjective(), madlibs.noun(), madlibs.verb()],
+            extraInfo: extraInfo,
+            tags: tags,
             onSent: function (r) {},
             onSuccess: function (r) {
-                console.log("[" + type + "]", chalk.green(r.marketID), chalk.cyan.dim(description));
-                augur.getMarketInfo(r.marketID, function (marketInfo) {
+                var marketID = r.callReturn;
+                if (!marketID) return next();
+                console.log("[" + type + "]", chalk.green(marketID), chalk.cyan.dim(description));
+                augur.getMarketInfo(marketID, function (marketInfo) {
                     if (marketInfo === null) {
                         console.log(chalk.red("Market info not found:"), chalk.cyan.dim(description), chalk.white.dim(expDate));
-                        return augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                        return augur.setCash(augur.from, "10000000000000",
                             function (r) {},
                             function (r) { next(); },
                             function (err) {
-                                console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                console.error(chalk.red.bold("setCash failed:"), err);
                                 next();
                             }
                         );
                     }
                     var orderBookParams = {
-                        market: r.marketID,
-                        liquidity: Math.floor(400*Math.random()) + 100,
-                        startingQuantity: Math.floor(40*Math.random()) + 10,
-                        bestStartingQuantity: Math.floor(40*Math.random()) + 10
+                        market: marketID,
+                        liquidity: Math.floor(400*Math.random()) + 10000,
+                        startingQuantity: Math.floor(40*Math.random()) + 1000,
+                        bestStartingQuantity: Math.floor(40*Math.random()) + 1000
                     };
                     var initialFairPrices = new Array(numOutcomes);
                     if (type === "scalar") {
                         orderBookParams.priceWidth = (0.25*(maxValue - minValue)).toString();
                         var avg = 0.5*(minValue + maxValue);
-                        initialFairPrices = [0.9*avg, 1.1*avg];
+                        initialFairPrices = [0.5*avg, 1.5*avg];
                         while (initialFairPrices[0] < minValue + 0.5*parseFloat(orderBookParams.priceWidth)) {
                             initialFairPrices[0] = initialFairPrices[0]*1.01;
-                            // console.log("updated left initial fair price:", initialFairPrices[0]);
                         }
                         while (initialFairPrices[1] > maxValue - 0.5*parseFloat(orderBookParams.priceWidth)) {
                             initialFairPrices[1] = initialFairPrices[1]*0.99;
-                            // console.log("updated right initial fair price:", initialFairPrices[1]);
                         }
                     } else {
                         orderBookParams.priceWidth = Math.random().toString();
@@ -114,35 +123,37 @@ function createMarkets(numMarketsToCreate, callback) {
                         }
                     }
                     orderBookParams.initialFairPrices = initialFairPrices;
-                    // console.log("orderBookParams:", JSON.stringify(orderBookParams, null, 2));
                     augur.generateOrderBook(orderBookParams, {
+                        onSimulate: function (sim) {
+                            console.log("simulation:", sim);
+                        },
                         onBuyCompleteSets: function (res) {
                             // console.log("buyCompleteSets:", res);
                         },
                         onSetupOutcome: function (res) {
-                            // console.log("setupOutcome:", res);
+                            console.log("setupOutcome:", res);
                         },
                         onSetupOrder: function (res) {
-                            // console.log("setupOrder:", res);
+                            console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
                             if (index % 10) return next();
-                            augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                            augur.setCash(augur.from, "10000000000000",
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
-                                    console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                    console.error(chalk.red.bold("setCash failed:"), err);
                                     next();
                                 }
                             );
                         },
                         onFailed: function (err) {
                             console.error(chalk.red.bold("generateOrderBook failed:"), err);
-                            augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                            augur.setCash(augur.from, "10000000000000",
                                 function (r) {},
                                 function (r) { next(); },
                                 function (err) {
-                                    console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                                    console.error(chalk.red.bold("setCash failed:"), err);
                                     next();
                                 }
                             );
@@ -152,11 +163,11 @@ function createMarkets(numMarketsToCreate, callback) {
             },
             onFailed: function (err) {
                 console.error(chalk.red.bold("createSingleEventMarket failed:"), err);
-                augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID,
+                augur.setCash(augur.from, "10000000000000",
                     function (r) {},
                     function (r) { next(); },
                     function (err) {
-                        console.error(chalk.red.bold("fundNewAccount failed:"), err);
+                        console.error(chalk.red.bold("setCash failed:"), err);
                         next();
                     }
                 );

@@ -4,20 +4,25 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var fs = (NODE_JS) ? require("fs") : null;
 var path = (NODE_JS) ? require("path") : null;
-var assert = (NODE_JS) ? require("assert") : console.assert;
+var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var Decimal = require("decimal.js");
 var abi = require("augur-abi");
+var madlibs = require("madlibs");
+var async = require("async");
 var chalk = require("chalk");
 var clone = require("clone");
 var moment = require("moment");
 var constants = require("../src/constants");
+var reptools = require("../src/modules/reportingTools");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 var displayed_connection_info = false;
 
 module.exports = {
+
+    DEBUG: false,
 
     // maximum number of accounts/samples for testing
     MAX_TEST_ACCOUNTS: 3,
@@ -29,6 +34,297 @@ module.exports = {
 
     // approximately equals threshold
     EPSILON: 1e-6,
+
+    print_residual: function (periodLength, label) {
+        var t = parseInt(new Date().getTime() / 1000);
+        periodLength = parseInt(periodLength);
+        var residual = (t % periodLength) + "/" + periodLength + " (" + reptools.getCurrentPeriodProgress(periodLength) + "%)";
+        if (label) console.log("\n" + chalk.blue.bold(label));
+        console.log(chalk.white.dim(" - Residual:"), chalk.cyan.dim(residual));
+    },
+
+    print_reporting_status: function (augur, eventID, label) {
+        var sender = augur.from;
+        var branch = augur.Events.getBranch(eventID);
+        var periodLength = parseInt(augur.Branches.getPeriodLength(branch));
+        var redistributed = augur.ConsensusData.getRepRedistributionDone(branch, sender);
+        var votePeriod = augur.Branches.getVotePeriod(branch);
+        var lastPeriodPenalized = augur.ConsensusData.getPenalizedUpTo(branch, sender);
+        if (label) console.log("\n" + chalk.blue.bold(label));
+        console.log(chalk.white.dim(" - Vote period:          "), chalk.blue(votePeriod));
+        console.log(chalk.white.dim(" - Expiration period:    "), chalk.blue(Math.floor(augur.getExpiration(eventID) / periodLength)));
+        console.log(chalk.white.dim(" - Current period:       "), chalk.blue(reptools.getCurrentPeriod(periodLength)));
+        console.log(chalk.white.dim(" - Last period:          "), chalk.blue(votePeriod - 1));
+        console.log(chalk.white.dim(" - Last period penalized:"), chalk.blue(lastPeriodPenalized));
+        console.log(chalk.white.dim(" - Rep redistribution:   "), chalk.cyan.dim(redistributed));
+        this.print_residual(periodLength);
+    },
+
+    top_up: function (augur, accounts, password, callback) {
+        var unlocked = [];
+        var self = this;
+        async.eachSeries(accounts, function (account, nextAccount) {
+            augur.rpc.personal("unlockAccount", [account, password], function (res) {
+                if (res && res.error) return nextAccount();
+                augur.Cash.balance(account, function (cashBalance) {
+                    if (parseFloat(cashBalance) >= 10000000000) {
+                        unlocked.push(account);
+                        return nextAccount();
+                    }
+                    augur.useAccount(account);
+                    augur.setCash({
+                        address: account,
+                        balance: "10000000000",
+                        onSent: augur.utils.noop,
+                        onSuccess: function (r) {
+                            if (r.callReturn === "1") unlocked.push(account);
+                            nextAccount();
+                        },
+                        onFailed: function (err) {
+                            if (self.DEBUG) console.debug("Couldn't unlock account:", account, err);
+                            nextAccount();
+                        }
+                    });
+                });
+            });
+        }, function (err) {
+            if (err) return callback(err);
+            if (unlocked.length) {
+                if (self.DEBUG) console.debug("Using account:", unlocked[0]);
+                augur.useAccount(unlocked[0]);
+            }
+            callback(null, unlocked);
+        });
+    },
+
+    create_each_market_type: function (augur, branchID, expDate, callback) {
+        var self = this;
+        function is_created(markets) {
+            return markets.scalar && markets.categorical && markets.binary;
+        }
+
+        // markets have matching descriptions, tags, fees, etc.
+        branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
+        var streetName = madlibs.streetName();
+        var action = madlibs.action();
+        var city = madlibs.city();
+        var description = "Will " + city + " " + madlibs.noun() + " " + action + " " + streetName + " " + madlibs.noun() + "?";
+        var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
+        var tags = [streetName, action, city];
+        var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
+        expDate = expDate || parseInt(new Date().getTime() / 995);
+        var takerFee = "0.02";
+        var makerFee = "0.01";
+        var numCategories = 7;
+        var categories = new Array(numCategories);
+        for (var i = 0; i < numCategories; ++i) {
+            categories[i] = madlibs.action();
+        }
+        var markets = {};
+
+        // create a binary market
+        augur.createSingleEventMarket({
+            branchId: branchID,
+            description: description,
+            expDate: expDate,
+            minValue: 1,
+            maxValue: 2,
+            numOutcomes: 2,
+            resolution: resolution,
+            takerFee: takerFee,
+            makerFee: makerFee,
+            tags: tags,
+            extraInfo: extraInfo,
+            onSent: function (res) {
+                assert.isNull(res.callReturn);
+
+                // create a categorical market
+                augur.createSingleEventMarket({
+                    branchId: branchID,
+                    description: description + "~|>" + categories.join('|'),
+                    expDate: expDate,
+                    minValue: 1,
+                    maxValue: 2,
+                    numOutcomes: numCategories,
+                    resolution: resolution,
+                    takerFee: takerFee,
+                    makerFee: makerFee,
+                    tags: tags,
+                    extraInfo: extraInfo,
+                    onSent: function (res) {
+                        assert.isNull(res.callReturn);
+
+                        // create a scalar market
+                        augur.createSingleEventMarket({
+                            branchId: branchID,
+                            description: description,
+                            expDate: expDate,
+                            minValue: 5,
+                            maxValue: 10,
+                            numOutcomes: 2,
+                            resolution: resolution,
+                            takerFee: takerFee,
+                            makerFee: makerFee,
+                            tags: tags,
+                            extraInfo: extraInfo,
+                            onSent: function (res) {
+                                assert.isNull(res.callReturn);
+                            },
+                            onSuccess: function (res) {
+                                if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
+                                assert.isNotNull(res.callReturn);
+                                markets.scalar = res.callReturn;
+                                if (is_created(markets)) callback(null, markets);
+                            },
+                            onFailed: function (err) {
+                                if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
+                                callback(new Error(self.pp(err)));
+                            }
+                        });
+                    },
+                    onSuccess: function (res) {
+                        if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
+                        assert.isNotNull(res.callReturn);
+                        markets.categorical = res.callReturn;
+                        if (is_created(markets)) callback(null, markets);
+                    },
+                    onFailed: function (err) {
+                        if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
+                        callback(new Error(self.pp(err)));
+                    }
+                });
+            },
+            onSuccess: function (res) {
+                if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
+                assert.isNotNull(res.callReturn);
+                markets.binary = res.callReturn;
+                if (is_created(markets)) callback(null, markets);
+            },
+            onFailed: function (err) {
+                if (self.DEBUG) console.error("createSingleEventMarket failed:", err);
+                callback(new Error(self.pp(err)));
+            }
+        });
+    },
+
+    trade_in_each_market: function (augur, amountPerMarket, markets, maker, taker, callback) {
+        var self = this;
+        var branch = augur.getBranchID(markets.binary);
+        var periodLength = augur.getPeriodLength(branch);
+        async.forEachOf(markets, function (market, type, nextMarket) {
+            augur.useAccount(maker);
+            if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Buying complete set");
+            augur.buyCompleteSets({
+                market: market,
+                amount: amountPerMarket,
+                onSent: function (r) {
+                    assert.isNull(r.callReturn);
+                },
+                onSuccess: function (r) {
+                    assert.strictEqual(r.callReturn, "1");
+                    if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
+                    augur.sell({
+                        amount: amountPerMarket,
+                        price: "0.99",
+                        market: market,
+                        outcome: 1,
+                        onSent: function (r) {
+                            assert.isNull(r.callReturn);
+                        },
+                        onSuccess: function (r) {
+                            assert.isNotNull(r.callReturn);
+                            nextMarket(null);
+                        },
+                        onFailed: nextMarket
+                    });
+                },
+                onFailed: nextMarket
+            });
+        }, function (err) {
+            assert.isNull(err);
+            augur.useAccount(taker);
+            var trades = [];
+            async.forEachOf(markets, function (market, type, nextMarket) {
+                if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
+                var marketTrades = augur.get_trade_ids(market);
+                if (!marketTrades || !marketTrades.length) {
+                    return nextMarket("no trades found for " + market);
+                }
+                async.eachSeries(marketTrades, function (thisTrade, nextTrade) {
+                    var tradeInfo = augur.get_trade(thisTrade);
+                    if (!tradeInfo) return nextTrade("no trade info found");
+                    if (tradeInfo.owner === augur.from) return nextTrade(null);
+                    if (tradeInfo.type === "buy") return nextTrade(null);
+                    if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Trading");
+                    nextTrade(thisTrade);
+                }, function (trade) {
+                    assert.isNotNull(trade);
+                    trades.push(trade);
+                    nextMarket(null);
+                });
+            }, function (err) {
+                if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
+                assert.isNull(err);
+                assert.strictEqual(trades.length, Object.keys(markets).length);
+                augur.trade({
+                    max_value: Object.keys(markets).length*amountPerMarket,
+                    max_amount: 0,
+                    trade_ids: trades,
+                    onTradeHash: function (tradeHash) {
+                        if (self.DEBUG) {
+                            self.print_residual(periodLength, "Trade hash: " + tradeHash);
+                        }
+                        assert.notProperty(tradeHash, "error");
+                        assert.isString(tradeHash);
+                    },
+                    onCommitSent: function (r) {
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onCommitSuccess: function (r) {
+                        if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
+                        assert.strictEqual(r.callReturn, "1");
+                    },
+                    onCommitFailed: callback,
+                    onNextBlock: function (block) {
+                        if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
+                    },
+                    onTradeSent: function (r) {
+                        assert.isNull(r.callReturn);
+                    },
+                    onTradeSuccess: function (r) {
+                        if (self.DEBUG) {
+                            self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r.callReturn));
+                        }
+                        assert.isObject(r);
+                        assert.notProperty(r, "error");
+                        assert.property(r, "unmatchedCash");
+                        assert.property(r, "unmatchedShares");
+                        augur.useAccount(maker);
+                        callback(null);
+                    },
+                    onTradeFailed: callback
+                });
+            });
+        });
+    },
+
+    wait_until_expiration: function (augur, eventID, callback) {
+        var periodLength = augur.getPeriodLength(augur.getBranch(eventID));
+        var t = parseInt(new Date().getTime() / 1000);
+        var currentPeriod = augur.getCurrentPeriod(periodLength);
+        var expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
+        var periodsToGo = expirationPeriod - currentPeriod;
+        var secondsToGo = periodsToGo*periodLength + periodLength - (t % periodLength);
+        if (this.DEBUG) {
+            this.print_reporting_status(augur, eventID, "Waiting until period after new events expire...");
+            console.log(chalk.white.dim(" - Periods to go:"), chalk.cyan.dim(periodsToGo + " + " + (periodLength - (t % periodLength)) + "/" + periodLength + " (" + (100 - augur.getCurrentPeriodProgress(periodLength)) + "%)"));
+            console.log(chalk.white.dim(" - Minutes to go:"), chalk.cyan.dim(secondsToGo / 60));
+        }
+        setTimeout(function () {
+            assert.strictEqual(augur.getCurrentPeriod(periodLength), expirationPeriod + 1);
+            callback(null);
+        }, secondsToGo*1000);
+    },
 
     chunk32: function (string, stride, offset) {
         var elements, chunked, position;
@@ -93,6 +389,7 @@ module.exports = {
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
         }
+        augur.rpc.retryDroppedTxs = true;
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
             if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {

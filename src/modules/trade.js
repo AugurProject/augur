@@ -50,13 +50,14 @@ module.exports = {
                         abi.fix(max_amount, "hex"),
                         trade_ids
                     ];
-                    self.transact(tx, onTradeSent, function (successResult) {
-                        var result = clone(successResult);
+                    self.transact(tx, onTradeSent, function (result) {
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
+                                return onTradeSuccess({
+                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                    unmatchedShares: abi.unfix(result.callReturn[2], "string")
+                                });
                             }
                             return onTradeSuccess(result);
                         }
@@ -106,14 +107,15 @@ module.exports = {
                         buyer_trade_id,
                         abi.fix(max_amount, "hex")
                     ];
-                    self.transact(tx, onTradeSent, function (successResult) {
-                        var result = clone(successResult);
+                    self.transact(tx, onTradeSent, function (result) {
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                result.callReturn[1] = abi.unfix(result.callReturn[1], "string");
-                                result.callReturn[2] = abi.unfix(result.callReturn[2], "string");
-                                result.callReturn[3] = abi.unfix(result.callReturn[3], "string");
+                                return onTradeSuccess({
+                                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                                    matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    price: abi.unfix(result.callReturn[3], "string")
+                                });
                             }
                             return onTradeSuccess(result);
                         }

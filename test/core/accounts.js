@@ -16,6 +16,7 @@ var abi = require("augur-abi");
 var utils = require("../../src/utilities");
 var constants = require("../../src/constants");
 var tools = require("../tools");
+var random = require("../random");
 var augur = tools.setup(require("../../src"), process.argv.slice(2));
 
 // generate random private key
@@ -236,6 +237,24 @@ describe("Logout", function () {
 
 });
 
+describe("Change Account Name", function () {
+
+	it("Should be able to update the account object", function () {
+		this.timeout(tools.TIMEOUT);
+		var augur = tools.setup(require("../../src"), process.argv.slice(2));
+		augur.web.login(secureLoginID, password, function (user) {
+			var privateKey = augur.web.account.privateKey;
+			augur.web.changeAccountName('testingName', function (updatedUser) {
+				assert.strictEqual(user.keystore, updatedUser.keystore);
+				assert.strictEqual(updatedUser.name, 'testingName');
+				assert.strictEqual(user.address, updatedUser.address);
+				assert.strictEqual(privateKey, augur.web.account.privateKey);
+			});
+		});
+	});
+
+});
+
 describe("Transaction signing", function () {
 
     // sign tx with private key
@@ -370,7 +389,6 @@ describe("Integration tests", function () {
                 augur.web.fundNewAccountFromAddress(augur.from, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
                     function (res) {
                         assert.notProperty(res, "error");
-                        assert.strictEqual(res.callReturn, "1");
                     },
                     function (response) {
                         assert.notProperty(response, "error");
@@ -405,7 +423,6 @@ describe("Integration tests", function () {
                 augur.web.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
                     function (res) {
                         assert.notProperty(res, "error");
-                        assert.strictEqual(res.callReturn, "1");
                     },
                     function (response) {
                         assert.notProperty(response, "error");
@@ -463,12 +480,11 @@ describe("Integration tests", function () {
                 assert.notProperty(user, "error");
                 assert.strictEqual(user.address, augur.web.account.address);
                 augur.reputationFaucet({
-                    branch: augur.constants.DEFAULT_BRANCH_ID,
+                    branch: augur.constants.DEFAULT_BRANCH_ID + "01",
                     onSent: function (r) {
                         // sent
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
-                        assert.strictEqual(r.callReturn, "1");
                         assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
                         assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
                     },
@@ -510,25 +526,24 @@ describe("Integration tests", function () {
                     var count = 0;
                     var tx1 = clone(augur.tx.Faucets.reputationFaucet);
                     var tx2 = clone(augur.tx.Faucets.fundNewAccount);
-                    tx1.params = [augur.constants.DEFAULT_BRANCH_ID];
-                    tx2.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    tx1.params = [random.hash()];
+                    tx2.params = [random.hash()];
                     var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
                     tx1.nonce = txCount;
                     tx2.nonce = txCount + 1;
                     augur.transact(tx1, function (r) {
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
-                        assert.strictEqual(r.callReturn, "1");
                         augur.transact(tx2, function (r) {
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
                         }, function (r) {
                             ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
                             assert.property(r, "blockNumber");
+                            assert.strictEqual(r.callReturn, "1");
                             assert.isAbove(parseInt(r.blockNumber), 0);
                             assert.strictEqual(r.from, user.address);
                             assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -543,6 +558,7 @@ describe("Integration tests", function () {
                         assert.property(r, "callReturn");
                         assert.property(r, "blockHash");
                         assert.property(r, "blockNumber");
+                        assert.strictEqual(r.callReturn, "1");
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.strictEqual(r.from, user.address);
                         assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -570,21 +586,21 @@ describe("Integration tests", function () {
                     var count = 0;
                     var tx1 = clone(augur.tx.Faucets.reputationFaucet);
                     var tx2 = clone(augur.tx.Faucets.fundNewAccount);
-                    tx1.params = [augur.constants.DEFAULT_BRANCH_ID];
-                    tx2.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    tx1.params = [random.hash()];
+                    tx2.params = [random.hash()];
                     var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
                     tx1.nonce = txCount;
                     tx2.nonce = txCount + 1;
                     augur.transact(tx1, function (r) {
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
-                        assert.strictEqual(r.callReturn, "1");
                     }, function (r) {
                         ++count;
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
                         assert.property(r, "blockHash");
                         assert.property(r, "blockNumber");
+                        assert.strictEqual(r.callReturn, "1");
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.strictEqual(r.from, user.address);
                         assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -596,13 +612,13 @@ describe("Integration tests", function () {
                     augur.transact(tx2, function (r) {
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
-                        assert.strictEqual(r.callReturn, "1");
                     }, function (r) {
                         ++count;
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
                         assert.property(r, "blockHash");
                         assert.property(r, "blockNumber");
+                        assert.strictEqual(r.callReturn, "1");
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.strictEqual(r.from, user.address);
                         assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -630,21 +646,21 @@ describe("Integration tests", function () {
                     var count = 0;
                     var tx1 = clone(augur.tx.Faucets.reputationFaucet);
                     var tx2 = clone(augur.tx.Faucets.fundNewAccount);
-                    tx1.params = [augur.constants.DEFAULT_BRANCH_ID];
-                    tx2.params = [augur.constants.DEFAULT_BRANCH_ID];
+                    tx1.params = [random.hash()];
+                    tx2.params = [random.hash()];
                     var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
                     tx1.nonce = txCount;
                     tx2.nonce = txCount;
                     augur.transact(tx1, function (r) {
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
-                        assert.strictEqual(r.callReturn, "1");
                     }, function (r) {
                         ++count;
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
                         assert.property(r, "blockHash");
                         assert.property(r, "blockNumber");
+                        assert.strictEqual(r.callReturn, "1");
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.strictEqual(r.from, user.address);
                         assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -656,13 +672,13 @@ describe("Integration tests", function () {
                     augur.transact(tx2, function (r) {
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
-                        assert.strictEqual(r.callReturn, "1");
                     }, function (r) {
                         ++count;
                         assert.property(r, "txHash");
                         assert.property(r, "callReturn");
                         assert.property(r, "blockHash");
                         assert.property(r, "blockNumber");
+                        assert.strictEqual(r.callReturn, "1");
                         assert.isAbove(parseInt(r.blockNumber), 0);
                         assert.strictEqual(r.from, user.address);
                         assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -688,19 +704,20 @@ describe("Integration tests", function () {
                     assert.notProperty(user, "error");
                     assert.strictEqual(user.address, augur.web.account.address);
                     var count = 0;
+                    var branch = random.hash();
                     augur.reputationFaucet({
-                        branch: augur.constants.DEFAULT_BRANCH_ID,
+                        branch: branch,
                         onSent: function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
                         },
                         onSuccess: function (r) {
-                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
                             assert.property(r, "blockNumber");
+                            assert.strictEqual(r.callReturn, "1");
                             assert.isAbove(parseInt(r.blockNumber), 0);
                             assert.strictEqual(r.from, user.address);
                             assert.strictEqual(r.to, augur.contracts.Faucets);
@@ -717,18 +734,18 @@ describe("Integration tests", function () {
                         }
                     });
                     augur.reputationFaucet({
-                        branch: augur.constants.DEFAULT_BRANCH_ID,
+                        branch: branch,
                         onSent: function (r) {
+                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
-                            assert.strictEqual(r.callReturn, "1");
                         },
                         onSuccess: function (r) {
-                            ++count;
                             assert.property(r, "txHash");
                             assert.property(r, "callReturn");
                             assert.property(r, "blockHash");
                             assert.property(r, "blockNumber");
+                            assert.strictEqual(r.callReturn, "1");
                             assert.isAbove(parseInt(r.blockNumber), 0);
                             assert.strictEqual(r.from, user.address);
                             assert.strictEqual(r.to, augur.contracts.Faucets);

@@ -35,9 +35,9 @@ module.exports = function () {
 
         // free (testnet) ether for new accounts on registration
         fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             if (registeredAddress === undefined || registeredAddress === null ||
                 registeredAddress.constructor !== String) {
                 return onFailed(registeredAddress);
@@ -59,9 +59,9 @@ module.exports = function () {
         },
 
         fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-            onSent = onSent || utils.pass;
-            onSuccess = onSuccess || utils.pass;
-            onFailed = onFailed || utils.pass;
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
             augur.rpc.sendEther({
                 to: registeredAddress,
                 value: amount,
@@ -78,6 +78,35 @@ module.exports = function () {
                 onFailed: onFailed
             });
         },
+
+				changeAccountName: function (newName, cb) {
+					var i, self = this;
+					// now set vars based on what is currently in place
+					var keystore = self.account.keystore;
+					var privateKey = self.account.privateKey;
+					// preparing to redo the secureLoginID to use the new name
+					var unsecureLoginIDObject = {
+						name: newName,
+						keystore: keystore
+					};
+					var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+          // web.account object is set to use new values
+          self.account = {
+              name: newName,
+              secureLoginID: secureLoginID,
+              privateKey: privateKey,
+              address: keystore.address,
+              keystore: keystore
+          };
+					// send back the new updated loginAccount object.
+          cb({
+              name: newName,
+              secureLoginID: secureLoginID,
+              keystore: keystore,
+							address: keystore.address
+          });
+				},
 
         register: function (name, password, cb) {
             var i, self = this;
@@ -144,6 +173,27 @@ module.exports = function () {
             }); // create
         },
 
+				loadLocalLoginAccount: function (localAccount, cb) {
+					var self = this;
+					cb = (utils.is_function(cb)) ? cb : utils.pass;
+
+					self.account = {
+							name: localAccount.name,
+							secureLoginID: localAccount.secureLoginID,
+							privateKey: localAccount.privateKey,
+							address: localAccount.keystore.address,
+							keystore: localAccount.keystore
+					};
+
+					cb({
+							name: localAccount.name,
+							secureLoginID: localAccount.secureLoginID,
+							privateKey: localAccount.privateKey,
+							address: localAccount.keystore.address,
+							keystore: localAccount.keystore
+					});
+				},
+
         login: function (secureLoginID, password, cb) {
             var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
@@ -193,7 +243,9 @@ module.exports = function () {
                     cb({
                         name: name,
                         secureLoginID: secureLoginID,
-                        keystore: keystore, address: keystore.address
+                        keystore: keystore,
+												address: keystore.address,
+												privateKey: privateKey
                     });
 
                 // decryption failure: bad password
@@ -235,30 +287,27 @@ module.exports = function () {
 
                 // send the raw signed transaction to geth
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                    var err;
-                    if (res) {
-                        if (res.error) {
-                            if (res.message.indexOf("rlp") > -1) {
-                                err = clone(errors.RLP_ENCODING_ERROR);
-                                err.bubble = res;
-                                err.packaged = packaged;
-                                return cb(err);
-                            } else if (res.message.indexOf("Nonce too low") > -1) {
-                                console.debug("Bad nonce, retrying:", res.message, packaged);
-                                delete packaged.nonce;
-                                return self.getTxNonce(packaged, cb);
-                            }
+                    if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
+                    if (res.error) {
+                        if (res.message.indexOf("rlp") > -1) {
+                            var err = clone(errors.RLP_ENCODING_ERROR);
+                            err.bubble = res;
+                            err.packaged = packaged;
                             return cb(err);
+                        } else if (res.message.indexOf("Nonce too low") > -1) {
+                            console.debug("Bad nonce, retrying:", res.message, packaged);
+                            delete packaged.nonce;
+                            return self.getTxNonce(packaged, cb);
                         }
-
-                        // res is the txhash if nothing failed immediately
-                        // (even if the tx is nulled, still index the hash)
-                        augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-                        // nonce ok, execute callback
                         return cb(res);
                     }
-                    cb(errors.RAW_TRANSACTION_ERROR);
+
+                    // res is the txhash if nothing failed immediately
+                    // (even if the tx is nulled, still index the hash)
+                    augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
+
+                    // nonce ok, execute callback
+                    return cb(res);
                 });
             });
         },

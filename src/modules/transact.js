@@ -7,13 +7,13 @@
 
 module.exports = {
 
-    fire: function (tx, callback) {
+    fire: function (tx, callback, wrapper, aux) {
         if (this.web && this.web.account && this.web.account.address) {
             tx.from = this.web.account.address;
         } else {
             tx.from = tx.from || this.from || this.coinbase;
         }
-        return this.rpc.fire(tx, callback);
+        return this.rpc.fire(tx, callback, wrapper, aux);
     },
 
     transact: function (tx, onSent, onSuccess, onFailed) {

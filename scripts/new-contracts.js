@@ -21,19 +21,18 @@ augur.connect("http://127.0.0.1:8545", process.env.GETH_IPC, function (connected
             async.eachSeries(accounts, function (account, nextAccount) {
                 augur.useAccount(account);
                 augur.rpc.personal("unlockAccount", [account, password], function (unlocked) {
-                    if (!unlocked) return nextAccount("couldn't unlock " + account);
+                    if (unlocked && unlocked.error) return nextAccount();
                     augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID, function (res) {
                         console.log("fundNewAccount", account, "sent:", res);
                     }, function (res) {
                         console.log("fundNewAccount", account, "success:", res);
                         nextAccount();
-                    }, nextAccount);
+                    }, function (err) {
+                        console.error("fundNewAccount", account, "failed:", err);
+                        nextAccount();
+                    });
                 });
-            }, function (err) {
-                if (err) console.error("fundNewAccount failed:", err);
-            });
+            }, process.exit);
         });
-    }, function (err) {
-        console.error("initDefaultBranch failed:", err);
-    });
+    }, process.exit);
 });
