@@ -53,6 +53,8 @@ const testState = {
 		id: '0xtest123',
 		name: 'testTesterson',
 		secureLoginID: 'testSecureID',
+		localNode: false,
+		prettyAddress: '0xte...t123',
 		linkText: 'testTesterson',
 		prettySecureLoginID: 'test...reID',
 		ether: 0,
