@@ -757,18 +757,6 @@ export default function(market) {
 			});
 		});
 
-		describe('orderBook', () => {
-			it('[TODO] further assert shape');
-
-			it('should receive an orderBook and be an object', () => {
-				assert.isDefined(market.orderBook, `market.orderBook isn't defined`);
-			});
-
-			it('should be an object', () => {
-				assert.isObject(market.orderBook, `market.orderBook isn't an object`);
-			});
-		});
-
 		describe('onSubmitPlaceTrade', () => {
 			let onSubmitPlaceTrade = market.onSubmitPlaceTrade;
 
