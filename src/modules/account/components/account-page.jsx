@@ -146,9 +146,14 @@ export default class AccountPage extends Component {
 								<p>
 									If you are running Augur using a local geth node, you can download your account data to login through the node.
 								</p>
-								<button className="button download-account" title="Click here to Download your Account." onClick={() => p.account.downloadAccount()}>
+								<a
+									className="button download-account"
+									href={p.account.dataString}
+									download={p.account.downloadFileName}
+									title="Click here to Download your Account."
+								>
 									Download Account
-								</button>
+								</a>
 							</div>
 						</div>
 					</div>

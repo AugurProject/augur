@@ -14,6 +14,12 @@ const loginAccount = {
 };
 
 loginAccount.linkText = loginAccount.localNode ? loginAccount.prettyAddress : loginAccount.name || loginAccount.prettySecureLoginID;
+const date = new Date()
+	.toISOString()
+	.split(':')
+	.join('-');
+loginAccount.downloadAccountDataString = `data:application/octet-stream;charset=utf-8;base64,${encodeURIComponent(JSON.stringify(loginAccount))}`;
+loginAccount.downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
 
 loginAccount.signIn = (name = loginAccount.name) => {
 	loginAccount.update({ loginAccount: {
@@ -25,20 +31,6 @@ loginAccount.signIn = (name = loginAccount.name) => {
 	}
 	});
 	loginAccount.editName(name);
-};
-
-loginAccount.downloadAccount = () => {
-	const theDocument = typeof document !== 'undefined' && document;
-	const link = theDocument.createElement('a');
-	const date = new Date()
-		.toISOString()
-		.split(':')
-		.join('-');
-	const filename = `UTC--${date}--${loginAccount.address}`;
-	const accountFile = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(loginAccount))}`;
-	link.download = filename;
-	link.href = accountFile;
-	link.click();
 };
 
 loginAccount.editName = (name) => {
