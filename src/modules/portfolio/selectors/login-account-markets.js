@@ -62,12 +62,10 @@ export const selectAverageTradeSize = marketPriceHistory => {
 	};
 
 	const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
-		const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => {
-			return {
-				shares: outcomeTotals.shares + Number(trade.shares),
-				trades: outcomeTotals.trades + 1
-			};
-		}, initialState);
+		const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
+			shares: outcomeTotals.shares + Number(trade.shares),
+			trades: outcomeTotals.trades + 1
+		}), initialState);
 
 		return {
 			shares: historyTotals.shares + outcomeTotals.shares,
