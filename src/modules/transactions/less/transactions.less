@@ -50,6 +50,7 @@
 
             .description {
                 display: inline-block;
+                flex: 1;
                 min-width: 40%;
                 line-height: 1.5em;
                 padding: 0 3% 0 1%;
@@ -76,7 +77,6 @@
             }
 
             .value-changes {
-                flex: 2;
                 display: inline-block;
                 padding: 0 3% 0 1%;
                 text-align: right;
@@ -94,13 +94,11 @@
             .status-and-message {
                 display: inline-block;
                 flex: 2;
-                max-width: 22%;
+                max-width: 35%;
                 padding: 0 3% 0 1%;
 				line-height: 1.2rem;
                 text-align: right;
-                border-left: 1px solid @color-border;
                 color: orange;
-                text-overflow: ellipsis;
                 overflow: hidden;
 
 	            .status {
