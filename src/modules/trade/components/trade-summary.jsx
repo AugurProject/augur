@@ -3,7 +3,7 @@ import Transaction from '../../transactions/components/transaction';
 
 const TradeSummary = (p) => (
 	<div className="trade-summary">
-		<h5>Possible Order</h5>
+		<h5>Possible Fill</h5>
 
 		{p.tradeSummary && p.tradeSummary.tradeOrders && p.tradeSummary.tradeOrders.map((tradeOrder, i) => (
 			<Transaction
