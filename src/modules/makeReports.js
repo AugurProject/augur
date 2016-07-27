@@ -27,7 +27,7 @@ module.exports = {
         ]);
     },
 
-    submitReportHash: function (event, reportHash, encryptedSaltyHash, branch, period, periodLength, onSent, onSuccess, onFailed) {
+    submitReportHash: function (event, reportHash, encryptedSaltyHash, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (event.constructor === Object && event.event) {
             reportHash = event.reportHash;
@@ -38,6 +38,7 @@ module.exports = {
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;
+            onConfirmed = event.onConfirmed;
             event = event.event;
         }
         if (this.getCurrentPeriodProgress(periodLength) >= 50) {
@@ -59,7 +60,8 @@ module.exports = {
                         periodLength: periodLength,
                         onSent: onSent,
                         onSuccess: onSuccess,
-                        onFailed: onFailed
+                        onFailed: onFailed,
+                        onConfirmed: onConfirmed
                     });
                 });
             }
@@ -76,10 +78,10 @@ module.exports = {
                     onSuccess(res);
                 }
             });
-        }, onFailed);
+        }, onFailed, onConfirmed);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed) {
+    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed, onConfirmed) {
         if (event.constructor === Object && event.event) {
             salt = event.salt;
             report = event.report;
@@ -88,6 +90,7 @@ module.exports = {
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;
+            onConfirmed = event.onConfirmed;
             event = event.event;
         }
         onSent = onSent || utils.pass;
@@ -106,7 +109,7 @@ module.exports = {
             fixedReport,
             abi.fix(ethics, "hex")
         ];
-        return this.transact(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     },
 
     validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {

@@ -12,7 +12,7 @@ var constants = require("../constants");
 
 module.exports = {
 
-    buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
@@ -21,6 +21,7 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
+            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -28,9 +29,8 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.buy);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        if (!utils.is_function(onSent)) {
-            var res = this.transact(tx);
-            res.callReturn = utils.sha3([
+        var prepare = function (res, cb) {
+            res.tradeID = utils.sha3([
                 constants.BID,
                 market,
                 abi.fix(amount, "hex"),
@@ -39,23 +39,14 @@ module.exports = {
                 res.blockNumber,
                 parseInt(outcome)
             ]);
-            return res;
-        }
-        this.transact(tx, onSent, function (res) {
-            res.callReturn = utils.sha3([
-                constants.BID,
-                market,
-                abi.fix(amount, "hex"),
-                abi.fix(price, "hex"),
-                res.from,
-                res.blockNumber,
-                parseInt(outcome)
-            ]);
-            onSuccess(res);
-        }, onFailed);
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
+        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
     },
 
-    sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed) {
+    sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (amount.constructor === Object && amount.amount) {
             price = amount.price;
@@ -64,6 +55,7 @@ module.exports = {
             onSent = amount.onSent;
             onSuccess = amount.onSuccess;
             onFailed = amount.onFailed;
+            onConfirmed = amount.onConfirmed;
             amount = amount.amount;
         }
         onSent = onSent || utils.noop;
@@ -71,8 +63,8 @@ module.exports = {
         onFailed = onFailed || utils.noop;
         var tx = clone(this.tx.BuyAndSellShares.sell);
         tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        this.transact(tx, onSent, function (res) {
-            res.callReturn = utils.sha3([
+        var prepare = function (res, cb) {
+            res.tradeID = utils.sha3([
                 constants.ASK,
                 market,
                 abi.fix(amount, "hex"),
@@ -81,7 +73,10 @@ module.exports = {
                 res.blockNumber,
                 parseInt(outcome)
             ]);
-            onSuccess(res);
-        }, onFailed);
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
+        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
     }
 };

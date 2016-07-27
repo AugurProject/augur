@@ -12,6 +12,7 @@ var augurpath = "../../src/index";
 var augur = require(augurpath);
 var utils = require("../../src/utilities");
 var tools = require("../tools");
+var DEBUG = false;
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -46,13 +47,15 @@ describe("CreateMarket.createSingleEventMarket", function () {
                 extraInfo: t.extraInfo,
                 resolution: t.resolution,
                 onSent: function (r) {
+                    if (DEBUG) console.log("sent:", r);
                     assert(r.txHash);
                     assert.isNull(r.callReturn);
                 },
                 onSuccess: function (r) {
+                    if (DEBUG) console.log("success:", r);
                     assert.strictEqual(r.marketID, r.callReturn);
                     var marketID = r.callReturn;
-                    console.log("marketID:", marketID);
+                    if (DEBUG) console.log("marketID:", marketID);
                     var periodLength = augur.getPeriodLength(t.branch);
                     var block = augur.rpc.getBlock(r.blockNumber);
                     var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
@@ -75,13 +78,16 @@ describe("CreateMarket.createSingleEventMarket", function () {
 
                     // get market's event and check its properties are correct
                     var eventID = augur.getMarketEvent(marketID, 0);
-                    console.log("eventID:", eventID);
+                    if (DEBUG) console.log("eventID:", eventID);
                     assert.strictEqual(augur.getDescription(eventID), t.description);
                     assert.strictEqual(augur.getResolution(eventID), t.resolution);
                     var info = augur.getMarketInfo(marketID);
                     assert.notProperty(info, "error");
                     assert.isArray(info.events);
                     assert.strictEqual(info.events.length, 1);
+                },
+                onConfirmed: function (r) {
+                    if (DEBUG) console.log("confirmed:", r);
 
                     // generate new order book
                     var IFP = new Array(t.numOutcomes);
@@ -89,7 +95,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
                         IFP[i] = "0.5";
                     }
                     augur.generateOrderBook({
-                        market: marketID,
+                        market: r.callReturn,
                         liquidity: 50000,
                         startingQuantity: 5000,
                         bestStartingQuantity: 10000,

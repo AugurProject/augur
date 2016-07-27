@@ -14,7 +14,7 @@ BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
 
-    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
+    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (branch && branch.branch) {
             sender = branch.sender;
@@ -22,6 +22,7 @@ module.exports = {
             onSent = branch.onSent;
             onSuccess = branch.onSuccess;
             onFailed = branch.onFailed;
+            onConfirmed = branch.onConfirmed;
             branch = branch.branch;
         }
         if (this.getCurrentPeriodProgress(periodLength) < 50) {
@@ -29,26 +30,27 @@ module.exports = {
         }
         var tx = clone(this.tx.CollectFees.collectFees);
         tx.params = [branch, sender];
-        return this.transact(tx, onSent, function (res) {
+        var prepare = function (res, cb) {
             if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-                return onSuccess(res);
+                return cb(res);
             }
             self.Branches.getVotePeriod(branch, function (period) {
                 self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
                     if (feesCollected !== "1") {
                         res.callReturn = "2";
-                        return onSuccess(res);
+                        return cb(res);
                     }
                     self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
                         if (parseInt(afterRep, 10) <= 1) {
                             res.callReturn = "2";
-                            return onSuccess(res);
+                            return cb(res);
                         }
                         res.callReturn = "1";
-                        onSuccess(res);
+                        return cb(res);
                     });
                 });
             });
-        }, onFailed);
+        };
+        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
     }
 };

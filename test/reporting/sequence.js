@@ -55,7 +55,7 @@ describe("Reporting sequence", function () {
     branchID = constants.DEFAULT_BRANCH_ID;
     suffix = Math.random().toString(36).substring(4);
     description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
-    periodLength = 180;
+    periodLength = 900;
     report = 1;
     salt = "1337";
     eventID, newBranchID, marketID;
@@ -106,6 +106,8 @@ describe("Reporting sequence", function () {
                         0,
                         branchDescription
                     ]));
+                },
+                onConfirmed: function (res) {
 
                     // get reputation on the new branch
                     augur.fundNewAccount({
@@ -168,7 +170,6 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                console.log("using account:", unlockable[0]);
                 augur.useAccount(unlockable[0]);
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     if (err) console.log("checkVotePeriod failed:", err);
@@ -278,7 +279,6 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                console.log("using account:", unlockable[0]);
                 augur.useAccount(unlockable[0]);
                 async.forEachOf(events, function (event, type, nextEvent) {
                     if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
@@ -328,7 +328,6 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                console.log("using account:", unlockable[0]);
                 augur.useAccount(unlockable[0]);
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     assert.isNull(err);
@@ -428,7 +427,6 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                console.log("using account:", unlockable[0]);
                 augur.useAccount(unlockable[0]);
                 async.forEachOf(events, function (event, type, nextEvent) {
                     augur.collectFees({

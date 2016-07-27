@@ -19,7 +19,9 @@ var constants = require("../../src/constants");
 var augurpath = "../../src/index";
 var augur = tools.setup(require(augurpath), process.argv.slice(2));
 
+var DEBUG = false;
 var DELAY = 2500;
+
 var branch = augur.constants.DEFAULT_BRANCH_ID;
 var markets = augur.getMarketsInBranch(branch);
 var numMarkets = markets.length;
@@ -77,7 +79,7 @@ function trade(done, augur) {
 
                                     },
                                     onTradeSuccess: function (r) {
-                                        console.log("trade success:", r)
+                                        if (DEBUG) console.log("trade success:", r)
                                         nextTrade(r);
                                     },
                                     onTradeFailed: nextTrade
@@ -127,7 +129,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_block_message(msg, function (parsed) {
-                    console.log("parse_block_message:", parsed);
+                    if (DEBUG) console.log("parse_block_message:", parsed);
                     done();
                 });
             });
@@ -197,7 +199,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_contracts_message(msg, function (parsed) {
-                    console.log("parse_contracts_message:", parsed);
+                    if (DEBUG) console.log("parse_contracts_message:", parsed);
                     done();
                 });
             });
@@ -246,7 +248,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_log_add_tx_message(msg, function (parsed) {
-                    console.log("parse_log_add_tx_message:", parsed);
+                    if (DEBUG) console.log("parse_log_add_tx_message:", parsed);
                     done();
                 });
             });
@@ -334,7 +336,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_log_cancel_message(msg, function (parsed) {
-                    console.log("parse_log_cancel_message:", parsed);
+                    if (DEBUG) console.log("parse_log_cancel_message:", parsed);
                     done();
                 });
             });
@@ -357,7 +359,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_log_price_message(msg, function (parsed) {
-                    console.log("parse_log_price_message:", parsed);
+                    if (DEBUG) console.log("parse_log_price_message:", parsed);
                     done();
                 });
             });
@@ -396,7 +398,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_thru_message(msg, function (parsed) {
-                    console.log("parse_thru_message:", parsed);
+                    if (DEBUG) console.log("parse_thru_message:", parsed);
                     done();
                 });
             });
@@ -407,7 +409,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_penalize_message(msg, function (parsed) {
-                    console.log("parse_penalize_message:", parsed);
+                    if (DEBUG) console.log("parse_penalize_message:", parsed);
                     done();
                 });
             });
@@ -418,7 +420,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_marketCreated_message(msg, function (parsed) {
-                    console.log("parse_marketCreated_message:", parsed);
+                    if (DEBUG) console.log("parse_marketCreated_message:", parsed);
                     done();
                 });
             });
@@ -443,7 +445,7 @@ describe("Unit tests", function () {
                     assert.property(parsed, "marketId");
                     assert.property(parsed, "tradingFee");
                     assert.deepEqual(parsed['marketId'], "0xe7d9beacb528f154ea5bbe325c2497cdb2a208f7fb8460bdf1dbc26e7190775b");
-                    console.log("parse_tradingFeeUpdated_message:", parsed);
+                    if (DEBUG) console.log("parse_tradingFeeUpdated_message:", parsed);
                     done();
                 });
             });
@@ -461,7 +463,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_approval_message(msg, function (parsed) {
-                    console.log("parse_approval_message:", parsed);
+                    if (DEBUG) console.log("parse_approval_message:", parsed);
                     done();
                 });
             });
@@ -472,7 +474,7 @@ describe("Unit tests", function () {
         var test = function (msg) {
             it(JSON.stringify(msg), function (done) {
                 augur.filters.parse_transfer_message(msg, function (parsed) {
-                    console.log("parse_transfer_message:", parsed);
+                    if (DEBUG) console.log("parse_transfer_message:", parsed);
                     done();
                 });
             });
@@ -496,7 +498,7 @@ describe("Unit tests", function () {
                     assert.deepEqual(abi.format_address(msg[0].topics[2]), parsed['taker']);
                     assert.deepEqual(abi.format_address(msg[0].topics[3]), parsed['maker']);
                     assert.deepEqual(msg[0].blockNumber, parsed['blockNumber']);
-                    console.log("parse_log_fill_tx_message:", parsed);
+                    if (DEBUG) console.log("parse_log_fill_tx_message:", parsed);
                     done();
                 });
             });
@@ -669,8 +671,8 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 this.timeout(tools.TIMEOUT);
                 var start = (new Date()).getTime();
                 augur.getMarketPriceHistory(marketId, function (priceHistory) {
-                    console.log("[async] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
-                    console.log("priceHistory:", priceHistory);
+                    if (DEBUG) console.log("[async] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
+                    if (DEBUG) console.log("priceHistory:", priceHistory);
                     assert.isObject(priceHistory);
                     for (var k in priceHistory) {
                         if (!priceHistory.hasOwnProperty(k)) continue;
@@ -693,7 +695,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                 this.timeout(tools.TIMEOUT);
                 var start = (new Date()).getTime();
                 var priceHistory = augur.getMarketPriceHistory(marketId);
-                console.log("[sync] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
+                if (DEBUG) console.log("[sync] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
                 assert.isObject(priceHistory);
                 for (var k in priceHistory) {
                     if (!priceHistory.hasOwnProperty(k)) continue;

@@ -34,7 +34,7 @@ module.exports = function () {
         account: {},
 
         // free (testnet) ether for new accounts on registration
-        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
+        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
@@ -53,12 +53,13 @@ module.exports = function () {
                     branch: branch || constants.DEFAULT_BRANCH_ID,
                     onSent: onSent,
                     onSuccess: onSuccess,
-                    onFailed: onFailed
+                    onFailed: onFailed,
+                    onConfirmed: onConfirmed
                 });
             });
         },
 
-        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
+        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
             onSent = onSent || utils.noop;
             onSuccess = onSuccess || utils.noop;
             onFailed = onFailed || utils.noop;
@@ -72,44 +73,48 @@ module.exports = function () {
                         branch: branch || constants.DEFAULT_BRANCH_ID,
                         onSent: onSent,
                         onSuccess: onSuccess,
-                        onFailed: onFailed
+                        onFailed: onFailed,
+                        onConfirmed: onConfirmed
                     });
                 },
                 onFailed: onFailed
             });
         },
 
-				changeAccountName: function (newName, cb) {
-					var i, self = this;
-					// now set vars based on what is currently in place
-					var keystore = self.account.keystore;
-					var privateKey = self.account.privateKey;
-					// preparing to redo the secureLoginID to use the new name
-					var unsecureLoginIDObject = {
-						name: newName,
-						keystore: keystore
-					};
-					var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+        changeAccountName: function (newName, cb) {
+            cb = cb || utils.pass;
 
-          // web.account object is set to use new values
-          self.account = {
-              name: newName,
-              secureLoginID: secureLoginID,
-              privateKey: privateKey,
-              address: keystore.address,
-              keystore: keystore
-          };
-					// send back the new updated loginAccount object.
-          cb({
-              name: newName,
-              secureLoginID: secureLoginID,
-              keystore: keystore,
-							address: keystore.address
-          });
-				},
+            // now set vars based on what is currently in place
+            var keystore = this.account.keystore;
+            var privateKey = this.account.privateKey;
+
+            // preparing to redo the secureLoginID to use the new name
+            var unsecureLoginIDObject = {
+                name: newName,
+                keystore: keystore
+            };
+            var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+            // web.account object is set to use new values
+            this.account = {
+                name: newName,
+                secureLoginID: secureLoginID,
+                privateKey: privateKey,
+                address: keystore.address,
+                keystore: keystore
+            };
+
+            // send back the new updated loginAccount object.
+            return cb({
+                name: newName,
+                secureLoginID: secureLoginID,
+                keystore: keystore,
+                address: keystore.address
+            });
+        },
 
         register: function (name, password, cb) {
-            var i, self = this;
+            var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
             if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
 
@@ -120,11 +125,9 @@ module.exports = function () {
                 // derive secret key from password
                 keys.deriveKey(password, plain.salt, null, function (derivedKey) {
                     if (derivedKey.error) return cb(derivedKey);
-
                     if (!Buffer.isBuffer(derivedKey)) {
                         derivedKey = new Buffer(derivedKey, "hex");
                     }
-
                     var encryptedPrivateKey = new Buffer(keys.encrypt(
                         plain.privateKey,
                         derivedKey.slice(0, 16),
@@ -154,7 +157,7 @@ module.exports = function () {
                     var unsecureLoginIDObject = {name: name, keystore: keystore};
                     var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
 
-										// while logged in, web.account object is set
+                    // while logged in, web.account object is set
                     self.account = {
                         name: name,
                         secureLoginID: secureLoginID,
@@ -173,26 +176,23 @@ module.exports = function () {
             }); // create
         },
 
-				loadLocalLoginAccount: function (localAccount, cb) {
-					var self = this;
-					cb = (utils.is_function(cb)) ? cb : utils.pass;
-
-					self.account = {
-							name: localAccount.name,
-							secureLoginID: localAccount.secureLoginID,
-							privateKey: localAccount.privateKey,
-							address: localAccount.keystore.address,
-							keystore: localAccount.keystore
-					};
-
-					cb({
-							name: localAccount.name,
-							secureLoginID: localAccount.secureLoginID,
-							privateKey: localAccount.privateKey,
-							address: localAccount.keystore.address,
-							keystore: localAccount.keystore
-					});
-				},
+        loadLocalLoginAccount: function (localAccount, cb) {
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
+            this.account = {
+                name: localAccount.name,
+                secureLoginID: localAccount.secureLoginID,
+                privateKey: localAccount.privateKey,
+                address: localAccount.keystore.address,
+                keystore: localAccount.keystore
+            };
+            return cb({
+                name: localAccount.name,
+                secureLoginID: localAccount.secureLoginID,
+                privateKey: localAccount.privateKey,
+                address: localAccount.keystore.address,
+                keystore: localAccount.keystore
+            });
+        },
 
         login: function (secureLoginID, password, cb) {
             var self = this;
@@ -244,8 +244,8 @@ module.exports = function () {
                         name: name,
                         secureLoginID: secureLoginID,
                         keystore: keystore,
-												address: keystore.address,
-												privateKey: privateKey
+                        address: keystore.address,
+                        privateKey: privateKey
                     });
 
                 // decryption failure: bad password

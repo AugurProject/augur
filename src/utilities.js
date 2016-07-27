@@ -24,6 +24,12 @@ module.exports = {
 
     ARGUMENT_NAMES: /([^\s,]+)/g,
 
+    compose: function (prepare, callback) {
+        if (!this.is_function(callback)) return null;
+        if (!this.is_function(prepare)) return callback;
+        return function (result) { return prepare(result, callback); };
+    },
+
     labels: function (func) {
         var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
         var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);

@@ -78,7 +78,6 @@ module.exports = function () {
             }
         },
         parse_log_cancel_message: function (message, onMessage) {
-            console.log("cancel:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -95,7 +94,6 @@ module.exports = function () {
             }
         },
         parse_thru_message: function (message, onMessage) {
-            console.log("thru:", JSON.stringify(message, null, 2));
             for (var i = 0, len = message.length; i < len; ++i) {
                 if (message[i]) {
                     if (message[i].constructor === Object && message[i].data) {
@@ -106,7 +104,6 @@ module.exports = function () {
             }
         },
         parse_penalize_message: function (message, onMessage) {
-            console.log("penalize:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {

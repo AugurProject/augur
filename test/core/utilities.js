@@ -13,6 +13,76 @@ var tools = require("../tools");
 
 require('it-each')({ testPerIteration: true });
 
+describe("utilities.compose", function () {
+
+    var test = function (t) {
+        it(JSON.stringify(t), function () {
+            var composition = utils.compose(t.prepare, t.callback);
+            if (t.expected.type === Function) {
+                assert.isTrue(utils.is_function(composition));
+                assert.strictEqual(composition(t.input), t.expected.output);
+            } else {
+                assert.isNull(composition);
+            }
+        });
+    };
+
+    test({
+        prepare: function (x, cb) {
+            if (!utils.is_function(cb)) return 2*x;
+            return cb(2*x);
+        },
+        callback: function (x) { return 3 + x; },
+        input: 1,
+        expected: {
+            type: Function,
+            output: 5
+        }
+    });
+    test({
+        prepare: function (x, cb) {
+            if (!utils.is_function(cb)) return 2*x;
+            return cb(2*x);
+        },
+        callback: function (x) { return 3 + x; },
+        input: 7,
+        expected: {
+            type: Function,
+            output: 17
+        }
+    });
+    test({
+        prepare: function (x, cb) {
+            if (!utils.is_function(cb)) return 2*x;
+            return cb(2*x);
+        },
+        callback: null,
+        input: 1,
+        expected: {type: null}
+    });
+    test({
+        prepare: null,
+        callback: null,
+        input: 1,
+        expected: {type: null}
+    });
+    test({
+        prepare: undefined,
+        callback: undefined,
+        input: 1,
+        expected: {type: null}
+    });
+    test({
+        prepare: null,
+        callback: function (x) { return 3 + x; },
+        input: 1,
+        expected: {
+            type: Function,
+            output: 4
+        }
+    });
+});
+
 describe("tools.linspace", function () {
 
     var test = function (t) {
@@ -219,12 +289,12 @@ describe("tools.remove_duplicates", function () {
 describe("utilities.labels", function () {
 
     it("should extract parameter names", function () {
-        var fn = function (a, b, c, onSent, onSuccess, onFailed) {
+        var fn = function (a, b, c, onSent, onSuccess, onFailed, onConfirmed) {
             var params = utils.labels(fn);
-            var expected = ['a', 'b', 'c', "onSent", "onSuccess", "onFailed"];
+            var expected = ['a', 'b', 'c', "onSent", "onSuccess", "onFailed", "onConfirmed"];
             assert.deepEqual(params, expected);
         };
-        fn('x', 'y', 'z', console.log, console.log, console.log);
+        fn('x', 'y', 'z', console.log, console.log, console.log, console.log);
     });
 
 });
@@ -237,13 +307,13 @@ describe("utilities.unpack", function () {
         assert.strictEqual(unpacked.params.constructor, Array);
         assert.strictEqual(unpacked.cb.constructor, Array);
         assert.strictEqual(unpacked.params.length, 4);
-        assert.strictEqual(unpacked.cb.length, 3);
+        assert.strictEqual(unpacked.cb.length, 4);
         assert.deepEqual(unpacked.params, ['w', 'x', 'y', 'z']);
-        assert.deepEqual(unpacked.cb, [console.log, console.log, console.log]);
+        assert.deepEqual(unpacked.cb, [console.log, console.log, console.log, console.log]);
     };
 
     it("should unpack object argument", function () {
-        var fn = function (a, b, c, d, onSent, onSuccess, onFailed) {
+        var fn = function (a, b, c, d, onSent, onSuccess, onFailed, onConfirmed) {
             test(utils.unpack(a, utils.labels(fn)));
         };
         fn({
@@ -253,15 +323,16 @@ describe("utilities.unpack", function () {
             d: 'z',
             onSent: console.log,
             onSuccess: console.log,
-            onFailed: console.log
+            onFailed: console.log,
+            onConfirmed: console.log
         });
     });
 
     it("should unpack positional arguments", function () {
-        var fn = function (a, b, c, d, onSent, onSuccess, onFailed) {
+        var fn = function (a, b, c, d, onSent, onSuccess, onFailed, onConfirmed) {
             test(utils.unpack(a, utils.labels(fn), arguments));
         };
-        fn('w', 'x', 'y', 'z', console.log, console.log, console.log);
+        fn('w', 'x', 'y', 'z', console.log, console.log, console.log, console.log);
     });
 
 });

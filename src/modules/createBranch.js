@@ -11,7 +11,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
         var self = this;
         if (description && description.parent) {
             periodLength = description.periodLength;
@@ -21,18 +21,12 @@ module.exports = {
             onSent = description.onSent;
             onSuccess = description.onSuccess;
             onFailed = description.onFailed;
+            onConfirmed = description.onConfirmed;
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
         description = description.trim();
         if (!utils.is_function(onSent)) {
-            console.log({
-                description: description,
-                periodLength: periodLength,
-                parent: parent,
-                minTradingFee: minTradingFee,
-                oracleOnly: oracleOnly
-            });
             var response = this.CreateBranch.createSubbranch({
                 description: description,
                 periodLength: periodLength,
@@ -75,11 +69,12 @@ module.exports = {
                     onSuccess(response);
                 });
             },
-            onFailed: onFailed
+            onFailed: onFailed,
+            onConfirmed: onConfirmed
         });
     },
 
-    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
         if (description && description.parent) {
             periodLength = description.periodLength;
             parent = description.parent;
@@ -88,6 +83,7 @@ module.exports = {
             onSent = description.onSent;
             onSuccess = description.onSuccess;
             onFailed = description.onFailed;
+            onConfirmed = description.onConfirmed;
             description = description.description;
         }
         oracleOnly = oracleOnly || 0;
@@ -99,6 +95,6 @@ module.exports = {
             abi.fix(minTradingFee, "hex"),
             oracleOnly
         ];
-        return this.transact(tx, onSent, onSuccess, onFailed);
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
     }
 };

@@ -11,7 +11,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed) {
+    saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Trades.saveTrade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.saveTrade), arguments);
         tx.params = unpacked.params;
@@ -44,7 +44,7 @@ module.exports = {
         });
     },
 
-    update_trade: function (id, price, onSent, onSuccess, onFailed) {
+    update_trade: function (id, price, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Trades.update_trade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.update_trade), arguments);
         tx.params = unpacked.params;
@@ -52,7 +52,7 @@ module.exports = {
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
-    fill_trade: function (id, fill, onSent, onSuccess, onFailed) {
+    fill_trade: function (id, fill, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Trades.fill_trade);
         var unpacked = utils.unpack(arguments[0], utils.labels(this.fill_trade), arguments);
         tx.params = unpacked.params;

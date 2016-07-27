@@ -10,7 +10,7 @@ var utils = require("../utilities");
 
 module.exports = {
 
-    setInfo: function (id, description, creator, fee, onSent, onSuccess, onFailed) {
+    setInfo: function (id, description, creator, fee, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Info.setInfo);
         var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
         tx.params = unpacked.params;
@@ -18,7 +18,7 @@ module.exports = {
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
-    modifyShares: function (marketID, outcome, amount, onSent, onSuccess, onFailed) {
+    modifyShares: function (marketID, outcome, amount, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.Markets.modifyShares);
         var unpacked = utils.unpack(marketID, utils.labels(this.modifyShares), arguments);
         tx.params = unpacked.params;
@@ -26,7 +26,7 @@ module.exports = {
         return this.transact.apply(this, [tx].concat(unpacked.cb));
     },
 
-    setTotalRepReported: function (branchId, reportPeriod, repReported, onSent, onSuccess, onFailed) {
+    setTotalRepReported: function (branchId, reportPeriod, repReported, onSent, onSuccess, onFailed, onConfirmed) {
         var tx = clone(this.tx.ExpiringEvents.setTotalRepReported);
         var unpacked = utils.unpack(branchId, utils.labels(this.setTotalRepReported), arguments);
         tx.params = unpacked.params;

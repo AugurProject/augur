@@ -24,7 +24,7 @@ module.exports = {
     bindContractMethod: function (contract, method) {
         var self = this;
         return function (args) {
-            var tx, params, cb, i, onSent, onSuccess, onFailed;
+            var tx, params, cb, i, onSent, onSuccess, onFailed, onConfirmed;
             tx = clone(self.api.functions[contract][method]);
             if (!arguments) {
                 if (!tx.send) return self.fire(tx);
@@ -54,13 +54,14 @@ module.exports = {
                 onSent = params[0].onSent;
                 onSuccess = params[0].onSuccess;
                 onFailed = params[0].onFailed;
+                onConfirmed = params[0].onConfirmed;
                 if (tx.inputs && tx.inputs.length) {
                     tx.params = new Array(tx.inputs.length);
                     for (i = 0; i < tx.inputs.length; ++i) {
                         tx.params[i] = params[0][tx.inputs[i]];
                     }
                 }
-                return self.transact(tx, onSent, onSuccess, onFailed);
+                return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
             }
             cb = [];
             while (utils.is_function(params[params.length - 1])) {
