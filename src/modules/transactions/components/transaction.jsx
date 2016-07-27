@@ -31,7 +31,7 @@ const Transaction = (p) => {
 		nodes.description = (
 			<span className="description">
 				<span className="action">{nodes.action}</span>
-				<ValueDenomination className="shares" {...p.shares} />
+				<ValueDenomination className="shares" {...p.data.numShares} />
 				<span className="of">of</span>
 				<span className="outcome-name">{p.data.outcomeName.substring(0, 35) + (p.data.outcomeName.length > 35 && '...' || '')}</span>
 				<span className="at">@</span>
