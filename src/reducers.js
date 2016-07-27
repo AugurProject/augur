@@ -17,6 +17,7 @@ import reports from './modules/reports/reducers/reports';
 
 import marketOrderBooks from './modules/bids-asks/reducers/market-order-books';
 import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
+import marketTrades from './modules/portfolio/reducers/market-trades';
 import accountTrades from './modules/positions/reducers/account-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
@@ -64,6 +65,7 @@ module.exports = {
 
 	marketOrderBooks,
 	orderCancellation,
+	marketTrades,
 	accountTrades,
 	transactionsData
 };
