@@ -57833,7 +57833,6 @@ module.exports = function () {
             }
         },
         parse_tradingFeeUpdated_message: function (message, onMessage) {
-            console.log("tradingFeeUpdated:", JSON.stringify(message, null, 2));
             if (message) {
                 if (message.length && message.constructor === Array) {
                     for (var i = 0, len = message.length; i < len; ++i) {
@@ -57964,6 +57963,11 @@ module.exports = function () {
                 case "tradingFeeUpdated":
                     callback = function (msg) {
                         self.parse_tradingFeeUpdated_message(msg, onMessage);
+                    };
+                    break;
+                case "marketCreated":
+                    callback = function (msg) {
+                        self.parse_marketCreated_message(msg, callback);
                     };
                     break;
                 default:
@@ -58550,7 +58554,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.11";
+    this.version = "1.9.12";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -60367,6 +60371,7 @@ module.exports = {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
                                 return onTradeSuccess({
+                                    txHash: result.txHash,
                                     unmatchedCash: abi.unfix(result.callReturn[1], "string"),
                                     unmatchedShares: abi.unfix(result.callReturn[2], "string")
                                 });
@@ -60424,6 +60429,7 @@ module.exports = {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
                                 return onTradeSuccess({
+                                    txHash: result.txHash,
                                     unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                     matchedShares: abi.unfix(result.callReturn[2], "string"),
                                     price: abi.unfix(result.callReturn[3], "string")

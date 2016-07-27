@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "1.9.11",
+  "version": "1.9.12",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
