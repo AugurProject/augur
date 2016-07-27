@@ -1,7 +1,13 @@
 {
     "nonce": "0x0000000000000042", 
     "difficulty": "0x01", 
+    "config": {
+        "homesteadBlock": 0
+    },
     "alloc": {
+        "7c0d52faab596c08f484e3478aebc6205f3f5d8c": {
+            "balance": "9000000000000000000000" 
+        },
         "3282791d6fd713f1e94f4bfd565eaa78b3a0599d": {
             "balance": "1337000000000000000000"
         },
