@@ -10,6 +10,7 @@ import { clearReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import env from '../../../env.json';
 
 // import { commitReports } from '../../reports/actions/commit-reports';
 import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
@@ -71,8 +72,9 @@ export function loadLoginAccountLocalStorage(accountID) {
 export function loadLoginAccount() {
 	return (dispatch) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
-		AugurJS.loadLoginAccount((err, loginAccount) => {
+		console.log('in load login, env:');
+		console.log(env);
+		AugurJS.loadLoginAccount(env, (err, loginAccount) => {
 			let localLoginAccount = loginAccount;
 
 			if (err) {

@@ -69,7 +69,7 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 	});
 };
 
-ex.loadLoginAccount = function loadLoginAccount(cb) {
+ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 	const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
