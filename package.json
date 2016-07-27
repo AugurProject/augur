@@ -13,7 +13,7 @@
   },
   "scripts": {
     "watch": "clear; echo '* NPM UPDATE *'; npm update; echo '* CLEAN * HTML * ENV * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
-		"watch:noUp": "clear; echo '* CLEAN * HTML * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
+    "watch:noUp": "clear; echo '* CLEAN * HTML * ASSETS * CSS * WATCHIFY *'; NODE_ENV=development npm run -s watch:all",
     "start": "augur-ui-webserver -d './build'",
     "build": "clear; echo '* NPM UPDATE *'; echo '* * * *  BUILD  * * * *'; NODE_ENV=production npm run -s build:all",
     "test": "clear; NODE_ENV=test mocha",
@@ -55,9 +55,10 @@
   },
   "dependencies": {
     "augur-ui-react-components": "3.0.14",
-    "augur.js": "1.8.2",
+    "augur.js": "1.9.9",
     "bignumber.js": "2.3.0",
     "memoizerific": "1.8.4",
+    "npm-check-updates": "^2.7.1",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
     "secure-random": "1.1.1"
@@ -90,7 +91,7 @@
     "less": "2.7.1",
     "mocha": "2.5.3",
     "mocha-lcov-reporter": "1.2.0",
-    "npm-check-updates": "2.7.0",
+    "npm-check-updates": "2.7.1",
     "onchange": "2.5.0",
     "proxyquire": "1.7.10",
     "redux-mock-store": "1.1.2",

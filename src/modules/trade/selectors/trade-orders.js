@@ -1,19 +1,9 @@
 // import memoizerific from 'memoizerific';
-import {
-	formatShares,
-	formatEther,
-	// formatNumber
-} from '../../../utils/format-number';
-// import store from '../../../store';
-// import {
-// 	selectOutcomeBids,
-// 	selectOutcomeAsks
-// } from '../../bids-asks/selectors/select-bids-asks';
+import { formatShares, formatEther } from '../../../utils/format-number';
 import { makeTradeTransaction } from '../../transactions/actions/add-trade-transaction';
 import { ASK } from '../../../modules/transactions/constants/types';
 
-export const selectOutcomeTradeOrders =
-(market, outcome, outcomeTradeInProgress, dispatch) => {
+export const selectOutcomeTradeOrders = (market, outcome, outcomeTradeInProgress, dispatch) => {
 	const orders = [];
 
 	if (!outcomeTradeInProgress || !outcomeTradeInProgress.numShares) {
@@ -21,8 +11,8 @@ export const selectOutcomeTradeOrders =
 	}
 
 	const numShares = outcomeTradeInProgress.numShares;
-	const	totalCost = outcomeTradeInProgress.totalCost;
-	const	tradeTransaction = makeTradeTransaction(
+	const totalCost = outcomeTradeInProgress.totalCost;
+	const tradeTransaction = makeTradeTransaction(
 			outcomeTradeInProgress.side === ASK,
 			market,
 			outcome,

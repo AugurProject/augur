@@ -1,5 +1,7 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
+import env from '../src/env.json';
+
 const testState = {
 	activePage: 'markets',
 	accountTrades: {
@@ -51,11 +53,14 @@ const testState = {
 	favorites: {
 		testMarketID: true
 	},
+	env,
 	loginAccount: {
 		address: '0xtest123',
 		id: '0xtest123',
 		name: 'testTesterson',
 		secureLoginID: 'testSecureID',
+		localNode: false,
+		prettyAddress: '0xte...t123',
 		linkText: 'testTesterson',
 		prettySecureLoginID: 'test...reID',
 		ether: 0,
@@ -77,7 +82,7 @@ const testState = {
 			takerFee: 0.05,
 			volume: 500,
 			tags: ['tag1', 'tag2', 'tag3'],
-			orderBook: {}
+			orderBook: {} // todo: delete when AURC > v3.0.20 - assertion will be fixed there
 		}
 	},
 	marketOrderBooks: {

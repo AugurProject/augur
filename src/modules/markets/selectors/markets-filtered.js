@@ -14,7 +14,7 @@ export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selecte
 
 export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedFilters, selectedTags) => {
 	const selectedTagsList = Object.keys(selectedTags);
-	return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList);
+	return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList) && isDisplayable(market);
 
 	function isMatchKeywords(market, keys) {
 		const keywordsArray = cleanKeywordsArray(keys);
@@ -33,5 +33,11 @@ export const isMarketFiltersMatch = memoizerific(3)((market, keywords, selectedF
 			return true;
 		}
 		return selectedTagsList.every(tag => market.tags.some(marketTag => marketTag.name === tag));
+	}
+
+	function isDisplayable(market) {
+		if (!market.isMalFormed && !market.isRequiredToReportByAccount) {
+			return true;
+		}
 	}
 });

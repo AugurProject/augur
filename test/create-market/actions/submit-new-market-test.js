@@ -52,7 +52,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			}
 		},
 		state = Object.assign({}, testState);
-	
+
 	store = mockStore(state);
 
 	let stubbedNewMarketTransactions = {
@@ -88,14 +88,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			status: SUCCESS
 		}
 	);
-    
-	let stubbedLoadMarket = {
-		loadMarket: () => {}
-	};
-	stubbedLoadMarket.loadMarket = sinon.stub().returns({
-		type: 'loadMarket'
-	});
-    
+
 	let stubbedGenerateOrderBook = {
 		submitGenerateOrderBook: () => {}
 	};
@@ -104,7 +97,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			type: 'submitGenerateOrderBook'
 		};
 	});
-	
+
 	let stubbedLink = {
 		selectTransactionsLink: () => {}
 	};
@@ -113,14 +106,13 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			type: 'clickedLink'
 		})
 	}));
-    
+
 	action = proxyquire(
 		'../../../src/modules/create-market/actions/submit-new-market',
 		{
 			'../../transactions/actions/add-create-market-transaction': stubbedNewMarketTransactions,
 			'../../transactions/actions/update-existing-transaction': stubbedUpdateExistingTransaction,
 			'../../../services/augurjs': stubbedAugurJS,
-			'../../market/actions/load-market': stubbedLoadMarket,
 			'../../create-market/actions/generate-order-book': stubbedGenerateOrderBook,
 			'../../link/selectors/links': stubbedLink
 		}
@@ -189,7 +181,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		afterEach(() => {
 			clock.restore();
 		});
-		
+
 		it('should fail correctly', () => {
 			store.dispatch(action.createMarket( transID, failedMarketData ));
 
@@ -235,9 +227,6 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'submitGenerateOrderBook'
-				},
-				{
-					type: 'loadMarket'
 				}
 			];
 
@@ -247,7 +236,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				maxValue: 2,
 				numOutcomes: 2
 			};
-			
+
 			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
 			assert.deepEqual(store.getActions(), out, `a binary market was not correctly created`);
 			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
@@ -280,19 +269,16 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'submitGenerateOrderBook'
-				},
-				{
-					type: 'loadMarket'
 				}
 			];
-			
+
 			expectedMarketData = {
 				type: SCALAR,
 				scalarSmallNum: 10,
 				scalarBigNum: 100,
 				minValue: 10,
 				maxValue: 100,
-				numOutcomes: 2 
+				numOutcomes: 2
 			};
 
 			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
@@ -329,11 +315,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				{
 					type: 'CLEAR_MAKE_IN_PROGRESS'
 				},
-				{ 
-					type: 'submitGenerateOrderBook' 
-				},
 				{
-					type: 'loadMarket'
+					type: 'submitGenerateOrderBook'
 				}
 			];
 

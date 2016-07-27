@@ -1,9 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
-import {
-	TRADING,
-	SUCCESS,
-	FAILED
-} from '../../transactions/constants/statuses';
+import { TRADING, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { addTransactions } from '../../transactions/actions/add-transactions';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';

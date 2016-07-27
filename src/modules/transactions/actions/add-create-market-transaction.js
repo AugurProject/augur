@@ -14,12 +14,14 @@ export const makeCreateMarketTransaction = (marketData, gas, etherWithoutGas, di
 };
 
 export const addCreateMarketTransaction = (marketData, gas, etherWithoutGas) =>
-    (dispatch, getState) =>
-        dispatch(
+	(dispatch, getState) =>
+		dispatch(
 			addTransaction(
 				makeCreateMarketTransaction(
-					marketData, gas,
-					etherWithoutGas, dispatch
+					marketData,
+					gas,
+					etherWithoutGas,
+					dispatch
 				)
 			)
 		);

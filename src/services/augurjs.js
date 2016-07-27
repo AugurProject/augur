@@ -70,6 +70,7 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 };
 
 ex.loadLoginAccount = function loadLoginAccount(cb) {
+	const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
@@ -78,16 +79,15 @@ ex.loadLoginAccount = function loadLoginAccount(cb) {
 			id: augur.web.account.address
 		});
 	}
+	// if the user has a persistent login, use it
+	if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
+		const account = JSON.parse(localStorageRef.getItem('account'));
 
-	// // if the user has a persistent login, use it
-	// const account = augur.web.persist();
-	// if (account && account.privateKey) {
-	// 	console.log('using persistent login:', account);
-	// 	return cb(null, {
-	// 		...augur.web.account,
-	// 		id: augur.web.account.address
-	// 	});
-	// }
+		if (account && account.privateKey) {
+			augur.web.loadLocalLoginAccount(account, (loginAccount) => cb(null, loginAccount));
+		}
+	}
+
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
@@ -168,15 +168,6 @@ ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
 			cb(res);
 		}
 		cb(null, res);
-	});
-};
-
-ex.loadMarket = function loadMarket(marketID, cb) {
-	augur.getMarketInfo(marketID, marketInfo => {
-		if (marketInfo && marketInfo.error) {
-			return cb(marketInfo);
-		}
-		cb(null, marketInfo);
 	});
 };
 
@@ -296,7 +287,7 @@ ex.getSimulatedSell = function getSimulatedSell(marketID, outcomeID, numShares) 
 
 ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	if (!marketID) {
-		cb('ERROR: loadPriceHistory() marketID required');
+		return cb('ERROR: loadPriceHistory() marketID required');
 	}
 	augur.getMarketPriceHistory(marketID, (priceHistory) => {
 		if (priceHistory && priceHistory.error) {
@@ -318,6 +309,9 @@ ex.get_trade = function getTrade(orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
 
+ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
+ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
+
 ex.cancel = function cancel(orderId, onSent, onSuccess, onFailure) {
 	augur.cancel(orderId, onSent, onSuccess, onFailure);
 };
@@ -333,7 +327,7 @@ ex.createMarket = function createMarket(branchId, newMarket, cb) {
 		takerFee: newMarket.takerFee / 100,
 		tags: newMarket.tags,
 		makerFee: newMarket.makerFee / 100,
-		extraInfo: newMarket.extraInfo,
+		extraInfo: newMarket.detailsText,
 		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
 		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
 		onFailed: r => cb(r),
@@ -364,63 +358,8 @@ ex.getReport = function getReport(branchID, reportPeriod, eventID) {
 		console.log('*************report', report));
 };
 
-ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(
-		eventIDs,
-		accountID,
-		reportPeriod,
-		branchID,
-		cb
-	) {
-	const pendingReportEventIDs = {};
-
-	if (!eventIDs || !eventIDs.length) {
-		return cb(null, {});
-	}
-
-	// load market-ids related to each event-id one at a time
-	(function processEventID() {
-		const eventID = eventIDs.pop();
-		const randomNumber = augur.abi.hex(augur.abi.bignum(accountID).plus(augur.abi.bignum(eventID)));
-		const diceroll = augur.rpc.sha3(randomNumber, true);
-
-		function finish() {
-			// if there are more event ids, re-run this function to get their market ids
-			if (eventIDs.length) {
-				setTimeout(processEventID, TIMEOUT_MILLIS);
-			} else {
-			// if no more event ids to process, exit this loop and callback
-				cb(null, pendingReportEventIDs);
-			}
-		}
-
-		if (!diceroll) {
-			console.log('WARN: couldn\'t get sha3 for', randomNumber, diceroll);
-			return finish();
-		}
-
-		augur.calculateReportingThreshold(branchID, eventID, reportPeriod, threshold => {
-			if (!threshold) {
-				console.log('WARN: couldn\'t get reporting threshold for', eventID);
-				return finish();
-			}
-			if (threshold.error) {
-				console.log('ERROR: calculateReportingThreshold', threshold);
-				return finish();
-			}
-			if (augur.abi.bignum(diceroll).lt(augur.abi.bignum(threshold))) {
-				augur.getReportHash(branchID, reportPeriod, accountID, eventID, (reportHash) => {
-					if (reportHash && reportHash !== '0x0') {
-						pendingReportEventIDs[eventID] = { reportHash };
-					} else {
-						pendingReportEventIDs[eventID] = { reportHash: null };
-					}
-					finish();
-				});
-			} else {
-				finish();
-			}
-		});
-	}());
+ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(eventIDs, accountID, reportPeriod, branchID, cb) {
+	return cb(null, {});
 };
 
 ex.submitReportHash = function submitReportHash(branchID, accountID, event, report, cb) {
@@ -532,6 +471,7 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 	augur.closeMarket({
 		branch: branchID,
 		market: marketID,
+		sender: augur.from,
 		onSent: res => {
 			// console.log('closeMarket sent:', res);
 		},
@@ -547,16 +487,20 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 };
 
 ex.collectFees = function collectFees(branchID, cb) {
-	augur.collectFees({
-		branch: branchID,
-		onSent: res => {
-		},
-		onSuccess: res => {
-			cb(null, res);
-		},
-		onFailed: err => {
-			cb(err);
-		}
+	augur.getPeriodLength(branchID, periodLength => {
+		augur.collectFees({
+			branch: branchID,
+			sender: augur.from,
+			periodLength,
+			onSent: res => {
+			},
+			onSuccess: res => {
+				cb(null, res);
+			},
+			onFailed: err => {
+				cb(err);
+			}
+		});
 	});
 };
 
@@ -570,7 +514,7 @@ ex.incrementPeriodAfterReporting = function incrementPeriodAfterReporting(branch
 };
 
 ex.getReportPeriod = function getReportPeriod(branchID, cb) {
-	augur.getReportPeriod(branchID, (res) => {
+	augur.getVotePeriod(branchID, (res) => {
 		if (res.error) {
 			return cb(res);
 		}
@@ -581,8 +525,27 @@ ex.getReportPeriod = function getReportPeriod(branchID, cb) {
 ex.submitReport = function submitReport(...args) {
 	augur.submitReport.apply(augur, args);
 };
+
 ex.getEvents = function getEvents(...args) {
 	augur.getEvents.apply(augur, args);
 };
+
+ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
+	if (env.fundNewAccountFromAddress) {
+		augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
+	} else {
+		augur.web.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
+	}
+};
+
+ex.changeAccountName = function changeAccountName(name, cb) {
+	augur.web.changeAccountName(name, account => {
+		if (!account) {
+			return cb({ code: 0, message: 'failed to edit account name' });
+		}
+		return cb(null, account);
+	});
+};
+
 ex.rpc = augur.rpc;
 module.exports = ex;

@@ -33,6 +33,9 @@ export function loadMarketsInfo(marketIDs) {
 
 				// transform array of outcomes into an object and add their names
 				finalOutcomesData[marketID] = parseOutcomes(marketData);
+				if (finalOutcomesData[marketID] === undefined) { // Data object is mal-formed if outcomes are unable to be parsed.
+					marketData.isMalFormed = true;
+				}
 
 				// mark that details have been loaded
 				marketData.isLoadedMarketInfo = true;
@@ -91,14 +94,14 @@ export function loadMarketsInfo(marketIDs) {
 			splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
 			if (splitDescription.length < 2) {
 				console.warn('Missing outcome names in description for categorical market:', marketID, marketData);
-				break;
+				return undefined;
 			}
 
 			// parse individual outcomes from outcomes string
 			categoricalOutcomeNames = splitDescription.pop().split(CATEGORICAL_OUTCOME_SEPARATOR);
 			if (categoricalOutcomeNames.length !== marketData.outcomes.length) {
 				console.warn('Number of outcomes parsed from description do not match number of outcomes in market for for categorical market:', marketID, marketData);
-				break;
+				return undefined;
 			}
 
 			// add names to outcomes

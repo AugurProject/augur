@@ -1,8 +1,7 @@
 import { formatEther, formatShares } from '../../../utils/format-number';
 import {
 	BID,
-	ASK,
-	BUY_SHARES
+	ASK
 } from '../../transactions/constants/types';
 import { processOrder } from '../../trade/actions/place-trade';
 import { addTransaction } from '../../transactions/actions/add-transactions';
@@ -31,7 +30,7 @@ export const makeTradeTransaction =
 		},
 		action: (transactionID) => {
 			const order = {
-				type: txn.type === BUY_SHARES ? 'buy' : 'sell',
+				type: txn.type === BID ? 'buy' : 'sell',
 				outcomeID: txn.data.outcomeID,
 				limitPrice: txn.limitPrice,
 				etherToBuy: txn.ether.value,
