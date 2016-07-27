@@ -47,7 +47,7 @@ const TradeBuilderRow = (p) => {
 					isClearable={false}
 					onChange={(value) => p.trade.updateTradeOrder(value, undefined, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
-					onFocus={() => p.updateSelectedOutcome(p.id) }
+					onFocus={() => p.updateSelectedOutcome(p.id)}
 				/>
 			</td>
 			<td className={classnames('limit-price', { fade: p.isFaded && !p.trade.numShares })}>
@@ -57,7 +57,7 @@ const TradeBuilderRow = (p) => {
 					isClearable={false}
 					onChange={(value) => p.trade.updateTradeOrder(undefined, value, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
-					onFocus={() => p.updateSelectedOutcome(p.id) }
+					onFocus={() => p.updateSelectedOutcome(p.id)}
 				/>
 			</td>
 			<td className={classnames('fee-to-pay', { fade: p.isFaded && !p.trade.numShares })}>
