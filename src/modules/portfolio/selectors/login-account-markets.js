@@ -23,7 +23,7 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 		console.log('market.id -- ', market.id);
 
 		const fees = formatEther(AugurJS.getFees(market.id));
-		
+
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
 		const averageTradeSize = formatNumber(selectAverageTradeSize(market.marketPriceHistory));
 		const openVolume = formatNumber(selectOpenVolume(market));

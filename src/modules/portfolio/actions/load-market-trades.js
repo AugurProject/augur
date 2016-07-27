@@ -21,5 +21,4 @@ export function loadMarketTrades(marketID) {
 			dispatch(updateMarketTradesData(trades));
 		});
 	};
-};
-
+}
