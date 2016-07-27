@@ -75,8 +75,6 @@ describe("Reporting sequence", function () {
             assert.isAbove(unlocked.length, 0);
             unlockable = clone(unlocked);
             console.log("unlockable:", unlockable);
-            augur.useAccount(unlockable[0]);
-            console.log("using:", unlockable[0]);
             sender = unlockable[0];
 
             // create a new branch
@@ -165,16 +163,22 @@ describe("Reporting sequence", function () {
         before("Wait for second period to start", function (done) {
             this.timeout(tools.TIMEOUT*100);
             if (DEBUG) printReportingStatus(eventID, "Before checks");
-            console.log("using account:", unlockable);
-            augur.useAccount(unlockable[0]);
-            augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
-                if (err) console.log("checkVotePeriod failed:", err);
+            tools.top_up(augur, unlockable, password, function (err, unlocked) {
                 assert.isNull(err);
-                if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
-                augur.checkTime(newBranchID, eventID, periodLength, function (err) {
-                    if (err) console.log("checkTime failed:", err);
+                assert.isArray(unlocked);
+                assert.isAbove(unlocked.length, 0);
+                assert.sameMembers(unlockable, unlocked);
+                console.log("using account:", unlockable[0]);
+                augur.useAccount(unlockable[0]);
+                augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
+                    if (err) console.log("checkVotePeriod failed:", err);
                     assert.isNull(err);
-                    done();
+                    if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
+                    augur.checkTime(newBranchID, eventID, periodLength, function (err) {
+                        if (err) console.log("checkTime failed:", err);
+                        assert.isNull(err);
+                        done();
+                    });
                 });
             });
         });
@@ -269,41 +273,49 @@ describe("Reporting sequence", function () {
         });
         it("makeReports.submitReport", function (done) {
             this.timeout(tools.TIMEOUT*100);
-            async.forEachOf(events, function (event, type, nextEvent) {
-                if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
-                augur.submitReport({
-                    event: event,
-                    salt: salt,
-                    report: report,
-                    ethics: 1,
-                    isScalar: false,
-                    onSent: function (res) {
-                        assert(res.txHash);
-                        console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
-                    },
-                    onSuccess: function (res) {
-                        var period = augur.Branches.getVotePeriod(newBranchID);
-                        var storedReport = augur.ExpiringEvents.getReport({
-                            branch: newBranchID,
-                            period: period,
-                            event: event,
-                            sender: sender
-                        });
-                        if (DEBUG) {
-                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period-1);
-                            console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
-                            printReportingStatus(event, "[" + type  + "] submitReport complete");
-                            console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
-                            console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
-                        }
-                        assert(res.txHash);
-                        assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
-                        assert.strictEqual(parseInt(storedReport), report);
-                        nextEvent();
-                    },
-                    onFailed: nextEvent
-                });
-            }, done);
+            tools.top_up(augur, unlockable, password, function (err, unlocked) {
+                assert.isNull(err);
+                assert.isArray(unlocked);
+                assert.isAbove(unlocked.length, 0);
+                assert.sameMembers(unlockable, unlocked);
+                console.log("using account:", unlockable[0]);
+                augur.useAccount(unlockable[0]);
+                async.forEachOf(events, function (event, type, nextEvent) {
+                    if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
+                    augur.submitReport({
+                        event: event,
+                        salt: salt,
+                        report: report,
+                        ethics: 1,
+                        isScalar: false,
+                        onSent: function (res) {
+                            assert(res.txHash);
+                            console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
+                        },
+                        onSuccess: function (res) {
+                            var period = augur.Branches.getVotePeriod(newBranchID);
+                            var storedReport = augur.ExpiringEvents.getReport({
+                                branch: newBranchID,
+                                period: period,
+                                event: event,
+                                sender: sender
+                            });
+                            if (DEBUG) {
+                                var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period-1);
+                                console.log(chalk.white.dim("submitReport return value:"), chalk.cyan(res.callReturn));
+                                printReportingStatus(event, "[" + type  + "] submitReport complete");
+                                console.log(chalk.white.dim(" - Fees collected:       "), chalk.cyan(feesCollected));
+                                console.log(chalk.white.dim(" - Stored report:        "), chalk.cyan(storedReport));
+                            }
+                            assert(res.txHash);
+                            assert(res.callReturn === "1" || res.callReturn === "2"); // "2" from collectFees
+                            assert.strictEqual(parseInt(storedReport), report);
+                            nextEvent();
+                        },
+                        onFailed: nextEvent
+                    });
+                }, done);
+            });
         });
     });
 
@@ -311,12 +323,20 @@ describe("Reporting sequence", function () {
         before("Wait for third period", function (done) {
             this.timeout(tools.TIMEOUT*100);
             if (DEBUG) printReportingStatus(eventID, "Before third period checks");
-            augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
+            tools.top_up(augur, unlockable, password, function (err, unlocked) {
                 assert.isNull(err);
-                if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
-                augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
+                assert.isArray(unlocked);
+                assert.isAbove(unlocked.length, 0);
+                assert.sameMembers(unlockable, unlocked);
+                console.log("using account:", unlockable[0]);
+                augur.useAccount(unlockable[0]);
+                augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     assert.isNull(err);
-                    done();
+                    if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
+                    augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
+                        assert.isNull(err);
+                        done();
+                    });
                 });
             });
         });
@@ -403,32 +423,40 @@ describe("Reporting sequence", function () {
         });
         it("CollectFees.collectFees", function (done) {
             this.timeout(tools.TIMEOUT*3);
-            async.forEachOf(events, function (event, type, nextEvent) {
-                augur.collectFees({
-                    branch: newBranchID,
-                    sender: sender,
-                    periodLength: periodLength,
-                    onSent: function (r) {
-                        if (DEBUG) console.log("[" + type  + "] collectFees sent:", r);
-                    },
-                    onSuccess: function (r) {
-                        if (DEBUG) {
-                            console.log("collectFees success:", r);
-                            printReportingStatus(event, "[" + type  + "] Fees collected for " + r.from);
+            tools.top_up(augur, unlockable, password, function (err, unlocked) {
+                assert.isNull(err);
+                assert.isArray(unlocked);
+                assert.isAbove(unlocked.length, 0);
+                assert.sameMembers(unlockable, unlocked);
+                console.log("using account:", unlockable[0]);
+                augur.useAccount(unlockable[0]);
+                async.forEachOf(events, function (event, type, nextEvent) {
+                    augur.collectFees({
+                        branch: newBranchID,
+                        sender: sender,
+                        periodLength: periodLength,
+                        onSent: function (r) {
+                            if (DEBUG) console.log("[" + type  + "] collectFees sent:", r);
+                        },
+                        onSuccess: function (r) {
+                            if (DEBUG) {
+                                console.log("collectFees success:", r);
+                                printReportingStatus(event, "[" + type  + "] Fees collected for " + r.from);
+                            }
+                            var period = augur.Branches.getVotePeriod(newBranchID);
+                            var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
+                            console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
+                            assert.strictEqual(feesCollected, "1");
+                            nextEvent();
+                        },
+                        onFailed: function (err) {
+                            if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
+                            if (DEBUG) printReportingStatus(event, "[" + type  + "] collectFees failed");
+                            nextEvent(err);
                         }
-                        var period = augur.Branches.getVotePeriod(newBranchID);
-                        var feesCollected = augur.ConsensusData.getFeesCollected(newBranchID, sender, period - 1);
-                        console.log(chalk.white.dim("Fees collected:"), chalk.cyan(feesCollected));
-                        assert.strictEqual(feesCollected, "1");
-                        nextEvent();
-                    },
-                    onFailed: function (err) {
-                        if (DEBUG) console.error(chalk.red.bold("collectFees failed:"), err);
-                        if (DEBUG) printReportingStatus(event, "[" + type  + "] collectFees failed");
-                        nextEvent(err);
-                    }
-                });
-            }, done);
+                    });
+                }, done);
+            });
         });
     });
 });
