@@ -37049,17 +37049,21 @@ module.exports = function () {
 
         loadLocalLoginAccount: function (localAccount, cb) {
             cb = (utils.is_function(cb)) ? cb : utils.pass;
+            var privateKey = localAccount.privateKey;
+            if (privateKey && !Buffer.isBuffer(privateKey)) {
+                privateKey = new Buffer(privateKey, "hex");
+            }
             this.account = {
                 name: localAccount.name,
                 secureLoginID: localAccount.secureLoginID,
-                privateKey: localAccount.privateKey,
+                privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore
             };
             return cb({
                 name: localAccount.name,
                 secureLoginID: localAccount.secureLoginID,
-                privateKey: localAccount.privateKey,
+                privateKey: privateKey,
                 address: localAccount.keystore.address,
                 keystore: localAccount.keystore
             });
@@ -38191,7 +38195,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.13";
+    this.version = "1.9.14";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
