@@ -104,14 +104,11 @@ const Transaction = (p) => {
 			{nodes.description}
 
 			<span className="value-changes">
-				{!!p.shares && !!p.shares.value &&
-					<ValueDenomination className="value-change shares" {...p.shares} />
-				}
 				{!!p.gas && !!p.gas.value &&
-					<ValueDenomination className="value-change gas" {...p.gas} />
+					<ValueDenomination className="value-change gas" {...p.gas} prefix="gas:" />
 				}
 				{!!p.ether && !!p.ether.value &&
-					<ValueDenomination className="value-change ether" {...p.ether} />
+					<ValueDenomination className="value-change ether" {...p.ether} prefix="total:" />
 				}
 			</span>
 
