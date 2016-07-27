@@ -57,13 +57,14 @@ describe("CreateMarket.createSingleEventMarket", function () {
                     var block = augur.rpc.getBlock(r.blockNumber);
                     var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength)).floor().toString(16));
                     var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5"));
+                    var formattedTags = augur.formatTags(t.tags);
                     assert.strictEqual(utils.sha3([
                         futurePeriod,
                         abi.fix(tradingFee, "hex"),
                         block.timestamp,
-                        t.tags[0],
-                        t.tags[1],
-                        t.tags[2],
+                        formattedTags[0],
+                        formattedTags[1],
+                        formattedTags[2],
                         t.expDate,
                         new Buffer(t.description, "utf8").length,
                         t.description
@@ -102,13 +103,13 @@ describe("CreateMarket.createSingleEventMarket", function () {
                             // console.log("buyCompleteSets:", res);
                         },
                         onSetupOutcome: function (res) {
-                            console.log("setupOutcome:", res);
+                            // console.log("setupOutcome:", res);
                         },
                         onSetupOrder: function (res) {
                             // console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
-                            console.log("order book setup:", res);
+                            console.log("order book setup complete:", Object.keys(res.buy).length + Object.keys(res.sell).length, "orders created");
                             done();
                         },
                         onFailed: function (err) {
@@ -133,7 +134,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
         makerFee: "0.01",
         extraInfo: "Candidates must be polling at 15% or higher to be included in the Presidential debates.",
         tags: ["politics", "US elections", "presidential debates"],
-        resolution: null
+        resolution: ""
     });
     test({
         branch: augur.constants.DEFAULT_BRANCH_ID,
@@ -148,17 +149,17 @@ describe("CreateMarket.createSingleEventMarket", function () {
         tags: ["space", "Dragon", "ISS"],
         resolution: "http://www.spacex.com"
     });
-    // test({
-    //     branch: augur.constants.DEFAULT_BRANCH_ID,
-    //     description: "Which political party's candidate will win the 2016 U.S. Presidential Election?~|>Democratic|Republican|Libertarian|other",
-    //     expDate: parseInt(new Date("1/2/2017").getTime()/1000 + new Date().getTime()/1000*Math.random()),
-    //     minValue: 1,
-    //     maxValue: 2,
-    //     numOutcomes: 4,
-    //     takerFee: "0.02",
-    //     makerFee: "0.001",
-    //     extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
-    //     tags: ["politics", "US elections", "political parties"],
-    //     resolution: "http://lmgtfy.com"
-    // });
+    test({
+        branch: augur.constants.DEFAULT_BRANCH_ID,
+        description: "Which political party's candidate will win the 2016 U.S. Presidential Election?~|>Democratic|Republican|Libertarian|other",
+        expDate: parseInt(new Date("1/2/2017").getTime()/1000 + new Date().getTime()/1000*Math.random()),
+        minValue: 1,
+        maxValue: 2,
+        numOutcomes: 4,
+        takerFee: "0.02",
+        makerFee: "0.001",
+        extraInfo: "The United States presidential election of 2016, scheduled for Tuesday, November 8, 2016, will be the 58th quadrennial U.S. presidential election.",
+        tags: ["politics", "US elections", "political parties"],
+        resolution: "http://lmgtfy.com"
+    });
 });
