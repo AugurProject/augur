@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
 import AugurJS from '../../../services/augurjs';
+import store from '../../../store';
 import { formatNumber, formatEther } from '../../../utils/format-number';
 
 export default function () {
@@ -14,12 +15,16 @@ export default function () {
 export const selectFilteredMarkets = memoizerific(1)((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID));
 
 export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
+	const { marketTrades } = store.getState();
+
 	const markets = [];
 
 	authorOwnedMarkets.forEach((market) => {
-		const fees = formatEther(AugurJS.getFees(market.id));
-		const numberOfTrades = formatNumber(AugurJS.get_total_trades(market.id));
+		console.log('market.id -- ', market.id);
 
+		const fees = formatEther(AugurJS.getFees(market.id));
+		
+		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
 		const averageTradeSize = formatNumber(selectAverageTradeSize(market.marketPriceHistory));
 		const openVolume = formatNumber(selectOpenVolume(market));
 
@@ -36,6 +41,20 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 
 	return markets;
 });
+
+export const selectNumberOfTrades = trades => {
+	if (!trades) {
+		return 0;
+	}
+
+	let totalTrades = 0;
+
+	Object.key(trades).forEach(outcome => {
+		totalTrades += trades[outcome].length;
+	});
+
+	return totalTrades;
+};
 
 export const selectOpenVolume = market => {
 	let openVolume = 0;
