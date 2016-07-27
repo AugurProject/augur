@@ -137,6 +137,7 @@ function createMarkets(numMarketsToCreate, callback) {
                             console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
+                            console.log("generateOrderBook success:", res);
                             if (index % 10) return next();
                             augur.setCash(augur.from, "10000000000000",
                                 function (r) {},

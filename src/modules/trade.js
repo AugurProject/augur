@@ -55,6 +55,7 @@ module.exports = {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
                                 return onTradeSuccess({
+                                    txHash: result.txHash,
                                     unmatchedCash: abi.unfix(result.callReturn[1], "string"),
                                     unmatchedShares: abi.unfix(result.callReturn[2], "string")
                                 });
@@ -112,6 +113,7 @@ module.exports = {
                             result.callReturn[0] = parseInt(result.callReturn[0]);
                             if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
                                 return onTradeSuccess({
+                                    txHash: result.txHash,
                                     unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                     matchedShares: abi.unfix(result.callReturn[2], "string"),
                                     price: abi.unfix(result.callReturn[3], "string")
