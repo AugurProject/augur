@@ -2353,15 +2353,15 @@ describe("Integration tests", function () {
                                                     assert.notProperty(r, "error");
                                                     assert.property(r, "unmatchedCash");
                                                     assert.property(r, "unmatchedShares");
-                                                    assert.isAtMost(abi.number(r.unmatchedCash), t.unmatchedCash);
-                                                    assert.strictEqual(abi.number(r.unmatchedShares), t.unmatchedShares);
+                                                    assert.isAtMost(abi.number(r.unmatchedCash), t.expected.unmatchedCash);
+                                                    assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
                                                     nextTrade(r);
                                                 },
                                                 onTradeFailed: nextTrade
                                             });
                                         });
                                     }, function (x) {
-                                        if (x && x.unmatchedCash) return done();
+                                        if (x && x.txHash) return done();
                                         done(x);
                                     });
                                 });
@@ -2459,7 +2459,7 @@ describe("Integration tests", function () {
                                     });
                                 });
                             }, function (x) {
-                                if (x && x.price) return done();
+                                if (x && x.txHash) return done();
                                 done(x);
                             });
                         });

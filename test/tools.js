@@ -293,7 +293,7 @@ module.exports = {
                     },
                     onTradeSuccess: function (r) {
                         if (self.DEBUG) {
-                            self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r.callReturn));
+                            self.print_residual(periodLength, "Trade complete: " + JSON.stringify(r, null, 2));
                         }
                         assert.isObject(r);
                         assert.notProperty(r, "error");
