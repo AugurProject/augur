@@ -272,24 +272,9 @@ export default function (market) {
 			assert.isObject(tradeSummary);
 		});
 
-		it('market.tradeSummary.totalShares', () => {
-			assert.isDefined(tradeSummary.totalShares);
-			assertFormattedNumber(tradeSummary.totalShares);
-		});
-
-		it('market.tradeSummary.totalCost', () => {
-			assert.isDefined(tradeSummary.totalCost);
-			assertFormattedNumber(tradeSummary.totalCost);
-		});
-
 		it('market.tradeSummary.totalGas', () => {
 			assert.isDefined(tradeSummary.totalGas);
 			assertFormattedNumber(tradeSummary.totalGas);
-		});
-
-		it('market.tradeSummary.totalFee', () => {
-			assert.isDefined(tradeSummary.totalFee);
-			assertFormattedNumber(tradeSummary.totalFee);
 		});
 
 		const tradeOrders = tradeSummary.tradeOrders;
@@ -314,11 +299,6 @@ export default function (market) {
 				assert.isDefined(trade.ether);
 				assert.isObject(trade.ether);
 				assertFormattedNumber(trade.ether);
-			});
-
-			it('market.tradeSummary.totalFee', () => {
-				assert.isDefined(tradeSummary.totalFee);
-				assertFormattedNumber(tradeSummary.totalFee);
 			});
 
 			it(`market.tradeSummary.tradeOrders${i}.gas`, () => {

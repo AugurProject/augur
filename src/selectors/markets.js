@@ -63,10 +63,7 @@ function makeMarkets(numMarkets = 50) {
 
 		// trade summary
 		m.tradeSummary = {
-			totalShares: makeNumber(0, 'shares'),
-			totalCost: makeNumber(0, 'eth'),
 			totalGas: makeNumber(0, 'eth'),
-			totalFee: makeNumber(0, 'eth'),
 			tradeOrders: []
 		};
 
@@ -259,9 +256,9 @@ function makeMarkets(numMarkets = 50) {
 
 							const finalLimitPrice = outcome.trade.limitPrice || 1;
 							const totEth = outcome.trade.numShares * finalLimitPrice * negater;
-							outcome.trade.tradeSummary.totalFee = makeNumber(Math.round(m.takerFeePercent.value / 100 * finalLimitPrice * outcome.trade.numShares * 100) / 100, 'eth');
-							const feeFortotalEth = -1 * outcome.trade.tradeSummary.totalFee.value;
-							outcome.trade.tradeSummary.totalCost = makeNumber(Math.round((totEth + feeFortotalEth) * 100) / 100, 'eth');
+							outcome.trade.totalFee = makeNumber(Math.round(m.takerFeePercent.value / 100 * finalLimitPrice * outcome.trade.numShares * 100) / 100, 'eth');
+							const feeFortotalEth = -1 * outcome.trade.totalFee.value;
+							outcome.trade.totalCost = makeNumber(Math.round((totEth + feeFortotalEth) * 100) / 100, 'eth');
 
 							m.outcomes = m.outcomes.map(currentOutcome => {
 								if (currentOutcome.id === outcomeID) {
@@ -281,11 +278,11 @@ function makeMarkets(numMarkets = 50) {
 									type: outcome.trade.side,
 									shares: makeNumber(outcome.trade.numShares, 'shares'),
 									gas: makeNumber(gas, 'eth'),
-									ether: makeNumber(outcome.trade.tradeSummary.totalCost.value - gas, 'eth'),
+									ether: makeNumber(outcome.trade.totalCost.value - gas, 'eth'),
 									data: {
 										outcomeName: outcome.name,
 										marketDescription: m.description,
-										avgPrice: makeNumber(Math.round((outcome.trade.tradeSummary.totalCost.value / outcome.trade.numShares) * 100) / 100, 'eth'),
+										avgPrice: makeNumber(Math.round((outcome.trade.totalCost.value / outcome.trade.numShares) * 100) / 100, 'eth'),
 									}
 								});
 
