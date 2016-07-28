@@ -11,9 +11,10 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 		}
 
 		trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch,
-			(res) => {
-				return dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, totalEthWithFee, res.remainingShares, res.remainingEth) }));
-			},
+			(res) => dispatch(updateExistingTransaction(
+				transactionID,
+				{ status: 'filling...', message: generateMessage(numShares, totalEthWithFee, res.remainingShares, res.remainingEth) }
+			)),
 			(err, res) => {
 				if (err) {
 					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
@@ -36,7 +37,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 					if (err) {
 						return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 					}
-					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: message }));
+					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
 				});
 			}
 		);
@@ -44,17 +45,15 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 }
 
 function generateMessage(numShares, totalEthWithFee, remainingShares, remainingEth) {
-	const filledShares = numShares - remainingShares;
+	// const filledShares = numShares - remainingShares;
 	const filledEth = totalEthWithFee - remainingEth;
-	const filledAvgPrice = Math.round(filledShares / filledEth * 100) / 100;
-
-	let message = '';
+	// const filledAvgPrice = Math.round(filledShares / filledEth * 100) / 100;
 
 	if (filledEth) {
 		return `filled ${formatEther(filledEth).full} of ${formatEther(totalEthWithFee).full}`;
 	}
 
-	return message;
+	return '';
 }
 
 function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch, cbFill, cb) {
@@ -97,9 +96,8 @@ function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalE
 			if (res.remainingEth) {
 				cbFill(res);
 				return trade(transactionID, marketID, outcomeID, numShares, limitPrice, res.remainingEth, getState, dispatch, cbFill, cb);
-			} else {
-				return cb(null, res);
 			}
+			return cb(null, res);
 		},
 
 		onTradeFailed: cb,
