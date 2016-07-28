@@ -36,6 +36,9 @@ export function processCancelOrder(transactionID, orderID) {
 				console.log('onFail %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, transaction.data.marketID, transaction.data.type));
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
+			},
+			function onConfirmed(res) {
+				console.log('onConfirmed %o', res);
 			}
 		);
 	};

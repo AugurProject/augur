@@ -8,42 +8,62 @@ import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
 import { CANCELLING, CANCELLED } from '../../bids-asks/constants/order-status';
 import { formatNone, formatEther, formatShares } from '../../../utils/format-number';
 
+/**
+ *
+ * @param {String} outcomeId
+ * @param {{buy: object, sell: object}} marketOrderBook
+ *
+ * @return {Array}
+ */
 export default function (outcomeId, marketOrderBook) {
+	console.log('default selectUserOpenOrders');
 	const { loginAccount } = store.getState();
 
 	return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook);
 }
 
-export const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook) => {
+/**
+ *
+ * @param {String} outcomeID
+ * @param {Object} loginAccount
+ * @param {{buy: object, sell: object}} marketOrderBook
+ *
+ * @return {Array}
+ */
+const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook) => {
+	console.log('selectUserOpenOrders');
 	const isUserLoggedIn = loginAccount != null && loginAccount.address != null;
 
 	if (!isUserLoggedIn || marketOrderBook == null) {
 		return [];
 	}
 
-	const userBids = marketOrderBook.buy == null ? [] : marketOrderBook.buy
-		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, loginAccount.address))
-		.map(order => (
-			{
-				id: order.id,
-				marketID: order.market,
-				type: BID,
-				isCancelling: order.status === CANCELLING,
-				isCancelled: order.status === CANCELLED,
-				originalShares: formatNone(),
-				avgPrice: formatEther(order.price),
-				matchedShares: formatNone(),
-				unmatchedShares: formatShares(order.amount)
-			}
-	));
+	const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BID, outcomeID, loginAccount.id);
 
-	const userAsks = marketOrderBook.sell == null ? [] : marketOrderBook.sell
-		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, loginAccount.address))
+	const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.id);
+
+	return userBids.concat(userAsks);
+});
+
+/**
+ * Returns user's order for specified outcome
+ *
+ * @param {Object} orders
+ * @param {String} orderType
+ * @param {String} outcomeID
+ * @param {String} userID
+ *
+ * @return {Array}
+ */
+function getUserOpenOrders(orders, orderType, outcomeID, userID) {
+	return Object.keys(orders)
+		.map(orderId => orders[orderId])
+		.filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID) && !order.isCancelled)
 		.map(order => (
 			{
 				id: order.id,
 				marketID: order.market,
-				type: ASK,
+				type: orderType,
 				isCancelling: order.status === CANCELLING,
 				isCancelled: order.status === CANCELLED,
 				originalShares: formatNone(),
@@ -52,6 +72,4 @@ export const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, m
 				unmatchedShares: formatShares(order.amount)
 			}
 		));
-
-	return userBids.concat(userAsks);
-});
+}

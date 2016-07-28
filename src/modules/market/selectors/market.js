@@ -39,6 +39,7 @@ import store from '../../../store';
 import { selectMarketLink } from '../../link/selectors/links';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 import selectUserOpenOrders from '../../user-open-orders/selectors/user-open-orders';
+import selectUserOpenOrdersSummary from '../../user-open-orders/selectors/user-open-orders-summary';
 
 import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
 
@@ -218,8 +219,9 @@ export const assembleMarket = memoizerific(1000)((
 	market.reportableOutcomes = market.outcomes.slice();
 	market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
-	market.tradeSummary = generateTradeSummary(marketTradeOrders);
+	market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
+	market.tradeSummary = generateTradeSummary(marketTradeOrders);
 	market.positionsSummary = selectPositionsSummary(
 		positions.list.length,
 		positions.qtyShares,

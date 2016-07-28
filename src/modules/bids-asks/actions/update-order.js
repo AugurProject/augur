@@ -18,18 +18,18 @@ export function updateOrderStatus(orderID, status, marketID, type) {
 		const marketOrderBook = marketOrderBooks[marketID];
 
 		if (marketOrderBook == null) {
-			return console.warn('updateOrderStatus: can\'t update %o', orderID);
+			return warnNonExistingOrder(orderID, status, marketID, type);
 		}
 
 		const buyOrSell = type === BID ? 'buy' : 'sell';
 		const orders = marketOrderBook[buyOrSell];
 		if (orders == null) {
-			return console.warn('updateOrderStatus: can\'t update %o', orderID);
+			return warnNonExistingOrder(orderID, status, marketID, type);
 		}
 
-		const order = orders.find(order => order.id === orderID);
+		const order = orders[orderID];
 		if (order == null) {
-			return console.warn('updateOrderStatus: can\'t update %o', orderID);
+			return warnNonExistingOrder(orderID, status, marketID, type);
 		}
 
 		dispatch({
@@ -40,4 +40,8 @@ export function updateOrderStatus(orderID, status, marketID, type) {
 			orderType: buyOrSell
 		});
 	};
+}
+
+function warnNonExistingOrder(orderID, status, marketID, type) {
+	return console.warn('updateOrderStatus: can\'t update %o', orderID, status, marketID, type);
 }

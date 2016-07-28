@@ -21,12 +21,13 @@ export default function (marketOrderBooks = {}, action) {
 			...marketOrderBooks,
 			[action.marketID]: {
 				...marketOrderBooks[action.marketID],
-				[action.orderType]: marketOrderBooks[action.marketID][action.orderType].map(order => {
-					if (order.id === action.orderID) {
-						order.status = action.status;
+				[action.orderType]: {
+					...marketOrderBooks[action.marketID][action.orderType],
+					[action.orderID]: {
+						...marketOrderBooks[action.marketID][action.orderType][action.orderID],
+						status: action.status
 					}
-					return order;
-				})
+				}
 			}
 		};
 	default:
