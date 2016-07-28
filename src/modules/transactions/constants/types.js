@@ -1,8 +1,8 @@
-export const BUY_SHARES = 'buy_shares';
-export const SELL_SHARES = 'sell_shares';
-
 export const BID = 'bid';
 export const ASK = 'ask';
+
+export const SHORT_SELL = 'short_sell';
+export const SHORT_SELL_RISKY = 'short_sell_risky';
 
 export const CREATE_MARKET = 'create_market';
 export const SUBMIT_REPORT = 'submit_report';

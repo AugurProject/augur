@@ -1,7 +1,4 @@
-import {
-	UPDATE_TRADE_IN_PROGRESS,
-	CLEAR_TRADE_IN_PROGRESS
-} from '../../trade/actions/update-trades-in-progress';
+import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from '../../trade/actions/update-trades-in-progress';
 import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
 
 export default function (tradesInProgress = {}, action) {

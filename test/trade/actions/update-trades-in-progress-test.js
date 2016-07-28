@@ -1,10 +1,8 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import {BID, ASK} from '../../../src/modules/bids-asks/constants/bids-asks-types';
+import { BUY, SELL } from '../../trade/constants/types';
 
 describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 	const middlewares = [thunk];
@@ -19,7 +17,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 					limitPrice: 1,
 					numShares: 4,
 					totalCost: 4,
-					side: ASK
+					side: SELL
 				}
 			},
 			testMarketID9: {
@@ -27,7 +25,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 					limitPrice: 1,
 					numShares: 4,
 					totalCost: 4,
-					side: ASK
+					side: SELL
 				}
 			}
 		}
@@ -47,7 +45,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 					outcomeID: 'testOutcomeID',
 					numShares: 4,
 					limitPrice: 1,
-					side: ASK
+					side: SELL
 				},
 				expectedOutput: []
 			},
@@ -58,7 +56,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 					outcomeID: 'testOutcomeID',
 					numShares: 4,
 					limitPrice: 0.5,
-					side: BID
+					side: BUY
 				},
 				expectedOutput: [{
 					type: actions.UPDATE_TRADE_IN_PROGRESS,
@@ -69,7 +67,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 							numShares: 4,
 							limitPrice: 0.5,
 							totalCost: 2,
-							side: BID
+							side: BUY
 						}
 					}
 				}]
@@ -127,7 +125,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 					outcomeID: 'testOutcomeID',
 					numShares: undefined,
 					limitPrice: undefined,
-					side: ASK
+					side: SELL
 				},
 				expectedOutput: [{
 					type: actions.UPDATE_TRADE_IN_PROGRESS,
@@ -138,7 +136,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 							numShares: undefined,
 							limitPrice: undefined,
 							totalCost: null,
-							side: ASK
+							side: SELL
 						}
 					}
 				}]
@@ -161,7 +159,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 							numShares: 2,
 							limitPrice: 1,
 							totalCost: 2,
-							side: ASK
+							side: SELL
 						}
 					}
 				}]
@@ -171,7 +169,7 @@ describe(`modules/trade/actions/update-trades-in-progress.js`, () => {
 		tests.forEach(function (test) {
 			it(test.title, function () {
 				store.dispatch(
-					actions.updateTradesInProgress(test.params.marketID, test.params.outcomeID, test.params.numShares, test.params.limitPrice, test.params.side)
+					actions.updateTradesInProgress(test.params.marketID, test.params.outcomeID, test.params.side, test.params.numShares, test.params.limitPrice)
 				);
 
 				assert.deepEqual(store.getActions(), test.expectedOutput, test.failureMessage);

@@ -7,11 +7,12 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR, BINARY_N
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
 import { updateOutcomesData } from '../../markets/actions/update-outcomes-data';
 
-export function loadMarketsInfo(marketIDs) {
+export function loadMarketsInfo(marketIDs, cb) {
 	return (dispatch, getState) => {
 		if (!marketIDs || !marketIDs.length) {
 			return;
 		}
+
 		AugurJS.batchGetMarketInfo(marketIDs, (err, marketsData) => {
 			if (err) {
 				console.error('ERROR loadMarketsInfo()', err);
@@ -46,6 +47,8 @@ export function loadMarketsInfo(marketIDs) {
 
 			dispatch(updateMarketsData(finalMarketsData));
 			dispatch(updateOutcomesData(finalOutcomesData));
+
+			cb && cb();
 		});
 	};
 
@@ -141,15 +144,4 @@ export function loadMarketsInfo(marketIDs) {
 			return p;
 		}, {});
 	}
-}
-
-export function loadMarketsInfoForDisplayedMarkets() {
-	return (dispatch, getState) => {
-		const { markets } = require('../../../selectors');
-		const marketIDsMissingInfo = markets.filter(market => !market.isLoadedMarketInfo).map(market => market.id);
-
-		if (marketIDsMissingInfo.length) {
-			dispatch(loadMarketsInfo(marketIDsMissingInfo));
-		}
-	};
 }

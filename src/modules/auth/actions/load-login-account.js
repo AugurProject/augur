@@ -58,8 +58,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 		}
 		if (localState.transactionsData) {
 			Object.keys(localState.transactionsData).forEach(key => {
-				if ([SUCCESS, FAILED, PENDING, INTERRUPTED]
-						.indexOf(localState.transactionsData[key].status) < 0) {
+				if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
 					localState.transactionsData[key].status = INTERRUPTED;
 					localState.transactionsData[key].message = 'unknown if completed';
 				}

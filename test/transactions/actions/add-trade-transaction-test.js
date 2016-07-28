@@ -85,7 +85,7 @@ describe.skip(`modules/transactions/actions/add-trade-transaction.js`, () => {
 					denomination: 'Eth',
 					full: '+0.50Eth'
 				},
-				feeToPay: {
+				totalFee: {
 					value: 2,
 					formattedValue: 2,
 					formatted: '+2.00',

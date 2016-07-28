@@ -247,36 +247,6 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
-ex.processOrder = function processOrder(requestId, market, marketOrderBook, userTradeOrder, userPosition, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onBuySellSent, onBuySellSuccess, onBuySellFailed, onShortSellSent, onShortSellSuccess, onShortSellFailed, onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed) {
-	augur.processOrder(requestId, market, marketOrderBook, userTradeOrder, userPosition, scalarMinMax, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed,
-		onBuySellSent, onBuySellSuccess, onBuySellFailed,
-		onShortSellSent, onShortSellSuccess, onShortSellFailed,
-		onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed);
-};
-
-ex.tradeShares = function tradeShares(branchID, marketID, outcomeID, numShares, limit, cap, cb) {
-	augur.trade({
-		branch: branchID,
-		market: marketID,
-		outcome: outcomeID,
-		amount: numShares,
-		limit,
-		stop: false,
-		cap: null,
-		expiration: 0,
-		callbacks: {
-			onMarketHash: (marketHash) => cb(null, { status: 'sending...', data: marketHash }),
-			onCommitTradeSent: (res) => cb(null, { status: 'committing...', data: res }),
-			onCommitTradeSuccess: (res) => cb(null, { status: 'broadcasting...', data: res }),
-			onCommitTradeFailed: (err) => cb(err),
-			onTradeSent: (res) => cb(null, { status: 'confirming...', data: res }),
-			onTradeSuccess: (res) => cb(null, { status: SUCCESS, data: res }),
-			onTradeFailed: (err) => cb(err),
-			onOrderCreated: (res) => console.log('onOrderCreated', res)
-		}
-	});
-};
-
 ex.getSimulatedBuy = function getSimulatedBuy(marketID, outcomeID, numShares) {
 	return augur.getSimulatedBuy(marketID, outcomeID, numShares);
 };
@@ -544,4 +514,7 @@ ex.changeAccountName = function changeAccountName(name, cb) {
 };
 
 ex.rpc = augur.rpc;
+ex.getTradingActions = augur.getTradingActions;
+ex.trade = augur.trade;
+
 module.exports = ex;

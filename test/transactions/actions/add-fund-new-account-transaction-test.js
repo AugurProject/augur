@@ -45,7 +45,6 @@ describe(`modules/transactions/actions/add-fund-new-account-transactions.js`, ()
 			{
 				type: 'fund_account',
 	    	address: 'testAddress123',
-	    	message: 'Preparing to sending a request to fund your account.',
 	    	action:  store.getActions()[0].action
 			},
 			{

@@ -63,7 +63,7 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 				denomination: 'shares',
 				full: '-586shares'
 			},
-			feeToPay: {
+			totalFee: {
 				denomination: "eth",
 				formatted: "0.00",
 				formattedValue: 0,
@@ -73,7 +73,7 @@ describe(`modules/trade/selectors/trade-summary.js`, () => {
 				roundedValue: 0,
 				value: 0
 			},
-			totalEther: {
+			totalEth: {
 				value: 5670,
 				formattedValue: 5670,
 				formatted: '+5,670.00',

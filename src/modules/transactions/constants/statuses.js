@@ -15,5 +15,3 @@ export const COMPLETE_SET_BOUGHT = 'complete set bought';
 export const ORDER_BOOK_ORDER_COMPLETE = 'order creation complete';
 export const ORDER_BOOK_OUTCOME_COMPLETE = 'outcome creation complete';
 
-// Trading
-export const TRADING = 'placing trade';

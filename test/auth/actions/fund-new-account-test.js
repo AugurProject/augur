@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe(`modules/auth/actions/fund-new-account.js`, () => {
+describe(`modules/auth/actions/process-fund-new-account.js`, () => {
 	proxyquire.noPreserveCache();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -38,31 +38,36 @@ describe(`modules/auth/actions/fund-new-account.js`, () => {
 		store.clearActions();
 	});
 
-	const action = proxyquire('../../../src/modules/auth/actions/fund-new-account', {
+	const action = proxyquire('../../../src/modules/auth/actions/process-fund-new-account', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../transactions/actions/update-existing-transaction': fakeUpdateTrans,
 		'../../auth/actions/update-assets': fakeUpdateAssets
 	});
 
 	it('should fund a new account', () => {
-		store.dispatch(action.fundNewAccount('myTransactionID', 'testAddress123'));
+		store.dispatch(action.processFundNewAccount('myTransactionID', 'testAddress123'));
 
 		const expectedOutput = [
-			{ type: 'UPDATE_EXISTING_TRANSACTIONS',
-    		transID: {
+			{
+				type: 'UPDATE_EXISTING_TRANSACTIONS',
+				transID: {
 					status: 'sent request',
-       		message: 'A request has been sent to fund your account.'
+					message: 'A request has been sent to fund your account.'
 				}
 			},
-  		{ type: 'UPDATE_EXISTING_TRANSACTIONS',
-    		transID: {
+			{
+				type: 'UPDATE_EXISTING_TRANSACTIONS',
+				transID: {
 					status: 'success',
-       		message: 'Your account has successfully been funded!'
+					message: 'Your account has successfully been funded!'
 				}
 			},
-  		{ type: 'UPDATE_ASSETS' },
-  		{ type: 'UPDATE_EXISTING_TRANSACTIONS',
-    		transID: {
+			{
+				type: 'UPDATE_ASSETS'
+			},
+			{
+				type: 'UPDATE_EXISTING_TRANSACTIONS',
+				transID: {
 					status: 'failed',
 					message: 'this is a failure message'
 				}
