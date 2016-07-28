@@ -1,20 +1,17 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const Toggler = (p) => {
-	return (
-		<div
-			className={classnames('clickable', 'toggler', p.className)}
-			onClick={(e) => {
-				e.persist();
-				p.onClick(findNextOption(p.selected, p.options), e);
-			}}
-		>
-			{p.selected.label}
-		</div>
-	);
-
-};
+const Toggler = (p) => (
+	<div
+		className={classnames('clickable', 'toggler', p.className)}
+		onClick={(e) => {
+			e.persist();
+			p.onClick(findNextOption(p.selected, p.options), e);
+		}}
+	>
+		{p.selected.label}
+	</div>
+);
 
 const findNextOption = (selected, options) => {
 	const currentSelectedIndex = options.indexOf(selected);
