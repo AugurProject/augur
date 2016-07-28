@@ -16,6 +16,7 @@ export default class AuthForm extends Component {
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
 		isVisibleID: PropTypes.bool,
+		isVisibleFileInput: PropTypes.bool,
 		isVisibleRememberMe: PropTypes.bool,
 		clearName: PropTypes.bool,
 		clearPassword: PropTypes.bool,
@@ -41,6 +42,7 @@ export default class AuthForm extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
 			msg: this.props.msg,
+			importAccount: this.props.importAccount,
 			secureLoginID: this.props.secureLoginID,
 			rememberMe: this.props.rememberMe
 		};
@@ -65,24 +67,36 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
+		console.log(e);
+		console.log(this.refs.form.value);
+		console.log(this.refs.form.data);
 		const name = this.refs.name.value;
 		const secureLoginID = this.state.secureLoginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
+		const importAccount = this.state.importAccount;
+		console.log(importAccount);
 		this.setState({ msg: '' });
 		setTimeout(() =>
-			this.props.onSubmit(name, password, password2, secureLoginID, rememberMe), 100);
+			this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
 	}
 
 	render() {
 		const p = this.props;
 		const s = this.state;
-
+		console.log(p);
 		return (
-			<form className={p.className} onSubmit={this.handleSubmit}>
+			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
 				<h1 className="title">
 					{p.title}
+					<Link
+						className="top-mid-link"
+						href={p.topMidLink.href}
+						onClick={p.topMidLink.onClick}
+					>
+						{p.topMidLinkText}
+					</Link>
 					{p.topLinkText &&
 						<Link
 							className="top-link"
@@ -105,6 +119,16 @@ export default class AuthForm extends Component {
 					placeholder="name"
 					maxLength="30"
 					autoFocus="autofocus"
+				/>
+				<Input
+					name="importAccount"
+					ref={(ref) => { if (ref && ref.state.value !== s.importAccount) { this.setState({ importAccount: ref.state.value }); } }}
+					className={classnames('auth-input', { displayNone: !p.isVisibleFileInput })}
+					type="file"
+					value={s.importAccount}
+					placeholder="Import Account"
+					autoFocus="autofocus"
+					onChange={(importAccount) => this.setState({ importAccount })}
 				/>
 				<Input
 					name="secureLoginID"
