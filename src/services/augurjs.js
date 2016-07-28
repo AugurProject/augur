@@ -213,6 +213,7 @@ ex.loadMarketTrades = function loadMarketTrades(marketID, cb) {
 		if (marketTrades && marketTrades.error) {
 			return cb(marketTrades.error);
 		}
+
 		cb(null, marketTrades);
 	});
 };

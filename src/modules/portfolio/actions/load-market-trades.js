@@ -6,7 +6,7 @@ export function loadMarketTrades(marketID) {
 	return dispatch => {
 		AugurJS.loadMarketTrades(marketID, (err, marketTrades) => {
 			if (err) {
-				console.log('ERROR loadMarketTrades -- ', err);
+				console.error('ERROR loadMarketTrades -- ', err);
 				return;
 			}
 
@@ -14,9 +14,8 @@ export function loadMarketTrades(marketID) {
 				return;
 			}
 
-			const trades = {
-				marketID: marketTrades
-			};
+			const trades = {};
+			trades[marketID] = marketTrades;
 
 			dispatch(updateMarketTradesData(trades));
 		});

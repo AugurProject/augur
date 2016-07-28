@@ -20,8 +20,6 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 	const markets = [];
 
 	authorOwnedMarkets.forEach((market) => {
-		console.log('market.id -- ', market.id);
-
 		const fees = formatEther(AugurJS.getFees(market.id));
 
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
@@ -47,13 +45,7 @@ export const selectNumberOfTrades = trades => {
 		return 0;
 	}
 
-	let totalTrades = 0;
-
-	Object.key(trades).forEach(outcome => {
-		totalTrades += trades[outcome].length;
-	});
-
-	return totalTrades;
+	return Object.keys(trades).reduce((p, outcome) => (p + trades[outcome].length), 0);
 };
 
 export const selectOpenVolume = market => {
