@@ -11,11 +11,11 @@ let isAlreadyUpdatingBlockchain = false;
 
 export function incrementReportPeriod(cb) {
 	return (dispatch, getState) => {
-		const { blockchain } = getState();
+		const { blockchain, loginAccount } = getState();
 		const expectedReportPeriod = blockchain.currentPeriod - 1;
 
-		// if the report period is as expected, exit
-		if (blockchain.reportPeriod === expectedReportPeriod) {
+		// if not logged in / unlocked or if the report period is as expected, exit
+		if (!loginAccount.id || blockchain.reportPeriod === expectedReportPeriod) {
 			return cb && cb();
 		}
 
