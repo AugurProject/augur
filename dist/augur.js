@@ -38195,7 +38195,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.14";
+    this.version = "1.9.15";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39961,7 +39961,7 @@ module.exports = {
 
     trade: function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
-        if (max_value.constructor === Object && max_value.max_value) {
+        if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
             onTradeHash = max_value.onTradeHash;
