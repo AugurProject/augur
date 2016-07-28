@@ -80,15 +80,15 @@ function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalE
 		max_amount: numShares,
 		trade_ids: matchingSortedAskIDs,
 
-		onTradeHash: data => dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' })),
-		onCommitSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'committing...' })),
-		onCommitSuccess: data => dispatch(updateExistingTransaction(transactionID, { status: 'sending...' })),
+		onTradeHash: data => dispatch(updateExistingTransaction(transactionID, { status: 'submitting buy...' })),
+		onCommitSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'committing buy...' })),
+		onCommitSuccess: data => dispatch(updateExistingTransaction(transactionID, { status: 'sending buy...' })),
 
 		onCommitConfirmed: data => console.log('trade-onCommitConfirmed', data),
 		onCommitFailed: cb,
 
 		onNextBlock: data => console.log('trade-onNextBlock', data),
-		onTradeSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'processing...' })),
+		onTradeSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'filling buy...' })),
 		onTradeSuccess: data => {
 			res.remainingEth = parseFloat(data.unmatchedCash) || 0;
 			res.remainingShares = parseFloat(data.unmatchedShares) || 0;
