@@ -501,7 +501,7 @@ describe("Integration tests", function () {
                         assert.strictEqual(Number(r.value), 0);
                         assert.isObject(augur.rpc.rawTxs[r.txHash].tx);
                         assert.isAbove(parseFloat(augur.rpc.rawTxs[r.txHash].cost), 0);
-                        assert.strictEqual(augur.rpc.txs[r.txHash].status, "confirmed");
+                        assert.strictEqual(augur.rpc.txs[r.txHash].status, "mined");
                         done();
                     },
                     onFailed: done
