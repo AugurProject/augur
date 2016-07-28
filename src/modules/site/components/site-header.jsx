@@ -12,7 +12,7 @@ const SiteHeader = (p) => (
 
 			<span className="spacer">&nbsp;</span>
 
-			{!!p.loginAccount && !!p.loginAccount.id && !!p.positionsSummary.numPositions.value &&
+			{!!p.loginAccount && !!p.loginAccount.id &&
 				<Link className={classnames('site-nav-link', POSITIONS, { active: p.activePage === POSITIONS })} {...p.positionsLink}>
 
 					{!!p.positionsSummary && !!p.positionsSummary.numPositions &&
