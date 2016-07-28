@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { BUY, SELL } from '../../trade/constants/types';
+import { BUY } from '../../trade/constants/types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
 
@@ -35,7 +35,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		// if shares exist, but no limit price, use top order
 		let cleanLimitPrice = Math.abs(parseFloat(limitPrice)) || outcomeTradeInProgress.limitPrice;
 		if (cleanNumShares && !cleanLimitPrice && cleanLimitPrice !== 0) {
-			cleanLimitPrice =  topOrderPrice;
+			cleanLimitPrice = topOrderPrice;
 		}
 
 		// calculate totals

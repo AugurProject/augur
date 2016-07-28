@@ -2,6 +2,12 @@ import { processFundNewAccount } from '../../auth/actions/process-fund-new-accou
 import { FUND_ACCOUNT } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
+export const addFundNewAccount = (address) => {
+	(dispatch, getState) => (
+		dispatch(addTransaction(makeAddFundTransaction(address, dispatch)))
+	);
+};
+
 export const makeAddFundTransaction = (address, dispatch) => {
 	const addFundingObject = {
 		type: FUND_ACCOUNT,
@@ -11,8 +17,3 @@ export const makeAddFundTransaction = (address, dispatch) => {
 	return addFundingObject;
 };
 
-export const addFundNewAccount = (address) => {
-	(dispatch, getState) => {
-		dispatch(addTransaction(makeAddFundTransaction(address, dispatch)));
-	};
-};

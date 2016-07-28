@@ -4,7 +4,7 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
 
-export function fundNewAccount(transactionID, address) {
+export function processFundNewAccount(transactionID, address) {
 	return (dispatch, getState) => {
 		const { env } = getState();
 

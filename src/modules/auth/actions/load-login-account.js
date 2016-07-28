@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { SUCCESS, FAILED, PENDING, INTERRUPTED } from '../../transactions/constants/statuses';
+import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';

@@ -17,5 +17,5 @@ export function addTransaction(transaction) {
 }
 
 export function makeTransactionID(currentBlock) {
-	return currentBlock + '-' + Date.now();
+	return `${currentBlock}-${Date.now()}`;
 }

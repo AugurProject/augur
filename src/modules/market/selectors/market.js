@@ -22,10 +22,9 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatPercent } from '../../../utils/format-number';
+import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
-import BigNumber from 'bignumber.js';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
@@ -200,6 +199,8 @@ export const assembleMarket = memoizerific(1000)((
 
 		marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
 
+		outcome.userOpenOrders = [];
+
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
@@ -225,6 +226,10 @@ export const assembleMarket = memoizerific(1000)((
 		positions.totalCost);
 
 	market.positionOutcomes = positions.list;
+
+	market.userOpenOrdersSummary = {
+		openOrdersCount: formatNumber(0)
+	};
 
 	return market;
 });

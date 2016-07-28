@@ -16,7 +16,7 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 	const totalFee = outcomeTradeInProgress && outcomeTradeInProgress.totalFee || 0;
 	const totalCost = outcomeTradeInProgress && outcomeTradeInProgress.totalCost || 0;
 
-	let trade = {
+	return {
 		side,
 		numShares,
 		limitPrice,
@@ -32,8 +32,6 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 		tradeSummary: generateTradeSummary(generateTradeOrders(market, outcome, outcomeTradeInProgress)),
 		updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice))
 	};
-
-	return trade;
 });
 
 export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
@@ -80,6 +78,6 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			market.description,
 			outcome.name,
 			customOutcomeInProgress,
-			store.dispatch)
+			store.dispatch);
 	});
 });

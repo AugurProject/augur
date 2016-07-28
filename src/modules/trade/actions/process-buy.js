@@ -33,7 +33,7 @@ function trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, 
 	const { marketOrderBooks } = getState();
 	const marketOrderBookSells = marketOrderBooks[marketID] && marketOrderBooks[marketID].sell || {};
 
-	let res = {
+	const res = {
 		remainingEth: totalEthWithFee,
 		filledEth: 0,
 		filledShares: 0
@@ -42,7 +42,7 @@ function trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, 
 	const matchingSortedAskIDs = Object.keys(marketOrderBookSells)
 		.map(askID => marketOrderBookSells[askID])
 		.filter(ask => ask.outcome === outcomeID && parseFloat(ask.price) <= limitPrice)
-		.sort((order1, order2) => order1.price < order2.price ? -1 : 0)
+		.sort((order1, order2) => (order1.price < order2.price ? -1 : 0))
 		.map(ask => ask.id);
 
 	if (!matchingSortedAskIDs.length) {
@@ -71,8 +71,7 @@ function trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, 
 
 			if (res.remainingEth) {
 				trade(transactionID, marketID, outcomeID, limitPrice, res.remainingEth, getState, dispatch, cb);
-			}
-			else {
+			} else {
 				return cb(null, res);
 			}
 		},

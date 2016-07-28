@@ -13,7 +13,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 		const matchingSortedBidIDs = Object.keys(marketOrderBookBuys)
 			.map(bidID => marketOrderBookBuys[bidID])
 			.filter(bid => bid.outcome === outcomeID && parseFloat(bid.price) >= limitPrice)
-			.sort((order1, order2) => order1.price < order2.price ? 1 : 0)
+			.sort((order1, order2) => (order1.price < order2.price ? 1 : 0))
 			.map(bid => bid.id);
 
 		AugurJS.trade({

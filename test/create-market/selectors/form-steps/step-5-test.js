@@ -1,6 +1,4 @@
-import chai, {
-	assert
-} from 'chai';
+import chai, { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -9,18 +7,8 @@ import testState from '../../../testState';
 
 import { CREATE_MARKET } from '../../../../src/modules/transactions/constants/types';
 
-import {
-	BINARY,
-	CATEGORICAL,
-	SCALAR
-} from '../../../../src/modules/markets/constants/market-types';
-import {
-	TAKER_FEE_DEFAULT,
-	MAKER_FEE_DEFAULT,
-	STARTING_QUANTITY_DEFAULT,
-	BEST_STARTING_QUANTITY_DEFAULT,
-	PRICE_WIDTH_DEFAULT
-} from '../../../../src/modules/create-market/constants/market-values-constraints';
+import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
+import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT } from '../../../../src/modules/create-market/constants/market-values-constraints';
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-5';
 import * as submitNewMarket from '../../../../src/modules/create-market/actions/submit-new-market';
@@ -122,7 +110,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				state.blockchain.currentBlockMillisSinceEpoch,
 				store.dispatch
 			);
-    
+
 			out = {
 				type: BINARY,
 				description: 'test',
@@ -150,8 +138,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					formatted: [
 						{
 							denomination: "ETH | Yes",
-			        		formatted: "0.5",
-				        	formattedValue: 0.5,
+							formatted: "0.5",
+							formattedValue: 0.5,
 							full: "0.5ETH | Yes",
 							minimized: "0.5",
 							rounded: "1",
@@ -167,7 +155,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 							rounded: "1",
 							roundedValue: 1,
 							value: 0.5
-				  		}
+						}
 					]
 				},
 				outcomes: [
@@ -184,22 +172,22 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
-					formatted: '+2.0',
+					formatted: '2.0',
 					roundedValue: 2,
-					rounded: '+2',
-					minimized: '+2',
+					rounded: '2',
+					minimized: '2',
 					denomination: '%',
-					full: '+2.0%'
+					full: '2.0%'
 				},
 				makerFeePercent: {
 					value: 1,
 					formattedValue: 1,
-					formatted: '+1.0',
+					formatted: '1.0',
 					roundedValue: 1,
-					rounded: '+1',
-					minimized: '+1',
+					rounded: '1',
+					minimized: '1',
 					denomination: '%',
-					full: '+1.0%'
+					full: '1.0%'
 				},
 				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
@@ -214,7 +202,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					full: '-'
 				},
 				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-			  	bestStartingQuantityFormatted: {
+				bestStartingQuantityFormatted: {
 					denomination: "Shares",
 					formatted: "20",
 					formattedValue: 20,
@@ -249,7 +237,7 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			};
 
 			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
-    
+
 			assert.deepEqual(
 				select,
 				out,
@@ -381,22 +369,22 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
-					formatted: '+2.0',
+					formatted: '2.0',
 					roundedValue: 2,
-					rounded: '+2',
-					minimized: '+2',
+					rounded: '2',
+					minimized: '2',
 					denomination: '%',
-					full: '+2.0%'
+					full: '2.0%'
 				},
 				makerFeePercent: {
 					value: 1,
 					formattedValue: 1,
-					formatted: '+1.0',
+					formatted: '1.0',
 					roundedValue: 1,
-					rounded: '+1',
-					minimized: '+1',
+					rounded: '1',
+					minimized: '1',
 					denomination: '%',
-					full: '+1.0%'
+					full: '1.0%'
 				},
 				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
@@ -547,22 +535,22 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				takerFeePercent: {
 					value: 2,
 					formattedValue: 2,
-					formatted: '+2.0',
+					formatted: '2.0',
 					roundedValue: 2,
-					rounded: '+2',
-					minimized: '+2',
+					rounded: '2',
+					minimized: '2',
 					denomination: '%',
-					full: '+2.0%'
+					full: '2.0%'
 				},
 				makerFeePercent: {
 					value: 1,
 					formattedValue: 1,
-					formatted: '+1.0',
+					formatted: '1.0',
 					roundedValue: 1,
-					rounded: '+1',
-					minimized: '+1',
+					rounded: '1',
+					minimized: '1',
 					denomination: '%',
-					full: '+1.0%'
+					full: '1.0%'
 				},
 				endBlock: select.endBlock,
 				takerFee: TAKER_FEE_DEFAULT,
