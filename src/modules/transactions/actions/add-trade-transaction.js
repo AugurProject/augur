@@ -1,56 +1,48 @@
-import { formatEther, formatShares } from '../../../utils/format-number';
-import {
-	BID,
-	ASK
-} from '../../transactions/constants/types';
-import { processOrder } from '../../trade/actions/place-trade';
+import { formatShares, formatEther } from '../../../utils/format-number';
+
+import { BUY, SELL } from '../../trade/constants/types';
+
 import { addTransaction } from '../../transactions/actions/add-transactions';
+import { processBuy } from '../../trade/actions/process-buy';
+import { processSell } from '../../trade/actions/process-sell';
 
-export const makeTradeTransaction =
-(isSell, market, outcome, numShares, limitPrice, totalCostWithoutFeeEther, feeEther, gas, dispatch) => {
-	const totalEther = totalCostWithoutFeeEther + feeEther;
-	const profitLoss = !isSell ? -(numShares * limitPrice) : numShares * limitPrice;
+export const addTradeTransaction = (type, marketID, outcomeID, marketDescription, outcomeName, outcomeTradeInProgress) => (
+	(dispatch, getState) => {
+		dispatch(addTransaction(makeTradeTransaction(type, marketID, outcomeID, marketDescription, outcomeName, outcomeTradeInProgress, dispatch)));
+	}
+);
 
-	const txn = {
-		type: !isSell ? BID : ASK,
-		shares: numShares,
-		sharesNegative: formatShares(-numShares),
-		limitPrice,
-		ether: totalEther,
-		etherNegative: formatEther(-totalEther),
-		feeToPay: formatEther(0),
-		profitLoss: formatEther(profitLoss),
-		gas,
+export const makeTradeTransaction = (type, marketID, outcomeID, marketDescription, outcomeName, outcomeTradeInProgress, dispatch) => {
+	const transaction = {
+		type,
 		data: {
-			marketID: market.id,
-			outcomeID: outcome.id,
-			marketDescription: market.description,
-			outcomeName: outcome.name,
-			avgPrice: formatEther(totalCostWithoutFeeEther / numShares)
-		},
-		action: (transactionID) => {
-			const order = {
-				type: txn.type === BID ? 'buy' : 'sell',
-				outcomeID: txn.data.outcomeID,
-				limitPrice: txn.limitPrice,
-				etherToBuy: txn.ether.value,
-				sharesToSell: txn.shares.value
-			};
-			dispatch(processOrder(transactionID, txn.data.marketID, txn.data.outcomeID, order));
+			marketID,
+			outcomeID,
+			marketDescription,
+			outcomeName,
+			numShares: formatShares(outcomeTradeInProgress.numShares),
+			avgPrice: formatEther(outcomeTradeInProgress.limitPrice)
 		}
 	};
-	return txn;
-};
 
-export const addTradeTransaction =
-(isSell, market, outcome, numShares, totalCostWithoutFeeEther, feeEther, gas) =>
-  (dispatch, getState) =>
-    dispatch(
-			addTransaction(
-				makeTradeTransaction(
-					isSell, market, outcome,
-					numShares, totalCostWithoutFeeEther, feeEther,
-					gas, dispatch
-				)
-			)
-		);
+	if (outcomeTradeInProgress.side === BUY) {
+		transaction.action = (transactionID) => dispatch(processBuy(
+				transactionID,
+				marketID,
+				outcomeID,
+				outcomeTradeInProgress.numShares,
+				outcomeTradeInProgress.limitPrice,
+				outcomeTradeInProgress.totalCost));
+
+	} else if (outcomeTradeInProgress.side === SELL) {
+		transaction.action = (transactionID) => dispatch(processSell(
+				transactionID,
+				marketID,
+				outcomeID,
+				outcomeTradeInProgress.numShares,
+				outcomeTradeInProgress.limitPrice,
+				outcomeTradeInProgress.totalCost));
+	}
+
+	return transaction;
+};

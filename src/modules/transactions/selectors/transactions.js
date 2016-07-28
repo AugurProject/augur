@@ -8,9 +8,34 @@ export default function () {
 	return selectTransactions(transactionsData);
 }
 
-export const selectTransactions = memoizerific(1)((transactionsData) =>
-	Object.keys(transactionsData || {})
-		.sort((a, b) => parseFloat(b) - parseFloat(a))
+export const selectTransactions = memoizerific(1)((transactionsData) => {
+	let splitA;
+	let splitB;
+	let valA;
+	let valB;
+
+	return Object.keys(transactionsData || {})
+		.sort((a, b) => {
+			splitA = a.split('-');
+			splitB = b.split('-');
+
+			valA = parseInt(splitA[0], 10);
+			valB = parseInt(splitB[0], 10);
+
+			if (valA > valB) {
+				return -1;
+			} else if (valB > valA) {
+				return 1;
+			}
+
+			valA = parseInt(splitA[1], 10);
+			valB = parseInt(splitB[1], 10);
+
+			if (valA > valB) {
+				return -1;
+			}
+			return 1;
+		})
 		.map(id => {
 			const obj = {
 				...transactionsData[id],
@@ -22,5 +47,5 @@ export const selectTransactions = memoizerific(1)((transactionsData) =>
 				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
 			};
 			return obj;
-		})
-);
+		});
+});

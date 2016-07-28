@@ -13,6 +13,7 @@
     "global-require": 0,
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
     "no-use-before-define": 0,
+    "no-unused-expressions": 0,
     "max-len": 0,
     "no-shadow": 0,
     "padded-blocks": 0,

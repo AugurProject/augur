@@ -20,7 +20,11 @@ export function login(secureLoginID, password, rememberMe) {
 				return;
 			}
 			if (rememberMe && localStorageRef && localStorageRef.setItem) {
-				localStorageRef.setItem('account', JSON.stringify(loginAccount));
+				const persistentAccount = Object.assign({}, loginAccount);
+				if (Buffer.isBuffer(persistentAccount.privateKey)) {
+					persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+				}
+				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
 			dispatch(updateLoginAccount(loginAccount));

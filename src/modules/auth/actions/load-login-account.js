@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { SUCCESS, FAILED, PENDING, INTERRUPTED } from '../../transactions/constants/statuses';
+import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
@@ -10,6 +10,7 @@ import { clearReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import env from '../../../env.json';
 
 // import { commitReports } from '../../reports/actions/commit-reports';
 import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
@@ -57,8 +58,7 @@ export function loadLoginAccountLocalStorage(accountID) {
 		}
 		if (localState.transactionsData) {
 			Object.keys(localState.transactionsData).forEach(key => {
-				if ([SUCCESS, FAILED, PENDING, INTERRUPTED]
-						.indexOf(localState.transactionsData[key].status) < 0) {
+				if ([SUCCESS, FAILED, INTERRUPTED].indexOf(localState.transactionsData[key].status) < 0) {
 					localState.transactionsData[key].status = INTERRUPTED;
 					localState.transactionsData[key].message = 'unknown if completed';
 				}
@@ -71,8 +71,9 @@ export function loadLoginAccountLocalStorage(accountID) {
 export function loadLoginAccount() {
 	return (dispatch) => {
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
-		AugurJS.loadLoginAccount((err, loginAccount) => {
+		console.log('in load login, env:');
+		console.log(env);
+		AugurJS.loadLoginAccount(env, (err, loginAccount) => {
 			let localLoginAccount = loginAccount;
 
 			if (err) {

@@ -22,25 +22,21 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatPercent } from '../../../utils/format-number';
+import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { BID, ASK } from '../../../modules/transactions/constants/types';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
-import { updateTradesInProgress } from '../../trade/actions/update-trades-in-progress';
 import { submitReport } from '../../reports/actions/submit-report';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
 import store from '../../../store';
 
 import { selectMarketLink } from '../../link/selectors/links';
-import { selectOutcomeTradeOrders } from '../../trade/selectors/trade-orders';
-import { selectTradeSummary } from '../../trade/selectors/trade-summary';
 import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 import selectUserOpenOrders from '../../user-open-orders/selectors/user-open-orders';
 
@@ -49,6 +45,8 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
+
+import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
 
 export default function () {
 	const { selectedMarketID } = store.getState();
@@ -139,11 +137,6 @@ export const assembleMarket = memoizerific(1000)((
 		break;
 	}
 
-	market.orderSides = {
-		BID,
-		ASK
-	};
-
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
 
@@ -173,7 +166,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.outcomes = [];
 
-	let tradeOrders = [];
+	let marketTradeOrders = [];
 	const positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
 	market.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
@@ -188,15 +181,7 @@ export const assembleMarket = memoizerific(1000)((
 			lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
 		};
 
-		const outcomeTradeOrders = selectOutcomeTradeOrders(market, outcome, outcomeTradeInProgress, dispatch);
-
-		outcome.trade = {
-			side: outcomeTradeInProgress && outcomeTradeInProgress.side || BID,
-			numShares: outcomeTradeInProgress && outcomeTradeInProgress.numShares || 0,
-			limitPrice: outcomeTradeInProgress && outcomeTradeInProgress.limitPrice || 0,
-			tradeSummary: selectTradeSummary(outcomeTradeOrders),
-			updateTradeOrder: (outcomeId, shares, limitPrice, side) => dispatch(updateTradesInProgress(marketID, outcome.id, shares, limitPrice, side))
-		};
+		outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
 		if (marketAccountTrades && marketAccountTrades[outcomeID]) {
 			outcome.position = selectPositionFromOutcomeAccountTrades(marketAccountTrades[outcomeID], outcome.price);
@@ -213,9 +198,9 @@ export const assembleMarket = memoizerific(1000)((
 		outcome.topBid = selectTopBid(orderBook);
 		outcome.topAsk = selectTopAsk(orderBook);
 
-		outcome.userOpenOrders = selectUserOpenOrders(outcomeID, marketOrderBooks);
+		marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders);
 
-		tradeOrders = tradeOrders.concat(outcomeTradeOrders);
+		outcome.userOpenOrders = selectUserOpenOrders(outcomeID, marketOrderBooks);
 
 		return outcome;
 	}).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
@@ -233,13 +218,19 @@ export const assembleMarket = memoizerific(1000)((
 	market.reportableOutcomes = market.outcomes.slice();
 	market.reportableOutcomes.push({ id: INDETERMINATE_OUTCOME_ID, name: INDETERMINATE_OUTCOME_NAME });
 
-	market.tradeSummary = selectTradeSummary(tradeOrders);
+	market.tradeSummary = generateTradeSummary(marketTradeOrders);
+
 	market.positionsSummary = selectPositionsSummary(
 		positions.list.length,
 		positions.qtyShares,
 		positions.totalValue,
 		positions.totalCost);
+
 	market.positionOutcomes = positions.list;
+
+	market.userOpenOrdersSummary = {
+		openOrdersCount: formatNumber(0)
+	};
 
 	return market;
 });

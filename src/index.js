@@ -1,5 +1,6 @@
 import { App } from 'augur-ui-react-components';
 import selectors from './selectors';
+import AugurJS from './services/augurjs';
 
 import { initAugur } from './modules/app/actions/init-augur';
 import { updateURL } from './modules/link/actions/update-url';
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 	Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
 	window.selectors = selectors;
 	window.App = App;
+	window.augurjs = AugurJS;
 	console.log(`*********************************************
  DEVELOPMENT MODE
  window.selectors

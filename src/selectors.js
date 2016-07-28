@@ -18,7 +18,6 @@ import selectedUserOpenOrdersGroup from './modules/user-open-orders/selectors/se
 import cancelOrder from './modules/bids-asks/selectors/cancel-order';
 
 import market from './modules/market/selectors/market';
-import sideOptions from './modules/trade/selectors/side-options';
 
 import filters from './modules/markets/selectors/filters';
 import searchSort from './modules/markets/selectors/search-sort';
@@ -52,7 +51,6 @@ const selectors = {
 	cancelOrder,
 
 	market,
-	sideOptions,
 
 	filters,
 	searchSort,

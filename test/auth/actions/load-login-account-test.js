@@ -27,7 +27,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		loginAccount: {}
 	});
 	store = mockStore(thisTestState);
-	fakeAugurJS.loadLoginAccount = (cb) => {
+	fakeAugurJS.loadLoginAccount = (env, cb) => {
 		cb(null, {
 			id: 123456789
 		});

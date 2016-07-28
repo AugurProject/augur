@@ -52,7 +52,7 @@ export function formatEther(num, opts) {
 			decimals: 2,
 			decimalsRounded: 1,
 			denomination: 'eth',
-			positiveSign: true,
+			positiveSign: false,
 			zeroStyled: false,
 			...opts
 		}
@@ -66,7 +66,7 @@ export function formatPercent(num, opts) {
 			decimals: 1,
 			decimalsRounded: 0,
 			denomination: '%',
-			positiveSign: true,
+			positiveSign: false,
 			zeroStyled: false,
 			...opts
 		}
@@ -94,7 +94,7 @@ export function formatRep(num, opts) {
 			decimals: 0,
 			decimalsRounded: 0,
 			denomination: 'rep',
-			positiveSign: true,
+			positiveSign: false,
 			zeroStyled: false,
 			...opts
 		}
