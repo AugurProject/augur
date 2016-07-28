@@ -520,5 +520,6 @@ ex.changeAccountName = function changeAccountName(name, cb) {
 ex.rpc = augur.rpc;
 ex.getTradingActions = augur.getTradingActions;
 ex.trade = augur.trade;
+ex.buy = augur.buy;
 
 module.exports = ex;

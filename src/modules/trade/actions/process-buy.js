@@ -1,4 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
+import { formatEther, formatShares } from '../../../utils/format-number';
+
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
@@ -8,35 +10,59 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `Invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
-		trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, getState, dispatch, (err, res) => {
-			if (err) {
-				dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
-				return;
-			}
-			if (!res.remainingEth) {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'bot shares!' }));
-				return;
-			}
-
-			bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, dispatch, (err, res) => {
+		trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch,
+			(res) => dispatch(updateExistingTransaction(
+				transactionID,
+				{ status: 'filling...', message: generateMessage(numShares, totalEthWithFee, res.remainingShares, res.remainingEth) }
+			)),
+			(err, res) => {
 				if (err) {
-					dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
-					return;
+					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				}
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'bid shares!' }));
-			});
-		});
+
+				let message = generateMessage(numShares, totalEthWithFee, res.remainingShares, res.remainingEth);
+
+				if (!res.remainingEth) {
+					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
+				}
+
+				if (message) {
+					message = `${message}, bid `;
+				}
+				message = `${message}${formatShares(res.remainingEth / limitPrice).full} @ ${formatEther(limitPrice).full}`;
+
+				dispatch(updateExistingTransaction(transactionID, { status: 'placing bid...', message }));
+
+				bid(transactionID, marketID, outcomeID, limitPrice, res.remainingEth, (err, res) => {
+					if (err) {
+						return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
+					}
+					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
+				});
+			}
+		);
 	};
 }
 
-function trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, getState, dispatch, cb) {
+function generateMessage(numShares, totalEthWithFee, remainingShares, remainingEth) {
+	// const filledShares = numShares - remainingShares;
+	const filledEth = totalEthWithFee - remainingEth;
+	// const filledAvgPrice = Math.round(filledShares / filledEth * 100) / 100;
+
+	if (filledEth) {
+		return `filled ${formatEther(filledEth).full} of ${formatEther(totalEthWithFee).full}`;
+	}
+
+	return '';
+}
+
+function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch, cbFill, cb) {
 	const { marketOrderBooks } = getState();
 	const marketOrderBookSells = marketOrderBooks[marketID] && marketOrderBooks[marketID].sell || {};
 
 	const res = {
 		remainingEth: totalEthWithFee,
-		filledEth: 0,
-		filledShares: 0
+		remainingShares: numShares
 	};
 
 	const matchingSortedAskIDs = Object.keys(marketOrderBookSells)
@@ -51,29 +77,27 @@ function trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, 
 
 	AugurJS.trade({
 		max_value: totalEthWithFee,
-		max_amount: 0,
+		max_amount: numShares,
 		trade_ids: matchingSortedAskIDs,
 
-		onTradeHash: data => dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' })),
-		onCommitSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'committing...' })),
-		onCommitSuccess: data => dispatch(updateExistingTransaction(transactionID, { status: 'sending...' })),
+		onTradeHash: data => dispatch(updateExistingTransaction(transactionID, { status: 'submitting buy...' })),
+		onCommitSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'committing buy...' })),
+		onCommitSuccess: data => dispatch(updateExistingTransaction(transactionID, { status: 'sending buy...' })),
 
 		onCommitConfirmed: data => console.log('trade-onCommitConfirmed', data),
 		onCommitFailed: cb,
 
 		onNextBlock: data => console.log('trade-onNextBlock', data),
-		onTradeSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'processing...' })),
+		onTradeSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'filling buy...' })),
 		onTradeSuccess: data => {
-			console.log('!!!!!!!!trade-success!!!', data);
-
-			res.remainingEth -= Number(data.callReturn[1]) || 0;
-			res.filledEth += totalEthWithFee - res.remainingEth;
+			res.remainingEth = parseFloat(data.unmatchedCash) || 0;
+			res.remainingShares = parseFloat(data.unmatchedShares) || 0;
 
 			if (res.remainingEth) {
-				trade(transactionID, marketID, outcomeID, limitPrice, res.remainingEth, getState, dispatch, cb);
-			} else {
-				return cb(null, res);
+				cbFill(res);
+				return trade(transactionID, marketID, outcomeID, numShares, limitPrice, res.remainingEth, getState, dispatch, cbFill, cb);
 			}
+			return cb(null, res);
 		},
 
 		onTradeFailed: cb,
@@ -81,15 +105,15 @@ function trade(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, 
 	});
 }
 
-function bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, dispatch, cb) {
+function bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, cb) {
 	AugurJS.buy({
 		amount: totalEthWithFee,
 		price: limitPrice,
 		market: marketID,
 		outcome: outcomeID,
 
-		onSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'sending bid...' })),
-		onFailed: data => dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: data.message })),
-		onSuccess: cb
+		onSent: data => console.log('bid onSent', data),
+		onFailed: cb,
+		onSuccess: data => cb(null, data)
 	});
 }

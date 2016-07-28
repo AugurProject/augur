@@ -32,7 +32,7 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketDescriptio
 				outcomeID,
 				outcomeTradeInProgress.numShares,
 				outcomeTradeInProgress.limitPrice,
-				outcomeTradeInProgress.totalCost));
+				Math.abs(outcomeTradeInProgress.totalCost)));
 
 	} else if (outcomeTradeInProgress.side === SELL) {
 		transaction.action = (transactionID) => dispatch(processSell(
@@ -40,8 +40,7 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketDescriptio
 				marketID,
 				outcomeID,
 				outcomeTradeInProgress.numShares,
-				outcomeTradeInProgress.limitPrice,
-				outcomeTradeInProgress.totalCost));
+				outcomeTradeInProgress.limitPrice));
 	}
 
 	return transaction;

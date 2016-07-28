@@ -2,7 +2,7 @@ import * as AugurJS from '../../../services/augurjs';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
-export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
+export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
 		if ((!limitPrice) || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `Invalid limit price "${limitPrice}" or shares "${numShares}"` }));
