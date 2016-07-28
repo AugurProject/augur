@@ -4,16 +4,18 @@ import Transaction from './transaction';
 
 const Transactions = (p) => (
 	<section className={classnames(p.className)}>
-		{(p.transactions || []).map((transaction, i) =>
-			<Transaction
-				key={transaction.id}
-				{...transaction}
-				index={p.transactions.length - i}
-			/>
-		)}
+		<div className="transactions-container">
+			{(p.transactions || []).map((transaction, i) =>
+				<Transaction
+					key={transaction.id}
+					{...transaction}
+					index={p.transactions.length - i}
+				/>
+			)}
+		</div>
 		{!!p.transactions.length &&
 			<span className="feel-free">
-				You can continue using the site and placing trades while transactions are running. Just don't close the browser before they're done!
+				Feel free to continue trading while transactions are running, just don't close the browser before they're done!
 			</span>
 		}
 	</section>

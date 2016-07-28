@@ -1,4 +1,9 @@
 export default {
-	title: '1 Transactions',
-	numTotal: 1
+	numWorking: 1,
+	numPending: 0,
+	numComplete: 3,
+	numWorkingAndPending: 1,
+	numTotal: 4,
+	title: '1 Transaction Working',
+	shortTitle: '0 Working'
 };

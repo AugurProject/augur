@@ -1,8 +1,14 @@
 import { assert } from 'chai';
 
 export default function(transactionsTotals) {
-	assert.isDefined(transactionsTotals, `transactionsTotals isn't defined`);
-	assert.isObject(transactionsTotals, `transactionsTotals isn't an object as expected`);
-	assert.isDefined(transactionsTotals.title, `transactionsTotals.title isn't defined`);
-	assert.isString(transactionsTotals.title, `transactionsTotals.title isn't a string`);
+	assert.isObject(transactionsTotals);
+
+	assert.isString(transactionsTotals.title);
+	assert.isString(transactionsTotals.shortTitle);
+
+	assert.isNumber(transactionsTotals.numWorking);
+	assert.isNumber(transactionsTotals.numPending);
+	assert.isNumber(transactionsTotals.numComplete);
+	assert.isNumber(transactionsTotals.numWorkingAndPending);
+	assert.isNumber(transactionsTotals.numTotal);
 }

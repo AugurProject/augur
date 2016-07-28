@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK } from '../../transactions/constants/types';
-import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
+import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const Transaction = (p) => {
@@ -50,10 +50,10 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
-	case REGISTER:
+	case FUND_ACCOUNT:
 		nodes.description = (
 			<span className="description">
-				Load free beta assets
+				Load free beta ether and rep
 			</span>
 		);
 		break;
