@@ -2,7 +2,6 @@ import { makeNumber } from '../utils/make-number';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
 import { M } from '../modules/site/constants/pages';
-import { BUY } from '../modules/trade/constants/types';
 
 module.exports = makeMarkets();
 
@@ -216,6 +215,11 @@ function makeMarkets(numMarkets = 50) {
 			function makeOutcome(index, percentLeft, orderBook) {
 				const outcomeID = index.toString();
 				const lastPrice = randomInt(0, percentLeft) / 100;
+				const tradeTypeOptions = [
+					{ label: 'buy', value: 'buy' },
+					{ label: 'sell', value: 'sell' }
+				];
+
 				const outcome = {
 					id: index.toString(),
 					marketID: outcomeID,
@@ -232,9 +236,10 @@ function makeMarkets(numMarkets = 50) {
 						netChange: makeNumber(3344, 'eth')
 					},
 					trade: {
-						side: BUY,
+						side: tradeTypeOptions[0].value,
 						numShares: 0,
 						limitPrice: 0,
+						tradeTypeOptions,
 						tradeSummary: {},
 						updateTradeOrder: (shares, limitPrice, side) => {
 							console.log('update trade order:', shares, limitPrice, side);
@@ -252,7 +257,7 @@ function makeMarkets(numMarkets = 50) {
 								outcome.trade.side = side;
 							}
 
-							const negater = outcome.trade.side === BUY ? -1 : 1;
+							const negater = outcome.trade.side === 'buy' ? -1 : 1;
 
 							const finalLimitPrice = outcome.trade.limitPrice || 1;
 							const totEth = outcome.trade.numShares * finalLimitPrice * negater;

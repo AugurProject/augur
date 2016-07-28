@@ -1,11 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { BUY, SELL } from '../../trade/constants/types';
-
 import TradeBuilderBidAsk from '../../../modules/trade/components/trade-builder-bid-ask';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 import Input from '../../../modules/common/components/input';
+import Toggler from '../../../modules/common/components/toggler';
 
 const TradeBuilderRow = (p) => {
 	const bids = !p.showFullOrderBook ? p.orderBook.bids.slice(0, 1) : p.orderBook.bids;
@@ -19,25 +18,25 @@ const TradeBuilderRow = (p) => {
 			<td className={classnames('last-price', { fade: p.isFaded })}>
 				<ValueDenomination {...p.lastPrice} />
 			</td>
-			<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === BUY) })}>
+			<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
 				{!!bids && bids.map((bid, i) => (
 					<TradeBuilderBidAsk key={i} bidAsk={bid} />
 				))}
 			</td>
-			<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === SELL) })}>
+			<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'sell') })}>
 				{!!asks && asks.map((ask, i) => (
 					<TradeBuilderBidAsk key={i} bidAsk={ask} />
 				))}
 			</td>
 
-			<td className={classnames('buy-sell-toggle', { fade: p.isFaded && !p.trade.numShares })}>
+			<td className={classnames('buy-sell-toggler', { fade: p.isFaded && !p.trade.numShares })}>
 				{!!p.trade && p.trade.side &&
-					<div
-						className={classnames('clickable', 'toggle', p.trade.side)}
-						onClick={(e) => { e.stopPropagation(); p.trade.updateTradeOrder(undefined, undefined, p.trade.side === BUY ? SELL : BUY); p.updateSelectedOutcome(p.id); }}
-					>
-						{p.trade.side === BUY ? 'buy' : 'sell'}
-					</div>
+					<Toggler
+						className={p.trade.side}
+						selected={p.trade.tradeTypeOptions.find(tradeTypeOption => tradeTypeOption.value === p.trade.side)}
+						options={p.trade.tradeTypeOptions}
+						onClick={(selectedOption, e) => { e.stopPropagation(); p.trade.updateTradeOrder(undefined, undefined, selectedOption.value); p.updateSelectedOutcome(p.id); }}
+					/>
 				}
 			</td>
 			<td className={classnames('num-shares', { fade: p.isFaded && !p.trade.numShares })}>
