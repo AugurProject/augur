@@ -15,7 +15,7 @@ const SiteHeader = (p) => (
 			{!!p.loginAccount && !!p.loginAccount.id &&
 				<Link className={classnames('site-nav-link', POSITIONS, { active: p.activePage === POSITIONS })} {...p.positionsLink}>
 
-					{!!p.positionsSummary && !!p.positionsSummary.numPositions &&
+					{!!p.positionsSummary && !!p.positionsSummary.numPositions && !!p.positionsSummary.numPositions.value &&
 						<ValueDenomination
 							className="positions-num"
 							{...p.positionsSummary.numPositions}
