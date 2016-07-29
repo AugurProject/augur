@@ -161,6 +161,36 @@ const testState = {
 			status: 'failed',
 			type: 'register'
 		}
+	},
+	marketTrades: {
+		'0xMARKET1': {
+			0: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			],
+			1: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			]
+		},
+		'0xMARKET2': {
+			0: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			],
+			1: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			]
+		},
 	}
 };
 
