@@ -330,7 +330,6 @@ module.exports = function () {
 
         invoke: function (payload, cb) {
             var self = this;
-            var tx, packaged;
 
             // if this is just a call, use ethrpc's regular invoke method
             if (!payload.send) return augur.rpc.fire(payload, cb);
@@ -344,40 +343,14 @@ module.exports = function () {
             }
 
             // parse and serialize transaction parameters
-            tx = clone(payload);
-            if (tx.params === undefined || tx.params === null) {
-                tx.params = [];
-            } else if (tx.params.constructor !== Array) {
-                tx.params = [tx.params];
-            }
-            for (var j = 0, numParams = tx.params.length; j < numParams; ++j) {
-                if (tx.params[j] !== undefined && tx.params[j] !== null) {
-                    if (tx.params[j].constructor === Number) {
-                        tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
-                    }
-                    if (tx.signature[j] === "int256") {
-                        tx.params[j] = abi.unfork(tx.params[j], true);
-                    } else if (tx.signature[j] === "int256[]" &&
-                        tx.params[j].constructor === Array && tx.params[j].length) {
-                        for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
-                            tx.params[j][k] = abi.unfork(tx.params[j][k], true);
-                        }
-                    }
-                }
-            }
+            var packaged = augur.rpc.packageRequest(payload);
+            packaged.from = this.account.address;
+            packaged.nonce = payload.nonce || 0;
+            packaged.value = payload.value || "0x0";
+            packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
 
-            // package up the transaction and submit it to the network
-            packaged = {
-                to: abi.format_address(tx.to),
-                from: abi.format_address(this.account.address),
-                gasLimit: tx.gas || constants.DEFAULT_GAS,
-                nonce: tx.nonce || 0,
-                value: tx.value || "0x0",
-                data: abi.encode(tx)
-            };
-            if (tx.timeout) packaged.timeout = tx.timeout;
-            if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
-                packaged.gasPrice = tx.gasPrice;
+            if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
+                packaged.gasPrice = payload.gasPrice;
                 return this.getTxNonce(packaged, cb);
             }
             augur.rpc.getGasPrice(function (gasPrice) {

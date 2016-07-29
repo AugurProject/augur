@@ -2035,6 +2035,7 @@ describe("Integration tests", function () {
                             assert.isNull(r.callReturn);
                         },
                         onSuccess: function (r) {
+                            assert.include(augur.get_trade_ids(markets[t.market]), r.callReturn);
                             augur.get_trade(r.callReturn, function (trade) {
                                 assert.isObject(trade);
                                 assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
@@ -2134,6 +2135,7 @@ describe("Integration tests", function () {
                                     assert.isNull(r.callReturn);
                                 },
                                 onSuccess: function (r) {
+                                    assert.include(augur.get_trade_ids(markets[t.market]), r.callReturn);
                                     augur.get_trade(r.callReturn, function (trade) {
                                         assert.isObject(trade);
                                         assert.approximately(Number(trade.amount), Number(t.amount), tools.EPSILON);
@@ -2231,7 +2233,7 @@ describe("Integration tests", function () {
                             onSuccess: function (r) {
                                 assert(r.txHash);
                                 assert.isNotNull(r.callReturn);
-                                assert.include(augur.get_trade_ids(markets[t.market]), abi.hex(r.callReturn));
+                                assert.include(augur.get_trade_ids(markets[t.market]), r.callReturn);
                                 augur.cancel(r.callReturn, function (r) {
                                     assert.isNull(r.callReturn);
                                 }, function (r) {

@@ -124,10 +124,9 @@ module.exports = {
      *         ipc: "/path/to/geth.ipc",
      *         ws: "wss://ws.augur.net" }
      *    2. URL string for HTTP RPC: "https://eth3.augur.net"
-     * @param ipcpath {string=} Local IPC path, if not provided in rpcinfo object.
      * @param cb {function=} Callback function.
      */
-    connect: function (rpcinfo, ipcpath, cb) {
+    connect: function (rpcinfo, cb) {
         var options = {};
         if (rpcinfo) {
             switch (rpcinfo.constructor) {
@@ -143,21 +142,6 @@ module.exports = {
                 break;
             default:
                 options.http = null;
-            }
-        }
-        if (ipcpath) {
-            switch (ipcpath.constructor) {
-            case String:
-                options.ipc = ipcpath;
-                break;
-            case Function:
-                if (!cb) {
-                    cb = ipcpath;
-                    options.ipc = null;
-                }
-                break;
-            default:
-                options.ipc = null;
             }
         }
         if (!utils.is_function(cb)) {

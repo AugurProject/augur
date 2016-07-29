@@ -17163,7 +17163,7 @@ module.exports={
         ], 
         "method": "buy", 
         "mutable": true, 
-        "returns": "number", 
+        "returns": "int256", 
         "send": true, 
         "signature": [
           "int256", 
@@ -17193,7 +17193,7 @@ module.exports={
         ], 
         "method": "sell", 
         "mutable": true, 
-        "returns": "number", 
+        "returns": "int256", 
         "send": true, 
         "signature": [
           "int256", 
@@ -37201,7 +37201,6 @@ module.exports = function () {
 
         invoke: function (payload, cb) {
             var self = this;
-            var tx, packaged;
 
             // if this is just a call, use ethrpc's regular invoke method
             if (!payload.send) return augur.rpc.fire(payload, cb);
@@ -37215,40 +37214,14 @@ module.exports = function () {
             }
 
             // parse and serialize transaction parameters
-            tx = clone(payload);
-            if (tx.params === undefined || tx.params === null) {
-                tx.params = [];
-            } else if (tx.params.constructor !== Array) {
-                tx.params = [tx.params];
-            }
-            for (var j = 0, numParams = tx.params.length; j < numParams; ++j) {
-                if (tx.params[j] !== undefined && tx.params[j] !== null) {
-                    if (tx.params[j].constructor === Number) {
-                        tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
-                    }
-                    if (tx.signature[j] === "int256") {
-                        tx.params[j] = abi.unfork(tx.params[j], true);
-                    } else if (tx.signature[j] === "int256[]" &&
-                        tx.params[j].constructor === Array && tx.params[j].length) {
-                        for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
-                            tx.params[j][k] = abi.unfork(tx.params[j][k], true);
-                        }
-                    }
-                }
-            }
+            var packaged = augur.rpc.packageRequest(payload);
+            packaged.from = this.account.address;
+            packaged.nonce = payload.nonce || 0;
+            packaged.value = payload.value || "0x0";
+            packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
 
-            // package up the transaction and submit it to the network
-            packaged = {
-                to: abi.format_address(tx.to),
-                from: abi.format_address(this.account.address),
-                gasLimit: tx.gas || constants.DEFAULT_GAS,
-                nonce: tx.nonce || 0,
-                value: tx.value || "0x0",
-                data: abi.encode(tx)
-            };
-            if (tx.timeout) packaged.timeout = tx.timeout;
-            if (tx.gasPrice && abi.number(tx.gasPrice) > 0) {
-                packaged.gasPrice = tx.gasPrice;
+            if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
+                packaged.gasPrice = payload.gasPrice;
                 return this.getTxNonce(packaged, cb);
             }
             augur.rpc.getGasPrice(function (gasPrice) {
@@ -38195,7 +38168,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.15";
+    this.version = "1.9.16";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -39005,10 +38978,9 @@ module.exports = {
      *         ipc: "/path/to/geth.ipc",
      *         ws: "wss://ws.augur.net" }
      *    2. URL string for HTTP RPC: "https://eth3.augur.net"
-     * @param ipcpath {string=} Local IPC path, if not provided in rpcinfo object.
      * @param cb {function=} Callback function.
      */
-    connect: function (rpcinfo, ipcpath, cb) {
+    connect: function (rpcinfo, cb) {
         var options = {};
         if (rpcinfo) {
             switch (rpcinfo.constructor) {
@@ -39024,21 +38996,6 @@ module.exports = {
                 break;
             default:
                 options.http = null;
-            }
-        }
-        if (ipcpath) {
-            switch (ipcpath.constructor) {
-            case String:
-                options.ipc = ipcpath;
-                break;
-            case Function:
-                if (!cb) {
-                    cb = ipcpath;
-                    options.ipc = null;
-                }
-                break;
-            default:
-                options.ipc = null;
             }
         }
         if (!utils.is_function(cb)) {
@@ -39558,6 +39515,60 @@ module.exports = {
                 meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
             }
             cb(meanPrices);
+        });
+    },
+
+    getMarketTrades: function (marketID, options, cb) {
+        var self = this;
+
+        function parseMarketTrades(logs, trades, callback) {
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return callback();
+            }
+            if (logs.error) return cb(logs);
+
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    var parsed = self.rpc.unmarshal(logs[i].data);
+                    var outcome = parseInt(parsed[4]);
+                    if (!trades[outcome]) trades[outcome] = [];
+                    trades[outcome].push({
+                        type: parseInt(parsed[0], 16),
+                        price: abi.unfix(parsed[1], "string"),
+                        shares: abi.unfix(parsed[2], "string"),
+                        trade_id: parsed[3],
+                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                    });
+                }
+            }
+            return callback();
+        }
+
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+
+        if (!marketID || !utils.is_function(cb)) return;
+
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [
+                this.api.events.log_fill_tx.signature,
+                abi.format_int256(marketID)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            var trades = {};
+
+            parseMarketTrades(logs, trades, function () {
+                if (Object.keys(trades).length === 0) return cb(null);
+                cb(trades);
+            });
         });
     }
 };
@@ -41313,7 +41324,8 @@ module.exports = {
             this.rpc.nodes.local = options.http;
             this.rpc.nodes.hosted = [];
             this.rpc.wsUrl = options.ws;
-            this.rpc.wsStatus = 0;
+            this.rpc.rpcStatus.ws = 0;
+            this.rpc.rpcStatus.ipc = 0;
 
         // if this is the second attempt to connect, fall back to the
         // default hosted nodes
@@ -41324,7 +41336,8 @@ module.exports = {
             this.rpc.ipcpath = null;
             this.rpc.reset();
             this.rpc.useHostedNode();
-            this.rpc.wsStatus = 0;
+            this.rpc.rpcStatus.ws = 0;
+            this.rpc.rpcStatus.ipc = 0;
             if (this.debug) {
                 console.debug("HTTP RPC:", JSON.stringify(this.rpc.nodes.hosted, null, 2));
                 console.debug("WebSocket:", this.rpc.wsUrl);
@@ -41362,12 +41375,12 @@ module.exports = {
             function (next) {
                 if (!options.http || !options.ws) return next();
                 var wsUrl = self.rpc.wsUrl;
-                var wsStatus = self.rpc.wsStatus;
+                var wsStatus = self.rpc.rpcStatus.ws;
                 self.rpc.wsUrl = null;
-                self.rpc.wsStatus = 0;
+                self.rpc.rpcStatus.ws = 0;
                 self.detect_network(function (err) {
                     self.rpc.wsUrl = wsUrl;
-                    self.rpc.wsStatus = wsStatus;
+                    self.rpc.rpcStatus.ws = wsStatus;
                     next(err);
                 });
             },
@@ -41483,12 +41496,6 @@ module.exports = {
 
     // geth websocket endpoint
     wsUrl: process.env.GETH_WEBSOCKET_URL || HOSTED_WEBSOCKET,
-
-    // initial value 0
-    // if connection fails: -1
-    // if connection succeeds: 1
-    ipcStatus: 0,
-    wsStatus: 0,
 
     // active websocket (if connected)
     websocket: null,
@@ -41673,8 +41680,36 @@ module.exports = {
         this.subscriptions[id] = callback;
     },
 
-    ipcRequests: {},
-    wsRequests: {},
+    rpcRequests: {ipc: {}, ws: {}},
+
+    // initial value 0
+    // if connection fails: -1
+    // if connection succeeds: 1
+    rpcStatus: {ipc: 0, ws: 0},
+
+    messageAction: function (type, msg) {
+        if (msg.constructor === Array) {
+            for (var i = 0, n = msg.length; i < n; ++i) {
+                this.messageAction(type, msg[i]);
+            }
+        } else {
+            if (msg.id !== undefined && msg.id !== null) {
+                if (this.debug.broadcast) {
+                    console.debug("[" + type + "] matched message ID", msg.id, "to", this.rpcRequests[type]);
+                }
+                var req = this.rpcRequests[type][msg.id];
+                delete this.rpcRequests[type][msg.id];
+                return this.parse(msg, req.returns, req.callback);
+            } else if (msg.method === "eth_subscription" && msg.params &&
+                msg.params.subscription && msg.params.result &&
+                this.subscriptions[msg.params.subscription]) {
+                return this.subscriptions[msg.params.subscription](msg.params.result);
+            }
+            if (this.debug.broadcast) {
+                console.warn("[" + type + "] Unknown message received:", msg.data || msg);
+            }
+        }
+    },
 
     ipcConnect: function (callback) {
         var self = this;
@@ -41695,110 +41730,74 @@ module.exports = {
                 }
             }
             if (parsed) {
-                if (parsed.id !== undefined && parsed.id !== null) {
-                    var req = self.ipcRequests[parsed.id];
-                    delete self.ipcRequests[parsed.id];
-                    self.parse(JSON.stringify(parsed), req.returns, req.callback);
-                } else if (parsed.method === "eth_subscription" && parsed.params &&
-                    parsed.params.subscription && parsed.params.result &&
-                    self.subscriptions[parsed.params.subscription]) {
-                    self.subscriptions[parsed.params.subscription](parsed.params.result);
-                }
                 received = "";
+                return self.messageAction("ipc", parsed);
             }
         });
         this.socket.on("end", function () { received = ""; });
         this.socket.on("error", function (err) {
-            self.ipcStatus = -1;
+            self.rpcStatus.ipc = -1;
             self.socket.destroy();
             received = "";
             if (self.debug.broadcast) {
-                console.error("[ethrpc] IPC socket error", self.ipcpath, self.ipcStatus, err);
+                console.error("[ethrpc] IPC socket error", self.ipcpath, self.rpcStatus.ipc, err);
             }
         });
         this.socket.on("close", function (err) {
-            self.ipcStatus = (err) ? -1 : 0;
+            self.rpcStatus.ipc = (err) ? -1 : 0;
             received = "";
             if (self.debug.broadcast) {
-                console.warn("[ethrpc] IPC socket closed", self.ipcpath, self.ipcStatus);
+                console.warn("[ethrpc] IPC socket closed", self.ipcpath, self.rpcStatus.ipc);
             }
         });
         this.socket.connect({path: this.ipcpath}, function () {
-            self.ipcStatus = 1;
+            self.rpcStatus.ipc = 1;
             callback(true);
         });
-    },
-
-    wsMessageAction: function (msg) {
-        if (msg.constructor === Array) {
-            for (var i = 0, n = msg.length; i < n; ++i) {
-                this.wsMessageAction(msg[i]);
-            }
-        } else {
-            if (msg.id !== undefined && msg.id !== null) {
-                if (this.debug.broadcast) {
-                    console.debug("[ethrpc] matched message ID", msg.id, "to", this.wsRequests);
-                }
-                var req = this.wsRequests[msg.id];
-                delete this.wsRequests[msg.id];
-                return this.parse(msg, req.returns, req.callback);
-            } else if (msg.method === "eth_subscription" && msg.params &&
-                msg.params.subscription && msg.params.result &&
-                this.subscriptions[msg.params.subscription]) {
-                return this.subscriptions[msg.params.subscription](msg.params.result);
-            }
-            if (this.debug.broadcast) {
-                console.warn("[ethrpc] Unknown message received:", msg.data || msg);
-            }
-        }
     },
 
     wsConnect: function (callback) {
         var self = this;
         var calledCallback = false;
         if (!this.wsUrl) {
-            this.wsStatus = -1;
+            this.rpcStatus.ws = -1;
             return callback(false);
         }
         this.websocket = new W3CWebSocket(this.wsUrl);
         this.websocket.onerror = function () {
             if (self.debug.broadcast) {
-                console.error("[ethrpc] WebSocket error", self.wsUrl, self.wsStatus);
+                console.error("[ethrpc] WebSocket error", self.wsUrl, self.rpcStatus.ws);
             }
-            self.wsStatus = -1;
+            self.rpcStatus.ws = -1;
             self.wsUrl = null;
         };
         this.websocket.onclose = function () {
-            if (self.wsStatus === 1) self.wsStatus = 0;
+            if (self.rpcStatus.ws === 1) self.rpcStatus.ws = 0;
             if (self.debug.broadcast) {
-                console.warn("[ethrpc] WebSocket closed", self.wsUrl, self.wsStatus);
+                console.warn("[ethrpc] WebSocket closed", self.wsUrl, self.rpcStatus.ws);
             }
             if (!calledCallback) callback(false);
         };
         this.websocket.onmessage = function (msg) {
             if (msg && msg.data && typeof msg.data === "string") {
-                return self.wsMessageAction(JSON.parse(msg.data));
+                return self.messageAction("ws", JSON.parse(msg.data));
             }
         };
         this.websocket.onopen = function () {
-            self.wsStatus = 1;
+            self.rpcStatus.ws = 1;
             calledCallback = true;
             callback(true);
         };
     },
 
-    ipcSend: function (command, returns, callback) {
-        if (this.debug.broadcast) {
-            console.debug("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
-        }
-        this.ipcRequests[command.id] = {returns: returns, callback: callback};
-        if (this.ipcStatus === 1) this.socket.write(JSON.stringify(command));
-    },
-
-    wsSend: function (command, returns, callback) {
+    send: function (type, command, returns, callback) {
         var self = this;
         if (this.debug.broadcast) {
-            console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
+            if (type === "ws") {
+                console.debug("[ethrpc] WebSocket request to", this.wsUrl, "\n" + JSON.stringify(command));
+            } else if (type === "ipc") {
+                console.debug("[ethrpc] IPC request to", this.ipcpath, "\n" + JSON.stringify(command));
+            }
         }
         if (command.constructor === Array) {
             var commandList = [];
@@ -41807,24 +41806,42 @@ module.exports = {
             }
             async.each(commandList, function (thisCommand, nextCommand) {
                 if (!thisCommand.returns) {
-                    self.wsRequests[thisCommand.command.id] = {returns: thisCommand.returns, callback: thisCommand.callback};
+                    self.rpcRequests[type][thisCommand.command.id] = {
+                        returns: thisCommand.returns,
+                        callback: thisCommand.callback
+                    };
                 } else {
-                    self.wsRequests[thisCommand.command.id] = {returns: thisCommand.returns, callback: function (res) {
-                        thisCommand.callback(self.applyReturns(thisCommand.returns, res));
-                    }};
+                    self.rpcRequests[type][thisCommand.command.id] = {
+                        returns: thisCommand.returns,
+                        callback: function (res) {
+                            thisCommand.callback(self.applyReturns(thisCommand.returns, res));
+                        }
+                    };
                 }
                 nextCommand();
             }, function (err) {
-                if (err) return console.error("wsSend failed:", err);
-                self.wsRequests[command.id] = {returns: returns, callback: callback};
-                if (self.websocket.readyState === self.websocket.OPEN) {
-                    self.websocket.send(JSON.stringify(command));
+                if (err) return console.error("[" + type + "] send failed:", err);
+                self.rpcRequests[type][command.id] = {returns: returns, callback: callback};
+                if (type === "ws") {
+                    if (self.websocket.readyState === self.websocket.OPEN) {
+                        self.websocket.send(JSON.stringify(command));
+                    }
+                } else if (type === "ipc") {
+                    if (self.rpcStatus.ipc === 1) {
+                        self.socket.write(JSON.stringify(command));
+                    }
                 }
             });
         } else {
-            this.wsRequests[command.id] = {returns: returns, callback: callback};
-            if (this.websocket.readyState === this.websocket.OPEN) {
-                this.websocket.send(JSON.stringify(command));
+            this.rpcRequests[type][command.id] = {returns: returns, callback: callback};
+            if (type === "ws") {
+                if (this.websocket.readyState === this.websocket.OPEN) {
+                    this.websocket.send(JSON.stringify(command));
+                }
+            } else if (type === "ipc") {
+                if (this.rpcStatus.ipc === 1) {
+                    this.socket.write(JSON.stringify(command));
+                }
             }
         }
     },
@@ -41934,20 +41951,20 @@ module.exports = {
             if (!isFunction(callback) && !loopback) {
                 throw new this.Error(errors.LOOPBACK_NOT_FOUND);
             }
-            if (isFunction(callback) && command.constructor !== Array) {
-                if (!this.ipcpath) this.ipcStatus = -1;
-                switch (this.ipcStatus) {
+            if (isFunction(callback)) {
+                if (!this.ipcpath) this.rpcStatus.ipc = -1;
+                switch (this.rpcStatus.ipc) {
 
                 // [0] IPC socket closed / not connected: try to connect
                 case 0:
                     return this.ipcConnect(function (connected) {
                         if (!connected) return self.broadcast(command, callback);
-                        self.ipcSend(command, returns, callback);
+                        self.send("ipc", command, returns, callback);
                     });
 
                 // [1] IPC socket connected
                 case 1:
-                    return this.ipcSend(command, returns, callback);
+                    return this.send("ipc", command, returns, callback);
                 }
             }
         }
@@ -41959,19 +41976,19 @@ module.exports = {
         if (callback) {
 
             // use websocket if available
-            switch (this.wsStatus) {
+            switch (this.rpcStatus.ws) {
 
             // [0] websocket closed / not connected: try to connect
             case 0:
                 this.wsConnect(function (connected) {
                     if (!connected) return self.broadcast(command, callback);
-                    self.wsSend(command, returns, callback);
+                    self.send("ws", command, returns, callback);
                 });
                 break;
 
             // [1] websocket connected
             case 1:
-                this.wsSend(command, returns, callback);
+                this.send("ws", command, returns, callback);
                 break;
 
             // [-1] websocket errored or unavailable: fallback to HTTP RPC
@@ -42455,30 +42472,8 @@ module.exports = {
         }
     },
 
-    /**
-     * Invoke a function from a contract on the blockchain.
-     *
-     * Input tx format:
-     * {
-     *    from: <sender's address> (hexstring; optional, coinbase default)
-     *    to: <contract address> (hexstring)
-     *    method: <function name> (string)
-     *    signature: <function signature, e.g. "iia"> (string)
-     *    params: <parameters passed to the function> (optional)
-     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
-     *    send: <true to sendTransaction, false to call (default)>
-     * }
-     */
-    invoke: function (payload, f) {
-        var tx, packaged, invocation;
-        if (!payload || payload.constructor !== Object) {
-            if (!isFunction(f)) return errors.TRANSACTION_FAILED;
-            return f(errors.TRANSACTION_FAILED);
-        }
-        if (payload.send && payload.invocation && isFunction(payload.invocation.invoke)) {
-            return payload.invocation.invoke.call(payload.invocation.context, payload, f);
-        }
-        tx = clone(payload);
+    packageRequest: function (payload) {
+        var tx = clone(payload);
         if (tx.params === undefined || tx.params === null) {
             tx.params = [];
         } else if (tx.params.constructor !== Array) {
@@ -42501,21 +42496,47 @@ module.exports = {
         }
         if (tx.to) tx.to = abi.format_address(tx.to);
         if (tx.from) tx.from = abi.format_address(tx.from);
-        packaged = {
+        var packaged = {
             from: tx.from,
             to: tx.to,
             data: abi.encode(tx),
-            gas: tx.gas || this.DEFAULT_GAS,
-            gasPrice: tx.gasPrice
+            gas: tx.gas || this.DEFAULT_GAS
         };
+        if (tx.gasPrice) packaged.gasPrice = tx.gasPrice;
         if (tx.timeout) packaged.timeout = tx.timeout;
         if (tx.value) packaged.value = tx.value;
         if (tx.returns) packaged.returns = tx.returns;
+        return packaged;
+    },
+
+    /**
+     * Invoke a function from a contract on the blockchain.
+     *
+     * Input tx format:
+     * {
+     *    from: <sender's address> (hexstring; optional, coinbase default)
+     *    to: <contract address> (hexstring)
+     *    method: <function name> (string)
+     *    signature: <function signature, e.g. "iia"> (string)
+     *    params: <parameters passed to the function> (optional)
+     *    returns: <"number[]", "int", "BigNumber", or "string" (default)>
+     *    send: <true to sendTransaction, false to call (default)>
+     * }
+     */
+    invoke: function (payload, f) {
+        if (!payload || payload.constructor !== Object) {
+            if (!isFunction(f)) return errors.TRANSACTION_FAILED;
+            return f(errors.TRANSACTION_FAILED);
+        }
+        if (payload.send && payload.invocation && isFunction(payload.invocation.invoke)) {
+            return payload.invocation.invoke.call(payload.invocation.context, payload, f);
+        }
+        var packaged = this.packageRequest(payload);
         if (this.debug.broadcast) {
-            packaged.debug = clone(tx);
+            packaged.debug = clone(payload);
             packaged.debug.batch = false;
         }
-        invocation = (tx.send) ? this.sendTx : this.call;
+        var invocation = (payload.send) ? this.sendTx : this.call;
         return invocation.call(this, packaged, f);
     },
 
@@ -42524,7 +42545,7 @@ module.exports = {
      */
     batch: function (txlist, f) {
         var self = this;
-        var numCommands, rpclist, callbacks, tx, dataAbi, packaged, invocation, returns;
+        var numCommands, rpclist, callbacks, packaged, invocation, returns;
         if (txlist.constructor !== Array) {
             if (this.debug.broadcast) {
                 console.warn("expected array for batch RPC, invoking instead");
@@ -42536,56 +42557,20 @@ module.exports = {
         callbacks = new Array(numCommands);
         returns = [];
         for (var i = 0; i < numCommands; ++i) {
-            tx = clone(txlist[i]);
-            if (tx.params === undefined || tx.params === null) {
-                tx.params = [];
-            } else if (tx.params.constructor !== Array) {
-                tx.params = [tx.params];
+            packaged = this.packageRequest(txlist[i]);
+            if (isFunction(txlist[i].callback)) {
+                callbacks[i] = txlist[i].callback;
+                delete txlist[i].callback;
             }
-            for (var j = 0; j < tx.params.length; ++j) {
-                if (tx.params[j].constructor === Number) {
-                    tx.params[j] = abi.prefix_hex(tx.params[j].toString(16));
-                }
-                if (tx.signature[j] === "int256") {
-                    tx.params[j] = abi.unfork(tx.params[j], true);
-                } else if (tx.signature[j] === "int256[]" &&
-                    tx.params[j].constructor === Array && tx.params[j].length) {
-                    for (var k = 0, arrayLen = tx.params[j].length; k < arrayLen; ++k) {
-                        tx.params[j][k] = abi.unfork(tx.params[j][k], true);
-                    }
-                }
+            returns.push(txlist[i].returns);
+            if (this.debug.broadcast) {
+                packaged.debug = clone(txlist[i]);
+                packaged.debug.batch = true;
             }
-            if (tx.from) tx.from = abi.format_address(tx.from);
-            if (tx.to) tx.to = abi.format_address(tx.to);
-            dataAbi = abi.encode(tx);
-            if (dataAbi) {
-                if (isFunction(tx.callback)) {
-                    callbacks[i] = tx.callback;
-                    delete tx.callback;
-                }
-                packaged = {
-                    from: tx.from,
-                    to: tx.to,
-                    data: dataAbi,
-                    gas: tx.gas || this.DEFAULT_GAS,
-                    gasPrice: tx.gasPrice
-                };
-                if (tx.timeout) packaged.timeout = tx.timeout;
-                if (tx.value) packaged.value = tx.value;
-                if (tx.returns) packaged.returns = tx.returns;
-                returns.push(tx.returns);
-                if (this.debug.broadcast) {
-                    packaged.debug = clone(tx);
-                    packaged.debug.batch = true;
-                }
-                invocation = (tx.send) ? "sendTransaction" : "call";
-                rpclist[i] = this.marshal(invocation, [packaged, "latest"]);
-            } else {
-                console.error("unable to package commands for batch RPC");
-                return rpclist;
-            }
+            invocation = (txlist[i].send) ? "sendTransaction" : "call";
+            rpclist[i] = this.marshal(invocation, [packaged, "latest"]);
         }
-        if (this.wsUrl) {
+        if (this.wsUrl || this.ipcpath) {
             return this.broadcast(rpclist, (f === true) ? callbacks : f);
         }
         if (!f) {
