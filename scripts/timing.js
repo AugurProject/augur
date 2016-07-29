@@ -17,6 +17,8 @@ var tools = require("../test/tools");
 process.env.AUGURJS_INTEGRATION_TESTS = true;
 var augur = tools.setup(require(augurpath));
 
+var DEBUG = false;
+
 var DATAFILE = join(__dirname, "..", "data", "timing-getMarketsInfo.csv");
 var MAX_NUM_MARKETS = 100;
 try {
@@ -125,19 +127,19 @@ function createMarkets(numMarketsToCreate, callback) {
                     orderBookParams.initialFairPrices = initialFairPrices;
                     augur.generateOrderBook(orderBookParams, {
                         onSimulate: function (sim) {
-                            console.log("simulation:", sim);
+                            if (DEBUG) console.log("simulation:", sim);
                         },
                         onBuyCompleteSets: function (res) {
-                            // console.log("buyCompleteSets:", res);
+                            if (DEBUG) console.log("buyCompleteSets:", res);
                         },
                         onSetupOutcome: function (res) {
-                            console.log("setupOutcome:", res);
+                            if (DEBUG) console.log("setupOutcome:", res);
                         },
                         onSetupOrder: function (res) {
-                            console.log("setupOrder:", res);
+                            if (DEBUG) console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
-                            console.log("generateOrderBook success:", res);
+                            if (DEBUG) console.log("generateOrderBook success:", res);
                             if (index % 10) return next();
                             augur.setCash(augur.from, "10000000000000",
                                 function (r) {},
