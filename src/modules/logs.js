@@ -176,11 +176,13 @@ module.exports = {
     getMarketTrades: function (marketID, options, cb) {
         var self = this;
 
-        function parseMarketTrades(logs, trades, callback) {
+        function parseMarketTrades(logs, callback) {
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return callback();
             }
             if (logs.error) return cb(logs);
+
+            var trades = {};
 
             for (var i = 0, n = logs.length; i < n; ++i) {
                 if (logs[i] && logs[i].data !== undefined &&
@@ -197,7 +199,7 @@ module.exports = {
                     });
                 }
             }
-            return callback();
+            return callback(trades);
         }
 
         if (!cb && utils.is_function(options)) {
@@ -218,9 +220,7 @@ module.exports = {
             ],
             timeout: 480000
         }, function (logs) {
-            var trades = {};
-
-            parseMarketTrades(logs, trades, function () {
+            parseMarketTrades(logs, function (trades) {
                 if (Object.keys(trades).length === 0) return cb(null);
                 cb(trades);
             });
