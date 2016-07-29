@@ -230,9 +230,5 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.positionOutcomes = positions.list;
 
-	market.userOpenOrdersSummary = {
-		openOrdersCount: formatNumber(0)
-	};
-
 	return market;
 });

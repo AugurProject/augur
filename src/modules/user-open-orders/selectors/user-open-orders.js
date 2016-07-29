@@ -16,7 +16,6 @@ import { formatNone, formatEther, formatShares } from '../../../utils/format-num
  * @return {Array}
  */
 export default function (outcomeId, marketOrderBook) {
-	console.log('default selectUserOpenOrders');
 	const { loginAccount } = store.getState();
 
 	return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook);
@@ -31,8 +30,7 @@ export default function (outcomeId, marketOrderBook) {
  * @return {Array}
  */
 const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook) => {
-	console.log('selectUserOpenOrders');
-	const isUserLoggedIn = loginAccount != null && loginAccount.address != null;
+	const isUserLoggedIn = loginAccount.id != null;
 
 	if (!isUserLoggedIn || marketOrderBook == null) {
 		return [];
