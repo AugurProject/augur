@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-export default function (actual, label = 'Formatted number') {
+export default function (actual, label = 'Formatted Number') {
 	describe(label, () => {
 		describe('value', () => {
 			it('should exist', () => {

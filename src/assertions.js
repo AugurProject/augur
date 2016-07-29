@@ -23,6 +23,7 @@ import url from '../test/assertions/url';
 import selectedUserOpenOrdersGroup from '../test/assertions/selected-user-open-orders-group';
 import orderCancellation from '../test/assertions/order-cancellation';
 import portfolio from '../test/assertions/portfolio';
+import loginAccountMarkets from '../test/assertions/login-account-markets';
 
 export default {
 	activePage,
@@ -49,5 +50,6 @@ export default {
 	url,
 	selectedUserOpenOrdersGroup,
 	orderCancellation,
-	portfolio
+	portfolio,
+	loginAccountMarkets
 };
