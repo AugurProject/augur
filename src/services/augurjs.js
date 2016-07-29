@@ -88,6 +88,10 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		}
 	}
 
+	//Short circuit if autologin disabled in env.json
+	if (!env.autoLogin){
+		return cb(null)
+	}
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
