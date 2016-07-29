@@ -1023,6 +1023,25 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     done();
                 });
             });
+
+            it("getMarketTrades(" + marketId + ")", function (done) {
+                this.timeout(tools.TIMEOUT);
+                augur.getMarketTrades(marketId, function (trades) {
+                    for (var outcomeId in trades) {
+                        if (!trades[outcomeId].hasOwnProperty(outcomeId)) continue;
+                        assert.isArray(trades[outcomeId]);
+                        for (var i = 0; i < trades[outcomeId].length; ++i) {
+                            assert.property(trades[outcomeId][i], "type");
+                            assert.property(trades[outcomeId][i], "price");
+                            assert.property(trades[outcomeId][i], "shares");
+                            assert.property(trades[outcomeId][i], "trade_id");
+                            assert.property(trades[outcomeId][i], "blockNumber");
+                            assert.isAbove(trades[outcomeId][i].blockNumber, 0);
+                        }
+                    }
+                    done();
+                });
+            });
         });
 
         describe("listen/ignore", function () {

@@ -171,5 +171,59 @@ module.exports = {
             }
             cb(meanPrices);
         });
+    },
+
+    getMarketTrades: function (marketID, options, cb) {
+        var self = this;
+
+        function parseMarketTrades(logs, trades, callback) {
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return callback();
+            }
+            if (logs.error) return cb(logs);
+
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    var parsed = self.rpc.unmarshal(logs[i].data);
+                    var outcome = parseInt(parsed[4]);
+                    if (!trades[outcome]) trades[outcome] = [];
+                    trades[outcome].push({
+                        type: parseInt(parsed[0], 16),
+                        price: abi.unfix(parsed[1], "string"),
+                        shares: abi.unfix(parsed[2], "string"),
+                        trade_id: parsed[3],
+                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                    });
+                }
+            }
+            return callback();
+        }
+
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+
+        if (!marketID || !utils.is_function(cb)) return;
+
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [
+                this.api.events.log_fill_tx.signature,
+                abi.format_int256(marketID)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            var trades = {};
+
+            parseMarketTrades(logs, trades, function () {
+                if (Object.keys(trades).length === 0) return cb(null);
+                cb(trades);
+            });
+        });
     }
 };
