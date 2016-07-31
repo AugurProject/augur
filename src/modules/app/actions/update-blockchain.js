@@ -2,7 +2,7 @@ import * as AugurJS from '../../../services/augurjs';
 
 import { BRANCH_ID } from '../../app/constants/network';
 
-// import { commitReports } from '../../reports/actions/commit-reports';
+// import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
@@ -99,7 +99,7 @@ export function updateBlockchain(cb) {
 				dispatch(incrementReportPeriod(() => {
 					// if the report *phase* changed this block, do some extra stuff
 					if (isChangedReportPhase) {
-						// dispatch(commitReports());
+						// dispatch(revealReports());
 						dispatch(collectFees());
 					}
 

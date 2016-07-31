@@ -20,7 +20,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 		updateReports: () => {}
 	};
 
-	mockAugurJS.loadPendingReportEventIDs = sinon.stub().yields(null, ['test1', 'test2']);
+	mockAugurJS.getEventsToReportOn = sinon.stub().yields(null, ['test1', 'test2']);
 	mockMarketData.isMarketDataOpen = sinon.stub().returns(false);
 	sinon.stub(mockUpdateReports, "updateReports", (eventIDs) => {
 		return {
@@ -60,7 +60,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 
 		store.dispatch(action.loadReports(test));
 
-		assert(mockAugurJS.loadPendingReportEventIDs.calledOnce, `AugurJS.loadPendingReportEventIDs() wasn't only called once as expected`);
+		assert(mockAugurJS.getEventsToReportOn.calledOnce, `AugurJS.getEventsToReportOn() wasn't only called once as expected`);
 		assert(mockMarketData.isMarketDataOpen.calledTwice, `isMarketDataOpen() wasn't called only twice as expected based on test data`);
 		assert(mockUpdateReports.updateReports.calledOnce, `updateReports wasn't only called once as expected`);
 

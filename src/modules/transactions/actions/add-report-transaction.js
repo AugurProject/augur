@@ -1,37 +1,75 @@
-import { SUBMIT_REPORT } from '../../transactions/constants/types';
-import { processReport } from '../../reports/actions/submit-report';
+import { COMMIT_REPORT, REVEAL_REPORT } from '../../transactions/constants/types';
+import { sendCommitReport } from '../../reports/actions/commit-report';
+import { sendRevealReport } from '../../reports/actions/reveal-reports';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
-export const makeReportTransaction =
-(market, reportedOutcomeID, isUnethical, gas, etherWithoutGas, dispatch) => {
+export const makeRevealReportTransaction =
+(market, reportedOutcomeID, isUnethical, isIndeterminate, gas, etherWithoutGas, dispatch) => {
 	const obj = {
-		type: SUBMIT_REPORT,
+		type: REVEAL_REPORT,
 		gas,
 		ether: etherWithoutGas,
 		data: {
 			market,
 			outcome: market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {},
 			reportedOutcomeID,
-			isUnethical
+			isUnethical,
+			isIndeterminate
 		},
 		action: (transactionID) =>
 			dispatch(
-				processReport(
+				sendRevealReport(
 					transactionID, market,
-					reportedOutcomeID, isUnethical
+					reportedOutcomeID, isUnethical, isIndeterminate
 				)
 			)
 	};
 	return obj;
 };
 
-export const addReportTransaction =
-(market, reportedOutcomeID, isUnethical, gas, etherWithoutGas) =>
+export const addRevealReportTransaction =
+(market, reportedOutcomeID, isUnethical, isIndeterminate, gas, etherWithoutGas) =>
     (dispatch, getState) =>
         dispatch(
 					addTransaction(
-						makeReportTransaction(
-							market, reportedOutcomeID, isUnethical,
+						makeRevealReportTransaction(
+							market, reportedOutcomeID, isUnethical, isIndeterminate,
+							gas, etherWithoutGas, dispatch
+						)
+					)
+				);
+
+export const makeCommitReportTransaction =
+(market, reportedOutcomeID, isUnethical, isIndeterminate, gas, etherWithoutGas, dispatch) => {
+	const obj = {
+		type: COMMIT_REPORT,
+		gas,
+		ether: etherWithoutGas,
+		data: {
+			market,
+			outcome: market.reportableOutcomes.find(outcome => outcome.id === reportedOutcomeID) || {},
+			reportedOutcomeID,
+			isUnethical,
+			isIndeterminate
+		},
+		action: (transactionID) =>
+			dispatch(
+				sendCommitReport(
+					transactionID, market,
+					reportedOutcomeID, isUnethical, isIndeterminate
+				)
+			)
+	};
+	return obj;
+};
+
+export const addCommitReportTransaction =
+(market, reportedOutcomeID, isUnethical, isIndeterminate, gas, etherWithoutGas) =>
+    (dispatch, getState) =>
+        dispatch(
+					addTransaction(
+						makeCommitReportTransaction(
+							market, reportedOutcomeID, isUnethical, isIndeterminate,
 							gas, etherWithoutGas, dispatch
 						)
 					)

@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe(`modules/reports/actions/submit-report.js`, () => {
+describe(`modules/reports/actions/commit-report.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -43,7 +43,7 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 			...obj
 		}
 	});
-	mockReportTrans.addReportTransaction = sinon.stub().returns({
+	mockReportTrans.addCommitReportTransaction = sinon.stub().returns({
 		type: 'ADD_REPORT_TRANSACTION'
 	});
 	mockMarket.selectMarketFromEventID = sinon.stub().returns('testID123');
@@ -75,13 +75,13 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 			status
 		};
 	});
-	mockAugurJS.submitReportHash = sinon.stub().yields(null, {
+	mockAugurJS.commitReport = sinon.stub().yields(null, {
 		status: 'success',
 		reportHash: 'testReportHash123456789'
 	});
 	mockHex.bytesToHex = sinon.stub().returns('salt12345');
 
-	action = proxyquire('../../../src/modules/reports/actions/submit-report.js', {
+	action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
 		'../../../services/augurjs': mockAugurJS,
 		'../../transactions/actions/add-report-transaction': mockReportTrans,
 		'../../transactions/actions/update-existing-transaction': mockUpExTrans,
@@ -98,16 +98,16 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 	afterEach(() => {
 		store.clearActions();
 		mockUpReports.updateReports.reset();
-		mockReportTrans.addReportTransaction.reset();
+		mockReportTrans.addCommitReportTransaction.reset();
 		mockMarket.selectMarketFromEventID.reset();
-		mockAugurJS.submitReportHash.reset();
+		mockAugurJS.commitReport.reset();
 		mockLinks.selectMarketLink.reset();
 		mockLinks.selectMarketsLink.reset();
 		mockUpExTrans.updateExistingTransaction.reset();
 		mockHex.bytesToHex.reset();
 	});
 
-	it(`should return submit a report`, () => {
+	it(`should return commit a report`, () => {
 		let market = {
 			id: 'test1'
 		};
@@ -123,9 +123,9 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 			nextPendingReportMarket: 'testID123'
 		}];
 
-		store.dispatch(action.submitReport(market, 'testOutcomeID', false));
+		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
 
-		assert(mockReportTrans.addReportTransaction.calledOnce, `addReportTransaction wasn't called once as expected`);
+		assert(mockReportTrans.addCommitReportTransaction.calledOnce, `addCommitReportTransaction wasn't called once as expected`);
 		assert(mockLinks.selectMarketLink.calledOnce, `selectMarketLink wasn't called once as expected`);
 		assert(mockUpReports.updateReports.calledOnce, `updateReports wasn't called once as expected`);
 		assert(mockMarket.selectMarketFromEventID.calledOnce, `selectMarketFromEventID wasn't called once as expected`);
@@ -133,7 +133,7 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 
 		store.clearActions();
 
-		store.dispatch(action.submitReport(market, 'testOutcomeID', false));
+		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
 
 		out = [{
 			test1EventID: {
@@ -147,7 +147,7 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 		}];
 
 
-		assert(mockReportTrans.addReportTransaction.calledTwice, `addReportTransaction wasn't called twice as expected`);
+		assert(mockReportTrans.addCommitReportTransaction.calledTwice, `addCommitReportTransaction wasn't called twice as expected`);
 		assert(mockLinks.selectMarketLink.calledOnce, `selectMarketsLink wasn't called once as expected`);
 		assert(mockUpReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);
 		assert(mockMarket.selectMarketFromEventID.calledTwice, `selectMarketFromEventID wasn't called twice as expected`);
@@ -192,12 +192,12 @@ describe(`modules/reports/actions/submit-report.js`, () => {
 			type: 'UPDATE_REPORTS'
 		}];
 
-		store.dispatch(action.processReport('transID1', market, 'testOutcomeID', false));
+		store.dispatch(action.sendCommitReport('transID1', market, 'testOutcomeID', false));
 
 		assert(mockHex.bytesToHex.calledOnce, `bytesToHex wasn't called once as expected`);
 		assert(mockUpReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);
 		assert(mockUpExTrans.updateExistingTransaction.calledTwice, `updateExistingTransaction wasn't called twice as expected`);
-		assert(mockAugurJS.submitReportHash.calledOnce, `Didn't call submitReportHash once as expected`);
+		assert(mockAugurJS.commitReport.calledOnce, `Didn't call commitReport once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions for processing a report`);
 	});
 

@@ -31,7 +31,7 @@ import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../mark
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
-import { submitReport } from '../../reports/actions/submit-report';
+import { commitReport } from '../../reports/actions/commit-report';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
 import store from '../../../store';
@@ -160,7 +160,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.report = {
 		...marketReport,
-		onSubmitReport: (reportedOutcomeID, isUnethical) => dispatch(submitReport(market, reportedOutcomeID, isUnethical))
+		onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
 	};
 
 	market.outcomes = [];

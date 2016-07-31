@@ -63,7 +63,7 @@ export function autoReportSequence(isReportConfirmationPhase) {
 			if (loginAccount.rep) {
 				// TODO
 				// for each event in this report period:
-				//  AugurJS.submitReport(...);
+				//  AugurJS.revealReport(...);
 				//
 			}
 			// trade and rep redistribution payouts

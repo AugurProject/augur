@@ -11,7 +11,7 @@ ex.connect = function connect(env, cb) {
 		ws: env.gethWebsocketsURL,
 		contracts: env.contracts
 	};
-	if (window.location.protocol === 'https:') {
+	if (typeof window !== 'undefined' && window.location.protocol === 'https:') {
 		const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
 		const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
 		if (!isEnvHttps) options.http = null;
@@ -42,7 +42,7 @@ ex.loadBranches = function loadBranches(cb) {
 };
 
 ex.loadBranch = function loadBranch(branchID, cb) {
-	const branch = {};
+	const branch = { id: branchID };
 
 	function finish() {
 		if (branch.periodLength && branch.description) {
@@ -71,6 +71,7 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 
 ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 	const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+
 	// if available, use the client-side account
 	if (augur.web.account.address && augur.web.account.privateKey) {
 		console.log('using client-side account:', augur.web.account.address);
@@ -82,22 +83,19 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 	// if the user has a persistent login, use it
 	if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
 		const account = JSON.parse(localStorageRef.getItem('account'));
-
 		if (account && account.privateKey) {
-			augur.web.loadLocalLoginAccount(account, (loginAccount) => cb(null, loginAccount));
+			return augur.web.loadLocalLoginAccount(account, (loginAccount) => cb(null, loginAccount));
 		}
 	}
-
 
 	// local node: if it's unlocked, use the coinbase account
 	// check to make sure the account is unlocked
 	augur.rpc.unlocked(augur.from, (unlocked) => {
-		// use from/coinbase if unlocked
+
+		// use augur.from address if unlocked
 		if (unlocked && !unlocked.error) {
 			console.log('using unlocked account:', augur.from);
-			return cb(null, {
-				id: augur.from
-			});
+			return cb(null, { id: augur.from });
 		}
 
 		// otherwise, no account available
@@ -247,14 +245,6 @@ ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
 	});
 };
 
-ex.getSimulatedBuy = function getSimulatedBuy(marketID, outcomeID, numShares) {
-	return augur.getSimulatedBuy(marketID, outcomeID, numShares);
-};
-
-ex.getSimulatedSell = function getSimulatedSell(marketID, outcomeID, numShares) {
-	return augur.getSimulatedSell(marketID, outcomeID, numShares);
-};
-
 ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	if (!marketID) {
 		return cb('ERROR: loadPriceHistory() marketID required');
@@ -267,20 +257,24 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
+ex.getSimulatedBuy = function getSimulatedBuy(marketID, outcomeID, numShares) {
+	return augur.getSimulatedBuy(marketID, outcomeID, numShares);
+};
+ex.getSimulatedSell = function getSimulatedSell(marketID, outcomeID, numShares) {
+	return augur.getSimulatedSell(marketID, outcomeID, numShares);
+};
 ex.get_trade_ids = function getTradeIds(marketID, cb) {
 	augur.get_trade_ids(marketID, cb);
 };
-
 ex.getOrderBook = function getOrderBook(marketID, scalarMinMax, cb) {
 	augur.getOrderBook(marketID, scalarMinMax, cb);
 };
-
 ex.get_trade = function getTrade(orderID, cb) {
 	augur.get_trade(orderID, cb);
 };
-
 ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
 ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
+ex.getReport = augur.getReport.bind(augur);
 
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
@@ -319,58 +313,85 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 	});
 };
 
-ex.getReport = function getReport(branchID, reportPeriod, eventID) {
-	augur.getReport(branchID, reportPeriod, eventID, (report) =>
-		console.log('*************report', report));
+// TODO move to augur.js
+ex.getEventsToReportOn = function getEventsToReportOn(branch, period, sender, start, cb) {
+	const eventsToReportOn = {};
+
+	// load market-ids related to each event-id one at a time
+	augur.getEventsToReportOn(branch, period, sender, start, (events) => {
+		(function processEventID() {
+			const event = events.pop();
+			augur.getReportHash(branch, period, sender, event, (reportHash) => {
+				if (reportHash && reportHash !== '0x0') {
+					eventsToReportOn[event] = { reportHash };
+				} else {
+					eventsToReportOn[event] = { reportHash: null };
+				}
+
+				// if there are more event ids, re-run this function to get their market ids
+				if (events.length) {
+					setTimeout(processEventID, TIMEOUT_MILLIS);
+
+				// if no more event ids to process
+				} else {
+					cb(null, eventsToReportOn);
+				}
+			});
+		}());
+	});
 };
 
-ex.loadPendingReportEventIDs = function loadPendingReportEventIDs(eventIDs, accountID, reportPeriod, branchID, cb) {
-	return cb(null, {});
-};
-
-ex.submitReportHash = function submitReportHash(branchID, accountID, event, report, cb) {
-	const minValue = augur.abi.bignum(event.minValue);
-	const maxValue = augur.abi.bignum(event.maxValue);
-	const numOutcomes = augur.abi.bignum(event.numOutcomes);
-	let rescaledReportedOutcome;
-
-	// Re-scale scalar/categorical reports so they fall between 0 and 1
-	if (report.isIndeterminate) {
-		rescaledReportedOutcome = report.reportedOutcomeID;
-	} else {
-		if (report.isScalar) {
-			rescaledReportedOutcome = augur.abi.bignum(report.reportedOutcomeID)
-												.minus(minValue)
-												.dividedBy(maxValue.minus(minValue))
-												.toFixed();
-		} else if (report.isCategorical) {
-			rescaledReportedOutcome = augur.abi.bignum(report.reportedOutcomeID)
-												.minus(augur.abi.bignum(1))
-												.dividedBy(numOutcomes.minus(augur.abi.bignum(1)))
-												.toFixed();
-		} else {
-			rescaledReportedOutcome = report.reportedOutcomeID;
+// TODO move to augur.js
+ex.revealReport = function revealReport(event, salt, report, isScalar, isUnethical, cb) {
+	augur.submitReport({
+		event,
+		salt,
+		report,
+		ethics: Number(!isUnethical),
+		isScalar,
+		onSent: (res) => {},
+		onSuccess: (res) => {
+			console.log('------> revealed report', res);
+			cb(null, { [event]: { isCommited: true } });
+		},
+		onFailed: (err) => {
+			console.log('ERROR revealReport', err);
+			cb(err);
 		}
-	}
+	});
+};
 
-	const reportHash = augur.makeHash(
-		report.salt,
-		rescaledReportedOutcome,
-		event.id,
-		accountID,
-		report.isIndeterminate,
-		report.isScalar
-	);
-
+// TODO move to augur.js
+ex.commitReport = function commitReport(branch, loginAccount, event, reportObject, periodLength, cb) {
+	const address = loginAccount.id;
+	const derivedKey = loginAccount.derivedKey;
+	const accountSalt = loginAccount.keystore.crypto.kdfparams.salt;
+	const report = reportObject.reportedOutcomeID;
+	const salt = reportObject.salt;
+	const period = reportObject.reportPeriod;
+	const isScalar = reportObject.isScalar;
+	const isIndeterminate = reportObject.isIndeterminate;
+	const fixedReport = augur.fixReport(report, isScalar, isIndeterminate);
+	const reportHash = augur.makeHash(salt, fixedReport, event, address);
+	const encryptedReport = augur.encryptReport(fixedReport, derivedKey, salt);
+	const encryptedSalt = augur.encryptReport(salt, derivedKey, accountSalt);
 	augur.submitReportHash({
-		branch: branchID,
+		event,
 		reportHash,
-		reportPeriod: report.reportPeriod,
-		eventID: event.id,
-		eventIndex: event.index,
-		onSent: res => cb(null, { ...res, reportHash, status: 'processing...' }),
-		onSuccess: res => cb(null, { ...res, reportHash, status: SUCCESS }),
-		onFailed: err => cb(err)
+		encryptedReport,
+		encryptedSalt,
+		branch,
+		period,
+		periodLength,
+		onSent: (res) => {
+			console.log('SRH sent:', res);
+			cb(null, { ...res, reportHash, status: 'processing...' });
+		},
+		onSuccess: (res) => {
+			console.log('SRH successful:', res);
+			cb(null, { ...res, reportHash, status: SUCCESS });
+		},
+		onFailed: (err) => cb(err)
 	});
 };
 
@@ -386,8 +407,8 @@ ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
 		},
 		onFailed: err => {
 			console.error('penalizationCatchup failed:', err);
-			if (err.error === '0') {
-				// already caught up
+			if (err.error === '0') { // already caught up
+				return cb(null);
 			}
 			cb(err);
 		}
@@ -486,10 +507,6 @@ ex.getReportPeriod = function getReportPeriod(branchID, cb) {
 		}
 		return cb(null, res);
 	});
-};
-
-ex.submitReport = function submitReport(...args) {
-	augur.submitReport.apply(augur, args);
 };
 
 ex.getEvents = function getEvents(...args) {

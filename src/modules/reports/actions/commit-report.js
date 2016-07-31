@@ -25,7 +25,7 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
 
 		if (nextPendingReportMarket) {
 			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
-		}	else {
+		} else {
 			selectMarketsLink(dispatch).onClick();
 		}
 	};

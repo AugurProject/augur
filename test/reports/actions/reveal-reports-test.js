@@ -23,7 +23,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			test1: {
 				_id: 'test1',
 				reportHash: '0xtesthash123456789testhash1',
-				isCommitted: false,
+				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID1',
 				isUnethical: false,
 				isIndeterminate: true,
@@ -32,7 +32,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			test2: {
 				_id: 'test2',
 				reportHash: '0xtesthash123456789testhash2',
-				isCommitted: false,
+				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID2',
 				isUnethical: false,
 				isIndeterminate: false,
@@ -41,7 +41,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			test3: {
 				_id: 'test3',
 				reportHash: '0xtesthash123456789testhash3',
-				isCommitted: false,
+				isRevealed: false,
 				reportedOutcomeID: 'testOutcomeID3',
 				isUnethical: true,
 				isIndeterminate: false,
@@ -51,15 +51,10 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 	});
 	store = mockStore(state);
 	let mockAugurJS = {
-		submitReport: () => {}
+		revealReport: () => {}
 	};
 
-	mockAugurJS.getEventIndex = sinon.stub().yields({
-		err: null,
-		index: 'test'
-	});
-
-	sinon.stub(mockAugurJS, 'submitReport', (argObj) => {
+	sinon.stub(mockAugurJS, 'revealReport', (argObj) => {
 		argObj.onSuccess('test response!');
 	});
 
@@ -101,13 +96,12 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 			}
 		}];
 
-		store.dispatch(action.commitReports());
+		store.dispatch(action.revealReports());
 
 		clock.tick(6000);
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockAugurJS.submitReport.calledThrice, `Didn't call submitReport 3 times as expected`);
-		assert(mockAugurJS.getEventIndex.calledThrice, `Didn't call getEventIndex 3 times as expected`);
+		assert(mockAugurJS.revealReport.calledThrice, `Didn't call revealReport 3 times as expected`);
 	});
 
 });
