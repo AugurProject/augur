@@ -192,7 +192,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 			type: 'UPDATE_REPORTS'
 		}];
 
-		store.dispatch(action.sendCommitReport('transID1', market, 'testOutcomeID', false));
+		store.dispatch(action.sendCommitReport('transID1', market, 'testOutcomeID', false, false));
 
 		assert(mockHex.bytesToHex.calledOnce, `bytesToHex wasn't called once as expected`);
 		assert(mockUpReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);

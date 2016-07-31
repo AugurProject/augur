@@ -264,17 +264,17 @@ ex.getSimulatedSell = function getSimulatedSell(marketID, outcomeID, numShares) 
 	return augur.getSimulatedSell(marketID, outcomeID, numShares);
 };
 ex.get_trade_ids = function getTradeIds(marketID, cb) {
-	augur.get_trade_ids(marketID, cb);
+	return augur.get_trade_ids(marketID, cb);
 };
 ex.getOrderBook = function getOrderBook(marketID, scalarMinMax, cb) {
-	augur.getOrderBook(marketID, scalarMinMax, cb);
+	return augur.getOrderBook(marketID, scalarMinMax, cb);
 };
 ex.get_trade = function getTrade(orderID, cb) {
-	augur.get_trade(orderID, cb);
+	return augur.get_trade(orderID, cb);
 };
 ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
 ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
-ex.getReport = augur.getReport.bind(augur);
+// ex.getReport = augur.getReport.bind(augur);
 
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
@@ -352,7 +352,7 @@ ex.revealReport = function revealReport(event, salt, report, isScalar, isUnethic
 		onSent: (res) => {},
 		onSuccess: (res) => {
 			console.log('------> revealed report', res);
-			cb(null, { [event]: { isCommited: true } });
+			cb(null, { [event]: { isRevealed: true } });
 		},
 		onFailed: (err) => {
 			console.log('ERROR revealReport', err);

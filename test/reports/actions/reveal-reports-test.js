@@ -50,12 +50,15 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 		}
 	});
 	store = mockStore(state);
-	let mockAugurJS = {
-		revealReport: () => {}
-	};
 
-	sinon.stub(mockAugurJS, 'revealReport', (argObj) => {
-		argObj.onSuccess('test response!');
+	// let revealReport = sinon.stub();
+	// revealReport.onFirstCall().returns(null, { test3: { isRevealed: true } });
+	// revealReport.onSecondCall().returns(null, { test2: { isRevealed: true } });
+	// revealReport.onThirdCall().returns(null, { test1: { isRevealed: true } });
+	// let mockAugurJS = {revealReport};
+	let mockAugurJS = {revealReport: () => {}};
+	sinon.stub(mockAugurJS, 'revealReport', (event, salt, report, isScalar, isUnethical, cb) => {
+		return cb(null, { [event]: { isRevealed: true } });
 	});
 
 	action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
@@ -72,28 +75,16 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 		clock.restore();
 	});
 
-	it('should commit reports', () => {
+	it('should reveal reports', () => {
 		let out = [{
 			type: 'UPDATE_REPORTS',
-			reports: {
-				test3: {
-					isCommited: true
-				}
-			}
+			reports: { test3: { isRevealed: true } }
 		}, {
 			type: 'UPDATE_REPORTS',
-			reports: {
-				test2: {
-					isCommited: true
-				}
-			}
+			reports: { test2: { isRevealed: true } }
 		}, {
 			type: 'UPDATE_REPORTS',
-			reports: {
-				test1: {
-					isCommited: true
-				}
-			}
+			reports: { test1: { isRevealed: true } }
 		}];
 
 		store.dispatch(action.revealReports());

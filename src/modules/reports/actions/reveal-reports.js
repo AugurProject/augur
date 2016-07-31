@@ -1,4 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
+import { updateReports } from '../../reports/actions/update-reports';
 
 export function revealReports() {
 	return (dispatch, getState) => {
@@ -33,11 +34,13 @@ export function revealReports() {
 			AugurJS.revealReport(
 				event,
 				report.salt,
+				report.reportedOutcome,
 				report.isScalar,
 				report.isUnethical,
 				(err, res) => {
 					console.log('revealReport err:', err);
 					console.log('revealReport response:', res);
+					dispatch(updateReports(res));
 					next();
 				}
 			);

@@ -56,7 +56,7 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 			}
 		};
 
-		store.dispatch(action.addCommitReportTransaction(market, 'test1', false, 1, 5));
+		store.dispatch(action.addCommitReportTransaction(market, 'test1', false, false, 1, 5));
 
 		out = [{
 			type: 'ADD_TRANSACTION',
@@ -72,7 +72,8 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 						id: 'test2'
 					}],
 					reportedOutcomeID: 'test1',
-					isUnethical: false
+					isUnethical: false,
+					isIndeterminate: false
 				},
 				action: store.getActions()[0].data.action
 			}

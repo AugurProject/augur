@@ -1,6 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
-// import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 import { updateReports } from '../../reports/actions/update-reports';
 
 export function loadReports(marketsData) {

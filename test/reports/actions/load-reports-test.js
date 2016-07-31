@@ -21,8 +21,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 	};
 
 	mockAugurJS.getEventsToReportOn = sinon.stub().yields(null, ['test1', 'test2']);
-	mockMarketData.isMarketDataOpen = sinon.stub().returns(false);
-	sinon.stub(mockUpdateReports, "updateReports", (eventIDs) => {
+	sinon.stub(mockUpdateReports, 'updateReports', (eventIDs) => {
 		return {
 			type: 'UPDATE_REPORTS',
 			reports: eventIDs
@@ -31,7 +30,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 
 	action = proxyquire('../../../src/modules/reports/actions/load-reports', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../../utils/is-market-data-open': mockMarketData,
 		'../../reports/actions/update-reports': mockUpdateReports
 	});
 
@@ -61,7 +59,6 @@ describe('modules/reports/actions/load-reports.js', () => {
 		store.dispatch(action.loadReports(test));
 
 		assert(mockAugurJS.getEventsToReportOn.calledOnce, `AugurJS.getEventsToReportOn() wasn't only called once as expected`);
-		assert(mockMarketData.isMarketDataOpen.calledTwice, `isMarketDataOpen() wasn't called only twice as expected based on test data`);
 		assert(mockUpdateReports.updateReports.calledOnce, `updateReports wasn't only called once as expected`);
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct information`);
