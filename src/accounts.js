@@ -163,10 +163,11 @@ module.exports = function () {
                         secureLoginID: secureLoginID,
                         privateKey: plain.privateKey,
                         address: keystore.address,
-                        keystore: keystore
+                        keystore: keystore,
+                        derivedKey: derivedKey
                     };
 
-                    cb({
+                    return cb({
                         name: name,
                         secureLoginID: secureLoginID,
                         keystore: keystore,
@@ -179,23 +180,22 @@ module.exports = function () {
         loadLocalLoginAccount: function (localAccount, cb) {
             cb = (utils.is_function(cb)) ? cb : utils.pass;
             var privateKey = localAccount.privateKey;
+            var derivedKey = localAccount.derivedKey;
             if (privateKey && !Buffer.isBuffer(privateKey)) {
                 privateKey = new Buffer(privateKey, "hex");
+            }
+            if (derivedKey && !Buffer.isBuffer(derivedKey)) {
+                derivedKey = new Buffer(derivedKey, "hex");
             }
             this.account = {
                 name: localAccount.name,
                 secureLoginID: localAccount.secureLoginID,
                 privateKey: privateKey,
                 address: localAccount.keystore.address,
-                keystore: localAccount.keystore
+                keystore: localAccount.keystore,
+                derivedKey: derivedKey
             };
-            return cb({
-                name: localAccount.name,
-                secureLoginID: localAccount.secureLoginID,
-                privateKey: privateKey,
-                address: localAccount.keystore.address,
-                keystore: localAccount.keystore
-            });
+            return cb(clone(this.account));
         },
 
         login: function (secureLoginID, password, cb) {
@@ -214,24 +214,24 @@ module.exports = function () {
             var name = unencryptedLoginIDObject.name;
 
             // derive secret key from password
-            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derived) {
-                if (!derived || derived.error) return cb(errors.BAD_CREDENTIALS);
+            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+                if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
                 // verify that message authentication codes match
                 var storedKey = keystore.crypto.ciphertext;
-                if (keys.getMAC(derived, storedKey) !== keystore.crypto.mac.toString("hex")) {
+                if (keys.getMAC(derivedKey, storedKey) !== keystore.crypto.mac.toString("hex")) {
                     return cb(errors.BAD_CREDENTIALS);
                 }
 
-                if (!Buffer.isBuffer(derived)) {
-                    derived = new Buffer(derived, "hex");
+                if (!Buffer.isBuffer(derivedKey)) {
+                    derivedKey = new Buffer(derivedKey, "hex");
                 }
 
                 // decrypt stored private key using secret key
                 try {
                     var privateKey = new Buffer(keys.decrypt(
                         storedKey,
-                        derived.slice(0, 16),
+                        derivedKey.slice(0, 16),
                         keystore.crypto.cipherparams.iv
                     ), "hex");
 
@@ -241,22 +241,16 @@ module.exports = function () {
                         secureLoginID: secureLoginID,
                         privateKey: privateKey,
                         address: keystore.address,
-                        keystore: keystore
-                    };
-
-                    cb({
-                        name: name,
-                        secureLoginID: secureLoginID,
                         keystore: keystore,
-                        address: keystore.address,
-                        privateKey: privateKey
-                    });
+                        derivedKey: derivedKey
+                    };
+                    return cb(clone(self.account));
 
                 // decryption failure: bad password
                 } catch (exc) {
                     var e = clone(errors.BAD_CREDENTIALS);
                     e.bubble = exc;
-                    cb(e);
+                    return cb(e);
                 }
             }); // deriveKey
         },

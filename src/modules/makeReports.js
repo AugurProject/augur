@@ -7,31 +7,85 @@
 
 var clone = require("clone");
 var abi = require("augur-abi");
+var keys = require("keythereum");
 var contracts = require("augur-contracts");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 module.exports = {
 
-    makeHash: function (salt, report, event, from, isScalar) {
+    // rules: http://docs.augur.net/#reporting-outcomes
+    fixReport: function (report, isScalar, isIndeterminate) {
         var fixedReport;
-        if (isScalar && report === "0") {
-            fixedReport = "0x1";
+        if (isIndeterminate) {
+            fixedReport = constants.INDETERMINATE;
         } else {
-            fixedReport = abi.fix(report, "hex");
+            if (isScalar && report === "0") {
+                fixedReport = "0x1";
+            } else {
+                fixedReport = abi.fix(report, "hex");
+            }
+
+            // if report is equal to fix(1.5) but is not indeterminate,
+            // then set report to fix(1.5) + 1
+            if (fixedReport === constants.INDETERMINATE) {
+                fixedReport = constants.INDETERMINATE_PLUS_ONE;
+            }
         }
-        return utils.sha3([
-            from || this.from,
-            abi.hex(salt),
-            fixedReport,
-            event
-        ]);
+        return fixedReport;
     },
 
-    submitReportHash: function (event, reportHash, encryptedSaltyHash, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+    // report in fixed-point
+    makeHash: function (salt, report, event, from) {
+        return utils.sha3([from || this.from, abi.hex(salt), report, event]);
+    },
+
+    // report in fixed-point
+    encryptReport: function (report, key, salt) {
+        if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
+        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+        return abi.prefix_hex(new Buffer(keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER), "base64").toString("hex"));
+    },
+
+    // returns plaintext fixed-point report
+    decryptReport: function (encryptedReport, key, salt) {
+        if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
+        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+        return abi.prefix_hex(keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER));
+    },
+
+    parseAndDecryptReport: function (arr, secret) {
+        if (!arr || arr.constructor !== Array || arr.length < 2) return null;
+        var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
+        return {
+            salt: salt,
+            report: abi.string(this.decryptReport(arr[0], secret.derivedKey, salt))
+        };
+    },
+
+    getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
         var self = this;
-        if (event.constructor === Object && event.event) {
+        if (branch.constructor === Object) {
+            expDateIndex = branch.expDateIndex;
+            reporter = branch.reporter;
+            event = branch.event;
+            secret = branch.secret;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
+        tx.params = [branch, expDateIndex, reporter, event];
+        return this.fire(tx, callback, this.parseAndDecryptReport, secret);
+    },
+
+    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (event.constructor === Object) {
             reportHash = event.reportHash;
-            encryptedSaltyHash = event.encryptedSaltyHash;
+            encryptedReport = event.encryptedReport;
+            encryptedSalt = event.encryptedSalt;
             branch = event.branch;
             period = event.period;
             periodLength = event.periodLength;
@@ -45,7 +99,7 @@ module.exports = {
             return onFailed({"-2": "not in first half of period (commit phase)"});
         }
         var tx = clone(this.tx.MakeReports.submitReportHash);
-        tx.params = [event, reportHash, encryptedSaltyHash || 0];
+        tx.params = [event, reportHash, encryptedReport || 0, encryptedSalt || 0];
         return this.transact(tx, onSent, function (res) {
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
@@ -54,7 +108,8 @@ module.exports = {
                     return self.submitReportHash({
                         event: event,
                         reportHash: reportHash,
-                        encryptedSaltyHash: encryptedSaltyHash,
+                        encryptedReport: encryptedReport,
+                        encryptedSalt: encryptedSalt,
                         branch: branch,
                         period: period,
                         periodLength: periodLength,
@@ -81,8 +136,8 @@ module.exports = {
         }, onFailed, onConfirmed);
     },
 
-    submitReport: function (event, salt, report, ethics, isScalar, onSent, onSuccess, onFailed, onConfirmed) {
-        if (event.constructor === Object && event.event) {
+    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed, onConfirmed) {
+        if (event.constructor === Object) {
             salt = event.salt;
             report = event.report;
             ethics = event.ethics;
@@ -96,17 +151,11 @@ module.exports = {
         onSent = onSent || utils.pass;
         onSuccess = onSuccess || utils.pass;
         onFailed = onFailed || utils.pass;
-        var fixedReport;
-        if (isScalar && report === "0") {
-            fixedReport = "0x1";
-        } else {
-            fixedReport = abi.fix(report, "hex");
-        }
         var tx = clone(this.tx.MakeReports.submitReport);
         tx.params = [
             event,
             abi.hex(salt),
-            fixedReport,
+            this.fixReport(report, isScalar, isIndeterminate),
             abi.fix(ethics, "hex")
         ];
         return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);

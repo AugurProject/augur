@@ -8,7 +8,11 @@ var async = require("async");
 var augur = require("../src");
 var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
 
-augur.connect("http://127.0.0.1:8545", process.env.GETH_IPC, function (connected) {
+augur.connect({
+    http: "http://127.0.0.1:8545",
+    ipc: process.env.GETH_IPC,
+    ws: "ws://127.0.0.1:8546"
+}, function (connected) {
     if (!connected) return console.error("connect failed:", connected);
     augur.initDefaultBranch(function (res) {
         console.log("initDefaultBranch sent:", res);

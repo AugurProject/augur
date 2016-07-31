@@ -20,6 +20,10 @@ module.exports = {
     BID: 1,
     ASK: 2,
 
+    // fixed-point indeterminate: 1.5 * 10^18
+    INDETERMINATE: "0x14d1120d7b160000",
+    INDETERMINATE_PLUS_ONE: "0x14d1120d7b160001",
+
     // default gas: 3.135M
     DEFAULT_GAS: "0x2fd618",
 
@@ -32,6 +36,9 @@ module.exports = {
     ROUNDS: 65536,
     KEYSIZE: 32,
     IVSIZE: 16,
+
+    // cipher used to encrypt/decrypt reports
+    REPORT_CIPHER: "aes-256-ctr",
 
     // Morden testnet faucet endpoint
     FAUCET: "https://faucet.augur.net/faucet/"

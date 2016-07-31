@@ -55,7 +55,7 @@ describe("Reporting sequence", function () {
     branchID = constants.DEFAULT_BRANCH_ID;
     suffix = Math.random().toString(36).substring(4);
     description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
-    periodLength = 900;
+    periodLength = 180;
     report = 1;
     salt = "1337";
     eventID, newBranchID, marketID;
@@ -208,7 +208,8 @@ describe("Reporting sequence", function () {
                 augur.submitReportHash({
                     event: event,
                     reportHash: reportHash,
-                    encryptedSaltyHash: 0,
+                    encryptedReport: 0,
+                    encryptedSalt: 0,
                     branch: branch,
                     period: period,
                     periodLength: periodLength,
@@ -286,7 +287,7 @@ describe("Reporting sequence", function () {
                         event: event,
                         salt: salt,
                         report: report,
-                        ethics: 1,
+                        ethics: 1, // 1 = ethical
                         isScalar: false,
                         onSent: function (res) {
                             assert(res.txHash);
