@@ -12,7 +12,7 @@ import { updateAccountTradesData } from '../../positions/actions/update-account-
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import env from '../../../env.json';
 
-// import { commitReports } from '../../reports/actions/commit-reports';
+// import { revealReports } from '../../reports/actions/reveal-reports';
 import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
 // import { collectFees } from '../../reports/actions/collect-fees';
 import { closeMarkets } from '../../reports/actions/close-markets';
@@ -29,7 +29,7 @@ export function loadLoginAccountDependents() {
 		dispatch(clearReports());
 		dispatch(loadReports(marketsData));
 
-		// dispatch(commitReports());
+		// dispatch(revealReports());
 		// dispatch(collectFees());
 		dispatch(penalizeWrongReports(marketsData));
 		dispatch(closeMarkets(marketsData));

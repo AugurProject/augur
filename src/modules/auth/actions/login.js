@@ -24,6 +24,9 @@ export function login(secureLoginID, password, rememberMe) {
 				if (Buffer.isBuffer(persistentAccount.privateKey)) {
 					persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
 				}
+				if (Buffer.isBuffer(persistentAccount.derivedKey)) {
+					persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
+				}
 				localStorageRef.setItem('account', JSON.stringify(persistentAccount));
 			}
 			dispatch(loadLoginAccountLocalStorage(loginAccount.id));
