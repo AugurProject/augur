@@ -21,6 +21,6 @@ const selectUserOpenOrdersSummary = memoizerific(10)((outcomes, loginAccount) =>
 	), 0);
 
 	return {
-		openOrdersCount: formatNumber(openOrdersCount, 'Open Orders')
+		openOrdersCount: formatNumber(openOrdersCount, { denomination: 'Open Orders' })
 	};
 });

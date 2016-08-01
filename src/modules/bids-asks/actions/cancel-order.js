@@ -9,6 +9,8 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 export const CANCEL_ORDER = 'CANCEL_ORDER';
+export const SHOW_CANCEL_ORDER_CONFIRMATION = 'SHOW_CANCEL_ORDER_CONFIRMATION';
+export const ABORT_CANCEL_ORDER_CONFIRMATION = 'ABORT_CANCEL_ORDER_CONFIRMATION';
 
 export function cancelOrder(orderID, marketID, type) {
 	return (dispatch, getState) => {
@@ -41,5 +43,29 @@ export function processCancelOrder(transactionID, orderID) {
 				console.log('onConfirmed %o', res);
 			}
 		);
+	};
+}
+
+/**
+ *
+ * @param {String} orderID
+ * @return {{type: string, orderID: *}}
+ */
+export function showCancelOrderConfirmation(orderID) {
+	return {
+		type: SHOW_CANCEL_ORDER_CONFIRMATION,
+		orderID
+	};
+}
+
+/**
+ *
+ * @param {String} orderID
+ * @return {{type: string, orderID: *}}
+ */
+export function abortCancelOrderConfirmation(orderID) {
+	return {
+		type: ABORT_CANCEL_ORDER_CONFIRMATION,
+		orderID
 	};
 }

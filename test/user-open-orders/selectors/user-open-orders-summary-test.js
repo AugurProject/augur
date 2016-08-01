@@ -50,7 +50,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders-summary.js`, () =>
 		];
 
 		const expected = {
-			openOrdersCount: formatNumber(9)
+			openOrdersCount: formatNumber(9, { denomination: 'Open Orders' })
 		};
 		assert.deepEqual(selectUserOpenOrdersSummary(outcomes), expected);
 	});
