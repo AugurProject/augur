@@ -11,6 +11,12 @@ import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
 
+import { loadReports } from '../../reports/actions/load-reports';
+// import { revealReports } from '../../reports/actions/reveal-reports';
+// import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
+// import { collectFees } from '../../reports/actions/collect-fees';
+// import { closeMarkets } from '../../reports/actions/close-markets';
+
 export function initAugur() {
 	return (dispatch, getState) => {
 		const xhttp = new XMLHttpRequest();
@@ -40,6 +46,12 @@ export function initAugur() {
 						}
 
 						dispatch(updateBlockchain(() => {
+							const { marketsData } = getState();
+							dispatch(loadReports(marketsData));
+							// dispatch(revealReports());
+							// dispatch(collectFees());
+							// dispatch(penalizeWrongReports(marketsData));
+							// dispatch(closeMarkets(marketsData));
 							dispatch(listenToUpdates());
 						}));
 					});

@@ -17,6 +17,9 @@ describe(`modules/app/actions/init-augur.js`, () => {
 
 	let mockAugurJS = {};
 	let mockUpBlockchain = {};
+	let mockLoadReports = {};
+	let mockPenalizeWrongReports = {};
+	let mockCloseMarkets = {};
 	let mockListenUp = {};
 	let mockLoginAcc = {};
 	let mockLoadMarkets = {};
@@ -37,6 +40,15 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	mockLoginAcc.loadLoginAccount = sinon.stub().returns({
 		type: 'LOAD_LOGIN_ACCOUNT'
 	});
+	mockLoadReports.loadReports = sinon.stub().returns({
+		type: 'LOAD_REPORTS'
+	});
+	mockPenalizeWrongReports.penalizeWrongReports = sinon.stub().returns({
+		type: 'PENALIZE_WRONG_REPORTS'
+	});
+	mockCloseMarkets.closeMarkets = sinon.stub().returns({
+		type: 'CLOSE_MARKETS'
+	});
 	mockLoadMarkets.loadMarkets = sinon.stub().returns({
 		type: 'LOAD_MARKETS'
 	});
@@ -50,7 +62,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		'../../app/actions/listen-to-updates': mockListenUp,
 		'../../auth/actions/load-login-account': mockLoginAcc,
 		'../../markets/actions/load-markets': mockLoadMarkets,
-		'../../market/actions/load-full-market': mockLoadFullMarket
+		'../../market/actions/load-full-market': mockLoadFullMarket,
+		'../../reports/actions/load-reports': mockLoadReports
 	});
 
 	beforeEach(() => {
@@ -85,6 +98,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		}, {
 			type: 'LOAD_FULL_MARKET'
 		}, {
+			type: 'LOAD_REPORTS'
+		}, {
 			type: 'LISTEN_TO_UPDATES'
 		}, {
 			type: 'UPDATE_BLOCKCHAIN'
@@ -97,9 +112,10 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		assert(mockAugurJS.connect.calledOnce, `Didn't call AugurJS.connect() exactly once`);
 		assert(mockAugurJS.loadBranch.calledOnce, `Didn't call AugurJS.loadBranch()  exactly once`);
 		assert(mockUpBlockchain.updateBlockchain.calledOnce, `Didn't call updateBlockchain() exactly once as expected`);
-		assert(mockListenUp.listenToUpdates.calledOnce, `Didn't call listenToUpdates() exactly once as expected`);
 		assert(mockLoginAcc.loadLoginAccount.calledOnce, `Didn't call loadLoginAccount() exactly once as expected`);
 		assert(mockLoadMarkets.loadMarkets.calledOnce, `Didn't call loadMarkets() exactly once as expected`);
+		assert(mockLoadReports.loadReports.calledOnce, `Didn't call loadReports() exactly once as expected`);
+		assert(mockListenUp.listenToUpdates.calledOnce, `Didn't call listenToUpdates() exactly once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
 	});
 });

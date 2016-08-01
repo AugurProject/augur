@@ -1,12 +1,11 @@
 import * as AugurJS from '../../../services/augurjs';
-import { BRANCH_ID } from '../../app/constants/network';
 import { updateReports } from '../../reports/actions/update-reports';
 
 export function loadReports(marketsData) {
 	return (dispatch, getState) => {
 		const { loginAccount, blockchain, branch } = getState();
 
-		if (!loginAccount || !loginAccount.id) {
+		if (!loginAccount || !loginAccount.id || !branch.id || !blockchain.reportPeriod) {
 			return;
 		}
 
@@ -15,12 +14,13 @@ export function loadReports(marketsData) {
 			blockchain.reportPeriod,
 			loginAccount.id,
 			0,
-			BRANCH_ID, (err, evtIDs) => {
+			(err, evtIDs) => {
 				if (err) {
 					console.log('ERROR loadReports', err);
 					return;
 				}
 				dispatch(updateReports(evtIDs));
-			});
+			}
+		);
 	};
 }

@@ -37,6 +37,7 @@ const testState = {
 		reportPeriod: 19
 	},
 	branch: {
+		id: 1010101,
 		description: 'root branch',
 		periodLength: 4000
 	},

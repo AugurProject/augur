@@ -5,34 +5,20 @@ import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statu
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
-import { loadReports } from '../../reports/actions/load-reports';
 import { clearReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 import env from '../../../env.json';
 
-// import { revealReports } from '../../reports/actions/reveal-reports';
-import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
-// import { collectFees } from '../../reports/actions/collect-fees';
-import { closeMarkets } from '../../reports/actions/close-markets';
-
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
-		const { marketsData } = getState();
-
 		// dispatch(loadMeanTradePrices());
 		dispatch(updateAssets());
 		dispatch(loadAccountTrades());
 		// clear and load reports for any markets that have been loaded
 		// (partly to handle signing out of one account and into another)
 		dispatch(clearReports());
-		dispatch(loadReports(marketsData));
-
-		// dispatch(revealReports());
-		// dispatch(collectFees());
-		dispatch(penalizeWrongReports(marketsData));
-		dispatch(closeMarkets(marketsData));
 	};
 }
 

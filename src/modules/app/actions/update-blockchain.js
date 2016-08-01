@@ -72,7 +72,7 @@ export function updateBlockchain(cb) {
 
 		// load latest block number
 		AugurJS.loadCurrentBlock(currentBlockNumber => {
-			const { branch, blockchain } = getState();
+			const { branch, blockchain, loginAccount } = getState();
 			const currentPeriod = AugurJS.getCurrentPeriod(branch.periodLength);
 			const currentPeriodProgress = AugurJS.getCurrentPeriodProgress(branch.periodLength);
 			const isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod;
@@ -95,7 +95,8 @@ export function updateBlockchain(cb) {
 			});
 
 			// if the report *period* changed this block, do some extra stuff (also triggers the first time blockchain is being set)
-			if (isChangedCurrentPeriod) {
+			if (isChangedCurrentPeriod && loginAccount.id) {
+				console.log('loginAccount:', loginAccount);
 				dispatch(incrementReportPeriod(() => {
 					// if the report *phase* changed this block, do some extra stuff
 					if (isChangedReportPhase) {
