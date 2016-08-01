@@ -1,0 +1,32 @@
+import { makeNumber } from '../utils/make-number';
+import { makeDate } from '../utils/make-date';
+
+export default [
+	{
+		description: 'Will the shoop, shoop de woop?',
+		endDate: makeDate(new Date('2017/12/12')),
+		fees: makeNumber(Math.random() * 10, 'ETH', true),
+		volume: makeNumber(Math.random() * 100, null, true),
+		numberOfTrades: makeNumber(Math.random() * 1000, null, true),
+		averageTradeSize: makeNumber(Math.random() * 100, 'ETH'),
+		openVolume: makeNumber(Math.random() * 10000, null, true)
+	},
+	{
+		description: 'When will the first zipline span the San Francisco Bay?',
+		endDate: makeDate(new Date('2017/12/12')),
+		fees: makeNumber(Math.random() * 10, 'ETH', true),
+		volume: makeNumber(Math.random() * 100, null, true),
+		numberOfTrades: makeNumber(Math.random() * 1000, null, true),
+		averageTradeSize: makeNumber(Math.random() * 100, 'ETH', true),
+		openVolume: makeNumber(Math.random() * 10000, null, true)
+	},
+	{
+		description: 'When will I stop balding?',
+		endDate: makeDate(new Date('2017/12/12')),
+		fees: makeNumber(Math.random() * 10, 'ETH'),
+		volume: makeNumber(Math.random() * 100, null, true),
+		numberOfTrades: makeNumber(Math.random() * 1000, null, true),
+		averageTradeSize: makeNumber(Math.random() * 100, 'ETH', true),
+		openVolume: makeNumber(Math.random() * 10000, null, true)
+	}
+];

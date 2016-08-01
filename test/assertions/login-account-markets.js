@@ -3,11 +3,16 @@ import assertFormattedNumber from '../../test/assertions/common/formatted-number
 import assertEndDate from '../../test/assertions/common/end-date';
 
 export default function (loginAccountMarkets){
-	loginAccountMarkets.forEach(market => { assertLoginAccountMarkets(market) });
+	describe(`augur-ui-react-components loginAccountMarket's shape`, () => {
+		assert.isDefined(loginAccountMarkets);
+		assert.isArray(loginAccountMarkets);
+
+		loginAccountMarkets.forEach(market => { assertLoginAccountMarkets(market) });
+	});
 };
 
 export function assertLoginAccountMarkets(market) {
-	describe('augur-ui-react-components loginAccountMarkets state', () => {
+	describe(`markets's shape`, () => {
 		it('description', () => {
 			assert.isDefined(market.description);
 			assert.isString(market.description);
