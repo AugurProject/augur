@@ -55,7 +55,7 @@ describe("Reporting sequence", function () {
     branchID = constants.DEFAULT_BRANCH_ID;
     suffix = Math.random().toString(36).substring(4);
     description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
-    periodLength = 180;
+    periodLength = 600;
     report = 1;
     salt = "1337";
     eventID, newBranchID, marketID;
@@ -145,7 +145,9 @@ describe("Reporting sequence", function () {
                                 if (DEBUG) console.log(chalk.white.dim("Events: "), events);
 
                                 // make a single trade in each new market
-                                tools.trade_in_each_market(augur, 1, markets, unlockable[0], unlockable[1], function (err) {
+                                console.log("trade maker:", unlockable[0]);
+                                console.log("trade taker:", unlockable[1]);
+                                tools.trade_in_each_market(augur, 1, markets, unlockable[0], unlockable[1], password, function (err) {
                                     assert.isNull(err);
 
                                     // wait until the period after the new events expire
@@ -188,15 +190,17 @@ describe("Reporting sequence", function () {
             var branch = newBranchID;
             var period = parseInt(augur.getVotePeriod(branch));
             var eventsToReportOn = augur.getEventsToReportOn(branch, period, sender, 0);
-            console.log("haystack:", eventsToReportOn);
+            if (DEBUG) {
+                console.log(chalk.white.dim("Events in period ") + chalk.cyan(period) + chalk.white.dim(":"), augur.ExpiringEvents.getEvents(branch, period));
+                console.log(chalk.white.dim("Events to report on:"), eventsToReportOn);
+                console.log(chalk.white.dim("Reporter:"), chalk.green(augur.from));
+            }
             async.forEachOf(events, function (event, type, nextEvent) {
                 console.log("needle:", abi.hex(event));
                 var reportHash = augur.makeHash(salt, report, event);
                 if (DEBUG) {
-                    printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period) + ". Submitting report hash...");
-                    console.log(chalk.white.dim("Report hash:"), chalk.green(reportHash));
-                    console.log(chalk.white.dim("Events in period ") + chalk.cyan(period) + chalk.white.dim(":"), augur.ExpiringEvents.getEvents(branch, period));
-                    console.log(chalk.white.dim("Events to report on:"), eventsToReportOn);
+                    printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period));
+                    console.log(chalk.white.dim("Submitting report hash:"), chalk.green(reportHash));
                 }
                 assert.include(eventsToReportOn, abi.hex(event));
                 if (DEBUG) {
@@ -280,6 +284,8 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
+                console.log("unlockable:", unlockable);
+                console.log("unlocked:", unlocked);
                 augur.useAccount(unlockable[0]);
                 async.forEachOf(events, function (event, type, nextEvent) {
                     if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");

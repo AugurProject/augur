@@ -89,7 +89,6 @@ describe("Register", function () {
             done();
           });
     });
-
     it("register account 2: " + name2 + " / " + password2, function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -118,7 +117,6 @@ describe("Register", function () {
 });
 
 describe("Login", function () {
-
     it("login and decrypt the stored private key", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -135,7 +133,6 @@ describe("Login", function () {
             done();
         });
     });
-
     it("login twice as the same user", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -156,7 +153,6 @@ describe("Login", function () {
             });
         });
     });
-
     it("fail with error 403 when given an incorrect secureLoginID", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -166,7 +162,6 @@ describe("Login", function () {
             done();
         });
     });
-
     it("fail with error 403 when given a blank secureLoginID", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -175,7 +170,6 @@ describe("Login", function () {
             done();
         });
     });
-
     it("fail with error 403 when given a blank password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -184,7 +178,6 @@ describe("Login", function () {
             done();
         });
     });
-
     it("fail with error 403 when given a blank secureLoginID and a blank password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -193,7 +186,6 @@ describe("Login", function () {
             done();
         });
     });
-
     it("fail with error 403 when given an incorrect password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -203,7 +195,6 @@ describe("Login", function () {
             done();
         });
     });
-
     it("fail with error 403 when given an incorrect secureLoginID and an incorrect password", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -214,11 +205,9 @@ describe("Login", function () {
             done();
         });
     });
-
 });
 
 describe("Logout", function () {
-
     it("logout and unset the account object", function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
@@ -234,25 +223,23 @@ describe("Logout", function () {
             done();
         });
     });
-
 });
 
 describe("Change Account Name", function () {
-
-	it("Should be able to update the account object", function () {
+	it("Should be able to update the account object", function (done) {
 		this.timeout(tools.TIMEOUT);
 		var augur = tools.setup(require("../../src"), process.argv.slice(2));
 		augur.web.login(secureLoginID, password, function (user) {
 			var privateKey = augur.web.account.privateKey;
-			augur.web.changeAccountName('testingName', function (updatedUser) {
-				assert.strictEqual(user.keystore, updatedUser.keystore);
-				assert.strictEqual(updatedUser.name, 'testingName');
+			augur.web.changeAccountName("testingName", function (updatedUser) {
+				assert.deepEqual(user.keystore, updatedUser.keystore);
+				assert.strictEqual(updatedUser.name, "testingName");
 				assert.strictEqual(user.address, updatedUser.address);
-				assert.strictEqual(privateKey, augur.web.account.privateKey);
+				assert.strictEqual(privateKey.toString("hex"), augur.web.account.privateKey.toString("hex"));
+                done();
 			});
 		});
 	});
-
 });
 
 describe("Transaction signing", function () {
@@ -337,7 +324,6 @@ describe("Transaction signing", function () {
         assert.strictEqual(abi.hex(tx2.getSenderAddress()), address);
         assert.isTrue(tx2.verifySignature());
     });
-
 });
 
 describe("eth_call", function () {
@@ -349,7 +335,8 @@ describe("eth_call", function () {
             assert.strictEqual(user.address, augur.web.account.address);
 
             // sync
-            var branches = augur.web.invoke(augur.tx.Branches.getBranches);
+            var tx = clone(augur.tx.Branches.getBranches);
+            var branches = augur.web.invoke(tx);
             assert.notProperty(branches, "error");
             assert.isAbove(branches.length, 0);
             assert.isArray(branches);
@@ -359,7 +346,7 @@ describe("eth_call", function () {
             );
 
             // async
-            augur.web.invoke(augur.tx.Branches.getBranches, function (branches) {
+            augur.web.invoke(tx, function (branches) {
                 assert.notProperty(branches, "error");
                 assert.isAbove(branches.length, 0);
                 assert.isArray(branches);

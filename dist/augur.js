@@ -42014,6 +42014,7 @@ module.exports = {
                 // [0] IPC socket closed / not connected: try to connect
                 case 0:
                     return this.ipcConnect(function (connected) {
+                        // TODO reattach returns
                         if (!connected) return self.broadcast(command, callback);
                         self.send("ipc", command, returns, callback);
                     });
