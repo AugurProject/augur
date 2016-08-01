@@ -28,8 +28,10 @@
 				text-align: right;
 			}
 			.cancel {
-				padding: 0.1em 0em;
+				padding: 0.1em 0;
 				text-align: left;
+				min-width: 4.6em;
+				font-size: 0.6em;
 
 				.cancel-order-action {
 					padding: 0;
@@ -38,7 +40,6 @@
 					text-align: left;
 					color: @color-danger-active;
 					background: transparent;
-					font-size: 0.6em;
 
 					&:before {
 						content: '\f00d';
@@ -56,6 +57,20 @@
 					&[disabled] {
 						color: @color-muted-active !important;
 						background: transparent !important;
+					}
+				}
+
+				.cancel-order-abort-confirmation {
+					padding: 0;
+					height: unset;
+					line-height: unset;
+					text-align: left;
+					background-color: transparent;
+					color: inherit;
+					margin-right: 1.4em;
+
+					&:hover {
+						font-weight: 700;
 					}
 				}
 			}

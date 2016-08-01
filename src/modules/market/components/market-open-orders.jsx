@@ -17,7 +17,7 @@ const OpenOrders = (p) => (
 						id={outcome.id}
 						name={outcome.name}
 						userOpenOrders={outcome.userOpenOrders}
-						cancelOrder={p.cancelOrder}
+						orderCancellation={p.orderCancellation}
 					/>
 				))
 			}
@@ -28,7 +28,7 @@ const OpenOrders = (p) => (
 OpenOrders.propTypes = {
 	userOpenOrdersSummary: React.PropTypes.object,
 	outcomes: React.PropTypes.array,
-	cancelOrder: React.PropTypes.func.isRequired
+	orderCancellation: React.PropTypes.object.isRequired
 };
 
 export default OpenOrders;

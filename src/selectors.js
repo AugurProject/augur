@@ -1,6 +1,6 @@
 import activePage from './selectors/active-page';
 import authForm from './selectors/auth-form';
-import { cancelOrder } from './selectors/cancel-order';
+import orderCancellation from './selectors/order-cancellation';
 import createMarketForm from './selectors/create-market-form';
 import filters from './selectors/filters';
 import keywords from './selectors/keywords';
@@ -19,7 +19,7 @@ import url from './selectors/url';
 const selectors = {
 	activePage,
 	authForm,
-	cancelOrder,
+	orderCancellation,
 	createMarketForm,
 	filters,
 	keywords,
