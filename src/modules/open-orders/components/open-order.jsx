@@ -66,6 +66,8 @@ function renderCancelNode(orderID, marketID, type, status, cancellationStatuses,
 		);
 	case cancellationStatuses.CANCELLING:
 		return 'Cancelling';
+	case cancellationStatuses.CANCELLATION_FAILED:
+		return 'Failure';
 	case cancellationStatuses.CANCELLED:
 		return null;
 	default:

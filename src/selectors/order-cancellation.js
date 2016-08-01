@@ -18,8 +18,18 @@ export default {
 				market.outcomes.forEach(outcome => {
 					const order = outcome.userOpenOrders.find(openOrder => openOrder.id === orderID);
 					if (order != null) {
-						const index = outcome.userOpenOrders.findIndex(openOrder => openOrder.id === orderID);
-						outcome.userOpenOrders.splice(index, 1);
+						if (order.type === 'buy') {
+							// cancellation success => remove
+							const index = outcome.userOpenOrders.findIndex(openOrder => openOrder.id === orderID);
+							outcome.userOpenOrders.splice(index, 1);
+						} else {
+							// cancellation failure => display cancel action again
+							require('../selectors').orderCancellation[orderID] = require('../selectors').orderCancellation.cancellationStatuses.CANCELLATION_FAILED;
+							setTimeout(() => {
+								delete require('../selectors').orderCancellation[orderID];
+								require('../selectors').update({});
+							}, 2000);
+						}
 						require('../selectors').update({});
 					}
 				});
@@ -27,6 +37,7 @@ export default {
 		}, 2000);
 	},
 	showCancelOrderConfirmation: orderID => {
+		// prevent accidental cancellation from double click
 		setTimeout(() => {
 			require('../selectors').orderCancellation[orderID] = require('../selectors').orderCancellation.cancellationStatuses.CANCELLATION_CONFIRMATION;
 			require('../selectors').update({});
