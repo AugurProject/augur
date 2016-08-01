@@ -47,8 +47,6 @@ const PortfolioPage = (p) => {
 						}
 					</div>
 
-					<Filters filters={p.filters} />
-
 					<div className="portfolio-item">
 						{!!p.portfolio && !!p.portfolio.navItems.length &&
 							<TabNavigation
@@ -56,14 +54,6 @@ const PortfolioPage = (p) => {
 								navItems={p.portfolio.navItems}
 							/>
 						}
-
-						<SearchSort
-							keywords={p.keywords}
-							selectedSort={p.selectedSort}
-							sortOptions={p.sortOptions}
-							onChangeKeywords={p.onChangeKeywords}
-							onChangeSort={p.onChangeSort}
-						/>
 
 						{node}
 					</div>
@@ -75,16 +65,10 @@ const PortfolioPage = (p) => {
 };
 
 PortfolioPage.propTypes = {
-	portfolio: React.PropTypes.object,
-	siteHeader: React.PropTypes.object,
-	keywords: React.PropTypes.string,
-	selectedSort: React.PropTypes.object,
-	sortOptions: React.PropTypes.array,
-	onChangeKeywords: React.PropTypes.func,
-	onChangeSort: React.PropTypes.func,
-	filters: React.PropTypes.array,
-	positionsSummary: React.PropTypes.object,
-	positionsMarkets: React.PropTypes.array
+	portfolio: React.PropTypes.object.isRequired,
+	siteHeader: React.PropTypes.object.isRequired,
+	positionsSummary: React.PropTypes.object.isRequired,
+	positionsMarkets: React.PropTypes.array.isRequired
 };
 
 export default PortfolioPage;
