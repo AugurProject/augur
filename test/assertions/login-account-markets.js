@@ -3,48 +3,50 @@ import assertFormattedNumber from '../../test/assertions/common/formatted-number
 import assertEndDate from '../../test/assertions/common/end-date';
 
 export default function (loginAccountMarkets){
-	loginAccountMarkets.forEach(market => {
-		describe('augur-ui-react-components loginAccountMarkets state', () => {
-			it('description', () => {
-				assert.isDefined(market.description);
-				assert.isString(market.description);
-			});
+	loginAccountMarkets.forEach(market => { assertLoginAccountMarkets(market) });
+};
 
-			it('endDate', () => {
-				assert.isDefined(market.endDate);
+export function assertLoginAccountMarkets(market) {
+	describe('augur-ui-react-components loginAccountMarkets state', () => {
+		it('description', () => {
+			assert.isDefined(market.description);
+			assert.isString(market.description);
+		});
 
-				assertEndDate(market.endDate, 'loginAccountMarkets.endDate');
-			});
+		it('endDate', () => {
+			assert.isDefined(market.endDate);
 
-			it('fees', () => {
-				assert.isDefined(market.fees);
+			assertEndDate(market.endDate, 'loginAccountMarkets.endDate');
+		});
 
-				assertFormattedNumber(market.fees, 'loginAccountMarkets.fees');
-			});
+		it('fees', () => {
+			assert.isDefined(market.fees);
 
-			it('volume', () => {
-				assert.isDefined(market.volume);
+			assertFormattedNumber(market.fees, 'loginAccountMarkets.fees');
+		});
 
-				assertFormattedNumber(market.volume, 'loginAccountMarkets.volume');
-			});
+		it('volume', () => {
+			assert.isDefined(market.volume);
 
-			it('numberOfTrades', () => {
-				assert.isDefined(market.numberOfTrades);
+			assertFormattedNumber(market.volume, 'loginAccountMarkets.volume');
+		});
 
-				assertFormattedNumber(market.numberOfTrades, 'loginAccountMarkets.numberOfTrades');
-			});
+		it('numberOfTrades', () => {
+			assert.isDefined(market.numberOfTrades);
 
-			it('averageTradeSize', () => {
-				assert.isDefined(market.averageTradeSize);
+			assertFormattedNumber(market.numberOfTrades, 'loginAccountMarkets.numberOfTrades');
+		});
 
-				assertFormattedNumber(market.averageTradeSize, 'loginAccountMarkets.averageTradeSize');
-			});
+		it('averageTradeSize', () => {
+			assert.isDefined(market.averageTradeSize);
 
-			it('openVolume', () => {
-				assert.isDefined(market.openVolume);
+			assertFormattedNumber(market.averageTradeSize, 'loginAccountMarkets.averageTradeSize');
+		});
 
-				assertFormattedNumber(market.openVolume, 'loginAccountMarkets.openVolume');
-			});
+		it('openVolume', () => {
+			assert.isDefined(market.openVolume);
+
+			assertFormattedNumber(market.openVolume, 'loginAccountMarkets.openVolume');
 		});
 	});
 };
