@@ -230,16 +230,6 @@ export default function (market) {
 						assert.isObject(openOrder.unmatchedShares);
 						assertFormattedNumber(openOrder.unmatchedShares);
 					});
-
-					it(`market.outcomes[${i}].userOpenOrders[${j}].isCancelling`, () => {
-						assert.isDefined(openOrder.isCancelling);
-						assert.isBoolean(openOrder.isCancelling);
-					});
-
-					it(`market.outcomes[${i}].userOpenOrders[${j}].isCancelled`, () => {
-						assert.isDefined(openOrder.isCancelled);
-						assert.isBoolean(openOrder.isCancelled);
-					});
 				});
 			});
 		});

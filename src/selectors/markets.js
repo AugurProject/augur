@@ -322,8 +322,6 @@ function makeMarkets(numMarkets = 50) {
 						id: `${m.id}${outcome.id}order${index}`,
 						type: parseInt(index, 10) % 2 === 1 ? 'buy' : 'sell',
 						marketID: m.id,
-						isCancelling: false,
-						isCancelled: false,
 						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), 'eth'),
 						unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
 						outcome: outcomeID,

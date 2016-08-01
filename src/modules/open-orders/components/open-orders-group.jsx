@@ -26,7 +26,11 @@ const OpenOrdersGroup = (p) => {
 						key={openOrder.id}
 						outcomeName={p.name}
 						{...openOrder}
-						cancelOrder={p.cancelOrder}
+						status={p.orderCancellation[openOrder.id]}
+						cancellationStatuses={p.orderCancellation.cancellationStatuses}
+						cancelOrder={p.orderCancellation.cancelOrder}
+						abortCancelOrderConfirmation={p.orderCancellation.abortCancelOrderConfirmation}
+						showCancelOrderConfirmation={p.orderCancellation.showCancelOrderConfirmation}
 					/>
 				))}
 			</tbody>
@@ -37,7 +41,7 @@ const OpenOrdersGroup = (p) => {
 OpenOrdersGroup.propTypes = {
 	userOpenOrders: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
 	name: React.PropTypes.string.isRequired,
-	cancelOrder: React.PropTypes.func.isRequired
+	orderCancellation: React.PropTypes.object.isRequired
 };
 
 export default OpenOrdersGroup;

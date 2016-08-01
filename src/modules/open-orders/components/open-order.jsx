@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = (p) => (
-	<tr className={classnames('open-order', { 'is-disabled': p.isCancelling || p.isCancelled })}>
+	<tr className={classnames('open-order', { 'is-disabled': [p.cancellationStatuses.CANCELLING, p.cancellationStatuses.CANCELLED].includes(p.status) })}>
 		<td className="outcome-name">
 			{p.outcomeName}
 		</td>
@@ -22,13 +22,9 @@ const OpenOrder = (p) => (
 			<ValueDenomination {...p.avgPrice} />
 		</td>
 		<td className="cancel">
-			<button
-				className="button cancel-order-action"
-				disabled={p.isCancelling || p.isCancelled}
-				title="Cancel order"
-				onClick={(event) => { p.cancelOrder(p.id, p.marketID, p.type); }}
-			>Cancel</button>
-
+			{
+				renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)
+			}
 		</td>
 	</tr>
 );
@@ -40,9 +36,54 @@ OpenOrder.propTypes = {
 	type: React.PropTypes.string.isRequired,
 	avgPrice: React.PropTypes.object.isRequired,
 	unmatchedShares: React.PropTypes.object.isRequired,
-	isCancelling: React.PropTypes.bool.isRequired,
-	isCancelled: React.PropTypes.bool.isRequired,
+	cancellationStatuses: React.PropTypes.object.isRequired,
+	status: React.PropTypes.string,
+	abortCancelOrderConfirmation: React.PropTypes.func.isRequired,
+	showCancelOrderConfirmation: React.PropTypes.func.isRequired,
 	cancelOrder: React.PropTypes.func.isRequired
 };
+
+function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {
+	switch (status) {
+	case cancellationStatuses.CANCELLATION_CONFIRMATION:
+		return (
+			<span>
+				<button
+					className="button cancel-order-abort-confirmation"
+					title="No, don't cancel order"
+					onClick={(event) => {
+						abortCancelOrderConfirmation(orderID, marketID, type);
+					}}
+				>No</button>
+				<button
+					className="button cancel-order-action"
+					title="Yes, cancel order"
+					onClick={(event) => {
+						cancelOrder(orderID, marketID, type);
+					}}
+				>Yes</button>
+			</span>
+		);
+	case cancellationStatuses.CANCELLING:
+		return 'Cancelling';
+	case cancellationStatuses.CANCELLATION_FAILED:
+		return 'Failure';
+	case cancellationStatuses.CANCELLED:
+		return null;
+	default:
+		return (
+			<button
+				className="button cancel-order-action"
+				title="Cancel order"
+				onClick={(event) => {
+					showCancelOrderConfirmation(orderID, marketID, type);
+				}}
+			>
+				Cancel
+			</button>
+		);
+	}
+
+}
 
 export default OpenOrder;
