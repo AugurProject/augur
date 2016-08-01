@@ -1,13 +1,11 @@
 import React from 'react';
 import SiteHeader from '../../../modules/site/components/site-header';
 import SiteFooter from '../../../modules/site/components/site-footer';
-import SearchSort from '../../../modules/common/components/search-sort';
 import PortfolioSummary from '../../../modules/portfolio/components/summary';
 import Positions from '../../../modules/positions/components/portfolio';
 import Markets from '../../../modules/markets/components/portfolio';
 import Reports from '../../../modules/reports/components/portfolio';
 import Link from '../../../modules/link/components/link';
-import Filters from '../../../modules/filters/components/filters';
 import TabNavigation from '../../../modules/common/components/tab-navigation';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/pages';
 
