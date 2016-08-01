@@ -201,7 +201,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 		assert.deepEqual(expected, actual, `Didn't return the expected array`);
 	});
 
-	it('should deliver the expected shape to AURC', () => {
+	it('should deliver the expected shape to augur-ui-react-components', () => {
 		assertions.loginAccountMarkets(actual);
 	});
 });
