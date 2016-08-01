@@ -37,7 +37,7 @@ describe('modules/portfolio/selectors/portfolio', () => {
 		assert(spiedLoginAccountMarkets.calledOnce, `Didn't call 'selectLoginAccountMarkets once as expected`);
 	});
 
-	it(`should return the correct object`, () => {
+	it(`should return the correct object to augur-ui-react-components`, () => {
 		assertions.portfolio(actual);
 	});
 });

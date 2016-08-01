@@ -12,7 +12,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
 
 	it('should return the expected array', () => {
 		proxyquire.noPreserveCache().noCallThru();
-		
+
 		let stubbedSelectors = {
 			links: {
 				myPositionsLink: {
