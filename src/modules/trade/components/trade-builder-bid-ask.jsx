@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
 
 const TradeBuilderBidAsk = (p) => (
-	<div className={classnames('trade-builder-bid-ask', p.className)}>
+	<div className={classnames('trade-builder-bid-ask', { 'is-of-current-user': p.bidAsk.isOfCurrentUser }, p.className)}>
 		<ValueDenomination
 			className={classnames('shares')}
 			{...p.bidAsk.shares}

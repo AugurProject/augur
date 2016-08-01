@@ -5,7 +5,8 @@ export default function selectOrderBook() {
 		bids: [
 			{
 				shares: makeNumber(776, 'Shares'),
-				price: makeNumber(0.5, 'eth')
+				price: makeNumber(0.5, 'eth'),
+				isOfCurrentUser: true
 			},
 			{
 				shares: makeNumber(87, 'Shares'),
@@ -27,7 +28,8 @@ export default function selectOrderBook() {
 			},
 			{
 				shares: makeNumber(2000, 'Shares'),
-				price: makeNumber(0.72, 'eth')
+				price: makeNumber(0.72, 'eth'),
+				isOfCurrentUser: Math.random() > 0.3
 			},
 			{
 				shares: makeNumber(5, 'Shares'),

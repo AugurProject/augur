@@ -57,6 +57,7 @@ export default class MarketPage extends Component {
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
 						tradeSummary={p.market.tradeSummary}
+						userOpenOrdersSummary={p.market.userOpenOrdersSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
 					/>
 				);

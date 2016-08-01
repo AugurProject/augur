@@ -28,12 +28,22 @@ const TradePanel = (p) => (
 				/>
 			))}
 		</tbody>
+		{p.userOpenOrdersSummary != null && p.userOpenOrdersSummary.openOrdersCount != null && p.userOpenOrdersSummary.openOrdersCount.value > 0 &&
+			(<tbody>
+				<tr>
+					<td colSpan="9">
+						Prices at which you have open orders are underlined
+					</td>
+				</tr>
+			</tbody>)
+		}
 	</table>
 );
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
-	selectedOutcome: React.PropTypes.object
+	selectedOutcome: React.PropTypes.object,
+	userOpenOrdersSummary: React.PropTypes.object
 };
 
 export default TradePanel;

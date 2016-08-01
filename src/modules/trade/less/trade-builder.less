@@ -74,6 +74,11 @@
 
     .trade-builder-bid-ask {
         display: flex;
+        &.is-of-current-user {
+            .price .value {
+                text-decoration: underline;
+            }
+        }
         .shares {
             flex: 1.6;
             text-align: right;
