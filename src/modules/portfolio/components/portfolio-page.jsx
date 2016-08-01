@@ -37,9 +37,6 @@ const PortfolioPage = (p) => {
 			<div className="page-content">
 				<section className="page-content portfolio-content">
 					<div className="component-header">
-						<Link className="button make" {...p.createMarketLink} >
-							Make a Market
-						</Link>
 						{!!p.portfolio && !!p.portfolio.summaries.length &&
 							<PortfolioSummary summaries={p.portfolio.summaries} />
 						}
