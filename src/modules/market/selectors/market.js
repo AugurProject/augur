@@ -22,7 +22,7 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
+import { formatShares, formatEther, formatPercent } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
