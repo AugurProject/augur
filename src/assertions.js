@@ -25,6 +25,7 @@ import orderCancellation from '../test/assertions/order-cancellation';
 import portfolio from '../test/assertions/portfolio';
 import loginAccountMarkets from '../test/assertions/login-account-markets';
 import portfolioNavItems from '../test/assertions/portfolio-nav-items';
+import portfolioSummaries from '../test/assertions/portfolio-summaries';
 
 export default {
 	activePage,
@@ -53,5 +54,6 @@ export default {
 	orderCancellation,
 	portfolio,
 	loginAccountMarkets,
-	portfolioNavItems
+	portfolioNavItems,
+	portfolioSummaries
 };
