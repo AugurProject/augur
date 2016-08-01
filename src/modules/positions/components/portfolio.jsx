@@ -3,8 +3,8 @@ import Positions from '../../positions/components/positions';
 import PositionsSummary from '../../positions/components/positions-summary';
 
 const PortfolioPositions = (p) => (
-	<div>
-		<header className="page-header">
+	<div className="positions-page">
+		<header className="page-header positions-header">
 			<div className="l-container">
 				<PositionsSummary {...p.positionsSummary} />
 			</div>

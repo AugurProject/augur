@@ -2,8 +2,6 @@ import React from 'react';
 import PortfolioMarketsRow from '../../../modules/markets/components/portfolio-row';
 
 const PortfolioMarkets = (p) => {
-	console.log('PortfolioMarkets -- ', p);
-
 	return (
 		<table className="full-width-table">
 			<thead>
@@ -28,7 +26,7 @@ const PortfolioMarkets = (p) => {
 };
 
 PortfolioMarkets.propTypes = {
-	markets: React.PropTypes.array
+	markets: React.PropTypes.array.isRequired
 };
 
 export default PortfolioMarkets;
