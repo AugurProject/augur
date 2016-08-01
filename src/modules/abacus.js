@@ -11,10 +11,26 @@ var clone = require("clone");
 var bs58 = require("bs58");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
+
+    // type: "buy" or "sell"
+    // gasLimit (optional): block gas limit as an integer
+    maxOrdersPerTrade: function (type, gasLimit) {
+        return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
+    },
+
+    // tradeTypes: array of "buy" and/or "sell"
+    sumTradeGas: function (tradeTypes) {
+        var gas = 0;
+        for (var i = 0, n = tradeTypes.length; i < n; ++i) {
+            gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
+        }
+        return gas;
+    },
 
     sumTrades: function (trade_ids) {
         var trades = new BigNumber(0);

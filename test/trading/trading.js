@@ -13,11 +13,206 @@ var abi = require("augur-abi");
 var clone = require("clone");
 var augurpath = "../../src/index";
 var augur = require(augurpath);
+var constants = require("../../src/constants");
+var utils = require("../../src/utilities");
 var tools = require("../tools");
 var random = require("../random");
+var abacus = require("../../src/modules/abacus");
+var trade = require("../../src/modules/trade");
 var DEBUG = true;
 
 describe("Unit tests", function () {
+
+    describe("abacus.maxOrdersPerTrade", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function () {
+                var maxOrders = abacus.maxOrdersPerTrade(t.type, t.gasLimit);
+                assert.strictEqual(maxOrders, t.expected);
+            });
+        };
+        test({type: "sell", expected: 4});
+        test({type: "buy", expected: 4});
+        test({type: "sell", gasLimit: 3135000, expected: 4});
+        test({type: "buy", gasLimit: 3135000, expected: 4});
+        test({type: "sell", gasLimit: 3500000, expected: 5});
+        test({type: "buy", gasLimit: 3500000, expected: 5});
+        test({type: "sell", gasLimit: 4250000, expected: 6});
+        test({type: "buy", gasLimit: 4250000, expected: 6});
+        test({type: "sell", gasLimit: 4712388, expected: 7});
+        test({type: "buy", gasLimit: 4712388, expected: 6});
+        test({type: "sell", gasLimit: 10000000, expected: 16});
+        test({type: "buy", gasLimit: 10000000, expected: 14});
+        test({type: "sell", gasLimit: 100000000, expected: 162});
+        test({type: "buy", gasLimit: 100000000, expected: 150});
+    });
+
+    describe("abacus.sumTradeGas", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function () {
+                assert.strictEqual(abacus.sumTradeGas(t.tradeTypes), t.expected);
+            });
+        };
+        test({
+            tradeTypes: ["buy"],
+            expected: constants.TRADE_GAS[0].buy
+        });
+        test({
+            tradeTypes: ["sell"],
+            expected: constants.TRADE_GAS[0].sell
+        });
+        test({
+            tradeTypes: ["buy", "buy"],
+            expected: constants.TRADE_GAS[0].buy + constants.TRADE_GAS[1].buy
+        });
+        test({
+            tradeTypes: ["sell", "sell"],
+            expected: constants.TRADE_GAS[0].sell + constants.TRADE_GAS[1].sell
+        });
+        test({
+            tradeTypes: ["buy", "sell"],
+            expected: constants.TRADE_GAS[0].buy + constants.TRADE_GAS[1].sell
+        });
+        test({
+            tradeTypes: ["sell", "buy"],
+            expected: constants.TRADE_GAS[0].sell + constants.TRADE_GAS[1].buy
+        });
+        test({
+            tradeTypes: ["buy", "buy", "buy"],
+            expected: constants.TRADE_GAS[0].buy + 2*constants.TRADE_GAS[1].buy
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell"],
+            expected: constants.TRADE_GAS[0].sell + 2*constants.TRADE_GAS[1].sell
+        });
+        test({
+            tradeTypes: ["buy", "sell", "sell"],
+            expected: constants.TRADE_GAS[0].buy + 2*constants.TRADE_GAS[1].sell
+        });
+        test({
+            tradeTypes: ["sell", "buy", "buy"],
+            expected: constants.TRADE_GAS[0].sell + 2*constants.TRADE_GAS[1].buy
+        });
+        test({
+            tradeTypes: ["buy", "buy", "sell"],
+            expected: constants.TRADE_GAS[0].buy + constants.TRADE_GAS[1].buy + constants.TRADE_GAS[1].sell
+        });
+        test({
+            tradeTypes: ["sell", "sell", "buy"],
+            expected: constants.TRADE_GAS[0].sell + constants.TRADE_GAS[1].sell + constants.TRADE_GAS[1].buy
+        });
+    });
+
+    describe("trade.isUnderGasLimit", function () {
+        before(function () {
+            trade.rpc = {
+                blockNumber: function (callback) {
+                    if (!utils.is_function(callback)) return "0x1";
+                    callback("0x1");
+                },
+            };
+        });
+        after(function () { delete trade.rpc; });
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                trade.rpc.getBlock = function (blockNumber, pending, callback) {
+                    if (!utils.is_function(callback)) return {gasLimit: abi.hex(t.gasLimit)};
+                    callback({gasLimit: abi.hex(t.gasLimit)});
+                };
+                assert.strictEqual(trade.isUnderGasLimit(t.tradeTypes, t.gasLimit), t.expected);
+                assert.strictEqual(trade.isUnderGasLimit(t.tradeTypes), t.expected);
+                trade.isUnderGasLimit(t.tradeTypes, t.gasLimit, function (isUnderGasLimit) {
+                    assert.strictEqual(isUnderGasLimit, t.expected);
+                    trade.isUnderGasLimit(t.tradeTypes, function (isUnderGasLimit) {
+                        assert.strictEqual(isUnderGasLimit, t.expected);
+                        trade.isUnderGasLimit(t.tradeTypes, null, function (isUnderGasLimit) {
+                            assert.strictEqual(isUnderGasLimit, t.expected);
+                            done();
+                        });
+                    });
+                });
+            });
+        };
+        test({
+            tradeTypes: ["buy"],
+            gasLimit: 3135000,
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "buy"],
+            gasLimit: 3135000,
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "buy", "sell"],
+            gasLimit: 3135000,
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "buy", "sell", "buy"],
+            gasLimit: 3135000,
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
+            gasLimit: 3135000,
+            expected: false
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
+            gasLimit: 3135000,
+            expected: false
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
+            gasLimit: 3135000,
+            expected: false
+        });
+        test({
+            tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
+            gasLimit: 3135000,
+            expected: false
+        });
+        test({
+            tradeTypes: ["buy"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "buy"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "buy", "sell"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "buy", "sell", "buy"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
+            gasLimit: 4712388,
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
+            gasLimit: 4712388,
+            expected: false
+        });
+    });
 
     describe("getTradingActions", function () {
         var txOriginal;
@@ -1822,7 +2017,7 @@ describe("Unit tests", function () {
                         block: 1117314,
                         outcome: "1"
                     }
-            },
+                },
                 sell: {}
             },
             userPosition: {qtyShares: 1},
@@ -1986,11 +2181,10 @@ describe("Integration tests", function () {
 
     before("Top-up accounts and create new markets", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length + tools.TIMEOUT*3);
-        tools.top_up(augur, unlockable, password, function (err, unlocked) {
+        tools.top_up(augur, null, unlockable, password, function (err, unlocked) {
             assert.isNull(err);
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
-            assert.strictEqual(augur.from, unlocked[0]);
             unlockable = clone(unlocked);
             var expiration = parseInt(new Date().getTime() / 995);
             tools.create_each_market_type(augur, null, expiration, function (err, newMarkets) {
@@ -2010,12 +2204,58 @@ describe("Integration tests", function () {
 
     beforeEach("Top-up accounts", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length);
-        tools.top_up(augur, unlockable, password, function (err, unlocked) {
+        tools.top_up(augur, null, unlockable, password, function (err, unlocked) {
             assert.isNull(err);
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
-            assert.strictEqual(augur.from, unlocked[0]);
             done();
+        });
+    });
+
+    describe("trade.isUnderGasLimit", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                assert.strictEqual(augur.isUnderGasLimit(t.tradeTypes), t.expected);
+                augur.isUnderGasLimit(t.tradeTypes, function (isUnderGasLimit) {
+                    assert.strictEqual(isUnderGasLimit, t.expected);
+                    augur.isUnderGasLimit(t.tradeTypes, null, function (isUnderGasLimit) {
+                        assert.strictEqual(isUnderGasLimit, t.expected);
+                        done();
+                    });
+                });
+            });
+        };
+        test({
+            tradeTypes: ["buy"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "buy"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "buy", "sell"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "buy", "sell", "buy"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
+            expected: true
+        });
+        test({
+            tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
+            expected: false
         });
     });
 
@@ -2219,7 +2459,7 @@ describe("Integration tests", function () {
                 augur.buyCompleteSets({
                     market: markets[t.market],
                     amount: t.amount,
-                    onSent: function (r) {},
+                    onSent: augur.utils.noop,
                     onSuccess: function (r) {
                         augur.sell({
                             amount: t.amount,
@@ -2309,19 +2549,20 @@ describe("Integration tests", function () {
         var test = function (t) {
             it(JSON.stringify(t), function (done) {
                 this.timeout(tools.TIMEOUT*10);
+                var active = augur.from;
                 augur.useAccount(unlockable[0]);
                 var initialTotalTrades = parseInt(augur.Markets.get_total_trades(markets[t.market]));
                 augur.buyCompleteSets({
                     market: markets[t.market],
                     amount: t.amount,
-                    onSent: function (r) {},
+                    onSent: augur.utils.noop,
                     onSuccess: function (r) {
                         augur.sell({
                             amount: t.amount,
                             price: t.price,
                             market: markets[t.market],
                             outcome: t.outcome,
-                            onSent: function (r) {},
+                            onSent: augur.utils.noop,
                             onSuccess: function (r) {
                                 augur.useAccount(unlockable[1]);
                                 augur.get_trade_ids(markets[t.market], function (trade_ids) {
@@ -2363,6 +2604,7 @@ describe("Integration tests", function () {
                                             });
                                         });
                                     }, function (x) {
+                                        augur.useAccount(active);
                                         if (x && x.txHash) return done();
                                         done(x);
                                     });
@@ -2411,6 +2653,7 @@ describe("Integration tests", function () {
         var test = function (t) {
             it(JSON.stringify(t), function (done) {
                 this.timeout(tools.TIMEOUT*10);
+                var active = augur.from;
                 augur.useAccount(unlockable[0]);
                 var initialTotalTrades = parseInt(augur.get_total_trades(markets[t.market]));
                 augur.buy({
@@ -2418,7 +2661,7 @@ describe("Integration tests", function () {
                     price: t.price,
                     market: markets[t.market],
                     outcome: t.outcome,
-                    onSent: function (r) {},
+                    onSent: augur.utils.noop,
                     onSuccess: function (r) {
                         augur.useAccount(unlockable[1]);
                         augur.get_trade_ids(markets[t.market], function (trade_ids) {
@@ -2461,6 +2704,7 @@ describe("Integration tests", function () {
                                     });
                                 });
                             }, function (x) {
+                                augur.useAccount(active);
                                 if (x && x.txHash) return done();
                                 done(x);
                             });

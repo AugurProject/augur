@@ -103,19 +103,19 @@ describe("CreateMarket.createSingleEventMarket", function () {
                         priceWidth: "0.1"
                     }, {
                         onSimulate: function (res) {
-                            // console.log("simulation:", res);
+                            if (DEBUG) console.log("simulation:", res);
                         },
                         onBuyCompleteSets: function (res) {
-                            // console.log("buyCompleteSets:", res);
+                            if (DEBUG) console.log("buyCompleteSets:", res);
                         },
                         onSetupOutcome: function (res) {
-                            // console.log("setupOutcome:", res);
+                            if (DEBUG) console.log("setupOutcome:", res);
                         },
                         onSetupOrder: function (res) {
-                            // console.log("setupOrder:", res);
+                            if (DEBUG) console.log("setupOrder:", res);
                         },
                         onSuccess: function (res) {
-                            console.log("order book setup complete:", Object.keys(res.buy).length + Object.keys(res.sell).length, "orders created");
+                            if (DEBUG) console.log("order book setup complete:", Object.keys(res.buy).length + Object.keys(res.sell).length, "orders created");
                             done();
                         },
                         onFailed: function (err) {

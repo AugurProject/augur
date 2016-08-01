@@ -25,7 +25,13 @@ module.exports = {
     INDETERMINATE_PLUS_ONE: "0x14d1120d7b160001",
 
     // default gas: 3.135M
-    DEFAULT_GAS: "0x2fd618",
+    DEFAULT_GAS: 3135000,
+
+    // gas needed for trade transactions (values from pyethereum tester)
+    TRADE_GAS: [
+        {sell: 756374, buy: 787421}, // first trade_id only
+        {sell: 615817, buy: 661894} // each additional trade_id
+    ],
 
     // expected block interval
     SECONDS_PER_BLOCK: 12,

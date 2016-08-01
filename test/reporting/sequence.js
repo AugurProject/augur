@@ -79,7 +79,7 @@ describe("Reporting sequence", function () {
             // create a new branch
             if (DEBUG) {
                 console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"))
-                console.log(chalk.white.dim("Account:"), chalk.green(augur.from));
+                console.log(chalk.white.dim("Account:"), chalk.green(sender));
             }
             augur.createBranch({
                 description: branchDescription,
@@ -92,7 +92,7 @@ describe("Reporting sequence", function () {
                     newBranchID = res.branchID;
                     if (DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
                     var block = augur.rpc.getBlock(res.blockNumber);
-                    assert.strictEqual(augur.getCreator(newBranchID), augur.from);
+                    assert.strictEqual(augur.getCreator(newBranchID), sender);
                     assert.strictEqual(augur.getDescription(newBranchID), branchDescription);
                     var block = augur.rpc.getBlock(res.blockNumber);
                     assert.strictEqual(newBranchID, utils.sha3([
@@ -105,8 +105,6 @@ describe("Reporting sequence", function () {
                         0,
                         branchDescription
                     ]));
-                },
-                onConfirmed: function (res) {
 
                     // get reputation on the new branch
                     if (DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(sender));
@@ -119,7 +117,7 @@ describe("Reporting sequence", function () {
                         onSuccess: function (res) {
                             assert(res.txHash);
                             assert.strictEqual(res.callReturn, "1");
-                            assert.strictEqual(augur.getRepBalance(newBranchID, augur.from), "47");
+                            assert.strictEqual(augur.getRepBalance(newBranchID, sender), "47");
 
                             // create an event (and market) on the new branch
                             var t = new Date().getTime() / 1000;
@@ -172,7 +170,6 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                augur.useAccount(unlockable[0]);
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     if (err) console.log("checkVotePeriod failed:", err);
                     assert.isNull(err);
@@ -196,13 +193,13 @@ describe("Reporting sequence", function () {
                 console.log(chalk.white.dim("Reporter:"), chalk.green(sender));
             }
             async.forEachOf(events, function (event, type, nextEvent) {
-                console.log("needle:", abi.hex(event));
-                var reportHash = augur.makeHash(salt, report, event);
+                var fixedReport = augur.fixReport(report, type === "scalar", false);
+                var reportHash = augur.makeHash(salt, fixedReport, event, sender);
                 if (DEBUG) {
                     printReportingStatus(event, "[" + type  + "] Difference " + (augur.getCurrentPeriod(periodLength) - period));
                     console.log(chalk.white.dim("Submitting report hash:"), chalk.green(reportHash));
                 }
-                assert.include(eventsToReportOn, abi.hex(event));
+                assert.include(eventsToReportOn, event);
                 if (DEBUG) {
                     var periodRepConstant = augur.ExpiringEvents.getPeriodRepConstant(branch, period, sender);
                     var lesserReportNum = augur.ExpiringEvents.getLesserReportNum(branch, period, event);
@@ -279,13 +276,12 @@ describe("Reporting sequence", function () {
         });
         it("makeReports.submitReport", function (done) {
             this.timeout(tools.TIMEOUT*100);
+            var period = augur.Branches.getVotePeriod(newBranchID);
             tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
                 assert.isNull(err);
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                console.log("unlockable[0]:", unlockable[0]);
-                console.log("sender:", sender);
                 augur.useAccount(sender);
                 async.forEachOf(events, function (event, type, nextEvent) {
                     if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
@@ -296,13 +292,13 @@ describe("Reporting sequence", function () {
                             salt: salt,
                             report: report,
                             ethics: 1, // 1 = ethical
-                            isScalar: false,
+                            isScalar: type === "scalar",
+                            isIndeterminate: false,
                             onSent: function (res) {
                                 assert(res.txHash);
                                 console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
                             },
                             onSuccess: function (res) {
-                                var period = augur.Branches.getVotePeriod(newBranchID);
                                 var storedReport = augur.ExpiringEvents.getReport({
                                     branch: newBranchID,
                                     period: period,
@@ -338,7 +334,6 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                augur.useAccount(unlockable[0]);
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     assert.isNull(err);
                     if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");

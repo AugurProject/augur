@@ -64,6 +64,7 @@ module.exports = {
         var unlocked = [];
         var self = this;
         var active = augur.from;
+        branch = branch || constants.DEFAULT_BRANCH_ID;
         async.eachSeries(accounts, function (account, nextAccount) {
             augur.rpc.personal("unlockAccount", [account, password], function (res) {
                 if (res && res.error) return nextAccount();

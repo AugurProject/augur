@@ -9,8 +9,30 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var utils = require("../utilities");
+var abacus = require("./abacus");
 
 module.exports = {
+
+    // tradeTypes: array of "buy" and/or "sell"
+    // gasLimit (optional): block gas limit as integer
+    isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
+        if (utils.is_function(gasLimit) && !callback) {
+            callback = gasLimit;
+            gasLimit = null;
+        }
+        var gas = abacus.sumTradeGas(tradeTypes);
+        if (!utils.is_function(callback)) {
+            if (gasLimit) return gas <= gasLimit;
+            return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
+        }
+        if (gasLimit) return callback(gas <= gasLimit);
+        var self = this;
+        this.rpc.blockNumber(function (blockNumber) {
+            self.rpc.getBlock(blockNumber, false, function (block) {
+                callback(gas <= parseInt(block.gasLimit, 16));
+            });
+        });
+    },
 
     trade: function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
