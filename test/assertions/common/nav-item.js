@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import assertLink from '../../../test/assertions/common/link';
 
-export default function (navItem, ref){
-	describe(`${ref}'s navItem shape`, () => {
+export default function (navItem, label = 'Nav Item'){
+	describe(`${label}' Shape`, () => {
 		assert.isDefined(navItem);
 		assert.isObject(navItem);
 
@@ -12,7 +12,7 @@ export default function (navItem, ref){
 		});
 
 		it('link', () => {
-			assertLink(navItem.link);
+			assertLink(navItem.link, 'portfolio.navItem.link');
 		});
 
 		it('page', () => {

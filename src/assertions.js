@@ -24,6 +24,7 @@ import selectedUserOpenOrdersGroup from '../test/assertions/selected-user-open-o
 import orderCancellation from '../test/assertions/order-cancellation';
 import portfolio from '../test/assertions/portfolio';
 import loginAccountMarkets from '../test/assertions/login-account-markets';
+import portfolioNavItems from '../test/assertions/portfolio-nav-items';
 
 export default {
 	activePage,
@@ -51,5 +52,6 @@ export default {
 	selectedUserOpenOrdersGroup,
 	orderCancellation,
 	portfolio,
-	loginAccountMarkets
+	loginAccountMarkets,
+	portfolioNavItems
 };

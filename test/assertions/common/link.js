@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
-export default function (link, label) {
-	describe(`${label}'s link shape`, () => {
+export default function (link, label = 'Link') {
+	describe(`${label} Shape`, () => {
 		assert.isDefined(link);
 		assert.isObject(link);
 

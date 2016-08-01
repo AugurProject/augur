@@ -5,30 +5,14 @@ import assertEndDate from '../../test/assertions/common/end-date';
 
 export default function (portfolio){
 	describe('augur-ui-react-components portfolio state', () => {
-		it('portfolio', () => {
-			assert.isDefined(portfolio);
-			assert.isObject(portfolio);
-		});
-
-		it('navItems', () => {
-			assert.isDefined(portfolio.navItems);
-			assert.isArray(portfolio.navItems);
-
-			portfolio.navItems.forEach(navItem => { assertNavItem(navItem, 'portfolio') });
-		});
+		assert.isDefined(portfolio);
+		assert.isObject(portfolio);
 
 		it('summaries', () => {
 			assert.isDefined(portfolio.summaries);
 			assert.isArray(portfolio.summaries);
 
 			portfolio.summaries.forEach(summary => { assertSummary(summary) });
-		});
-
-		it('loginAccountMarkets', () => {
-			assert.isDefined(portfolio.loginAccountMarkets);
-			assert.isArray(portfolio.loginAccountMarkets);
-
-			portfolio.loginAccountMarkets.forEach(market => { assertLoginAccountMarket(market) })
 		});
 	});
 };
