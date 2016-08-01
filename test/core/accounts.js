@@ -278,15 +278,14 @@ describe("Transaction signing", function () {
                   "600f5933ff33560f601e5960003356576000335700604158600035560f602b59"+
                   "0033560f60365960003356573360003557600035335700";
         tx.sign(privateKey);
-        var signed = "f9017b80648203e88080b9012e37663465363136643635353236353637303030"+
+        var signed = "80648203e88080b9012e37663465363136643635353236353637303030303030"+
                      "3030303030303030303030303030303030303030303030303030303030303030"+
-                     "3030303030303030303030303030303330353733303766346536313664363535"+
-                     "3236353637303030303030303030303030303030303030303030303030303030"+
-                     "3030303030303030303030303030303030303030303030353733333630343535"+
-                     "3736";
+                     "3030303030303030303030303330353733303766346536313664363535323635"+
+                     "3637303030303030303030303030303030303030303030303030303030303030"+
+                     "30303030303030303030303030303030303030303537333336303435353736";
         var serializedTx = tx.serialize().toString("hex");
-        assert.strictEqual(serializedTx.slice(0, 324), signed);
-        assert.strictEqual(serializedTx.length, 764)
+        assert.strictEqual(serializedTx.slice(6, 324), signed);
+        assert(serializedTx.length === 764 || serializedTx.length === 762);
     });
 
     // up-front cost calculation:
@@ -365,7 +364,7 @@ describe("Integration tests", function () {
 
     describe("Fund new account", function () {
         it("Address funding sequence", function (done) {
-            this.timeout(tools.TIMEOUT*4);
+            this.timeout(tools.TIMEOUT*2);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
             augur.web.login(secureLoginID, password, function (account) {
                 // console.log("login:", account);
@@ -399,8 +398,12 @@ describe("Integration tests", function () {
             });
         });
         it("Faucet funding sequence", function (done) {
-            this.timeout(tools.TIMEOUT*4);
+            this.timeout(tools.TIMEOUT*2);
             var augur = tools.setup(require("../../src"), process.argv.slice(2));
+
+            // faucet only exists on network 2!
+            if (augur.network_id !== "2") return done();
+
             augur.web.login(secureLoginID2, password2, function (account) {
                 // console.log("login:", account);
                 checkAccount(augur, account);

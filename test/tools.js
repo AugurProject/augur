@@ -60,39 +60,49 @@ module.exports = {
         this.print_residual(periodLength);
     },
 
-    top_up: function (augur, accounts, password, callback) {
+    top_up: function (augur, branch, accounts, password, callback) {
         var unlocked = [];
         var self = this;
+        var active = augur.from;
         async.eachSeries(accounts, function (account, nextAccount) {
             augur.rpc.personal("unlockAccount", [account, password], function (res) {
                 if (res && res.error) return nextAccount();
+                if (self.DEBUG) console.log(chalk.white.dim("Unlocked account:"), chalk.green(account));
                 augur.Cash.balance(account, function (cashBalance) {
-                    if (parseFloat(cashBalance) >= 10000000000) {
-                        unlocked.push(account);
-                        return nextAccount();
-                    }
-                    augur.useAccount(account);
-                    augur.setCash({
+                    augur.Reporting.getRepBalance({
+                        branch: branch,
                         address: account,
-                        balance: "10000000000",
-                        onSent: augur.utils.noop,
-                        onSuccess: function (r) {
-                            if (r.callReturn === "1") unlocked.push(account);
-                            nextAccount();
-                        },
-                        onFailed: function (err) {
-                            if (self.DEBUG) console.debug("Couldn't unlock account:", account, err);
-                            nextAccount();
+                        callback: function (repBalance) {
+                            augur.useAccount(account);
+                            if (parseFloat(cashBalance) >= 10000000000 && parseFloat(repBalance) >= 47) {
+                                unlocked.push(account);
+                                return nextAccount();
+                            }
+                            augur.fundNewAccount({
+                                branch: branch,
+                                onSent: augur.utils.noop,
+                                onSuccess: function (r) {
+                                    if (r.callReturn !== "1") return nextAccount();
+                                    augur.setCash({
+                                        address: account,
+                                        balance: "10000000000",
+                                        onSent: augur.utils.noop,
+                                        onSuccess: function (r) {
+                                            if (r.callReturn === "1") unlocked.push(account);
+                                            nextAccount();
+                                        },
+                                        onFailed: function () { nextAccount(); }
+                                    });
+                                },
+                                onFailed: function () { nextAccount(); }
+                            });
                         }
                     });
                 });
             });
         }, function (err) {
             if (err) return callback(err);
-            if (unlocked.length) {
-                if (self.DEBUG) console.debug("Using account:", unlocked[0]);
-                augur.useAccount(unlocked[0]);
-            }
+            augur.useAccount(active);
             callback(null, unlocked);
         });
     },
@@ -211,6 +221,7 @@ module.exports = {
         var self = this;
         var branch = augur.getBranchID(markets.binary);
         var periodLength = augur.getPeriodLength(branch);
+        var active = augur.from;
         async.forEachOf(markets, function (market, type, nextMarket) {
             augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
                 if (unlocked && unlocked.error) return nextMarket(unlocked);
@@ -304,7 +315,7 @@ module.exports = {
                             assert.notProperty(r, "error");
                             assert.property(r, "unmatchedCash");
                             assert.property(r, "unmatchedShares");
-                            augur.useAccount(maker);
+                            augur.useAccount(active);
                             callback(null);
                         },
                         onTradeFailed: callback

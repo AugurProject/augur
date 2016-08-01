@@ -48,7 +48,9 @@ module.exports = function () {
                 if (response.statusCode !== 200) {
                     return onFailed(response.statusCode);
                 }
-                console.debug("Sent ether to:", registeredAddress);
+                if (augur.rpc.debug.broadcast) {
+                    console.debug("Sent ether to:", registeredAddress);
+                }
                 augur.fundNewAccount({
                     branch: branch || constants.DEFAULT_BRANCH_ID,
                     onSent: onSent,
@@ -272,12 +274,16 @@ module.exports = function () {
                     }
                 }
                 mutex.unlock();
+                if (augur.rpc.debug.broadcast) {
+                    console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
+                }
                 var etx = new EthTx(packaged);
 
                 // sign, validate, and send the transaction
                 etx.sign(self.account.privateKey);
 
                 // calculate the cost (in ether) of this transaction
+                // (note: this is just an upper bound on the cost, set by the gasLimit!)
                 var cost = etx.getUpfrontCost().toString();
 
                 // transaction validation
@@ -285,6 +291,7 @@ module.exports = function () {
 
                 // send the raw signed transaction to geth
                 augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+                    if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
                     if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
                     if (res.error) {
                         if (res.message.indexOf("rlp") > -1) {
@@ -293,7 +300,9 @@ module.exports = function () {
                             err.packaged = packaged;
                             return cb(err);
                         } else if (res.message.indexOf("Nonce too low") > -1) {
-                            console.debug("Bad nonce, retrying:", res.message, packaged);
+                            if (augur.rpc.debug.broadcast) {
+                                console.debug("Bad nonce, retrying:", res.message, packaged);
+                            }
                             delete packaged.nonce;
                             return self.getTxNonce(packaged, cb);
                         }
@@ -342,7 +351,9 @@ module.exports = function () {
             packaged.nonce = payload.nonce || 0;
             packaged.value = payload.value || "0x0";
             packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
-
+            if (augur.rpc.debug.broadcast) {
+                console.log("[augur.js] payload:", JSON.stringify(payload, null, 2));
+            }
             if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
                 packaged.gasPrice = payload.gasPrice;
                 return this.getTxNonce(packaged, cb);
