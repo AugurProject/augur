@@ -1,31 +1,26 @@
 .tab-navigator {
     display: flex;
+
     width: 100%;
-    height: 4rem;
-    line-height: 4rem;
-    margin-bottom: 1rem;
 
     .nav-item {
         flex: 1;
 
-        font-size: 1.2rem;
         text-align: center;
 
-        background-color: @color-muted-normal;
+        background: white;
+        color: black;
 
-        &:hover {
-            background-color: @color-muted-hover;
-        }
-
-        &:active {
-            background-color: @color-muted-active;
+        &:hover, &:active {
+            background: @color-light-hover;
         }
 
         &.active {
-            background-color: white;
+            background: @color-dark-hover;
+            color: @color-light-normal;
         }
 
-        border: 1px solid @color-border-dark;
+        border: 1px solid @color-border;
         &:not(:last-of-type) {
             border-right: none;
         }

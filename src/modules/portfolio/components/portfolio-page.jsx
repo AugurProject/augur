@@ -32,17 +32,20 @@ const PortfolioPage = (p) => {
 	return (
 		<main className="page portfolio">
 			<SiteHeader {...p.siteHeader} />
+
+			<header className="page-header portfolio-header">
+				<div className="l-container">
+					{!!p.portfolio && !!p.portfolio.navItems.length &&
+						<TabNavigation
+							activePage={p.siteHeader.activePage}
+							navItems={p.portfolio.navItems}
+						/>
+					}
+				</div>
+			</header>
+
 			<div className="page-content">
 				<section className="page-content portfolio-content">
-					<div className="component-header">
-						{!!p.portfolio && !!p.portfolio.navItems.length &&
-							<TabNavigation
-								activePage={p.siteHeader.activePage}
-								navItems={p.portfolio.navItems}
-							/>
-						}
-					</div>
-
 					<div className="portfolio-item">
 						{node}
 					</div>

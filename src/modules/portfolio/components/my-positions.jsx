@@ -4,12 +4,6 @@ import PositionsSummary from '../../../modules/portfolio/components/positions-su
 
 const PortfolioPositions = (p) => (
 	<div className="positions-page">
-		<header className="page-header positions-header">
-			<div className="l-container">
-				<PositionsSummary {...p.positionsSummary} />
-			</div>
-		</header>
-
 		<section className="page-content">
 			<div className="l-container">
 				{!!p.positionsMarkets && !!p.positionsMarkets.length && p.positionsMarkets.map(positionsMarket => (
