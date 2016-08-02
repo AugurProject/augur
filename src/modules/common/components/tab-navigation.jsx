@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from '../../../modules/link/components/link';
 import classnames from 'classnames';
+import ValueDenomination from '../../../modules/common/components/value-denomination';
 
 const TabNavigation = (p) => (
 	<div className="tab-navigator">
@@ -14,7 +15,26 @@ const TabNavigation = (p) => (
 					href={navItem.link.href}
 					onClick={navItem.link.onClick}
 				>
-					{navItem.label}
+					<span className="nav-label">{navItem.label}</span>
+
+					{(!!navItem.leadingValue || !!navItem.trailingValue) &&
+						<section className="nav-values">
+							{!!navItem.leadingValue &&
+								<ValueDenomination
+									{...navItem.leadingValue || {}}
+									title={!!navItem.leadingTitle ? `${navItem.leadingTitle}: ${navItem.leadingValue.full}` : ''}
+								/>
+							}
+
+							{!!navItem.trailingValue &&
+								<ValueDenomination
+									{...navItem.trailingValue || {}}
+									title={!!navItem.trailingTitle ? `${navItem.trailingTitle}: ${navItem.trailingValue.full}` : ''}
+									className="colorize"
+								/>
+							}
+						</section>
+					}
 				</Link>
 			);
 		})}
