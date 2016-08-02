@@ -3,8 +3,8 @@ import loginAccount from './login-account';
 const Shared = {
 	msg: null,
 	isVisiblePassword: true,
-	topMidLinkText: 'Import Account',
-	topMidLink: { href: '/import', onClick: () => require('../selectors').update({ activePage: 'import', authForm: { ...importAccount } }) },
+	bottomLinkText: 'Import Account',
+	bottomLink: { href: '/import', onClick: () => require('../selectors').update({ authForm: importAccount }) },
 	msgClass: 'success',
 	closeLink: { href: '/', onClick: () => require('../selectors').update({ activePage: 'markets' }) }
 };
@@ -74,10 +74,10 @@ const importAccount = {
 	isVisiblePassword2: false,
 	isVisibleFileInput: true,
 	title: 'Import Account',
-	topMidLinkText: 'Sign Up',
+	bottomLinkText: 'Sign Up',
 	submitButtonClass: 'login-button',
 	submitButtonText: 'Import Account',
-	topMidLink: {
+	bottomLink: {
 		href: '/register',
 		onClick: () => {
 			require('../selectors').update({ authForm: { ...signUp, clearPassword: true, clearName: true } });
@@ -107,7 +107,7 @@ function SignUpOnSubmit(name, password, password2) {
 }
 
 const AuthForm = {
-	...importAccount
+	...signUp
 };
 
 export default AuthForm;

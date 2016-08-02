@@ -89,13 +89,6 @@ export default class AuthForm extends Component {
 			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
 				<h1 className="title">
 					{p.title}
-					<Link
-						className="top-mid-link"
-						href={p.topMidLink.href}
-						onClick={p.topMidLink.onClick}
-					>
-						{p.topMidLinkText}
-					</Link>
 					{p.topLinkText &&
 						<Link
 							className="top-link"
@@ -151,22 +144,22 @@ export default class AuthForm extends Component {
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
 				/>
-				<Checkbox
-					className={classnames({ displayNone: !p.isVisibleRememberMe })}
-					title="Click Here to remember your account information locally."
-					text="Remember Me"
-					isChecked={s.rememberMe}
-					onClick={() => this.setState({ rememberMe: !s.rememberMe })}
-				/>
-				{p.bottomLinkText &&
+				<div className={classnames('bottom-container')}>
 					<Link
-						className="bottom-link"
-						href={p.bottomLinkHref}
-						onClick={p.onClickBottomLink}
+						className={classnames('bottom-link', { displayNone: !p.bottomLink })}
+						href={p.bottomLink.href}
+						onClick={p.bottomLink.onClick}
 					>
 						{p.bottomLinkText}
 					</Link>
-				}
+					<Checkbox
+						className={classnames({ displayNone: !p.isVisibleRememberMe })}
+						title="Click Here to remember your account information locally."
+						text="Remember Me"
+						isChecked={s.rememberMe}
+						onClick={() => this.setState({ rememberMe: !s.rememberMe })}
+					/>
+				</div>
 				<input
 					className={classnames('button', 'submit-button', p.submitButtonClass)}
 					type="submit"
