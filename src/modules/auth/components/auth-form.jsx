@@ -40,9 +40,9 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.fileReader = new FileReader();
 		this.state = {
 			msg: this.props.msg,
-			importAccount: this.props.importAccount,
 			secureLoginID: this.props.secureLoginID,
 			rememberMe: this.props.rememberMe
 		};
@@ -67,19 +67,18 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(e);
-		console.log(this.refs.form.value);
-		console.log(this.refs.form.data);
+		this.fileReader.readAsText(this.refs.form[1].files[0]);
 		const name = this.refs.name.value;
 		const secureLoginID = this.state.secureLoginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
-		const importAccount = this.state.importAccount;
-		console.log(importAccount);
-		this.setState({ msg: '' });
-		setTimeout(() =>
-			this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
+		this.fileReader.onload = (e) => {
+			// console.log(e.target.result);
+			const importAccount = JSON.parse(e.target.result);
+			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
+			this.setState({ msg: '' });
+		};
 	}
 
 	render() {
@@ -120,15 +119,12 @@ export default class AuthForm extends Component {
 					maxLength="30"
 					autoFocus="autofocus"
 				/>
-				<Input
+				<input
 					name="importAccount"
-					ref={(ref) => { if (ref && ref.state.value !== s.importAccount) { this.setState({ importAccount: ref.state.value }); } }}
 					className={classnames('auth-input', { displayNone: !p.isVisibleFileInput })}
 					type="file"
-					value={s.importAccount}
 					placeholder="Import Account"
 					autoFocus="autofocus"
-					onChange={(importAccount) => this.setState({ importAccount })}
 				/>
 				<Input
 					name="secureLoginID"

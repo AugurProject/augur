@@ -107,7 +107,7 @@ function SignUpOnSubmit(name, password, password2) {
 }
 
 const AuthForm = {
-	...signUp
+	...importAccount
 };
 
 export default AuthForm;
