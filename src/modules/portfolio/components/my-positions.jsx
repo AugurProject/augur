@@ -1,6 +1,5 @@
 import React from 'react';
 import Positions from '../../../modules/positions/components/positions';
-import PositionsSummary from '../../../modules/positions/components/positions-summary';
 
 const MyPositions = (p) => (
 	<div className="positions-page">
@@ -24,6 +23,6 @@ const MyPositions = (p) => (
 
 MyPositions.propTypes = {
 	positions: React.PropTypes.object.isRequired
-}
+};
 
 export default MyPositions;
