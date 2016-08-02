@@ -1,7 +1,6 @@
 import React from 'react';
 import SiteHeader from '../../../modules/site/components/site-header';
 import SiteFooter from '../../../modules/site/components/site-footer';
-import PortfolioSummary from '../../../modules/portfolio/components/summary';
 import Positions from '../../../modules/positions/components/portfolio';
 import Markets from '../../../modules/markets/components/portfolio';
 import Reports from '../../../modules/reports/components/portfolio';
@@ -36,19 +35,15 @@ const PortfolioPage = (p) => {
 			<div className="page-content">
 				<section className="page-content portfolio-content">
 					<div className="component-header">
-						{!!p.portfolio && !!p.portfolio.summaries.length &&
-							<PortfolioSummary summaries={p.portfolio.summaries} />
-						}
-					</div>
-
-					<div className="portfolio-item">
 						{!!p.portfolio && !!p.portfolio.navItems.length &&
 							<TabNavigation
 								activePage={p.siteHeader.activePage}
 								navItems={p.portfolio.navItems}
 							/>
 						}
+					</div>
 
+					<div className="portfolio-item">
 						{node}
 					</div>
 				</section>

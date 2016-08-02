@@ -16,7 +16,6 @@ import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
 import portfolio from './selectors/portfolio';
 import portfolioNavItems from './selectors/portfolio-nav-items';
-import portfolioSummaries from './selectors/portfolio-summaries';
 import loginAccountMarkets from './selectors/login-account-markets';
 
 // all selectors should go here
@@ -38,7 +37,6 @@ const selectors = {
 	transactionsTotals,
 	url,
 	portfolio,
-	portfolioSummaries,
 	portfolioNavItems,
 	loginAccountMarkets
 };
