@@ -2,17 +2,17 @@ import React from 'react';
 import Positions from '../../../modules/portfolio/components/positions';
 import PositionsSummary from '../../../modules/portfolio/components/positions-summary';
 
-const PortfolioPositions = (p) => (
+const MyPositions = (p) => (
 	<div className="positions-page">
 		<section className="page-content">
 			<div className="l-container">
-				{!!p.positionsMarkets && !!p.positionsMarkets.length && p.positionsMarkets.map(positionsMarket => (
-					<div key={positionsMarket.id} className="positions-container">
-						<span className="description">{positionsMarket.description}</span>
-						{!!positionsMarket.outcomes && !!positionsMarket.outcomes.length &&
+				{!!p.positions && !!p.positions.markets && !!p.positions.markets.length && p.positions.markets.map(market => (
+					<div key={market.id} className="positions-container">
+						<span className="description">{market.description}</span>
+						{!!market.outcomes && !!market.outcomes.length &&
 							<Positions
 								className="page-content positions-content"
-								outcomes={positionsMarket.outcomes}
+								outcomes={market.outcomes}
 							/>
 						}
 					</div>
@@ -22,4 +22,8 @@ const PortfolioPositions = (p) => (
 	</div>
 );
 
-export default PortfolioPositions;
+MyPositions.propTypes = {
+	positions: React.PropTypes.object.isRequired
+}
+
+export default MyPositions;

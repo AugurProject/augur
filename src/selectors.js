@@ -9,8 +9,6 @@ import loginAccount from './selectors/login-account';
 import market from './selectors/market';
 import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
-import positionsMarkets from './selectors/positions-markets';
-import positionsSummary from './selectors/positions-summary';
 import transactions from './selectors/transactions';
 import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
@@ -31,8 +29,6 @@ const selectors = {
 	market,
 	markets,
 	marketsTotals,
-	positionsSummary,
-	positionsMarkets,
 	transactions,
 	transactionsTotals,
 	url,

@@ -13,19 +13,13 @@ const PortfolioPage = (p) => {
 	switch (p.siteHeader.activePage) {
 	default:
 	case MY_POSITIONS:
-		node = (
-			<MyPositions
-				siteHeader={p.siteHeader}
-				positionsSummary={p.positionsSummary}
-				positionsMarkets={p.positionsMarkets}
-			/>
-		);
+		node = <MyPositions positions={p.positions} />;
 		break;
 	case MY_MARKETS:
-		node = <MyMarkets markets={p.portfolio.loginAccountMarkets} />;
+		node = <MyMarkets markets={p.markets} />;
 		break;
 	case MY_REPORTS:
-		node = <MyReports />;
+		node = <MyReports reports={p.reports} />;
 		break;
 	}
 
@@ -35,10 +29,10 @@ const PortfolioPage = (p) => {
 
 			<header className="page-header portfolio-header">
 				<div className="l-container">
-					{!!p.portfolio && !!p.portfolio.navItems.length &&
+					{!!p.navItems && !!p.navItems.length &&
 						<TabNavigation
 							activePage={p.siteHeader.activePage}
-							navItems={p.portfolio.navItems}
+							navItems={p.navItems}
 						/>
 					}
 				</div>
@@ -57,10 +51,12 @@ const PortfolioPage = (p) => {
 };
 
 PortfolioPage.propTypes = {
-	portfolio: React.PropTypes.object.isRequired,
 	siteHeader: React.PropTypes.object.isRequired,
-	positionsSummary: React.PropTypes.object.isRequired,
-	positionsMarkets: React.PropTypes.array.isRequired
+	navItems: React.PropTypes.array.isRequired,
+	totals: React.PropTypes.object.isRequired,
+	positions: React.PropTypes.object.isRequired,
+	markets: React.PropTypes.array.isRequired,
+	reports: React.PropTypes.array.isRequired
 };
 
 export default PortfolioPage;
