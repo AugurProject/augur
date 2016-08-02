@@ -104,11 +104,7 @@ function makeMarkets(numMarkets = 50) {
 			gainPercent: makeNumber(15, '%')
 		};
 
-		m.userOpenOrdersSummary = {
-			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
-				openOrdersCount + outcome.userOpenOrders.length
-			), 0), 'Open Orders')
-		};
+		m.userOpenOrdersSummary = null;
 
 		// report
 		m.report = {
