@@ -3,6 +3,8 @@ import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
+import { loadAccountTrades } from '../../positions/actions/load-account-trades';
+
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
@@ -25,6 +27,8 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				if (err) {
 					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				}
+
+				dispatch(loadAccountTrades());
 
 				message = generateMessage(totalEthWithFee, res.remainingEth);
 
@@ -65,7 +69,7 @@ function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalE
 	};
 
 	const matchingSortedAskIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks);
-console.log('------>', matchingSortedAskIDs, getState().marketOrderBooks);
+
 	if (!matchingSortedAskIDs.length) {
 		return cb(null, res);
 	}

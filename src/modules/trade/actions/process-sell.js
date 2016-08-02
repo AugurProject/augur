@@ -3,6 +3,8 @@ import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
+import { loadAccountTrades } from '../../positions/actions/load-account-trades';
+
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
@@ -17,14 +19,16 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message }));
 
 		trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch,
-			(res) => dispatch(updateExistingTransaction(
-				transactionID,
-				{ status: 'filling...', message: generateMessage(numShares, res.remainingShares) }
-			)),
+			(res) => {
+				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares) }));
+				dispatch(loadAccountTrades());
+			},
 			(err, res) => {
 				if (err) {
 					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				}
+
+				dispatch(loadAccountTrades());
 
 				message = generateMessage(numShares, res.remainingShares);
 
@@ -69,7 +73,7 @@ function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalE
 	if (!matchingSortedBidIDs.length) {
 		return cb(null, res);
 	}
-console.log('!!!!', 0, numShares, matchingSortedBidIDs);
+
 	AugurJS.trade({
 		max_value: 0,
 		max_amount: numShares,
@@ -87,7 +91,7 @@ console.log('!!!!', 0, numShares, matchingSortedBidIDs);
 		onTradeSuccess: data => {
 			res.remainingEth = parseFloat(data.unmatchedCash) || 0;
 			res.remainingShares = parseFloat(data.unmatchedShares) || 0;
-console.log('##', res);
+
 			if (res.remainingShares) {
 				cbFill(res);
 				return trade(transactionID, marketID, outcomeID, res.remainingShares, limitPrice, res.remainingEth, getState, dispatch, cbFill, cb);
