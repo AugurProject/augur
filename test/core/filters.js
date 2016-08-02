@@ -27,6 +27,7 @@ var tradeMarket = {};
 tradeMarket[augur.getMarketInfo(marketId).type] = marketId;
 var outcome = "1";
 var amount = "1";
+var password;
 
 describe("Unit tests", function () {
 
@@ -525,10 +526,9 @@ describe("Unit tests", function () {
 
 });
 
-var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
-
 describe("Integration tests", function () {
     if (!process.env.AUGURJS_INTEGRATION_TESTS) return;
+    password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
 
     describe("Price history", function () {
         before(function (done) {
