@@ -71,7 +71,7 @@ export const selectMarket = (marketID) => {
 		outcomes[marketID],
 
 		reports[marketsData[marketID].eventID],
-		accountTrades[marketID],
+		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 
 		// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
