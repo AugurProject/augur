@@ -104,6 +104,7 @@ function makeMarkets(numMarkets = 50) {
 			gainPercent: makeNumber(14, '%')
 		};
 
+		// position-outcomes
 		const randomPositionOutcome = m.outcomes[randomInt(0, m.outcomes.length - 1)];
 		randomPositionOutcome.position = {
 			qtyShares: makeNumber(16898, 'shares'),

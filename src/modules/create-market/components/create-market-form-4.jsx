@@ -62,7 +62,7 @@ const CreateMarketForm4 = (p) => {
 			</div>
 			<div className="advanced-market-params" >
 				<h6 className="horizontal-divider" onClick={() => { p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams }); }}><span>{advancedParamsArrow}</span> Advanced <span>{advancedParamsArrow}</span></h6>
-				<div className={classNames({ displayNone: !!!p.showAdvancedMarketParams })}>
+				<div className={classNames({ displayNone: !p.showAdvancedMarketParams })}>
 					<div>
 						<h4>Initial Fair Price</h4>
 						<p>

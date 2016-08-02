@@ -21,18 +21,18 @@ const OpenOrdersGroup = (p) => {
 					<th className="price">Price</th>
 					<th className="cancel">&nbsp;</th>
 				</tr>
-				{p.userOpenOrders.map(openOrder => (
+				{p.userOpenOrders.map(openOrder =>
 					<OpenOrder
+						{...openOrder}
 						key={openOrder.id}
 						outcomeName={p.name}
-						{...openOrder}
 						status={p.orderCancellation[openOrder.id]}
 						cancellationStatuses={p.orderCancellation.cancellationStatuses}
 						cancelOrder={p.orderCancellation.cancelOrder}
 						abortCancelOrderConfirmation={p.orderCancellation.abortCancelOrderConfirmation}
 						showCancelOrderConfirmation={p.orderCancellation.showCancelOrderConfirmation}
 					/>
-				))}
+				)}
 			</tbody>
 		</table>
 	);
