@@ -5,7 +5,7 @@ import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrders = (p) => (
 	<div className="market-open-orders">
-		{ !!p.userOpenOrdersSummary && !!p.userOpenOrdersSummary.openOrdersCount && p.userOpenOrdersSummary.openOrdersCount.value > 0 &&
+		{!!p.userOpenOrdersSummary && !!p.userOpenOrdersSummary.openOrdersCount && p.userOpenOrdersSummary.openOrdersCount.value > 0 &&
 			<div className="market-section-header">
 				<ValueDenomination {...p.userOpenOrdersSummary.openOrdersCount} />
 			</div>
