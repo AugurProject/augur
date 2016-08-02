@@ -358,7 +358,7 @@ describe("Reporting sequence", function () {
                             console.log("[" + type  + "] penalizeWrong sent:", res);
                         },
                         onSuccess: function (res) {
-                            // assert.strictEqual(res.callReturn, "1");
+                            assert.strictEqual(res.callReturn, "1");
                             console.log("[" + type  + "] penalizeWrong success:", res);
                             if (DEBUG) {
                                 printReportingStatus(event, "[" + type  + "] Event " + event + " penalized");
@@ -374,7 +374,7 @@ describe("Reporting sequence", function () {
                                 },
                                 onSuccess: function (res) {
                                     if (DEBUG) console.log("[" + type  + "] closeMarket success:", res);
-                                    // assert.strictEqual(res.callReturn, "1");
+                                    assert.strictEqual(res.callReturn, "1");
                                     if (DEBUG) {
                                         printReportingStatus(event, "[" + type  + "] Market closed");
                                         console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
