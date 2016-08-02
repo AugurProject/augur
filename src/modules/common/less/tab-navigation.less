@@ -9,10 +9,13 @@
     .nav-item {
         flex: 1;
         display: flex;
+        flex-direction: column;
         align-items: center;
 
         background: white;
         color: black;
+
+        line-height: 2em;
 
         &:hover, &:active {
             background: @color-light-hover;
@@ -29,34 +32,34 @@
         }
 
         .nav-label {
-            flex: 1;
+            flex: 5;
             display: flex;
             justify-content: center;
+            align-items: center;
 
             font-size: 2.5vmin;
-
-            padding-left: 1em;
         }
 
         .nav-values {
-            display: flex;
-            height: 62%;
+            width: 100%;
+            flex: 2;
 
-            justify-content: flex-end;
+            display: flex;
             align-items: center;
 
-            font-size: 2vmin;
+            font-size: 1.6vmin;
 
-            padding-right: 1em;
+            border-top: 1px solid @color-border;
 
             .value-denomination {
-                display: flex;
-                align-items: center;
+                flex: 1;
                 height: 100%;
 
-                padding: 0 1em;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
-                border-left: 1px solid @color-border;
+                border-right: 1px solid @color-border;
 
                 &:last-of-type {
                     padding-right: 0;
