@@ -1,13 +1,15 @@
 import React from 'react';
 
-import OpenOrdersSummary from '../../open-orders/components/open-orders-summary';
 import OpenOrdersGroup from '../../open-orders/components/open-orders-group';
+import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrders = (p) => (
 	<div className="market-open-orders">
-		<OpenOrdersSummary
-			userOpenOrdersSummary={p.userOpenOrdersSummary}
-		/>
+		{ !!p.userOpenOrdersSummary && !!p.userOpenOrdersSummary.openOrdersCount && p.userOpenOrdersSummary.openOrdersCount.value > 0 &&
+			<div className="market-section-header">
+				<ValueDenomination {...p.userOpenOrdersSummary.openOrdersCount} />
+			</div>
+		}
 
 		<div className="open-orders-list">
 			{
