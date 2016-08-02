@@ -7,14 +7,11 @@ var augur = require("../src");
 augur.connect({http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546"});
 
 augur.filters.listen({
-    // block: function (msg) {
-    //     console.log("block filter:", JSON.stringify(msg, null, 2));
-    // },
+    block: function (msg) {
+        console.log("block filter:", JSON.stringify(msg, null, 2));
+    },
     // contracts: function (msg) {
     //     console.log("contracts filter:", JSON.stringify(msg, null, 2));
-    // },
-    // log_price: function (msg) {
-    //     console.log("log_price filter:", JSON.stringify(msg, null, 2));
     // },
     log_fill_tx: function (msg) {
         console.log("log_fill_tx filter:", JSON.stringify(msg, null, 2));
@@ -36,9 +33,6 @@ augur.filters.listen({
     },
     tradingFeeUpdated: function (msg) {
         console.log("tradingFeeUpdated filter:", JSON.stringify(msg, null, 2));
-    },
-    returnValue: function (msg) {
-        console.log("returnValue filter:", JSON.stringify(msg, null, 2));
     },
     Approval: function (msg) {
         console.log("approval filter:", JSON.stringify(msg, null, 2));

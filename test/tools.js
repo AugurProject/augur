@@ -220,7 +220,7 @@ module.exports = {
 
     trade_in_each_market: function (augur, amountPerMarket, markets, maker, taker, password, callback) {
         var self = this;
-        var branch = augur.getBranchID(markets.binary);
+        var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
         var periodLength = augur.getPeriodLength(branch);
         var active = augur.from;
         async.forEachOf(markets, function (market, type, nextMarket) {

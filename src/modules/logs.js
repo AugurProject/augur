@@ -71,7 +71,7 @@ module.exports = {
             totalShares = new BigNumber(0);
             for (var i = 0, n = trades[outcome].length; i < n; ++i) {
                 price = new BigNumber(trades[outcome][i].price, 10);
-                shares = new BigNumber(trades[outcome][i].amount, 10);
+                shares = new BigNumber(trades[outcome][i].shares, 10);
                 if (include(shares)) {
                     outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
                     totalShares = totalShares.plus(shares);
@@ -149,7 +149,9 @@ module.exports = {
                     timeout: 480000
                 }, function (logs) {
                     parseLogs(logs, trades, false, function () {
-                        if (Object.keys(trades).length === 0) return cb(null);
+                        if (!trades || Object.keys(trades).length === 0) {
+                            return cb(null);
+                        }
                         cb(trades);
                     });
                 });              
@@ -221,7 +223,9 @@ module.exports = {
             timeout: 480000
         }, function (logs) {
             parseMarketTrades(logs, function (trades) {
-                if (Object.keys(trades).length === 0) return cb(null);
+                if (!trades || Object.keys(trades).length === 0) {
+                    return cb(null);
+                }
                 cb(trades);
             });
         });
