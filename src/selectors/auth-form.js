@@ -4,7 +4,7 @@ const Shared = {
 	msg: null,
 	isVisiblePassword: true,
 	topMidLinkText: 'Import Account',
-	topMidLink: { href: '/import', onClick: () => require('../selectors').update({ activePage: 'import', authForm: {...importAccount} })},
+	topMidLink: { href: '/import', onClick: () => require('../selectors').update({ activePage: 'import', authForm: { ...importAccount } }) },
 	msgClass: 'success',
 	closeLink: { href: '/', onClick: () => require('../selectors').update({ activePage: 'markets' }) }
 };
