@@ -1,9 +1,9 @@
 import React from 'react';
 import SiteHeader from '../../../modules/site/components/site-header';
 import SiteFooter from '../../../modules/site/components/site-footer';
-import Positions from '../../../modules/positions/components/portfolio';
-import Markets from '../../../modules/markets/components/portfolio';
-import Reports from '../../../modules/reports/components/portfolio';
+import MyPositions from '../../../modules/portfolio/components/my-positions';
+import MyMarkets from '../../../modules/portfolio/components/my-markets';
+import MyReports from '../../../modules/portfolio/components/my-reports';
 import TabNavigation from '../../../modules/common/components/tab-navigation';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/pages';
 
@@ -14,7 +14,7 @@ const PortfolioPage = (p) => {
 	default:
 	case MY_POSITIONS:
 		node = (
-			<Positions
+			<MyPositions
 				siteHeader={p.siteHeader}
 				positionsSummary={p.positionsSummary}
 				positionsMarkets={p.positionsMarkets}
@@ -22,10 +22,10 @@ const PortfolioPage = (p) => {
 		);
 		break;
 	case MY_MARKETS:
-		node = <Markets markets={p.portfolio.loginAccountMarkets} />;
+		node = <MyMarkets markets={p.portfolio.loginAccountMarkets} />;
 		break;
 	case MY_REPORTS:
-		node = <Reports />;
+		node = <MyReports />;
 		break;
 	}
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-const PortfolioReports = () => (
+const MyReports = () => (
 	<span>PORTFOLIO REPORTS -- TODO</span>
 );
 
-export default PortfolioReports;
+export default MyReports;

@@ -1,5 +1,4 @@
 import React from 'react';
-import PortfolioMarketsRow from '../../../modules/markets/components/portfolio-row';
 
 const PortfolioMarkets = (p) => (
 	<table className="full-width-table">
@@ -15,10 +14,17 @@ const PortfolioMarkets = (p) => (
 			</tr>
 		</thead>
 		{p.markets.map((market, id) => (
-			<PortfolioMarketsRow
-				key={id}
-				market={market}
-			/>
+			<tbody key={id} >
+				<tr className="cells-bordered solid dark">
+					<th className="cell-left-aligned">{market.description}</th>
+					<td>{market.endDate.formatted}</td>
+					<td>{market.fees.full}</td>
+					<td>{market.volume.formatted}</td>
+					<td>{market.numberOfTrades.formatted}</td>
+					<td>{market.averageTradeSize.full}</td>
+					<td>{market.openVolume.formatted}</td>
+				</tr>
+			</tbody>
 		))}
 	</table>
 );

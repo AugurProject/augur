@@ -1,6 +1,6 @@
 import React from 'react';
-import Positions from '../../positions/components/positions';
-import PositionsSummary from '../../positions/components/positions-summary';
+import Positions from '../../../modules/portfolio/components/positions';
+import PositionsSummary from '../../../modules/portfolio/components/positions-summary';
 
 const PortfolioPositions = (p) => (
 	<div className="positions-page">
