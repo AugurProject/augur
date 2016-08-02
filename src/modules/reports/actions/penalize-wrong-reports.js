@@ -33,7 +33,7 @@ export function penalizeWrongReports(marketsData) {
 					console.log('ERROR penalizeWrong()', err);
 					return next();
 				}
-				console.log('------> penalizeWrong', res);
+				console.log('penalizeWrong', res);
 				return next();
 			});
 		}());
