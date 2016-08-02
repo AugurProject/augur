@@ -14,7 +14,7 @@ const SiteHeader = (p) => (
 			
 			{!!p.loginAccount && !!p.loginAccount.id &&
 				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
-					Portfolio
+					Portfolio ({p.portfolioTotals.value.full} | {p.portfolioTotals.net.full})
 				</Link>
 			}
 
@@ -68,7 +68,8 @@ SiteHeader.propTypes = {
 	marketsLink: React.PropTypes.object,
 	myPositionsLink: React.PropTypes.object,
 	transactionsLink: React.PropTypes.object,
-	authLink: React.PropTypes.object
+	authLink: React.PropTypes.object,
+	portfolioTotals: React.PropTypes.object
 };
 
 export default SiteHeader;
