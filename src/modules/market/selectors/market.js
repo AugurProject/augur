@@ -53,7 +53,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -68,7 +68,7 @@ export const selectMarket = (marketID) => {
 		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
 
 		!!favorites[marketID],
-		outcomes[marketID],
+		outcomesData[marketID],
 
 		reports[marketsData[marketID].eventID],
 		(accountTrades || {})[marketID],
@@ -98,7 +98,7 @@ export const assembleMarket = memoizerific(1000)((
 		marketPriceHistory,
 		isOpen,
 		isFavorite,
-		marketOutcomes,
+		marketOutcomesData,
 		marketReport,
 		marketAccountTrades,
 		marketTradeInProgress,
@@ -168,8 +168,8 @@ export const assembleMarket = memoizerific(1000)((
 	let marketTradeOrders = [];
 	const positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
-	market.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
-		const outcomeData = marketOutcomes[outcomeID];
+	market.outcomes = Object.keys(marketOutcomesData || {}).map(outcomeID => {
+		const outcomeData = marketOutcomesData[outcomeID];
 		const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
 		const outcome = {

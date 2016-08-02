@@ -7,20 +7,11 @@ import store from '../../../store';
 import { assembleMarket } from '../../market/selectors/market';
 
 export default function () {
-	const { marketsData, favorites, reports,
-					outcomes, accountTrades, tradesInProgress,
-					blockchain, selectedSort, priceHistory, marketOrderBooks } = store.getState();
-
-	return selectMarkets(
-		marketsData, favorites, reports,
-		outcomes, accountTrades, tradesInProgress,
-		blockchain, selectedSort, priceHistory, marketOrderBooks, store.dispatch
-	);
+	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, marketOrderBooks } = store.getState();
+	return selectMarkets(marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, marketOrderBooks, store.dispatch);
 }
 
-export const selectMarkets = memoizerific(1)((marketsData, favorites, reports,
-	outcomes, accountTrades, tradesInProgress,
-	blockchain, selectedSort, priceHistory, marketOrderBooks, dispatch) => {
+export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, selectedSort, priceHistory, marketOrderBooks, dispatch) => {
 	if (!marketsData) {
 		return [];
 	}
@@ -39,7 +30,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports,
 			isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
 
 			!!favorites[marketID],
-			outcomes[marketID],
+			outcomesData[marketID],
 
 			reports[marketsData[marketID].eventID],
 			(accountTrades || {})[marketID],

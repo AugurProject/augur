@@ -5,7 +5,7 @@ import { selectTransactionsLink } from '../../link/selectors/links';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, outcomes } = getState();
+		const { tradesInProgress, outcomesData } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
 
@@ -24,7 +24,7 @@ export function placeTrade(marketID) {
 				marketID,
 				outcomeID,
 				market.description,
-				outcomes[marketID][outcomeID].name,
+				outcomesData[marketID][outcomeID].name,
 				outcomeTradeInProgress));
 		});
 
