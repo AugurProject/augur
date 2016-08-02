@@ -4,7 +4,9 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../modules/site/constants/
 
 import { makeNumber } from '../../src/utils/make-number';
 
-const randomSign = () => Math.random() < 0.5 ? -1 : 1;
+function randomSign() {
+	return Math.random() < 0.5 ? -1 : 1;
+}
 
 export default [
 	{
