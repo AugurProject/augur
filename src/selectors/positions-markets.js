@@ -4,7 +4,7 @@ export default [
 	{
 		id: '123',
 		description: 'will there be a referendum on may 1?',
-		outcomes: [
+		positionOutcomes: [
 			{
 				id: 1,
 				name: 'outcome 1',
@@ -40,7 +40,7 @@ export default [
 	{
 		id: '234',
 		description: 'Yoooooooooooooo, sup guy?',
-		outcomes: [
+		positionOutcomes: [
 			{
 				id: 1,
 				name: 'outcome 1',

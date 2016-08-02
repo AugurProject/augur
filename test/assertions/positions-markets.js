@@ -13,7 +13,7 @@ function assertPositionMarket(positionMarket) {
 	assert.isString(positionMarket.id, `id isn't a string`);
 	assert.isString(positionMarket.description, `description isn't a string`);
 
-	positionMarket.outcomes.forEach(function(outcome) { assertOutcome(outcome) });
+	positionMarket.positionOutcomes.forEach(function(positionOutcome) { assertOutcome(positionOutcome) });
 }
 
 function assertOutcome(outcome) {

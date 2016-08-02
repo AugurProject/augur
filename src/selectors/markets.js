@@ -94,15 +94,27 @@ function makeMarkets(numMarkets = 50) {
 
 		// positions summary
 		m.positionsSummary = {
-			numPositions: makeNumber(3, 'Positions', true),
-			qtyShares: makeNumber(10, 'shares'),
+			numPositions: makeNumber(1, 'Positions', true),
+			qtyShares: makeNumber(16898, 'shares'),
 			purchasePrice: makeNumber(0.5, 'eth'),
 			totalCost: makeNumber(5, 'eth'),
 			shareChange: makeNumber(1, 'shares'),
 			netChange: makeNumber(1, 'eth'),
 			totalValue: makeNumber(985, 'eth'),
-			gainPercent: makeNumber(15, '%')
+			gainPercent: makeNumber(14, '%')
 		};
+
+		const randomPositionOutcome = m.outcomes[randomInt(0, m.outcomes.length - 1)];
+		randomPositionOutcome.position = {
+			qtyShares: makeNumber(16898, 'shares'),
+			totalValue: makeNumber(14877, 'eth'),
+			gainPercent: makeNumber(14, '%'),
+			purchasePrice: makeNumber(0.77, 'eth'),
+			shareChange: makeNumber(0.107, 'eth'),
+			totalCost: makeNumber(12555, 'eth'),
+			netChange: makeNumber(3344, 'eth')
+		};
+		m.positionOutcomes = [randomPositionOutcome];
 
 		m.userOpenOrdersSummary = {
 			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
@@ -226,15 +238,6 @@ function makeMarkets(numMarkets = 50) {
 					name: makeName(index),
 					lastPrice: makeNumber(lastPrice, 'eth'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),
-					position: {
-						qtyShares: makeNumber(16898, 'shares'),
-						totalValue: makeNumber(14877, 'eth'),
-						gainPercent: makeNumber(14, '%'),
-						purchasePrice: makeNumber(0.77, 'eth'),
-						shareChange: makeNumber(0.107, 'eth'),
-						totalCost: makeNumber(12555, 'eth'),
-						netChange: makeNumber(3344, 'eth')
-					},
 					trade: {
 						side: tradeTypeOptions[0].value,
 						numShares: 0,

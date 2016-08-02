@@ -3,7 +3,7 @@ import ValueDenomination from '../../common/components/value-denomination';
 
 const Position = (p) => (
 	<div className="position">
-		<div className="main-group">
+		<div className="position-group main-group">
 			<span className="position-name">{p.name}</span>
 			<ValueDenomination {...p.qtyShares} />
 			<ValueDenomination

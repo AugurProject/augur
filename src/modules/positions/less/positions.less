@@ -20,7 +20,7 @@
 }
 
 .positions-container {
-	padding: 2rem 0 0 0;
+	padding: 1.5rem 0 0 0;
 	border-bottom: 3px solid @color-border;
 
 	.description {
@@ -32,27 +32,28 @@
 }
 
 .positions-list {
-	width: 100%;
-	padding: 2vmin 6vmin 1vmin 6vmin;
+	display: table;
+	width: 92%;
+	margin: 1vmin 0 1vmin 4%;
 	line-height: 1.9rem;
 	font-size: 1.2rem;
 
-
 	.position {
-		display: flex;
-		padding: 1.6em 4vmin 0.5em 4vmin;
+		display: table-row;
 
 		&:not(:first-child) {
 			border-top: 1px solid @color-border;
 		}
 
 		.position-group {
+			display: table-cell;
+			padding-top: 0.5em;
 			text-align: right;
+			vertical-align: top;
 
 			.position-pair {
 				display: inline-block;
-				min-width: 8em;
-				margin: 0 0 0.7em 0;
+				min-width: 7.8em;
 				line-height: 1.1em;
 				white-space: nowrap;
 
@@ -72,8 +73,8 @@
 		}
 
 		.main-group {
-			min-width: 40%;
 			line-height: 2em;
+			padding-top: 0.4em;
 			text-align: left;
 			font-size: 1.2em;
 			.colorize();
@@ -91,7 +92,7 @@
 			.position-name {
 				min-width: 5em;
 				padding: 0.25em 0.5em;
-				border: 3px solid @color-border;
+				text-transform: uppercase;
 			}
 		}
 	}
