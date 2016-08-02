@@ -15,7 +15,7 @@ const Transactions = (p) => (
 		</div>
 		{!!p.transactions.length &&
 			<span className="feel-free">
-				Feel free to continue trading while transactions are running, just don't close the browser before they're done!
+				continue trading while transactions are running, just don't close the browser before they're done!
 			</span>
 		}
 	</section>
