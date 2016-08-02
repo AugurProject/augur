@@ -14,7 +14,10 @@ import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
 import portfolio from './selectors/portfolio';
 import portfolioNavItems from './selectors/portfolio-nav-items';
+import portfolioTotals from './selectors/portfolio-totals';
+import loginAccountPositions from './selectors/login-account-positions';
 import loginAccountMarkets from './selectors/login-account-markets';
+import loginAccountReports from './selectors/login-account-reports';
 
 // all selectors should go here
 const selectors = {
@@ -34,7 +37,10 @@ const selectors = {
 	url,
 	portfolio,
 	portfolioNavItems,
-	loginAccountMarkets
+	portfolioTotals,
+	loginAccountPositions,
+	loginAccountMarkets,
+	loginAccountReports
 };
 
 // add update helper fn to selectors object
