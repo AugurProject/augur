@@ -34,5 +34,5 @@ export default [
 		repEarned: makeNumber(-Math.random() * 2.1, 'REP'),
 		endDate: makeDate(new Date('2008/11/4')),
 		isChallengeable: true
-	},
+	}
 ];
