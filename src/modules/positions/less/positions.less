@@ -34,7 +34,7 @@
 .positions-list {
 	display: table;
 	width: 92%;
-	margin: 1vmin 0 1vmin 4%;
+	margin: 1vmin 0 0 4%;
 	line-height: 1.9rem;
 	font-size: 1.2rem;
 
@@ -47,9 +47,9 @@
 
 		.position-group {
 			display: table-cell;
-			padding-top: 0.5em;
+			padding: 0.5em 0;
 			text-align: right;
-			vertical-align: top;
+			vertical-align: middle;
 
 			.position-pair {
 				display: inline-block;
@@ -73,15 +73,12 @@
 		}
 
 		.main-group {
-			line-height: 2em;
-			padding-top: 0.4em;
 			text-align: left;
-			font-size: 1.2em;
 			.colorize();
 
 			> * {
 				display: inline-block;
-				margin-right: 1.5em;
+				margin-right: 1em;
 				vertical-align: middle;
 			}
 
@@ -90,8 +87,7 @@
 			}
 
 			.position-name {
-				min-width: 5em;
-				padding: 0.25em 0.5em;
+				min-width: 4.5em;
 				text-transform: uppercase;
 			}
 		}
