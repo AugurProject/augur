@@ -3,10 +3,13 @@
 import env from '../src/env.json';
 
 const testState = {
-	accountTrades: {},
 	activePage: 'markets',
 	accountTrades: {
-		testMarketID: {}
+		testMarketID: {
+			testoutcomeID: [
+				{ type: 1, price: '0.5', shares: '50' }
+			]
+		}
 	},
 	auth: {
 		err: null,
@@ -82,7 +85,7 @@ const testState = {
 	marketOrderBooks: {
 		testMarketID: {}
 	},
-	outcomes: {
+	outcomesData: {
 		testMarketID: {
 			testMarketID: {
 				id: 'testMarketID',

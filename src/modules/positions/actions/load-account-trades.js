@@ -12,6 +12,7 @@ export function loadAccountTrades() {
 			if (!accountTrades) {
 				return;
 			}
+console.log('***', accountTrades);
 			dispatch(updateAccountTradesData(accountTrades || null));
 		});
 	};

@@ -72,7 +72,8 @@ describe(`modules/markets/selectors/markets-positions.js`, () => {
 
 	it(`should return only positions markets`, () => {
 		test = selector.default();
-		out = mockSelectors.allMarkets.filter(market => market.positionsSummary);
+		out = mockSelectors.positionsMarkets.filter(market => market.positionsSummary && market.positionsSummary.numPositions && market.positionsSummary.numPositions.value);
+
 		assert.deepEqual(test, out, `Didn't return the expected markets`);
 	});
 });

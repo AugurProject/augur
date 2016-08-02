@@ -1,12 +1,6 @@
-import {
-	assert
-} from 'chai';
-import {
-	UPDATE_ACCOUNT_TRADES_DATA
-} from '../../../src/modules/positions/actions/update-account-trades-data';
-import {
-	CLEAR_LOGIN_ACCOUNT
-} from '../../../src/modules/auth/actions/update-login-account';
+import { assert } from 'chai';
+import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../src/modules/positions/actions/update-account-trades-data';
+import { CLEAR_LOGIN_ACCOUNT } from '../../../src/modules/auth/actions/update-login-account';
 import reducer from '../../../src/modules/positions/reducers/account-trades';
 
 describe(`modules/positions/reducers/account-trades.js`, () => {
@@ -42,7 +36,7 @@ describe(`modules/positions/reducers/account-trades.js`, () => {
 		const action = {
 			type: CLEAR_LOGIN_ACCOUNT
 		};
-		assert.deepEqual(reducer(undefined, action), {}, `empty state didn't return empty object`);
-		assert.deepEqual(reducer(startState, action), {}, `with state didn't return empty object`);
+		assert.deepEqual(reducer(undefined, action), null, `empty state didn't return empty object`);
+		assert.deepEqual(reducer(startState, action), null, `with state didn't return empty object`);
 	});
 });
