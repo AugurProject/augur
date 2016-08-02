@@ -40,7 +40,9 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.fileReader = new FileReader();
+		if (window && window.fileReader) {
+			this.fileReader = new FileReader();
+		}
 		this.state = {
 			msg: this.props.msg,
 			secureLoginID: this.props.secureLoginID,
@@ -67,18 +69,23 @@ export default class AuthForm extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		this.fileReader.readAsText(this.refs.form[1].files[0]);
 		const name = this.refs.name.value;
 		const secureLoginID = this.state.secureLoginID;
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
-		this.fileReader.onload = (e) => {
-			// console.log(e.target.result);
-			const importAccount = JSON.parse(e.target.result);
-			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
+		if (typeof this.refs.form[1].files[0] !== undefined && this.fileReader) {
+			this.fileReader.readAsText(this.refs.form[1].files[0]);
+			this.fileReader.onload = (e) => {
+				// console.log(e.target.result);
+				const importAccount = JSON.parse(e.target.result);
+				setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
+				this.setState({ msg: '' });
+			};
+		} else {
+			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, undefined), 100);
 			this.setState({ msg: '' });
-		};
+		}
 	}
 
 	render() {
