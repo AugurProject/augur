@@ -16,34 +16,38 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 		}
 
 		let tradeComplete = false;
-		let message = generateMessage(totalEthWithFee, totalEthWithFee);
+		let message = generateMessage(totalEthWithFee, totalEthWithFee, 0);
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message }));
 
-		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee,
+		tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee,
 			() => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
 			(res) => dispatch(updateExistingTransaction(
 				transactionID,
-				{ status: 'filling...', message: generateMessage(totalEthWithFee, res.remainingEth) }
+				{ status: 'filling...', message: generateMessage(totalEthWithFee, res.remainingEth, res.filledShares) }
 			)),
 			(err, res) => {
-				if (err) {
-					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
-				}
-
-				dispatch(loadAccountTrades());
-
-				message = generateMessage(totalEthWithFee, res.remainingEth);
-
-				if (!res.remainingEth || tradeComplete) {
-					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
+				if (tradeComplete) {
+					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				}
 
 				tradeComplete = true;
 
+				if (err) {
+					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `${message} - ${err.message}` }));
+				}
+
+				dispatch(loadAccountTrades());
+
+				message = generateMessage(totalEthWithFee, res.remainingEth, res.filledShares);
+
+				if (!res.remainingEth) {
+					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
+				}
+
 				if (message) {
-					message = `${message}, bid `;
+					message = `${message}, BID `;
 				}
 				message = `${message}${formatShares(res.remainingEth / limitPrice).full} @ ${formatEther(limitPrice).full}`;
 
@@ -60,12 +64,10 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 	};
 }
 
-function generateMessage(totalEthWithFee, remainingEth) {
-	// const filledShares = numShares - remainingShares;
+function generateMessage(totalEthWithFee, remainingEth, filledShares) {
 	const filledEth = totalEthWithFee - remainingEth;
-	// const filledAvgPrice = Math.round(filledShares / filledEth * 100) / 100;
-
-	return `filled ${formatEther(filledEth).full} of ${formatEther(totalEthWithFee).full}`;
+	const filledAvgPrice = Math.round(filledEth / filledShares * 100) / 100;
+	return `BOT ${formatShares(filledShares).full} @ ${formatEther(filledAvgPrice).full}`;
 }
 
 

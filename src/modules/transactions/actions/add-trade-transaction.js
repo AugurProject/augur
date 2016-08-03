@@ -40,7 +40,8 @@ export const makeTradeTransaction = (type, marketID, outcomeID, marketDescriptio
 				marketID,
 				outcomeID,
 				outcomeTradeInProgress.numShares,
-				outcomeTradeInProgress.limitPrice));
+				outcomeTradeInProgress.limitPrice,
+				0));
 	}
 
 	return transaction;

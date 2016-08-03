@@ -76,8 +76,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
 
 	function parseBinaryOutcomes(marketData, marketID) {
 		return marketData.outcomes.reduce((p, outcome) => {
-			p[outcome.id] = p[outcome.id] || {};
-
+			p[outcome.id] = { ...outcome };
 			if (outcome.id === BINARY_NO_ID) {
 				p[outcome.id].name = 'No';
 			} else if (outcome.id === BINARY_YES_ID) {
@@ -114,6 +113,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
 
 	function parseScalarOutcomes(marketData, marketID) {
 		return marketData.outcomes.reduce((p, outcome) => {
+			p[outcome.id] = { ...outcome };
 			if (outcome.id === SCALAR_DOWN_ID) {
 				p[outcome.id].name = '⇩';
 			} else if (outcome.id === SCALAR_UP_ID) {
@@ -122,7 +122,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
 				console.warn('Invalid outcome ID for scalar market:', outcome, marketID, marketData);
 			}
 			return p;
-		});
+		}, {});
 	}
 }
 

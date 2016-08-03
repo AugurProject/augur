@@ -43,8 +43,8 @@ describe('utils/format-number.js', () => {
 						formatted: '1,000.1',
 						rounded: '1,000',
 						minimized: '1,000.1',
-						denomination: 'shares',
-						full: '1,000.1shares'
+						denomination: ' shares',
+						full: '1,000.1 shares'
 					}
 				},
 				{
