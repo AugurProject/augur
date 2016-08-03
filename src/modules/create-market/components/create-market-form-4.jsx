@@ -42,7 +42,7 @@ const CreateMarketForm4 = (p) => (
 		<div className="initial-order-book">
 			<h4>Set the initial order book</h4>
 			<p>
-				These initial set of orders will allow traders to begin buying and selling against them immediately upon market creation.
+				Allows you to place an initial set of orders in this market's order book, which will allow traders to begin buying and selling immediately.
 			</p>
 			<Checkbox
 				text="Include initial order book"
