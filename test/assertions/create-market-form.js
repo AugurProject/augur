@@ -391,61 +391,77 @@ export default function(createMarketForm) {
 						});
 					});
 
-					describe('initialFairPrices', () => {
-						it('should be defined', () => {
-							assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+					if(createMarketForm.isCreatingOrderBook) {
+						describe('initialFairPrices', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.initialFairPrices, `'initialFairPrices' is not defined`);
+							});
+
+							it('should be an object', () => {
+								assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
+							});
+
+							it('should have the correct shape', () => {
+								assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm.initialFairPrices');
+							});
 						});
 
-						it('should be an object', () => {
-							assert.isObject(createMarketForm.initialFairPrices, `'initialFairPrices' is not an object`);
+						describe('priceWidthFormatted', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.initialLiquidityFormatted, `'initialLiquidityFormatted' is not defined`);
+							});
+
+							it('should be an object', () => {
+								assert.isObject(createMarketForm.initialLiquidityFormatted, `'initialLiquidityFormatted' is not an object`);
+							});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(createMarketForm.initialLiquidityFormatted, 'createMarketForm.initialLiquidityFormatted');
+							});
 						});
 
-						it('should have the correct shape', () => {
-							assertInitialFairPrices(createMarketForm.initialFairPrices, 'createMarketForm.initialFairPrices');
-						});
-					});
+						describe('priceWidthFormatted', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.priceWidthFormatted, `'priceWidthFormatted' is not defined`);
+							});
 
-					describe('bestStartingQuantityFormatted', () => {
-						it('should be defined', () => {
-							assert.isDefined(createMarketForm.bestStartingQuantityFormatted, `'bestStartingQuantityFormatted' is not defined`);
-						});
+							it('should be an object', () => {
+								assert.isObject(createMarketForm.priceWidthFormatted, `'priceWidthFormatted' is not an object`);
+							});
 
-						it('should be an object', () => {
-							assert.isObject(createMarketForm.bestStartingQuantityFormatted, `'bestStartingQuantityFormatted' is not an object`);
-						});
-
-						it('should have the correct shape', () => {
-							assertFormattedNumber(createMarketForm.bestStartingQuantityFormatted, 'createMarketForm.bestStartingQuantityFormatted');
-						});
-					});
-
-					describe('startingQuantityFormatted', () => {
-						it('should be defined', () => {
-							assert.isDefined(createMarketForm.startingQuantityFormatted, `'startingQuantityFormatted' is not defined`);
+							it('should have the correct shape', () => {
+								assertFormattedNumber(createMarketForm.priceWidthFormatted, 'createMarketForm.priceWidthFormatted');
+							});
 						});
 
-						it('should be an object', () => {
-							assert.isObject(createMarketForm.startingQuantityFormatted, `'startingQuantityFormatted' is not an object`);
+						describe('bestStartingQuantityFormatted', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.bestStartingQuantityFormatted, `'bestStartingQuantityFormatted' is not defined`);
+							});
+
+							it('should be an object', () => {
+								assert.isObject(createMarketForm.bestStartingQuantityFormatted, `'bestStartingQuantityFormatted' is not an object`);
+							});
+
+							it('should have the correct shape', () => {
+								assertFormattedNumber(createMarketForm.bestStartingQuantityFormatted, 'createMarketForm.bestStartingQuantityFormatted');
+							});
 						});
 
-						it('should have the correct shape', () => {
-							assertFormattedNumber(createMarketForm.startingQuantityFormatted, 'createMarketForm.startingQuantityFormatted');
-						});
-					});
+						describe('startingQuantityFormatted', () => {
+							it('should be defined', () => {
+								assert.isDefined(createMarketForm.startingQuantityFormatted, `'startingQuantityFormatted' is not defined`);
+							});
 
-					describe('priceWidthFormatted', () => {
-						it('should be defined', () => {
-							assert.isDefined(createMarketForm.priceWidthFormatted, `'priceWidthFormatted' is not defined`);
-						});
+							it('should be an object', () => {
+								assert.isObject(createMarketForm.startingQuantityFormatted, `'startingQuantityFormatted' is not an object`);
+							});
 
-						it('should be an object', () => {
-							assert.isObject(createMarketForm.priceWidthFormatted, `'priceWidthFormatted' is not an object`);
+							it('should have the correct shape', () => {
+								assertFormattedNumber(createMarketForm.startingQuantityFormatted, 'createMarketForm.startingQuantityFormatted');
+							});
 						});
-
-						it('should have the correct shape', () => {
-							assertFormattedNumber(createMarketForm.priceWidthFormatted, 'createMarketForm.priceWidthFormatted');
-						});
-					});
+					}
 			}
 		});
 	});
