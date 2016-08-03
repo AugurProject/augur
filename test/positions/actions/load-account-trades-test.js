@@ -15,11 +15,14 @@ describe(`modules/positions/actions/load-account-trades.js`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 	let testData = {
-		testTrade: {
-			testOutcome: [{
-				market: 'test',
-				shares: 40,
-				cost: 10
+		'0x5f28dc8c789626ff3fdc28509b7f25af5e53301de88356bce1e0ea5f406d4ad2': {
+			'3': [{
+				'type': 1,
+				'price': '0.55',
+				'shares': '222.043537948617376173',
+				'trade_id': '0x0ba631b0ee824f668252128e6a2d4d554bcb284c77df39ab1fa2b60beaf88e62',
+				'blockNumber': 1413814,
+				'maker': false
 			}]
 		}
 	};
@@ -28,7 +31,7 @@ describe(`modules/positions/actions/load-account-trades.js`, () => {
 		loadAccountTrades: () => {}
 	};
 
-	let mock = sinon.stub(mockAugurJS, "loadAccountTrades", (loginID, cb) => cb(null, testData));
+	let mock = sinon.stub(mockAugurJS, 'loadAccountTrades', (loginID, cb) => cb(null, testData));
 
 	action = proxyquire('../../../src/modules/positions/actions/load-account-trades', {
 		'../../../services/augurjs': mockAugurJS
@@ -38,10 +41,14 @@ describe(`modules/positions/actions/load-account-trades.js`, () => {
 		out = [{
 			type: 'UPDATE_ACCOUNT_TRADES_DATA',
 			data: {
-				test: {
-					testOutcome: [{
-						qtyShares: 40,
-						purchasePrice: 10
+				'0x5f28dc8c789626ff3fdc28509b7f25af5e53301de88356bce1e0ea5f406d4ad2': {
+					'3': [{
+						'type': 1,
+						'price': '0.55',
+						'shares': '222.043537948617376173',
+						'trade_id': '0x0ba631b0ee824f668252128e6a2d4d554bcb284c77df39ab1fa2b60beaf88e62',
+						'blockNumber': 1413814,
+						'maker': false
 					}]
 				}
 			}
@@ -51,3 +58,5 @@ describe(`modules/positions/actions/load-account-trades.js`, () => {
 		assert.deepEqual(store.getActions(), out, `Didn't properly dispatch an UPDATE ACCOUNT TRADES DATA action`);
 	});
 });
+
+

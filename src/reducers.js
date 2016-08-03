@@ -9,12 +9,12 @@ import loginAccount from './modules/auth/reducers/login-account';
 import activePage from './modules/app/reducers/active-page';
 
 import marketsData from './modules/markets/reducers/markets-data';
+import outcomesData from './modules/markets/reducers/outcomes-data';
 import favorites from './modules/markets/reducers/favorites';
 import pagination from './modules/markets/reducers/pagination';
 
 import reports from './modules/reports/reducers/reports';
 
-import outcomes from './modules/markets/reducers/outcomes';
 import marketOrderBooks from './modules/bids-asks/reducers/market-order-books';
 import accountTrades from './modules/positions/reducers/account-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
@@ -43,6 +43,7 @@ module.exports = {
 	activePage,
 
 	marketsData,
+	outcomesData,
 	favorites,
 	pagination,
 
@@ -60,7 +61,6 @@ module.exports = {
 	tradesInProgress,
 	createMarketInProgress,
 
-	outcomes,
 	marketOrderBooks,
 	accountTrades,
 	transactionsData
