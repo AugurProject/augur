@@ -23,18 +23,24 @@ import validateStartingQuantity from '../../validators/validate-starting-quantit
 import validatePriceWidth from '../../validators/validate-price-width';
 
 export const select = (formState) => {
-	const obj = {
+	let obj = {
 		takerFee: formState.takerFee || TAKER_FEE_DEFAULT,
-		makerFee: formState.makerFee || MAKER_FEE_DEFAULT,
-		initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
-		initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
-		startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
-		bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
-		priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
-		halfPriceWidth: !!formState.priceWidth ? parseFloat(formState.priceWidth) / 2 : PRICE_WIDTH_DEFAULT / 2,
-		priceDepth: PRICE_DEPTH_DEFAULT,
-		isSimulation: formState.isSimulation || IS_SIMULATION
+		makerFee: formState.makerFee || MAKER_FEE_DEFAULT
 	};
+
+	if (formState.isCreatingOrderBook) {
+		obj = {
+			...obj,
+			initialLiquidity: formState.initialLiquidity || INITIAL_LIQUIDITY_DEFAULT,
+			initialFairPrices: !!formState.initialFairPrices.raw.length ? formState.initialFairPrices : { ...formState.initialFairPrices, ...initialFairPrices(formState) },
+			startingQuantity: formState.startingQuantity || STARTING_QUANTITY_DEFAULT,
+			bestStartingQuantity: formState.bestStartingQuantity || BEST_STARTING_QUANTITY_DEFAULT,
+			priceWidth: formState.priceWidth || PRICE_WIDTH_DEFAULT,
+			halfPriceWidth: !!formState.priceWidth ? parseFloat(formState.priceWidth) / 2 : PRICE_WIDTH_DEFAULT / 2,
+			priceDepth: PRICE_DEPTH_DEFAULT,
+			isSimulation: formState.isSimulation || IS_SIMULATION
+		};
+	}
 
 	return obj;
 };

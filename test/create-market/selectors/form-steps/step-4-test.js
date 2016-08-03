@@ -68,9 +68,10 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			out = null;
 		});
 
-		it('should return the correct object for binary markets', () => {
+		it('should return the correct object for binary markets with an initial order book', () => {
 			formState = {
 				type: BINARY,
+				isCreatingOrderBook: true,
 				initialFairPrices: {
 					type: BINARY,
 					values: [],
@@ -110,9 +111,10 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a binary market');
 		});
 
-		it('should return the correct object for categorical markets', () => {
+		it('should return the correct object for categorical markets with an initial order order', () => {
 			formState = {
 				type: CATEGORICAL,
+				isCreatingOrderBook: true,
 				initialFairPrices: {
 					type: CATEGORICAL,
 					values: [],
@@ -162,9 +164,10 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a categorical market');
 		});
 
-		it('should return the correct object for scaler markets', () => {
+		it('should return the correct object for scaler markets with an initial order book', () => {
 			formState = {
 				type: SCALAR,
+				isCreatingOrderBook: true,
 				initialFairPrices: {
 					type: SCALAR,
 					values: [],
