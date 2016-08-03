@@ -6,17 +6,21 @@ import url from './modules/link/selectors/url';
 import authForm from './modules/auth/selectors/auth-form';
 
 import marketsHeader from './modules/markets/selectors/markets-header';
+import marketsTotals from './modules/markets/selectors/markets-totals';
+import pagination from './modules/markets/selectors/pagination';
+
 import markets from './modules/markets/selectors/markets';
 import allMarkets from './modules/markets/selectors/markets-all';
 import favoriteMarkets from './modules/markets/selectors/markets-favorite';
 import filteredMarkets from './modules/markets/selectors/markets-filtered';
 import unpaginatedMarkets from './modules/markets/selectors/markets-unpaginated';
-import marketsTotals from './modules/markets/selectors/markets-totals';
-import pagination from './modules/markets/selectors/pagination';
-import selectedOutcome from './modules/outcome/selectors/selected-outcome';
+
+import positionsMarkets from './modules/markets/selectors/markets-positions';
+import positionsSummary from './modules/positions/selectors/positions-summary';
 import orderCancellation from './modules/bids-asks/selectors/order-cancellation';
 
 import market from './modules/market/selectors/market';
+import selectedOutcome from './modules/outcome/selectors/selected-outcome';
 
 import filters from './modules/markets/selectors/filters';
 import searchSort from './modules/markets/selectors/search-sort';
@@ -38,17 +42,21 @@ const selectors = {
 	createMarketForm,
 
 	marketsHeader,
+	marketsTotals,
+	pagination,
+
 	markets,
 	allMarkets,
 	favoriteMarkets,
 	filteredMarkets,
 	unpaginatedMarkets,
-	marketsTotals,
-	pagination,
-	selectedOutcome,
+
+	positionsMarkets,
+	positionsSummary,
 	orderCancellation,
 
 	market,
+	selectedOutcome,
 
 	filters,
 	searchSort,

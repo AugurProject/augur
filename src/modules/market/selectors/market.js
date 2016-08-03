@@ -37,17 +37,15 @@ import { toggleTag } from '../../markets/actions/toggle-tag';
 import store from '../../../store';
 
 import { selectMarketLink } from '../../link/selectors/links';
-import { selectPositionsSummary } from '../../positions/selectors/positions-summary';
 import selectUserOpenOrders from '../../user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from '../../user-open-orders/selectors/user-open-orders-summary';
 
 import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
 
-import { selectPositionFromOutcomeAccountTrades } from '../../positions/selectors/position';
-
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
+import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../positions/selectors/positions-summary';
 
 export default function () {
 	const { selectedMarketID } = store.getState();
@@ -55,7 +53,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomes, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -70,10 +68,10 @@ export const selectMarket = (marketID) => {
 		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
 
 		!!favorites[marketID],
-		outcomes[marketID],
+		outcomesData[marketID],
 
 		reports[marketsData[marketID].eventID],
-		accountTrades[marketID],
+		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 
 		// the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
@@ -100,7 +98,7 @@ export const assembleMarket = memoizerific(1000)((
 		marketPriceHistory,
 		isOpen,
 		isFavorite,
-		marketOutcomes,
+		marketOutcomesData,
 		marketReport,
 		marketAccountTrades,
 		marketTradeInProgress,
@@ -117,7 +115,6 @@ export const assembleMarket = memoizerific(1000)((
 		id: marketID
 	};
 
-	market.type = marketData.type;
 	switch (market.type) {
 	case BINARY:
 		market.isBinary = true;
@@ -168,31 +165,23 @@ export const assembleMarket = memoizerific(1000)((
 	market.outcomes = [];
 
 	let marketTradeOrders = [];
-	const positions = { qtyShares: 0, totalValue: 0, totalCost: 0, list: [] };
 
-	market.outcomes = Object.keys(marketOutcomes || {}).map(outcomeID => {
-		const outcomeData = marketOutcomes[outcomeID];
+	market.outcomes = Object.keys(marketOutcomesData || {}).map(outcomeID => {
+		const outcomeData = marketOutcomesData[outcomeID];
 		const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeID];
 
 		const outcome = {
 			...outcomeData,
 			id: outcomeID,
 			marketID,
-			lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
-			lastPricePercent: formatPercent((outcomeData.price || 0) * 100, { positiveSign: false })
+			lastPrice: formatEther(parseFloat(outcomeData.price) || 0, { positiveSign: false })
 		};
+
+		outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false });
 
 		outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress);
 
-		if (marketAccountTrades && marketAccountTrades[outcomeID]) {
-			outcome.position = selectPositionFromOutcomeAccountTrades(marketAccountTrades[outcomeID], outcome.price);
-			if (outcome.position && outcome.position.qtyShares && outcome.position.qtyShares.value) {
-				positions.qtyShares += outcome.position.qtyShares.value;
-				positions.totalValue += outcome.position.totalValue.value || 0;
-				positions.totalCost += outcome.position.totalCost.value || 0;
-				positions.list.push(outcome);
-			}
-		}
+		outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 
 		const orderBook = selectAggregateOrderBook(outcome.id, marketOrderBooks);
 		outcome.orderBook = orderBook;
@@ -222,13 +211,12 @@ export const assembleMarket = memoizerific(1000)((
 	market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
 	market.tradeSummary = generateTradeSummary(marketTradeOrders);
-	market.positionsSummary = selectPositionsSummary(
-		positions.list.length,
-		positions.qtyShares,
-		positions.totalValue,
-		positions.totalCost);
 
-	market.positionOutcomes = positions.list;
+	market.positionsSummary = generateMarketsPositionsSummary([market]);
+	if (market.positionsSummary) {
+		market.positionOutcomes = market.positionsSummary.positionOutcomes;
+		delete market.positionsSummary.positionOutcomes;
+	}
 
 	return market;
 });

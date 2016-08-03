@@ -190,11 +190,8 @@ ex.listenToUpdates = function listenToUpdates(cbBlock, cbContracts, cbPrice, cbC
 
 ex.loadAccountTrades = function loadAccountTrades(accountID, cb) {
 	augur.getAccountTrades(accountID, null, (accountTrades) => {
-		if (!accountTrades) {
-			return cb();
-		}
-		if (accountTrades.error) {
-			return cb(accountTrades);
+		if (accountTrades && accountTrades.error) {
+			return cb(accountTrades.error);
 		}
 		return cb(null, accountTrades);
 	});
@@ -525,5 +522,7 @@ ex.rpc = augur.rpc;
 ex.getTradingActions = augur.getTradingActions;
 ex.trade = augur.trade;
 ex.buy = augur.buy;
+
+ex.augur = augur;
 
 module.exports = ex;

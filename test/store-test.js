@@ -1,6 +1,4 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import store from '../src/store';
 /*
 ==================================
@@ -92,17 +90,15 @@ describe(`store.js`, () => {
 		assert.isObject(state.createMarketInProgress, 'createMarketInProgress is not an object');
 		assert.deepEqual(state.createMarketInProgress, {}, 'createMarketInProgress is not an empty object');
 
-		assert.isOk(state.outcomes, 'outcomes is not defined');
-		assert.isObject(state.outcomes, 'outcomes is not an object');
-		assert.deepEqual(state.outcomes, {}, 'outcomes is not an empty object');
+		assert.isOk(state.outcomesData, 'outcomes is not defined');
+		assert.isObject(state.outcomesData, 'outcomes is not an object');
+		assert.deepEqual(state.outcomesData, {}, 'outcomes is not an empty object');
 
 		assert.isOk(state.marketOrderBooks, 'marketOrderBooks is not defined');
 		assert.isObject(state.marketOrderBooks, 'marketOrderBooks is not an object');
 		assert.deepEqual(state.marketOrderBooks, {}, 'marketOrderBooks is not an empty object');
 
-		assert.isOk(state.accountTrades, 'accountTrades is not defined');
-		assert.isObject(state.accountTrades, 'accountTrades is not an object');
-		assert.deepEqual(state.accountTrades, {}, 'accountTrades is not an empty object');
+		assert.deepEqual(state.accountTrades, null, 'accountTrades is an empty object');
 
 		assert.isOk(state.transactionsData, 'transactionsData is not defined');
 		assert.isObject(state.transactionsData, 'transactionsData is not an object');

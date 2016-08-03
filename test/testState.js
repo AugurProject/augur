@@ -5,7 +5,11 @@ import env from '../src/env.json';
 const testState = {
 	activePage: 'markets',
 	accountTrades: {
-		testMarketID: {}
+		testMarketID: {
+			testoutcomeID: [
+				{ type: 1, price: '0.5', shares: '50' }
+			]
+		}
 	},
 	auth: {
 		err: null,
@@ -102,7 +106,7 @@ const testState = {
 	orderCancellation: {
 		'an orderID': 'a status'
 	},
-	outcomes: {
+	outcomesData: {
 		testMarketID: {
 			'2': {
 				id: '2',

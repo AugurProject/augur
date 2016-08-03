@@ -11,7 +11,7 @@ describe(`modules/positions/selectors/positions-summary.js`, () => {
 		let totalCost = 10000;
 		let positions = 50;
 
-		actual = selector.selectPositionsSummary(numPositions, qtyShares, totalValue, totalCost, positions);
+		actual = selector.generatePositionsSummary(numPositions, qtyShares, totalValue, totalCost);
 
 		assertions.positionsSummary(actual);
 	});

@@ -15,19 +15,4 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
 		};
 		assert.deepEqual(action.updateMarketsData(marketsOutcomesData), expectedOutput, `Update Markets Data action misfired.`);
 	});
-
-	it(`should dispatch an update market data action`, () => {
-		const marketData = {
-			marketID: '123',
-			outcomeID: 'some outcome',
-			details: {
-				adetail: 'B: answer'
-			}
-		};
-		const expectedOutput = {
-			type: action.UPDATE_MARKET_DATA,
-			marketData
-		};
-		assert.deepEqual(action.updateMarketData(marketData), expectedOutput, `Update Market Data didn't fire correctly`);
-	});
 });
