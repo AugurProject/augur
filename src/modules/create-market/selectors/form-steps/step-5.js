@@ -44,6 +44,7 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formatted: formattedFairPrices
 	};
 
+	o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
 	o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
 	o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
 	o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
