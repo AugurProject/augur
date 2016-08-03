@@ -40,7 +40,7 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		if (window && window.fileReader) {
+		if (new FileReader()) {
 			this.fileReader = new FileReader();
 		}
 		this.state = {
@@ -74,10 +74,10 @@ export default class AuthForm extends Component {
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
-		if (typeof this.refs.form[1].files[0] !== undefined && this.fileReader) {
+		const file = (this.refs.form[1].files[0] !== undefined);
+		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
-				// console.log(e.target.result);
 				const importAccount = JSON.parse(e.target.result);
 				setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
 				this.setState({ msg: '' });
@@ -91,7 +91,7 @@ export default class AuthForm extends Component {
 	render() {
 		const p = this.props;
 		const s = this.state;
-		console.log(p);
+
 		return (
 			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
 				<h1 className="title">
