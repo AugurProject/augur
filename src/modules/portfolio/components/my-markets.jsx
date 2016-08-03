@@ -1,28 +1,28 @@
 import React from 'react';
 
 const PortfolioMarkets = (p) => (
-	<table className="full-width-table">
+	<table className="my-markets">
 		<thead>
-			<tr className="cells-bordered solid dark">
-				<th className="no-cell-border"></th>
-				<th>Ends</th>
-				<th>Fees Collected</th>
-				<th>Volume</th>
-				<th># Trades</th>
-				<th>Avg Trade Size</th>
-				<th>Open Volume</th>
+			<tr>
+				<th className="market-description"></th>
+				<th className="end-date">Ends</th>
+				<th className="open-volume">Open Volume</th>
+				<th className="volume">Volume</th>
+				<th className="num-trades"># Trades</th>
+				<th className="avg-trade-size">Avg Trade Size</th>
+				<th className="fees-collected">Fees Collected</th>
 			</tr>
 		</thead>
 		{p.markets.map((market, id) => (
 			<tbody key={id} >
-				<tr className="cells-bordered solid dark">
-					<th className="cell-left-aligned">{market.description}</th>
-					<td>{market.endDate.formatted}</td>
-					<td>{market.fees.full}</td>
-					<td>{market.volume.formatted}</td>
-					<td>{market.numberOfTrades.formatted}</td>
-					<td>{market.averageTradeSize.full}</td>
-					<td>{market.openVolume.formatted}</td>
+				<tr>
+					<td className="market-description">{market.description}</td>
+					<td className="end-date">{market.endDate.formatted}</td>
+					<td className="open-volume">{market.openVolume.formatted}</td>
+					<td className="volume">{market.volume.formatted}</td>
+					<td className="num-trades">{market.numberOfTrades.formatted}</td>
+					<td className="avg-trade-size">{market.averageTradeSize.full}</td>
+					<td className="fees-collected">{market.fees.full}</td>
 				</tr>
 			</tbody>
 		))}

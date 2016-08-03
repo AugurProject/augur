@@ -9,6 +9,7 @@
         display: flex;
         flex-wrap: wrap;
         width: 100%;
+        background: white;
         .l-container();
 
         .portfolio-item {
@@ -16,45 +17,6 @@
             line-height: 2.5em;
             overflow: hidden;
             margin: 1vmin;
-
-            .search-sort {
-                padding: 0;
-                margin: 1vmin 0;
-
-                background-color: transparent;
-
-                .sort-container {
-                    .title {
-                        top: -0.7rem;
-
-                        color: @color-dark-normal;
-                    }
-
-                    .sort {
-                        background-color: white;
-
-                        color: @color-dark-normal;
-
-                        .options {
-                            background-color: white;
-
-                            color: @color-dark-normal;
-
-                            .option {
-                                &:hover, &:focus, &:active{
-                                    background-color: @color-dark-active;
-
-                                    color: @color-light-normal;
-                                }
-                            }
-                        }
-                    }
-
-                    .sort-direction-button {
-                        color: @color-dark-normal;
-                    }
-                }
-            }
         }
     }
 }
@@ -85,9 +47,6 @@
   .portfolio {
     .page-content {
       .component-header {
-        .button.make {
-          font-size: 3.5vmin;
-        }
         .header-bar {
           font-size: 3.5vmin;
         }
