@@ -16,7 +16,7 @@ module.exports = {
 
     getMarketPriceHistory: function (market, options, cb) {
         var self = this;
-        function parsePriceLogs(logs) {
+        function parseMarketPriceHistoryLogs(logs) {
             if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
                 return null;
             }
@@ -34,7 +34,7 @@ module.exports = {
                         user: abi.format_address(logs[i].topics[2]),
                         price: abi.unfix(parsed[1], "string"),
                         shares: abi.unfix(parsed[2], "string"),
-                        timestamp: parseInt(parsed[3], 16),
+                        timestamp: parseInt(parsed[5], 16),
                         blockNumber: parseInt(logs[i].blockNumber, 16)
                     });
                 }
@@ -50,13 +50,13 @@ module.exports = {
             fromBlock: options.fromBlock || "0x1",
             toBlock: options.toBlock || "latest",
             address: this.contracts.Trade,
-            topics: [this.api.events.log_price.signature, market]
+            topics: [this.api.events.log_fill_tx.signature, market]
         };
         if (!utils.is_function(cb)) {
-            return parsePriceLogs(this.rpc.getLogs(filter));
+            return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));
         }
         this.rpc.getLogs(filter, function (logs) {
-            cb(parsePriceLogs(logs));
+            cb(parseMarketPriceHistoryLogs(logs));
         });
     },
 
