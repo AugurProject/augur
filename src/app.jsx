@@ -23,6 +23,8 @@ export default function (appElement, selectors) {
 		doScrollTop = true;
 	}
 
+	console.log('app portfolio -- ', p.portfolio);
+
 	p.siteHeader = {
 		activePage: p.activePage,
 		loginAccount: p.loginAccount,
@@ -66,25 +68,6 @@ export default function (appElement, selectors) {
 			<CreateMarketPage
 				siteHeader={p.siteHeader}
 				createMarketForm={p.createMarketForm}
-			/>
-		);
-		break;
-
-	case MY_POSITIONS:
-	case MY_MARKETS:
-	case MY_REPORTS:
-		node = (
-			<PortfolioPage
-				portfolio={p.portfolio}
-				siteHeader={p.siteHeader}
-				keywords={p.keywords && p.keywords.value}
-				selectedSort={p.searchSort.selectedSort}
-				sortOptions={p.searchSort.sortOptions}
-				onChangeKeywords={p.keywords && p.keywords.onChangeKeywords}
-				onChangeSort={p.searchSort.onChangeSort}
-				filters={p.filters}
-				positionsSummary={p.positionsSummary}
-				positionsMarkets={p.positionsMarkets}
 			/>
 		);
 		break;
