@@ -5,6 +5,7 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 
+import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
 import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
@@ -18,7 +19,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message }));
 
-		trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch,
+		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee,
+			() => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
+			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
 			(res) => dispatch(updateExistingTransaction(
 				transactionID,
 				{ status: 'filling...', message: generateMessage(totalEthWithFee, res.remainingEth) }
@@ -62,47 +65,6 @@ function generateMessage(totalEthWithFee, remainingEth) {
 	return `filled ${formatEther(filledEth).full} of ${formatEther(totalEthWithFee).full}`;
 }
 
-function trade(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee, getState, dispatch, cbFill, cb) {
-	const res = {
-		remainingEth: totalEthWithFee,
-		remainingShares: numShares
-	};
-
-	const matchingSortedAskIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks);
-
-	if (!matchingSortedAskIDs.length) {
-		return cb(null, res);
-	}
-
-	AugurJS.trade({
-		max_value: totalEthWithFee,
-		max_amount: 0,
-		trade_ids: matchingSortedAskIDs,
-
-		onTradeHash: data => dispatch(updateExistingTransaction(transactionID, { status: 'submitting buy...' })),
-		onCommitSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'committing buy...' })),
-		onCommitSuccess: data => dispatch(updateExistingTransaction(transactionID, { status: 'sending buy...' })),
-
-		onCommitConfirmed: data => console.log('trade-onCommitConfirmed', data),
-		onCommitFailed: cb,
-
-		onNextBlock: data => console.log('trade-onNextBlock', data),
-		onTradeSent: data => dispatch(updateExistingTransaction(transactionID, { status: 'filling buy...' })),
-		onTradeSuccess: data => {
-			res.remainingEth = parseFloat(data.unmatchedCash) || 0;
-			res.remainingShares = parseFloat(data.unmatchedShares) || 0;
-
-			if (res.remainingEth) {
-				cbFill(res);
-				return trade(transactionID, marketID, outcomeID, res.remainingShares, limitPrice, res.remainingEth, getState, dispatch, cbFill, cb);
-			}
-			return cb(null, res);
-		},
-
-		onTradeFailed: cb,
-		onTradeConfirmed: data => console.log('trade-onTradeConfirmed', data)
-	});
-}
 
 function bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, cb) {
 	AugurJS.buy({
