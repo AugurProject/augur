@@ -46,16 +46,12 @@ const CreateMarketForm4 = (p) => (
 			</p>
 			<Checkbox
 				text="Include initial order book"
-				isChecked={p.showOrderBookCreation}
-				onClick={() => {
-					console.log('value -- ', p.showOrderBookCreation);
-
-					p.onValuesUpdated({ showOrderBookCreation: !p.showOrderBookCreation });
-				}}
+				isChecked={p.isCreatingOrderBook}
+				onClick={() => p.onValuesUpdated({ isCreatingOrderBook: !p.isCreatingOrderBook })}
 			/>
 		</div>
 
-		<div className={classNames('order-book-creation', { displayNone: !p.showOrderBookCreation })} >
+		<div className={classNames('order-book-creation', { displayNone: !p.isCreatingOrderBook })} >
 			<h6 className="horizontal-divider" > Order Book Creation </h6>
 			<div>
 				<div className="liquidity">
