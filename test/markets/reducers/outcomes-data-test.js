@@ -1,6 +1,5 @@
 import { assert } from 'chai';
 import reducer from '../../../src/modules/markets/reducers/outcomes-data';
-import { UPDATE_OUTCOMES_DATA } from '../../../src/modules/markets/actions/update-outcomes-data';
 import { UPDATE_OUTCOME_PRICE } from '../../../src/modules/markets/actions/update-outcome-price';
 
 /*
@@ -10,10 +9,6 @@ describe(`modules/markets/reducers/outcomes-data.js`, () => {
 		const outcomesData = {
 			test: 'test123',
 			test2: 'test456'
-		};
-		const action = {
-			type: UPDATE_OUTCOMES_DATA,
-			outcomesData
 		};
 		const expectedOutput = {
 			test: 'test123',

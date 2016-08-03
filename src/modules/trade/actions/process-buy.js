@@ -15,6 +15,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `Invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
+		let tradeComplete = false;
 		let message = generateMessage(totalEthWithFee, totalEthWithFee);
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message }));
@@ -35,9 +36,11 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 				message = generateMessage(totalEthWithFee, res.remainingEth);
 
-				if (!res.remainingEth) {
+				if (!res.remainingEth || tradeComplete) {
 					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
 				}
+
+				tradeComplete = true;
 
 				if (message) {
 					message = `${message}, bid `;

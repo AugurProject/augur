@@ -113,7 +113,6 @@ export const assembleMarket = memoizerific(1000)((
 		id: marketID
 	};
 
-	market.type = marketData.type;
 	switch (market.type) {
 	case BINARY:
 		market.isBinary = true;

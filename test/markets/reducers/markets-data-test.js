@@ -1,11 +1,6 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import reducer from '../../../src/modules/markets/reducers/markets-data';
-import {
-	UPDATE_MARKETS_DATA,
-	UPDATE_MARKET_DATA
-} from '../../../src/modules/markets/actions/update-markets-data';
+import { UPDATE_MARKETS_DATA } from '../../../src/modules/markets/actions/update-markets-data';
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
 	it(`should update Markets Data`, () => {
@@ -38,6 +33,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			market1: {
 				id: 1,
 				outcomeID: 'an outcomeID',
+				isLoadedMarketInfo: false,
 				details: {
 					test: 'example'
 				}
@@ -47,6 +43,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			market1: {
 				id: 1,
 				outcomeID: 'an outcomeID',
+				isLoadedMarketInfo: false,
 				details: {
 					test: 'example'
 				}
@@ -63,6 +60,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			market1: {
 				id: 1,
 				outcomeID: 'an outcomeID',
+				isLoadedMarketInfo: false,
 				details: {
 					test: 'example'
 				}
@@ -70,11 +68,12 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 			market2: {
 				id: 2,
 				outcomeID: 'someoutcome',
+				isLoadedMarketInfo: false,
 				details: {
 					example: 'test'
 				}
 			}
-		}
+		};
 		const action = {
 			type: UPDATE_MARKETS_DATA,
 			marketsData
@@ -87,52 +86,5 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
 		assert.deepEqual(reducer(curMarketsData1, action), expectedOutput, `didn't add a new market to markets data`);
 		assert.deepEqual(reducer(curMarketsData2, action), expectedOutput, `didn't update a market in markets data`);
 		assert.deepEqual(reducer(undefined, action2), expectedOutput, `didn't get the correct output when marketsData is empty`);
-	});
-
-	it(`should update a Market's Data`, () => {
-		const marketData = {
-			id: 'market1',
-			outcomeID: 'something',
-			details: {
-				test: 'example'
-			}
-		};
-		const marketsData = {
-			market1: {
-				id: 'market1',
-				outcomeID: 'somethingelse',
-				details: {
-					test: 'testing'
-				}
-			},
-			market2: {
-				id: 'market2',
-				outcomeID: 'anotherOutcome',
-				details: {
-					example: 'testing'
-				}
-			}
-		};
-		const expectedOutput = {
-			market1: {
-				id: 'market1',
-				outcomeID: 'something',
-				details: {
-					test: 'example'
-				}
-			},
-			market2: {
-				id: 'market2',
-				outcomeID: 'anotherOutcome',
-				details: {
-					example: 'testing'
-				}
-			}
-		};
-		const action = {
-			type: UPDATE_MARKET_DATA,
-			marketData
-		};
-		assert.deepEqual(reducer(marketsData, action), expectedOutput, `It didn't handle the action correctly`);
 	});
 });

@@ -56,30 +56,24 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 			type: 'UPDATE_MARKETS_DATA',
 			marketsData: {
 				test123: {
-					tags: [ 'test', 'testtag' ],
-					type: 'binary',
-					eventID: 'event1',
-					isLoadedMarketInfo: true,
-					minValue: 1,
-					maxValue: 3,
-					numOutcomes: 3,
-					reportedOutcome: 2
-				}
-			}
-		}, {
-			type: 'UPDATE_OUTCOMES_DATA',
-			outcomesData: {
-				test123: {
-					'1': {
-						name: 'No'
-					},
-					'2': {
-						name: 'Yes'
-					}
+					events: [{
+						id: 'event1',
+						minValue: 1,
+						maxValue: 3,
+						numOutcomes: 3,
+						outcome: 2
+					}],
+					tags: ['test', 'testtag'],
+					outcomes: [{
+						id: 1
+					}, {
+						id: 2
+					}],
+					type: 'binary'
 				}
 			}
 		}];
-		let actual = store.dispatch(action.loadMarketsInfo(['test123']));
+		store.dispatch(action.loadMarketsInfo(['test123']));
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});

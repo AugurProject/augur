@@ -1,7 +1,7 @@
-import makeDescription from '../../../utils/make-description';
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
+import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
 
 import AugurJS from '../../../services/augurjs';
 
@@ -35,7 +35,7 @@ export function createMarket(transactionID, newMarket) {
 			newMarket.minValue = 1;
 			newMarket.maxValue = 2;
 			newMarket.numOutcomes = newMarket.outcomes.length;
-			newMarket.formattedDescription = makeDescription(newMarket);
+			newMarket.formattedDescription = newMarket.description + CATEGORICAL_OUTCOMES_SEPARATOR + newMarket.outcomes.map(outcome => outcome.name).join(CATEGORICAL_OUTCOME_SEPARATOR);
 		} else {
 			console.warn('createMarket unsupported type:', newMarket.type);
 			return;
