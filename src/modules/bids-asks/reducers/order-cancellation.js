@@ -8,7 +8,7 @@ import { CANCELLATION_CONFIRMATION } from '../../bids-asks/constants/order-statu
 /**
  * @param {Object} orderCancellation
  * @param {Object} action
- * @return {{}} key: marketId, value: {buy: [], sell: []}
+ * @return {{}} key: orderID, value: String
  */
 export default function (orderCancellation = {}, action) {
 	switch (action.type) {
@@ -25,7 +25,6 @@ export default function (orderCancellation = {}, action) {
 		};
 
 	case ABORT_CANCEL_ORDER_CONFIRMATION: {
-
 		const newOrderCancellation = {
 			...orderCancellation
 		};

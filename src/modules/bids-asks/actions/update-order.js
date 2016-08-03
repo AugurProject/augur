@@ -2,6 +2,7 @@
  * Author: priecint
  */
 import { BID } from '../../bids-asks/constants/bids-asks-types';
+import store from '../../../store';
 
 export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS';
 
@@ -9,36 +10,37 @@ export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS';
  *
  * @param {String} orderID
  * @param {String} status
- * @param {String} marketID Here to speed up look-up of order, if orders are stored by their IDs, it won't be needed
- * @param {String} type Here to speed up look-up of order, if orders are stored by their IDs, it won't be needed
+ * @param {String} marketID
+ * @param {String} type
  */
 export function updateOrderStatus(orderID, status, marketID, type) {
-	return (dispatch, getState) => {
-		const { marketOrderBooks } = getState();
-		const marketOrderBook = marketOrderBooks[marketID];
+	const { marketOrderBooks } = store.getState();
+	const marketOrderBook = marketOrderBooks[marketID];
 
-		if (marketOrderBook == null) {
-			return warnNonExistingOrder(orderID, status, marketID, type);
-		}
+	if (marketOrderBook == null) {
+		warnNonExistingOrder(orderID, status, marketID, type);
+		return;
+	}
 
-		const buyOrSell = type === BID ? 'buy' : 'sell';
-		const orders = marketOrderBook[buyOrSell];
-		if (orders == null) {
-			return warnNonExistingOrder(orderID, status, marketID, type);
-		}
+	const buyOrSell = type === BID ? 'buy' : 'sell';
+	const orders = marketOrderBook[buyOrSell];
+	if (orders == null) {
+		warnNonExistingOrder(orderID, status, marketID, type);
+		return;
+	}
 
-		const order = orders[orderID];
-		if (order == null) {
-			return warnNonExistingOrder(orderID, status, marketID, type);
-		}
+	const order = orders[orderID];
+	if (order == null) {
+		warnNonExistingOrder(orderID, status, marketID, type);
+		return;
+	}
 
-		dispatch({
-			type: UPDATE_ORDER_STATUS,
-			orderID,
-			status,
-			marketID,
-			orderType: buyOrSell
-		});
+	return {
+		type: UPDATE_ORDER_STATUS,
+		orderID,
+		status,
+		marketID,
+		orderType: buyOrSell
 	};
 }
 

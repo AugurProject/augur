@@ -3,7 +3,7 @@
  */
 import memoizerific from 'memoizerific';
 import store from '../../../store';
-import { isOrderOfUser } from '../../bids-asks/selectors/is-order-of-user';
+import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
 import { BID, ASK } from '../../bids-asks/constants/bids-asks-types';
 import { CANCELLING, CANCELLED } from '../../bids-asks/constants/order-status';
 import { formatNone, formatEther, formatShares } from '../../../utils/format-number';

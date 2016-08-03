@@ -1,14 +1,13 @@
 /*
  * Author: priecint
  */
-import * as augurJS from '../../../services/augurjs';
-import { updateOrderStatus } from '../../bids-asks/actions/update-order';
-import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
+import { updateOrderStatus } from '../../bids-asks/actions/update-order';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
+import * as augurJS from '../../../services/augurjs';
+import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
-export const CANCEL_ORDER = 'CANCEL_ORDER';
 export const SHOW_CANCEL_ORDER_CONFIRMATION = 'SHOW_CANCEL_ORDER_CONFIRMATION';
 export const ABORT_CANCEL_ORDER_CONFIRMATION = 'ABORT_CANCEL_ORDER_CONFIRMATION';
 
@@ -21,6 +20,9 @@ export function cancelOrder(orderID, marketID, type) {
 export function processCancelOrder(transactionID, orderID) {
 	return (dispatch, getState) => {
 		const transaction = getState().transactionsData[transactionID];
+		if (transaction == null) {
+			return;
+		}
 
 		dispatch(updateOrderStatus(orderID, CANCELLING, transaction.data.marketID, transaction.data.type));
 		dispatch(updateExistingTransaction(transactionID, { status: CANCELLING_ORDER }));

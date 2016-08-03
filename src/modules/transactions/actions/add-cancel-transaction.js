@@ -3,7 +3,8 @@
  */
 
 import { addTransaction } from '../../transactions/actions/add-transactions';
-import { CANCEL_ORDER, processCancelOrder } from '../../bids-asks/actions/cancel-order';
+import { processCancelOrder } from '../../bids-asks/actions/cancel-order';
+import { CANCEL_ORDER } from '../../transactions/constants/types';
 
 export function addCancelTransaction(orderID, marketID, type) {
 	return (dispatch, getState) => {

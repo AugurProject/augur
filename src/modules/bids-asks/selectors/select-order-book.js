@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 
 import store from '../../../store';
 import { formatShares, formatEther } from '../../../utils/format-number';
-import { isOrderOfUser } from '../../bids-asks/selectors/is-order-of-user';
+import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
 
 /**
  * @param {String} outcomeId

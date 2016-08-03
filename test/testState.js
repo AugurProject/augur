@@ -99,6 +99,9 @@ const testState = {
 			}
 		}
 	},
+	orderCancellation: {
+		'an orderID': 'a status'
+	},
 	outcomes: {
 		testMarketID: {
 			'2': {
