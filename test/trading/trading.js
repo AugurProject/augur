@@ -2459,7 +2459,7 @@ describe("Integration tests", function () {
                 augur.buyCompleteSets({
                     market: markets[t.market],
                     amount: t.amount,
-                    onSent: augur.utils.noop,
+                    onSent: utils.noop,
                     onSuccess: function (r) {
                         augur.sell({
                             amount: t.amount,
@@ -2548,132 +2548,32 @@ describe("Integration tests", function () {
     describe("Trade.trade", function () {
         var test = function (t) {
             it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT*10);
+                this.timeout(tools.TIMEOUT*3);
                 var active = augur.from;
+                augur.rpc.personal("unlockAccount", [unlockable[0], password]);
+                augur.rpc.personal("unlockAccount", [unlockable[1], password]);
                 augur.useAccount(unlockable[0]);
-                var initialTotalTrades = parseInt(augur.Markets.get_total_trades(markets[t.market]));
-                augur.buyCompleteSets({
-                    market: markets[t.market],
-                    amount: t.amount,
-                    onSent: augur.utils.noop,
-                    onSuccess: function (r) {
-                        augur.sell({
-                            amount: t.amount,
-                            price: t.price,
-                            market: markets[t.market],
-                            outcome: t.outcome,
-                            onSent: augur.utils.noop,
-                            onSuccess: function (r) {
-                                augur.useAccount(unlockable[1]);
-                                augur.get_trade_ids(markets[t.market], function (trade_ids) {
-                                    async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
-                                        augur.get_trade(thisTrade, function (tradeInfo) {
-                                            if (!tradeInfo) return nextTrade("no trade info found");
-                                            if (tradeInfo.owner === augur.from) return nextTrade();
-                                            if (tradeInfo.type === "buy") return nextTrade();
-                                            if (tradeInfo.price !== t.price) return nextTrade();
-                                            augur.trade({
-                                                max_value: t.amount,
-                                                max_amount: 0,
-                                                trade_ids: [thisTrade],
-                                                onTradeHash: function (r) {
-                                                    assert.notProperty(r, "error");
-                                                    assert.isString(r);
-                                                },
-                                                onCommitSent: function (r) {
-                                                    assert.strictEqual(r.callReturn, "1");
-                                                },
-                                                onCommitSuccess: function (r) {
-                                                    assert.strictEqual(r.callReturn, "1");
-                                                },
-                                                onCommitFailed: nextTrade,
-                                                onTradeSent: function (r) {
-                                                    assert.isNull(r.callReturn);
-                                                },
-                                                onTradeSuccess: function (r) {
-                                                    console.log("trade succeeded:", r);
-                                                    assert.isObject(r);
-                                                    assert.notProperty(r, "error");
-                                                    assert.property(r, "unmatchedCash");
-                                                    assert.property(r, "unmatchedShares");
-                                                    assert.isAtMost(abi.number(r.unmatchedCash), t.expected.unmatchedCash);
-                                                    assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
-                                                    nextTrade(r);
-                                                },
-                                                onTradeFailed: nextTrade
-                                            });
-                                        });
-                                    }, function (x) {
-                                        augur.useAccount(active);
-                                        if (x && x.txHash) return done();
-                                        done(x);
-                                    });
-                                });
-                            },
-                            onFailed: done
-                        });
-                    },
-                    onFailed: done
-                });
-            });
-        };
-        test({
-            market: "binary",
-            amount: 1,
-            outcome: "1",
-            price: "0.1",
-            expected: {
-                unmatchedCash: 0.9,
-                unmatchedShares: 0
-            }
-        });
-        test({
-            market: "categorical",
-            amount: 1,
-            outcome: "3",
-            price: "0.1",
-            expected: {
-                unmatchedCash: 0.9,
-                unmatchedShares: 0
-            }
-        });
-        test({
-            market: "scalar",
-            amount: 1,
-            outcome: "1",
-            price: "3.4",
-            expected: {
-                unmatchedCash: 0,
-                unmatchedShares: 0
-            }
-        });
-    });
-
-    describe("Trade.short_sell", function () {
-        var test = function (t) {
-            it(JSON.stringify(t), function (done) {
-                this.timeout(tools.TIMEOUT*10);
-                var active = augur.from;
-                augur.useAccount(unlockable[0]);
-                var initialTotalTrades = parseInt(augur.get_total_trades(markets[t.market]));
-                augur.buy({
-                    amount: 1,
-                    price: t.price,
-                    market: markets[t.market],
-                    outcome: t.outcome,
-                    onSent: augur.utils.noop,
-                    onSuccess: function (r) {
-                        augur.useAccount(unlockable[1]);
-                        augur.get_trade_ids(markets[t.market], function (trade_ids) {
-                            async.eachSeries(trade_ids, function (thisTrade, nextTrade) {
-                                augur.get_trade(thisTrade, function (tradeInfo) {
-                                    if (!tradeInfo) return nextTrade("no trade info found");
-                                    if (tradeInfo.owner === augur.from) return nextTrade();
-                                    if (tradeInfo.type === "sell") return nextTrade();
-                                    if (tradeInfo.price !== t.price) return nextTrade();
-                                    augur.short_sell({
-                                        buyer_trade_id: thisTrade,
-                                        max_amount: t.amount,
+                if (t.type === "buy") {
+                    augur.buyCompleteSets({
+                        market: markets[t.market],
+                        amount: t.amount,
+                        onSent: utils.noop,
+                        onSuccess: function (r) {
+                            augur.sell({
+                                amount: t.amount,
+                                price: t.price,
+                                market: markets[t.market],
+                                outcome: t.outcome,
+                                onSent: utils.noop,
+                                onSuccess: function (r) {
+                                    var new_trade_id = r.callReturn;
+                                    augur.useAccount(unlockable[1]);
+                                    var trade_ids = augur.get_trade_ids(markets[t.market]);
+                                    assert.include(trade_ids, new_trade_id);
+                                    augur.trade({
+                                        max_value: t.amount,
+                                        max_amount: 0,
+                                        trade_ids: [new_trade_id],
                                         onTradeHash: function (r) {
                                             assert.notProperty(r, "error");
                                             assert.isString(r);
@@ -2684,33 +2584,293 @@ describe("Integration tests", function () {
                                         onCommitSuccess: function (r) {
                                             assert.strictEqual(r.callReturn, "1");
                                         },
-                                        onCommitFailed: nextTrade,
+                                        onCommitFailed: function (e) {
+                                            augur.useAccount(active);
+                                            console.error(e);
+                                            assert.isNull(e);
+                                        },
                                         onTradeSent: function (r) {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            console.log("short_sell succeeded:", r);
+                                            console.log("trade succeeded:", r);
+                                            console.log("trade info (after):", augur.get_trade(new_trade_id));
                                             assert.isObject(r);
                                             assert.notProperty(r, "error");
-                                            assert.property(r, "matchedShares");
+                                            assert.property(r, "unmatchedCash");
                                             assert.property(r, "unmatchedShares");
-                                            assert.property(r, "price");
-                                            assert.strictEqual(abi.number(r.matchedShares), t.expected.matchedShares);
+                                            assert.property(r, "sharesBought");
+                                            assert.property(r, "cashFromTrade");
+                                            assert.isAtMost(abi.number(r.unmatchedCash), t.expected.unmatchedCash);
                                             assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
-                                            assert.strictEqual(abi.number(r.price), t.expected.price);
-                                            nextTrade(r);
+                                            assert.strictEqual(abi.number(r.sharesBought), t.expected.sharesBought);
+                                            assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
+                                            assert.deepEqual(augur.get_trade(new_trade_id), {
+                                                id: "0x0",
+                                                type: "sell",
+                                                market: "0x0",
+                                                amount: "0",
+                                                price: "0",
+                                                owner: "0x0000000000000000000000000000000000000000",
+                                                block: 0,
+                                                outcome: "0"
+                                            });
+                                            assert.notProperty(augur.getOrderBook(markets[t.market]).sell, new_trade_id);
+                                            augur.useAccount(active);
+                                            done();
                                         },
-                                        onTradeFailed: nextTrade
+                                        onTradeFailed: function (e) {
+                                            augur.useAccount(active);
+                                            console.error(JSON.stringify(e, null, 2));
+                                            assert.isNull(e);
+                                        }
                                     });
-                                });
-                            }, function (x) {
-                                augur.useAccount(active);
-                                if (x && x.txHash) return done();
-                                done(x);
+                                },
+                                onFailed: function (e) {
+                                    augur.useAccount(active);
+                                    console.error(JSON.stringify(e, null, 2));
+                                    assert.isNull(e);
+                                }
                             });
+                        },
+                        onFailed: function (e) {
+                            augur.useAccount(active);
+                            console.error(JSON.stringify(e, null, 2));
+                            assert.isNull(e);
+                        }
+                    });
+                } else {
+                    augur.buy({
+                        amount: t.amount,
+                        price: t.price,
+                        market: markets[t.market],
+                        outcome: t.outcome,
+                        onSent: utils.noop,
+                        onSuccess: function (r) {
+                            var new_trade_id = r.callReturn;
+                            augur.useAccount(unlockable[1]);
+                            augur.buyCompleteSets({
+                                market: markets[t.market],
+                                amount: t.amount,
+                                onSent: utils.noop,
+                                onSuccess: function (r) {
+                                    var trade_ids = augur.get_trade_ids(markets[t.market]);
+                                    assert.include(trade_ids, new_trade_id);
+                                    augur.trade({
+                                        max_value: 0,
+                                        max_amount: t.amount,
+                                        trade_ids: [new_trade_id],
+                                        onTradeHash: function (r) {
+                                            assert.notProperty(r, "error");
+                                            assert.isString(r);
+                                        },
+                                        onCommitSent: function (r) {
+                                            assert.strictEqual(r.callReturn, "1");
+                                        },
+                                        onCommitSuccess: function (r) {
+                                            assert.strictEqual(r.callReturn, "1");
+                                        },
+                                        onCommitFailed: function (e) {
+                                            augur.useAccount(active);
+                                            console.error(JSON.stringify(e, null, 2));
+                                            assert.isNull(e);
+                                        },
+                                        onTradeSent: function (r) {
+                                            assert.isNull(r.callReturn);
+                                        },
+                                        onTradeSuccess: function (r) {
+                                            console.log("trade succeeded:", r);
+                                            assert.isObject(r);
+                                            assert.notProperty(r, "error");
+                                            assert.property(r, "unmatchedCash");
+                                            assert.property(r, "unmatchedShares");
+                                            assert.property(r, "sharesBought");
+                                            assert.property(r, "cashFromTrade");
+                                            assert.isAtMost(abi.number(r.unmatchedCash), t.expected.unmatchedCash);
+                                            assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
+                                            assert.strictEqual(abi.number(r.sharesBought), t.expected.sharesBought);
+                                            assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
+                                            assert.deepEqual(augur.get_trade(new_trade_id), {
+                                                id: "0x0",
+                                                type: "sell",
+                                                market: "0x0",
+                                                amount: "0",
+                                                price: "0",
+                                                owner: "0x0000000000000000000000000000000000000000",
+                                                block: 0,
+                                                outcome: "0"
+                                            });
+                                            assert.notProperty(augur.getOrderBook(markets[t.market]).sell, new_trade_id);
+                                            augur.useAccount(active);
+                                            done();
+                                        },
+                                        onTradeFailed: function (e) {
+                                            augur.useAccount(active);
+                                            console.error(JSON.stringify(e, null, 2));
+                                            assert.isNull(e);
+                                        }
+                                    });
+                                },
+                                onFailed: function (e) {
+                                    augur.useAccount(active);
+                                    console.error(JSON.stringify(e, null, 2));
+                                    assert.isNull(e);
+                                }
+                            });
+                        },
+                        onFailed: function (e) {
+                            augur.useAccount(active);
+                            console.error(JSON.stringify(e, null, 2));
+                            assert.isNull(e);
+                        }
+                    });
+                }
+            });
+        };
+        test({
+            type: "buy",
+            market: "binary",
+            amount: 1,
+            outcome: "1",
+            price: "0.1",
+            expected: {
+                unmatchedCash: 0.9,
+                unmatchedShares: 0,
+                sharesBought: 1,
+                cashFromTrade: 0
+            }
+        });
+        test({
+            type: "sell",
+            market: "binary",
+            amount: 1,
+            outcome: "1",
+            price: "0.1",
+            expected: {
+                unmatchedCash: 0.9,
+                unmatchedShares: 0,
+                sharesBought: 0,
+                cashFromTrade: 0.1
+            }
+        });
+        test({
+            type: "buy",
+            market: "categorical",
+            amount: 2,
+            outcome: "3",
+            price: "0.1",
+            expected: {
+                unmatchedCash: 0.9,
+                unmatchedShares: 0,
+                sharesBought: 2,
+                cashFromTrade: 0
+            }
+        });
+        test({
+            type: "sell",
+            market: "categorical",
+            amount: 2,
+            outcome: "3",
+            price: "0.1",
+            expected: {
+                unmatchedCash: 0.9,
+                unmatchedShares: 0,
+                sharesBought: 0,
+                cashFromTrade: 0.2
+            }
+        });
+        test({
+            type: "buy",
+            market: "scalar",
+            amount: 1,
+            outcome: "1",
+            price: "3.4",
+            expected: {
+                unmatchedCash: 0,
+                unmatchedShares: 0,
+                sharesBought: 1,
+                cashFromTrade: 0
+            }
+        });
+        test({
+            type: "sell",
+            market: "scalar",
+            amount: 1,
+            outcome: "1",
+            price: "3.4",
+            expected: {
+                unmatchedCash: 0,
+                unmatchedShares: 0,
+                sharesBought: 0,
+                cashFromTrade: 3.4
+            }
+        });
+    });
+
+    describe("Trade.short_sell", function () {
+        var test = function (t) {
+            it(JSON.stringify(t), function (done) {
+                this.timeout(tools.TIMEOUT*3);
+                var active = augur.from;
+                augur.rpc.personal("unlockAccount", [unlockable[0], password]);
+                augur.rpc.personal("unlockAccount", [unlockable[1], password]);
+                augur.useAccount(unlockable[0]);
+                augur.buy({
+                    amount: 1,
+                    price: t.price,
+                    market: markets[t.market],
+                    outcome: t.outcome,
+                    onSent: utils.noop,
+                    onSuccess: function (r) {
+                        var new_trade_id = r.callReturn;
+                        augur.useAccount(unlockable[1]);
+                        var trade_ids = augur.get_trade_ids(markets[t.market]);
+                        assert.include(trade_ids, new_trade_id);
+                        augur.short_sell({
+                            buyer_trade_id: new_trade_id,
+                            max_amount: t.amount,
+                            onTradeHash: function (r) {
+                                assert.notProperty(r, "error");
+                                assert.isString(r);
+                            },
+                            onCommitSent: function (r) {
+                                assert.strictEqual(r.callReturn, "1");
+                            },
+                            onCommitSuccess: function (r) {
+                                assert.strictEqual(r.callReturn, "1");
+                            },
+                            onCommitFailed: function (e) {
+                                augur.useAccount(active);
+                                done(e);
+                            },
+                            onTradeSent: function (r) {
+                                assert.isNull(r.callReturn);
+                            },
+                            onTradeSuccess: function (r) {
+                                console.log("short_sell succeeded:", r);
+                                assert.isObject(r);
+                                assert.notProperty(r, "error");
+                                assert.property(r, "matchedShares");
+                                assert.property(r, "unmatchedShares");
+                                assert.property(r, "cashFromTrade");
+                                assert.property(r, "price");
+                                assert.strictEqual(abi.number(r.matchedShares), t.expected.matchedShares);
+                                assert.strictEqual(abi.number(r.unmatchedShares), t.expected.unmatchedShares);
+                                assert.strictEqual(abi.number(r.cashFromTrade), t.expected.cashFromTrade);
+                                assert.strictEqual(abi.number(r.price), t.expected.price);
+                                augur.useAccount(active);
+                                done();
+                            },
+                            onTradeFailed: function (e) {
+                                augur.useAccount(active);
+                                done(e);
+                            }
                         });
                     },
-                    onFailed: done
+                    onFailed: function (e) {
+                        augur.useAccount(active);
+                        done(e);
+                    }
                 });
             });
         };
@@ -2722,17 +2882,19 @@ describe("Integration tests", function () {
             expected: {
                 unmatchedShares: 0,
                 matchedShares: 1,
+                cashFromTrade: 0.1,
                 price: 0.1
             }
         });
         test({
             market: "categorical",
-            amount: 1,
+            amount: 2,
             outcome: "3",
             price: "0.1",
             expected: {
                 unmatchedShares: 0,
                 matchedShares: 1,
+                cashFromTrade: 0.2,
                 price: 0.1
             }
         });
@@ -2744,6 +2906,7 @@ describe("Integration tests", function () {
             expected: {
                 unmatchedShares: 0,
                 matchedShares: 1,
+                cashFromTrade: 3.4,
                 price: 3.4
             }
         });

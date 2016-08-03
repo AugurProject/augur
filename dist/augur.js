@@ -16417,10 +16417,15 @@ module.exports={
           "indexed": false, 
           "name": "outcome", 
           "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "timestamp", 
+          "type": "int256"
         }
       ], 
-      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x715b9a9cb6dfb4fa9cb1ebc2eba40d2a7bd66aa8cef75f87a77d1ff05d29a3b6"
+      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x4867c6b95984b4bd8fba5fa5e12c32c056c2fe64dd1b43dbcec7c6ada2aea9eb"
     }, 
     "log_price": {
       "contract": "Trade", 
@@ -20056,6 +20061,7 @@ module.exports={
         ], 
         "method": "remove_trade_from_market", 
         "returns": "int256", 
+        "send": true, 
         "signature": [
           "int256", 
           "int256"
@@ -21014,7 +21020,7 @@ module.exports={
         "RoundTwoPenalize": "0xf7893739f437d350f8330e84fb02ccc927669e57", 
         "SendReputation": "0xeb22baf269eac16e835dadf643ac69a1386e1131", 
         "SlashRep": "0x56094c9ed1c8efa5d9c95c36ee74b5237c8874ea", 
-        "Trade": "0xb12146f49392ddf6e2f03c9d695f1eb8778d57cf", 
+        "Trade": "0x1eec0978ec705829fce7905cc8344d06309c82cf", 
         "Trades": "0x2914d5d2822a5c0f89494194a632032fe2a3fc74"
     }
 }
@@ -21290,6 +21296,10 @@ module.exports={
     "RLP_ENCODING_ERROR": {
         "error": 504,
         "message": "RLP encoding error"
+    },
+    "TRANSACTION_RECEIPT_NOT_FOUND": {
+        "error": 505,
+        "message": "transaction receipt not found"
     },
     "RPC_TIMEOUT": {
         "error": 599,
@@ -41480,8 +41490,297 @@ module.exports={
     }
 }
 },{}],158:[function(require,module,exports){
-arguments[4][57][0].apply(exports,arguments)
-},{"dup":57}],159:[function(require,module,exports){
+module.exports={
+    "0x": "no response or bad input",
+    "buy": {
+        "0": "market doesn't exist",
+        "-1": "amount/price bad",
+        "-2": "oracle-only branch",
+        "-4": "not enough money or shares",
+        "21": "trade already exists"
+    },
+    "buyCompleteSets": {
+        "0": "market not found",
+        "-1": "oracle-only branch",
+        "-3": "not enough cash"
+    },
+    "cashFaucet": {
+        "-1": "Hey, you're not broke!"
+    },
+    "claimProceeds": {
+        "0": "reporting not done",
+        "-1": "trader doesn't exist"
+    },
+    "closeMarket": {
+        "0": "fail/trading not over yet/event not expired or closed already",
+        "-1": "Market has no cash anyway / already closed",
+        "-2": "0 outcome / not reported on yet",
+        "-3": "not final round 2 event",
+        "-5": "Event forked and not final yet",
+        "-6": "bonded pushed forward market not ready to be resolved",
+        "-7": "event not reportable >.99",
+        "-8": "market isn't in branch"
+    },
+    "collectFees": {
+        "-1": "rep redistribution/rewards/penalizations in consensus not done yet"
+    },
+    "createEvent": {
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad",
+        "0": "not enough money to pay fees or event already exists",
+        "-2": "max value < min value",
+        "-9": "would expire during non-reporting fork period"
+    },
+    "createSingleEventMarket": {
+        "0": "not enough money to pay fees or event already exists",
+        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
+        "-2": "max value < min value",
+        "-3": "too many outcomes",
+        "-4": "not enough money",
+        "-5": "fee too low",
+        "-6": "duplicate events",
+        "-7": "event already expired",
+        "-8": "market already exists",
+        "-9": "would expire during non-reporting fork period"
+    },
+    "createMarket": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "too many events",
+        "-3": "too many outcomes",
+        "-4": "not enough money",
+        "-5": "fee too low",
+        "-6": "duplicate events",
+        "-7": "event already expired",
+        "-8": "market already exists",
+        "-9": "would expire during non-reporting fork period"
+    },
+    "createSubbranch": {
+        "-1": "bad input or parent doesn't exist",
+        "-2": "no money for creation fee or branch already exists"
+    },
+    "penalizationCatchup": {
+        "-1": "not in first half of reporting period",
+        "-2": "doesn't need to be penalized/caught up",
+        "-3": "user isn't behind or reported in the last period (and should thus use the penalization functions in consensus.se)"
+    },
+    "penalizeOnForkedEvent": {
+        "-2": "already past first half of new period and needed to penalize before then",
+        "-4": "fork event isn't resolved yet",
+        "-5": "already done for all events in this period"
+    },
+    "penalizeRoundTwoWrong": {
+        "0": "event is a fork event",
+        "-1": "need to penalize in round 2 penalize function",
+        "-2": "already past first half of new period and needed to penalize before then",
+        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
+        "-5": "already done for all events in this period",
+        "-6": "forked events should be penalized using the fork penalization function"
+    },
+    "penalizeWrong": {
+        "0": "event is a fork event",
+        "-1": "need to penalize in round 2 penalize function",
+        "-2": "already past first half of new period and needed to penalize before then",
+        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
+        "-5": "already done for all events in this period",
+        "-6": "forked events should be penalized using the fork penalization function",
+        "-7": "no outcome",
+        "-8": "needed to collect fees last period which sets the before/after rep"
+    },
+    "proveReporterDidntReportEnough": {
+        "-1": "already done",
+        "-2": "not in right part of period"
+    },
+    "pushMarketForward": {
+        "-1": "fork period cannot be the current or previous period",
+        "-2": "market is already closed or pushed forward",
+        "-3": "not enough cash to post early resolution bond",
+        "-4": "early resolution already attempted or outcome already exists"
+    },
+    "sell": {
+        "0": "market doesn't exist",
+        "-1": "amount/price bad",
+        "-2": "oracle only branch",
+        "-3": "bad outcome to trade",
+        "-4": "not enough money or shares",
+        "21": "trade already exists"
+    },
+    "sellCompleteSets": {
+        "-1": "oracle-only branch",
+        "-2": "not a participant in this market",
+        "-3": "not enough shares"
+    },
+    "sendReputation": {
+        "0": "not enough reputation",
+        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
+        "-2": "Receiving address doesn't exist"
+    },
+    "short_sell": {
+        "-1": "oracle only branch",
+        "-2": "bad trade hash",
+        "-3": "trader doesn't exist / own shares in this market",
+        "-4": "must buy at least .00000001 in value",
+        "10": "insufficient balance"
+    },
+    "slashRep": {
+        "0": "not a valid claim",
+        "-2": "reporter doesn't exist"
+    },
+    "submitReportHash": {
+        "-1": "invalid event"
+    },
+    "submitReport": {
+        "0": "reporter doesn't exist or has <1 rep",
+        "-1": "has already reported",
+        "-2": "not in second half of period [reveal part]",
+        "-3": "hash doesn't match",
+        "-4": "bad report",
+        "-5": "invalid event",
+        "-6": "already resolved",
+        "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
+        "-8": "fees couldn't be collected",
+        "-9": "need to pay not reporting bond"
+    },
+    "trade": {
+        "-1": "oracle only branch",
+        "-2": "bad trade hash",
+        "-3": "trader doesn't exist / own shares in this market",
+        "-4": "must buy at least .00000001 in value",
+        "10": "insufficient balance"
+    },
+    "updateTradingFee": {
+        "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
+        "-4": "sender's address does not match the market creator's address"
+    },
+    "WRONG_NUMBER_OF_OUTCOMES": {
+        "error": 41,
+        "message": "the number of initial fair prices does not match this market's number of outcomes"
+    },
+    "INSUFFICIENT_LIQUIDITY": {
+        "error": 42,
+        "message": "insufficient liquidity to generate order book"
+    },
+    "INITIAL_PRICE_OUT_OF_BOUNDS": {
+        "error": 43,
+        "message": "one or more initial fair prices are out-of-bounds"
+    },
+    "PRICE_WIDTH_OUT_OF_BOUNDS": {
+        "error": 44,
+        "message": "price width is too large for one or more initial fair prices"
+    },
+    "DB_DELETE_FAILED": {
+        "error": 97,
+        "message": "database delete failed"
+    },
+    "DB_WRITE_FAILED": {
+        "error": 98,
+        "message": "database write failed"
+    },
+    "DB_READ_FAILED": {
+        "error": 99,
+        "message": "database read failed"
+    },
+    "INVALID_CONTRACT_PARAMETER": {
+        "error": 400,
+        "message": "cannot send object parameter to contract"
+    },
+    "NOT_LOGGED_IN": {
+        "error": 401,
+        "message": "not logged in"
+    },
+    "PARAMETER_NUMBER_ERROR": {
+        "error": 402,
+        "message": "wrong number of parameters"
+    },
+    "BAD_CREDENTIALS": {
+        "error": 403,
+        "message": "incorrect handle or password"
+    },
+    "TRANSACTION_NOT_FOUND": {
+        "error": 404,
+        "message": "transaction not found"
+    },
+    "PASSWORD_TOO_SHORT": {
+        "error": 405,
+        "message": "password must be at least 6 characters long"
+    },
+    "NULL_CALL_RETURN": {
+        "error": 406,
+        "message": "expected contract call to return value, received null"
+    },
+    "NULL_RESPONSE": {
+        "error": 407,
+        "message": "expected transaction hash from Ethereum node, received null"
+    },
+    "NO_RESPONSE": {
+        "error": 408,
+        "message": "no response"
+    },
+    "INVALID_RESPONSE": {
+        "error": 409,
+        "message": "could not parse response from Ethereum node"
+    },
+    "LOCAL_NODE_FAILURE": {
+        "error": 410,
+        "message": "RPC request to local Ethereum node failed"
+    },
+    "HOSTED_NODE_FAILURE": {
+        "error": 411,
+        "message": "RPC request to hosted nodes failed"
+    },
+    "TRANSACTION_INVALID": {
+        "error": 412,
+        "message": "transaction validation failed"
+    },
+    "TRANSACTION_RETRY_MAX_EXCEEDED": {
+        "error": 413,
+        "message": "maximum number of transaction retry attempts exceeded"
+    },
+    "HANDLE_TAKEN": {
+        "error": 422,
+        "message": "handle already taken"
+    },
+    "FILTER_NOT_CREATED": {
+        "error": 450,
+        "message": "filter could not be created"
+    },
+    "TRANSACTION_FAILED": {
+        "error": 500,
+        "message": "transaction failed"
+    },
+    "TRANSACTION_NOT_CONFIRMED": {
+        "error": 501,
+        "message": "polled network but could not confirm transaction"
+    },
+    "DUPLICATE_TRANSACTION": {
+        "error": 502,
+        "message": "duplicate transaction"
+    },
+    "RAW_TRANSACTION_ERROR": {
+        "error": 503,
+        "message": "error sending client-side transaction"
+    },
+    "RLP_ENCODING_ERROR": {
+        "error": 504,
+        "message": "RLP encoding error"
+    },
+    "RPC_TIMEOUT": {
+        "error": 599,
+        "message": "timed out while waiting for Ethereum network response"
+    },
+    "LOOPBACK_NOT_FOUND": {
+        "error": 650,
+        "message": "loopback interface required for synchronous local commands"
+    },
+    "ETHEREUM_NOT_FOUND": {
+        "error": 651,
+        "message": "no active ethereum node(s) found"
+    },
+    "CHECK_ORDER_BOOK_FAILED": {
+        "error": 710,
+        "message": "could not check order book using current prices"
+    }
+}
+
+},{}],159:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
 },{"./contracts":157,"./errors":158,"./tx":160,"dup":58}],160:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
@@ -47282,50 +47581,41 @@ module.exports = function () {
             }
         },
         parse_contracts_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
-                            }
-                            if (onMessage) onMessage(message[i]);
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } else {
-                    onMessage(message);
+                    onMessage(message[i]);
                 }
             }
         },
         parse_log_add_tx_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
-                            }
-                            if (onMessage) onMessage(message[i]);
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } else {
-                    onMessage(message);
+                    onMessage(message[i]);
                 }
             }
         },
         parse_log_cancel_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
-                            }
-                            if (onMessage) onMessage(message[i]);
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } else {
-                    onMessage(message);
+                    onMessage(message[i]);
                 }
             }
         },
@@ -47340,108 +47630,93 @@ module.exports = function () {
             }
         },
         parse_penalize_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
-                            }
-                            if (onMessage) onMessage(message[i]);
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } else {
-                    onMessage(message);
+                    onMessage(message[i]);
                 }
             }
         },
         parse_marketCreated_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].data);
-                    }
-                } else {
-                    if (message.data) onMessage(message.data);
+            if (!message) return onMessage(message);
+            if (message.constructor === Object && message.data) {
+                return onMessage(message);
+            }
+            if (message.constructor === Array && message.length) {
+                for (var i = 0, len = message.length; i < len; ++i) {
+                    if (message[i]) onMessage(message[i].data);
                 }
             }
         },
         parse_tradingFeeUpdated_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            var data_array = augur.rpc.unmarshal(message[i].data);
-                            if (data_array && data_array.constructor === Array && 
-                                data_array.length > 1) {
-                                onMessage({
-                                    marketId: data_array[0],
-                                    tradingFee: abi.unfix(data_array[1], "string")
-                                });
-                            }
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    var data_array = augur.rpc.unmarshal(message[i].data);
+                    if (data_array && data_array.constructor === Array && 
+                        data_array.length > 1) {
+                        onMessage({
+                            marketId: data_array[0],
+                            tradingFee: abi.unfix(data_array[1], "string")
+                        });
                     }
-                } else {
-                    onMessage(message);
                 }
             }
         },
         parse_approval_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
-                            }
-                            if (onMessage) onMessage(message[i]);
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } else {
-                    onMessage(message);
+                    onMessage(message[i]);
                 }
             }
         },
         parse_transfer_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) {
-                            if (message[i].constructor === Object && message[i].data) {
-                                message[i].data = augur.rpc.unmarshal(message[i].data);
-                            }
-                            if (onMessage) onMessage(message[i]);
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
                     }
-                } else {
-                    onMessage(message);
+                    onMessage(message[i]);
                 }
             }
         },
         parse_log_fill_tx_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i] && message[i].topics && message[i].topics.length === 4) {
-                            var data_array = augur.rpc.unmarshal(message[i].data);
-                            if (data_array && data_array.constructor === Array && 
-                                data_array.length > 1) {
-                                onMessage({
-                                    marketId: message[i].topics[1],
-                                    type: (parseInt(data_array[0]) === 1) ? "buy" : "sell",
-                                    taker: abi.format_address(message[i].topics[2]),
-                                    maker: abi.format_address(message[i].topics[3]),
-                                    price: abi.unfix(data_array[1], "string"),
-                                    shares: abi.unfix(data_array[2], "string"),
-                                    trade_id: data_array[3],
-                                    outcome: parseInt(data_array[4]),
-                                    blockNumber: message[i].blockNumber
-                                });
-                            }
-                        }
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i] && message[i].topics && message[i].topics.length === 4) {
+                    var data_array = augur.rpc.unmarshal(message[i].data);
+                    if (data_array && data_array.constructor === Array && data_array.length) {
+                        onMessage({
+                            marketId: message[i].topics[1],
+                            type: (parseInt(data_array[0], 16) === 1) ? "buy" : "sell",
+                            taker: abi.format_address(message[i].topics[2]),
+                            maker: abi.format_address(message[i].topics[3]),
+                            price: abi.unfix(data_array[1], "string"),
+                            shares: abi.unfix(data_array[2], "string"),
+                            trade_id: data_array[3],
+                            outcome: parseInt(data_array[4], 16),
+                            timestamp: parseInt(data_array[5], 16),
+                            blockNumber: parseInt(message[i].blockNumber, 16)
+                        });
                     }
-                } else {
-                    onMessage(message);
                 }
             }
         },
@@ -48053,7 +48328,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.20";
+    this.version = "1.9.21";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
@@ -49922,6 +50197,7 @@ module.exports = {
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var errors = require("augur-contracts").errors;
 var utils = require("../utilities");
 var abacus = require("./abacus");
 
@@ -49989,20 +50265,51 @@ module.exports = {
                         trade_ids
                     ];
                     var prepare = function (result, cb) {
+                        var txHash = result.txHash;
                         if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0]);
-                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                return cb({
-                                    txHash: result.txHash,
-                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
-                                    unmatchedShares: abi.unfix(result.callReturn[2], "string")
-                                });
+                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                                return onTradeFailed(result);
                             }
-                            return cb(result);
+                            self.rpc.receipt(txHash, function (receipt) {
+                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (receipt.error) return onTradeFailed(receipt);
+                                var sharesBought, cashFromTrade;
+                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                    var logs = receipt.logs;
+                                    var sig = self.api.events.log_fill_tx.signature;
+                                    sharesBought = abi.bignum(0);
+                                    cashFromTrade = abi.bignum(0);
+                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                        if (logs[i].topics[0] === sig) {
+                                            var logdata = self.rpc.unmarshal(logs[i].data);
+                                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                                // buy (matched sell order)
+                                                if (parseInt(logdata[0], 16) === 1) {
+                                                    sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+
+                                                // sell (matched buy order)
+                                                // cash received = price per share * shares sold
+                                                } else {
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                cb({
+                                    txHash: txHash,
+                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    sharesBought: abi.string(sharesBought),
+                                    cashFromTrade: abi.string(cashFromTrade)
+                                });
+                            });
+                        } else {
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }
-                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                        if (!err) return onTradeFailed(result);
-                        return onTradeFailed({error: err, message: self.errors[err], tx: tx});
                     };
                     self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
                 });
@@ -50051,21 +50358,42 @@ module.exports = {
                         abi.fix(max_amount, "hex")
                     ];
                     var prepare = function (result, cb) {
+                        var txHash = result.txHash;
                         if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0]);
-                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                return cb({
-                                    txHash: result.txHash,
+                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
+                                return onTradeFailed(result);
+                            }
+                            self.rpc.receipt(txHash, function (receipt) {
+                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (receipt.error) return onTradeFailed(receipt);
+                                var cashFromTrade;
+                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                    var logs = receipt.logs;
+                                    var sig = self.api.events.log_fill_tx.signature;
+                                    cashFromTrade = abi.bignum(0);
+                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                        if (logs[i].topics[0] === sig) {
+                                            var logdata = self.rpc.unmarshal(logs[i].data);
+                                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                                cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                            }
+                                        }
+                                    }
+                                }
+                                cb({
+                                    txHash: txHash,
                                     unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                     matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    cashFromTrade: abi.string(cashFromTrade),
                                     price: abi.unfix(result.callReturn[3], "string")
                                 });
-                            }
-                            return cb(result);
+                            });
+                        } else {
+                            var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }
-                        var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                        if (!err) return onTradeFailed(result);
-                        return onTradeFailed({error: err, message: self.errors[err], tx: tx});
                     };
                     self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
                 });
@@ -50076,7 +50404,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":257,"./abacus":236,"augur-abi":1,"clone":116,"ethrpc":155}],252:[function(require,module,exports){
+},{"../utilities":257,"./abacus":236,"augur-abi":1,"augur-contracts":58,"clone":116,"ethrpc":155}],252:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -51595,8 +51923,8 @@ arguments[4][156][0].apply(exports,arguments)
 },{"dup":156}],294:[function(require,module,exports){
 arguments[4][157][0].apply(exports,arguments)
 },{"dup":157}],295:[function(require,module,exports){
-arguments[4][57][0].apply(exports,arguments)
-},{"dup":57}],296:[function(require,module,exports){
+arguments[4][158][0].apply(exports,arguments)
+},{"dup":158}],296:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
 },{"./contracts":294,"./errors":295,"./tx":297,"dup":58}],297:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)

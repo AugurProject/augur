@@ -364,7 +364,7 @@ describe("Unit tests", function () {
                     assert.deepEqual(msg[0].topics[1], parsed['marketId']);
                     assert.deepEqual(abi.format_address(msg[0].topics[2]), parsed['taker']);
                     assert.deepEqual(abi.format_address(msg[0].topics[3]), parsed['maker']);
-                    assert.deepEqual(msg[0].blockNumber, parsed['blockNumber']);
+                    assert.deepEqual(parseInt(msg[0].blockNumber, 16), parsed['blockNumber']);
                     if (DEBUG) console.log("parse_log_fill_tx_message:", parsed);
                     done();
                 });

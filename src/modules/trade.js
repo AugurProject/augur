@@ -8,6 +8,7 @@
 var clone = require("clone");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
+var errors = require("augur-contracts").errors;
 var utils = require("../utilities");
 var abacus = require("./abacus");
 
@@ -75,20 +76,51 @@ module.exports = {
                         trade_ids
                     ];
                     var prepare = function (result, cb) {
+                        var txHash = result.txHash;
                         if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0]);
-                            if (result.callReturn[0] === 1 && result.callReturn.length === 3) {
-                                return cb({
-                                    txHash: result.txHash,
-                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
-                                    unmatchedShares: abi.unfix(result.callReturn[2], "string")
-                                });
+                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                                return onTradeFailed(result);
                             }
-                            return cb(result);
+                            self.rpc.receipt(txHash, function (receipt) {
+                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (receipt.error) return onTradeFailed(receipt);
+                                var sharesBought, cashFromTrade;
+                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                    var logs = receipt.logs;
+                                    var sig = self.api.events.log_fill_tx.signature;
+                                    sharesBought = abi.bignum(0);
+                                    cashFromTrade = abi.bignum(0);
+                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                        if (logs[i].topics[0] === sig) {
+                                            var logdata = self.rpc.unmarshal(logs[i].data);
+                                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                                // buy (matched sell order)
+                                                if (parseInt(logdata[0], 16) === 1) {
+                                                    sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+
+                                                // sell (matched buy order)
+                                                // cash received = price per share * shares sold
+                                                } else {
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                cb({
+                                    txHash: txHash,
+                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    sharesBought: abi.string(sharesBought),
+                                    cashFromTrade: abi.string(cashFromTrade)
+                                });
+                            });
+                        } else {
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }
-                        var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                        if (!err) return onTradeFailed(result);
-                        return onTradeFailed({error: err, message: self.errors[err], tx: tx});
                     };
                     self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
                 });
@@ -137,21 +169,42 @@ module.exports = {
                         abi.fix(max_amount, "hex")
                     ];
                     var prepare = function (result, cb) {
+                        var txHash = result.txHash;
                         if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0]);
-                            if (result.callReturn[0] === 1 && result.callReturn.length === 4) {
-                                return cb({
-                                    txHash: result.txHash,
+                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
+                                return onTradeFailed(result);
+                            }
+                            self.rpc.receipt(txHash, function (receipt) {
+                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (receipt.error) return onTradeFailed(receipt);
+                                var cashFromTrade;
+                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                    var logs = receipt.logs;
+                                    var sig = self.api.events.log_fill_tx.signature;
+                                    cashFromTrade = abi.bignum(0);
+                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                        if (logs[i].topics[0] === sig) {
+                                            var logdata = self.rpc.unmarshal(logs[i].data);
+                                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                                cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                            }
+                                        }
+                                    }
+                                }
+                                cb({
+                                    txHash: txHash,
                                     unmatchedShares: abi.unfix(result.callReturn[1], "string"),
                                     matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    cashFromTrade: abi.string(cashFromTrade),
                                     price: abi.unfix(result.callReturn[3], "string")
                                 });
-                            }
-                            return cb(result);
+                            });
+                        } else {
+                            var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
                         }
-                        var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                        if (!err) return onTradeFailed(result);
-                        return onTradeFailed({error: err, message: self.errors[err], tx: tx});
                     };
                     self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
                 });
