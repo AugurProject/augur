@@ -212,7 +212,7 @@ module.exports = function () {
                     break;
                 case "marketCreated":
                     callback = function (msg) {
-                        self.parse_marketCreated_message(msg, callback);
+                        self.parse_marketCreated_message(msg, onMessage);
                     };
                     break;
                 default:
