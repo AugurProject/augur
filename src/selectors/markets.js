@@ -94,15 +94,38 @@ function makeMarkets(numMarkets = 10) {
 
 		// positions summary
 		m.positionsSummary = {
-			numPositions: makeNumber(3, 'Positions', true),
-			qtyShares: makeNumber(10, 'shares'),
+			numPositions: makeNumber(2, 'Positions', true),
+			qtyShares: makeNumber(16898, 'shares'),
 			purchasePrice: makeNumber(0.5, 'eth'),
 			totalCost: makeNumber(5, 'eth'),
 			shareChange: makeNumber(1, 'shares'),
 			netChange: makeNumber(1, 'eth'),
 			totalValue: makeNumber(985, 'eth'),
-			gainPercent: makeNumber(15, '%')
+			gainPercent: makeNumber(14, '%')
 		};
+
+		// position-outcomes
+		const randomPositionOutcome = m.outcomes[randomInt(0, m.outcomes.length - 1)];
+		randomPositionOutcome.position = {
+			qtyShares: makeNumber(16898, 'shares'),
+			totalValue: makeNumber(14877, 'eth'),
+			gainPercent: makeNumber(14, '%'),
+			purchasePrice: makeNumber(0.77, 'eth'),
+			shareChange: makeNumber(0.107, 'eth'),
+			totalCost: makeNumber(12555, 'eth'),
+			netChange: makeNumber(3344, 'eth')
+		};
+		const randomPositionOutcome2 = m.outcomes[randomInt(0, m.outcomes.length - 1)];
+		randomPositionOutcome2.position = {
+			qtyShares: makeNumber(16898, 'shares'),
+			totalValue: makeNumber(14877, 'eth'),
+			gainPercent: makeNumber(14, '%'),
+			purchasePrice: makeNumber(0.77, 'eth'),
+			shareChange: makeNumber(0.107, 'eth'),
+			totalCost: makeNumber(12555, 'eth'),
+			netChange: makeNumber(3344, 'eth')
+		};
+		m.positionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
 
 		m.userOpenOrdersSummary = {
 			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
@@ -226,15 +249,6 @@ function makeMarkets(numMarkets = 10) {
 					name: makeName(index),
 					lastPrice: makeNumber(lastPrice, 'eth'),
 					lastPricePercent: makeNumber(lastPrice * 100, '%'),
-					position: {
-						qtyShares: makeNumber(16898, 'shares'),
-						totalValue: makeNumber(14877, 'eth'),
-						gainPercent: makeNumber(14, '%'),
-						purchasePrice: makeNumber(0.77, 'eth'),
-						shareChange: makeNumber(0.107, 'eth'),
-						totalCost: makeNumber(12555, 'eth'),
-						netChange: makeNumber(3344, 'eth')
-					},
 					trade: {
 						side: tradeTypeOptions[0].value,
 						numShares: 0,
@@ -322,8 +336,6 @@ function makeMarkets(numMarkets = 10) {
 						id: `${m.id}${outcome.id}order${index}`,
 						type: parseInt(index, 10) % 2 === 1 ? 'buy' : 'sell',
 						marketID: m.id,
-						isCancelling: false,
-						isCancelled: false,
 						avgPrice: makeNumber(parseFloat(Math.random().toFixed(2)), 'eth'),
 						unmatchedShares: makeNumber(parseInt(Math.random() * 10, 10), 'shares'),
 						outcome: outcomeID,

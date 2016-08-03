@@ -16,7 +16,7 @@ export default class Chart extends Component {
 		const p = this.props;
 		const config = {
 			title: {
-				text: 'Price history'
+				text: ''
 			},
 			rangeSelector: { selected: 1 },
 			xAxis: {
@@ -40,9 +40,12 @@ export default class Chart extends Component {
 		};
 
 		return (
-			<div className="price-history-chart">
+			<section className="price-history-chart">
+				<div className="market-section-header">
+					Price History
+				</div>
 				<ReactHighcharts config={config} />
-			</div>
+			</section>
 		);
 	}
 }

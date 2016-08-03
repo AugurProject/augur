@@ -1,13 +1,13 @@
 import React from 'react';
 
-import OpenOrdersSummary from '../../open-orders/components/open-orders-summary';
 import OpenOrdersGroup from '../../open-orders/components/open-orders-group';
+import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrders = (p) => (
 	<div className="market-open-orders">
-		<OpenOrdersSummary
-			userOpenOrdersSummary={p.userOpenOrdersSummary}
-		/>
+		<div className="market-section-header">
+			<ValueDenomination {...p.userOpenOrdersSummary.openOrdersCount} />
+		</div>
 
 		<div className="open-orders-list">
 			{
@@ -17,7 +17,7 @@ const OpenOrders = (p) => (
 						id={outcome.id}
 						name={outcome.name}
 						userOpenOrders={outcome.userOpenOrders}
-						cancelOrder={p.cancelOrder}
+						orderCancellation={p.orderCancellation}
 					/>
 				))
 			}
@@ -28,7 +28,7 @@ const OpenOrders = (p) => (
 OpenOrders.propTypes = {
 	userOpenOrdersSummary: React.PropTypes.object,
 	outcomes: React.PropTypes.array,
-	cancelOrder: React.PropTypes.func.isRequired
+	orderCancellation: React.PropTypes.object.isRequired
 };
 
 export default OpenOrders;

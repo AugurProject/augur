@@ -21,7 +21,7 @@ import transactions from '../test/assertions/transactions';
 import transactionsTotals from '../test/assertions/transactions-totals';
 import url from '../test/assertions/url';
 import selectedUserOpenOrdersGroup from '../test/assertions/selected-user-open-orders-group';
-import cancelOrder from '../test/assertions/cancel-order';
+import orderCancellation from '../test/assertions/order-cancellation';
 
 export default {
 	activePage,
@@ -47,5 +47,5 @@ export default {
 	transactionsTotals,
 	url,
 	selectedUserOpenOrdersGroup,
-	cancelOrder
+	orderCancellation
 };

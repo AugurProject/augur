@@ -6,6 +6,7 @@ const TradePanel = (p) => (
 	<div className="trade-panel">
 		<TradeBuilder
 			outcomes={p.outcomes}
+			userOpenOrdersSummary={p.userOpenOrdersSummary}
 			selectedOutcome={p.selectedOutcome}
 		/>
 
@@ -32,6 +33,7 @@ TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
 	selectedOutcome: React.PropTypes.object,
 	tradeSummary: React.PropTypes.object,
+	userOpenOrdersSummary: React.PropTypes.object,
 	onSubmitPlaceTrade: React.PropTypes.func
 };
 

@@ -17,7 +17,7 @@ export default class MarketPage extends Component {
 		selectedOutcome: PropTypes.object,
 		priceTimeSeries: PropTypes.array,
 		numPendingReports: PropTypes.number,
-		cancelOrder: PropTypes.func.isRequired
+		orderCancellation: PropTypes.object.isRequired
 	};
 	constructor(props) {
 		super(props);
@@ -57,18 +57,19 @@ export default class MarketPage extends Component {
 						outcomes={p.market.outcomes}
 						selectedOutcome={p.selectedOutcome}
 						tradeSummary={p.market.tradeSummary}
+						userOpenOrdersSummary={p.market.userOpenOrdersSummary}
 						onSubmitPlaceTrade={p.market.onSubmitPlaceTrade}
 					/>
 				);
 
 				// open orders
-				if (p.market.userOpenOrdersSummary != null && p.market.userOpenOrdersSummary.openOrdersCount != null && p.market.userOpenOrdersSummary.openOrdersCount.value != null) {
+				if (!!p.market.userOpenOrdersSummary && !!p.market.userOpenOrdersSummary.openOrdersCount && !!p.market.userOpenOrdersSummary.openOrdersCount.value) {
 					nodes.push(
 						<MarketOpenOrders
 							key="market-open-orders"
 							userOpenOrdersSummary={p.market.userOpenOrdersSummary}
 							outcomes={p.market.outcomes}
-							cancelOrder={p.cancelOrder}
+							orderCancellation={p.orderCancellation}
 						/>
 					);
 				}

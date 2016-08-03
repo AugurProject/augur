@@ -38,7 +38,7 @@ export default class MarketItem extends Component {
 					{!!p.creatingMarket &&
 						<div className="advanced-market-params" >
 							<h6 className="horizontal-divider" onClick={() => { p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams }); }}><span>{advancedParamsArrow}</span> Advanced <span>{advancedParamsArrow}</span></h6>
-							<div className={classnames({ displayNone: !!!p.showAdvancedMarketParams })}>
+							<div className={classnames({ displayNone: !p.showAdvancedMarketParams })}>
 								<Advanced {...p} />
 							</div>
 						</div>

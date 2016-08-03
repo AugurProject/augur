@@ -19,10 +19,10 @@ const PositionsPage = (p) => (
 				{!!p.positionsMarkets && !!p.positionsMarkets.length && p.positionsMarkets.map(positionsMarket => (
 					<div key={positionsMarket.id} className="positions-container">
 						<span className="description">{positionsMarket.description}</span>
-						{!!positionsMarket.outcomes && !!positionsMarket.outcomes.length &&
+						{!!positionsMarket.positionOutcomes && !!positionsMarket.positionOutcomes.length &&
 							<Positions
 								className="page-content positions-content"
-								outcomes={positionsMarket.outcomes}
+								outcomes={positionsMarket.positionOutcomes}
 							/>
 						}
 					</div>

@@ -93,7 +93,7 @@ export default class AccountPage extends Component {
 										<th className="title">Account Address:</th>
 										<td className="item">
 											<span>
-												{p.account.address}
+												{p.account.id}
 											</span>
 										</td>
 									</tr>

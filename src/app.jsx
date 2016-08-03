@@ -88,7 +88,7 @@ export default function (appElement, selectors) {
 			<MarketPage
 				siteHeader={p.siteHeader}
 				selectedOutcome={p.selectedOutcome}
-				cancelOrder={p.cancelOrder}
+				orderCancellation={p.orderCancellation}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
 			/>

@@ -33,7 +33,8 @@ const TradePanel = (p) => (
 
 TradePanel.propTypes = {
 	outcomes: React.PropTypes.array,
-	selectedOutcome: React.PropTypes.object
+	selectedOutcome: React.PropTypes.object,
+	userOpenOrdersSummary: React.PropTypes.object
 };
 
 export default TradePanel;
