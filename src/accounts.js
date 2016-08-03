@@ -179,7 +179,63 @@ module.exports = function () {
             }); // create
         },
 
+				importAccount: function (name, password, keystore, cb) {
+					var self = this;
+					cb = (utils.is_function(cb)) ? cb : utils.pass;
+
+					// blank password
+					if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+
+					// preparing to redo the secureLoginID to use the new name
+					var unsecureLoginIDObject = {
+							name: name,
+							keystore: keystore
+					};
+					var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+					// derive secret key from password
+					keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+							if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
+
+							// verify that message authentication codes match
+							var storedKey = keystore.crypto.ciphertext;
+							if (keys.getMAC(derivedKey, storedKey) !== keystore.crypto.mac.toString("hex")) {
+									return cb(errors.BAD_CREDENTIALS);
+							}
+
+							if (!Buffer.isBuffer(derivedKey)) {
+									derivedKey = new Buffer(derivedKey, "hex");
+							}
+
+							// decrypt stored private key using secret key
+							try {
+									var privateKey = new Buffer(keys.decrypt(
+											storedKey,
+											derivedKey.slice(0, 16),
+											keystore.crypto.cipherparams.iv
+									), "hex");
+
+									// while logged in, web.account object is set
+									self.account = {
+											name: name,
+											secureLoginID: secureLoginID,
+											privateKey: privateKey,
+											address: keystore.address,
+											keystore: keystore,
+											derivedKey: derivedKey
+									};
+									return cb(clone(self.account));
+
+							// decryption failure: bad password
+							} catch (exc) {
+									var e = clone(errors.BAD_CREDENTIALS);
+									e.bubble = exc;
+									return cb(e);
+							}
+					}); // deriveKey
+				},
+
         loadLocalLoginAccount: function (localAccount, cb) {
+						var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
             var privateKey = localAccount.privateKey;
             var derivedKey = localAccount.derivedKey;
@@ -189,7 +245,7 @@ module.exports = function () {
             if (derivedKey && !Buffer.isBuffer(derivedKey)) {
                 derivedKey = new Buffer(derivedKey, "hex");
             }
-            this.account = {
+            self.account = {
                 name: localAccount.name,
                 secureLoginID: localAccount.secureLoginID,
                 privateKey: privateKey,
