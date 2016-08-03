@@ -7,7 +7,7 @@ export default function () {
 }
 
 export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTrades, lastPrice) => {
-	if (!outcomeAccountTrades || !outcomeAccountTrades.length || !lastPrice) {
+	if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
 		return null;
 	}
 
@@ -16,7 +16,6 @@ export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTr
 	let totalValue = 0;
 	let totalCost = 0;
 	let totalSellShares = 0;
-
 	outcomeAccountTrades.forEach(outcomeAccountTrade => {
 		if (!outcomeAccountTrade) {
 			return;

@@ -54,7 +54,7 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "augur-ui-react-components": "3.0.28",
+    "augur-ui-react-components": "3.0.31",
     "augur.js": "1.9.25",
     "bignumber.js": "2.4.0",
     "memoizerific": "1.8.4",
@@ -85,11 +85,11 @@
     "eslint-plugin-jsx-a11y": "1.5.5",
     "eslint-plugin-react": "5.2.2",
     "exorcist": "0.4.0",
-    "firebase-tools": "3.0.5",
+    "firebase-tools": "3.0.6",
     "inline-source-cli": "1.1.1",
     "istanbul": "1.0.0-alpha.2",
     "less": "2.7.1",
-    "mocha": "2.5.3",
+    "mocha": "3.0.0",
     "mocha-lcov-reporter": "1.2.0",
     "npm-check-updates": "2.8.0",
     "onchange": "2.5.0",

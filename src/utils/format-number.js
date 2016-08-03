@@ -74,17 +74,23 @@ export function formatPercent(num, opts) {
 }
 
 export function formatShares(num, opts) {
-	return formatNumber(
+	const formattedShares = formatNumber(
 		num,
 		{
 			decimals: 2,
 			decimalsRounded: 0,
-			denomination: 'shares',
+			denomination: ` share${num !== 1 ? 's' : ''}`,
 			minimized: true,
 			zeroStyled: false,
 			...opts
 		}
 	);
+
+	if (formattedShares.formattedValue === 1) {
+		formattedShares.full = makeFull(formattedShares.formatted, ' share');
+	}
+
+	return formattedShares;
 }
 
 export function formatRep(num, opts) {
@@ -152,7 +158,11 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	}
 
 	o.denomination = denomination;
-	o.full = o.formatted + o.denomination;
+	o.full = makeFull(o.formatted, o.denomination);
 
 	return o;
+}
+
+export function makeFull(formatted, denomination) {
+	return formatted + denomination;
 }
