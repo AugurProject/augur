@@ -68,7 +68,7 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			out = null;
 		});
 
-		it('should return the correct object for binary markets with an initial order book', () => {
+		it('should return the correct object for binary markets WITH an initial order book', () => {
 			formState = {
 				type: BINARY,
 				isCreatingOrderBook: true,
@@ -111,7 +111,25 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a binary market');
 		});
 
-		it('should return the correct object for categorical markets with an initial order order', () => {
+		it('should return the correct object for binary markets WITHOUT an initial order book', () => {
+			formState = {
+				type: BINARY,
+				initialFairPrices: {
+					type: BINARY,
+					values: [],
+					raw: []
+				}
+			};
+
+			out = {
+				takerFee: TAKER_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a binary market');
+		});
+
+		it('should return the correct object for categorical markets WITH an initial order book', () => {
 			formState = {
 				type: CATEGORICAL,
 				isCreatingOrderBook: true,
@@ -164,7 +182,30 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a categorical market');
 		});
 
-		it('should return the correct object for scaler markets with an initial order book', () => {
+		it('should return the correct object for categorical markets WITHOUT an initial order book', () => {
+			formState = {
+				type: CATEGORICAL,
+				initialFairPrices: {
+					type: CATEGORICAL,
+					values: [],
+					raw: []
+				},
+				categoricalOutcomes: [
+					'test1',
+					'test2',
+					'test3'
+				]
+			};
+
+			out = {
+				takerFee: TAKER_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a categorical market');
+		});
+
+		it('should return the correct object for scaler markets WITH an initial order book', () => {
 			formState = {
 				type: SCALAR,
 				isCreatingOrderBook: true,
@@ -204,6 +245,26 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 				halfPriceWidth: PRICE_WIDTH_DEFAULT / 2,
 				priceDepth: PRICE_DEPTH_DEFAULT,
 				isSimulation: IS_SIMULATION
+			};
+
+			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a scalar market');
+		});
+
+		it('should return the correct object for scaler markets WITHOUT an initial order book', () => {
+			formState = {
+				type: SCALAR,
+				initialFairPrices: {
+					type: SCALAR,
+					values: [],
+					raw: []
+				},
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			out = {
+				takerFee: TAKER_FEE_DEFAULT,
+				makerFee: MAKER_FEE_DEFAULT
 			};
 
 			assert.deepEqual(selector.select(formState), out, 'select does not return the correct object for a scalar market');
