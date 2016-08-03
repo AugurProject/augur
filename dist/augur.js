@@ -41187,7 +41187,7 @@ module.exports = function () {
         pacemaker: function (cb) {
             var self = this;
             if (!cb || cb.constructor !== Object) return;
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+            // if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
                 async.forEachOf(this.filter, function (filter, label, next) {
                     if (utils.is_function(cb[label])) {
                         self.poll_filter(label, cb[label]);
@@ -41197,51 +41197,51 @@ module.exports = function () {
                     }
                     next();
                 });
-            } else {
-                async.forEachOf(this.filter, function (filter, label, next) {
-                    if (utils.is_function(cb[label])) {
-                        var callback;
-                        switch (label) {
-                        case "block":
-                            callback = cb.block;
-                            cb.block = function (block) {
-                                self.parse_block_message(block, callback);
-                            };
-                            break;
-                        case "contracts":
-                            callback = cb.contracts;
-                            cb.contracts = function (msg) {
-                                self.parse_contracts_message(msg, callback);
-                            };
-                            break;
-                        case "log_fill_tx":
-                            callback = cb.log_fill_tx;
-                            cb.log_fill_tx = function (msg) {
-                                self.parse_log_fill_tx_message(msg, callback);
-                            };
-                            break;
-                        case "marketCreated":
-                            callback = cb.marketCreated;
-                            cb.marketCreated = function (msg) {
-                                self.parse_marketCreated_message(msg, callback);
-                            };
-                            break;
-                        case "tradingFeeUpdated":
-                            callback = cb.tradingFeeUpdated;
-                            cb.tradingFeeUpdated = function (msg) {
-                                self.parse_tradingFeeUpdated_message(msg, callback);
-                            };
-                            break;
-                        }
-                        augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
-                        next();
-                    }
-                });
-            }
+            // } else {
+            //     async.forEachOf(this.filter, function (filter, label, next) {
+            //         if (utils.is_function(cb[label])) {
+            //             var callback;
+            //             switch (label) {
+            //             case "block":
+            //                 callback = cb.block;
+            //                 cb.block = function (block) {
+            //                     self.parse_block_message(block, callback);
+            //                 };
+            //                 break;
+            //             case "contracts":
+            //                 callback = cb.contracts;
+            //                 cb.contracts = function (msg) {
+            //                     self.parse_contracts_message(msg, callback);
+            //                 };
+            //                 break;
+            //             case "log_fill_tx":
+            //                 callback = cb.log_fill_tx;
+            //                 cb.log_fill_tx = function (msg) {
+            //                     self.parse_log_fill_tx_message(msg, callback);
+            //                 };
+            //                 break;
+            //             case "marketCreated":
+            //                 callback = cb.marketCreated;
+            //                 cb.marketCreated = function (msg) {
+            //                     self.parse_marketCreated_message(msg, callback);
+            //                 };
+            //                 break;
+            //             case "tradingFeeUpdated":
+            //                 callback = cb.tradingFeeUpdated;
+            //                 cb.tradingFeeUpdated = function (msg) {
+            //                     self.parse_tradingFeeUpdated_message(msg, callback);
+            //                 };
+            //                 break;
+            //             }
+            //             augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
+            //             next();
+            //         }
+            //     });
+            // }
         },
 
         listen: function (cb, setup_complete) {
-            var run, self = this;
+            var self = this;
 
             function listenHelper(callback, label, next) {
                 switch (label) {
@@ -41267,17 +41267,15 @@ module.exports = function () {
                 }
             }
 
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+            // if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
                 this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
                 this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
                 this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
-                run = async.parallel;
-            } else {
-                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
-                run = async.series;
-            }
+            // } else {
+            //     this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+            //     this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
+            //     this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+            // }
             async.forEachOfSeries(cb, function (callback, label, next) {
 
                 // skip invalid labels, undefined callbacks
@@ -41641,7 +41639,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.24";
+    this.version = "1.9.25";
 
     this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
     this.protocol = NODE_JS || document.location.protocol;
