@@ -206,7 +206,7 @@ module.exports = function () {
 							};
 							return cb(clone(self.account));
 						});
-					})
+					});
 				},
 
         loadLocalLoginAccount: function (localAccount, cb) {
