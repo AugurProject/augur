@@ -13,11 +13,11 @@ export default function selectOrderBook() {
 				price: makeNumber(0.45, 'eth')
 			},
 			{
-				shares: makeNumber(2, 'Shares'),
+				shares: makeNumber(2.22, 'Shares'),
 				price: makeNumber(0.35, 'eth')
 			},
 			{
-				shares: makeNumber(6544, 'Shares'),
+				shares: makeNumber(6544.43, 'Shares'),
 				price: makeNumber(0.25, 'eth')
 			}
 		],

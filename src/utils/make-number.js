@@ -6,8 +6,8 @@ export function makeNumber(num, denomination, omitSign) {
 		value: rndNum,
 		formattedValue: rndNum,
 		formatted: rndNum.toString(),
-		roundedValue: rndNum,
-		rounded: rndNum.toString(),
+		roundedValue: Math.round(rndNum),
+		rounded: Math.round(rndNum).toString(),
 		minimized: rndNum.toString(),
 		denomination: denomination || ''
 	};

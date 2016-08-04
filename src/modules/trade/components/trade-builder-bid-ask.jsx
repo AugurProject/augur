@@ -9,6 +9,7 @@ const TradeBuilderBidAsk = (p) => (
 		<ValueDenomination
 			{...p.bidAsk.shares}
 			className={classnames('shares')}
+			formatted={p.bidAsk.shares.rounded}
 			denomination={undefined}
 		/>
 
