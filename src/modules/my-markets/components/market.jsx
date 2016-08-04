@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../../modules/common/components/value-denomination';
+import ValueDate from '../../../modules/common/components/value-date';
 
 const Market = (p) => (
 	<div className="portfolio-row">
 		<div className="portfolio-group portfolio-main-group">
 			<span className="market-main-group-title">ends: </span>
-			<ValueDenomination {...p.endDate} />
+			<ValueDate {...p.endDate} />
 		</div>
 		<div className="portfolio-group">
 			<div className="portfolio-pair total-value">

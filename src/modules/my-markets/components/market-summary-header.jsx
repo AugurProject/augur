@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const PositionsSummary = (p) => (
@@ -11,7 +11,8 @@ const PositionsSummary = (p) => (
 );
 
 PositionsSummary.propTypes = {
-	className: React.PropTypes.string
+	className: PropTypes.string.isRequired,
+	fees: PropTypes.object.isRequired
 };
 
 export default PositionsSummary;
