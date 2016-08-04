@@ -15,7 +15,7 @@ const TradeBuilderRow = (p) => {
 			<td className={classnames('outcome-name', { fade: p.isFaded })}>
 				{p.name}
 				&nbsp; - &nbsp;
-				<ValueDenomination {...p.lastPricePercent} />
+				<ValueDenomination {...p.lastPricePercent} formatted={p.lastPricePercent.rounded} />
 			</td>
 			{p.trade.side === 'sell' &&
 				<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
