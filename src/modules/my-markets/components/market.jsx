@@ -6,13 +6,15 @@ const Market = (p) => (
 		<div className="portfolio-group portfolio-main-group">
 			<span className="market-main-group-title">ends: </span>
 			<ValueDenomination {...p.endDate} />
-			<ValueDenomination
-				className="colorize"
-				{...p.fees}
-				denomination={`${p.fees.denomination} collected`}
-			/>
 		</div>
 		<div className="portfolio-group">
+			<div className="portfolio-pair total-value">
+				<span className="title">fees collected</span>
+				<ValueDenomination
+					className="colorize"
+					{...p.fees}
+				/>
+			</div>
 			<div className="portfolio-pair">
 				<span className="title">open volume</span>
 				<ValueDenomination {...p.openVolume} />
@@ -26,7 +28,7 @@ const Market = (p) => (
 				<ValueDenomination {...p.numberOfTrades} />
 			</div>
 			<div className="portfolio-pair total-value">
-				<span className="title">Avg Trade Size</span>
+				<span className="title">avg trade size</span>
 				<ValueDenomination {...p.averageTradeSize} />
 			</div>
 		</div>

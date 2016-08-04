@@ -1,6 +1,5 @@
 import React from 'react';
 import Market from '../../../modules/my-markets/components/market';
-import ValueDenomination from '../../../modules/common/components/value-denomination';
 
 const PortfolioMarkets = (p) => (
 	<div>
