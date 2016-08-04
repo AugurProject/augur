@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import { REGISTER, LOGIN } from '../../auth/constants/auth-types';
+import { REGISTER, LOGIN, IMPORT } from '../../auth/constants/auth-types';
 import {
 	INVALID_USERNAME_OR_PASSWORD,
 	USERNAME_REQUIRED,
@@ -9,6 +9,7 @@ import {
 } from '../../auth/constants/form-errors';
 import store from '../../../store';
 import { register } from '../../auth/actions/register';
+import { importAccount } from '../../auth/actions/import-account';
 import { login } from '../../auth/actions/login';
 import { selectAuthLink } from '../../link/selectors/links';
 
@@ -49,9 +50,13 @@ export const selectRegister = (auth, dispatch) => {
 		isVisiblePassword: true,
 		isVisiblePassword2: true,
 		isVisibleRememberMe: false,
+		isVisibleFileInput: false,
 
 		topLinkText: 'Login',
 		topLink: selectAuthLink(LOGIN, false, dispatch),
+
+		bottomLinkText: 'Import Account',
+		bottomLink: selectAuthLink(IMPORT, false, dispatch),
 
 		msg: errMsg,
 		msgClass: errMsg ? 'error' : 'success',
@@ -77,9 +82,14 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 		isVisiblePassword: true,
 		isVisiblePassword2: false,
 		isVisibleRememberMe: true,
+		isVisibleFileInput: false,
 
 		topLinkText: 'Sign Up',
 		topLink: selectAuthLink(REGISTER, false, dispatch),
+
+		bottomLinkText: 'Import Account',
+		bottomLink: selectAuthLink(IMPORT, false, dispatch),
+
 
 		secureLoginID: loginAccount.secureLoginID,
 		msg: errMsg || newAccountMessage,
@@ -92,12 +102,42 @@ export const selectLogin = (auth, loginAccount, dispatch) => {
 	};
 };
 
+export const selectImportAccount = (auth, dispatch) => {
+	const errMsg = selectErrMsg(auth.err);
+	return {
+		title: 'Import Account',
+
+		isVisibleName: true,
+		isVisibleID: false,
+		isVisiblePassword: true,
+		isVisiblePassword2: false,
+		isVisibleRememberMe: true,
+		isVisibleFileInput: true,
+
+		topLinkText: 'Login',
+		topLink: selectAuthLink(LOGIN, false, dispatch),
+
+		bottomLinkText: 'Sign Up',
+		bottomLink: selectAuthLink(REGISTER, false, dispatch),
+
+		msg: errMsg,
+		msgClass: errMsg ? 'error' : 'success',
+
+		submitButtonText: 'Import Account',
+		submitButtonClass: 'register-button',
+
+		onSubmit: (name, password, password2, secureLoginID, rememberMe, keystore) => dispatch(importAccount(name, password, rememberMe, keystore))
+	};
+};
+
 export const selectAuthType = (auth, loginAccount, dispatch) => {
 	switch (auth.selectedAuthType) {
 	case REGISTER:
 		return selectRegister(auth, dispatch);
 	case LOGIN:
 		return selectLogin(auth, loginAccount, dispatch);
+	case IMPORT:
+		return selectImportAccount(auth, dispatch);
 	default:
 		return;
 	}

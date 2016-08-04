@@ -4,7 +4,7 @@ import { makeLocation } from '../../../utils/parse-url';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
 import { ACCOUNT, M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
-import { LOGIN, REGISTER } from '../../auth/constants/auth-types';
+import { LOGIN, REGISTER, IMPORT } from '../../auth/constants/auth-types';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -16,11 +16,10 @@ import store from '../../../store';
 // import * as selectors from '../../../selectors';
 
 export default function () {
-	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount } = store.getState();
+	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth } = store.getState();
 	const { market } = require('../../../selectors');
-
 	return {
-		authLink: selectAuthLink(loginAccount.id ? LOGIN : REGISTER, !!loginAccount.id, store.dispatch),
+		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
 		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort, selectedTags, pagination.selectedPageNum, store.dispatch),
 		positionsLink: selectPositionsLink(store.dispatch),

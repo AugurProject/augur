@@ -203,6 +203,7 @@ ex.listenToBidsAsks = function listenToBidsAsks() {
 
 ex.login = function login(secureLoginID, password, cb) {
 	augur.web.login(secureLoginID, password, (account) => {
+		console.log(account);
 		if (!account) {
 			return cb({ code: 0, message: 'failed to login' });
 		}
@@ -223,6 +224,7 @@ ex.logout = function logout() {
 ex.register = function register(name, password, cb) {
 	augur.web.register(name, password,
 		account => {
+			console.log(account);
 			if (!account) {
 				return cb({ code: 0, message: 'failed to register' });
 			}
@@ -234,6 +236,22 @@ ex.register = function register(name, password, cb) {
 				id: account.address
 			});
 		});
+};
+
+ex.importAccount = function importAccount(name, password, keystore, cb) {
+	augur.web.importAccount(name, password, keystore, account => {
+		console.log(account);
+		if (!account) {
+			return cb({ code: 0, message: 'failed to register' });
+		}
+		if (account.error) {
+			return cb({ code: account.error, message: account.message });
+		}
+		return cb(null, {
+			...account,
+			id: account.address
+		});
+	});
 };
 
 ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
