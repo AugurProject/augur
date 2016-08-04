@@ -1,0 +1,28 @@
+import React, { Component, PropTypes } from 'react';
+import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
+import Market from '../../../modules/my-markets/components/market';
+import MarketSummaryHeader from '../../my-markets/components/market-summary-header';
+
+export default class MarketSummary extends Component {
+	static propTypes = {
+		marketSummary: PropTypes.object.isRequired
+	};
+
+	constructor(props) {
+		super(props);
+		this.shouldComponentUpdate = shouldComponentUpdatePure;
+	}
+
+	render() {
+		const p = this.props;
+
+		return (
+			<section className="market-summary">
+				<MarketSummaryHeader {...p.marketSummary} className="market-section-header" />
+				<section className="portfolio-list">
+					<Market {...p.marketSummary} />
+				</section>
+			</section>
+		);
+	}
+}
