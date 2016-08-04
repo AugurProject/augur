@@ -1,7 +1,7 @@
 import React from 'react';
 import Positions from '../../../modules/my-positions/components/positions';
 
-const MyPositions = (p) => (
+const PortfolioPositions = (p) => (
 	<div className="positions-content">
 		{!!p.positions && !!p.positions.markets && !!p.positions.markets.length && p.positions.markets.map(market => (
 			<div key={market.id} className="positions-container">
@@ -17,8 +17,8 @@ const MyPositions = (p) => (
 	</div>
 );
 
-MyPositions.propTypes = {
+PortfolioPositions.propTypes = {
 	positions: React.PropTypes.object.isRequired
 };
 
-export default MyPositions;
+export default PortfolioPositions;

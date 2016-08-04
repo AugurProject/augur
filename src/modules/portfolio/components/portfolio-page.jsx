@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import SiteHeader from '../../../modules/site/components/site-header';
 import SiteFooter from '../../../modules/site/components/site-footer';
-import Positions from '../../../modules/portfolio/components/my-positions';
-import Markets from '../../../modules/my-markets/components/markets';
-import Reports from '../../../modules/my-reports/components/reports';
+import Positions from '../../../modules/portfolio/components/positions';
+import Markets from '../../../modules/portfolio/components/markets';
+import Reports from '../../../modules/portfolio/components/reports';
 import TabNavigation from '../../../modules/common/components/tab-navigation';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/pages';
 
