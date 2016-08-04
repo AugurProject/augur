@@ -1,5 +1,5 @@
 import { ACCOUNT, MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../../app/constants/pages';
-import { NEW_REGISTER, REGISTER, LOGIN } from '../../auth/constants/auth-types';
+import { IMPORT, REGISTER, LOGIN } from '../../auth/constants/auth-types';
 
 export const PATHS_PAGES = {
 	'/': MARKETS,
@@ -10,7 +10,7 @@ export const PATHS_PAGES = {
 	'/login': LOGIN,
 	'/m': M,
 	'/account': ACCOUNT,
-	'/newRegister': NEW_REGISTER,
+	'/import': IMPORT,
 };
 
 export const PAGES_PATHS = Object.keys(PATHS_PAGES).reduce(
@@ -22,7 +22,7 @@ export const PAGES_PATHS = Object.keys(PATHS_PAGES).reduce(
 export const PATHS_AUTH = {
 	'/register': REGISTER,
 	'/login': LOGIN,
-	'/newRegister': NEW_REGISTER,
+	'/import': IMPORT,
 };
 
 export const AUTH_PATHS = Object.keys(PATHS_AUTH).reduce(
