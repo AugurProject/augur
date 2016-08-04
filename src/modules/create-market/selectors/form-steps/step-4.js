@@ -114,7 +114,7 @@ export const isValid = (formState) => {
 	) {
 		return false;
 	}
-	
+
 	return true;
 };
 
