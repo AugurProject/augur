@@ -5,7 +5,7 @@ import { M } from '../modules/site/constants/pages';
 
 module.exports = makeMarkets();
 
-function makeMarkets(numMarkets = 50) {
+function makeMarkets(numMarkets = 10) {
 	const markets = [];
 	const types = ['binary', 'categorical', 'scalar'];
 

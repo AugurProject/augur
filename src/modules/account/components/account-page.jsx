@@ -132,8 +132,8 @@ export default class AccountPage extends Component {
 								</p>
 								<a
 									className="button download-account"
-									href={p.account.dataString}
-									download={p.account.downloadFileName}
+									href={p.account.downloadAccountDataString}
+									download={p.account.downloadAccountFileName}
 									title="Click here to Download your Account."
 								>
 									Download Account

@@ -18,14 +18,13 @@ const date = new Date()
 	.toISOString()
 	.split(':')
 	.join('-');
-loginAccount.downloadAccountDataString = `data:application/octet-stream;charset=utf-8;base64,${encodeURIComponent(JSON.stringify(loginAccount))}`;
+loginAccount.downloadAccountDataString = `data:,${encodeURIComponent(JSON.stringify(loginAccount))}`;
 loginAccount.downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
 
 loginAccount.signIn = (name = loginAccount.name) => {
-	loginAccount.update({ loginAccount: {
+	require('../selectors').update({ loginAccount: {
 		...loginAccount,
 		name,
-		update: loginAccount.update,
 		editName: loginAccount.editName,
 		signOut: loginAccount.signOut
 	}
@@ -39,10 +38,9 @@ loginAccount.editName = (name) => {
 };
 
 loginAccount.signIn = (name = loginAccount.name) => {
-	loginAccount.update({ loginAccount: {
+	require('../selectors').update({ loginAccount: {
 		...loginAccount,
 		name,
-		update: loginAccount.update,
 		editName: loginAccount.editName,
 		signOut: loginAccount.signOut
 	}
@@ -51,9 +49,8 @@ loginAccount.signIn = (name = loginAccount.name) => {
 };
 
 loginAccount.signOut = () => {
-	loginAccount.update({
+	require('../selectors').update({
 		loginAccount: {
-			update: loginAccount.update,
 			signIn: loginAccount.signIn
 		}
 	});

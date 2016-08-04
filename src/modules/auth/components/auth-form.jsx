@@ -16,6 +16,7 @@ export default class AuthForm extends Component {
 		isVisiblePassword: PropTypes.bool,
 		isVisiblePassword2: PropTypes.bool,
 		isVisibleID: PropTypes.bool,
+		isVisibleFileInput: PropTypes.bool,
 		isVisibleRememberMe: PropTypes.bool,
 		clearName: PropTypes.bool,
 		clearPassword: PropTypes.bool,
@@ -39,6 +40,9 @@ export default class AuthForm extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		if (new FileReader()) {
+			this.fileReader = new FileReader();
+		}
 		this.state = {
 			msg: this.props.msg,
 			secureLoginID: this.props.secureLoginID,
@@ -70,9 +74,18 @@ export default class AuthForm extends Component {
 		const password = this.refs.password.value;
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
-		this.setState({ msg: '' });
-		setTimeout(() =>
-			this.props.onSubmit(name, password, password2, secureLoginID, rememberMe), 100);
+		const file = (this.refs.form[1].files[0] !== undefined);
+		if (file && this.fileReader) {
+			this.fileReader.readAsText(this.refs.form[1].files[0]);
+			this.fileReader.onload = (e) => {
+				const importAccount = JSON.parse(e.target.result);
+				setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
+				this.setState({ msg: '' });
+			};
+		} else {
+			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, undefined), 100);
+			this.setState({ msg: '' });
+		}
 	}
 
 	render() {
@@ -80,7 +93,7 @@ export default class AuthForm extends Component {
 		const s = this.state;
 
 		return (
-			<form className={p.className} onSubmit={this.handleSubmit}>
+			<form ref="form" className={p.className} onSubmit={this.handleSubmit} encType="multipart/form-data">
 				<h1 className="title">
 					{p.title}
 					{p.topLinkText &&
@@ -104,6 +117,13 @@ export default class AuthForm extends Component {
 					type="text"
 					placeholder="name"
 					maxLength="30"
+					autoFocus="autofocus"
+				/>
+				<input
+					name="importAccount"
+					className={classnames('auth-input', { displayNone: !p.isVisibleFileInput })}
+					type="file"
+					placeholder="Import Account"
 					autoFocus="autofocus"
 				/>
 				<Input
@@ -131,22 +151,22 @@ export default class AuthForm extends Component {
 					placeholder={p.password2Placeholder || 'confirm password'}
 					maxLength="256"
 				/>
-				<Checkbox
-					className={classnames({ displayNone: !p.isVisibleRememberMe })}
-					title="Click Here to remember your account information locally."
-					text="Remember Me"
-					isChecked={s.rememberMe}
-					onClick={() => this.setState({ rememberMe: !s.rememberMe })}
-				/>
-				{p.bottomLinkText &&
+				<div className={classnames('bottom-container')}>
 					<Link
-						className="bottom-link"
-						href={p.bottomLinkHref}
-						onClick={p.onClickBottomLink}
+						className={classnames('bottom-link', { displayNone: !p.bottomLink })}
+						href={p.bottomLink.href}
+						onClick={p.bottomLink.onClick}
 					>
 						{p.bottomLinkText}
 					</Link>
-				}
+					<Checkbox
+						className={classnames({ displayNone: !p.isVisibleRememberMe })}
+						title="Click Here to remember your account information locally."
+						text="Remember Me"
+						isChecked={s.rememberMe}
+						onClick={() => this.setState({ rememberMe: !s.rememberMe })}
+					/>
+				</div>
 				<input
 					className={classnames('button', 'submit-button', p.submitButtonClass)}
 					type="submit"
