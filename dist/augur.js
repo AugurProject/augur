@@ -7083,7 +7083,7 @@ CipherBase.prototype._toString = function (value, enc, final) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":114,"inherits":37,"stream":224,"string_decoder":225}],8:[function(require,module,exports){
+},{"buffer":114,"inherits":37,"stream":218,"string_decoder":219}],8:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 var inherits = require('inherits')
@@ -14781,7 +14781,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../augur.js/node_modules/is-buffer/index.js")})
-},{"../../../../augur.js/node_modules/is-buffer/index.js":172}],44:[function(require,module,exports){
+},{"../../../../augur.js/node_modules/is-buffer/index.js":166}],44:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var createHash = require('create-hash')
@@ -17212,6 +17212,23 @@ module.exports={
         "mutable": true, 
         "returns": "int256", 
         "send": true, 
+        "signature": [
+          "int256", 
+          "int256", 
+          "int256", 
+          "int256"
+        ]
+      }, 
+      "buyCompleteSetsThenSell": {
+        "inputs": [
+          "amount", 
+          "price", 
+          "market", 
+          "outcome"
+        ], 
+        "method": "buyCompleteSetsThenSell", 
+        "mutable": true, 
+        "returns": "int256", 
         "signature": [
           "int256", 
           "int256", 
@@ -20950,46 +20967,46 @@ module.exports={
 },{}],56:[function(require,module,exports){
 module.exports={
     "10101": {
-        "Backstops": "0x004af642dc4e15785c441e5fb437344f52374449", 
-        "Branches": "0xc01b4edab0a7985f65633f27e63b8dba1b4baddc", 
-        "BuyAndSellShares": "0x868782adb99b638fd6a190959f5aa81b304011cd", 
-        "Cash": "0x521026c174cbc8af871e61854d83915aa05ba431", 
-        "CloseMarket": "0x847c498ec205cff1e247861b0c40b2ecf63c2ef2", 
-        "CloseMarketOne": "0x50857f66c60b7f11ed596f264329cde375f2299c", 
-        "CloseMarketTwo": "0xd89ccb47de16a8918d3bd437df9f483d46767073", 
-        "CollectFees": "0x5dd416a7a413d8e2d31eab4cd37615291412fa12", 
-        "CompleteSets": "0x5515d6bb68706d74e9256ad9b300e3de761b294d", 
-        "CompositeGetters": "0x266dc0eee3bcc4b34146d2bffefcf816eff1cbd6", 
-        "Consensus": "0xc23a537d1c7416dcef5c6882188f7bed67284f17", 
-        "ConsensusData": "0x3c1c56047a38100077ad9ac67b164fdea2cc9626", 
-        "CreateBranch": "0x29b81c4f39a9879ff20aad4962e7b1ec754216a7", 
-        "CreateMarket": "0x852e389efb61953f1c0407726cdb454157a6e881", 
-        "EventResolution": "0xa8fd897c5bc6d1768f64fc2e01f092bae263ae6c", 
-        "Events": "0x0c7a2fb80ce60e55e94b89f605c69ef8d7544571", 
-        "ExpiringEvents": "0x4e670020ae82a3b44b12bedd078e56d87fa2f47f", 
-        "Faucets": "0x9078f04f0558e3b374185b515d938f4cd9e41c50", 
-        "ForkPenalize": "0xa89627280b3cf072cebefeb6252e8e29a58b31c9", 
-        "Forking": "0xcbe2de7db931270a32cfb9c36f6a18b41415b3d4", 
-        "FxpFunctions": "0x49f7f70d65b04b4d67e3a0b24fbff7fb85c3dc7b", 
-        "Info": "0xd91d1e67f932ad891ec3e7b319de32d14cf689c3", 
-        "MakeReports": "0xd3a2cd80a7ca9f432629d400bce2bc3207cf4a49", 
-        "Markets": "0xbc3737730e62de254ae959a500fb2201ca830b11", 
-        "PenalizationCatchup": "0x53b47f065d582bc89a47963a9ee12e2c8ae7d224", 
-        "PenalizeNotEnoughReports": "0x6f2900f23c4680f9a1bb7d7c9301fa0328211655", 
-        "ProportionCorrect": "0x76da8f71aebcdc9e48920761eefe91f36c9da78b", 
-        "Reporting": "0xb8a2339701919377ad407ae640a720bb8a75a552", 
-        "ReportingThreshold": "0xe4e5897b30bbc5876f4a1b7e99577113c2a34907", 
-        "RoundTwo": "0x2169289d41d838297c79ea821be56ffb5239a23f", 
-        "RoundTwoPenalize": "0x7b0defa050472f023b229eb5228593769218a95e", 
-        "SendReputation": "0x6cfdca0ab64cfba38e184ee9c461a91145a0a947", 
-        "SlashRep": "0x5cec0b1db1d91869bbb72888cd782e705a46001e", 
-        "Trade": "0x674466043e51b308f6fb2560dcabaf6845a08fff", 
-        "Trades": "0xc9837907f967e022981c36bf0fd59451c8c108a1"
+        "Backstops": "0xbf240ac07d63aa161489bd4db817f4e0e71745a7", 
+        "Branches": "0x3b6cdf7fa1bed7fa000cd9eb8137e27c82682580", 
+        "BuyAndSellShares": "0x91b8869eb880515ff7ff6f892ed22dccaa64e3a9", 
+        "Cash": "0x92027e45b9a40c8c0b8cd5f75db4b587bb3bbc82", 
+        "CloseMarket": "0x102db0cf32911a8f64146cc5b558be2a4f560afc", 
+        "CloseMarketOne": "0x36508c4a6c96009bc1d9f85ac80d808ae3296ee8", 
+        "CloseMarketTwo": "0xe083caccd24b37765fd505be028586f6e8e6f99f", 
+        "CollectFees": "0x7a179ce5ce918a38e16557573e668abdb8e0269f", 
+        "CompleteSets": "0x5cf67b694c3ff2c62f88007f72efc369ae932a32", 
+        "CompositeGetters": "0x0af04688a11e0fac4838ec00fba789e97bd08726", 
+        "Consensus": "0x74fe58237d40501c002c0ab7327709cefd0eb714", 
+        "ConsensusData": "0x1e6ea72183c9a8c90cc111ba4be0eb21c9df7a21", 
+        "CreateBranch": "0x1a43dee62d07c34a3219d1c9ad62481f3dde2a84", 
+        "CreateMarket": "0x169c504d8a81760cbdbe1a610f50058381563494", 
+        "EventResolution": "0xeb326da9751ae75e061bdfc5aa3988aefd868818", 
+        "Events": "0x61f93ce415f782d953bc7a96e1ffec450bb5ba94", 
+        "ExpiringEvents": "0xa3dacd6ef829ccaed11e11f99fb6984682c244ee", 
+        "Faucets": "0xa54485d46ef123ba66b062ae732174bbead89c90", 
+        "ForkPenalize": "0xcf3c8d2953b8f02bea0bff3db9929361962aba06", 
+        "Forking": "0x2fd2953f436d16a6eb0e5624bbe9c8920513bff7", 
+        "FxpFunctions": "0x646b0d73d1a9242382b5e82014e0ff2eaf7a128e", 
+        "Info": "0xdca43fc1cf791598db5d5f8ecda52aa66e76865a", 
+        "MakeReports": "0xcb0c565165a1cca856da55036214d42e9726e201", 
+        "Markets": "0xbb8a89fb988943e317f3b3a54907a3c270eecc7b", 
+        "PenalizationCatchup": "0xa305c5cb4dedd919124eeffcf169401e03ca47de", 
+        "PenalizeNotEnoughReports": "0xf35dfb8936662e28851954fdefb9582fe22a3530", 
+        "ProportionCorrect": "0x4330c5a5da54d28975e2f660b98d13721ee4ac65", 
+        "Reporting": "0x80eb72de757f5ea0daa68eed23d3a59d0bf0913b", 
+        "ReportingThreshold": "0x4883b83697a151c6c57517ce315e609cb50008ef", 
+        "RoundTwo": "0xbd48e61312b2757ed6555f0bc919439fa3d19567", 
+        "RoundTwoPenalize": "0xa832bea402b452123d0a931618b24b199b1c4694", 
+        "SendReputation": "0xc15c4d0478440291ef56a6934c031d1effa7c996", 
+        "SlashRep": "0xa1e14903625b83ff8f03c4951b2506c9a19383b6", 
+        "Trade": "0x4089e79731beb5c9e73e8d84e238389716341b9c", 
+        "Trades": "0x8237de19a291c93b86135502581f232c9010651b"
     }, 
     "2": {
         "Backstops": "0x6383e0617288f6c5c47b987770f245ccf5999d50", 
         "Branches": "0xee5d4cbd36b6ac8bec59fc77016b90622d557dfa", 
-        "BuyAndSellShares": "0x54880a55093097d0ec7e3fbd60f5ad31f8e21449", 
+        "BuyAndSellShares": "0xe1eaef5116dfedb07eef3aaf20025c35c9b53008", 
         "Cash": "0xeecebff7ee0b308db51ded8041063d2169060819", 
         "CloseMarket": "0x7944a6c3242c6d6641fac3be53898e5446a5b9d6", 
         "CloseMarketOne": "0xe2f0429316b2517db00c29b002152844f4380c5b", 
@@ -21525,7 +21542,7 @@ var augur = global.augur || require("./src/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/index":235}],62:[function(require,module,exports){
+},{"./src/index":229}],62:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -21599,7 +21616,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":62,"inherits":171,"vm":229}],64:[function(require,module,exports){
+},{"../asn1":62,"inherits":165,"vm":223}],64:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -21717,7 +21734,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":65,"buffer":114,"inherits":171}],65:[function(require,module,exports){
+},{"../base":65,"buffer":114,"inherits":165}],65:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -22356,7 +22373,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":65,"minimalistic-assert":182}],67:[function(require,module,exports){
+},{"../base":65,"minimalistic-assert":176}],67:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -22479,7 +22496,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":171}],68:[function(require,module,exports){
+},{"inherits":165}],68:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -22868,7 +22885,7 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":62,"inherits":171}],71:[function(require,module,exports){
+},{"../../asn1":62,"inherits":165}],71:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
@@ -22925,7 +22942,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":70,"buffer":114,"inherits":171}],73:[function(require,module,exports){
+},{"./der":70,"buffer":114,"inherits":165}],73:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -23220,7 +23237,7 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":62,"buffer":114,"inherits":171}],74:[function(require,module,exports){
+},{"../../asn1":62,"buffer":114,"inherits":165}],74:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
@@ -23249,7 +23266,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":73,"inherits":171}],76:[function(require,module,exports){
+},{"./der":73,"inherits":165}],76:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -23610,7 +23627,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":228}],77:[function(require,module,exports){
+},{"util/":222}],77:[function(require,module,exports){
 (function (process,global){
 /*!
  * async
@@ -24879,7 +24896,7 @@ var objectKeys = Object.keys || function (obj) {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":191}],78:[function(require,module,exports){
+},{"_process":185}],78:[function(require,module,exports){
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
 // Originally written by Mike Hearn for BitcoinJ
@@ -29305,7 +29322,7 @@ function xorTest (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":86,"./ghash":91,"buffer":114,"buffer-xor":113,"cipher-base":115,"inherits":171}],88:[function(require,module,exports){
+},{"./aes":86,"./ghash":91,"buffer":114,"buffer-xor":113,"cipher-base":115,"inherits":165}],88:[function(require,module,exports){
 var ciphers = require('./encrypter')
 exports.createCipher = exports.Cipher = ciphers.createCipher
 exports.createCipheriv = exports.Cipheriv = ciphers.createCipheriv
@@ -29459,7 +29476,7 @@ exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":86,"./authCipher":87,"./modes":92,"./modes/cbc":93,"./modes/cfb":94,"./modes/cfb1":95,"./modes/cfb8":96,"./modes/ctr":97,"./modes/ecb":98,"./modes/ofb":99,"./streamCipher":100,"buffer":114,"cipher-base":115,"evp_bytestokey":162,"inherits":171}],90:[function(require,module,exports){
+},{"./aes":86,"./authCipher":87,"./modes":92,"./modes/cbc":93,"./modes/cfb":94,"./modes/cfb1":95,"./modes/cfb8":96,"./modes/ctr":97,"./modes/ecb":98,"./modes/ofb":99,"./streamCipher":100,"buffer":114,"cipher-base":115,"evp_bytestokey":156,"inherits":165}],90:[function(require,module,exports){
 (function (Buffer){
 var aes = require('./aes')
 var Transform = require('cipher-base')
@@ -29585,7 +29602,7 @@ exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":86,"./authCipher":87,"./modes":92,"./modes/cbc":93,"./modes/cfb":94,"./modes/cfb1":95,"./modes/cfb8":96,"./modes/ctr":97,"./modes/ecb":98,"./modes/ofb":99,"./streamCipher":100,"buffer":114,"cipher-base":115,"evp_bytestokey":162,"inherits":171}],91:[function(require,module,exports){
+},{"./aes":86,"./authCipher":87,"./modes":92,"./modes/cbc":93,"./modes/cfb":94,"./modes/cfb1":95,"./modes/cfb8":96,"./modes/ctr":97,"./modes/ecb":98,"./modes/ofb":99,"./streamCipher":100,"buffer":114,"cipher-base":115,"evp_bytestokey":156,"inherits":165}],91:[function(require,module,exports){
 (function (Buffer){
 var zeros = new Buffer(16)
 zeros.fill(0)
@@ -30063,7 +30080,7 @@ StreamCipher.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aes":86,"buffer":114,"cipher-base":115,"inherits":171}],101:[function(require,module,exports){
+},{"./aes":86,"buffer":114,"cipher-base":115,"inherits":165}],101:[function(require,module,exports){
 var ebtk = require('evp_bytestokey')
 var aes = require('browserify-aes/browser')
 var DES = require('browserify-des')
@@ -30138,7 +30155,7 @@ function getCiphers () {
 }
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":88,"browserify-aes/modes":92,"browserify-des":102,"browserify-des/modes":103,"evp_bytestokey":162}],102:[function(require,module,exports){
+},{"browserify-aes/browser":88,"browserify-aes/modes":92,"browserify-des":102,"browserify-des/modes":103,"evp_bytestokey":156}],102:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -30185,7 +30202,7 @@ DES.prototype._final = function () {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":114,"cipher-base":115,"des.js":124,"inherits":171}],103:[function(require,module,exports){
+},{"buffer":114,"cipher-base":115,"des.js":124,"inherits":165}],103:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -30255,9 +30272,9 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":82,"buffer":114,"randombytes":198}],105:[function(require,module,exports){
+},{"bn.js":82,"buffer":114,"randombytes":192}],105:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
-},{"buffer":114,"dup":6,"js-sha3":174}],106:[function(require,module,exports){
+},{"buffer":114,"dup":6,"js-sha3":168}],106:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 exports['RSA-SHA224'] = exports.sha224WithRSAEncryption = {
@@ -30440,7 +30457,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algos":106,"./sign":109,"./verify":110,"buffer":114,"create-hash":119,"inherits":171,"stream":224}],108:[function(require,module,exports){
+},{"./algos":106,"./sign":109,"./verify":110,"buffer":114,"create-hash":119,"inherits":165,"stream":218}],108:[function(require,module,exports){
 'use strict'
 exports['1.3.132.0.10'] = 'secp256k1'
 
@@ -30643,7 +30660,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":108,"bn.js":82,"browserify-rsa":104,"buffer":114,"create-hmac":122,"elliptic":134,"parse-asn1":187}],110:[function(require,module,exports){
+},{"./curves":108,"bn.js":82,"browserify-rsa":104,"buffer":114,"create-hmac":122,"elliptic":134,"parse-asn1":181}],110:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var curves = require('./curves')
@@ -30750,7 +30767,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves":108,"bn.js":82,"buffer":114,"elliptic":134,"parse-asn1":187}],111:[function(require,module,exports){
+},{"./curves":108,"bn.js":82,"buffer":114,"elliptic":134,"parse-asn1":181}],111:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
 },{"dup":85}],112:[function(require,module,exports){
 var basex = require('base-x')
@@ -32328,9 +32345,9 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":79,"ieee754":169,"isarray":173}],115:[function(require,module,exports){
+},{"base64-js":79,"ieee754":163,"isarray":167}],115:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"buffer":114,"dup":7,"inherits":171,"stream":224,"string_decoder":225}],116:[function(require,module,exports){
+},{"buffer":114,"dup":7,"inherits":165,"stream":218,"string_decoder":219}],116:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
 },{"buffer":114,"dup":59}],117:[function(require,module,exports){
 (function (Buffer){
@@ -32443,7 +32460,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":172}],118:[function(require,module,exports){
+},{"../../is-buffer/index.js":166}],118:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic');
 var BN = require('bn.js');
@@ -32571,7 +32588,7 @@ function formatReturnValue(bn, enc, len) {
 }).call(this,require("buffer").Buffer)
 },{"bn.js":82,"buffer":114,"elliptic":134}],119:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
-},{"./md5":121,"buffer":114,"cipher-base":115,"dup":8,"inherits":171,"ripemd160":209,"sha.js":217}],120:[function(require,module,exports){
+},{"./md5":121,"buffer":114,"cipher-base":115,"dup":8,"inherits":165,"ripemd160":203,"sha.js":211}],120:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
 },{"buffer":114,"dup":9}],121:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
@@ -32647,7 +32664,7 @@ module.exports = function createHmac(alg, key) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":114,"create-hash/browser":119,"inherits":171,"stream":224}],123:[function(require,module,exports){
+},{"buffer":114,"create-hash/browser":119,"inherits":165,"stream":218}],123:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -32726,7 +32743,7 @@ var publicEncrypt = require('public-encrypt')
   }
 })
 
-},{"browserify-cipher":101,"browserify-sign":107,"browserify-sign/algos":106,"create-ecdh":118,"create-hash":119,"create-hmac":122,"diffie-hellman":130,"pbkdf2":189,"public-encrypt":192,"randombytes":198}],124:[function(require,module,exports){
+},{"browserify-cipher":101,"browserify-sign":107,"browserify-sign/algos":106,"create-ecdh":118,"create-hash":119,"create-hmac":122,"diffie-hellman":130,"pbkdf2":183,"public-encrypt":186,"randombytes":192}],124:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -32802,7 +32819,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":171,"minimalistic-assert":182}],126:[function(require,module,exports){
+},{"inherits":165,"minimalistic-assert":176}],126:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -32945,7 +32962,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":182}],127:[function(require,module,exports){
+},{"minimalistic-assert":176}],127:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -33090,7 +33107,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":124,"inherits":171,"minimalistic-assert":182}],128:[function(require,module,exports){
+},{"../des":124,"inherits":165,"minimalistic-assert":176}],128:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -33147,7 +33164,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":124,"inherits":171,"minimalistic-assert":182}],129:[function(require,module,exports){
+},{"../des":124,"inherits":165,"minimalistic-assert":176}],129:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -33619,7 +33636,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":132,"bn.js":82,"buffer":114,"miller-rabin":181,"randombytes":198}],132:[function(require,module,exports){
+},{"./generatePrime":132,"bn.js":82,"buffer":114,"miller-rabin":175,"randombytes":192}],132:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -33726,7 +33743,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":82,"miller-rabin":181,"randombytes":198}],133:[function(require,module,exports){
+},{"bn.js":82,"miller-rabin":175,"randombytes":192}],133:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -33767,15 +33784,15 @@ arguments[4][11][0].apply(exports,arguments)
 arguments[4][12][0].apply(exports,arguments)
 },{"../../elliptic":134,"bn.js":82,"dup":12}],136:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"../../elliptic":134,"../curve":137,"bn.js":82,"dup":13,"inherits":171}],137:[function(require,module,exports){
+},{"../../elliptic":134,"../curve":137,"bn.js":82,"dup":13,"inherits":165}],137:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
 },{"./base":135,"./edwards":136,"./mont":138,"./short":139,"dup":14}],138:[function(require,module,exports){
 arguments[4][15][0].apply(exports,arguments)
-},{"../../elliptic":134,"../curve":137,"bn.js":82,"dup":15,"inherits":171}],139:[function(require,module,exports){
+},{"../../elliptic":134,"../curve":137,"bn.js":82,"dup":15,"inherits":165}],139:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"../../elliptic":134,"../curve":137,"bn.js":82,"dup":16,"inherits":171}],140:[function(require,module,exports){
+},{"../../elliptic":134,"../curve":137,"bn.js":82,"dup":16,"inherits":165}],140:[function(require,module,exports){
 arguments[4][17][0].apply(exports,arguments)
-},{"../elliptic":134,"./precomputed/secp256k1":148,"dup":17,"hash.js":163}],141:[function(require,module,exports){
+},{"../elliptic":134,"./precomputed/secp256k1":148,"dup":17,"hash.js":157}],141:[function(require,module,exports){
 arguments[4][18][0].apply(exports,arguments)
 },{"../../elliptic":134,"./key":142,"./signature":143,"bn.js":82,"dup":18}],142:[function(require,module,exports){
 arguments[4][19][0].apply(exports,arguments)
@@ -33783,13 +33800,13 @@ arguments[4][19][0].apply(exports,arguments)
 arguments[4][20][0].apply(exports,arguments)
 },{"../../elliptic":134,"bn.js":82,"dup":20}],144:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":134,"./key":145,"./signature":146,"dup":21,"hash.js":163}],145:[function(require,module,exports){
+},{"../../elliptic":134,"./key":145,"./signature":146,"dup":21,"hash.js":157}],145:[function(require,module,exports){
 arguments[4][22][0].apply(exports,arguments)
 },{"../../elliptic":134,"dup":22}],146:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
 },{"../../elliptic":134,"bn.js":82,"dup":23}],147:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":134,"dup":24,"hash.js":163}],148:[function(require,module,exports){
+},{"../elliptic":134,"dup":24,"hash.js":157}],148:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
 },{"dup":25}],149:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
@@ -35080,7 +35097,9987 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":76,"bn.js":82,"buffer":114,"create-hash":119,"keccakjs":175,"rlp":210,"secp256k1":211}],155:[function(require,module,exports){
+},{"assert":76,"bn.js":82,"buffer":114,"create-hash":119,"keccakjs":169,"rlp":204,"secp256k1":205}],155:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        // At least give some kind of context to the user
+        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+        err.context = er;
+        throw err;
+      }
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    args = Array.prototype.slice.call(arguments, 1);
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else if (listeners) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.prototype.listenerCount = function(type) {
+  if (this._events) {
+    var evlistener = this._events[type];
+
+    if (isFunction(evlistener))
+      return 1;
+    else if (evlistener)
+      return evlistener.length;
+  }
+  return 0;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  return emitter.listenerCount(type);
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+},{}],156:[function(require,module,exports){
+(function (Buffer){
+var md5 = require('create-hash/md5')
+module.exports = EVP_BytesToKey
+function EVP_BytesToKey (password, salt, keyLen, ivLen) {
+  if (!Buffer.isBuffer(password)) {
+    password = new Buffer(password, 'binary')
+  }
+  if (salt && !Buffer.isBuffer(salt)) {
+    salt = new Buffer(salt, 'binary')
+  }
+  keyLen = keyLen / 8
+  ivLen = ivLen || 0
+  var ki = 0
+  var ii = 0
+  var key = new Buffer(keyLen)
+  var iv = new Buffer(ivLen)
+  var addmd = 0
+  var md_buf
+  var i
+  var bufs = []
+  while (true) {
+    if (addmd++ > 0) {
+      bufs.push(md_buf)
+    }
+    bufs.push(password)
+    if (salt) {
+      bufs.push(salt)
+    }
+    md_buf = md5(Buffer.concat(bufs))
+    bufs = []
+    i = 0
+    if (keyLen > 0) {
+      while (true) {
+        if (keyLen === 0) {
+          break
+        }
+        if (i === md_buf.length) {
+          break
+        }
+        key[ki++] = md_buf[i]
+        keyLen--
+        i++
+      }
+    }
+    if (ivLen > 0 && i !== md_buf.length) {
+      while (true) {
+        if (ivLen === 0) {
+          break
+        }
+        if (i === md_buf.length) {
+          break
+        }
+        iv[ii++] = md_buf[i]
+        ivLen--
+        i++
+      }
+    }
+    if (keyLen === 0 && ivLen === 0) {
+      break
+    }
+  }
+  for (i = 0; i < md_buf.length; i++) {
+    md_buf[i] = 0
+  }
+  return {
+    key: key,
+    iv: iv
+  }
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":114,"create-hash/md5":121}],157:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"./hash/common":158,"./hash/hmac":159,"./hash/ripemd":160,"./hash/sha":161,"./hash/utils":162,"dup":31}],158:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"../hash":157,"dup":32}],159:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"../hash":157,"dup":33}],160:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"../hash":157,"dup":34}],161:[function(require,module,exports){
+arguments[4][35][0].apply(exports,arguments)
+},{"../hash":157,"dup":35}],162:[function(require,module,exports){
+arguments[4][36][0].apply(exports,arguments)
+},{"dup":36,"inherits":165}],163:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],164:[function(require,module,exports){
+
+var indexOf = [].indexOf;
+
+module.exports = function(arr, obj){
+  if (indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+},{}],165:[function(require,module,exports){
+arguments[4][37][0].apply(exports,arguments)
+},{"dup":37}],166:[function(require,module,exports){
+/**
+ * Determine if an object is Buffer
+ *
+ * Author:   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * License:  MIT
+ *
+ * `npm install is-buffer`
+ */
+
+module.exports = function (obj) {
+  return !!(obj != null &&
+    (obj._isBuffer || // For Safari 5-7 (missing Object.prototype.constructor)
+      (obj.constructor &&
+      typeof obj.constructor.isBuffer === 'function' &&
+      obj.constructor.isBuffer(obj))
+    ))
+}
+
+},{}],167:[function(require,module,exports){
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+},{}],168:[function(require,module,exports){
+arguments[4][38][0].apply(exports,arguments)
+},{"dup":38}],169:[function(require,module,exports){
+arguments[4][39][0].apply(exports,arguments)
+},{"browserify-sha3":105,"dup":39}],170:[function(require,module,exports){
+var Semaphore = require('./lib/Semaphore');
+var CondVariable = require('./lib/CondVariable');
+var Mutex = require('./lib/Mutex');
+var ReadWriteLock = require('./lib/ReadWriteLock');
+
+
+exports.Semaphore = Semaphore;
+exports.CondVariable = CondVariable;
+exports.Mutex = Mutex;
+exports.ReadWriteLock = ReadWriteLock;
+
+
+exports.createCondVariable = function (initialValue) {
+	return new CondVariable(initialValue);
+};
+
+exports.createSemaphore = function (initialCount) {
+	return new Semaphore(initialCount);
+};
+
+exports.createMutex = function () {
+	return new Mutex();
+};
+
+exports.createReadWriteLock = function () {
+	return new ReadWriteLock();
+};
+
+},{"./lib/CondVariable":171,"./lib/Mutex":172,"./lib/ReadWriteLock":173,"./lib/Semaphore":174}],171:[function(require,module,exports){
+function CondVariable(initialValue) {
+	this._value = initialValue;
+	this._waiting = [];
+}
+
+module.exports = CondVariable;
+
+
+function condToFunc(cond) {
+	if (typeof cond === 'function') {
+		return cond;
+	}
+
+	if (typeof cond === 'number' || typeof cond === 'boolean' || typeof cond === 'string') {
+		return function (value) {
+			return value === cond;
+		};
+	}
+
+	if (cond && typeof cond === 'object' && cond instanceof RegExp) {
+		return function (value) {
+			return cond.test(value);
+		};
+	}
+
+	throw new TypeError('Unknown condition type: ' + (typeof cond));
+}
+
+
+CondVariable.prototype.get = function () {
+	return this._value;
+};
+
+
+CondVariable.prototype.wait = function (cond, cb) {
+	var test = condToFunc(cond);
+
+	if (test(this._value)) {
+		return cb.call(this);
+	}
+
+	this._waiting.push({ test: test, cb: cb });
+};
+
+
+CondVariable.prototype.set = function (value) {
+	this._value = value;
+
+	for (var i = 0; i < this._waiting.length; i++) {
+		var waiter = this._waiting[i];
+
+		if (waiter.test(value)) {
+			this._waiting.splice(i, 1);
+			i -= 1;
+			waiter.cb.call(this);
+		}
+	}
+};
+
+},{}],172:[function(require,module,exports){
+function Mutex() {
+	this.isLocked = false;
+	this._waiting = [];
+}
+
+module.exports = Mutex;
+
+
+Mutex.prototype.lock = function (cb) {
+	if (this.isLocked) {
+		this._waiting.push(cb);
+	} else {
+		this.isLocked = true;
+		cb.call(this);
+	}
+};
+
+
+Mutex.prototype.timedLock = function (ttl, cb) {
+	if (!this.isLocked) {
+		this.isLocked = true;
+		return cb.call(this);
+	}
+
+	var timer, that = this;
+
+	this._waiting.push(function () {
+		clearTimeout(timer);
+
+		if (!cb) {
+			that.unlock();
+			return;
+		}
+
+		cb.call(this);
+		cb = null;
+	});
+
+	timer = setTimeout(function () {
+		if (cb) {
+			cb.call(this, new Error('Lock timed out'));
+			cb = null;
+		}
+	}, ttl);
+};
+
+
+Mutex.prototype.tryLock = function () {
+	if (this.isLocked) {
+		return false;
+	}
+
+	this.isLocked = true;
+	return true;
+};
+
+
+Mutex.prototype.unlock = function () {
+	if (!this.isLocked) {
+		throw new Error('Mutex is not locked');
+	}
+
+	var waiter = this._waiting.shift();
+
+	if (waiter) {
+		waiter.call(this);
+	} else {
+		this.isLocked = false;
+	}
+};
+
+},{}],173:[function(require,module,exports){
+function ReadWriteLock() {
+	this.isLocked = false;
+	this._readLocks = 0;
+	this._waitingToRead = [];
+	this._waitingToWrite = [];
+}
+
+module.exports = ReadWriteLock;
+
+
+ReadWriteLock.prototype.readLock = function (cb) {
+	if (this.isLocked === 'W') {
+		this._waitingToRead.push(cb);
+	} else {
+		this._readLocks += 1;
+		this.isLocked = 'R';
+		cb.call(this);
+	}
+};
+
+
+ReadWriteLock.prototype.writeLock = function (cb) {
+	if (this.isLocked) {
+		this._waitingToWrite.push(cb);
+	} else {
+		this.isLocked = 'W';
+		cb.call(this);
+	}
+};
+
+
+ReadWriteLock.prototype.timedReadLock = function (ttl, cb) {
+	if (this.tryReadLock()) {
+		return cb.call(this);
+	}
+
+	var timer, that = this;
+
+	function waiter() {
+		clearTimeout(timer);
+
+		if (cb) {
+			var callback = cb;
+			cb = null;
+			callback.apply(that, arguments);
+		}
+	}
+
+	this._waitingToRead.push(waiter);
+
+	timer = setTimeout(function () {
+		var index = that._waitingToRead.indexOf(waiter);
+		if (index !== -1) {
+			that._waitingToRead.splice(index, 1);
+			waiter(new Error('ReadLock timed out'));
+		}
+	}, ttl);
+};
+
+
+ReadWriteLock.prototype.timedWriteLock = function (ttl, cb) {
+	if (this.tryWriteLock()) {
+		return cb.call(this);
+	}
+
+	var timer, that = this;
+
+	function waiter() {
+		clearTimeout(timer);
+
+		if (cb) {
+			var callback = cb;
+			cb = null;
+			callback.apply(that, arguments);
+		}
+	}
+
+	this._waitingToWrite.push(waiter);
+
+	timer = setTimeout(function () {
+		var index = that._waitingToWrite.indexOf(waiter);
+		if (index !== -1) {
+			that._waitingToWrite.splice(index, 1);
+			waiter(new Error('WriteLock timed out'));
+		}
+	}, ttl);
+};
+
+
+ReadWriteLock.prototype.tryReadLock = function () {
+	if (this.isLocked === 'W') {
+		return false;
+	}
+
+	this.isLocked = 'R';
+	this._readLocks += 1;
+	return true;
+};
+
+
+ReadWriteLock.prototype.tryWriteLock = function () {
+	if (this.isLocked) {
+		return false;
+	}
+
+	this.isLocked = 'W';
+	return true;
+};
+
+
+ReadWriteLock.prototype.unlock = function () {
+	var waiter;
+
+	if (this.isLocked === 'R') {
+		this._readLocks -= 1;
+
+		if (this._readLocks === 0) {
+			// allow one write lock through
+
+			waiter = this._waitingToWrite.shift();
+			if (waiter) {
+				this.isLocked = 'W';
+				waiter.call(this);
+			} else {
+				this.isLocked = false;
+			}
+		}
+	} else if (this.isLocked === 'W') {
+		// allow all read locks or one write lock through
+
+		var rlen = this._waitingToRead.length;
+
+		if (rlen === 0) {
+			waiter = this._waitingToWrite.shift();
+			if (waiter) {
+				this.isLocked = 'W';
+				waiter.call(this);
+			} else {
+				this.isLocked = false;
+			}
+		} else {
+			this.isLocked = 'R';
+			this._readLocks = rlen;
+
+			var waiters = this._waitingToRead.slice();
+			this._waitingToRead = [];
+
+			for (var i = 0; i < rlen; i++) {
+				waiters[i].call(this);
+			}
+		}
+	} else {
+		throw new Error('ReadWriteLock is not locked');
+	}
+};
+
+},{}],174:[function(require,module,exports){
+function Semaphore(initialCount) {
+	this._count = initialCount || 1;
+	this._waiting = [];
+}
+
+module.exports = Semaphore;
+
+
+Semaphore.prototype.wait = function (cb) {
+	this._count -= 1;
+
+	if (this._count < 0) {
+		this._waiting.push(cb);
+	} else {
+		cb.call(this);
+	}
+};
+
+
+Semaphore.prototype.signal = function () {
+	this._count += 1;
+
+	if (this._count <= 0) {
+		var waiter = this._waiting.shift();
+		if (waiter) {
+			waiter.call(this);
+		}
+	}
+};
+
+},{}],175:[function(require,module,exports){
+var bn = require('bn.js');
+var brorand = require('brorand');
+
+function MillerRabin(rand) {
+  this.rand = rand || new brorand.Rand();
+}
+module.exports = MillerRabin;
+
+MillerRabin.create = function create(rand) {
+  return new MillerRabin(rand);
+};
+
+MillerRabin.prototype._rand = function _rand(n) {
+  var len = n.bitLength();
+  var buf = this.rand.generate(Math.ceil(len / 8));
+
+  // Set low bits
+  buf[0] |= 3;
+
+  // Mask high bits
+  var mask = len & 0x7;
+  if (mask !== 0)
+    buf[buf.length - 1] >>= 7 - mask;
+
+  return new bn(buf);
+}
+
+MillerRabin.prototype.test = function test(n, k, cb) {
+  var len = n.bitLength();
+  var red = bn.mont(n);
+  var rone = new bn(1).toRed(red);
+
+  if (!k)
+    k = Math.max(1, (len / 48) | 0);
+
+  // Find d and s, (n - 1) = (2 ^ s) * d;
+  var n1 = n.subn(1);
+  var n2 = n1.subn(1);
+  for (var s = 0; !n1.testn(s); s++) {}
+  var d = n.shrn(s);
+
+  var rn1 = n1.toRed(red);
+
+  var prime = true;
+  for (; k > 0; k--) {
+    var a = this._rand(n2);
+    if (cb)
+      cb(a);
+
+    var x = a.toRed(red).redPow(d);
+    if (x.cmp(rone) === 0 || x.cmp(rn1) === 0)
+      continue;
+
+    for (var i = 1; i < s; i++) {
+      x = x.redSqr();
+
+      if (x.cmp(rone) === 0)
+        return false;
+      if (x.cmp(rn1) === 0)
+        break;
+    }
+
+    if (i === s)
+      return false;
+  }
+
+  return prime;
+};
+
+MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
+  var len = n.bitLength();
+  var red = bn.mont(n);
+  var rone = new bn(1).toRed(red);
+
+  if (!k)
+    k = Math.max(1, (len / 48) | 0);
+
+  // Find d and s, (n - 1) = (2 ^ s) * d;
+  var n1 = n.subn(1);
+  var n2 = n1.subn(1);
+  for (var s = 0; !n1.testn(s); s++) {}
+  var d = n.shrn(s);
+
+  var rn1 = n1.toRed(red);
+
+  for (; k > 0; k--) {
+    var a = this._rand(n2);
+
+    var g = n.gcd(a);
+    if (g.cmpn(1) !== 0)
+      return g;
+
+    var x = a.toRed(red).redPow(d);
+    if (x.cmp(rone) === 0 || x.cmp(rn1) === 0)
+      continue;
+
+    for (var i = 1; i < s; i++) {
+      x = x.redSqr();
+
+      if (x.cmp(rone) === 0)
+        return x.fromRed().subn(1).gcd(n);
+      if (x.cmp(rn1) === 0)
+        break;
+    }
+
+    if (i === s) {
+      x = x.redSqr();
+      return x.fromRed().subn(1).gcd(n);
+    }
+  }
+
+  return false;
+};
+
+},{"bn.js":82,"brorand":83}],176:[function(require,module,exports){
+module.exports = assert;
+
+function assert(val, msg) {
+  if (!val)
+    throw new Error(msg || 'Assertion failed');
+}
+
+assert.equal = function assertEqual(l, r, msg) {
+  if (l != r)
+    throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
+};
+
+},{}],177:[function(require,module,exports){
+(function (Buffer){
+//     uuid.js
+//
+//     Copyright (c) 2010-2012 Robert Kieffer
+//     MIT License - http://opensource.org/licenses/mit-license.php
+
+/*global window, require, define */
+(function(_window) {
+  'use strict';
+
+  // Unique ID creation requires a high quality random # generator.  We feature
+  // detect to determine the best RNG source, normalizing to a function that
+  // returns 128-bits of randomness, since that's what's usually required
+  var _rng, _mathRNG, _nodeRNG, _whatwgRNG, _previousRoot;
+
+  function setupBrowser() {
+    // Allow for MSIE11 msCrypto
+    var _crypto = _window.crypto || _window.msCrypto;
+
+    if (!_rng && _crypto && _crypto.getRandomValues) {
+      // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
+      //
+      // Moderately fast, high quality
+      try {
+        var _rnds8 = new Uint8Array(16);
+        _whatwgRNG = _rng = function whatwgRNG() {
+          _crypto.getRandomValues(_rnds8);
+          return _rnds8;
+        };
+        _rng();
+      } catch(e) {}
+    }
+
+    if (!_rng) {
+      // Math.random()-based (RNG)
+      //
+      // If all else fails, use Math.random().  It's fast, but is of unspecified
+      // quality.
+      var  _rnds = new Array(16);
+      _mathRNG = _rng = function() {
+        for (var i = 0, r; i < 16; i++) {
+          if ((i & 0x03) === 0) { r = Math.random() * 0x100000000; }
+          _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+        }
+
+        return _rnds;
+      };
+      if ('undefined' !== typeof console && console.warn) {
+        console.warn("[SECURITY] node-uuid: crypto not usable, falling back to insecure Math.random()");
+      }
+    }
+  }
+
+  function setupNode() {
+    // Node.js crypto-based RNG - http://nodejs.org/docs/v0.6.2/api/crypto.html
+    //
+    // Moderately fast, high quality
+    if ('function' === typeof require) {
+      try {
+        var _rb = require('crypto').randomBytes;
+        _nodeRNG = _rng = _rb && function() {return _rb(16);};
+        _rng();
+      } catch(e) {}
+    }
+  }
+
+  if (_window) {
+    setupBrowser();
+  } else {
+    setupNode();
+  }
+
+  // Buffer class to use
+  var BufferClass = ('function' === typeof Buffer) ? Buffer : Array;
+
+  // Maps for number <-> hex string conversion
+  var _byteToHex = [];
+  var _hexToByte = {};
+  for (var i = 0; i < 256; i++) {
+    _byteToHex[i] = (i + 0x100).toString(16).substr(1);
+    _hexToByte[_byteToHex[i]] = i;
+  }
+
+  // **`parse()` - Parse a UUID into it's component bytes**
+  function parse(s, buf, offset) {
+    var i = (buf && offset) || 0, ii = 0;
+
+    buf = buf || [];
+    s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
+      if (ii < 16) { // Don't overflow!
+        buf[i + ii++] = _hexToByte[oct];
+      }
+    });
+
+    // Zero out remaining bytes if string was short
+    while (ii < 16) {
+      buf[i + ii++] = 0;
+    }
+
+    return buf;
+  }
+
+  // **`unparse()` - Convert UUID byte array (ala parse()) into a string**
+  function unparse(buf, offset) {
+    var i = offset || 0, bth = _byteToHex;
+    return  bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] + '-' +
+            bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]] +
+            bth[buf[i++]] + bth[buf[i++]];
+  }
+
+  // **`v1()` - Generate time-based UUID**
+  //
+  // Inspired by https://github.com/LiosK/UUID.js
+  // and http://docs.python.org/library/uuid.html
+
+  // random #'s we need to init node and clockseq
+  var _seedBytes = _rng();
+
+  // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+  var _nodeId = [
+    _seedBytes[0] | 0x01,
+    _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
+  ];
+
+  // Per 4.2.2, randomize (14 bit) clockseq
+  var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
+
+  // Previous uuid creation time
+  var _lastMSecs = 0, _lastNSecs = 0;
+
+  // See https://github.com/broofa/node-uuid for API details
+  function v1(options, buf, offset) {
+    var i = buf && offset || 0;
+    var b = buf || [];
+
+    options = options || {};
+
+    var clockseq = (options.clockseq != null) ? options.clockseq : _clockseq;
+
+    // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+    // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+    // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+    // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+    var msecs = (options.msecs != null) ? options.msecs : new Date().getTime();
+
+    // Per 4.2.1.2, use count of uuid's generated during the current clock
+    // cycle to simulate higher resolution clock
+    var nsecs = (options.nsecs != null) ? options.nsecs : _lastNSecs + 1;
+
+    // Time since last uuid creation (in msecs)
+    var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+
+    // Per 4.2.1.2, Bump clockseq on clock regression
+    if (dt < 0 && options.clockseq == null) {
+      clockseq = clockseq + 1 & 0x3fff;
+    }
+
+    // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+    // time interval
+    if ((dt < 0 || msecs > _lastMSecs) && options.nsecs == null) {
+      nsecs = 0;
+    }
+
+    // Per 4.2.1.2 Throw error if too many uuids are requested
+    if (nsecs >= 10000) {
+      throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+    }
+
+    _lastMSecs = msecs;
+    _lastNSecs = nsecs;
+    _clockseq = clockseq;
+
+    // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+    msecs += 12219292800000;
+
+    // `time_low`
+    var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+    b[i++] = tl >>> 24 & 0xff;
+    b[i++] = tl >>> 16 & 0xff;
+    b[i++] = tl >>> 8 & 0xff;
+    b[i++] = tl & 0xff;
+
+    // `time_mid`
+    var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+    b[i++] = tmh >>> 8 & 0xff;
+    b[i++] = tmh & 0xff;
+
+    // `time_high_and_version`
+    b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+    b[i++] = tmh >>> 16 & 0xff;
+
+    // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+    b[i++] = clockseq >>> 8 | 0x80;
+
+    // `clock_seq_low`
+    b[i++] = clockseq & 0xff;
+
+    // `node`
+    var node = options.node || _nodeId;
+    for (var n = 0; n < 6; n++) {
+      b[i + n] = node[n];
+    }
+
+    return buf ? buf : unparse(b);
+  }
+
+  // **`v4()` - Generate random UUID**
+
+  // See https://github.com/broofa/node-uuid for API details
+  function v4(options, buf, offset) {
+    // Deprecated - 'format' argument, as supported in v1.2
+    var i = buf && offset || 0;
+
+    if (typeof(options) === 'string') {
+      buf = (options === 'binary') ? new BufferClass(16) : null;
+      options = null;
+    }
+    options = options || {};
+
+    var rnds = options.random || (options.rng || _rng)();
+
+    // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+    rnds[6] = (rnds[6] & 0x0f) | 0x40;
+    rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+    // Copy bytes to buffer, if provided
+    if (buf) {
+      for (var ii = 0; ii < 16; ii++) {
+        buf[i + ii] = rnds[ii];
+      }
+    }
+
+    return buf || unparse(rnds);
+  }
+
+  // Export public API
+  var uuid = v4;
+  uuid.v1 = v1;
+  uuid.v4 = v4;
+  uuid.parse = parse;
+  uuid.unparse = unparse;
+  uuid.BufferClass = BufferClass;
+  uuid._rng = _rng;
+  uuid._mathRNG = _mathRNG;
+  uuid._nodeRNG = _nodeRNG;
+  uuid._whatwgRNG = _whatwgRNG;
+
+  if (('undefined' !== typeof module) && module.exports) {
+    // Publish as node.js module
+    module.exports = uuid;
+  } else if (typeof define === 'function' && define.amd) {
+    // Publish as AMD module
+    define(function() {return uuid;});
+
+
+  } else {
+    // Publish as global (in browsers)
+    _previousRoot = _window.uuid;
+
+    // **`noConflict()` - (browser only) to reset global 'uuid' var**
+    uuid.noConflict = function() {
+      _window.uuid = _previousRoot;
+      return uuid;
+    };
+
+    _window.uuid = uuid;
+  }
+})('undefined' !== typeof window ? window : null);
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":114,"crypto":123}],178:[function(require,module,exports){
+module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
+"2.16.840.1.101.3.4.1.2": "aes-128-cbc",
+"2.16.840.1.101.3.4.1.3": "aes-128-ofb",
+"2.16.840.1.101.3.4.1.4": "aes-128-cfb",
+"2.16.840.1.101.3.4.1.21": "aes-192-ecb",
+"2.16.840.1.101.3.4.1.22": "aes-192-cbc",
+"2.16.840.1.101.3.4.1.23": "aes-192-ofb",
+"2.16.840.1.101.3.4.1.24": "aes-192-cfb",
+"2.16.840.1.101.3.4.1.41": "aes-256-ecb",
+"2.16.840.1.101.3.4.1.42": "aes-256-cbc",
+"2.16.840.1.101.3.4.1.43": "aes-256-ofb",
+"2.16.840.1.101.3.4.1.44": "aes-256-cfb"
+}
+},{}],179:[function(require,module,exports){
+// from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
+// Fedor, you are amazing.
+
+var asn1 = require('asn1.js')
+
+var RSAPrivateKey = asn1.define('RSAPrivateKey', function () {
+  this.seq().obj(
+    this.key('version').int(),
+    this.key('modulus').int(),
+    this.key('publicExponent').int(),
+    this.key('privateExponent').int(),
+    this.key('prime1').int(),
+    this.key('prime2').int(),
+    this.key('exponent1').int(),
+    this.key('exponent2').int(),
+    this.key('coefficient').int()
+  )
+})
+exports.RSAPrivateKey = RSAPrivateKey
+
+var RSAPublicKey = asn1.define('RSAPublicKey', function () {
+  this.seq().obj(
+    this.key('modulus').int(),
+    this.key('publicExponent').int()
+  )
+})
+exports.RSAPublicKey = RSAPublicKey
+
+var PublicKey = asn1.define('SubjectPublicKeyInfo', function () {
+  this.seq().obj(
+    this.key('algorithm').use(AlgorithmIdentifier),
+    this.key('subjectPublicKey').bitstr()
+  )
+})
+exports.PublicKey = PublicKey
+
+var AlgorithmIdentifier = asn1.define('AlgorithmIdentifier', function () {
+  this.seq().obj(
+    this.key('algorithm').objid(),
+    this.key('none').null_().optional(),
+    this.key('curve').objid().optional(),
+    this.key('params').seq().obj(
+      this.key('p').int(),
+      this.key('q').int(),
+      this.key('g').int()
+    ).optional()
+  )
+})
+
+var PrivateKeyInfo = asn1.define('PrivateKeyInfo', function () {
+  this.seq().obj(
+    this.key('version').int(),
+    this.key('algorithm').use(AlgorithmIdentifier),
+    this.key('subjectPrivateKey').octstr()
+  )
+})
+exports.PrivateKey = PrivateKeyInfo
+var EncryptedPrivateKeyInfo = asn1.define('EncryptedPrivateKeyInfo', function () {
+  this.seq().obj(
+    this.key('algorithm').seq().obj(
+      this.key('id').objid(),
+      this.key('decrypt').seq().obj(
+        this.key('kde').seq().obj(
+          this.key('id').objid(),
+          this.key('kdeparams').seq().obj(
+            this.key('salt').octstr(),
+            this.key('iters').int()
+          )
+        ),
+        this.key('cipher').seq().obj(
+          this.key('algo').objid(),
+          this.key('iv').octstr()
+        )
+      )
+    ),
+    this.key('subjectPrivateKey').octstr()
+  )
+})
+
+exports.EncryptedPrivateKey = EncryptedPrivateKeyInfo
+
+var DSAPrivateKey = asn1.define('DSAPrivateKey', function () {
+  this.seq().obj(
+    this.key('version').int(),
+    this.key('p').int(),
+    this.key('q').int(),
+    this.key('g').int(),
+    this.key('pub_key').int(),
+    this.key('priv_key').int()
+  )
+})
+exports.DSAPrivateKey = DSAPrivateKey
+
+exports.DSAparam = asn1.define('DSAparam', function () {
+  this.int()
+})
+var ECPrivateKey = asn1.define('ECPrivateKey', function () {
+  this.seq().obj(
+    this.key('version').int(),
+    this.key('privateKey').octstr(),
+    this.key('parameters').optional().explicit(0).use(ECParameters),
+    this.key('publicKey').optional().explicit(1).bitstr()
+  )
+})
+exports.ECPrivateKey = ECPrivateKey
+var ECParameters = asn1.define('ECParameters', function () {
+  this.choice({
+    namedCurve: this.objid()
+  })
+})
+
+exports.signature = asn1.define('signature', function () {
+  this.seq().obj(
+    this.key('r').int(),
+    this.key('s').int()
+  )
+})
+
+},{"asn1.js":62}],180:[function(require,module,exports){
+(function (Buffer){
+// adapted from https://github.com/apatil/pemstrip
+var findProc = /Proc-Type: 4,ENCRYPTED\r?\nDEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\r?\n\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n/m
+var startRegex = /^-----BEGIN (.*) KEY-----\r?\n/m
+var fullRegex = /^-----BEGIN (.*) KEY-----\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n-----END \1 KEY-----$/m
+var evp = require('evp_bytestokey')
+var ciphers = require('browserify-aes')
+module.exports = function (okey, password) {
+  var key = okey.toString()
+  var match = key.match(findProc)
+  var decrypted
+  if (!match) {
+    var match2 = key.match(fullRegex)
+    decrypted = new Buffer(match2[2].replace(/\r?\n/g, ''), 'base64')
+  } else {
+    var suite = 'aes' + match[1]
+    var iv = new Buffer(match[2], 'hex')
+    var cipherText = new Buffer(match[3].replace(/\r?\n/g, ''), 'base64')
+    var cipherKey = evp(password, iv.slice(0, 8), parseInt(match[1], 10)).key
+    var out = []
+    var cipher = ciphers.createDecipheriv(suite, cipherKey, iv)
+    out.push(cipher.update(cipherText))
+    out.push(cipher.final())
+    decrypted = Buffer.concat(out)
+  }
+  var tag = key.match(startRegex)[1] + ' KEY'
+  return {
+    tag: tag,
+    data: decrypted
+  }
+}
+
+}).call(this,require("buffer").Buffer)
+},{"browserify-aes":88,"buffer":114,"evp_bytestokey":156}],181:[function(require,module,exports){
+(function (Buffer){
+var asn1 = require('./asn1')
+var aesid = require('./aesid.json')
+var fixProc = require('./fixProc')
+var ciphers = require('browserify-aes')
+var compat = require('pbkdf2')
+module.exports = parseKeys
+
+function parseKeys (buffer) {
+  var password
+  if (typeof buffer === 'object' && !Buffer.isBuffer(buffer)) {
+    password = buffer.passphrase
+    buffer = buffer.key
+  }
+  if (typeof buffer === 'string') {
+    buffer = new Buffer(buffer)
+  }
+
+  var stripped = fixProc(buffer, password)
+
+  var type = stripped.tag
+  var data = stripped.data
+  var subtype, ndata
+  switch (type) {
+    case 'PUBLIC KEY':
+      ndata = asn1.PublicKey.decode(data, 'der')
+      subtype = ndata.algorithm.algorithm.join('.')
+      switch (subtype) {
+        case '1.2.840.113549.1.1.1':
+          return asn1.RSAPublicKey.decode(ndata.subjectPublicKey.data, 'der')
+        case '1.2.840.10045.2.1':
+          ndata.subjectPrivateKey = ndata.subjectPublicKey
+          return {
+            type: 'ec',
+            data: ndata
+          }
+        case '1.2.840.10040.4.1':
+          ndata.algorithm.params.pub_key = asn1.DSAparam.decode(ndata.subjectPublicKey.data, 'der')
+          return {
+            type: 'dsa',
+            data: ndata.algorithm.params
+          }
+        default: throw new Error('unknown key id ' + subtype)
+      }
+      throw new Error('unknown key type ' + type)
+    case 'ENCRYPTED PRIVATE KEY':
+      data = asn1.EncryptedPrivateKey.decode(data, 'der')
+      data = decrypt(data, password)
+      // falls through
+    case 'PRIVATE KEY':
+      ndata = asn1.PrivateKey.decode(data, 'der')
+      subtype = ndata.algorithm.algorithm.join('.')
+      switch (subtype) {
+        case '1.2.840.113549.1.1.1':
+          return asn1.RSAPrivateKey.decode(ndata.subjectPrivateKey, 'der')
+        case '1.2.840.10045.2.1':
+          return {
+            curve: ndata.algorithm.curve,
+            privateKey: asn1.ECPrivateKey.decode(ndata.subjectPrivateKey, 'der').privateKey
+          }
+        case '1.2.840.10040.4.1':
+          ndata.algorithm.params.priv_key = asn1.DSAparam.decode(ndata.subjectPrivateKey, 'der')
+          return {
+            type: 'dsa',
+            params: ndata.algorithm.params
+          }
+        default: throw new Error('unknown key id ' + subtype)
+      }
+      throw new Error('unknown key type ' + type)
+    case 'RSA PUBLIC KEY':
+      return asn1.RSAPublicKey.decode(data, 'der')
+    case 'RSA PRIVATE KEY':
+      return asn1.RSAPrivateKey.decode(data, 'der')
+    case 'DSA PRIVATE KEY':
+      return {
+        type: 'dsa',
+        params: asn1.DSAPrivateKey.decode(data, 'der')
+      }
+    case 'EC PRIVATE KEY':
+      data = asn1.ECPrivateKey.decode(data, 'der')
+      return {
+        curve: data.parameters.value,
+        privateKey: data.privateKey
+      }
+    default: throw new Error('unknown key type ' + type)
+  }
+}
+parseKeys.signature = asn1.signature
+function decrypt (data, password) {
+  var salt = data.algorithm.decrypt.kde.kdeparams.salt
+  var iters = parseInt(data.algorithm.decrypt.kde.kdeparams.iters.toString(), 10)
+  var algo = aesid[data.algorithm.decrypt.cipher.algo.join('.')]
+  var iv = data.algorithm.decrypt.cipher.iv
+  var cipherText = data.subjectPrivateKey
+  var keylen = parseInt(algo.split('-')[1], 10) / 8
+  var key = compat.pbkdf2Sync(password, salt, iters, keylen)
+  var cipher = ciphers.createDecipheriv(algo, key, iv)
+  var out = []
+  out.push(cipher.update(cipherText))
+  out.push(cipher.final())
+  return Buffer.concat(out)
+}
+
+}).call(this,require("buffer").Buffer)
+},{"./aesid.json":178,"./asn1":179,"./fixProc":180,"browserify-aes":88,"buffer":114,"pbkdf2":183}],182:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+},{"_process":185}],183:[function(require,module,exports){
+(function (Buffer){
+var createHmac = require('create-hmac')
+var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
+
+exports.pbkdf2 = pbkdf2
+function pbkdf2 (password, salt, iterations, keylen, digest, callback) {
+  if (typeof digest === 'function') {
+    callback = digest
+    digest = undefined
+  }
+
+  if (typeof callback !== 'function') {
+    throw new Error('No callback provided to pbkdf2')
+  }
+
+  var result = pbkdf2Sync(password, salt, iterations, keylen, digest)
+  setTimeout(function () {
+    callback(undefined, result)
+  })
+}
+
+exports.pbkdf2Sync = pbkdf2Sync
+function pbkdf2Sync (password, salt, iterations, keylen, digest) {
+  if (typeof iterations !== 'number') {
+    throw new TypeError('Iterations not a number')
+  }
+
+  if (iterations < 0) {
+    throw new TypeError('Bad iterations')
+  }
+
+  if (typeof keylen !== 'number') {
+    throw new TypeError('Key length not a number')
+  }
+
+  if (keylen < 0 || keylen > MAX_ALLOC) {
+    throw new TypeError('Bad key length')
+  }
+
+  digest = digest || 'sha1'
+
+  if (!Buffer.isBuffer(password)) password = new Buffer(password, 'binary')
+  if (!Buffer.isBuffer(salt)) salt = new Buffer(salt, 'binary')
+
+  var hLen
+  var l = 1
+  var DK = new Buffer(keylen)
+  var block1 = new Buffer(salt.length + 4)
+  salt.copy(block1, 0, 0, salt.length)
+
+  var r
+  var T
+
+  for (var i = 1; i <= l; i++) {
+    block1.writeUInt32BE(i, salt.length)
+    var U = createHmac(digest, password).update(block1).digest()
+
+    if (!hLen) {
+      hLen = U.length
+      T = new Buffer(hLen)
+      l = Math.ceil(keylen / hLen)
+      r = keylen - (l - 1) * hLen
+    }
+
+    U.copy(T, 0, 0, hLen)
+
+    for (var j = 1; j < iterations; j++) {
+      U = createHmac(digest, password).update(U).digest()
+
+      for (var k = 0; k < hLen; k++) {
+        T[k] ^= U[k]
+      }
+    }
+
+    var destPos = (i - 1) * hLen
+    var len = (i === l ? r : hLen)
+    T.copy(DK, destPos, 0, len)
+  }
+
+  return DK
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":114,"create-hmac":122}],184:[function(require,module,exports){
+(function (process){
+'use strict';
+
+if (!process.version ||
+    process.version.indexOf('v0.') === 0 ||
+    process.version.indexOf('v1.') === 0 && process.version.indexOf('v1.8.') !== 0) {
+  module.exports = nextTick;
+} else {
+  module.exports = process.nextTick;
+}
+
+function nextTick(fn, arg1, arg2, arg3) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('"callback" argument must be a function');
+  }
+  var len = arguments.length;
+  var args, i;
+  switch (len) {
+  case 0:
+  case 1:
+    return process.nextTick(fn);
+  case 2:
+    return process.nextTick(function afterTickOne() {
+      fn.call(null, arg1);
+    });
+  case 3:
+    return process.nextTick(function afterTickTwo() {
+      fn.call(null, arg1, arg2);
+    });
+  case 4:
+    return process.nextTick(function afterTickThree() {
+      fn.call(null, arg1, arg2, arg3);
+    });
+  default:
+    args = new Array(len - 1);
+    i = 0;
+    while (i < args.length) {
+      args[i++] = arguments[i];
+    }
+    return process.nextTick(function afterTick() {
+      fn.apply(null, args);
+    });
+  }
+}
+
+}).call(this,require('_process'))
+},{"_process":185}],185:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+    try {
+        cachedSetTimeout = setTimeout;
+    } catch (e) {
+        cachedSetTimeout = function () {
+            throw new Error('setTimeout is not defined');
+        }
+    }
+    try {
+        cachedClearTimeout = clearTimeout;
+    } catch (e) {
+        cachedClearTimeout = function () {
+            throw new Error('clearTimeout is not defined');
+        }
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        return setTimeout(fun, 0);
+    } else {
+        return cachedSetTimeout.call(null, fun, 0);
+    }
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        clearTimeout(marker);
+    } else {
+        cachedClearTimeout.call(null, marker);
+    }
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],186:[function(require,module,exports){
+exports.publicEncrypt = require('./publicEncrypt');
+exports.privateDecrypt = require('./privateDecrypt');
+
+exports.privateEncrypt = function privateEncrypt(key, buf) {
+  return exports.publicEncrypt(key, buf, true);
+};
+
+exports.publicDecrypt = function publicDecrypt(key, buf) {
+  return exports.privateDecrypt(key, buf, true);
+};
+},{"./privateDecrypt":188,"./publicEncrypt":189}],187:[function(require,module,exports){
+(function (Buffer){
+var createHash = require('create-hash');
+module.exports = function (seed, len) {
+  var t = new Buffer('');
+  var  i = 0, c;
+  while (t.length < len) {
+    c = i2ops(i++);
+    t = Buffer.concat([t, createHash('sha1').update(seed).update(c).digest()]);
+  }
+  return t.slice(0, len);
+};
+
+function i2ops(c) {
+  var out = new Buffer(4);
+  out.writeUInt32BE(c,0);
+  return out;
+}
+}).call(this,require("buffer").Buffer)
+},{"buffer":114,"create-hash":119}],188:[function(require,module,exports){
+(function (Buffer){
+var parseKeys = require('parse-asn1');
+var mgf = require('./mgf');
+var xor = require('./xor');
+var bn = require('bn.js');
+var crt = require('browserify-rsa');
+var createHash = require('create-hash');
+var withPublic = require('./withPublic');
+module.exports = function privateDecrypt(private_key, enc, reverse) {
+  var padding;
+  if (private_key.padding) {
+    padding = private_key.padding;
+  } else if (reverse) {
+    padding = 1;
+  } else {
+    padding = 4;
+  }
+  
+  var key = parseKeys(private_key);
+  var k = key.modulus.byteLength();
+  if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
+    throw new Error('decryption error');
+  }
+  var msg;
+  if (reverse) {
+    msg = withPublic(new bn(enc), key);
+  } else {
+    msg = crt(enc, key);
+  }
+  var zBuffer = new Buffer(k - msg.length);
+  zBuffer.fill(0);
+  msg = Buffer.concat([zBuffer, msg], k);
+  if (padding === 4) {
+    return oaep(key, msg);
+  } else if (padding === 1) {
+    return pkcs1(key, msg, reverse);
+  } else if (padding === 3) {
+    return msg;
+  } else {
+    throw new Error('unknown padding');
+  }
+};
+
+function oaep(key, msg){
+  var n = key.modulus;
+  var k = key.modulus.byteLength();
+  var mLen = msg.length;
+  var iHash = createHash('sha1').update(new Buffer('')).digest();
+  var hLen = iHash.length;
+  var hLen2 = 2 * hLen;
+  if (msg[0] !== 0) {
+    throw new Error('decryption error');
+  }
+  var maskedSeed = msg.slice(1, hLen + 1);
+  var maskedDb =  msg.slice(hLen + 1);
+  var seed = xor(maskedSeed, mgf(maskedDb, hLen));
+  var db = xor(maskedDb, mgf(seed, k - hLen - 1));
+  if (compare(iHash, db.slice(0, hLen))) {
+    throw new Error('decryption error');
+  }
+  var i = hLen;
+  while (db[i] === 0) {
+    i++;
+  }
+  if (db[i++] !== 1) {
+    throw new Error('decryption error');
+  }
+  return db.slice(i);
+}
+
+function pkcs1(key, msg, reverse){
+  var p1 = msg.slice(0, 2);
+  var i = 2;
+  var status = 0;
+  while (msg[i++] !== 0) {
+    if (i >= msg.length) {
+      status++;
+      break;
+    }
+  }
+  var ps = msg.slice(2, i - 1);
+  var p2 = msg.slice(i - 1, i);
+
+  if ((p1.toString('hex') !== '0002' && !reverse) || (p1.toString('hex') !== '0001' && reverse)){
+    status++;
+  }
+  if (ps.length < 8) {
+    status++;
+  }
+  if (status) {
+    throw new Error('decryption error');
+  }
+  return  msg.slice(i);
+}
+function compare(a, b){
+  a = new Buffer(a);
+  b = new Buffer(b);
+  var dif = 0;
+  var len = a.length;
+  if (a.length !== b.length) {
+    dif++;
+    len = Math.min(a.length, b.length);
+  }
+  var i = -1;
+  while (++i < len) {
+    dif += (a[i] ^ b[i]);
+  }
+  return dif;
+}
+}).call(this,require("buffer").Buffer)
+},{"./mgf":187,"./withPublic":190,"./xor":191,"bn.js":82,"browserify-rsa":104,"buffer":114,"create-hash":119,"parse-asn1":181}],189:[function(require,module,exports){
+(function (Buffer){
+var parseKeys = require('parse-asn1');
+var randomBytes = require('randombytes');
+var createHash = require('create-hash');
+var mgf = require('./mgf');
+var xor = require('./xor');
+var bn = require('bn.js');
+var withPublic = require('./withPublic');
+var crt = require('browserify-rsa');
+
+var constants = {
+  RSA_PKCS1_OAEP_PADDING: 4,
+  RSA_PKCS1_PADDIN: 1,
+  RSA_NO_PADDING: 3
+};
+
+module.exports = function publicEncrypt(public_key, msg, reverse) {
+  var padding;
+  if (public_key.padding) {
+    padding = public_key.padding;
+  } else if (reverse) {
+    padding = 1;
+  } else {
+    padding = 4;
+  }
+  var key = parseKeys(public_key);
+  var paddedMsg;
+  if (padding === 4) {
+    paddedMsg = oaep(key, msg);
+  } else if (padding === 1) {
+    paddedMsg = pkcs1(key, msg, reverse);
+  } else if (padding === 3) {
+    paddedMsg = new bn(msg);
+    if (paddedMsg.cmp(key.modulus) >= 0) {
+      throw new Error('data too long for modulus');
+    }
+  } else {
+    throw new Error('unknown padding');
+  }
+  if (reverse) {
+    return crt(paddedMsg, key);
+  } else {
+    return withPublic(paddedMsg, key);
+  }
+};
+
+function oaep(key, msg){
+  var k = key.modulus.byteLength();
+  var mLen = msg.length;
+  var iHash = createHash('sha1').update(new Buffer('')).digest();
+  var hLen = iHash.length;
+  var hLen2 = 2 * hLen;
+  if (mLen > k - hLen2 - 2) {
+    throw new Error('message too long');
+  }
+  var ps = new Buffer(k - mLen - hLen2 - 2);
+  ps.fill(0);
+  var dblen = k - hLen - 1;
+  var seed = randomBytes(hLen);
+  var maskedDb = xor(Buffer.concat([iHash, ps, new Buffer([1]), msg], dblen), mgf(seed, dblen));
+  var maskedSeed = xor(seed, mgf(maskedDb, hLen));
+  return new bn(Buffer.concat([new Buffer([0]), maskedSeed, maskedDb], k));
+}
+function pkcs1(key, msg, reverse){
+  var mLen = msg.length;
+  var k = key.modulus.byteLength();
+  if (mLen > k - 11) {
+    throw new Error('message too long');
+  }
+  var ps;
+  if (reverse) {
+    ps = new Buffer(k - mLen - 3);
+    ps.fill(0xff);
+  } else {
+    ps = nonZero(k - mLen - 3);
+  }
+  return new bn(Buffer.concat([new Buffer([0, reverse?1:2]), ps, new Buffer([0]), msg], k));
+}
+function nonZero(len, crypto) {
+  var out = new Buffer(len);
+  var i = 0;
+  var cache = randomBytes(len*2);
+  var cur = 0;
+  var num;
+  while (i < len) {
+    if (cur === cache.length) {
+      cache = randomBytes(len*2);
+      cur = 0;
+    }
+    num = cache[cur++];
+    if (num) {
+      out[i++] = num;
+    }
+  }
+  return out;
+}
+}).call(this,require("buffer").Buffer)
+},{"./mgf":187,"./withPublic":190,"./xor":191,"bn.js":82,"browserify-rsa":104,"buffer":114,"create-hash":119,"parse-asn1":181,"randombytes":192}],190:[function(require,module,exports){
+(function (Buffer){
+var bn = require('bn.js');
+function withPublic(paddedMsg, key) {
+  return new Buffer(paddedMsg
+    .toRed(bn.mont(key.modulus))
+    .redPow(new bn(key.publicExponent))
+    .fromRed()
+    .toArray());
+}
+
+module.exports = withPublic;
+}).call(this,require("buffer").Buffer)
+},{"bn.js":82,"buffer":114}],191:[function(require,module,exports){
+module.exports = function xor(a, b) {
+  var len = a.length;
+  var i = -1;
+  while (++i < len) {
+    a[i] ^= b[i];
+  }
+  return a
+};
+},{}],192:[function(require,module,exports){
+(function (process,global,Buffer){
+'use strict'
+
+function oldBrowser () {
+  throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
+}
+
+var crypto = global.crypto || global.msCrypto
+
+if (crypto && crypto.getRandomValues) {
+  module.exports = randomBytes
+} else {
+  module.exports = oldBrowser
+}
+
+function randomBytes (size, cb) {
+  // phantomjs needs to throw
+  if (size > 65536) throw new Error('requested too many random bytes')
+  // in case browserify  isn't using the Uint8Array version
+  var rawBytes = new global.Uint8Array(size)
+
+  // This will not work in older browsers.
+  // See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
+  if (size > 0) {  // getRandomValues fails on IE if size == 0
+    crypto.getRandomValues(rawBytes)
+  }
+  // phantomjs doesn't like a buffer being passed here
+  var bytes = new Buffer(rawBytes.buffer)
+
+  if (typeof cb === 'function') {
+    return process.nextTick(function () {
+      cb(null, bytes)
+    })
+  }
+
+  return bytes
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
+},{"_process":185,"buffer":114}],193:[function(require,module,exports){
+module.exports = require("./lib/_stream_duplex.js")
+
+},{"./lib/_stream_duplex.js":194}],194:[function(require,module,exports){
+// a duplex stream is just a stream that is both readable and writable.
+// Since JS doesn't have multiple prototypal inheritance, this class
+// prototypally inherits from Readable, and then parasitically from
+// Writable.
+
+'use strict';
+
+/*<replacement>*/
+
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+  for (var key in obj) {
+    keys.push(key);
+  }return keys;
+};
+/*</replacement>*/
+
+module.exports = Duplex;
+
+/*<replacement>*/
+var processNextTick = require('process-nextick-args');
+/*</replacement>*/
+
+/*<replacement>*/
+var util = require('core-util-is');
+util.inherits = require('inherits');
+/*</replacement>*/
+
+var Readable = require('./_stream_readable');
+var Writable = require('./_stream_writable');
+
+util.inherits(Duplex, Readable);
+
+var keys = objectKeys(Writable.prototype);
+for (var v = 0; v < keys.length; v++) {
+  var method = keys[v];
+  if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+}
+
+function Duplex(options) {
+  if (!(this instanceof Duplex)) return new Duplex(options);
+
+  Readable.call(this, options);
+  Writable.call(this, options);
+
+  if (options && options.readable === false) this.readable = false;
+
+  if (options && options.writable === false) this.writable = false;
+
+  this.allowHalfOpen = true;
+  if (options && options.allowHalfOpen === false) this.allowHalfOpen = false;
+
+  this.once('end', onend);
+}
+
+// the no-half-open enforcer
+function onend() {
+  // if we allow half-open state, or if the writable side ended,
+  // then we're ok.
+  if (this.allowHalfOpen || this._writableState.ended) return;
+
+  // no more data can be written.
+  // But allow more writes to happen in this tick.
+  processNextTick(onEndNT, this);
+}
+
+function onEndNT(self) {
+  self.end();
+}
+
+function forEach(xs, f) {
+  for (var i = 0, l = xs.length; i < l; i++) {
+    f(xs[i], i);
+  }
+}
+},{"./_stream_readable":196,"./_stream_writable":198,"core-util-is":117,"inherits":165,"process-nextick-args":184}],195:[function(require,module,exports){
+// a passthrough stream.
+// basically just the most minimal sort of Transform stream.
+// Every written chunk gets output as-is.
+
+'use strict';
+
+module.exports = PassThrough;
+
+var Transform = require('./_stream_transform');
+
+/*<replacement>*/
+var util = require('core-util-is');
+util.inherits = require('inherits');
+/*</replacement>*/
+
+util.inherits(PassThrough, Transform);
+
+function PassThrough(options) {
+  if (!(this instanceof PassThrough)) return new PassThrough(options);
+
+  Transform.call(this, options);
+}
+
+PassThrough.prototype._transform = function (chunk, encoding, cb) {
+  cb(null, chunk);
+};
+},{"./_stream_transform":197,"core-util-is":117,"inherits":165}],196:[function(require,module,exports){
+(function (process){
+'use strict';
+
+module.exports = Readable;
+
+/*<replacement>*/
+var processNextTick = require('process-nextick-args');
+/*</replacement>*/
+
+/*<replacement>*/
+var isArray = require('isarray');
+/*</replacement>*/
+
+/*<replacement>*/
+var Buffer = require('buffer').Buffer;
+/*</replacement>*/
+
+Readable.ReadableState = ReadableState;
+
+var EE = require('events');
+
+/*<replacement>*/
+var EElistenerCount = function (emitter, type) {
+  return emitter.listeners(type).length;
+};
+/*</replacement>*/
+
+/*<replacement>*/
+var Stream;
+(function () {
+  try {
+    Stream = require('st' + 'ream');
+  } catch (_) {} finally {
+    if (!Stream) Stream = require('events').EventEmitter;
+  }
+})();
+/*</replacement>*/
+
+var Buffer = require('buffer').Buffer;
+
+/*<replacement>*/
+var util = require('core-util-is');
+util.inherits = require('inherits');
+/*</replacement>*/
+
+/*<replacement>*/
+var debugUtil = require('util');
+var debug = undefined;
+if (debugUtil && debugUtil.debuglog) {
+  debug = debugUtil.debuglog('stream');
+} else {
+  debug = function () {};
+}
+/*</replacement>*/
+
+var StringDecoder;
+
+util.inherits(Readable, Stream);
+
+var Duplex;
+function ReadableState(options, stream) {
+  Duplex = Duplex || require('./_stream_duplex');
+
+  options = options || {};
+
+  // object stream flag. Used to make read(n) ignore n and to
+  // make all the buffer merging and length checks go away
+  this.objectMode = !!options.objectMode;
+
+  if (stream instanceof Duplex) this.objectMode = this.objectMode || !!options.readableObjectMode;
+
+  // the point at which it stops calling _read() to fill the buffer
+  // Note: 0 is a valid value, means "don't call _read preemptively ever"
+  var hwm = options.highWaterMark;
+  var defaultHwm = this.objectMode ? 16 : 16 * 1024;
+  this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
+
+  // cast to ints.
+  this.highWaterMark = ~ ~this.highWaterMark;
+
+  this.buffer = [];
+  this.length = 0;
+  this.pipes = null;
+  this.pipesCount = 0;
+  this.flowing = null;
+  this.ended = false;
+  this.endEmitted = false;
+  this.reading = false;
+
+  // a flag to be able to tell if the onwrite cb is called immediately,
+  // or on a later tick.  We set this to true at first, because any
+  // actions that shouldn't happen until "later" should generally also
+  // not happen before the first write call.
+  this.sync = true;
+
+  // whenever we return null, then we set a flag to say
+  // that we're awaiting a 'readable' event emission.
+  this.needReadable = false;
+  this.emittedReadable = false;
+  this.readableListening = false;
+  this.resumeScheduled = false;
+
+  // Crypto is kind of old and crusty.  Historically, its default string
+  // encoding is 'binary' so we have to make this configurable.
+  // Everything else in the universe uses 'utf8', though.
+  this.defaultEncoding = options.defaultEncoding || 'utf8';
+
+  // when piping, we only care about 'readable' events that happen
+  // after read()ing all the bytes and not getting any pushback.
+  this.ranOut = false;
+
+  // the number of writers that are awaiting a drain event in .pipe()s
+  this.awaitDrain = 0;
+
+  // if true, a maybeReadMore has been scheduled
+  this.readingMore = false;
+
+  this.decoder = null;
+  this.encoding = null;
+  if (options.encoding) {
+    if (!StringDecoder) StringDecoder = require('string_decoder/').StringDecoder;
+    this.decoder = new StringDecoder(options.encoding);
+    this.encoding = options.encoding;
+  }
+}
+
+var Duplex;
+function Readable(options) {
+  Duplex = Duplex || require('./_stream_duplex');
+
+  if (!(this instanceof Readable)) return new Readable(options);
+
+  this._readableState = new ReadableState(options, this);
+
+  // legacy
+  this.readable = true;
+
+  if (options && typeof options.read === 'function') this._read = options.read;
+
+  Stream.call(this);
+}
+
+// Manually shove something into the read() buffer.
+// This returns true if the highWaterMark has not been hit yet,
+// similar to how Writable.write() returns true if you should
+// write() some more.
+Readable.prototype.push = function (chunk, encoding) {
+  var state = this._readableState;
+
+  if (!state.objectMode && typeof chunk === 'string') {
+    encoding = encoding || state.defaultEncoding;
+    if (encoding !== state.encoding) {
+      chunk = new Buffer(chunk, encoding);
+      encoding = '';
+    }
+  }
+
+  return readableAddChunk(this, state, chunk, encoding, false);
+};
+
+// Unshift should *always* be something directly out of read()
+Readable.prototype.unshift = function (chunk) {
+  var state = this._readableState;
+  return readableAddChunk(this, state, chunk, '', true);
+};
+
+Readable.prototype.isPaused = function () {
+  return this._readableState.flowing === false;
+};
+
+function readableAddChunk(stream, state, chunk, encoding, addToFront) {
+  var er = chunkInvalid(state, chunk);
+  if (er) {
+    stream.emit('error', er);
+  } else if (chunk === null) {
+    state.reading = false;
+    onEofChunk(stream, state);
+  } else if (state.objectMode || chunk && chunk.length > 0) {
+    if (state.ended && !addToFront) {
+      var e = new Error('stream.push() after EOF');
+      stream.emit('error', e);
+    } else if (state.endEmitted && addToFront) {
+      var e = new Error('stream.unshift() after end event');
+      stream.emit('error', e);
+    } else {
+      var skipAdd;
+      if (state.decoder && !addToFront && !encoding) {
+        chunk = state.decoder.write(chunk);
+        skipAdd = !state.objectMode && chunk.length === 0;
+      }
+
+      if (!addToFront) state.reading = false;
+
+      // Don't add to the buffer if we've decoded to an empty string chunk and
+      // we're not in object mode
+      if (!skipAdd) {
+        // if we want the data now, just emit it.
+        if (state.flowing && state.length === 0 && !state.sync) {
+          stream.emit('data', chunk);
+          stream.read(0);
+        } else {
+          // update the buffer info.
+          state.length += state.objectMode ? 1 : chunk.length;
+          if (addToFront) state.buffer.unshift(chunk);else state.buffer.push(chunk);
+
+          if (state.needReadable) emitReadable(stream);
+        }
+      }
+
+      maybeReadMore(stream, state);
+    }
+  } else if (!addToFront) {
+    state.reading = false;
+  }
+
+  return needMoreData(state);
+}
+
+// if it's past the high water mark, we can push in some more.
+// Also, if we have no data yet, we can stand some
+// more bytes.  This is to work around cases where hwm=0,
+// such as the repl.  Also, if the push() triggered a
+// readable event, and the user called read(largeNumber) such that
+// needReadable was set, then we ought to push more, so that another
+// 'readable' event will be triggered.
+function needMoreData(state) {
+  return !state.ended && (state.needReadable || state.length < state.highWaterMark || state.length === 0);
+}
+
+// backwards compatibility.
+Readable.prototype.setEncoding = function (enc) {
+  if (!StringDecoder) StringDecoder = require('string_decoder/').StringDecoder;
+  this._readableState.decoder = new StringDecoder(enc);
+  this._readableState.encoding = enc;
+  return this;
+};
+
+// Don't raise the hwm > 8MB
+var MAX_HWM = 0x800000;
+function computeNewHighWaterMark(n) {
+  if (n >= MAX_HWM) {
+    n = MAX_HWM;
+  } else {
+    // Get the next highest power of 2
+    n--;
+    n |= n >>> 1;
+    n |= n >>> 2;
+    n |= n >>> 4;
+    n |= n >>> 8;
+    n |= n >>> 16;
+    n++;
+  }
+  return n;
+}
+
+function howMuchToRead(n, state) {
+  if (state.length === 0 && state.ended) return 0;
+
+  if (state.objectMode) return n === 0 ? 0 : 1;
+
+  if (n === null || isNaN(n)) {
+    // only flow one buffer at a time
+    if (state.flowing && state.buffer.length) return state.buffer[0].length;else return state.length;
+  }
+
+  if (n <= 0) return 0;
+
+  // If we're asking for more than the target buffer level,
+  // then raise the water mark.  Bump up to the next highest
+  // power of 2, to prevent increasing it excessively in tiny
+  // amounts.
+  if (n > state.highWaterMark) state.highWaterMark = computeNewHighWaterMark(n);
+
+  // don't have that much.  return null, unless we've ended.
+  if (n > state.length) {
+    if (!state.ended) {
+      state.needReadable = true;
+      return 0;
+    } else {
+      return state.length;
+    }
+  }
+
+  return n;
+}
+
+// you can override either this method, or the async _read(n) below.
+Readable.prototype.read = function (n) {
+  debug('read', n);
+  var state = this._readableState;
+  var nOrig = n;
+
+  if (typeof n !== 'number' || n > 0) state.emittedReadable = false;
+
+  // if we're doing read(0) to trigger a readable event, but we
+  // already have a bunch of data in the buffer, then just trigger
+  // the 'readable' event and move on.
+  if (n === 0 && state.needReadable && (state.length >= state.highWaterMark || state.ended)) {
+    debug('read: emitReadable', state.length, state.ended);
+    if (state.length === 0 && state.ended) endReadable(this);else emitReadable(this);
+    return null;
+  }
+
+  n = howMuchToRead(n, state);
+
+  // if we've ended, and we're now clear, then finish it up.
+  if (n === 0 && state.ended) {
+    if (state.length === 0) endReadable(this);
+    return null;
+  }
+
+  // All the actual chunk generation logic needs to be
+  // *below* the call to _read.  The reason is that in certain
+  // synthetic stream cases, such as passthrough streams, _read
+  // may be a completely synchronous operation which may change
+  // the state of the read buffer, providing enough data when
+  // before there was *not* enough.
+  //
+  // So, the steps are:
+  // 1. Figure out what the state of things will be after we do
+  // a read from the buffer.
+  //
+  // 2. If that resulting state will trigger a _read, then call _read.
+  // Note that this may be asynchronous, or synchronous.  Yes, it is
+  // deeply ugly to write APIs this way, but that still doesn't mean
+  // that the Readable class should behave improperly, as streams are
+  // designed to be sync/async agnostic.
+  // Take note if the _read call is sync or async (ie, if the read call
+  // has returned yet), so that we know whether or not it's safe to emit
+  // 'readable' etc.
+  //
+  // 3. Actually pull the requested chunks out of the buffer and return.
+
+  // if we need a readable event, then we need to do some reading.
+  var doRead = state.needReadable;
+  debug('need readable', doRead);
+
+  // if we currently have less than the highWaterMark, then also read some
+  if (state.length === 0 || state.length - n < state.highWaterMark) {
+    doRead = true;
+    debug('length less than watermark', doRead);
+  }
+
+  // however, if we've ended, then there's no point, and if we're already
+  // reading, then it's unnecessary.
+  if (state.ended || state.reading) {
+    doRead = false;
+    debug('reading or ended', doRead);
+  }
+
+  if (doRead) {
+    debug('do read');
+    state.reading = true;
+    state.sync = true;
+    // if the length is currently zero, then we *need* a readable event.
+    if (state.length === 0) state.needReadable = true;
+    // call internal read method
+    this._read(state.highWaterMark);
+    state.sync = false;
+  }
+
+  // If _read pushed data synchronously, then `reading` will be false,
+  // and we need to re-evaluate how much data we can return to the user.
+  if (doRead && !state.reading) n = howMuchToRead(nOrig, state);
+
+  var ret;
+  if (n > 0) ret = fromList(n, state);else ret = null;
+
+  if (ret === null) {
+    state.needReadable = true;
+    n = 0;
+  }
+
+  state.length -= n;
+
+  // If we have nothing in the buffer, then we want to know
+  // as soon as we *do* get something into the buffer.
+  if (state.length === 0 && !state.ended) state.needReadable = true;
+
+  // If we tried to read() past the EOF, then emit end on the next tick.
+  if (nOrig !== n && state.ended && state.length === 0) endReadable(this);
+
+  if (ret !== null) this.emit('data', ret);
+
+  return ret;
+};
+
+function chunkInvalid(state, chunk) {
+  var er = null;
+  if (!Buffer.isBuffer(chunk) && typeof chunk !== 'string' && chunk !== null && chunk !== undefined && !state.objectMode) {
+    er = new TypeError('Invalid non-string/buffer chunk');
+  }
+  return er;
+}
+
+function onEofChunk(stream, state) {
+  if (state.ended) return;
+  if (state.decoder) {
+    var chunk = state.decoder.end();
+    if (chunk && chunk.length) {
+      state.buffer.push(chunk);
+      state.length += state.objectMode ? 1 : chunk.length;
+    }
+  }
+  state.ended = true;
+
+  // emit 'readable' now to make sure it gets picked up.
+  emitReadable(stream);
+}
+
+// Don't emit readable right away in sync mode, because this can trigger
+// another read() call => stack overflow.  This way, it might trigger
+// a nextTick recursion warning, but that's not so bad.
+function emitReadable(stream) {
+  var state = stream._readableState;
+  state.needReadable = false;
+  if (!state.emittedReadable) {
+    debug('emitReadable', state.flowing);
+    state.emittedReadable = true;
+    if (state.sync) processNextTick(emitReadable_, stream);else emitReadable_(stream);
+  }
+}
+
+function emitReadable_(stream) {
+  debug('emit readable');
+  stream.emit('readable');
+  flow(stream);
+}
+
+// at this point, the user has presumably seen the 'readable' event,
+// and called read() to consume some data.  that may have triggered
+// in turn another _read(n) call, in which case reading = true if
+// it's in progress.
+// However, if we're not ended, or reading, and the length < hwm,
+// then go ahead and try to read some more preemptively.
+function maybeReadMore(stream, state) {
+  if (!state.readingMore) {
+    state.readingMore = true;
+    processNextTick(maybeReadMore_, stream, state);
+  }
+}
+
+function maybeReadMore_(stream, state) {
+  var len = state.length;
+  while (!state.reading && !state.flowing && !state.ended && state.length < state.highWaterMark) {
+    debug('maybeReadMore read 0');
+    stream.read(0);
+    if (len === state.length)
+      // didn't get any data, stop spinning.
+      break;else len = state.length;
+  }
+  state.readingMore = false;
+}
+
+// abstract method.  to be overridden in specific implementation classes.
+// call cb(er, data) where data is <= n in length.
+// for virtual (non-string, non-buffer) streams, "length" is somewhat
+// arbitrary, and perhaps not very meaningful.
+Readable.prototype._read = function (n) {
+  this.emit('error', new Error('not implemented'));
+};
+
+Readable.prototype.pipe = function (dest, pipeOpts) {
+  var src = this;
+  var state = this._readableState;
+
+  switch (state.pipesCount) {
+    case 0:
+      state.pipes = dest;
+      break;
+    case 1:
+      state.pipes = [state.pipes, dest];
+      break;
+    default:
+      state.pipes.push(dest);
+      break;
+  }
+  state.pipesCount += 1;
+  debug('pipe count=%d opts=%j', state.pipesCount, pipeOpts);
+
+  var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
+
+  var endFn = doEnd ? onend : cleanup;
+  if (state.endEmitted) processNextTick(endFn);else src.once('end', endFn);
+
+  dest.on('unpipe', onunpipe);
+  function onunpipe(readable) {
+    debug('onunpipe');
+    if (readable === src) {
+      cleanup();
+    }
+  }
+
+  function onend() {
+    debug('onend');
+    dest.end();
+  }
+
+  // when the dest drains, it reduces the awaitDrain counter
+  // on the source.  This would be more elegant with a .once()
+  // handler in flow(), but adding and removing repeatedly is
+  // too slow.
+  var ondrain = pipeOnDrain(src);
+  dest.on('drain', ondrain);
+
+  var cleanedUp = false;
+  function cleanup() {
+    debug('cleanup');
+    // cleanup event handlers once the pipe is broken
+    dest.removeListener('close', onclose);
+    dest.removeListener('finish', onfinish);
+    dest.removeListener('drain', ondrain);
+    dest.removeListener('error', onerror);
+    dest.removeListener('unpipe', onunpipe);
+    src.removeListener('end', onend);
+    src.removeListener('end', cleanup);
+    src.removeListener('data', ondata);
+
+    cleanedUp = true;
+
+    // if the reader is waiting for a drain event from this
+    // specific writer, then it would cause it to never start
+    // flowing again.
+    // So, if this is awaiting a drain, then we just call it now.
+    // If we don't know, then assume that we are waiting for one.
+    if (state.awaitDrain && (!dest._writableState || dest._writableState.needDrain)) ondrain();
+  }
+
+  src.on('data', ondata);
+  function ondata(chunk) {
+    debug('ondata');
+    var ret = dest.write(chunk);
+    if (false === ret) {
+      // If the user unpiped during `dest.write()`, it is possible
+      // to get stuck in a permanently paused state if that write
+      // also returned false.
+      if (state.pipesCount === 1 && state.pipes[0] === dest && src.listenerCount('data') === 1 && !cleanedUp) {
+        debug('false write response, pause', src._readableState.awaitDrain);
+        src._readableState.awaitDrain++;
+      }
+      src.pause();
+    }
+  }
+
+  // if the dest has an error, then stop piping into it.
+  // however, don't suppress the throwing behavior for this.
+  function onerror(er) {
+    debug('onerror', er);
+    unpipe();
+    dest.removeListener('error', onerror);
+    if (EElistenerCount(dest, 'error') === 0) dest.emit('error', er);
+  }
+  // This is a brutally ugly hack to make sure that our error handler
+  // is attached before any userland ones.  NEVER DO THIS.
+  if (!dest._events || !dest._events.error) dest.on('error', onerror);else if (isArray(dest._events.error)) dest._events.error.unshift(onerror);else dest._events.error = [onerror, dest._events.error];
+
+  // Both close and finish should trigger unpipe, but only once.
+  function onclose() {
+    dest.removeListener('finish', onfinish);
+    unpipe();
+  }
+  dest.once('close', onclose);
+  function onfinish() {
+    debug('onfinish');
+    dest.removeListener('close', onclose);
+    unpipe();
+  }
+  dest.once('finish', onfinish);
+
+  function unpipe() {
+    debug('unpipe');
+    src.unpipe(dest);
+  }
+
+  // tell the dest that it's being piped to
+  dest.emit('pipe', src);
+
+  // start the flow if it hasn't been started already.
+  if (!state.flowing) {
+    debug('pipe resume');
+    src.resume();
+  }
+
+  return dest;
+};
+
+function pipeOnDrain(src) {
+  return function () {
+    var state = src._readableState;
+    debug('pipeOnDrain', state.awaitDrain);
+    if (state.awaitDrain) state.awaitDrain--;
+    if (state.awaitDrain === 0 && EElistenerCount(src, 'data')) {
+      state.flowing = true;
+      flow(src);
+    }
+  };
+}
+
+Readable.prototype.unpipe = function (dest) {
+  var state = this._readableState;
+
+  // if we're not piping anywhere, then do nothing.
+  if (state.pipesCount === 0) return this;
+
+  // just one destination.  most common case.
+  if (state.pipesCount === 1) {
+    // passed in one, but it's not the right one.
+    if (dest && dest !== state.pipes) return this;
+
+    if (!dest) dest = state.pipes;
+
+    // got a match.
+    state.pipes = null;
+    state.pipesCount = 0;
+    state.flowing = false;
+    if (dest) dest.emit('unpipe', this);
+    return this;
+  }
+
+  // slow case. multiple pipe destinations.
+
+  if (!dest) {
+    // remove all.
+    var dests = state.pipes;
+    var len = state.pipesCount;
+    state.pipes = null;
+    state.pipesCount = 0;
+    state.flowing = false;
+
+    for (var _i = 0; _i < len; _i++) {
+      dests[_i].emit('unpipe', this);
+    }return this;
+  }
+
+  // try to find the right one.
+  var i = indexOf(state.pipes, dest);
+  if (i === -1) return this;
+
+  state.pipes.splice(i, 1);
+  state.pipesCount -= 1;
+  if (state.pipesCount === 1) state.pipes = state.pipes[0];
+
+  dest.emit('unpipe', this);
+
+  return this;
+};
+
+// set up data events if they are asked for
+// Ensure readable listeners eventually get something
+Readable.prototype.on = function (ev, fn) {
+  var res = Stream.prototype.on.call(this, ev, fn);
+
+  // If listening to data, and it has not explicitly been paused,
+  // then call resume to start the flow of data on the next tick.
+  if (ev === 'data' && false !== this._readableState.flowing) {
+    this.resume();
+  }
+
+  if (ev === 'readable' && !this._readableState.endEmitted) {
+    var state = this._readableState;
+    if (!state.readableListening) {
+      state.readableListening = true;
+      state.emittedReadable = false;
+      state.needReadable = true;
+      if (!state.reading) {
+        processNextTick(nReadingNextTick, this);
+      } else if (state.length) {
+        emitReadable(this, state);
+      }
+    }
+  }
+
+  return res;
+};
+Readable.prototype.addListener = Readable.prototype.on;
+
+function nReadingNextTick(self) {
+  debug('readable nexttick read 0');
+  self.read(0);
+}
+
+// pause() and resume() are remnants of the legacy readable stream API
+// If the user uses them, then switch into old mode.
+Readable.prototype.resume = function () {
+  var state = this._readableState;
+  if (!state.flowing) {
+    debug('resume');
+    state.flowing = true;
+    resume(this, state);
+  }
+  return this;
+};
+
+function resume(stream, state) {
+  if (!state.resumeScheduled) {
+    state.resumeScheduled = true;
+    processNextTick(resume_, stream, state);
+  }
+}
+
+function resume_(stream, state) {
+  if (!state.reading) {
+    debug('resume read 0');
+    stream.read(0);
+  }
+
+  state.resumeScheduled = false;
+  stream.emit('resume');
+  flow(stream);
+  if (state.flowing && !state.reading) stream.read(0);
+}
+
+Readable.prototype.pause = function () {
+  debug('call pause flowing=%j', this._readableState.flowing);
+  if (false !== this._readableState.flowing) {
+    debug('pause');
+    this._readableState.flowing = false;
+    this.emit('pause');
+  }
+  return this;
+};
+
+function flow(stream) {
+  var state = stream._readableState;
+  debug('flow', state.flowing);
+  if (state.flowing) {
+    do {
+      var chunk = stream.read();
+    } while (null !== chunk && state.flowing);
+  }
+}
+
+// wrap an old-style stream as the async data source.
+// This is *not* part of the readable stream interface.
+// It is an ugly unfortunate mess of history.
+Readable.prototype.wrap = function (stream) {
+  var state = this._readableState;
+  var paused = false;
+
+  var self = this;
+  stream.on('end', function () {
+    debug('wrapped end');
+    if (state.decoder && !state.ended) {
+      var chunk = state.decoder.end();
+      if (chunk && chunk.length) self.push(chunk);
+    }
+
+    self.push(null);
+  });
+
+  stream.on('data', function (chunk) {
+    debug('wrapped data');
+    if (state.decoder) chunk = state.decoder.write(chunk);
+
+    // don't skip over falsy values in objectMode
+    if (state.objectMode && (chunk === null || chunk === undefined)) return;else if (!state.objectMode && (!chunk || !chunk.length)) return;
+
+    var ret = self.push(chunk);
+    if (!ret) {
+      paused = true;
+      stream.pause();
+    }
+  });
+
+  // proxy all the other methods.
+  // important when wrapping filters and duplexes.
+  for (var i in stream) {
+    if (this[i] === undefined && typeof stream[i] === 'function') {
+      this[i] = function (method) {
+        return function () {
+          return stream[method].apply(stream, arguments);
+        };
+      }(i);
+    }
+  }
+
+  // proxy certain important events.
+  var events = ['error', 'close', 'destroy', 'pause', 'resume'];
+  forEach(events, function (ev) {
+    stream.on(ev, self.emit.bind(self, ev));
+  });
+
+  // when we try to consume some more bytes, simply unpause the
+  // underlying stream.
+  self._read = function (n) {
+    debug('wrapped _read', n);
+    if (paused) {
+      paused = false;
+      stream.resume();
+    }
+  };
+
+  return self;
+};
+
+// exposed for testing purposes only.
+Readable._fromList = fromList;
+
+// Pluck off n bytes from an array of buffers.
+// Length is the combined lengths of all the buffers in the list.
+function fromList(n, state) {
+  var list = state.buffer;
+  var length = state.length;
+  var stringMode = !!state.decoder;
+  var objectMode = !!state.objectMode;
+  var ret;
+
+  // nothing in the list, definitely empty.
+  if (list.length === 0) return null;
+
+  if (length === 0) ret = null;else if (objectMode) ret = list.shift();else if (!n || n >= length) {
+    // read it all, truncate the array.
+    if (stringMode) ret = list.join('');else if (list.length === 1) ret = list[0];else ret = Buffer.concat(list, length);
+    list.length = 0;
+  } else {
+    // read just some of it.
+    if (n < list[0].length) {
+      // just take a part of the first list item.
+      // slice is the same for buffers and strings.
+      var buf = list[0];
+      ret = buf.slice(0, n);
+      list[0] = buf.slice(n);
+    } else if (n === list[0].length) {
+      // first list is a perfect match
+      ret = list.shift();
+    } else {
+      // complex case.
+      // we have enough to cover it, but it spans past the first buffer.
+      if (stringMode) ret = '';else ret = new Buffer(n);
+
+      var c = 0;
+      for (var i = 0, l = list.length; i < l && c < n; i++) {
+        var buf = list[0];
+        var cpy = Math.min(n - c, buf.length);
+
+        if (stringMode) ret += buf.slice(0, cpy);else buf.copy(ret, c, 0, cpy);
+
+        if (cpy < buf.length) list[0] = buf.slice(cpy);else list.shift();
+
+        c += cpy;
+      }
+    }
+  }
+
+  return ret;
+}
+
+function endReadable(stream) {
+  var state = stream._readableState;
+
+  // If we get here before consuming all the bytes, then that is a
+  // bug in node.  Should never happen.
+  if (state.length > 0) throw new Error('endReadable called on non-empty stream');
+
+  if (!state.endEmitted) {
+    state.ended = true;
+    processNextTick(endReadableNT, state, stream);
+  }
+}
+
+function endReadableNT(state, stream) {
+  // Check that we didn't get one last unshift.
+  if (!state.endEmitted && state.length === 0) {
+    state.endEmitted = true;
+    stream.readable = false;
+    stream.emit('end');
+  }
+}
+
+function forEach(xs, f) {
+  for (var i = 0, l = xs.length; i < l; i++) {
+    f(xs[i], i);
+  }
+}
+
+function indexOf(xs, x) {
+  for (var i = 0, l = xs.length; i < l; i++) {
+    if (xs[i] === x) return i;
+  }
+  return -1;
+}
+}).call(this,require('_process'))
+},{"./_stream_duplex":194,"_process":185,"buffer":114,"core-util-is":117,"events":155,"inherits":165,"isarray":167,"process-nextick-args":184,"string_decoder/":219,"util":85}],197:[function(require,module,exports){
+// a transform stream is a readable/writable stream where you do
+// something with the data.  Sometimes it's called a "filter",
+// but that's not a great name for it, since that implies a thing where
+// some bits pass through, and others are simply ignored.  (That would
+// be a valid example of a transform, of course.)
+//
+// While the output is causally related to the input, it's not a
+// necessarily symmetric or synchronous transformation.  For example,
+// a zlib stream might take multiple plain-text writes(), and then
+// emit a single compressed chunk some time in the future.
+//
+// Here's how this works:
+//
+// The Transform stream has all the aspects of the readable and writable
+// stream classes.  When you write(chunk), that calls _write(chunk,cb)
+// internally, and returns false if there's a lot of pending writes
+// buffered up.  When you call read(), that calls _read(n) until
+// there's enough pending readable data buffered up.
+//
+// In a transform stream, the written data is placed in a buffer.  When
+// _read(n) is called, it transforms the queued up data, calling the
+// buffered _write cb's as it consumes chunks.  If consuming a single
+// written chunk would result in multiple output chunks, then the first
+// outputted bit calls the readcb, and subsequent chunks just go into
+// the read buffer, and will cause it to emit 'readable' if necessary.
+//
+// This way, back-pressure is actually determined by the reading side,
+// since _read has to be called to start processing a new chunk.  However,
+// a pathological inflate type of transform can cause excessive buffering
+// here.  For example, imagine a stream where every byte of input is
+// interpreted as an integer from 0-255, and then results in that many
+// bytes of output.  Writing the 4 bytes {ff,ff,ff,ff} would result in
+// 1kb of data being output.  In this case, you could write a very small
+// amount of input, and end up with a very large amount of output.  In
+// such a pathological inflating mechanism, there'd be no way to tell
+// the system to stop doing the transform.  A single 4MB write could
+// cause the system to run out of memory.
+//
+// However, even in such a pathological case, only a single written chunk
+// would be consumed, and then the rest would wait (un-transformed) until
+// the results of the previous transformed chunk were consumed.
+
+'use strict';
+
+module.exports = Transform;
+
+var Duplex = require('./_stream_duplex');
+
+/*<replacement>*/
+var util = require('core-util-is');
+util.inherits = require('inherits');
+/*</replacement>*/
+
+util.inherits(Transform, Duplex);
+
+function TransformState(stream) {
+  this.afterTransform = function (er, data) {
+    return afterTransform(stream, er, data);
+  };
+
+  this.needTransform = false;
+  this.transforming = false;
+  this.writecb = null;
+  this.writechunk = null;
+  this.writeencoding = null;
+}
+
+function afterTransform(stream, er, data) {
+  var ts = stream._transformState;
+  ts.transforming = false;
+
+  var cb = ts.writecb;
+
+  if (!cb) return stream.emit('error', new Error('no writecb in Transform class'));
+
+  ts.writechunk = null;
+  ts.writecb = null;
+
+  if (data !== null && data !== undefined) stream.push(data);
+
+  cb(er);
+
+  var rs = stream._readableState;
+  rs.reading = false;
+  if (rs.needReadable || rs.length < rs.highWaterMark) {
+    stream._read(rs.highWaterMark);
+  }
+}
+
+function Transform(options) {
+  if (!(this instanceof Transform)) return new Transform(options);
+
+  Duplex.call(this, options);
+
+  this._transformState = new TransformState(this);
+
+  // when the writable side finishes, then flush out anything remaining.
+  var stream = this;
+
+  // start out asking for a readable event once data is transformed.
+  this._readableState.needReadable = true;
+
+  // we have implemented the _read method, and done the other things
+  // that Readable wants before the first _read call, so unset the
+  // sync guard flag.
+  this._readableState.sync = false;
+
+  if (options) {
+    if (typeof options.transform === 'function') this._transform = options.transform;
+
+    if (typeof options.flush === 'function') this._flush = options.flush;
+  }
+
+  this.once('prefinish', function () {
+    if (typeof this._flush === 'function') this._flush(function (er) {
+      done(stream, er);
+    });else done(stream);
+  });
+}
+
+Transform.prototype.push = function (chunk, encoding) {
+  this._transformState.needTransform = false;
+  return Duplex.prototype.push.call(this, chunk, encoding);
+};
+
+// This is the part where you do stuff!
+// override this function in implementation classes.
+// 'chunk' is an input chunk.
+//
+// Call `push(newChunk)` to pass along transformed output
+// to the readable side.  You may call 'push' zero or more times.
+//
+// Call `cb(err)` when you are done with this chunk.  If you pass
+// an error, then that'll put the hurt on the whole operation.  If you
+// never call cb(), then you'll never get another chunk.
+Transform.prototype._transform = function (chunk, encoding, cb) {
+  throw new Error('not implemented');
+};
+
+Transform.prototype._write = function (chunk, encoding, cb) {
+  var ts = this._transformState;
+  ts.writecb = cb;
+  ts.writechunk = chunk;
+  ts.writeencoding = encoding;
+  if (!ts.transforming) {
+    var rs = this._readableState;
+    if (ts.needTransform || rs.needReadable || rs.length < rs.highWaterMark) this._read(rs.highWaterMark);
+  }
+};
+
+// Doesn't matter what the args are here.
+// _transform does all the work.
+// That we got here means that the readable side wants more data.
+Transform.prototype._read = function (n) {
+  var ts = this._transformState;
+
+  if (ts.writechunk !== null && ts.writecb && !ts.transforming) {
+    ts.transforming = true;
+    this._transform(ts.writechunk, ts.writeencoding, ts.afterTransform);
+  } else {
+    // mark that we need a transform, so that any data that comes in
+    // will get processed, now that we've asked for it.
+    ts.needTransform = true;
+  }
+};
+
+function done(stream, er) {
+  if (er) return stream.emit('error', er);
+
+  // if there's nothing in the write buffer, then that means
+  // that nothing more will ever be provided
+  var ws = stream._writableState;
+  var ts = stream._transformState;
+
+  if (ws.length) throw new Error('calling transform done when ws.length != 0');
+
+  if (ts.transforming) throw new Error('calling transform done when still transforming');
+
+  return stream.push(null);
+}
+},{"./_stream_duplex":194,"core-util-is":117,"inherits":165}],198:[function(require,module,exports){
+(function (process){
+// A bit simpler than readable streams.
+// Implement an async ._write(chunk, encoding, cb), and it'll handle all
+// the drain event emission and buffering.
+
+'use strict';
+
+module.exports = Writable;
+
+/*<replacement>*/
+var processNextTick = require('process-nextick-args');
+/*</replacement>*/
+
+/*<replacement>*/
+var asyncWrite = !process.browser && ['v0.10', 'v0.9.'].indexOf(process.version.slice(0, 5)) > -1 ? setImmediate : processNextTick;
+/*</replacement>*/
+
+/*<replacement>*/
+var Buffer = require('buffer').Buffer;
+/*</replacement>*/
+
+Writable.WritableState = WritableState;
+
+/*<replacement>*/
+var util = require('core-util-is');
+util.inherits = require('inherits');
+/*</replacement>*/
+
+/*<replacement>*/
+var internalUtil = {
+  deprecate: require('util-deprecate')
+};
+/*</replacement>*/
+
+/*<replacement>*/
+var Stream;
+(function () {
+  try {
+    Stream = require('st' + 'ream');
+  } catch (_) {} finally {
+    if (!Stream) Stream = require('events').EventEmitter;
+  }
+})();
+/*</replacement>*/
+
+var Buffer = require('buffer').Buffer;
+
+util.inherits(Writable, Stream);
+
+function nop() {}
+
+function WriteReq(chunk, encoding, cb) {
+  this.chunk = chunk;
+  this.encoding = encoding;
+  this.callback = cb;
+  this.next = null;
+}
+
+var Duplex;
+function WritableState(options, stream) {
+  Duplex = Duplex || require('./_stream_duplex');
+
+  options = options || {};
+
+  // object stream flag to indicate whether or not this stream
+  // contains buffers or objects.
+  this.objectMode = !!options.objectMode;
+
+  if (stream instanceof Duplex) this.objectMode = this.objectMode || !!options.writableObjectMode;
+
+  // the point at which write() starts returning false
+  // Note: 0 is a valid value, means that we always return false if
+  // the entire buffer is not flushed immediately on write()
+  var hwm = options.highWaterMark;
+  var defaultHwm = this.objectMode ? 16 : 16 * 1024;
+  this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
+
+  // cast to ints.
+  this.highWaterMark = ~ ~this.highWaterMark;
+
+  this.needDrain = false;
+  // at the start of calling end()
+  this.ending = false;
+  // when end() has been called, and returned
+  this.ended = false;
+  // when 'finish' is emitted
+  this.finished = false;
+
+  // should we decode strings into buffers before passing to _write?
+  // this is here so that some node-core streams can optimize string
+  // handling at a lower level.
+  var noDecode = options.decodeStrings === false;
+  this.decodeStrings = !noDecode;
+
+  // Crypto is kind of old and crusty.  Historically, its default string
+  // encoding is 'binary' so we have to make this configurable.
+  // Everything else in the universe uses 'utf8', though.
+  this.defaultEncoding = options.defaultEncoding || 'utf8';
+
+  // not an actual buffer we keep track of, but a measurement
+  // of how much we're waiting to get pushed to some underlying
+  // socket or file.
+  this.length = 0;
+
+  // a flag to see when we're in the middle of a write.
+  this.writing = false;
+
+  // when true all writes will be buffered until .uncork() call
+  this.corked = 0;
+
+  // a flag to be able to tell if the onwrite cb is called immediately,
+  // or on a later tick.  We set this to true at first, because any
+  // actions that shouldn't happen until "later" should generally also
+  // not happen before the first write call.
+  this.sync = true;
+
+  // a flag to know if we're processing previously buffered items, which
+  // may call the _write() callback in the same tick, so that we don't
+  // end up in an overlapped onwrite situation.
+  this.bufferProcessing = false;
+
+  // the callback that's passed to _write(chunk,cb)
+  this.onwrite = function (er) {
+    onwrite(stream, er);
+  };
+
+  // the callback that the user supplies to write(chunk,encoding,cb)
+  this.writecb = null;
+
+  // the amount that is being written when _write is called.
+  this.writelen = 0;
+
+  this.bufferedRequest = null;
+  this.lastBufferedRequest = null;
+
+  // number of pending user-supplied write callbacks
+  // this must be 0 before 'finish' can be emitted
+  this.pendingcb = 0;
+
+  // emit prefinish if the only thing we're waiting for is _write cbs
+  // This is relevant for synchronous Transform streams
+  this.prefinished = false;
+
+  // True if the error was already emitted and should not be thrown again
+  this.errorEmitted = false;
+
+  // count buffered requests
+  this.bufferedRequestCount = 0;
+
+  // create the two objects needed to store the corked requests
+  // they are not a linked list, as no new elements are inserted in there
+  this.corkedRequestsFree = new CorkedRequest(this);
+  this.corkedRequestsFree.next = new CorkedRequest(this);
+}
+
+WritableState.prototype.getBuffer = function writableStateGetBuffer() {
+  var current = this.bufferedRequest;
+  var out = [];
+  while (current) {
+    out.push(current);
+    current = current.next;
+  }
+  return out;
+};
+
+(function () {
+  try {
+    Object.defineProperty(WritableState.prototype, 'buffer', {
+      get: internalUtil.deprecate(function () {
+        return this.getBuffer();
+      }, '_writableState.buffer is deprecated. Use _writableState.getBuffer ' + 'instead.')
+    });
+  } catch (_) {}
+})();
+
+var Duplex;
+function Writable(options) {
+  Duplex = Duplex || require('./_stream_duplex');
+
+  // Writable ctor is applied to Duplexes, though they're not
+  // instanceof Writable, they're instanceof Readable.
+  if (!(this instanceof Writable) && !(this instanceof Duplex)) return new Writable(options);
+
+  this._writableState = new WritableState(options, this);
+
+  // legacy.
+  this.writable = true;
+
+  if (options) {
+    if (typeof options.write === 'function') this._write = options.write;
+
+    if (typeof options.writev === 'function') this._writev = options.writev;
+  }
+
+  Stream.call(this);
+}
+
+// Otherwise people can pipe Writable streams, which is just wrong.
+Writable.prototype.pipe = function () {
+  this.emit('error', new Error('Cannot pipe. Not readable.'));
+};
+
+function writeAfterEnd(stream, cb) {
+  var er = new Error('write after end');
+  // TODO: defer error events consistently everywhere, not just the cb
+  stream.emit('error', er);
+  processNextTick(cb, er);
+}
+
+// If we get something that is not a buffer, string, null, or undefined,
+// and we're not in objectMode, then that's an error.
+// Otherwise stream chunks are all considered to be of length=1, and the
+// watermarks determine how many objects to keep in the buffer, rather than
+// how many bytes or characters.
+function validChunk(stream, state, chunk, cb) {
+  var valid = true;
+
+  if (!Buffer.isBuffer(chunk) && typeof chunk !== 'string' && chunk !== null && chunk !== undefined && !state.objectMode) {
+    var er = new TypeError('Invalid non-string/buffer chunk');
+    stream.emit('error', er);
+    processNextTick(cb, er);
+    valid = false;
+  }
+  return valid;
+}
+
+Writable.prototype.write = function (chunk, encoding, cb) {
+  var state = this._writableState;
+  var ret = false;
+
+  if (typeof encoding === 'function') {
+    cb = encoding;
+    encoding = null;
+  }
+
+  if (Buffer.isBuffer(chunk)) encoding = 'buffer';else if (!encoding) encoding = state.defaultEncoding;
+
+  if (typeof cb !== 'function') cb = nop;
+
+  if (state.ended) writeAfterEnd(this, cb);else if (validChunk(this, state, chunk, cb)) {
+    state.pendingcb++;
+    ret = writeOrBuffer(this, state, chunk, encoding, cb);
+  }
+
+  return ret;
+};
+
+Writable.prototype.cork = function () {
+  var state = this._writableState;
+
+  state.corked++;
+};
+
+Writable.prototype.uncork = function () {
+  var state = this._writableState;
+
+  if (state.corked) {
+    state.corked--;
+
+    if (!state.writing && !state.corked && !state.finished && !state.bufferProcessing && state.bufferedRequest) clearBuffer(this, state);
+  }
+};
+
+Writable.prototype.setDefaultEncoding = function setDefaultEncoding(encoding) {
+  // node::ParseEncoding() requires lower case.
+  if (typeof encoding === 'string') encoding = encoding.toLowerCase();
+  if (!(['hex', 'utf8', 'utf-8', 'ascii', 'binary', 'base64', 'ucs2', 'ucs-2', 'utf16le', 'utf-16le', 'raw'].indexOf((encoding + '').toLowerCase()) > -1)) throw new TypeError('Unknown encoding: ' + encoding);
+  this._writableState.defaultEncoding = encoding;
+};
+
+function decodeChunk(state, chunk, encoding) {
+  if (!state.objectMode && state.decodeStrings !== false && typeof chunk === 'string') {
+    chunk = new Buffer(chunk, encoding);
+  }
+  return chunk;
+}
+
+// if we're already writing something, then just put this
+// in the queue, and wait our turn.  Otherwise, call _write
+// If we return false, then we need a drain event, so set that flag.
+function writeOrBuffer(stream, state, chunk, encoding, cb) {
+  chunk = decodeChunk(state, chunk, encoding);
+
+  if (Buffer.isBuffer(chunk)) encoding = 'buffer';
+  var len = state.objectMode ? 1 : chunk.length;
+
+  state.length += len;
+
+  var ret = state.length < state.highWaterMark;
+  // we must ensure that previous needDrain will not be reset to false.
+  if (!ret) state.needDrain = true;
+
+  if (state.writing || state.corked) {
+    var last = state.lastBufferedRequest;
+    state.lastBufferedRequest = new WriteReq(chunk, encoding, cb);
+    if (last) {
+      last.next = state.lastBufferedRequest;
+    } else {
+      state.bufferedRequest = state.lastBufferedRequest;
+    }
+    state.bufferedRequestCount += 1;
+  } else {
+    doWrite(stream, state, false, len, chunk, encoding, cb);
+  }
+
+  return ret;
+}
+
+function doWrite(stream, state, writev, len, chunk, encoding, cb) {
+  state.writelen = len;
+  state.writecb = cb;
+  state.writing = true;
+  state.sync = true;
+  if (writev) stream._writev(chunk, state.onwrite);else stream._write(chunk, encoding, state.onwrite);
+  state.sync = false;
+}
+
+function onwriteError(stream, state, sync, er, cb) {
+  --state.pendingcb;
+  if (sync) processNextTick(cb, er);else cb(er);
+
+  stream._writableState.errorEmitted = true;
+  stream.emit('error', er);
+}
+
+function onwriteStateUpdate(state) {
+  state.writing = false;
+  state.writecb = null;
+  state.length -= state.writelen;
+  state.writelen = 0;
+}
+
+function onwrite(stream, er) {
+  var state = stream._writableState;
+  var sync = state.sync;
+  var cb = state.writecb;
+
+  onwriteStateUpdate(state);
+
+  if (er) onwriteError(stream, state, sync, er, cb);else {
+    // Check if we're actually ready to finish, but don't emit yet
+    var finished = needFinish(state);
+
+    if (!finished && !state.corked && !state.bufferProcessing && state.bufferedRequest) {
+      clearBuffer(stream, state);
+    }
+
+    if (sync) {
+      /*<replacement>*/
+      asyncWrite(afterWrite, stream, state, finished, cb);
+      /*</replacement>*/
+    } else {
+        afterWrite(stream, state, finished, cb);
+      }
+  }
+}
+
+function afterWrite(stream, state, finished, cb) {
+  if (!finished) onwriteDrain(stream, state);
+  state.pendingcb--;
+  cb();
+  finishMaybe(stream, state);
+}
+
+// Must force callback to be called on nextTick, so that we don't
+// emit 'drain' before the write() consumer gets the 'false' return
+// value, and has a chance to attach a 'drain' listener.
+function onwriteDrain(stream, state) {
+  if (state.length === 0 && state.needDrain) {
+    state.needDrain = false;
+    stream.emit('drain');
+  }
+}
+
+// if there's something in the buffer waiting, then process it
+function clearBuffer(stream, state) {
+  state.bufferProcessing = true;
+  var entry = state.bufferedRequest;
+
+  if (stream._writev && entry && entry.next) {
+    // Fast case, write everything using _writev()
+    var l = state.bufferedRequestCount;
+    var buffer = new Array(l);
+    var holder = state.corkedRequestsFree;
+    holder.entry = entry;
+
+    var count = 0;
+    while (entry) {
+      buffer[count] = entry;
+      entry = entry.next;
+      count += 1;
+    }
+
+    doWrite(stream, state, true, state.length, buffer, '', holder.finish);
+
+    // doWrite is always async, defer these to save a bit of time
+    // as the hot path ends with doWrite
+    state.pendingcb++;
+    state.lastBufferedRequest = null;
+    state.corkedRequestsFree = holder.next;
+    holder.next = null;
+  } else {
+    // Slow case, write chunks one-by-one
+    while (entry) {
+      var chunk = entry.chunk;
+      var encoding = entry.encoding;
+      var cb = entry.callback;
+      var len = state.objectMode ? 1 : chunk.length;
+
+      doWrite(stream, state, false, len, chunk, encoding, cb);
+      entry = entry.next;
+      // if we didn't call the onwrite immediately, then
+      // it means that we need to wait until it does.
+      // also, that means that the chunk and cb are currently
+      // being processed, so move the buffer counter past them.
+      if (state.writing) {
+        break;
+      }
+    }
+
+    if (entry === null) state.lastBufferedRequest = null;
+  }
+
+  state.bufferedRequestCount = 0;
+  state.bufferedRequest = entry;
+  state.bufferProcessing = false;
+}
+
+Writable.prototype._write = function (chunk, encoding, cb) {
+  cb(new Error('not implemented'));
+};
+
+Writable.prototype._writev = null;
+
+Writable.prototype.end = function (chunk, encoding, cb) {
+  var state = this._writableState;
+
+  if (typeof chunk === 'function') {
+    cb = chunk;
+    chunk = null;
+    encoding = null;
+  } else if (typeof encoding === 'function') {
+    cb = encoding;
+    encoding = null;
+  }
+
+  if (chunk !== null && chunk !== undefined) this.write(chunk, encoding);
+
+  // .end() fully uncorks
+  if (state.corked) {
+    state.corked = 1;
+    this.uncork();
+  }
+
+  // ignore unnecessary end() calls.
+  if (!state.ending && !state.finished) endWritable(this, state, cb);
+};
+
+function needFinish(state) {
+  return state.ending && state.length === 0 && state.bufferedRequest === null && !state.finished && !state.writing;
+}
+
+function prefinish(stream, state) {
+  if (!state.prefinished) {
+    state.prefinished = true;
+    stream.emit('prefinish');
+  }
+}
+
+function finishMaybe(stream, state) {
+  var need = needFinish(state);
+  if (need) {
+    if (state.pendingcb === 0) {
+      prefinish(stream, state);
+      state.finished = true;
+      stream.emit('finish');
+    } else {
+      prefinish(stream, state);
+    }
+  }
+  return need;
+}
+
+function endWritable(stream, state, cb) {
+  state.ending = true;
+  finishMaybe(stream, state);
+  if (cb) {
+    if (state.finished) processNextTick(cb);else stream.once('finish', cb);
+  }
+  state.ended = true;
+  stream.writable = false;
+}
+
+// It seems a linked list but it is not
+// there will be only 2 of these for each stream
+function CorkedRequest(state) {
+  var _this = this;
+
+  this.next = null;
+  this.entry = null;
+
+  this.finish = function (err) {
+    var entry = _this.entry;
+    _this.entry = null;
+    while (entry) {
+      var cb = entry.callback;
+      state.pendingcb--;
+      cb(err);
+      entry = entry.next;
+    }
+    if (state.corkedRequestsFree) {
+      state.corkedRequestsFree.next = _this;
+    } else {
+      state.corkedRequestsFree = _this;
+    }
+  };
+}
+}).call(this,require('_process'))
+},{"./_stream_duplex":194,"_process":185,"buffer":114,"core-util-is":117,"events":155,"inherits":165,"process-nextick-args":184,"util-deprecate":220}],199:[function(require,module,exports){
+module.exports = require("./lib/_stream_passthrough.js")
+
+},{"./lib/_stream_passthrough.js":195}],200:[function(require,module,exports){
+var Stream = (function (){
+  try {
+    return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
+  } catch(_){}
+}());
+exports = module.exports = require('./lib/_stream_readable.js');
+exports.Stream = Stream || exports;
+exports.Readable = exports;
+exports.Writable = require('./lib/_stream_writable.js');
+exports.Duplex = require('./lib/_stream_duplex.js');
+exports.Transform = require('./lib/_stream_transform.js');
+exports.PassThrough = require('./lib/_stream_passthrough.js');
+
+},{"./lib/_stream_duplex.js":194,"./lib/_stream_passthrough.js":195,"./lib/_stream_readable.js":196,"./lib/_stream_transform.js":197,"./lib/_stream_writable.js":198}],201:[function(require,module,exports){
+module.exports = require("./lib/_stream_transform.js")
+
+},{"./lib/_stream_transform.js":197}],202:[function(require,module,exports){
+module.exports = require("./lib/_stream_writable.js")
+
+},{"./lib/_stream_writable.js":198}],203:[function(require,module,exports){
+arguments[4][40][0].apply(exports,arguments)
+},{"buffer":114,"dup":40}],204:[function(require,module,exports){
+arguments[4][41][0].apply(exports,arguments)
+},{"assert":76,"buffer":114,"dup":41}],205:[function(require,module,exports){
+arguments[4][42][0].apply(exports,arguments)
+},{"./lib":208,"./lib/elliptic":207,"dup":42}],206:[function(require,module,exports){
+(function (Buffer){
+'use strict'
+var toString = Object.prototype.toString
+
+// TypeError
+exports.isArray = function (value, message) {
+  if (!Array.isArray(value)) throw TypeError(message)
+}
+
+exports.isBoolean = function (value, message) {
+  if (toString.call(value) !== '[object Boolean]') throw TypeError(message)
+}
+
+exports.isBuffer = function (value, message) {
+  if (!Buffer.isBuffer(value)) throw TypeError(message)
+}
+
+exports.isFunction = function (value, message) {
+  if (toString.call(value) !== '[object Function]') throw TypeError(message)
+}
+
+exports.isNumber = function (value, message) {
+  if (toString.call(value) !== '[object Number]') throw TypeError(message)
+}
+
+exports.isObject = function (value, message) {
+  if (toString.call(value) !== '[object Object]') throw TypeError(message)
+}
+
+// RangeError
+exports.isBufferLength = function (buffer, length, message) {
+  if (buffer.length !== length) throw RangeError(message)
+}
+
+exports.isBufferLength2 = function (buffer, length1, length2, message) {
+  if (buffer.length !== length1 && buffer.length !== length2) throw RangeError(message)
+}
+
+exports.isLengthGTZero = function (value, message) {
+  if (value.length === 0) throw RangeError(message)
+}
+
+exports.isNumberInInterval = function (number, x, y, message) {
+  if (number <= x || number >= y) throw RangeError(message)
+}
+
+}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
+},{"../../is-buffer/index.js":166}],207:[function(require,module,exports){
+arguments[4][44][0].apply(exports,arguments)
+},{"../messages.json":209,"bn.js":82,"buffer":114,"create-hash":119,"dup":44,"elliptic":134}],208:[function(require,module,exports){
+arguments[4][45][0].apply(exports,arguments)
+},{"./assert":206,"./messages.json":209,"bip66":81,"buffer":114,"dup":45}],209:[function(require,module,exports){
+arguments[4][46][0].apply(exports,arguments)
+},{"dup":46}],210:[function(require,module,exports){
+arguments[4][47][0].apply(exports,arguments)
+},{"buffer":114,"dup":47}],211:[function(require,module,exports){
+arguments[4][48][0].apply(exports,arguments)
+},{"./sha":212,"./sha1":213,"./sha224":214,"./sha256":215,"./sha384":216,"./sha512":217,"dup":48}],212:[function(require,module,exports){
+arguments[4][49][0].apply(exports,arguments)
+},{"./hash":210,"buffer":114,"dup":49,"inherits":165}],213:[function(require,module,exports){
+arguments[4][50][0].apply(exports,arguments)
+},{"./hash":210,"buffer":114,"dup":50,"inherits":165}],214:[function(require,module,exports){
+arguments[4][51][0].apply(exports,arguments)
+},{"./hash":210,"./sha256":215,"buffer":114,"dup":51,"inherits":165}],215:[function(require,module,exports){
+arguments[4][52][0].apply(exports,arguments)
+},{"./hash":210,"buffer":114,"dup":52,"inherits":165}],216:[function(require,module,exports){
+arguments[4][53][0].apply(exports,arguments)
+},{"./hash":210,"./sha512":217,"buffer":114,"dup":53,"inherits":165}],217:[function(require,module,exports){
+arguments[4][54][0].apply(exports,arguments)
+},{"./hash":210,"buffer":114,"dup":54,"inherits":165}],218:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+module.exports = Stream;
+
+var EE = require('events').EventEmitter;
+var inherits = require('inherits');
+
+inherits(Stream, EE);
+Stream.Readable = require('readable-stream/readable.js');
+Stream.Writable = require('readable-stream/writable.js');
+Stream.Duplex = require('readable-stream/duplex.js');
+Stream.Transform = require('readable-stream/transform.js');
+Stream.PassThrough = require('readable-stream/passthrough.js');
+
+// Backwards-compat with node 0.4.x
+Stream.Stream = Stream;
+
+
+
+// old-style streams.  Note that the pipe method (the only relevant
+// part of this class) is overridden in the Readable class.
+
+function Stream() {
+  EE.call(this);
+}
+
+Stream.prototype.pipe = function(dest, options) {
+  var source = this;
+
+  function ondata(chunk) {
+    if (dest.writable) {
+      if (false === dest.write(chunk) && source.pause) {
+        source.pause();
+      }
+    }
+  }
+
+  source.on('data', ondata);
+
+  function ondrain() {
+    if (source.readable && source.resume) {
+      source.resume();
+    }
+  }
+
+  dest.on('drain', ondrain);
+
+  // If the 'end' option is not supplied, dest.end() will be called when
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
+  if (!dest._isStdio && (!options || options.end !== false)) {
+    source.on('end', onend);
+    source.on('close', onclose);
+  }
+
+  var didOnEnd = false;
+  function onend() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.end();
+  }
+
+
+  function onclose() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    if (typeof dest.destroy === 'function') dest.destroy();
+  }
+
+  // don't leave dangling pipes when there are errors.
+  function onerror(er) {
+    cleanup();
+    if (EE.listenerCount(this, 'error') === 0) {
+      throw er; // Unhandled stream error in pipe.
+    }
+  }
+
+  source.on('error', onerror);
+  dest.on('error', onerror);
+
+  // remove all the event listeners that were added.
+  function cleanup() {
+    source.removeListener('data', ondata);
+    dest.removeListener('drain', ondrain);
+
+    source.removeListener('end', onend);
+    source.removeListener('close', onclose);
+
+    source.removeListener('error', onerror);
+    dest.removeListener('error', onerror);
+
+    source.removeListener('end', cleanup);
+    source.removeListener('close', cleanup);
+
+    dest.removeListener('close', cleanup);
+  }
+
+  source.on('end', cleanup);
+  source.on('close', cleanup);
+
+  dest.on('close', cleanup);
+
+  dest.emit('pipe', source);
+
+  // Allow for unix-like usage: A.pipe(B).pipe(C)
+  return dest;
+};
+
+},{"events":155,"inherits":165,"readable-stream/duplex.js":193,"readable-stream/passthrough.js":199,"readable-stream/readable.js":200,"readable-stream/transform.js":201,"readable-stream/writable.js":202}],219:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var Buffer = require('buffer').Buffer;
+
+var isBufferEncoding = Buffer.isEncoding
+  || function(encoding) {
+       switch (encoding && encoding.toLowerCase()) {
+         case 'hex': case 'utf8': case 'utf-8': case 'ascii': case 'binary': case 'base64': case 'ucs2': case 'ucs-2': case 'utf16le': case 'utf-16le': case 'raw': return true;
+         default: return false;
+       }
+     }
+
+
+function assertEncoding(encoding) {
+  if (encoding && !isBufferEncoding(encoding)) {
+    throw new Error('Unknown encoding: ' + encoding);
+  }
+}
+
+// StringDecoder provides an interface for efficiently splitting a series of
+// buffers into a series of JS strings without breaking apart multi-byte
+// characters. CESU-8 is handled as part of the UTF-8 encoding.
+//
+// @TODO Handling all encodings inside a single object makes it very difficult
+// to reason about this code, so it should be split up in the future.
+// @TODO There should be a utf8-strict encoding that rejects invalid UTF-8 code
+// points as used by CESU-8.
+var StringDecoder = exports.StringDecoder = function(encoding) {
+  this.encoding = (encoding || 'utf8').toLowerCase().replace(/[-_]/, '');
+  assertEncoding(encoding);
+  switch (this.encoding) {
+    case 'utf8':
+      // CESU-8 represents each of Surrogate Pair by 3-bytes
+      this.surrogateSize = 3;
+      break;
+    case 'ucs2':
+    case 'utf16le':
+      // UTF-16 represents each of Surrogate Pair by 2-bytes
+      this.surrogateSize = 2;
+      this.detectIncompleteChar = utf16DetectIncompleteChar;
+      break;
+    case 'base64':
+      // Base-64 stores 3 bytes in 4 chars, and pads the remainder.
+      this.surrogateSize = 3;
+      this.detectIncompleteChar = base64DetectIncompleteChar;
+      break;
+    default:
+      this.write = passThroughWrite;
+      return;
+  }
+
+  // Enough space to store all bytes of a single character. UTF-8 needs 4
+  // bytes, but CESU-8 may require up to 6 (3 bytes per surrogate).
+  this.charBuffer = new Buffer(6);
+  // Number of bytes received for the current incomplete multi-byte character.
+  this.charReceived = 0;
+  // Number of bytes expected for the current incomplete multi-byte character.
+  this.charLength = 0;
+};
+
+
+// write decodes the given buffer and returns it as JS string that is
+// guaranteed to not contain any partial multi-byte characters. Any partial
+// character found at the end of the buffer is buffered up, and will be
+// returned when calling write again with the remaining bytes.
+//
+// Note: Converting a Buffer containing an orphan surrogate to a String
+// currently works, but converting a String to a Buffer (via `new Buffer`, or
+// Buffer#write) will replace incomplete surrogates with the unicode
+// replacement character. See https://codereview.chromium.org/121173009/ .
+StringDecoder.prototype.write = function(buffer) {
+  var charStr = '';
+  // if our last write ended with an incomplete multibyte character
+  while (this.charLength) {
+    // determine how many remaining bytes this buffer has to offer for this char
+    var available = (buffer.length >= this.charLength - this.charReceived) ?
+        this.charLength - this.charReceived :
+        buffer.length;
+
+    // add the new bytes to the char buffer
+    buffer.copy(this.charBuffer, this.charReceived, 0, available);
+    this.charReceived += available;
+
+    if (this.charReceived < this.charLength) {
+      // still not enough chars in this buffer? wait for more ...
+      return '';
+    }
+
+    // remove bytes belonging to the current character from the buffer
+    buffer = buffer.slice(available, buffer.length);
+
+    // get the character that was split
+    charStr = this.charBuffer.slice(0, this.charLength).toString(this.encoding);
+
+    // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
+    var charCode = charStr.charCodeAt(charStr.length - 1);
+    if (charCode >= 0xD800 && charCode <= 0xDBFF) {
+      this.charLength += this.surrogateSize;
+      charStr = '';
+      continue;
+    }
+    this.charReceived = this.charLength = 0;
+
+    // if there are no more bytes in this buffer, just emit our char
+    if (buffer.length === 0) {
+      return charStr;
+    }
+    break;
+  }
+
+  // determine and set charLength / charReceived
+  this.detectIncompleteChar(buffer);
+
+  var end = buffer.length;
+  if (this.charLength) {
+    // buffer the incomplete character bytes we got
+    buffer.copy(this.charBuffer, 0, buffer.length - this.charReceived, end);
+    end -= this.charReceived;
+  }
+
+  charStr += buffer.toString(this.encoding, 0, end);
+
+  var end = charStr.length - 1;
+  var charCode = charStr.charCodeAt(end);
+  // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
+  if (charCode >= 0xD800 && charCode <= 0xDBFF) {
+    var size = this.surrogateSize;
+    this.charLength += size;
+    this.charReceived += size;
+    this.charBuffer.copy(this.charBuffer, size, 0, size);
+    buffer.copy(this.charBuffer, 0, 0, size);
+    return charStr.substring(0, end);
+  }
+
+  // or just emit the charStr
+  return charStr;
+};
+
+// detectIncompleteChar determines if there is an incomplete UTF-8 character at
+// the end of the given buffer. If so, it sets this.charLength to the byte
+// length that character, and sets this.charReceived to the number of bytes
+// that are available for this character.
+StringDecoder.prototype.detectIncompleteChar = function(buffer) {
+  // determine how many bytes we have to check at the end of this buffer
+  var i = (buffer.length >= 3) ? 3 : buffer.length;
+
+  // Figure out if one of the last i bytes of our buffer announces an
+  // incomplete char.
+  for (; i > 0; i--) {
+    var c = buffer[buffer.length - i];
+
+    // See http://en.wikipedia.org/wiki/UTF-8#Description
+
+    // 110XXXXX
+    if (i == 1 && c >> 5 == 0x06) {
+      this.charLength = 2;
+      break;
+    }
+
+    // 1110XXXX
+    if (i <= 2 && c >> 4 == 0x0E) {
+      this.charLength = 3;
+      break;
+    }
+
+    // 11110XXX
+    if (i <= 3 && c >> 3 == 0x1E) {
+      this.charLength = 4;
+      break;
+    }
+  }
+  this.charReceived = i;
+};
+
+StringDecoder.prototype.end = function(buffer) {
+  var res = '';
+  if (buffer && buffer.length)
+    res = this.write(buffer);
+
+  if (this.charReceived) {
+    var cr = this.charReceived;
+    var buf = this.charBuffer;
+    var enc = this.encoding;
+    res += buf.slice(0, cr).toString(enc);
+  }
+
+  return res;
+};
+
+function passThroughWrite(buffer) {
+  return buffer.toString(this.encoding);
+}
+
+function utf16DetectIncompleteChar(buffer) {
+  this.charReceived = buffer.length % 2;
+  this.charLength = this.charReceived ? 2 : 0;
+}
+
+function base64DetectIncompleteChar(buffer) {
+  this.charReceived = buffer.length % 3;
+  this.charLength = this.charReceived ? 3 : 0;
+}
+
+},{"buffer":114}],220:[function(require,module,exports){
+(function (global){
+
+/**
+ * Module exports.
+ */
+
+module.exports = deprecate;
+
+/**
+ * Mark that a method should not be used.
+ * Returns a modified function which warns once by default.
+ *
+ * If `localStorage.noDeprecation = true` is set, then it is a no-op.
+ *
+ * If `localStorage.throwDeprecation = true` is set, then deprecated functions
+ * will throw an Error when invoked.
+ *
+ * If `localStorage.traceDeprecation = true` is set, then deprecated functions
+ * will invoke `console.trace()` instead of `console.error()`.
+ *
+ * @param {Function} fn - the function to deprecate
+ * @param {String} msg - the string to print to the console when `fn` is invoked
+ * @returns {Function} a new "deprecated" version of `fn`
+ * @api public
+ */
+
+function deprecate (fn, msg) {
+  if (config('noDeprecation')) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (config('throwDeprecation')) {
+        throw new Error(msg);
+      } else if (config('traceDeprecation')) {
+        console.trace(msg);
+      } else {
+        console.warn(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+}
+
+/**
+ * Checks `localStorage` for boolean values for the given `name`.
+ *
+ * @param {String} name
+ * @returns {Boolean}
+ * @api private
+ */
+
+function config (name) {
+  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
+  try {
+    if (!global.localStorage) return false;
+  } catch (_) {
+    return false;
+  }
+  var val = global.localStorage[name];
+  if (null == val) return false;
+  return String(val).toLowerCase() === 'true';
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],221:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],222:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":221,"_process":185,"inherits":165}],223:[function(require,module,exports){
+var indexOf = require('indexof');
+
+var Object_keys = function (obj) {
+    if (Object.keys) return Object.keys(obj)
+    else {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    }
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
+};
+
+var defineProp = (function() {
+    try {
+        Object.defineProperty({}, '_', {});
+        return function(obj, name, value) {
+            Object.defineProperty(obj, name, {
+                writable: true,
+                enumerable: false,
+                configurable: true,
+                value: value
+            })
+        };
+    } catch(e) {
+        return function(obj, name, value) {
+            obj[name] = value;
+        };
+    }
+}());
+
+var globals = ['Array', 'Boolean', 'Date', 'Error', 'EvalError', 'Function',
+'Infinity', 'JSON', 'Math', 'NaN', 'Number', 'Object', 'RangeError',
+'ReferenceError', 'RegExp', 'String', 'SyntaxError', 'TypeError', 'URIError',
+'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape',
+'eval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'undefined', 'unescape'];
+
+function Context() {}
+Context.prototype = {};
+
+var Script = exports.Script = function NodeScript (code) {
+    if (!(this instanceof Script)) return new Script(code);
+    this.code = code;
+};
+
+Script.prototype.runInContext = function (context) {
+    if (!(context instanceof Context)) {
+        throw new TypeError("needs a 'context' argument.");
+    }
+    
+    var iframe = document.createElement('iframe');
+    if (!iframe.style) iframe.style = {};
+    iframe.style.display = 'none';
+    
+    document.body.appendChild(iframe);
+    
+    var win = iframe.contentWindow;
+    var wEval = win.eval, wExecScript = win.execScript;
+
+    if (!wEval && wExecScript) {
+        // win.eval() magically appears when this is called in IE:
+        wExecScript.call(win, 'null');
+        wEval = win.eval;
+    }
+    
+    forEach(Object_keys(context), function (key) {
+        win[key] = context[key];
+    });
+    forEach(globals, function (key) {
+        if (context[key]) {
+            win[key] = context[key];
+        }
+    });
+    
+    var winKeys = Object_keys(win);
+
+    var res = wEval.call(win, this.code);
+    
+    forEach(Object_keys(win), function (key) {
+        // Avoid copying circular objects like `top` and `window` by only
+        // updating existing context properties or new properties in the `win`
+        // that was only introduced after the eval.
+        if (key in context || indexOf(winKeys, key) === -1) {
+            context[key] = win[key];
+        }
+    });
+
+    forEach(globals, function (key) {
+        if (!(key in context)) {
+            defineProp(context, key, win[key]);
+        }
+    });
+    
+    document.body.removeChild(iframe);
+    
+    return res;
+};
+
+Script.prototype.runInThisContext = function () {
+    return eval(this.code); // maybe...
+};
+
+Script.prototype.runInNewContext = function (context) {
+    var ctx = Script.createContext(context);
+    var res = this.runInContext(ctx);
+
+    forEach(Object_keys(ctx), function (key) {
+        context[key] = ctx[key];
+    });
+
+    return res;
+};
+
+forEach(Object_keys(Script.prototype), function (name) {
+    exports[name] = Script[name] = function (code) {
+        var s = Script(code);
+        return s[name].apply(s, [].slice.call(arguments, 1));
+    };
+});
+
+exports.createScript = function (code) {
+    return exports.Script(code);
+};
+
+exports.createContext = Script.createContext = function (context) {
+    var copy = new Context();
+    if(typeof context === 'object') {
+        forEach(Object_keys(context), function (key) {
+            copy[key] = context[key];
+        });
+    }
+    return copy;
+};
+
+},{"indexof":164}],224:[function(require,module,exports){
+(function (process,Buffer){
+/**
+ * Client-side accounts
+ */
+
+"use strict";
+
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
+var BigNumber = require("bignumber.js");
+var EthTx = require("ethereumjs-tx");
+var keys = require("keythereum");
+var uuid = require("node-uuid");
+var clone = require("clone");
+var locks = require("locks");
+var request = (NODE_JS) ? require("request") : require("browser-request");
+var abi = require("augur-abi");
+var errors = require("augur-contracts").errors;
+var constants = require("./constants");
+var utils = require("./utilities");
+
+request = request.defaults({timeout: 120000});
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+keys.constants.pbkdf2.c = constants.ROUNDS;
+keys.constants.scrypt.n = constants.ROUNDS;
+
+module.exports = function () {
+
+    var augur = this;
+
+    return {
+
+        // The account object is set when logged in
+        account: {},
+
+        // free (testnet) ether for new accounts on registration
+        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
+            if (registeredAddress === undefined || registeredAddress === null ||
+                registeredAddress.constructor !== String) {
+                return onFailed(registeredAddress);
+            }
+            var url = constants.FAUCET + abi.format_address(registeredAddress);
+            request(url, function (err, response, body) {
+                if (err) return onFailed(err);
+                if (response.statusCode !== 200) {
+                    return onFailed(response.statusCode);
+                }
+                if (augur.rpc.debug.broadcast) {
+                    console.debug("Sent ether to:", registeredAddress);
+                }
+                augur.fundNewAccount({
+                    branch: branch || constants.DEFAULT_BRANCH_ID,
+                    onSent: onSent,
+                    onSuccess: onSuccess,
+                    onFailed: onFailed,
+                    onConfirmed: onConfirmed
+                });
+            });
+        },
+
+        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
+            onSent = onSent || utils.noop;
+            onSuccess = onSuccess || utils.noop;
+            onFailed = onFailed || utils.noop;
+            augur.rpc.sendEther({
+                to: registeredAddress,
+                value: amount,
+                from: fromAddress,
+                onSent: utils.noop,
+                onSuccess: function (res) {
+                    augur.fundNewAccount({
+                        branch: branch || constants.DEFAULT_BRANCH_ID,
+                        onSent: onSent,
+                        onSuccess: onSuccess,
+                        onFailed: onFailed,
+                        onConfirmed: onConfirmed
+                    });
+                },
+                onFailed: onFailed
+            });
+        },
+
+        changeAccountName: function (newName, cb) {
+            cb = cb || utils.pass;
+
+            // now set vars based on what is currently in place
+            var keystore = this.account.keystore;
+            var privateKey = this.account.privateKey;
+
+            // preparing to redo the secureLoginID to use the new name
+            var unsecureLoginIDObject = {
+                name: newName,
+                keystore: keystore
+            };
+            var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+            // web.account object is set to use new values
+            this.account = {
+                name: newName,
+                secureLoginID: secureLoginID,
+                privateKey: privateKey,
+                address: keystore.address,
+                keystore: keystore
+            };
+
+            // send back the new updated loginAccount object.
+            return cb({
+                name: newName,
+                secureLoginID: secureLoginID,
+                keystore: keystore,
+                address: keystore.address
+            });
+        },
+
+        register: function (name, password, cb) {
+            var self = this;
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
+            if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
+
+            // generate ECDSA private key and initialization vector
+            keys.create(null, function (plain) {
+                if (plain.error) return cb(plain);
+
+                // derive secret key from password
+                keys.deriveKey(password, plain.salt, null, function (derivedKey) {
+                    if (derivedKey.error) return cb(derivedKey);
+                    if (!Buffer.isBuffer(derivedKey)) {
+                        derivedKey = new Buffer(derivedKey, "hex");
+                    }
+                    var encryptedPrivateKey = new Buffer(keys.encrypt(
+                        plain.privateKey,
+                        derivedKey.slice(0, 16),
+                        plain.iv
+                    ), "base64").toString("hex");
+
+                    // encrypt private key using derived key and IV, then
+                    // store encrypted key & IV, indexed by handle
+                    var keystore = {
+                        address: abi.format_address(keys.privateKeyToAddress(plain.privateKey)),
+                        crypto: {
+                            cipher: keys.constants.cipher,
+                            ciphertext: encryptedPrivateKey,
+                            cipherparams: {iv: plain.iv.toString("hex")},
+                            kdf: constants.KDF,
+                            kdfparams: {
+                                c: keys.constants[constants.KDF].c,
+                                dklen: keys.constants[constants.KDF].dklen,
+                                prf: keys.constants[constants.KDF].prf,
+                                salt: plain.salt.toString("hex")
+                            },
+                            mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+                        },
+                        version: 3,
+                        id: uuid.v4()
+                    };
+                    var unsecureLoginIDObject = {name: name, keystore: keystore};
+                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+
+                    // while logged in, web.account object is set
+                    self.account = {
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        privateKey: plain.privateKey,
+                        address: keystore.address,
+                        keystore: keystore,
+                        derivedKey: derivedKey
+                    };
+
+                    return cb({
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        keystore: keystore,
+                        address: keystore.address
+                    });
+                }); // deriveKey
+            }); // create
+        },
+
+        loadLocalLoginAccount: function (localAccount, cb) {
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
+            var privateKey = localAccount.privateKey;
+            var derivedKey = localAccount.derivedKey;
+            if (privateKey && !Buffer.isBuffer(privateKey)) {
+                privateKey = new Buffer(privateKey, "hex");
+            }
+            if (derivedKey && !Buffer.isBuffer(derivedKey)) {
+                derivedKey = new Buffer(derivedKey, "hex");
+            }
+            this.account = {
+                name: localAccount.name,
+                secureLoginID: localAccount.secureLoginID,
+                privateKey: privateKey,
+                address: localAccount.keystore.address,
+                keystore: localAccount.keystore,
+                derivedKey: derivedKey
+            };
+            return cb(clone(this.account));
+        },
+
+        login: function (secureLoginID, password, cb) {
+            var self = this;
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
+
+            // blank password
+            if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+            var unencryptedLoginIDObject;
+            try {
+                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
+            } catch (err) {
+                return cb(errors.BAD_CREDENTIALS);
+            }
+            var keystore = unencryptedLoginIDObject.keystore;
+            var name = unencryptedLoginIDObject.name;
+
+            // derive secret key from password
+            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+                if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
+
+                // verify that message authentication codes match
+                var storedKey = keystore.crypto.ciphertext;
+                if (keys.getMAC(derivedKey, storedKey) !== keystore.crypto.mac.toString("hex")) {
+                    return cb(errors.BAD_CREDENTIALS);
+                }
+
+                if (!Buffer.isBuffer(derivedKey)) {
+                    derivedKey = new Buffer(derivedKey, "hex");
+                }
+
+                // decrypt stored private key using secret key
+                try {
+                    var privateKey = new Buffer(keys.decrypt(
+                        storedKey,
+                        derivedKey.slice(0, 16),
+                        keystore.crypto.cipherparams.iv
+                    ), "hex");
+
+                    // while logged in, web.account object is set
+                    self.account = {
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        privateKey: privateKey,
+                        address: keystore.address,
+                        keystore: keystore,
+                        derivedKey: derivedKey
+                    };
+                    return cb(clone(self.account));
+
+                // decryption failure: bad password
+                } catch (exc) {
+                    var e = clone(errors.BAD_CREDENTIALS);
+                    e.bubble = exc;
+                    return cb(e);
+                }
+            }); // deriveKey
+        },
+
+        logout: function () {
+            this.account = {};
+            augur.rpc.clear();
+        },
+
+        submitTx: function (packaged, cb) {
+            var self = this;
+            var mutex = locks.createMutex();
+            mutex.lock(function () {
+                for (var rawTxHash in augur.rpc.rawTxs) {
+                    if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
+                    if (augur.rpc.rawTxs[rawTxHash].nonce === packaged.nonce) {
+                        ++packaged.nonce;
+                        break;
+                    }
+                }
+                mutex.unlock();
+                if (augur.rpc.debug.broadcast) {
+                    console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
+                }
+                var etx = new EthTx(packaged);
+
+                // sign, validate, and send the transaction
+                etx.sign(self.account.privateKey);
+
+                // calculate the cost (in ether) of this transaction
+                // (note: this is just an upper bound on the cost, set by the gasLimit!)
+                var cost = etx.getUpfrontCost().toString();
+
+                // transaction validation
+                if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
+
+                // send the raw signed transaction to geth
+                augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
+                    if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
+                    if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
+                    if (res.error) {
+                        if (res.message.indexOf("rlp") > -1) {
+                            var err = clone(errors.RLP_ENCODING_ERROR);
+                            err.bubble = res;
+                            err.packaged = packaged;
+                            return cb(err);
+                        } else if (res.message.indexOf("Nonce too low") > -1) {
+                            if (augur.rpc.debug.broadcast) {
+                                console.debug("Bad nonce, retrying:", res.message, packaged);
+                            }
+                            delete packaged.nonce;
+                            return self.getTxNonce(packaged, cb);
+                        }
+                        return cb(res);
+                    }
+
+                    // res is the txhash if nothing failed immediately
+                    // (even if the tx is nulled, still index the hash)
+                    augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
+
+                    // nonce ok, execute callback
+                    return cb(res);
+                });
+            });
+        },
+
+        // get nonce: number of transactions
+        getTxNonce: function (packaged, cb) {
+            var self = this;
+            if (packaged.nonce) return this.submitTx(packaged, cb);
+            augur.rpc.pendingTxCount(self.account.address, function (txCount) {
+                if (txCount && !txCount.error && !(txCount instanceof Error)) {
+                    packaged.nonce = parseInt(txCount, 16);
+                }
+                self.submitTx(packaged, cb);
+            });
+        },
+
+        invoke: function (payload, cb) {
+            var self = this;
+
+            // if this is just a call, use ethrpc's regular invoke method
+            if (!payload.send) return augur.rpc.fire(payload, cb);
+
+            cb = cb || utils.pass;
+            if (!this.account.address || !this.account.privateKey) {
+                return cb(errors.NOT_LOGGED_IN);
+            }
+            if (!payload || payload.constructor !== Object) {
+                return cb(errors.TRANSACTION_FAILED);
+            }
+
+            // parse and serialize transaction parameters
+            var packaged = augur.rpc.packageRequest(payload);
+            packaged.from = this.account.address;
+            packaged.nonce = payload.nonce || 0;
+            packaged.value = payload.value || "0x0";
+            packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
+            if (augur.rpc.debug.broadcast) {
+                console.log("[augur.js] payload:", JSON.stringify(payload, null, 2));
+            }
+            if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
+                packaged.gasPrice = payload.gasPrice;
+                return this.getTxNonce(packaged, cb);
+            }
+            augur.rpc.getGasPrice(function (gasPrice) {
+                if (!gasPrice || gasPrice.error) {
+                    return cb(errors.TRANSACTION_FAILED);
+                }
+                packaged.gasPrice = gasPrice;
+                self.getTxNonce(packaged, cb);
+            });
+        }
+
+    };
+};
+
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"./constants":226,"./utilities":251,"_process":185,"augur-abi":1,"augur-contracts":58,"bignumber.js":80,"browser-request":84,"buffer":114,"clone":116,"ethereumjs-tx":153,"keythereum":260,"locks":170,"node-uuid":177,"request":85}],225:[function(require,module,exports){
+/**
+ * Batch interface:
+ * var b = augur.createBatch();
+ * b.add("getCashBalance", [augur.coinbase], callback);
+ * b.add("getRepBalance", [augur.constants.DEFAULT_BRANCH_ID, augur.coinbase], callback);
+ * b.execute();
+ */
+
+"use strict";
+
+var clone = require("clone");
+
+var Batch = function (tx, rpc) {
+    this.tx = tx;
+    this.rpc = rpc;
+    this.txlist = [];
+};
+
+Batch.prototype.add = function (contract, method, params, callback) {
+    if (method) {
+        var tx = clone(this.tx[contract][method]);
+        tx.params = params;
+        if (callback) tx.callback = callback;
+        this.txlist.push(tx);
+    }
+};
+
+Batch.prototype.execute = function () {
+    this.rpc.batch(this.txlist, true);
+};
+
+module.exports = function () {
+    return new Batch(this.tx, this.rpc);
+};
+
+},{"clone":116}],226:[function(require,module,exports){
+/** 
+ * augur.js constants
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+var ONE = new BigNumber(10).toPower(18); 
+
+module.exports = {
+    ZERO: new BigNumber(0),
+    ONE: ONE,
+    ETHER: ONE,
+
+    DEFAULT_BRANCH_ID: "0xf69b5",
+    BID: 1,
+    ASK: 2,
+
+    // fixed-point indeterminate: 1.5 * 10^18
+    INDETERMINATE: "0x14d1120d7b160000",
+    INDETERMINATE_PLUS_ONE: "0x14d1120d7b160001",
+
+    // default gas: 3.135M
+    DEFAULT_GAS: 3135000,
+
+    // gas needed for trade transactions (values from pyethereum tester)
+    TRADE_GAS: [
+        {sell: 756374, buy: 787421}, // first trade_id only
+        {sell: 615817, buy: 661894} // each additional trade_id
+    ],
+
+    // expected block interval
+    SECONDS_PER_BLOCK: 12,
+
+    // keythereum crypto parameters
+    KDF: "pbkdf2",
+    SCRYPT: "scrypt",
+    ROUNDS: 65536,
+    KEYSIZE: 32,
+    IVSIZE: 16,
+
+    // cipher used to encrypt/decrypt reports
+    REPORT_CIPHER: "aes-256-ctr",
+
+    // Morden testnet faucet endpoint
+    FAUCET: "https://faucet.augur.net/faucet/"
+};
+
+},{"augur-abi":1,"bignumber.js":80}],227:[function(require,module,exports){
+/**
+ * Filters / logging
+ */
+
+"use strict";
+
+var async = require("async");
+var abi = require("augur-abi");
+var augur_contracts = require("augur-contracts");
+var utils = require("./utilities");
+var constants = require("./constants");
+var errors = augur_contracts.errors;
+
+// non-event filters
+var filters = {
+    block: {id: null, heartbeat: null},
+    contracts: {id: null, heartbeat: null}
+};
+
+// event filters
+var events_api = new augur_contracts.Tx().events;
+for (var label in events_api) {
+    if (!events_api.hasOwnProperty(label)) continue;
+    filters[label] = {id: null, heartbeat: null};
+}
+
+module.exports = function () {
+
+    var augur = this;
+
+    return {
+
+        PULSE: constants.SECONDS_PER_BLOCK * 500,
+
+        filter: filters,
+
+        parse_block_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i]) onMessage(message[i].hash);
+                    }
+                } else {
+                    if (message.hash) onMessage(message.hash);
+                }
+            }
+        },
+        parse_contracts_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    onMessage(message[i]);
+                }
+            }
+        },
+        parse_log_add_tx_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    onMessage(message[i]);
+                }
+            }
+        },
+        parse_log_cancel_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    onMessage(message[i]);
+                }
+            }
+        },
+        parse_thru_message: function (message, onMessage) {
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    if (onMessage) onMessage(message[i]);
+                }
+            }
+        },
+        parse_penalize_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    onMessage(message[i]);
+                }
+            }
+        },
+        parse_marketCreated_message: function (message, onMessage) {
+            if (!message) return onMessage(message);
+            if (message.constructor === Object && message.data) {
+                return onMessage(message);
+            }
+            if (message.constructor === Array && message.length) {
+                for (var i = 0, len = message.length; i < len; ++i) {
+                    if (message[i]) onMessage(message[i].data);
+                }
+            }
+        },
+        parse_tradingFeeUpdated_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    var data_array = augur.rpc.unmarshal(message[i].data);
+                    if (data_array && data_array.constructor === Array && 
+                        data_array.length > 1) {
+                        onMessage({
+                            marketId: data_array[0],
+                            tradingFee: abi.unfix(data_array[1], "string")
+                        });
+                    }
+                }
+            }
+        },
+        parse_approval_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    onMessage(message[i]);
+                }
+            }
+        },
+        parse_transfer_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i]) {
+                    if (message[i].constructor === Object && message[i].data) {
+                        message[i].data = augur.rpc.unmarshal(message[i].data);
+                    }
+                    onMessage(message[i]);
+                }
+            }
+        },
+        parse_log_fill_tx_message: function (message, onMessage) {
+            if (!message || !message.length || message.constructor !== Array) {
+                return onMessage(message);
+            }
+            for (var i = 0, len = message.length; i < len; ++i) {
+                if (message[i] && message[i].topics && message[i].topics.length === 4) {
+                    var data_array = augur.rpc.unmarshal(message[i].data);
+                    if (data_array && data_array.constructor === Array && data_array.length) {
+                        onMessage({
+                            marketId: message[i].topics[1],
+                            type: (parseInt(data_array[0], 16) === 1) ? "buy" : "sell",
+                            taker: abi.format_address(message[i].topics[2]),
+                            maker: abi.format_address(message[i].topics[3]),
+                            price: abi.unfix(data_array[1], "string"),
+                            shares: abi.unfix(data_array[2], "string"),
+                            trade_id: data_array[3],
+                            outcome: parseInt(data_array[4], 16),
+                            timestamp: parseInt(data_array[5], 16),
+                            blockNumber: parseInt(message[i].blockNumber, 16)
+                        });
+                    }
+                }
+            }
+        },
+
+        poll_filter: function (label, onMessage) {
+            var callback, self = this;
+            if (this.filter[label]) {
+                switch (label) {
+                case "log_fill_tx":
+                    callback = function (msg) {
+                        self.parse_log_fill_tx_message(msg, onMessage);
+                    };
+                    break;
+                case "contracts":
+                    callback = function (msg) {
+                        self.parse_contracts_message(msg, onMessage);
+                    };
+                    break;
+                case "block":
+                    callback = function (msg) {
+                        self.parse_block_message(msg, onMessage);
+                    };
+                    break;
+                case "tradingFeeUpdated":
+                    callback = function (msg) {
+                        self.parse_tradingFeeUpdated_message(msg, onMessage);
+                    };
+                    break;
+                case "marketCreated":
+                    callback = function (msg) {
+                        self.parse_marketCreated_message(msg, onMessage);
+                    };
+                    break;
+                default:
+                    callback = onMessage;
+                }
+                augur.rpc.getFilterChanges(this.filter[label].id, callback);
+            }
+        },
+
+        // clear/uninstall filters
+        clear_filter: function (label, cb) {
+            if (utils.is_function(cb)) {
+                var self = this;
+                this.unsubscribe(this.filter[label].id, function (uninst) {
+                    self.filter[label].id = null;
+                    cb(uninst);
+                });
+            } else {
+                var uninst = this.unsubscribe(this.filter[label].id);
+                this.filter[label].id = null;
+                return uninst;
+            }
+        },
+
+        // set up filters
+        setup_event_filter: function (contract, label, f) {
+            return this.subscribeLogs({
+                address: augur.contracts[contract],
+                topics: [augur.api.events[label].signature]
+            }, f);
+        },
+        setup_contracts_filter: function (f) {
+            var self = this;
+            var contract_list = [];
+            for (var c in augur.contracts) {
+                if (!augur.contracts.hasOwnProperty(c)) continue;
+                contract_list.push(augur.contracts[c]);
+            }
+            var params = {
+                address: contract_list,
+                fromBlock: "0x01",
+                toBlock: "latest"
+            };
+            if (!utils.is_function(f)) {
+                this.filter.contracts = {
+                    id: this.subscribeLogs(params),
+                    heartbeat: null
+                };
+                return this.filter.contracts;
+            }
+            this.subscribeLogs(params, function (filter_id) {
+                self.filter.contracts = {
+                    id: filter_id,
+                    heartbeat: null
+                };
+                f(self.filter.contracts);
+            });
+        },
+        setup_block_filter: function (f) {
+            var self = this;
+            if (!utils.is_function(f)) {
+                this.filter.block = {
+                    id: this.subscribeNewBlocks(),
+                    heartbeat: null
+                };
+                return this.filter.block;
+            }
+            this.subscribeNewBlocks(function (filter_id) {
+                self.filter.block = {id: filter_id, heartbeat: null};
+                f(self.filter.block);
+            });
+        },
+
+        // start listeners
+        start_event_listener: function (label, cb) {
+            var self = this;
+            var contract = augur.api.events[label].contract;
+            if (this.filter[label] && this.filter[label].id) {
+                if (!utils.is_function(cb)) return this.filter[label].id;
+                return cb(this.filter[label].id);
+            }
+            if (!utils.is_function(cb)) {
+                var filter_id = this.setup_event_filter(contract, label);
+                if (!filter_id || filter_id === "0x") {
+                    return errors.FILTER_NOT_CREATED;
+                }
+                if (filter_id.error) return filter_id;
+                self.filter[label] = {
+                    id: filter_id,
+                    heartbeat: null
+                };
+                return filter_id;
+            }
+            this.setup_event_filter(contract, label, function (filter_id) {
+                if (!filter_id || filter_id === "0x") {
+                    return cb(errors.FILTER_NOT_CREATED);
+                }
+                if (filter_id.error) return cb(filter_id);
+                self.filter[label] = {
+                    id: filter_id,
+                    heartbeat: null
+                };
+                cb(filter_id);
+            });
+        },
+        start_contracts_listener: function (cb) {
+            if (this.filter.contracts.id === null) {
+                if (!utils.is_function(cb)) {
+                    return this.setup_contracts_filter();
+                }
+                this.setup_contracts_filter(cb);
+            }
+        },
+        start_block_listener: function (cb) {
+            if (this.filter.block.id === null) {
+                if (!utils.is_function(cb)) {
+                    return this.setup_block_filter();
+                }
+                this.setup_block_filter(cb);
+            }
+        },
+
+        // start/stop polling
+        pacemaker: function (cb) {
+            var self = this;
+            if (!cb || cb.constructor !== Object) return;
+            // if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                async.forEachOf(this.filter, function (filter, label, next) {
+                    if (utils.is_function(cb[label])) {
+                        self.poll_filter(label, cb[label]);
+                        self.filter[label].heartbeat = setInterval(function () {
+                            self.poll_filter(label, cb[label]);
+                        }, self.PULSE);
+                    }
+                    next();
+                });
+            // } else {
+            //     async.forEachOf(this.filter, function (filter, label, next) {
+            //         if (utils.is_function(cb[label])) {
+            //             var callback;
+            //             switch (label) {
+            //             case "block":
+            //                 callback = cb.block;
+            //                 cb.block = function (block) {
+            //                     self.parse_block_message(block, callback);
+            //                 };
+            //                 break;
+            //             case "contracts":
+            //                 callback = cb.contracts;
+            //                 cb.contracts = function (msg) {
+            //                     self.parse_contracts_message(msg, callback);
+            //                 };
+            //                 break;
+            //             case "log_fill_tx":
+            //                 callback = cb.log_fill_tx;
+            //                 cb.log_fill_tx = function (msg) {
+            //                     self.parse_log_fill_tx_message(msg, callback);
+            //                 };
+            //                 break;
+            //             case "marketCreated":
+            //                 callback = cb.marketCreated;
+            //                 cb.marketCreated = function (msg) {
+            //                     self.parse_marketCreated_message(msg, callback);
+            //                 };
+            //                 break;
+            //             case "tradingFeeUpdated":
+            //                 callback = cb.tradingFeeUpdated;
+            //                 cb.tradingFeeUpdated = function (msg) {
+            //                     self.parse_tradingFeeUpdated_message(msg, callback);
+            //                 };
+            //                 break;
+            //             }
+            //             augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
+            //             next();
+            //         }
+            //     });
+            // }
+        },
+
+        listen: function (cb, setup_complete) {
+            var self = this;
+
+            function listenHelper(callback, label, next) {
+                switch (label) {
+                    case "contracts":
+                        self.start_contracts_listener(function () {
+                            self.pacemaker({contracts: callback});
+                            next(null, [label, self.filter[label].id]);
+                        });
+                        break;
+                    case "block":
+                        self.start_block_listener(function () {
+                            self.pacemaker({block: callback});
+                            next(null, [label, self.filter[label].id]);
+                        });
+                        break;
+                    default:
+                        self.start_event_listener(label, function () {
+                            var p = {};
+                            p[label] = callback;
+                            self.pacemaker(p);
+                            next(null, [label, self.filter[label].id]);
+                        });
+                }
+            }
+
+            // if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
+                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
+                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
+            // } else {
+            //     this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
+            //     this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
+            //     this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
+            // }
+            async.forEachOfSeries(cb, function (callback, label, next) {
+
+                // skip invalid labels, undefined callbacks
+                if (!self.filter[label] || !callback) {
+                    next(null, null);
+                } else if (self.filter[label].id === null && callback) {
+                    listenHelper(callback, label, next);
+
+                // callback already registered. uninstall, and reinstall new callback.
+                } else if (self.filter[label].id && callback) {
+                    self.clear_filter(label, function () {
+                        listenHelper(callback, label, next);
+                    });
+                }
+            }, function (err) {
+                if (err) console.error(err);
+                if (utils.is_function(setup_complete)) setup_complete(self.filter);
+            });
+        },
+
+        all_filters_removed: function () {
+            var f, isRemoved = true;
+            for (var label in this.filter) {
+                if (!this.filter.hasOwnProperty(label)) continue;
+                f = this.filter[label];
+                if (f.heartbeat !== null || f.id !== null) {
+                    isRemoved = false;
+                    break;
+                }
+            }
+            return isRemoved;
+        },
+
+        ignore: function (uninstall, cb, complete) {
+            var label, self = this;
+
+            function cleared(uninst, callback, complete) {
+                callback(uninst);
+                if (uninst && uninst.constructor === Object) {
+                    return complete(uninst);
+                }
+                if (self.all_filters_removed()) complete();
+            }
+
+            if (!complete && utils.is_function(cb)) {
+                complete = cb;
+                cb = null;
+            }
+            if (uninstall && uninstall.constructor === Object) {
+                cb = {};
+                for (label in this.filter) {
+                    if (!this.filter.hasOwnProperty(label)) continue;
+                    if (utils.is_function(uninstall[label])) {
+                        cb[label] = uninstall[label];
+                    }
+                }
+                uninstall = false;
+            }
+            cb = cb || {}; // individual filter removal callbacks
+            for (label in this.filter) {
+                if (!this.filter.hasOwnProperty(label)) continue;
+                cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
+            }
+            complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
+            for (label in this.filter) {
+                if (!this.filter.hasOwnProperty(label)) continue;
+                if (this.filter[label].heartbeat !== null) {
+                    clearInterval(this.filter[label].heartbeat);
+                    this.filter[label].heartbeat = null;
+                    if (!uninstall && utils.is_function(cb[label])) {
+                        cb[label]();
+                        if (this.all_filters_removed()) complete();
+                    }
+                }
+            }
+            if (uninstall) {
+                async.forEachOfSeries(this.filter, function (filter, label, next) {
+                    if (filter.id === null) return next();
+                    self.clear_filter(label, function (uninst) {
+                        cleared(uninst, cb[label], complete);
+                        next();
+                    });
+                });
+            }
+        }
+    };
+};
+
+},{"./constants":226,"./utilities":251,"async":77,"augur-abi":1,"augur-contracts":58}],228:[function(require,module,exports){
+/**
+ * generateOrderBook: convenience method for generating an initial order book
+ * for a newly created market. generateOrderBook calculates the number of
+ * orders to create, as well as the spacing between orders.
+ *
+ * @param {Object} p
+ *     market: market ID
+ *     liquidity: initial cash to be placed on the order book
+ *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
+ *     startingQuantity: number of shares in each order
+ *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
+ *     priceWidth: spread between best bid/offer
+ *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
+ * @param {Object} cb
+ *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
+ *     (note: callbacks can also be properties of the p object)
+ */
+
+"use strict";
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var constants = require("./constants");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = function (p, cb) {
+    var self = this;
+    var liquidity = abi.bignum(p.liquidity);
+    var numOutcomes = p.initialFairPrices.length;
+    var initialFairPrices = new Array(numOutcomes);
+    for (var i = 0; i < numOutcomes; ++i) {
+        initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
+    }
+    var startingQuantity = abi.bignum(p.startingQuantity);
+    var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
+    var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
+    cb = cb || {};
+    var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
+    var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
+    var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
+    var onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
+    var onFailed = cb.onFailed || p.onFailed || this.utils.noop;
+    this.getMarketInfo(p.market, function (marketInfo) {
+        var minValue, maxValue;
+        if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
+        if (marketInfo.numOutcomes !== numOutcomes) {
+            return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
+        }
+        if (marketInfo.type === "scalar") {
+            minValue = abi.bignum(marketInfo.events[0].minValue);
+            maxValue = abi.bignum(marketInfo.events[0].maxValue);
+        } else {
+            minValue = new BigNumber(0);
+            maxValue = new BigNumber(1);
+        }
+        var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+        if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
+            return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
+        }
+        var buyPrices = new Array(numOutcomes);
+        var sellPrices = new Array(numOutcomes);
+        var numSellOrders = new Array(numOutcomes);
+        var numBuyOrders = new Array(numOutcomes);
+        var shares = new BigNumber(0);
+        var i, j, buyPrice, sellPrice, outcomeShares;
+        for (i = 0; i < numOutcomes; ++i) {
+            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
+                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+                console.log("priceDepth:", priceDepth.toFixed());
+                console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+                console.log("minValue:", minValue.toFixed());
+                console.log("maxValue:", maxValue.toFixed());
+                console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+                console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+                console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+                console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+                return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
+            }
+            if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
+                initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
+                return onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
+            }
+            buyPrice = initialFairPrices[i].minus(halfPriceWidth);
+            sellPrice = initialFairPrices[i].plus(halfPriceWidth);
+            numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
+            if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
+            numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
+            if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
+            outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
+            if (outcomeShares.gt(shares)) shares = outcomeShares;
+            numSellOrders[i] = numSellOrders[i].toNumber();
+            buyPrices[i] = new Array(numBuyOrders[i]);
+            buyPrices[i][0] = buyPrice;
+            for (j = 1; j < numBuyOrders[i]; ++j) {
+                buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
+                if (buyPrices[i][j].lte(minValue)) {
+                    buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
+                }
+            }
+            sellPrices[i] = new Array(numSellOrders[i]);
+            sellPrices[i][0] = sellPrice;
+            for (j = 1; j < numSellOrders[i]; ++j) {
+                sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
+                if (sellPrices[i][j].gte(maxValue)) {
+                    sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
+                }
+            }
+        }
+        var numTransactions = 0;
+        for (i = 0; i < numOutcomes; ++i) {
+            numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
+        }
+        var onSimulate = cb.onSimulate || p.onSimulate;
+        if (self.utils.is_function(onSimulate)) {
+            onSimulate({
+                shares: shares.toFixed(),
+                numBuyOrders: numBuyOrders,
+                numSellOrders: numSellOrders,
+                buyPrices: abi.string(buyPrices),
+                sellPrices: abi.string(sellPrices),
+                numTransactions: numTransactions,
+                priceDepth: priceDepth.toFixed()
+            });
+            if (p.isSimulation) return;
+        }
+        self.buyCompleteSets({
+            market: p.market,
+            amount: abi.hex(shares),
+            onSent: function (res) {
+                // console.log("generateOrderBook.buyCompleteSets sent:", res);
+            },
+            onSuccess: function (res) {
+                // console.log("generateOrderBook.buyCompleteSets success:", res);
+                onBuyCompleteSets(res);
+                var outcomes = new Array(numOutcomes);
+                for (var i = 0; i < numOutcomes; ++i) {
+                    outcomes[i] = i + 1;
+                }
+                async.forEachOf(outcomes, function (outcome, index, nextOutcome) {
+                    async.parallel([
+                        function (callback) {
+                            async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
+                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                if (marketInfo.type === "scalar") {
+                                    buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
+                                } else {
+                                    buyPrice = buyPrice.toFixed();
+                                }
+                                self.buy({
+                                    amount: amount.toFixed(),
+                                    price: buyPrice,
+                                    market: p.market,
+                                    outcome: outcome,
+                                    onSent: function (res) {
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
+                                    },
+                                    onSuccess: function (res) {
+                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
+                                        onSetupOrder({
+                                            tradeId: res.callReturn,
+                                            market: p.market,
+                                            outcome: outcome,
+                                            amount: amount.toFixed(),
+                                            buyPrice: buyPrice
+                                        });
+                                        nextBuyPrice();
+                                    },
+                                    onFailed: function (err) {
+                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
+                                        nextBuyPrice(err);
+                                    }
+                                });
+                            }, function (err) {
+                                if (err) console.error("async.each buy:", err);
+                                callback(err);
+                            });
+                        },
+                        function (callback) {
+                            async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
+                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
+                                if (marketInfo.type === "scalar") {
+                                    sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
+                                } else {
+                                    sellPrice = sellPrice.toFixed();
+                                }
+                                self.sell({
+                                    amount: amount.toFixed(),
+                                    price: sellPrice,
+                                    market: p.market,
+                                    outcome: outcome,
+                                    onSent: function (res) {
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
+                                    },
+                                    onSuccess: function (res) {
+                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
+                                        onSetupOrder({
+                                            tradeId: res.callReturn,
+                                            market: p.market,
+                                            outcome: outcome,
+                                            amount: amount.toFixed(),
+                                            sellPrice: sellPrice
+                                        });
+                                        nextSellPrice();
+                                    },
+                                    onFailed: function (err) {
+                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
+                                        nextSellPrice(err);
+                                    }
+                                });
+                            }, function (err) {
+                                if (err) console.error("async.each sell:", err);
+                                callback(err);
+                            });
+                        }
+                    ], function (err) {
+                        // if (err) console.error("buy/sell:", err);
+                        onSetupOutcome({market: p.market, outcome: outcome});
+                        nextOutcome(err);
+                    });
+                }, function (err) {
+                    if (err) return onFailed(err);
+                    var scalarMinMax = {};
+                    if (marketInfo.type === "scalar") {
+                        scalarMinMax.minValue = minValue;
+                        scalarMinMax.maxValue = maxValue;
+                    }
+                    self.getOrderBook(p.market, scalarMinMax, onSuccess);
+                });
+            },
+            onFailed: function (err) {
+                console.error("generateOrderBook.buyCompleteSets failed:", err);
+                onFailed(err);
+            }
+        });
+    });
+};
+
+},{"./constants":226,"async":77,"augur-abi":1,"bignumber.js":80}],229:[function(require,module,exports){
+(function (process){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
+var modules = [
+    require("./modules/connect"),
+    require("./modules/transact"),
+    require("./modules/cash"),
+    require("./modules/events"),
+    require("./modules/markets"),
+    require("./modules/trades"),
+    require("./modules/buyAndSellShares"),
+    require("./modules/trade"),
+    require("./modules/completeSets"),
+    require("./modules/createBranch"),
+    require("./modules/sendReputation"),
+    require("./modules/makeReports"),
+    require("./modules/collectFees"),
+    require("./modules/createMarket"),
+    require("./modules/compositeGetters"),
+    require("./modules/whitelist"),
+    require("./modules/logs"),
+    require("./modules/abacus"),
+    require("./modules/reportingTools"),
+    require("./modules/tradingActions")
+];
+
+function Augur() {
+    this.version = "1.9.26";
+
+    this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
+    this.protocol = NODE_JS || document.location.protocol;
+
+    this.connection = null;
+    this.coinbase = null;
+    this.from = null;
+
+    this.constants = require("./constants");
+    this.abi = require("augur-abi");
+    this.utils = require("./utilities");
+    this.errors = require("augur-contracts").errors;
+    this.rpc = require("ethrpc");
+    this.abi.debug = this.options.debug.abi;
+    this.rpc.debug = this.options.debug;
+
+    // Load submodules
+    for (var i = 0, len = modules.length; i < len; ++i) {
+        for (var fn in modules[i]) {
+            if (!modules[i].hasOwnProperty(fn)) continue;
+            this[fn] = modules[i][fn].bind(this);
+            this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
+        }
+    }
+    this.generateOrderBook = require("./generateOrderBook").bind(this);
+    this.processOrder = require("./processOrder").bind(this);
+    this.createBatch = require("./batch").bind(this);
+    this.web = this.Accounts();
+    this.filters = this.Filters();
+}
+
+Augur.prototype.Accounts = require("./accounts");
+Augur.prototype.Filters = require("./filters");
+
+module.exports = new Augur();
+
+}).call(this,require('_process'))
+},{"./accounts":224,"./batch":225,"./constants":226,"./filters":227,"./generateOrderBook":228,"./modules/abacus":230,"./modules/buyAndSellShares":231,"./modules/cash":232,"./modules/collectFees":233,"./modules/completeSets":234,"./modules/compositeGetters":235,"./modules/connect":236,"./modules/createBranch":237,"./modules/createMarket":238,"./modules/events":239,"./modules/logs":240,"./modules/makeReports":241,"./modules/markets":242,"./modules/reportingTools":243,"./modules/sendReputation":244,"./modules/trade":245,"./modules/trades":246,"./modules/tradingActions":247,"./modules/transact":248,"./modules/whitelist":249,"./processOrder":250,"./utilities":251,"_process":185,"augur-abi":1,"augur-contracts":58,"ethrpc":254}],230:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Utility functions that do a local calculation (i.e., these functions do not
+ * make RPC requests).
+ */
+
+"use strict";
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var bs58 = require("bs58");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    // type: "buy" or "sell"
+    // gasLimit (optional): block gas limit as an integer
+    maxOrdersPerTrade: function (type, gasLimit) {
+        return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
+    },
+
+    // tradeTypes: array of "buy" and/or "sell"
+    sumTradeGas: function (tradeTypes) {
+        var gas = 0;
+        for (var i = 0, n = tradeTypes.length; i < n; ++i) {
+            gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
+        }
+        return gas;
+    },
+
+    sumTrades: function (trade_ids) {
+        var trades = new BigNumber(0);
+        for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
+            trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
+        }
+        return abi.hex(trades, true);
+    },
+
+    makeTradeHash: function (max_value, max_amount, trade_ids) {
+        return utils.sha3([
+            this.sumTrades(trade_ids),
+            abi.fix(max_amount, "hex"),
+            abi.fix(max_value, "hex")
+        ]);
+    },
+
+    calculateTradingFees: function (makerFee, takerFee) {
+        var bnMakerFee = abi.bignum(makerFee);
+        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
+        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
+    },
+
+    // expects fixed-point inputs
+    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
+        tradingFee = abi.unfix(tradingFee);
+        makerProportionOfFee = abi.unfix(makerProportionOfFee);
+        var makerFee = tradingFee.times(makerProportionOfFee);
+        return {
+            trading: tradingFee.toFixed(),
+            maker: makerFee.toFixed(),
+            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
+        };
+    },
+
+    parseMarketInfo: function (rawInfo) {
+        var EVENTS_FIELDS = 6;
+        var OUTCOMES_FIELDS = 2;
+        var WINNING_OUTCOMES_FIELDS = 8;
+        var info = {};
+        if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
+            // marketInfo[0] = marketID
+            // marketInfo[1] = MARKETS.getMakerFees(marketID)
+            // marketInfo[2] = numOutcomes
+            // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+            // marketInfo[4] = MARKETS.getTradingFee(marketID)
+            // marketInfo[5] = MARKETS.getBranchID(marketID)
+            // marketInfo[6] = MARKETS.getCumScale(marketID)
+            // marketInfo[7] = MARKETS.getCreationTime(marketID)
+            // marketInfo[8] = MARKETS.getVolume(marketID)
+            // marketInfo[9] = INFO.getCreationFee(marketID)
+            // marketInfo[10] = INFO.getCreator(marketID)
+            // tags = MARKETS.returnTags(marketID, outitems=3)
+            // marketInfo[11] = tags[0]
+            // marketInfo[12] = tags[1]
+            // marketInfo[13] = tags[2]
+            var index = 14;
+            var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+            info = {
+                network: this.network_id,
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                tradingFee: fees.trading,
+                numOutcomes: parseInt(rawInfo[2], 16),
+                tradingPeriod: parseInt(rawInfo[3], 16),
+                branchId: rawInfo[5],
+                numEvents: 1,
+                cumulativeScale: abi.unfix(rawInfo[6], "string"),
+                creationTime: parseInt(rawInfo[7], 16),
+                volume: abi.unfix(rawInfo[8], "string"),
+                creationFee: abi.unfix(rawInfo[9], "string"),
+                author: abi.format_address(rawInfo[10]),
+                tags: [
+                    this.decodeTag(rawInfo[11]),
+                    this.decodeTag(rawInfo[12]),
+                    this.decodeTag(rawInfo[13])
+                ],
+                winningOutcomes: []
+            };
+            info.outcomes = new Array(info.numOutcomes);
+
+            // organize event info
+            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+            var event = {
+                id: rawInfo[index],
+                endDate: parseInt(rawInfo[index + 1], 16),
+                outcome: abi.unfix(rawInfo[index + 2], "string"),
+                minValue: abi.unfix(rawInfo[index + 3], "string"),
+                maxValue: abi.unfix(rawInfo[index + 4], "string"),
+                numOutcomes: parseInt(rawInfo[index + 5], 16)
+            };
+
+            // event type: binary, categorical, or scalar
+            if (event.numOutcomes !== 2) {
+                event.type = "categorical";
+            } else if (event.minValue === '1' && event.maxValue === '2') {
+                event.type = "binary";
+            } else {
+                event.type = "scalar";
+            }
+            info.type = event.type;
+            info.endDate = event.endDate;
+            info.events = [event];
+            index += EVENTS_FIELDS;
+
+            // organize outcome info
+            for (var i = 0; i < info.numOutcomes; ++i) {
+                info.outcomes[i] = {
+                    id: i + 1,
+                    outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
+                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
+                };
+            }
+            index += info.numOutcomes*OUTCOMES_FIELDS;
+            info.winningOutcomes = abi.string(
+                rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
+            );
+            index += WINNING_OUTCOMES_FIELDS;
+
+            // convert description byte array to unicode
+            var descriptionLength = parseInt(rawInfo[index], 16);
+            ++index;
+            if (descriptionLength) {
+                info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
+                index += descriptionLength;
+            }
+
+            // convert resolution byte array to unicode
+            var resolutionLength = parseInt(rawInfo[index], 16);
+            ++index;
+            if (resolutionLength) {
+                info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+                index += resolutionLength;
+            }
+
+            // convert extraInfo byte array to unicode
+            var extraInfoLength = parseInt(rawInfo[index], 16);
+            if (extraInfoLength) {
+                info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
+            }
+        }
+        return info;
+    },
+
+    formatTags: function (tags) {
+        var formattedTags = clone(tags);
+        if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+        if (formattedTags.length) {
+            for (var i = 0; i < formattedTags.length; ++i) {
+                if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
+                    formattedTags[i] = "0x0";
+                } else {
+                    formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
+                }
+            }
+        }
+        while (formattedTags.length < 3) {
+            formattedTags.push("0x0");
+        }
+        return formattedTags;
+    },
+
+    calculateRequiredMarketValue: function (gasPrice) {
+        gasPrice = abi.bignum(gasPrice);
+        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    },
+
+    // expects BigNumber inputs
+    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
+    },
+
+    shrinkScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.minus(minValue).toFixed();
+    },
+
+    expandScalarPrice: function (minValue, price) {
+        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
+        if (price.constructor !== BigNumber) price = abi.bignum(price);
+        return price.plus(minValue).toFixed();
+    },
+
+    parseTradeInfo: function (trade) {
+        return {
+            id: trade[0],
+            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
+            market: trade[2],
+            amount: abi.unfix(trade[3], "string"),
+            price: abi.unfix(trade[4], "string"),
+            owner: abi.format_address(trade[5], true),
+            block: parseInt(trade[6]),
+            outcome: abi.string(trade[7])
+        };
+    },
+
+    decodeTag: function (tag) {
+        try {
+            return (tag && tag !== "0x0" && tag !== "0x") ?
+                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
+        } catch (exc) {
+            if (this.options.debug.broadcast) console.error(exc, tag);
+            return null;
+        }
+    },
+
+    base58Decrypt: function (secureLoginID) {
+        return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
+    },
+
+    base58Encrypt: function (keystore) {
+        return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"../constants":226,"../utilities":251,"async":77,"augur-abi":1,"bignumber.js":80,"bs58":112,"buffer":114,"clone":116}],231:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+    buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            onConfirmed = amount.onConfirmed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
+        var tx = clone(this.tx.BuyAndSellShares.buy);
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        var prepare = function (res, cb) {
+            res.tradeID = utils.sha3([
+                constants.BID,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                res.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
+        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+    },
+
+    sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            onConfirmed = amount.onConfirmed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
+        var tx = clone(this.tx.BuyAndSellShares.sell);
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        var prepare = function (res, cb) {
+            res.tradeID = utils.sha3([
+                constants.ASK,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                res.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
+        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+    },
+
+    buyCompleteSetsThenSell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (amount.constructor === Object && amount.amount) {
+            price = amount.price;
+            market = amount.market;
+            outcome = amount.outcome;
+            onSent = amount.onSent;
+            onSuccess = amount.onSuccess;
+            onFailed = amount.onFailed;
+            onConfirmed = amount.onConfirmed;
+            amount = amount.amount;
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
+        var tx = clone(this.tx.BuyAndSellShares.buyCompleteSetsThenSell);
+        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
+        var prepare = function (res, cb) {
+            res.tradeID = utils.sha3([
+                constants.ASK,
+                market,
+                abi.fix(amount, "hex"),
+                abi.fix(price, "hex"),
+                res.from,
+                res.blockNumber,
+                parseInt(outcome)
+            ]);
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
+        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+    }
+};
+
+},{"../constants":226,"../utilities":251,"augur-abi":1,"clone":116}],232:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+    
+    depositEther: function (value, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Cash.depositEther);
+        var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
+        tx.value = abi.fix(unpacked.params[0], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    withdrawEther: function (to, value, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Cash.withdrawEther);
+        var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    setCash: function (address, balance, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Cash.setCash);
+        var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+    
+    addCash: function (ID, amount, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Cash.addCash);
+        var unpacked = utils.unpack(ID, utils.labels(this.addCash), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+    
+    getCashBalance: function (account, callback) {
+        return this.Cash.balance(account, callback);
+    },
+
+    sendCash: function (to, value, onSent, onSuccess, onFailed, onConfirmed) {
+        // to: ethereum account
+        // value: number -> fixed-point
+        if (to && to.value !== null && to.value !== undefined) {
+            value = to.value;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            to = to.to;
+        }
+        var tx = clone(this.tx.Cash.send);
+        tx.params = [to, abi.fix(value, "hex")];
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    },
+
+    sendCashFrom: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
+        // to: ethereum account
+        // value: number -> fixed-point
+        // from: ethereum account
+        if (to && to.value) {
+            value = to.value;
+            from = to.from;
+            if (to.onSent) onSent = to.onSent;
+            if (to.onSuccess) onSuccess = to.onSuccess;
+            if (to.onFailed) onFailed = to.onFailed;
+            to = to.to;
+        }
+        var tx = clone(this.tx.Cash.sendFrom);
+        tx.params = [to, abi.fix(value, "hex"), from];
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    }
+};
+
+},{"../constants":226,"../utilities":251,"augur-abi":1,"clone":116}],233:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (branch && branch.branch) {
+            sender = branch.sender;
+            periodLength = branch.periodLength;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            onConfirmed = branch.onConfirmed;
+            branch = branch.branch;
+        }
+        if (this.getCurrentPeriodProgress(periodLength) < 50) {
+            return onFailed({"-2": "needs to be second half of reporting period to claim rep"});
+        }
+        var tx = clone(this.tx.CollectFees.collectFees);
+        tx.params = [branch, sender];
+        var prepare = function (res, cb) {
+            if (res && (res.callReturn === "1" || res.callReturn === "2")) {
+                return cb(res);
+            }
+            self.Branches.getVotePeriod(branch, function (period) {
+                self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+                    if (feesCollected !== "1") {
+                        res.callReturn = "2";
+                        return cb(res);
+                    }
+                    self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
+                        if (parseInt(afterRep, 10) <= 1) {
+                            res.callReturn = "2";
+                            return cb(res);
+                        }
+                        res.callReturn = "1";
+                        return cb(res);
+                    });
+                });
+            });
+        };
+        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"bignumber.js":80,"clone":116}],234:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.CompleteSets.buyCompleteSets);
+        var unpacked = utils.unpack(arguments[0], utils.labels(this.buyCompleteSets), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    sellCompleteSets: function (market, amount, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.CompleteSets.sellCompleteSets);
+        var unpacked = utils.unpack(arguments[0], utils.labels(this.sellCompleteSets), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"clone":116}],235:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    parseOrderBook: function (orderArray, scalarMinMax) {
+        if (!orderArray || orderArray.error) return orderArray;
+        var minValue, order;
+        var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
+        if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
+        var numOrders = orderArray.length / 8;
+        var orderBook = {buy: {}, sell: {}};
+        for (var i = 0; i < numOrders; ++i) {
+            order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+            if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
+            orderBook[order.type][order.id] = order;
+        }
+        return orderBook;
+    },
+
+    // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
+    getOrderBook: function (market, scalarMinMax, callback) {
+        var self = this;
+        if (!callback && utils.is_function(scalarMinMax)) {
+            callback = scalarMinMax;
+            scalarMinMax = null;
+        }
+        if (market && market.market) {
+            scalarMinMax = market.scalarMinMax;
+            callback = callback || market.callback;
+            market = market.market;
+        }
+        var tx = clone(this.tx.CompositeGetters.getOrderBook);
+        tx.params = market;
+        return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
+    },
+
+    validateMarketInfo: function (marketInfo) {
+        if (!marketInfo) return null;
+        var parsedMarketInfo = this.parseMarketInfo(marketInfo);
+        if (!parsedMarketInfo.numOutcomes) return null;
+        return parsedMarketInfo;
+    },
+
+    getMarketInfo: function (market, callback) {
+        var self = this;
+        if (market && market.market) {
+            callback = callback || market.callback;
+            market = market.market;
+        }
+        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
+        tx.params = market;
+        tx.timeout = 45000;
+        return this.fire(tx, callback, this.validateMarketInfo);
+    },
+
+    parseBatchMarketInfo: function (marketsArray, numMarkets) {
+        var len, shift, rawInfo, info, marketID;
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
+        }
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            rawInfo = marketsArray.slice(shift, shift + len - 1);
+            marketID = marketsArray[shift];
+            info = this.parseMarketInfo(rawInfo);
+            if (info && info.numOutcomes) {
+                marketsInfo[marketID] = info;
+                marketsInfo[marketID].sortOrder = i;
+            }
+            totalLen += len;
+        }
+        return marketsInfo;
+    },
+
+    batchGetMarketInfo: function (marketIDs, callback) {
+        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+        tx.params = [marketIDs];
+        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
+    },
+
+    parseMarketsInfo: function (marketsArray) {
+        var len, shift, marketID, fees;
+        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
+            return marketsArray;
+        }
+        var numMarkets = parseInt(marketsArray.shift(), 16);
+        var marketsInfo = {};
+        var totalLen = 0;
+        for (var i = 0; i < numMarkets; ++i) {
+            len = parseInt(marketsArray[totalLen]);
+            shift = totalLen + 1;
+            marketID = marketsArray[shift];
+            fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
+            marketsInfo[marketID] = {
+                sortOrder: i,
+                tradingPeriod: parseInt(marketsArray[shift + 1], 16),
+                tradingFee: fees.trading,
+                makerFee: fees.maker,
+                takerFee: fees.taker,
+                creationTime: parseInt(marketsArray[shift + 3], 16),
+                volume: abi.unfix(marketsArray[shift + 4], "string"),
+                tags: [
+                    this.decodeTag(marketsArray[shift + 5]),
+                    this.decodeTag(marketsArray[shift + 6]),
+                    this.decodeTag(marketsArray[shift + 7])
+                ],
+                endDate: parseInt(marketsArray[shift + 8], 16),
+                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
+            };
+            totalLen += len;
+        }
+        return marketsInfo;
+    },
+
+    getMarketsInfo: function (branch, offset, numMarketsToLoad, callback) {
+        var self = this;
+        if (!callback && utils.is_function(offset)) {
+            callback = offset;
+            offset = null;
+        }
+        if (branch && branch.branch) {
+            offset = branch.offset;
+            numMarketsToLoad = branch.numMarketsToLoad;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        branch = branch || this.constants.DEFAULT_BRANCH_ID;
+        offset = offset || 0;
+        numMarketsToLoad = numMarketsToLoad || 0;
+        var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+        tx.params = [branch, offset, numMarketsToLoad];
+        tx.timeout = 240000;
+        return this.fire(tx, callback, this.parseMarketsInfo);
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"bignumber.js":80,"clone":116}],236:[function(require,module,exports){
+/**
+ * Ethereum network connection / contract lookup
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var connector = require("ethereumjs-connect");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+module.exports = {
+
+    /**
+     * Direct no-frills bindings to Augur's Serpent (contract) API.
+     *  - Parameter positions and types are the same as the underlying
+     *    contract method's parameters.
+     *  - Parameters should be passed in exactly as they would be
+     *    passed to the contract method (e.g., if the contract method
+     *    expects a fixed-point number, you must do that conversion
+     *    yourself and pass the fixed-point number in).
+     */
+    bindContractMethod: function (contract, method) {
+        var self = this;
+        return function (args) {
+            var tx, params, cb, i, onSent, onSuccess, onFailed, onConfirmed;
+            tx = clone(self.api.functions[contract][method]);
+            if (!arguments) {
+                if (!tx.send) return self.fire(tx);
+                return self.transact(tx);
+            }
+            params = Array.prototype.slice.call(arguments);
+            if (!tx.send) {
+                if (params[0] !== undefined && params[0] !== null &&
+                    params[0].constructor === Object) {
+                    cb = params[0].callback;
+                    if (tx.inputs && tx.inputs.length) {
+                        tx.params = new Array(tx.inputs.length);
+                        for (i = 0; i < tx.inputs.length; ++i) {
+                            tx.params[i] = params[0][tx.inputs[i]];
+                        }
+                    }
+                } else {
+                    if (utils.is_function(params[params.length - 1])) {
+                        cb = params.pop();
+                    }
+                    tx.params = params;
+                }
+                return self.fire(tx, cb);
+            }
+            if (params[0] !== undefined && params[0] !== null &&
+                params[0].constructor === Object) {
+                onSent = params[0].onSent;
+                onSuccess = params[0].onSuccess;
+                onFailed = params[0].onFailed;
+                onConfirmed = params[0].onConfirmed;
+                if (tx.inputs && tx.inputs.length) {
+                    tx.params = new Array(tx.inputs.length);
+                    for (i = 0; i < tx.inputs.length; ++i) {
+                        tx.params[i] = params[0][tx.inputs[i]];
+                    }
+                }
+                return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+            }
+            cb = [];
+            while (utils.is_function(params[params.length - 1])) {
+                cb.push(params.pop());
+            }
+            tx.params = params;
+            cb.reverse();
+            return self.transact.apply(self, [tx].concat(cb));
+        };
+    },
+    bindContractAPI: function (methods) {
+        methods = methods || this.api.functions;
+        for (var contract in methods) {
+            if (!methods.hasOwnProperty(contract)) continue;
+            this[contract] = {};
+            for (var method in methods[contract]) {
+                if (!methods[contract].hasOwnProperty(method)) continue;
+                this[contract][method] = this.bindContractMethod(contract, method);
+                if (!this[method]) this[method] = this[contract][method];
+            }
+        }
+        return methods;
+    },
+
+    sync: function () {
+        if (connector && connector.constructor === Object) {
+            this.network_id = connector.network_id;
+            this.from = connector.from;
+            this.coinbase = connector.coinbase;
+            this.rpc = connector.rpc;
+            this.api = connector.api;
+            this.tx = connector.tx;
+            this.contracts = connector.contracts;
+            this.init_contracts = connector.init_contracts;
+            this.bindContractAPI();
+            return true;
+        }
+        return false;
+    },
+
+    useAccount: function (account) {
+        connector.from = account;
+        connector.from_field_tx(account);
+        this.sync();
+    },
+
+    updateContracts: function (newContracts) {
+        if (connector && connector.constructor === Object) {
+            connector.contracts = clone(newContracts);
+            connector.update_contracts();
+            return this.sync();
+        }
+        return false;
+    },
+
+    /** 
+     * @param rpcinfo {Object|string=} Two forms accepted:
+     *    1. Object with connection info fields:
+     *       { http: "https://eth3.augur.net",
+     *         ipc: "/path/to/geth.ipc",
+     *         ws: "wss://ws.augur.net" }
+     *    2. URL string for HTTP RPC: "https://eth3.augur.net"
+     * @param cb {function=} Callback function.
+     */
+    connect: function (rpcinfo, cb) {
+        var options = {};
+        if (rpcinfo) {
+            switch (rpcinfo.constructor) {
+            case String:
+                options.http = rpcinfo;
+                break;
+            case Function:
+                cb = rpcinfo;
+                options.http = null;
+                break;
+            case Object:
+                options = rpcinfo;
+                break;
+            default:
+                options.http = null;
+            }
+        }
+        if (!utils.is_function(cb)) {
+            var connection = connector.connect(options);
+            this.sync();
+            return connection;
+        }
+        var self = this;
+        connector.connect(options, function (connection) {
+            self.sync();
+            cb(connection);
+        });
+    }
+};
+
+},{"../constants":226,"../utilities":251,"clone":116,"ethereumjs-connect":252}],237:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (description && description.parent) {
+            periodLength = description.periodLength;
+            parent = description.parent;
+            minTradingFee = description.minTradingFee;
+            oracleOnly = description.oracleOnly;
+            onSent = description.onSent;
+            onSuccess = description.onSuccess;
+            onFailed = description.onFailed;
+            onConfirmed = description.onConfirmed;
+            description = description.description;
+        }
+        oracleOnly = oracleOnly || 0;
+        description = description.trim();
+        if (!utils.is_function(onSent)) {
+            var response = this.CreateBranch.createSubbranch({
+                description: description,
+                periodLength: periodLength,
+                parent: parent,
+                minTradingFee: abi.fix(minTradingFee, "hex"),
+                oracleOnly: oracleOnly
+            });
+            var block = this.rpc.getBlock(response.blockNumber);
+            response.branchID = utils.sha3([
+                response.from,
+                "0x28c418afbbb5c0000",
+                periodLength,
+                block.timestamp,
+                parent,
+                abi.fix(minTradingFee, "hex"),
+                oracleOnly,
+                description
+            ]);
+            return response;
+        }
+        this.createSubbranch({
+            description: description,
+            periodLength: periodLength,
+            parent: parent,
+            minTradingFee: minTradingFee,
+            oracleOnly: oracleOnly,
+            onSent: onSent,
+            onSuccess: function (response) {
+                self.rpc.getBlock(response.blockNumber, false, function (block) {
+                    response.branchID = utils.sha3([
+                        response.from,
+                        "0x28c418afbbb5c0000",
+                        periodLength,
+                        block.timestamp,
+                        parent,
+                        abi.fix(minTradingFee, "hex"),
+                        oracleOnly,
+                        description
+                    ]);
+                    onSuccess(response);
+                });
+            },
+            onFailed: onFailed,
+            onConfirmed: onConfirmed
+        });
+    },
+
+    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
+        if (description && description.parent) {
+            periodLength = description.periodLength;
+            parent = description.parent;
+            minTradingFee = description.minTradingFee;
+            oracleOnly = description.oracleOnly;
+            onSent = description.onSent;
+            onSuccess = description.onSuccess;
+            onFailed = description.onFailed;
+            onConfirmed = description.onConfirmed;
+            description = description.description;
+        }
+        oracleOnly = oracleOnly || 0;
+        var tx = clone(this.tx.CreateBranch.createSubbranch);
+        tx.params = [
+            description.trim(),
+            periodLength,
+            parent,
+            abi.fix(minTradingFee, "hex"),
+            oracleOnly
+        ];
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"clone":116}],238:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (branchId.constructor === Object && branchId.branchId) {
+            description = branchId.description;         // string
+            expDate = branchId.expDate;
+            minValue = branchId.minValue;               // integer (1 for binary)
+            maxValue = branchId.maxValue;               // integer (2 for binary)
+            numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+            resolution = branchId.resolution;
+            takerFee = branchId.takerFee;
+            tags = branchId.tags;
+            makerFee = branchId.makerFee;
+            extraInfo = branchId.extraInfo;
+            onSent = branchId.onSent;                   // function
+            onSuccess = branchId.onSuccess;             // function
+            onFailed = branchId.onFailed;               // function
+            onConfirmed = branchId.onConfirmed;
+            branchId = branchId.branchId;               // sha256 hash
+        }
+        var formattedTags = this.formatTags(tags);
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+        expDate = parseInt(expDate);
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
+        var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
+        tx.params = [
+            branchId,
+            description,
+            expDate,
+            abi.fix(minValue, "hex"),
+            abi.fix(maxValue, "hex"),
+            numOutcomes,
+            resolution || "",
+            abi.fix(fees.tradingFee, "hex"),
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
+            abi.fix(fees.makerProportionOfFee, "hex"),
+            extraInfo || ""
+        ];
+        var prepare = function (res, cb) {
+            res.marketID = res.callReturn;
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            return prepare(this.transact(tx));
+        }
+        this.rpc.getGasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            tx.value = self.calculateRequiredMarketValue(gasPrice);
+            self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+        });
+    },
+
+    createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed, onConfirmed) {
+        if (branchId.constructor === Object && branchId.branchId) {
+            description = branchId.description;         // string
+            minValue = branchId.minValue;               // integer (1 for binary)
+            maxValue = branchId.maxValue;               // integer (2 for binary)
+            numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
+            expDate = branchId.expDate;
+            resolution = branchId.resolution;
+            onSent = branchId.onSent;                   // function
+            onSuccess = branchId.onSuccess;             // function
+            onFailed = branchId.onFailed;               // function
+            onConfirmed = branchId.onConfirmed;
+            branchId = branchId.branchId;               // sha256 hash
+        }
+        var tx = clone(this.tx.CreateMarket.createEvent);
+        if (description) description = description.trim();
+        if (resolution) resolution = resolution.trim();
+        tx.params = [
+            branchId,
+            description,
+            parseInt(expDate),
+            abi.fix(minValue, "hex"),
+            abi.fix(maxValue, "hex"),
+            numOutcomes,
+            resolution || ""
+        ];
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    },
+
+    createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (branchId.constructor === Object && branchId.branchId) {
+            description = branchId.description; // string
+            takerFee = branchId.takerFee;
+            events = branchId.events;           // array [sha256, ...]
+            tags = branchId.tags;
+            makerFee = branchId.makerFee;
+            extraInfo = branchId.extraInfo;
+            onSent = branchId.onSent;           // function
+            onSuccess = branchId.onSuccess;     // function
+            onFailed = branchId.onFailed;       // function
+            onConfirmed = branchId.onConfirmed;
+            branchId = branchId.branchId;       // sha256 hash
+        }
+        onSent = onSent || utils.noop;
+        onSuccess = onSuccess || utils.noop;
+        onFailed = onFailed || utils.noop;
+        var formattedTags = this.formatTags(tags);
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+        var tx = clone(this.tx.CreateMarket.createMarket);
+        if (description) description = description.trim();
+        tx.params = [
+            branchId,
+            description,
+            abi.fix(fees.tradingFee, "hex"),
+            events,
+            formattedTags[0],
+            formattedTags[1],
+            formattedTags[2],
+            abi.fix(fees.makerProportionOfFee, "hex"),
+            extraInfo || ""
+        ];
+        var prepare = function (res, cb) {
+            res.marketID = res.callReturn;
+            if (!utils.is_function(cb)) return res;
+            return cb(res);
+        };
+        if (!utils.is_function(onSent)) {
+            var gasPrice = this.rpc.getGasPrice();
+            tx.gasPrice = gasPrice;
+            tx.value = this.calculateRequiredMarketValue(gasPrice);
+            return prepare(this.transact(tx));
+        }
+        this.rpc.getGasPrice(function (gasPrice) {
+            tx.gasPrice = gasPrice;
+            tx.value = self.calculateRequiredMarketValue(gasPrice);
+            self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+        });
+    },
+
+    updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (branchId.constructor === Object && branchId.branchId) {
+            market = branchId.market;         // string
+            takerFee = branchId.takerFee;
+            makerFee = branchId.makerFee;
+            onSent = branchId.onSent;         // function
+            onSuccess = branchId.onSuccess;   // function
+            onFailed = branchId.onFailed;     // function
+            onConfirmed = branchId.onConfirmed;
+            branchId = branchId.branchId;     // sha256 hash
+        }
+        var tx = clone(this.tx.CreateMarket.updateTradingFee);
+        var fees = this.calculateTradingFees(makerFee, takerFee);
+        tx.params = [
+            branchId,
+            market,
+            abi.fix(fees.tradingFee, "hex"),
+            abi.fix(fees.makerProportionOfFee, "hex"),
+        ];
+        if (!utils.is_function(onSent)) return this.transact(tx);
+        self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"bignumber.js":80,"clone":116}],239:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+    getEventInfo: function (eventId, callback) {
+        // eventId: hash id
+        var self = this;
+        var parse_info = function (info) {
+            // eventinfo = string(7*32 + length)
+            // eventinfo[0] = self.Events[event].branch
+            // eventinfo[1] = self.Events[event].expirationDate 
+            // eventinfo[2] = self.Events[event].outcome
+            // eventinfo[3] = self.Events[event].minValue
+            // eventinfo[4] = self.Events[event].maxValue
+            // eventinfo[5] = self.Events[event].numOutcomes
+            // eventinfo[6] = self.Events[event].bond
+            if (info && info.length) {
+                info[0] = abi.hex(info[0]);
+                info[1] = abi.bignum(info[1]).toFixed();
+                info[2] = abi.unfix(info[2], "string");
+                info[3] = abi.unfix(info[3], "string");
+                info[4] = abi.unfix(info[4], "string");
+                info[5] = parseInt(info[5]);
+                info[6] = abi.unfix(info[6], "string");
+            }
+            return info;
+        };
+        var tx = clone(this.tx.Events.getEventInfo);
+        tx.params = eventId;
+        if (utils.is_function(callback)) {
+            this.fire(tx, function (info) {
+                callback(parse_info(info));
+            });
+        } else {
+            return parse_info(this.fire(tx));
+        }
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"clone":116}],240:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    getMarketPriceHistory: function (market, options, cb) {
+        var self = this;
+        function parseMarketPriceHistoryLogs(logs) {
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return null;
+            }
+            if (logs.error) throw new Error(JSON.stringify(logs));
+            var outcome, parsed, priceHistory = {};
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    parsed = self.rpc.unmarshal(logs[i].data);
+                    outcome = parseInt(parsed[4], 16);
+                    if (!priceHistory[outcome]) priceHistory[outcome] = [];
+                    priceHistory[outcome].push({
+                        market: market,
+                        type: parseInt(parsed[0], 16),
+                        user: abi.format_address(logs[i].topics[2]),
+                        price: abi.unfix(parsed[1], "string"),
+                        shares: abi.unfix(parsed[2], "string"),
+                        timestamp: parseInt(parsed[5], 16),
+                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                    });
+                }
+            }
+            return priceHistory;
+        }
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+        var filter = {
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [this.api.events.log_fill_tx.signature, market]
+        };
+        if (!utils.is_function(cb)) {
+            return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));
+        }
+        this.rpc.getLogs(filter, function (logs) {
+            cb(parseMarketPriceHistoryLogs(logs));
+        });
+    },
+
+    meanTradePrice: function (trades, sell) {
+        var price, shares, totalShares, outcomeMeanPrice, meanPrice = {};
+        function include(shares) {
+            return (sell) ? shares.lt(new BigNumber(0)) : shares.gt(new BigNumber(0));
+        }
+        for (var outcome in trades) {
+            if (!trades.hasOwnProperty(outcome)) continue;
+            outcomeMeanPrice = new BigNumber(0);
+            totalShares = new BigNumber(0);
+            for (var i = 0, n = trades[outcome].length; i < n; ++i) {
+                price = new BigNumber(trades[outcome][i].price, 10);
+                shares = new BigNumber(trades[outcome][i].shares, 10);
+                if (include(shares)) {
+                    outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
+                    totalShares = totalShares.plus(shares);
+                }
+            }
+            if (include(totalShares)) {
+                meanPrice[outcome] = outcomeMeanPrice.dividedBy(totalShares).toFixed();
+            }
+        }
+        return meanPrice;
+    },
+
+    getAccountTrades: function (account, options, cb) {
+        var self = this;
+
+        function parseLogs(logs, trades, maker, callback) {
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return callback();
+            }
+            if (logs.error) return cb(logs);
+            
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    var market = logs[i].topics[1];
+                    if (!trades[market]) trades[market] = {};
+                    var parsed = self.rpc.unmarshal(logs[i].data);
+                    var outcome = parseInt(parsed[4]);
+                    if (!trades[market][outcome]) trades[market][outcome] = [];
+                    trades[market][outcome].push({
+                        type: parseInt(parsed[0], 16),
+                        price: abi.unfix(parsed[1], "string"),
+                        shares: abi.unfix(parsed[2], "string"),
+                        trade_id: parsed[3],
+                        blockNumber: parseInt(logs[i].blockNumber, 16),
+                        maker: maker
+                    });
+                }
+            }
+            return callback();
+        }
+
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+
+        if (!account || !utils.is_function(cb)) return;
+
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [
+                this.api.events.log_fill_tx.signature,
+                null,
+                null,
+                abi.format_int256(account)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            var trades = {};
+            parseLogs(logs, trades, true, function () {
+                self.rpc.getLogs({
+                    fromBlock: options.fromBlock || "0x1",
+                    toBlock: options.toBlock || "latest",
+                    address: self.contracts.Trade,
+                    topics: [
+                        self.api.events.log_fill_tx.signature,
+                        null,
+                        abi.format_int256(account),
+                        null
+                    ],
+                    timeout: 480000
+                }, function (logs) {
+                    parseLogs(logs, trades, false, function () {
+                        if (!trades || Object.keys(trades).length === 0) {
+                            return cb(null);
+                        }
+                        cb(trades);
+                    });
+                });              
+            });
+        });
+    },
+
+    getAccountMeanTradePrices: function (account, cb) {
+        var self = this;
+        if (!utils.is_function(cb)) return;
+        this.getAccountTrades(account, function (trades) {
+            if (!trades) return cb(null);
+            if (trades.error) return (trades);
+            var meanPrices = {buy: {}, sell: {}};
+            for (var marketId in trades) {
+                if (!trades.hasOwnProperty(marketId)) continue;
+                meanPrices.buy[marketId] = self.meanTradePrice(trades[marketId]);
+                meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
+            }
+            cb(meanPrices);
+        });
+    },
+
+    getMarketTrades: function (marketID, options, cb) {
+        var self = this;
+
+        function parseMarketTrades(logs, callback) {
+            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
+                return callback();
+            }
+            if (logs.error) return cb(logs);
+
+            var trades = {};
+
+            for (var i = 0, n = logs.length; i < n; ++i) {
+                if (logs[i] && logs[i].data !== undefined &&
+                    logs[i].data !== null && logs[i].data !== "0x") {
+                    var parsed = self.rpc.unmarshal(logs[i].data);
+                    var outcome = parseInt(parsed[4]);
+                    if (!trades[outcome]) trades[outcome] = [];
+                    trades[outcome].push({
+                        type: parseInt(parsed[0], 16),
+                        price: abi.unfix(parsed[1], "string"),
+                        shares: abi.unfix(parsed[2], "string"),
+                        trade_id: parsed[3],
+                        blockNumber: parseInt(logs[i].blockNumber, 16)
+                    });
+                }
+            }
+            return callback(trades);
+        }
+
+        if (!cb && utils.is_function(options)) {
+            cb = options;
+            options = null;
+        }
+        options = options || {};
+
+        if (!marketID || !utils.is_function(cb)) return;
+
+        this.rpc.getLogs({
+            fromBlock: options.fromBlock || "0x1",
+            toBlock: options.toBlock || "latest",
+            address: this.contracts.Trade,
+            topics: [
+                this.api.events.log_fill_tx.signature,
+                abi.format_int256(marketID)
+            ],
+            timeout: 480000
+        }, function (logs) {
+            parseMarketTrades(logs, function (trades) {
+                if (!trades || Object.keys(trades).length === 0) {
+                    return cb(null);
+                }
+                cb(trades);
+            });
+        });
+    }
+};
+
+},{"../constants":226,"../utilities":251,"augur-abi":1,"bignumber.js":80}],241:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var keys = require("keythereum");
+var contracts = require("augur-contracts");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+    // rules: http://docs.augur.net/#reporting-outcomes
+    fixReport: function (report, isScalar, isIndeterminate) {
+        var fixedReport;
+        if (isIndeterminate) {
+            fixedReport = constants.INDETERMINATE;
+        } else {
+            if (isScalar && report === "0") {
+                fixedReport = "0x1";
+            } else {
+                fixedReport = abi.fix(report, "hex");
+            }
+
+            // if report is equal to fix(1.5) but is not indeterminate,
+            // then set report to fix(1.5) + 1
+            if (fixedReport === constants.INDETERMINATE) {
+                fixedReport = constants.INDETERMINATE_PLUS_ONE;
+            }
+        }
+        return fixedReport;
+    },
+
+    // report in fixed-point
+    makeHash: function (salt, report, event, from) {
+        return utils.sha3([from || this.from, abi.hex(salt), report, event]);
+    },
+
+    // report in fixed-point
+    encryptReport: function (report, key, salt) {
+        if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
+        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+        return abi.prefix_hex(new Buffer(keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER), "base64").toString("hex"));
+    },
+
+    // returns plaintext fixed-point report
+    decryptReport: function (encryptedReport, key, salt) {
+        if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
+        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
+        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+        return abi.prefix_hex(keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER));
+    },
+
+    parseAndDecryptReport: function (arr, secret) {
+        if (!arr || arr.constructor !== Array || arr.length < 2) return null;
+        var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
+        return {
+            salt: salt,
+            report: abi.string(this.decryptReport(arr[0], secret.derivedKey, salt))
+        };
+    },
+
+    getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
+        var self = this;
+        if (branch.constructor === Object) {
+            expDateIndex = branch.expDateIndex;
+            reporter = branch.reporter;
+            event = branch.event;
+            secret = branch.secret;
+            callback = callback || branch.callback;
+            branch = branch.branch;
+        }
+        var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
+        tx.params = [branch, expDateIndex, reporter, event];
+        return this.fire(tx, callback, this.parseAndDecryptReport, secret);
+    },
+
+    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
+        var self = this;
+        if (event.constructor === Object) {
+            reportHash = event.reportHash;
+            encryptedReport = event.encryptedReport;
+            encryptedSalt = event.encryptedSalt;
+            branch = event.branch;
+            period = event.period;
+            periodLength = event.periodLength;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
+            onConfirmed = event.onConfirmed;
+            event = event.event;
+        }
+        if (this.getCurrentPeriodProgress(periodLength) >= 50) {
+            return onFailed({"-2": "not in first half of period (commit phase)"});
+        }
+        var tx = clone(this.tx.MakeReports.submitReportHash);
+        tx.params = [event, reportHash, encryptedReport || 0, encryptedSalt || 0];
+        return this.transact(tx, onSent, function (res) {
+            res.callReturn = abi.bignum(res.callReturn, "string", true);
+            if (res.callReturn === "0") {
+                return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
+                    if (err) return onFailed(err);
+                    return self.submitReportHash({
+                        event: event,
+                        reportHash: reportHash,
+                        encryptedReport: encryptedReport,
+                        encryptedSalt: encryptedSalt,
+                        branch: branch,
+                        period: period,
+                        periodLength: periodLength,
+                        onSent: onSent,
+                        onSuccess: onSuccess,
+                        onFailed: onFailed,
+                        onConfirmed: onConfirmed
+                    });
+                });
+            }
+            if (res.callReturn !== "-2") return onSuccess(res);
+            self.ExpiringEvents.getReportHash({
+                branch: branch,
+                expDateIndex: period,
+                reporter: res.from,
+                event: event,
+                callback: function (storedReportHash) {
+                    if (parseInt(storedReportHash, 16)) {
+                        res.callReturn = "1";
+                    }
+                    onSuccess(res);
+                }
+            });
+        }, onFailed, onConfirmed);
+    },
+
+    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed, onConfirmed) {
+        if (event.constructor === Object) {
+            salt = event.salt;
+            report = event.report;
+            ethics = event.ethics;
+            isScalar = event.isScalar;
+            onSent = event.onSent;
+            onSuccess = event.onSuccess;
+            onFailed = event.onFailed;
+            onConfirmed = event.onConfirmed;
+            event = event.event;
+        }
+        onSent = onSent || utils.pass;
+        onSuccess = onSuccess || utils.pass;
+        onFailed = onFailed || utils.pass;
+        var tx = clone(this.tx.MakeReports.submitReport);
+        tx.params = [
+            event,
+            abi.hex(salt),
+            this.fixReport(report, isScalar, isIndeterminate),
+            abi.fix(ethics, "hex")
+        ];
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    },
+
+    validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
+        var tx = clone(this.tx.MakeReports.validateReport);
+        tx.params = [
+            eventID,
+            branch,
+            votePeriod,
+            abi.fix(report, "hex"),
+            forkedOverEthicality,
+            forkedOverThisEvent,
+            roundTwo,
+            abi.fix(balance, "hex")
+        ];
+        return this.fire(tx, callback);
+    }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"../constants":226,"../utilities":251,"augur-abi":1,"augur-contracts":58,"buffer":114,"clone":116,"keythereum":260}],242:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var utils = require("../utilities");
+
+module.exports = {
+
+    getWinningOutcomes: function (market, callback) {
+        // market: hash id
+        var self = this;
+        var tx = clone(this.tx.Markets.getWinningOutcomes);
+        tx.params = market;
+        if (!utils.is_function(callback)) {
+            var winningOutcomes = this.fire(tx);
+            if (!winningOutcomes) return null;
+            if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+                return winningOutcomes;
+            }
+            return winningOutcomes.slice(0, this.getMarketNumOutcomes(market));
+        }
+        this.fire(tx, function (winningOutcomes) {
+            if (!winningOutcomes) return callback(null);
+            if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
+                return callback(winningOutcomes);
+            }
+            self.getMarketNumOutcomes(market, function (numOutcomes) {
+                if (numOutcomes && numOutcomes.error) {
+                    return callback(numOutcomes);
+                }
+                callback(winningOutcomes.slice(0, numOutcomes));
+            });
+        });
+    }
+};
+
+},{"../utilities":251,"clone":116}],243:[function(require,module,exports){
+/**
+ * Reporting time/period toolkit
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var abi = require("augur-abi");
+var async = require("async");
+var utils = require("../utilities");
+
+module.exports = {
+
+    getCurrentPeriod: function (periodLength) {
+        return Math.floor(new Date().getTime() / 1000 / periodLength);
+    },
+
+    getCurrentPeriodProgress: function (periodLength) {
+        var t = parseInt(new Date().getTime() / 1000);
+        return 100 * (t % periodLength) / periodLength;
+    },
+
+    hashSenderPlusEvent: function (sender, event) {
+        return abi.wrap(
+            utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
+        ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
+    },
+
+    // Increment vote period until vote period = current period - 1
+    checkVotePeriod: function (branch, periodLength, callback) {
+        var self = this;
+
+        function incrementPeriod(branch, periodLength, next) {
+            self.Consensus.incrementPeriodAfterReporting({
+                branch: branch,
+                onSent: function (r) {},
+                onSuccess: function (r) {
+                    console.log("Incremented period:", r.callReturn);
+                    self.getVotePeriod(branch, function (votePeriod) {
+                        next(null, votePeriod);
+                    });
+                },
+                onFailed: next
+            });
+        }
+
+        function checkPenalizeWrong(branch, votePeriod, next) {
+            console.log("checking penalizeWrong for period", votePeriod);
+            self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
+                console.log(" - Events in vote period", votePeriod + ":", events);
+                if (!events || events.constructor !== Array || !events.length) {
+                    // if > first period, then call penalizeWrong(branch, 0)
+                    console.log("No events found for this period");
+                    return self.ConsensusData.getPenalizedUpTo(branch, self.from, function (lastPeriodPenalized) {
+                        lastPeriodPenalized = parseInt(lastPeriodPenalized);
+                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
+                            console.log("Penalizations caught up!");
+                            return next(null);
+                        }
+                        console.log("Calling penalizeWrong(branch, 0)...");
+                        self.Consensus.penalizeWrong({
+                            branch: branch,
+                            event: 0,
+                            onSent: function (r) {
+                                console.log("penalizeWrong sent:", r);
+                            },
+                            onSuccess: function (r) {
+                                console.log("penalizeWrong(branch, 0) success:", r);
+                                console.log(abi.bignum(r.callReturn, "string", true));
+                                next(null);
+                            },
+                            onFailed: function (err) {
+                                console.error("penalizeWrong(branch, 0) error:", err);
+                                next(null);
+                            }
+                        });
+                    });
+                }
+                console.log("Events found, looping through...");
+                async.eachSeries(events, function (event, nextEvent) {
+                    console.log(" - penalizeWrong:", event);
+                    self.Consensus.penalizeWrong({
+                        branch: branch,
+                        event: event,
+                        onSent: utils.noop,
+                        onSuccess: function (r) {
+                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                            nextEvent();
+                        },
+                        onFailed: function (err) {
+                            console.error(" - penalizeWrong error:", err);
+                            nextEvent(err);
+                        }
+                    });
+                }, next);
+            });
+        }
+
+        function checkIncrementPeriod(branch, periodLength, next, callback) {
+            self.Branches.getVotePeriod(branch, function (votePeriod) {
+                if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
+                    incrementPeriod(branch, periodLength, function (err, votePeriod) {
+                        if (err) return next(err);
+                        console.log("New vote period:", votePeriod);
+                        next(null, votePeriod);
+                    });
+                } else {
+                    callback(null, votePeriod);
+                }
+            });
+        }
+
+        checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
+            console.log("checkIncrementPeriod:", err, votePeriod);
+            if (err) return callback(err);
+            checkPenalizeWrong(branch, votePeriod - 1, function (err) {
+                console.log("checkPenalizeWrong:", err);
+                if (err) return callback(err);
+                self.checkVotePeriod(branch, periodLength, callback);
+            });
+        }, callback);
+    },
+
+    // Make sure current period = expiration period + periodGap
+    // If not, wait until it is:
+    // expPeriod - currentPeriod periods
+    // t % periodLength seconds
+    checkTime: function (branch, event, periodLength, periodGap, callback) {
+        var self = this;
+        if (!callback && utils.is_function(periodGap)) {
+            callback = periodGap;
+            periodGap = null;
+        }
+        periodGap = periodGap || 1;
+        function wait(branch, secondsToWait, next) {
+            console.log("Waiting", secondsToWait / 60, "minutes...");
+            setTimeout(function () {
+                self.Consensus.incrementPeriodAfterReporting({
+                    branch: branch,
+                    onSent: function (r) {},
+                    onSuccess: function (r) {
+                        console.log("Incremented period:", r.callReturn);
+                        self.getVotePeriod(branch, function (votePeriod) {
+                            next(null, votePeriod);
+                        });
+                    },
+                    onFailed: next
+                });
+            }, secondsToWait*1000);
+        }
+        this.getExpiration(event, function (expTime) {
+            var expPeriod = Math.floor(expTime / periodLength);
+            var currentPeriod = self.getCurrentPeriod(periodLength);
+            console.log("\nreportingTools.checkTime:");
+            console.log(" - Expiration period:", expPeriod);
+            console.log(" - Current period:   ", currentPeriod);
+            console.log(" - Target period:    ", expPeriod + periodGap);
+            if (currentPeriod < expPeriod + periodGap) {
+                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
+                console.log("Full periods to wait:", fullPeriodsToWait);
+                var secondsToWait = periodLength;
+                if (fullPeriodsToWait === 0) {
+                    secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
+                }
+                console.log("Seconds to wait:", secondsToWait);
+                wait(branch, secondsToWait, function (err, votePeriod) {
+                    if (err) return callback(err);
+                    console.log("New vote period:", votePeriod);
+                    self.checkTime(branch, event, periodLength, callback);
+                });
+            } else {
+                callback(null);
+            }
+        });
+    }
+};
+
+},{"../utilities":251,"async":77,"augur-abi":1}],244:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+
+module.exports = {
+
+    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed, onConfirmed) {
+        // branch: hash id
+        // recver: ethereum address of recipient
+        // value: number -> fixed-point
+        if (branch && branch.branch) {
+            recver = branch.recver;
+            value = branch.value;
+            onSent = branch.onSent;
+            onSuccess = branch.onSuccess;
+            onFailed = branch.onFailed;
+            onConfirmed = branch.onConfirmed;
+            branch = branch.branch;
+        }
+        var tx = clone(this.tx.SendReputation.sendReputation);
+        tx.params = [branch, recver, abi.fix(value, "hex")];
+        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    }
+};
+
+},{"augur-abi":1,"clone":116}],245:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var rpc = require("ethrpc");
+var errors = require("augur-contracts").errors;
+var utils = require("../utilities");
+var abacus = require("./abacus");
+
+module.exports = {
+
+    // tradeTypes: array of "buy" and/or "sell"
+    // gasLimit (optional): block gas limit as integer
+    isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
+        if (utils.is_function(gasLimit) && !callback) {
+            callback = gasLimit;
+            gasLimit = null;
+        }
+        var gas = abacus.sumTradeGas(tradeTypes);
+        if (!utils.is_function(callback)) {
+            if (gasLimit) return gas <= gasLimit;
+            return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
+        }
+        if (gasLimit) return callback(gas <= gasLimit);
+        var self = this;
+        this.rpc.blockNumber(function (blockNumber) {
+            self.rpc.getBlock(blockNumber, false, function (block) {
+                callback(gas <= parseInt(block.gasLimit, 16));
+            });
+        });
+    },
+
+    trade: function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+        var self = this;
+        if (max_value.constructor === Object) {
+            max_amount = max_value.max_amount;
+            trade_ids = max_value.trade_ids;
+            onTradeHash = max_value.onTradeHash;
+            onCommitSent = max_value.onCommitSent;
+            onCommitSuccess = max_value.onCommitSuccess;
+            onCommitFailed = max_value.onCommitFailed;
+            onCommitConfirmed = max_value.onCommitConfirmed;
+            onNextBlock = max_value.onNextBlock;
+            onTradeSent = max_value.onTradeSent;
+            onTradeSuccess = max_value.onTradeSuccess;
+            onTradeFailed = max_value.onTradeFailed;
+            onTradeConfirmed = max_value.onTradeConfirmed;
+            max_value = max_value.max_value;
+        }
+        onTradeHash = onTradeHash || utils.noop;
+        onCommitSent = onCommitSent || utils.noop;
+        onCommitSuccess = onCommitSuccess || utils.noop;
+        onCommitFailed = onCommitFailed || utils.noop;
+        onNextBlock = onNextBlock || utils.noop;
+        onTradeSent = onTradeSent || utils.noop;
+        onTradeSuccess = onTradeSuccess || utils.noop;
+        onTradeFailed = onTradeFailed || utils.noop;
+        var tradeHash = this.makeTradeHash(max_value, max_amount, trade_ids);
+        onTradeHash(tradeHash);
+        this.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                self.rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.Trade.trade);
+                    tx.params = [
+                        abi.fix(max_value, "hex"),
+                        abi.fix(max_amount, "hex"),
+                        trade_ids
+                    ];
+                    var prepare = function (result, cb) {
+                        var txHash = result.txHash;
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                                return onTradeFailed(result);
+                            }
+                            self.rpc.receipt(txHash, function (receipt) {
+                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (receipt.error) return onTradeFailed(receipt);
+                                var sharesBought, cashFromTrade;
+                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                    var logs = receipt.logs;
+                                    var sig = self.api.events.log_fill_tx.signature;
+                                    sharesBought = abi.bignum(0);
+                                    cashFromTrade = abi.bignum(0);
+                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                        if (logs[i].topics[0] === sig) {
+                                            var logdata = self.rpc.unmarshal(logs[i].data);
+                                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                                // buy (matched sell order)
+                                                if (parseInt(logdata[0], 16) === 1) {
+                                                    sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+
+                                                // sell (matched buy order)
+                                                // cash received = price per share * shares sold
+                                                } else {
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                cb({
+                                    txHash: txHash,
+                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    sharesBought: abi.string(sharesBought),
+                                    cashFromTrade: abi.string(cashFromTrade)
+                                });
+                            });
+                        } else {
+                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                        }
+                    };
+                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                });
+            },
+            onFailed: onCommitFailed,
+            onConfirmed: onCommitConfirmed
+        });
+    },
+
+    short_sell: function (buyer_trade_id, max_amount, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+        var self = this;
+        if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
+            max_amount = buyer_trade_id.max_amount;
+            onTradeHash = buyer_trade_id.onTradeHash;
+            onCommitSent = buyer_trade_id.onCommitSent;
+            onCommitSuccess = buyer_trade_id.onCommitSuccess;
+            onCommitFailed = buyer_trade_id.onCommitFailed;
+            onCommitConfirmed = buyer_trade_id.onCommitConfirmed;
+            onNextBlock = buyer_trade_id.onNextBlock;
+            onTradeSent = buyer_trade_id.onTradeSent;
+            onTradeSuccess = buyer_trade_id.onTradeSuccess;
+            onTradeFailed = buyer_trade_id.onTradeFailed;
+            onTradeConfirmed = buyer_trade_id.onTradeConfirmed;
+            buyer_trade_id = buyer_trade_id.buyer_trade_id;
+        }
+        onTradeHash = onTradeHash || utils.noop;
+        onCommitSent = onCommitSent || utils.noop;
+        onCommitSuccess = onCommitSuccess || utils.noop;
+        onCommitFailed = onCommitFailed || utils.noop;
+        onNextBlock = onNextBlock || utils.noop;
+        onTradeSent = onTradeSent || utils.noop;
+        onTradeSuccess = onTradeSuccess || utils.noop;
+        onTradeFailed = onTradeFailed || utils.noop;
+        var tradeHash = this.makeTradeHash(0, max_amount, [buyer_trade_id]);
+        onTradeHash(tradeHash);
+        this.commitTrade({
+            hash: tradeHash,
+            onSent: onCommitSent,
+            onSuccess: function (res) {
+                onCommitSuccess(res);
+                self.rpc.fastforward(1, function (blockNumber) {
+                    onNextBlock(blockNumber);
+                    var tx = clone(self.tx.Trade.short_sell);
+                    tx.params = [
+                        buyer_trade_id,
+                        abi.fix(max_amount, "hex")
+                    ];
+                    var prepare = function (result, cb) {
+                        var txHash = result.txHash;
+                        if (result.callReturn && result.callReturn.constructor === Array) {
+                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
+                                return onTradeFailed(result);
+                            }
+                            self.rpc.receipt(txHash, function (receipt) {
+                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (receipt.error) return onTradeFailed(receipt);
+                                var cashFromTrade;
+                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                    var logs = receipt.logs;
+                                    var sig = self.api.events.log_fill_tx.signature;
+                                    cashFromTrade = abi.bignum(0);
+                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                        if (logs[i].topics[0] === sig) {
+                                            var logdata = self.rpc.unmarshal(logs[i].data);
+                                            if (logdata && logdata.constructor === Array && logdata.length) {
+                                                cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                            }
+                                        }
+                                    }
+                                }
+                                cb({
+                                    txHash: txHash,
+                                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                                    matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                    cashFromTrade: abi.string(cashFromTrade),
+                                    price: abi.unfix(result.callReturn[3], "string")
+                                });
+                            });
+                        } else {
+                            var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                            if (!err) return onTradeFailed(result);
+                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                        }
+                    };
+                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                });
+            },
+            onFailed: onCommitFailed,
+            onConfirmed: onCommitConfirmed
+        });
+    }
+};
+
+},{"../utilities":251,"./abacus":230,"augur-abi":1,"augur-contracts":58,"clone":116,"ethrpc":254}],246:[function(require,module,exports){
+/**
+ * Augur JavaScript API
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+    saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Trades.saveTrade);
+        var unpacked = utils.unpack(arguments[0], utils.labels(this.saveTrade), arguments);
+        tx.params = unpacked.params;
+        tx.params[3] = abi.fix(tx.params[3], "hex");
+        tx.params[4] = abi.fix(tx.params[4], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    get_trade: function (id, callback) {
+        // trade = array(9)
+        // trade[0] = self.trades[id].id
+        // trade[1] = self.trades[id].type
+        // trade[2] = self.trades[id].market
+        // trade[3] = self.trades[id].amount
+        // trade[4] = self.trades[id].price
+        // trade[5] = self.trades[id].owner
+        // trade[6] = self.trades[id].block
+        // trade[7] = self.trades[id].outcome
+        var self = this;
+        var tx = clone(this.tx.Trades.get_trade);
+        tx.params = id;
+        if (!utils.is_function(callback)) {
+            var trade = this.fire(tx);
+            if (!trade || trade.error) return trade;
+            return this.parseTradeInfo(trade);
+        }
+        this.fire(tx, function (trade) {
+            if (!trade || trade.error) return callback(trade);
+            callback(self.parseTradeInfo(trade));
+        });
+    },
+
+    update_trade: function (id, price, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Trades.update_trade);
+        var unpacked = utils.unpack(arguments[0], utils.labels(this.update_trade), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    fill_trade: function (id, fill, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Trades.fill_trade);
+        var unpacked = utils.unpack(arguments[0], utils.labels(this.fill_trade), arguments);
+        tx.params = unpacked.params;
+        tx.params[1] = abi.fix(tx.params[1], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"clone":116}],247:[function(require,module,exports){
+/*
+ * Author: priecint
+ */
+var clone = require("clone");
+var BigNumber = require("bignumber.js");
+var EthTx = require("ethereumjs-tx");
+var constants = require("../constants");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+	/**
+	 * Calculates (approximately) gas needed to run the transaction
+	 *
+	 * @param {Object} tx
+	 * @param {Number} gasPrice
+	 * @return {BigNumber}
+	 */
+	getTxGasEth: function (tx, gasPrice) {
+		tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
+		tx.gasPrice = gasPrice;
+		var etx = new EthTx(tx);
+		return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
+	},
+
+	/**
+	 * Bids are sorted descendingly, asks are sorted ascendingly
+	 *
+	 * @param {Array} orders Bids or asks
+	 * @param {String} traderOrderType What trader want to do (buy or sell)
+	 * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
+	 *     it's null order is considered to be market order
+	 * @param {String} outcomeId
+	 * @param {String} userAddress
+	 * @return {Array.<Object>}
+	 */
+	filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+		var isMarketOrder = limitPrice === null || limitPrice === undefined;
+		return Object.keys(orders)
+			.map(function (orderId) {
+				return orders[orderId];
+			})
+			.filter(function (order) {
+				var isMatchingPrice;
+				if (isMarketOrder) {
+					isMatchingPrice = true;
+				} else {
+					isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+				}
+				return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+			})
+			.sort(function compareOrdersByPrice(order1, order2) {
+				return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+			});
+	},
+
+	/**
+	 *
+	 * @param {BigNumber} shares
+	 * @param {BigNumber} limitPrice
+	 * @param {BigNumber} makerFee
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
+		var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
+		var etherToBid = shares.times(limitPrice);
+		return {
+			action: "BID",
+			shares: shares.toFixed(),
+			gasEth: bidGasEth.toFixed(),
+			feeEth: etherToBid.times(makerFee).toFixed(),
+			costEth: etherToBid.toFixed(),
+			avgPrice: limitPrice.toFixed()
+		};
+	},
+
+	/**
+	 *
+	 * @param {BigNumber} buyEth
+	 * @param {BigNumber} sharesFilled
+	 * @param {BigNumber} takerFee
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	getBuyAction: function (buyEth, sharesFilled, takerFee, gasPrice) {
+		var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+		return {
+			action: "BUY",
+			shares: sharesFilled.toFixed(),
+			gasEth: tradeGasEth.toFixed(),
+			feeEth: buyEth.times(takerFee).toFixed(),
+			costEth: buyEth.toFixed(),
+			avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
+		};
+	},
+
+	/**
+	 *
+	 * @param {BigNumber} shares
+	 * @param {BigNumber} limitPrice
+	 * @param {BigNumber} makerFee
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
+		var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+		var costEth = shares.times(limitPrice);
+		return {
+			action: "ASK",
+			shares: shares.toFixed(),
+			gasEth: askGasEth.toFixed(),
+			feeEth: costEth.times(makerFee).toFixed(),
+			costEth: costEth.toFixed(),
+			avgPrice: limitPrice.toFixed()
+		};
+	},
+
+	/**
+	 *
+	 * @param {BigNumber} sellEth
+	 * @param {BigNumber} sharesFilled
+	 * @param {BigNumber} takerFee
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	getSellAction: function (sellEth, sharesFilled, takerFee, gasPrice) {
+		var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+		return {
+			action: "SELL",
+			shares: sharesFilled.toFixed(),
+			gasEth: tradeGasEth.toFixed(),
+			feeEth: sellEth.times(takerFee).toFixed(),
+			costEth: sellEth.toFixed(),
+			avgPrice: sellEth.dividedBy(sharesFilled).toFixed()
+		};
+	},
+
+	/**
+	 *
+	 * @param {BigNumber} shortSellEth
+	 * @param {BigNumber} shares
+	 * @param {BigNumber} takerFee
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	getShortSellAction: function (shortSellEth, shares, takerFee, gasPrice) {
+		var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
+		return {
+			action: "SHORT_SELL",
+			shares: shares.toFixed(),
+			gasEth: shortSellGasEth.toFixed(),
+			feeEth: shortSellEth.times(takerFee).toFixed(),
+			costEth: shortSellEth.toFixed(),
+			avgPrice: shortSellEth.dividedBy(shares).toFixed()
+		};
+	},
+
+	/**
+	 *
+	 * @param {BigNumber} shares
+	 * @param {BigNumber} limitPrice
+	 * @param {BigNumber} makerFee
+	 * @param {Number} gasPrice
+	 * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
+	 */
+	getRiskyShortSellAction: function (shares, limitPrice, makerFee, gasPrice) {
+		var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
+		var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+		var riskyShortSellEth = shares.times(limitPrice);
+		return {
+			action: "SHORT_SELL_RISKY",
+			shares: shares.toFixed(),
+			gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
+			feeEth: riskyShortSellEth.times(makerFee).toFixed(),
+			costEth: riskyShortSellEth.toFixed(),
+			avgPrice: limitPrice.toFixed()
+		};
+	},
+
+	/**
+	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
+	 * much they pay for trading
+	 *
+	 * @param {String} type 'buy' or 'sell'
+	 * @param {String|BigNumber} orderShares
+	 * @param {String|BigNumber=} orderLimitPrice null value results in market order
+	 * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
+	 * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
+	 * @param {String} userAddress Address of trader to exclude orders from order book
+	 * @param {String|BigNumber} userPositionShares
+	 * @param {String} outcomeId
+	 * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
+	 * @return {Array}
+	 */
+	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
+		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
+		if (type.constructor === Object && type.type) {
+			orderShares = type.orderShares;
+			orderLimitPrice = type.orderLimitPrice;
+			takerFee = type.takerFee;
+			makerFee = type.makerFee;
+			userAddress = type.userAddress;
+			userPositionShares = type.userPositionShares;
+			outcomeId = type.outcomeId;
+			marketOrderBook = type.marketOrderBook;
+			type = type.type;
+		}
+
+		orderShares = new BigNumber(orderShares, 10);
+		orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
+		takerFee = new BigNumber(takerFee, 10);
+		makerFee = new BigNumber(makerFee, 10);
+		userPositionShares = new BigNumber(userPositionShares, 10);
+		isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
+
+		var augur = this;
+		var gasPrice = augur.rpc.gasPrice;
+		if (type === "buy") {
+			var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
+
+			var areSuitableOrders = matchingSortedAsks.length > 0;
+			if (!areSuitableOrders) {
+				if (isMarketOrder) {
+					return [];
+				}
+
+				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
+			} else {
+				var buyActions = [];
+
+				var etherToTrade = constants.ZERO;
+				remainingOrderShares = orderShares;
+				length = matchingSortedAsks.length;
+				for (i = 0; i < length; i++) {
+					ask = matchingSortedAsks[i];
+					orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
+					etherToTrade = etherToTrade.add(orderSharesFilled.times(new BigNumber(ask.price, 10)));
+					remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+					if (remainingOrderShares.equals(constants.ZERO)) {
+						break;
+					}
+				}
+				buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
+
+				if (!remainingOrderShares.equals(constants.ZERO) && !isMarketOrder) {
+					buyActions.push(augur.getBidAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
+				}
+
+				return buyActions;
+			}
+		} else {
+			var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
+
+			var areSuitableBids = matchingSortedBids.length > 0;
+			var userHasPosition = userPositionShares.greaterThan(constants.ZERO);
+			var sellActions = [];
+
+			if (userHasPosition) {
+				var etherToSell = constants.ZERO;
+				remainingOrderShares = orderShares;
+				var remainingPositionShares = userPositionShares;
+				if (areSuitableBids) {
+					for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+						bid = matchingSortedBids[i];
+						bidAmount = new BigNumber(bid.amount);
+						orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
+						etherToSell = etherToSell.plus(orderSharesFilled.times(new BigNumber(bid.price, 10)));
+						remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+						remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
+						if (orderSharesFilled.equals(bidAmount)) {
+							// since this order is filled we remove it. Change for-cycle variables accordingly
+							matchingSortedBids.splice(i, 1);
+							i--;
+							length--;
+						} else {
+							var newBid = clone(bid);
+							newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
+							matchingSortedBids[i] = newBid;
+						}
+
+						if (remainingOrderShares.equals(constants.ZERO) || remainingPositionShares.equals(constants.ZERO)) {
+							break;
+						}
+					}
+
+					sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
+				} else {
+					if (!isMarketOrder) {
+						var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
+						remainingOrderShares = remainingOrderShares.minus(askShares);
+						remainingPositionShares = remainingPositionShares.minus(askShares);
+						sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
+					}
+				}
+
+				if (remainingOrderShares.greaterThan(constants.ZERO) && !isMarketOrder) {
+					// recursion
+					sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, {buy: matchingSortedBids}));
+				}
+			} else {
+				if (isMarketOrder) {
+					return sellActions;
+				}
+
+				var etherToShortSell = constants.ZERO;
+				remainingOrderShares = orderShares;
+				if (areSuitableBids) {
+					for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+						bid = matchingSortedBids[i];
+						orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
+						etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(new BigNumber(bid.price, 10)));
+						remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+						if (remainingOrderShares.equals(constants.ZERO)) {
+							break;
+						}
+					}
+					sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
+				}
+				if (remainingOrderShares.greaterThan(constants.ZERO)) {
+					sellActions.push(augur.getRiskyShortSellAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
+				}
+			}
+
+			return sellActions;
+		}
+	}
+};
+
+},{"../constants":226,"bignumber.js":80,"clone":116,"ethereumjs-tx":153}],248:[function(require,module,exports){
+/**
+ * ethrpc fire/transact wrappers
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+module.exports = {
+
+    fire: function (tx, callback, wrapper, aux) {
+        if (this.web && this.web.account && this.web.account.address) {
+            tx.from = this.web.account.address;
+        } else {
+            tx.from = tx.from || this.from || this.coinbase;
+        }
+        return this.rpc.fire(tx, callback, wrapper, aux);
+    },
+
+    transact: function (tx, onSent, onSuccess, onFailed, onConfirmed) {
+        if (this.web && this.web.account && this.web.account.address) {
+            tx.from = this.web.account.address;
+            tx.invocation = {invoke: this.web.invoke, context: this.web};
+        } else {
+            tx.from = tx.from || this.from || this.coinbase;
+        }
+        return this.rpc.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
+    }
+};
+
+},{}],249:[function(require,module,exports){
+/**
+ * Testing-only: these methods are whitelisted on production contracts!
+ */
+
+"use strict";
+
+var clone = require("clone");
+var abi = require("augur-abi");
+var utils = require("../utilities");
+
+module.exports = {
+
+    setInfo: function (id, description, creator, fee, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Info.setInfo);
+        var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
+        tx.params = unpacked.params;
+        tx.params[3] = abi.fix(tx.params[3], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    modifyShares: function (marketID, outcome, amount, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.Markets.modifyShares);
+        var unpacked = utils.unpack(marketID, utils.labels(this.modifyShares), arguments);
+        tx.params = unpacked.params;
+        tx.params[2] = abi.fix(tx.params[2], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    },
+
+    setTotalRepReported: function (branchId, reportPeriod, repReported, onSent, onSuccess, onFailed, onConfirmed) {
+        var tx = clone(this.tx.ExpiringEvents.setTotalRepReported);
+        var unpacked = utils.unpack(branchId, utils.labels(this.setTotalRepReported), arguments);
+        tx.params = unpacked.params;
+        tx.params[2] = abi.fix(tx.params[2], "hex");
+        return this.transact.apply(this, [tx].concat(unpacked.cb));
+    }
+};
+
+},{"../utilities":251,"augur-abi":1,"clone":116}],250:[function(require,module,exports){
+/**
+ * multiTrade: allows trading multiple outcomes in market.
+ *
+ * This method can result in multiple ethereum transactions per trade order (e.g. when user wants to buy 20 shares but
+ * there are only 10 ask shares on order book, this method does trade() and buy()). Callbacks are called with
+ * requestId to allow client map transactions to individual trade order
+ *
+ * Important fields in userTradeOrder are: sharesToSell, etherToBuy (total cost + fees) and limitPrice
+ *
+ * Algorithm:
+ *
+ * for each user trade order do this:
+ * 1.1/ when user wants to buy: find all asks for that outcome which have less or equal price (user
+ * doesn't want to pay more than specified). Sort asks by price ascendingly (lower prices first)
+ * 1.2/ when user wants to sell: find all bids in order book for that outcome which have greater or equal price
+ * (user doesn't want to sell at lower price than specified). Sort bids by price descendingly (higher prices first)
+ *
+ * 2/ if there are no orders to match, place order to order book. exit
+ *
+ * if there are suitable orders in order book let's trade:
+ *
+ * 3/ Trade user's buy order:
+ *      3.1/ if user order was filled there is nothing to do. exit
+ *      3.1/ if user order was partially filled we place bid for remaining shares to order book. exit
+ *
+ * 4/ Trade user's sell order:
+ *      4.1/ if user has position, sell shares he owns:
+ *          4.1.1/ if user order was filled there is nothing to do. exit
+ *          4.1.2/ if order was partially filled place ask to order book. exit
+ *      4.2/ if user doesn't have position do short sell
+ *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares after filling it try again
+ *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants,
+ * which results in the equal position
+ *
+ *
+ * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this
+ *     method
+ * @param {String} market The market ID on which trading occurs
+ * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
+ * @param {Object} userTradeOrder Trade order to execute (usually from UI).
+ * @param {Object} userPosition User's position
+ * @param {Object} scalarMinMax: {minValue, maxValue} if scalar market; null/undefined otherwise
+ * @param {Function} onTradeHash
+ * @param {Function} onCommitSent
+ * @param {Function} onCommitSuccess
+ * @param {Function} onCommitFailed
+ * @param {Function} onNextBlock
+ * @param {Function} onTradeSent
+ * @param {Function} onTradeSuccess
+ * @param {Function} onTradeFailed
+ * @param {Function} onBuySellSent
+ * @param {Function} onBuySellSuccess
+ * @param {Function} onBuySellFailed
+ * @param {Function} onBuyCompleteSetsSent
+ * @param {Function} onBuyCompleteSetsSuccess
+ * @param {Function} onBuyCompleteSetsFailed
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var constants = require("./constants");
+var utils = require("./utilities");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = function (
+    requestId, market, marketOrderBook,
+    userTradeOrder, userPosition, scalarMinMax,
+    onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
+    onTradeSent, onTradeSuccess, onTradeFailed,
+    onBuySellSent, onBuySellSuccess, onBuySellFailed,
+    onShortSellSent, onShortSellSuccess, onShortSellFailed,
+    onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
+) {
+    var self = this;
+    if (requestId.constructor === Object && requestId.requestId) {
+        market = requestId.market;
+        marketOrderBook = requestId.marketOrderBook;
+        userTradeOrder = requestId.userTradeOrder;
+        userPosition = requestId.userPosition;
+        scalarMinMax = requestId.scalarMinMax;
+        onTradeHash = requestId.onTradeHash || utils.noop;
+        onCommitSent = requestId.onCommitSent || utils.noop;
+        onCommitSuccess = requestId.onCommitSuccess || utils.noop;
+        onCommitFailed = requestId.onCommitFailed || utils.noop;
+        onNextBlock = requestId.onNextBlock || utils.noop;
+        onTradeSent = requestId.onTradeSent || utils.noop;
+        onTradeSuccess = requestId.onTradeSuccess || utils.noop;
+        onTradeFailed = requestId.onTradeFailed || utils.noop;
+        onBuySellSent = requestId.onBuySellSent || utils.noop;
+        onBuySellSuccess = requestId.onBuySellSuccess || utils.noop;
+        onBuySellFailed = requestId.onBuySellFailed || utils.noop;
+        onBuyCompleteSetsSent = requestId.onBuyCompleteSetsSent || utils.noop;
+        onBuyCompleteSetsSuccess = requestId.onBuyCompleteSetsSuccess || utils.noop;
+        onBuyCompleteSetsFailed = requestId.onBuyCompleteSetsFailed || utils.noop;
+        requestId = requestId.requestId;
+    }
+    var isScalar = scalarMinMax &&
+        scalarMinMax.minValue !== undefined &&
+        scalarMinMax.maxValue !== undefined;
+    var minValue, maxValue;
+    if (isScalar) {
+        minValue = new BigNumber(scalarMinMax.minValue, 10);
+        maxValue = new BigNumber(scalarMinMax.maxValue, 10);
+    }
+    /**
+     * Recursive. Uses either short_sell or buyCompleteSets + sell
+     *
+     * @param tradeOrderId
+     * @param matchingSortedBidIds
+     * @param userTradeOrder
+     */
+    function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, userTradeOrder) {
+        var sharesLeft = new BigNumber(userTradeOrder.sharesToSell, 10);
+        if (matchingSortedBidIds.length > 0) {
+            // 4.2.1/ there is order to fill
+            var firstBuyerTradeId = matchingSortedBidIds[0];
+            self.short_sell({
+                buyer_trade_id: firstBuyerTradeId,
+                max_amount: sharesLeft,
+                onTradeHash: function (data) {
+                    onTradeHash(tradeOrderId, data);
+                },
+                onCommitSent: function (data) {
+                    onCommitSent(tradeOrderId, data);
+                },
+                onCommitSuccess: function (data) {
+                    onCommitSuccess(tradeOrderId, data);
+                },
+                onCommitFailed: function (data) {
+                    onCommitFailed(tradeOrderId, data);
+                },
+                onNextBlock: function (data) {
+                    onNextBlock(tradeOrderId, data);
+                },
+                onTradeSent: function (data) {
+                    onTradeSent(tradeOrderId, data);
+                },
+                onTradeSuccess: function (data) {
+                    onTradeSuccess(tradeOrderId, data);
+                    var newSharesLeft = new BigNumber(data.callReturn[1], 10);
+                    if (newSharesLeft.gt(constants.ZERO)) {
+                        // not all user shares were shorted, recursively short
+                        userTradeOrder.sharesToSell = newSharesLeft.toFixed();
+                        shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), userTradeOrder);
+                    }
+                },
+                onTradeFailed: function (data) {
+                    onTradeFailed(tradeOrderId, data);
+                }
+            });
+        } else {
+            // 4.2.2/ no order to fill
+            self.buyCompleteSets({
+                market: market,
+                amount: userTradeOrder.sharesToSell,
+                onSent: function (data) {
+                    onBuyCompleteSetsSent(requestId, data);
+                },
+                onSuccess: function (data) {
+                    onBuyCompleteSetsSuccess(requestId, data);
+                    self.sell({
+                        amount: sharesLeft.toFixed(),
+                        price: userTradeOrder.limitPrice,
+                        market: market,
+                        outcome: userTradeOrder.outcomeID,
+                        onSent: function (data) {
+                            onBuySellSent(requestId, data);
+                        },
+                        onSuccess: function (data) {
+                            onBuySellSuccess(requestId, data);
+                        },
+                        onFailed: function (data) {
+                            onBuySellFailed(requestId, data);
+                        }
+                    });
+                },
+                onFailed: function (data) {
+                    onBuyCompleteSetsFailed(requestId, data);
+                }
+            });
+        }
+    }
+
+    if (isScalar) {
+        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
+    }
+    if (userTradeOrder.type === "buy") {
+        // 1.1/ user wants to buy
+        var matchingSortedAskIds = Object.keys(marketOrderBook.sell)
+            .map(function (askId) {
+                return marketOrderBook.sell[askId];
+            })
+            .filter(function (ask) {
+                return ask.outcome === userTradeOrder.outcomeID &&
+                    parseFloat(ask.price) <= userTradeOrder.limitPrice;
+            }, this)
+            .sort(function compareOrdersByPriceAsc(order1, order2) {
+                return order1.price < order2.price ? -1 : 0;
+            })
+            .map(function (ask) {
+                return ask.id;
+            });
+
+        if (matchingSortedAskIds.length === 0) {
+            // 2/ there are no suitable asks on order book
+            this.buy({
+                amount: userTradeOrder.etherToBuy,
+                price: userTradeOrder.limitPrice,
+                market: market,
+                outcome: userTradeOrder.outcomeID,
+                onSent: function onBuySentInner(data) {
+                    onBuySellSent(requestId, data);
+                },
+                onSuccess: function onBuySuccessInner(data) {
+                    onBuySellSuccess(requestId, data);
+                },
+                onFailed: function onBuyFailureInner(data) {
+                    onBuySellFailed(requestId, data);
+                }
+            });
+        } else {
+            // 3/ there are orders on order book to match
+            this.trade({
+                max_value: userTradeOrder.etherToBuy,
+                max_amount: 0,
+                trade_ids: matchingSortedAskIds,
+                onTradeHash: function (data) {
+                    onTradeHash(requestId, data);
+                },
+                onCommitSent: function (data) {
+                    onCommitSent(requestId, data);
+                },
+                onCommitSuccess: function (data) {
+                    onCommitSuccess(requestId, data);
+                },
+                onCommitFailed: function (data) {
+                    onCommitFailed(requestId, data);
+                },
+                onNextBlock: function (data) {
+                    onNextBlock(requestId, data);
+                },
+                onTradeSent: function (data) {
+                    onTradeSent(requestId, data);
+                },
+                onTradeSuccess: function localOnTradeSuccess(data) {
+                    var etherNotFilled = Number(data.callReturn[1]);
+                    if (etherNotFilled > 0) {
+                        // 3.1/ order was partially filled so place bid on order book
+                        self.buy({
+                            amount: etherNotFilled,
+                            price: userTradeOrder.limitPrice,
+                            market: market,
+                            outcome: userTradeOrder.outcomeID,
+                            onSent: function localOnBuySent(data) {
+                                onBuySellSent(requestId, data);
+                            },
+                            onSuccess: function localOnBuySuccess(data) {
+                                onBuySellSuccess(requestId, data);
+                            },
+                            onFailed: function localOnBuyFailure(data) {
+                                onBuySellFailed(requestId, data);
+                            }
+                        });
+                    }
+                    onTradeSuccess(requestId, data);
+                },
+                onTradeFailed: function (data) {
+                    onTradeFailed(requestId, data);
+                }
+            });
+        }
+    } else {
+        // 1.2/ user wants to sell
+        var matchingSortedBidIds = Object.keys(marketOrderBook.buy)
+            .map(function (buyId) {
+                return marketOrderBook.buy[buyId];
+            })
+            .filter(function (bid) {
+                return bid.outcome === userTradeOrder.outcomeID &&
+                    parseFloat(bid.price) >= userTradeOrder.limitPrice;
+            })
+            .sort(function compareOrdersByPriceDesc(order1, order2) {
+                return order1.price < order2.price ? 1 : 0;
+            })
+            .map(function (bid) {
+                return bid.id;
+            });
+
+        var hasUserPosition = userPosition && userPosition.qtyShares > 0;
+        if (hasUserPosition) {
+            if (matchingSortedBidIds.length === 0) {
+                // 2/ no bids to match => place ask on order book
+                this.sell({
+                    amount: userTradeOrder.sharesToSell,
+                    price: userTradeOrder.limitPrice,
+                    market: market,
+                    outcome: userTradeOrder.outcomeID,
+                    onSent: function localOnSellSent(data) {
+                        onBuySellSent(requestId, data);
+                    },
+                    onSuccess: function localOnSellSuccess(data) {
+                        onBuySellSuccess(requestId, data);
+                    },
+                    onFailed: function localOnSellFailure(data) {
+                        onBuySellFailed(requestId, data);
+                    }
+                });
+            } else {
+                // 4.1/ there are bids to match
+                this.trade({
+                    max_value: 0,
+                    max_amount: userTradeOrder.sharesToSell,
+                    trade_ids: matchingSortedBidIds,
+                    onTradeHash: function (data) {
+                        onTradeHash(requestId, data);
+                    },
+                    onCommitSent: function (data) {
+                        onCommitSent(requestId, data);
+                    },
+                    onCommitSuccess: function (data) {
+                        onCommitSuccess(requestId, data);
+                    },
+                    onCommitFailed: function (data) {
+                        onCommitFailed(requestId, data);
+                    },
+                    onNextBlock: function (data) {
+                        onNextBlock(requestId, data);
+                    },
+                    onTradeSent: function (data) {
+                        onTradeSent(requestId, data);
+                    },
+                    onTradeSuccess: function localOnTradeSuccess(data) {
+                        var sharesNotSold = Number(data.callReturn[2]);
+                        if (sharesNotSold > 0) {
+                            // 4.1.2 order was partially filled
+                            self.sell({
+                                amount: sharesNotSold,
+                                price: userTradeOrder.limitPrice,
+                                market: market,
+                                outcome: userTradeOrder.outcomeID,
+                                onSent: function (data) {
+                                    onBuySellSent(requestId, data);
+                                },
+                                onSuccess: function (data) {
+                                    onBuySellSuccess(requestId, data);
+                                },
+                                onFailed: function (data) {
+                                    onBuySellFailed(requestId, data);
+                                }
+                            });
+                        }
+                        onTradeSuccess(requestId, data);
+                    },
+                    onTradeFailed: function (data) {
+                        onTradeFailed(requestId, data);
+                    }
+                });
+            }
+        } else {
+            // 4.2/ no user position
+            shortSellUntilZero(requestId, matchingSortedBidIds, userTradeOrder);
+        }
+    }
+};
+
+},{"./constants":226,"./utilities":251,"bignumber.js":80}],251:[function(require,module,exports){
+(function (process,Buffer){
+"use strict";
+
+var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+
+var crypto = require("crypto");
+var BigNumber = require("bignumber.js");
+var clone = require("clone");
+var abi = require("augur-abi");
+var constants = require("./constants");
+
+BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
+
+module.exports = {
+
+    noop: function () {},
+
+    pass: function (o) { return o; },
+
+    is_function: function (f) {
+        return Object.prototype.toString.call(f) === "[object Function]";
+    },
+
+    STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
+
+    ARGUMENT_NAMES: /([^\s,]+)/g,
+
+    compose: function (prepare, callback) {
+        if (!this.is_function(callback)) return null;
+        if (!this.is_function(prepare)) return callback;
+        return function (result) { return prepare(result, callback); };
+    },
+
+    labels: function (func) {
+        var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
+        var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
+        if (result === null) result = [];
+        return result;
+    },
+
+    unpack: function (o, labels, args) {
+        var params = [], cb = [];
+
+        // unpack object argument
+        if (o !== undefined && o !== null && o.constructor === Object &&
+            labels && labels.constructor === Array && labels.length) {
+            for (var i = 0, len = labels.length; i < len; ++i) {
+                if (o[labels[i]] !== undefined) {
+                    if (o[labels[i]].constructor === Function) {
+                        cb.push(o[labels[i]]);
+                    } else {
+                        params.push(o[labels[i]]);
+                    }
+                }
+            }
+
+        // unpack positional arguments
+        } else {
+            for (var j = 0, arglen = args.length; j < arglen; ++j) {
+                if (args[j] !== undefined) {
+                    if (args[j] && args[j].constructor === Function) {
+                        cb.push(args[j]);
+                    } else {
+                        params.push(args[j]);
+                    }
+                }
+            }
+        }
+
+        return { params: params, cb: cb };
+    },
+
+    sha256: function (hashable) {
+        var x = clone(hashable);
+        if (x && x.constructor === Array) {
+            var digest, cat = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                if (x[i] !== null && x[i] !== undefined) {
+
+                    // array element is a javascript number
+                    // (base-10 numbers)
+                    if (x[i].constructor === Number) {
+                        x[i] = abi.bignum(x[i]);
+                        if (x[i].lt(constants.ZERO)) {
+                            x[i] = x[i].add(abi.constants.MOD);
+                        }
+                        cat += abi.encode_int(x[i]);
+
+                    // array element is a string: text or hex
+                    } else if (x[i].constructor === String) {
+
+                        // negative hex
+                        if (x[i].slice(0,1) === '-') {
+                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
+                            cat += abi.encode_int(x[i]);
+
+                        // positive hex
+                        } else if (x[i].slice(0,2) === "0x") {
+                            cat += abi.pad_left(x[i].slice(2));
+
+                        // text string
+                        } else {
+                            cat += new Buffer(x[i], "utf8").toString("hex");
+                        }
+                    }
+                }
+            }
+            digest = new BigNumber(this.sha256(new Buffer(cat, "hex")), 16);
+            if (digest.gt(new BigNumber(2).toPower(255))) {
+                return abi.hex(digest.sub(abi.constants.MOD));
+            }
+            return abi.hex(digest);
+        }
+        return crypto.createHash("sha256").update(x).digest("hex");
+    },
+
+    serialize: function (x) {
+        var serialized;
+        if (x !== null && x !== undefined) {
+
+            // array element is a javascript number
+            // (base-10 numbers)
+            if (x.constructor === Number) {
+                x = abi.bignum(x);
+                if (x.lt(constants.ZERO)) {
+                    x = x.add(abi.constants.MOD);
+                }
+                serialized = abi.encode_int(x);
+
+            // array element is a string: text or hex
+            } else if (x.constructor === String) {
+
+                // negative hex
+                if (x.slice(0,1) === '-') {
+                    x = abi.bignum(x).add(abi.constants.MOD).toFixed();
+                    serialized = abi.encode_int(x);
+
+                // positive hex
+                } else if (x.slice(0,2) === "0x") {
+                    serialized = abi.pad_left(x.slice(2));
+
+                // text string
+                } else {
+                    serialized = new Buffer(x, "utf8").toString("hex");
+                }
+            }
+        }
+        return serialized;
+    },
+
+    sha3: function (hashable) {
+        var x = clone(hashable);
+        var serialized;
+        if (x && x.constructor === Array) {
+            serialized = "";
+            for (var i = 0, n = x.length; i < n; ++i) {
+                serialized += this.serialize(x[i]);
+            }
+        } else {
+            serialized = this.serialize(x);
+        }
+        return abi.prefix_hex(abi.sha3(serialized));
+    }
+
+};
+
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"./constants":226,"_process":185,"augur-abi":1,"bignumber.js":80,"buffer":114,"clone":116,"crypto":123}],252:[function(require,module,exports){
+/**
+ * Basic Ethereum connection tasks.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var async = require("async");
+var rpc = require("ethrpc");
+var contracts = require("augur-contracts");
+var network_id = "2";
+
+function noop() {}
+
+function is_function(f) {
+    return Object.prototype.toString.call(f) === "[object Function]";
+}
+
+function clone(obj) {
+    if (null === obj || "object" !== typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
+var api = new contracts.Tx(network_id);
+
+module.exports = {
+
+    debug: false,
+
+    from: null,
+
+    coinbase: null,
+
+    connection: null,
+
+    rpc: rpc,
+
+    network_id: network_id,
+
+    contracts: contracts[network_id],
+
+    init_contracts: contracts[network_id],
+
+    custom_contracts: null,
+
+    api: api,
+
+    tx: api.functions,
+
+    has_value: function (o, v) {
+        for (var p in o) {
+            if (o.hasOwnProperty(p)) {
+                if (o[p] === v) return p;
+            }
+        }
+    },
+
+    detect_network: function (callback) {
+        var self = this;
+        if (this.connection === null &&
+            JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
+        {
+            if (is_function(callback)) {
+                this.rpc.version(function (version) {
+                    var key, method;
+                    if (version !== null && version !== undefined && !version.error) {
+                        self.network_id = version;
+                        self.api = new contracts.Tx(version, self.custom_contracts);
+                        self.contracts = clone(self.custom_contracts || contracts[self.network_id]);
+                        for (method in self.api.functions) {
+                            if (!self.api.functions.hasOwnProperty(method)) continue;
+                            key = self.has_value(self.init_contracts, self.api.functions[method].to);
+                            if (key) self.api.functions[method].to = self.contracts[key];
+                        }
+                        self.tx = self.api.functions;
+                    } else {
+                        return callback(version);
+                    }
+                    if (is_function(callback)) callback(null, version);
+                });
+            } else {
+                var key, method;
+                this.rpc.blockNumber(noop);
+                this.network_id = this.rpc.version() || "2";
+                this.api = new contracts.Tx(this.network_id, this.custom_contracts);
+                this.contracts = clone(this.custom_contracts || contracts[this.network_id]);
+                for (method in this.api.functions) {
+                    if (!this.api.functions.hasOwnProperty(method)) continue;
+                    key = this.has_value(this.init_contracts, this.api.functions[method].to);
+                    if (key) this.api.functions[method].to = this.contracts[key];
+                }
+                this.tx = this.api.functions;
+                return this.network_id;
+            }
+        } else {
+            if (is_function(callback)) callback();
+        }
+    },
+
+    from_field_tx: function (account) {
+        if (account && account !== "0x") {
+            for (var contract in this.tx) {
+                if (!this.tx.hasOwnProperty(contract)) continue;
+                for (var method in this.tx[contract]) {
+                    if (!this.tx[contract].hasOwnProperty(method)) continue;
+                    this.tx[contract][method].from = account;
+                }
+            }
+        }
+    },
+
+    get_coinbase: function (callback) {
+        var self = this;
+        if (is_function(callback)) {
+            this.rpc.coinbase(function (coinbase) {
+                if (coinbase && !coinbase.error && coinbase !== "0x") {
+                    self.coinbase = coinbase;
+                    self.from = self.from || coinbase;
+                    self.from_field_tx(self.from);
+                    if (callback) return callback(null, coinbase);
+                }
+                if (!self.coinbase && (self.rpc.nodes.local || self.rpc.ipcpath)) {
+                    self.rpc.accounts(function (accounts) {
+                        if (accounts && accounts.constructor === Array && accounts.length) {
+                            async.eachSeries(accounts, function (account, nextAccount) {
+                                if (self.unlocked(account)) return nextAccount(account);
+                                nextAccount();
+                            }, function (account) {
+                                if (!account) return callback("get_coinbase: coinbase not found");
+                                self.coinbase = account;
+                                self.from = self.from || account;
+                                self.from_field_tx(self.from);
+                                callback(null, account);
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            var accounts, num_accounts, i, method, m;
+            this.coinbase = this.rpc.coinbase();
+            if (!this.coinbase && this.rpc.nodes.local) {
+                accounts = this.rpc.accounts();
+                if (accounts && accounts.constructor === Array) {
+                    num_accounts = accounts.length;
+                    if (num_accounts === 1) {
+                        if (this.unlocked(accounts[0])) {
+                            this.coinbase = accounts[0];
+                        }
+                    } else {
+                        for (i = 0; i < num_accounts; ++i) {
+                            if (this.unlocked(accounts[i])) {
+                                this.coinbase = accounts[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (this.coinbase && !this.coinbase.error && this.coinbase !== "0x") {
+                this.from = this.from || this.coinbase;
+                for (method in this.tx) {
+                    if (!this.tx.hasOwnProperty(method)) continue;
+                    if (!this.tx[method].method) {
+                        for (m in this.tx[method]) {
+                            if (!this.tx[method].hasOwnProperty(m)) continue;
+                            this.tx[method][m].from = this.from;
+                        }
+                    } else {
+                        this.tx[method].from = this.from;
+                    }
+                }
+            } else {
+                throw new Error("get_coinbase: coinbase not found");
+            }
+        }
+    },
+
+    update_contracts: function () {
+        var key;
+        if (JSON.stringify(this.init_contracts) !== JSON.stringify(this.contracts)) {
+            for (var method in this.tx) {
+                if (!this.tx.hasOwnProperty(method)) continue;
+                if (!this.tx[method].method) {
+                    for (var m in this.tx[method]) {
+                        if (!this.tx[method].hasOwnProperty(m)) continue;
+                        key = this.has_value(this.init_contracts, this.tx[method][m].to);
+                        if (key) {
+                            this.tx[method][m].to = this.contracts[key];
+                        }
+                    }
+                } else {
+                    key = this.has_value(this.init_contracts, this.tx[method].to);
+                    if (key) {
+                        this.tx[method].to = this.contracts[key];
+                    }
+                }
+            }
+        }
+        this.init_contracts = clone(this.contracts);
+    },
+
+    connect: function (options, callback) {
+        var self = this;
+        if (!callback && is_function(options)) {
+            callback = options;
+            options = null;
+        }
+        options = options || {};
+        if (options.contracts) {
+            this.contracts = clone(options.contracts);
+            this.init_contracts = clone(options.contracts);
+            this.custom_contracts = clone(options.contracts);
+        }
+
+        // if this is the first attempt to connect, connect using the
+        // parameters provided by the user exactly
+        if ((options.http || options.ipc || options.ws) && !options.attempts) {
+            this.rpc.ipcpath = options.ipc || null;
+            this.rpc.nodes.local = options.http;
+            this.rpc.nodes.hosted = [];
+            this.rpc.wsUrl = options.ws;
+            this.rpc.rpcStatus.ws = 0;
+            this.rpc.rpcStatus.ipc = 0;
+
+        // if this is the second attempt to connect, fall back to the
+        // default hosted nodes
+        } else {
+            if (this.debug) {
+                console.debug("Connecting to hosted Ethereum node...");
+            }
+            this.rpc.ipcpath = null;
+            this.rpc.reset();
+            this.rpc.useHostedNode();
+            this.rpc.rpcStatus.ws = 0;
+            this.rpc.rpcStatus.ipc = 0;
+            if (this.debug) {
+                console.debug("HTTP RPC:", JSON.stringify(this.rpc.nodes.hosted, null, 2));
+                console.debug("WebSocket:", this.rpc.wsUrl);
+            }
+        }
+
+        // synchronous connect sequence
+        if (!is_function(callback)) {
+            try {
+                this.detect_network();
+                this.get_coinbase();
+                this.update_contracts();
+                this.connection = true;
+                return {
+                    http: this.rpc.nodes.local || this.rpc.nodes.hosted,
+                    ws: this.rpc.wsUrl,
+                    ipc: this.rpc.ipcpath
+                };
+            } catch (exc) {
+                if (this.debug) {
+                    console.warn("[sync] Couldn't connect to Ethereum", exc, JSON.stringify(options, null, 2));
+                }
+                this.connection = false;
+                if (!options.attempts) {
+                    options.attempts = 1;
+                    return this.connect(options);
+                }
+                return false;
+            }
+        }
+
+        // asynchronous connect sequence
+        callback = callback || noop;
+        async.series([
+            function (next) {
+                if (!options.http || !options.ws) return next();
+                var wsUrl = self.rpc.wsUrl;
+                var wsStatus = self.rpc.rpcStatus.ws;
+                self.rpc.wsUrl = null;
+                self.rpc.rpcStatus.ws = 0;
+                self.detect_network(function (err) {
+                    self.rpc.wsUrl = wsUrl;
+                    self.rpc.rpcStatus.ws = wsStatus;
+                    next(err);
+                });
+            },
+            this.detect_network.bind(this),
+            this.get_coinbase.bind(this)
+        ], function (err) {
+            if (err) {
+                if (self.debug) {
+                    console.warn("[async] Couldn't connect to Ethereum", err, JSON.stringify(options, null, 2));
+                }
+                self.connection = false;
+                if (!options.attempts) {
+                    options.attempts = 1;
+                    return self.connect(options, callback);
+                }
+                return callback(false);
+            }
+            self.update_contracts();
+            self.connection = true;
+            callback({
+                http: self.rpc.nodes.local || self.rpc.nodes.hosted,
+                ws: self.rpc.wsUrl,
+                ipc: self.rpc.ipcpath
+            });
+        });
+    },
+
+    connected: function (f) {
+        if (is_function(f)) {
+            return this.rpc.coinbase(function (coinbase) {
+                f(coinbase && !coinbase.error);
+            });
+        }
+        try {
+            this.rpc.coinbase();
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+};
+
+},{"async":253,"augur-contracts":58,"ethrpc":254}],253:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"_process":185,"dup":77}],254:[function(require,module,exports){
 (function (process){
 /**
  * JSON RPC methods for Ethereum
@@ -35161,10 +45158,10 @@ module.exports = {
     REQUIRED_CONFIRMATIONS: 5,
 
     // Maximum number of retry attempts for dropped transactions
-    TX_RETRY_MAX: 3,
+    TX_RETRY_MAX: 5,
 
     // Maximum number of transaction verification attempts
-    TX_POLL_MAX: 128,
+    TX_POLL_MAX: 1000,
 
     // Transaction polling interval
     TX_POLL_INTERVAL: 5000,
@@ -35357,6 +45354,7 @@ module.exports = {
             } else if (msg.method === "eth_subscription" && msg.params &&
                 msg.params.subscription && msg.params.result &&
                 this.subscriptions[msg.params.subscription]) {
+                // console.debug("eth_subscription message received:", JSON.stringify(msg, null, 2));
                 return this.subscriptions[msg.params.subscription](msg.params.result);
             }
             if (this.debug.broadcast) {
@@ -35419,17 +45417,18 @@ module.exports = {
         }
         this.websocket = new W3CWebSocket(this.wsUrl);
         this.websocket.onerror = function () {
-            if (self.debug.broadcast) {
+            // if (self.debug.broadcast) {
                 console.error("[ethrpc] WebSocket error", self.wsUrl, self.rpcStatus.ws);
-            }
+            // }
             self.rpcStatus.ws = -1;
             self.wsUrl = null;
         };
         this.websocket.onclose = function () {
-            if (self.rpcStatus.ws === 1) self.rpcStatus.ws = 0;
-            if (self.debug.broadcast) {
+            // if (self.debug.broadcast) {
                 console.warn("[ethrpc] WebSocket closed", self.wsUrl, self.rpcStatus.ws);
-            }
+            // }
+            var status = self.rpcStatus.ws;
+            if (status !== -1) self.rpcStatus.ws = 0;
             if (!calledCallback) callback(false);
         };
         this.websocket.onmessage = function (msg) {
@@ -36709,15274 +46708,17 @@ module.exports = {
 };
 
 }).call(this,require('_process'))
-},{"_process":191,"async":77,"augur-abi":1,"augur-contracts":159,"bignumber.js":80,"browser-request":84,"clone":116,"js-sha3":174,"net":111,"request":85,"sync-request":85,"websocket":85}],156:[function(require,module,exports){
-module.exports={
-  "events": {
-    "Approval": {
-      "contract": "SendReputation", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "_owner", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "_spender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "value", 
-          "type": "int256"
-        }
-      ], 
-      "name": "Approval(int256,int256,int256)", 
-      "signature": "0xe64e66bf3e94c88742c041103133494023640d143db88ec4aec44744744d85f1"
-    }, 
-    "Transfer": {
-      "contract": "SendReputation", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "_from", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "_to", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "_value", 
-          "type": "int256"
-        }
-      ], 
-      "name": "Transfer(int256,int256,int256)", 
-      "signature": "0x66e05b8a99642b6a77335be485dc593f0217aee37e6180f32909449b16ed7eca"
-    }, 
-    "buyAndSellShares_logReturn": {
-      "contract": "BuyAndSellShares", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "buyAndSellShares_logReturn(int256)", 
-      "signature": "0x9fbb0d8110bee15417200d9e638635c9436990b24f565fa2ce74f50f870171b6"
-    }, 
-    "closeMarket_logReturn": {
-      "contract": "CloseMarket", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "closeMarket_logReturn(int256)", 
-      "signature": "0x7111c90bbf79fe51a8f95606c2c44137f600abeb3b5631db7d06ed168c13eea7"
-    }, 
-    "completeSets_logReturn": {
-      "contract": "CompleteSets", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "completeSets_logReturn(int256)", 
-      "signature": "0x70a46893aa026bc51efe8d9b9c21c4d63fe015bb03feeb700d0d5bc537d980f8"
-    }, 
-    "consensus_logReturn": {
-      "contract": "Consensus", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "consensus_logReturn(int256)", 
-      "signature": "0x2c8fae543971d12ce9baeaa8ac11b4873683653fdcb1a6104f6e0c9d5c3ecf02"
-    }, 
-    "log_add_tx": {
-      "contract": "BuyAndSellShares", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "sender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradeid", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_add_tx(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x8dbed7bffe37a9907a92186110f23d8104f5967a71fb059f3b907ca9001fd160"
-    }, 
-    "log_cancel": {
-      "contract": "BuyAndSellShares", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "sender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradeid", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_cancel(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x9ecf4903f3efaf1549dc51545bd945f94d51923f37ce198a3b838125a2f397d5"
-    }, 
-    "log_fill_tx": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "market", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "sender", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": true, 
-          "name": "owner", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "type", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "price", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "amount", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradeid", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }
-      ], 
-      "name": "log_fill_tx(int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x715b9a9cb6dfb4fa9cb1ebc2eba40d2a7bd66aa8cef75f87a77d1ff05d29a3b6"
-    }, 
-    "makeReports_logReturn": {
-      "contract": "MakeReports", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "makeReports_logReturn(int256)", 
-      "signature": "0xc63250021b81c42e43223a77f306159f705fa6e54b1fbeaeeadaaa8340a38760"
-    }, 
-    "marketCreated": {
-      "contract": "CreateMarket", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "marketID", 
-          "type": "int256"
-        }
-      ], 
-      "name": "marketCreated(int256)", 
-      "signature": "0x63f140d7adcc464732c9379020aa9e5ce1b1e350796814d780ea3ca41d62a36b"
-    }, 
-    "penalize": {
-      "contract": "Consensus", 
-      "inputs": [
-        {
-          "indexed": true, 
-          "name": "user", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "outcome", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "oldrep", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "repchange", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "newafterrep", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "p", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "reportValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "penalize(int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x3253564cd022a8ec496277f26ccdaddf64e75973423eda45df329f60b2a0c6a7"
-    }, 
-    "trade_logArrayReturn": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnArray", 
-          "type": "int256[]"
-        }
-      ], 
-      "name": "trade_logArrayReturn(int256[])", 
-      "signature": "0x6a5b12f51adb25f3461c7108a9f5f8c509d374df9530d7dac8dfdd310929e39d"
-    }, 
-    "trade_logReturn": {
-      "contract": "Trade", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "returnValue", 
-          "type": "int256"
-        }
-      ], 
-      "name": "trade_logReturn(int256)", 
-      "signature": "0x1bbf36d9a7b2814880015722ce46ca5df561edceee37844559cf4dd31ecd5dfa"
-    }, 
-    "tradingFeeUpdated": {
-      "contract": "CreateMarket", 
-      "inputs": [
-        {
-          "indexed": false, 
-          "name": "marketID", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
-          "name": "tradingFee", 
-          "type": "int256"
-        }
-      ], 
-      "name": "tradingFeeUpdated(int256,int256)", 
-      "signature": "0xb8c735cc6495f8dac2581d532413dea78d7e03e0ff0880c32b4648c2145fba41"
-    }
-  }, 
-  "functions": {
-    "Backstops": {
-      "adjForkBondPaid": {
-        "inputs": [
-          "event", 
-          "amount"
-        ], 
-        "method": "adjForkBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "doRoundTwoRefund": {
-        "inputs": [
-          "sender", 
-          "event"
-        ], 
-        "method": "doRoundTwoRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBondAmount": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondAmount", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBondPaid": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBondPoster": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondPoster", 
-        "returns": "address", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBondReturned": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBondReturned", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getFinal": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getFinal", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkBondPaid": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkBondPoster": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkBondPoster", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkedOverEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkedOverEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMoved": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMoved", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalBranch": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalVotePeriod": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalVotePeriod", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getResolved": {
-        "inputs": [
-          "branch", 
-          "forkPeriod"
-        ], 
-        "method": "getResolved", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRoundTwo": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRoundTwo", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "increaseBondPaid": {
-        "inputs": [
-          "event", 
-          "amount"
-        ], 
-        "method": "increaseBondPaid", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBondAmount": {
-        "inputs": [
-          "event", 
-          "amount"
-        ], 
-        "method": "setBondAmount", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBondPoster": {
-        "inputs": [
-          "event", 
-          "bondPoster"
-        ], 
-        "method": "setBondPoster", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBondReturned": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setBondReturned", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setFinal": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setFinal", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setForkBondPoster": {
-        "inputs": [
-          "event", 
-          "poster"
-        ], 
-        "method": "setForkBondPoster", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkedOverEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setForkedOverEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setMoved": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setMoved", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setOriginalBranch": {
-        "inputs": [
-          "event", 
-          "branch"
-        ], 
-        "method": "setOriginalBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOriginalEthicality": {
-        "inputs": [
-          "event", 
-          "ethicality"
-        ], 
-        "method": "setOriginalEthicality", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOriginalOutcome": {
-        "inputs": [
-          "event", 
-          "originalOutcome"
-        ], 
-        "method": "setOriginalOutcome", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOriginalVotePeriod": {
-        "inputs": [
-          "event", 
-          "period"
-        ], 
-        "method": "setOriginalVotePeriod", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setResolved": {
-        "inputs": [
-          "branch", 
-          "forkPeriod", 
-          "winner"
-        ], 
-        "method": "setResolved", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRoundTwo": {
-        "inputs": [
-          "event", 
-          "roundTwo"
-        ], 
-        "method": "setRoundTwo", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRoundTwoRefund": {
-        "inputs": [
-          "event", 
-          "amt"
-        ], 
-        "method": "setRoundTwoRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Branches": {
-      "addMarketToBranch": {
-        "inputs": [
-          "branch", 
-          "market"
-        ], 
-        "method": "addMarketToBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBaseReporters": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getBaseReporters", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranchByNum": {
-        "inputs": [
-          "branchNumber"
-        ], 
-        "method": "getBranchByNum", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranches": {
-        "method": "getBranches", 
-        "returns": "hash[]"
-      }, 
-      "getCreationDate": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getCreationDate", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventForkedOver": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getEventForkedOver", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getForkPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getInitialBalance": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getInitialBalance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getMarketsInBranch": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getMarketsInBranch", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMinTradingFee": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getMinTradingFee", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumBranches": {
-        "method": "getNumBranches", 
-        "returns": "number"
-      }, 
-      "getNumMarketsBranch": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getNumMarketsBranch", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOracleOnly": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getOracleOnly", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getParent": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getParent", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getParentPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getParentPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getPeriodLength": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getPeriodLength", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getSomeMarketsInBranch": {
-        "inputs": [
-          "branch", 
-          "initial", 
-          "last"
-        ], 
-        "method": "getSomeMarketsInBranch", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getVotePeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getVotePeriod", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "incrementPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "incrementPeriod", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "initDefaultBranch": {
-        "method": "initDefaultBranch", 
-        "returns": "number", 
-        "send": true
-      }, 
-      "initializeBranch": {
-        "inputs": [
-          "ID", 
-          "currentVotePeriod", 
-          "periodLength", 
-          "minTradingFee", 
-          "oracleOnly", 
-          "parentPeriod", 
-          "parent"
-        ], 
-        "method": "initializeBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBaseReporters": {
-        "inputs": [
-          "branch", 
-          "num"
-        ], 
-        "method": "setBaseReporters", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEventForkedOver": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "setEventForkedOver", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "setForkPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setInitialBalance": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "balance"
-        ], 
-        "method": "setInitialBalance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "BuyAndSellShares": {
-      "buy": {
-        "inputs": [
-          "amount", 
-          "price", 
-          "market", 
-          "outcome"
-        ], 
-        "method": "buy", 
-        "mutable": true, 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "cancel": {
-        "inputs": [
-          "trade_id"
-        ], 
-        "method": "cancel", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "sell": {
-        "inputs": [
-          "amount", 
-          "price", 
-          "market", 
-          "outcome"
-        ], 
-        "method": "sell", 
-        "mutable": true, 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Cash": {
-      "addCash": {
-        "inputs": [
-          "ID", 
-          "amount"
-        ], 
-        "method": "addCash", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "balance": {
-        "inputs": [
-          "address"
-        ], 
-        "method": "balance", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "depositEther": {
-        "method": "depositEther", 
-        "returns": "number", 
-        "send": true
-      }, 
-      "initiateOwner": {
-        "inputs": [
-          "account"
-        ], 
-        "method": "initiateOwner", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "send": {
-        "inputs": [
-          "recver", 
-          "value"
-        ], 
-        "method": "send", 
-        "returns": "unfix", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "sendFrom": {
-        "inputs": [
-          "recver", 
-          "value", 
-          "from"
-        ], 
-        "method": "sendFrom", 
-        "returns": "unfix", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setCash": {
-        "inputs": [
-          "address", 
-          "balance"
-        ], 
-        "method": "setCash", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "subtractCash": {
-        "inputs": [
-          "ID", 
-          "amount"
-        ], 
-        "method": "subtractCash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "withdrawEther": {
-        "inputs": [
-          "to", 
-          "value"
-        ], 
-        "method": "withdrawEther", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarket": {
-      "claimProceeds": {
-        "inputs": [
-          "branch", 
-          "market"
-        ], 
-        "method": "claimProceeds", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "closeMarket": {
-        "inputs": [
-          "branch", 
-          "market", 
-          "sender"
-        ], 
-        "method": "closeMarket", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarketOne": {
-      "oneOutcome": {
-        "inputs": [
-          "market", 
-          "winningOutcome", 
-          "sender", 
-          "categoricalPointFive", 
-          "numOutcomes"
-        ], 
-        "method": "oneOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CloseMarketTwo": {
-      "twoOutcomes": {
-        "inputs": [
-          "market", 
-          "winningOutcome", 
-          "event", 
-          "sender"
-        ], 
-        "method": "twoOutcomes", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CollectFees": {
-      "collectFees": {
-        "inputs": [
-          "branch", 
-          "sender"
-        ], 
-        "method": "collectFees", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CompleteSets": {
-      "buyCompleteSets": {
-        "inputs": [
-          "market", 
-          "amount"
-        ], 
-        "method": "buyCompleteSets", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "sellCompleteSets": {
-        "inputs": [
-          "market", 
-          "amount"
-        ], 
-        "method": "sellCompleteSets", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CompositeGetters": {
-      "batchGetMarketInfo": {
-        "inputs": [
-          "marketIDs"
-        ], 
-        "method": "batchGetMarketInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256[]"
-        ]
-      }, 
-      "getMarketInfo": {
-        "inputs": [
-          "marketID"
-        ], 
-        "method": "getMarketInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketsInfo": {
-        "inputs": [
-          "branch", 
-          "offset", 
-          "numMarketsToLoad"
-        ], 
-        "method": "getMarketsInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getOrderBook": {
-        "inputs": [
-          "marketID"
-        ], 
-        "method": "getOrderBook", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Consensus": {
-      "incrementPeriodAfterReporting": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "incrementPeriodAfterReporting", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "penalizeWrong": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "penalizeWrong", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "ConsensusData": {
-      "doRefund": {
-        "inputs": [
-          "sender", 
-          "refunder"
-        ], 
-        "method": "doRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBaseReportersLastPeriod": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getBaseReportersLastPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDenominator": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getDenominator", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getFeeFirst": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getFeeFirst", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getFeesCollected": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "getFeesCollected", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNotEnoughPenalized": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "getNotEnoughPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPenalized": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "event"
-        ], 
-        "method": "getPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPenalizedNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getPenalizedNum", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPenalizedUpTo": {
-        "inputs": [
-          "branch", 
-          "sender"
-        ], 
-        "method": "getPenalizedUpTo", 
-        "returns": "int", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPeriodBalance": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getPeriodBalance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRepRedistributionDone": {
-        "inputs": [
-          "branch", 
-          "reporter"
-        ], 
-        "method": "getRepRedistributionDone", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getSlashed": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "reporter"
-        ], 
-        "method": "getSlashed", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "increaseDenominator": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "amount"
-        ], 
-        "method": "increaseDenominator", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "increasePenalizedNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "amount"
-        ], 
-        "method": "increasePenalizedNum", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBaseReportersLastPeriod": {
-        "inputs": [
-          "branch", 
-          "amount"
-        ], 
-        "method": "setBaseReportersLastPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setFeeFirst": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "val"
-        ], 
-        "method": "setFeeFirst", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setFeesCollected": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "setFeesCollected", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setNotEnoughPenalized": {
-        "inputs": [
-          "branch", 
-          "address", 
-          "period"
-        ], 
-        "method": "setNotEnoughPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPenalized": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "event"
-        ], 
-        "method": "setPenalized", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPenalizedUpTo": {
-        "inputs": [
-          "branch", 
-          "sender", 
-          "period"
-        ], 
-        "method": "setPenalizedUpTo", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPeriodBalance": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "balance"
-        ], 
-        "method": "setPeriodBalance", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRefund": {
-        "inputs": [
-          "refunder", 
-          "amt"
-        ], 
-        "method": "setRefund", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setSlashed": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "reporter"
-        ], 
-        "method": "setSlashed", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CreateBranch": {
-      "createSubbranch": {
-        "inputs": [
-          "description", 
-          "periodLength", 
-          "parent", 
-          "minTradingFee", 
-          "oracleOnly"
-        ], 
-        "method": "createSubbranch", 
-        "returns": "hash", 
-        "send": true, 
-        "signature": [
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "CreateMarket": {
-      "createEvent": {
-        "inputs": [
-          "branch", 
-          "description", 
-          "expDate", 
-          "minValue", 
-          "maxValue", 
-          "numOutcomes", 
-          "resolution"
-        ], 
-        "method": "createEvent", 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "createMarket": {
-        "inputs": [
-          "branch", 
-          "description", 
-          "tradingFee", 
-          "event", 
-          "tag1", 
-          "tag2", 
-          "tag3", 
-          "makerFees", 
-          "extraInfo"
-        ], 
-        "method": "createMarket", 
-        "mutable": true, 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "createSingleEventMarket": {
-        "inputs": [
-          "branch", 
-          "description", 
-          "expDate", 
-          "minValue", 
-          "maxValue", 
-          "numOutcomes", 
-          "resolution", 
-          "tradingFee", 
-          "tag1", 
-          "tag2", 
-          "tag3", 
-          "makerFees", 
-          "extraInfo"
-        ], 
-        "method": "createSingleEventMarket", 
-        "mutable": true, 
-        "returns": "hash", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "pushMarketForward": {
-        "inputs": [
-          "branch", 
-          "market"
-        ], 
-        "method": "pushMarketForward", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "updateTradingFee": {
-        "inputs": [
-          "branch", 
-          "market", 
-          "tradingFee", 
-          "makerFees"
-        ], 
-        "method": "updateTradingFee", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "EventResolution": {
-      "determineWinningOutcomes": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "determineWinningOutcomes", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "resolveBinary": {
-        "inputs": [
-          "event", 
-          "market", 
-          "branch", 
-          "votingPeriodEvent"
-        ], 
-        "method": "resolveBinary", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "resolveCategoricalOrScalar": {
-        "inputs": [
-          "scaled_min", 
-          "scaled_max", 
-          "event", 
-          "market", 
-          "branch", 
-          "votingPeriodEvent"
-        ], 
-        "method": "resolveCategoricalOrScalar", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Events": {
-      "addMarket": {
-        "inputs": [
-          "event", 
-          "marketID"
-        ], 
-        "method": "addMarket", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addPast24": {
-        "inputs": [
-          "period"
-        ], 
-        "method": "addPast24", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBond": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBond", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranch": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEthical": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEthical", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEthics": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEthics", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventBranch": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventBranch", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventInfo": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventInfo", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getEventPushedUp": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getEventPushedUp", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getExpiration": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getExpiration", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkEthicality": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForked": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForked", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getForkedDone": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getForkedDone", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarket": {
-        "inputs": [
-          "event", 
-          "marketIndex"
-        ], 
-        "method": "getMarket", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getMarkets": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMarkets", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMaxValue": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMaxValue", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMinValue": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getMinValue", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumMarkets": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getNumMarkets", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumOutcomes": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getNumOutcomes", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOriginalExpiration": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOriginalExpiration", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getOutcome", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getPast24": {
-        "inputs": [
-          "period"
-        ], 
-        "method": "getPast24", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getRejected": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRejected", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getRejectedPeriod": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRejectedPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getReportingThreshold": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getReportingThreshold", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getResolution": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getResolution", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getResolutionLength": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getResolutionLength", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getUncaughtOutcome": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getUncaughtOutcome", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getmode": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getmode", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "initializeEvent": {
-        "inputs": [
-          "ID", 
-          "branch", 
-          "expirationDate", 
-          "minValue", 
-          "maxValue", 
-          "numOutcomes", 
-          "resolution"
-        ], 
-        "method": "initializeEvent", 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes"
-        ]
-      }, 
-      "setBond": {
-        "inputs": [
-          "event", 
-          "bond"
-        ], 
-        "method": "setBond", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBranch": {
-        "inputs": [
-          "event", 
-          "branch"
-        ], 
-        "method": "setBranch", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEthics": {
-        "inputs": [
-          "event", 
-          "ethicality"
-        ], 
-        "method": "setEthics", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEventPushedUp": {
-        "inputs": [
-          "event", 
-          "val"
-        ], 
-        "method": "setEventPushedUp", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setExpiration": {
-        "inputs": [
-          "event", 
-          "date"
-        ], 
-        "method": "setExpiration", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkDone": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setForkDone", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setForkEthicality": {
-        "inputs": [
-          "event", 
-          "value"
-        ], 
-        "method": "setForkEthicality", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForkOutcome": {
-        "inputs": [
-          "event", 
-          "value"
-        ], 
-        "method": "setForkOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setForked": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setForked", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setOriginalExpiration": {
-        "inputs": [
-          "event", 
-          "date"
-        ], 
-        "method": "setOriginalExpiration", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setOutcome": {
-        "inputs": [
-          "ID", 
-          "outcome"
-        ], 
-        "method": "setOutcome", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRejected": {
-        "inputs": [
-          "event", 
-          "period"
-        ], 
-        "method": "setRejected", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setThreshold": {
-        "inputs": [
-          "event", 
-          "threshold"
-        ], 
-        "method": "setThreshold", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setUncaughtOutcome": {
-        "inputs": [
-          "event", 
-          "outcome"
-        ], 
-        "method": "setUncaughtOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setmode": {
-        "inputs": [
-          "event", 
-          "mode"
-        ], 
-        "method": "setmode", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "ExpiringEvents": {
-      "addEvent": {
-        "inputs": [
-          "branch", 
-          "futurePeriod", 
-          "eventID", 
-          "subsidy"
-        ], 
-        "method": "addEvent", 
-        "returns": "int256", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addRepEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "event", 
-          "amount"
-        ], 
-        "method": "addRepEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addReportToEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "eventID", 
-          "sender"
-        ], 
-        "method": "addReportToEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addReportersPaidSoFar": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "addReportersPaidSoFar", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addRoundTwo": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "addRoundTwo", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addToWeightOfReport": {
-        "inputs": [
-          "period", 
-          "event", 
-          "report", 
-          "amount"
-        ], 
-        "method": "addToWeightOfReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "adjustPeriodShareValueOutstanding": {
-        "inputs": [
-          "branch", 
-          "expIndex", 
-          "amount"
-        ], 
-        "method": "adjustPeriodShareValueOutstanding", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "deleteEvent": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "deleteEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getAfterRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getAfterRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBeforeRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getBeforeRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getCurrentMode": {
-        "inputs": [
-          "period", 
-          "event"
-        ], 
-        "method": "getCurrentMode", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getCurrentModeItems": {
-        "inputs": [
-          "period", 
-          "event"
-        ], 
-        "method": "getCurrentModeItems", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEncryptedReport": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "event"
-        ], 
-        "method": "getEncryptedReport", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEthicReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "sender"
-        ], 
-        "method": "getEthicReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEvent": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "eventIndex"
-        ], 
-        "method": "getEvent", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventIndex": {
-        "inputs": [
-          "period", 
-          "eventID"
-        ], 
-        "method": "getEventIndex", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEvents": {
-        "inputs": [
-          "branch", 
-          "expDateIndex"
-        ], 
-        "method": "getEvents", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventsRange": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "start", 
-          "end"
-        ], 
-        "method": "getEventsRange", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getLesserReportNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "getLesserReportNum", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumEventsToReportOn": {
-        "inputs": [
-          "branch", 
-          "expDateIndex"
-        ], 
-        "method": "getNumEventsToReportOn", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumRemoved": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getNumRemoved", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumReportsActual": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "getNumReportsActual", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumReportsEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "eventID"
-        ], 
-        "method": "getNumReportsEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumRequired": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getNumRequired", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumRoundTwo": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "getNumRoundTwo", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getNumberEvents": {
-        "inputs": [
-          "branch", 
-          "expDateIndex"
-        ], 
-        "method": "getNumberEvents", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPeriodDormantRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender"
-        ], 
-        "method": "getPeriodDormantRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPeriodRepConstant": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "getPeriodRepConstant", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRepEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "event"
-        ], 
-        "method": "getRepEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "sender"
-        ], 
-        "method": "getReport", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReportHash": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "event"
-        ], 
-        "method": "getReportHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReportersPaidSoFar": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "getReportersPaidSoFar", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRequired": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "getRequired", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getShareValue": {
-        "inputs": [
-          "branch", 
-          "expIndex"
-        ], 
-        "method": "getShareValue", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getSubsidy": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "getSubsidy", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getWeightOfReport": {
-        "inputs": [
-          "period", 
-          "event", 
-          "report"
-        ], 
-        "method": "getWeightOfReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "moveEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "moveEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "refundCost": {
-        "inputs": [
-          "to", 
-          "value"
-        ], 
-        "method": "refundCost", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "removeEvent": {
-        "inputs": [
-          "branch", 
-          "period"
-        ], 
-        "method": "removeEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setAfterRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "rep", 
-          "sender"
-        ], 
-        "method": "setAfterRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setBeforeRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "rep", 
-          "sender"
-        ], 
-        "method": "setBeforeRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setCurrentMode": {
-        "inputs": [
-          "period", 
-          "event", 
-          "mode"
-        ], 
-        "method": "setCurrentMode", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setCurrentModeItems": {
-        "inputs": [
-          "period", 
-          "event", 
-          "modeReport"
-        ], 
-        "method": "setCurrentModeItems", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEncryptedReport": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "report", 
-          "salt", 
-          "event"
-        ], 
-        "method": "setEncryptedReport", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEthicReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "ethics", 
-          "sender"
-        ], 
-        "method": "setEthicReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setEventRequired": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event"
-        ], 
-        "method": "setEventRequired", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setLesserReportNum": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "num"
-        ], 
-        "method": "setLesserReportNum", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setNumEventsToReportOn": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "setNumEventsToReportOn", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setNumReportsEvent": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "eventID", 
-          "num"
-        ], 
-        "method": "setNumReportsEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPeriodDormantRep": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "rep", 
-          "sender"
-        ], 
-        "method": "setPeriodDormantRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPeriodRepConstant": {
-        "inputs": [
-          "branch", 
-          "votePeriod", 
-          "sender", 
-          "value"
-        ], 
-        "method": "setPeriodRepConstant", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setReport": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "event", 
-          "report", 
-          "sender"
-        ], 
-        "method": "setReport", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setReportHash": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "reportHash", 
-          "event"
-        ], 
-        "method": "setReportHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Faucets": {
-      "cashFaucet": {
-        "method": "cashFaucet", 
-        "returns": "number", 
-        "send": true
-      }, 
-      "claimInitialRep": {
-        "inputs": [
-          "parent", 
-          "branch"
-        ], 
-        "method": "claimInitialRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "fundNewAccount": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "fundNewAccount", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "reputationFaucet": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "reputationFaucet", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "ForkPenalize": {
-      "penalizeOnForkedEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "penalizeOnForkedEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "proportionCorrectForkEvent": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "proportionCorrectForkEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Forking": {
-      "exchangeRate": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "exchangeRate", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "fork": {
-        "inputs": [
-          "event", 
-          "branch", 
-          "forkedOverEthicality"
-        ], 
-        "method": "fork", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "move_event": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "move_event", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "resolveForkEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "resolveForkEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "resolveForkedEvent": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "resolveForkedEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "resolve_fork": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "resolve_fork", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "FxpFunctions": {
-      "fx_exp": {
-        "inputs": [
-          "x"
-        ], 
-        "method": "fx_exp", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "fx_log": {
-        "inputs": [
-          "x"
-        ], 
-        "method": "fx_log", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "sqrt": {
-        "inputs": [
-          "n"
-        ], 
-        "method": "sqrt", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Info": {
-      "getCreationFee": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getCreationFee", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getCreator": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getCreator", 
-        "returns": "address", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDescription": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getDescription", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDescriptionLength": {
-        "inputs": [
-          "ID"
-        ], 
-        "method": "getDescriptionLength", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setInfo": {
-        "inputs": [
-          "ID", 
-          "description", 
-          "creator", 
-          "fee"
-        ], 
-        "method": "setInfo", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "LogReturn": {}, 
-    "MakeReports": {
-      "makeHash": {
-        "inputs": [
-          "salt", 
-          "report", 
-          "eventID", 
-          "sender"
-        ], 
-        "method": "makeHash", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "submitReport": {
-        "inputs": [
-          "event", 
-          "salt", 
-          "report", 
-          "ethics"
-        ], 
-        "method": "submitReport", 
-        "mutable": true, 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "submitReportHash": {
-        "inputs": [
-          "event", 
-          "reportHash", 
-          "encryptedReport", 
-          "encryptedSalt"
-        ], 
-        "method": "submitReportHash", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "validateReport": {
-        "inputs": [
-          "eventID", 
-          "branch", 
-          "votePeriod", 
-          "report", 
-          "forkedOverEthicality", 
-          "forkedOverThisEvent", 
-          "roundTwo", 
-          "balance"
-        ], 
-        "method": "validateReport", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Markets": {
-      "addFees": {
-        "inputs": [
-          "market", 
-          "amount"
-        ], 
-        "method": "addFees", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addToMarketsHash": {
-        "inputs": [
-          "branch", 
-          "newHash"
-        ], 
-        "method": "addToMarketsHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addTrade": {
-        "inputs": [
-          "market", 
-          "trade_id", 
-          "last_id"
-        ], 
-        "method": "addTrade", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getBondsMan": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getBondsMan", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getBranchID": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getBranchID", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getCreationTime": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getCreationTime", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getCumScale": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getCumScale", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getExtraInfo": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getExtraInfo", 
-        "returns": "string", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getExtraInfoLength": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getExtraInfoLength", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getFees": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getFees", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getLastExpDate": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getLastExpDate", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getLastOutcomePrice": {
-        "inputs": [
-          "market", 
-          "outcome"
-        ], 
-        "method": "getLastOutcomePrice", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getLastTrade": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getLastTrade", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMakerFees": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getMakerFees", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketEvent": {
-        "inputs": [
-          "market", 
-          "index"
-        ], 
-        "method": "getMarketEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getMarketEvents": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getMarketEvents", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketNumOutcomes": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getMarketNumOutcomes", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getMarketsHash": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getMarketsHash", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumEvents": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getNumEvents", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getOneWinningOutcome": {
-        "inputs": [
-          "market", 
-          "num"
-        ], 
-        "method": "getOneWinningOutcome", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getOriginalTradingPeriod": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getOriginalTradingPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getParticipantSharesPurchased": {
-        "inputs": [
-          "market", 
-          "trader", 
-          "outcome"
-        ], 
-        "method": "getParticipantSharesPurchased", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getPushedForward": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getPushedForward", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getSender": {
-        "method": "getSender", 
-        "returns": "int256"
-      }, 
-      "getSharesPurchased": {
-        "inputs": [
-          "market", 
-          "outcome"
-        ], 
-        "method": "getSharesPurchased", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getSharesValue": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getSharesValue", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTotalSharesPurchased": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getTotalSharesPurchased", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTradingFee": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getTradingFee", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTradingPeriod": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getTradingPeriod", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getVolume": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getVolume", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getWinningOutcomes": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getWinningOutcomes", 
-        "returns": "number[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_total_trades": {
-        "inputs": [
-          "market_id"
-        ], 
-        "method": "get_total_trades", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_trade_ids": {
-        "inputs": [
-          "market_id"
-        ], 
-        "method": "get_trade_ids", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getgasSubsidy": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "getgasSubsidy", 
-        "returns": "int", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "initializeMarket": {
-        "inputs": [
-          "marketID", 
-          "events", 
-          "tradingPeriod", 
-          "tradingFee", 
-          "branch", 
-          "tag1", 
-          "tag2", 
-          "tag3", 
-          "makerFees", 
-          "cumScale", 
-          "numOutcomes", 
-          "extraInfo", 
-          "gasSubsidy", 
-          "creationFee", 
-          "lastExpDate"
-        ], 
-        "method": "initializeMarket", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "bytes", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "modifyParticipantShares": {
-        "inputs": [
-          "marketID", 
-          "trader", 
-          "outcome", 
-          "amount", 
-          "cancel"
-        ], 
-        "method": "modifyParticipantShares", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "modifyShares": {
-        "inputs": [
-          "marketID", 
-          "outcome", 
-          "amount"
-        ], 
-        "method": "modifyShares", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "modifySharesValue": {
-        "inputs": [
-          "marketID", 
-          "amount"
-        ], 
-        "method": "modifySharesValue", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "refundClosing": {
-        "inputs": [
-          "market", 
-          "to"
-        ], 
-        "method": "refundClosing", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "remove_trade_from_market": {
-        "inputs": [
-          "market_id", 
-          "trade_id"
-        ], 
-        "method": "remove_trade_from_market", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "returnTags": {
-        "inputs": [
-          "market"
-        ], 
-        "method": "returnTags", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setMakerFees": {
-        "inputs": [
-          "market", 
-          "makerFees"
-        ], 
-        "method": "setMakerFees", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPrice": {
-        "inputs": [
-          "market", 
-          "outcome", 
-          "price"
-        ], 
-        "method": "setPrice", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setPushedForward": {
-        "inputs": [
-          "market", 
-          "bool", 
-          "sender"
-        ], 
-        "method": "setPushedForward", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setTradingFee": {
-        "inputs": [
-          "market", 
-          "fee"
-        ], 
-        "method": "setTradingFee", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setTradingPeriod": {
-        "inputs": [
-          "market", 
-          "period"
-        ], 
-        "method": "setTradingPeriod", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setWinningOutcomes": {
-        "inputs": [
-          "market", 
-          "outcomes"
-        ], 
-        "method": "setWinningOutcomes", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256[]"
-        ]
-      }
-    }, 
-    "PenalizationCatchup": {
-      "penalizationCatchup": {
-        "inputs": [
-          "branch", 
-          "sender"
-        ], 
-        "method": "penalizationCatchup", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "PenalizeNotEnoughReports": {
-      "proveReporterDidntReportEnough": {
-        "inputs": [
-          "branch", 
-          "reporter", 
-          "eventExample"
-        ], 
-        "method": "proveReporterDidntReportEnough", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "ProportionCorrect": {
-      "proportionCorrect": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "proportionCorrect", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "Reporting": {
-      "addDormantRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "addDormantRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "addRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "addReporter": {
-        "inputs": [
-          "branch", 
-          "sender", 
-          "amount", 
-          "dormant", 
-          "repToBonderOrBranch"
-        ], 
-        "method": "addReporter", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "adjustActiveRep": {
-        "inputs": [
-          "branch", 
-          "amount"
-        ], 
-        "method": "adjustActiveRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "balanceOf": {
-        "inputs": [
-          "branch", 
-          "address"
-        ], 
-        "method": "balanceOf", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "checkContractWhitelist": {
-        "inputs": [
-          "contract", 
-          "address"
-        ], 
-        "method": "checkContractWhitelist", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "checkWhitelist": {
-        "inputs": [
-          "address"
-        ], 
-        "method": "checkWhitelist", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getActiveRep": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getActiveRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getDormantRepByIndex": {
-        "inputs": [
-          "branch", 
-          "repIndex"
-        ], 
-        "method": "getDormantRepByIndex", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getFork": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getFork", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getNumberReporters": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getNumberReporters", 
-        "returns": "number", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getRepBalance": {
-        "inputs": [
-          "branch", 
-          "address"
-        ], 
-        "method": "getRepBalance", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getRepByIndex": {
-        "inputs": [
-          "branch", 
-          "repIndex"
-        ], 
-        "method": "getRepByIndex", 
-        "returns": "unfix", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReporterID": {
-        "inputs": [
-          "branch", 
-          "index"
-        ], 
-        "method": "getReporterID", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getReputation": {
-        "inputs": [
-          "address"
-        ], 
-        "method": "getReputation", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "getTotalRep": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "getTotalRep", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "repIDToIndex": {
-        "inputs": [
-          "branch", 
-          "repID"
-        ], 
-        "method": "repIDToIndex", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setFork": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "setFork", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "setInitialReporters": {
-        "inputs": [
-          "parent", 
-          "branchID"
-        ], 
-        "method": "setInitialReporters", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "newRep"
-        ], 
-        "method": "setRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setSaleDistribution": {
-        "inputs": [
-          "addresses", 
-          "balances", 
-          "branchID"
-        ], 
-        "method": "setSaleDistribution", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256[]", 
-          "int256[]", 
-          "int256"
-        ]
-      }, 
-      "setWhitelist": {
-        "inputs": [
-          "contract", 
-          "addresses"
-        ], 
-        "method": "setWhitelist", 
-        "returns": "string", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256[]"
-        ]
-      }, 
-      "subtractDormantRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "subtractDormantRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "subtractRep": {
-        "inputs": [
-          "branch", 
-          "index", 
-          "value"
-        ], 
-        "method": "subtractRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "totalSupply": {
-        "inputs": [
-          "branch"
-        ], 
-        "method": "totalSupply", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "ReportingThreshold": {
-      "calculateReportTargetForEvent": {
-        "inputs": [
-          "branch", 
-          "eventID", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "calculateReportTargetForEvent", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "calculateReportingThreshold": {
-        "inputs": [
-          "branch", 
-          "eventID", 
-          "votePeriod", 
-          "sender"
-        ], 
-        "method": "calculateReportingThreshold", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventCanReportOn": {
-        "inputs": [
-          "branch", 
-          "expDateIndex", 
-          "reporter", 
-          "event"
-        ], 
-        "method": "getEventCanReportOn", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getEventsToReportOn": {
-        "inputs": [
-          "branch", 
-          "period", 
-          "sender", 
-          "start"
-        ], 
-        "method": "getEventsToReportOn", 
-        "returns": "int256[]", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "setReportingThreshold": {
-        "inputs": [
-          "event"
-        ], 
-        "method": "setReportingThreshold", 
-        "returns": "int256", 
-        "signature": [
-          "int256"
-        ]
-      }
-    }, 
-    "RoundTwo": {
-      "resolve": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "resolve", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "roundTwoPostBond": {
-        "inputs": [
-          "branch", 
-          "event", 
-          "eventIndex", 
-          "votePeriod"
-        ], 
-        "method": "roundTwoPostBond", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "roundTwoResolve": {
-        "inputs": [
-          "branch", 
-          "event", 
-          "eventIndex", 
-          "sender"
-        ], 
-        "method": "roundTwoResolve", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "RoundTwoPenalize": {
-      "penalizeRoundTwoWrong": {
-        "inputs": [
-          "branch", 
-          "event"
-        ], 
-        "method": "penalizeRoundTwoWrong", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "SendReputation": {
-      "allowance": {
-        "inputs": [
-          "owner", 
-          "spender"
-        ], 
-        "method": "allowance", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "approve": {
-        "inputs": [
-          "branch", 
-          "spender", 
-          "value"
-        ], 
-        "method": "approve", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "convertToActiveRep": {
-        "inputs": [
-          "branch", 
-          "value"
-        ], 
-        "method": "convertToActiveRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "convertToDormantRep": {
-        "inputs": [
-          "branch", 
-          "value"
-        ], 
-        "method": "convertToDormantRep", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "sendReputation": {
-        "inputs": [
-          "branch", 
-          "recver", 
-          "value"
-        ], 
-        "method": "sendReputation", 
-        "returns": "unfix", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "transfer": {
-        "inputs": [
-          "branch", 
-          "recver", 
-          "value"
-        ], 
-        "method": "transfer", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "transferFrom": {
-        "inputs": [
-          "branch", 
-          "from", 
-          "recver", 
-          "value"
-        ], 
-        "method": "transferFrom", 
-        "returns": "int256", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "SlashRep": {
-      "slashRep": {
-        "inputs": [
-          "branch", 
-          "salt", 
-          "report", 
-          "reporter", 
-          "eventID"
-        ], 
-        "method": "slashRep", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }
-    }, 
-    "Trade": {
-      "short_sell": {
-        "inputs": [
-          "buyer_trade_id", 
-          "max_amount"
-        ], 
-        "method": "short_sell", 
-        "mutable": true, 
-        "returns": "hash[]", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "trade": {
-        "inputs": [
-          "max_value", 
-          "max_amount", 
-          "trade_ids"
-        ], 
-        "method": "trade", 
-        "mutable": true, 
-        "returns": "hash[]", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256[]"
-        ]
-      }
-    }, 
-    "Trades": {
-      "checkHash": {
-        "inputs": [
-          "tradeHash", 
-          "sender"
-        ], 
-        "method": "checkHash", 
-        "returns": "number", 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "commitTrade": {
-        "inputs": [
-          "hash"
-        ], 
-        "method": "commitTrade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "fill_trade": {
-        "inputs": [
-          "id", 
-          "fill"
-        ], 
-        "method": "fill_trade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "getID": {
-        "inputs": [
-          "tradeID"
-        ], 
-        "method": "getID", 
-        "returns": "hash", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_amount": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "get_amount", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_price": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "get_price", 
-        "returns": "unfix", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "get_trade": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "get_trade", 
-        "returns": "hash[]", 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "makeTradeHash": {
-        "inputs": [
-          "max_value", 
-          "max_amount", 
-          "trade_ids"
-        ], 
-        "method": "makeTradeHash", 
-        "returns": "hash", 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256[]"
-        ]
-      }, 
-      "remove_trade": {
-        "inputs": [
-          "id"
-        ], 
-        "method": "remove_trade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256"
-        ]
-      }, 
-      "saveTrade": {
-        "inputs": [
-          "trade_id", 
-          "type", 
-          "market", 
-          "amount", 
-          "price", 
-          "sender", 
-          "outcome"
-        ], 
-        "method": "saveTrade", 
-        "returns": "number", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "update_trade": {
-        "inputs": [
-          "id", 
-          "price"
-        ], 
-        "method": "update_trade", 
-        "send": true, 
-        "signature": [
-          "int256", 
-          "int256"
-        ]
-      }, 
-      "zeroHash": {
-        "method": "zeroHash", 
-        "returns": "number", 
-        "send": true
-      }
-    }
-  }
-}
-},{}],157:[function(require,module,exports){
-module.exports={
-    "10101": {
-        "Backstops": "0x38f5f8debf498505778154bde0a7194c7eb78dbf", 
-        "Branches": "0x570372c441d7cc67d512337c5c2637be084012a3", 
-        "BuyAndSellShares": "0x765aa1f5f264fe9a46f1f7649cefc7d36afad821", 
-        "Cash": "0x9f52f5841050b5b6f7590fcde30726672b7976ca", 
-        "CloseMarket": "0x092c709a82fb33da2159f9327091137d0923f84c", 
-        "CloseMarketOne": "0x94adc54993af909a3b0d1c0df5f3625f626f10cd", 
-        "CloseMarketTwo": "0x7aa0dfbc2eb9240f7e7a7dc71066f360456680a7", 
-        "CollectFees": "0x99d282ce6d677d5528365479b183058f02afcf21", 
-        "CompleteSets": "0x70e264ca7e86fc9926fbb82cfe216da2422ba37f", 
-        "CompositeGetters": "0xf6c7d76fc02957726b9e7ecf2fd2696645a6d254", 
-        "Consensus": "0xc2f25d4dcf19ce11628a1119f111b4f8612d38ab", 
-        "ConsensusData": "0x9e564e5485c901a3b38d18ffb4678ac080a4bcfc", 
-        "CreateBranch": "0xbb623ffb52b7c5781cba8aa4d1cf51ab97890f18", 
-        "CreateMarket": "0xb7b1b72f53d5f2742920b29ff8ed81aa4b9dec1e", 
-        "EventResolution": "0x2ea14c3f8c45654016105c873ebebadd2c4ff8dd", 
-        "Events": "0xc3d0688c61f13d6668964dd8e17c2b91bbacc9ae", 
-        "ExpiringEvents": "0xdcae8e7da64b53ad5ceff2d13da61b74e6d09770", 
-        "Faucets": "0x1de5efa9ced47752b63db052cc4e1a6131c64320", 
-        "ForkPenalize": "0x63015a3dde81665d3bc22b65ca6fcabdd687f68b", 
-        "Forking": "0x172baa70a19632497ddf0e1364a6ef6c5e3c4977", 
-        "FxpFunctions": "0xe96c027eff937d6ff7a2b172b2f5c82c929f37fa", 
-        "Info": "0x1f7316bb20189aeb10fb91d9ce15592a1a970728", 
-        "MakeReports": "0xbdb159bc0c78d95cd6e64a5bcb98c539605e149f", 
-        "Markets": "0xcf044ec66a0d8850522cc371ae2cb580f09e2e29", 
-        "PenalizationCatchup": "0x60dd62806c1c04452df79f3f742c205093bde5bf", 
-        "PenalizeNotEnoughReports": "0x634ffeedddbbd83da1e6f3f16912cf9a9f2b0c43", 
-        "ProportionCorrect": "0xca7ece9bd33151cf66a956405e97fce1f5964ab7", 
-        "Reporting": "0x9373657573de45d67fdae7b1b21ccf2be49253f9", 
-        "ReportingThreshold": "0xc12ecde2c8894187bfe1ee174d2076c15fa6f3c7", 
-        "RoundTwo": "0x16cfa70d76721457e1fa40eea62de6acf8da7eb3", 
-        "RoundTwoPenalize": "0xa1bfee7b075356c818d47165211d08054aec5cf2", 
-        "SendReputation": "0x7348fc79ac970f865106f7d77e56bda4570e5aa6", 
-        "SlashRep": "0xfdad3089ec6ad5c0b6fdb41793d9f27a98c768d8", 
-        "Trade": "0xb37009044b8fca892ccc08c71dabe151fad83583", 
-        "Trades": "0x38c336bd3594717fc0d56202bbc8ccaf9bb7114f"
-    }, 
-    "2": {
-        "Backstops": "0x6383e0617288f6c5c47b987770f245ccf5999d50", 
-        "Branches": "0xee5d4cbd36b6ac8bec59fc77016b90622d557dfa", 
-        "BuyAndSellShares": "0x54880a55093097d0ec7e3fbd60f5ad31f8e21449", 
-        "Cash": "0xeecebff7ee0b308db51ded8041063d2169060819", 
-        "CloseMarket": "0x7944a6c3242c6d6641fac3be53898e5446a5b9d6", 
-        "CloseMarketOne": "0xe2f0429316b2517db00c29b002152844f4380c5b", 
-        "CloseMarketTwo": "0x1aabbe7d72e67d40bee1ea01a11c47aafff44c27", 
-        "CollectFees": "0x51d136b60f8f0f0068e2a433c8305fa442bf9b18", 
-        "CompleteSets": "0x38fb24dd43e2fe26049f12e7f9d261313d2c705d", 
-        "CompositeGetters": "0xbead3baddbf90561d370711cfbc6626cdad85a23", 
-        "Consensus": "0xb77b6a8f75e7654271bbbaf77ecab141702e8fc9", 
-        "ConsensusData": "0x2098e0e5ea5bdaf754eae0c5c2382a7331ef40da", 
-        "CreateBranch": "0x3a63feffeffd88247ff970acf361def6fcb3f84a", 
-        "CreateMarket": "0xea3fc35beafe2dff9efa562b903f4695c26a60dc", 
-        "EventResolution": "0x7002addf4b8482518d3c19b0be518be60f8f3de1", 
-        "Events": "0xd32d8288482203c125cbd0bbb0e91bdd42a98cbf", 
-        "ExpiringEvents": "0x3110b442ac616668325802a2cca7d3aa4e6881f2", 
-        "Faucets": "0x1a81f92640c002f2190bce5798d5756851581d7b", 
-        "ForkPenalize": "0xcbbde7bef34b80e3d02c7de3642d01eb1cec4199", 
-        "Forking": "0x10b12d2a5e5922c2435c9e5740dbc644bd3c838e", 
-        "FxpFunctions": "0x55a262355e7dcd11555778bb990ab51334ff2734", 
-        "Info": "0x74df892797f87423c2d7fb6b67440dece183d6e2", 
-        "MakeReports": "0x7cebfcd8b8eb9195e7472188e44610213bf0ac12", 
-        "Markets": "0xa754a1882b5f34993a889f6d26903ff3b0ea1560", 
-        "PenalizationCatchup": "0x8ab8aa018e510e35026117d7ddba36fccbeee297", 
-        "PenalizeNotEnoughReports": "0xa52ee580b07db40ad08e924f9db99868effe64ef", 
-        "ProportionCorrect": "0x968ca5a86a22c7bc664933866af09bbd94a9b0f1", 
-        "Reporting": "0x43c989384443dcaf872ed824621b2bcb7bcde1ea", 
-        "ReportingThreshold": "0xc99872378e8649ccf979b1d1ec955b9a171e805e", 
-        "RoundTwo": "0xe018bc890e743e92fbd7eed06cef2e6774236e43", 
-        "RoundTwoPenalize": "0xf7893739f437d350f8330e84fb02ccc927669e57", 
-        "SendReputation": "0xeb22baf269eac16e835dadf643ac69a1386e1131", 
-        "SlashRep": "0x56094c9ed1c8efa5d9c95c36ee74b5237c8874ea", 
-        "Trade": "0xf4b6c847df304175206a1c2b1fa91b6d65d9dfff", 
-        "Trades": "0x2914d5d2822a5c0f89494194a632032fe2a3fc74"
-    }
-}
-},{}],158:[function(require,module,exports){
-module.exports={
-    "0x": "no response or bad input",
-    "buy": {
-        "0": "market doesn't exist",
-        "-1": "amount/price bad",
-        "-2": "oracle-only branch",
-        "-4": "not enough money or shares",
-        "21": "trade already exists"
-    },
-    "buyCompleteSets": {
-        "0": "market not found",
-        "-1": "oracle-only branch",
-        "-3": "not enough cash"
-    },
-    "cashFaucet": {
-        "-1": "Hey, you're not broke!"
-    },
-    "claimProceeds": {
-        "0": "reporting not done",
-        "-1": "trader doesn't exist"
-    },
-    "closeMarket": {
-        "0": "fail/trading not over yet/event not expired or closed already",
-        "-1": "Market has no cash anyway / already closed",
-        "-2": "0 outcome / not reported on yet",
-        "-3": "not final round 2 event",
-        "-5": "Event forked and not final yet",
-        "-6": "bonded pushed forward market not ready to be resolved",
-        "-7": "event not reportable >.99",
-        "-8": "market isn't in branch"
-    },
-    "collectFees": {
-        "-1": "rep redistribution/rewards/penalizations in consensus not done yet"
-    },
-    "createEvent": {
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad",
-        "0": "not enough money to pay fees or event already exists",
-        "-2": "max value < min value",
-        "-9": "would expire during non-reporting fork period"
-    },
-    "createSingleEventMarket": {
-        "0": "not enough money to pay fees or event already exists",
-        "-1": "we're either already past that date, branch doesn't exist, or description is bad, or bad input or parent doesn't exist",
-        "-2": "max value < min value",
-        "-3": "too many outcomes",
-        "-4": "not enough money",
-        "-5": "fee too low",
-        "-6": "duplicate events",
-        "-7": "event already expired",
-        "-8": "market already exists",
-        "-9": "would expire during non-reporting fork period"
-    },
-    "createMarket": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "too many events",
-        "-3": "too many outcomes",
-        "-4": "not enough money",
-        "-5": "fee too low",
-        "-6": "duplicate events",
-        "-7": "event already expired",
-        "-8": "market already exists",
-        "-9": "would expire during non-reporting fork period"
-    },
-    "createSubbranch": {
-        "-1": "bad input or parent doesn't exist",
-        "-2": "no money for creation fee or branch already exists"
-    },
-    "penalizationCatchup": {
-        "-1": "not in first half of reporting period",
-        "-2": "doesn't need to be penalized/caught up",
-        "-3": "user isn't behind or reported in the last period (and should thus use the penalization functions in consensus.se)"
-    },
-    "penalizeOnForkedEvent": {
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-4": "fork event isn't resolved yet",
-        "-5": "already done for all events in this period"
-    },
-    "penalizeRoundTwoWrong": {
-        "0": "event is a fork event",
-        "-1": "need to penalize in round 2 penalize function",
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
-        "-5": "already done for all events in this period",
-        "-6": "forked events should be penalized using the fork penalization function"
-    },
-    "penalizeWrong": {
-        "0": "event is a fork event",
-        "-1": "need to penalize in round 2 penalize function",
-        "-2": "already past first half of new period and needed to penalize before then",
-        "-4": "in fork period only thing that rbcr is done on is the round 2 event in the original branch via round 2 penalize",
-        "-5": "already done for all events in this period",
-        "-6": "forked events should be penalized using the fork penalization function",
-        "-7": "no outcome",
-        "-8": "needed to collect fees last period which sets the before/after rep"
-    },
-    "proveReporterDidntReportEnough": {
-        "-1": "already done",
-        "-2": "not in right part of period"
-    },
-    "pushMarketForward": {
-        "-1": "fork period cannot be the current or previous period",
-        "-2": "market is already closed or pushed forward",
-        "-3": "not enough cash to post early resolution bond",
-        "-4": "early resolution already attempted or outcome already exists"
-    },
-    "sell": {
-        "0": "market doesn't exist",
-        "-1": "amount/price bad",
-        "-2": "oracle only branch",
-        "-3": "bad outcome to trade",
-        "-4": "not enough money or shares",
-        "21": "trade already exists"
-    },
-    "sellCompleteSets": {
-        "-1": "oracle-only branch",
-        "-2": "not a participant in this market",
-        "-3": "not enough shares"
-    },
-    "sendReputation": {
-        "0": "not enough reputation",
-        "-1": "Your reputation account was just created! Earn some reputation before you can send to others",
-        "-2": "Receiving address doesn't exist"
-    },
-    "short_sell": {
-        "-1": "oracle only branch",
-        "-2": "bad trade hash",
-        "-3": "trader doesn't exist / own shares in this market",
-        "-4": "must buy at least .00000001 in value",
-        "10": "insufficient balance"
-    },
-    "slashRep": {
-        "0": "not a valid claim",
-        "-2": "reporter doesn't exist"
-    },
-    "submitReportHash": {
-        "-1": "invalid event"
-    },
-    "submitReport": {
-        "0": "reporter doesn't exist or has <1 rep",
-        "-1": "has already reported",
-        "-2": "not in second half of period [reveal part]",
-        "-3": "hash doesn't match",
-        "-4": "bad report",
-        "-5": "invalid event",
-        "-6": "already resolved",
-        "-7": "<48 hr left in period, too late to report, able to put up readj. bonds though",
-        "-8": "fees couldn't be collected",
-        "-9": "need to pay not reporting bond"
-    },
-    "trade": {
-        "-1": "oracle only branch",
-        "-2": "bad trade hash",
-        "-3": "trader doesn't exist / own shares in this market",
-        "-4": "must buy at least .00000001 in value",
-        "10": "insufficient balance"
-    },
-    "updateTradingFee": {
-        "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
-        "-4": "sender's address does not match the market creator's address"
-    },
-    "WRONG_NUMBER_OF_OUTCOMES": {
-        "error": 41,
-        "message": "the number of initial fair prices does not match this market's number of outcomes"
-    },
-    "INSUFFICIENT_LIQUIDITY": {
-        "error": 42,
-        "message": "insufficient liquidity to generate order book"
-    },
-    "INITIAL_PRICE_OUT_OF_BOUNDS": {
-        "error": 43,
-        "message": "one or more initial fair prices are out-of-bounds"
-    },
-    "PRICE_WIDTH_OUT_OF_BOUNDS": {
-        "error": 44,
-        "message": "price width is too large for one or more initial fair prices"
-    },
-    "DB_DELETE_FAILED": {
-        "error": 97,
-        "message": "database delete failed"
-    },
-    "DB_WRITE_FAILED": {
-        "error": 98,
-        "message": "database write failed"
-    },
-    "DB_READ_FAILED": {
-        "error": 99,
-        "message": "database read failed"
-    },
-    "INVALID_CONTRACT_PARAMETER": {
-        "error": 400,
-        "message": "cannot send object parameter to contract"
-    },
-    "NOT_LOGGED_IN": {
-        "error": 401,
-        "message": "not logged in"
-    },
-    "PARAMETER_NUMBER_ERROR": {
-        "error": 402,
-        "message": "wrong number of parameters"
-    },
-    "BAD_CREDENTIALS": {
-        "error": 403,
-        "message": "incorrect handle or password"
-    },
-    "TRANSACTION_NOT_FOUND": {
-        "error": 404,
-        "message": "transaction not found"
-    },
-    "PASSWORD_TOO_SHORT": {
-        "error": 405,
-        "message": "password must be at least 6 characters long"
-    },
-    "NULL_CALL_RETURN": {
-        "error": 406,
-        "message": "expected contract call to return value, received null"
-    },
-    "NULL_RESPONSE": {
-        "error": 407,
-        "message": "expected transaction hash from Ethereum node, received null"
-    },
-    "NO_RESPONSE": {
-        "error": 408,
-        "message": "no response"
-    },
-    "INVALID_RESPONSE": {
-        "error": 409,
-        "message": "could not parse response from Ethereum node"
-    },
-    "LOCAL_NODE_FAILURE": {
-        "error": 410,
-        "message": "RPC request to local Ethereum node failed"
-    },
-    "HOSTED_NODE_FAILURE": {
-        "error": 411,
-        "message": "RPC request to hosted nodes failed"
-    },
-    "TRANSACTION_INVALID": {
-        "error": 412,
-        "message": "transaction validation failed"
-    },
-    "TRANSACTION_RETRY_MAX_EXCEEDED": {
-        "error": 413,
-        "message": "maximum number of transaction retry attempts exceeded"
-    },
-    "HANDLE_TAKEN": {
-        "error": 422,
-        "message": "handle already taken"
-    },
-    "FILTER_NOT_CREATED": {
-        "error": 450,
-        "message": "filter could not be created"
-    },
-    "TRANSACTION_FAILED": {
-        "error": 500,
-        "message": "transaction failed"
-    },
-    "TRANSACTION_NOT_CONFIRMED": {
-        "error": 501,
-        "message": "polled network but could not confirm transaction"
-    },
-    "DUPLICATE_TRANSACTION": {
-        "error": 502,
-        "message": "duplicate transaction"
-    },
-    "RAW_TRANSACTION_ERROR": {
-        "error": 503,
-        "message": "error sending client-side transaction"
-    },
-    "RLP_ENCODING_ERROR": {
-        "error": 504,
-        "message": "RLP encoding error"
-    },
-    "RPC_TIMEOUT": {
-        "error": 599,
-        "message": "timed out while waiting for Ethereum network response"
-    },
-    "LOOPBACK_NOT_FOUND": {
-        "error": 650,
-        "message": "loopback interface required for synchronous local commands"
-    },
-    "ETHEREUM_NOT_FOUND": {
-        "error": 651,
-        "message": "no active ethereum node(s) found"
-    },
-    "CHECK_ORDER_BOOK_FAILED": {
-        "error": 710,
-        "message": "could not check order book using current prices"
-    }
-}
-
-},{}],159:[function(require,module,exports){
-arguments[4][58][0].apply(exports,arguments)
-},{"./contracts":157,"./errors":158,"./tx":160,"dup":58}],160:[function(require,module,exports){
-arguments[4][60][0].apply(exports,arguments)
-},{"./api":156,"./contracts":157,"clone":116,"dup":60}],161:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-function EventEmitter() {
-  this._events = this._events || {};
-  this._maxListeners = this._maxListeners || undefined;
-}
-module.exports = EventEmitter;
-
-// Backwards-compat with node 0.10.x
-EventEmitter.EventEmitter = EventEmitter;
-
-EventEmitter.prototype._events = undefined;
-EventEmitter.prototype._maxListeners = undefined;
-
-// By default EventEmitters will print a warning if more than 10 listeners are
-// added to it. This is a useful default which helps finding memory leaks.
-EventEmitter.defaultMaxListeners = 10;
-
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!isNumber(n) || n < 0 || isNaN(n))
-    throw TypeError('n must be a positive number');
-  this._maxListeners = n;
-  return this;
-};
-
-EventEmitter.prototype.emit = function(type) {
-  var er, handler, len, args, i, listeners;
-
-  if (!this._events)
-    this._events = {};
-
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events.error ||
-        (isObject(this._events.error) && !this._events.error.length)) {
-      er = arguments[1];
-      if (er instanceof Error) {
-        throw er; // Unhandled 'error' event
-      } else {
-        // At least give some kind of context to the user
-        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-        err.context = er;
-        throw err;
-      }
-    }
-  }
-
-  handler = this._events[type];
-
-  if (isUndefined(handler))
-    return false;
-
-  if (isFunction(handler)) {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-  } else if (isObject(handler)) {
-    args = Array.prototype.slice.call(arguments, 1);
-    listeners = handler.slice();
-    len = listeners.length;
-    for (i = 0; i < len; i++)
-      listeners[i].apply(this, args);
-  }
-
-  return true;
-};
-
-EventEmitter.prototype.addListener = function(type, listener) {
-  var m;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events)
-    this._events = {};
-
-  // To avoid recursion in the case that type === "newListener"! Before
-  // adding it to the listeners, first emit "newListener".
-  if (this._events.newListener)
-    this.emit('newListener', type,
-              isFunction(listener.listener) ?
-              listener.listener : listener);
-
-  if (!this._events[type])
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  else if (isObject(this._events[type]))
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  else
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-
-  // Check for listener leak
-  if (isObject(this._events[type]) && !this._events[type].warned) {
-    if (!isUndefined(this._maxListeners)) {
-      m = this._maxListeners;
-    } else {
-      m = EventEmitter.defaultMaxListeners;
-    }
-
-    if (m && m > 0 && this._events[type].length > m) {
-      this._events[type].warned = true;
-      console.error('(node) warning: possible EventEmitter memory ' +
-                    'leak detected. %d listeners added. ' +
-                    'Use emitter.setMaxListeners() to increase limit.',
-                    this._events[type].length);
-      if (typeof console.trace === 'function') {
-        // not supported in IE 10
-        console.trace();
-      }
-    }
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  var fired = false;
-
-  function g() {
-    this.removeListener(type, g);
-
-    if (!fired) {
-      fired = true;
-      listener.apply(this, arguments);
-    }
-  }
-
-  g.listener = listener;
-  this.on(type, g);
-
-  return this;
-};
-
-// emits a 'removeListener' event iff the listener was removed
-EventEmitter.prototype.removeListener = function(type, listener) {
-  var list, position, length, i;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events || !this._events[type])
-    return this;
-
-  list = this._events[type];
-  length = list.length;
-  position = -1;
-
-  if (list === listener ||
-      (isFunction(list.listener) && list.listener === listener)) {
-    delete this._events[type];
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-
-  } else if (isObject(list)) {
-    for (i = length; i-- > 0;) {
-      if (list[i] === listener ||
-          (list[i].listener && list[i].listener === listener)) {
-        position = i;
-        break;
-      }
-    }
-
-    if (position < 0)
-      return this;
-
-    if (list.length === 1) {
-      list.length = 0;
-      delete this._events[type];
-    } else {
-      list.splice(position, 1);
-    }
-
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  var key, listeners;
-
-  if (!this._events)
-    return this;
-
-  // not listening for removeListener, no need to emit
-  if (!this._events.removeListener) {
-    if (arguments.length === 0)
-      this._events = {};
-    else if (this._events[type])
-      delete this._events[type];
-    return this;
-  }
-
-  // emit removeListener for all listeners on all events
-  if (arguments.length === 0) {
-    for (key in this._events) {
-      if (key === 'removeListener') continue;
-      this.removeAllListeners(key);
-    }
-    this.removeAllListeners('removeListener');
-    this._events = {};
-    return this;
-  }
-
-  listeners = this._events[type];
-
-  if (isFunction(listeners)) {
-    this.removeListener(type, listeners);
-  } else if (listeners) {
-    // LIFO order
-    while (listeners.length)
-      this.removeListener(type, listeners[listeners.length - 1]);
-  }
-  delete this._events[type];
-
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  var ret;
-  if (!this._events || !this._events[type])
-    ret = [];
-  else if (isFunction(this._events[type]))
-    ret = [this._events[type]];
-  else
-    ret = this._events[type].slice();
-  return ret;
-};
-
-EventEmitter.prototype.listenerCount = function(type) {
-  if (this._events) {
-    var evlistener = this._events[type];
-
-    if (isFunction(evlistener))
-      return 1;
-    else if (evlistener)
-      return evlistener.length;
-  }
-  return 0;
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  return emitter.listenerCount(type);
-};
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-},{}],162:[function(require,module,exports){
-(function (Buffer){
-var md5 = require('create-hash/md5')
-module.exports = EVP_BytesToKey
-function EVP_BytesToKey (password, salt, keyLen, ivLen) {
-  if (!Buffer.isBuffer(password)) {
-    password = new Buffer(password, 'binary')
-  }
-  if (salt && !Buffer.isBuffer(salt)) {
-    salt = new Buffer(salt, 'binary')
-  }
-  keyLen = keyLen / 8
-  ivLen = ivLen || 0
-  var ki = 0
-  var ii = 0
-  var key = new Buffer(keyLen)
-  var iv = new Buffer(ivLen)
-  var addmd = 0
-  var md_buf
-  var i
-  var bufs = []
-  while (true) {
-    if (addmd++ > 0) {
-      bufs.push(md_buf)
-    }
-    bufs.push(password)
-    if (salt) {
-      bufs.push(salt)
-    }
-    md_buf = md5(Buffer.concat(bufs))
-    bufs = []
-    i = 0
-    if (keyLen > 0) {
-      while (true) {
-        if (keyLen === 0) {
-          break
-        }
-        if (i === md_buf.length) {
-          break
-        }
-        key[ki++] = md_buf[i]
-        keyLen--
-        i++
-      }
-    }
-    if (ivLen > 0 && i !== md_buf.length) {
-      while (true) {
-        if (ivLen === 0) {
-          break
-        }
-        if (i === md_buf.length) {
-          break
-        }
-        iv[ii++] = md_buf[i]
-        ivLen--
-        i++
-      }
-    }
-    if (keyLen === 0 && ivLen === 0) {
-      break
-    }
-  }
-  for (i = 0; i < md_buf.length; i++) {
-    md_buf[i] = 0
-  }
-  return {
-    key: key,
-    iv: iv
-  }
-}
-
-}).call(this,require("buffer").Buffer)
-},{"buffer":114,"create-hash/md5":121}],163:[function(require,module,exports){
-arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":164,"./hash/hmac":165,"./hash/ripemd":166,"./hash/sha":167,"./hash/utils":168,"dup":31}],164:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"../hash":163,"dup":32}],165:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"../hash":163,"dup":33}],166:[function(require,module,exports){
-arguments[4][34][0].apply(exports,arguments)
-},{"../hash":163,"dup":34}],167:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"../hash":163,"dup":35}],168:[function(require,module,exports){
-arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":171}],169:[function(require,module,exports){
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-},{}],170:[function(require,module,exports){
-
-var indexOf = [].indexOf;
-
-module.exports = function(arr, obj){
-  if (indexOf) return arr.indexOf(obj);
-  for (var i = 0; i < arr.length; ++i) {
-    if (arr[i] === obj) return i;
-  }
-  return -1;
-};
-},{}],171:[function(require,module,exports){
-arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],172:[function(require,module,exports){
-/**
- * Determine if an object is Buffer
- *
- * Author:   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
- * License:  MIT
- *
- * `npm install is-buffer`
- */
-
-module.exports = function (obj) {
-  return !!(obj != null &&
-    (obj._isBuffer || // For Safari 5-7 (missing Object.prototype.constructor)
-      (obj.constructor &&
-      typeof obj.constructor.isBuffer === 'function' &&
-      obj.constructor.isBuffer(obj))
-    ))
-}
-
-},{}],173:[function(require,module,exports){
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-},{}],174:[function(require,module,exports){
-arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],175:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
-},{"browserify-sha3":105,"dup":39}],176:[function(require,module,exports){
-var Semaphore = require('./lib/Semaphore');
-var CondVariable = require('./lib/CondVariable');
-var Mutex = require('./lib/Mutex');
-var ReadWriteLock = require('./lib/ReadWriteLock');
-
-
-exports.Semaphore = Semaphore;
-exports.CondVariable = CondVariable;
-exports.Mutex = Mutex;
-exports.ReadWriteLock = ReadWriteLock;
-
-
-exports.createCondVariable = function (initialValue) {
-	return new CondVariable(initialValue);
-};
-
-exports.createSemaphore = function (initialCount) {
-	return new Semaphore(initialCount);
-};
-
-exports.createMutex = function () {
-	return new Mutex();
-};
-
-exports.createReadWriteLock = function () {
-	return new ReadWriteLock();
-};
-
-},{"./lib/CondVariable":177,"./lib/Mutex":178,"./lib/ReadWriteLock":179,"./lib/Semaphore":180}],177:[function(require,module,exports){
-function CondVariable(initialValue) {
-	this._value = initialValue;
-	this._waiting = [];
-}
-
-module.exports = CondVariable;
-
-
-function condToFunc(cond) {
-	if (typeof cond === 'function') {
-		return cond;
-	}
-
-	if (typeof cond === 'number' || typeof cond === 'boolean' || typeof cond === 'string') {
-		return function (value) {
-			return value === cond;
-		};
-	}
-
-	if (cond && typeof cond === 'object' && cond instanceof RegExp) {
-		return function (value) {
-			return cond.test(value);
-		};
-	}
-
-	throw new TypeError('Unknown condition type: ' + (typeof cond));
-}
-
-
-CondVariable.prototype.get = function () {
-	return this._value;
-};
-
-
-CondVariable.prototype.wait = function (cond, cb) {
-	var test = condToFunc(cond);
-
-	if (test(this._value)) {
-		return cb.call(this);
-	}
-
-	this._waiting.push({ test: test, cb: cb });
-};
-
-
-CondVariable.prototype.set = function (value) {
-	this._value = value;
-
-	for (var i = 0; i < this._waiting.length; i++) {
-		var waiter = this._waiting[i];
-
-		if (waiter.test(value)) {
-			this._waiting.splice(i, 1);
-			i -= 1;
-			waiter.cb.call(this);
-		}
-	}
-};
-
-},{}],178:[function(require,module,exports){
-function Mutex() {
-	this.isLocked = false;
-	this._waiting = [];
-}
-
-module.exports = Mutex;
-
-
-Mutex.prototype.lock = function (cb) {
-	if (this.isLocked) {
-		this._waiting.push(cb);
-	} else {
-		this.isLocked = true;
-		cb.call(this);
-	}
-};
-
-
-Mutex.prototype.timedLock = function (ttl, cb) {
-	if (!this.isLocked) {
-		this.isLocked = true;
-		return cb.call(this);
-	}
-
-	var timer, that = this;
-
-	this._waiting.push(function () {
-		clearTimeout(timer);
-
-		if (!cb) {
-			that.unlock();
-			return;
-		}
-
-		cb.call(this);
-		cb = null;
-	});
-
-	timer = setTimeout(function () {
-		if (cb) {
-			cb.call(this, new Error('Lock timed out'));
-			cb = null;
-		}
-	}, ttl);
-};
-
-
-Mutex.prototype.tryLock = function () {
-	if (this.isLocked) {
-		return false;
-	}
-
-	this.isLocked = true;
-	return true;
-};
-
-
-Mutex.prototype.unlock = function () {
-	if (!this.isLocked) {
-		throw new Error('Mutex is not locked');
-	}
-
-	var waiter = this._waiting.shift();
-
-	if (waiter) {
-		waiter.call(this);
-	} else {
-		this.isLocked = false;
-	}
-};
-
-},{}],179:[function(require,module,exports){
-function ReadWriteLock() {
-	this.isLocked = false;
-	this._readLocks = 0;
-	this._waitingToRead = [];
-	this._waitingToWrite = [];
-}
-
-module.exports = ReadWriteLock;
-
-
-ReadWriteLock.prototype.readLock = function (cb) {
-	if (this.isLocked === 'W') {
-		this._waitingToRead.push(cb);
-	} else {
-		this._readLocks += 1;
-		this.isLocked = 'R';
-		cb.call(this);
-	}
-};
-
-
-ReadWriteLock.prototype.writeLock = function (cb) {
-	if (this.isLocked) {
-		this._waitingToWrite.push(cb);
-	} else {
-		this.isLocked = 'W';
-		cb.call(this);
-	}
-};
-
-
-ReadWriteLock.prototype.timedReadLock = function (ttl, cb) {
-	if (this.tryReadLock()) {
-		return cb.call(this);
-	}
-
-	var timer, that = this;
-
-	function waiter() {
-		clearTimeout(timer);
-
-		if (cb) {
-			var callback = cb;
-			cb = null;
-			callback.apply(that, arguments);
-		}
-	}
-
-	this._waitingToRead.push(waiter);
-
-	timer = setTimeout(function () {
-		var index = that._waitingToRead.indexOf(waiter);
-		if (index !== -1) {
-			that._waitingToRead.splice(index, 1);
-			waiter(new Error('ReadLock timed out'));
-		}
-	}, ttl);
-};
-
-
-ReadWriteLock.prototype.timedWriteLock = function (ttl, cb) {
-	if (this.tryWriteLock()) {
-		return cb.call(this);
-	}
-
-	var timer, that = this;
-
-	function waiter() {
-		clearTimeout(timer);
-
-		if (cb) {
-			var callback = cb;
-			cb = null;
-			callback.apply(that, arguments);
-		}
-	}
-
-	this._waitingToWrite.push(waiter);
-
-	timer = setTimeout(function () {
-		var index = that._waitingToWrite.indexOf(waiter);
-		if (index !== -1) {
-			that._waitingToWrite.splice(index, 1);
-			waiter(new Error('WriteLock timed out'));
-		}
-	}, ttl);
-};
-
-
-ReadWriteLock.prototype.tryReadLock = function () {
-	if (this.isLocked === 'W') {
-		return false;
-	}
-
-	this.isLocked = 'R';
-	this._readLocks += 1;
-	return true;
-};
-
-
-ReadWriteLock.prototype.tryWriteLock = function () {
-	if (this.isLocked) {
-		return false;
-	}
-
-	this.isLocked = 'W';
-	return true;
-};
-
-
-ReadWriteLock.prototype.unlock = function () {
-	var waiter;
-
-	if (this.isLocked === 'R') {
-		this._readLocks -= 1;
-
-		if (this._readLocks === 0) {
-			// allow one write lock through
-
-			waiter = this._waitingToWrite.shift();
-			if (waiter) {
-				this.isLocked = 'W';
-				waiter.call(this);
-			} else {
-				this.isLocked = false;
-			}
-		}
-	} else if (this.isLocked === 'W') {
-		// allow all read locks or one write lock through
-
-		var rlen = this._waitingToRead.length;
-
-		if (rlen === 0) {
-			waiter = this._waitingToWrite.shift();
-			if (waiter) {
-				this.isLocked = 'W';
-				waiter.call(this);
-			} else {
-				this.isLocked = false;
-			}
-		} else {
-			this.isLocked = 'R';
-			this._readLocks = rlen;
-
-			var waiters = this._waitingToRead.slice();
-			this._waitingToRead = [];
-
-			for (var i = 0; i < rlen; i++) {
-				waiters[i].call(this);
-			}
-		}
-	} else {
-		throw new Error('ReadWriteLock is not locked');
-	}
-};
-
-},{}],180:[function(require,module,exports){
-function Semaphore(initialCount) {
-	this._count = initialCount || 1;
-	this._waiting = [];
-}
-
-module.exports = Semaphore;
-
-
-Semaphore.prototype.wait = function (cb) {
-	this._count -= 1;
-
-	if (this._count < 0) {
-		this._waiting.push(cb);
-	} else {
-		cb.call(this);
-	}
-};
-
-
-Semaphore.prototype.signal = function () {
-	this._count += 1;
-
-	if (this._count <= 0) {
-		var waiter = this._waiting.shift();
-		if (waiter) {
-			waiter.call(this);
-		}
-	}
-};
-
-},{}],181:[function(require,module,exports){
-var bn = require('bn.js');
-var brorand = require('brorand');
-
-function MillerRabin(rand) {
-  this.rand = rand || new brorand.Rand();
-}
-module.exports = MillerRabin;
-
-MillerRabin.create = function create(rand) {
-  return new MillerRabin(rand);
-};
-
-MillerRabin.prototype._rand = function _rand(n) {
-  var len = n.bitLength();
-  var buf = this.rand.generate(Math.ceil(len / 8));
-
-  // Set low bits
-  buf[0] |= 3;
-
-  // Mask high bits
-  var mask = len & 0x7;
-  if (mask !== 0)
-    buf[buf.length - 1] >>= 7 - mask;
-
-  return new bn(buf);
-}
-
-MillerRabin.prototype.test = function test(n, k, cb) {
-  var len = n.bitLength();
-  var red = bn.mont(n);
-  var rone = new bn(1).toRed(red);
-
-  if (!k)
-    k = Math.max(1, (len / 48) | 0);
-
-  // Find d and s, (n - 1) = (2 ^ s) * d;
-  var n1 = n.subn(1);
-  var n2 = n1.subn(1);
-  for (var s = 0; !n1.testn(s); s++) {}
-  var d = n.shrn(s);
-
-  var rn1 = n1.toRed(red);
-
-  var prime = true;
-  for (; k > 0; k--) {
-    var a = this._rand(n2);
-    if (cb)
-      cb(a);
-
-    var x = a.toRed(red).redPow(d);
-    if (x.cmp(rone) === 0 || x.cmp(rn1) === 0)
-      continue;
-
-    for (var i = 1; i < s; i++) {
-      x = x.redSqr();
-
-      if (x.cmp(rone) === 0)
-        return false;
-      if (x.cmp(rn1) === 0)
-        break;
-    }
-
-    if (i === s)
-      return false;
-  }
-
-  return prime;
-};
-
-MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
-  var len = n.bitLength();
-  var red = bn.mont(n);
-  var rone = new bn(1).toRed(red);
-
-  if (!k)
-    k = Math.max(1, (len / 48) | 0);
-
-  // Find d and s, (n - 1) = (2 ^ s) * d;
-  var n1 = n.subn(1);
-  var n2 = n1.subn(1);
-  for (var s = 0; !n1.testn(s); s++) {}
-  var d = n.shrn(s);
-
-  var rn1 = n1.toRed(red);
-
-  for (; k > 0; k--) {
-    var a = this._rand(n2);
-
-    var g = n.gcd(a);
-    if (g.cmpn(1) !== 0)
-      return g;
-
-    var x = a.toRed(red).redPow(d);
-    if (x.cmp(rone) === 0 || x.cmp(rn1) === 0)
-      continue;
-
-    for (var i = 1; i < s; i++) {
-      x = x.redSqr();
-
-      if (x.cmp(rone) === 0)
-        return x.fromRed().subn(1).gcd(n);
-      if (x.cmp(rn1) === 0)
-        break;
-    }
-
-    if (i === s) {
-      x = x.redSqr();
-      return x.fromRed().subn(1).gcd(n);
-    }
-  }
-
-  return false;
-};
-
-},{"bn.js":82,"brorand":83}],182:[function(require,module,exports){
-module.exports = assert;
-
-function assert(val, msg) {
-  if (!val)
-    throw new Error(msg || 'Assertion failed');
-}
-
-assert.equal = function assertEqual(l, r, msg) {
-  if (l != r)
-    throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
-};
-
-},{}],183:[function(require,module,exports){
-(function (Buffer){
-//     uuid.js
-//
-//     Copyright (c) 2010-2012 Robert Kieffer
-//     MIT License - http://opensource.org/licenses/mit-license.php
-
-/*global window, require, define */
-(function(_window) {
-  'use strict';
-
-  // Unique ID creation requires a high quality random # generator.  We feature
-  // detect to determine the best RNG source, normalizing to a function that
-  // returns 128-bits of randomness, since that's what's usually required
-  var _rng, _mathRNG, _nodeRNG, _whatwgRNG, _previousRoot;
-
-  function setupBrowser() {
-    // Allow for MSIE11 msCrypto
-    var _crypto = _window.crypto || _window.msCrypto;
-
-    if (!_rng && _crypto && _crypto.getRandomValues) {
-      // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
-      //
-      // Moderately fast, high quality
-      try {
-        var _rnds8 = new Uint8Array(16);
-        _whatwgRNG = _rng = function whatwgRNG() {
-          _crypto.getRandomValues(_rnds8);
-          return _rnds8;
-        };
-        _rng();
-      } catch(e) {}
-    }
-
-    if (!_rng) {
-      // Math.random()-based (RNG)
-      //
-      // If all else fails, use Math.random().  It's fast, but is of unspecified
-      // quality.
-      var  _rnds = new Array(16);
-      _mathRNG = _rng = function() {
-        for (var i = 0, r; i < 16; i++) {
-          if ((i & 0x03) === 0) { r = Math.random() * 0x100000000; }
-          _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
-        }
-
-        return _rnds;
-      };
-      if ('undefined' !== typeof console && console.warn) {
-        console.warn("[SECURITY] node-uuid: crypto not usable, falling back to insecure Math.random()");
-      }
-    }
-  }
-
-  function setupNode() {
-    // Node.js crypto-based RNG - http://nodejs.org/docs/v0.6.2/api/crypto.html
-    //
-    // Moderately fast, high quality
-    if ('function' === typeof require) {
-      try {
-        var _rb = require('crypto').randomBytes;
-        _nodeRNG = _rng = _rb && function() {return _rb(16);};
-        _rng();
-      } catch(e) {}
-    }
-  }
-
-  if (_window) {
-    setupBrowser();
-  } else {
-    setupNode();
-  }
-
-  // Buffer class to use
-  var BufferClass = ('function' === typeof Buffer) ? Buffer : Array;
-
-  // Maps for number <-> hex string conversion
-  var _byteToHex = [];
-  var _hexToByte = {};
-  for (var i = 0; i < 256; i++) {
-    _byteToHex[i] = (i + 0x100).toString(16).substr(1);
-    _hexToByte[_byteToHex[i]] = i;
-  }
-
-  // **`parse()` - Parse a UUID into it's component bytes**
-  function parse(s, buf, offset) {
-    var i = (buf && offset) || 0, ii = 0;
-
-    buf = buf || [];
-    s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
-      if (ii < 16) { // Don't overflow!
-        buf[i + ii++] = _hexToByte[oct];
-      }
-    });
-
-    // Zero out remaining bytes if string was short
-    while (ii < 16) {
-      buf[i + ii++] = 0;
-    }
-
-    return buf;
-  }
-
-  // **`unparse()` - Convert UUID byte array (ala parse()) into a string**
-  function unparse(buf, offset) {
-    var i = offset || 0, bth = _byteToHex;
-    return  bth[buf[i++]] + bth[buf[i++]] +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] + '-' +
-            bth[buf[i++]] + bth[buf[i++]] +
-            bth[buf[i++]] + bth[buf[i++]] +
-            bth[buf[i++]] + bth[buf[i++]];
-  }
-
-  // **`v1()` - Generate time-based UUID**
-  //
-  // Inspired by https://github.com/LiosK/UUID.js
-  // and http://docs.python.org/library/uuid.html
-
-  // random #'s we need to init node and clockseq
-  var _seedBytes = _rng();
-
-  // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
-  var _nodeId = [
-    _seedBytes[0] | 0x01,
-    _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
-  ];
-
-  // Per 4.2.2, randomize (14 bit) clockseq
-  var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
-
-  // Previous uuid creation time
-  var _lastMSecs = 0, _lastNSecs = 0;
-
-  // See https://github.com/broofa/node-uuid for API details
-  function v1(options, buf, offset) {
-    var i = buf && offset || 0;
-    var b = buf || [];
-
-    options = options || {};
-
-    var clockseq = (options.clockseq != null) ? options.clockseq : _clockseq;
-
-    // UUID timestamps are 100 nano-second units since the Gregorian epoch,
-    // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
-    // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
-    // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
-    var msecs = (options.msecs != null) ? options.msecs : new Date().getTime();
-
-    // Per 4.2.1.2, use count of uuid's generated during the current clock
-    // cycle to simulate higher resolution clock
-    var nsecs = (options.nsecs != null) ? options.nsecs : _lastNSecs + 1;
-
-    // Time since last uuid creation (in msecs)
-    var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
-
-    // Per 4.2.1.2, Bump clockseq on clock regression
-    if (dt < 0 && options.clockseq == null) {
-      clockseq = clockseq + 1 & 0x3fff;
-    }
-
-    // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
-    // time interval
-    if ((dt < 0 || msecs > _lastMSecs) && options.nsecs == null) {
-      nsecs = 0;
-    }
-
-    // Per 4.2.1.2 Throw error if too many uuids are requested
-    if (nsecs >= 10000) {
-      throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
-    }
-
-    _lastMSecs = msecs;
-    _lastNSecs = nsecs;
-    _clockseq = clockseq;
-
-    // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
-    msecs += 12219292800000;
-
-    // `time_low`
-    var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
-    b[i++] = tl >>> 24 & 0xff;
-    b[i++] = tl >>> 16 & 0xff;
-    b[i++] = tl >>> 8 & 0xff;
-    b[i++] = tl & 0xff;
-
-    // `time_mid`
-    var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
-    b[i++] = tmh >>> 8 & 0xff;
-    b[i++] = tmh & 0xff;
-
-    // `time_high_and_version`
-    b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
-    b[i++] = tmh >>> 16 & 0xff;
-
-    // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
-    b[i++] = clockseq >>> 8 | 0x80;
-
-    // `clock_seq_low`
-    b[i++] = clockseq & 0xff;
-
-    // `node`
-    var node = options.node || _nodeId;
-    for (var n = 0; n < 6; n++) {
-      b[i + n] = node[n];
-    }
-
-    return buf ? buf : unparse(b);
-  }
-
-  // **`v4()` - Generate random UUID**
-
-  // See https://github.com/broofa/node-uuid for API details
-  function v4(options, buf, offset) {
-    // Deprecated - 'format' argument, as supported in v1.2
-    var i = buf && offset || 0;
-
-    if (typeof(options) === 'string') {
-      buf = (options === 'binary') ? new BufferClass(16) : null;
-      options = null;
-    }
-    options = options || {};
-
-    var rnds = options.random || (options.rng || _rng)();
-
-    // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-    rnds[6] = (rnds[6] & 0x0f) | 0x40;
-    rnds[8] = (rnds[8] & 0x3f) | 0x80;
-
-    // Copy bytes to buffer, if provided
-    if (buf) {
-      for (var ii = 0; ii < 16; ii++) {
-        buf[i + ii] = rnds[ii];
-      }
-    }
-
-    return buf || unparse(rnds);
-  }
-
-  // Export public API
-  var uuid = v4;
-  uuid.v1 = v1;
-  uuid.v4 = v4;
-  uuid.parse = parse;
-  uuid.unparse = unparse;
-  uuid.BufferClass = BufferClass;
-  uuid._rng = _rng;
-  uuid._mathRNG = _mathRNG;
-  uuid._nodeRNG = _nodeRNG;
-  uuid._whatwgRNG = _whatwgRNG;
-
-  if (('undefined' !== typeof module) && module.exports) {
-    // Publish as node.js module
-    module.exports = uuid;
-  } else if (typeof define === 'function' && define.amd) {
-    // Publish as AMD module
-    define(function() {return uuid;});
-
-
-  } else {
-    // Publish as global (in browsers)
-    _previousRoot = _window.uuid;
-
-    // **`noConflict()` - (browser only) to reset global 'uuid' var**
-    uuid.noConflict = function() {
-      _window.uuid = _previousRoot;
-      return uuid;
-    };
-
-    _window.uuid = uuid;
-  }
-})('undefined' !== typeof window ? window : null);
-
-}).call(this,require("buffer").Buffer)
-},{"buffer":114,"crypto":123}],184:[function(require,module,exports){
-module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
-"2.16.840.1.101.3.4.1.2": "aes-128-cbc",
-"2.16.840.1.101.3.4.1.3": "aes-128-ofb",
-"2.16.840.1.101.3.4.1.4": "aes-128-cfb",
-"2.16.840.1.101.3.4.1.21": "aes-192-ecb",
-"2.16.840.1.101.3.4.1.22": "aes-192-cbc",
-"2.16.840.1.101.3.4.1.23": "aes-192-ofb",
-"2.16.840.1.101.3.4.1.24": "aes-192-cfb",
-"2.16.840.1.101.3.4.1.41": "aes-256-ecb",
-"2.16.840.1.101.3.4.1.42": "aes-256-cbc",
-"2.16.840.1.101.3.4.1.43": "aes-256-ofb",
-"2.16.840.1.101.3.4.1.44": "aes-256-cfb"
-}
-},{}],185:[function(require,module,exports){
-// from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
-// Fedor, you are amazing.
-
-var asn1 = require('asn1.js')
-
-var RSAPrivateKey = asn1.define('RSAPrivateKey', function () {
-  this.seq().obj(
-    this.key('version').int(),
-    this.key('modulus').int(),
-    this.key('publicExponent').int(),
-    this.key('privateExponent').int(),
-    this.key('prime1').int(),
-    this.key('prime2').int(),
-    this.key('exponent1').int(),
-    this.key('exponent2').int(),
-    this.key('coefficient').int()
-  )
-})
-exports.RSAPrivateKey = RSAPrivateKey
-
-var RSAPublicKey = asn1.define('RSAPublicKey', function () {
-  this.seq().obj(
-    this.key('modulus').int(),
-    this.key('publicExponent').int()
-  )
-})
-exports.RSAPublicKey = RSAPublicKey
-
-var PublicKey = asn1.define('SubjectPublicKeyInfo', function () {
-  this.seq().obj(
-    this.key('algorithm').use(AlgorithmIdentifier),
-    this.key('subjectPublicKey').bitstr()
-  )
-})
-exports.PublicKey = PublicKey
-
-var AlgorithmIdentifier = asn1.define('AlgorithmIdentifier', function () {
-  this.seq().obj(
-    this.key('algorithm').objid(),
-    this.key('none').null_().optional(),
-    this.key('curve').objid().optional(),
-    this.key('params').seq().obj(
-      this.key('p').int(),
-      this.key('q').int(),
-      this.key('g').int()
-    ).optional()
-  )
-})
-
-var PrivateKeyInfo = asn1.define('PrivateKeyInfo', function () {
-  this.seq().obj(
-    this.key('version').int(),
-    this.key('algorithm').use(AlgorithmIdentifier),
-    this.key('subjectPrivateKey').octstr()
-  )
-})
-exports.PrivateKey = PrivateKeyInfo
-var EncryptedPrivateKeyInfo = asn1.define('EncryptedPrivateKeyInfo', function () {
-  this.seq().obj(
-    this.key('algorithm').seq().obj(
-      this.key('id').objid(),
-      this.key('decrypt').seq().obj(
-        this.key('kde').seq().obj(
-          this.key('id').objid(),
-          this.key('kdeparams').seq().obj(
-            this.key('salt').octstr(),
-            this.key('iters').int()
-          )
-        ),
-        this.key('cipher').seq().obj(
-          this.key('algo').objid(),
-          this.key('iv').octstr()
-        )
-      )
-    ),
-    this.key('subjectPrivateKey').octstr()
-  )
-})
-
-exports.EncryptedPrivateKey = EncryptedPrivateKeyInfo
-
-var DSAPrivateKey = asn1.define('DSAPrivateKey', function () {
-  this.seq().obj(
-    this.key('version').int(),
-    this.key('p').int(),
-    this.key('q').int(),
-    this.key('g').int(),
-    this.key('pub_key').int(),
-    this.key('priv_key').int()
-  )
-})
-exports.DSAPrivateKey = DSAPrivateKey
-
-exports.DSAparam = asn1.define('DSAparam', function () {
-  this.int()
-})
-var ECPrivateKey = asn1.define('ECPrivateKey', function () {
-  this.seq().obj(
-    this.key('version').int(),
-    this.key('privateKey').octstr(),
-    this.key('parameters').optional().explicit(0).use(ECParameters),
-    this.key('publicKey').optional().explicit(1).bitstr()
-  )
-})
-exports.ECPrivateKey = ECPrivateKey
-var ECParameters = asn1.define('ECParameters', function () {
-  this.choice({
-    namedCurve: this.objid()
-  })
-})
-
-exports.signature = asn1.define('signature', function () {
-  this.seq().obj(
-    this.key('r').int(),
-    this.key('s').int()
-  )
-})
-
-},{"asn1.js":62}],186:[function(require,module,exports){
-(function (Buffer){
-// adapted from https://github.com/apatil/pemstrip
-var findProc = /Proc-Type: 4,ENCRYPTED\r?\nDEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\r?\n\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n/m
-var startRegex = /^-----BEGIN (.*) KEY-----\r?\n/m
-var fullRegex = /^-----BEGIN (.*) KEY-----\r?\n([0-9A-z\n\r\+\/\=]+)\r?\n-----END \1 KEY-----$/m
-var evp = require('evp_bytestokey')
-var ciphers = require('browserify-aes')
-module.exports = function (okey, password) {
-  var key = okey.toString()
-  var match = key.match(findProc)
-  var decrypted
-  if (!match) {
-    var match2 = key.match(fullRegex)
-    decrypted = new Buffer(match2[2].replace(/\r?\n/g, ''), 'base64')
-  } else {
-    var suite = 'aes' + match[1]
-    var iv = new Buffer(match[2], 'hex')
-    var cipherText = new Buffer(match[3].replace(/\r?\n/g, ''), 'base64')
-    var cipherKey = evp(password, iv.slice(0, 8), parseInt(match[1], 10)).key
-    var out = []
-    var cipher = ciphers.createDecipheriv(suite, cipherKey, iv)
-    out.push(cipher.update(cipherText))
-    out.push(cipher.final())
-    decrypted = Buffer.concat(out)
-  }
-  var tag = key.match(startRegex)[1] + ' KEY'
-  return {
-    tag: tag,
-    data: decrypted
-  }
-}
-
-}).call(this,require("buffer").Buffer)
-},{"browserify-aes":88,"buffer":114,"evp_bytestokey":162}],187:[function(require,module,exports){
-(function (Buffer){
-var asn1 = require('./asn1')
-var aesid = require('./aesid.json')
-var fixProc = require('./fixProc')
-var ciphers = require('browserify-aes')
-var compat = require('pbkdf2')
-module.exports = parseKeys
-
-function parseKeys (buffer) {
-  var password
-  if (typeof buffer === 'object' && !Buffer.isBuffer(buffer)) {
-    password = buffer.passphrase
-    buffer = buffer.key
-  }
-  if (typeof buffer === 'string') {
-    buffer = new Buffer(buffer)
-  }
-
-  var stripped = fixProc(buffer, password)
-
-  var type = stripped.tag
-  var data = stripped.data
-  var subtype, ndata
-  switch (type) {
-    case 'PUBLIC KEY':
-      ndata = asn1.PublicKey.decode(data, 'der')
-      subtype = ndata.algorithm.algorithm.join('.')
-      switch (subtype) {
-        case '1.2.840.113549.1.1.1':
-          return asn1.RSAPublicKey.decode(ndata.subjectPublicKey.data, 'der')
-        case '1.2.840.10045.2.1':
-          ndata.subjectPrivateKey = ndata.subjectPublicKey
-          return {
-            type: 'ec',
-            data: ndata
-          }
-        case '1.2.840.10040.4.1':
-          ndata.algorithm.params.pub_key = asn1.DSAparam.decode(ndata.subjectPublicKey.data, 'der')
-          return {
-            type: 'dsa',
-            data: ndata.algorithm.params
-          }
-        default: throw new Error('unknown key id ' + subtype)
-      }
-      throw new Error('unknown key type ' + type)
-    case 'ENCRYPTED PRIVATE KEY':
-      data = asn1.EncryptedPrivateKey.decode(data, 'der')
-      data = decrypt(data, password)
-      // falls through
-    case 'PRIVATE KEY':
-      ndata = asn1.PrivateKey.decode(data, 'der')
-      subtype = ndata.algorithm.algorithm.join('.')
-      switch (subtype) {
-        case '1.2.840.113549.1.1.1':
-          return asn1.RSAPrivateKey.decode(ndata.subjectPrivateKey, 'der')
-        case '1.2.840.10045.2.1':
-          return {
-            curve: ndata.algorithm.curve,
-            privateKey: asn1.ECPrivateKey.decode(ndata.subjectPrivateKey, 'der').privateKey
-          }
-        case '1.2.840.10040.4.1':
-          ndata.algorithm.params.priv_key = asn1.DSAparam.decode(ndata.subjectPrivateKey, 'der')
-          return {
-            type: 'dsa',
-            params: ndata.algorithm.params
-          }
-        default: throw new Error('unknown key id ' + subtype)
-      }
-      throw new Error('unknown key type ' + type)
-    case 'RSA PUBLIC KEY':
-      return asn1.RSAPublicKey.decode(data, 'der')
-    case 'RSA PRIVATE KEY':
-      return asn1.RSAPrivateKey.decode(data, 'der')
-    case 'DSA PRIVATE KEY':
-      return {
-        type: 'dsa',
-        params: asn1.DSAPrivateKey.decode(data, 'der')
-      }
-    case 'EC PRIVATE KEY':
-      data = asn1.ECPrivateKey.decode(data, 'der')
-      return {
-        curve: data.parameters.value,
-        privateKey: data.privateKey
-      }
-    default: throw new Error('unknown key type ' + type)
-  }
-}
-parseKeys.signature = asn1.signature
-function decrypt (data, password) {
-  var salt = data.algorithm.decrypt.kde.kdeparams.salt
-  var iters = parseInt(data.algorithm.decrypt.kde.kdeparams.iters.toString(), 10)
-  var algo = aesid[data.algorithm.decrypt.cipher.algo.join('.')]
-  var iv = data.algorithm.decrypt.cipher.iv
-  var cipherText = data.subjectPrivateKey
-  var keylen = parseInt(algo.split('-')[1], 10) / 8
-  var key = compat.pbkdf2Sync(password, salt, iters, keylen)
-  var cipher = ciphers.createDecipheriv(algo, key, iv)
-  var out = []
-  out.push(cipher.update(cipherText))
-  out.push(cipher.final())
-  return Buffer.concat(out)
-}
-
-}).call(this,require("buffer").Buffer)
-},{"./aesid.json":184,"./asn1":185,"./fixProc":186,"browserify-aes":88,"buffer":114,"pbkdf2":189}],188:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-},{"_process":191}],189:[function(require,module,exports){
-(function (Buffer){
-var createHmac = require('create-hmac')
-var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
-
-exports.pbkdf2 = pbkdf2
-function pbkdf2 (password, salt, iterations, keylen, digest, callback) {
-  if (typeof digest === 'function') {
-    callback = digest
-    digest = undefined
-  }
-
-  if (typeof callback !== 'function') {
-    throw new Error('No callback provided to pbkdf2')
-  }
-
-  var result = pbkdf2Sync(password, salt, iterations, keylen, digest)
-  setTimeout(function () {
-    callback(undefined, result)
-  })
-}
-
-exports.pbkdf2Sync = pbkdf2Sync
-function pbkdf2Sync (password, salt, iterations, keylen, digest) {
-  if (typeof iterations !== 'number') {
-    throw new TypeError('Iterations not a number')
-  }
-
-  if (iterations < 0) {
-    throw new TypeError('Bad iterations')
-  }
-
-  if (typeof keylen !== 'number') {
-    throw new TypeError('Key length not a number')
-  }
-
-  if (keylen < 0 || keylen > MAX_ALLOC) {
-    throw new TypeError('Bad key length')
-  }
-
-  digest = digest || 'sha1'
-
-  if (!Buffer.isBuffer(password)) password = new Buffer(password, 'binary')
-  if (!Buffer.isBuffer(salt)) salt = new Buffer(salt, 'binary')
-
-  var hLen
-  var l = 1
-  var DK = new Buffer(keylen)
-  var block1 = new Buffer(salt.length + 4)
-  salt.copy(block1, 0, 0, salt.length)
-
-  var r
-  var T
-
-  for (var i = 1; i <= l; i++) {
-    block1.writeUInt32BE(i, salt.length)
-    var U = createHmac(digest, password).update(block1).digest()
-
-    if (!hLen) {
-      hLen = U.length
-      T = new Buffer(hLen)
-      l = Math.ceil(keylen / hLen)
-      r = keylen - (l - 1) * hLen
-    }
-
-    U.copy(T, 0, 0, hLen)
-
-    for (var j = 1; j < iterations; j++) {
-      U = createHmac(digest, password).update(U).digest()
-
-      for (var k = 0; k < hLen; k++) {
-        T[k] ^= U[k]
-      }
-    }
-
-    var destPos = (i - 1) * hLen
-    var len = (i === l ? r : hLen)
-    T.copy(DK, destPos, 0, len)
-  }
-
-  return DK
-}
-
-}).call(this,require("buffer").Buffer)
-},{"buffer":114,"create-hmac":122}],190:[function(require,module,exports){
-(function (process){
-'use strict';
-
-if (!process.version ||
-    process.version.indexOf('v0.') === 0 ||
-    process.version.indexOf('v1.') === 0 && process.version.indexOf('v1.8.') !== 0) {
-  module.exports = nextTick;
-} else {
-  module.exports = process.nextTick;
-}
-
-function nextTick(fn, arg1, arg2, arg3) {
-  if (typeof fn !== 'function') {
-    throw new TypeError('"callback" argument must be a function');
-  }
-  var len = arguments.length;
-  var args, i;
-  switch (len) {
-  case 0:
-  case 1:
-    return process.nextTick(fn);
-  case 2:
-    return process.nextTick(function afterTickOne() {
-      fn.call(null, arg1);
-    });
-  case 3:
-    return process.nextTick(function afterTickTwo() {
-      fn.call(null, arg1, arg2);
-    });
-  case 4:
-    return process.nextTick(function afterTickThree() {
-      fn.call(null, arg1, arg2, arg3);
-    });
-  default:
-    args = new Array(len - 1);
-    i = 0;
-    while (i < args.length) {
-      args[i++] = arguments[i];
-    }
-    return process.nextTick(function afterTick() {
-      fn.apply(null, args);
-    });
-  }
-}
-
-}).call(this,require('_process'))
-},{"_process":191}],191:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-(function () {
-    try {
-        cachedSetTimeout = setTimeout;
-    } catch (e) {
-        cachedSetTimeout = function () {
-            throw new Error('setTimeout is not defined');
-        }
-    }
-    try {
-        cachedClearTimeout = clearTimeout;
-    } catch (e) {
-        cachedClearTimeout = function () {
-            throw new Error('clearTimeout is not defined');
-        }
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        return setTimeout(fun, 0);
-    } else {
-        return cachedSetTimeout.call(null, fun, 0);
-    }
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        clearTimeout(marker);
-    } else {
-        cachedClearTimeout.call(null, marker);
-    }
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],192:[function(require,module,exports){
-exports.publicEncrypt = require('./publicEncrypt');
-exports.privateDecrypt = require('./privateDecrypt');
-
-exports.privateEncrypt = function privateEncrypt(key, buf) {
-  return exports.publicEncrypt(key, buf, true);
-};
-
-exports.publicDecrypt = function publicDecrypt(key, buf) {
-  return exports.privateDecrypt(key, buf, true);
-};
-},{"./privateDecrypt":194,"./publicEncrypt":195}],193:[function(require,module,exports){
-(function (Buffer){
-var createHash = require('create-hash');
-module.exports = function (seed, len) {
-  var t = new Buffer('');
-  var  i = 0, c;
-  while (t.length < len) {
-    c = i2ops(i++);
-    t = Buffer.concat([t, createHash('sha1').update(seed).update(c).digest()]);
-  }
-  return t.slice(0, len);
-};
-
-function i2ops(c) {
-  var out = new Buffer(4);
-  out.writeUInt32BE(c,0);
-  return out;
-}
-}).call(this,require("buffer").Buffer)
-},{"buffer":114,"create-hash":119}],194:[function(require,module,exports){
-(function (Buffer){
-var parseKeys = require('parse-asn1');
-var mgf = require('./mgf');
-var xor = require('./xor');
-var bn = require('bn.js');
-var crt = require('browserify-rsa');
-var createHash = require('create-hash');
-var withPublic = require('./withPublic');
-module.exports = function privateDecrypt(private_key, enc, reverse) {
-  var padding;
-  if (private_key.padding) {
-    padding = private_key.padding;
-  } else if (reverse) {
-    padding = 1;
-  } else {
-    padding = 4;
-  }
-  
-  var key = parseKeys(private_key);
-  var k = key.modulus.byteLength();
-  if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
-    throw new Error('decryption error');
-  }
-  var msg;
-  if (reverse) {
-    msg = withPublic(new bn(enc), key);
-  } else {
-    msg = crt(enc, key);
-  }
-  var zBuffer = new Buffer(k - msg.length);
-  zBuffer.fill(0);
-  msg = Buffer.concat([zBuffer, msg], k);
-  if (padding === 4) {
-    return oaep(key, msg);
-  } else if (padding === 1) {
-    return pkcs1(key, msg, reverse);
-  } else if (padding === 3) {
-    return msg;
-  } else {
-    throw new Error('unknown padding');
-  }
-};
-
-function oaep(key, msg){
-  var n = key.modulus;
-  var k = key.modulus.byteLength();
-  var mLen = msg.length;
-  var iHash = createHash('sha1').update(new Buffer('')).digest();
-  var hLen = iHash.length;
-  var hLen2 = 2 * hLen;
-  if (msg[0] !== 0) {
-    throw new Error('decryption error');
-  }
-  var maskedSeed = msg.slice(1, hLen + 1);
-  var maskedDb =  msg.slice(hLen + 1);
-  var seed = xor(maskedSeed, mgf(maskedDb, hLen));
-  var db = xor(maskedDb, mgf(seed, k - hLen - 1));
-  if (compare(iHash, db.slice(0, hLen))) {
-    throw new Error('decryption error');
-  }
-  var i = hLen;
-  while (db[i] === 0) {
-    i++;
-  }
-  if (db[i++] !== 1) {
-    throw new Error('decryption error');
-  }
-  return db.slice(i);
-}
-
-function pkcs1(key, msg, reverse){
-  var p1 = msg.slice(0, 2);
-  var i = 2;
-  var status = 0;
-  while (msg[i++] !== 0) {
-    if (i >= msg.length) {
-      status++;
-      break;
-    }
-  }
-  var ps = msg.slice(2, i - 1);
-  var p2 = msg.slice(i - 1, i);
-
-  if ((p1.toString('hex') !== '0002' && !reverse) || (p1.toString('hex') !== '0001' && reverse)){
-    status++;
-  }
-  if (ps.length < 8) {
-    status++;
-  }
-  if (status) {
-    throw new Error('decryption error');
-  }
-  return  msg.slice(i);
-}
-function compare(a, b){
-  a = new Buffer(a);
-  b = new Buffer(b);
-  var dif = 0;
-  var len = a.length;
-  if (a.length !== b.length) {
-    dif++;
-    len = Math.min(a.length, b.length);
-  }
-  var i = -1;
-  while (++i < len) {
-    dif += (a[i] ^ b[i]);
-  }
-  return dif;
-}
-}).call(this,require("buffer").Buffer)
-},{"./mgf":193,"./withPublic":196,"./xor":197,"bn.js":82,"browserify-rsa":104,"buffer":114,"create-hash":119,"parse-asn1":187}],195:[function(require,module,exports){
-(function (Buffer){
-var parseKeys = require('parse-asn1');
-var randomBytes = require('randombytes');
-var createHash = require('create-hash');
-var mgf = require('./mgf');
-var xor = require('./xor');
-var bn = require('bn.js');
-var withPublic = require('./withPublic');
-var crt = require('browserify-rsa');
-
-var constants = {
-  RSA_PKCS1_OAEP_PADDING: 4,
-  RSA_PKCS1_PADDIN: 1,
-  RSA_NO_PADDING: 3
-};
-
-module.exports = function publicEncrypt(public_key, msg, reverse) {
-  var padding;
-  if (public_key.padding) {
-    padding = public_key.padding;
-  } else if (reverse) {
-    padding = 1;
-  } else {
-    padding = 4;
-  }
-  var key = parseKeys(public_key);
-  var paddedMsg;
-  if (padding === 4) {
-    paddedMsg = oaep(key, msg);
-  } else if (padding === 1) {
-    paddedMsg = pkcs1(key, msg, reverse);
-  } else if (padding === 3) {
-    paddedMsg = new bn(msg);
-    if (paddedMsg.cmp(key.modulus) >= 0) {
-      throw new Error('data too long for modulus');
-    }
-  } else {
-    throw new Error('unknown padding');
-  }
-  if (reverse) {
-    return crt(paddedMsg, key);
-  } else {
-    return withPublic(paddedMsg, key);
-  }
-};
-
-function oaep(key, msg){
-  var k = key.modulus.byteLength();
-  var mLen = msg.length;
-  var iHash = createHash('sha1').update(new Buffer('')).digest();
-  var hLen = iHash.length;
-  var hLen2 = 2 * hLen;
-  if (mLen > k - hLen2 - 2) {
-    throw new Error('message too long');
-  }
-  var ps = new Buffer(k - mLen - hLen2 - 2);
-  ps.fill(0);
-  var dblen = k - hLen - 1;
-  var seed = randomBytes(hLen);
-  var maskedDb = xor(Buffer.concat([iHash, ps, new Buffer([1]), msg], dblen), mgf(seed, dblen));
-  var maskedSeed = xor(seed, mgf(maskedDb, hLen));
-  return new bn(Buffer.concat([new Buffer([0]), maskedSeed, maskedDb], k));
-}
-function pkcs1(key, msg, reverse){
-  var mLen = msg.length;
-  var k = key.modulus.byteLength();
-  if (mLen > k - 11) {
-    throw new Error('message too long');
-  }
-  var ps;
-  if (reverse) {
-    ps = new Buffer(k - mLen - 3);
-    ps.fill(0xff);
-  } else {
-    ps = nonZero(k - mLen - 3);
-  }
-  return new bn(Buffer.concat([new Buffer([0, reverse?1:2]), ps, new Buffer([0]), msg], k));
-}
-function nonZero(len, crypto) {
-  var out = new Buffer(len);
-  var i = 0;
-  var cache = randomBytes(len*2);
-  var cur = 0;
-  var num;
-  while (i < len) {
-    if (cur === cache.length) {
-      cache = randomBytes(len*2);
-      cur = 0;
-    }
-    num = cache[cur++];
-    if (num) {
-      out[i++] = num;
-    }
-  }
-  return out;
-}
-}).call(this,require("buffer").Buffer)
-},{"./mgf":193,"./withPublic":196,"./xor":197,"bn.js":82,"browserify-rsa":104,"buffer":114,"create-hash":119,"parse-asn1":187,"randombytes":198}],196:[function(require,module,exports){
-(function (Buffer){
-var bn = require('bn.js');
-function withPublic(paddedMsg, key) {
-  return new Buffer(paddedMsg
-    .toRed(bn.mont(key.modulus))
-    .redPow(new bn(key.publicExponent))
-    .fromRed()
-    .toArray());
-}
-
-module.exports = withPublic;
-}).call(this,require("buffer").Buffer)
-},{"bn.js":82,"buffer":114}],197:[function(require,module,exports){
-module.exports = function xor(a, b) {
-  var len = a.length;
-  var i = -1;
-  while (++i < len) {
-    a[i] ^= b[i];
-  }
-  return a
-};
-},{}],198:[function(require,module,exports){
-(function (process,global,Buffer){
-'use strict'
-
-function oldBrowser () {
-  throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
-}
-
-var crypto = global.crypto || global.msCrypto
-
-if (crypto && crypto.getRandomValues) {
-  module.exports = randomBytes
-} else {
-  module.exports = oldBrowser
-}
-
-function randomBytes (size, cb) {
-  // phantomjs needs to throw
-  if (size > 65536) throw new Error('requested too many random bytes')
-  // in case browserify  isn't using the Uint8Array version
-  var rawBytes = new global.Uint8Array(size)
-
-  // This will not work in older browsers.
-  // See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
-  if (size > 0) {  // getRandomValues fails on IE if size == 0
-    crypto.getRandomValues(rawBytes)
-  }
-  // phantomjs doesn't like a buffer being passed here
-  var bytes = new Buffer(rawBytes.buffer)
-
-  if (typeof cb === 'function') {
-    return process.nextTick(function () {
-      cb(null, bytes)
-    })
-  }
-
-  return bytes
-}
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"_process":191,"buffer":114}],199:[function(require,module,exports){
-module.exports = require("./lib/_stream_duplex.js")
-
-},{"./lib/_stream_duplex.js":200}],200:[function(require,module,exports){
-// a duplex stream is just a stream that is both readable and writable.
-// Since JS doesn't have multiple prototypal inheritance, this class
-// prototypally inherits from Readable, and then parasitically from
-// Writable.
-
-'use strict';
-
-/*<replacement>*/
-
-var objectKeys = Object.keys || function (obj) {
-  var keys = [];
-  for (var key in obj) {
-    keys.push(key);
-  }return keys;
-};
-/*</replacement>*/
-
-module.exports = Duplex;
-
-/*<replacement>*/
-var processNextTick = require('process-nextick-args');
-/*</replacement>*/
-
-/*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
-/*</replacement>*/
-
-var Readable = require('./_stream_readable');
-var Writable = require('./_stream_writable');
-
-util.inherits(Duplex, Readable);
-
-var keys = objectKeys(Writable.prototype);
-for (var v = 0; v < keys.length; v++) {
-  var method = keys[v];
-  if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
-}
-
-function Duplex(options) {
-  if (!(this instanceof Duplex)) return new Duplex(options);
-
-  Readable.call(this, options);
-  Writable.call(this, options);
-
-  if (options && options.readable === false) this.readable = false;
-
-  if (options && options.writable === false) this.writable = false;
-
-  this.allowHalfOpen = true;
-  if (options && options.allowHalfOpen === false) this.allowHalfOpen = false;
-
-  this.once('end', onend);
-}
-
-// the no-half-open enforcer
-function onend() {
-  // if we allow half-open state, or if the writable side ended,
-  // then we're ok.
-  if (this.allowHalfOpen || this._writableState.ended) return;
-
-  // no more data can be written.
-  // But allow more writes to happen in this tick.
-  processNextTick(onEndNT, this);
-}
-
-function onEndNT(self) {
-  self.end();
-}
-
-function forEach(xs, f) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    f(xs[i], i);
-  }
-}
-},{"./_stream_readable":202,"./_stream_writable":204,"core-util-is":117,"inherits":171,"process-nextick-args":190}],201:[function(require,module,exports){
-// a passthrough stream.
-// basically just the most minimal sort of Transform stream.
-// Every written chunk gets output as-is.
-
-'use strict';
-
-module.exports = PassThrough;
-
-var Transform = require('./_stream_transform');
-
-/*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
-/*</replacement>*/
-
-util.inherits(PassThrough, Transform);
-
-function PassThrough(options) {
-  if (!(this instanceof PassThrough)) return new PassThrough(options);
-
-  Transform.call(this, options);
-}
-
-PassThrough.prototype._transform = function (chunk, encoding, cb) {
-  cb(null, chunk);
-};
-},{"./_stream_transform":203,"core-util-is":117,"inherits":171}],202:[function(require,module,exports){
-(function (process){
-'use strict';
-
-module.exports = Readable;
-
-/*<replacement>*/
-var processNextTick = require('process-nextick-args');
-/*</replacement>*/
-
-/*<replacement>*/
-var isArray = require('isarray');
-/*</replacement>*/
-
-/*<replacement>*/
-var Buffer = require('buffer').Buffer;
-/*</replacement>*/
-
-Readable.ReadableState = ReadableState;
-
-var EE = require('events');
-
-/*<replacement>*/
-var EElistenerCount = function (emitter, type) {
-  return emitter.listeners(type).length;
-};
-/*</replacement>*/
-
-/*<replacement>*/
-var Stream;
-(function () {
-  try {
-    Stream = require('st' + 'ream');
-  } catch (_) {} finally {
-    if (!Stream) Stream = require('events').EventEmitter;
-  }
-})();
-/*</replacement>*/
-
-var Buffer = require('buffer').Buffer;
-
-/*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
-/*</replacement>*/
-
-/*<replacement>*/
-var debugUtil = require('util');
-var debug = undefined;
-if (debugUtil && debugUtil.debuglog) {
-  debug = debugUtil.debuglog('stream');
-} else {
-  debug = function () {};
-}
-/*</replacement>*/
-
-var StringDecoder;
-
-util.inherits(Readable, Stream);
-
-var Duplex;
-function ReadableState(options, stream) {
-  Duplex = Duplex || require('./_stream_duplex');
-
-  options = options || {};
-
-  // object stream flag. Used to make read(n) ignore n and to
-  // make all the buffer merging and length checks go away
-  this.objectMode = !!options.objectMode;
-
-  if (stream instanceof Duplex) this.objectMode = this.objectMode || !!options.readableObjectMode;
-
-  // the point at which it stops calling _read() to fill the buffer
-  // Note: 0 is a valid value, means "don't call _read preemptively ever"
-  var hwm = options.highWaterMark;
-  var defaultHwm = this.objectMode ? 16 : 16 * 1024;
-  this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
-
-  // cast to ints.
-  this.highWaterMark = ~ ~this.highWaterMark;
-
-  this.buffer = [];
-  this.length = 0;
-  this.pipes = null;
-  this.pipesCount = 0;
-  this.flowing = null;
-  this.ended = false;
-  this.endEmitted = false;
-  this.reading = false;
-
-  // a flag to be able to tell if the onwrite cb is called immediately,
-  // or on a later tick.  We set this to true at first, because any
-  // actions that shouldn't happen until "later" should generally also
-  // not happen before the first write call.
-  this.sync = true;
-
-  // whenever we return null, then we set a flag to say
-  // that we're awaiting a 'readable' event emission.
-  this.needReadable = false;
-  this.emittedReadable = false;
-  this.readableListening = false;
-  this.resumeScheduled = false;
-
-  // Crypto is kind of old and crusty.  Historically, its default string
-  // encoding is 'binary' so we have to make this configurable.
-  // Everything else in the universe uses 'utf8', though.
-  this.defaultEncoding = options.defaultEncoding || 'utf8';
-
-  // when piping, we only care about 'readable' events that happen
-  // after read()ing all the bytes and not getting any pushback.
-  this.ranOut = false;
-
-  // the number of writers that are awaiting a drain event in .pipe()s
-  this.awaitDrain = 0;
-
-  // if true, a maybeReadMore has been scheduled
-  this.readingMore = false;
-
-  this.decoder = null;
-  this.encoding = null;
-  if (options.encoding) {
-    if (!StringDecoder) StringDecoder = require('string_decoder/').StringDecoder;
-    this.decoder = new StringDecoder(options.encoding);
-    this.encoding = options.encoding;
-  }
-}
-
-var Duplex;
-function Readable(options) {
-  Duplex = Duplex || require('./_stream_duplex');
-
-  if (!(this instanceof Readable)) return new Readable(options);
-
-  this._readableState = new ReadableState(options, this);
-
-  // legacy
-  this.readable = true;
-
-  if (options && typeof options.read === 'function') this._read = options.read;
-
-  Stream.call(this);
-}
-
-// Manually shove something into the read() buffer.
-// This returns true if the highWaterMark has not been hit yet,
-// similar to how Writable.write() returns true if you should
-// write() some more.
-Readable.prototype.push = function (chunk, encoding) {
-  var state = this._readableState;
-
-  if (!state.objectMode && typeof chunk === 'string') {
-    encoding = encoding || state.defaultEncoding;
-    if (encoding !== state.encoding) {
-      chunk = new Buffer(chunk, encoding);
-      encoding = '';
-    }
-  }
-
-  return readableAddChunk(this, state, chunk, encoding, false);
-};
-
-// Unshift should *always* be something directly out of read()
-Readable.prototype.unshift = function (chunk) {
-  var state = this._readableState;
-  return readableAddChunk(this, state, chunk, '', true);
-};
-
-Readable.prototype.isPaused = function () {
-  return this._readableState.flowing === false;
-};
-
-function readableAddChunk(stream, state, chunk, encoding, addToFront) {
-  var er = chunkInvalid(state, chunk);
-  if (er) {
-    stream.emit('error', er);
-  } else if (chunk === null) {
-    state.reading = false;
-    onEofChunk(stream, state);
-  } else if (state.objectMode || chunk && chunk.length > 0) {
-    if (state.ended && !addToFront) {
-      var e = new Error('stream.push() after EOF');
-      stream.emit('error', e);
-    } else if (state.endEmitted && addToFront) {
-      var e = new Error('stream.unshift() after end event');
-      stream.emit('error', e);
-    } else {
-      var skipAdd;
-      if (state.decoder && !addToFront && !encoding) {
-        chunk = state.decoder.write(chunk);
-        skipAdd = !state.objectMode && chunk.length === 0;
-      }
-
-      if (!addToFront) state.reading = false;
-
-      // Don't add to the buffer if we've decoded to an empty string chunk and
-      // we're not in object mode
-      if (!skipAdd) {
-        // if we want the data now, just emit it.
-        if (state.flowing && state.length === 0 && !state.sync) {
-          stream.emit('data', chunk);
-          stream.read(0);
-        } else {
-          // update the buffer info.
-          state.length += state.objectMode ? 1 : chunk.length;
-          if (addToFront) state.buffer.unshift(chunk);else state.buffer.push(chunk);
-
-          if (state.needReadable) emitReadable(stream);
-        }
-      }
-
-      maybeReadMore(stream, state);
-    }
-  } else if (!addToFront) {
-    state.reading = false;
-  }
-
-  return needMoreData(state);
-}
-
-// if it's past the high water mark, we can push in some more.
-// Also, if we have no data yet, we can stand some
-// more bytes.  This is to work around cases where hwm=0,
-// such as the repl.  Also, if the push() triggered a
-// readable event, and the user called read(largeNumber) such that
-// needReadable was set, then we ought to push more, so that another
-// 'readable' event will be triggered.
-function needMoreData(state) {
-  return !state.ended && (state.needReadable || state.length < state.highWaterMark || state.length === 0);
-}
-
-// backwards compatibility.
-Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = require('string_decoder/').StringDecoder;
-  this._readableState.decoder = new StringDecoder(enc);
-  this._readableState.encoding = enc;
-  return this;
-};
-
-// Don't raise the hwm > 8MB
-var MAX_HWM = 0x800000;
-function computeNewHighWaterMark(n) {
-  if (n >= MAX_HWM) {
-    n = MAX_HWM;
-  } else {
-    // Get the next highest power of 2
-    n--;
-    n |= n >>> 1;
-    n |= n >>> 2;
-    n |= n >>> 4;
-    n |= n >>> 8;
-    n |= n >>> 16;
-    n++;
-  }
-  return n;
-}
-
-function howMuchToRead(n, state) {
-  if (state.length === 0 && state.ended) return 0;
-
-  if (state.objectMode) return n === 0 ? 0 : 1;
-
-  if (n === null || isNaN(n)) {
-    // only flow one buffer at a time
-    if (state.flowing && state.buffer.length) return state.buffer[0].length;else return state.length;
-  }
-
-  if (n <= 0) return 0;
-
-  // If we're asking for more than the target buffer level,
-  // then raise the water mark.  Bump up to the next highest
-  // power of 2, to prevent increasing it excessively in tiny
-  // amounts.
-  if (n > state.highWaterMark) state.highWaterMark = computeNewHighWaterMark(n);
-
-  // don't have that much.  return null, unless we've ended.
-  if (n > state.length) {
-    if (!state.ended) {
-      state.needReadable = true;
-      return 0;
-    } else {
-      return state.length;
-    }
-  }
-
-  return n;
-}
-
-// you can override either this method, or the async _read(n) below.
-Readable.prototype.read = function (n) {
-  debug('read', n);
-  var state = this._readableState;
-  var nOrig = n;
-
-  if (typeof n !== 'number' || n > 0) state.emittedReadable = false;
-
-  // if we're doing read(0) to trigger a readable event, but we
-  // already have a bunch of data in the buffer, then just trigger
-  // the 'readable' event and move on.
-  if (n === 0 && state.needReadable && (state.length >= state.highWaterMark || state.ended)) {
-    debug('read: emitReadable', state.length, state.ended);
-    if (state.length === 0 && state.ended) endReadable(this);else emitReadable(this);
-    return null;
-  }
-
-  n = howMuchToRead(n, state);
-
-  // if we've ended, and we're now clear, then finish it up.
-  if (n === 0 && state.ended) {
-    if (state.length === 0) endReadable(this);
-    return null;
-  }
-
-  // All the actual chunk generation logic needs to be
-  // *below* the call to _read.  The reason is that in certain
-  // synthetic stream cases, such as passthrough streams, _read
-  // may be a completely synchronous operation which may change
-  // the state of the read buffer, providing enough data when
-  // before there was *not* enough.
-  //
-  // So, the steps are:
-  // 1. Figure out what the state of things will be after we do
-  // a read from the buffer.
-  //
-  // 2. If that resulting state will trigger a _read, then call _read.
-  // Note that this may be asynchronous, or synchronous.  Yes, it is
-  // deeply ugly to write APIs this way, but that still doesn't mean
-  // that the Readable class should behave improperly, as streams are
-  // designed to be sync/async agnostic.
-  // Take note if the _read call is sync or async (ie, if the read call
-  // has returned yet), so that we know whether or not it's safe to emit
-  // 'readable' etc.
-  //
-  // 3. Actually pull the requested chunks out of the buffer and return.
-
-  // if we need a readable event, then we need to do some reading.
-  var doRead = state.needReadable;
-  debug('need readable', doRead);
-
-  // if we currently have less than the highWaterMark, then also read some
-  if (state.length === 0 || state.length - n < state.highWaterMark) {
-    doRead = true;
-    debug('length less than watermark', doRead);
-  }
-
-  // however, if we've ended, then there's no point, and if we're already
-  // reading, then it's unnecessary.
-  if (state.ended || state.reading) {
-    doRead = false;
-    debug('reading or ended', doRead);
-  }
-
-  if (doRead) {
-    debug('do read');
-    state.reading = true;
-    state.sync = true;
-    // if the length is currently zero, then we *need* a readable event.
-    if (state.length === 0) state.needReadable = true;
-    // call internal read method
-    this._read(state.highWaterMark);
-    state.sync = false;
-  }
-
-  // If _read pushed data synchronously, then `reading` will be false,
-  // and we need to re-evaluate how much data we can return to the user.
-  if (doRead && !state.reading) n = howMuchToRead(nOrig, state);
-
-  var ret;
-  if (n > 0) ret = fromList(n, state);else ret = null;
-
-  if (ret === null) {
-    state.needReadable = true;
-    n = 0;
-  }
-
-  state.length -= n;
-
-  // If we have nothing in the buffer, then we want to know
-  // as soon as we *do* get something into the buffer.
-  if (state.length === 0 && !state.ended) state.needReadable = true;
-
-  // If we tried to read() past the EOF, then emit end on the next tick.
-  if (nOrig !== n && state.ended && state.length === 0) endReadable(this);
-
-  if (ret !== null) this.emit('data', ret);
-
-  return ret;
-};
-
-function chunkInvalid(state, chunk) {
-  var er = null;
-  if (!Buffer.isBuffer(chunk) && typeof chunk !== 'string' && chunk !== null && chunk !== undefined && !state.objectMode) {
-    er = new TypeError('Invalid non-string/buffer chunk');
-  }
-  return er;
-}
-
-function onEofChunk(stream, state) {
-  if (state.ended) return;
-  if (state.decoder) {
-    var chunk = state.decoder.end();
-    if (chunk && chunk.length) {
-      state.buffer.push(chunk);
-      state.length += state.objectMode ? 1 : chunk.length;
-    }
-  }
-  state.ended = true;
-
-  // emit 'readable' now to make sure it gets picked up.
-  emitReadable(stream);
-}
-
-// Don't emit readable right away in sync mode, because this can trigger
-// another read() call => stack overflow.  This way, it might trigger
-// a nextTick recursion warning, but that's not so bad.
-function emitReadable(stream) {
-  var state = stream._readableState;
-  state.needReadable = false;
-  if (!state.emittedReadable) {
-    debug('emitReadable', state.flowing);
-    state.emittedReadable = true;
-    if (state.sync) processNextTick(emitReadable_, stream);else emitReadable_(stream);
-  }
-}
-
-function emitReadable_(stream) {
-  debug('emit readable');
-  stream.emit('readable');
-  flow(stream);
-}
-
-// at this point, the user has presumably seen the 'readable' event,
-// and called read() to consume some data.  that may have triggered
-// in turn another _read(n) call, in which case reading = true if
-// it's in progress.
-// However, if we're not ended, or reading, and the length < hwm,
-// then go ahead and try to read some more preemptively.
-function maybeReadMore(stream, state) {
-  if (!state.readingMore) {
-    state.readingMore = true;
-    processNextTick(maybeReadMore_, stream, state);
-  }
-}
-
-function maybeReadMore_(stream, state) {
-  var len = state.length;
-  while (!state.reading && !state.flowing && !state.ended && state.length < state.highWaterMark) {
-    debug('maybeReadMore read 0');
-    stream.read(0);
-    if (len === state.length)
-      // didn't get any data, stop spinning.
-      break;else len = state.length;
-  }
-  state.readingMore = false;
-}
-
-// abstract method.  to be overridden in specific implementation classes.
-// call cb(er, data) where data is <= n in length.
-// for virtual (non-string, non-buffer) streams, "length" is somewhat
-// arbitrary, and perhaps not very meaningful.
-Readable.prototype._read = function (n) {
-  this.emit('error', new Error('not implemented'));
-};
-
-Readable.prototype.pipe = function (dest, pipeOpts) {
-  var src = this;
-  var state = this._readableState;
-
-  switch (state.pipesCount) {
-    case 0:
-      state.pipes = dest;
-      break;
-    case 1:
-      state.pipes = [state.pipes, dest];
-      break;
-    default:
-      state.pipes.push(dest);
-      break;
-  }
-  state.pipesCount += 1;
-  debug('pipe count=%d opts=%j', state.pipesCount, pipeOpts);
-
-  var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
-
-  var endFn = doEnd ? onend : cleanup;
-  if (state.endEmitted) processNextTick(endFn);else src.once('end', endFn);
-
-  dest.on('unpipe', onunpipe);
-  function onunpipe(readable) {
-    debug('onunpipe');
-    if (readable === src) {
-      cleanup();
-    }
-  }
-
-  function onend() {
-    debug('onend');
-    dest.end();
-  }
-
-  // when the dest drains, it reduces the awaitDrain counter
-  // on the source.  This would be more elegant with a .once()
-  // handler in flow(), but adding and removing repeatedly is
-  // too slow.
-  var ondrain = pipeOnDrain(src);
-  dest.on('drain', ondrain);
-
-  var cleanedUp = false;
-  function cleanup() {
-    debug('cleanup');
-    // cleanup event handlers once the pipe is broken
-    dest.removeListener('close', onclose);
-    dest.removeListener('finish', onfinish);
-    dest.removeListener('drain', ondrain);
-    dest.removeListener('error', onerror);
-    dest.removeListener('unpipe', onunpipe);
-    src.removeListener('end', onend);
-    src.removeListener('end', cleanup);
-    src.removeListener('data', ondata);
-
-    cleanedUp = true;
-
-    // if the reader is waiting for a drain event from this
-    // specific writer, then it would cause it to never start
-    // flowing again.
-    // So, if this is awaiting a drain, then we just call it now.
-    // If we don't know, then assume that we are waiting for one.
-    if (state.awaitDrain && (!dest._writableState || dest._writableState.needDrain)) ondrain();
-  }
-
-  src.on('data', ondata);
-  function ondata(chunk) {
-    debug('ondata');
-    var ret = dest.write(chunk);
-    if (false === ret) {
-      // If the user unpiped during `dest.write()`, it is possible
-      // to get stuck in a permanently paused state if that write
-      // also returned false.
-      if (state.pipesCount === 1 && state.pipes[0] === dest && src.listenerCount('data') === 1 && !cleanedUp) {
-        debug('false write response, pause', src._readableState.awaitDrain);
-        src._readableState.awaitDrain++;
-      }
-      src.pause();
-    }
-  }
-
-  // if the dest has an error, then stop piping into it.
-  // however, don't suppress the throwing behavior for this.
-  function onerror(er) {
-    debug('onerror', er);
-    unpipe();
-    dest.removeListener('error', onerror);
-    if (EElistenerCount(dest, 'error') === 0) dest.emit('error', er);
-  }
-  // This is a brutally ugly hack to make sure that our error handler
-  // is attached before any userland ones.  NEVER DO THIS.
-  if (!dest._events || !dest._events.error) dest.on('error', onerror);else if (isArray(dest._events.error)) dest._events.error.unshift(onerror);else dest._events.error = [onerror, dest._events.error];
-
-  // Both close and finish should trigger unpipe, but only once.
-  function onclose() {
-    dest.removeListener('finish', onfinish);
-    unpipe();
-  }
-  dest.once('close', onclose);
-  function onfinish() {
-    debug('onfinish');
-    dest.removeListener('close', onclose);
-    unpipe();
-  }
-  dest.once('finish', onfinish);
-
-  function unpipe() {
-    debug('unpipe');
-    src.unpipe(dest);
-  }
-
-  // tell the dest that it's being piped to
-  dest.emit('pipe', src);
-
-  // start the flow if it hasn't been started already.
-  if (!state.flowing) {
-    debug('pipe resume');
-    src.resume();
-  }
-
-  return dest;
-};
-
-function pipeOnDrain(src) {
-  return function () {
-    var state = src._readableState;
-    debug('pipeOnDrain', state.awaitDrain);
-    if (state.awaitDrain) state.awaitDrain--;
-    if (state.awaitDrain === 0 && EElistenerCount(src, 'data')) {
-      state.flowing = true;
-      flow(src);
-    }
-  };
-}
-
-Readable.prototype.unpipe = function (dest) {
-  var state = this._readableState;
-
-  // if we're not piping anywhere, then do nothing.
-  if (state.pipesCount === 0) return this;
-
-  // just one destination.  most common case.
-  if (state.pipesCount === 1) {
-    // passed in one, but it's not the right one.
-    if (dest && dest !== state.pipes) return this;
-
-    if (!dest) dest = state.pipes;
-
-    // got a match.
-    state.pipes = null;
-    state.pipesCount = 0;
-    state.flowing = false;
-    if (dest) dest.emit('unpipe', this);
-    return this;
-  }
-
-  // slow case. multiple pipe destinations.
-
-  if (!dest) {
-    // remove all.
-    var dests = state.pipes;
-    var len = state.pipesCount;
-    state.pipes = null;
-    state.pipesCount = 0;
-    state.flowing = false;
-
-    for (var _i = 0; _i < len; _i++) {
-      dests[_i].emit('unpipe', this);
-    }return this;
-  }
-
-  // try to find the right one.
-  var i = indexOf(state.pipes, dest);
-  if (i === -1) return this;
-
-  state.pipes.splice(i, 1);
-  state.pipesCount -= 1;
-  if (state.pipesCount === 1) state.pipes = state.pipes[0];
-
-  dest.emit('unpipe', this);
-
-  return this;
-};
-
-// set up data events if they are asked for
-// Ensure readable listeners eventually get something
-Readable.prototype.on = function (ev, fn) {
-  var res = Stream.prototype.on.call(this, ev, fn);
-
-  // If listening to data, and it has not explicitly been paused,
-  // then call resume to start the flow of data on the next tick.
-  if (ev === 'data' && false !== this._readableState.flowing) {
-    this.resume();
-  }
-
-  if (ev === 'readable' && !this._readableState.endEmitted) {
-    var state = this._readableState;
-    if (!state.readableListening) {
-      state.readableListening = true;
-      state.emittedReadable = false;
-      state.needReadable = true;
-      if (!state.reading) {
-        processNextTick(nReadingNextTick, this);
-      } else if (state.length) {
-        emitReadable(this, state);
-      }
-    }
-  }
-
-  return res;
-};
-Readable.prototype.addListener = Readable.prototype.on;
-
-function nReadingNextTick(self) {
-  debug('readable nexttick read 0');
-  self.read(0);
-}
-
-// pause() and resume() are remnants of the legacy readable stream API
-// If the user uses them, then switch into old mode.
-Readable.prototype.resume = function () {
-  var state = this._readableState;
-  if (!state.flowing) {
-    debug('resume');
-    state.flowing = true;
-    resume(this, state);
-  }
-  return this;
-};
-
-function resume(stream, state) {
-  if (!state.resumeScheduled) {
-    state.resumeScheduled = true;
-    processNextTick(resume_, stream, state);
-  }
-}
-
-function resume_(stream, state) {
-  if (!state.reading) {
-    debug('resume read 0');
-    stream.read(0);
-  }
-
-  state.resumeScheduled = false;
-  stream.emit('resume');
-  flow(stream);
-  if (state.flowing && !state.reading) stream.read(0);
-}
-
-Readable.prototype.pause = function () {
-  debug('call pause flowing=%j', this._readableState.flowing);
-  if (false !== this._readableState.flowing) {
-    debug('pause');
-    this._readableState.flowing = false;
-    this.emit('pause');
-  }
-  return this;
-};
-
-function flow(stream) {
-  var state = stream._readableState;
-  debug('flow', state.flowing);
-  if (state.flowing) {
-    do {
-      var chunk = stream.read();
-    } while (null !== chunk && state.flowing);
-  }
-}
-
-// wrap an old-style stream as the async data source.
-// This is *not* part of the readable stream interface.
-// It is an ugly unfortunate mess of history.
-Readable.prototype.wrap = function (stream) {
-  var state = this._readableState;
-  var paused = false;
-
-  var self = this;
-  stream.on('end', function () {
-    debug('wrapped end');
-    if (state.decoder && !state.ended) {
-      var chunk = state.decoder.end();
-      if (chunk && chunk.length) self.push(chunk);
-    }
-
-    self.push(null);
-  });
-
-  stream.on('data', function (chunk) {
-    debug('wrapped data');
-    if (state.decoder) chunk = state.decoder.write(chunk);
-
-    // don't skip over falsy values in objectMode
-    if (state.objectMode && (chunk === null || chunk === undefined)) return;else if (!state.objectMode && (!chunk || !chunk.length)) return;
-
-    var ret = self.push(chunk);
-    if (!ret) {
-      paused = true;
-      stream.pause();
-    }
-  });
-
-  // proxy all the other methods.
-  // important when wrapping filters and duplexes.
-  for (var i in stream) {
-    if (this[i] === undefined && typeof stream[i] === 'function') {
-      this[i] = function (method) {
-        return function () {
-          return stream[method].apply(stream, arguments);
-        };
-      }(i);
-    }
-  }
-
-  // proxy certain important events.
-  var events = ['error', 'close', 'destroy', 'pause', 'resume'];
-  forEach(events, function (ev) {
-    stream.on(ev, self.emit.bind(self, ev));
-  });
-
-  // when we try to consume some more bytes, simply unpause the
-  // underlying stream.
-  self._read = function (n) {
-    debug('wrapped _read', n);
-    if (paused) {
-      paused = false;
-      stream.resume();
-    }
-  };
-
-  return self;
-};
-
-// exposed for testing purposes only.
-Readable._fromList = fromList;
-
-// Pluck off n bytes from an array of buffers.
-// Length is the combined lengths of all the buffers in the list.
-function fromList(n, state) {
-  var list = state.buffer;
-  var length = state.length;
-  var stringMode = !!state.decoder;
-  var objectMode = !!state.objectMode;
-  var ret;
-
-  // nothing in the list, definitely empty.
-  if (list.length === 0) return null;
-
-  if (length === 0) ret = null;else if (objectMode) ret = list.shift();else if (!n || n >= length) {
-    // read it all, truncate the array.
-    if (stringMode) ret = list.join('');else if (list.length === 1) ret = list[0];else ret = Buffer.concat(list, length);
-    list.length = 0;
-  } else {
-    // read just some of it.
-    if (n < list[0].length) {
-      // just take a part of the first list item.
-      // slice is the same for buffers and strings.
-      var buf = list[0];
-      ret = buf.slice(0, n);
-      list[0] = buf.slice(n);
-    } else if (n === list[0].length) {
-      // first list is a perfect match
-      ret = list.shift();
-    } else {
-      // complex case.
-      // we have enough to cover it, but it spans past the first buffer.
-      if (stringMode) ret = '';else ret = new Buffer(n);
-
-      var c = 0;
-      for (var i = 0, l = list.length; i < l && c < n; i++) {
-        var buf = list[0];
-        var cpy = Math.min(n - c, buf.length);
-
-        if (stringMode) ret += buf.slice(0, cpy);else buf.copy(ret, c, 0, cpy);
-
-        if (cpy < buf.length) list[0] = buf.slice(cpy);else list.shift();
-
-        c += cpy;
-      }
-    }
-  }
-
-  return ret;
-}
-
-function endReadable(stream) {
-  var state = stream._readableState;
-
-  // If we get here before consuming all the bytes, then that is a
-  // bug in node.  Should never happen.
-  if (state.length > 0) throw new Error('endReadable called on non-empty stream');
-
-  if (!state.endEmitted) {
-    state.ended = true;
-    processNextTick(endReadableNT, state, stream);
-  }
-}
-
-function endReadableNT(state, stream) {
-  // Check that we didn't get one last unshift.
-  if (!state.endEmitted && state.length === 0) {
-    state.endEmitted = true;
-    stream.readable = false;
-    stream.emit('end');
-  }
-}
-
-function forEach(xs, f) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    f(xs[i], i);
-  }
-}
-
-function indexOf(xs, x) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    if (xs[i] === x) return i;
-  }
-  return -1;
-}
-}).call(this,require('_process'))
-},{"./_stream_duplex":200,"_process":191,"buffer":114,"core-util-is":117,"events":161,"inherits":171,"isarray":173,"process-nextick-args":190,"string_decoder/":225,"util":85}],203:[function(require,module,exports){
-// a transform stream is a readable/writable stream where you do
-// something with the data.  Sometimes it's called a "filter",
-// but that's not a great name for it, since that implies a thing where
-// some bits pass through, and others are simply ignored.  (That would
-// be a valid example of a transform, of course.)
-//
-// While the output is causally related to the input, it's not a
-// necessarily symmetric or synchronous transformation.  For example,
-// a zlib stream might take multiple plain-text writes(), and then
-// emit a single compressed chunk some time in the future.
-//
-// Here's how this works:
-//
-// The Transform stream has all the aspects of the readable and writable
-// stream classes.  When you write(chunk), that calls _write(chunk,cb)
-// internally, and returns false if there's a lot of pending writes
-// buffered up.  When you call read(), that calls _read(n) until
-// there's enough pending readable data buffered up.
-//
-// In a transform stream, the written data is placed in a buffer.  When
-// _read(n) is called, it transforms the queued up data, calling the
-// buffered _write cb's as it consumes chunks.  If consuming a single
-// written chunk would result in multiple output chunks, then the first
-// outputted bit calls the readcb, and subsequent chunks just go into
-// the read buffer, and will cause it to emit 'readable' if necessary.
-//
-// This way, back-pressure is actually determined by the reading side,
-// since _read has to be called to start processing a new chunk.  However,
-// a pathological inflate type of transform can cause excessive buffering
-// here.  For example, imagine a stream where every byte of input is
-// interpreted as an integer from 0-255, and then results in that many
-// bytes of output.  Writing the 4 bytes {ff,ff,ff,ff} would result in
-// 1kb of data being output.  In this case, you could write a very small
-// amount of input, and end up with a very large amount of output.  In
-// such a pathological inflating mechanism, there'd be no way to tell
-// the system to stop doing the transform.  A single 4MB write could
-// cause the system to run out of memory.
-//
-// However, even in such a pathological case, only a single written chunk
-// would be consumed, and then the rest would wait (un-transformed) until
-// the results of the previous transformed chunk were consumed.
-
-'use strict';
-
-module.exports = Transform;
-
-var Duplex = require('./_stream_duplex');
-
-/*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
-/*</replacement>*/
-
-util.inherits(Transform, Duplex);
-
-function TransformState(stream) {
-  this.afterTransform = function (er, data) {
-    return afterTransform(stream, er, data);
-  };
-
-  this.needTransform = false;
-  this.transforming = false;
-  this.writecb = null;
-  this.writechunk = null;
-  this.writeencoding = null;
-}
-
-function afterTransform(stream, er, data) {
-  var ts = stream._transformState;
-  ts.transforming = false;
-
-  var cb = ts.writecb;
-
-  if (!cb) return stream.emit('error', new Error('no writecb in Transform class'));
-
-  ts.writechunk = null;
-  ts.writecb = null;
-
-  if (data !== null && data !== undefined) stream.push(data);
-
-  cb(er);
-
-  var rs = stream._readableState;
-  rs.reading = false;
-  if (rs.needReadable || rs.length < rs.highWaterMark) {
-    stream._read(rs.highWaterMark);
-  }
-}
-
-function Transform(options) {
-  if (!(this instanceof Transform)) return new Transform(options);
-
-  Duplex.call(this, options);
-
-  this._transformState = new TransformState(this);
-
-  // when the writable side finishes, then flush out anything remaining.
-  var stream = this;
-
-  // start out asking for a readable event once data is transformed.
-  this._readableState.needReadable = true;
-
-  // we have implemented the _read method, and done the other things
-  // that Readable wants before the first _read call, so unset the
-  // sync guard flag.
-  this._readableState.sync = false;
-
-  if (options) {
-    if (typeof options.transform === 'function') this._transform = options.transform;
-
-    if (typeof options.flush === 'function') this._flush = options.flush;
-  }
-
-  this.once('prefinish', function () {
-    if (typeof this._flush === 'function') this._flush(function (er) {
-      done(stream, er);
-    });else done(stream);
-  });
-}
-
-Transform.prototype.push = function (chunk, encoding) {
-  this._transformState.needTransform = false;
-  return Duplex.prototype.push.call(this, chunk, encoding);
-};
-
-// This is the part where you do stuff!
-// override this function in implementation classes.
-// 'chunk' is an input chunk.
-//
-// Call `push(newChunk)` to pass along transformed output
-// to the readable side.  You may call 'push' zero or more times.
-//
-// Call `cb(err)` when you are done with this chunk.  If you pass
-// an error, then that'll put the hurt on the whole operation.  If you
-// never call cb(), then you'll never get another chunk.
-Transform.prototype._transform = function (chunk, encoding, cb) {
-  throw new Error('not implemented');
-};
-
-Transform.prototype._write = function (chunk, encoding, cb) {
-  var ts = this._transformState;
-  ts.writecb = cb;
-  ts.writechunk = chunk;
-  ts.writeencoding = encoding;
-  if (!ts.transforming) {
-    var rs = this._readableState;
-    if (ts.needTransform || rs.needReadable || rs.length < rs.highWaterMark) this._read(rs.highWaterMark);
-  }
-};
-
-// Doesn't matter what the args are here.
-// _transform does all the work.
-// That we got here means that the readable side wants more data.
-Transform.prototype._read = function (n) {
-  var ts = this._transformState;
-
-  if (ts.writechunk !== null && ts.writecb && !ts.transforming) {
-    ts.transforming = true;
-    this._transform(ts.writechunk, ts.writeencoding, ts.afterTransform);
-  } else {
-    // mark that we need a transform, so that any data that comes in
-    // will get processed, now that we've asked for it.
-    ts.needTransform = true;
-  }
-};
-
-function done(stream, er) {
-  if (er) return stream.emit('error', er);
-
-  // if there's nothing in the write buffer, then that means
-  // that nothing more will ever be provided
-  var ws = stream._writableState;
-  var ts = stream._transformState;
-
-  if (ws.length) throw new Error('calling transform done when ws.length != 0');
-
-  if (ts.transforming) throw new Error('calling transform done when still transforming');
-
-  return stream.push(null);
-}
-},{"./_stream_duplex":200,"core-util-is":117,"inherits":171}],204:[function(require,module,exports){
-(function (process){
-// A bit simpler than readable streams.
-// Implement an async ._write(chunk, encoding, cb), and it'll handle all
-// the drain event emission and buffering.
-
-'use strict';
-
-module.exports = Writable;
-
-/*<replacement>*/
-var processNextTick = require('process-nextick-args');
-/*</replacement>*/
-
-/*<replacement>*/
-var asyncWrite = !process.browser && ['v0.10', 'v0.9.'].indexOf(process.version.slice(0, 5)) > -1 ? setImmediate : processNextTick;
-/*</replacement>*/
-
-/*<replacement>*/
-var Buffer = require('buffer').Buffer;
-/*</replacement>*/
-
-Writable.WritableState = WritableState;
-
-/*<replacement>*/
-var util = require('core-util-is');
-util.inherits = require('inherits');
-/*</replacement>*/
-
-/*<replacement>*/
-var internalUtil = {
-  deprecate: require('util-deprecate')
-};
-/*</replacement>*/
-
-/*<replacement>*/
-var Stream;
-(function () {
-  try {
-    Stream = require('st' + 'ream');
-  } catch (_) {} finally {
-    if (!Stream) Stream = require('events').EventEmitter;
-  }
-})();
-/*</replacement>*/
-
-var Buffer = require('buffer').Buffer;
-
-util.inherits(Writable, Stream);
-
-function nop() {}
-
-function WriteReq(chunk, encoding, cb) {
-  this.chunk = chunk;
-  this.encoding = encoding;
-  this.callback = cb;
-  this.next = null;
-}
-
-var Duplex;
-function WritableState(options, stream) {
-  Duplex = Duplex || require('./_stream_duplex');
-
-  options = options || {};
-
-  // object stream flag to indicate whether or not this stream
-  // contains buffers or objects.
-  this.objectMode = !!options.objectMode;
-
-  if (stream instanceof Duplex) this.objectMode = this.objectMode || !!options.writableObjectMode;
-
-  // the point at which write() starts returning false
-  // Note: 0 is a valid value, means that we always return false if
-  // the entire buffer is not flushed immediately on write()
-  var hwm = options.highWaterMark;
-  var defaultHwm = this.objectMode ? 16 : 16 * 1024;
-  this.highWaterMark = hwm || hwm === 0 ? hwm : defaultHwm;
-
-  // cast to ints.
-  this.highWaterMark = ~ ~this.highWaterMark;
-
-  this.needDrain = false;
-  // at the start of calling end()
-  this.ending = false;
-  // when end() has been called, and returned
-  this.ended = false;
-  // when 'finish' is emitted
-  this.finished = false;
-
-  // should we decode strings into buffers before passing to _write?
-  // this is here so that some node-core streams can optimize string
-  // handling at a lower level.
-  var noDecode = options.decodeStrings === false;
-  this.decodeStrings = !noDecode;
-
-  // Crypto is kind of old and crusty.  Historically, its default string
-  // encoding is 'binary' so we have to make this configurable.
-  // Everything else in the universe uses 'utf8', though.
-  this.defaultEncoding = options.defaultEncoding || 'utf8';
-
-  // not an actual buffer we keep track of, but a measurement
-  // of how much we're waiting to get pushed to some underlying
-  // socket or file.
-  this.length = 0;
-
-  // a flag to see when we're in the middle of a write.
-  this.writing = false;
-
-  // when true all writes will be buffered until .uncork() call
-  this.corked = 0;
-
-  // a flag to be able to tell if the onwrite cb is called immediately,
-  // or on a later tick.  We set this to true at first, because any
-  // actions that shouldn't happen until "later" should generally also
-  // not happen before the first write call.
-  this.sync = true;
-
-  // a flag to know if we're processing previously buffered items, which
-  // may call the _write() callback in the same tick, so that we don't
-  // end up in an overlapped onwrite situation.
-  this.bufferProcessing = false;
-
-  // the callback that's passed to _write(chunk,cb)
-  this.onwrite = function (er) {
-    onwrite(stream, er);
-  };
-
-  // the callback that the user supplies to write(chunk,encoding,cb)
-  this.writecb = null;
-
-  // the amount that is being written when _write is called.
-  this.writelen = 0;
-
-  this.bufferedRequest = null;
-  this.lastBufferedRequest = null;
-
-  // number of pending user-supplied write callbacks
-  // this must be 0 before 'finish' can be emitted
-  this.pendingcb = 0;
-
-  // emit prefinish if the only thing we're waiting for is _write cbs
-  // This is relevant for synchronous Transform streams
-  this.prefinished = false;
-
-  // True if the error was already emitted and should not be thrown again
-  this.errorEmitted = false;
-
-  // count buffered requests
-  this.bufferedRequestCount = 0;
-
-  // create the two objects needed to store the corked requests
-  // they are not a linked list, as no new elements are inserted in there
-  this.corkedRequestsFree = new CorkedRequest(this);
-  this.corkedRequestsFree.next = new CorkedRequest(this);
-}
-
-WritableState.prototype.getBuffer = function writableStateGetBuffer() {
-  var current = this.bufferedRequest;
-  var out = [];
-  while (current) {
-    out.push(current);
-    current = current.next;
-  }
-  return out;
-};
-
-(function () {
-  try {
-    Object.defineProperty(WritableState.prototype, 'buffer', {
-      get: internalUtil.deprecate(function () {
-        return this.getBuffer();
-      }, '_writableState.buffer is deprecated. Use _writableState.getBuffer ' + 'instead.')
-    });
-  } catch (_) {}
-})();
-
-var Duplex;
-function Writable(options) {
-  Duplex = Duplex || require('./_stream_duplex');
-
-  // Writable ctor is applied to Duplexes, though they're not
-  // instanceof Writable, they're instanceof Readable.
-  if (!(this instanceof Writable) && !(this instanceof Duplex)) return new Writable(options);
-
-  this._writableState = new WritableState(options, this);
-
-  // legacy.
-  this.writable = true;
-
-  if (options) {
-    if (typeof options.write === 'function') this._write = options.write;
-
-    if (typeof options.writev === 'function') this._writev = options.writev;
-  }
-
-  Stream.call(this);
-}
-
-// Otherwise people can pipe Writable streams, which is just wrong.
-Writable.prototype.pipe = function () {
-  this.emit('error', new Error('Cannot pipe. Not readable.'));
-};
-
-function writeAfterEnd(stream, cb) {
-  var er = new Error('write after end');
-  // TODO: defer error events consistently everywhere, not just the cb
-  stream.emit('error', er);
-  processNextTick(cb, er);
-}
-
-// If we get something that is not a buffer, string, null, or undefined,
-// and we're not in objectMode, then that's an error.
-// Otherwise stream chunks are all considered to be of length=1, and the
-// watermarks determine how many objects to keep in the buffer, rather than
-// how many bytes or characters.
-function validChunk(stream, state, chunk, cb) {
-  var valid = true;
-
-  if (!Buffer.isBuffer(chunk) && typeof chunk !== 'string' && chunk !== null && chunk !== undefined && !state.objectMode) {
-    var er = new TypeError('Invalid non-string/buffer chunk');
-    stream.emit('error', er);
-    processNextTick(cb, er);
-    valid = false;
-  }
-  return valid;
-}
-
-Writable.prototype.write = function (chunk, encoding, cb) {
-  var state = this._writableState;
-  var ret = false;
-
-  if (typeof encoding === 'function') {
-    cb = encoding;
-    encoding = null;
-  }
-
-  if (Buffer.isBuffer(chunk)) encoding = 'buffer';else if (!encoding) encoding = state.defaultEncoding;
-
-  if (typeof cb !== 'function') cb = nop;
-
-  if (state.ended) writeAfterEnd(this, cb);else if (validChunk(this, state, chunk, cb)) {
-    state.pendingcb++;
-    ret = writeOrBuffer(this, state, chunk, encoding, cb);
-  }
-
-  return ret;
-};
-
-Writable.prototype.cork = function () {
-  var state = this._writableState;
-
-  state.corked++;
-};
-
-Writable.prototype.uncork = function () {
-  var state = this._writableState;
-
-  if (state.corked) {
-    state.corked--;
-
-    if (!state.writing && !state.corked && !state.finished && !state.bufferProcessing && state.bufferedRequest) clearBuffer(this, state);
-  }
-};
-
-Writable.prototype.setDefaultEncoding = function setDefaultEncoding(encoding) {
-  // node::ParseEncoding() requires lower case.
-  if (typeof encoding === 'string') encoding = encoding.toLowerCase();
-  if (!(['hex', 'utf8', 'utf-8', 'ascii', 'binary', 'base64', 'ucs2', 'ucs-2', 'utf16le', 'utf-16le', 'raw'].indexOf((encoding + '').toLowerCase()) > -1)) throw new TypeError('Unknown encoding: ' + encoding);
-  this._writableState.defaultEncoding = encoding;
-};
-
-function decodeChunk(state, chunk, encoding) {
-  if (!state.objectMode && state.decodeStrings !== false && typeof chunk === 'string') {
-    chunk = new Buffer(chunk, encoding);
-  }
-  return chunk;
-}
-
-// if we're already writing something, then just put this
-// in the queue, and wait our turn.  Otherwise, call _write
-// If we return false, then we need a drain event, so set that flag.
-function writeOrBuffer(stream, state, chunk, encoding, cb) {
-  chunk = decodeChunk(state, chunk, encoding);
-
-  if (Buffer.isBuffer(chunk)) encoding = 'buffer';
-  var len = state.objectMode ? 1 : chunk.length;
-
-  state.length += len;
-
-  var ret = state.length < state.highWaterMark;
-  // we must ensure that previous needDrain will not be reset to false.
-  if (!ret) state.needDrain = true;
-
-  if (state.writing || state.corked) {
-    var last = state.lastBufferedRequest;
-    state.lastBufferedRequest = new WriteReq(chunk, encoding, cb);
-    if (last) {
-      last.next = state.lastBufferedRequest;
-    } else {
-      state.bufferedRequest = state.lastBufferedRequest;
-    }
-    state.bufferedRequestCount += 1;
-  } else {
-    doWrite(stream, state, false, len, chunk, encoding, cb);
-  }
-
-  return ret;
-}
-
-function doWrite(stream, state, writev, len, chunk, encoding, cb) {
-  state.writelen = len;
-  state.writecb = cb;
-  state.writing = true;
-  state.sync = true;
-  if (writev) stream._writev(chunk, state.onwrite);else stream._write(chunk, encoding, state.onwrite);
-  state.sync = false;
-}
-
-function onwriteError(stream, state, sync, er, cb) {
-  --state.pendingcb;
-  if (sync) processNextTick(cb, er);else cb(er);
-
-  stream._writableState.errorEmitted = true;
-  stream.emit('error', er);
-}
-
-function onwriteStateUpdate(state) {
-  state.writing = false;
-  state.writecb = null;
-  state.length -= state.writelen;
-  state.writelen = 0;
-}
-
-function onwrite(stream, er) {
-  var state = stream._writableState;
-  var sync = state.sync;
-  var cb = state.writecb;
-
-  onwriteStateUpdate(state);
-
-  if (er) onwriteError(stream, state, sync, er, cb);else {
-    // Check if we're actually ready to finish, but don't emit yet
-    var finished = needFinish(state);
-
-    if (!finished && !state.corked && !state.bufferProcessing && state.bufferedRequest) {
-      clearBuffer(stream, state);
-    }
-
-    if (sync) {
-      /*<replacement>*/
-      asyncWrite(afterWrite, stream, state, finished, cb);
-      /*</replacement>*/
-    } else {
-        afterWrite(stream, state, finished, cb);
-      }
-  }
-}
-
-function afterWrite(stream, state, finished, cb) {
-  if (!finished) onwriteDrain(stream, state);
-  state.pendingcb--;
-  cb();
-  finishMaybe(stream, state);
-}
-
-// Must force callback to be called on nextTick, so that we don't
-// emit 'drain' before the write() consumer gets the 'false' return
-// value, and has a chance to attach a 'drain' listener.
-function onwriteDrain(stream, state) {
-  if (state.length === 0 && state.needDrain) {
-    state.needDrain = false;
-    stream.emit('drain');
-  }
-}
-
-// if there's something in the buffer waiting, then process it
-function clearBuffer(stream, state) {
-  state.bufferProcessing = true;
-  var entry = state.bufferedRequest;
-
-  if (stream._writev && entry && entry.next) {
-    // Fast case, write everything using _writev()
-    var l = state.bufferedRequestCount;
-    var buffer = new Array(l);
-    var holder = state.corkedRequestsFree;
-    holder.entry = entry;
-
-    var count = 0;
-    while (entry) {
-      buffer[count] = entry;
-      entry = entry.next;
-      count += 1;
-    }
-
-    doWrite(stream, state, true, state.length, buffer, '', holder.finish);
-
-    // doWrite is always async, defer these to save a bit of time
-    // as the hot path ends with doWrite
-    state.pendingcb++;
-    state.lastBufferedRequest = null;
-    state.corkedRequestsFree = holder.next;
-    holder.next = null;
-  } else {
-    // Slow case, write chunks one-by-one
-    while (entry) {
-      var chunk = entry.chunk;
-      var encoding = entry.encoding;
-      var cb = entry.callback;
-      var len = state.objectMode ? 1 : chunk.length;
-
-      doWrite(stream, state, false, len, chunk, encoding, cb);
-      entry = entry.next;
-      // if we didn't call the onwrite immediately, then
-      // it means that we need to wait until it does.
-      // also, that means that the chunk and cb are currently
-      // being processed, so move the buffer counter past them.
-      if (state.writing) {
-        break;
-      }
-    }
-
-    if (entry === null) state.lastBufferedRequest = null;
-  }
-
-  state.bufferedRequestCount = 0;
-  state.bufferedRequest = entry;
-  state.bufferProcessing = false;
-}
-
-Writable.prototype._write = function (chunk, encoding, cb) {
-  cb(new Error('not implemented'));
-};
-
-Writable.prototype._writev = null;
-
-Writable.prototype.end = function (chunk, encoding, cb) {
-  var state = this._writableState;
-
-  if (typeof chunk === 'function') {
-    cb = chunk;
-    chunk = null;
-    encoding = null;
-  } else if (typeof encoding === 'function') {
-    cb = encoding;
-    encoding = null;
-  }
-
-  if (chunk !== null && chunk !== undefined) this.write(chunk, encoding);
-
-  // .end() fully uncorks
-  if (state.corked) {
-    state.corked = 1;
-    this.uncork();
-  }
-
-  // ignore unnecessary end() calls.
-  if (!state.ending && !state.finished) endWritable(this, state, cb);
-};
-
-function needFinish(state) {
-  return state.ending && state.length === 0 && state.bufferedRequest === null && !state.finished && !state.writing;
-}
-
-function prefinish(stream, state) {
-  if (!state.prefinished) {
-    state.prefinished = true;
-    stream.emit('prefinish');
-  }
-}
-
-function finishMaybe(stream, state) {
-  var need = needFinish(state);
-  if (need) {
-    if (state.pendingcb === 0) {
-      prefinish(stream, state);
-      state.finished = true;
-      stream.emit('finish');
-    } else {
-      prefinish(stream, state);
-    }
-  }
-  return need;
-}
-
-function endWritable(stream, state, cb) {
-  state.ending = true;
-  finishMaybe(stream, state);
-  if (cb) {
-    if (state.finished) processNextTick(cb);else stream.once('finish', cb);
-  }
-  state.ended = true;
-  stream.writable = false;
-}
-
-// It seems a linked list but it is not
-// there will be only 2 of these for each stream
-function CorkedRequest(state) {
-  var _this = this;
-
-  this.next = null;
-  this.entry = null;
-
-  this.finish = function (err) {
-    var entry = _this.entry;
-    _this.entry = null;
-    while (entry) {
-      var cb = entry.callback;
-      state.pendingcb--;
-      cb(err);
-      entry = entry.next;
-    }
-    if (state.corkedRequestsFree) {
-      state.corkedRequestsFree.next = _this;
-    } else {
-      state.corkedRequestsFree = _this;
-    }
-  };
-}
-}).call(this,require('_process'))
-},{"./_stream_duplex":200,"_process":191,"buffer":114,"core-util-is":117,"events":161,"inherits":171,"process-nextick-args":190,"util-deprecate":226}],205:[function(require,module,exports){
-module.exports = require("./lib/_stream_passthrough.js")
-
-},{"./lib/_stream_passthrough.js":201}],206:[function(require,module,exports){
-var Stream = (function (){
-  try {
-    return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
-  } catch(_){}
-}());
-exports = module.exports = require('./lib/_stream_readable.js');
-exports.Stream = Stream || exports;
-exports.Readable = exports;
-exports.Writable = require('./lib/_stream_writable.js');
-exports.Duplex = require('./lib/_stream_duplex.js');
-exports.Transform = require('./lib/_stream_transform.js');
-exports.PassThrough = require('./lib/_stream_passthrough.js');
-
-},{"./lib/_stream_duplex.js":200,"./lib/_stream_passthrough.js":201,"./lib/_stream_readable.js":202,"./lib/_stream_transform.js":203,"./lib/_stream_writable.js":204}],207:[function(require,module,exports){
-module.exports = require("./lib/_stream_transform.js")
-
-},{"./lib/_stream_transform.js":203}],208:[function(require,module,exports){
-module.exports = require("./lib/_stream_writable.js")
-
-},{"./lib/_stream_writable.js":204}],209:[function(require,module,exports){
-arguments[4][40][0].apply(exports,arguments)
-},{"buffer":114,"dup":40}],210:[function(require,module,exports){
-arguments[4][41][0].apply(exports,arguments)
-},{"assert":76,"buffer":114,"dup":41}],211:[function(require,module,exports){
-arguments[4][42][0].apply(exports,arguments)
-},{"./lib":214,"./lib/elliptic":213,"dup":42}],212:[function(require,module,exports){
-(function (Buffer){
-'use strict'
-var toString = Object.prototype.toString
-
-// TypeError
-exports.isArray = function (value, message) {
-  if (!Array.isArray(value)) throw TypeError(message)
-}
-
-exports.isBoolean = function (value, message) {
-  if (toString.call(value) !== '[object Boolean]') throw TypeError(message)
-}
-
-exports.isBuffer = function (value, message) {
-  if (!Buffer.isBuffer(value)) throw TypeError(message)
-}
-
-exports.isFunction = function (value, message) {
-  if (toString.call(value) !== '[object Function]') throw TypeError(message)
-}
-
-exports.isNumber = function (value, message) {
-  if (toString.call(value) !== '[object Number]') throw TypeError(message)
-}
-
-exports.isObject = function (value, message) {
-  if (toString.call(value) !== '[object Object]') throw TypeError(message)
-}
-
-// RangeError
-exports.isBufferLength = function (buffer, length, message) {
-  if (buffer.length !== length) throw RangeError(message)
-}
-
-exports.isBufferLength2 = function (buffer, length1, length2, message) {
-  if (buffer.length !== length1 && buffer.length !== length2) throw RangeError(message)
-}
-
-exports.isLengthGTZero = function (value, message) {
-  if (value.length === 0) throw RangeError(message)
-}
-
-exports.isNumberInInterval = function (number, x, y, message) {
-  if (number <= x || number >= y) throw RangeError(message)
-}
-
-}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":172}],213:[function(require,module,exports){
-arguments[4][44][0].apply(exports,arguments)
-},{"../messages.json":215,"bn.js":82,"buffer":114,"create-hash":119,"dup":44,"elliptic":134}],214:[function(require,module,exports){
-arguments[4][45][0].apply(exports,arguments)
-},{"./assert":212,"./messages.json":215,"bip66":81,"buffer":114,"dup":45}],215:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments)
-},{"dup":46}],216:[function(require,module,exports){
-arguments[4][47][0].apply(exports,arguments)
-},{"buffer":114,"dup":47}],217:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"./sha":218,"./sha1":219,"./sha224":220,"./sha256":221,"./sha384":222,"./sha512":223,"dup":48}],218:[function(require,module,exports){
-arguments[4][49][0].apply(exports,arguments)
-},{"./hash":216,"buffer":114,"dup":49,"inherits":171}],219:[function(require,module,exports){
-arguments[4][50][0].apply(exports,arguments)
-},{"./hash":216,"buffer":114,"dup":50,"inherits":171}],220:[function(require,module,exports){
-arguments[4][51][0].apply(exports,arguments)
-},{"./hash":216,"./sha256":221,"buffer":114,"dup":51,"inherits":171}],221:[function(require,module,exports){
-arguments[4][52][0].apply(exports,arguments)
-},{"./hash":216,"buffer":114,"dup":52,"inherits":171}],222:[function(require,module,exports){
-arguments[4][53][0].apply(exports,arguments)
-},{"./hash":216,"./sha512":223,"buffer":114,"dup":53,"inherits":171}],223:[function(require,module,exports){
-arguments[4][54][0].apply(exports,arguments)
-},{"./hash":216,"buffer":114,"dup":54,"inherits":171}],224:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-module.exports = Stream;
-
-var EE = require('events').EventEmitter;
-var inherits = require('inherits');
-
-inherits(Stream, EE);
-Stream.Readable = require('readable-stream/readable.js');
-Stream.Writable = require('readable-stream/writable.js');
-Stream.Duplex = require('readable-stream/duplex.js');
-Stream.Transform = require('readable-stream/transform.js');
-Stream.PassThrough = require('readable-stream/passthrough.js');
-
-// Backwards-compat with node 0.4.x
-Stream.Stream = Stream;
-
-
-
-// old-style streams.  Note that the pipe method (the only relevant
-// part of this class) is overridden in the Readable class.
-
-function Stream() {
-  EE.call(this);
-}
-
-Stream.prototype.pipe = function(dest, options) {
-  var source = this;
-
-  function ondata(chunk) {
-    if (dest.writable) {
-      if (false === dest.write(chunk) && source.pause) {
-        source.pause();
-      }
-    }
-  }
-
-  source.on('data', ondata);
-
-  function ondrain() {
-    if (source.readable && source.resume) {
-      source.resume();
-    }
-  }
-
-  dest.on('drain', ondrain);
-
-  // If the 'end' option is not supplied, dest.end() will be called when
-  // source gets the 'end' or 'close' events.  Only dest.end() once.
-  if (!dest._isStdio && (!options || options.end !== false)) {
-    source.on('end', onend);
-    source.on('close', onclose);
-  }
-
-  var didOnEnd = false;
-  function onend() {
-    if (didOnEnd) return;
-    didOnEnd = true;
-
-    dest.end();
-  }
-
-
-  function onclose() {
-    if (didOnEnd) return;
-    didOnEnd = true;
-
-    if (typeof dest.destroy === 'function') dest.destroy();
-  }
-
-  // don't leave dangling pipes when there are errors.
-  function onerror(er) {
-    cleanup();
-    if (EE.listenerCount(this, 'error') === 0) {
-      throw er; // Unhandled stream error in pipe.
-    }
-  }
-
-  source.on('error', onerror);
-  dest.on('error', onerror);
-
-  // remove all the event listeners that were added.
-  function cleanup() {
-    source.removeListener('data', ondata);
-    dest.removeListener('drain', ondrain);
-
-    source.removeListener('end', onend);
-    source.removeListener('close', onclose);
-
-    source.removeListener('error', onerror);
-    dest.removeListener('error', onerror);
-
-    source.removeListener('end', cleanup);
-    source.removeListener('close', cleanup);
-
-    dest.removeListener('close', cleanup);
-  }
-
-  source.on('end', cleanup);
-  source.on('close', cleanup);
-
-  dest.on('close', cleanup);
-
-  dest.emit('pipe', source);
-
-  // Allow for unix-like usage: A.pipe(B).pipe(C)
-  return dest;
-};
-
-},{"events":161,"inherits":171,"readable-stream/duplex.js":199,"readable-stream/passthrough.js":205,"readable-stream/readable.js":206,"readable-stream/transform.js":207,"readable-stream/writable.js":208}],225:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var Buffer = require('buffer').Buffer;
-
-var isBufferEncoding = Buffer.isEncoding
-  || function(encoding) {
-       switch (encoding && encoding.toLowerCase()) {
-         case 'hex': case 'utf8': case 'utf-8': case 'ascii': case 'binary': case 'base64': case 'ucs2': case 'ucs-2': case 'utf16le': case 'utf-16le': case 'raw': return true;
-         default: return false;
-       }
-     }
-
-
-function assertEncoding(encoding) {
-  if (encoding && !isBufferEncoding(encoding)) {
-    throw new Error('Unknown encoding: ' + encoding);
-  }
-}
-
-// StringDecoder provides an interface for efficiently splitting a series of
-// buffers into a series of JS strings without breaking apart multi-byte
-// characters. CESU-8 is handled as part of the UTF-8 encoding.
-//
-// @TODO Handling all encodings inside a single object makes it very difficult
-// to reason about this code, so it should be split up in the future.
-// @TODO There should be a utf8-strict encoding that rejects invalid UTF-8 code
-// points as used by CESU-8.
-var StringDecoder = exports.StringDecoder = function(encoding) {
-  this.encoding = (encoding || 'utf8').toLowerCase().replace(/[-_]/, '');
-  assertEncoding(encoding);
-  switch (this.encoding) {
-    case 'utf8':
-      // CESU-8 represents each of Surrogate Pair by 3-bytes
-      this.surrogateSize = 3;
-      break;
-    case 'ucs2':
-    case 'utf16le':
-      // UTF-16 represents each of Surrogate Pair by 2-bytes
-      this.surrogateSize = 2;
-      this.detectIncompleteChar = utf16DetectIncompleteChar;
-      break;
-    case 'base64':
-      // Base-64 stores 3 bytes in 4 chars, and pads the remainder.
-      this.surrogateSize = 3;
-      this.detectIncompleteChar = base64DetectIncompleteChar;
-      break;
-    default:
-      this.write = passThroughWrite;
-      return;
-  }
-
-  // Enough space to store all bytes of a single character. UTF-8 needs 4
-  // bytes, but CESU-8 may require up to 6 (3 bytes per surrogate).
-  this.charBuffer = new Buffer(6);
-  // Number of bytes received for the current incomplete multi-byte character.
-  this.charReceived = 0;
-  // Number of bytes expected for the current incomplete multi-byte character.
-  this.charLength = 0;
-};
-
-
-// write decodes the given buffer and returns it as JS string that is
-// guaranteed to not contain any partial multi-byte characters. Any partial
-// character found at the end of the buffer is buffered up, and will be
-// returned when calling write again with the remaining bytes.
-//
-// Note: Converting a Buffer containing an orphan surrogate to a String
-// currently works, but converting a String to a Buffer (via `new Buffer`, or
-// Buffer#write) will replace incomplete surrogates with the unicode
-// replacement character. See https://codereview.chromium.org/121173009/ .
-StringDecoder.prototype.write = function(buffer) {
-  var charStr = '';
-  // if our last write ended with an incomplete multibyte character
-  while (this.charLength) {
-    // determine how many remaining bytes this buffer has to offer for this char
-    var available = (buffer.length >= this.charLength - this.charReceived) ?
-        this.charLength - this.charReceived :
-        buffer.length;
-
-    // add the new bytes to the char buffer
-    buffer.copy(this.charBuffer, this.charReceived, 0, available);
-    this.charReceived += available;
-
-    if (this.charReceived < this.charLength) {
-      // still not enough chars in this buffer? wait for more ...
-      return '';
-    }
-
-    // remove bytes belonging to the current character from the buffer
-    buffer = buffer.slice(available, buffer.length);
-
-    // get the character that was split
-    charStr = this.charBuffer.slice(0, this.charLength).toString(this.encoding);
-
-    // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
-    var charCode = charStr.charCodeAt(charStr.length - 1);
-    if (charCode >= 0xD800 && charCode <= 0xDBFF) {
-      this.charLength += this.surrogateSize;
-      charStr = '';
-      continue;
-    }
-    this.charReceived = this.charLength = 0;
-
-    // if there are no more bytes in this buffer, just emit our char
-    if (buffer.length === 0) {
-      return charStr;
-    }
-    break;
-  }
-
-  // determine and set charLength / charReceived
-  this.detectIncompleteChar(buffer);
-
-  var end = buffer.length;
-  if (this.charLength) {
-    // buffer the incomplete character bytes we got
-    buffer.copy(this.charBuffer, 0, buffer.length - this.charReceived, end);
-    end -= this.charReceived;
-  }
-
-  charStr += buffer.toString(this.encoding, 0, end);
-
-  var end = charStr.length - 1;
-  var charCode = charStr.charCodeAt(end);
-  // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
-  if (charCode >= 0xD800 && charCode <= 0xDBFF) {
-    var size = this.surrogateSize;
-    this.charLength += size;
-    this.charReceived += size;
-    this.charBuffer.copy(this.charBuffer, size, 0, size);
-    buffer.copy(this.charBuffer, 0, 0, size);
-    return charStr.substring(0, end);
-  }
-
-  // or just emit the charStr
-  return charStr;
-};
-
-// detectIncompleteChar determines if there is an incomplete UTF-8 character at
-// the end of the given buffer. If so, it sets this.charLength to the byte
-// length that character, and sets this.charReceived to the number of bytes
-// that are available for this character.
-StringDecoder.prototype.detectIncompleteChar = function(buffer) {
-  // determine how many bytes we have to check at the end of this buffer
-  var i = (buffer.length >= 3) ? 3 : buffer.length;
-
-  // Figure out if one of the last i bytes of our buffer announces an
-  // incomplete char.
-  for (; i > 0; i--) {
-    var c = buffer[buffer.length - i];
-
-    // See http://en.wikipedia.org/wiki/UTF-8#Description
-
-    // 110XXXXX
-    if (i == 1 && c >> 5 == 0x06) {
-      this.charLength = 2;
-      break;
-    }
-
-    // 1110XXXX
-    if (i <= 2 && c >> 4 == 0x0E) {
-      this.charLength = 3;
-      break;
-    }
-
-    // 11110XXX
-    if (i <= 3 && c >> 3 == 0x1E) {
-      this.charLength = 4;
-      break;
-    }
-  }
-  this.charReceived = i;
-};
-
-StringDecoder.prototype.end = function(buffer) {
-  var res = '';
-  if (buffer && buffer.length)
-    res = this.write(buffer);
-
-  if (this.charReceived) {
-    var cr = this.charReceived;
-    var buf = this.charBuffer;
-    var enc = this.encoding;
-    res += buf.slice(0, cr).toString(enc);
-  }
-
-  return res;
-};
-
-function passThroughWrite(buffer) {
-  return buffer.toString(this.encoding);
-}
-
-function utf16DetectIncompleteChar(buffer) {
-  this.charReceived = buffer.length % 2;
-  this.charLength = this.charReceived ? 2 : 0;
-}
-
-function base64DetectIncompleteChar(buffer) {
-  this.charReceived = buffer.length % 3;
-  this.charLength = this.charReceived ? 3 : 0;
-}
-
-},{"buffer":114}],226:[function(require,module,exports){
-(function (global){
-
-/**
- * Module exports.
- */
-
-module.exports = deprecate;
-
-/**
- * Mark that a method should not be used.
- * Returns a modified function which warns once by default.
- *
- * If `localStorage.noDeprecation = true` is set, then it is a no-op.
- *
- * If `localStorage.throwDeprecation = true` is set, then deprecated functions
- * will throw an Error when invoked.
- *
- * If `localStorage.traceDeprecation = true` is set, then deprecated functions
- * will invoke `console.trace()` instead of `console.error()`.
- *
- * @param {Function} fn - the function to deprecate
- * @param {String} msg - the string to print to the console when `fn` is invoked
- * @returns {Function} a new "deprecated" version of `fn`
- * @api public
- */
-
-function deprecate (fn, msg) {
-  if (config('noDeprecation')) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (config('throwDeprecation')) {
-        throw new Error(msg);
-      } else if (config('traceDeprecation')) {
-        console.trace(msg);
-      } else {
-        console.warn(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-}
-
-/**
- * Checks `localStorage` for boolean values for the given `name`.
- *
- * @param {String} name
- * @returns {Boolean}
- * @api private
- */
-
-function config (name) {
-  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
-  try {
-    if (!global.localStorage) return false;
-  } catch (_) {
-    return false;
-  }
-  var val = global.localStorage[name];
-  if (null == val) return false;
-  return String(val).toLowerCase() === 'true';
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],227:[function(require,module,exports){
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-},{}],228:[function(require,module,exports){
-(function (process,global){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
-};
-
-
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = require('./support/isBuffer');
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = require('inherits');
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":227,"_process":191,"inherits":171}],229:[function(require,module,exports){
-var indexOf = require('indexof');
-
-var Object_keys = function (obj) {
-    if (Object.keys) return Object.keys(obj)
-    else {
-        var res = [];
-        for (var key in obj) res.push(key)
-        return res;
-    }
-};
-
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
-};
-
-var defineProp = (function() {
-    try {
-        Object.defineProperty({}, '_', {});
-        return function(obj, name, value) {
-            Object.defineProperty(obj, name, {
-                writable: true,
-                enumerable: false,
-                configurable: true,
-                value: value
-            })
-        };
-    } catch(e) {
-        return function(obj, name, value) {
-            obj[name] = value;
-        };
-    }
-}());
-
-var globals = ['Array', 'Boolean', 'Date', 'Error', 'EvalError', 'Function',
-'Infinity', 'JSON', 'Math', 'NaN', 'Number', 'Object', 'RangeError',
-'ReferenceError', 'RegExp', 'String', 'SyntaxError', 'TypeError', 'URIError',
-'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape',
-'eval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'undefined', 'unescape'];
-
-function Context() {}
-Context.prototype = {};
-
-var Script = exports.Script = function NodeScript (code) {
-    if (!(this instanceof Script)) return new Script(code);
-    this.code = code;
-};
-
-Script.prototype.runInContext = function (context) {
-    if (!(context instanceof Context)) {
-        throw new TypeError("needs a 'context' argument.");
-    }
-    
-    var iframe = document.createElement('iframe');
-    if (!iframe.style) iframe.style = {};
-    iframe.style.display = 'none';
-    
-    document.body.appendChild(iframe);
-    
-    var win = iframe.contentWindow;
-    var wEval = win.eval, wExecScript = win.execScript;
-
-    if (!wEval && wExecScript) {
-        // win.eval() magically appears when this is called in IE:
-        wExecScript.call(win, 'null');
-        wEval = win.eval;
-    }
-    
-    forEach(Object_keys(context), function (key) {
-        win[key] = context[key];
-    });
-    forEach(globals, function (key) {
-        if (context[key]) {
-            win[key] = context[key];
-        }
-    });
-    
-    var winKeys = Object_keys(win);
-
-    var res = wEval.call(win, this.code);
-    
-    forEach(Object_keys(win), function (key) {
-        // Avoid copying circular objects like `top` and `window` by only
-        // updating existing context properties or new properties in the `win`
-        // that was only introduced after the eval.
-        if (key in context || indexOf(winKeys, key) === -1) {
-            context[key] = win[key];
-        }
-    });
-
-    forEach(globals, function (key) {
-        if (!(key in context)) {
-            defineProp(context, key, win[key]);
-        }
-    });
-    
-    document.body.removeChild(iframe);
-    
-    return res;
-};
-
-Script.prototype.runInThisContext = function () {
-    return eval(this.code); // maybe...
-};
-
-Script.prototype.runInNewContext = function (context) {
-    var ctx = Script.createContext(context);
-    var res = this.runInContext(ctx);
-
-    forEach(Object_keys(ctx), function (key) {
-        context[key] = ctx[key];
-    });
-
-    return res;
-};
-
-forEach(Object_keys(Script.prototype), function (name) {
-    exports[name] = Script[name] = function (code) {
-        var s = Script(code);
-        return s[name].apply(s, [].slice.call(arguments, 1));
-    };
-});
-
-exports.createScript = function (code) {
-    return exports.Script(code);
-};
-
-exports.createContext = Script.createContext = function (context) {
-    var copy = new Context();
-    if(typeof context === 'object') {
-        forEach(Object_keys(context), function (key) {
-            copy[key] = context[key];
-        });
-    }
-    return copy;
-};
-
-},{"indexof":170}],230:[function(require,module,exports){
-(function (process,Buffer){
-/**
- * Client-side accounts
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
-var keys = require("keythereum");
-var uuid = require("node-uuid");
-var clone = require("clone");
-var locks = require("locks");
-var request = (NODE_JS) ? require("request") : require("browser-request");
-var abi = require("augur-abi");
-var errors = require("augur-contracts").errors;
-var constants = require("./constants");
-var utils = require("./utilities");
-
-request = request.defaults({timeout: 120000});
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-keys.constants.pbkdf2.c = constants.ROUNDS;
-keys.constants.scrypt.n = constants.ROUNDS;
-
-module.exports = function () {
-
-    var augur = this;
-
-    return {
-
-        // The account object is set when logged in
-        account: {},
-
-        // free (testnet) ether for new accounts on registration
-        fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
-            onSent = onSent || utils.noop;
-            onSuccess = onSuccess || utils.noop;
-            onFailed = onFailed || utils.noop;
-            if (registeredAddress === undefined || registeredAddress === null ||
-                registeredAddress.constructor !== String) {
-                return onFailed(registeredAddress);
-            }
-            var url = constants.FAUCET + abi.format_address(registeredAddress);
-            request(url, function (err, response, body) {
-                if (err) return onFailed(err);
-                if (response.statusCode !== 200) {
-                    return onFailed(response.statusCode);
-                }
-                if (augur.rpc.debug.broadcast) {
-                    console.debug("Sent ether to:", registeredAddress);
-                }
-                augur.fundNewAccount({
-                    branch: branch || constants.DEFAULT_BRANCH_ID,
-                    onSent: onSent,
-                    onSuccess: onSuccess,
-                    onFailed: onFailed,
-                    onConfirmed: onConfirmed
-                });
-            });
-        },
-
-        fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed, onConfirmed) {
-            onSent = onSent || utils.noop;
-            onSuccess = onSuccess || utils.noop;
-            onFailed = onFailed || utils.noop;
-            augur.rpc.sendEther({
-                to: registeredAddress,
-                value: amount,
-                from: fromAddress,
-                onSent: utils.noop,
-                onSuccess: function (res) {
-                    augur.fundNewAccount({
-                        branch: branch || constants.DEFAULT_BRANCH_ID,
-                        onSent: onSent,
-                        onSuccess: onSuccess,
-                        onFailed: onFailed,
-                        onConfirmed: onConfirmed
-                    });
-                },
-                onFailed: onFailed
-            });
-        },
-
-        changeAccountName: function (newName, cb) {
-            cb = cb || utils.pass;
-
-            // now set vars based on what is currently in place
-            var keystore = this.account.keystore;
-            var privateKey = this.account.privateKey;
-
-            // preparing to redo the secureLoginID to use the new name
-            var unsecureLoginIDObject = {
-                name: newName,
-                keystore: keystore
-            };
-            var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
-
-            // web.account object is set to use new values
-            this.account = {
-                name: newName,
-                secureLoginID: secureLoginID,
-                privateKey: privateKey,
-                address: keystore.address,
-                keystore: keystore
-            };
-
-            // send back the new updated loginAccount object.
-            return cb({
-                name: newName,
-                secureLoginID: secureLoginID,
-                keystore: keystore,
-                address: keystore.address
-            });
-        },
-
-        register: function (name, password, cb) {
-            var self = this;
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
-            if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
-
-            // generate ECDSA private key and initialization vector
-            keys.create(null, function (plain) {
-                if (plain.error) return cb(plain);
-
-                // derive secret key from password
-                keys.deriveKey(password, plain.salt, null, function (derivedKey) {
-                    if (derivedKey.error) return cb(derivedKey);
-                    if (!Buffer.isBuffer(derivedKey)) {
-                        derivedKey = new Buffer(derivedKey, "hex");
-                    }
-                    var encryptedPrivateKey = new Buffer(keys.encrypt(
-                        plain.privateKey,
-                        derivedKey.slice(0, 16),
-                        plain.iv
-                    ), "base64").toString("hex");
-
-                    // encrypt private key using derived key and IV, then
-                    // store encrypted key & IV, indexed by handle
-                    var keystore = {
-                        address: abi.format_address(keys.privateKeyToAddress(plain.privateKey)),
-                        crypto: {
-                            cipher: keys.constants.cipher,
-                            ciphertext: encryptedPrivateKey,
-                            cipherparams: {iv: plain.iv.toString("hex")},
-                            kdf: constants.KDF,
-                            kdfparams: {
-                                c: keys.constants[constants.KDF].c,
-                                dklen: keys.constants[constants.KDF].dklen,
-                                prf: keys.constants[constants.KDF].prf,
-                                salt: plain.salt.toString("hex")
-                            },
-                            mac: keys.getMAC(derivedKey, encryptedPrivateKey)
-                        },
-                        version: 3,
-                        id: uuid.v4()
-                    };
-                    var unsecureLoginIDObject = {name: name, keystore: keystore};
-                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
-
-                    // while logged in, web.account object is set
-                    self.account = {
-                        name: name,
-                        secureLoginID: secureLoginID,
-                        privateKey: plain.privateKey,
-                        address: keystore.address,
-                        keystore: keystore,
-                        derivedKey: derivedKey
-                    };
-
-                    return cb({
-                        name: name,
-                        secureLoginID: secureLoginID,
-                        keystore: keystore,
-                        address: keystore.address
-                    });
-                }); // deriveKey
-            }); // create
-        },
-
-        loadLocalLoginAccount: function (localAccount, cb) {
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
-            var privateKey = localAccount.privateKey;
-            var derivedKey = localAccount.derivedKey;
-            if (privateKey && !Buffer.isBuffer(privateKey)) {
-                privateKey = new Buffer(privateKey, "hex");
-            }
-            if (derivedKey && !Buffer.isBuffer(derivedKey)) {
-                derivedKey = new Buffer(derivedKey, "hex");
-            }
-            this.account = {
-                name: localAccount.name,
-                secureLoginID: localAccount.secureLoginID,
-                privateKey: privateKey,
-                address: localAccount.keystore.address,
-                keystore: localAccount.keystore,
-                derivedKey: derivedKey
-            };
-            return cb(clone(this.account));
-        },
-
-        login: function (secureLoginID, password, cb) {
-            var self = this;
-            cb = (utils.is_function(cb)) ? cb : utils.pass;
-
-            // blank password
-            if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-            var unencryptedLoginIDObject;
-            try {
-                unencryptedLoginIDObject = augur.base58Decrypt(secureLoginID);
-            } catch (err) {
-                return cb(errors.BAD_CREDENTIALS);
-            }
-            var keystore = unencryptedLoginIDObject.keystore;
-            var name = unencryptedLoginIDObject.name;
-
-            // derive secret key from password
-            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
-                if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
-
-                // verify that message authentication codes match
-                var storedKey = keystore.crypto.ciphertext;
-                if (keys.getMAC(derivedKey, storedKey) !== keystore.crypto.mac.toString("hex")) {
-                    return cb(errors.BAD_CREDENTIALS);
-                }
-
-                if (!Buffer.isBuffer(derivedKey)) {
-                    derivedKey = new Buffer(derivedKey, "hex");
-                }
-
-                // decrypt stored private key using secret key
-                try {
-                    var privateKey = new Buffer(keys.decrypt(
-                        storedKey,
-                        derivedKey.slice(0, 16),
-                        keystore.crypto.cipherparams.iv
-                    ), "hex");
-
-                    // while logged in, web.account object is set
-                    self.account = {
-                        name: name,
-                        secureLoginID: secureLoginID,
-                        privateKey: privateKey,
-                        address: keystore.address,
-                        keystore: keystore,
-                        derivedKey: derivedKey
-                    };
-                    return cb(clone(self.account));
-
-                // decryption failure: bad password
-                } catch (exc) {
-                    var e = clone(errors.BAD_CREDENTIALS);
-                    e.bubble = exc;
-                    return cb(e);
-                }
-            }); // deriveKey
-        },
-
-        logout: function () {
-            this.account = {};
-            augur.rpc.clear();
-        },
-
-        submitTx: function (packaged, cb) {
-            var self = this;
-            var mutex = locks.createMutex();
-            mutex.lock(function () {
-                for (var rawTxHash in augur.rpc.rawTxs) {
-                    if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-                    if (augur.rpc.rawTxs[rawTxHash].nonce === packaged.nonce) {
-                        ++packaged.nonce;
-                        break;
-                    }
-                }
-                mutex.unlock();
-                if (augur.rpc.debug.broadcast) {
-                    console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
-                }
-                var etx = new EthTx(packaged);
-
-                // sign, validate, and send the transaction
-                etx.sign(self.account.privateKey);
-
-                // calculate the cost (in ether) of this transaction
-                // (note: this is just an upper bound on the cost, set by the gasLimit!)
-                var cost = etx.getUpfrontCost().toString();
-
-                // transaction validation
-                if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
-
-                // send the raw signed transaction to geth
-                augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-                    if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
-                    if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
-                    if (res.error) {
-                        if (res.message.indexOf("rlp") > -1) {
-                            var err = clone(errors.RLP_ENCODING_ERROR);
-                            err.bubble = res;
-                            err.packaged = packaged;
-                            return cb(err);
-                        } else if (res.message.indexOf("Nonce too low") > -1) {
-                            if (augur.rpc.debug.broadcast) {
-                                console.debug("Bad nonce, retrying:", res.message, packaged);
-                            }
-                            delete packaged.nonce;
-                            return self.getTxNonce(packaged, cb);
-                        }
-                        return cb(res);
-                    }
-
-                    // res is the txhash if nothing failed immediately
-                    // (even if the tx is nulled, still index the hash)
-                    augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-                    // nonce ok, execute callback
-                    return cb(res);
-                });
-            });
-        },
-
-        // get nonce: number of transactions
-        getTxNonce: function (packaged, cb) {
-            var self = this;
-            if (packaged.nonce) return this.submitTx(packaged, cb);
-            augur.rpc.pendingTxCount(self.account.address, function (txCount) {
-                if (txCount && !txCount.error && !(txCount instanceof Error)) {
-                    packaged.nonce = parseInt(txCount, 16);
-                }
-                self.submitTx(packaged, cb);
-            });
-        },
-
-        invoke: function (payload, cb) {
-            var self = this;
-
-            // if this is just a call, use ethrpc's regular invoke method
-            if (!payload.send) return augur.rpc.fire(payload, cb);
-
-            cb = cb || utils.pass;
-            if (!this.account.address || !this.account.privateKey) {
-                return cb(errors.NOT_LOGGED_IN);
-            }
-            if (!payload || payload.constructor !== Object) {
-                return cb(errors.TRANSACTION_FAILED);
-            }
-
-            // parse and serialize transaction parameters
-            var packaged = augur.rpc.packageRequest(payload);
-            packaged.from = this.account.address;
-            packaged.nonce = payload.nonce || 0;
-            packaged.value = payload.value || "0x0";
-            packaged.gasLimit = payload.gas || constants.DEFAULT_GAS;
-            if (augur.rpc.debug.broadcast) {
-                console.log("[augur.js] payload:", JSON.stringify(payload, null, 2));
-            }
-            if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
-                packaged.gasPrice = payload.gasPrice;
-                return this.getTxNonce(packaged, cb);
-            }
-            augur.rpc.getGasPrice(function (gasPrice) {
-                if (!gasPrice || gasPrice.error) {
-                    return cb(errors.TRANSACTION_FAILED);
-                }
-                packaged.gasPrice = gasPrice;
-                self.getTxNonce(packaged, cb);
-            });
-        }
-
-    };
-};
-
-}).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":232,"./utilities":257,"_process":191,"augur-abi":1,"augur-contracts":58,"bignumber.js":80,"browser-request":84,"buffer":114,"clone":116,"ethereumjs-tx":153,"keythereum":322,"locks":176,"node-uuid":183,"request":85}],231:[function(require,module,exports){
-/**
- * Batch interface:
- * var b = augur.createBatch();
- * b.add("getCashBalance", [augur.coinbase], callback);
- * b.add("getRepBalance", [augur.constants.DEFAULT_BRANCH_ID, augur.coinbase], callback);
- * b.execute();
- */
-
-"use strict";
-
-var clone = require("clone");
-
-var Batch = function (tx, rpc) {
-    this.tx = tx;
-    this.rpc = rpc;
-    this.txlist = [];
-};
-
-Batch.prototype.add = function (contract, method, params, callback) {
-    if (method) {
-        var tx = clone(this.tx[contract][method]);
-        tx.params = params;
-        if (callback) tx.callback = callback;
-        this.txlist.push(tx);
-    }
-};
-
-Batch.prototype.execute = function () {
-    this.rpc.batch(this.txlist, true);
-};
-
-module.exports = function () {
-    return new Batch(this.tx, this.rpc);
-};
-
-},{"clone":116}],232:[function(require,module,exports){
-/** 
- * augur.js constants
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-var ONE = new BigNumber(10).toPower(18); 
-
-module.exports = {
-    ZERO: new BigNumber(0),
-    ONE: ONE,
-    ETHER: ONE,
-
-    DEFAULT_BRANCH_ID: "0xf69b5",
-    BID: 1,
-    ASK: 2,
-
-    // fixed-point indeterminate: 1.5 * 10^18
-    INDETERMINATE: "0x14d1120d7b160000",
-    INDETERMINATE_PLUS_ONE: "0x14d1120d7b160001",
-
-    // default gas: 3.135M
-    DEFAULT_GAS: 3135000,
-
-    // gas needed for trade transactions (values from pyethereum tester)
-    TRADE_GAS: [
-        {sell: 756374, buy: 787421}, // first trade_id only
-        {sell: 615817, buy: 661894} // each additional trade_id
-    ],
-
-    // expected block interval
-    SECONDS_PER_BLOCK: 12,
-
-    // keythereum crypto parameters
-    KDF: "pbkdf2",
-    SCRYPT: "scrypt",
-    ROUNDS: 65536,
-    KEYSIZE: 32,
-    IVSIZE: 16,
-
-    // cipher used to encrypt/decrypt reports
-    REPORT_CIPHER: "aes-256-ctr",
-
-    // Morden testnet faucet endpoint
-    FAUCET: "https://faucet.augur.net/faucet/"
-};
-
-},{"augur-abi":1,"bignumber.js":80}],233:[function(require,module,exports){
-/**
- * Filters / logging
- */
-
-"use strict";
-
-var async = require("async");
-var abi = require("augur-abi");
-var augur_contracts = require("augur-contracts");
-var utils = require("./utilities");
-var constants = require("./constants");
-var errors = augur_contracts.errors;
-
-// non-event filters
-var filters = {
-    block: {id: null, heartbeat: null},
-    contracts: {id: null, heartbeat: null}
-};
-
-// event filters
-var events_api = new augur_contracts.Tx().events;
-for (var label in events_api) {
-    if (!events_api.hasOwnProperty(label)) continue;
-    filters[label] = {id: null, heartbeat: null};
-}
-
-module.exports = function () {
-
-    var augur = this;
-
-    return {
-
-        PULSE: constants.SECONDS_PER_BLOCK * 500,
-
-        filter: filters,
-
-        parse_block_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].hash);
-                    }
-                } else {
-                    if (message.hash) onMessage(message.hash);
-                }
-            }
-        },
-        parse_contracts_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    onMessage(message[i]);
-                }
-            }
-        },
-        parse_log_add_tx_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    onMessage(message[i]);
-                }
-            }
-        },
-        parse_log_cancel_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    onMessage(message[i]);
-                }
-            }
-        },
-        parse_thru_message: function (message, onMessage) {
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    if (onMessage) onMessage(message[i]);
-                }
-            }
-        },
-        parse_penalize_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    onMessage(message[i]);
-                }
-            }
-        },
-        parse_marketCreated_message: function (message, onMessage) {
-            if (!message) return onMessage(message);
-            if (message.constructor === Object && message.data) {
-                return onMessage(message);
-            }
-            if (message.constructor === Array && message.length) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) onMessage(message[i].data);
-                }
-            }
-        },
-        parse_tradingFeeUpdated_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    var data_array = augur.rpc.unmarshal(message[i].data);
-                    if (data_array && data_array.constructor === Array && 
-                        data_array.length > 1) {
-                        onMessage({
-                            marketId: data_array[0],
-                            tradingFee: abi.unfix(data_array[1], "string")
-                        });
-                    }
-                }
-            }
-        },
-        parse_approval_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    onMessage(message[i]);
-                }
-            }
-        },
-        parse_transfer_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i]) {
-                    if (message[i].constructor === Object && message[i].data) {
-                        message[i].data = augur.rpc.unmarshal(message[i].data);
-                    }
-                    onMessage(message[i]);
-                }
-            }
-        },
-        parse_log_fill_tx_message: function (message, onMessage) {
-            if (!message || !message.length || message.constructor !== Array) {
-                return onMessage(message);
-            }
-            for (var i = 0, len = message.length; i < len; ++i) {
-                if (message[i] && message[i].topics && message[i].topics.length === 4) {
-                    var data_array = augur.rpc.unmarshal(message[i].data);
-                    if (data_array && data_array.constructor === Array && data_array.length) {
-                        onMessage({
-                            marketId: message[i].topics[1],
-                            type: (parseInt(data_array[0], 16) === 1) ? "buy" : "sell",
-                            taker: abi.format_address(message[i].topics[2]),
-                            maker: abi.format_address(message[i].topics[3]),
-                            price: abi.unfix(data_array[1], "string"),
-                            shares: abi.unfix(data_array[2], "string"),
-                            trade_id: data_array[3],
-                            outcome: parseInt(data_array[4], 16),
-                            timestamp: parseInt(data_array[5], 16),
-                            blockNumber: parseInt(message[i].blockNumber, 16)
-                        });
-                    }
-                }
-            }
-        },
-
-        poll_filter: function (label, onMessage) {
-            var callback, self = this;
-            if (this.filter[label]) {
-                switch (label) {
-                case "log_fill_tx":
-                    callback = function (msg) {
-                        self.parse_log_fill_tx_message(msg, onMessage);
-                    };
-                    break;
-                case "contracts":
-                    callback = function (msg) {
-                        self.parse_contracts_message(msg, onMessage);
-                    };
-                    break;
-                case "block":
-                    callback = function (msg) {
-                        self.parse_block_message(msg, onMessage);
-                    };
-                    break;
-                case "tradingFeeUpdated":
-                    callback = function (msg) {
-                        self.parse_tradingFeeUpdated_message(msg, onMessage);
-                    };
-                    break;
-                case "marketCreated":
-                    callback = function (msg) {
-                        self.parse_marketCreated_message(msg, onMessage);
-                    };
-                    break;
-                default:
-                    callback = onMessage;
-                }
-                augur.rpc.getFilterChanges(this.filter[label].id, callback);
-            }
-        },
-
-        // clear/uninstall filters
-        clear_filter: function (label, cb) {
-            if (utils.is_function(cb)) {
-                var self = this;
-                this.unsubscribe(this.filter[label].id, function (uninst) {
-                    self.filter[label].id = null;
-                    cb(uninst);
-                });
-            } else {
-                var uninst = this.unsubscribe(this.filter[label].id);
-                this.filter[label].id = null;
-                return uninst;
-            }
-        },
-
-        // set up filters
-        setup_event_filter: function (contract, label, f) {
-            return this.subscribeLogs({
-                address: augur.contracts[contract],
-                topics: [augur.api.events[label].signature]
-            }, f);
-        },
-        setup_contracts_filter: function (f) {
-            var self = this;
-            var contract_list = [];
-            for (var c in augur.contracts) {
-                if (!augur.contracts.hasOwnProperty(c)) continue;
-                contract_list.push(augur.contracts[c]);
-            }
-            var params = {
-                address: contract_list,
-                fromBlock: "0x01",
-                toBlock: "latest"
-            };
-            if (!utils.is_function(f)) {
-                this.filter.contracts = {
-                    id: this.subscribeLogs(params),
-                    heartbeat: null
-                };
-                return this.filter.contracts;
-            }
-            this.subscribeLogs(params, function (filter_id) {
-                self.filter.contracts = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                f(self.filter.contracts);
-            });
-        },
-        setup_block_filter: function (f) {
-            var self = this;
-            if (!utils.is_function(f)) {
-                this.filter.block = {
-                    id: this.subscribeNewBlocks(),
-                    heartbeat: null
-                };
-                return this.filter.block;
-            }
-            this.subscribeNewBlocks(function (filter_id) {
-                self.filter.block = {id: filter_id, heartbeat: null};
-                f(self.filter.block);
-            });
-        },
-
-        // start listeners
-        start_event_listener: function (label, cb) {
-            var self = this;
-            var contract = augur.api.events[label].contract;
-            if (this.filter[label] && this.filter[label].id) {
-                if (!utils.is_function(cb)) return this.filter[label].id;
-                return cb(this.filter[label].id);
-            }
-            if (!utils.is_function(cb)) {
-                var filter_id = this.setup_event_filter(contract, label);
-                if (!filter_id || filter_id === "0x") {
-                    return errors.FILTER_NOT_CREATED;
-                }
-                if (filter_id.error) return filter_id;
-                self.filter[label] = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                return filter_id;
-            }
-            this.setup_event_filter(contract, label, function (filter_id) {
-                if (!filter_id || filter_id === "0x") {
-                    return cb(errors.FILTER_NOT_CREATED);
-                }
-                if (filter_id.error) return cb(filter_id);
-                self.filter[label] = {
-                    id: filter_id,
-                    heartbeat: null
-                };
-                cb(filter_id);
-            });
-        },
-        start_contracts_listener: function (cb) {
-            if (this.filter.contracts.id === null) {
-                if (!utils.is_function(cb)) {
-                    return this.setup_contracts_filter();
-                }
-                this.setup_contracts_filter(cb);
-            }
-        },
-        start_block_listener: function (cb) {
-            if (this.filter.block.id === null) {
-                if (!utils.is_function(cb)) {
-                    return this.setup_block_filter();
-                }
-                this.setup_block_filter(cb);
-            }
-        },
-
-        // start/stop polling
-        pacemaker: function (cb) {
-            var self = this;
-            if (!cb || cb.constructor !== Object) return;
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                async.forEachOf(this.filter, function (filter, label, next) {
-                    if (utils.is_function(cb[label])) {
-                        self.poll_filter(label, cb[label]);
-                        self.filter[label].heartbeat = setInterval(function () {
-                            self.poll_filter(label, cb[label]);
-                        }, self.PULSE);
-                    }
-                    next();
-                });
-            } else {
-                async.forEachOf(this.filter, function (filter, label, next) {
-                    if (utils.is_function(cb[label])) {
-                        var callback;
-                        switch (label) {
-                        case "block":
-                            callback = cb.block;
-                            cb.block = function (block) {
-                                self.parse_block_message(block, callback);
-                            };
-                            break;
-                        case "contracts":
-                            callback = cb.contracts;
-                            cb.contracts = function (msg) {
-                                self.parse_contracts_message(msg, callback);
-                            };
-                            break;
-                        case "log_fill_tx":
-                            callback = cb.log_fill_tx;
-                            cb.log_fill_tx = function (msg) {
-                                self.parse_log_fill_tx_message(msg, callback);
-                            };
-                            break;
-                        case "marketCreated":
-                            callback = cb.marketCreated;
-                            cb.marketCreated = function (msg) {
-                                self.parse_marketCreated_message(msg, callback);
-                            };
-                            break;
-                        case "tradingFeeUpdated":
-                            callback = cb.tradingFeeUpdated;
-                            cb.tradingFeeUpdated = function (msg) {
-                                self.parse_tradingFeeUpdated_message(msg, callback);
-                            };
-                            break;
-                        }
-                        augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
-                        next();
-                    }
-                });
-            }
-        },
-
-        listen: function (cb, setup_complete) {
-            var run, self = this;
-
-            function listenHelper(callback, label, next) {
-                switch (label) {
-                    case "contracts":
-                        self.start_contracts_listener(function () {
-                            self.pacemaker({contracts: callback});
-                            next(null, [label, self.filter[label].id]);
-                        });
-                        break;
-                    case "block":
-                        self.start_block_listener(function () {
-                            self.pacemaker({block: callback});
-                            next(null, [label, self.filter[label].id]);
-                        });
-                        break;
-                    default:
-                        self.start_event_listener(label, function () {
-                            var p = {};
-                            p[label] = callback;
-                            self.pacemaker(p);
-                            next(null, [label, self.filter[label].id]);
-                        });
-                }
-            }
-
-            if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
-                this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
-                run = async.parallel;
-            } else {
-                this.subscribeLogs = augur.rpc.subscribeLogs.bind(augur.rpc);
-                this.subscribeNewBlocks = augur.rpc.subscribeNewBlocks.bind(augur.rpc);
-                this.unsubscribe = augur.rpc.unsubscribe.bind(augur.rpc);
-                run = async.series;
-            }
-            async.forEachOfSeries(cb, function (callback, label, next) {
-
-                // skip invalid labels, undefined callbacks
-                if (!self.filter[label] || !callback) {
-                    next(null, null);
-                } else if (self.filter[label].id === null && callback) {
-                    listenHelper(callback, label, next);
-
-                // callback already registered. uninstall, and reinstall new callback.
-                } else if (self.filter[label].id && callback) {
-                    self.clear_filter(label, function () {
-                        listenHelper(callback, label, next);
-                    });
-                }
-            }, function (err) {
-                if (err) console.error(err);
-                if (utils.is_function(setup_complete)) setup_complete(self.filter);
-            });
-        },
-
-        all_filters_removed: function () {
-            var f, isRemoved = true;
-            for (var label in this.filter) {
-                if (!this.filter.hasOwnProperty(label)) continue;
-                f = this.filter[label];
-                if (f.heartbeat !== null || f.id !== null) {
-                    isRemoved = false;
-                    break;
-                }
-            }
-            return isRemoved;
-        },
-
-        ignore: function (uninstall, cb, complete) {
-            var label, self = this;
-
-            function cleared(uninst, callback, complete) {
-                callback(uninst);
-                if (uninst && uninst.constructor === Object) {
-                    return complete(uninst);
-                }
-                if (self.all_filters_removed()) complete();
-            }
-
-            if (!complete && utils.is_function(cb)) {
-                complete = cb;
-                cb = null;
-            }
-            if (uninstall && uninstall.constructor === Object) {
-                cb = {};
-                for (label in this.filter) {
-                    if (!this.filter.hasOwnProperty(label)) continue;
-                    if (utils.is_function(uninstall[label])) {
-                        cb[label] = uninstall[label];
-                    }
-                }
-                uninstall = false;
-            }
-            cb = cb || {}; // individual filter removal callbacks
-            for (label in this.filter) {
-                if (!this.filter.hasOwnProperty(label)) continue;
-                cb[label] = utils.is_function(cb[label]) ? cb[label] : utils.noop;
-            }
-            complete = utils.is_function(complete) ? complete : utils.noop; // after all filters removed
-            for (label in this.filter) {
-                if (!this.filter.hasOwnProperty(label)) continue;
-                if (this.filter[label].heartbeat !== null) {
-                    clearInterval(this.filter[label].heartbeat);
-                    this.filter[label].heartbeat = null;
-                    if (!uninstall && utils.is_function(cb[label])) {
-                        cb[label]();
-                        if (this.all_filters_removed()) complete();
-                    }
-                }
-            }
-            if (uninstall) {
-                async.forEachOfSeries(this.filter, function (filter, label, next) {
-                    if (filter.id === null) return next();
-                    self.clear_filter(label, function (uninst) {
-                        cleared(uninst, cb[label], complete);
-                        next();
-                    });
-                });
-            }
-        }
-    };
-};
-
-},{"./constants":232,"./utilities":257,"async":77,"augur-abi":1,"augur-contracts":58}],234:[function(require,module,exports){
-/**
- * generateOrderBook: convenience method for generating an initial order book
- * for a newly created market. generateOrderBook calculates the number of
- * orders to create, as well as the spacing between orders.
- *
- * @param {Object} p
- *     market: market ID
- *     liquidity: initial cash to be placed on the order book
- *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
- *     startingQuantity: number of shares in each order
- *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
- *     priceWidth: spread between best bid/offer
- *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
- * @param {Object} cb
- *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
- *     (note: callbacks can also be properties of the p object)
- */
-
-"use strict";
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-var constants = require("./constants");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = function (p, cb) {
-    var self = this;
-    var liquidity = abi.bignum(p.liquidity);
-    var numOutcomes = p.initialFairPrices.length;
-    var initialFairPrices = new Array(numOutcomes);
-    for (var i = 0; i < numOutcomes; ++i) {
-        initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
-    }
-    var startingQuantity = abi.bignum(p.startingQuantity);
-    var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
-    var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
-    cb = cb || {};
-    var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
-    var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
-    var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
-    var onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
-    var onFailed = cb.onFailed || p.onFailed || this.utils.noop;
-    this.getMarketInfo(p.market, function (marketInfo) {
-        var minValue, maxValue;
-        if (!marketInfo) return onFailed(self.errors.NO_MARKET_INFO);
-        if (marketInfo.numOutcomes !== numOutcomes) {
-            return onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
-        }
-        if (marketInfo.type === "scalar") {
-            minValue = abi.bignum(marketInfo.events[0].minValue);
-            maxValue = abi.bignum(marketInfo.events[0].maxValue);
-        } else {
-            minValue = new BigNumber(0);
-            maxValue = new BigNumber(1);
-        }
-        var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
-        if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
-            return onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
-        }
-        var buyPrices = new Array(numOutcomes);
-        var sellPrices = new Array(numOutcomes);
-        var numSellOrders = new Array(numOutcomes);
-        var numBuyOrders = new Array(numOutcomes);
-        var shares = new BigNumber(0);
-        var i, j, buyPrice, sellPrice, outcomeShares;
-        for (i = 0; i < numOutcomes; ++i) {
-            if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) ||
-                initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-                console.log("priceDepth:", priceDepth.toFixed());
-                console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-                console.log("minValue:", minValue.toFixed());
-                console.log("maxValue:", maxValue.toFixed());
-                console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-                console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-                console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-                console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
-                return onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
-            }
-            if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) ||
-                initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
-                return onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
-            }
-            buyPrice = initialFairPrices[i].minus(halfPriceWidth);
-            sellPrice = initialFairPrices[i].plus(halfPriceWidth);
-            numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
-            if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
-            numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
-            if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
-            outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
-            if (outcomeShares.gt(shares)) shares = outcomeShares;
-            numSellOrders[i] = numSellOrders[i].toNumber();
-            buyPrices[i] = new Array(numBuyOrders[i]);
-            buyPrices[i][0] = buyPrice;
-            for (j = 1; j < numBuyOrders[i]; ++j) {
-                buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
-                if (buyPrices[i][j].lte(minValue)) {
-                    buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-            }
-            sellPrices[i] = new Array(numSellOrders[i]);
-            sellPrices[i][0] = sellPrice;
-            for (j = 1; j < numSellOrders[i]; ++j) {
-                sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
-                if (sellPrices[i][j].gte(maxValue)) {
-                    sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-                }
-            }
-        }
-        var numTransactions = 0;
-        for (i = 0; i < numOutcomes; ++i) {
-            numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
-        }
-        var onSimulate = cb.onSimulate || p.onSimulate;
-        if (self.utils.is_function(onSimulate)) {
-            onSimulate({
-                shares: shares.toFixed(),
-                numBuyOrders: numBuyOrders,
-                numSellOrders: numSellOrders,
-                buyPrices: abi.string(buyPrices),
-                sellPrices: abi.string(sellPrices),
-                numTransactions: numTransactions,
-                priceDepth: priceDepth.toFixed()
-            });
-            if (p.isSimulation) return;
-        }
-        self.buyCompleteSets({
-            market: p.market,
-            amount: abi.hex(shares),
-            onSent: function (res) {
-                // console.log("generateOrderBook.buyCompleteSets sent:", res);
-            },
-            onSuccess: function (res) {
-                // console.log("generateOrderBook.buyCompleteSets success:", res);
-                onBuyCompleteSets(res);
-                var outcomes = new Array(numOutcomes);
-                for (var i = 0; i < numOutcomes; ++i) {
-                    outcomes[i] = i + 1;
-                }
-                async.forEachOf(outcomes, function (outcome, index, nextOutcome) {
-                    async.parallel([
-                        function (callback) {
-                            async.forEachOf(buyPrices[index], function (buyPrice, i, nextBuyPrice) {
-                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                if (marketInfo.type === "scalar") {
-                                    buyPrice = self.shrinkScalarPrice(minValue, buyPrice);
-                                } else {
-                                    buyPrice = buyPrice.toFixed();
-                                }
-                                self.buy({
-                                    amount: amount.toFixed(),
-                                    price: buyPrice,
-                                    market: p.market,
-                                    outcome: outcome,
-                                    onSent: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
-                                    },
-                                    onSuccess: function (res) {
-                                        // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
-                                        onSetupOrder({
-                                            tradeId: res.callReturn,
-                                            market: p.market,
-                                            outcome: outcome,
-                                            amount: amount.toFixed(),
-                                            buyPrice: buyPrice
-                                        });
-                                        nextBuyPrice();
-                                    },
-                                    onFailed: function (err) {
-                                        console.error("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "failed:", err);
-                                        nextBuyPrice(err);
-                                    }
-                                });
-                            }, function (err) {
-                                if (err) console.error("async.each buy:", err);
-                                callback(err);
-                            });
-                        },
-                        function (callback) {
-                            async.forEachOf(sellPrices[index], function (sellPrice, i, nextSellPrice) {
-                                var amount = (!i) ? bestStartingQuantity : startingQuantity;
-                                if (marketInfo.type === "scalar") {
-                                    sellPrice = self.shrinkScalarPrice(minValue, sellPrice);
-                                } else {
-                                    sellPrice = sellPrice.toFixed();
-                                }
-                                self.sell({
-                                    amount: amount.toFixed(),
-                                    price: sellPrice,
-                                    market: p.market,
-                                    outcome: outcome,
-                                    onSent: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
-                                    },
-                                    onSuccess: function (res) {
-                                        // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
-                                        onSetupOrder({
-                                            tradeId: res.callReturn,
-                                            market: p.market,
-                                            outcome: outcome,
-                                            amount: amount.toFixed(),
-                                            sellPrice: sellPrice
-                                        });
-                                        nextSellPrice();
-                                    },
-                                    onFailed: function (err) {
-                                        console.error("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "failed:", err);
-                                        nextSellPrice(err);
-                                    }
-                                });
-                            }, function (err) {
-                                if (err) console.error("async.each sell:", err);
-                                callback(err);
-                            });
-                        }
-                    ], function (err) {
-                        // if (err) console.error("buy/sell:", err);
-                        onSetupOutcome({market: p.market, outcome: outcome});
-                        nextOutcome(err);
-                    });
-                }, function (err) {
-                    if (err) return onFailed(err);
-                    var scalarMinMax = {};
-                    if (marketInfo.type === "scalar") {
-                        scalarMinMax.minValue = minValue;
-                        scalarMinMax.maxValue = maxValue;
-                    }
-                    self.getOrderBook(p.market, scalarMinMax, onSuccess);
-                });
-            },
-            onFailed: function (err) {
-                console.error("generateOrderBook.buyCompleteSets failed:", err);
-                onFailed(err);
-            }
-        });
-    });
-};
-
-},{"./constants":232,"async":77,"augur-abi":1,"bignumber.js":80}],235:[function(require,module,exports){
-(function (process){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var modules = [
-    require("./modules/connect"),
-    require("./modules/transact"),
-    require("./modules/cash"),
-    require("./modules/events"),
-    require("./modules/markets"),
-    require("./modules/trades"),
-    require("./modules/buyAndSellShares"),
-    require("./modules/trade"),
-    require("./modules/completeSets"),
-    require("./modules/createBranch"),
-    require("./modules/sendReputation"),
-    require("./modules/makeReports"),
-    require("./modules/collectFees"),
-    require("./modules/createMarket"),
-    require("./modules/compositeGetters"),
-    require("./modules/whitelist"),
-    require("./modules/logs"),
-    require("./modules/abacus"),
-    require("./modules/reportingTools"),
-    require("./modules/tradingActions")
-];
-
-function Augur() {
-    this.version = "1.9.23";
-
-    this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
-    this.protocol = NODE_JS || document.location.protocol;
-
-    this.connection = null;
-    this.coinbase = null;
-    this.from = null;
-
-    this.constants = require("./constants");
-    this.abi = require("augur-abi");
-    this.utils = require("./utilities");
-    this.errors = require("augur-contracts").errors;
-    this.rpc = require("ethrpc");
-    this.abi.debug = this.options.debug.abi;
-    this.rpc.debug = this.options.debug;
-
-    // Load submodules
-    for (var i = 0, len = modules.length; i < len; ++i) {
-        for (var fn in modules[i]) {
-            if (!modules[i].hasOwnProperty(fn)) continue;
-            this[fn] = modules[i][fn].bind(this);
-            this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
-        }
-    }
-    this.generateOrderBook = require("./generateOrderBook").bind(this);
-    this.processOrder = require("./processOrder").bind(this);
-    this.createBatch = require("./batch").bind(this);
-    this.web = this.Accounts();
-    this.filters = this.Filters();
-}
-
-Augur.prototype.Accounts = require("./accounts");
-Augur.prototype.Filters = require("./filters");
-
-module.exports = new Augur();
-
-}).call(this,require('_process'))
-},{"./accounts":230,"./batch":231,"./constants":232,"./filters":233,"./generateOrderBook":234,"./modules/abacus":236,"./modules/buyAndSellShares":237,"./modules/cash":238,"./modules/collectFees":239,"./modules/completeSets":240,"./modules/compositeGetters":241,"./modules/connect":242,"./modules/createBranch":243,"./modules/createMarket":244,"./modules/events":245,"./modules/logs":246,"./modules/makeReports":247,"./modules/markets":248,"./modules/reportingTools":249,"./modules/sendReputation":250,"./modules/trade":251,"./modules/trades":252,"./modules/tradingActions":253,"./modules/transact":254,"./modules/whitelist":255,"./processOrder":256,"./utilities":257,"_process":191,"augur-abi":1,"augur-contracts":58,"ethrpc":155}],236:[function(require,module,exports){
-(function (Buffer){
-/**
- * Utility functions that do a local calculation (i.e., these functions do not
- * make RPC requests).
- */
-
-"use strict";
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var bs58 = require("bs58");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    // type: "buy" or "sell"
-    // gasLimit (optional): block gas limit as an integer
-    maxOrdersPerTrade: function (type, gasLimit) {
-        return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
-    },
-
-    // tradeTypes: array of "buy" and/or "sell"
-    sumTradeGas: function (tradeTypes) {
-        var gas = 0;
-        for (var i = 0, n = tradeTypes.length; i < n; ++i) {
-            gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
-        }
-        return gas;
-    },
-
-    sumTrades: function (trade_ids) {
-        var trades = new BigNumber(0);
-        for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
-            trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
-        }
-        return abi.hex(trades, true);
-    },
-
-    makeTradeHash: function (max_value, max_amount, trade_ids) {
-        return utils.sha3([
-            this.sumTrades(trade_ids),
-            abi.fix(max_amount, "hex"),
-            abi.fix(max_value, "hex")
-        ]);
-    },
-
-    calculateTradingFees: function (makerFee, takerFee) {
-        var bnMakerFee = abi.bignum(makerFee);
-        var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(new BigNumber("1.5"));
-        var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
-        return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
-    },
-
-    // expects fixed-point inputs
-    calculateMakerTakerFees: function (tradingFee, makerProportionOfFee) {
-        tradingFee = abi.unfix(tradingFee);
-        makerProportionOfFee = abi.unfix(makerProportionOfFee);
-        var makerFee = tradingFee.times(makerProportionOfFee);
-        return {
-            trading: tradingFee.toFixed(),
-            maker: makerFee.toFixed(),
-            taker: new BigNumber("1.5").times(tradingFee).minus(makerFee).toFixed()
-        };
-    },
-
-    parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 6;
-        var OUTCOMES_FIELDS = 2;
-        var WINNING_OUTCOMES_FIELDS = 8;
-        var info = {};
-        if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
-            // marketInfo[0] = marketID
-            // marketInfo[1] = MARKETS.getMakerFees(marketID)
-            // marketInfo[2] = numOutcomes
-            // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
-            // marketInfo[4] = MARKETS.getTradingFee(marketID)
-            // marketInfo[5] = MARKETS.getBranchID(marketID)
-            // marketInfo[6] = MARKETS.getCumScale(marketID)
-            // marketInfo[7] = MARKETS.getCreationTime(marketID)
-            // marketInfo[8] = MARKETS.getVolume(marketID)
-            // marketInfo[9] = INFO.getCreationFee(marketID)
-            // marketInfo[10] = INFO.getCreator(marketID)
-            // tags = MARKETS.returnTags(marketID, outitems=3)
-            // marketInfo[11] = tags[0]
-            // marketInfo[12] = tags[1]
-            // marketInfo[13] = tags[2]
-            var index = 14;
-            var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-            info = {
-                network: this.network_id,
-                makerFee: fees.maker,
-                takerFee: fees.taker,
-                tradingFee: fees.trading,
-                numOutcomes: parseInt(rawInfo[2], 16),
-                tradingPeriod: parseInt(rawInfo[3], 16),
-                branchId: rawInfo[5],
-                numEvents: 1,
-                cumulativeScale: abi.unfix(rawInfo[6], "string"),
-                creationTime: parseInt(rawInfo[7], 16),
-                volume: abi.unfix(rawInfo[8], "string"),
-                creationFee: abi.unfix(rawInfo[9], "string"),
-                author: abi.format_address(rawInfo[10]),
-                tags: [
-                    this.decodeTag(rawInfo[11]),
-                    this.decodeTag(rawInfo[12]),
-                    this.decodeTag(rawInfo[13])
-                ],
-                winningOutcomes: []
-            };
-            info.outcomes = new Array(info.numOutcomes);
-
-            // organize event info
-            // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-            var event = {
-                id: rawInfo[index],
-                endDate: parseInt(rawInfo[index + 1], 16),
-                outcome: abi.unfix(rawInfo[index + 2], "string"),
-                minValue: abi.unfix(rawInfo[index + 3], "string"),
-                maxValue: abi.unfix(rawInfo[index + 4], "string"),
-                numOutcomes: parseInt(rawInfo[index + 5], 16)
-            };
-
-            // event type: binary, categorical, or scalar
-            if (event.numOutcomes !== 2) {
-                event.type = "categorical";
-            } else if (event.minValue === '1' && event.maxValue === '2') {
-                event.type = "binary";
-            } else {
-                event.type = "scalar";
-            }
-            info.type = event.type;
-            info.endDate = event.endDate;
-            info.events = [event];
-            index += EVENTS_FIELDS;
-
-            // organize outcome info
-            for (var i = 0; i < info.numOutcomes; ++i) {
-                info.outcomes[i] = {
-                    id: i + 1,
-                    outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
-                    price: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index + 1], "string")
-                };
-            }
-            index += info.numOutcomes*OUTCOMES_FIELDS;
-            info.winningOutcomes = abi.string(
-                rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
-            );
-            index += WINNING_OUTCOMES_FIELDS;
-
-            // convert description byte array to unicode
-            var descriptionLength = parseInt(rawInfo[index], 16);
-            ++index;
-            if (descriptionLength) {
-                info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
-                index += descriptionLength;
-            }
-
-            // convert resolution byte array to unicode
-            var resolutionLength = parseInt(rawInfo[index], 16);
-            ++index;
-            if (resolutionLength) {
-                info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
-                index += resolutionLength;
-            }
-
-            // convert extraInfo byte array to unicode
-            var extraInfoLength = parseInt(rawInfo[index], 16);
-            if (extraInfoLength) {
-                info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
-            }
-        }
-        return info;
-    },
-
-    formatTags: function (tags) {
-        var formattedTags = clone(tags);
-        if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
-        if (formattedTags.length) {
-            for (var i = 0; i < formattedTags.length; ++i) {
-                if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
-                    formattedTags[i] = "0x0";
-                } else {
-                    formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
-                }
-            }
-        }
-        while (formattedTags.length < 3) {
-            formattedTags.push("0x0");
-        }
-        return formattedTags;
-    },
-
-    calculateRequiredMarketValue: function (gasPrice) {
-        gasPrice = abi.bignum(gasPrice);
-        return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
-    },
-
-    // expects BigNumber inputs
-    calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-        return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-    },
-
-    shrinkScalarPrice: function (minValue, price) {
-        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
-        if (price.constructor !== BigNumber) price = abi.bignum(price);
-        return price.minus(minValue).toFixed();
-    },
-
-    expandScalarPrice: function (minValue, price) {
-        if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
-        if (price.constructor !== BigNumber) price = abi.bignum(price);
-        return price.plus(minValue).toFixed();
-    },
-
-    parseTradeInfo: function (trade) {
-        return {
-            id: trade[0],
-            type: (trade[1] === "0x1") ? "buy" : "sell", // 0x1=buy, 0x2=sell
-            market: trade[2],
-            amount: abi.unfix(trade[3], "string"),
-            price: abi.unfix(trade[4], "string"),
-            owner: abi.format_address(trade[5], true),
-            block: parseInt(trade[6]),
-            outcome: abi.string(trade[7])
-        };
-    },
-
-    decodeTag: function (tag) {
-        try {
-            return (tag && tag !== "0x0" && tag !== "0x") ?
-                abi.int256_to_short_string(abi.unfork(tag, true)) : null;
-        } catch (exc) {
-            if (this.options.debug.broadcast) console.error(exc, tag);
-            return null;
-        }
-    },
-
-    base58Decrypt: function (secureLoginID) {
-        return JSON.parse(new Buffer(bs58.decode(secureLoginID)).toString('utf8'));
-    },
-
-    base58Encrypt: function (keystore) {
-        return bs58.encode(new Buffer(JSON.stringify(keystore), "utf8"));
-    }
-};
-
-}).call(this,require("buffer").Buffer)
-},{"../constants":232,"../utilities":257,"async":77,"augur-abi":1,"bignumber.js":80,"bs58":112,"buffer":114,"clone":116}],237:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-    buy: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (amount.constructor === Object && amount.amount) {
-            price = amount.price;
-            market = amount.market;
-            outcome = amount.outcome;
-            onSent = amount.onSent;
-            onSuccess = amount.onSuccess;
-            onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
-            amount = amount.amount;
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.BuyAndSellShares.buy);
-        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        var prepare = function (res, cb) {
-            res.tradeID = utils.sha3([
-                constants.BID,
-                market,
-                abi.fix(amount, "hex"),
-                abi.fix(price, "hex"),
-                res.from,
-                res.blockNumber,
-                parseInt(outcome)
-            ]);
-            if (!utils.is_function(cb)) return res;
-            return cb(res);
-        };
-        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
-        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
-    },
-
-    sell: function (amount, price, market, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (amount.constructor === Object && amount.amount) {
-            price = amount.price;
-            market = amount.market;
-            outcome = amount.outcome;
-            onSent = amount.onSent;
-            onSuccess = amount.onSuccess;
-            onFailed = amount.onFailed;
-            onConfirmed = amount.onConfirmed;
-            amount = amount.amount;
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        var tx = clone(this.tx.BuyAndSellShares.sell);
-        tx.params = [abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome];
-        var prepare = function (res, cb) {
-            res.tradeID = utils.sha3([
-                constants.ASK,
-                market,
-                abi.fix(amount, "hex"),
-                abi.fix(price, "hex"),
-                res.from,
-                res.blockNumber,
-                parseInt(outcome)
-            ]);
-            if (!utils.is_function(cb)) return res;
-            return cb(res);
-        };
-        if (!utils.is_function(onSent)) return prepare(this.transact(tx));
-        this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
-    }
-};
-
-},{"../constants":232,"../utilities":257,"augur-abi":1,"clone":116}],238:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-    
-    depositEther: function (value, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.depositEther);
-        var unpacked = utils.unpack(value, utils.labels(this.depositEther), arguments);
-        tx.value = abi.fix(unpacked.params[0], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    withdrawEther: function (to, value, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.withdrawEther);
-        var unpacked = utils.unpack(to, utils.labels(this.withdrawEther), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    setCash: function (address, balance, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.setCash);
-        var unpacked = utils.unpack(address, utils.labels(this.setCash), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-    
-    addCash: function (ID, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Cash.addCash);
-        var unpacked = utils.unpack(ID, utils.labels(this.addCash), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-    
-    getCashBalance: function (account, callback) {
-        return this.Cash.balance(account, callback);
-    },
-
-    sendCash: function (to, value, onSent, onSuccess, onFailed, onConfirmed) {
-        // to: ethereum account
-        // value: number -> fixed-point
-        if (to && to.value !== null && to.value !== undefined) {
-            value = to.value;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        var tx = clone(this.tx.Cash.send);
-        tx.params = [to, abi.fix(value, "hex")];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    },
-
-    sendCashFrom: function (to, value, from, onSent, onSuccess, onFailed, onConfirmed) {
-        // to: ethereum account
-        // value: number -> fixed-point
-        // from: ethereum account
-        if (to && to.value) {
-            value = to.value;
-            from = to.from;
-            if (to.onSent) onSent = to.onSent;
-            if (to.onSuccess) onSuccess = to.onSuccess;
-            if (to.onFailed) onFailed = to.onFailed;
-            to = to.to;
-        }
-        var tx = clone(this.tx.Cash.sendFrom);
-        tx.params = [to, abi.fix(value, "hex"), from];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    }
-};
-
-},{"../constants":232,"../utilities":257,"augur-abi":1,"clone":116}],239:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (branch && branch.branch) {
-            sender = branch.sender;
-            periodLength = branch.periodLength;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            onConfirmed = branch.onConfirmed;
-            branch = branch.branch;
-        }
-        if (this.getCurrentPeriodProgress(periodLength) < 50) {
-            return onFailed({"-2": "needs to be second half of reporting period to claim rep"});
-        }
-        var tx = clone(this.tx.CollectFees.collectFees);
-        tx.params = [branch, sender];
-        var prepare = function (res, cb) {
-            if (res && (res.callReturn === "1" || res.callReturn === "2")) {
-                return cb(res);
-            }
-            self.Branches.getVotePeriod(branch, function (period) {
-                self.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-                    if (feesCollected !== "1") {
-                        res.callReturn = "2";
-                        return cb(res);
-                    }
-                    self.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
-                        if (parseInt(afterRep, 10) <= 1) {
-                            res.callReturn = "2";
-                            return cb(res);
-                        }
-                        res.callReturn = "1";
-                        return cb(res);
-                    });
-                });
-            });
-        };
-        return this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"bignumber.js":80,"clone":116}],240:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.CompleteSets.buyCompleteSets);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.buyCompleteSets), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    sellCompleteSets: function (market, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.CompleteSets.sellCompleteSets);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.sellCompleteSets), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"clone":116}],241:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    parseOrderBook: function (orderArray, scalarMinMax) {
-        if (!orderArray || orderArray.error) return orderArray;
-        var minValue, order;
-        var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
-        if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
-        var numOrders = orderArray.length / 8;
-        var orderBook = {buy: {}, sell: {}};
-        for (var i = 0; i < numOrders; ++i) {
-            order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
-            if (isScalar) order.price = this.expandScalarPrice(minValue, order.price);
-            orderBook[order.type][order.id] = order;
-        }
-        return orderBook;
-    },
-
-    // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-    getOrderBook: function (market, scalarMinMax, callback) {
-        var self = this;
-        if (!callback && utils.is_function(scalarMinMax)) {
-            callback = scalarMinMax;
-            scalarMinMax = null;
-        }
-        if (market && market.market) {
-            scalarMinMax = market.scalarMinMax;
-            callback = callback || market.callback;
-            market = market.market;
-        }
-        var tx = clone(this.tx.CompositeGetters.getOrderBook);
-        tx.params = market;
-        return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
-    },
-
-    validateMarketInfo: function (marketInfo) {
-        if (!marketInfo) return null;
-        var parsedMarketInfo = this.parseMarketInfo(marketInfo);
-        if (!parsedMarketInfo.numOutcomes) return null;
-        return parsedMarketInfo;
-    },
-
-    getMarketInfo: function (market, callback) {
-        var self = this;
-        if (market && market.market) {
-            callback = callback || market.callback;
-            market = market.market;
-        }
-        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        tx.params = market;
-        tx.timeout = 45000;
-        return this.fire(tx, callback, this.validateMarketInfo);
-    },
-
-    parseBatchMarketInfo: function (marketsArray, numMarkets) {
-        var len, shift, rawInfo, info, marketID;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
-        }
-        var marketsInfo = {};
-        var totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            rawInfo = marketsArray.slice(shift, shift + len - 1);
-            marketID = marketsArray[shift];
-            info = this.parseMarketInfo(rawInfo);
-            if (info && info.numOutcomes) {
-                marketsInfo[marketID] = info;
-                marketsInfo[marketID].sortOrder = i;
-            }
-            totalLen += len;
-        }
-        return marketsInfo;
-    },
-
-    batchGetMarketInfo: function (marketIDs, callback) {
-        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-        tx.params = [marketIDs];
-        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
-    },
-
-    parseMarketsInfo: function (marketsArray) {
-        var len, shift, marketID, fees;
-        if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-            return marketsArray;
-        }
-        var numMarkets = parseInt(marketsArray.shift(), 16);
-        var marketsInfo = {};
-        var totalLen = 0;
-        for (var i = 0; i < numMarkets; ++i) {
-            len = parseInt(marketsArray[totalLen]);
-            shift = totalLen + 1;
-            marketID = marketsArray[shift];
-            fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
-            marketsInfo[marketID] = {
-                sortOrder: i,
-                tradingPeriod: parseInt(marketsArray[shift + 1], 16),
-                tradingFee: fees.trading,
-                makerFee: fees.maker,
-                takerFee: fees.taker,
-                creationTime: parseInt(marketsArray[shift + 3], 16),
-                volume: abi.unfix(marketsArray[shift + 4], "string"),
-                tags: [
-                    this.decodeTag(marketsArray[shift + 5]),
-                    this.decodeTag(marketsArray[shift + 6]),
-                    this.decodeTag(marketsArray[shift + 7])
-                ],
-                endDate: parseInt(marketsArray[shift + 8], 16),
-                description: abi.bytes_to_utf16(marketsArray.slice(shift + 10, shift + len - 1))
-            };
-            totalLen += len;
-        }
-        return marketsInfo;
-    },
-
-    getMarketsInfo: function (branch, offset, numMarketsToLoad, callback) {
-        var self = this;
-        if (!callback && utils.is_function(offset)) {
-            callback = offset;
-            offset = null;
-        }
-        if (branch && branch.branch) {
-            offset = branch.offset;
-            numMarketsToLoad = branch.numMarketsToLoad;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        branch = branch || this.constants.DEFAULT_BRANCH_ID;
-        offset = offset || 0;
-        numMarketsToLoad = numMarketsToLoad || 0;
-        var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
-        tx.params = [branch, offset, numMarketsToLoad];
-        tx.timeout = 240000;
-        return this.fire(tx, callback, this.parseMarketsInfo);
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"bignumber.js":80,"clone":116}],242:[function(require,module,exports){
-/**
- * Ethereum network connection / contract lookup
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var connector = require("ethereumjs-connect");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-module.exports = {
-
-    /**
-     * Direct no-frills bindings to Augur's Serpent (contract) API.
-     *  - Parameter positions and types are the same as the underlying
-     *    contract method's parameters.
-     *  - Parameters should be passed in exactly as they would be
-     *    passed to the contract method (e.g., if the contract method
-     *    expects a fixed-point number, you must do that conversion
-     *    yourself and pass the fixed-point number in).
-     */
-    bindContractMethod: function (contract, method) {
-        var self = this;
-        return function (args) {
-            var tx, params, cb, i, onSent, onSuccess, onFailed, onConfirmed;
-            tx = clone(self.api.functions[contract][method]);
-            if (!arguments) {
-                if (!tx.send) return self.fire(tx);
-                return self.transact(tx);
-            }
-            params = Array.prototype.slice.call(arguments);
-            if (!tx.send) {
-                if (params[0] !== undefined && params[0] !== null &&
-                    params[0].constructor === Object) {
-                    cb = params[0].callback;
-                    if (tx.inputs && tx.inputs.length) {
-                        tx.params = new Array(tx.inputs.length);
-                        for (i = 0; i < tx.inputs.length; ++i) {
-                            tx.params[i] = params[0][tx.inputs[i]];
-                        }
-                    }
-                } else {
-                    if (utils.is_function(params[params.length - 1])) {
-                        cb = params.pop();
-                    }
-                    tx.params = params;
-                }
-                return self.fire(tx, cb);
-            }
-            if (params[0] !== undefined && params[0] !== null &&
-                params[0].constructor === Object) {
-                onSent = params[0].onSent;
-                onSuccess = params[0].onSuccess;
-                onFailed = params[0].onFailed;
-                onConfirmed = params[0].onConfirmed;
-                if (tx.inputs && tx.inputs.length) {
-                    tx.params = new Array(tx.inputs.length);
-                    for (i = 0; i < tx.inputs.length; ++i) {
-                        tx.params[i] = params[0][tx.inputs[i]];
-                    }
-                }
-                return self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-            }
-            cb = [];
-            while (utils.is_function(params[params.length - 1])) {
-                cb.push(params.pop());
-            }
-            tx.params = params;
-            cb.reverse();
-            return self.transact.apply(self, [tx].concat(cb));
-        };
-    },
-    bindContractAPI: function (methods) {
-        methods = methods || this.api.functions;
-        for (var contract in methods) {
-            if (!methods.hasOwnProperty(contract)) continue;
-            this[contract] = {};
-            for (var method in methods[contract]) {
-                if (!methods[contract].hasOwnProperty(method)) continue;
-                this[contract][method] = this.bindContractMethod(contract, method);
-                if (!this[method]) this[method] = this[contract][method];
-            }
-        }
-        return methods;
-    },
-
-    sync: function () {
-        if (connector && connector.constructor === Object) {
-            this.network_id = connector.network_id;
-            this.from = connector.from;
-            this.coinbase = connector.coinbase;
-            this.rpc = connector.rpc;
-            this.api = connector.api;
-            this.tx = connector.tx;
-            this.contracts = connector.contracts;
-            this.init_contracts = connector.init_contracts;
-            this.bindContractAPI();
-            return true;
-        }
-        return false;
-    },
-
-    useAccount: function (account) {
-        connector.from = account;
-        connector.from_field_tx(account);
-        this.sync();
-    },
-
-    updateContracts: function (newContracts) {
-        if (connector && connector.constructor === Object) {
-            connector.contracts = clone(newContracts);
-            connector.update_contracts();
-            return this.sync();
-        }
-        return false;
-    },
-
-    /** 
-     * @param rpcinfo {Object|string=} Two forms accepted:
-     *    1. Object with connection info fields:
-     *       { http: "https://eth3.augur.net",
-     *         ipc: "/path/to/geth.ipc",
-     *         ws: "wss://ws.augur.net" }
-     *    2. URL string for HTTP RPC: "https://eth3.augur.net"
-     * @param cb {function=} Callback function.
-     */
-    connect: function (rpcinfo, cb) {
-        var options = {};
-        if (rpcinfo) {
-            switch (rpcinfo.constructor) {
-            case String:
-                options.http = rpcinfo;
-                break;
-            case Function:
-                cb = rpcinfo;
-                options.http = null;
-                break;
-            case Object:
-                options = rpcinfo;
-                break;
-            default:
-                options.http = null;
-            }
-        }
-        if (!utils.is_function(cb)) {
-            var connection = connector.connect(options);
-            this.sync();
-            return connection;
-        }
-        var self = this;
-        connector.connect(options, function (connection) {
-            self.sync();
-            cb(connection);
-        });
-    }
-};
-
-},{"../constants":232,"../utilities":257,"clone":116,"ethereumjs-connect":258}],243:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (description && description.parent) {
-            periodLength = description.periodLength;
-            parent = description.parent;
-            minTradingFee = description.minTradingFee;
-            oracleOnly = description.oracleOnly;
-            onSent = description.onSent;
-            onSuccess = description.onSuccess;
-            onFailed = description.onFailed;
-            onConfirmed = description.onConfirmed;
-            description = description.description;
-        }
-        oracleOnly = oracleOnly || 0;
-        description = description.trim();
-        if (!utils.is_function(onSent)) {
-            var response = this.CreateBranch.createSubbranch({
-                description: description,
-                periodLength: periodLength,
-                parent: parent,
-                minTradingFee: abi.fix(minTradingFee, "hex"),
-                oracleOnly: oracleOnly
-            });
-            var block = this.rpc.getBlock(response.blockNumber);
-            response.branchID = utils.sha3([
-                response.from,
-                "0x28c418afbbb5c0000",
-                periodLength,
-                block.timestamp,
-                parent,
-                abi.fix(minTradingFee, "hex"),
-                oracleOnly,
-                description
-            ]);
-            return response;
-        }
-        this.createSubbranch({
-            description: description,
-            periodLength: periodLength,
-            parent: parent,
-            minTradingFee: minTradingFee,
-            oracleOnly: oracleOnly,
-            onSent: onSent,
-            onSuccess: function (response) {
-                self.rpc.getBlock(response.blockNumber, false, function (block) {
-                    response.branchID = utils.sha3([
-                        response.from,
-                        "0x28c418afbbb5c0000",
-                        periodLength,
-                        block.timestamp,
-                        parent,
-                        abi.fix(minTradingFee, "hex"),
-                        oracleOnly,
-                        description
-                    ]);
-                    onSuccess(response);
-                });
-            },
-            onFailed: onFailed,
-            onConfirmed: onConfirmed
-        });
-    },
-
-    createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed, onConfirmed) {
-        if (description && description.parent) {
-            periodLength = description.periodLength;
-            parent = description.parent;
-            minTradingFee = description.minTradingFee;
-            oracleOnly = description.oracleOnly;
-            onSent = description.onSent;
-            onSuccess = description.onSuccess;
-            onFailed = description.onFailed;
-            onConfirmed = description.onConfirmed;
-            description = description.description;
-        }
-        oracleOnly = oracleOnly || 0;
-        var tx = clone(this.tx.CreateBranch.createSubbranch);
-        tx.params = [
-            description.trim(),
-            periodLength,
-            parent,
-            abi.fix(minTradingFee, "hex"),
-            oracleOnly
-        ];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"clone":116}],244:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    createSingleEventMarket: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (branchId.constructor === Object && branchId.branchId) {
-            description = branchId.description;         // string
-            expDate = branchId.expDate;
-            minValue = branchId.minValue;               // integer (1 for binary)
-            maxValue = branchId.maxValue;               // integer (2 for binary)
-            numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-            resolution = branchId.resolution;
-            takerFee = branchId.takerFee;
-            tags = branchId.tags;
-            makerFee = branchId.makerFee;
-            extraInfo = branchId.extraInfo;
-            onSent = branchId.onSent;                   // function
-            onSuccess = branchId.onSuccess;             // function
-            onFailed = branchId.onFailed;               // function
-            onConfirmed = branchId.onConfirmed;
-            branchId = branchId.branchId;               // sha256 hash
-        }
-        var formattedTags = this.formatTags(tags);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        expDate = parseInt(expDate);
-        if (description) description = description.trim();
-        if (resolution) resolution = resolution.trim();
-        var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
-        tx.params = [
-            branchId,
-            description,
-            expDate,
-            abi.fix(minValue, "hex"),
-            abi.fix(maxValue, "hex"),
-            numOutcomes,
-            resolution || "",
-            abi.fix(fees.tradingFee, "hex"),
-            formattedTags[0],
-            formattedTags[1],
-            formattedTags[2],
-            abi.fix(fees.makerProportionOfFee, "hex"),
-            extraInfo || ""
-        ];
-        var prepare = function (res, cb) {
-            res.marketID = res.callReturn;
-            if (!utils.is_function(cb)) return res;
-            return cb(res);
-        };
-        if (!utils.is_function(onSent)) {
-            var gasPrice = this.rpc.getGasPrice();
-            tx.gasPrice = gasPrice;
-            tx.value = this.calculateRequiredMarketValue(gasPrice);
-            return prepare(this.transact(tx));
-        }
-        this.rpc.getGasPrice(function (gasPrice) {
-            tx.gasPrice = gasPrice;
-            tx.value = self.calculateRequiredMarketValue(gasPrice);
-            self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
-        });
-    },
-
-    createEvent: function (branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed, onConfirmed) {
-        if (branchId.constructor === Object && branchId.branchId) {
-            description = branchId.description;         // string
-            minValue = branchId.minValue;               // integer (1 for binary)
-            maxValue = branchId.maxValue;               // integer (2 for binary)
-            numOutcomes = branchId.numOutcomes;         // integer (2 for binary)
-            expDate = branchId.expDate;
-            resolution = branchId.resolution;
-            onSent = branchId.onSent;                   // function
-            onSuccess = branchId.onSuccess;             // function
-            onFailed = branchId.onFailed;               // function
-            onConfirmed = branchId.onConfirmed;
-            branchId = branchId.branchId;               // sha256 hash
-        }
-        var tx = clone(this.tx.CreateMarket.createEvent);
-        if (description) description = description.trim();
-        if (resolution) resolution = resolution.trim();
-        tx.params = [
-            branchId,
-            description,
-            parseInt(expDate),
-            abi.fix(minValue, "hex"),
-            abi.fix(maxValue, "hex"),
-            numOutcomes,
-            resolution || ""
-        ];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    },
-
-    createMarket: function (branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (branchId.constructor === Object && branchId.branchId) {
-            description = branchId.description; // string
-            takerFee = branchId.takerFee;
-            events = branchId.events;           // array [sha256, ...]
-            tags = branchId.tags;
-            makerFee = branchId.makerFee;
-            extraInfo = branchId.extraInfo;
-            onSent = branchId.onSent;           // function
-            onSuccess = branchId.onSuccess;     // function
-            onFailed = branchId.onFailed;       // function
-            onConfirmed = branchId.onConfirmed;
-            branchId = branchId.branchId;       // sha256 hash
-        }
-        onSent = onSent || utils.noop;
-        onSuccess = onSuccess || utils.noop;
-        onFailed = onFailed || utils.noop;
-        var formattedTags = this.formatTags(tags);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        var tx = clone(this.tx.CreateMarket.createMarket);
-        if (description) description = description.trim();
-        tx.params = [
-            branchId,
-            description,
-            abi.fix(fees.tradingFee, "hex"),
-            events,
-            formattedTags[0],
-            formattedTags[1],
-            formattedTags[2],
-            abi.fix(fees.makerProportionOfFee, "hex"),
-            extraInfo || ""
-        ];
-        var prepare = function (res, cb) {
-            res.marketID = res.callReturn;
-            if (!utils.is_function(cb)) return res;
-            return cb(res);
-        };
-        if (!utils.is_function(onSent)) {
-            var gasPrice = this.rpc.getGasPrice();
-            tx.gasPrice = gasPrice;
-            tx.value = this.calculateRequiredMarketValue(gasPrice);
-            return prepare(this.transact(tx));
-        }
-        this.rpc.getGasPrice(function (gasPrice) {
-            tx.gasPrice = gasPrice;
-            tx.value = self.calculateRequiredMarketValue(gasPrice);
-            self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
-        });
-    },
-
-    updateTradingFee: function (branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (branchId.constructor === Object && branchId.branchId) {
-            market = branchId.market;         // string
-            takerFee = branchId.takerFee;
-            makerFee = branchId.makerFee;
-            onSent = branchId.onSent;         // function
-            onSuccess = branchId.onSuccess;   // function
-            onFailed = branchId.onFailed;     // function
-            onConfirmed = branchId.onConfirmed;
-            branchId = branchId.branchId;     // sha256 hash
-        }
-        var tx = clone(this.tx.CreateMarket.updateTradingFee);
-        var fees = this.calculateTradingFees(makerFee, takerFee);
-        tx.params = [
-            branchId,
-            market,
-            abi.fix(fees.tradingFee, "hex"),
-            abi.fix(fees.makerProportionOfFee, "hex"),
-        ];
-        if (!utils.is_function(onSent)) return this.transact(tx);
-        self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"bignumber.js":80,"clone":116}],245:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    getEventInfo: function (eventId, callback) {
-        // eventId: hash id
-        var self = this;
-        var parse_info = function (info) {
-            // eventinfo = string(7*32 + length)
-            // eventinfo[0] = self.Events[event].branch
-            // eventinfo[1] = self.Events[event].expirationDate 
-            // eventinfo[2] = self.Events[event].outcome
-            // eventinfo[3] = self.Events[event].minValue
-            // eventinfo[4] = self.Events[event].maxValue
-            // eventinfo[5] = self.Events[event].numOutcomes
-            // eventinfo[6] = self.Events[event].bond
-            if (info && info.length) {
-                info[0] = abi.hex(info[0]);
-                info[1] = abi.bignum(info[1]).toFixed();
-                info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.unfix(info[3], "string");
-                info[4] = abi.unfix(info[4], "string");
-                info[5] = parseInt(info[5]);
-                info[6] = abi.unfix(info[6], "string");
-            }
-            return info;
-        };
-        var tx = clone(this.tx.Events.getEventInfo);
-        tx.params = eventId;
-        if (utils.is_function(callback)) {
-            this.fire(tx, function (info) {
-                callback(parse_info(info));
-            });
-        } else {
-            return parse_info(this.fire(tx));
-        }
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"clone":116}],246:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var utils = require("../utilities");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    getMarketPriceHistory: function (market, options, cb) {
-        var self = this;
-        function parseMarketPriceHistoryLogs(logs) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return null;
-            }
-            if (logs.error) throw new Error(JSON.stringify(logs));
-            var outcome, parsed, priceHistory = {};
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    parsed = self.rpc.unmarshal(logs[i].data);
-                    outcome = parseInt(parsed[4], 16);
-                    if (!priceHistory[outcome]) priceHistory[outcome] = [];
-                    priceHistory[outcome].push({
-                        market: market,
-                        type: parseInt(parsed[0], 16),
-                        user: abi.format_address(logs[i].topics[2]),
-                        price: abi.unfix(parsed[1], "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        timestamp: parseInt(parsed[5], 16),
-                        blockNumber: parseInt(logs[i].blockNumber, 16)
-                    });
-                }
-            }
-            return priceHistory;
-        }
-        if (!cb && utils.is_function(options)) {
-            cb = options;
-            options = null;
-        }
-        options = options || {};
-        var filter = {
-            fromBlock: options.fromBlock || "0x1",
-            toBlock: options.toBlock || "latest",
-            address: this.contracts.Trade,
-            topics: [this.api.events.log_fill_tx.signature, market]
-        };
-        if (!utils.is_function(cb)) {
-            return parseMarketPriceHistoryLogs(this.rpc.getLogs(filter));
-        }
-        this.rpc.getLogs(filter, function (logs) {
-            cb(parseMarketPriceHistoryLogs(logs));
-        });
-    },
-
-    meanTradePrice: function (trades, sell) {
-        var price, shares, totalShares, outcomeMeanPrice, meanPrice = {};
-        function include(shares) {
-            return (sell) ? shares.lt(new BigNumber(0)) : shares.gt(new BigNumber(0));
-        }
-        for (var outcome in trades) {
-            if (!trades.hasOwnProperty(outcome)) continue;
-            outcomeMeanPrice = new BigNumber(0);
-            totalShares = new BigNumber(0);
-            for (var i = 0, n = trades[outcome].length; i < n; ++i) {
-                price = new BigNumber(trades[outcome][i].price, 10);
-                shares = new BigNumber(trades[outcome][i].shares, 10);
-                if (include(shares)) {
-                    outcomeMeanPrice = outcomeMeanPrice.plus(price.mul(shares));
-                    totalShares = totalShares.plus(shares);
-                }
-            }
-            if (include(totalShares)) {
-                meanPrice[outcome] = outcomeMeanPrice.dividedBy(totalShares).toFixed();
-            }
-        }
-        return meanPrice;
-    },
-
-    getAccountTrades: function (account, options, cb) {
-        var self = this;
-
-        function parseLogs(logs, trades, maker, callback) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return callback();
-            }
-            if (logs.error) return cb(logs);
-            
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    var market = logs[i].topics[1];
-                    if (!trades[market]) trades[market] = {};
-                    var parsed = self.rpc.unmarshal(logs[i].data);
-                    var outcome = parseInt(parsed[4]);
-                    if (!trades[market][outcome]) trades[market][outcome] = [];
-                    trades[market][outcome].push({
-                        type: parseInt(parsed[0], 16),
-                        price: abi.unfix(parsed[1], "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16),
-                        maker: maker
-                    });
-                }
-            }
-            return callback();
-        }
-
-        if (!cb && utils.is_function(options)) {
-            cb = options;
-            options = null;
-        }
-        options = options || {};
-
-        if (!account || !utils.is_function(cb)) return;
-
-        this.rpc.getLogs({
-            fromBlock: options.fromBlock || "0x1",
-            toBlock: options.toBlock || "latest",
-            address: this.contracts.Trade,
-            topics: [
-                this.api.events.log_fill_tx.signature,
-                null,
-                null,
-                abi.format_int256(account)
-            ],
-            timeout: 480000
-        }, function (logs) {
-            var trades = {};
-            parseLogs(logs, trades, true, function () {
-                self.rpc.getLogs({
-                    fromBlock: options.fromBlock || "0x1",
-                    toBlock: options.toBlock || "latest",
-                    address: self.contracts.Trade,
-                    topics: [
-                        self.api.events.log_fill_tx.signature,
-                        null,
-                        abi.format_int256(account),
-                        null
-                    ],
-                    timeout: 480000
-                }, function (logs) {
-                    parseLogs(logs, trades, false, function () {
-                        if (!trades || Object.keys(trades).length === 0) {
-                            return cb(null);
-                        }
-                        cb(trades);
-                    });
-                });              
-            });
-        });
-    },
-
-    getAccountMeanTradePrices: function (account, cb) {
-        var self = this;
-        if (!utils.is_function(cb)) return;
-        this.getAccountTrades(account, function (trades) {
-            if (!trades) return cb(null);
-            if (trades.error) return (trades);
-            var meanPrices = {buy: {}, sell: {}};
-            for (var marketId in trades) {
-                if (!trades.hasOwnProperty(marketId)) continue;
-                meanPrices.buy[marketId] = self.meanTradePrice(trades[marketId]);
-                meanPrices.sell[marketId] = self.meanTradePrice(trades[marketId], true);
-            }
-            cb(meanPrices);
-        });
-    },
-
-    getMarketTrades: function (marketID, options, cb) {
-        var self = this;
-
-        function parseMarketTrades(logs, callback) {
-            if (!logs || (logs && (logs.constructor !== Array || !logs.length))) {
-                return callback();
-            }
-            if (logs.error) return cb(logs);
-
-            var trades = {};
-
-            for (var i = 0, n = logs.length; i < n; ++i) {
-                if (logs[i] && logs[i].data !== undefined &&
-                    logs[i].data !== null && logs[i].data !== "0x") {
-                    var parsed = self.rpc.unmarshal(logs[i].data);
-                    var outcome = parseInt(parsed[4]);
-                    if (!trades[outcome]) trades[outcome] = [];
-                    trades[outcome].push({
-                        type: parseInt(parsed[0], 16),
-                        price: abi.unfix(parsed[1], "string"),
-                        shares: abi.unfix(parsed[2], "string"),
-                        trade_id: parsed[3],
-                        blockNumber: parseInt(logs[i].blockNumber, 16)
-                    });
-                }
-            }
-            return callback(trades);
-        }
-
-        if (!cb && utils.is_function(options)) {
-            cb = options;
-            options = null;
-        }
-        options = options || {};
-
-        if (!marketID || !utils.is_function(cb)) return;
-
-        this.rpc.getLogs({
-            fromBlock: options.fromBlock || "0x1",
-            toBlock: options.toBlock || "latest",
-            address: this.contracts.Trade,
-            topics: [
-                this.api.events.log_fill_tx.signature,
-                abi.format_int256(marketID)
-            ],
-            timeout: 480000
-        }, function (logs) {
-            parseMarketTrades(logs, function (trades) {
-                if (!trades || Object.keys(trades).length === 0) {
-                    return cb(null);
-                }
-                cb(trades);
-            });
-        });
-    }
-};
-
-},{"../constants":232,"../utilities":257,"augur-abi":1,"bignumber.js":80}],247:[function(require,module,exports){
-(function (Buffer){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var keys = require("keythereum");
-var contracts = require("augur-contracts");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-    // rules: http://docs.augur.net/#reporting-outcomes
-    fixReport: function (report, isScalar, isIndeterminate) {
-        var fixedReport;
-        if (isIndeterminate) {
-            fixedReport = constants.INDETERMINATE;
-        } else {
-            if (isScalar && report === "0") {
-                fixedReport = "0x1";
-            } else {
-                fixedReport = abi.fix(report, "hex");
-            }
-
-            // if report is equal to fix(1.5) but is not indeterminate,
-            // then set report to fix(1.5) + 1
-            if (fixedReport === constants.INDETERMINATE) {
-                fixedReport = constants.INDETERMINATE_PLUS_ONE;
-            }
-        }
-        return fixedReport;
-    },
-
-    // report in fixed-point
-    makeHash: function (salt, report, event, from) {
-        return utils.sha3([from || this.from, abi.hex(salt), report, event]);
-    },
-
-    // report in fixed-point
-    encryptReport: function (report, key, salt) {
-        if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
-        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        return abi.prefix_hex(new Buffer(keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER), "base64").toString("hex"));
-    },
-
-    // returns plaintext fixed-point report
-    decryptReport: function (encryptedReport, key, salt) {
-        if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
-        if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-        if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-        return abi.prefix_hex(keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER));
-    },
-
-    parseAndDecryptReport: function (arr, secret) {
-        if (!arr || arr.constructor !== Array || arr.length < 2) return null;
-        var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
-        return {
-            salt: salt,
-            report: abi.string(this.decryptReport(arr[0], secret.derivedKey, salt))
-        };
-    },
-
-    getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
-        var self = this;
-        if (branch.constructor === Object) {
-            expDateIndex = branch.expDateIndex;
-            reporter = branch.reporter;
-            event = branch.event;
-            secret = branch.secret;
-            callback = callback || branch.callback;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
-        tx.params = [branch, expDateIndex, reporter, event];
-        return this.fire(tx, callback, this.parseAndDecryptReport, secret);
-    },
-
-    submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, branch, period, periodLength, onSent, onSuccess, onFailed, onConfirmed) {
-        var self = this;
-        if (event.constructor === Object) {
-            reportHash = event.reportHash;
-            encryptedReport = event.encryptedReport;
-            encryptedSalt = event.encryptedSalt;
-            branch = event.branch;
-            period = event.period;
-            periodLength = event.periodLength;
-            onSent = event.onSent;
-            onSuccess = event.onSuccess;
-            onFailed = event.onFailed;
-            onConfirmed = event.onConfirmed;
-            event = event.event;
-        }
-        if (this.getCurrentPeriodProgress(periodLength) >= 50) {
-            return onFailed({"-2": "not in first half of period (commit phase)"});
-        }
-        var tx = clone(this.tx.MakeReports.submitReportHash);
-        tx.params = [event, reportHash, encryptedReport || 0, encryptedSalt || 0];
-        return this.transact(tx, onSent, function (res) {
-            res.callReturn = abi.bignum(res.callReturn, "string", true);
-            if (res.callReturn === "0") {
-                return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
-                    if (err) return onFailed(err);
-                    return self.submitReportHash({
-                        event: event,
-                        reportHash: reportHash,
-                        encryptedReport: encryptedReport,
-                        encryptedSalt: encryptedSalt,
-                        branch: branch,
-                        period: period,
-                        periodLength: periodLength,
-                        onSent: onSent,
-                        onSuccess: onSuccess,
-                        onFailed: onFailed,
-                        onConfirmed: onConfirmed
-                    });
-                });
-            }
-            if (res.callReturn !== "-2") return onSuccess(res);
-            self.ExpiringEvents.getReportHash({
-                branch: branch,
-                expDateIndex: period,
-                reporter: res.from,
-                event: event,
-                callback: function (storedReportHash) {
-                    if (parseInt(storedReportHash, 16)) {
-                        res.callReturn = "1";
-                    }
-                    onSuccess(res);
-                }
-            });
-        }, onFailed, onConfirmed);
-    },
-
-    submitReport: function (event, salt, report, ethics, isScalar, isIndeterminate, onSent, onSuccess, onFailed, onConfirmed) {
-        if (event.constructor === Object) {
-            salt = event.salt;
-            report = event.report;
-            ethics = event.ethics;
-            isScalar = event.isScalar;
-            onSent = event.onSent;
-            onSuccess = event.onSuccess;
-            onFailed = event.onFailed;
-            onConfirmed = event.onConfirmed;
-            event = event.event;
-        }
-        onSent = onSent || utils.pass;
-        onSuccess = onSuccess || utils.pass;
-        onFailed = onFailed || utils.pass;
-        var tx = clone(this.tx.MakeReports.submitReport);
-        tx.params = [
-            event,
-            abi.hex(salt),
-            this.fixReport(report, isScalar, isIndeterminate),
-            abi.fix(ethics, "hex")
-        ];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    },
-
-    validateReport: function (eventID, branch, votePeriod, report, forkedOverEthicality, forkedOverThisEvent, roundTwo, balance, callback) {
-        var tx = clone(this.tx.MakeReports.validateReport);
-        tx.params = [
-            eventID,
-            branch,
-            votePeriod,
-            abi.fix(report, "hex"),
-            forkedOverEthicality,
-            forkedOverThisEvent,
-            roundTwo,
-            abi.fix(balance, "hex")
-        ];
-        return this.fire(tx, callback);
-    }
-};
-
-}).call(this,require("buffer").Buffer)
-},{"../constants":232,"../utilities":257,"augur-abi":1,"augur-contracts":58,"buffer":114,"clone":116,"keythereum":322}],248:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var utils = require("../utilities");
-
-module.exports = {
-
-    getWinningOutcomes: function (market, callback) {
-        // market: hash id
-        var self = this;
-        var tx = clone(this.tx.Markets.getWinningOutcomes);
-        tx.params = market;
-        if (!utils.is_function(callback)) {
-            var winningOutcomes = this.fire(tx);
-            if (!winningOutcomes) return null;
-            if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
-                return winningOutcomes;
-            }
-            return winningOutcomes.slice(0, this.getMarketNumOutcomes(market));
-        }
-        this.fire(tx, function (winningOutcomes) {
-            if (!winningOutcomes) return callback(null);
-            if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
-                return callback(winningOutcomes);
-            }
-            self.getMarketNumOutcomes(market, function (numOutcomes) {
-                if (numOutcomes && numOutcomes.error) {
-                    return callback(numOutcomes);
-                }
-                callback(winningOutcomes.slice(0, numOutcomes));
-            });
-        });
-    }
-};
-
-},{"../utilities":257,"clone":116}],249:[function(require,module,exports){
-/**
- * Reporting time/period toolkit
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var abi = require("augur-abi");
-var async = require("async");
-var utils = require("../utilities");
-
-module.exports = {
-
-    getCurrentPeriod: function (periodLength) {
-        return Math.floor(new Date().getTime() / 1000 / periodLength);
-    },
-
-    getCurrentPeriodProgress: function (periodLength) {
-        var t = parseInt(new Date().getTime() / 1000);
-        return 100 * (t % periodLength) / periodLength;
-    },
-
-    hashSenderPlusEvent: function (sender, event) {
-        return abi.wrap(
-            utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
-        ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
-    },
-
-    // Increment vote period until vote period = current period - 1
-    checkVotePeriod: function (branch, periodLength, callback) {
-        var self = this;
-
-        function incrementPeriod(branch, periodLength, next) {
-            self.Consensus.incrementPeriodAfterReporting({
-                branch: branch,
-                onSent: function (r) {},
-                onSuccess: function (r) {
-                    console.log("Incremented period:", r.callReturn);
-                    self.getVotePeriod(branch, function (votePeriod) {
-                        next(null, votePeriod);
-                    });
-                },
-                onFailed: next
-            });
-        }
-
-        function checkPenalizeWrong(branch, votePeriod, next) {
-            console.log("checking penalizeWrong for period", votePeriod);
-            self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
-                console.log(" - Events in vote period", votePeriod + ":", events);
-                if (!events || events.constructor !== Array || !events.length) {
-                    // if > first period, then call penalizeWrong(branch, 0)
-                    console.log("No events found for this period");
-                    return self.ConsensusData.getPenalizedUpTo(branch, self.from, function (lastPeriodPenalized) {
-                        lastPeriodPenalized = parseInt(lastPeriodPenalized);
-                        if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
-                            console.log("Penalizations caught up!");
-                            return next(null);
-                        }
-                        console.log("Calling penalizeWrong(branch, 0)...");
-                        self.Consensus.penalizeWrong({
-                            branch: branch,
-                            event: 0,
-                            onSent: function (r) {
-                                console.log("penalizeWrong sent:", r);
-                            },
-                            onSuccess: function (r) {
-                                console.log("penalizeWrong(branch, 0) success:", r);
-                                console.log(abi.bignum(r.callReturn, "string", true));
-                                next(null);
-                            },
-                            onFailed: function (err) {
-                                console.error("penalizeWrong(branch, 0) error:", err);
-                                next(null);
-                            }
-                        });
-                    });
-                }
-                console.log("Events found, looping through...");
-                async.eachSeries(events, function (event, nextEvent) {
-                    console.log(" - penalizeWrong:", event);
-                    self.Consensus.penalizeWrong({
-                        branch: branch,
-                        event: event,
-                        onSent: utils.noop,
-                        onSuccess: function (r) {
-                            console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                            nextEvent();
-                        },
-                        onFailed: function (err) {
-                            console.error(" - penalizeWrong error:", err);
-                            nextEvent(err);
-                        }
-                    });
-                }, next);
-            });
-        }
-
-        function checkIncrementPeriod(branch, periodLength, next, callback) {
-            self.Branches.getVotePeriod(branch, function (votePeriod) {
-                if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
-                    incrementPeriod(branch, periodLength, function (err, votePeriod) {
-                        if (err) return next(err);
-                        console.log("New vote period:", votePeriod);
-                        next(null, votePeriod);
-                    });
-                } else {
-                    callback(null, votePeriod);
-                }
-            });
-        }
-
-        checkIncrementPeriod(branch, periodLength, function (err, votePeriod) {
-            console.log("checkIncrementPeriod:", err, votePeriod);
-            if (err) return callback(err);
-            checkPenalizeWrong(branch, votePeriod - 1, function (err) {
-                console.log("checkPenalizeWrong:", err);
-                if (err) return callback(err);
-                self.checkVotePeriod(branch, periodLength, callback);
-            });
-        }, callback);
-    },
-
-    // Make sure current period = expiration period + periodGap
-    // If not, wait until it is:
-    // expPeriod - currentPeriod periods
-    // t % periodLength seconds
-    checkTime: function (branch, event, periodLength, periodGap, callback) {
-        var self = this;
-        if (!callback && utils.is_function(periodGap)) {
-            callback = periodGap;
-            periodGap = null;
-        }
-        periodGap = periodGap || 1;
-        function wait(branch, secondsToWait, next) {
-            console.log("Waiting", secondsToWait / 60, "minutes...");
-            setTimeout(function () {
-                self.Consensus.incrementPeriodAfterReporting({
-                    branch: branch,
-                    onSent: function (r) {},
-                    onSuccess: function (r) {
-                        console.log("Incremented period:", r.callReturn);
-                        self.getVotePeriod(branch, function (votePeriod) {
-                            next(null, votePeriod);
-                        });
-                    },
-                    onFailed: next
-                });
-            }, secondsToWait*1000);
-        }
-        this.getExpiration(event, function (expTime) {
-            var expPeriod = Math.floor(expTime / periodLength);
-            var currentPeriod = self.getCurrentPeriod(periodLength);
-            console.log("\nreportingTools.checkTime:");
-            console.log(" - Expiration period:", expPeriod);
-            console.log(" - Current period:   ", currentPeriod);
-            console.log(" - Target period:    ", expPeriod + periodGap);
-            if (currentPeriod < expPeriod + periodGap) {
-                var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
-                console.log("Full periods to wait:", fullPeriodsToWait);
-                var secondsToWait = periodLength;
-                if (fullPeriodsToWait === 0) {
-                    secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
-                }
-                console.log("Seconds to wait:", secondsToWait);
-                wait(branch, secondsToWait, function (err, votePeriod) {
-                    if (err) return callback(err);
-                    console.log("New vote period:", votePeriod);
-                    self.checkTime(branch, event, periodLength, callback);
-                });
-            } else {
-                callback(null);
-            }
-        });
-    }
-};
-
-},{"../utilities":257,"async":77,"augur-abi":1}],250:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-
-module.exports = {
-
-    sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed, onConfirmed) {
-        // branch: hash id
-        // recver: ethereum address of recipient
-        // value: number -> fixed-point
-        if (branch && branch.branch) {
-            recver = branch.recver;
-            value = branch.value;
-            onSent = branch.onSent;
-            onSuccess = branch.onSuccess;
-            onFailed = branch.onFailed;
-            onConfirmed = branch.onConfirmed;
-            branch = branch.branch;
-        }
-        var tx = clone(this.tx.SendReputation.sendReputation);
-        tx.params = [branch, recver, abi.fix(value, "hex")];
-        return this.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    }
-};
-
-},{"augur-abi":1,"clone":116}],251:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var rpc = require("ethrpc");
-var errors = require("augur-contracts").errors;
-var utils = require("../utilities");
-var abacus = require("./abacus");
-
-module.exports = {
-
-    // tradeTypes: array of "buy" and/or "sell"
-    // gasLimit (optional): block gas limit as integer
-    isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
-        if (utils.is_function(gasLimit) && !callback) {
-            callback = gasLimit;
-            gasLimit = null;
-        }
-        var gas = abacus.sumTradeGas(tradeTypes);
-        if (!utils.is_function(callback)) {
-            if (gasLimit) return gas <= gasLimit;
-            return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
-        }
-        if (gasLimit) return callback(gas <= gasLimit);
-        var self = this;
-        this.rpc.blockNumber(function (blockNumber) {
-            self.rpc.getBlock(blockNumber, false, function (block) {
-                callback(gas <= parseInt(block.gasLimit, 16));
-            });
-        });
-    },
-
-    trade: function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
-        var self = this;
-        if (max_value.constructor === Object) {
-            max_amount = max_value.max_amount;
-            trade_ids = max_value.trade_ids;
-            onTradeHash = max_value.onTradeHash;
-            onCommitSent = max_value.onCommitSent;
-            onCommitSuccess = max_value.onCommitSuccess;
-            onCommitFailed = max_value.onCommitFailed;
-            onCommitConfirmed = max_value.onCommitConfirmed;
-            onNextBlock = max_value.onNextBlock;
-            onTradeSent = max_value.onTradeSent;
-            onTradeSuccess = max_value.onTradeSuccess;
-            onTradeFailed = max_value.onTradeFailed;
-            onTradeConfirmed = max_value.onTradeConfirmed;
-            max_value = max_value.max_value;
-        }
-        onTradeHash = onTradeHash || utils.noop;
-        onCommitSent = onCommitSent || utils.noop;
-        onCommitSuccess = onCommitSuccess || utils.noop;
-        onCommitFailed = onCommitFailed || utils.noop;
-        onNextBlock = onNextBlock || utils.noop;
-        onTradeSent = onTradeSent || utils.noop;
-        onTradeSuccess = onTradeSuccess || utils.noop;
-        onTradeFailed = onTradeFailed || utils.noop;
-        var tradeHash = this.makeTradeHash(max_value, max_amount, trade_ids);
-        onTradeHash(tradeHash);
-        this.commitTrade({
-            hash: tradeHash,
-            onSent: onCommitSent,
-            onSuccess: function (res) {
-                onCommitSuccess(res);
-                self.rpc.fastforward(1, function (blockNumber) {
-                    onNextBlock(blockNumber);
-                    var tx = clone(self.tx.Trade.trade);
-                    tx.params = [
-                        abi.fix(max_value, "hex"),
-                        abi.fix(max_amount, "hex"),
-                        trade_ids
-                    ];
-                    var prepare = function (result, cb) {
-                        var txHash = result.txHash;
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                                return onTradeFailed(result);
-                            }
-                            self.rpc.receipt(txHash, function (receipt) {
-                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                if (receipt.error) return onTradeFailed(receipt);
-                                var sharesBought, cashFromTrade;
-                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                    var logs = receipt.logs;
-                                    var sig = self.api.events.log_fill_tx.signature;
-                                    sharesBought = abi.bignum(0);
-                                    cashFromTrade = abi.bignum(0);
-                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                        if (logs[i].topics[0] === sig) {
-                                            var logdata = self.rpc.unmarshal(logs[i].data);
-                                            if (logdata && logdata.constructor === Array && logdata.length) {
-                                                // buy (matched sell order)
-                                                if (parseInt(logdata[0], 16) === 1) {
-                                                    sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
-
-                                                // sell (matched buy order)
-                                                // cash received = price per share * shares sold
-                                                } else {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                cb({
-                                    txHash: txHash,
-                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
-                                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                                    sharesBought: abi.string(sharesBought),
-                                    cashFromTrade: abi.string(cashFromTrade)
-                                });
-                            });
-                        } else {
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }
-                    };
-                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
-                });
-            },
-            onFailed: onCommitFailed,
-            onConfirmed: onCommitConfirmed
-        });
-    },
-
-    short_sell: function (buyer_trade_id, max_amount, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
-        var self = this;
-        if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
-            max_amount = buyer_trade_id.max_amount;
-            onTradeHash = buyer_trade_id.onTradeHash;
-            onCommitSent = buyer_trade_id.onCommitSent;
-            onCommitSuccess = buyer_trade_id.onCommitSuccess;
-            onCommitFailed = buyer_trade_id.onCommitFailed;
-            onCommitConfirmed = buyer_trade_id.onCommitConfirmed;
-            onNextBlock = buyer_trade_id.onNextBlock;
-            onTradeSent = buyer_trade_id.onTradeSent;
-            onTradeSuccess = buyer_trade_id.onTradeSuccess;
-            onTradeFailed = buyer_trade_id.onTradeFailed;
-            onTradeConfirmed = buyer_trade_id.onTradeConfirmed;
-            buyer_trade_id = buyer_trade_id.buyer_trade_id;
-        }
-        onTradeHash = onTradeHash || utils.noop;
-        onCommitSent = onCommitSent || utils.noop;
-        onCommitSuccess = onCommitSuccess || utils.noop;
-        onCommitFailed = onCommitFailed || utils.noop;
-        onNextBlock = onNextBlock || utils.noop;
-        onTradeSent = onTradeSent || utils.noop;
-        onTradeSuccess = onTradeSuccess || utils.noop;
-        onTradeFailed = onTradeFailed || utils.noop;
-        var tradeHash = this.makeTradeHash(0, max_amount, [buyer_trade_id]);
-        onTradeHash(tradeHash);
-        this.commitTrade({
-            hash: tradeHash,
-            onSent: onCommitSent,
-            onSuccess: function (res) {
-                onCommitSuccess(res);
-                self.rpc.fastforward(1, function (blockNumber) {
-                    onNextBlock(blockNumber);
-                    var tx = clone(self.tx.Trade.short_sell);
-                    tx.params = [
-                        buyer_trade_id,
-                        abi.fix(max_amount, "hex")
-                    ];
-                    var prepare = function (result, cb) {
-                        var txHash = result.txHash;
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
-                                return onTradeFailed(result);
-                            }
-                            self.rpc.receipt(txHash, function (receipt) {
-                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                if (receipt.error) return onTradeFailed(receipt);
-                                var cashFromTrade;
-                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                    var logs = receipt.logs;
-                                    var sig = self.api.events.log_fill_tx.signature;
-                                    cashFromTrade = abi.bignum(0);
-                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                        if (logs[i].topics[0] === sig) {
-                                            var logdata = self.rpc.unmarshal(logs[i].data);
-                                            if (logdata && logdata.constructor === Array && logdata.length) {
-                                                cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
-                                            }
-                                        }
-                                    }
-                                }
-                                cb({
-                                    txHash: txHash,
-                                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                                    matchedShares: abi.unfix(result.callReturn[2], "string"),
-                                    cashFromTrade: abi.string(cashFromTrade),
-                                    price: abi.unfix(result.callReturn[3], "string")
-                                });
-                            });
-                        } else {
-                            var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }
-                    };
-                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
-                });
-            },
-            onFailed: onCommitFailed,
-            onConfirmed: onCommitConfirmed
-        });
-    }
-};
-
-},{"../utilities":257,"./abacus":236,"augur-abi":1,"augur-contracts":58,"clone":116,"ethrpc":155}],252:[function(require,module,exports){
-/**
- * Augur JavaScript API
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    saveTrade: function (trade_id, type, market, amount, price, sender, outcome, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Trades.saveTrade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.saveTrade), arguments);
-        tx.params = unpacked.params;
-        tx.params[3] = abi.fix(tx.params[3], "hex");
-        tx.params[4] = abi.fix(tx.params[4], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    get_trade: function (id, callback) {
-        // trade = array(9)
-        // trade[0] = self.trades[id].id
-        // trade[1] = self.trades[id].type
-        // trade[2] = self.trades[id].market
-        // trade[3] = self.trades[id].amount
-        // trade[4] = self.trades[id].price
-        // trade[5] = self.trades[id].owner
-        // trade[6] = self.trades[id].block
-        // trade[7] = self.trades[id].outcome
-        var self = this;
-        var tx = clone(this.tx.Trades.get_trade);
-        tx.params = id;
-        if (!utils.is_function(callback)) {
-            var trade = this.fire(tx);
-            if (!trade || trade.error) return trade;
-            return this.parseTradeInfo(trade);
-        }
-        this.fire(tx, function (trade) {
-            if (!trade || trade.error) return callback(trade);
-            callback(self.parseTradeInfo(trade));
-        });
-    },
-
-    update_trade: function (id, price, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Trades.update_trade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.update_trade), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    fill_trade: function (id, fill, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Trades.fill_trade);
-        var unpacked = utils.unpack(arguments[0], utils.labels(this.fill_trade), arguments);
-        tx.params = unpacked.params;
-        tx.params[1] = abi.fix(tx.params[1], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"clone":116}],253:[function(require,module,exports){
-/*
- * Author: priecint
- */
-var clone = require("clone");
-var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
-var constants = require("../constants");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-	/**
-	 * Calculates (approximately) gas needed to run the transaction
-	 *
-	 * @param {Object} tx
-	 * @param {Number} gasPrice
-	 * @return {BigNumber}
-	 */
-	getTxGasEth: function (tx, gasPrice) {
-		tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
-		tx.gasPrice = gasPrice;
-		var etx = new EthTx(tx);
-		return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
-	},
-
-	/**
-	 * Bids are sorted descendingly, asks are sorted ascendingly
-	 *
-	 * @param {Array} orders Bids or asks
-	 * @param {String} traderOrderType What trader want to do (buy or sell)
-	 * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If
-	 *     it's null order is considered to be market order
-	 * @param {String} outcomeId
-	 * @param {String} userAddress
-	 * @return {Array.<Object>}
-	 */
-	filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
-		var isMarketOrder = limitPrice === null || limitPrice === undefined;
-		return Object.keys(orders)
-			.map(function (orderId) {
-				return orders[orderId];
-			})
-			.filter(function (order) {
-				var isMatchingPrice;
-				if (isMarketOrder) {
-					isMatchingPrice = true;
-				} else {
-					isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
-				}
-				return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
-			})
-			.sort(function compareOrdersByPrice(order1, order2) {
-				return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
-			});
-	},
-
-	/**
-	 *
-	 * @param {BigNumber} shares
-	 * @param {BigNumber} limitPrice
-	 * @param {BigNumber} makerFee
-	 * @param {Number} gasPrice
-	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-	 */
-	getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
-		var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
-		var etherToBid = shares.times(limitPrice);
-		return {
-			action: "BID",
-			shares: shares.toFixed(),
-			gasEth: bidGasEth.toFixed(),
-			feeEth: etherToBid.times(makerFee).toFixed(),
-			costEth: etherToBid.toFixed(),
-			avgPrice: limitPrice.toFixed()
-		};
-	},
-
-	/**
-	 *
-	 * @param {BigNumber} buyEth
-	 * @param {BigNumber} sharesFilled
-	 * @param {BigNumber} takerFee
-	 * @param {Number} gasPrice
-	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-	 */
-	getBuyAction: function (buyEth, sharesFilled, takerFee, gasPrice) {
-		var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
-		return {
-			action: "BUY",
-			shares: sharesFilled.toFixed(),
-			gasEth: tradeGasEth.toFixed(),
-			feeEth: buyEth.times(takerFee).toFixed(),
-			costEth: buyEth.toFixed(),
-			avgPrice: buyEth.dividedBy(sharesFilled).toFixed()
-		};
-	},
-
-	/**
-	 *
-	 * @param {BigNumber} shares
-	 * @param {BigNumber} limitPrice
-	 * @param {BigNumber} makerFee
-	 * @param {Number} gasPrice
-	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-	 */
-	getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-		var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-		var costEth = shares.times(limitPrice);
-		return {
-			action: "ASK",
-			shares: shares.toFixed(),
-			gasEth: askGasEth.toFixed(),
-			feeEth: costEth.times(makerFee).toFixed(),
-			costEth: costEth.toFixed(),
-			avgPrice: limitPrice.toFixed()
-		};
-	},
-
-	/**
-	 *
-	 * @param {BigNumber} sellEth
-	 * @param {BigNumber} sharesFilled
-	 * @param {BigNumber} takerFee
-	 * @param {Number} gasPrice
-	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-	 */
-	getSellAction: function (sellEth, sharesFilled, takerFee, gasPrice) {
-		var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
-		return {
-			action: "SELL",
-			shares: sharesFilled.toFixed(),
-			gasEth: tradeGasEth.toFixed(),
-			feeEth: sellEth.times(takerFee).toFixed(),
-			costEth: sellEth.toFixed(),
-			avgPrice: sellEth.dividedBy(sharesFilled).toFixed()
-		};
-	},
-
-	/**
-	 *
-	 * @param {BigNumber} shortSellEth
-	 * @param {BigNumber} shares
-	 * @param {BigNumber} takerFee
-	 * @param {Number} gasPrice
-	 * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
-	 */
-	getShortSellAction: function (shortSellEth, shares, takerFee, gasPrice) {
-		var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
-		return {
-			action: "SHORT_SELL",
-			shares: shares.toFixed(),
-			gasEth: shortSellGasEth.toFixed(),
-			feeEth: shortSellEth.times(takerFee).toFixed(),
-			costEth: shortSellEth.toFixed(),
-			avgPrice: shortSellEth.dividedBy(shares).toFixed()
-		};
-	},
-
-	/**
-	 *
-	 * @param {BigNumber} shares
-	 * @param {BigNumber} limitPrice
-	 * @param {BigNumber} makerFee
-	 * @param {Number} gasPrice
-	 * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
-	 */
-	getRiskyShortSellAction: function (shares, limitPrice, makerFee, gasPrice) {
-		var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
-		var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
-		var riskyShortSellEth = shares.times(limitPrice);
-		return {
-			action: "SHORT_SELL_RISKY",
-			shares: shares.toFixed(),
-			gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
-			feeEth: riskyShortSellEth.times(makerFee).toFixed(),
-			costEth: riskyShortSellEth.toFixed(),
-			avgPrice: limitPrice.toFixed()
-		};
-	},
-
-	/**
-	 * Allows to estimate what trading methods will be called based on user's order. This is useful so users know how
-	 * much they pay for trading
-	 *
-	 * @param {String} type 'buy' or 'sell'
-	 * @param {String|BigNumber} orderShares
-	 * @param {String|BigNumber=} orderLimitPrice null value results in market order
-	 * @param {String|BigNumber} takerFee Decimal string ("0.02" for 2% fee)
-	 * @param {String|BigNumber} makerFee Decimal string ("0.02" for 2% fee)
-	 * @param {String} userAddress Address of trader to exclude orders from order book
-	 * @param {String|BigNumber} userPositionShares
-	 * @param {String} outcomeId
-	 * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
-	 * @return {Array}
-	 */
-	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
-		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
-		if (type.constructor === Object && type.type) {
-			orderShares = type.orderShares;
-			orderLimitPrice = type.orderLimitPrice;
-			takerFee = type.takerFee;
-			makerFee = type.makerFee;
-			userAddress = type.userAddress;
-			userPositionShares = type.userPositionShares;
-			outcomeId = type.outcomeId;
-			marketOrderBook = type.marketOrderBook;
-			type = type.type;
-		}
-
-		orderShares = new BigNumber(orderShares, 10);
-		orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ? null : new BigNumber(orderLimitPrice, 10);
-		takerFee = new BigNumber(takerFee, 10);
-		makerFee = new BigNumber(makerFee, 10);
-		userPositionShares = new BigNumber(userPositionShares, 10);
-		isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
-
-		var augur = this;
-		var gasPrice = augur.rpc.gasPrice;
-		if (type === "buy") {
-			var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
-
-			var areSuitableOrders = matchingSortedAsks.length > 0;
-			if (!areSuitableOrders) {
-				if (isMarketOrder) {
-					return [];
-				}
-
-				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
-			} else {
-				var buyActions = [];
-
-				var etherToTrade = constants.ZERO;
-				remainingOrderShares = orderShares;
-				length = matchingSortedAsks.length;
-				for (i = 0; i < length; i++) {
-					ask = matchingSortedAsks[i];
-					orderSharesFilled = BigNumber.min(remainingOrderShares, ask.amount);
-					etherToTrade = etherToTrade.add(orderSharesFilled.times(new BigNumber(ask.price, 10)));
-					remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-					if (remainingOrderShares.equals(constants.ZERO)) {
-						break;
-					}
-				}
-				buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
-
-				if (!remainingOrderShares.equals(constants.ZERO) && !isMarketOrder) {
-					buyActions.push(augur.getBidAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
-				}
-
-				return buyActions;
-			}
-		} else {
-			var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
-
-			var areSuitableBids = matchingSortedBids.length > 0;
-			var userHasPosition = userPositionShares.greaterThan(constants.ZERO);
-			var sellActions = [];
-
-			if (userHasPosition) {
-				var etherToSell = constants.ZERO;
-				remainingOrderShares = orderShares;
-				var remainingPositionShares = userPositionShares;
-				if (areSuitableBids) {
-					for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-						bid = matchingSortedBids[i];
-						bidAmount = new BigNumber(bid.amount);
-						orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
-						etherToSell = etherToSell.plus(orderSharesFilled.times(new BigNumber(bid.price, 10)));
-						remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-						remainingPositionShares = remainingPositionShares.minus(orderSharesFilled);
-						if (orderSharesFilled.equals(bidAmount)) {
-							// since this order is filled we remove it. Change for-cycle variables accordingly
-							matchingSortedBids.splice(i, 1);
-							i--;
-							length--;
-						} else {
-							var newBid = clone(bid);
-							newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
-							matchingSortedBids[i] = newBid;
-						}
-
-						if (remainingOrderShares.equals(constants.ZERO) || remainingPositionShares.equals(constants.ZERO)) {
-							break;
-						}
-					}
-
-					sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
-				} else {
-					if (!isMarketOrder) {
-						var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
-						remainingOrderShares = remainingOrderShares.minus(askShares);
-						remainingPositionShares = remainingPositionShares.minus(askShares);
-						sellActions.push(augur.getAskAction(askShares, orderLimitPrice, makerFee, gasPrice));
-					}
-				}
-
-				if (remainingOrderShares.greaterThan(constants.ZERO) && !isMarketOrder) {
-					// recursion
-					sellActions = sellActions.concat(augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, {buy: matchingSortedBids}));
-				}
-			} else {
-				if (isMarketOrder) {
-					return sellActions;
-				}
-
-				var etherToShortSell = constants.ZERO;
-				remainingOrderShares = orderShares;
-				if (areSuitableBids) {
-					for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-						bid = matchingSortedBids[i];
-						orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-						etherToShortSell = etherToShortSell.plus(orderSharesFilled.times(new BigNumber(bid.price, 10)));
-						remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-						if (remainingOrderShares.equals(constants.ZERO)) {
-							break;
-						}
-					}
-					sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), takerFee, gasPrice));
-				}
-				if (remainingOrderShares.greaterThan(constants.ZERO)) {
-					sellActions.push(augur.getRiskyShortSellAction(remainingOrderShares, orderLimitPrice, makerFee, gasPrice));
-				}
-			}
-
-			return sellActions;
-		}
-	}
-};
-
-},{"../constants":232,"bignumber.js":80,"clone":116,"ethereumjs-tx":153}],254:[function(require,module,exports){
-/**
- * ethrpc fire/transact wrappers
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-module.exports = {
-
-    fire: function (tx, callback, wrapper, aux) {
-        if (this.web && this.web.account && this.web.account.address) {
-            tx.from = this.web.account.address;
-        } else {
-            tx.from = tx.from || this.from || this.coinbase;
-        }
-        return this.rpc.fire(tx, callback, wrapper, aux);
-    },
-
-    transact: function (tx, onSent, onSuccess, onFailed, onConfirmed) {
-        if (this.web && this.web.account && this.web.account.address) {
-            tx.from = this.web.account.address;
-            tx.invocation = {invoke: this.web.invoke, context: this.web};
-        } else {
-            tx.from = tx.from || this.from || this.coinbase;
-        }
-        return this.rpc.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
-    }
-};
-
-},{}],255:[function(require,module,exports){
-/**
- * Testing-only: these methods are whitelisted on production contracts!
- */
-
-"use strict";
-
-var clone = require("clone");
-var abi = require("augur-abi");
-var utils = require("../utilities");
-
-module.exports = {
-
-    setInfo: function (id, description, creator, fee, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Info.setInfo);
-        var unpacked = utils.unpack(id, utils.labels(this.setInfo), arguments);
-        tx.params = unpacked.params;
-        tx.params[3] = abi.fix(tx.params[3], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    modifyShares: function (marketID, outcome, amount, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.Markets.modifyShares);
-        var unpacked = utils.unpack(marketID, utils.labels(this.modifyShares), arguments);
-        tx.params = unpacked.params;
-        tx.params[2] = abi.fix(tx.params[2], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    },
-
-    setTotalRepReported: function (branchId, reportPeriod, repReported, onSent, onSuccess, onFailed, onConfirmed) {
-        var tx = clone(this.tx.ExpiringEvents.setTotalRepReported);
-        var unpacked = utils.unpack(branchId, utils.labels(this.setTotalRepReported), arguments);
-        tx.params = unpacked.params;
-        tx.params[2] = abi.fix(tx.params[2], "hex");
-        return this.transact.apply(this, [tx].concat(unpacked.cb));
-    }
-};
-
-},{"../utilities":257,"augur-abi":1,"clone":116}],256:[function(require,module,exports){
-/**
- * multiTrade: allows trading multiple outcomes in market.
- *
- * This method can result in multiple ethereum transactions per trade order (e.g. when user wants to buy 20 shares but
- * there are only 10 ask shares on order book, this method does trade() and buy()). Callbacks are called with
- * requestId to allow client map transactions to individual trade order
- *
- * Important fields in userTradeOrder are: sharesToSell, etherToBuy (total cost + fees) and limitPrice
- *
- * Algorithm:
- *
- * for each user trade order do this:
- * 1.1/ when user wants to buy: find all asks for that outcome which have less or equal price (user
- * doesn't want to pay more than specified). Sort asks by price ascendingly (lower prices first)
- * 1.2/ when user wants to sell: find all bids in order book for that outcome which have greater or equal price
- * (user doesn't want to sell at lower price than specified). Sort bids by price descendingly (higher prices first)
- *
- * 2/ if there are no orders to match, place order to order book. exit
- *
- * if there are suitable orders in order book let's trade:
- *
- * 3/ Trade user's buy order:
- *      3.1/ if user order was filled there is nothing to do. exit
- *      3.1/ if user order was partially filled we place bid for remaining shares to order book. exit
- *
- * 4/ Trade user's sell order:
- *      4.1/ if user has position, sell shares he owns:
- *          4.1.1/ if user order was filled there is nothing to do. exit
- *          4.1.2/ if order was partially filled place ask to order book. exit
- *      4.2/ if user doesn't have position do short sell
- *          4.2.1/ if there is bid for short_sell, try to fill it. if there are still shares after filling it try again
- *          4.2.2/ if there is no bid for short_sell user has to buy complete set and then sell the outcome he wants,
- * which results in the equal position
- *
- *
- * @param {Number} requestId Value to be passed to callbacks so client can pair callbacks with client call to this
- *     method
- * @param {String} market The market ID on which trading occurs
- * @param {Object} marketOrderBook Bids and asks for market (mixed for all outcomes)
- * @param {Object} userTradeOrder Trade order to execute (usually from UI).
- * @param {Object} userPosition User's position
- * @param {Object} scalarMinMax: {minValue, maxValue} if scalar market; null/undefined otherwise
- * @param {Function} onTradeHash
- * @param {Function} onCommitSent
- * @param {Function} onCommitSuccess
- * @param {Function} onCommitFailed
- * @param {Function} onNextBlock
- * @param {Function} onTradeSent
- * @param {Function} onTradeSuccess
- * @param {Function} onTradeFailed
- * @param {Function} onBuySellSent
- * @param {Function} onBuySellSuccess
- * @param {Function} onBuySellFailed
- * @param {Function} onBuyCompleteSetsSent
- * @param {Function} onBuyCompleteSetsSuccess
- * @param {Function} onBuyCompleteSetsFailed
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-var constants = require("./constants");
-var utils = require("./utilities");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = function (
-    requestId, market, marketOrderBook,
-    userTradeOrder, userPosition, scalarMinMax,
-    onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock,
-    onTradeSent, onTradeSuccess, onTradeFailed,
-    onBuySellSent, onBuySellSuccess, onBuySellFailed,
-    onShortSellSent, onShortSellSuccess, onShortSellFailed,
-    onBuyCompleteSetsSent, onBuyCompleteSetsSuccess, onBuyCompleteSetsFailed
-) {
-    var self = this;
-    if (requestId.constructor === Object && requestId.requestId) {
-        market = requestId.market;
-        marketOrderBook = requestId.marketOrderBook;
-        userTradeOrder = requestId.userTradeOrder;
-        userPosition = requestId.userPosition;
-        scalarMinMax = requestId.scalarMinMax;
-        onTradeHash = requestId.onTradeHash || utils.noop;
-        onCommitSent = requestId.onCommitSent || utils.noop;
-        onCommitSuccess = requestId.onCommitSuccess || utils.noop;
-        onCommitFailed = requestId.onCommitFailed || utils.noop;
-        onNextBlock = requestId.onNextBlock || utils.noop;
-        onTradeSent = requestId.onTradeSent || utils.noop;
-        onTradeSuccess = requestId.onTradeSuccess || utils.noop;
-        onTradeFailed = requestId.onTradeFailed || utils.noop;
-        onBuySellSent = requestId.onBuySellSent || utils.noop;
-        onBuySellSuccess = requestId.onBuySellSuccess || utils.noop;
-        onBuySellFailed = requestId.onBuySellFailed || utils.noop;
-        onBuyCompleteSetsSent = requestId.onBuyCompleteSetsSent || utils.noop;
-        onBuyCompleteSetsSuccess = requestId.onBuyCompleteSetsSuccess || utils.noop;
-        onBuyCompleteSetsFailed = requestId.onBuyCompleteSetsFailed || utils.noop;
-        requestId = requestId.requestId;
-    }
-    var isScalar = scalarMinMax &&
-        scalarMinMax.minValue !== undefined &&
-        scalarMinMax.maxValue !== undefined;
-    var minValue, maxValue;
-    if (isScalar) {
-        minValue = new BigNumber(scalarMinMax.minValue, 10);
-        maxValue = new BigNumber(scalarMinMax.maxValue, 10);
-    }
-    /**
-     * Recursive. Uses either short_sell or buyCompleteSets + sell
-     *
-     * @param tradeOrderId
-     * @param matchingSortedBidIds
-     * @param userTradeOrder
-     */
-    function shortSellUntilZero(tradeOrderId, matchingSortedBidIds, userTradeOrder) {
-        var sharesLeft = new BigNumber(userTradeOrder.sharesToSell, 10);
-        if (matchingSortedBidIds.length > 0) {
-            // 4.2.1/ there is order to fill
-            var firstBuyerTradeId = matchingSortedBidIds[0];
-            self.short_sell({
-                buyer_trade_id: firstBuyerTradeId,
-                max_amount: sharesLeft,
-                onTradeHash: function (data) {
-                    onTradeHash(tradeOrderId, data);
-                },
-                onCommitSent: function (data) {
-                    onCommitSent(tradeOrderId, data);
-                },
-                onCommitSuccess: function (data) {
-                    onCommitSuccess(tradeOrderId, data);
-                },
-                onCommitFailed: function (data) {
-                    onCommitFailed(tradeOrderId, data);
-                },
-                onNextBlock: function (data) {
-                    onNextBlock(tradeOrderId, data);
-                },
-                onTradeSent: function (data) {
-                    onTradeSent(tradeOrderId, data);
-                },
-                onTradeSuccess: function (data) {
-                    onTradeSuccess(tradeOrderId, data);
-                    var newSharesLeft = new BigNumber(data.callReturn[1], 10);
-                    if (newSharesLeft.gt(constants.ZERO)) {
-                        // not all user shares were shorted, recursively short
-                        userTradeOrder.sharesToSell = newSharesLeft.toFixed();
-                        shortSellUntilZero(tradeOrderId, matchingSortedBidIds.slice(1), userTradeOrder);
-                    }
-                },
-                onTradeFailed: function (data) {
-                    onTradeFailed(tradeOrderId, data);
-                }
-            });
-        } else {
-            // 4.2.2/ no order to fill
-            self.buyCompleteSets({
-                market: market,
-                amount: userTradeOrder.sharesToSell,
-                onSent: function (data) {
-                    onBuyCompleteSetsSent(requestId, data);
-                },
-                onSuccess: function (data) {
-                    onBuyCompleteSetsSuccess(requestId, data);
-                    self.sell({
-                        amount: sharesLeft.toFixed(),
-                        price: userTradeOrder.limitPrice,
-                        market: market,
-                        outcome: userTradeOrder.outcomeID,
-                        onSent: function (data) {
-                            onBuySellSent(requestId, data);
-                        },
-                        onSuccess: function (data) {
-                            onBuySellSuccess(requestId, data);
-                        },
-                        onFailed: function (data) {
-                            onBuySellFailed(requestId, data);
-                        }
-                    });
-                },
-                onFailed: function (data) {
-                    onBuyCompleteSetsFailed(requestId, data);
-                }
-            });
-        }
-    }
-
-    if (isScalar) {
-        userTradeOrder.limitPrice = self.shrinkScalarPrice(minValue, userTradeOrder.limitPrice);
-    }
-    if (userTradeOrder.type === "buy") {
-        // 1.1/ user wants to buy
-        var matchingSortedAskIds = Object.keys(marketOrderBook.sell)
-            .map(function (askId) {
-                return marketOrderBook.sell[askId];
-            })
-            .filter(function (ask) {
-                return ask.outcome === userTradeOrder.outcomeID &&
-                    parseFloat(ask.price) <= userTradeOrder.limitPrice;
-            }, this)
-            .sort(function compareOrdersByPriceAsc(order1, order2) {
-                return order1.price < order2.price ? -1 : 0;
-            })
-            .map(function (ask) {
-                return ask.id;
-            });
-
-        if (matchingSortedAskIds.length === 0) {
-            // 2/ there are no suitable asks on order book
-            this.buy({
-                amount: userTradeOrder.etherToBuy,
-                price: userTradeOrder.limitPrice,
-                market: market,
-                outcome: userTradeOrder.outcomeID,
-                onSent: function onBuySentInner(data) {
-                    onBuySellSent(requestId, data);
-                },
-                onSuccess: function onBuySuccessInner(data) {
-                    onBuySellSuccess(requestId, data);
-                },
-                onFailed: function onBuyFailureInner(data) {
-                    onBuySellFailed(requestId, data);
-                }
-            });
-        } else {
-            // 3/ there are orders on order book to match
-            this.trade({
-                max_value: userTradeOrder.etherToBuy,
-                max_amount: 0,
-                trade_ids: matchingSortedAskIds,
-                onTradeHash: function (data) {
-                    onTradeHash(requestId, data);
-                },
-                onCommitSent: function (data) {
-                    onCommitSent(requestId, data);
-                },
-                onCommitSuccess: function (data) {
-                    onCommitSuccess(requestId, data);
-                },
-                onCommitFailed: function (data) {
-                    onCommitFailed(requestId, data);
-                },
-                onNextBlock: function (data) {
-                    onNextBlock(requestId, data);
-                },
-                onTradeSent: function (data) {
-                    onTradeSent(requestId, data);
-                },
-                onTradeSuccess: function localOnTradeSuccess(data) {
-                    var etherNotFilled = Number(data.callReturn[1]);
-                    if (etherNotFilled > 0) {
-                        // 3.1/ order was partially filled so place bid on order book
-                        self.buy({
-                            amount: etherNotFilled,
-                            price: userTradeOrder.limitPrice,
-                            market: market,
-                            outcome: userTradeOrder.outcomeID,
-                            onSent: function localOnBuySent(data) {
-                                onBuySellSent(requestId, data);
-                            },
-                            onSuccess: function localOnBuySuccess(data) {
-                                onBuySellSuccess(requestId, data);
-                            },
-                            onFailed: function localOnBuyFailure(data) {
-                                onBuySellFailed(requestId, data);
-                            }
-                        });
-                    }
-                    onTradeSuccess(requestId, data);
-                },
-                onTradeFailed: function (data) {
-                    onTradeFailed(requestId, data);
-                }
-            });
-        }
-    } else {
-        // 1.2/ user wants to sell
-        var matchingSortedBidIds = Object.keys(marketOrderBook.buy)
-            .map(function (buyId) {
-                return marketOrderBook.buy[buyId];
-            })
-            .filter(function (bid) {
-                return bid.outcome === userTradeOrder.outcomeID &&
-                    parseFloat(bid.price) >= userTradeOrder.limitPrice;
-            })
-            .sort(function compareOrdersByPriceDesc(order1, order2) {
-                return order1.price < order2.price ? 1 : 0;
-            })
-            .map(function (bid) {
-                return bid.id;
-            });
-
-        var hasUserPosition = userPosition && userPosition.qtyShares > 0;
-        if (hasUserPosition) {
-            if (matchingSortedBidIds.length === 0) {
-                // 2/ no bids to match => place ask on order book
-                this.sell({
-                    amount: userTradeOrder.sharesToSell,
-                    price: userTradeOrder.limitPrice,
-                    market: market,
-                    outcome: userTradeOrder.outcomeID,
-                    onSent: function localOnSellSent(data) {
-                        onBuySellSent(requestId, data);
-                    },
-                    onSuccess: function localOnSellSuccess(data) {
-                        onBuySellSuccess(requestId, data);
-                    },
-                    onFailed: function localOnSellFailure(data) {
-                        onBuySellFailed(requestId, data);
-                    }
-                });
-            } else {
-                // 4.1/ there are bids to match
-                this.trade({
-                    max_value: 0,
-                    max_amount: userTradeOrder.sharesToSell,
-                    trade_ids: matchingSortedBidIds,
-                    onTradeHash: function (data) {
-                        onTradeHash(requestId, data);
-                    },
-                    onCommitSent: function (data) {
-                        onCommitSent(requestId, data);
-                    },
-                    onCommitSuccess: function (data) {
-                        onCommitSuccess(requestId, data);
-                    },
-                    onCommitFailed: function (data) {
-                        onCommitFailed(requestId, data);
-                    },
-                    onNextBlock: function (data) {
-                        onNextBlock(requestId, data);
-                    },
-                    onTradeSent: function (data) {
-                        onTradeSent(requestId, data);
-                    },
-                    onTradeSuccess: function localOnTradeSuccess(data) {
-                        var sharesNotSold = Number(data.callReturn[2]);
-                        if (sharesNotSold > 0) {
-                            // 4.1.2 order was partially filled
-                            self.sell({
-                                amount: sharesNotSold,
-                                price: userTradeOrder.limitPrice,
-                                market: market,
-                                outcome: userTradeOrder.outcomeID,
-                                onSent: function (data) {
-                                    onBuySellSent(requestId, data);
-                                },
-                                onSuccess: function (data) {
-                                    onBuySellSuccess(requestId, data);
-                                },
-                                onFailed: function (data) {
-                                    onBuySellFailed(requestId, data);
-                                }
-                            });
-                        }
-                        onTradeSuccess(requestId, data);
-                    },
-                    onTradeFailed: function (data) {
-                        onTradeFailed(requestId, data);
-                    }
-                });
-            }
-        } else {
-            // 4.2/ no user position
-            shortSellUntilZero(requestId, matchingSortedBidIds, userTradeOrder);
-        }
-    }
-};
-
-},{"./constants":232,"./utilities":257,"bignumber.js":80}],257:[function(require,module,exports){
-(function (process,Buffer){
-"use strict";
-
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
-var crypto = require("crypto");
-var BigNumber = require("bignumber.js");
-var clone = require("clone");
-var abi = require("augur-abi");
-var constants = require("./constants");
-
-BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
-
-module.exports = {
-
-    noop: function () {},
-
-    pass: function (o) { return o; },
-
-    is_function: function (f) {
-        return Object.prototype.toString.call(f) === "[object Function]";
-    },
-
-    STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-
-    ARGUMENT_NAMES: /([^\s,]+)/g,
-
-    compose: function (prepare, callback) {
-        if (!this.is_function(callback)) return null;
-        if (!this.is_function(prepare)) return callback;
-        return function (result) { return prepare(result, callback); };
-    },
-
-    labels: function (func) {
-        var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
-        var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
-        if (result === null) result = [];
-        return result;
-    },
-
-    unpack: function (o, labels, args) {
-        var params = [], cb = [];
-
-        // unpack object argument
-        if (o !== undefined && o !== null && o.constructor === Object &&
-            labels && labels.constructor === Array && labels.length) {
-            for (var i = 0, len = labels.length; i < len; ++i) {
-                if (o[labels[i]] !== undefined) {
-                    if (o[labels[i]].constructor === Function) {
-                        cb.push(o[labels[i]]);
-                    } else {
-                        params.push(o[labels[i]]);
-                    }
-                }
-            }
-
-        // unpack positional arguments
-        } else {
-            for (var j = 0, arglen = args.length; j < arglen; ++j) {
-                if (args[j] !== undefined) {
-                    if (args[j] && args[j].constructor === Function) {
-                        cb.push(args[j]);
-                    } else {
-                        params.push(args[j]);
-                    }
-                }
-            }
-        }
-
-        return { params: params, cb: cb };
-    },
-
-    sha256: function (hashable) {
-        var x = clone(hashable);
-        if (x && x.constructor === Array) {
-            var digest, cat = "";
-            for (var i = 0, n = x.length; i < n; ++i) {
-                if (x[i] !== null && x[i] !== undefined) {
-
-                    // array element is a javascript number
-                    // (base-10 numbers)
-                    if (x[i].constructor === Number) {
-                        x[i] = abi.bignum(x[i]);
-                        if (x[i].lt(constants.ZERO)) {
-                            x[i] = x[i].add(abi.constants.MOD);
-                        }
-                        cat += abi.encode_int(x[i]);
-
-                    // array element is a string: text or hex
-                    } else if (x[i].constructor === String) {
-
-                        // negative hex
-                        if (x[i].slice(0,1) === '-') {
-                            x[i] = abi.bignum(x[i]).add(abi.constants.MOD).toFixed();
-                            cat += abi.encode_int(x[i]);
-
-                        // positive hex
-                        } else if (x[i].slice(0,2) === "0x") {
-                            cat += abi.pad_left(x[i].slice(2));
-
-                        // text string
-                        } else {
-                            cat += new Buffer(x[i], "utf8").toString("hex");
-                        }
-                    }
-                }
-            }
-            digest = new BigNumber(this.sha256(new Buffer(cat, "hex")), 16);
-            if (digest.gt(new BigNumber(2).toPower(255))) {
-                return abi.hex(digest.sub(abi.constants.MOD));
-            }
-            return abi.hex(digest);
-        }
-        return crypto.createHash("sha256").update(x).digest("hex");
-    },
-
-    serialize: function (x) {
-        var serialized;
-        if (x !== null && x !== undefined) {
-
-            // array element is a javascript number
-            // (base-10 numbers)
-            if (x.constructor === Number) {
-                x = abi.bignum(x);
-                if (x.lt(constants.ZERO)) {
-                    x = x.add(abi.constants.MOD);
-                }
-                serialized = abi.encode_int(x);
-
-            // array element is a string: text or hex
-            } else if (x.constructor === String) {
-
-                // negative hex
-                if (x.slice(0,1) === '-') {
-                    x = abi.bignum(x).add(abi.constants.MOD).toFixed();
-                    serialized = abi.encode_int(x);
-
-                // positive hex
-                } else if (x.slice(0,2) === "0x") {
-                    serialized = abi.pad_left(x.slice(2));
-
-                // text string
-                } else {
-                    serialized = new Buffer(x, "utf8").toString("hex");
-                }
-            }
-        }
-        return serialized;
-    },
-
-    sha3: function (hashable) {
-        var x = clone(hashable);
-        var serialized;
-        if (x && x.constructor === Array) {
-            serialized = "";
-            for (var i = 0, n = x.length; i < n; ++i) {
-                serialized += this.serialize(x[i]);
-            }
-        } else {
-            serialized = this.serialize(x);
-        }
-        return abi.prefix_hex(abi.sha3(serialized));
-    }
-
-};
-
-}).call(this,require('_process'),require("buffer").Buffer)
-},{"./constants":232,"_process":191,"augur-abi":1,"bignumber.js":80,"buffer":114,"clone":116,"crypto":123}],258:[function(require,module,exports){
-/**
- * Basic Ethereum connection tasks.
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var async = require("async");
-var rpc = require("ethrpc");
-var contracts = require("augur-contracts");
-var network_id = "2";
-
-function noop() {}
-
-function is_function(f) {
-    return Object.prototype.toString.call(f) === "[object Function]";
-}
-
-function clone(obj) {
-    if (null === obj || "object" !== typeof obj) return obj;
-    var copy = obj.constructor();
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
-    return copy;
-}
-
-var api = new contracts.Tx(network_id);
-
-module.exports = {
-
-    debug: false,
-
-    from: null,
-
-    coinbase: null,
-
-    connection: null,
-
-    rpc: rpc,
-
-    network_id: network_id,
-
-    contracts: contracts[network_id],
-
-    init_contracts: contracts[network_id],
-
-    custom_contracts: null,
-
-    api: api,
-
-    tx: api.functions,
-
-    has_value: function (o, v) {
-        for (var p in o) {
-            if (o.hasOwnProperty(p)) {
-                if (o[p] === v) return p;
-            }
-        }
-    },
-
-    detect_network: function (callback) {
-        var self = this;
-        if (this.connection === null &&
-            JSON.stringify(this.init_contracts) === JSON.stringify(this.contracts))
-        {
-            if (is_function(callback)) {
-                this.rpc.version(function (version) {
-                    var key, method;
-                    if (version !== null && version !== undefined && !version.error) {
-                        self.network_id = version;
-                        self.api = new contracts.Tx(version, self.custom_contracts);
-                        self.contracts = clone(self.custom_contracts || contracts[self.network_id]);
-                        for (method in self.api.functions) {
-                            if (!self.api.functions.hasOwnProperty(method)) continue;
-                            key = self.has_value(self.init_contracts, self.api.functions[method].to);
-                            if (key) self.api.functions[method].to = self.contracts[key];
-                        }
-                        self.tx = self.api.functions;
-                    } else {
-                        return callback(version);
-                    }
-                    if (is_function(callback)) callback(null, version);
-                });
-            } else {
-                var key, method;
-                this.rpc.blockNumber(noop);
-                this.network_id = this.rpc.version() || "2";
-                this.api = new contracts.Tx(this.network_id, this.custom_contracts);
-                this.contracts = clone(this.custom_contracts || contracts[this.network_id]);
-                for (method in this.api.functions) {
-                    if (!this.api.functions.hasOwnProperty(method)) continue;
-                    key = this.has_value(this.init_contracts, this.api.functions[method].to);
-                    if (key) this.api.functions[method].to = this.contracts[key];
-                }
-                this.tx = this.api.functions;
-                return this.network_id;
-            }
-        } else {
-            if (is_function(callback)) callback();
-        }
-    },
-
-    from_field_tx: function (account) {
-        if (account && account !== "0x") {
-            for (var contract in this.tx) {
-                if (!this.tx.hasOwnProperty(contract)) continue;
-                for (var method in this.tx[contract]) {
-                    if (!this.tx[contract].hasOwnProperty(method)) continue;
-                    this.tx[contract][method].from = account;
-                }
-            }
-        }
-    },
-
-    get_coinbase: function (callback) {
-        var self = this;
-        if (is_function(callback)) {
-            this.rpc.coinbase(function (coinbase) {
-                if (coinbase && !coinbase.error && coinbase !== "0x") {
-                    self.coinbase = coinbase;
-                    self.from = self.from || coinbase;
-                    self.from_field_tx(self.from);
-                    if (callback) return callback(null, coinbase);
-                }
-                if (!self.coinbase && (self.rpc.nodes.local || self.rpc.ipcpath)) {
-                    self.rpc.accounts(function (accounts) {
-                        if (accounts && accounts.constructor === Array && accounts.length) {
-                            async.eachSeries(accounts, function (account, nextAccount) {
-                                if (self.unlocked(account)) return nextAccount(account);
-                                nextAccount();
-                            }, function (account) {
-                                if (!account) return callback("get_coinbase: coinbase not found");
-                                self.coinbase = account;
-                                self.from = self.from || account;
-                                self.from_field_tx(self.from);
-                                callback(null, account);
-                            });
-                        }
-                    });
-                }
-            });
-        } else {
-            var accounts, num_accounts, i, method, m;
-            this.coinbase = this.rpc.coinbase();
-            if (!this.coinbase && this.rpc.nodes.local) {
-                accounts = this.rpc.accounts();
-                if (accounts && accounts.constructor === Array) {
-                    num_accounts = accounts.length;
-                    if (num_accounts === 1) {
-                        if (this.unlocked(accounts[0])) {
-                            this.coinbase = accounts[0];
-                        }
-                    } else {
-                        for (i = 0; i < num_accounts; ++i) {
-                            if (this.unlocked(accounts[i])) {
-                                this.coinbase = accounts[i];
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (this.coinbase && !this.coinbase.error && this.coinbase !== "0x") {
-                this.from = this.from || this.coinbase;
-                for (method in this.tx) {
-                    if (!this.tx.hasOwnProperty(method)) continue;
-                    if (!this.tx[method].method) {
-                        for (m in this.tx[method]) {
-                            if (!this.tx[method].hasOwnProperty(m)) continue;
-                            this.tx[method][m].from = this.from;
-                        }
-                    } else {
-                        this.tx[method].from = this.from;
-                    }
-                }
-            } else {
-                throw new Error("get_coinbase: coinbase not found");
-            }
-        }
-    },
-
-    update_contracts: function () {
-        var key;
-        if (JSON.stringify(this.init_contracts) !== JSON.stringify(this.contracts)) {
-            for (var method in this.tx) {
-                if (!this.tx.hasOwnProperty(method)) continue;
-                if (!this.tx[method].method) {
-                    for (var m in this.tx[method]) {
-                        if (!this.tx[method].hasOwnProperty(m)) continue;
-                        key = this.has_value(this.init_contracts, this.tx[method][m].to);
-                        if (key) {
-                            this.tx[method][m].to = this.contracts[key];
-                        }
-                    }
-                } else {
-                    key = this.has_value(this.init_contracts, this.tx[method].to);
-                    if (key) {
-                        this.tx[method].to = this.contracts[key];
-                    }
-                }
-            }
-        }
-        this.init_contracts = clone(this.contracts);
-    },
-
-    connect: function (options, callback) {
-        var self = this;
-        if (!callback && is_function(options)) {
-            callback = options;
-            options = null;
-        }
-        options = options || {};
-        if (options.contracts) {
-            this.contracts = clone(options.contracts);
-            this.init_contracts = clone(options.contracts);
-            this.custom_contracts = clone(options.contracts);
-        }
-
-        // if this is the first attempt to connect, connect using the
-        // parameters provided by the user exactly
-        if ((options.http || options.ipc || options.ws) && !options.attempts) {
-            this.rpc.ipcpath = options.ipc || null;
-            this.rpc.nodes.local = options.http;
-            this.rpc.nodes.hosted = [];
-            this.rpc.wsUrl = options.ws;
-            this.rpc.rpcStatus.ws = 0;
-            this.rpc.rpcStatus.ipc = 0;
-
-        // if this is the second attempt to connect, fall back to the
-        // default hosted nodes
-        } else {
-            if (this.debug) {
-                console.debug("Connecting to hosted Ethereum node...");
-            }
-            this.rpc.ipcpath = null;
-            this.rpc.reset();
-            this.rpc.useHostedNode();
-            this.rpc.rpcStatus.ws = 0;
-            this.rpc.rpcStatus.ipc = 0;
-            if (this.debug) {
-                console.debug("HTTP RPC:", JSON.stringify(this.rpc.nodes.hosted, null, 2));
-                console.debug("WebSocket:", this.rpc.wsUrl);
-            }
-        }
-
-        // synchronous connect sequence
-        if (!is_function(callback)) {
-            try {
-                this.detect_network();
-                this.get_coinbase();
-                this.update_contracts();
-                this.connection = true;
-                return {
-                    http: this.rpc.nodes.local || this.rpc.nodes.hosted,
-                    ws: this.rpc.wsUrl,
-                    ipc: this.rpc.ipcpath
-                };
-            } catch (exc) {
-                if (this.debug) {
-                    console.warn("[sync] Couldn't connect to Ethereum", exc, JSON.stringify(options, null, 2));
-                }
-                this.connection = false;
-                if (!options.attempts) {
-                    options.attempts = 1;
-                    return this.connect(options);
-                }
-                return false;
-            }
-        }
-
-        // asynchronous connect sequence
-        callback = callback || noop;
-        async.series([
-            function (next) {
-                if (!options.http || !options.ws) return next();
-                var wsUrl = self.rpc.wsUrl;
-                var wsStatus = self.rpc.rpcStatus.ws;
-                self.rpc.wsUrl = null;
-                self.rpc.rpcStatus.ws = 0;
-                self.detect_network(function (err) {
-                    self.rpc.wsUrl = wsUrl;
-                    self.rpc.rpcStatus.ws = wsStatus;
-                    next(err);
-                });
-            },
-            this.detect_network.bind(this),
-            this.get_coinbase.bind(this)
-        ], function (err) {
-            if (err) {
-                if (self.debug) {
-                    console.warn("[async] Couldn't connect to Ethereum", err, JSON.stringify(options, null, 2));
-                }
-                self.connection = false;
-                if (!options.attempts) {
-                    options.attempts = 1;
-                    return self.connect(options, callback);
-                }
-                return callback(false);
-            }
-            self.update_contracts();
-            self.connection = true;
-            callback({
-                http: self.rpc.nodes.local || self.rpc.nodes.hosted,
-                ws: self.rpc.wsUrl,
-                ipc: self.rpc.ipcpath
-            });
-        });
-    },
-
-    connected: function (f) {
-        if (is_function(f)) {
-            return this.rpc.coinbase(function (coinbase) {
-                f(coinbase && !coinbase.error);
-            });
-        }
-        try {
-            this.rpc.coinbase();
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-};
-
-},{"async":259,"augur-contracts":58,"ethrpc":291}],259:[function(require,module,exports){
+},{"_process":185,"async":255,"augur-abi":1,"augur-contracts":58,"bignumber.js":256,"browser-request":257,"clone":258,"js-sha3":259,"net":111,"request":85,"sync-request":85,"websocket":85}],255:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"_process":191,"dup":77}],260:[function(require,module,exports){
+},{"_process":185,"dup":77}],256:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],261:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"buffer":114,"dup":3}],262:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],263:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],264:[function(require,module,exports){
+},{"dup":2}],257:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],265:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"buffer":114,"dup":6,"js-sha3":305}],266:[function(require,module,exports){
-arguments[4][7][0].apply(exports,arguments)
-},{"buffer":114,"dup":7,"inherits":304,"stream":224,"string_decoder":225}],267:[function(require,module,exports){
+},{"dup":84}],258:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"buffer":114,"dup":59}],268:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"./md5":270,"buffer":114,"cipher-base":266,"dup":8,"inherits":304,"ripemd160":307,"sha.js":315}],269:[function(require,module,exports){
-arguments[4][9][0].apply(exports,arguments)
-},{"buffer":114,"dup":9}],270:[function(require,module,exports){
-arguments[4][10][0].apply(exports,arguments)
-},{"./helpers":269,"dup":10}],271:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":287,"./elliptic/curve":274,"./elliptic/curves":277,"./elliptic/ec":278,"./elliptic/eddsa":281,"./elliptic/hmac-drbg":284,"./elliptic/utils":286,"brorand":263,"dup":11}],272:[function(require,module,exports){
-arguments[4][12][0].apply(exports,arguments)
-},{"../../elliptic":271,"bn.js":262,"dup":12}],273:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"../../elliptic":271,"../curve":274,"bn.js":262,"dup":13,"inherits":304}],274:[function(require,module,exports){
-arguments[4][14][0].apply(exports,arguments)
-},{"./base":272,"./edwards":273,"./mont":275,"./short":276,"dup":14}],275:[function(require,module,exports){
-arguments[4][15][0].apply(exports,arguments)
-},{"../../elliptic":271,"../curve":274,"bn.js":262,"dup":15,"inherits":304}],276:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"../../elliptic":271,"../curve":274,"bn.js":262,"dup":16,"inherits":304}],277:[function(require,module,exports){
-arguments[4][17][0].apply(exports,arguments)
-},{"../elliptic":271,"./precomputed/secp256k1":285,"dup":17,"hash.js":298}],278:[function(require,module,exports){
-arguments[4][18][0].apply(exports,arguments)
-},{"../../elliptic":271,"./key":279,"./signature":280,"bn.js":262,"dup":18}],279:[function(require,module,exports){
-arguments[4][19][0].apply(exports,arguments)
-},{"bn.js":262,"dup":19}],280:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"../../elliptic":271,"bn.js":262,"dup":20}],281:[function(require,module,exports){
-arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":271,"./key":282,"./signature":283,"dup":21,"hash.js":298}],282:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"../../elliptic":271,"dup":22}],283:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"../../elliptic":271,"bn.js":262,"dup":23}],284:[function(require,module,exports){
-arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":271,"dup":24,"hash.js":298}],285:[function(require,module,exports){
-arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],286:[function(require,module,exports){
-arguments[4][26][0].apply(exports,arguments)
-},{"bn.js":262,"dup":26}],287:[function(require,module,exports){
-module.exports={
-  "_args": [
-    [
-      {
-        "raw": "elliptic@^6.2.3",
-        "scope": null,
-        "escapedName": "elliptic",
-        "name": "elliptic",
-        "rawSpec": "^6.2.3",
-        "spec": ">=6.2.3 <7.0.0",
-        "type": "range"
-      },
-      "/home/jack/src/ethereumjs-connect/node_modules/secp256k1"
-    ]
-  ],
-  "_from": "elliptic@>=6.2.3 <7.0.0",
-  "_id": "elliptic@6.3.1",
-  "_inCache": true,
-  "_installable": true,
-  "_location": "/elliptic",
-  "_nodeVersion": "6.0.0",
-  "_npmOperationalInternal": {
-    "host": "packages-16-east.internal.npmjs.com",
-    "tmp": "tmp/elliptic-6.3.1.tgz_1465921413402_0.5202967382501811"
-  },
-  "_npmUser": {
-    "name": "indutny",
-    "email": "fedor@indutny.com"
-  },
-  "_npmVersion": "3.8.6",
-  "_phantomChildren": {},
-  "_requested": {
-    "raw": "elliptic@^6.2.3",
-    "scope": null,
-    "escapedName": "elliptic",
-    "name": "elliptic",
-    "rawSpec": "^6.2.3",
-    "spec": ">=6.2.3 <7.0.0",
-    "type": "range"
-  },
-  "_requiredBy": [
-    "/browserify-sign",
-    "/create-ecdh",
-    "/secp256k1"
-  ],
-  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.3.1.tgz",
-  "_shasum": "17781f2109ab0ec686b146bdcff5d2e8c6aeceda",
-  "_shrinkwrap": null,
-  "_spec": "elliptic@^6.2.3",
-  "_where": "/home/jack/src/ethereumjs-connect/node_modules/secp256k1",
-  "author": {
-    "name": "Fedor Indutny",
-    "email": "fedor@indutny.com"
-  },
-  "bugs": {
-    "url": "https://github.com/indutny/elliptic/issues"
-  },
-  "dependencies": {
-    "bn.js": "^4.4.0",
-    "brorand": "^1.0.1",
-    "hash.js": "^1.0.0",
-    "inherits": "^2.0.1"
-  },
-  "description": "EC cryptography",
-  "devDependencies": {
-    "brfs": "^1.4.3",
-    "coveralls": "^2.11.3",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^5.0.0",
-    "grunt-contrib-connect": "^1.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-uglify": "^1.0.1",
-    "grunt-mocha-istanbul": "^3.0.1",
-    "grunt-saucelabs": "^8.6.2",
-    "istanbul": "^0.4.2",
-    "jscs": "^2.9.0",
-    "jshint": "^2.6.0",
-    "mocha": "^2.1.0"
-  },
-  "directories": {},
-  "dist": {
-    "shasum": "17781f2109ab0ec686b146bdcff5d2e8c6aeceda",
-    "tarball": "https://registry.npmjs.org/elliptic/-/elliptic-6.3.1.tgz"
-  },
-  "files": [
-    "lib"
-  ],
-  "gitHead": "c53f5cf3d832c0073eb4a4ed423a464cbce68f3e",
-  "homepage": "https://github.com/indutny/elliptic",
-  "keywords": [
-    "EC",
-    "Elliptic",
-    "curve",
-    "Cryptography"
-  ],
-  "license": "MIT",
-  "main": "lib/elliptic.js",
-  "maintainers": [
-    {
-      "name": "indutny",
-      "email": "fedor@indutny.com"
-    }
-  ],
-  "name": "elliptic",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/indutny/elliptic.git"
-  },
-  "scripts": {
-    "jscs": "jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js",
-    "jshint": "jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js",
-    "lint": "npm run jscs && npm run jshint",
-    "test": "npm run lint && npm run unit",
-    "unit": "istanbul test _mocha --reporter=spec test/index.js",
-    "version": "grunt dist && git add dist/"
-  },
-  "version": "6.3.1"
-}
-
-},{}],288:[function(require,module,exports){
-arguments[4][28][0].apply(exports,arguments)
-},{"./lib/index.js":289,"dup":28}],289:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"bn.js":262,"buffer":114,"dup":29,"ethereumjs-util":290}],290:[function(require,module,exports){
-arguments[4][30][0].apply(exports,arguments)
-},{"assert":76,"bn.js":262,"buffer":114,"create-hash":268,"dup":30,"keccakjs":306,"rlp":308,"secp256k1":309}],291:[function(require,module,exports){
-arguments[4][155][0].apply(exports,arguments)
-},{"_process":191,"async":259,"augur-abi":292,"augur-contracts":296,"bignumber.js":260,"browser-request":264,"clone":267,"dup":155,"js-sha3":305,"net":111,"request":85,"sync-request":85,"websocket":85}],292:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"bignumber.js":260,"buffer":114,"dup":1,"ethereumjs-abi":288,"js-sha3":305}],293:[function(require,module,exports){
-arguments[4][156][0].apply(exports,arguments)
-},{"dup":156}],294:[function(require,module,exports){
-arguments[4][157][0].apply(exports,arguments)
-},{"dup":157}],295:[function(require,module,exports){
-arguments[4][158][0].apply(exports,arguments)
-},{"dup":158}],296:[function(require,module,exports){
-arguments[4][58][0].apply(exports,arguments)
-},{"./contracts":294,"./errors":295,"./tx":297,"dup":58}],297:[function(require,module,exports){
-arguments[4][60][0].apply(exports,arguments)
-},{"./api":293,"./contracts":294,"clone":267,"dup":60}],298:[function(require,module,exports){
-arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":299,"./hash/hmac":300,"./hash/ripemd":301,"./hash/sha":302,"./hash/utils":303,"dup":31}],299:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"../hash":298,"dup":32}],300:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"../hash":298,"dup":33}],301:[function(require,module,exports){
-arguments[4][34][0].apply(exports,arguments)
-},{"../hash":298,"dup":34}],302:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"../hash":298,"dup":35}],303:[function(require,module,exports){
-arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":304}],304:[function(require,module,exports){
-arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],305:[function(require,module,exports){
+},{"buffer":114,"dup":59}],259:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],306:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
-},{"browserify-sha3":265,"dup":39}],307:[function(require,module,exports){
-arguments[4][40][0].apply(exports,arguments)
-},{"buffer":114,"dup":40}],308:[function(require,module,exports){
-arguments[4][41][0].apply(exports,arguments)
-},{"assert":76,"buffer":114,"dup":41}],309:[function(require,module,exports){
-arguments[4][42][0].apply(exports,arguments)
-},{"./lib":312,"./lib/elliptic":311,"dup":42}],310:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"../../../../augur.js/node_modules/is-buffer/index.js":172,"dup":43}],311:[function(require,module,exports){
-arguments[4][44][0].apply(exports,arguments)
-},{"../messages.json":313,"bn.js":262,"buffer":114,"create-hash":268,"dup":44,"elliptic":271}],312:[function(require,module,exports){
-arguments[4][45][0].apply(exports,arguments)
-},{"./assert":310,"./messages.json":313,"bip66":261,"buffer":114,"dup":45}],313:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments)
-},{"dup":46}],314:[function(require,module,exports){
-arguments[4][47][0].apply(exports,arguments)
-},{"buffer":114,"dup":47}],315:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"./sha":316,"./sha1":317,"./sha224":318,"./sha256":319,"./sha384":320,"./sha512":321,"dup":48}],316:[function(require,module,exports){
-arguments[4][49][0].apply(exports,arguments)
-},{"./hash":314,"buffer":114,"dup":49,"inherits":304}],317:[function(require,module,exports){
-arguments[4][50][0].apply(exports,arguments)
-},{"./hash":314,"buffer":114,"dup":50,"inherits":304}],318:[function(require,module,exports){
-arguments[4][51][0].apply(exports,arguments)
-},{"./hash":314,"./sha256":319,"buffer":114,"dup":51,"inherits":304}],319:[function(require,module,exports){
-arguments[4][52][0].apply(exports,arguments)
-},{"./hash":314,"buffer":114,"dup":52,"inherits":304}],320:[function(require,module,exports){
-arguments[4][53][0].apply(exports,arguments)
-},{"./hash":314,"./sha512":321,"buffer":114,"dup":53,"inherits":304}],321:[function(require,module,exports){
-arguments[4][54][0].apply(exports,arguments)
-},{"./hash":314,"buffer":114,"dup":54,"inherits":304}],322:[function(require,module,exports){
+},{"dup":38}],260:[function(require,module,exports){
 (function (process,Buffer){
 /**
  * keythereum: create/import/export ethereum keys
@@ -52582,7 +47324,7 @@ module.exports = {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./lib/keccak":323,"./lib/scrypt":324,"_process":191,"buffer":114,"crypto":123,"elliptic":328,"ethereumjs-util":345,"fs":111,"node-uuid":354,"path":188,"validator":356}],323:[function(require,module,exports){
+},{"./lib/keccak":261,"./lib/scrypt":262,"_process":185,"buffer":114,"crypto":123,"elliptic":266,"ethereumjs-util":283,"fs":111,"node-uuid":292,"path":182,"validator":294}],261:[function(require,module,exports){
 /* keccak.js
  * A Javascript implementation of the Keccak SHA-3 candidate from Bertoni,
  * Daemen, Peeters and van Assche. This version is not optimized with any of 
@@ -52776,7 +47518,7 @@ module.exports = (function () {
     };
 }());
 
-},{}],324:[function(require,module,exports){
+},{}],262:[function(require,module,exports){
 (function (process,__dirname){
 // https://github.com/tonyg/js-scrypt
 module.exports = function (requested_total_memory) {
@@ -64497,7 +59239,7 @@ module.exports = function (requested_total_memory) {
 };
 
 }).call(this,require('_process'),"/../keythereum/lib")
-},{"_process":191,"fs":111,"path":188}],325:[function(require,module,exports){
+},{"_process":185,"fs":111,"path":182}],263:[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -66946,9 +61688,9 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],326:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],327:[function(require,module,exports){
+},{"dup":5}],265:[function(require,module,exports){
 (function (Buffer){
 const Sha3 = require('js-sha3')
 
@@ -66974,9 +61716,9 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":114,"js-sha3":353}],328:[function(require,module,exports){
+},{"buffer":114,"js-sha3":291}],266:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"../package.json":344,"./elliptic/curve":331,"./elliptic/curves":334,"./elliptic/ec":335,"./elliptic/eddsa":338,"./elliptic/hmac-drbg":341,"./elliptic/utils":343,"brorand":326,"dup":11}],329:[function(require,module,exports){
+},{"../package.json":282,"./elliptic/curve":269,"./elliptic/curves":272,"./elliptic/ec":273,"./elliptic/eddsa":276,"./elliptic/hmac-drbg":279,"./elliptic/utils":281,"brorand":264,"dup":11}],267:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -67329,7 +62071,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":328,"bn.js":325}],330:[function(require,module,exports){
+},{"../../elliptic":266,"bn.js":263}],268:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -67737,9 +62479,9 @@ Point.prototype.eq = function eq(other) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":328,"../curve":331,"bn.js":325,"inherits":352}],331:[function(require,module,exports){
+},{"../../elliptic":266,"../curve":269,"bn.js":263,"inherits":290}],269:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./base":329,"./edwards":330,"./mont":332,"./short":333,"dup":14}],332:[function(require,module,exports){
+},{"./base":267,"./edwards":268,"./mont":270,"./short":271,"dup":14}],270:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -67917,7 +62659,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":328,"../curve":331,"bn.js":325,"inherits":352}],333:[function(require,module,exports){
+},{"../../elliptic":266,"../curve":269,"bn.js":263,"inherits":290}],271:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -68826,7 +63568,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":328,"../curve":331,"bn.js":325,"inherits":352}],334:[function(require,module,exports){
+},{"../../elliptic":266,"../curve":269,"bn.js":263,"inherits":290}],272:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -68985,7 +63727,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":328,"./precomputed/secp256k1":342,"hash.js":346}],335:[function(require,module,exports){
+},{"../elliptic":266,"./precomputed/secp256k1":280,"hash.js":284}],273:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69197,7 +63939,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":328,"./key":336,"./signature":337,"bn.js":325}],336:[function(require,module,exports){
+},{"../../elliptic":266,"./key":274,"./signature":275,"bn.js":263}],274:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69306,7 +64048,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"bn.js":325}],337:[function(require,module,exports){
+},{"bn.js":263}],275:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69378,9 +64120,9 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":328,"bn.js":325}],338:[function(require,module,exports){
+},{"../../elliptic":266,"bn.js":263}],276:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"../../elliptic":328,"./key":339,"./signature":340,"dup":21,"hash.js":346}],339:[function(require,module,exports){
+},{"../../elliptic":266,"./key":277,"./signature":278,"dup":21,"hash.js":284}],277:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -69478,7 +64220,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":328}],340:[function(require,module,exports){
+},{"../../elliptic":266}],278:[function(require,module,exports){
 'use strict';
 
 var bn = require('bn.js');
@@ -69546,11 +64288,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":328,"bn.js":325}],341:[function(require,module,exports){
+},{"../../elliptic":266,"bn.js":263}],279:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"../elliptic":328,"dup":24,"hash.js":346}],342:[function(require,module,exports){
+},{"../elliptic":266,"dup":24,"hash.js":284}],280:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],343:[function(require,module,exports){
+},{"dup":25}],281:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -69724,7 +64466,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":325}],344:[function(require,module,exports){
+},{"bn.js":263}],282:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -69825,7 +64567,7 @@ module.exports={
   "version": "5.1.0"
 }
 
-},{}],345:[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('sha3')
 const ec = require('elliptic').ec('secp256k1')
@@ -70173,23 +64915,23 @@ function padToEven(a){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":76,"bn.js":325,"buffer":114,"elliptic":328,"rlp":355,"sha3":327}],346:[function(require,module,exports){
+},{"assert":76,"bn.js":263,"buffer":114,"elliptic":266,"rlp":293,"sha3":265}],284:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"./hash/common":347,"./hash/hmac":348,"./hash/ripemd":349,"./hash/sha":350,"./hash/utils":351,"dup":31}],347:[function(require,module,exports){
+},{"./hash/common":285,"./hash/hmac":286,"./hash/ripemd":287,"./hash/sha":288,"./hash/utils":289,"dup":31}],285:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"../hash":346,"dup":32}],348:[function(require,module,exports){
+},{"../hash":284,"dup":32}],286:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"../hash":346,"dup":33}],349:[function(require,module,exports){
+},{"../hash":284,"dup":33}],287:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../hash":346,"dup":34}],350:[function(require,module,exports){
+},{"../hash":284,"dup":34}],288:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"../hash":346,"dup":35}],351:[function(require,module,exports){
+},{"../hash":284,"dup":35}],289:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"dup":36,"inherits":352}],352:[function(require,module,exports){
+},{"dup":36,"inherits":290}],290:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],353:[function(require,module,exports){
+},{"dup":37}],291:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"dup":38}],354:[function(require,module,exports){
+},{"dup":38}],292:[function(require,module,exports){
 //     uuid.js
 //
 //     Copyright (c) 2010-2012 Robert Kieffer
@@ -70438,7 +65180,7 @@ arguments[4][38][0].apply(exports,arguments)
   }
 }).call(this);
 
-},{}],355:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 (function (Buffer){
 const assert = require('assert')
 /**
@@ -70667,7 +65409,7 @@ function toBuffer (v) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":76,"buffer":114}],356:[function(require,module,exports){
+},{"assert":76,"buffer":114}],294:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
