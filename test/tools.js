@@ -408,6 +408,7 @@ module.exports = {
             this.TIMEOUT = 131072;
         }
         augur.rpc.retryDroppedTxs = true;
+        augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
         if (defaulthost) augur.rpc.setLocalNode(defaulthost);
         if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
             if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {

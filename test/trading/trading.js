@@ -2918,23 +2918,15 @@ describe("Integration tests", function () {
                 this.timeout(tools.TIMEOUT);
                 var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
                 var initialTotalTrades = parseInt(augur.get_total_trades(markets[t.market]));
-                console.log("BCSTS:", {
-                    amount: t.amount,
-                    price: t.price,
-                    market: markets[t.market],
-                    outcome: t.outcome
-                });
                 augur.buyCompleteSetsThenSell({
                     amount: t.amount,
                     price: t.price,
                     market: markets[t.market],
                     outcome: t.outcome,
                     onSent: function (r) {
-                        console.log("sent:", r);
                         assert.isNull(r.callReturn);
                     },
                     onSuccess: function (r) {
-                        console.log("success:", r);
                         assert.isNotNull(r.callReturn);
                         var tradeID = r.callReturn;
                         var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
