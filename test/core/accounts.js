@@ -26,7 +26,10 @@ var address = keys.privateKeyToAddress(privateKey);
 // generate random names and passwords
 var name = utils.sha256(new Date().toString());
 var password = utils.sha256(Math.random().toString(36).substring(4));
+
 var secureLoginID;
+var generatedKeystore;
+
 var name2 = utils.sha256(new Date().toString()).slice(10) + "@" +
     utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
@@ -70,6 +73,7 @@ describe("Register", function () {
             checkAccount(augur, result, true);
             secureLoginID = result.secureLoginID;
             var rec = result.keystore;
+						generatedKeystore = result.keystore;
             assert.notProperty(rec, "error");
             assert(rec.crypto.ciphertext);
             assert(rec.crypto.cipherparams.iv);
@@ -114,6 +118,27 @@ describe("Register", function () {
             done();
         });
     });
+});
+
+describe("Import Account", function () {
+	it("Import Account should login the account given name, password, and keystore", function (done) {
+		this.timeout(tools.TIMEOUT);
+		var augur = tools.setup(require("../../src"), process.argv.slice(2));
+		augur.web.importAccount(name, password, generatedKeystore, function (user) {
+				assert.notProperty(user, "error");
+				assert.isTrue(Buffer.isBuffer(augur.web.account.privateKey));
+				assert.isString(user.address);
+				assert.isString(user.secureLoginID);
+				assert.isString(user.name);
+				assert.isObject(user.keystore);
+				assert.strictEqual(
+						augur.web.account.privateKey.toString("hex").length,
+						constants.KEYSIZE*2
+				);
+				assert.strictEqual(user.address.length, 42);
+				done();
+		});
+	});
 });
 
 describe("Login", function () {

@@ -179,7 +179,38 @@ module.exports = function () {
             }); // create
         },
 
+				importAccount: function (name, password, keystore, cb) {
+					var self = this;
+					cb = (utils.is_function(cb)) ? cb : utils.pass;
+					// blank password
+					if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+
+					// preparing to redo the secureLoginID to use the new name
+					keys.recover(password, keystore, function (privateKey) {
+						keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+
+							var unsecureLoginIDObject = {
+									name: name,
+									keystore: keystore
+							};
+
+							var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
+							// while logged in, web.account object is set
+							self.account = {
+									name: name,
+									secureLoginID: secureLoginID,
+									privateKey: privateKey,
+									address: keystore.address,
+									keystore: keystore,
+									derivedKey: derivedKey
+							};
+							return cb(clone(self.account));
+						});
+					});
+				},
+
         loadLocalLoginAccount: function (localAccount, cb) {
+						var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
             var privateKey = localAccount.privateKey;
             var derivedKey = localAccount.derivedKey;
@@ -189,7 +220,7 @@ module.exports = function () {
             if (derivedKey && !Buffer.isBuffer(derivedKey)) {
                 derivedKey = new Buffer(derivedKey, "hex");
             }
-            this.account = {
+            self.account = {
                 name: localAccount.name,
                 secureLoginID: localAccount.secureLoginID,
                 privateKey: privateKey,
@@ -214,9 +245,14 @@ module.exports = function () {
             }
             var keystore = unencryptedLoginIDObject.keystore;
             var name = unencryptedLoginIDObject.name;
+						var options = {
+							kdf: keystore.crypto.kdf,
+							kdfparams: keystore.crypto.kdfparams,
+							cipher: keystore.crypto.kdf
+						};
 
             // derive secret key from password
-            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+            keys.deriveKey(password, keystore.crypto.kdfparams.salt, options, function (derivedKey) {
                 if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
                 // verify that message authentication codes match
