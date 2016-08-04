@@ -396,6 +396,37 @@ export default function (market) {
 			assertFormattedNumber(positionsSummary.netChange);
 		});
 
+		const marketSummary = market.marketSummary;
+		it('market.marketSummary.endDate', () => {
+			assert.isDefined(marketSummary.endDate);
+			assertEndDate(marketSummary.endDate, 'marketSummary.endDate');
+		});
+
+		it('market.marketSummary.fees', () => {
+			assert.isDefined(marketSummary.fees);
+			assertFormattedNumber(marketSummary.fees);
+		});
+
+		it('market.marketSummary.volume', () => {
+			assert.isDefined(marketSummary.volume);
+			assertFormattedNumber(marketSummary.volume);
+		});
+
+		it('market.marketSummary.numberOfTrades', () => {
+			assert.isDefined(marketSummary.numberOfTrades);
+			assertFormattedNumber(marketSummary.numberOfTrades);
+		});
+
+		it('market.marketSummary.averageTradeSize', () => {
+			assert.isDefined(marketSummary.averageTradeSize);
+			assertFormattedNumber(marketSummary.averageTradeSize);
+		});
+
+		it('market.marketSummary.openVolume', () => {
+			assert.isDefined(marketSummary.openVolume);
+			assertFormattedNumber(marketSummary.openVolume);
+		});
+
 		const report = market.report;
 		it('market.report', () => {
 			assert.isDefined(report);
