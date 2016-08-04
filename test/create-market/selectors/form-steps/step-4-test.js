@@ -239,43 +239,99 @@ describe(`modules/create-market/selectors/form-steps/step-4.js`, () => {
 					raw: null
 				}
 			};
-
-			proxiedSelector.isValid(formState);
 		});
 
-		it('calls validateTakerFee', () => {
-			assert(stubbedValidateTakerFee.calledOnce, 'validateTakerFee was not called once');
-			validateTakerFee.default.reset();
+		describe('isCreatingOrderBook false', () => {
+			before(() => {
+				proxiedSelector.isValid(formState);
+			});
+
+			after(() => {
+				validateTakerFee.default.reset();
+				validateMakerFee.default.reset();
+				validateInitialLiquidity.default.reset();
+				validateInitialFairPrices.default.reset();
+				validateBestStartingQuantity.default.reset();
+				validateStartingQuantity.default.reset();
+				validatePriceWidth.default.reset();
+			});
+
+			it('calls validateTakerFee', () => {
+				assert(stubbedValidateTakerFee.calledOnce, 'validateTakerFee was not called once');
+			});
+
+			it('calls validateMakerFee', () => {
+				assert(stubbedValidateMakerFee.calledOnce, 'validateMakerFee was not called once');
+			});
+
+			it('calls validateInitialLiquidity', () => {
+				assert(stubbedValidateInitialLiquidity.notCalled, 'validateInitialLiquidity was called');
+			});
+
+			it('calls validateInitialFairPrices', () => {
+				assert(stubbedValidateInitialFairPrices.notCalled, 'validateInitialFairPrices was called');
+			});
+
+			it('calls validateBestStartingQuantity', () => {
+				assert(stubbedValidateBestStartingQuantity.notCalled, 'validateBestStartingQuantity was called');
+			});
+
+			it('calls validateStartingQuantity', () => {
+				assert(stubbedValidateStartingQuantity.notCalled, 'validateStartingQuantity was called');
+			});
+
+			it('calls validatePriceWidth', () => {
+				assert(stubbedValidatePriceWidth.notCalled, 'validatePriceWidth was called ');
+			});
 		});
 
-		it('calls validateMakerFee', () => {
-			assert(stubbedValidateMakerFee.calledOnce, 'validateMakerFee was not called once');
-			validateMakerFee.default.reset();
-		});
+		describe('isCreatingOrderBook true', () => {
+			before(() => {
+				formState = {
+					...formState,
+					isCreatingOrderBook: true
+				};
 
-		it('calls validateInitialLiquidity', () => {
-			assert(stubbedValidateInitialLiquidity.calledOnce, 'validateInitialLiquidity was not called once');
-			validateInitialLiquidity.default.reset();
-		});
+				proxiedSelector.isValid(formState);
+			});
 
-		it('calls validateInitialFairPrices', () => {
-			assert(stubbedValidateInitialFairPrices.calledOnce, 'validateInitialFairPrices was not called once');
-			validateInitialFairPrices.default.reset();
-		});
+			after(() => {
+				validateTakerFee.default.reset();
+				validateMakerFee.default.reset();
+				validateInitialLiquidity.default.reset();
+				validateInitialFairPrices.default.reset();
+				validateBestStartingQuantity.default.reset();
+				validateStartingQuantity.default.reset();
+				validatePriceWidth.default.reset();
+			});
 
-		it('calls validateBestStartingQuantity', () => {
-			assert(stubbedValidateBestStartingQuantity.calledOnce, 'validateBestStartingQuantity was not called once');
-			validateBestStartingQuantity.default.reset();
-		});
+			it('calls validateTakerFee', () => {
+				assert(stubbedValidateTakerFee.calledOnce, 'validateTakerFee was not called once');
+			});
 
-		it('calls validateStartingQuantity', () => {
-			assert(stubbedValidateStartingQuantity.calledOnce, 'validateStartingQuantity was not called once');
-			validateStartingQuantity.default.reset();
-		});
+			it('calls validateMakerFee', () => {
+				assert(stubbedValidateMakerFee.calledOnce, 'validateMakerFee was not called once');
+			});
 
-		it('calls validatePriceWidth', () => {
-			assert(stubbedValidatePriceWidth.calledOnce, 'validatePriceWidth was not called once');
-			validatePriceWidth.default.reset();
+			it('calls validateInitialLiquidity', () => {
+				assert(stubbedValidateInitialLiquidity.calledOnce, 'validateInitialLiquidity was not called once');
+			});
+
+			it('calls validateInitialFairPrices', () => {
+				assert(stubbedValidateInitialFairPrices.calledOnce, 'validateInitialFairPrices was not called once');
+			});
+
+			it('calls validateBestStartingQuantity', () => {
+				assert(stubbedValidateBestStartingQuantity.calledOnce, 'validateBestStartingQuantity was not called once');
+			});
+
+			it('calls validateStartingQuantity', () => {
+				assert(stubbedValidateStartingQuantity.calledOnce, 'validateStartingQuantity was not called once');
+			});
+
+			it('calls validatePriceWidth', () => {
+				assert(stubbedValidatePriceWidth.calledOnce, 'validatePriceWidth was not called once');
+			});
 		});
 	});
 
