@@ -84,7 +84,15 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		const account = JSON.parse(localStorageRef.getItem('account'));
 
 		if (account && account.privateKey) {
-			augur.web.loadLocalLoginAccount(account, (loginAccount) => cb(null, loginAccount));
+			// local storage account exists, load it spawn the callback using augur.web.account
+			augur.web.loadLocalLoginAccount(account, (loginAccount) =>
+				cb(null, {
+					...augur.web.account,
+					id: augur.web.account.address
+				})
+			);
+			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
+			return;
 		}
 	}
 
@@ -528,7 +536,7 @@ ex.changeAccountName = function changeAccountName(name, cb) {
 		if (!account) {
 			return cb({ code: 0, message: 'failed to edit account name' });
 		}
-		return cb(null, account);
+		return cb(null, { ...account, id: account.address });
 	});
 };
 
