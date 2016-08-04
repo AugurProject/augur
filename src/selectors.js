@@ -9,11 +9,15 @@ import loginAccount from './selectors/login-account';
 import market from './selectors/market';
 import markets from './selectors/markets';
 import marketsTotals from './selectors/markets-totals';
-import positionsMarkets from './selectors/positions-markets';
-import positionsSummary from './selectors/positions-summary';
 import transactions from './selectors/transactions';
 import transactionsTotals from './selectors/transactions-totals';
 import url from './selectors/url';
+import portfolio from './selectors/portfolio';
+import portfolioNavItems from './selectors/portfolio-nav-items';
+import portfolioTotals from './selectors/portfolio-totals';
+import loginAccountPositions from './selectors/login-account-positions';
+import loginAccountMarkets from './selectors/login-account-markets';
+import loginAccountReports from './selectors/login-account-reports';
 
 // all selectors should go here
 const selectors = {
@@ -28,11 +32,15 @@ const selectors = {
 	market,
 	markets,
 	marketsTotals,
-	positionsSummary,
-	positionsMarkets,
 	transactions,
 	transactionsTotals,
-	url
+	url,
+	portfolio,
+	portfolioNavItems,
+	portfolioTotals,
+	loginAccountPositions,
+	loginAccountMarkets,
+	loginAccountReports
 };
 
 // add update helper fn to selectors object

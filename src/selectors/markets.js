@@ -1,4 +1,5 @@
 import { makeNumber } from '../utils/make-number';
+import { makeDate } from '../utils/make-date';
 import selectOrderBook from '../selectors/bids-asks/select-bids-asks';
 
 import { M } from '../modules/site/constants/pages';
@@ -29,11 +30,7 @@ function makeMarkets(numMarkets = 10) {
 			id,
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
-			endDate: {
-				value: d,
-				formatted: `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`,
-				full: d.toISOString()
-			},
+			endDate: makeDate(d),
 			endDateLabel: (d < new Date()) ? 'ended' : 'ends',
 			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),

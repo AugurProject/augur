@@ -113,7 +113,11 @@ const Transaction = (p) => {
 			</span>
 
 			{p.status &&
-				<div className="status-and-message"><span className="status">{p.status}</span><br /><span className="message">{p.message}</span></div>
+				<div className="status-and-message">
+					<span className="message">{p.message}</span>
+					<br />
+					<span className="status">{p.status}</span>
+				</div>
 			}
 		</article>
 	);

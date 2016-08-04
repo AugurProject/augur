@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ACCOUNT, MARKETS, POSITIONS, TRANSACTIONS } from '../../site/constants/pages';
+import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../site/constants/pages';
 import { AUTH_TYPES } from '../../auth/constants/auth-types';
 import Link from '../../link/components/link';
 import ValueDenomination from '../../common/components/value-denomination';
@@ -12,28 +12,19 @@ const SiteHeader = (p) => (
 
 			<span className="spacer">&nbsp;</span>
 
-			{!!p.loginAccount && !!p.loginAccount.id && !!p.positionsSummary && !!p.positionsSummary.numPositions &&
-				<Link className={classnames('site-nav-link', POSITIONS, { active: p.activePage === POSITIONS })} {...p.positionsLink}>
-
-					{!!p.positionsSummary &&
-						<ValueDenomination
-							className="positions-num"
-							{...p.positionsSummary.numPositions}
-							formatted={p.positionsSummary.numPositions.rounded}
-							formattedValue={p.positionsSummary.numPositions.roundedValue}
-						/>
-					}
-
-					{!!p.positionsSummary && !!p.positionsSummary.gainPercent && p.positionsSummary.numPositions.roundedValue > 0 &&
-						<ValueDenomination
-							className="positions-gain"
-							{...p.positionsSummary.gainPercent}
-							formatted={p.positionsSummary.gainPercent.rounded}
-							formattedValue={p.positionsSummary.gainPercent.roundedValue}
-						/>
-					}
+			{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
+				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
+					<ValueDenomination
+						title={`Total Portfolio Value: ${p.portfolioTotals.value.full}`}
+						{...p.portfolioTotals.value || {}}
+					/> Portfolio (
+					<ValueDenomination
+						title={`Total Portfolio Gain/Loss: ${p.portfolioTotals.net.full}`}
+						{...p.portfolioTotals.net || {}}
+					/>)
 				</Link>
 			}
+
 			{(!!p.loginAccount && !!p.loginAccount.id || !!p.transactionsTotals.numTotal) &&
 				<Link
 					className={classnames('site-nav-link', TRANSACTIONS, { active: p.activePage === TRANSACTIONS }, { working: p.isTransactionsWorking })}
@@ -79,13 +70,13 @@ const SiteHeader = (p) => (
 SiteHeader.propTypes = {
 	activePage: React.PropTypes.string,
 	loginAccount: React.PropTypes.object,
-	positionsSummary: React.PropTypes.object,
 	transactionsTotals: React.PropTypes.object,
 	isTransactionsWorking: React.PropTypes.bool,
 	marketsLink: React.PropTypes.object,
-	positionsLink: React.PropTypes.object,
+	myPositionsLink: React.PropTypes.object,
 	transactionsLink: React.PropTypes.object,
-	authLink: React.PropTypes.object
+	authLink: React.PropTypes.object,
+	portfolioTotals: React.PropTypes.object
 };
 
 export default SiteHeader;
