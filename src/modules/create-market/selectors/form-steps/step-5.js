@@ -32,22 +32,24 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
 		formState.scalarBigNum);
 	o.isFavorite = false;
 
-	const formattedFairPrices = [];
+	if (!!o.isCreatingOrderBook) {
+		const formattedFairPrices = [];
 
-	o.initialFairPrices.values.map((cV, i) => {
-		formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
-		return formattedFairPrices;
-	});
+		o.initialFairPrices.values.map((cV, i) => {
+			formattedFairPrices[i] = formatNumber(cV.value, { decimals: 2, minimized: true, denomination: `ETH | ${cV.label}` });
+			return formattedFairPrices;
+		});
 
-	o.initialFairPrices = {
-		...o.initialFairPrices,
-		formatted: formattedFairPrices
-	};
+		o.initialFairPrices = {
+			...o.initialFairPrices,
+			formatted: formattedFairPrices
+		};
 
-	o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
-	o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
-	o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
-	o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
+		o.initialLiquidityFormatted = formatNumber(o.initialLiquidity, { denomination: 'ETH' });
+		o.bestStartingQuantityFormatted = formatNumber(o.bestStartingQuantity, { denomination: 'Shares' });
+		o.startingQuantityFormatted = formatNumber(o.startingQuantity, { denomination: 'Shares' });
+		o.priceWidthFormatted = formatNumber(o.priceWidth, { decimals: 2, minimized: true, denomination: 'ETH' });
+	}
 
 	o.onSubmit = () => dispatch(submitNewMarket(o));
 
