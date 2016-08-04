@@ -30,7 +30,7 @@ export function listenToUpdates() {
 
 			// new market, result = { blockNumber, marketId }
 			(errNone, result) => {
-				if (!result.marketId) {
+				if (!result || !result.marketId) {
 					return;
 				}
 				dispatch(loadMarketsInfo(result.marketId));
