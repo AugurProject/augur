@@ -202,9 +202,10 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			assert.deepEqual(store.getActions(), out, `createMarket did not fail correctly`);
 		});
 
-		it('should be able to create a binary market', () => {
+		it('should be able to create a binary market WITH an order book', () => {
 			marketData = {
-				type: BINARY
+				type: BINARY,
+				isCreatingOrderBook: true
 			};
 
 			store.dispatch(action.createMarket( transID, marketData ));
@@ -232,6 +233,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 			expectedMarketData = {
 				type: BINARY,
+				isCreatingOrderBook: true,
 				minValue: 1,
 				maxValue: 2,
 				numOutcomes: 2
@@ -242,9 +244,47 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
 		});
 
-		it('should be able to create a scalar market', () => {
+		it('should be able to create a binary market WITHOUT an order book', () => {
+			marketData = {
+				type: BINARY
+			};
+
+			store.dispatch(action.createMarket( transID, marketData ));
+
+			clock.tick(10000);
+
+			out = [
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: transID,
+					status: { status: 'sending...' }
+				},
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: transID,
+					status: { status: SUCCESS }
+				},
+				{
+					type: 'CLEAR_MAKE_IN_PROGRESS'
+				}
+			];
+
+			expectedMarketData = {
+				type: BINARY,
+				minValue: 1,
+				maxValue: 2,
+				numOutcomes: 2
+			};
+
+			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
+			assert.deepEqual(store.getActions(), out, `a binary market was not correctly created`);
+			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
+		});
+
+		it('should be able to create a scalar market WITH an order book', () => {
 			marketData = {
 				type: SCALAR,
+				isCreatingOrderBook: true,
 				scalarSmallNum: 10,
 				scalarBigNum: 100
 			};
@@ -274,6 +314,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 			expectedMarketData = {
 				type: SCALAR,
+				isCreatingOrderBook: true,
 				scalarSmallNum: 10,
 				scalarBigNum: 100,
 				minValue: 10,
@@ -286,10 +327,52 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
 		});
 
-		it('should be able to create a categorical market', () => {
+		it('should be able to create a scalar market WITHOUT an order book', () => {
+			marketData = {
+				type: SCALAR,
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			store.dispatch(action.createMarket( transID, marketData ));
+
+			clock.tick(10000);
+
+			out = [
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: transID,
+					status: { status: 'sending...' }
+				},
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: transID,
+					status: { status: SUCCESS }
+				},
+				{
+					type: 'CLEAR_MAKE_IN_PROGRESS'
+				}
+			];
+
+			expectedMarketData = {
+				type: SCALAR,
+				scalarSmallNum: 10,
+				scalarBigNum: 100,
+				minValue: 10,
+				maxValue: 100,
+				numOutcomes: 2
+			};
+
+			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
+			assert.deepEqual(store.getActions(), out, `a scalar market was not correctly created`);
+			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
+		});
+
+		it('should be able to create a categorical market WITH an order book', () => {
 			marketData = {
 				description: 'test',
 				type: CATEGORICAL,
+				isCreatingOrderBook: true,
 				outcomes: [
 					{ id: 0, name: 'outcome1'},
 					{ id: 1, name: 'outcome2'},
@@ -317,6 +400,57 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 				},
 				{
 					type: 'submitGenerateOrderBook'
+				}
+			];
+
+			expectedMarketData = {
+				description: 'test',
+				formattedDescription: `test${CATEGORICAL_OUTCOMES_SEPARATOR}${marketData.outcomes[0].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[1].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[2].name}`,
+				type: CATEGORICAL,
+				isCreatingOrderBook: true,
+				outcomes: [
+					{ id: 0, name: 'outcome1'},
+					{ id: 1, name: 'outcome2'},
+					{ id: 2, name: 'outcome3'}
+				],
+				minValue: 1,
+				maxValue: 2,
+				numOutcomes: 3
+			};
+
+			assert(stubbedUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction was not called exactly twice`);
+			assert.deepEqual(store.getActions(), out, `a categorical market was not correctly created`);
+			assert.deepEqual(marketData, expectedMarketData, 'market data was not correctly mutated');
+		});
+
+		it('should be able to create a categorical market WITH an order book', () => {
+			marketData = {
+				description: 'test',
+				type: CATEGORICAL,
+				outcomes: [
+					{ id: 0, name: 'outcome1'},
+					{ id: 1, name: 'outcome2'},
+					{ id: 2, name: 'outcome3'}
+				]
+			};
+
+			store.dispatch(action.createMarket( transID, marketData ));
+
+			clock.tick(10000);
+
+			out = [
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: transID,
+					status: { status: 'sending...' }
+				},
+				{
+					type: 'UPDATE_EXISTING_TRANSACTIONS',
+					transactionID: transID,
+					status: { status: SUCCESS }
+				},
+				{
+					type: 'CLEAR_MAKE_IN_PROGRESS'
 				}
 			];
 
