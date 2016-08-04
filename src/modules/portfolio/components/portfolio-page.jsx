@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import SiteHeader from '../../../modules/site/components/site-header';
 import SiteFooter from '../../../modules/site/components/site-footer';
 import MyPositions from '../../../modules/portfolio/components/my-positions';
-import MyMarkets from '../../../modules/portfolio/components/my-markets';
+import MyMarkets from '../../../modules/my-markets/components/markets';
 import MyReports from '../../../modules/portfolio/components/my-reports';
 import TabNavigation from '../../../modules/common/components/tab-navigation';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../modules/site/constants/pages';
@@ -45,18 +45,19 @@ const PortfolioPage = (p) => {
 					</div>
 				</section>
 			</div>
+
 			<SiteFooter />
 		</main>
 	);
 };
 
 PortfolioPage.propTypes = {
-	siteHeader: React.PropTypes.object.isRequired,
-	navItems: React.PropTypes.array.isRequired,
-	totals: React.PropTypes.object.isRequired,
-	positions: React.PropTypes.object.isRequired,
-	markets: React.PropTypes.array.isRequired,
-	reports: React.PropTypes.array.isRequired
+	siteHeader: PropTypes.object.isRequired,
+	navItems: PropTypes.array.isRequired,
+	totals: PropTypes.object.isRequired,
+	positions: PropTypes.object.isRequired,
+	markets: PropTypes.array.isRequired,
+	reports: PropTypes.array.isRequired
 };
 
 export default PortfolioPage;
