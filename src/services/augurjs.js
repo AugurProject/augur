@@ -99,6 +99,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 
 		// use augur.from address if unlocked
 		if (unlocked && !unlocked.error) {
+			augur.web.logout();
 			console.log('using unlocked account:', augur.from);
 			return cb(null, { id: augur.from });
 		}
@@ -321,6 +322,10 @@ ex.getEventsToReportOn = function getEventsToReportOn(branch, period, sender, st
 
 	// load market-ids related to each event-id one at a time
 	augur.getEventsToReportOn(branch, period, sender, start, (events) => {
+		if (!events || events.constructor !== Array || !events.length) {
+			return cb(null, {});
+		}
+		console.debug('getEventsToReportOn:', events);
 		(function processEventID() {
 			const event = events.pop();
 			augur.getReportHash(branch, period, sender, event, (reportHash) => {
