@@ -14,21 +14,29 @@ const TradeBuilderRow = (p) => {
 		<tr className={classnames('trade-builder-row')}>
 			<td className={classnames('outcome-name', { fade: p.isFaded })}>
 				{p.name}
+				&nbsp; - &nbsp;
+				<ValueDenomination {...p.lastPricePercent} />
 			</td>
-			<td className={classnames('last-price', { fade: p.isFaded })}>
-				<ValueDenomination {...p.lastPrice} />
-			</td>
-			<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
-				{!!bids && bids.map((bid, i) => (
-					<TradeBuilderBidAsk key={i} bidAsk={bid} />
-				))}
-			</td>
-			<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'sell') })}>
-				{!!asks && asks.map((ask, i) => (
-					<TradeBuilderBidAsk key={i} bidAsk={ask} />
-				))}
-			</td>
-
+			{p.trade.side === 'sell' &&
+				<td className={classnames('bid', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'buy') })}>
+					{!p.showFullOrderBook && !!p.topBid && !!p.topBid.price &&
+						<ValueDenomination {...p.topBid.price} />
+					}
+					{!!p.showFullOrderBook && !!bids && bids.map((bid, i) => (
+						<TradeBuilderBidAsk key={i} bidAsk={bid} />
+					))}
+				</td>
+			}
+			{p.trade.side === 'buy' &&
+				<td className={classnames('ask', { fade: p.isFaded || (p.showFullOrderBook && p.trade.side === 'sell') })}>
+					{!p.showFullOrderBook && !!p.topAsk && !!p.topAsk.price &&
+						<ValueDenomination {...p.topAsk.price} />
+					}
+					{!!p.showFullOrderBook && !!asks && asks.map((ask, i) => (
+						<TradeBuilderBidAsk key={i} bidAsk={ask} />
+					))}
+				</td>
+			}
 			<td className={classnames('buy-sell-toggler', { fade: p.isFaded && !p.trade.numShares })}>
 				{!!p.trade && p.trade.side &&
 					<Toggler
