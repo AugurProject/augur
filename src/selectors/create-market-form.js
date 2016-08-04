@@ -92,6 +92,7 @@ function createMarketForm() {
 
 			form.takerFeePercent = makeNumber(form.takerFee, '%');
 			form.makerFeePercent = makeNumber(form.makerFee, '%');
+			form.initialLiquidityFormatted = makeNumber(form.initialLiquidity, 'ETH', true);
 			form.bestStartingQuantityFormatted = makeNumber(form.bestStartingQuantity, 'Shares', true);
 			form.startingQuantityFormatted = makeNumber(form.startingQuantity, 'Shares', true);
 			form.priceWidthFormatted = makeNumber(form.priceWidth, 'ETH', true);

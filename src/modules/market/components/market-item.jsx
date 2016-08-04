@@ -4,7 +4,7 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 import Basics from '../../market/components/basics';
 import Outcomes from '../../market/components/outcomes';
 import Link from '../../link/components/link';
-import Advanced from '../../market/components/advanced';
+import OrderBookParameters from '../../../modules/market/components/order-book-parameters';
 
 export default class MarketItem extends Component {
 	static propTypes = {
@@ -28,18 +28,17 @@ export default class MarketItem extends Component {
 
 	render() {
 		const p = this.props;
-		const advancedParamsArrow = !!p.showAdvancedMarketParams ? '▲' : '▼';
 
 		return (
 			<article className="market-item">
 				<div className="basics-container">
 					<Basics {...p} />
 
-					{!!p.creatingMarket &&
-						<div className="advanced-market-params" >
-							<h6 className="horizontal-divider" onClick={() => { p.onValuesUpdated({ showAdvancedMarketParams: !p.showAdvancedMarketParams }); }}><span>{advancedParamsArrow}</span> Advanced <span>{advancedParamsArrow}</span></h6>
-							<div className={classnames({ displayNone: !p.showAdvancedMarketParams })}>
-								<Advanced {...p} />
+					{!!p.creatingMarket && p.isCreatingOrderBook &&
+						<div className="order-book-creation" >
+							<h6 className="horizontal-divider" > Order Book Parameters </h6>
+							<div>
+								<OrderBookParameters {...p} />
 							</div>
 						</div>
 					}

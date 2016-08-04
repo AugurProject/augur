@@ -1,9 +1,13 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const Advanced = (p) => (
+const OrderBookParameters = (p) => (
 	<section className="advanced">
 		<ul className="properties">
+			<li className="property">
+				<span className="property-label">initial liquidity</span>
+				<ValueDenomination className="property-value" {...p.initialLiquidityFormatted} />
+			</li>
 			<li className="property fee">
 				<span className="property-label">initial prices: </span>
 				<span>
@@ -32,11 +36,12 @@ const Advanced = (p) => (
 	</section>
 );
 
-Advanced.propTypes = {
-	initialFairPrices: PropTypes.object,
-	bestStartingQuantityFormatted: PropTypes.any,
-	startingQuantityFormatted: PropTypes.any,
-	priceWidthFormatted: PropTypes.any
+OrderBookParameters.propTypes = {
+	initialFairPrices: PropTypes.object.isRequired,
+	initialLiquidityFormatted: PropTypes.object.isRequired,
+	bestStartingQuantityFormatted: PropTypes.object.isRequired,
+	startingQuantityFormatted: PropTypes.object.isRequired,
+	priceWidthFormatted: PropTypes.object.isRequired
 };
 
-export default Advanced;
+export default OrderBookParameters;

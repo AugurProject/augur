@@ -59,7 +59,7 @@
 			}
 		}
 
-		.advanced-market-params {
+		.order-book-creation {
 			.horizontal-divider {
 				padding: 1rem 0;
 
@@ -74,7 +74,6 @@
 				}
 
 				color: @color-muted-normal;
-				cursor: pointer;
 
 				// Horizontal Lines
 				&::before,
@@ -94,22 +93,6 @@
 				&::after {
 					left: 0.5rem;
 					margin-right: -50%;
-				}
-
-				// States
-				&:hover {
-					color: @color-muted-hover;
-				}
-				&:hover::before,
-				&:hover::after {
-					background-color: @color-muted-hover;
-				}
-				&:active {
-					color: @color-muted-active;
-				}
-				&:active::before,
-				&:active::after {
-					background-color: @color-muted-active;
 				}
 			}
 		}
@@ -204,6 +187,11 @@
 
 			.fee {
 				margin-bottom: 2rem;
+			}
+
+			.initial-order-book .checkbox {
+				display: block;
+				margin: 2rem 0 0.5rem;
 			}
 		}
 	}
