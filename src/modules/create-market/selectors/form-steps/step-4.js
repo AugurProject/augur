@@ -89,28 +89,32 @@ export const initialFairPrices = (formState) => {
 export const isValid = (formState) => {
 	if (validateTakerFee(formState.takerFee) ||
 		validateMakerFee(formState.makerFee, formState.takerFee) ||
-		validateInitialLiquidity(
-			formState.type,
-			formState.initialLiquidity,
-			formState.startingQuantity,
-			formState.bestStartingQuantity,
-			formState.halfPriceWidth,
-			formState.scalarSmallNum,
-			formState.scalarBigNum
-		)	||
-		validateInitialFairPrices(
-			formState.type,
-			formState.initialFairPrices.raw,
-			formState.priceWidth,
-			formState.halfPriceWidth,
-			formState.scalarSmallNum,
-			formState.scalarBigNum
-		)	||
-		validateBestStartingQuantity(formState.bestStartingQuantity) ||
-		validateStartingQuantity(formState.startingQuantity)	||
-		validatePriceWidth(formState.priceWidth)) {
+		(!!formState.isCreatingOrderBook && (
+			validateInitialLiquidity(
+				formState.type,
+				formState.initialLiquidity,
+				formState.startingQuantity,
+				formState.bestStartingQuantity,
+				formState.halfPriceWidth,
+				formState.scalarSmallNum,
+				formState.scalarBigNum
+			)	||
+			validateInitialFairPrices(
+				formState.type,
+				formState.initialFairPrices.raw,
+				formState.priceWidth,
+				formState.halfPriceWidth,
+				formState.scalarSmallNum,
+				formState.scalarBigNum
+			)	||
+			validateBestStartingQuantity(formState.bestStartingQuantity) ||
+			validateStartingQuantity(formState.startingQuantity)	||
+			validatePriceWidth(formState.priceWidth)
+		))
+	) {
 		return false;
 	}
+	
 	return true;
 };
 
