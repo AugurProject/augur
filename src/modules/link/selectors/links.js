@@ -4,7 +4,6 @@ import { makeLocation } from '../../../utils/parse-url';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
 import { ACCOUNT, M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
-import { LOGIN, REGISTER, IMPORT } from '../../auth/constants/auth-types';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
