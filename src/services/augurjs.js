@@ -84,7 +84,15 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		const account = JSON.parse(localStorageRef.getItem('account'));
 
 		if (account && account.privateKey) {
-			augur.web.loadLocalLoginAccount(account, (loginAccount) => cb(null, loginAccount));
+			// local storage account exists, load it spawn the callback using augur.web.account
+			augur.web.loadLocalLoginAccount(account, (loginAccount) =>
+				cb(null, {
+					...augur.web.account,
+					id: augur.web.account.address
+				})
+			);
+			//	break out of ex.loadLoginAccount as we don't want to login the local geth node.
+			return;
 		}
 	}
 
@@ -203,6 +211,7 @@ ex.listenToBidsAsks = function listenToBidsAsks() {
 
 ex.login = function login(secureLoginID, password, cb) {
 	augur.web.login(secureLoginID, password, (account) => {
+		console.log(account);
 		if (!account) {
 			return cb({ code: 0, message: 'failed to login' });
 		}
@@ -223,6 +232,7 @@ ex.logout = function logout() {
 ex.register = function register(name, password, cb) {
 	augur.web.register(name, password,
 		account => {
+			console.log(account);
 			if (!account) {
 				return cb({ code: 0, message: 'failed to register' });
 			}
@@ -234,6 +244,22 @@ ex.register = function register(name, password, cb) {
 				id: account.address
 			});
 		});
+};
+
+ex.importAccount = function importAccount(name, password, keystore, cb) {
+	augur.web.importAccount(name, password, keystore, account => {
+		console.log(account);
+		if (!account) {
+			return cb({ code: 0, message: 'failed to register' });
+		}
+		if (account.error) {
+			return cb({ code: account.error, message: account.message });
+		}
+		return cb(null, {
+			...account,
+			id: account.address
+		});
+	});
 };
 
 ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
@@ -510,7 +536,7 @@ ex.changeAccountName = function changeAccountName(name, cb) {
 		if (!account) {
 			return cb({ code: 0, message: 'failed to edit account name' });
 		}
-		return cb(null, account);
+		return cb(null, { ...account, id: account.address });
 	});
 };
 
