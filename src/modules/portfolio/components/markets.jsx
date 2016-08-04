@@ -1,11 +1,23 @@
 import React from 'react';
+import Market from '../../../modules/my-markets/components/market';
 
-const Markets = (p) => (
-	<div>MY MARKETS STUB (waiting on styling) -- TODO</div>
+const PortfolioMarkets = (p) => (
+	<div>
+		{!!p.markets && !!p.markets.length && p.markets.map(market => (
+			<div key={market.id}>
+				<span className="description">{market.description}</span>
+				{!!market &&
+					<section className="portfolio-list">
+						<Market {...market} />
+					</section>
+				}
+			</div>
+		))}
+	</div>
 );
 
-Markets.propTypes = {
-	markets: React.PropTypes.object.isRequired
+PortfolioMarkets.propTypes = {
+	markets: React.PropTypes.array.isRequired
 };
 
-export default Markets;
+export default PortfolioMarkets;

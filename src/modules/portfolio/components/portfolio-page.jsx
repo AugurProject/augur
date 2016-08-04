@@ -39,10 +39,8 @@ const PortfolioPage = (p) => {
 			</header>
 
 			<div className="page-content">
-				<section className="page-content portfolio-content">
-					<div className="portfolio-item">
-						{node}
-					</div>
+				<section className="l-container portfolio-content">
+					{node}
 				</section>
 			</div>
 
