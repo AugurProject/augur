@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import { ACCOUNT, MAKE, POSITIONS, TRANSACTIONS, M } from './modules/site/constants/pages';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from './modules/site/constants/pages';
 import { REGISTER, LOGIN, LOGOUT, IMPORT } from './modules/auth/constants/auth-types';
 
 import MarketsPage from './modules/markets/components/markets-page';
@@ -9,7 +9,7 @@ import MarketPage from './modules/market/components/market-page';
 import CreateMarketPage from './modules/create-market/components/create-market-page';
 import AuthPage from './modules/auth/components/auth-page';
 import AccountPage from './modules/account/components/account-page';
-import PositionsPage from './modules/positions/components/positions-page';
+import PortfolioPage from './modules/portfolio/components/portfolio-page';
 import TransactionsPage from './modules/transactions/components/transactions-page';
 
 export default function (appElement, selectors) {
@@ -24,11 +24,12 @@ export default function (appElement, selectors) {
 		transactionsTotals: p.transactionsTotals,
 		isTransactionsWorking: p.isTransactionsWorking,
 		marketsLink: p.links && p.links.marketsLink || undefined,
-		positionsLink: p.links && p.links.positionsLink || undefined,
 		transactionsLink: p.links && p.links.transactionsLink || undefined,
 		authLink: p.links && p.links.authLink || undefined,
 		accountLink: p.links && p.links.accountLink || undefined,
-		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined
+		accountLinkText: p.loginAccount && p.loginAccount.linkText || undefined,
+		myPositionsLink: p.links && p.links.myPositionsLink || undefined,
+		portfolioTotals: p.portfolio && p.portfolio.totals || undefined
 	};
 
 	switch (p.activePage) {
@@ -63,16 +64,6 @@ export default function (appElement, selectors) {
 		);
 		break;
 
-	case POSITIONS:
-		node = (
-			<PositionsPage
-				siteHeader={p.siteHeader}
-				positionsSummary={p.positionsSummary}
-				positionsMarkets={p.positionsMarkets}
-			/>
-		);
-		break;
-
 	case TRANSACTIONS:
 		node = (
 			<TransactionsPage
@@ -91,6 +82,17 @@ export default function (appElement, selectors) {
 				orderCancellation={p.orderCancellation}
 				market={p.market}
 				numPendingReports={p.marketsTotals.numPendingReports}
+			/>
+		);
+		break;
+
+	case MY_POSITIONS:
+	case MY_MARKETS:
+	case MY_REPORTS:
+		node = (
+			<PortfolioPage
+				siteHeader={p.siteHeader}
+				{...p.portfolio}
 			/>
 		);
 		break;

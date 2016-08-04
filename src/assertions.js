@@ -22,6 +22,12 @@ import transactionsTotals from '../test/assertions/transactions-totals';
 import url from '../test/assertions/url';
 import selectedUserOpenOrdersGroup from '../test/assertions/selected-user-open-orders-group';
 import orderCancellation from '../test/assertions/order-cancellation';
+import portfolio from '../test/assertions/portfolio';
+import portfolioNavItems from '../test/assertions/portfolio-nav-items';
+import loginAccountPositions from '../test/assertions/login-account-positions';
+import loginAccountMarkets from '../test/assertions/login-account-markets';
+import loginAccountReports from '../test/assertions/login-account-reports';
+import portfolioTotals from '../test/assertions/portfolio-totals';
 
 export default {
 	activePage,
@@ -47,5 +53,11 @@ export default {
 	transactionsTotals,
 	url,
 	selectedUserOpenOrdersGroup,
-	orderCancellation
+	orderCancellation,
+	portfolio,
+	portfolioNavItems,
+	portfolioTotals,
+	loginAccountPositions,
+	loginAccountMarkets,
+	loginAccountReports
 };

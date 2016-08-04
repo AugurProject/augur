@@ -27,7 +27,8 @@ export default [
 				full: '0.36eth'
 			}
 		},
-		status: 'processing...',
+		status: 'processing buy...',
+		message: 'buying 10 shares @ 0.67eth',
 		id: '1385867-1469682892056'
 	},
 	{
@@ -97,7 +98,7 @@ export default [
 	{
 		type: 'fund_account',
 		address: '0xbf824e58631c5f8a8d3c2dca4dc1e5b99852ecd0',
-		message: 'Loaded free ether and rep',
+		message: 'loaded free ether and rep',
 		status: 'success',
 		id: '1385715-1469680758488'
 	}
