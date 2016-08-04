@@ -189,18 +189,6 @@ module.exports = function () {
 					keys.recover(password, keystore, function (privateKey) {
 						keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
 
-							// convert keystore to "pbkdf2" if it's a "scrypt"
-							if (keystore.crypto.kdf === "scrypt") {
-								var newCrypto = keystore.crypto;
-								newCrypto.kdf = "pbkdf2";
-								newCrypto.kdfParams = {};
-								newCrypto.kdfParams.salt = keystore.crypto.kdfParams.salt;
-								newCrypto.kdfParams.c = 65536;
-		            newCrypto.kdfParams.dklen = 32;
-		            newCrypto.kdfParams.prf= "hmac-sha256";
-								keystore.crypto = newCrypto;
-							}
-
 							var unsecureLoginIDObject = {
 									name: name,
 									keystore: keystore
@@ -257,9 +245,14 @@ module.exports = function () {
             }
             var keystore = unencryptedLoginIDObject.keystore;
             var name = unencryptedLoginIDObject.name;
+						var options = {
+							kdf: keystore.crypto.kdf,
+							kdfparams: keystore.crypto.kdfparams,
+							cipher: keystore.crypto.kdf
+						};
 
             // derive secret key from password
-            keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+            keys.deriveKey(password, keystore.crypto.kdfparams.salt, options, function (derivedKey) {
                 if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
                 // verify that message authentication codes match
