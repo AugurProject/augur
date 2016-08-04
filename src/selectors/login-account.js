@@ -18,7 +18,7 @@ const date = new Date()
 	.toISOString()
 	.split(':')
 	.join('-');
-loginAccount.downloadAccountDataString = `data:application/octet-stream;charset=utf-8;base64,${encodeURIComponent(JSON.stringify(loginAccount))}`;
+loginAccount.downloadAccountDataString = `data:,${encodeURIComponent(JSON.stringify(loginAccount))}`;
 loginAccount.downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
 
 loginAccount.signIn = (name = loginAccount.name) => {
