@@ -3,11 +3,16 @@ import ValueDenomination from '../../../modules/common/components/value-denomina
 
 const Market = (p) => (
 	<div className="portfolio-row">
+		<div className="portfolio-group portfolio-main-group">
+			<span className="market-main-group-title">ends: </span>
+			<ValueDenomination {...p.endDate} />
+			<ValueDenomination
+				className="colorize"
+				{...p.fees}
+				denomination={`${p.fees.denomination} collected`}
+			/>
+		</div>
 		<div className="portfolio-group">
-			<div className="portfolio-pair">
-				<span className="title">end date</span>
-				<ValueDenomination {...p.endDate} />
-			</div>
 			<div className="portfolio-pair">
 				<span className="title">open volume</span>
 				<ValueDenomination {...p.openVolume} />
@@ -16,8 +21,6 @@ const Market = (p) => (
 				<span className="title">volume</span>
 				<ValueDenomination {...p.volume} />
 			</div>
-		</div>
-		<div className="portfolio-group">
 			<div className="portfolio-pair total-cost">
 				<span className="title"># of trades</span>
 				<ValueDenomination {...p.numberOfTrades} />
@@ -25,10 +28,6 @@ const Market = (p) => (
 			<div className="portfolio-pair total-value">
 				<span className="title">Avg Trade Size</span>
 				<ValueDenomination {...p.averageTradeSize} />
-			</div>
-			<div className="portfolio-pair net-change">
-				<span className="title">fees collected</span>
-				<ValueDenomination className="colorize" {...p.fees} />
 			</div>
 		</div>
 	</div>
