@@ -10,12 +10,14 @@ import { listenToUpdates } from '../../app/actions/listen-to-updates';
 import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
-
 import { loadReports } from '../../reports/actions/load-reports';
 // import { revealReports } from '../../reports/actions/reveal-reports';
 // import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
 // import { collectFees } from '../../reports/actions/collect-fees';
 // import { closeMarkets } from '../../reports/actions/close-markets';
+
+// for testing only
+import { reportify } from '../../reports/actions/reportify';
 
 export function initAugur() {
 	return (dispatch, getState) => {
@@ -53,6 +55,9 @@ export function initAugur() {
 							// dispatch(penalizeWrongReports(marketsData));
 							// dispatch(closeMarkets(marketsData));
 							dispatch(listenToUpdates());
+
+							// for testing only
+							dispatch(reportify());
 						}));
 					});
 				});

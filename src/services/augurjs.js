@@ -347,6 +347,7 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
 ex.reportify = function reportify(periodLen, cb) {
+	const self = this;
 	const tools = augur.tools;
 	const constants = augur.constants;
 	const sender = augur.from;
@@ -369,55 +370,65 @@ ex.reportify = function reportify(periodLen, cb) {
 		console.log('Current timestamp:', parseInt(t, 10));
 		console.log('Expiration time:  ', expDate);
 		console.log('Expiration period:', expirationPeriod);
-		tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
+		self.loadBranch(newBranchID, (err, branch) => {
 			if (err) return callback(err);
-			console.log('Markets:', markets);
-			const events = {};
-			let type;
-			for (type in markets) {
-				if (!markets.hasOwnProperty(type)) continue;
-				events[type] = augur.getMarketEvent(markets[type], 0);
-			}
-			const eventID = events.binary;
-			console.log('Events:', events);
-
-			// make a single trade in each new market
-			const password = process.env.GETH_PASSWORD;
-			tools.top_up(augur, newBranchID, accounts, password, (err, unlocked) => {
+			console.log('Loaded new branch:', branch);
+			cb(null, 1);
+			tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
 				if (err) return callback(err);
-				console.log('Unlocked:', unlocked);
-				tools.trade_in_each_market(augur, 1, markets, accounts[0], accounts[1], password, (err) => {
+				cb(null, markets);
+				console.log('Markets:', markets);
+				const events = {};
+				let type;
+				for (type in markets) {
+					if (!markets.hasOwnProperty(type)) continue;
+					events[type] = augur.getMarketEvent(markets[type], 0);
+				}
+				const eventID = events.binary;
+				console.log('Events:', events);
+
+				// make a single trade in each new market
+				const password = process.env.GETH_PASSWORD;
+				tools.top_up(augur, newBranchID, accounts, password, (err, unlocked) => {
 					if (err) return callback(err);
-
-					// wait until the period after the new events expire
-					tools.wait_until_expiration(augur, events.binary, (err) => {
+					console.log('Unlocked:', unlocked);
+					tools.trade_in_each_market(augur, 1, markets, unlocked[0], unlocked[1], password, (err) => {
 						if (err) return callback(err);
-						const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
-						const t = parseInt(new Date().getTime() / 1000, 10);
-						const currentPeriod = augur.getCurrentPeriod(periodLength);
-						const expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
-						const periodsToGo = expirationPeriod - currentPeriod;
-						const secondsToGo = periodsToGo * periodLength + periodLength - (t % periodLength);
-						tools.print_reporting_status(augur, eventID, 'Waiting until period after new events expire...');
-						console.log(' - Periods to go:', periodsToGo + ' + ' + (periodLength - (t % periodLength)) + '/' + periodLength + ' (' + (100 - augur.getCurrentPeriodProgress(periodLength)) + '%)');
-						console.log(' - Minutes to go:', secondsToGo / 60);
-						setTimeout(() => {
-							console.log('Current period:', augur.getCurrentPeriod(periodLength));
-							console.log('Expiration period + 1:', expirationPeriod + 1);
+						cb(null, 2);
 
-							// wait for second period to start
-							tools.top_up(augur, newBranchID, unlocked, password, (err, unlocked) => {
-								if (err) console.error('top_up failed:', err);
-								augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
-									if (err) console.error('checkVotePeriod failed:', err);
-									tools.printReportingStatus(eventID, 'After checkVotePeriod');
-									augur.checkTime(newBranchID, eventID, periodLength, (err) => {
-										if (err) console.error('checkTime failed:', err);
-										callback(null);
+						// wait until the period after the new events expire
+						tools.wait_until_expiration(augur, events.binary, (err) => {
+							if (err) return callback(err);
+							callback(null, 3);
+							const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
+							const t = parseInt(new Date().getTime() / 1000, 10);
+							const currentPeriod = augur.getCurrentPeriod(periodLength);
+							const expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
+							const periodsToGo = expirationPeriod - currentPeriod;
+							const secondsToGo = periodsToGo * periodLength + periodLength - (t % periodLength);
+							tools.print_reporting_status(augur, eventID, 'Waiting until period after new events expire...');
+							console.log(' - Periods to go:', periodsToGo + ' + ' + (periodLength - (t % periodLength)) + '/' + periodLength + ' (' + (100 - augur.getCurrentPeriodProgress(periodLength)) + '%)');
+							console.log(' - Minutes to go:', secondsToGo / 60);
+							setTimeout(() => {
+								console.log('Current period:', augur.getCurrentPeriod(periodLength));
+								console.log('Expiration period + 1:', expirationPeriod + 1);
+								callback(null, 4);
+
+								// wait for second period to start
+								tools.top_up(augur, newBranchID, unlocked, password, (err, unlocked) => {
+									if (err) console.error('top_up failed:', err);
+									augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
+										if (err) console.error('checkVotePeriod failed:', err);
+										callback(null, 5);
+										tools.printReportingStatus(eventID, 'After checkVotePeriod');
+										augur.checkTime(newBranchID, eventID, periodLength, (err) => {
+											if (err) console.error('checkTime failed:', err);
+											callback(null, 6);
+										});
 									});
 								});
-							});
-						}, secondsToGo * 1000);
+							}, secondsToGo * 1000);
+						});
 					});
 				});
 			});
