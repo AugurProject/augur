@@ -7,6 +7,18 @@
 
 		.report-main-group-title-outcome {
 			font-weight: @font-weight-bold;
+
+			.fa {
+				font-family: 'FontAwesome';
+				padding: 0 0.4rem;
+
+				&.report-equal {
+					color: @color-positive;
+				}
+				&.report-unequal {
+					color: @color-negative;
+				}
+			}
 		}
 	}
 }

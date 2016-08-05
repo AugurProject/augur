@@ -14,7 +14,8 @@ export default [
 		feesEarned: makeNumber(Math.random() * 1.9, 'eth'),
 		repEarned: makeNumber(Math.random() * 1.3, 'rep'),
 		endDate: makeDate(new Date('2015/12/31')),
-		isChallengeable: randomBool()
+		isChallengeable: randomBool(),
+		isChallenged: randomBool()
 	},
 	{
 		id: '1',
@@ -26,7 +27,8 @@ export default [
 		feesEarned: makeNumber(Math.random() * 1.2, 'eth'),
 		repEarned: makeNumber(Math.random() * 1.3, 'rep'),
 		endDate: makeDate(new Date('2015/12/31')),
-		isChallengeable: randomBool()
+		isChallengeable: randomBool(),
+		isChallenged: randomBool()
 	},
 	{
 		id: '2',
@@ -38,6 +40,7 @@ export default [
 		feesEarned: makeNumber(-Math.random() * 1.8, 'eth'),
 		repEarned: makeNumber(-Math.random() * 2.1, 'rep'),
 		endDate: makeDate(new Date('2008/11/4')),
-		isChallengeable: randomBool()
+		isChallengeable: randomBool(),
+		isChallenged: randomBool()
 	}
 ];
