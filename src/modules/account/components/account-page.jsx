@@ -13,12 +13,22 @@ export default class AccountPage extends Component {
 
 	constructor(props) {
 		super(props);
+		this.handleTransfer = this.handleTransfer.bind(this);
 		this.state = {
 			name: this.props.account.name,
 			editName: false,
 			showFullID: false,
 			msg: ''
 		};
+	}
+
+	handleTransfer = (e) => {
+		e.preventDefault();
+		const amount = this.refs.sendAmount.value;
+		const recipient = this.refs.recipientAddress.value;
+		this.refs.sendAmount.value = '';
+		this.refs.recipientAddress.value = '';
+		this.props.account.transferFunds(this.props.account.id, amount, recipient);
 	}
 
 	render() {
@@ -124,6 +134,42 @@ export default class AccountPage extends Component {
 								</tbody>
 							</table>
 						</div>
+						<div className={classnames('account-section')}>
+							<div className="account-info-item">
+								<h2 className="heading">Transfer Funds</h2>
+								<p>
+									You can transfer funds to another address by selecting the type of curreny you would like to send and entering the address you would like to send it to. (Note: Always double check the address you intend to send funds to!)
+								</p>
+								<div className="transfer-funds-section">
+									<span>Send:</span>
+									<input
+										type="number"
+										className={classnames('auth-input')}
+										ref="sendAmount"
+										name="sendAmount"
+										placeholder="Amount to transfer"
+										title="Amount to transfer"
+									/>
+									<span>Ether (eth)</span>
+									<span>To:</span>
+									<input
+										type="text"
+										className={classnames('auth-input')}
+										ref="recipientAddress"
+										name="recipientAddress"
+										placeholder="Recipient Address"
+										title="Recipient Address"
+									/>
+									<button
+										className="button make"
+										title="Click to Send Currency"
+										onClick={this.handleTransfer}
+									>
+										Send Currency
+									</button>
+								</div>
+							</div>
+						</div>
 						<div className={classnames('account-section', { displayNone: p.account.localNode })}>
 							<div className="account-info-item">
 								<h2 className="heading">Download Account</h2>
@@ -147,3 +193,8 @@ export default class AccountPage extends Component {
 		);
 	}
 }
+// <select ref="currency" className={classnames('currency-selector')} title="Currency Type">
+// 	<option value="eth">ether (eth)</option>
+// 	<option value="realEth">Real Ether (eth)</option>
+// 	<option value="REP">REP (REP)</option>
+// </select>
