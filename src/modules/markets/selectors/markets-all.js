@@ -27,7 +27,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			marketID,
 			marketsData[marketID],
 			priceHistory[marketID],
-			isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+			isMarketDataOpen(marketsData[marketID]),
 
 			!!favorites[marketID],
 			outcomesData[marketID],

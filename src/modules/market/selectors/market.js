@@ -63,7 +63,7 @@ export const selectMarket = (marketID) => {
 		marketID,
 		marketsData[marketID],
 		priceHistory[marketID],
-		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+		isMarketDataOpen(marketsData[marketID]),
 
 		!!favorites[marketID],
 		outcomesData[marketID],
