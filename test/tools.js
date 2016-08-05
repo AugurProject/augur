@@ -2,14 +2,21 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
-var path = (NODE_JS) ? require("path") : null;
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var async = require("async");
 var chalk = require("chalk");
 var clone = require("clone");
-var madlibs = (NODE_JS) ? require("madlibs") : require("./madlibs");
+var path, madlibs;
+try {
+    path = require("path");
+    madlibs = require("madlibs");
+} catch (exc) {
+    console.warn(exc);
+    path = null;
+    madlibs = require("./madlibs");
+}
 var constants = require("../src/constants");
 var utils = require("../src/utilities");
 var reptools = require("../src/modules/reportingTools");
