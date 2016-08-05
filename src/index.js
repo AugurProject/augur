@@ -31,9 +31,16 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.29";
+    this.version = "1.9.30";
 
-    this.options = {debug: {abi: false, broadcast: false, fallback: false, connect: false}};
+    this.options = {
+        debug: {
+            tools: true,
+            abi: false,
+            broadcast: false,
+            connect: false
+        }
+    };
     this.protocol = NODE_JS || document.location.protocol;
 
     this.connection = null;
@@ -61,6 +68,7 @@ function Augur() {
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
+    if (this.options.debug.tools) this.tools = require("../test/tools");
 }
 
 Augur.prototype.Accounts = require("./accounts");

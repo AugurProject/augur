@@ -535,7 +535,7 @@ describe("Integration tests", function () {
             this.timeout(tools.TIMEOUT*6);
             var augur = tools.setup(require(augurpath), process.argv.slice(2))
             if (parseInt(augur.getTotalSharesPurchased(marketId))) return done();
-            var allAccounts = augur.rpc.personal("listAccounts");
+            var allAccounts = augur.rpc.accounts();
             tools.top_up(augur, branch, allAccounts, password, function (err, unlocked) {
                 assert.isNull(err);
                 assert.isArray(unlocked);
@@ -751,7 +751,7 @@ describe("Integration tests", function () {
         it("log_fill_tx filter", function (done) {
             this.timeout(tools.TIMEOUT);
             var augur = tools.setup(require(augurpath), process.argv.slice(2));
-            var allAccounts = augur.rpc.personal("listAccounts");
+            var allAccounts = augur.rpc.accounts();
             tools.top_up(augur, branch, allAccounts, password, function (err, unlocked) {
                 assert.isNull(err);
                 assert.isArray(unlocked);
@@ -835,7 +835,7 @@ describe("Integration tests", function () {
                     });
                 }
             }
-            var allAccounts = augur.rpc.personal("listAccounts");
+            var allAccounts = augur.rpc.accounts();
             tools.top_up(augur, branch, allAccounts, password, function (err, unlocked) {
                 assert.isNull(err);
                 assert.isArray(unlocked);

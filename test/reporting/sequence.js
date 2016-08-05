@@ -51,113 +51,59 @@ describe("Reporting sequence", function () {
 
     augur = tools.setup(require(augurpath), process.argv.slice(2));
     password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
-    unlockable = augur.rpc.personal("listAccounts");
-    branchID = constants.DEFAULT_BRANCH_ID;
-    suffix = Math.random().toString(36).substring(4);
-    description = madlibs.adjective() + " " + madlibs.noun() + " [" + suffix + "]";
+    unlockable = augur.rpc.accounts();
+    description = madlibs.adjective() + " " + madlibs.noun();
     periodLength = 900;
     report = 1;
     salt = "1337";
-    eventID, newBranchID, marketID;
     markets = {};
     events = {};
 
     before("Setup/first period", function (done) {
         this.timeout(tools.TIMEOUT*100);
-
-        var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + suffix + "]";
-        var tradingFee = "0.01";
-
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
         sender = augur.from;
-        tools.top_up(augur, branchID, unlockable, password, function (err, unlocked) {
+        tools.top_up(augur, constants.DEFAULT_BRANCH_ID, unlockable, password, function (err, unlocked) {
             assert.isNull(err);
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
             unlockable = clone(unlocked);
+            tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], function (err, newBranch) {
+                assert.isNull(err);
+                assert.isString(newBranch);
+                newBranchID = newBranch;
 
-            // create a new branch
-            if (DEBUG) {
-                console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"))
-                console.log(chalk.white.dim("Account:"), chalk.green(sender));
-            }
-            augur.createBranch({
-                description: branchDescription,
-                periodLength: periodLength,
-                parent: branchID,
-                minTradingFee: tradingFee,
-                oracleOnly: 0,
-                onSent: utils.noop,
-                onSuccess: function (res) {
-                    newBranchID = res.branchID;
-                    if (DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-                    assert.strictEqual(augur.getCreator(newBranchID), sender);
-                    assert.strictEqual(augur.getDescription(newBranchID), branchDescription);
-                    var block = augur.rpc.getBlock(res.blockNumber);
-                    assert.strictEqual(newBranchID, utils.sha3([
-                        res.from,
-                        abi.fix(47, "hex"),
-                        periodLength,
-                        block.timestamp,
-                        branchID,
-                        abi.fix(tradingFee, "hex"),
-                        0,
-                        branchDescription
-                    ]));
+                // create an event (and market) of each type on the new branch
+                var t = new Date().getTime() / 1000;
+                var untilNextPeriod = periodLength - (parseInt(t) % periodLength);
+                var expDate = parseInt(t + untilNextPeriod + 1);
+                var expirationPeriod = Math.floor(expDate / periodLength);
+                if (DEBUG) {
+                    console.log(chalk.blue.bold("\nCreating events/markets..."));
+                    console.log(chalk.white.dim("Next period starts at time"), chalk.cyan(parseInt(t) + untilNextPeriod + " (" + untilNextPeriod + " seconds to go)"));
+                    console.log(chalk.white.dim("Current timestamp:"), chalk.cyan(parseInt(t)));
+                    console.log(chalk.white.dim("Expiration time:  "), chalk.cyan(expDate));
+                    console.log(chalk.white.dim("Expiration period:"), chalk.blue(expirationPeriod));
+                }
+                tools.create_each_market_type(augur, newBranchID, expDate, function (err, newMarkets) {
+                    assert.isNull(err);
+                    markets = clone(newMarkets);
+                    for (var type in markets) {
+                        if (!markets.hasOwnProperty(type)) continue;
+                        events[type] = augur.getMarketEvent(markets[type], 0);
+                    }
+                    marketID = markets.binary;
+                    eventID = events.binary;
+                    if (DEBUG) console.log(chalk.white.dim("Events: "), events);
 
-                    // get reputation on the new branch
-                    if (DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(sender));
-                    augur.fundNewAccount({
-                        branch: newBranchID,
-                        onSent: function (res) {
-                            assert(res.txHash);
-                            assert.strictEqual(res.callReturn, "1");
-                        },
-                        onSuccess: function (res) {
-                            assert(res.txHash);
-                            assert.strictEqual(res.callReturn, "1");
-                            assert.strictEqual(augur.getRepBalance(newBranchID, sender), "47");
+                    // make a single trade in each new market
+                    tools.trade_in_each_market(augur, 1, markets, unlockable[0], unlockable[1], password, function (err) {
+                        assert.isNull(err);
 
-                            // create an event (and market) on the new branch
-                            var t = new Date().getTime() / 1000;
-                            var untilNextPeriod = periodLength - (parseInt(t) % periodLength);
-                            var expDate = parseInt(t + untilNextPeriod + 1);
-                            var expirationPeriod = Math.floor(expDate / periodLength);
-                            if (DEBUG) {
-                                console.log(chalk.blue.bold("\nCreating events/markets..."));
-                                console.log(chalk.white.dim("Next period starts at time"), chalk.cyan(parseInt(t) + untilNextPeriod + " (" + untilNextPeriod + " seconds to go)"));
-                                console.log(chalk.white.dim("Current timestamp:"), chalk.cyan(parseInt(t)));
-                                console.log(chalk.white.dim("Expiration time:  "), chalk.cyan(expDate));
-                                console.log(chalk.white.dim("Expiration period:"), chalk.blue(expirationPeriod));
-                            }
-                            tools.create_each_market_type(augur, newBranchID, expDate, function (err, newMarkets) {
-                                assert.isNull(err);
-                                markets = clone(newMarkets);
-                                for (var type in markets) {
-                                    if (!markets.hasOwnProperty(type)) continue;
-                                    events[type] = augur.getMarketEvent(markets[type], 0);
-                                }
-                                marketID = markets.binary;
-                                eventID = events.binary;
-
-                                // make a single trade in each new market
-                                if (DEBUG) {
-                                    console.log(chalk.white.dim("Events: "), events);
-                                    console.log(chalk.white.dim("trade maker:"), chalk.green(unlockable[0]));
-                                    console.log(chalk.white.dim("trade taker:"), chalk.green(unlockable[1]));
-                                }
-                                tools.trade_in_each_market(augur, 1, markets, unlockable[0], unlockable[1], password, function (err) {
-                                    assert.isNull(err);
-
-                                    // wait until the period after the new events expire
-                                    tools.wait_until_expiration(augur, events.binary, done);
-                                });
-                            });
-                        },
-                        onFailed: done
+                        // wait until the period after the new events expire
+                        tools.wait_until_expiration(augur, events.binary, done);
                     });
-                },
-                onFailed: done
+                });
             });
         });
     });

@@ -14,6 +14,7 @@ var chalk = require("chalk");
 var clone = require("clone");
 var moment = require("moment");
 var constants = require("../src/constants");
+var utils = require("../src/utilities");
 var reptools = require("../src/modules/reportingTools");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
@@ -81,13 +82,13 @@ module.exports = {
                             }
                             augur.fundNewAccount({
                                 branch: branch,
-                                onSent: augur.utils.noop,
+                                onSent: utils.noop,
                                 onSuccess: function (r) {
                                     if (r.callReturn !== "1") return nextAccount();
                                     augur.setCash({
                                         address: account,
                                         balance: "10000000000",
-                                        onSent: augur.utils.noop,
+                                        onSent: utils.noop,
                                         onSuccess: function (r) {
                                             if (r.callReturn === "1") unlocked.push(account);
                                             nextAccount();
@@ -105,6 +106,71 @@ module.exports = {
             if (err) return callback(err);
             augur.useAccount(active);
             callback(null, unlocked);
+        });
+    },
+
+    // Create a new branch and get Reputation on it
+    setup_new_branch: function (augur, periodLength, parentBranchID, accounts, callback) {
+        var self = this;
+        var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + Math.random().toString(36).substring(4) + "]";
+        var tradingFee = "0.01";
+        if (this.DEBUG) {
+            console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"));
+            console.log(chalk.white.dim("Account(s):"), chalk.green(accounts));
+        }
+        var sender = augur.from;
+        augur.createBranch({
+            description: branchDescription,
+            periodLength: periodLength,
+            parent: parentBranchID,
+            minTradingFee: tradingFee,
+            oracleOnly: 0,
+            onSent: utils.noop,
+            onSuccess: function (res) {
+                var newBranchID = res.branchID;
+                if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
+                assert.strictEqual(augur.getCreator(newBranchID), sender);
+                assert.strictEqual(augur.getDescription(newBranchID), branchDescription);
+                var block = augur.rpc.getBlock(res.blockNumber);
+                assert.strictEqual(newBranchID, utils.sha3([
+                    res.from,
+                    abi.fix(47, "hex"),
+                    periodLength,
+                    block.timestamp,
+                    parentBranchID,
+                    abi.fix(tradingFee, "hex"),
+                    0,
+                    branchDescription
+                ]));
+
+                // get reputation on the new branch
+                async.each(accounts, function (account, nextAccount) {
+                    if (self.DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(account));
+                    augur.useAccount(account);
+                    augur.fundNewAccount({
+                        branch: newBranchID,
+                        onSent: function (res) {
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                        },
+                        onSuccess: function (res) {
+                            assert(res.txHash);
+                            assert.strictEqual(res.callReturn, "1");
+                            assert.strictEqual(augur.getRepBalance(newBranchID, account), "47");
+                            nextAccount();                            
+                        },
+                        onFailed: nextAccount
+                    });
+                }, function (err) {
+                    augur.useAccount(sender);
+                    if (err) return callback(err);
+                    callback(null, newBranchID);
+                });
+            },
+            onFailed: function (err) {
+                augur.useAccount(sender);
+                callback(err);
+            }
         });
     },
 
@@ -223,6 +289,11 @@ module.exports = {
         var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
         var periodLength = augur.getPeriodLength(branch);
         var active = augur.from;
+        if (this.DEBUG) {
+            console.log(chalk.blue.bold("\nTrading in each market..."));
+            console.log(chalk.white.dim("Maker:"), chalk.green(maker));
+            console.log(chalk.white.dim("Taker:"), chalk.green(taker));
+        }
         async.forEachOf(markets, function (market, type, nextMarket) {
             augur.rpc.personal("unlockAccount", [maker, password], function (unlocked) {
                 if (unlocked && unlocked.error) return nextMarket(unlocked);

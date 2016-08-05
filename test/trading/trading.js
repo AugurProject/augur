@@ -2176,7 +2176,7 @@ describe("Integration tests", function () {
 
     var augur = tools.setup(require(augurpath), process.argv.slice(2));
     var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
-    var unlockable = augur.rpc.personal("listAccounts");
+    var unlockable = augur.rpc.accounts();
     var markets = {};
 
     before("Top-up accounts and create new markets", function (done) {
