@@ -8,7 +8,7 @@ import testState from '../../../testState';
 import { CREATE_MARKET } from '../../../../src/modules/transactions/constants/types';
 
 import { BINARY, CATEGORICAL, SCALAR } from '../../../../src/modules/markets/constants/market-types';
-import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT } from '../../../../src/modules/create-market/constants/market-values-constraints';
+import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT, STARTING_QUANTITY_DEFAULT, BEST_STARTING_QUANTITY_DEFAULT, PRICE_WIDTH_DEFAULT, INITIAL_LIQUIDITY_DEFAULT } from '../../../../src/modules/create-market/constants/market-values-constraints';
 
 import * as selector from '../../../../src/modules/create-market/selectors/form-steps/step-5';
 import * as submitNewMarket from '../../../../src/modules/create-market/actions/submit-new-market';
@@ -43,28 +43,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				endDate: new Date(3000, 0, 1, 0, 0, 0, 0),
 				takerFee: TAKER_FEE_DEFAULT,
 				makerFee: MAKER_FEE_DEFAULT,
-				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
-				startingQuantity: STARTING_QUANTITY_DEFAULT,
-				priceWidth: PRICE_WIDTH_DEFAULT,
 				expirySource: 'testing',
-				type: BINARY,
-				initialFairPrices: {
-					type: BINARY,
-					values: [
-						{
-							label: 'Yes',
-							value: 0.5
-						},
-						{
-							label: 'No',
-							value: 0.5
-						}
-					],
-					raw: [
-						0.5,
-						0.5
-					]
-				}
+				type: BINARY
 			};
 		});
 
@@ -81,10 +61,15 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			assert.deepEqual(store.getActions(), outAction, `Didn't dispatch the expected action object when onSubmit was called`);
 		});
 
-		it('should return the correct object for a binary market', () => {
+		it('should return the correct object for a binary market WITH an order book', () => {
 			formState = {
 				...formState,
 				type: BINARY,
+				isCreatingOrderBook: true,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialFairPrices: {
 					type: BINARY,
 					values: [
@@ -233,22 +218,108 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					roundedValue: 10,
 					value: 10
 				},
+				isFavorite: false,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialLiquidityFormatted: {
+					denomination: "ETH",
+					formatted: "500",
+					formattedValue: 500,
+					full: "500ETH",
+					minimized: "500",
+					rounded: "500",
+					roundedValue: 500,
+					value: 500
+				},
+				isCreatingOrderBook: true
+			};
+
+			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+
+			assert.deepEqual(select, out, `correct object was not returned`);
+		});
+
+		it('should return the correct object for a binary market WITHOUT an order book', () => {
+			formState = {
+				...formState
+			};
+
+			let select = selector.select(
+				formState,
+				state.blockchain.currentBlockNumber,
+				state.blockchain.currentBlockMillisSinceEpoch,
+				store.dispatch
+			);
+
+			out = {
+				type: BINARY,
+				description: 'test',
+				formattedDescription: 'test',
+				expirySource: 'testing',
+				makerFee: MAKER_FEE_DEFAULT,
+				endDate: {
+					value: new Date(3000, 0, 1, 0, 0, 0, 0),
+					formatted: 'Jan 1, 3000',
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+				},
+				outcomes: [
+					{
+						id: 1,
+						name: "No"
+					},
+					{
+						id: 2,
+						name: "Yes"
+					}
+				],
+				takerFeePercent: {
+					value: 2,
+					formattedValue: 2,
+					formatted: '2.0',
+					roundedValue: 2,
+					rounded: '2',
+					minimized: '2',
+					denomination: '%',
+					full: '2.0%'
+				},
+				makerFeePercent: {
+					value: 1,
+					formattedValue: 1,
+					formatted: '1.0',
+					roundedValue: 1,
+					rounded: '1',
+					minimized: '1',
+					denomination: '%',
+					full: '1.0%'
+				},
+				endBlock: select.endBlock,
+				takerFee: TAKER_FEE_DEFAULT,
+				volume: {
+					value: 0,
+					formattedValue: 0,
+					formatted: '-',
+					roundedValue: 0,
+					rounded: '-',
+					minimized: '-',
+					denomination: '',
+					full: '-'
+				},
 				isFavorite: false
 			};
 
 			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(
-				select,
-				out,
-				`correct object was not returned`
-			);
+			assert.deepEqual(select, out, `correct object was not returned`);
 		});
 
-		it('should return the correct object for a categorical market', () => {
+		it('should return the correct object for a categorical market WITH an order book', () => {
 			formState = {
 				...formState,
 				type: CATEGORICAL,
+				isCreatingOrderBook: true,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialFairPrices: {
 					type: CATEGORICAL,
 					values: [
@@ -430,7 +501,19 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 					roundedValue: 10,
 					value: 10
 				},
-				isFavorite: false
+				isFavorite: false,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialLiquidityFormatted: {
+					denomination: "ETH",
+					formatted: "500",
+					formattedValue: 500,
+					full: "500ETH",
+					minimized: "500",
+					rounded: "500",
+					roundedValue: 500,
+					value: 500
+				},
+				isCreatingOrderBook: true
 			};
 
 			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
@@ -442,10 +525,103 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 			);
 		});
 
-		it('should return the correct object for a scalar market', () => {
+		it('should return the correct object for a categorical market WITHOUT an order book', () => {
+			formState = {
+				...formState,
+				type: CATEGORICAL,
+				categoricalOutcomes: [
+					'test1',
+					'test2',
+					'test3'
+				]
+			};
+
+			let select = selector.select(
+				formState,
+				state.blockchain.currentBlockNumber,
+				state.blockchain.currentBlockMillisSinceEpoch,
+				store.dispatch
+			);
+
+			out = {
+				type: CATEGORICAL,
+				description: 'test',
+				formattedDescription: 'test',
+				expirySource: 'testing',
+				makerFee: MAKER_FEE_DEFAULT,
+				endDate: {
+					value: new Date(3000, 0, 1, 0, 0, 0, 0),
+					formatted: 'Jan 1, 3000',
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+				},
+				categoricalOutcomes: [
+					'test1',
+					'test2',
+					'test3'
+				],
+				outcomes: [
+					{
+						id: 0,
+						name: "test1"
+					},
+					{
+						id: 1,
+						name: "test2"
+					},
+					{
+						id: 2,
+						name: "test3"
+					}
+				],
+				takerFeePercent: {
+					value: 2,
+					formattedValue: 2,
+					formatted: '2.0',
+					roundedValue: 2,
+					rounded: '2',
+					minimized: '2',
+					denomination: '%',
+					full: '2.0%'
+				},
+				makerFeePercent: {
+					value: 1,
+					formattedValue: 1,
+					formatted: '1.0',
+					roundedValue: 1,
+					rounded: '1',
+					minimized: '1',
+					denomination: '%',
+					full: '1.0%'
+				},
+				endBlock: select.endBlock,
+				takerFee: TAKER_FEE_DEFAULT,
+				volume: {
+					value: 0,
+					formattedValue: 0,
+					formatted: '-',
+					roundedValue: 0,
+					rounded: '-',
+					minimized: '-',
+					denomination: '',
+					full: '-'
+				},
+				isFavorite: false
+			};
+
+			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+
+			assert.deepEqual(select, out, `correct object was not returned`);
+		});
+
+		it('should return the correct object for a scalar market WITH an order book', () => {
 			formState = {
 				...formState,
 				type: SCALAR,
+				isCreatingOrderBook: true,
+				bestStartingQuantity: BEST_STARTING_QUANTITY_DEFAULT,
+				startingQuantity: STARTING_QUANTITY_DEFAULT,
+				priceWidth: PRICE_WIDTH_DEFAULT,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
 				initialFairPrices: {
 					type: SCALAR,
 					values: [
@@ -598,16 +774,102 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
 				},
 				isFavorite: false,
 				scalarSmallNum: 10,
+				scalarBigNum: 100,
+				initialLiquidity: INITIAL_LIQUIDITY_DEFAULT,
+				initialLiquidityFormatted: {
+					denomination: "ETH",
+					formatted: "500",
+					formattedValue: 500,
+					full: "500ETH",
+					minimized: "500",
+					rounded: "500",
+					roundedValue: 500,
+					value: 500
+				},
+				isCreatingOrderBook: true
+			};
+
+			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
+
+			assert.deepEqual(select, out, 'correct object was not returned');
+		});
+
+		it('should return the correct object for a scalar market WITHOUT an order book', () => {
+			formState = {
+				...formState,
+				type: SCALAR,
+				scalarSmallNum: 10,
+				scalarBigNum: 100
+			};
+
+			let select = selector.select(
+				formState,
+				state.blockchain.currentBlockNumber,
+				state.blockchain.currentBlockMillisSinceEpoch,
+				store.dispatch
+			);
+
+			out = {
+				type: SCALAR,
+				description: 'test',
+				formattedDescription: 'test',
+				expirySource: 'testing',
+				makerFee: MAKER_FEE_DEFAULT,
+				endDate: {
+					value: new Date(3000, 0, 1, 0, 0, 0, 0),
+					formatted: 'Jan 1, 3000',
+					full: new Date(3000, 0, 1, 0, 0, 0, 0).toISOString()
+				},
+				outcomes: [
+					{
+						id: 1,
+						name: 10
+					},
+					{
+						id: 2,
+						name: 100
+					}
+				],
+				takerFeePercent: {
+					value: 2,
+					formattedValue: 2,
+					formatted: '2.0',
+					roundedValue: 2,
+					rounded: '2',
+					minimized: '2',
+					denomination: '%',
+					full: '2.0%'
+				},
+				makerFeePercent: {
+					value: 1,
+					formattedValue: 1,
+					formatted: '1.0',
+					roundedValue: 1,
+					rounded: '1',
+					minimized: '1',
+					denomination: '%',
+					full: '1.0%'
+				},
+				endBlock: select.endBlock,
+				takerFee: TAKER_FEE_DEFAULT,
+				volume: {
+					value: 0,
+					formattedValue: 0,
+					formatted: '-',
+					roundedValue: 0,
+					rounded: '-',
+					minimized: '-',
+					denomination: '',
+					full: '-'
+				},
+				isFavorite: false,
+				scalarSmallNum: 10,
 				scalarBigNum: 100
 			};
 
 			delete select['onSubmit']; // Exclude onSubmit function from object comparison assertion
 
-			assert.deepEqual(
-				select,
-				out,
-				`correct object was not returned`
-			);
+			assert.deepEqual(select, out, 'correct object was not returned');
 		});
 	});
 });

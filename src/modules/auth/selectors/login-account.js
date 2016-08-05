@@ -25,7 +25,7 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 	const accountData = encodeURIComponent(JSON.stringify({
 		...loginAccount.keystore
 	}));
-	const downloadAccountDataString = `data:application/octet-stream;charset=utf-8;base64,${accountData}`;
+	const downloadAccountDataString = `data:,${accountData}`;
 
 	return {
 		...loginAccount,

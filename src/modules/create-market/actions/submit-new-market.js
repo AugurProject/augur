@@ -61,13 +61,15 @@ export function createMarket(transactionID, newMarket) {
 				if (res.status === SUCCESS) {
 					dispatch(clearMakeInProgress());
 
-					const updatedNewMarket = {
-						...newMarket,
-						id: res.marketID,
-						tx: res.tx
-					};
+					if (newMarket.isCreatingOrderBook) {
+						const updatedNewMarket = {
+							...newMarket,
+							id: res.marketID,
+							tx: res.tx
+						};
 
-					dispatch(submitGenerateOrderBook(updatedNewMarket));
+						dispatch(submitGenerateOrderBook(updatedNewMarket));
+					}
 				}
 			}
 		});
