@@ -16,6 +16,12 @@ export default function (appElement, selectors) {
 	const p = selectors;
 	const url = p.url;
 	let node;
+	let doScrollTop = false;
+
+	if (url !== window.location.pathname + window.location.search) {
+		window.history.pushState(null, null, url);
+		doScrollTop = true;
+	}
 
 	p.siteHeader = {
 		activePage: p.activePage,
@@ -122,9 +128,8 @@ export default function (appElement, selectors) {
 		appElement
 	);
 
-
-	if (url !== window.location.pathname + window.location.search) {
-		window.history.pushState(null, null, url);
+	if (doScrollTop) {
 		window.scrollTo(0, 0);
+		doScrollTop = false;
 	}
 }

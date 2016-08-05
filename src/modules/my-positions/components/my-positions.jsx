@@ -1,5 +1,5 @@
 import React from 'react';
-import Position from './position';
+import Position from './my-position';
 
 const Positions = (p) => (
 	<section className="positions-list">

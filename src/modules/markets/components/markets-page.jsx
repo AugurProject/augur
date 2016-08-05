@@ -33,15 +33,6 @@ export default class MarketsPage extends Component {
 			<div className="page markets">
 				<SiteHeader {...p.siteHeader} />
 
-				<header className="page-header">
-					<div className="l-container">
-						<span className="big-line">Augur lets you trade any market</span>.
-						Find a market you can beat,
-						and buy shares on the side that <b><i>you think</i></b> should go up.
-						When you&apos;re right, you make money.
-					</div>
-				</header>
-
 				<div className="page-content">
 					<SearchSort
 						keywords={p.keywords}

@@ -8,6 +8,7 @@ import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
 import MarketOpenOrders from '../../market/components/market-open-orders';
 import Chart from '../../market/components/chart';
+import MarketSummary from './market-summary';
 
 export default class MarketPage extends Component {
 	static propTypes = {
@@ -75,13 +76,23 @@ export default class MarketPage extends Component {
 				}
 
 				// positions
-				if (p.market.positionsSummary && p.market.positionsSummary.numPositions && p.market.positionsSummary.numPositions.value) {
+				if (p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value) {
 					nodes.push(
 						<MarketPositions
 							key="market-positions"
 							className="market-positions"
-							positionsSummary={p.market.positionsSummary}
-							positionOutcomes={p.market.positionOutcomes}
+							positionsSummary={p.market.myPositionsSummary}
+							positionOutcomes={p.market.myPositionOutcomes}
+						/>
+					);
+				}
+
+				// my markets
+				if (!!p.market.myMarketSummary) {
+					nodes.push(
+						<MarketSummary
+							key="market-summary"
+							marketSummary={p.market.myMarketSummary}
 						/>
 					);
 				}
