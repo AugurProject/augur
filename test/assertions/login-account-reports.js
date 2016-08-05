@@ -13,6 +13,11 @@ export default function (loginAccountMarkets){
 
 export function assertLoginAccountMarkets(report) {
 	describe(`report's shape`, () => {
+		it('id', () => {
+			assert.isDefined(report.id);
+			assert.isString(report.id);
+		});
+
 		it('description', () => {
 			assert.isDefined(report.description);
 			assert.isString(report.description);
@@ -56,6 +61,11 @@ export function assertLoginAccountMarkets(report) {
 			assert.isDefined(report.endDate);
 
 			assertEndDate(report.endDate, 'report.endDate');
+		});
+
+		it('isChallenged', () => {
+			assert.isDefined(report.isChallenged);
+			assert.isBoolean(report.isChallenged);
 		});
 
 		it('isChallangeable', () => {
