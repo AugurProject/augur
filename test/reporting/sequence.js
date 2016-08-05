@@ -91,7 +91,6 @@ describe("Reporting sequence", function () {
                 onSuccess: function (res) {
                     newBranchID = res.branchID;
                     if (DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-                    var block = augur.rpc.getBlock(res.blockNumber);
                     assert.strictEqual(augur.getCreator(newBranchID), sender);
                     assert.strictEqual(augur.getDescription(newBranchID), branchDescription);
                     var block = augur.rpc.getBlock(res.blockNumber);
