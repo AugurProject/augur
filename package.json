@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "1.9.35",
+  "version": "1.9.36",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
+    "chalk": "1.1.1",
     "clone": "1.0.2",
     "ethereumjs-connect": "0.9.13",
     "ethereumjs-tx": "1.1.1",
@@ -49,7 +50,6 @@
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",
     "chai": "^3.0.0",
-    "chalk": "^1.1.1",
     "coveralls": "^2.11.3",
     "decimal.js": "^5.0.8",
     "del": "^1.2.0",
