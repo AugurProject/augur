@@ -9,6 +9,8 @@ node_modules/
 overflow/
 coverage/
 build
+target
+scratch
 
 # Logs
 logs
