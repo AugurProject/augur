@@ -16,9 +16,9 @@ export function reportify() {
 			return;
 		}
 		console.log('calling reportify...');
-		AugurJS.reportify(900, (err, result) => {
+		AugurJS.reportify(900, (err, step) => {
 			if (err) return console.error('reportify failed:', err);
-			console.log('reportify step', result, 'complete');
+			console.log('reportify step', step, 'complete');
 			dispatch(loadMarkets());
 			const { selectedMarketID } = getState();
 			if (selectedMarketID !== null) {
