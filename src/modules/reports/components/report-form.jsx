@@ -6,6 +6,7 @@ export default class ReportForm extends React.Component {
 	static propTypes = {
 		reportableOutcomes: React.PropTypes.array,
 		reportedOutcomeID: React.PropTypes.any,
+		isIndeterminate: React.PropTypes.bool,
 		isUnethical: React.PropTypes.bool,
 		isReported: React.PropTypes.bool,
 		onClickSubmit: React.PropTypes.func
@@ -15,6 +16,7 @@ export default class ReportForm extends React.Component {
 		super(props);
 		this.state = {
 			reportedOutcomeID: props.reportedOutcomeID,
+			isIndeterminate: props.isIndeterminate,
 			isUnethical: props.isUnethical,
 			isReported: props.isReported
 		};
@@ -31,8 +33,8 @@ export default class ReportForm extends React.Component {
 	handleOutcomeChange = (e) => this.setState({ reportedOutcomeID: e.target.value });
 
 	handleSubmit() {
-		this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical);
-		this.setState({ reportedOutcomeID: null, isUnethical: null, isReported: false });
+		this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
+		this.setState({ reportedOutcomeID: null, isIndeterminate: null, isUnethical: null, isReported: false });
 	}
 
 	render() {
@@ -58,6 +60,21 @@ export default class ReportForm extends React.Component {
 							{outcome.name}
 						</label>
 					))}
+				</div>
+
+				<div className="indeterminate">
+					<h4>Is this question indeterminate?</h4>
+
+					<Checkbox
+						className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
+						text="Yes, this question is indeterminate"
+						isChecked={!!s.isIndeterminate}
+						onClick={!s.isReported && (() => this.setState({ isIndeterminate: !s.isIndeterminate })) || null}
+					/>
+
+					<span className="indeterminate-message">
+						If this question is subjective, vague, or does not yet have a clear answer, you should report indeterminate.
+					</span>
 				</div>
 
 				<div className="unethical">
