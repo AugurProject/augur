@@ -8,8 +8,6 @@ import Markets from '../../../modules/portfolio/components/markets';
 import Reports from '../../../modules/portfolio/components/reports';
 
 const PortfolioPage = (p) => {
-	console.log('p -- ', p.reports);
-
 	let node;
 
 	switch (p.siteHeader.activePage) {

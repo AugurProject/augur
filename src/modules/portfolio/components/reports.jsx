@@ -35,7 +35,7 @@ const PortfolioReports = (p) => (
 );
 
 PortfolioReports.propTypes = {
-	reports: React.PropTypes.object.isRequired
+	reports: React.PropTypes.array.isRequired
 };
 
 export default PortfolioReports;

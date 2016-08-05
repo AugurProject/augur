@@ -7,7 +7,12 @@ const Report = (p) => (
 		<div className="portfolio-group portfolio-main-group">
 			<div className="portfolio-pair">
 				<span className="report-main-group-title">outcome: </span>
-				<span className="report-main-group-title-outcome">{!!p.outcome ? p.outcome : '-'}</span>
+				<span className="report-main-group-title-outcome">
+					{!!p.outcome ?
+						<span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span> :
+						'-'
+					}
+				</span>
 			</div>
 			<div className="portfolio-pair">
 				<span className="report-main-group-title">reported: </span>
@@ -32,21 +37,21 @@ const Report = (p) => (
 		</div>
 		<div className="portfolio-group">
 			<div className="portfolio-pair">
-				<span className="title">fees earned</span>
+				<span className="title">fees gain/loss</span>
 				<ValueDenomination
 					className="colorize"
 					{...p.feesEarned}
 				/>
 			</div>
 			<div className="portfolio-pair">
-				<span className="title">rep earned</span>
+				<span className="title">rep gain/loss</span>
 				<ValueDenomination
 					className="colorize"
 					{...p.repEarned}
 				/>
 			</div>
 			<div className="portfolio-pair">
-				<span className="title">end date</span>
+				<span className="title">ended</span>
 				<ValueDate {...p.endDate} />
 			</div>
 		</div>
