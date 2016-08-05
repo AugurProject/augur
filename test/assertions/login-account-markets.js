@@ -13,6 +13,11 @@ export default function (loginAccountMarkets){
 
 export function assertLoginAccountMarkets(market) {
 	describe(`markets's shape`, () => {
+		it('id', () => {
+			assert.isDefined(market.id);
+			assert.isString(market.id);
+		});
+
 		it('description', () => {
 			assert.isDefined(market.description);
 			assert.isString(market.description);

@@ -8,6 +8,7 @@ import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
 import MarketOpenOrders from '../../market/components/market-open-orders';
 import Chart from '../../market/components/chart';
+import MarketSummary from './market-summary';
 
 export default class MarketPage extends Component {
 	static propTypes = {
@@ -93,6 +94,16 @@ export default class MarketPage extends Component {
 						series={p.market.priceTimeSeries}
 					/>
 				);
+
+				// summary
+				if (!!p.market.marketSummary) {
+					nodes.push(
+						<MarketSummary
+							key="market-summary"
+							marketSummary={p.market.marketSummary}
+						/>
+					);
+				}
 			}
 		}
 

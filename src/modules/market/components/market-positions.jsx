@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
-import Positions from '../../positions/components/positions';
-import PositionsSummary from '../../positions/components/positions-summary';
+import Positions from '../../../modules/my-positions/components/positions';
+import PositionsSummary from '../../../modules/my-positions/components/positions-summary';
 
 export default class MarketPositions extends Component {
 	static propTypes = {

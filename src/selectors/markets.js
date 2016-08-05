@@ -130,6 +130,16 @@ function makeMarkets(numMarkets = 10) {
 			), 0), 'Open Orders')
 		};
 
+		// market summary
+		m.marketSummary = {
+			endDate: makeDate(new Date('2017/12/12')),
+			fees: makeNumber(Math.random() * 10, 'eth'),
+			volume: makeNumber(Math.floor(Math.random() * 100), null, true),
+			numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
+			averageTradeSize: makeNumber(Math.random() * 100, 'eth', true),
+			openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
+		};
+
 		// report
 		m.report = {
 			isUnethical: true,

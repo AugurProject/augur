@@ -1,56 +1,80 @@
 .portfolio {
-    .portfolio-header {
-        .tab-navigator {
-            margin-bottom: 0;
-        }
-    }
+	.portfolio-header {
+		.tab-navigator {
+			margin-bottom: 0;
+		}
+	}
 
-    .portfolio-content {
-        display: flex;
-        flex-wrap: wrap;
-        width: 100%;
-        background: white;
-        .l-container();
+	.portfolio-content {
+		background: white;
 
-        .portfolio-item {
-            flex: 2;
-            line-height: 2.5em;
-            overflow: hidden;
-            margin: 1vmin;
-        }
-    }
+		padding: 1.5rem 0 0 0;
+		border-bottom: 3px solid @color-border;
+
+		.description {
+			display: inline-block;
+			padding: 1vmin 4vmin 0vmin 4vmin;
+			font-size: 1.2em;
+			font-weight: 700;
+		}
+	}
 }
 
-@media only screen and (max-width: @media-small-width) {
-  .markets {
-    .portfolio-content {
-      .component-header {
-        .button.make {
-          width: auto;
-          padding: 0 4vmin;
-          font-size: 1.6rem;
-        }
-        .header-bar {
-          font-size: 1.6rem;
-        }
-      }
+.portfolio-list {
+	display: table;
+	width: 92%;
+	margin: 1vmin 0 0 4%;
+	line-height: 1.9rem;
+	font-size: 1.2rem;
 
-      .portfolio-item {
-        flex: unset;
-        width: 100%;
-      }
-    }
-  }
-}
+	.portfolio-row {
+		display: table-row;
 
-@media only screen and (max-width: @media-mobile-width) {
-  .portfolio {
-    .page-content {
-      .component-header {
-        .header-bar {
-          font-size: 3.5vmin;
-        }
-      }
-    }
-  }
+		&:not(:first-child) {
+			border-top: 1px solid @color-border;
+		}
+
+		.portfolio-group {
+			display: table-cell;
+			padding: 0.5em 0;
+			text-align: right;
+			vertical-align: middle;
+
+			.portfolio-pair {
+				display: inline-block;
+				min-width: 7.8em;
+				line-height: 1.1em;
+				white-space: nowrap;
+
+				> * {
+					display: block;
+					margin-left: 0.5em;
+				}
+
+				.title {
+					font-size: 0.8em;
+				}
+			}
+		}
+
+		.portfolio-main-group {
+			text-align: left;
+			.colorize();
+
+			> * {
+				display: inline-block;
+				margin-right: 1em;
+				vertical-align: middle;
+			}
+
+			.portfolio-pair {
+				white-space: nowrap;
+			}
+
+			.portfolio-name {
+				min-width: 4.5em;
+				text-transform: uppercase;
+			}
+		}
+	}
 }
