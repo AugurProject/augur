@@ -2,17 +2,14 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
-var fs = (NODE_JS) ? require("fs") : null;
 var path = (NODE_JS) ? require("path") : null;
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var Decimal = require("decimal.js");
 var abi = require("augur-abi");
-var madlibs = require("madlibs");
 var async = require("async");
 var chalk = require("chalk");
 var clone = require("clone");
-var moment = require("moment");
+var madlibs = (NODE_JS) ? require("madlibs") : require("./madlibs");
 var constants = require("../src/constants");
 var utils = require("../src/utilities");
 var reptools = require("../src/modules/reportingTools");
@@ -503,24 +500,6 @@ module.exports = {
         return require(mod);
     },
 
-    // calculate date from block number
-    block_to_date: function (augur, block) {
-        var current_block = augur.rpc.blockNumber();
-        var seconds = (block - current_block) * constants.SECONDS_PER_BLOCK;
-        var date = moment().add(seconds, 'seconds');
-        return date;
-    },
-
-    // calculate block number from date
-    date_to_block: function (augur, date) {
-        date = moment(new Date(date));
-        var current_block = augur.rpc.blockNumber();
-        var now = moment();
-        var seconds_delta = date.diff(now, 'seconds');
-        var block_delta = parseInt(seconds_delta / constants.SECONDS_PER_BLOCK);
-        return current_block + block_delta;
-    },
-
     get_test_accounts: function (augur, max_accounts) {
         var accounts;
         if (augur) {
@@ -572,24 +551,6 @@ module.exports = {
         return arr.filter(function (element, position, array) {
             return array.indexOf(element) === position;
         });
-    },
-
-    toDecimal: function (x) {
-        if (!x) return null;
-        if (x.constructor === Array) {
-            for (var i = 0, n = x.length; i < n; ++i) {
-                x[i] = this.toDecimal(x[i]);
-            }
-        } else if (x.constructor !== Decimal) {
-            if (x.toFixed && x.toFixed.constructor === Function) {
-                x = x.toFixed();
-            }
-            if (x.toString && x.toString.constructor === Function) {
-                x = x.toString();
-            }
-            x = new Decimal(x);
-        }
-        return x;
     },
 
     has_value: function (o, v) {

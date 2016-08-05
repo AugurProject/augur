@@ -302,11 +302,10 @@ describe("Reporting sequence", function () {
                         branch: newBranchID,
                         event: event,
                         onSent: function (res) {
-                            console.log("[" + type  + "] penalizeWrong sent:", res);
+                            assert.isNull(res.callReturn);
                         },
                         onSuccess: function (res) {
                             assert.strictEqual(res.callReturn, "1");
-                            console.log("[" + type  + "] penalizeWrong success:", res);
                             if (DEBUG) {
                                 printReportingStatus(event, "[" + type  + "] Event " + event + " penalized");
                                 console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
@@ -317,10 +316,9 @@ describe("Reporting sequence", function () {
                                 market: markets[type],
                                 sender: sender,
                                 onSent: function (res) {
-                                    assert(res.txHash);
+                                    assert.isNull(res.callReturn);
                                 },
                                 onSuccess: function (res) {
-                                    if (DEBUG) console.log("[" + type  + "] closeMarket success:", res);
                                     assert.strictEqual(res.callReturn, "1");
                                     if (DEBUG) {
                                         printReportingStatus(event, "[" + type  + "] Market closed");
