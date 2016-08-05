@@ -376,7 +376,7 @@ ex.reportify = function reportify(periodLen, cb) {
 			cb(null, 1);
 			tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
 				if (err) return callback(err);
-				cb(null, markets);
+				cb(null, 2);
 				console.log('Markets:', markets);
 				const events = {};
 				let type;
@@ -394,12 +394,12 @@ ex.reportify = function reportify(periodLen, cb) {
 					console.log('Unlocked:', unlocked);
 					tools.trade_in_each_market(augur, 1, markets, unlocked[0], unlocked[1], password, (err) => {
 						if (err) return callback(err);
-						cb(null, 2);
+						cb(null, 3);
 
 						// wait until the period after the new events expire
 						tools.wait_until_expiration(augur, events.binary, (err) => {
 							if (err) return callback(err);
-							callback(null, 3);
+							callback(null, 4);
 							const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
 							const t = parseInt(new Date().getTime() / 1000, 10);
 							const currentPeriod = augur.getCurrentPeriod(periodLength);
@@ -412,18 +412,18 @@ ex.reportify = function reportify(periodLen, cb) {
 							setTimeout(() => {
 								console.log('Current period:', augur.getCurrentPeriod(periodLength));
 								console.log('Expiration period + 1:', expirationPeriod + 1);
-								callback(null, 4);
+								callback(null, 5);
 
 								// wait for second period to start
 								tools.top_up(augur, newBranchID, unlocked, password, (err, unlocked) => {
 									if (err) console.error('top_up failed:', err);
 									augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
 										if (err) console.error('checkVotePeriod failed:', err);
-										callback(null, 5);
+										callback(null, 6);
 										tools.printReportingStatus(eventID, 'After checkVotePeriod');
 										augur.checkTime(newBranchID, eventID, periodLength, (err) => {
 											if (err) console.error('checkTime failed:', err);
-											callback(null, 6);
+											callback(null, 7);
 										});
 									});
 								});
