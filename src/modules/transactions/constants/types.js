@@ -13,3 +13,4 @@ export const GENERATE_ORDER_BOOK = 'generate_order_book';
 
 export const REGISTER_ACCOUNT = 'register_account';
 export const FUND_ACCOUNT = 'fund_account';
+export const TRANSFER_FUNDS = 'transfer_funds';
