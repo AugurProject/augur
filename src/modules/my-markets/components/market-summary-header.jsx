@@ -1,18 +1,18 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from '../../common/components/value-denomination';
 
-const PositionsSummary = (p) => (
+const MyMarketsSummary = (p) => (
 	<div className={p.className}>
-		<span>Summary</span>
+		<span>My Markets</span>
 		{!!p.fees &&
 			<ValueDenomination {...p.fees} />
 		}
 	</div>
 );
 
-PositionsSummary.propTypes = {
+MyMarketsSummary.propTypes = {
 	className: PropTypes.string.isRequired,
 	fees: PropTypes.object.isRequired
 };
 
-export default PositionsSummary;
+export default MyMarketsSummary;

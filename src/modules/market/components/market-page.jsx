@@ -87,15 +87,7 @@ export default class MarketPage extends Component {
 					);
 				}
 
-				// chart
-				nodes.push(
-					<Chart
-						key="chart"
-						series={p.market.priceTimeSeries}
-					/>
-				);
-
-				// summary
+				// my markets
 				if (!!p.market.marketSummary) {
 					nodes.push(
 						<MarketSummary
@@ -104,6 +96,14 @@ export default class MarketPage extends Component {
 						/>
 					);
 				}
+
+				// chart
+				nodes.push(
+					<Chart
+						key="chart"
+						series={p.market.priceTimeSeries}
+					/>
+				);
 			}
 		}
 
