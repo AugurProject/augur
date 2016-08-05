@@ -140,11 +140,13 @@ describe("Reporting sequence", function () {
                                 }
                                 marketID = markets.binary;
                                 eventID = events.binary;
-                                if (DEBUG) console.log(chalk.white.dim("Events: "), events);
 
                                 // make a single trade in each new market
-                                console.log("trade maker:", unlockable[0]);
-                                console.log("trade taker:", unlockable[1]);
+                                if (DEBUG) {
+                                    console.log(chalk.white.dim("Events: "), events);
+                                    console.log(chalk.white.dim("trade maker:"), chalk.green(unlockable[0]));
+                                    console.log(chalk.white.dim("trade taker:"), chalk.green(unlockable[1]));
+                                }
                                 tools.trade_in_each_market(augur, 1, markets, unlockable[0], unlockable[1], password, function (err) {
                                     assert.isNull(err);
 
