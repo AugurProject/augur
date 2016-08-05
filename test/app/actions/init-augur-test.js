@@ -24,6 +24,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	let mockLoginAcc = {};
 	let mockLoadMarkets = {};
 	let mockLoadFullMarket = {};
+	let mockReportify = {};
 
 	mockAugurJS.connect = sinon.stub().yields(null, {
 		connect: 'test'
@@ -55,6 +56,9 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	mockLoadFullMarket.loadFullMarket = sinon.stub().returns({
 		type: 'LOAD_FULL_MARKET'
 	});
+	mockReportify.reportify = sinon.stub().returns({
+		type: 'REPORTIFY'
+	});
 
 	action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
 		'../../../services/augurjs': mockAugurJS,
@@ -63,7 +67,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		'../../auth/actions/load-login-account': mockLoginAcc,
 		'../../markets/actions/load-markets': mockLoadMarkets,
 		'../../market/actions/load-full-market': mockLoadFullMarket,
-		'../../reports/actions/load-reports': mockLoadReports
+		'../../reports/actions/load-reports': mockLoadReports,
+		'../../reports/actions/reportify': mockReportify
 	});
 
 	beforeEach(() => {
@@ -101,6 +106,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
 			type: 'LOAD_REPORTS'
 		}, {
 			type: 'LISTEN_TO_UPDATES'
+		}, {
+			type: 'REPORTIFY'
 		}, {
 			type: 'UPDATE_BLOCKCHAIN'
 		}];

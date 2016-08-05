@@ -373,7 +373,7 @@ ex.reportify = function reportify(periodLen, cb) {
 		self.loadBranch(newBranchID, (err, branch) => {
 			if (err) return callback(err);
 			console.log('Loaded new branch:', branch);
-			cb(null, 1);
+			cb(null, 1, branch);
 			tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
 				if (err) return callback(err);
 				cb(null, 2);
@@ -420,7 +420,7 @@ ex.reportify = function reportify(periodLen, cb) {
 									augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
 										if (err) console.error('checkVotePeriod failed:', err);
 										callback(null, 6);
-										tools.printReportingStatus(eventID, 'After checkVotePeriod');
+										tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
 										augur.checkTime(newBranchID, eventID, periodLength, (err) => {
 											if (err) console.error('checkTime failed:', err);
 											callback(null, 7);
