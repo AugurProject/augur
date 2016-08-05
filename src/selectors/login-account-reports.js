@@ -2,7 +2,7 @@ import { makeDate } from '../utils/make-date';
 import { makeNumber } from '../utils/make-number';
 
 const randomBool = () => Math.random() > 0.5;
-const randomSign = () => Math.random() > 0.5 ? 1 : -1;
+const randomSign = () => (Math.random() > 0.5 ? 1 : -1);
 
 export default [
 	{
