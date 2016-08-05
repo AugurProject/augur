@@ -5,7 +5,12 @@ node_modules
 data
 old
 lib
-test
+test/browser
+test/core
+test/create
+test/reporting
+test/trading
+test/markets
 scripts
 env.js
 coverage
