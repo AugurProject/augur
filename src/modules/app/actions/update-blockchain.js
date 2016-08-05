@@ -1,7 +1,5 @@
 import * as AugurJS from '../../../services/augurjs';
 
-import { BRANCH_ID } from '../../app/constants/network';
-
 // import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
 
@@ -11,7 +9,7 @@ let isAlreadyUpdatingBlockchain = false;
 
 export function incrementReportPeriod(cb) {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount } = getState();
+		const { blockchain, loginAccount, branch } = getState();
 		const expectedReportPeriod = blockchain.currentPeriod - 1;
 
 		// if not logged in / unlocked or if the report period is as expected, exit
@@ -20,9 +18,9 @@ export function incrementReportPeriod(cb) {
 		}
 
 		// load report period from chain to see if that one is as expected
-		AugurJS.getReportPeriod(BRANCH_ID, (error, chainReportPeriod) => {
+		AugurJS.getReportPeriod(branch.id, (error, chainReportPeriod) => {
 			if (error) {
-				console.log('ERROR getReportPeriod1', BRANCH_ID, error);
+				console.log('ERROR getReportPeriod1', branch.id, error);
 				return cb && cb();
 			}
 
@@ -36,14 +34,14 @@ export function incrementReportPeriod(cb) {
 
 			// if we are the first to encounter the new period, we get the
 			// honor of incrementing it on chain for everyone
-			AugurJS.incrementPeriodAfterReporting(BRANCH_ID, (err, res) => {
+			AugurJS.incrementPeriodAfterReporting(branch.id, (err, res) => {
 				if (err) {
 					console.error('ERROR incrementPeriodAfterReporting()', err);
 					return cb && cb();
 				}
 
 				// check if it worked out
-				AugurJS.getReportPeriod(BRANCH_ID, (er, verifyReportPeriod) => {
+				AugurJS.getReportPeriod(branch.id, (er, verifyReportPeriod) => {
 					if (er) {
 						console.log('ERROR getReportPeriod2', er);
 						return cb && cb();

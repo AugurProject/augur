@@ -1,13 +1,11 @@
 import * as AugurJS from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { BRANCH_ID } from '../../app/constants/network';
 
 const tracker = {};
 
 export function autoReportSequence(isReportConfirmationPhase) {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount } = getState();
-		const branchID = BRANCH_ID;
+		const { blockchain, loginAccount, branch } = getState();
 		const prevPeriod = blockchain.reportPeriod - 1;
 		let track = tracker[prevPeriod];
 		if (!track) track = {};
@@ -19,7 +17,7 @@ export function autoReportSequence(isReportConfirmationPhase) {
 		if (!isReportConfirmationPhase) {
 			// close any markets that are ready to be closed
 			if (loginAccount.ether && !track.calledCloseMarkets) {
-				AugurJS.closeMarkets(branchID, prevPeriod, (err, closedMarkets) => {
+				AugurJS.closeMarkets(branch.id, prevPeriod, (err, closedMarkets) => {
 					if (err) console.error('closeMarkets:', err);
 					track.calledCloseMarkets = true;
 					console.log('Closed markets:', closedMarkets);
@@ -30,13 +28,13 @@ export function autoReportSequence(isReportConfirmationPhase) {
 			if (loginAccount.rep) {
 
 				// number-of-reports penalties applied; now penalize wrong answers.
-				AugurJS.getEvents(branchID, prevPeriod, events => {
+				AugurJS.getEvents(branch.id, prevPeriod, events => {
 					if (!events || events.error) return console.error('getEvents:', events);
 					async.eachSeries(events, (event, nextEvent) => {
 						if (track.calledPenalizeWrong && track.calledPenalizeWrong[event]) {
 							return nextEvent();
 						}
-						AugurJS.penalizeWrong(branchID, prevPeriod, event, (err, res) => {
+						AugurJS.penalizeWrong(branch.id, prevPeriod, event, (err, res) => {
 							if (err) {
 								if (track.calledPenalizeWrong && track.calledPenalizeWrong.length) {
 									if (track.calledPenalizeWrong[event]) {

@@ -1,16 +1,15 @@
 import * as AugurJS from '../../../services/augurjs';
-import { BRANCH_ID } from '../../app/constants/network';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { updateAssets } from '../../auth/actions/update-assets';
 
 export function processFundNewAccount(transactionID, address) {
 	return (dispatch, getState) => {
-		const { env } = getState();
+		const { env, branch } = getState();
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' }));
 
-		AugurJS.fundNewAccount(env, address, BRANCH_ID,
+		AugurJS.fundNewAccount(env, address, branch.id,
 			() => {
 				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
 			},

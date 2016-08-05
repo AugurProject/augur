@@ -1,5 +1,4 @@
 // import * as AugurJS from '../../../services/augurjs';
-// import { BRANCH_ID } from '../../app/constants/network';
 import { isMarketDataPreviousReportPeriod } from '../../../utils/is-market-data-open';
 // import { updateMarketData } from '../../markets/actions/update-markets-data';
 
@@ -41,7 +40,7 @@ export function closeMarkets(marketsData) {
 					return next();
 				}
 
-				AugurJS.closeMarket(BRANCH_ID, unparsedMarket._id, (err, res) => {
+				AugurJS.closeMarket(branch.id, unparsedMarket._id, (err, res) => {
 					if (err) {
 						console.log('ERROR closeMarkets()', err);
 						return next();

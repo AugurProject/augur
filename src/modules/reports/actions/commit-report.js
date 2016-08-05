@@ -1,7 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 import secureRandom from 'secure-random';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
-import { BRANCH_ID } from '../../app/constants/network';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 import { addCommitReportTransaction } from '../../transactions/actions/add-report-transaction';
@@ -61,7 +60,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 		dispatch(updateReports({ [eventID]: report }));
 
 		AugurJS.commitReport(
-			BRANCH_ID,
+			branch.id,
 			loginAccount,
 			eventID,
 			report,

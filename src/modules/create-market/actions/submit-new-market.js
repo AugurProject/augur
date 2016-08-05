@@ -1,4 +1,3 @@
-import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
@@ -22,7 +21,9 @@ export function submitNewMarket(newMarket) {
 }
 
 export function createMarket(transactionID, newMarket) {
-	return dispatch => {
+	return (dispatch, getState) => {
+		const { branch } = getState();
+
 		if (newMarket.type === BINARY) {
 			newMarket.minValue = 1;
 			newMarket.maxValue = 2;
@@ -43,7 +44,7 @@ export function createMarket(transactionID, newMarket) {
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
 
-		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
+		AugurJS.createMarket(branch.id, newMarket, (err, res) => {
 			if (err) {
 				dispatch(
 					updateExistingTransaction(

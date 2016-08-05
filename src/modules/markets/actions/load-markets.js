@@ -14,7 +14,8 @@ export function loadMarkets() {
 	const chunkSize = 10;
 
 	return (dispatch, getState) => {
-		AugurJS.loadMarkets(BRANCH_ID, chunkSize, true, (err, marketsData) => {
+		const { branch } = getState();
+		AugurJS.loadMarkets(branch.id || BRANCH_ID, chunkSize, true, (err, marketsData) => {
 			if (err) {
 				console.log('ERROR loadMarkets()', err);
 				return;

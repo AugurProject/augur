@@ -22,7 +22,7 @@ export function listenToUpdates() {
 
 			// outcome price update, { marketId, outcome (id), price }
 			(errNone, outcomePriceChange) => {
-				if (!outcomePriceChange || !outcomePriceChange.marketId || !outcomePriceChange.outcome || !outcomePriceChange.price) {
+				if (errNone || !outcomePriceChange || !outcomePriceChange.marketId || !outcomePriceChange.outcome || !outcomePriceChange.price) {
 					return;
 				}
 				dispatch(updateOutcomePrice(outcomePriceChange.marketId, outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
@@ -30,7 +30,7 @@ export function listenToUpdates() {
 
 			// new market, result = { blockNumber, marketId }
 			(errNone, result) => {
-				if (!result || !result.marketId) {
+				if (errNone || !result || !result.marketId) {
 					return;
 				}
 				dispatch(loadMarketsInfo(result.marketId));
