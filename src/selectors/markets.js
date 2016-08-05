@@ -90,7 +90,7 @@ function makeMarkets(numMarkets = 10) {
 		];
 
 		// positions summary
-		m.positionsSummary = {
+		m.myPositionsSummary = {
 			numPositions: makeNumber(2, 'Positions', true),
 			qtyShares: makeNumber(16898, 'shares'),
 			purchasePrice: makeNumber(0.5, 'eth'),
@@ -122,7 +122,7 @@ function makeMarkets(numMarkets = 10) {
 			totalCost: makeNumber(12555, 'eth'),
 			netChange: makeNumber(3344, 'eth')
 		};
-		m.positionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
+		m.myPositionOutcomes = [randomPositionOutcome, randomPositionOutcome2];
 
 		m.userOpenOrdersSummary = {
 			openOrdersCount: makeNumber(m.outcomes.reduce((openOrdersCount, outcome) => (
@@ -131,7 +131,7 @@ function makeMarkets(numMarkets = 10) {
 		};
 
 		// market summary
-		m.marketSummary = {
+		m.myMarketSummary = {
 			endDate: makeDate(new Date('2017/12/12')),
 			fees: makeNumber(Math.random() * 10, 'eth'),
 			volume: makeNumber(Math.floor(Math.random() * 100), null, true),
