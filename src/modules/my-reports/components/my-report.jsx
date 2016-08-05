@@ -5,11 +5,30 @@ import ValueDate from '../../../modules/common/components/value-date';
 const Report = (p) => (
 	<div className="portfolio-row">
 		<div className="portfolio-group portfolio-main-group">
-			<span className="report-main-group-title">outcome: </span><span className="report-main-group-title-outcome">{!!p.outcome ? p.outcome : '-'}</span>
-			<span className="report-main-group-title">reported: </span><span className="report-main-group-title-outcome">{p.reported}{p.isReportEqual ? <span className="fa report-equal" >&#xf058;</span> : <span className="fa report-unequal" >&#xf057;</span>}</span>
-			{!p.isReportEqual && p.isChallengeable &&
-				<span>Challange Outcome -- ICON TODO</span>
-			}
+			<div className="portfolio-pair">
+				<span className="report-main-group-title">outcome: </span>
+				<span className="report-main-group-title-outcome">{!!p.outcome ? p.outcome : '-'}</span>
+			</div>
+			<div className="portfolio-pair">
+				<span className="report-main-group-title">reported: </span>
+				<span className="report-main-group-title-outcome">
+					{p.reported}
+					{p.isReportEqual ?
+						<span
+							className="fa report-equal"
+							title="Your report matches the consensus outcome"
+						>
+							&#xf058;
+						</span> :
+						<span
+							className="fa report-unequal"
+							title="Your report does not match the consensus outcome"
+						>
+							&#xf057;
+						</span>
+					}
+				</span>
+			</div>
 		</div>
 		<div className="portfolio-group">
 			<div className="portfolio-pair">
