@@ -23,8 +23,6 @@ export default function (appElement, selectors) {
 		doScrollTop = true;
 	}
 
-	console.log('app portfolio -- ', p.portfolio);
-
 	p.siteHeader = {
 		activePage: p.activePage,
 		loginAccount: p.loginAccount,
