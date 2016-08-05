@@ -20,7 +20,7 @@ var tools = require("../tools");
 var DEBUG = true;
 tools.DEBUG = DEBUG;
 
-var augur, password, accounts, unlockable, branchID, suffix, description, periodLength, report, salt, eventID, newBranchID, marketID, markets, events, sender;
+var augur, password, accounts, unlockable, branchID, suffix, description, periodLength, report, salt, eventID, newBranchID, markets, events, sender;
 
 function printResidual(periodLength, label) {
     var t = parseInt(new Date().getTime() / 1000);
@@ -64,12 +64,12 @@ describe("Reporting sequence", function () {
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
         sender = augur.from;
         tools.top_up(augur, constants.DEFAULT_BRANCH_ID, unlockable, password, function (err, unlocked) {
-            assert.isNull(err);
+            assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
             unlockable = clone(unlocked);
             tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], function (err, newBranch) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isString(newBranch);
                 newBranchID = newBranch;
 
@@ -86,19 +86,18 @@ describe("Reporting sequence", function () {
                     console.log(chalk.white.dim("Expiration period:"), chalk.blue(expirationPeriod));
                 }
                 tools.create_each_market_type(augur, newBranchID, expDate, function (err, newMarkets) {
-                    assert.isNull(err);
+                    assert.isNull(err, JSON.stringify(err));
                     markets = clone(newMarkets);
                     for (var type in markets) {
                         if (!markets.hasOwnProperty(type)) continue;
                         events[type] = augur.getMarketEvent(markets[type], 0);
                     }
-                    marketID = markets.binary;
                     eventID = events.binary;
                     if (DEBUG) console.log(chalk.white.dim("Events: "), events);
 
                     // make a single trade in each new market
                     tools.trade_in_each_market(augur, 1, markets, unlockable[0], unlockable[1], password, function (err) {
-                        assert.isNull(err);
+                        assert.isNull(err, JSON.stringify(err));
 
                         // wait until the period after the new events expire
                         tools.wait_until_expiration(augur, events.binary, done);
@@ -113,17 +112,17 @@ describe("Reporting sequence", function () {
             this.timeout(tools.TIMEOUT*100);
             if (DEBUG) printReportingStatus(eventID, "Before checks");
             tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
                     if (err) console.log("checkVotePeriod failed:", err);
-                    assert.isNull(err);
+                    assert.isNull(err, JSON.stringify(err));
                     if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
                     augur.checkTime(newBranchID, eventID, periodLength, function (err) {
                         if (err) console.log("checkTime failed:", err);
-                        assert.isNull(err);
+                        assert.isNull(err, JSON.stringify(err));
                         done();
                     });
                 });
@@ -225,7 +224,7 @@ describe("Reporting sequence", function () {
             this.timeout(tools.TIMEOUT*100);
             var period = augur.Branches.getVotePeriod(newBranchID);
             tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
@@ -277,15 +276,15 @@ describe("Reporting sequence", function () {
             this.timeout(tools.TIMEOUT*100);
             if (DEBUG) printReportingStatus(eventID, "Before third period checks");
             tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
                 augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
-                    assert.isNull(err);
+                    assert.isNull(err, JSON.stringify(err));
                     if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
                     augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
-                        assert.isNull(err);
+                        assert.isNull(err, JSON.stringify(err));
                         done();
                     });
                 });
@@ -376,7 +375,7 @@ describe("Reporting sequence", function () {
         it("CollectFees.collectFees", function (done) {
             this.timeout(tools.TIMEOUT*3);
             tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);

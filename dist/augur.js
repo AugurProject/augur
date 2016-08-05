@@ -49505,7 +49505,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.32";
+    this.version = "1.9.33";
 
     this.options = {
         debug: {
@@ -52938,7 +52938,7 @@ module.exports = {
                 });
             });
         }, function (err) {
-            assert.isNull(err);
+            assert.isNull(err, JSON.stringify(err));
             augur.useAccount(taker);
             var trades = [];
             async.forEachOf(markets, function (market, type, nextMarket) {
@@ -52961,7 +52961,7 @@ module.exports = {
                 });
             }, function (err) {
                 if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.strictEqual(trades.length, Object.keys(markets).length);
                 augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
                     if (unlocked && unlocked.error) return callback(unlocked);

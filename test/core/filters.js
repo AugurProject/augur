@@ -537,7 +537,7 @@ describe("Integration tests", function () {
             if (parseInt(augur.getTotalSharesPurchased(marketId))) return done();
             var allAccounts = augur.rpc.accounts();
             tools.top_up(augur, branch, allAccounts, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 1);
                 tools.trade_in_each_market(augur, 1, tradeMarket, unlocked[0], unlocked[1], password, done);
@@ -743,7 +743,7 @@ describe("Integration tests", function () {
                 assert.strictEqual(filters.contracts.id, augur.filters.filter.contracts.id);
                 spammer.createRandomMarket(augur, function (err, market) {
                     if (DEBUG) console.debug("Random market created:", market);
-                    assert.isNull(err);
+                    assert.isNull(err, JSON.stringify(err));
                     assert.isNotNull(market);
                 });
             });
@@ -753,7 +753,7 @@ describe("Integration tests", function () {
             var augur = tools.setup(require(augurpath), process.argv.slice(2));
             var allAccounts = augur.rpc.accounts();
             tools.top_up(augur, branch, allAccounts, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 1);
                 augur.filters.listen({
@@ -837,7 +837,7 @@ describe("Integration tests", function () {
             }
             var allAccounts = augur.rpc.accounts();
             tools.top_up(augur, branch, allAccounts, password, function (err, unlocked) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 1);
                 augur.filters.listen({
@@ -886,7 +886,7 @@ describe("Integration tests", function () {
                     tools.trade_in_each_market(augur, 1, tradeMarket, unlocked[0], unlocked[1], password, done);
                     spammer.createRandomMarket(augur, function (err, market) {
                         if (DEBUG) console.debug("Random market created:", market);
-                        assert.isNull(err);
+                        assert.isNull(err, JSON.stringify(err));
                         assert.isNotNull(market);
                     });
                 });

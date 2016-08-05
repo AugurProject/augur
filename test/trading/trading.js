@@ -2182,13 +2182,13 @@ describe("Integration tests", function () {
     before("Top-up accounts and create new markets", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length + tools.TIMEOUT*3);
         tools.top_up(augur, null, unlockable, password, function (err, unlocked) {
-            assert.isNull(err);
+            assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
             unlockable = clone(unlocked);
             var expiration = parseInt(new Date().getTime() / 995);
             tools.create_each_market_type(augur, null, expiration, function (err, newMarkets) {
-                assert.isNull(err);
+                assert.isNull(err, JSON.stringify(err));
                 assert.isObject(newMarkets);
                 assert.isString(newMarkets.binary);
                 assert.isString(newMarkets.categorical);
@@ -2205,7 +2205,7 @@ describe("Integration tests", function () {
     beforeEach("Top-up accounts", function (done) {
         this.timeout(tools.TIMEOUT*unlockable.length);
         tools.top_up(augur, null, unlockable, password, function (err, unlocked) {
-            assert.isNull(err);
+            assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
             done();
