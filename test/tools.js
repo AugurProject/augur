@@ -247,20 +247,6 @@ module.exports = {
         }
         var markets = {};
 
-        console.log('create binary:', {
-            branchId: branchID,
-            description: description,
-            expDate: expDate,
-            minValue: 1,
-            maxValue: 2,
-            numOutcomes: 2,
-            resolution: resolution,
-            takerFee: takerFee,
-            makerFee: makerFee,
-            tags: tags,
-            extraInfo: extraInfo
-        });
-
         // create a binary market
         augur.createSingleEventMarket({
             branchId: branchID,
