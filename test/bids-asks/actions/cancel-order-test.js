@@ -7,7 +7,7 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from '../../mockStore';
 import { CANCEL_ORDER } from '../../../src/modules/transactions/constants/types';
-import { BID } from '../../../src/modules/bids-asks/constants/bids-asks-types';
+import { BID, ASK } from '../../../src/modules/bids-asks/constants/bids-asks-types';
 import { CANCELLING } from '../../../src/modules/bids-asks/constants/order-status';
 import { CANCELLING_ORDER } from '../../../src/modules/transactions/constants/statuses';
 import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from '../../../src/modules/bids-asks/actions/cancel-order';
@@ -15,7 +15,7 @@ import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
-	const { mockStore, actionCreator } = mocks;
+	const { mockStore, actionCreator, state } = mocks;
 	const addCancelTransaction = actionCreator();
 	const cancel = sinon.stub();
 	const updateOrderStatus = actionCreator();
@@ -28,13 +28,14 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 	});
 
 	const store = mockStore({
+		...state,
 		transactionsData: {
 			cancelTxn: {
 				type: CANCEL_ORDER,
 				data: {
-					orderID: 'orderID',
-					marketID: 'marketID',
-					type: BID
+					order: { id: 'orderID', type: 'buy'},
+					market: {id: 'marketID'},
+					outcome: {}
 				}
 			}
 		}
@@ -49,9 +50,16 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 	});
 
 	describe('cancelOrder', () => {
-		it('should pass params tp addCancelTransaction', () => {
-			store.dispatch(cancelOrderModule.cancelOrder('orderID', 'marketID', 'buy'));
-			assert.deepEqual(addCancelTransaction.args[0], ['orderID', 'marketID', 'buy']);
+		it(`shouldn't dispatch it order doesn't exist`, () => {
+			store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BID));
+			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
+			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
+			sinon.assert.notCalled(addCancelTransaction);
+		});
+
+		it('should pass params to addCancelTransaction', () => {
+			store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', BID));
+			sinon.assert.calledOnce(addCancelTransaction);
 		});
 	});
 
@@ -90,5 +98,4 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 			assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID'}])
 		});
 	});
-
 });

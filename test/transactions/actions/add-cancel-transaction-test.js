@@ -7,6 +7,7 @@ import proxyquire from 'proxyquire';
 import mocks from '../../mockStore';
 import { BID } from '../../../src/modules/bids-asks/constants/bids-asks-types';
 import { CANCEL_ORDER } from "../../../src/modules/transactions/constants/types";
+import { formatShares, formatEther } from '../../../src/utils/format-number'
 
 describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
@@ -22,42 +23,54 @@ describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 		}
 	});
 
+	afterEach(() => {
+		processCancelOrder.reset();
+		addTransaction.reset();
+	});
+
 	const { store } = mocks;
 
 	describe('addCancelTransaction', () => {
 		it('should dispatch correct action', () => {
 			store.dispatch(addCancelTransactionModule.addCancelTransaction('orderID', 'marketID', BID));
 
-			assert.strictEqual(addTransaction.callCount, 1);
-			const firstArg = addTransaction.args[0][0];
-			assert.property(firstArg, 'type');
-			assert.property(firstArg, 'gas');
-			assert.property(firstArg, 'ether');
-			assert.deepProperty(firstArg, 'data.orderID');
-			assert.deepProperty(firstArg, 'data.marketID');
-			assert.deepProperty(firstArg, 'data.type');
-			assert.isFunction(firstArg.action);
+			sinon.assert.calledOnce(addTransaction);
 		});
 	});
 
 	describe('makeCancelTransaction', () => {
+		const order = {
+			id: 'orderID',
+			type: BID,
+			shares: formatShares(1),
+			price: formatEther(10)
+		};
+		const market = {
+			id: 'marketID',
+			description: 'market description'
+		};
+		const outcome = {
+			name: 'outcome name'
+		};
+		const gas = null;
+		const ether = null;
 		const dispatch = sinon.spy();
-		const transaction = addCancelTransactionModule.makeCancelTransaction('orderID', 'marketID', 'type', null, null, dispatch);
+
+		const transaction = addCancelTransactionModule.makeCancelTransaction(order, market, outcome, ether, gas, dispatch);
 		it('should return transaction', () => {
 			assert.deepEqual(transaction, {
 				type: CANCEL_ORDER,
-				gas: null,
-				ether: null,
+				gas,
+				ether,
 				data: {
-					orderID: 'orderID',
-					marketID: 'marketID',
-					type: 'type'
+					order,
+					outcome,
+					market,
 				},
-				action: transaction.action // reference the returned function so the values equal
+				action: transaction.action
 			});
-			assert.isFunction(addTransaction.args[0][0].action);
-			assert.lengthOf(addTransaction.args[0][0].action, 1);
-			console.log(addTransaction.args[0][0].action.toString())
+			assert.isFunction(transaction.action);
+			assert.lengthOf(transaction.action, 1);
 		});
 
 		it('should call correct action when transaction.action() is called', () => {

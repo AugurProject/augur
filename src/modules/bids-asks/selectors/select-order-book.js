@@ -3,12 +3,13 @@ import memoizerific from 'memoizerific';
 import store from '../../../store';
 import { formatShares, formatEther } from '../../../utils/format-number';
 import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
+import { CANCELLED } from '../../bids-asks/constants/order-status';
 
 /**
  * @param {String} outcomeId
  * @param {Object} marketOrderBook
  */
-export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrderBook) => {
+export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrderBook, orderCancellation) => {
 	if (marketOrderBook == null) {
 		return {
 			bids: [],
@@ -17,8 +18,8 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrde
 	}
 
 	return {
-		bids: selectAggregatePricePoints(outcomeId, marketOrderBook.buy).sort(sortPricePointsByPriceDesc),
-		asks: selectAggregatePricePoints(outcomeId, marketOrderBook.sell).sort(sortPricePointsByPriceAsc)
+		bids: selectAggregatePricePoints(outcomeId, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
+		asks: selectAggregatePricePoints(outcomeId, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
 	};
 });
 
@@ -38,7 +39,7 @@ export const selectTopAsk = memoizerific(10)((marketOrderBook) => {
  * @param {String} outcomeId
  * @param {{String, Object}} orders Key is order ID, value is order
  */
-const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
+const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders, orderCancellation) => {
 	if (orders == null) {
 		return [];
 	}
@@ -46,7 +47,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 
 	const shareCountPerPrice = Object.keys(orders)
 		.map(orderId => orders[orderId])
-		.filter(order => order.outcome === outcomeId)
+		.filter(order => order.outcome === outcomeId && orderCancellation[order.id] !== CANCELLED)
 		.map(order => ({
 			...order,
 			isOfCurrentUser: isOrderOfUser(order, currentUserAddress)

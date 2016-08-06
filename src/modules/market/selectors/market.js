@@ -53,7 +53,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks, orderCancellation } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -82,6 +82,7 @@ export const selectMarket = (marketID) => {
 		blockchain && blockchain.isReportConfirmationPhase,
 
 		marketOrderBooks[marketID],
+		orderCancellation,
 		store.dispatch);
 };
 
@@ -107,6 +108,7 @@ export const assembleMarket = memoizerific(1000)((
 		endDateDay,
 		isReportConfirmationPhase,
 		marketOrderBooks,
+		orderCancellation,
 		dispatch) => { // console.log('>>assembleMarket<<');
 
 	const market = {
@@ -183,7 +185,7 @@ export const assembleMarket = memoizerific(1000)((
 
 		outcome.position = generateOutcomePositionSummary((marketAccountTrades || {})[outcomeID], outcome.lastPrice.value);
 
-		const orderBook = selectAggregateOrderBook(outcome.id, marketOrderBooks);
+		const orderBook = selectAggregateOrderBook(outcome.id, marketOrderBooks, orderCancellation);
 		outcome.orderBook = orderBook;
 		outcome.topBid = selectTopBid(orderBook);
 		outcome.topAsk = selectTopAsk(orderBook);

@@ -8,7 +8,7 @@ describe(`modules/bids-asks/selectors/select-order-book.js`, () => {
 	const selectAggregateOrderBook = require('../../../src/modules/bids-asks/selectors/select-order-book').selectAggregateOrderBook;
 
 	it(`should return empty order book for no orders`, () => {
-		const orderBook = selectAggregateOrderBook('1', null);
+		const orderBook = selectAggregateOrderBook('1', null, {});
 
 		assert.isArray(orderBook.bids);
 		assert.isArray(orderBook.asks);
@@ -39,7 +39,7 @@ describe(`modules/bids-asks/selectors/select-order-book.js`, () => {
 				"order80": { amount: "13", price: "0.6", outcome: "1" },
 				"order90": { amount: "14", price: "0.5", outcome: "1" }
 			}
-		});
+		}, {});
 
 		assert.lengthOf(orderBook.bids, 3);
 		assert.lengthOf(orderBook.asks, 4);
