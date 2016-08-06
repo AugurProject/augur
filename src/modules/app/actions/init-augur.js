@@ -8,23 +8,24 @@ import { loadLoginAccount } from '../../auth/actions/load-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
 
 // for testing only
-import { reportify } from '../../reports/actions/reportify';
+import { reportingTestSetup } from '../../reports/actions/reporting-test-setup';
 
 export function initAugur() {
 	return (dispatch, getState) => {
 		const xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = () => {
 			if (xhttp.readyState === 4 && xhttp.status === 200) {
-				dispatch(updateEnv(JSON.parse(xhttp.responseText)));
-				AugurJS.connect(getState().env, (err, connected) => {
+				const env = JSON.parse(xhttp.responseText);
+				dispatch(updateEnv(env));
+				AugurJS.connect(env, (err, connected) => {
 					if (err) return console.error('connect failure:', err);
-
 					dispatch(updateConnectionStatus(connected));
 					dispatch(loadLoginAccount());
-					dispatch(loadBranch(BRANCH_ID));
-
-					// for testing only
-					dispatch(reportify());
+					if (env.reportingTest) {
+						dispatch(reportingTestSetup());
+					} else {
+						dispatch(loadBranch(BRANCH_ID));
+					}
 				});
 			}
 		};

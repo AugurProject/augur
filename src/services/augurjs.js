@@ -177,9 +177,7 @@ ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
 
 ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
 	augur.batchGetMarketInfo(marketIDs, (res) => {
-		if (res && res.error) {
-			cb(res);
-		}
+		if (res && res.error) return cb(res);
 		cb(null, res);
 	});
 };
@@ -346,16 +344,17 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 // Setup a new branch and prep it for reporting tests:
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
-ex.reportify = function reportify(periodLen, cb) {
+ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 	const tools = augur.tools;
 	const constants = augur.constants;
-	const sender = augur.from;
+	const sender = augur.web.account.address || augur.from;
 	const periodLength = periodLen || 900;
 	const callback = cb || function callback(e, r) {
 		if (e) console.error(e);
 		if (r) console.log(r);
 	};
 	const accounts = augur.rpc.accounts();
+	tools.DEBUG = true;
 	tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], (err, newBranchID) => {
 		if (err) return callback(err);
 
@@ -373,7 +372,6 @@ ex.reportify = function reportify(periodLen, cb) {
 		tools.create_each_market_type(augur, newBranchID, expDate, (err, markets) => {
 			if (err) return callback(err);
 			cb(null, 2);
-			console.log('Markets:', markets);
 			const events = {};
 			let type;
 			for (type in markets) {
@@ -381,7 +379,9 @@ ex.reportify = function reportify(periodLen, cb) {
 				events[type] = augur.getMarketEvent(markets[type], 0);
 			}
 			const eventID = events.binary;
-			console.log('Events:', events);
+			console.log('Binary event:', events.binary);
+			console.log('Categorical event:', events.categorical);
+			console.log('Scalar event:', events.scalar);
 
 			// make a single trade in each new market
 			const password = process.env.GETH_PASSWORD;
@@ -434,11 +434,9 @@ ex.reportify = function reportify(periodLen, cb) {
 // TODO move to augur.js
 ex.getEventsToReportOn = function getEventsToReportOn(branch, period, sender, start, cb) {
 	const eventsToReportOn = {};
-	// const eventsToReportOn = [];
 
 	// load market-ids related to each event-id one at a time
 	augur.getEventsToReportOn(branch, period, sender, start, (events) => {
-		console.debug('getEventsToReportOn:', events);
 		if (!events || events.constructor !== Array || !events.length) {
 			return cb(null, {});
 		}
@@ -483,18 +481,20 @@ ex.revealReport = function revealReport(event, salt, report, isScalar, isUnethic
 
 // TODO move to augur.js
 ex.commitReport = function commitReport(branch, loginAccount, event, reportObject, periodLength, cb) {
-	const address = loginAccount.id;
-	const derivedKey = loginAccount.derivedKey;
-	const accountSalt = loginAccount.keystore.crypto.kdfparams.salt;
 	const report = reportObject.reportedOutcomeID;
 	const salt = reportObject.salt;
 	const period = reportObject.reportPeriod;
 	const isScalar = reportObject.isScalar;
 	const isIndeterminate = reportObject.isIndeterminate;
 	const fixedReport = augur.fixReport(report, isScalar, isIndeterminate);
-	const reportHash = augur.makeHash(salt, fixedReport, event, address);
-	const encryptedReport = augur.encryptReport(fixedReport, derivedKey, salt);
-	const encryptedSalt = augur.encryptReport(salt, derivedKey, accountSalt);
+	const reportHash = augur.makeHash(salt, fixedReport, event, loginAccount.id);
+	let encryptedReport = 0;
+	let encryptedSalt = 0;
+	if (loginAccount.derivedKey) {
+		const derivedKey = loginAccount.derivedKey;
+		encryptedReport = augur.encryptReport(fixedReport, derivedKey, salt);
+		encryptedSalt = augur.encryptReport(salt, derivedKey, loginAccount.keystore.crypto.kdfparams.salt);
+	}
 	augur.submitReportHash({
 		event,
 		reportHash,
@@ -578,7 +578,7 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 	augur.closeMarket({
 		branch: branchID,
 		market: marketID,
-		sender: augur.from,
+		sender: augur.web.account.address || augur.from,
 		onSent: res => {
 			// console.log('closeMarket sent:', res);
 		},
@@ -597,7 +597,7 @@ ex.collectFees = function collectFees(branchID, cb) {
 	augur.getPeriodLength(branchID, periodLength => {
 		augur.collectFees({
 			branch: branchID,
-			sender: augur.from,
+			sender: augur.web.account.address || augur.from,
 			periodLength,
 			onSent: res => {
 			},

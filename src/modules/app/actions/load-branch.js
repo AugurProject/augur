@@ -21,7 +21,7 @@ export function loadBranch(branchID) {
 			if (err) return console.log('ERROR loadBranch', err);
 
 			dispatch(updateBranch(branch));
-			dispatch(loadMarkets());
+			dispatch(loadMarkets(branch.id));
 
 			const { selectedMarketID } = getState();
 			if (selectedMarketID !== null) {

@@ -43,7 +43,7 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 			}
 		}];
 
-		store.dispatch(action.loadMarkets());
+		store.dispatch(action.loadMarkets(1010101));
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
 		assert(mockAugurJS.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
