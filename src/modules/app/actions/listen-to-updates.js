@@ -10,7 +10,8 @@ export function listenToUpdates() {
 		AugurJS.listenToUpdates(
 
 			// new block
-			() => {
+			(err, blockHash) => {
+				console.log('block:', blockHash);
 				dispatch(updateAssets());
 				dispatch(updateBlockchain());
 			},

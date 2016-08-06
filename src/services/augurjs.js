@@ -182,14 +182,15 @@ ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
 	});
 };
 
-ex.listenToUpdates = function listenToUpdates(cbBlock, cbContracts, cbPrice, cbCreation) {
+ex.listenToUpdates = function listenToUpdates(cbBlock, cbContracts, cbLogFillTx, cbCreation) {
+	console.log('listenToUpdates:');
 	augur.filters.listen({
 		// listen for new blocks
 		block: (blockHash) => cbBlock(null, blockHash),
 		// listen for augur transactions
 		contracts: (filtrate) => cbContracts(null, filtrate),
 		// update market when a price change has been detected
-		price: (result) => cbPrice(null, result),
+		log_fill_tx: (result) => cbLogFillTx(null, result),
 		// listen for new markets
 		marketCreated: (result) => cbCreation(null, result)
 	}, (filters) => console.log('### listen to filters:', filters));

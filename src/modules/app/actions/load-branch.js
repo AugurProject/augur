@@ -7,7 +7,7 @@ import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearMarketsData } from '../../markets/actions/update-markets-data';
-// import { revealReports } from '../../reports/actions/reveal-reports';
+import { revealReports } from '../../reports/actions/reveal-reports';
 // import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
 // import { collectFees } from '../../reports/actions/collect-fees';
 // import { closeMarkets } from '../../reports/actions/close-markets';
@@ -21,7 +21,7 @@ export function loadBranch(branchID) {
 			if (err) return console.log('ERROR loadBranch', err);
 
 			dispatch(updateBranch(branch));
-			dispatch(loadMarkets(branch.id));
+			dispatch(loadMarkets(branchID));
 
 			const { selectedMarketID } = getState();
 			if (selectedMarketID !== null) {
@@ -31,7 +31,7 @@ export function loadBranch(branchID) {
 			dispatch(updateBlockchain(() => {
 				const { marketsData } = getState();
 				dispatch(loadReports(marketsData));
-				// dispatch(revealReports());
+				dispatch(revealReports());
 				// dispatch(collectFees());
 				// dispatch(penalizeWrongReports(marketsData));
 				// dispatch(closeMarkets(marketsData));

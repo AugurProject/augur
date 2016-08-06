@@ -1,6 +1,6 @@
 import * as AugurJS from '../../../services/augurjs';
 
-// import { revealReports } from '../../reports/actions/reveal-reports';
+import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
@@ -94,11 +94,10 @@ export function updateBlockchain(cb) {
 
 			// if the report *period* changed this block, do some extra stuff (also triggers the first time blockchain is being set)
 			if (isChangedCurrentPeriod && loginAccount.id) {
-				console.log('loginAccount:', loginAccount);
 				dispatch(incrementReportPeriod(() => {
 					// if the report *phase* changed this block, do some extra stuff
 					if (isChangedReportPhase) {
-						// dispatch(revealReports());
+						dispatch(revealReports());
 						dispatch(collectFees());
 					}
 
