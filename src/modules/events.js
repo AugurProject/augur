@@ -27,8 +27,8 @@ module.exports = {
                 info[0] = abi.hex(info[0]);
                 info[1] = abi.bignum(info[1]).toFixed();
                 info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.unfix(info[3], "string");
-                info[4] = abi.unfix(info[4], "string");
+                info[3] = abi.unfix(abi.hex(info[3], true), "string");
+                info[4] = abi.unfix(abi.hex(info[4], true), "string");
                 info[5] = parseInt(info[5]);
                 info[6] = abi.unfix(info[6], "string");
             }

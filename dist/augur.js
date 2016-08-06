@@ -43320,7 +43320,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.38";
+    this.version = "1.9.39";
 
     this.options = {
         debug: {
@@ -43489,8 +43489,8 @@ module.exports = {
                 id: rawInfo[index],
                 endDate: parseInt(rawInfo[index + 1], 16),
                 outcome: abi.unfix(rawInfo[index + 2], "string"),
-                minValue: abi.unfix(rawInfo[index + 3], "string"),
-                maxValue: abi.unfix(rawInfo[index + 4], "string"),
+                minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
+                maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16)
             };
 
@@ -44491,8 +44491,8 @@ module.exports = {
                 info[0] = abi.hex(info[0]);
                 info[1] = abi.bignum(info[1]).toFixed();
                 info[2] = abi.unfix(info[2], "string");
-                info[3] = abi.unfix(info[3], "string");
-                info[4] = abi.unfix(info[4], "string");
+                info[3] = abi.unfix(abi.hex(info[3], true), "string");
+                info[4] = abi.unfix(abi.hex(info[4], true), "string");
                 info[5] = parseInt(info[5]);
                 info[6] = abi.unfix(info[6], "string");
             }
@@ -46675,20 +46675,6 @@ module.exports = {
             categories[i] = madlibs.action();
         }
         var markets = {};
-
-        console.log('create binary:', {
-            branchId: branchID,
-            description: description,
-            expDate: expDate,
-            minValue: 1,
-            maxValue: 2,
-            numOutcomes: 2,
-            resolution: resolution,
-            takerFee: takerFee,
-            makerFee: makerFee,
-            tags: tags,
-            extraInfo: extraInfo
-        });
 
         // create a binary market
         augur.createSingleEventMarket({

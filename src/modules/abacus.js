@@ -119,8 +119,8 @@ module.exports = {
                 id: rawInfo[index],
                 endDate: parseInt(rawInfo[index + 1], 16),
                 outcome: abi.unfix(rawInfo[index + 2], "string"),
-                minValue: abi.unfix(rawInfo[index + 3], "string"),
-                maxValue: abi.unfix(rawInfo[index + 4], "string"),
+                minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
+                maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
                 numOutcomes: parseInt(rawInfo[index + 5], 16)
             };
 
