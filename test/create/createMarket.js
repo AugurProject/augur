@@ -69,7 +69,6 @@ describe("CreateMarket.createMarket", function () {
                                 done(new Error(tools.pp(err)));
                             }
                         }); // CreateMarket.createMarket
-
                     },
                     onFailed: function (err) {
                         done(new Error(tools.pp(err)));

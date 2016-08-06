@@ -65,11 +65,16 @@ module.exports = {
         this.print_residual(periodLength);
     },
 
-    top_up: function (augur, branch, accounts, password, callback) {
+    top_up: function (augur, branch, accountList, password, callback) {
         var unlocked = [];
         var self = this;
-        var active = augur.web.account.address || augur.from;
+        var active = augur.from;
         branch = branch || constants.DEFAULT_BRANCH_ID;
+        var clientSideAccount;
+        var accounts = clone(accountList);
+        if (augur.web.account.address) {
+            accounts = [augur.web.account.address].concat(accounts);
+        }
         async.eachSeries(accounts, function (account, nextAccount) {
             augur.rpc.personal("unlockAccount", [account, password], function (res) {
                 if (res && res.error) return nextAccount();
@@ -79,50 +84,71 @@ module.exports = {
                         branch: branch,
                         address: account,
                         callback: function (repBalance) {
-                            augur.useAccount(account);
+                            function next() {
+                                if (augur.web.account.address) {
+                                    clientSideAccount = clone(augur.web.account);
+                                    augur.web.account = {};
+                                }
+                                nextAccount();
+                            }
+                            if (!augur.web.account.address) {
+                                augur.useAccount(account);
+                            }
                             if (parseFloat(cashBalance) >= 10000000000 && parseFloat(repBalance) >= 47) {
-                                unlocked.push(account);
-                                return nextAccount();
+                                if (augur.web.account.address) {
+                                    clientSideAccount = clone(augur.web.account);
+                                    augur.web.account = {};
+                                } else {
+                                    unlocked.push(account);
+                                }
+                                return next();
                             }
                             augur.fundNewAccount({
                                 branch: branch,
                                 onSent: utils.noop,
                                 onSuccess: function (r) {
-                                    if (r.callReturn !== "1") return nextAccount();
+                                    if (r.callReturn !== "1") return next();
                                     augur.setCash({
                                         address: account,
                                         balance: "10000000000",
                                         onSent: utils.noop,
                                         onSuccess: function (r) {
-                                            if (r.callReturn === "1") unlocked.push(account);
-                                            nextAccount();
+                                            if (r.callReturn === "1" && !augur.web.account.address) { 
+                                                unlocked.push(account);
+                                            }
+                                            next();
                                         },
-                                        onFailed: function () { nextAccount(); }
+                                        onFailed: function () { next(); }
                                     });
                                 },
-                                onFailed: function () { nextAccount(); }
+                                onFailed: function () { next(); }
                             });
                         }
                     });
                 });
             });
         }, function (err) {
-            if (err) return callback(err);
+            if (clientSideAccount) {
+                augur.web.account = clientSideAccount;
+            }
             augur.useAccount(active);
+            if (err) return callback(err);
             callback(null, unlocked);
         });
     },
 
     // Create a new branch and get Reputation on it
-    setup_new_branch: function (augur, periodLength, parentBranchID, accounts, callback) {
+    setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
         var self = this;
         var branchDescription = madlibs.city() + " " + madlibs.noun() + " " + madlibs.noun() + " [" + Math.random().toString(36).substring(4) + "]";
         var tradingFee = "0.01";
+        var accounts = clone(accountList);
         if (this.DEBUG) {
             console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"));
             console.log(chalk.white.dim("Account(s):"), chalk.green(accounts));
         }
-        var sender = augur.web.account.address || augur.from;
+        var sender = augur.from;
+        var clientSideAccount;
         augur.createBranch({
             description: branchDescription,
             periodLength: periodLength,
@@ -133,7 +159,7 @@ module.exports = {
             onSuccess: function (res) {
                 var newBranchID = res.branchID;
                 if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-                assert(augur.getCreator(newBranchID) === sender);
+                assert(augur.getCreator(newBranchID) === (augur.web.account.address || augur.from));
                 assert(augur.getDescription(newBranchID) === branchDescription);
                 var block = augur.rpc.getBlock(res.blockNumber);
                 assert(newBranchID === utils.sha3([
@@ -148,9 +174,21 @@ module.exports = {
                 ]));
 
                 // get reputation on the new branch
+                if (augur.web.account.address) {
+                    accounts = [augur.web.account.address].concat(accounts);
+                }
                 async.each(accounts, function (account, nextAccount) {
                     if (self.DEBUG) console.log(chalk.white.dim("Funding account:"), chalk.green(account));
-                    augur.useAccount(account);
+                    function next() {
+                        if (augur.web.account.address) {
+                            clientSideAccount = clone(augur.web.account);
+                            augur.web.account = {};
+                        }
+                        nextAccount();
+                    }
+                    if (!augur.web.account.address) {
+                        augur.useAccount(account);
+                    }
                     augur.fundNewAccount({
                         branch: newBranchID,
                         onSent: function (res) {
@@ -161,17 +199,23 @@ module.exports = {
                             assert(res.txHash);
                             assert(res.callReturn === "1");
                             assert(augur.getRepBalance(newBranchID, account) === "47");
-                            nextAccount();                            
+                            nextAccount();
                         },
-                        onFailed: nextAccount
+                        onFailed: next
                     });
                 }, function (err) {
+                    if (clientSideAccount) {
+                        augur.web.account = clientSideAccount;
+                    }
                     augur.useAccount(sender);
                     if (err) return callback(err);
                     callback(null, newBranchID);
                 });
             },
             onFailed: function (err) {
+                if (clientSideAccount) {
+                    augur.web.account = clientSideAccount;
+                }
                 augur.useAccount(sender);
                 callback(err);
             }
@@ -202,6 +246,20 @@ module.exports = {
             categories[i] = madlibs.action();
         }
         var markets = {};
+
+        console.log('create binary:', {
+            branchId: branchID,
+            description: description,
+            expDate: expDate,
+            minValue: 1,
+            maxValue: 2,
+            numOutcomes: 2,
+            resolution: resolution,
+            takerFee: takerFee,
+            makerFee: makerFee,
+            tags: tags,
+            extraInfo: extraInfo
+        });
 
         // create a binary market
         augur.createSingleEventMarket({
@@ -292,7 +350,12 @@ module.exports = {
         var self = this;
         var branch = augur.getBranchID(markets[Object.keys(markets)[0]]);
         var periodLength = augur.getPeriodLength(branch);
-        var active = augur.web.account.address || augur.from;
+        var active = augur.from;
+        var clientSideAccount;
+        if (augur.web.account.address) {
+            clientSideAccount = clone(augur.web.account);
+            augur.web.account = {};
+        }
         if (this.DEBUG) {
             console.log(chalk.blue.bold("\nTrading in each market..."));
             console.log(chalk.white.dim("Maker:"), chalk.green(maker));
@@ -376,7 +439,13 @@ module.exports = {
                             if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
                             assert(r.callReturn === "1");
                         },
-                        onCommitFailed: callback,
+                        onCommitFailed: function (e) {
+                            if (clientSideAccount) {
+                                augur.web.account = clientSideAccount;
+                            }
+                            augur.useAccount(active);
+                            callback(e);
+                        },
                         onNextBlock: function (block) {
                             if (self.DEBUG) self.print_residual(periodLength, "Got block " + block);
                         },
@@ -391,10 +460,19 @@ module.exports = {
                             assert(!r.error);
                             assert(r.unmatchedCash !== undefined);
                             assert(r.unmatchedShares !== undefined);
+                            if (clientSideAccount) {
+                                augur.web.account = clientSideAccount;
+                            }
                             augur.useAccount(active);
                             callback(null);
                         },
-                        onTradeFailed: callback
+                        onTradeFailed: function (e) {
+                            if (clientSideAccount) {
+                                augur.web.account = clientSideAccount;
+                            }
+                            augur.useAccount(active);
+                            callback(e);
+                        }
                     });
                 });
             });
@@ -475,9 +553,9 @@ module.exports = {
     setup: function (augur, args, rpcinfo) {
         var defaulthost, ipcpath, wsUrl;
         if (NODE_JS && process.env.AUGURJS_INTEGRATION_TESTS) {
-            defaulthost = "http://127.0.0.1:8545";
+            defaulthost = process.env.GETH_HTTP || "http://127.0.0.1:8545";
             ipcpath = process.env.GETH_IPC;
-            wsUrl = "ws://127.0.0.1:8546";
+            wsUrl = process.env.GETH_WS || "ws://127.0.0.1:8546";
         }
         if (process.env.CONTINUOUS_INTEGRATION) {
             this.TIMEOUT = 131072;
