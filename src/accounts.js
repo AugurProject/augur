@@ -138,8 +138,9 @@ module.exports = function () {
 
                     // encrypt private key using derived key and IV, then
                     // store encrypted key & IV, indexed by handle
+                    var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
                     var keystore = {
-                        address: abi.format_address(keys.privateKeyToAddress(plain.privateKey)),
+                        address: address,
                         crypto: {
                             cipher: keys.constants.cipher,
                             ciphertext: encryptedPrivateKey,
@@ -164,7 +165,7 @@ module.exports = function () {
                         name: name,
                         secureLoginID: secureLoginID,
                         privateKey: plain.privateKey,
-                        address: keystore.address,
+                        address: address,
                         keystore: keystore,
                         derivedKey: derivedKey
                     };
@@ -173,44 +174,44 @@ module.exports = function () {
                         name: name,
                         secureLoginID: secureLoginID,
                         keystore: keystore,
-                        address: keystore.address
+                        address: address
                     });
                 }); // deriveKey
             }); // create
         },
 
-				importAccount: function (name, password, keystore, cb) {
-					var self = this;
-					cb = (utils.is_function(cb)) ? cb : utils.pass;
-					// blank password
-					if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+        importAccount: function (name, password, keystore, cb) {
+            var self = this;
+            cb = (utils.is_function(cb)) ? cb : utils.pass;
 
-					// preparing to redo the secureLoginID to use the new name
-					keys.recover(password, keystore, function (privateKey) {
-						keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+            // blank password
+            if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
 
-							var unsecureLoginIDObject = {
-									name: name,
-									keystore: keystore
-							};
+            // preparing to redo the secureLoginID to use the new name
+            keys.recover(password, keystore, function (privateKey) {
+                keys.deriveKey(password, keystore.crypto.kdfparams.salt, null, function (derivedKey) {
+                    var unsecureLoginIDObject = {
+                        name: name,
+                        keystore: keystore
+                    };
+                    var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
 
-							var secureLoginID = augur.base58Encrypt(unsecureLoginIDObject);
-							// while logged in, web.account object is set
-							self.account = {
-									name: name,
-									secureLoginID: secureLoginID,
-									privateKey: privateKey,
-									address: keystore.address,
-									keystore: keystore,
-									derivedKey: derivedKey
-							};
-							return cb(clone(self.account));
-						});
-					});
-				},
+                    // while logged in, web.account object is set
+                    self.account = {
+                        name: name,
+                        secureLoginID: secureLoginID,
+                        privateKey: privateKey,
+                        address: keystore.address,
+                        keystore: keystore,
+                        derivedKey: derivedKey
+                    };
+                    return cb(clone(self.account));
+                });
+            });
+        },
 
         loadLocalLoginAccount: function (localAccount, cb) {
-						var self = this;
+            var self = this;
             cb = (utils.is_function(cb)) ? cb : utils.pass;
             var privateKey = localAccount.privateKey;
             var derivedKey = localAccount.derivedKey;
@@ -245,11 +246,11 @@ module.exports = function () {
             }
             var keystore = unencryptedLoginIDObject.keystore;
             var name = unencryptedLoginIDObject.name;
-						var options = {
-							kdf: keystore.crypto.kdf,
-							kdfparams: keystore.crypto.kdfparams,
-							cipher: keystore.crypto.kdf
-						};
+            var options = {
+                kdf: keystore.crypto.kdf,
+                kdfparams: keystore.crypto.kdfparams,
+                cipher: keystore.crypto.kdf
+            };
 
             // derive secret key from password
             keys.deriveKey(password, keystore.crypto.kdfparams.salt, options, function (derivedKey) {

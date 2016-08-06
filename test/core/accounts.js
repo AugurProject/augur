@@ -390,14 +390,15 @@ describe("Integration tests", function () {
     describe("Fund new account", function () {
         it("Address funding sequence", function (done) {
             this.timeout(tools.TIMEOUT*2);
-            var augur = tools.setup(require("../../src"), process.argv.slice(2));
+            var augur = tools.setup(tools.reset("../../src/index"), process.argv.slice(2));
+            var sender = augur.from;
             augur.web.login(secureLoginID, password, function (account) {
                 // console.log("login:", account);
                 checkAccount(augur, account);
                 var recipient = account.address;
                 var initial_balance = abi.fix(augur.rpc.balance(recipient));
                 // console.log("initial balance:", initial_balance.toFixed());
-                augur.web.fundNewAccountFromAddress(augur.from, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
+                augur.web.fundNewAccountFromAddress(sender, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
                     function (res) {
                         assert.notProperty(res, "error");
                     },
