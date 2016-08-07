@@ -26,6 +26,7 @@ import { formatShares, formatEther, formatPercent, formatNumber } from '../../..
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
+import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
@@ -51,7 +52,7 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, marketOrderBooks, branch } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
@@ -68,7 +69,7 @@ export const selectMarket = (marketID) => {
 		!!favorites[marketID],
 		outcomesData[marketID],
 
-		reports[marketsData[marketID].eventID],
+		reports[branch.id || BRANCH_ID][marketsData[marketID].eventID],
 		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 

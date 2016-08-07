@@ -1,50 +1,61 @@
-import * as AugurJS from '../../../services/augurjs';
+import async from 'async';
+import { augur } from '../../../services/augurjs';
 import { updateReports } from '../../reports/actions/update-reports';
 
 export function revealReports() {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount, reports } = getState();
+		const { blockchain, loginAccount, reports, branch } = getState();
+		console.log('revealReports:', reports);
 
 		// if we're in the first half of the reporting period
 		if (!blockchain.isReportConfirmationPhase || !loginAccount.rep || !reports) {
 			return;
 		}
 
-		const revealableReports = Object.keys(reports)
-			.filter(eventID => reports[eventID].reportHash &&
-			reports[eventID].reportHash.length && !reports[eventID].isRevealed)
+		const branchReports = reports[branch.id];
+		if (!branchReports) return;
+		const revealableReports = Object.keys(branchReports)
+			.filter(eventID => branchReports[eventID].reportHash &&
+			branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed)
 			.map(eventID => {
-				const obj = { ...reports[eventID], eventID };
+				const obj = { ...branchReports[eventID], eventID };
 				return obj;
 			});
-
-		if (!revealableReports || !revealableReports.length) {
-			return;
+		console.log('revealableReports:', revealableReports);
+		if (revealableReports && revealableReports.length && loginAccount && loginAccount.id) {
+			async.each(revealableReports, (report, nextReport) => {
+				console.log('submitReport:', {
+					event: report.eventID,
+					salt: report.salt,
+					ethics: Number(!report.isUnethical),
+					isScalar: report.isScalar
+				});
+				augur.submitReport({
+					event: report.eventID,
+					salt: report.salt,
+					ethics: Number(!report.isUnethical),
+					isScalar: report.isScalar,
+					onSent: (res) => {
+						console.log('augur.submitReport sent:', res);
+					},
+					onSuccess: (res) => {
+						console.log('augur.submitReport success:', res);
+						dispatch(updateReports({
+							[branch.id]: {
+								[report.eventID]: { ...report, isRevealed: true }
+							}
+						}));
+						nextReport();
+					},
+					onFailed: (err) => {
+						console.error('augur.submitReport failed:', err);
+						nextReport();
+					}
+				});
+			}, (err) => {
+				if (err) return console.error('revealReports:', err);
+			});
 		}
-
-		(function process() {
-			// if there are more event ids, continue
-			function next() {
-				if (revealableReports.length) {
-					setTimeout(process, 1000);
-				}
-			}
-			const report = revealableReports.pop();
-			const event = report.eventID;
-			AugurJS.revealReport(
-				event,
-				report.salt,
-				report.reportedOutcome,
-				report.isScalar,
-				report.isUnethical,
-				(err, res) => {
-					console.log('revealReport err:', err);
-					console.log('revealReport response:', res);
-					dispatch(updateReports(res));
-					next();
-				}
-			);
-		}());
 	};
 }
 

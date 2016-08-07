@@ -10,61 +10,66 @@ export function listenToUpdates() {
 
 			// block arrivals
 			block: (blockHash) => {
-				console.debug('block:', blockHash);
 				dispatch(updateAssets());
 				dispatch(updateBlockchain());
 			},
 
-			// trade filled: { marketId, outcome (id), price }
+			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
-				console.debug('log_fill_tx:', msg);
-				if (msg && msg.marketId && msg.outcome && msg.price) {
-					dispatch(updateOutcomePrice(msg.marketId, msg.outcome, parseFloat(msg.price)));
+				if (msg) console.debug('log_fill_tx:', msg);
+				if (msg && msg.market && msg.outcome && msg.price) {
+					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
 				}
 			},
 
 			// order added to orderbook
 			log_add_tx: (msg) => {
-				console.debug('log_fill_tx:', msg);
-				// dispatch(loadMarketsInfo(msg.marketId));
+				if (msg) {
+					console.debug('log_add_tx:', msg);
+				}
+				dispatch(loadMarketsInfo(msg.market));
 			},
 
 			// order removed from orderbook
 			log_cancel: (msg) => {
-				console.debug('log_cancel:', msg);
-				// dispatch(loadMarketsInfo(msg.marketId));
+				if (msg) {
+					console.debug('log_cancel:', msg);
+				}
+				dispatch(loadMarketsInfo(msg.market));
 			},
 
-			// new market: msg = { marketId }
+			// new market: msg = { marketID }
 			marketCreated: (msg) => {
-				console.debug('marketCreated:', msg);
-				if (msg && msg.marketId) {
-					dispatch(loadMarketsInfo(msg.marketId));
+				if (msg) console.debug('marketCreated:', msg);
+				if (msg && msg.marketID) {
+					dispatch(loadMarketsInfo(msg.marketID));
 				}
 			},
 
 			// market trading fee updated (decrease only)
 			tradingFeeUpdated: (msg) => {
-				console.debug('tradingFeeUpdated:', msg);
-				// dispatch(loadMarketsInfo(msg.marketId));
+				if (msg) console.debug('tradingFeeUpdated:', msg);
+				if (msg && msg.marketID) {
+					dispatch(loadMarketsInfo(msg.marketID));
+				}
 			},
 
-			// Reporter penalization (debugging-only?)
-			penalize: (msg) => {
-				console.debug('penalize:', msg);
-				// dispatch(updateAssets());
-			},
+			// // Reporter penalization (debugging-only?)
+			// penalize: (msg) => {
+			// 	console.debug('penalize:', msg);
+			// 	// dispatch(updateAssets());
+			// },
 
-			// Reputation transfer
-			Transfer: (msg) => {
-				console.debug('Transfer:', msg);
-				// dispatch(updateAssets());
-			},
+			// // Reputation transfer
+			// Transfer: (msg) => {
+			// 	console.debug('Transfer:', msg);
+			// 	// dispatch(updateAssets());
+			// },
 
-			Approval: (msg) => {
-				console.debug('Approval:', msg);
-				// dispatch(updateAssets());
-			}
+			// Approval: (msg) => {
+			// 	console.debug('Approval:', msg);
+			// 	// dispatch(updateAssets());
+			// }
 		}, (filters) => console.log('### Listening to filters:', filters));
 	};
 }

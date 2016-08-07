@@ -74,7 +74,6 @@ export function updateBlockchain(cb) {
 		if (isAlreadyUpdatingBlockchain) {
 			return; // don't trigger cb on this failure
 		}
-
 		isAlreadyUpdatingBlockchain = true;
 
 		// load latest block number
@@ -104,15 +103,17 @@ export function updateBlockchain(cb) {
 			// if the report *period* changed this block, do some extra stuff (also triggers the first time blockchain is being set)
 			if (isChangedCurrentPeriod && loginAccount.id) {
 				dispatch(incrementReportPeriod(() => {
-					// if the report *phase* changed this block, do some extra stuff
-					if (isChangedReportPhase) {
-						dispatch(revealReports());
-						dispatch(collectFees());
-					}
-
 					isAlreadyUpdatingBlockchain = false;
 					return cb && cb();
 				}));
+
+			// if just the report *phase* changed this block, do some extra stuff
+			} else if (isChangedReportPhase && loginAccount.id) {
+				dispatch(revealReports());
+				dispatch(collectFees());
+				isAlreadyUpdatingBlockchain = false;
+				return cb && cb();
+
 			} else {
 				isAlreadyUpdatingBlockchain = false;
 				return cb && cb();

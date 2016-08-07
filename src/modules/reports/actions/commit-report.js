@@ -11,10 +11,12 @@ import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links'
 
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
-		const { marketsData, reports } = getState();
+		const { marketsData, reports, branch } = getState();
 		const currentEventID = marketsData[market.id].eventID;
 
-		dispatch(updateReports({ [currentEventID]: { reportHash: true } }));
+		dispatch(updateReports({
+			[branch.id]: { [currentEventID]: { reportHash: true } }
+		}));
 		dispatch(addCommitReportTransaction(market, reportedOutcomeID, isUnethical, isIndeterminate));
 
 		const nextPendingReportEventID = Object.keys(reports).find(
@@ -54,12 +56,13 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			isUnethical,
 			isIndeterminate,
 			salt: bytesToHex(secureRandom(32)),
-			reportHash: true
+			reportHash: null,
+			isRevealed: false
 		};
 
 		// If this is a local account, no encryption key is available in the
 		// client, so store the report in localStorage instead
-		dispatch(updateReports({ [eventID]: report }));
+		dispatch(updateReports({ [branch.id]: { [eventID]: report } }));
 
 		AugurJS.commitReport(
 			branch.id,
@@ -81,7 +84,9 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
 
 				if (res.status === SUCCESS) {
-					dispatch(updateReports({ [eventID]: { reportHash: res.reportHash } }));
+					dispatch(updateReports({
+						[branch.id]: { [eventID]: { reportHash: res.reportHash } }
+					}));
 				}
 
 				return;

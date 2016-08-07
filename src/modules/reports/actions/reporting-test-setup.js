@@ -30,9 +30,8 @@ export function reportingTestSetup() {
 				dispatch(loadFullMarket(selectedMarketID));
 			}
 			dispatch(updateBlockchain(() => {
-				const { marketsData } = getState();
-				console.log('loadReports:', marketsData);
-				dispatch(loadReports(marketsData));
+				// const { marketsData } = getState();
+				dispatch(loadReports());
 				dispatch(revealReports());
 				// dispatch(collectFees());
 				// dispatch(penalizeWrongReports(marketsData));

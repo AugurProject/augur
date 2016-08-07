@@ -29,8 +29,8 @@ export function loadBranch(branchID) {
 			}
 
 			dispatch(updateBlockchain(() => {
-				const { marketsData } = getState();
-				dispatch(loadReports(marketsData));
+				// const { marketsData } = getState();
+				dispatch(loadReports());
 				dispatch(revealReports());
 				// dispatch(collectFees());
 				// dispatch(penalizeWrongReports(marketsData));

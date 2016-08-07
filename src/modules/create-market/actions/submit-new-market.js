@@ -1,6 +1,7 @@
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
+import { BRANCH_ID } from '../../app/constants/network';
 
 import { augur } from '../../../services/augurjs';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
@@ -41,7 +42,7 @@ export function createMarket(transactionID, newMarket) {
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
 
 		augur.createSingleEventMarket({
-			branchId: branch.id,
+			branchId: branch.id || BRANCH_ID,
 			description: newMarket.formattedDescription,
 			expDate: newMarket.endDate.value.getTime() / 1000,
 			minValue: newMarket.minValue,
@@ -53,10 +54,10 @@ export function createMarket(transactionID, newMarket) {
 			makerFee: newMarket.makerFee / 100,
 			extraInfo: newMarket.detailsText,
 			onSent: (res) => {
-				dispatch({ status: CREATING_MARKET, txHash: res.txHash });
+				dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
 			},
 			onSuccess: (res) => {
-				dispatch({ status: SUCCESS, marketID: res.marketID, tx: res });
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				dispatch(clearMakeInProgress());
 				if (newMarket.isCreatingOrderBook) {
 					dispatch(submitGenerateOrderBook({
@@ -73,35 +74,5 @@ export function createMarket(transactionID, newMarket) {
 				}));
 			}
 		});
-		// augur.createSingleEventMarket(branch.id, newMarket, (err, res) => {
-		// 	if (err) {
-		// 		dispatch(
-		// 			updateExistingTransaction(
-		// 				transactionID,
-		// 				{ status: FAILED, message: err.message }
-		// 			)
-		// 		);
-		// 		return;
-		// 	}
-		// 	if (res.status === CREATING_MARKET) {
-		// 		dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
-		// 	} else {
-		// 		dispatch(updateExistingTransaction(transactionID, { status: res.status }));
-
-		// 		if (res.status === SUCCESS) {
-		// 			dispatch(clearMakeInProgress());
-
-		// 			if (newMarket.isCreatingOrderBook) {
-		// 				const updatedNewMarket = {
-		// 					...newMarket,
-		// 					id: res.marketID,
-		// 					tx: res.tx
-		// 				};
-
-		// 				dispatch(submitGenerateOrderBook(updatedNewMarket));
-		// 			}
-		// 		}
-		// 	}
-		// });
 	};
 }

@@ -3,26 +3,20 @@ import { UPDATE_REPORTS, CLEAR_REPORTS } from '../../reports/actions/update-repo
 /*
 Keys are eventID, values can be:
    - { reportHash: null }: user is required to report and has not yet reported
-   - { reportHash: true }: report sent, but not yet confirmed
-   - { reportHash: xyz... }: report submitted and confirmed
 */
 export default function (reports = {}, action) {
 	switch (action.type) {
-	case UPDATE_REPORTS:
-		return {
-			...reports,
-			...Object.keys(action.reports).reduce((p, eventID) => {
-				p[eventID] = {
-					...reports[eventID],
-					...action.reports[eventID]
-				};
-				return p;
-			}, {})
-		};
-
+	case UPDATE_REPORTS: {
+		const updatedReports = Object.assign({}, reports);
+		let branchID;
+		for (branchID in action.reports) {
+			if (!action.reports.hasOwnProperty(branchID)) continue;
+			updatedReports[branchID] = Object.assign({}, reports[branchID], action.reports[branchID]);
+		}
+		return updatedReports;
+	}
 	case CLEAR_REPORTS:
 		return {};
-
 	default:
 		return reports;
 	}

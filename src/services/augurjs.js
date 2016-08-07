@@ -348,55 +348,6 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 	});
 };
 
-// TODO move to augur.js
-ex.getEventsToReportOn = function getEventsToReportOn(branch, period, sender, start, cb) {
-	const eventsToReportOn = {};
-
-	// load market-ids related to each event-id one at a time
-	augur.getEventsToReportOn(branch, period, sender, start, (events) => {
-		if (!events || events.constructor !== Array || !events.length) {
-			return cb(null, {});
-		}
-		(function processEventID() {
-			const event = events.pop();
-			augur.getReportHash(branch, period, sender, event, (reportHash) => {
-				if (reportHash && parseInt(reportHash, 16) !== 0) {
-					eventsToReportOn[event] = { reportHash };
-				} else {
-					eventsToReportOn[event] = { reportHash: null };
-				}
-
-				// if there are more event ids, re-run this function to get their market ids
-				if (events.length) return processEventID();
-
-				// if no more event ids to process
-				cb(null, eventsToReportOn);
-			});
-		}());
-	});
-};
-
-// TODO move to augur.js
-ex.revealReport = function revealReport(event, salt, report, isScalar, isUnethical, cb) {
-	augur.submitReport({
-		event,
-		salt,
-		report,
-		ethics: Number(!isUnethical),
-		isScalar,
-		onSent: (res) => {},
-		onSuccess: (res) => {
-			console.log('------> revealed report', res);
-			cb(null, { [event]: { isRevealed: true } });
-		},
-		onFailed: (err) => {
-			console.log('ERROR revealReport', err);
-			cb(err);
-		}
-	});
-};
-
-// TODO move to augur.js
 ex.commitReport = function commitReport(branch, loginAccount, event, reportObject, periodLength, cb) {
 	const report = reportObject.reportedOutcomeID;
 	const salt = reportObject.salt;
