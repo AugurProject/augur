@@ -5,6 +5,7 @@
 "use strict";
 
 var async = require("async");
+var clone = require("clone");
 var abi = require("augur-abi");
 var augur_contracts = require("augur-contracts");
 var utils = require("./utilities");
@@ -34,31 +35,39 @@ module.exports = function () {
 
         filter: filters,
 
-        parse_block_message: function (message, onMessage) {
-            if (message) {
-                if (message.length && message.constructor === Array) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i] && message[i].hash) {
-                            onMessage(message[i].hash);
-                        } else {
-                            onMessage(message[i]);
-                        }
-                    }
-                } else if (message.hash) {
-                    onMessage(message.hash);
-                }
-            }
+        format_trade_type: function (type) {
+            return (parseInt(type, 16) === 1) ? "buy" : "sell";
         },
-        parse_contracts_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        onMessage(message[i]);
-                    }
-                }
+        format_event_message: function (label, msg) {
+            var fmt;
+            switch (label) {
+            case "tradingFeeUpdated":
+                fmt = clone(msg);
+                fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
+                return fmt;
+            case "log_fill_tx":
+                fmt = clone(msg);
+                fmt.type = this.format_trade_type(msg.type);
+                fmt.taker = abi.format_address(msg.sender);
+                fmt.maker = abi.format_address(msg.owner);
+                fmt.price = abi.unfix(msg.price, "string");
+                fmt.shares = abi.unfix(msg.shares, "string");
+                fmt.outcome = parseInt(msg.outcome, 16);
+                fmt.timestamp = parseInt(msg.timestamp, 16);
+                delete fmt.sender;
+                delete fmt.owner;
+                return fmt;
+            case "log_add_tx":
+                fmt = clone(msg);
+                fmt.type = this.format_trade_type(msg.type);
+                fmt.maker = abi.format_address(msg.sender);
+                fmt.price = abi.unfix(msg.price, "string");
+                fmt.amount = abi.unfix(msg.amount, "string");
+                fmt.outcome = parseInt(msg.outcome, 16);
+                delete fmt.sender;
+                return fmt;
+            default:
+                return msg;
             }
         },
         parse_event_message: function (label, msg, onMessage) {
@@ -89,62 +98,45 @@ module.exports = function () {
                             ++dataIndex;
                         }
                     }
-                    onMessage(parsed);
+                    parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                    onMessage(this.format_event_message(label, parsed));
                     break;
                 default:
                     console.error("unknown event message:", msg);
                 }
             }
         },
-        parse_tradingFeeUpdated_message: function (message, onMessage) {
+        parse_block_message: function (message, onMessage) {
+            if (message) {
+                if (message.length && message.constructor === Array) {
+                    for (var i = 0, len = message.length; i < len; ++i) {
+                        if (message[i] && message[i].hash) {
+                            onMessage(message[i].hash);
+                        } else {
+                            onMessage(message[i]);
+                        }
+                    }
+                } else if (message.hash) {
+                    onMessage(message.hash);
+                }
+            }
+        },
+        parse_contracts_message: function (message, onMessage) {
             if (message && message.length && message.constructor === Array) {
                 for (var i = 0, len = message.length; i < len; ++i) {
                     if (message[i]) {
-                        var data_array = augur.rpc.unmarshal(message[i].data);
-                        if (data_array && data_array.constructor === Array && 
-                            data_array.length > 1) {
-                            onMessage({
-                                marketID: data_array[0],
-                                tradingFee: abi.unfix(data_array[1], "string")
-                            });
+                        if (message[i].constructor === Object && message[i].data) {
+                            message[i].data = augur.rpc.unmarshal(message[i].data);
                         }
+                        onMessage(message[i]);
                     }
                 }
             }
         },
-        parse_log_fill_tx_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i] && message[i].topics && message[i].topics.length === 4) {
-                        var data_array = augur.rpc.unmarshal(message[i].data);
-                        if (data_array && data_array.constructor === Array && data_array.length) {
-                            onMessage({
-                                market: message[i].topics[1],
-                                type: (parseInt(data_array[0], 16) === 1) ? "buy" : "sell",
-                                taker: abi.format_address(message[i].topics[2]),
-                                maker: abi.format_address(message[i].topics[3]),
-                                price: abi.unfix(data_array[1], "string"),
-                                shares: abi.unfix(data_array[2], "string"),
-                                tradeid: data_array[3],
-                                outcome: parseInt(data_array[4], 16),
-                                timestamp: parseInt(data_array[5], 16),
-                                blockNumber: parseInt(message[i].blockNumber, 16)
-                            });
-                        }
-                    }
-                }
-            }
-        },
-
         poll_filter: function (label, onMessage) {
             var callback, self = this;
             if (this.filter[label]) {
                 switch (label) {
-                case "log_fill_tx":
-                    callback = function (msg) {
-                        self.parse_log_fill_tx_message(msg, onMessage);
-                    };
-                    break;
                 case "contracts":
                     callback = function (msg) {
                         self.parse_contracts_message(msg, onMessage);
@@ -153,11 +145,6 @@ module.exports = function () {
                 case "block":
                     callback = function (msg) {
                         self.parse_block_message(msg, onMessage);
-                    };
-                    break;
-                case "tradingFeeUpdated":
-                    callback = function (msg) {
-                        self.parse_tradingFeeUpdated_message(msg, onMessage);
                     };
                     break;
                 default:
