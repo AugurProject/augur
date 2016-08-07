@@ -6,10 +6,12 @@
 "use strict";
 
 var clone = require("clone");
+var async = require("async");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var errors = require("augur-contracts").errors;
 var utils = require("../utilities");
+var constants = require("../constants");
 var abacus = require("./abacus");
 
 module.exports = {
@@ -31,6 +33,27 @@ module.exports = {
         this.rpc.blockNumber(function (blockNumber) {
             self.rpc.getBlock(blockNumber, false, function (block) {
                 callback(gas <= parseInt(block.gasLimit, 16));
+            });
+        });
+    },
+
+    isTradeUnderGasLimit: function (trade_ids, callback) {
+        var self = this;
+        var gas = 0;
+        async.forEachOf(trade_ids, function (trade_id, i, next) {
+            self.get_trade(trade_id, function (trade) {
+                if (!trade || !trade.id) {
+                    return next("couldn't find trade: " + trade_id);
+                }
+                gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+                next();
+            }, function (e) {
+                if (e) return callback(e);
+                self.rpc.blockNumber(function (blockNumber) {
+                    self.rpc.getBlock(blockNumber, false, function (block) {
+                        callback(null, gas <= parseInt(block.gasLimit, 16));
+                    });
+                });
             });
         });
     },
@@ -60,73 +83,77 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        var tradeHash = this.makeTradeHash(max_value, max_amount, trade_ids);
-        onTradeHash(tradeHash);
-        this.commitTrade({
-            hash: tradeHash,
-            onSent: onCommitSent,
-            onSuccess: function (res) {
-                onCommitSuccess(res);
-                self.rpc.fastforward(1, function (blockNumber) {
-                    onNextBlock(blockNumber);
-                    var tx = clone(self.tx.Trade.trade);
-                    tx.params = [
-                        abi.fix(max_value, "hex"),
-                        abi.fix(max_amount, "hex"),
-                        trade_ids
-                    ];
-                    var prepare = function (result, cb) {
-                        var txHash = result.txHash;
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                                return onTradeFailed(result);
-                            }
-                            self.rpc.receipt(txHash, function (receipt) {
-                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                if (receipt.error) return onTradeFailed(receipt);
-                                var sharesBought, cashFromTrade;
-                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                    var logs = receipt.logs;
-                                    var sig = self.api.events.log_fill_tx.signature;
-                                    sharesBought = abi.bignum(0);
-                                    cashFromTrade = abi.bignum(0);
-                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                        if (logs[i].topics[0] === sig) {
-                                            var logdata = self.rpc.unmarshal(logs[i].data);
-                                            if (logdata && logdata.constructor === Array && logdata.length) {
-                                                // buy (matched sell order)
-                                                if (parseInt(logdata[0], 16) === 1) {
-                                                    sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+        this.isTradeUnderGasLimit(trade_ids, null, function (err, isUnderLimit) {
+            if (err) return onCommitFailed(err);
+            if (!isUnderLimit) return onCommitFailed(errors.GAS_LIMIT_EXCEEDED);
+            var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
+            onTradeHash(tradeHash);
+            self.commitTrade({
+                hash: tradeHash,
+                onSent: onCommitSent,
+                onSuccess: function (res) {
+                    onCommitSuccess(res);
+                    self.rpc.fastforward(1, function (blockNumber) {
+                        onNextBlock(blockNumber);
+                        var tx = clone(self.tx.Trade.trade);
+                        tx.params = [
+                            abi.fix(max_value, "hex"),
+                            abi.fix(max_amount, "hex"),
+                            trade_ids
+                        ];
+                        var prepare = function (result, cb) {
+                            var txHash = result.txHash;
+                            if (result.callReturn && result.callReturn.constructor === Array) {
+                                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                                    return onTradeFailed(result);
+                                }
+                                self.rpc.receipt(txHash, function (receipt) {
+                                    if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                    if (receipt.error) return onTradeFailed(receipt);
+                                    var sharesBought, cashFromTrade;
+                                    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                        var logs = receipt.logs;
+                                        var sig = self.api.events.log_fill_tx.signature;
+                                        sharesBought = abi.bignum(0);
+                                        cashFromTrade = abi.bignum(0);
+                                        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                            if (logs[i].topics[0] === sig) {
+                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                if (logdata && logdata.constructor === Array && logdata.length) {
+                                                    // buy (matched sell order)
+                                                    if (parseInt(logdata[0], 16) === 1) {
+                                                        sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
 
-                                                // sell (matched buy order)
-                                                // cash received = price per share * shares sold
-                                                } else {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                    // sell (matched buy order)
+                                                    // cash received = price per share * shares sold
+                                                    } else {
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                                cb({
-                                    txHash: txHash,
-                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
-                                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                                    sharesBought: abi.string(sharesBought),
-                                    cashFromTrade: abi.string(cashFromTrade)
+                                    cb({
+                                        txHash: txHash,
+                                        unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                        unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                                        sharesBought: abi.string(sharesBought),
+                                        cashFromTrade: abi.string(cashFromTrade)
+                                    });
                                 });
-                            });
-                        } else {
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }
-                    };
-                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
-                });
-            },
-            onFailed: onCommitFailed,
-            onConfirmed: onCommitConfirmed
+                            } else {
+                                var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                                if (!err) return onTradeFailed(result);
+                                onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                            }
+                        };
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                    });
+                },
+                onFailed: onCommitFailed,
+                onConfirmed: onCommitConfirmed
+            });
         });
     },
 

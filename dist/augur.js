@@ -20925,41 +20925,41 @@ module.exports={
 },{}],56:[function(require,module,exports){
 module.exports={
     "10101": {
-        "Backstops": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
-        "Branches": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
-        "BuyAndSellShares": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "Cash": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
-        "CloseMarket": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "CloseMarketOne": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
-        "CloseMarketTwo": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "CompleteSets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
-        "CompositeGetters": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "Consensus": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "ConsensusData": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "CreateBranch": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "CreateMarket": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "EventResolution": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "Events": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "ExpiringEvents": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
-        "Faucets": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "ForkPenalize": "0x509592c96eee7e19f6a34772fd8783cb072ca3c6", 
-        "Forking": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
-        "FxpFunctions": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Info": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "MakeReports": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "Markets": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "PenalizationCatchup": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "PenalizeNotEnoughReports": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "ProportionCorrect": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "Reporting": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
-        "ReportingThreshold": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "RoundTwo": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "RoundTwoPenalize": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
-        "SendReputation": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3", 
-        "SlashRep": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "Trade": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "Trades": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79"
+        "Backstops": "0xa53e3d24e013573445e174f4a0e20a7d29b7dd56", 
+        "Branches": "0x416e9b992b70fbf64e7edba44499e73fcf3bc71e", 
+        "BuyAndSellShares": "0xf1f207defe0d68873d9ff717ed68169e4d66af5e", 
+        "Cash": "0x433a4cc95a4245d5ed1ea73c33aa015b881f6ac3", 
+        "CloseMarket": "0x99b7265c85f7e3d8a26726d6897068eea615ce87", 
+        "CloseMarketOne": "0xf206ab1357b032f18bf0742824163ef8efdd45f8", 
+        "CloseMarketTwo": "0x77a53a8f3d6871754db8c51c657f9bfe9f4bd770", 
+        "CollectFees": "0x517758e7990bb325b03db19153650806bb1e23c1", 
+        "CompleteSets": "0x57aebf1659f9157d2b10ec35f394990703ca8ac4", 
+        "CompositeGetters": "0xb1546e2f7aadb1281b8a67cf8c1ba7cd1c464890", 
+        "Consensus": "0x7783fffea0e0e5634c469464c49ece7c4ed59cda", 
+        "ConsensusData": "0x5b0d4f9abade5839efe55f11824fc879c3dc3c39", 
+        "CreateBranch": "0x606b26ba8b3c8e2550a709bbb152ca56d196cee7", 
+        "CreateMarket": "0xa27a12aa6701b0b7f1d2adfdaaed9b642d547b78", 
+        "EventResolution": "0x49ced69ae40d1f534c1b49aa15d7364bc9ceac19", 
+        "Events": "0x7086f2c040b52a5a569df22381ea63e301ece6c2", 
+        "ExpiringEvents": "0x5aec516b710957731986e8951ce092c59791dbb7", 
+        "Faucets": "0xb556df7538fdbf10a89cc0f14c0556bf2fbfb74a", 
+        "ForkPenalize": "0xa396d80146db27f8ac7a7314202341d9ca47f067", 
+        "Forking": "0x30080bf20c94453468e724964ca26ca65053d056", 
+        "FxpFunctions": "0xd2b890ec8283771d85e13bff6b8b96724227c812", 
+        "Info": "0x5ae1eecc678fcc8cc7b68ba44690928724fe6916", 
+        "MakeReports": "0xb95d33d0f9cce6006d208b52d09ff7a0d66b9c2f", 
+        "Markets": "0x57fb9fff86cccdd3c0f80ff3253b61dd5fac70c0", 
+        "PenalizationCatchup": "0x7e685b235d6ef3f9ec84f1862d86e272f7d14dc1", 
+        "PenalizeNotEnoughReports": "0x9526177c26cf01947d3a533f047667265a5f51eb", 
+        "ProportionCorrect": "0x93d878e28a64cf76f3b550ba286ad30a608b5d4b", 
+        "Reporting": "0xefdfe6c4cb18ff9899bbf2889d5122368d37c664", 
+        "ReportingThreshold": "0x4f04aaa9225f453935affcd79c0469b64cb84bb9", 
+        "RoundTwo": "0x98a535a4f3ed579ec8f2e602066e2eb9d6c3caeb", 
+        "RoundTwoPenalize": "0xdf960cd0fe3a7992995c78b02aa0c33deec023b1", 
+        "SendReputation": "0x98803289173c38c5624fc3a839b2a1df505d10bd", 
+        "SlashRep": "0x26a988c7b7cfb92e5b297e87c76aff0cf694066f", 
+        "Trade": "0xd6e133db8628adba58d0ed91bb73b4ce290cde2a", 
+        "Trades": "0xf26707c1f3b94d80611c5373013098ccd2d4ea9d"
     }, 
     "2": {
         "Backstops": "0x6383e0617288f6c5c47b987770f245ccf5999d50", 
@@ -21159,6 +21159,10 @@ module.exports={
     "updateTradingFee": {
         "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
         "-4": "sender's address does not match the market creator's address"
+    },
+    "GAS_LIMIT_EXCEEDED": {
+        "error": 40,
+        "message": "trade exceeds the current block gas limit"
     },
     "WRONG_NUMBER_OF_OUTCOMES": {
         "error": 41,
@@ -42571,8 +42575,8 @@ module.exports = function () {
                             onMessage(message[i]);
                         }
                     }
-                } else {
-                    if (message.hash) onMessage(message.hash);
+                } else if (message.hash) {
+                    onMessage(message.hash);
                 }
             }
         },
@@ -42588,60 +42592,38 @@ module.exports = function () {
                 }
             }
         },
-        parse_log_add_tx_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
+        parse_event_message: function (label, msg, onMessage) {
+            var i;
+            if (msg) {
+                switch (msg.constructor) {
+                case Array:
+                    for (i = 0; i < msg.length; ++i) {
+                        this.parse_event_message(label, msg[i], onMessage);
+                    }
+                    break;
+                case Object:
+                    var inputs = augur.api.events[label].inputs;
+                    var parsed = {};
+                    var topicIndex = 0;
+                    var dataIndex = 0;
+                    var topics = msg.topics;
+                    var numIndexed = topics.length - 1;
+                    var data = augur.rpc.unmarshal(msg.data);
+                    if (data && data.constructor !== Array) data = [data];
+                    for (i = 0; i < inputs.length; ++i) {
+                        parsed[inputs[i].name] = 0;
+                        if (inputs[i].indexed) {
+                            parsed[inputs[i].name] = topics[topicIndex + 1];
+                            ++topicIndex;
+                        } else {
+                            parsed[inputs[i].name] = data[dataIndex];
+                            ++dataIndex;
                         }
-                        onMessage(message[i]);
                     }
-                }
-            }
-        },
-        parse_log_cancel_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        onMessage(message[i]);
-                    }
-                }
-            }
-        },
-        parse_thru_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        if (onMessage) onMessage(message[i]);
-                    }
-                }
-            }
-        },
-        parse_penalize_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        onMessage(message[i]);
-                    }
-                }
-            }
-        },  
-        parse_marketCreated_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                if (message.constructor === Array && message.length) {
-                    for (var i = 0, len = message.length; i < len; ++i) {
-                        if (message[i]) onMessage(message[i].data);
-                    }
+                    onMessage(parsed);
+                    break;
+                default:
+                    console.error("unknown event message:", msg);
                 }
             }
         },
@@ -42653,34 +42635,10 @@ module.exports = function () {
                         if (data_array && data_array.constructor === Array && 
                             data_array.length > 1) {
                             onMessage({
-                                marketId: data_array[0],
+                                marketID: data_array[0],
                                 tradingFee: abi.unfix(data_array[1], "string")
                             });
                         }
-                    }
-                }
-            }
-        },
-        parse_approval_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        onMessage(message[i]);
-                    }
-                }
-            }
-        },
-        parse_transfer_message: function (message, onMessage) {
-            if (message && message.length && message.constructor === Array) {
-                for (var i = 0, len = message.length; i < len; ++i) {
-                    if (message[i]) {
-                        if (message[i].constructor === Object && message[i].data) {
-                            message[i].data = augur.rpc.unmarshal(message[i].data);
-                        }
-                        onMessage(message[i]);
                     }
                 }
             }
@@ -42692,13 +42650,13 @@ module.exports = function () {
                         var data_array = augur.rpc.unmarshal(message[i].data);
                         if (data_array && data_array.constructor === Array && data_array.length) {
                             onMessage({
-                                marketId: message[i].topics[1],
+                                market: message[i].topics[1],
                                 type: (parseInt(data_array[0], 16) === 1) ? "buy" : "sell",
                                 taker: abi.format_address(message[i].topics[2]),
                                 maker: abi.format_address(message[i].topics[3]),
                                 price: abi.unfix(data_array[1], "string"),
                                 shares: abi.unfix(data_array[2], "string"),
-                                trade_id: data_array[3],
+                                tradeid: data_array[3],
                                 outcome: parseInt(data_array[4], 16),
                                 timestamp: parseInt(data_array[5], 16),
                                 blockNumber: parseInt(message[i].blockNumber, 16)
@@ -42733,13 +42691,10 @@ module.exports = function () {
                         self.parse_tradingFeeUpdated_message(msg, onMessage);
                     };
                     break;
-                case "marketCreated":
-                    callback = function (msg) {
-                        self.parse_marketCreated_message(msg, onMessage);
-                    };
-                    break;
                 default:
-                    callback = onMessage;
+                    callback = function (msg) {
+                        self.parse_event_message(label, msg, onMessage);
+                    };
                 }
                 augur.rpc.getFilterChanges(this.filter[label].id, callback);
             }
@@ -42907,6 +42862,12 @@ module.exports = function () {
             //                     self.parse_tradingFeeUpdated_message(msg, callback);
             //                 };
             //                 break;
+            //             }
+            //             default:
+            //                 callback = cb[label];
+            //                 cb[label] = function (msg) {
+            //                     self.parse_event_message(msg, callback);
+            //                 };
             //             }
             //             augur.rpc.registerSubscriptionCallback(self.filter[label].id, cb[label]);
             //             next();
@@ -43320,7 +43281,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.39";
+    this.version = "1.9.40";
 
     this.options = {
         debug: {
@@ -45187,10 +45148,12 @@ module.exports = {
 "use strict";
 
 var clone = require("clone");
+var async = require("async");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
 var errors = require("augur-contracts").errors;
 var utils = require("../utilities");
+var constants = require("../constants");
 var abacus = require("./abacus");
 
 module.exports = {
@@ -45212,6 +45175,27 @@ module.exports = {
         this.rpc.blockNumber(function (blockNumber) {
             self.rpc.getBlock(blockNumber, false, function (block) {
                 callback(gas <= parseInt(block.gasLimit, 16));
+            });
+        });
+    },
+
+    isTradeUnderGasLimit: function (trade_ids, callback) {
+        var self = this;
+        var gas = 0;
+        async.forEachOf(trade_ids, function (trade_id, i, next) {
+            self.get_trade(trade_id, function (trade) {
+                if (!trade || !trade.id) {
+                    return next("couldn't find trade: " + trade_id);
+                }
+                gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+                next();
+            }, function (e) {
+                if (e) return callback(e);
+                self.rpc.blockNumber(function (blockNumber) {
+                    self.rpc.getBlock(blockNumber, false, function (block) {
+                        callback(null, gas <= parseInt(block.gasLimit, 16));
+                    });
+                });
             });
         });
     },
@@ -45241,73 +45225,77 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        var tradeHash = this.makeTradeHash(max_value, max_amount, trade_ids);
-        onTradeHash(tradeHash);
-        this.commitTrade({
-            hash: tradeHash,
-            onSent: onCommitSent,
-            onSuccess: function (res) {
-                onCommitSuccess(res);
-                self.rpc.fastforward(1, function (blockNumber) {
-                    onNextBlock(blockNumber);
-                    var tx = clone(self.tx.Trade.trade);
-                    tx.params = [
-                        abi.fix(max_value, "hex"),
-                        abi.fix(max_amount, "hex"),
-                        trade_ids
-                    ];
-                    var prepare = function (result, cb) {
-                        var txHash = result.txHash;
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                                return onTradeFailed(result);
-                            }
-                            self.rpc.receipt(txHash, function (receipt) {
-                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                if (receipt.error) return onTradeFailed(receipt);
-                                var sharesBought, cashFromTrade;
-                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                    var logs = receipt.logs;
-                                    var sig = self.api.events.log_fill_tx.signature;
-                                    sharesBought = abi.bignum(0);
-                                    cashFromTrade = abi.bignum(0);
-                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                        if (logs[i].topics[0] === sig) {
-                                            var logdata = self.rpc.unmarshal(logs[i].data);
-                                            if (logdata && logdata.constructor === Array && logdata.length) {
-                                                // buy (matched sell order)
-                                                if (parseInt(logdata[0], 16) === 1) {
-                                                    sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+        this.isTradeUnderGasLimit(trade_ids, null, function (err, isUnderLimit) {
+            if (err) return onCommitFailed(err);
+            if (!isUnderLimit) return onCommitFailed(errors.GAS_LIMIT_EXCEEDED);
+            var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
+            onTradeHash(tradeHash);
+            self.commitTrade({
+                hash: tradeHash,
+                onSent: onCommitSent,
+                onSuccess: function (res) {
+                    onCommitSuccess(res);
+                    self.rpc.fastforward(1, function (blockNumber) {
+                        onNextBlock(blockNumber);
+                        var tx = clone(self.tx.Trade.trade);
+                        tx.params = [
+                            abi.fix(max_value, "hex"),
+                            abi.fix(max_amount, "hex"),
+                            trade_ids
+                        ];
+                        var prepare = function (result, cb) {
+                            var txHash = result.txHash;
+                            if (result.callReturn && result.callReturn.constructor === Array) {
+                                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                                    return onTradeFailed(result);
+                                }
+                                self.rpc.receipt(txHash, function (receipt) {
+                                    if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                    if (receipt.error) return onTradeFailed(receipt);
+                                    var sharesBought, cashFromTrade;
+                                    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                        var logs = receipt.logs;
+                                        var sig = self.api.events.log_fill_tx.signature;
+                                        sharesBought = abi.bignum(0);
+                                        cashFromTrade = abi.bignum(0);
+                                        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                            if (logs[i].topics[0] === sig) {
+                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                if (logdata && logdata.constructor === Array && logdata.length) {
+                                                    // buy (matched sell order)
+                                                    if (parseInt(logdata[0], 16) === 1) {
+                                                        sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
 
-                                                // sell (matched buy order)
-                                                // cash received = price per share * shares sold
-                                                } else {
-                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                    // sell (matched buy order)
+                                                    // cash received = price per share * shares sold
+                                                    } else {
+                                                        cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                                cb({
-                                    txHash: txHash,
-                                    unmatchedCash: abi.unfix(result.callReturn[1], "string"),
-                                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                                    sharesBought: abi.string(sharesBought),
-                                    cashFromTrade: abi.string(cashFromTrade)
+                                    cb({
+                                        txHash: txHash,
+                                        unmatchedCash: abi.unfix(result.callReturn[1], "string"),
+                                        unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                                        sharesBought: abi.string(sharesBought),
+                                        cashFromTrade: abi.string(cashFromTrade)
+                                    });
                                 });
-                            });
-                        } else {
-                            var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
-                        }
-                    };
-                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
-                });
-            },
-            onFailed: onCommitFailed,
-            onConfirmed: onCommitConfirmed
+                            } else {
+                                var err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                                if (!err) return onTradeFailed(result);
+                                onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                            }
+                        };
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                    });
+                },
+                onFailed: onCommitFailed,
+                onConfirmed: onCommitConfirmed
+            });
         });
     },
 
@@ -45396,7 +45384,7 @@ module.exports = {
     }
 };
 
-},{"../utilities":260,"./abacus":239,"augur-abi":1,"augur-contracts":58,"clone":119,"ethrpc":265}],255:[function(require,module,exports){
+},{"../constants":235,"../utilities":260,"./abacus":239,"async":79,"augur-abi":1,"augur-contracts":58,"clone":119,"ethrpc":265}],255:[function(require,module,exports){
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -47795,9 +47783,13 @@ module.exports = {
             var status = self.rpcStatus.ws;
             if (status !== -1) self.rpcStatus.ws = 0;
             if (status === 1 && self.AUTO_RECONNECT) {
-                console.debug("[ethrpc] WebSocket reconnecting...");
+                if (self.debug.broadcast) {
+                    console.debug("[ethrpc] WebSocket reconnecting...");
+                }
                 self.wsConnect(function (connected) {
-                    console.debug("[ethrpc] WebSocket reconnected:", connected);
+                    if (self.debug.broadcast) {
+                        console.debug("[ethrpc] WebSocket reconnected:", connected);
+                    }
                 });
             }
             if (!calledCallback) callback(false);
