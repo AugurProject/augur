@@ -1,5 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
@@ -7,35 +6,65 @@ import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 
 export function listenToUpdates() {
 	return (dispatch, getState) => {
-		AugurJS.listenToUpdates(
+		augur.filters.listen({
 
-			// new block
-			(err, blockHash) => {
-				console.log('block:', blockHash);
+			// block arrivals
+			block: (blockHash) => {
+				console.debug('block:', blockHash);
 				dispatch(updateAssets());
 				dispatch(updateBlockchain());
 			},
 
-			// transactions involving augur contracts
-			() => {
-				// console.log('augur contracts:', filtrate)
+			// trade filled: { marketId, outcome (id), price }
+			log_fill_tx: (msg) => {
+				console.debug('log_fill_tx:', msg);
+				if (msg && msg.marketId && msg.outcome && msg.price) {
+					dispatch(updateOutcomePrice(msg.marketId, msg.outcome, parseFloat(msg.price)));
+				}
 			},
 
-			// outcome price update, { marketId, outcome (id), price }
-			(errNone, outcomePriceChange) => {
-				if (errNone || !outcomePriceChange || !outcomePriceChange.marketId || !outcomePriceChange.outcome || !outcomePriceChange.price) {
-					return;
-				}
-				dispatch(updateOutcomePrice(outcomePriceChange.marketId, outcomePriceChange.outcome, parseFloat(outcomePriceChange.price)));
+			// order added to orderbook
+			log_add_tx: (msg) => {
+				console.debug('log_fill_tx:', msg);
+				// dispatch(loadMarketsInfo(msg.marketId));
 			},
 
-			// new market, result = { blockNumber, marketId }
-			(errNone, result) => {
-				if (errNone || !result || !result.marketId) {
-					return;
+			// order removed from orderbook
+			log_cancel: (msg) => {
+				console.debug('log_cancel:', msg);
+				// dispatch(loadMarketsInfo(msg.marketId));
+			},
+
+			// new market: msg = { marketId }
+			marketCreated: (msg) => {
+				console.debug('marketCreated:', msg);
+				if (msg && msg.marketId) {
+					dispatch(loadMarketsInfo(msg.marketId));
 				}
-				dispatch(loadMarketsInfo(result.marketId));
+			},
+
+			// market trading fee updated (decrease only)
+			tradingFeeUpdated: (msg) => {
+				console.debug('tradingFeeUpdated:', msg);
+				// dispatch(loadMarketsInfo(msg.marketId));
+			},
+
+			// Reporter penalization (debugging-only?)
+			penalize: (msg) => {
+				console.debug('penalize:', msg);
+				// dispatch(updateAssets());
+			},
+
+			// Reputation transfer
+			Transfer: (msg) => {
+				console.debug('Transfer:', msg);
+				// dispatch(updateAssets());
+			},
+
+			Approval: (msg) => {
+				console.debug('Approval:', msg);
+				// dispatch(updateAssets());
 			}
-		);
+		}, (filters) => console.log('### Listening to filters:', filters));
 	};
 }

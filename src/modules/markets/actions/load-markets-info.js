@@ -1,22 +1,16 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
 
 export function loadMarketsInfo(marketIDs, cb) {
 	return (dispatch, getState) => {
-		if (!marketIDs || !marketIDs.length) {
-			return;
+		if (marketIDs && marketIDs.length) {
+			augur.batchGetMarketInfo(marketIDs, (marketsData) => {
+				if (marketsData && marketsData.error) {
+					return console.error('ERROR loadMarketsInfo()', marketsData);
+				}
+				dispatch(updateMarketsData(marketsData));
+				cb && cb();
+			});
 		}
-
-		AugurJS.batchGetMarketInfo(marketIDs, (err, marketsData) => {
-			if (err) {
-				console.error('ERROR loadMarketsInfo()', err);
-				return;
-			}
-
-			dispatch(updateMarketsData(marketsData));
-
-			cb && cb();
-		});
 	};
 }

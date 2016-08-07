@@ -57,6 +57,8 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			reportHash: true
 		};
 
+		// If this is a local account, no encryption key is available in the
+		// client, so store the report in localStorage instead
 		dispatch(updateReports({ [eventID]: report }));
 
 		AugurJS.commitReport(

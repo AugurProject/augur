@@ -1,4 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { updateMarketOrderBook } from "./update-market-order-book";
 import { selectMarket } from '../../market/selectors/market';
 
@@ -10,8 +10,7 @@ export function loadBidsAsks(marketID) {
 			scalarMinMax.minValue = market.minValue;
 			scalarMinMax.maxValue = market.maxValue;
 		}
-
-		AugurJS.getOrderBook(marketID, scalarMinMax, (marketOrderBook) => {
+		augur.getOrderBook(marketID, scalarMinMax, (marketOrderBook) => {
 			if (marketOrderBook == null || marketOrderBook.error != null) {
 				return console.error(`load-bids-asks.js: getOrderBook(${marketID}) error: %o`, marketOrderBook);
 				// todo: how do we handle failures in UI? retry ???

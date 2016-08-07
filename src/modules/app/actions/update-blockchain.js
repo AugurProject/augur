@@ -1,5 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
 
@@ -18,43 +17,53 @@ export function incrementReportPeriod(cb) {
 		}
 
 		// load report period from chain to see if that one is as expected
-		AugurJS.getReportPeriod(branch.id, (error, chainReportPeriod) => {
-			if (error) {
-				console.log('ERROR getReportPeriod1', branch.id, error);
+		augur.getVotePeriod(branch.id, (chainReportPeriod) => {
+			if (chainReportPeriod && chainReportPeriod.error) {
+				console.log('ERROR getVotePeriod1', branch.id, chainReportPeriod);
 				return cb && cb();
 			}
-
 			const parsedChainReportPeriod = parseInt(chainReportPeriod, 10);
 
 			// if the report period on chain is up-to-date, update ours to match and exit
 			if (parsedChainReportPeriod === expectedReportPeriod) {
-				dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod: expectedReportPeriod } });
+				dispatch({
+					type: UPDATE_BLOCKCHAIN,
+					data: { reportPeriod: expectedReportPeriod }
+				});
 				return cb && cb();
 			}
 
 			// if we are the first to encounter the new period, we get the
 			// honor of incrementing it on chain for everyone
-			AugurJS.incrementPeriodAfterReporting(branch.id, (err, res) => {
-				if (err) {
+			augur.incrementPeriodAfterReporting({
+				branch: branch.id,
+				onSent: (res) => {},
+				onFailed: (err) => {
 					console.error('ERROR incrementPeriodAfterReporting()', err);
 					return cb && cb();
-				}
+				},
+				onSuccess: (res) => {
+					console.log('incrementPeriod success:', res.callReturn);
 
-				// check if it worked out
-				AugurJS.getReportPeriod(branch.id, (er, verifyReportPeriod) => {
-					if (er) {
-						console.log('ERROR getReportPeriod2', er);
+					// check if it worked out
+					augur.getVotePeriod(branch.id, (reportPeriod) => {
+						if (reportPeriod && reportPeriod.error) {
+							console.log('ERROR getVotePeriod2', reportPeriod);
+							return cb && cb();
+						}
+						if (parseInt(reportPeriod, 10) !== expectedReportPeriod) {
+							console.warn('Report period not as expected after being incremented, actual:',
+							reportPeriod, 'expected:',
+							expectedReportPeriod);
+							return cb && cb();
+						}
+						dispatch({
+							type: UPDATE_BLOCKCHAIN,
+							data: { reportPeriod: expectedReportPeriod }
+						});
 						return cb && cb();
-					}
-					if (parseInt(verifyReportPeriod, 10) !== expectedReportPeriod) {
-						console.warn('Report period not as expected after being incremented, actual:',
-						verifyReportPeriod, 'expected:',
-						expectedReportPeriod);
-						return cb && cb();
-					}
-					dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod: expectedReportPeriod } });
-					return cb && cb();
-				});
+					});
+				}
 			});
 		});
 	};
@@ -69,17 +78,17 @@ export function updateBlockchain(cb) {
 		isAlreadyUpdatingBlockchain = true;
 
 		// load latest block number
-		AugurJS.loadCurrentBlock(currentBlockNumber => {
-			const { branch, blockchain, loginAccount } = getState();
-			const currentPeriod = AugurJS.getCurrentPeriod(branch.periodLength);
-			const currentPeriodProgress = AugurJS.getCurrentPeriodProgress(branch.periodLength);
-			const isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod;
-			const isReportConfirmationPhase = currentPeriodProgress > 50;
-			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
-
+		augur.rpc.blockNumber(blockNumber => {
+			const currentBlockNumber = parseInt(blockNumber, 16);
 			if (!currentBlockNumber || currentBlockNumber !== parseInt(currentBlockNumber, 10)) {
 				return; // don't trigger cb on this failure
 			}
+			const { branch, blockchain, loginAccount } = getState();
+			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
+			const currentPeriodProgress = augur.getCurrentPeriodProgress(branch.periodLength);
+			const isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod;
+			const isReportConfirmationPhase = currentPeriodProgress > 50;
+			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
 
 			// update blockchain state
 			dispatch({

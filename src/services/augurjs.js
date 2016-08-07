@@ -1,6 +1,6 @@
 import augur from 'augur.js';
 import BigNumber from 'bignumber.js';
-import { SUCCESS, CREATING_MARKET, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
+import { SUCCESS, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
 
 const TIMEOUT_MILLIS = 50;
 const ex = {};
@@ -17,10 +17,8 @@ ex.connect = function connect(env, cb) {
 		if (!isEnvHttps) options.http = null;
 		if (!isEnvWss) options.ws = null;
 	}
-	if (options.http) {
-		augur.rpc.nodes.hosted = [options.http];
-	}
-	augur.rpc.retryDroppedTxs = true;
+	if (options.http) augur.rpc.nodes.hosted = [options.http];
+	augur.rpc.retryDroppedTxs = env.retryDroppedTxs;
 	augur.connect(options, (connection) => {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
@@ -28,29 +26,13 @@ ex.connect = function connect(env, cb) {
 	});
 };
 
-ex.loadCurrentBlock = function loadCurrentBlock(cb) {
-	augur.rpc.blockNumber((blockNumber) => cb(parseInt(blockNumber, 16)));
-};
-
-ex.loadBranches = function loadBranches(cb) {
-	augur.getBranches((branches) => {
-		if (!branches || branches.error) {
-			console.log('ERROR getBranches', branches);
-			cb(branches);
-		}
-		cb(null, branches);
-	});
-};
-
 ex.loadBranch = function loadBranch(branchID, cb) {
 	const branch = { id: branchID };
-
 	function finish() {
 		if (branch.periodLength && branch.description) {
 			cb(null, branch);
 		}
 	}
-
 	augur.getPeriodLength(branchID, periodLength => {
 		if (!periodLength || periodLength.error) {
 			console.info('ERROR getPeriodLength', periodLength);
@@ -59,7 +41,6 @@ ex.loadBranch = function loadBranch(branchID, cb) {
 		branch.periodLength = periodLength;
 		finish();
 	});
-
 	augur.getDescription(branchID, description => {
 		if (!description || description.error) {
 			console.info('ERROR getDescription', description);
@@ -126,14 +107,12 @@ ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealE
 		}
 		return cbEther(null, augur.abi.number(result));
 	});
-
 	augur.getRepBalance(branchID, accountID, (result) => {
 		if (!result || result.error) {
 			return cbRep(result);
 		}
 		return cbRep(null, augur.abi.number(result));
 	});
-
 	augur.rpc.balance(accountID, (wei) => {
 		if (!wei || wei.error) {
 			return cbRealEther(wei);
@@ -175,27 +154,6 @@ ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
 	}
 };
 
-ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
-	augur.batchGetMarketInfo(marketIDs, (res) => {
-		if (res && res.error) return cb(res);
-		cb(null, res);
-	});
-};
-
-ex.listenToUpdates = function listenToUpdates(cbBlock, cbContracts, cbLogFillTx, cbCreation) {
-	console.log('listenToUpdates:');
-	augur.filters.listen({
-		// listen for new blocks
-		block: (blockHash) => cbBlock(null, blockHash),
-		// listen for augur transactions
-		contracts: (filtrate) => cbContracts(null, filtrate),
-		// update market when a price change has been detected
-		log_fill_tx: (result) => cbLogFillTx(null, result),
-		// listen for new markets
-		marketCreated: (result) => cbCreation(null, result)
-	}, (filters) => console.log('### listen to filters:', filters));
-};
-
 ex.loadAccountTrades = function loadAccountTrades(accountID, cb) {
 	augur.getAccountTrades(accountID, null, (accountTrades) => {
 		if (accountTrades && accountTrades.error) {
@@ -203,10 +161,6 @@ ex.loadAccountTrades = function loadAccountTrades(accountID, cb) {
 		}
 		return cb(null, accountTrades);
 	});
-};
-
-ex.listenToBidsAsks = function listenToBidsAsks() {
-
 };
 
 ex.login = function login(secureLoginID, password, cb) {
@@ -286,44 +240,6 @@ ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
 	});
 };
 
-ex.getSimulatedBuy = function getSimulatedBuy(marketID, outcomeID, numShares) {
-	return augur.getSimulatedBuy(marketID, outcomeID, numShares);
-};
-ex.getSimulatedSell = function getSimulatedSell(marketID, outcomeID, numShares) {
-	return augur.getSimulatedSell(marketID, outcomeID, numShares);
-};
-ex.get_trade_ids = function getTradeIds(marketID, cb) {
-	return augur.get_trade_ids(marketID, cb);
-};
-ex.getOrderBook = function getOrderBook(marketID, scalarMinMax, cb) {
-	return augur.getOrderBook(marketID, scalarMinMax, cb);
-};
-ex.get_trade = function getTrade(orderID, cb) {
-	return augur.get_trade(orderID, cb);
-};
-ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
-ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
-// ex.getReport = augur.getReport.bind(augur);
-
-ex.createMarket = function createMarket(branchId, newMarket, cb) {
-	augur.createSingleEventMarket({
-		description: newMarket.formattedDescription,
-		expDate: newMarket.endDate.value.getTime() / 1000,
-		minValue: newMarket.minValue,
-		maxValue: newMarket.maxValue,
-		numOutcomes: newMarket.numOutcomes,
-		resolution: newMarket.expirySource,
-		takerFee: newMarket.takerFee / 100,
-		tags: newMarket.tags,
-		makerFee: newMarket.makerFee / 100,
-		extraInfo: newMarket.detailsText,
-		onSent: r => cb(null, { status: CREATING_MARKET, txHash: r.txHash }),
-		onSuccess: r => cb(null, { status: SUCCESS, marketID: r.marketID, tx: r }),
-		onFailed: r => cb(r),
-		branchId
-	});
-};
-
 ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 	augur.generateOrderBook({
 		market: marketData.id,
@@ -364,7 +280,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 		const untilNextPeriod = periodLength - (parseInt(t, 10) % periodLength);
 		const expDate = parseInt(t + untilNextPeriod + 1, 10);
 		const expirationPeriod = Math.floor(expDate / periodLength);
-		console.log('\nCreating events/markets...');
+		console.debug('\nCreating events/markets...');
 		console.log('Next period starts at time', parseInt(t, 10) + untilNextPeriod + ' (' + untilNextPeriod + ' seconds to go)');
 		console.log('Current timestamp:', parseInt(t, 10));
 		console.log('Expiration time:  ', expDate);
@@ -380,9 +296,9 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 				events[type] = augur.getMarketEvent(markets[type], 0);
 			}
 			const eventID = events.binary;
-			console.log('Binary event:', events.binary);
-			console.log('Categorical event:', events.categorical);
-			console.log('Scalar event:', events.scalar);
+			console.debug('Binary event:', events.binary);
+			console.debug('Categorical event:', events.categorical);
+			console.debug('Scalar event:', events.scalar);
 
 			// make a single trade in each new market
 			const password = process.env.GETH_PASSWORD;
@@ -612,31 +528,9 @@ ex.collectFees = function collectFees(branchID, cb) {
 	});
 };
 
-ex.incrementPeriodAfterReporting = function incrementPeriodAfterReporting(branchID, cb) {
-	augur.incrementPeriodAfterReporting({
-		branch: branchID,
-		onSent: (result) => {},
-		onFailed: (err) => cb(err),
-		onSuccess: (result) => cb(null, result)
-	});
-};
-
-ex.getReportPeriod = function getReportPeriod(branchID, cb) {
-	augur.getVotePeriod(branchID, (res) => {
-		if (res.error) {
-			return cb(res);
-		}
-		return cb(null, res);
-	});
-};
-
-ex.getEvents = function getEvents(...args) {
-	augur.getEvents.apply(augur, args);
-};
-
 ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
-	if (env.fundNewAccountFromAddress) {
-		augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
+	if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
+		augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address || augur.from, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
 	} else {
 		augur.web.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
 	}
@@ -651,11 +545,9 @@ ex.changeAccountName = function changeAccountName(name, cb) {
 	});
 };
 
-ex.rpc = augur.rpc;
 ex.getTradingActions = augur.getTradingActions;
 ex.trade = augur.trade;
 ex.buy = augur.buy;
-
 ex.augur = augur;
 
 module.exports = ex;
