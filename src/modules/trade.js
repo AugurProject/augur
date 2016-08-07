@@ -40,19 +40,19 @@ module.exports = {
     isTradeUnderGasLimit: function (trade_ids, callback) {
         var self = this;
         var gas = 0;
-        async.forEachOf(trade_ids, function (trade_id, i, next) {
+        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
             self.get_trade(trade_id, function (trade) {
                 if (!trade || !trade.id) {
                     return next("couldn't find trade: " + trade_id);
                 }
                 gas += constants.TRADE_GAS[Number(!!i)][trade.type];
                 next();
-            }, function (e) {
-                if (e) return callback(e);
-                self.rpc.blockNumber(function (blockNumber) {
-                    self.rpc.getBlock(blockNumber, false, function (block) {
-                        callback(null, gas <= parseInt(block.gasLimit, 16));
-                    });
+            });
+        }, function (e) {
+            if (e) return callback(e);
+            self.rpc.blockNumber(function (blockNumber) {
+                self.rpc.getBlock(blockNumber, false, function (block) {
+                    callback(null, gas <= parseInt(block.gasLimit, 16));
                 });
             });
         });
@@ -83,7 +83,7 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        this.isTradeUnderGasLimit(trade_ids, null, function (err, isUnderLimit) {
+        this.isTradeUnderGasLimit(trade_ids, function (err, isUnderLimit) {
             if (err) return onCommitFailed(err);
             if (!isUnderLimit) return onCommitFailed(errors.GAS_LIMIT_EXCEEDED);
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
