@@ -46,9 +46,7 @@ export function loadReports() {
 			}, (err) => {
 				if (err) return console.error('loadReports:', err);
 				console.debug('updated reports:', reports);
-				if (Object.keys(reports).length) {
-					dispatch(updateReports(reports));
-				}
+				dispatch(updateReports(reports));
 			});
 		});
 	};

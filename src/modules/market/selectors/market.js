@@ -59,6 +59,7 @@ export const selectMarket = (marketID) => {
 	}
 
 	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
+	const branchReports = reports[branch.id || BRANCH_ID];
 
 	return assembleMarket(
 		marketID,
@@ -69,7 +70,7 @@ export const selectMarket = (marketID) => {
 		!!favorites[marketID],
 		outcomesData[marketID],
 
-		reports[branch.id || BRANCH_ID][marketsData[marketID].eventID],
+		(branchReports) ? branchReports[marketsData[marketID].eventID] : undefined,
 		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 

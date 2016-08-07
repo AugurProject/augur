@@ -314,33 +314,25 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 						if (err) return callback(err);
 						callback(null, 4);
 						const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
-						const t = parseInt(new Date().getTime() / 1000, 10);
-						const currentPeriod = augur.getCurrentPeriod(periodLength);
 						const expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
-						const periodsToGo = expirationPeriod - currentPeriod;
-						const secondsToGo = periodsToGo * periodLength + periodLength - (t % periodLength);
-						tools.print_reporting_status(augur, eventID, 'Waiting until period after new events expire...');
-						console.log(' - Periods to go:', periodsToGo + ' + ' + (periodLength - (t % periodLength)) + '/' + periodLength + ' (' + (100 - augur.getCurrentPeriodProgress(periodLength)) + '%)');
-						console.log(' - Minutes to go:', secondsToGo / 60);
-						setTimeout(() => {
-							console.log('Current period:', augur.getCurrentPeriod(periodLength));
-							console.log('Expiration period + 1:', expirationPeriod + 1);
-							callback(null, 5);
+						tools.print_reporting_status(augur, eventID, 'Wait complete');
+						console.log('Current period:', augur.getCurrentPeriod(periodLength));
+						console.log('Expiration period + 1:', expirationPeriod + 1);
+						callback(null, 5);
 
-							// wait for second period to start
-							tools.top_up(augur, newBranchID, unlocked, password, (err, unlocked) => {
-								if (err) console.error('top_up failed:', err);
-								augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
-									if (err) console.error('checkVotePeriod failed:', err);
-									callback(null, 6);
-									tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
-									augur.checkTime(newBranchID, eventID, periodLength, (err) => {
-										if (err) console.error('checkTime failed:', err);
-										callback(null, 7);
-									});
+						// wait for second period to start
+						tools.top_up(augur, newBranchID, unlocked, password, (err, unlocked) => {
+							if (err) console.error('top_up failed:', err);
+							augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
+								if (err) console.error('checkVotePeriod failed:', err);
+								callback(null, 6);
+								tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
+								augur.checkTime(newBranchID, eventID, periodLength, (err) => {
+									if (err) console.error('checkTime failed:', err);
+									callback(null, 7);
 								});
 							});
-						}, secondsToGo * 1000);
+						});
 					});
 				});
 			});
