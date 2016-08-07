@@ -42611,26 +42611,28 @@ module.exports = function () {
                     }
                     break;
                 case Object:
-                    var inputs = augur.api.events[label].inputs;
-                    var parsed = {};
-                    var topicIndex = 0;
-                    var dataIndex = 0;
-                    var topics = msg.topics;
-                    var numIndexed = topics.length - 1;
-                    var data = augur.rpc.unmarshal(msg.data);
-                    if (data && data.constructor !== Array) data = [data];
-                    for (i = 0; i < inputs.length; ++i) {
-                        parsed[inputs[i].name] = 0;
-                        if (inputs[i].indexed) {
-                            parsed[inputs[i].name] = topics[topicIndex + 1];
-                            ++topicIndex;
-                        } else {
-                            parsed[inputs[i].name] = data[dataIndex];
-                            ++dataIndex;
+                    if (!msg.error && msg.topics && msg.data) {
+                        var inputs = augur.api.events[label].inputs;
+                        var parsed = {};
+                        var topicIndex = 0;
+                        var dataIndex = 0;
+                        var topics = msg.topics;
+                        var numIndexed = topics.length - 1;
+                        var data = augur.rpc.unmarshal(msg.data);
+                        if (data && data.constructor !== Array) data = [data];
+                        for (i = 0; i < inputs.length; ++i) {
+                            parsed[inputs[i].name] = 0;
+                            if (inputs[i].indexed) {
+                                parsed[inputs[i].name] = topics[topicIndex + 1];
+                                ++topicIndex;
+                            } else {
+                                parsed[inputs[i].name] = data[dataIndex];
+                                ++dataIndex;
+                            }
                         }
+                        parsed.blockNumber = parseInt(msg.blockNumber, 16);
+                        onMessage(this.format_event_message(label, parsed));
                     }
-                    parsed.blockNumber = parseInt(msg.blockNumber, 16);
-                    onMessage(this.format_event_message(label, parsed));
                     break;
                 default:
                     console.error("unknown event message:", msg);
@@ -43268,7 +43270,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.42";
+    this.version = "1.9.43";
 
     this.options = {
         debug: {
