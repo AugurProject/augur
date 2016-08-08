@@ -211,7 +211,6 @@ ex.listenToBidsAsks = function listenToBidsAsks() {
 
 ex.login = function login(secureLoginID, password, cb) {
 	augur.web.login(secureLoginID, password, (account) => {
-		console.log(account);
 		if (!account) {
 			return cb({ code: 0, message: 'failed to login' });
 		}
