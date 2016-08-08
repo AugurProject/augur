@@ -43270,7 +43270,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.43";
+    this.version = "1.9.44";
 
     this.options = {
         debug: {
@@ -44841,6 +44841,7 @@ module.exports = {
             report = event.report;
             ethics = event.ethics;
             isScalar = event.isScalar;
+            isIndeterminate = event.isIndeterminate;
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;

@@ -142,6 +142,7 @@ module.exports = {
             report = event.report;
             ethics = event.ethics;
             isScalar = event.isScalar;
+            isIndeterminate = event.isIndeterminate;
             onSent = event.onSent;
             onSuccess = event.onSuccess;
             onFailed = event.onFailed;
