@@ -2,7 +2,9 @@
     "nonce": "0x0000000000000021", 
     "difficulty": "0x00",
     "config": {
-        "homesteadBlock": 0
+        "homesteadBlock" : 0,
+        "daoForkBlock"   : 0,
+        "daoForkSupport" : true
     },
     "alloc": {
         "7c0d52faab596c08f484e3478aebc6205f3f5d8c": {
