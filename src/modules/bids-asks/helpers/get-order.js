@@ -2,6 +2,14 @@
  * Author: priecint
  */
 
+/**
+ *
+ * @param {String} orderID
+ * @param {String} marketID
+ * @param {String} type
+ * @param {Object} marketOrderBooks
+ * @return {Object|null}
+ */
 export default function (orderID, marketID, type, marketOrderBooks) {
 	const marketOrderBook = marketOrderBooks[marketID];
 
