@@ -1,5 +1,5 @@
-import * as AugurJS from '../../../services/augurjs';
 import secureRandom from 'secure-random';
+import { augur } from '../../../services/augurjs';
 import { bytesToHex } from '../../../utils/bytes-to-hex';
 import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -11,19 +11,14 @@ import { selectMarketLink, selectMarketsLink } from '../../link/selectors/links'
 
 export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
 	return (dispatch, getState) => {
-		const { marketsData, reports, branch } = getState();
-		const currentEventID = marketsData[market.id].eventID;
-
-		dispatch(updateReports({
-			[branch.id]: { [currentEventID]: { reportHash: true } }
-		}));
+		const { reports, branch } = getState();
 		dispatch(addCommitReportTransaction(market, reportedOutcomeID, isUnethical, isIndeterminate));
-
-		const nextPendingReportEventID = Object.keys(reports).find(
-			eventID =>	!reports[eventID].reportHash
+		const branchReports = reports[branch.id];
+		if (!branchReports) return selectMarketsLink(dispatch).onClick();
+		const nextPendingReportEventID = Object.keys(branchReports).find(
+			eventID =>	!branchReports[eventID].reportHash
 		);
 		const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
-
 		if (nextPendingReportMarket) {
 			selectMarketLink(nextPendingReportMarket, dispatch).onClick();
 		} else {
@@ -36,14 +31,12 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 	return (dispatch, getState) => {
 		const { loginAccount, blockchain, branch } = getState();
 		const eventID = market.eventID;
+		const branchID = branch.id;
 
 		if (!loginAccount || !loginAccount.id || !eventID || !event || !market || !reportedOutcomeID) {
-			return dispatch(
-				updateExistingTransaction(
-					transactionID,
-					{ status: FAILED, message: 'Missing data' }
-				)
-			);
+			return dispatch(updateExistingTransaction(transactionID, {
+				status: FAILED, message: 'Missing data'
+			}));
 		}
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
@@ -60,36 +53,42 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 			isRevealed: false
 		};
 
-		// If this is a local account, no encryption key is available in the
-		// client, so store the report in localStorage instead
-		dispatch(updateReports({ [branch.id]: { [eventID]: report } }));
+		dispatch(updateReports({ [branchID]: { [eventID]: report } }));
 
-		AugurJS.commitReport(
-			branch.id,
-			loginAccount,
-			eventID,
-			report,
-			branch.periodLength,
-			(err, res) => {
-				if (err) {
-					console.log('ERROR commitReport', err);
-					return dispatch(
-						updateExistingTransaction(
-							transactionID,
-							{ status: FAILED, message: err.message }
-						)
-					);
-				}
-
-				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
-
-				if (res.status === SUCCESS) {
-					dispatch(updateReports({
-						[branch.id]: { [eventID]: { reportHash: res.reportHash } }
-					}));
-				}
-
-				return;
-			});
+		const fixedReport = augur.fixReport(report.reportedOutcomeID, report.isScalar, report.isIndeterminate);
+		const reportHash = augur.makeHash(report.salt, fixedReport, eventID, loginAccount.id);
+		let encryptedReport = 0;
+		let encryptedSalt = 0;
+		if (loginAccount.derivedKey) {
+			const derivedKey = loginAccount.derivedKey;
+			encryptedReport = augur.encryptReport(fixedReport, derivedKey, report.salt);
+			encryptedSalt = augur.encryptReport(report.salt, derivedKey, loginAccount.keystore.crypto.kdfparams.salt);
+		}
+		augur.submitReportHash({
+			event: eventID,
+			reportHash,
+			encryptedReport,
+			encryptedSalt,
+			branch: branchID,
+			period: report.reportPeriod,
+			periodLength: branch.periodLength,
+			onSent: (res) => {
+				console.debug('SRH sent:', res);
+				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
+			},
+			onSuccess: (res) => {
+				console.debug('SRH successful:', res);
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				report.reportHash = reportHash;
+				dispatch(updateReports({ [branchID]: { [eventID]: report } }));
+			},
+			onFailed: (err) => {
+				console.error('SRH failed', err);
+				dispatch(updateExistingTransaction(transactionID, {
+					status: FAILED,
+					message: err.message
+				}));
+			}
+		});
 	};
 }

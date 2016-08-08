@@ -1,12 +1,10 @@
 import * as AugurJS from '../../../services/augurjs';
 import { isMarketDataPreviousReportPeriod } from '../../../utils/is-market-data-open';
-import { BRANCH_ID } from '../../app/constants/network';
 
 export function penalizeWrongReports(marketsData) {
 	return (dispatch, getState) => {
-		const { blockchain, loginAccount } = getState();
-		const branchID = BRANCH_ID;
-		const prevPeriod = blockchain.reportPeriod - 1;
+		const { blockchain, loginAccount, branch } = getState();
+		const branchID = branch.id;
 
 		if (blockchain.isReportConfirmationPhase || !loginAccount.rep) {
 			return;
@@ -19,6 +17,7 @@ export function penalizeWrongReports(marketsData) {
 				blockchain.currentBlockNumber
 			))
 			.map(marketID => marketsData[marketID].eventID);
+		console.log('penalizeWrong events:', eventIDs);
 
 		(function process() {
 			// if there are more event ids, continue
@@ -28,7 +27,7 @@ export function penalizeWrongReports(marketsData) {
 				}
 			}
 			const eventID = eventIDs.pop();
-			AugurJS.penalizeWrong(branchID, prevPeriod, eventID, (err, res) => {
+			AugurJS.penalizeWrong(branchID, eventID, (err, res) => {
 				if (err) {
 					console.log('ERROR penalizeWrong()', err);
 					return next();

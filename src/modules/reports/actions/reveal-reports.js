@@ -5,7 +5,6 @@ import { updateReports } from '../../reports/actions/update-reports';
 export function revealReports() {
 	return (dispatch, getState) => {
 		const { blockchain, loginAccount, reports, branch } = getState();
-		console.log('revealReports:', reports);
 
 		// if we're in the first half of the reporting period
 		if (!blockchain.isReportConfirmationPhase || !loginAccount.rep || !reports) {
@@ -21,20 +20,15 @@ export function revealReports() {
 				const obj = { ...branchReports[eventID], eventID };
 				return obj;
 			});
-		console.log('revealableReports:', revealableReports);
 		if (revealableReports && revealableReports.length && loginAccount && loginAccount.id) {
 			async.each(revealableReports, (report, nextReport) => {
-				console.log('submitReport:', {
-					event: report.eventID,
-					salt: report.salt,
-					ethics: Number(!report.isUnethical),
-					isScalar: report.isScalar
-				});
 				augur.submitReport({
 					event: report.eventID,
+					report: report.reportedOutcomeID,
 					salt: report.salt,
 					ethics: Number(!report.isUnethical),
 					isScalar: report.isScalar,
+					isIndeterminate: report.isIndeterminate,
 					onSent: (res) => {
 						console.log('augur.submitReport sent:', res);
 					},
@@ -56,11 +50,5 @@ export function revealReports() {
 				if (err) return console.error('revealReports:', err);
 			});
 		}
-	};
-}
-
-export function sendRevealReport() {
-	return (dispatch, getState) => {
-
 	};
 }

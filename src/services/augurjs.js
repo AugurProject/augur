@@ -340,41 +340,6 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 	});
 };
 
-ex.commitReport = function commitReport(branch, loginAccount, event, reportObject, periodLength, cb) {
-	const report = reportObject.reportedOutcomeID;
-	const salt = reportObject.salt;
-	const period = reportObject.reportPeriod;
-	const isScalar = reportObject.isScalar;
-	const isIndeterminate = reportObject.isIndeterminate;
-	const fixedReport = augur.fixReport(report, isScalar, isIndeterminate);
-	const reportHash = augur.makeHash(salt, fixedReport, event, loginAccount.id);
-	let encryptedReport = 0;
-	let encryptedSalt = 0;
-	if (loginAccount.derivedKey) {
-		const derivedKey = loginAccount.derivedKey;
-		encryptedReport = augur.encryptReport(fixedReport, derivedKey, salt);
-		encryptedSalt = augur.encryptReport(salt, derivedKey, loginAccount.keystore.crypto.kdfparams.salt);
-	}
-	augur.submitReportHash({
-		event,
-		reportHash,
-		encryptedReport,
-		encryptedSalt,
-		branch,
-		period,
-		periodLength,
-		onSent: (res) => {
-			console.log('SRH sent:', res);
-			cb(null, { ...res, reportHash, status: 'processing...' });
-		},
-		onSuccess: (res) => {
-			console.log('SRH successful:', res);
-			cb(null, { ...res, reportHash, status: SUCCESS });
-		},
-		onFailed: (err) => cb(err)
-	});
-};
-
 ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
 	augur.penalizationCatchup({
 		branch: branchID,
@@ -395,14 +360,12 @@ ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
 	});
 };
 
-ex.penalizeWrong = function penalizeWrong(branchID, period, event, cb) {
+ex.penalizeWrong = function penalizeWrong(branchID, event, cb) {
 	augur.getMarkets(event, markets => {
 		if (!markets || markets.error) return console.error('getMarkets:', markets);
-
-		/*
 		augur.getOutcome(event, outcome => {
 			if (outcome !== '0' && !outcome.error) {
-				console.log('Calling penalizeWrong for:', branchID, period, event);
+				console.log('Calling penalizeWrong for:', branchID, event);
 				augur.penalizeWrong({
 					branch: branchID,
 					event,
@@ -415,22 +378,16 @@ ex.penalizeWrong = function penalizeWrong(branchID, period, event, cb) {
 					},
 					onFailed: err => {
 						console.error(`penalizeWrong failed for event ${event}`, err);
-						if (err.error === '-3') {
-							augur.penalizeNotEnoughReports(branchID, (error, res) => {
-								self.penalizeWrong(branchID, period, event, cb);
-							});
-						}
 						cb(err);
 					}
 				});
 			} else {
 				self.closeMarket(branchID, markets[0], (err, res) => {
 					if (err) return cb(err);
-					self.penalizeWrong(branchID, period, event, cb);
+					self.penalizeWrong(branchID, event, cb);
 				});
 			}
 		});
-		*/
 	});
 };
 
@@ -440,14 +397,14 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 		market: marketID,
 		sender: augur.web.account.address || augur.from,
 		onSent: res => {
-			// console.log('closeMarket sent:', res);
+			console.log('closeMarket sent:', res);
 		},
 		onSuccess: res => {
-			// console.log('closeMarket success:', res);
+			console.log('closeMarket success:', res);
 			cb(null, res);
 		},
 		onFailed: err => {
-			// console.error('closeMarket error:', err);
+			console.error('closeMarket error:', err);
 			cb(err);
 		}
 	});

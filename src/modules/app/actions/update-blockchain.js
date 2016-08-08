@@ -1,6 +1,9 @@
 import { augur } from '../../../services/augurjs';
+import { loadReports } from '../../reports/actions/load-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
+import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
+import { closeMarkets } from '../../reports/actions/close-markets';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
@@ -104,15 +107,24 @@ export function updateBlockchain(cb) {
 			if (isChangedCurrentPeriod && loginAccount.id) {
 				dispatch(incrementReportPeriod(() => {
 					isAlreadyUpdatingBlockchain = false;
-					return cb && cb();
+					dispatch(loadReports((err) => {
+						if (err) return console.error('loadReports:', err);
+						const { marketsData } = getState();
+						dispatch(penalizeWrongReports(marketsData));
+						dispatch(closeMarkets(marketsData));
+						return cb && cb();
+					}));
 				}));
 
 			// if just the report *phase* changed this block, do some extra stuff
 			} else if (isChangedReportPhase && loginAccount.id) {
-				dispatch(revealReports());
-				dispatch(collectFees());
-				isAlreadyUpdatingBlockchain = false;
-				return cb && cb();
+				dispatch(loadReports((err) => {
+					if (err) return console.error('loadReports:', err);
+					dispatch(collectFees());
+					dispatch(revealReports());
+					isAlreadyUpdatingBlockchain = false;
+					return cb && cb();
+				}));
 
 			} else {
 				isAlreadyUpdatingBlockchain = false;
