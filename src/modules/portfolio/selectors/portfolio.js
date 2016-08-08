@@ -1,6 +1,6 @@
 import selectPortfolioNavItems from '../../../modules/portfolio/selectors/nav-items';
 import selectPortfolioSummaries from '../../../modules/portfolio/selectors/summaries';
-import selectLoginAccountMarkets from '../../../modules/portfolio/selectors/login-account-markets';
+import selectLoginAccountMarkets from '../../../modules/my-markets/selectors/login-account-markets';
 
 export default function () {
 	const navItems = selectPortfolioNavItems();

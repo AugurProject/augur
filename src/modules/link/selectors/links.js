@@ -14,7 +14,6 @@ import { logout } from '../../auth/actions/logout';
 import { loadFullLoginAccountMarkets } from '../../../modules/portfolio/actions/load-full-login-acccount-markets';
 
 import store from '../../../store';
-// import * as selectors from '../../../selectors';
 
 export default function () {
 	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth } = store.getState();

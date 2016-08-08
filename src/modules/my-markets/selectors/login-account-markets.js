@@ -6,6 +6,8 @@ import { formatNumber, formatEther } from '../../../utils/format-number';
 export default function () {
 	const { allMarkets, loginAccount } = require('../../../selectors');
 
+	if (!allMarkets || !loginAccount || !loginAccount.id) return [];
+
 	const filteredMarkets = selectFilteredMarkets(allMarkets, loginAccount.id);
 	const loginAccountMarkets = selectLoginAccountMarkets(filteredMarkets);
 
@@ -15,7 +17,7 @@ export default function () {
 export const selectFilteredMarkets = memoizerific(1)((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID));
 
 export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
-	const { marketTrades } = store.getState();
+	const { marketTrades, priceHistory } = store.getState();
 
 	const markets = [];
 
@@ -23,10 +25,11 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 		const fees = formatEther(AugurJS.getFees(market.id));
 
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
-		const averageTradeSize = formatNumber(selectAverageTradeSize(market.marketPriceHistory));
+		const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));
 		const openVolume = formatNumber(selectOpenVolume(market));
 
 		markets.push({
+			id: market.id,
 			description: market.description,
 			endDate: market.endDate,
 			volume: market.volume,
@@ -40,13 +43,13 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 	return markets;
 });
 
-export const selectNumberOfTrades = trades => {
+export const selectNumberOfTrades = memoizerific(1)(trades => {
 	if (!trades) {
 		return 0;
 	}
 
 	return Object.keys(trades).reduce((p, outcome) => (p + trades[outcome].length), 0);
-};
+});
 
 export const selectOpenVolume = market => {
 	let openVolume = 0;
@@ -62,8 +65,8 @@ export const selectOpenVolume = market => {
 	return openVolume;
 };
 
-export const selectAverageTradeSize = marketPriceHistory => {
-	if (marketPriceHistory == null) {
+export const selectAverageTradeSize = memoizerific(1)(marketPriceHistory => {
+	if (!marketPriceHistory) {
 		return 0;
 	}
 
@@ -85,4 +88,4 @@ export const selectAverageTradeSize = marketPriceHistory => {
 	}, initialState);
 
 	return priceHistoryTotals.shares / priceHistoryTotals.trades;
-};
+});
