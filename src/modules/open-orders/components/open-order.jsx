@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import ValueDenomination from '../../common/components/value-denomination';
 
 const OpenOrder = (p) => (
-	<tr className={classnames('open-order', { 'is-disabled': [p.cancellationStatuses.CANCELLING, p.cancellationStatuses.CANCELLED].includes(p.status) })}>
+	<tr className={classnames('open-order', { 'is-disabled': p.status === p.cancellationStatuses.CANCELLED })}>
 		<td className="outcome-name">
 			{p.outcomeName}
 		</td>
