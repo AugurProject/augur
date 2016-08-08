@@ -75,17 +75,18 @@ export default class AuthForm extends Component {
 		const password2 = this.refs.password2.value;
 		const rememberMe = this.state.rememberMe;
 		const file = (this.refs.form[1].files[0] !== undefined);
+		console.log(file);
 		if (file && this.fileReader) {
 			this.fileReader.readAsText(this.refs.form[1].files[0]);
 			this.fileReader.onload = (e) => {
 				const importAccount = JSON.parse(e.target.result);
 				setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, importAccount), 100);
-				this.setState({ msg: '' });
 			};
 		} else {
 			setTimeout(() => this.props.onSubmit(name, password, password2, secureLoginID, rememberMe, undefined), 100);
-			this.setState({ msg: '' });
 		}
+
+		this.setState({ msg: '' });
 	}
 
 	render() {
