@@ -16,6 +16,19 @@
 			padding: 1vmin 4vmin 0vmin 4vmin;
 			font-size: 1.2em;
 			font-weight: 700;
+
+			.fa {
+				font-family: 'FontAwesome';
+				padding: 0 0.4rem;
+
+				&.outcome-challengeable {
+					color: @color-warning-normal;
+				}
+
+				&.outcome-challenged {
+					color: @color-danger-normal;
+				}
+			}
 		}
 	}
 }
@@ -59,7 +72,10 @@
 
 		.portfolio-main-group {
 			text-align: left;
-			.colorize();
+
+			.colorize {
+				.colorize();
+			}
 
 			> * {
 				display: inline-block;
