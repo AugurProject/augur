@@ -6,20 +6,22 @@ import { updateAssets } from '../../auth/actions/update-assets';
 
 export function processTransferFunds(transactionID, fromAddress, amount, toAddress) {
 	return (dispatch, getState) => {
-		const env = { fundNewAccountFromAddress: { address: fromAddress, amount } };
-
 		dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' }));
 
-		AugurJS.fundNewAccount(env, toAddress, BRANCH_ID,
+		AugurJS.transferFunds(toAddress, amount, fromAddress,
 			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: 'processing...' }));
+				dispatch(updateExistingTransaction(transactionID, { status: 'processing transfering of funds...' }));
 			},
 			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Loaded free ether and rep' }));
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Transfer Complete.' }));
 				dispatch(updateAssets());
 			},
 			(failedTransaction) => {
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: failedTransaction.message }));
+			},
+			(...args) => {
+				console.log('confirmed transafer');
+				console.log(args);
 			}
 		);
 	};
