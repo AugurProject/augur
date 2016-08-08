@@ -33,8 +33,8 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 			cancelTxn: {
 				type: CANCEL_ORDER,
 				data: {
-					order: { id: 'orderID', type: 'buy'},
-					market: {id: 'marketID'},
+					order: { id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', type: BID },
+					market: { id: 'testMarketID' },
 					outcome: {}
 				}
 			}
@@ -74,12 +74,12 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		});
 
 		it('should call actions and then augurJS', () => {
-			store.dispatch(cancelOrderModule.processCancelOrder('cancelTxn', 'orderID'));
+			store.dispatch(cancelOrderModule.processCancelOrder('cancelTxn', '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3'));
 
-			assert.deepEqual(updateOrderStatus.args[0], ['orderID', CANCELLING, 'marketID', BID]);
+			assert.deepEqual(updateOrderStatus.args[0], ['0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CANCELLING, 'testMarketID', BID]);
 			assert.deepEqual(updateExistingTransaction.args[0], ['cancelTxn', { status: CANCELLING_ORDER }]);
 			assert.lengthOf(cancel.args[0], 5);
-			assert.equal(cancel.args[0][0], 'orderID');
+			assert.equal(cancel.args[0][0], '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3');
 		});
 	});
 

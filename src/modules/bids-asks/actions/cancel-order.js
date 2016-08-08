@@ -7,7 +7,6 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import getOrder from '../../bids-asks/helpers/get-order';
 import * as augurJS from '../../../services/augurjs';
-import { BID } from "../constants/bids-asks-types";
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
@@ -19,7 +18,7 @@ export const ABORT_CANCEL_ORDER_CONFIRMATION = 'ABORT_CANCEL_ORDER_CONFIRMATION'
 export function cancelOrder(orderID, marketID, type) {
 	return (dispatch, getState) => {
 		const { marketOrderBooks, outcomesData, marketsData } = getState();
-		const order = getOrder(orderID, marketID, type === BID ? 'buy' : 'sell', marketOrderBooks);
+		const order = getOrder(orderID, marketID, type, marketOrderBooks);
 		const market = marketsData[marketID];
 
 		if (order == null || market == null || outcomesData[marketID] == null) {
@@ -31,7 +30,7 @@ export function cancelOrder(orderID, marketID, type) {
 			return;
 		}
 
-		dispatch(addCancelTransaction(order, { ...market, id:marketID }, outcome));
+		dispatch(addCancelTransaction(order, { ...market, id: marketID }, outcome));
 	};
 }
 

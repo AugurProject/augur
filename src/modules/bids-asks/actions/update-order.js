@@ -2,7 +2,6 @@
  * Author: priecint
  */
 import getOrder from '../../bids-asks/helpers/get-order';
-import { BID } from '../../bids-asks/constants/bids-asks-types';
 import store from '../../../store';
 
 export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS';
@@ -24,14 +23,14 @@ export function updateOrderStatus(orderID, status, marketID, type) {
 			return;
 		}
 
-		dispatch ({
+		dispatch({
 			type: UPDATE_ORDER_STATUS,
 			orderID,
 			status,
 			marketID,
-			orderType: type === BID ? 'buy' : 'sell'
+			orderType: type
 		});
-	}
+	};
 }
 
 function warnNonExistingOrder(orderID, status, marketID, type) {
