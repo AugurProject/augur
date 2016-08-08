@@ -4,7 +4,7 @@ import { formatEther, formatShares } from '../../../utils/format-number';
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from '../../positions/actions/load-account-trades';
+import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';

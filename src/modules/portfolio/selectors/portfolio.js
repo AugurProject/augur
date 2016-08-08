@@ -1,15 +1,22 @@
-import selectPortfolioNavItems from '../../../modules/portfolio/selectors/nav-items';
-import selectPortfolioSummaries from '../../../modules/portfolio/selectors/summaries';
-import selectLoginAccountMarkets from '../../../modules/my-markets/selectors/login-account-markets';
+import selectPortfolioNavItems from './portfolio-nav-items';
+import selectPortfolioTotals from '../../../modules/portfolio/selectors/portfolio-totals';
 
 export default function () {
+	const { loginAccountPositions, loginAccountMarkets } = require('../../../selectors');
+
+	const positions = loginAccountPositions;
+	const markets = loginAccountMarkets;
 	const navItems = selectPortfolioNavItems();
-	const summaries = selectPortfolioSummaries();
-	const loginAccountMarkets = selectLoginAccountMarkets();
+	const totals = selectPortfolioTotals();
+
+	// console.log('positions -- ', positions);
+	//
+	// console.log('markets -- ', markets);
 
 	return {
 		navItems,
-		summaries,
-		loginAccountMarkets
+		positions,
+		markets,
+		totals
 	};
 }

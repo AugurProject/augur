@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/constants/pages';
 
-import * as selector from '../../../src/modules/portfolio/selectors/nav-items';
+import * as selector from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
 
 describe('modules/portfolio/selectors/nav-items', () => {
 	let actual, expected;

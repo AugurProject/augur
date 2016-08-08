@@ -45,7 +45,7 @@ import { selectPriceTimeSeries } from '../../market/selectors/price-time-series'
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
-import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../positions/selectors/positions-summary';
+import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../../modules/my-positions/selectors/my-positions-summary';
 
 export default function () {
 	const { selectedMarketID } = store.getState();

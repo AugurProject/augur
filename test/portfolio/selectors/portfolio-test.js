@@ -4,7 +4,7 @@ import { assertions } from 'augur-ui-react-components';
 import sinon from 'sinon';
 
 import selector from '../../../src/modules/portfolio/selectors/portfolio';
-import * as selectPortfolioNavItems from '../../../src/modules/portfolio/selectors/nav-items';
+import * as selectPortfolioNavItems from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
 import * as selectPortfolioSummaries from '../../../src/modules/portfolio/selectors/summaries';
 import * as selectLoginAccountMarkets from '../../../src/modules/portfolio/selectors/login-account-markets';
 
