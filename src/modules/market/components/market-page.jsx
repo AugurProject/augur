@@ -76,23 +76,23 @@ export default class MarketPage extends Component {
 				}
 
 				// positions
-				if (p.market.positionsSummary && p.market.positionsSummary.numPositions && p.market.positionsSummary.numPositions.value) {
+				if (p.market.myPositionsSummary && p.market.myPositionsSummary.numPositions && p.market.myPositionsSummary.numPositions.value) {
 					nodes.push(
 						<MarketPositions
 							key="market-positions"
 							className="market-positions"
-							positionsSummary={p.market.positionsSummary}
-							positionOutcomes={p.market.positionOutcomes}
+							positionsSummary={p.market.myPositionsSummary}
+							positionOutcomes={p.market.myPositionOutcomes}
 						/>
 					);
 				}
 
 				// my markets
-				if (!!p.market.marketSummary) {
+				if (!!p.market.myMarketSummary) {
 					nodes.push(
 						<MarketSummary
 							key="market-summary"
-							marketSummary={p.market.marketSummary}
+							marketSummary={p.market.myMarketSummary}
 						/>
 					);
 				}

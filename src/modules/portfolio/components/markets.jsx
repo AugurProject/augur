@@ -1,5 +1,5 @@
 import React from 'react';
-import Market from '../../../modules/my-markets/components/market';
+import Market from '../../../modules/my-markets/components/my-market';
 
 const PortfolioMarkets = (p) => (
 	<div>

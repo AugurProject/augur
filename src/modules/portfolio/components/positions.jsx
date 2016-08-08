@@ -1,5 +1,5 @@
 import React from 'react';
-import Positions from '../../../modules/my-positions/components/positions';
+import Positions from '../../../modules/my-positions/components/my-positions';
 
 const PortfolioPositions = (p) => (
 	<div className="positions-content" >
