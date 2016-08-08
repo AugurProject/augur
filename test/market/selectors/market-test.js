@@ -12,8 +12,6 @@ describe(`modules/market/selectors/market.js`, () => {
 		'../../../store': store
 	});
 
-	actual = selector.default();
-
 	beforeEach(() => {
 		store.clearActions();
 	});
@@ -23,6 +21,7 @@ describe(`modules/market/selectors/market.js`, () => {
 	});
 
 	it(`should return the expected values to components`, () => {
+		actual = selector.default();
 		assertions.market(actual);
 	});
 });

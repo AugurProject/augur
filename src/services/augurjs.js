@@ -541,7 +541,7 @@ ex.changeAccountName = function changeAccountName(name, cb) {
 };
 
 ex.transferFunds = function transferFunds(toAddress, amount, fromAddress, onSent, onSuccess, onFailed, onConfirmed) {
-		augur.sendCashFrom(toAddress, amount, fromAddress, onSent, onSuccess, onFailed, onConfirmed);
+	augur.sendCashFrom(toAddress, amount, fromAddress, onSent, onSuccess, onFailed, onConfirmed);
 };
 
 ex.rpc = augur.rpc;
