@@ -58,11 +58,12 @@ const testState = {
 			description: 'some test description',
 			endDate: 123,
 			type: 'scalar',
+			minValue: 1,
+			maxValue: 2,
 			makerFee: 0.02,
 			takerFee: 0.05,
 			volume: 500,
-			tags: ['tag1', 'tag2', 'tag3'],
-			orderBook: {} // todo: delete when AURC > v3.0.20 - assertion will be fixed there
+			tags: ['tag1', 'tag2', 'tag3']
 		}
 	},
 	marketOrderBooks: {
