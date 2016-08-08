@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK } from '../../transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SUBMIT_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER } from '../../transactions/constants/types';
 import { LOGIN, FUND_ACCOUNT } from '../../auth/constants/auth-types';
 import ValueDenomination from '../../common/components/value-denomination';
 
@@ -90,6 +90,24 @@ const Transaction = (p) => {
 			</span>
 		);
 		break;
+	case CANCEL_ORDER: {
+		nodes.description = (
+			<span className="description">
+				<span className="action">Cancel {p.data.order.type} order</span>
+				<ValueDenomination className="shares" {...p.data.order.shares} />
+				<span className="of">of</span>
+				<span className="outcome-name">{p.data.outcome.name.substring(0, 35) + (p.data.outcome.name.length > 35 && '...' || '')}</span>
+				<span className="at">@</span>
+				<ValueDenomination className="avgPrice" {...p.data.order.price} />
+				<br />
+				<span className="market-description" title={p.data.market.description}>
+					{p.data.market.description.substring(0, 100) + (p.data.market.description.length > 100 && '...' || '')}
+				</span>
+			</span>
+
+		);
+		break;
+	}
 	default:
 		nodes.description = (<span className="description">{p.type}</span>);
 		break;
