@@ -32,7 +32,7 @@ describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 
 	describe('addCancelTransaction', () => {
 		it('should dispatch correct action', () => {
-			store.dispatch(addCancelTransactionModule.addCancelTransaction('orderID', 'marketID', BID));
+			store.dispatch(addCancelTransactionModule.addCancelTransaction('orderID', 'testMarketID', BID));
 
 			sinon.assert.calledOnce(addTransaction);
 		});
@@ -40,13 +40,17 @@ describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 
 	describe('makeCancelTransaction', () => {
 		const order = {
-			id: 'orderID',
-			type: BID,
-			shares: formatShares(1),
-			price: formatEther(10)
+			amount: '10',
+			block: 1234,
+			id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+			market: 'testMarketID',
+			outcome: '2',
+			owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
+			price: '0.42',
+			type: 'buy'
 		};
 		const market = {
-			id: 'marketID',
+			id: 'testMarketID',
 			description: 'market description'
 		};
 		const outcome = {
@@ -63,9 +67,17 @@ describe('modules/transactions/actions/add-cancel-transaction.js', () => {
 				gas,
 				ether,
 				data: {
-					order,
+					order: {
+						id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+						type: BID,
+						shares: formatShares(10),
+						price: formatEther(0.42)
+					},
 					outcome,
-					market,
+					market: {
+						id: 'testMarketID',
+						description: 'market description'
+					},
 				},
 				action: transaction.action
 			});
