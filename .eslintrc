@@ -16,6 +16,7 @@
     "no-unused-expressions": 0,
     "max-len": 0,
     "no-shadow": 0,
-    "padded-blocks": 0
+    "padded-blocks": 0,
+    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }]
   }
 }

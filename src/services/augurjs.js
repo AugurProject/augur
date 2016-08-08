@@ -308,6 +308,10 @@ ex.get_trade = function getTrade(orderID, cb) {
 ex.getCurrentPeriod = augur.getCurrentPeriod.bind(augur);
 ex.getCurrentPeriodProgress = augur.getCurrentPeriodProgress.bind(augur);
 
+ex.cancel = function cancel(orderId, onSent, onSuccess, onFailure) {
+	augur.cancel(orderId, onSent, onSuccess, onFailure);
+};
+
 ex.createMarket = function createMarket(branchId, newMarket, cb) {
 	augur.createSingleEventMarket({
 		description: newMarket.formattedDescription,

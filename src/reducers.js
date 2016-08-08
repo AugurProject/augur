@@ -16,6 +16,7 @@ import pagination from './modules/markets/reducers/pagination';
 import reports from './modules/reports/reducers/reports';
 
 import marketOrderBooks from './modules/bids-asks/reducers/market-order-books';
+import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
 import accountTrades from './modules/positions/reducers/account-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 
@@ -62,6 +63,7 @@ module.exports = {
 	createMarketInProgress,
 
 	marketOrderBooks,
+	orderCancellation,
 	accountTrades,
 	transactionsData
 };

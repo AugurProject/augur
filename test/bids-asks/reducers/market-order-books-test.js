@@ -8,13 +8,16 @@ import {
 import reducer from '../../../src/modules/bids-asks/reducers/market-order-books';
 
 describe(`modules/bids-asks/reducers/market-order-books.js`, () => {
-	let action, expectedOutput;
-	let thisTestState = Object.assign({}, testState);
+	let thisTestState;
+
+	beforeEach(() => {
+		thisTestState = Object.assign({}, testState);
+	});
 
 	it(`Should set market order book`, () => {
-		action = {
+		const action = {
 			type: UPDATE_MARKET_ORDER_BOOK,
-			marketId: "testMarketID",
+			marketId: 'testMarketID',
 			marketOrderBook: {
 				buy: {
 					"0xdbd821cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3": {
@@ -31,7 +34,7 @@ describe(`modules/bids-asks/reducers/market-order-books.js`, () => {
 				sell: {
 					"0x8ef900c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb": {
 						amount: "50",
-							block: 1127471,
+						block: 1127471,
 						id: "0x8ef900c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb",
 						market: "testMarketID",
 						outcome: "1",
@@ -42,7 +45,7 @@ describe(`modules/bids-asks/reducers/market-order-books.js`, () => {
 				}
 			}
 		};
-		expectedOutput = {
+		const expectedOutput = {
 			testMarketID: {
 				buy: {
 					"0xdbd821cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3": {
@@ -71,6 +74,6 @@ describe(`modules/bids-asks/reducers/market-order-books.js`, () => {
 			}
 		};
 
-		assert.deepEqual(reducer(thisTestState.bidsAsks, action), expectedOutput, `Didn't properly set market order book`);
+		assert.deepEqual(reducer(thisTestState.marketOrderBooks, action), expectedOutput, `Didn't properly set market order book`);
 	});
 });
