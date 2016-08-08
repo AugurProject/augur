@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import shouldComponentUpdatePure from '../../../utils/should-component-update-pure';
 import ReactHighcharts from 'react-highcharts';
 
 export default class Chart extends Component {
@@ -7,9 +6,10 @@ export default class Chart extends Component {
 		series: PropTypes.array
 	};
 
-	constructor(props) {
-		super(props);
-		this.shouldComponentUpdate = shouldComponentUpdatePure;
+	shouldComponentUpdate(nextProps) {
+		if (nextProps.series.length === this.props.series.length) return false;
+
+		return true;
 	}
 
 	render() {
