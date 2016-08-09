@@ -9,10 +9,85 @@ var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
+var constants = require("../constants");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
 module.exports = {
+
+    // load each batch of marketdata sequentially and recursively until complete
+    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, chunkCB) {
+        var self = this;
+        this.getMarketsInfo({
+            branch: branchID,
+            offset: startIndex,
+            numMarketsToLoad: chunkSize
+        }, function (marketsData) {
+            if (!marketsData || marketsData.error) {
+                chunkCB(marketsData);
+            } else {
+                chunkCB(null, marketsData);
+            }
+            if (isDesc && startIndex > 0) {
+                setTimeout(function () {
+                    self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc);
+                }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
+            } else if (!isDesc && startIndex < numMarkets) {
+                setTimeout(function () {
+                    self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc);
+                }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
+            }
+        });
+    },
+
+    loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
+        var self = this;
+
+        // load the total number of markets
+        this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+            var numMarkets = parseInt(numMarketsRaw, 10);
+            var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+
+            // load markets in batches
+            self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, chunkCB);
+        });
+    },
+
+    loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
+        this.getCashBalance(accountID, function (result) {
+            if (!result || result.error) return cbEther(result);
+            return cbEther(null, parseFloat(result, 10));
+        });
+        this.getRepBalance(branchID, accountID, function (result) {
+            if (!result || result.error) return cbRep(result);
+            return cbRep(null, parseFloat(result, 10));
+        });
+        this.rpc.balance(accountID, function (wei) {
+            if (!wei || wei.error) return cbRealEther(wei);
+            return cbRealEther(null, abi.bignum(wei).dividedBy(constants.ONE).toNumber());
+        });
+    },
+
+    finishLoadBranch: function (branch, callback) {
+        if (branch.periodLength && branch.description) {
+            callback(null, branch);
+        }
+    },
+
+    loadBranch: function (branchID, callback) {
+        var self = this;
+        var branch = {id: branchID};
+        this.getPeriodLength(branchID, function (periodLength) {
+            if (!periodLength || periodLength.error) return callback(periodLength);
+            branch.periodLength = periodLength;
+            self.finishLoadBranch(branch, callback);
+        });
+        this.getDescription(branchID, function (description) {
+            if (!description || description.error) return callback(description);
+            branch.description = description;
+            self.finishLoadBranch(branch, callback);
+        });
+    },
 
     parseOrderBook: function (orderArray, scalarMinMax) {
         if (!orderArray || orderArray.error) return orderArray;
