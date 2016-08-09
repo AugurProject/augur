@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe(`modules/positions/actions/load-account-trades.js`, () => {
+describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -33,7 +33,7 @@ describe(`modules/positions/actions/load-account-trades.js`, () => {
 
 	let mock = sinon.stub(mockAugurJS, 'loadAccountTrades', (loginID, cb) => cb(null, testData));
 
-	action = proxyquire('../../../src/modules/positions/actions/load-account-trades', {
+	action = proxyquire('../../../src/modules/my-positions/actions/load-account-trades', {
 		'../../../services/augurjs': mockAugurJS
 	});
 
