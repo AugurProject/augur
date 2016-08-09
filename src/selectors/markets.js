@@ -34,6 +34,8 @@ function makeMarkets(numMarkets = 10) {
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
 			endDate: makeDate(d),
+			creationTime: makeDate(new Date(14706977556)),
+			outstandingShares: makeNumber(1000),
 			endDateLabel: (d < new Date()) ? 'ended' : 'ends',
 			takerFeePercent: makeNumber(randomInt(1, 10), '%', true),
 			makerFeePercent: makeNumber(randomInt(1, 5), '%', true),

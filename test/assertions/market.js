@@ -50,9 +50,19 @@ export default function (market) {
 			assertEndDate(market.endDate);
 		});
 
+		it('market.creationTime', () => {
+			assert.isDefined(market.creationTime);
+			assertEndDate(market.creationTime);
+		});
+
 		it('market.endDateLabel', () => {
 			assert.isDefined(market.endDateLabel);
 			assert.isString(market.endDateLabel);
+		});
+
+		it('market.outstandingShares', () => {
+			assert.isDefined(market.outstandingShares);
+			assertFormattedNumber(market.outstandingShares);
 		});
 
 		it('market.takerFeePercent', () => {

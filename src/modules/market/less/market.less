@@ -8,7 +8,8 @@
 			background: white;
 		}
 
-		.basics {
+		.basics,
+		.market-info {
 			padding: @market-section-padding;
 			padding-bottom: 0;
 			line-height: 2em;
@@ -23,6 +24,22 @@
 
 			.properties {
 				color: @color-light-hover;
+			}
+		}
+
+		.market-info {
+			line-height: 1em;
+			font-size: 1.2rem;
+			padding-top: 0;
+
+			.property {
+				display: inline-block;
+				margin: 0.5rem 2rem 0 0;
+
+				.property-value {
+					margin-left: 0.5rem;
+					font-weight: 900;
+				}
 			}
 		}
 
