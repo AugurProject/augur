@@ -17,6 +17,7 @@ import unpaginatedMarkets from './modules/markets/selectors/markets-unpaginated'
 
 import positionsMarkets from './modules/markets/selectors/markets-positions';
 import positionsSummary from './modules/positions/selectors/positions-summary';
+import orderCancellation from './modules/bids-asks/selectors/order-cancellation';
 
 import market from './modules/market/selectors/market';
 import selectedOutcome from './modules/outcome/selectors/selected-outcome';
@@ -52,6 +53,7 @@ const selectors = {
 
 	positionsMarkets,
 	positionsSummary,
+	orderCancellation,
 
 	market,
 	selectedOutcome,

@@ -1,0 +1,7 @@
+/*
+ * Author: priecint
+ */
+export const CANCELLATION_CONFIRMATION = 'CANCELLATION_CONFIRMATION';
+export const CANCELLING = 'CANCELLING';
+export const CANCELLED = 'CANCELLED';
+export const CANCELLATION_FAILED = 'CANCELLATION_FAILED';

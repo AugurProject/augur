@@ -3,6 +3,7 @@ import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
@@ -37,6 +38,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				message = generateMessage(numShares, res.remainingShares);
 
 				if (!res.remainingShares || tradeComplete) {
+					dispatch(loadBidsAsks(marketID));
 					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
 				}
 
@@ -53,6 +55,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					if (err) {
 						return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 					}
+					dispatch(loadBidsAsks(marketID));
 					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
 				});
 			}

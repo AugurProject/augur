@@ -8,7 +8,7 @@ describe(`modules/bids-asks/selectors/select-order-book.js`, () => {
 	const selectAggregateOrderBook = require('../../../src/modules/bids-asks/selectors/select-order-book').selectAggregateOrderBook;
 
 	it(`should return empty order book for no orders`, () => {
-		const orderBook = selectAggregateOrderBook("1", null);
+		const orderBook = selectAggregateOrderBook('1', null, {});
 
 		assert.isArray(orderBook.bids);
 		assert.isArray(orderBook.asks);
@@ -39,18 +39,18 @@ describe(`modules/bids-asks/selectors/select-order-book.js`, () => {
 				"order80": { amount: "13", price: "0.6", outcome: "1" },
 				"order90": { amount: "14", price: "0.5", outcome: "1" }
 			}
-		});
+		}, {});
 
 		assert.lengthOf(orderBook.bids, 3);
 		assert.lengthOf(orderBook.asks, 4);
 
-		assert.deepEqual(orderBook.bids[0], { price: formatEther(0.4), shares: formatShares(10) }, "first bid");
-		assert.deepEqual(orderBook.bids[1], { price: formatEther(0.2), shares: formatShares(10) }, "second bid");
-		assert.deepEqual(orderBook.bids[2], { price: formatEther(0.1), shares: formatShares(16) }, "third bid");
+		assert.deepEqual(orderBook.bids[0], { price: formatEther(0.4), shares: formatShares(10), isOfCurrentUser: false }, 'first bid');
+		assert.deepEqual(orderBook.bids[1], { price: formatEther(0.2), shares: formatShares(10), isOfCurrentUser: false }, 'second bid');
+		assert.deepEqual(orderBook.bids[2], { price: formatEther(0.1), shares: formatShares(16), isOfCurrentUser: false }, 'third bid');
 
-		assert.deepEqual(orderBook.asks[0], { price: formatEther(0.5), shares: formatShares(14) }, "first ask");
-		assert.deepEqual(orderBook.asks[1], { price: formatEther(0.6), shares: formatShares(23) }, "second ask");
-		assert.deepEqual(orderBook.asks[2], { price: formatEther(0.7), shares: formatShares(10) }, "third ask");
-		assert.deepEqual(orderBook.asks[3], { price: formatEther(0.8), shares: formatShares(2) }, "fourth ask");
+		assert.deepEqual(orderBook.asks[0], { price: formatEther(0.5), shares: formatShares(14), isOfCurrentUser: false }, 'first ask');
+		assert.deepEqual(orderBook.asks[1], { price: formatEther(0.6), shares: formatShares(23), isOfCurrentUser: false }, 'second ask');
+		assert.deepEqual(orderBook.asks[2], { price: formatEther(0.7), shares: formatShares(10), isOfCurrentUser: false }, 'third ask');
+		assert.deepEqual(orderBook.asks[3], { price: formatEther(0.8), shares: formatShares(2), isOfCurrentUser: false }, 'fourth ask');
 	});
 });
