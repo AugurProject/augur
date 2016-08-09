@@ -45039,7 +45039,7 @@ module.exports = {
         }
 
         function checkIncrementPeriod(branch, periodLength, next, callback) {
-            self.Branches.getVotePeriod(branch, function (votePeriod) {
+            self.getVotePeriod(branch, function (votePeriod) {
                 if (votePeriod < self.getCurrentPeriod(periodLength) - 1) {
                     incrementPeriod(branch, periodLength, function (err, votePeriod) {
                         if (err) return next(err);
