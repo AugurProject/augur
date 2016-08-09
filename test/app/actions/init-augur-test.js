@@ -44,7 +44,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	mockLoadReports.loadReports = sinon.stub().returns({
 		type: 'LOAD_REPORTS'
 	});
-	mockPenalizeWrongReports.penalizeWrongReports = sinon.stub().returns({
+	mockPenalizeWrongReports.checkPeriod = sinon.stub().returns({
 		type: 'PENALIZE_WRONG_REPORTS'
 	});
 	mockCloseMarkets.closeMarkets = sinon.stub().returns({

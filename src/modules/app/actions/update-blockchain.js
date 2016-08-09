@@ -2,8 +2,7 @@ import { augur } from '../../../services/augurjs';
 import { loadReports } from '../../reports/actions/load-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
 import { collectFees } from '../../reports/actions/collect-fees';
-import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
-import { closeMarkets } from '../../reports/actions/close-markets';
+import { checkPeriod } from '../../reports/actions/check-period';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
@@ -109,9 +108,7 @@ export function updateBlockchain(cb) {
 					isAlreadyUpdatingBlockchain = false;
 					dispatch(loadReports((err) => {
 						if (err) return console.error('loadReports:', err);
-						const { marketsData } = getState();
-						dispatch(penalizeWrongReports(marketsData));
-						dispatch(closeMarkets(marketsData));
+						dispatch(checkPeriod());
 						return cb && cb();
 					}));
 				}));

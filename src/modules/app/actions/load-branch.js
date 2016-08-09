@@ -8,9 +8,8 @@ import { loadFullMarket } from '../../market/actions/load-full-market';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearMarketsData } from '../../markets/actions/update-markets-data';
 import { revealReports } from '../../reports/actions/reveal-reports';
-import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
+import { checkPeriod } from '../../reports/actions/check-period';
 import { collectFees } from '../../reports/actions/collect-fees';
-import { closeMarkets } from '../../reports/actions/close-markets';
 
 export function loadBranch(branchID) {
 	return (dispatch, getState) => {
@@ -32,9 +31,7 @@ export function loadBranch(branchID) {
 				dispatch(loadReports((err) => {
 					dispatch(revealReports());
 					dispatch(collectFees());
-					const { marketsData } = getState();
-					dispatch(penalizeWrongReports(marketsData));
-					dispatch(closeMarkets(marketsData));
+					dispatch(checkPeriod());
 					dispatch(listenToUpdates());
 				}));
 			}));

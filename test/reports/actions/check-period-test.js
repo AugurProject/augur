@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe('modules/reports/actions/penalize-wrong-reports.js', () => {
+describe('modules/reports/actions/check-period.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
@@ -29,9 +29,8 @@ describe('modules/reports/actions/penalize-wrong-reports.js', () => {
 
 	sinon.stub(mockIsMarketData, 'isMarketDataPreviousReportPeriod', () => false);
 
-	action = proxyquire('../../../src/modules/reports/actions/penalize-wrong-reports.js', {
-		'../../../services/augurjs': mockAugurJS,
-		'../../../utils/is-market-data-open': mockIsMarketData
+	action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
+		'../../../services/augurjs': mockAugurJS
 	});
 
 	beforeEach(() => {
@@ -45,21 +44,9 @@ describe('modules/reports/actions/penalize-wrong-reports.js', () => {
 	});
 
 	it('should penalize wrong reports', () => {
-		let marketsData = {
-			test1: {
-				eventID: 'test1'
-			},
-			test2: {
-				eventID: 'test2'
-			},
-			test3: {
-				eventID: 'test3'
-			}
-		};
-		store.dispatch(action.penalizeWrongReports(marketsData));
+		store.dispatch(action.checkPeriod());
 		clock.tick(4000);
 		assert(mockAugurJS.penalizeWrong.calledThrice);
-		assert(mockIsMarketData.isMarketDataPreviousReportPeriod.calledThrice);
 	});
 
 });

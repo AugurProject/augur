@@ -179,10 +179,6 @@ ex.login = function login(secureLoginID, password, cb) {
 	});
 };
 
-ex.logout = function logout() {
-	augur.web.logout();
-};
-
 ex.register = function register(name, password, cb) {
 	augur.web.register(name, password,
 		account => {
@@ -340,109 +336,12 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 	});
 };
 
-ex.penalizationCatchup = function penalizationCatchup(branchID, cb) {
-	augur.penalizationCatchup({
-		branch: branchID,
-		onSent: res => {
-			console.log('penalizationCatchup sent:', res);
-		},
-		onSuccess: res => {
-			console.log('penalizationCatchup success:', res);
-			cb(null, res);
-		},
-		onFailed: err => {
-			console.error('penalizationCatchup failed:', err);
-			if (err.error === '0') { // already caught up
-				return cb(null);
-			}
-			cb(err);
-		}
-	});
-};
-
-ex.penalizeWrong = function penalizeWrong(branchID, event, cb) {
-	augur.getMarkets(event, markets => {
-		if (!markets || markets.error) return console.error('getMarkets:', markets);
-		augur.getOutcome(event, outcome => {
-			if (outcome !== '0' && !outcome.error) {
-				console.log('Calling penalizeWrong for:', branchID, event);
-				augur.penalizeWrong({
-					branch: branchID,
-					event,
-					onSent: res => {
-						console.log(`penalizeWrong sent for event ${event}`, res);
-					},
-					onSuccess: res => {
-						console.log(`penalizeWrong success for event ${event}`, res);
-						cb(null, res);
-					},
-					onFailed: err => {
-						console.error(`penalizeWrong failed for event ${event}`, err);
-						cb(err);
-					}
-				});
-			} else {
-				self.closeMarket(branchID, markets[0], (err, res) => {
-					if (err) return cb(err);
-					self.penalizeWrong(branchID, event, cb);
-				});
-			}
-		});
-	});
-};
-
-ex.closeMarket = function closeMarket(branchID, marketID, cb) {
-	augur.closeMarket({
-		branch: branchID,
-		market: marketID,
-		sender: augur.web.account.address || augur.from,
-		onSent: res => {
-			console.log('closeMarket sent:', res);
-		},
-		onSuccess: res => {
-			console.log('closeMarket success:', res);
-			cb(null, res);
-		},
-		onFailed: err => {
-			console.error('closeMarket error:', err);
-			cb(err);
-		}
-	});
-};
-
-ex.collectFees = function collectFees(branchID, cb) {
-	augur.getPeriodLength(branchID, periodLength => {
-		augur.collectFees({
-			branch: branchID,
-			sender: augur.web.account.address || augur.from,
-			periodLength,
-			onSent: res => {
-			},
-			onSuccess: res => {
-				cb(null, res);
-			},
-			onFailed: err => {
-				cb(err);
-			}
-		});
-	});
-};
-
 ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, onSuccess, onFailed) {
 	if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
 		augur.web.fundNewAccountFromAddress(env.fundNewAccountFromAddress.address || augur.from, env.fundNewAccountFromAddress.amount, toAddress, branchID, onSent, onSuccess, onFailed);
 	} else {
 		augur.web.fundNewAccountFromFaucet(toAddress, branchID, onSent, onSuccess, onFailed);
 	}
-};
-
-ex.changeAccountName = function changeAccountName(name, cb) {
-	augur.web.changeAccountName(name, account => {
-		if (!account) {
-			return cb({ code: 0, message: 'failed to edit account name' });
-		}
-		return cb(null, { ...account, id: account.address });
-	});
 };
 
 ex.getTradingActions = augur.getTradingActions;
