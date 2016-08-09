@@ -58,11 +58,11 @@ describe("Reporting sequence", function () {
     salt = "1337";
     markets = {};
     events = {};
+    sender = augur.from;
 
     before("Setup/first period", function (done) {
         this.timeout(tools.TIMEOUT*100);
         augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
-        sender = augur.from;
         tools.top_up(augur, constants.DEFAULT_BRANCH_ID, unlockable, password, function (err, unlocked) {
             assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
@@ -116,10 +116,10 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
-                    if (err) console.log("checkVotePeriod failed:", err);
+                augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod) {
+                    if (err) console.log("checkPeriod failed:", err);
                     assert.isNull(err, JSON.stringify(err));
-                    if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
+                    if (DEBUG) printReportingStatus(eventID, "After checkPeriod");
                     augur.checkTime(newBranchID, eventID, periodLength, function (err) {
                         if (err) console.log("checkTime failed:", err);
                         assert.isNull(err, JSON.stringify(err));
@@ -280,9 +280,9 @@ describe("Reporting sequence", function () {
                 assert.isArray(unlocked);
                 assert.isAbove(unlocked.length, 0);
                 assert.sameMembers(unlockable, unlocked);
-                augur.checkVotePeriod(newBranchID, periodLength, function (err, votePeriod) {
+                augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod) {
                     assert.isNull(err, JSON.stringify(err));
-                    if (DEBUG) printReportingStatus(eventID, "After checkVotePeriod");
+                    if (DEBUG) printReportingStatus(eventID, "After checkPeriod");
                     augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
                         assert.isNull(err, JSON.stringify(err));
                         done();

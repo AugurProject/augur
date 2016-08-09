@@ -43270,7 +43270,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.44";
+    this.version = "1.9.45";
 
     this.options = {
         debug: {
@@ -44802,7 +44802,7 @@ module.exports = {
         return this.transact(tx, onSent, function (res) {
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
-                return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
+                return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
                     if (err) return onFailed(err);
                     return self.submitReportHash({
                         event: event,
@@ -44949,7 +44949,7 @@ module.exports = {
     },
 
     // Increment vote period until vote period = current period - 1
-    checkVotePeriod: function (branch, periodLength, callback) {
+    checkPeriod: function (branch, periodLength, sender, callback) {
         var self = this;
 
         function incrementPeriod(branch, periodLength, next) {
@@ -44968,19 +44968,19 @@ module.exports = {
 
         function checkPenalizeWrong(branch, votePeriod, next) {
             console.log("checking penalizeWrong for period", votePeriod);
-            self.ExpiringEvents.getEvents(branch, votePeriod, function (events) {
+            self.getEvents(branch, votePeriod, function (events) {
                 console.log(" - Events in vote period", votePeriod + ":", events);
                 if (!events || events.constructor !== Array || !events.length) {
                     // if > first period, then call penalizeWrong(branch, 0)
                     console.log("No events found for this period");
-                    return self.ConsensusData.getPenalizedUpTo(branch, self.from, function (lastPeriodPenalized) {
+                    return self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
                         lastPeriodPenalized = parseInt(lastPeriodPenalized);
                         if (lastPeriodPenalized === 0 || lastPeriodPenalized === votePeriod - 1) {
                             console.log("Penalizations caught up!");
                             return next(null);
                         }
                         console.log("Calling penalizeWrong(branch, 0)...");
-                        self.Consensus.penalizeWrong({
+                        self.penalizeWrong({
                             branch: branch,
                             event: 0,
                             onSent: function (r) {
@@ -45001,13 +45001,33 @@ module.exports = {
                 console.log("Events found, looping through...");
                 async.eachSeries(events, function (event, nextEvent) {
                     console.log(" - penalizeWrong:", event);
-                    self.Consensus.penalizeWrong({
+                    self.penalizeWrong({
                         branch: branch,
                         event: event,
                         onSent: utils.noop,
                         onSuccess: function (r) {
                             console.log(" - penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                            nextEvent();
+                            console.log(" - closing extra markets");
+                            self.getMarkets(event, function (markets) {
+                                if (!markets) return nextEvent("no markets found for " + event);
+                                if (markets && markets.error) return nextEvent(markets);
+                                if (markets.length <= 1) return nextEvent();
+                                async.eachSeries(markets.slice(1), function (market, nextMarket) {
+                                    self.closeMarket({
+                                        branch: branch,
+                                        market: market,
+                                        sender: sender,
+                                        onSent: function (res) {
+                                            console.log("closeMarket", market, res);
+                                        },
+                                        onSuccess: function (res) {
+                                            console.log("closeMarket success", market, res.callReturn);
+                                            nextMarket();
+                                        },
+                                        onFailed: nextMarket
+                                    });
+                                }, nextEvent);
+                            });
                         },
                         onFailed: function (err) {
                             console.error(" - penalizeWrong error:", err);
@@ -45038,7 +45058,7 @@ module.exports = {
             checkPenalizeWrong(branch, votePeriod - 1, function (err) {
                 console.log("checkPenalizeWrong:", err);
                 if (err) return callback(err);
-                self.checkVotePeriod(branch, periodLength, callback);
+                self.checkPeriod(branch, periodLength, sender, callback);
             });
         }, callback);
     },

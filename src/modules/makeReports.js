@@ -103,7 +103,7 @@ module.exports = {
         return this.transact(tx, onSent, function (res) {
             res.callReturn = abi.bignum(res.callReturn, "string", true);
             if (res.callReturn === "0") {
-                return self.checkVotePeriod(branch, periodLength, function (err, newPeriod) {
+                return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
                     if (err) return onFailed(err);
                     return self.submitReportHash({
                         event: event,
