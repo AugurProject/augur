@@ -2,7 +2,7 @@
 // Goal: To help keep these unit tests as DRY as possible.
 import env from '../src/env.json';
 
-import { formatNumber, formatShares } from '../src/utils/format-number';
+import { formatNumber, formatShares, formatEther } from '../src/utils/format-number';
 import { formatDate } from '../src/utils/format-date';
 
 const testState = {
@@ -56,6 +56,7 @@ const testState = {
 	keywords: 'test testtag',
 	marketsData: {
 		testMarketID: {
+			author: '0xtest123',
 			eventID: 'testEventID',
 			name: 'testMarket',
 			description: 'some test description',
