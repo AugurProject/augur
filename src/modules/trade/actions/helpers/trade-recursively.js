@@ -9,7 +9,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 	};
 
 	const matchingIDs = calculateTradeIDs();
-	console.log('!!!!! trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'numShares', numShares, 'totalEthWithFee', totalEthWithFee, 'matchingIDs', matchingIDs);
+	console.log('* trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'numShares', numShares, 'totalEthWithFee', totalEthWithFee, 'matchingIDs', matchingIDs);
 	if (!matchingIDs.length) {
 		return cb(null, res);
 	}
@@ -40,7 +40,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		res.filledShares = parseFloat(data.sharesBought) || 0;
 		res.filledEth = parseFloat(data.cashFromTrade) || 0;
 
-		console.log('**** unmatched eth/shares:', data);
+		console.log('* trade success data:', data);
 		if ((res.filledEth && res.remainingEth) || (res.filledShares && res.remainingShares)) {
 			cbFill(res);
 			return tradeRecursively(marketID, outcomeID, res.remainingShares, res.remainingEth, calculateTradeIDs, cbStatus, cbFill, cb);

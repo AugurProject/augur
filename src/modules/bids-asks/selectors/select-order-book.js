@@ -50,7 +50,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders) => {
 		.map((price) => {
 			const obj = {
 				shares: formatShares(shareCountPerPrice[price]),
-				price: formatEther(parseFloat(price))
+				price: formatEther(parseFloat(price), { roundUp: true })
 			};
 			return obj;
 		});

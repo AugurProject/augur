@@ -49,7 +49,7 @@ export function formatEther(num, opts) {
 	return formatNumber(
 		num,
 		{
-			decimals: 2,
+			decimals: 3,
 			decimalsRounded: 1,
 			denomination: 'eth',
 			positiveSign: false,
@@ -120,10 +120,10 @@ export function formatNone() {
 	};
 }
 
-export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', positiveSign: false, zeroStyled: true, minimized: false }) {
+export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, positiveSign: false, zeroStyled: true, minimized: false }) {
 	const { minimized } = opts;
 	const o = {};
-	let { value, decimals, decimalsRounded, denomination, positiveSign, zeroStyled } = opts;
+	let { value, decimals, decimalsRounded, denomination, roundUp, positiveSign, zeroStyled } = opts;
 
 	decimals = decimals || 0;
 	decimalsRounded = decimalsRounded || 0;
@@ -136,10 +136,14 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 		return formatNone();
 	}
 
+	const decimalsValue = Math.pow(10, decimals);
+	const decimalsRoundedValue = Math.pow(10, decimalsRounded);
+	const roundFunction = !roundUp ? Math.round : Math.ceil;
+
 	o.value = value;
-	o.formattedValue = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	o.formattedValue = roundFunction(value * decimalsValue) / decimalsValue;
 	o.formatted = addCommas(o.formattedValue.toFixed(decimals));
-	o.roundedValue = Math.round(value * Math.pow(10, decimalsRounded)) / Math.pow(10, decimalsRounded);
+	o.roundedValue = roundFunction(value * decimalsRoundedValue) / decimalsRoundedValue;
 	o.rounded = addCommas(o.roundedValue.toFixed(decimalsRounded));
 	o.minimized = addCommas(parseFloat(o.formattedValue.toFixed(decimals)).toString());
 
