@@ -8,15 +8,15 @@ export default function (portfolioTotals){
 		assert.isObject(portfolioTotals);
 
 		it('value', () => {
-			assert.isDefined(portfolioTotals.value);
+			assert.isDefined(portfolioTotals.totalValue);
 
-			assertFormattedNumber(portfolioTotals.value, 'portfolio.totals.value');
+			assertFormattedNumber(portfolioTotals.totalValue, 'portfolio.totals.totalValue');
 		});
 
 		it('net', () => {
-			assert.isDefined(portfolioTotals);
+			assert.isDefined(portfolioTotals.netChange);
 
-			assertFormattedNumber(portfolioTotals.net, 'portfolio.totals.net');
+			assertFormattedNumber(portfolioTotals.netChange, 'portfolio.totals.netChange');
 		});
 	});
 };

@@ -15,12 +15,12 @@ const SiteHeader = (p) => (
 			{!!p.loginAccount && !!p.loginAccount.id && !!p.portfolioTotals &&
 				<Link className={classnames('site-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activePage) > -1 })} {...p.myPositionsLink}>
 					<ValueDenomination
-						title={`Total Portfolio Value: ${p.portfolioTotals.value.full}`}
-						{...p.portfolioTotals.value || {}}
+						title={`Total Portfolio Value: ${p.portfolioTotals.totalValue.full}`}
+						{...p.portfolioTotals.totalValue || {}}
 					/> Portfolio (
 					<ValueDenomination
-						title={`Total Portfolio Gain/Loss: ${p.portfolioTotals.net.full}`}
-						{...p.portfolioTotals.net || {}}
+						title={`Total Portfolio Gain/Loss: ${p.portfolioTotals.netChange.full}`}
+						{...p.portfolioTotals.netChange || {}}
 					/>)
 				</Link>
 			}

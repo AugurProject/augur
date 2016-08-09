@@ -5,14 +5,24 @@ import assertEndDate from '../../test/assertions/common/end-date';
 export default function (loginAccountMarkets){
 	describe(`augur-ui-react-components loginAccountMarket's shape`, () => {
 		assert.isDefined(loginAccountMarkets);
-		assert.isArray(loginAccountMarkets);
+		assert.isObject(loginAccountMarkets);
 
-		loginAccountMarkets.forEach(market => { assertLoginAccountMarkets(market) });
+		it('markets', () => {
+			assert.isDefined(loginAccountMarkets.markets);
+
+			loginAccountMarkets.markets.forEach(market => { assertMyMarkets(market) });
+		});
+
+		it('summary', () => {
+			assert.isDefined(loginAccountMarkets.summary);
+
+			assertMyMarketsSummary(loginAccountMarkets.summary);
+		});
 	});
 };
 
-export function assertLoginAccountMarkets(market) {
-	describe(`markets's shape`, () => {
+export function assertMyMarkets(market){
+	describe(`market's shape`, () => {
 		it('id', () => {
 			assert.isDefined(market.id);
 			assert.isString(market.id);
@@ -57,6 +67,23 @@ export function assertLoginAccountMarkets(market) {
 			assert.isDefined(market.openVolume);
 
 			assertFormattedNumber(market.openVolume, 'loginAccountMarkets.openVolume');
+		});
+	});
+};
+
+export function assertMyMarketsSummary(summary){
+	describe(`summary's shape`, () => {
+		assert.isDefined(summary);
+		assert.isObject(summary);
+
+		it('numMarkets', () => {
+			assert.isDefined(summary.numMarkets);
+			assert.isNumber(summary.numMarkets);
+		});
+
+		it('totalValue', () => {
+			assert.isDefined(summary.totalValue);
+			assert.isNumber(summary.totalValue);
 		});
 	});
 };

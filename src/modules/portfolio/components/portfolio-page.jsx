@@ -16,7 +16,7 @@ const PortfolioPage = (p) => {
 		node = <Positions positions={p.positions} />;
 		break;
 	case MY_MARKETS:
-		node = <Markets markets={p.markets} />;
+		node = <Markets {...p.markets} />;
 		break;
 	case MY_REPORTS:
 		node = <Reports reports={p.reports} />;
