@@ -43,7 +43,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders, orderCa
 	if (orders == null) {
 		return [];
 	}
-	const currentUserAddress = store.getState().loginAccount.address;
+	const currentUserAddress = store.getState().loginAccount.id;
 
 	const shareCountPerPrice = Object.keys(orders)
 		.map(orderId => orders[orderId])
