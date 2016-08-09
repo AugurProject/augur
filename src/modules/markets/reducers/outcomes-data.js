@@ -75,6 +75,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
 	}, {});
 
 	function parseBinaryOutcomes(marketData, marketID) {
+		console.log('parseBinary outcomes:', marketID, marketData);
 		return marketData.outcomes.reduce((p, outcome) => {
 			p[outcome.id] = { ...outcome };
 			if (outcome.id === BINARY_NO_ID) {
@@ -84,8 +85,9 @@ function parseOutcomes(newMarketsData, outcomesData) {
 			} else {
 				console.warn('Invalid outcome ID for binary market:', outcome, marketID, marketData);
 			}
+			console.log('p:', p);
 			return p;
-		});
+		}, {});
 	}
 
 	function parseCategoricalOutcomes(marketData, marketID) {
