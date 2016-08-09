@@ -22,7 +22,7 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		.toISOString()
 		.split(':')
 		.join('-');
-	const downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
+	const downloadAccountFileName = `UTC--${date}--${loginAccount.id}`;
 	const accountData = encodeURIComponent(JSON.stringify({
 		...loginAccount.keystore
 	}));

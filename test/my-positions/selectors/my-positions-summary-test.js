@@ -1,8 +1,8 @@
-import * as selector from '../../../src/modules/positions/selectors/positions-summary';
+import * as selector from '../../../src/modules/my-positions/selectors/my-positions-summary';
 import { assertions } from 'augur-ui-react-components';
 
-describe(`modules/positions/selectors/positions-summary.js`, () => {
-	let expected, actual;
+describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
+	let actual;
 
 	it(`should return a summary of positions`, () => {
 		let numPositions = 100;

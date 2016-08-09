@@ -205,6 +205,19 @@ ex.loadAccountTrades = function loadAccountTrades(accountID, cb) {
 	});
 };
 
+ex.loadMarketTrades = function loadMarketTrades(marketID, cb) {
+	if (!marketID) {
+		return cb('ERROR: loadMarketTrades() marketID required');
+	}
+	augur.getMarketTrades(marketID, (marketTrades) => {
+		if (marketTrades && marketTrades.error) {
+			return cb(marketTrades.error);
+		}
+
+		cb(null, marketTrades);
+	});
+};
+
 ex.listenToBidsAsks = function listenToBidsAsks() {
 
 };
@@ -480,6 +493,10 @@ ex.closeMarket = function closeMarket(branchID, marketID, cb) {
 			cb(err);
 		}
 	});
+};
+
+ex.getFees = function getFees(marketID) {
+	return augur.getFees(marketID);
 };
 
 ex.collectFees = function collectFees(branchID, cb) {

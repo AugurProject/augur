@@ -3,7 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 
 import { PAGES_PATHS } from '../../link/constants/paths';
-import { ACCOUNT, M, MARKETS, MAKE, POSITIONS, TRANSACTIONS } from '../../app/constants/pages';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS } from '../../app/constants/pages';
 
 import { SEARCH_PARAM_NAME, SORT_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, FILTERS_PARAM_NAME } from '../../link/constants/param-names';
 import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants/sort';
@@ -11,8 +11,9 @@ import { DEFAULT_SORT_PROP, DEFAULT_IS_SORT_DESC } from '../../markets/constants
 import { updateURL } from '../../link/actions/update-url';
 import { logout } from '../../auth/actions/logout';
 
+import { loadFullLoginAccountMarkets } from '../../../modules/portfolio/actions/load-full-login-acccount-markets';
+
 import store from '../../../store';
-// import * as selectors from '../../../selectors';
 
 export default function () {
 	const { keywords, selectedFilters, selectedSort, selectedTags, pagination, loginAccount, auth } = store.getState();
@@ -21,11 +22,13 @@ export default function () {
 		authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.id, store.dispatch),
 		createMarketLink: selectCreateMarketLink(store.dispatch),
 		marketsLink: selectMarketsLink(keywords, selectedFilters, selectedSort, selectedTags, pagination.selectedPageNum, store.dispatch),
-		positionsLink: selectPositionsLink(store.dispatch),
 		transactionsLink: selectTransactionsLink(store.dispatch),
 		marketLink: selectMarketLink(market, store.dispatch),
 		previousLink: selectPreviousLink(store.dispatch),
-		accountLink: selectAccountLink(store.dispatch)
+		accountLink: selectAccountLink(store.dispatch),
+		myPositionsLink: selectMyPositionsLink(store.dispatch),
+		myMarketsLink: selectMyMarketsLink(store.dispatch),
+		myReportsLink: selectMyReportsLink(store.dispatch),
 	};
 }
 
@@ -124,14 +127,6 @@ export const selectMarketLink = memoizerific(1)((market, dispatch) => {
 	return link;
 });
 
-export const selectPositionsLink = memoizerific(1)((dispatch) => {
-	const href = PAGES_PATHS[POSITIONS];
-	return {
-		href,
-		onClick: () => dispatch(updateURL(href))
-	};
-});
-
 export const selectTransactionsLink = memoizerific(1)((dispatch) => {
 	const href = PAGES_PATHS[TRANSACTIONS];
 	return {
@@ -142,6 +137,33 @@ export const selectTransactionsLink = memoizerific(1)((dispatch) => {
 
 export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
 	const href = PAGES_PATHS[MAKE];
+	return {
+		href,
+		onClick: () => dispatch(updateURL(href))
+	};
+});
+
+export const selectMyPositionsLink = memoizerific(1)((dispatch) => {
+	const href = PAGES_PATHS[MY_POSITIONS];
+	return {
+		href,
+		onClick: () => dispatch(updateURL(href))
+	};
+});
+
+export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
+	const href = PAGES_PATHS[MY_MARKETS];
+	return {
+		href,
+		onClick: () => {
+			dispatch(loadFullLoginAccountMarkets());
+			dispatch(updateURL(href));
+		}
+	};
+});
+
+export const selectMyReportsLink = memoizerific(1)((dispatch) => {
+	const href = PAGES_PATHS[MY_REPORTS];
 	return {
 		href,
 		onClick: () => dispatch(updateURL(href))
