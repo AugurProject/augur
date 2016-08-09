@@ -14,6 +14,14 @@ export default function () {
 	return loginAccountMarkets;
 }
 
+export const selectMyMarket = market => {
+	const { loginAccount } = require('../../../selectors');
+
+	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [null];
+
+	return selectLoginAccountMarkets([market]);
+};
+
 export const selectFilteredMarkets = memoizerific(1)((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID));
 
 export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
