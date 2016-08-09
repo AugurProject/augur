@@ -1,35 +1,7 @@
-import { makeNumber } from '../utils/make-number';
-import { makeDate } from '../utils/make-date';
+import markets from '../selectors/my-markets';
+import summary from '../selectors/my-markets-summary';
 
-export default [
-	{
-		id: '0',
-		description: 'Will the shoop, shoop de woop?',
-		endDate: makeDate(new Date('2017/12/12')),
-		fees: makeNumber(Math.random() * 10, 'eth', true),
-		volume: makeNumber(Math.floor(Math.random() * 100), null, true),
-		numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
-		averageTradeSize: makeNumber(Math.random() * 100, 'eth'),
-		openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
-	},
-	{
-		id: '1',
-		description: 'When will the first zipline span the San Francisco Bay?',
-		endDate: makeDate(new Date('2017/12/12')),
-		fees: makeNumber(Math.random() * 10, 'eth', true),
-		volume: makeNumber(Math.floor(Math.random() * 100), null, true),
-		numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
-		averageTradeSize: makeNumber(Math.random() * 100, 'eth', true),
-		openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
-	},
-	{
-		id: '2',
-		description: 'When will I stop balding?',
-		endDate: makeDate(new Date('2017/12/12')),
-		fees: makeNumber(Math.random() * 10, 'eth'),
-		volume: makeNumber(Math.floor(Math.random() * 100), null, true),
-		numberOfTrades: makeNumber(Math.floor(Math.random() * 1000), null, true),
-		averageTradeSize: makeNumber(Math.random() * 100, 'eth', true),
-		openVolume: makeNumber(Math.floor(Math.random() * 10000), null, true)
-	}
-];
+export default {
+	markets,
+	summary
+};
