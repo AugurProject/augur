@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
+import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 
 export function loadAccountTrades() {
 	return (dispatch, getState) => {

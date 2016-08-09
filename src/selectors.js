@@ -15,8 +15,6 @@ import favoriteMarkets from './modules/markets/selectors/markets-favorite';
 import filteredMarkets from './modules/markets/selectors/markets-filtered';
 import unpaginatedMarkets from './modules/markets/selectors/markets-unpaginated';
 
-import positionsMarkets from './modules/markets/selectors/markets-positions';
-import positionsSummary from './modules/positions/selectors/positions-summary';
 import orderCancellation from './modules/bids-asks/selectors/order-cancellation';
 
 import market from './modules/market/selectors/market';
@@ -25,6 +23,10 @@ import selectedOutcome from './modules/outcome/selectors/selected-outcome';
 import filters from './modules/markets/selectors/filters';
 import searchSort from './modules/markets/selectors/search-sort';
 import keywords from './modules/markets/selectors/keywords';
+
+import portfolio from './modules/portfolio/selectors/portfolio';
+import loginAccountPositions from './modules/my-positions/selectors/login-account-positions';
+import loginAccountMarkets from './modules/my-markets/selectors/login-account-markets';
 
 import transactions from './modules/transactions/selectors/transactions';
 import transactionsTotals from './modules/transactions/selectors/transactions-totals';
@@ -51,8 +53,6 @@ const selectors = {
 	filteredMarkets,
 	unpaginatedMarkets,
 
-	positionsMarkets,
-	positionsSummary,
 	orderCancellation,
 
 	market,
@@ -61,6 +61,10 @@ const selectors = {
 	filters,
 	searchSort,
 	keywords,
+
+	portfolio,
+	loginAccountPositions,
+	loginAccountMarkets,
 
 	transactions,
 	transactionsTotals,

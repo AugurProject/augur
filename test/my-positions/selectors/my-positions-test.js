@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 
 let positionsMarkets;
-describe(`modules/markets/selectors/markets-positions.js`, () => {
+describe(`modules/my-positions/selectors/my-positions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	let selector, out, test;
 	let mockSelectors = {
@@ -64,7 +64,7 @@ describe(`modules/markets/selectors/markets-positions.js`, () => {
 		}]
 	};
 
-	selector = proxyquire('../../../src/modules/markets/selectors/markets-positions.js', {
+	selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions.js', {
 		'../../../selectors': mockSelectors
 	});
 

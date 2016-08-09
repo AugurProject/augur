@@ -51,14 +51,14 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		};
 
 		// trade actions
-		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
+		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
 			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
 				newTradeDetails.numShares,
 				newTradeDetails.limitPrice,
 				market && market.takerFee || 0,
 				market && market.makerFee || 0,
-				loginAccount.address,
+				loginAccount.id,
 				accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares || 0,
 				outcomeID,
 				marketOrderBooks && marketOrderBooks[marketID] || {});

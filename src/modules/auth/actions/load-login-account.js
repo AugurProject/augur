@@ -6,9 +6,10 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 // import { updateReports, clearReports } from '../../reports/actions/update-reports';
+import { loadReports } from '../../reports/actions/load-reports';
 import { updateReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
-import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
+import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 
 export function loadLoginAccountDependents() {

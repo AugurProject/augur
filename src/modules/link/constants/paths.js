@@ -1,16 +1,18 @@
-import { ACCOUNT, MARKETS, MAKE, POSITIONS, TRANSACTIONS, M } from '../../app/constants/pages';
+import { ACCOUNT, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, M } from '../../app/constants/pages';
 import { IMPORT, REGISTER, LOGIN } from '../../auth/constants/auth-types';
 
 export const PATHS_PAGES = {
 	'/': MARKETS,
 	'/make': MAKE,
-	'/positions': POSITIONS,
+	'/my-positions': MY_POSITIONS,
+	'/my-markets': MY_MARKETS,
+	'/my-reports': MY_REPORTS,
 	'/transactions': TRANSACTIONS,
 	'/register': REGISTER,
 	'/login': LOGIN,
 	'/m': M,
 	'/account': ACCOUNT,
-	'/import': IMPORT,
+	'/import': IMPORT
 };
 
 export const PAGES_PATHS = Object.keys(PATHS_PAGES).reduce(

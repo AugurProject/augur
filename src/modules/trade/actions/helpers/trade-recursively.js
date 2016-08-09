@@ -9,29 +9,28 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 	};
 
 	const matchingIDs = calculateTradeIDs();
-	console.log('* trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'numShares', numShares, 'totalEthWithFee', totalEthWithFee, 'matchingIDs', matchingIDs);
 	if (!matchingIDs.length) {
 		return cb(null, res);
 	}
 
+	console.log('* trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'max_amount', numShares, 'max_value', totalEthWithFee, 'trade_ids', matchingIDs);
+
 	augur.trade({
 		max_value: totalEthWithFee,
-		max_amount: 0,
+		max_amount: numShares,
 		trade_ids: matchingIDs,
 
 		onTradeHash: data => cbStatus('submitting'),
+
 		onCommitSent: data => cbStatus('committing'),
 		onCommitSuccess: data => cbStatus('sending'),
-
-		onCommitConfirmed: data => console.log('trade-onCommitConfirmed', data),
-		onCommitFailed: cb,
+		onCommitFailed: err => { console.log('!!!! onCommitFailed', err); cb(err); },
 
 		onNextBlock: data => console.log('trade-onNextBlock', data),
-		onTradeSent: data => cbStatus('filling'),
-		onTradeSuccess: doSuccess,
 
-		onTradeFailed: cb,
-		onTradeConfirmed: doSuccess
+		onTradeSent: data => { console.log('!!!! onTradeSent', data); cbStatus('filling'); },
+		onTradeSuccess: doSuccess,
+		onTradeFailed: err => { console.log('!!!! onTradeFailed', err); cb(err); }
 	});
 
 	function doSuccess(data) {
