@@ -2,46 +2,51 @@ import { assert } from 'chai';
 import { assertions } from 'augur-ui-react-components';
 
 import sinon from 'sinon';
-
-import selector from '../../../src/modules/portfolio/selectors/portfolio';
-import * as selectPortfolioNavItems from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
-import * as selectPortfolioTotals from '../../../src/modules/portfolio/selectors/portfolio-totals';
-import * as selectLoginAccountPositions from '../../../src/modules/my-positions/selectors/login-account-positions';
-import * as selectLoginAccountMarkets from '../../../src/modules/my-markets/selectors/login-account-markets';
+import proxyquire from 'proxyquire';
 
 describe('modules/portfolio/selectors/portfolio', () => {
+	proxyquire.noPreserveCache().noCallThru();
+
 	let actual;
 
-	const spiedNavItems = sinon.spy(selectPortfolioNavItems, 'default');
-	const spiedPortfolioTotals = sinon.spy(selectPortfolioTotals, 'default');
-	const spiedLoginAccountPositions = sinon.spy(selectLoginAccountPositions, 'default');
-	const spiedLoginAccountMarkets = sinon.spy(selectLoginAccountMarkets, 'default');
+	const selectors = {
+		selectPortfolioNavItems: () => {},
+		selectPortfolioTotals: () => {},
+		selectLoginAccountPositions: () => {},
+		selectLoginAccountMarkets: () => {}
 
-	before(() => {
-		actual = selector();
+	};
+
+	const stubbedNavItems = sinon.stub(selectors, 'selectPortfolioNavItems');
+	const stubbedPortfolioTotals = sinon.stub(selectors, 'selectPortfolioTotals');
+	const stubbedLoginAccountPositions = sinon.stub(selectors, 'selectLoginAccountPositions');
+	const stubbedLoginAccountMarkets = sinon.stub(selectors, 'selectLoginAccountMarkets');
+
+	const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio', {
+		'../../../modules/portfolio/selectors/portfolio-nav-items': stubbedNavItems,
+		'../../../modules/portfolio/selectors/portfolio-totals': stubbedPortfolioTotals,
+		'../../../modules/my-positions/selectors/login-account-positions': stubbedLoginAccountPositions,
+		'../../../modules/my-markets/selectors/login-account-markets': stubbedLoginAccountMarkets
 	});
 
-	after(() => {
-		selectPortfolioNavItems.default.restore();
-		selectPortfolioTotals.default.restore();
-		selectLoginAccountPositions.default.restore();
-		selectLoginAccountMarkets.default.restore();
+	before(() => {
+		actual = proxiedSelector.default();
 	});
 
 	it(`should call 'selectPortfolioNavItems' once`, () => {
-		assert(spiedNavItems.calledOnce, `Didn't call selectPortfolioNavItems once as expected`);
+		assert(stubbedNavItems.calledOnce, `Didn't call selectPortfolioNavItems once as expected`);
 	});
 
 	it(`should call 'selectPortfolioTotals' once`, () => {
-		assert(spiedPortfolioTotals.calledOnce, `Didn't call 'selectPortfolioTotals' once as expected`);
+		assert(stubbedPortfolioTotals.calledOnce, `Didn't call 'selectPortfolioTotals' once as expected`);
 	});
 
 	it(`should call 'selectLoginAccountPositions' once`, () => {
-		assert(spiedLoginAccountPositions.calledOnce, `Didn't call 'selectLoginAccountPositions' once as expected`);
+		assert(stubbedLoginAccountPositions.calledOnce, `Didn't call 'selectLoginAccountPositions' once as expected`);
 	});
 
 	it(`should call 'selectPortfolioTotals' once`, () => {
-		assert(spiedLoginAccountMarkets.calledOnce, `Didn't call 'selectLoginAccountMarkets' once as expected`);
+		assert(stubbedLoginAccountMarkets.calledOnce, `Didn't call 'selectLoginAccountMarkets' once as expected`);
 	});
 
 	it(`should return the correct object to augur-ui-react-components`, () => {
