@@ -19,6 +19,7 @@
     "padded-blocks": 0,
     "no-restricted-syntax": 0,
     "prefer-template": 0,
-    "space-infix-ops": 0
+    "space-infix-ops": 0,
+    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }]
   }
 }

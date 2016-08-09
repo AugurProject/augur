@@ -14,7 +14,7 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
 	// let state = Object.assign({}, testState);
 	let mockDate = {};
 	// store = mockStore(state);
-	mockDate.blockToDate = sinon.stub().returns('SomeDate');
+	mockDate.blockToDate = sinon.stub().returns(new Date(Date.UTC(2017, 0, 1)));
 
 	selector = proxyquire('../../../src/modules/market/selectors/price-time-series.js', {
 		'../../../store': store,
@@ -44,7 +44,7 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
 		expected = [{
 			name: 'test',
 			data: [
-				[`SomeDate`, 100]
+				[1483228800000, 100]
 			]
 		}];
 		assert(mockDate.blockToDate.calledOnce, `Didn't call blockToDate once as expected`);

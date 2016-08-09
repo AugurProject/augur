@@ -1,12 +1,12 @@
 import { augur } from '../../../services/augurjs';
-import { updateMarketOrderBook } from "./update-market-order-book";
+import { updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
 import { selectMarket } from '../../market/selectors/market';
 
 export function loadBidsAsks(marketID) {
 	return (dispatch, getState) => {
 		const market = selectMarket(marketID);
 		var scalarMinMax = {};
-		if (market.type === "scalar") {
+		if (market.type === 'scalar') {
 			scalarMinMax.minValue = market.minValue;
 			scalarMinMax.maxValue = market.maxValue;
 		}
