@@ -17,7 +17,7 @@ export default function () {
 export const selectMyMarket = market => {
 	const { loginAccount } = require('../../../selectors');
 
-	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [null];
+	if (!market || !loginAccount || !loginAccount.id || !market.author || market.author !== loginAccount.id) return [];
 
 	return selectLoginAccountMarkets([market]);
 };
