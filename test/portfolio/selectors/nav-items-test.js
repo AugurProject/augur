@@ -8,6 +8,8 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from '../../../src/modules/app/c
 
 import { formatNumber, formatEther } from '../../../src/utils/format-number';
 
+import * as selector from '../../../src/modules/portfolio/selectors/portfolio-nav-items';
+
 describe('modules/portfolio/selectors/nav-items', () => {
 	proxyquire.noPreserveCache().noCallThru();
 
@@ -115,8 +117,6 @@ describe('modules/portfolio/selectors/nav-items', () => {
 
 	before(() => {
 		actual = proxiedSelector.default();
-
-		console.log('actual -- ', actual);
 	});
 
 	it(`should call 'selectMyPositionsSummary' once`, () => {
@@ -130,10 +130,10 @@ describe('modules/portfolio/selectors/nav-items', () => {
 	it('should return the expected array', () => {
 		assert.deepEqual(expected, actual, `Didn't return the expected array`);
 	});
-	//
-	// it('should deliver the expected shape to augur-ui-react-components', () => {
-	// 	actual = selector.default();
-	//
-	// 	assertions.portfolioNavItems(actual);
-	// });
+
+	it('should deliver the expected shape to augur-ui-react-components', () => {
+		actual = selector.default();
+
+		assertions.portfolioNavItems(actual);
+	});
 });
