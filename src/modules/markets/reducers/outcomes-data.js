@@ -85,7 +85,7 @@ function parseOutcomes(newMarketsData, outcomesData) {
 				console.warn('Invalid outcome ID for binary market:', outcome, marketID, marketData);
 			}
 			return p;
-		});
+		}, {});
 	}
 
 	function parseCategoricalOutcomes(marketData, marketID) {
