@@ -1,5 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateBranch } from '../../app/actions/update-branch';
 import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { listenToUpdates } from '../../app/actions/listen-to-updates';
@@ -14,9 +13,8 @@ import { collectFees } from '../../reports/actions/collect-fees';
 export function loadBranch(branchID) {
 	return (dispatch, getState) => {
 		dispatch(clearMarketsData());
-		console.log('Cleared markets data, loading branch', branchID);
 
-		AugurJS.loadBranch(branchID, (err, branch) => {
+		augur.loadBranch(branchID, (err, branch) => {
 			if (err) return console.log('ERROR loadBranch', err);
 
 			dispatch(updateBranch(branch));

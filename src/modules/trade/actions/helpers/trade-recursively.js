@@ -1,4 +1,4 @@
-import * as AugurJS from '../../../../services/augurjs';
+import { augur } from '../../../../services/augurjs';
 
 export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, calculateTradeIDs, cbStatus, cbFill, cb) {
 	const res = {
@@ -14,7 +14,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		return cb(null, res);
 	}
 
-	AugurJS.trade({
+	augur.trade({
 		max_value: totalEthWithFee,
 		max_amount: 0,
 		trade_ids: matchingIDs,

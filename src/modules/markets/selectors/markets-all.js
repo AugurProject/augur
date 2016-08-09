@@ -23,6 +23,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 
 		const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
 		const branchReports = reports[marketsData[marketID].branchId];
+		const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
 
 		return assembleMarket(
 			marketID,
@@ -33,7 +34,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 			!!favorites[marketID],
 			outcomesData[marketID],
 
-			(branchReports) ? branchReports[marketsData[marketID].eventID] : undefined,
+			marketReport,
 			(accountTrades || {})[marketID],
 			tradesInProgress[marketID],
 

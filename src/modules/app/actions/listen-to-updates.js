@@ -16,7 +16,6 @@ export function listenToUpdates() {
 
 			// trade filled: { market, outcome (id), price }
 			log_fill_tx: (msg) => {
-				if (msg) console.debug('log_fill_tx:', msg);
 				if (msg && msg.market && msg.outcome && msg.price) {
 					dispatch(updateOutcomePrice(msg.market, msg.outcome, parseFloat(msg.price)));
 				}
@@ -24,23 +23,20 @@ export function listenToUpdates() {
 
 			// order added to orderbook
 			log_add_tx: (msg) => {
-				if (msg) {
-					console.debug('log_add_tx:', msg);
+				if (msg && msg.market) {
+					dispatch(loadMarketsInfo(msg.market));
 				}
-				dispatch(loadMarketsInfo(msg.market));
 			},
 
 			// order removed from orderbook
 			log_cancel: (msg) => {
-				if (msg) {
-					console.debug('log_cancel:', msg);
+				if (msg && msg.market) {
+					dispatch(loadMarketsInfo(msg.market));
 				}
-				dispatch(loadMarketsInfo(msg.market));
 			},
 
 			// new market: msg = { marketID }
 			marketCreated: (msg) => {
-				if (msg) console.debug('marketCreated:', msg);
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo(msg.marketID));
 				}

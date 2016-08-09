@@ -1,8 +1,6 @@
 import augur from 'augur.js';
-import BigNumber from 'bignumber.js';
 import { SUCCESS, SIMULATED_ORDER_BOOK, COMPLETE_SET_BOUGHT, ORDER_BOOK_ORDER_COMPLETE, ORDER_BOOK_OUTCOME_COMPLETE } from '../modules/transactions/constants/statuses';
 
-const TIMEOUT_MILLIS = 50;
 const ex = {};
 
 ex.connect = function connect(env, cb) {
@@ -23,31 +21,6 @@ ex.connect = function connect(env, cb) {
 		if (!connection) return cb('could not connect to ethereum');
 		console.log('connected:', connection);
 		cb(null, connection);
-	});
-};
-
-ex.loadBranch = function loadBranch(branchID, cb) {
-	const branch = { id: branchID };
-	function finish() {
-		if (branch.periodLength && branch.description) {
-			cb(null, branch);
-		}
-	}
-	augur.getPeriodLength(branchID, periodLength => {
-		if (!periodLength || periodLength.error) {
-			console.info('ERROR getPeriodLength', periodLength);
-			return cb(periodLength);
-		}
-		branch.periodLength = periodLength;
-		finish();
-	});
-	augur.getDescription(branchID, description => {
-		if (!description || description.error) {
-			console.info('ERROR getDescription', description);
-			return cb(description);
-		}
-		branch.description = description;
-		finish();
 	});
 };
 
@@ -97,142 +70,6 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
 		// otherwise, no account available
 		console.log('account is locked: ', augur.from);
 		return cb(null);
-	});
-};
-
-ex.loadAssets = function loadAssets(branchID, accountID, cbEther, cbRep, cbRealEther) {
-	augur.getCashBalance(accountID, (result) => {
-		if (!result || result.error) {
-			return cbEther(result);
-		}
-		return cbEther(null, augur.abi.number(result));
-	});
-	augur.getRepBalance(branchID, accountID, (result) => {
-		if (!result || result.error) {
-			return cbRep(result);
-		}
-		return cbRep(null, augur.abi.number(result));
-	});
-	augur.rpc.balance(accountID, (wei) => {
-		if (!wei || wei.error) {
-			return cbRealEther(wei);
-		}
-		return cbRealEther(null, augur.abi.bignum(wei).dividedBy(new BigNumber(10).toPower(18)).toNumber());
-	});
-};
-
-ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
-
-	// load the total number of markets
-	augur.getNumMarketsBranch(branchID, numMarketsRaw => {
-		const numMarkets = parseInt(numMarketsRaw, 10);
-		const firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
-
-		// load markets in batches
-		getMarketsInfo(branchID, firstStartIndex, chunkSize, numMarkets, isDesc);
-	});
-
-	// load each batch of marketdata sequentially and recursively until complete
-	function getMarketsInfo(branchID, startIndex, chunkSize, numMarkets, isDesc) {
-		augur.getMarketsInfo({
-			branch: branchID,
-			offset: startIndex,
-			numMarketsToLoad: chunkSize
-		}, marketsData => {
-			if (!marketsData || marketsData.error) {
-				chunkCB(marketsData);
-			} else {
-				chunkCB(null, marketsData);
-			}
-
-			if (isDesc && startIndex > 0) {
-				setTimeout(() => getMarketsInfo(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc), TIMEOUT_MILLIS);
-			} else if (!isDesc && startIndex < numMarkets) {
-				setTimeout(() => getMarketsInfo(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc), TIMEOUT_MILLIS);
-			}
-		});
-	}
-};
-
-ex.loadAccountTrades = function loadAccountTrades(accountID, cb) {
-	augur.getAccountTrades(accountID, null, (accountTrades) => {
-		if (accountTrades && accountTrades.error) {
-			return cb(accountTrades.error);
-		}
-		return cb(null, accountTrades);
-	});
-};
-
-ex.login = function login(secureLoginID, password, cb) {
-	augur.web.login(secureLoginID, password, (account) => {
-		console.log(account);
-		if (!account) {
-			return cb({ code: 0, message: 'failed to login' });
-		}
-		if (account.error) {
-			return cb({ code: account.error, message: account.message });
-		}
-		return cb(null, {
-			...account,
-			id: account.address
-		});
-	});
-};
-
-ex.register = function register(name, password, cb) {
-	augur.web.register(name, password,
-		account => {
-			console.log(account);
-			if (!account) {
-				return cb({ code: 0, message: 'failed to register' });
-			}
-			if (account.error) {
-				return cb({ code: account.error, message: account.message });
-			}
-			return cb(null, {
-				...account,
-				id: account.address
-			});
-		});
-};
-
-ex.importAccount = function importAccount(name, password, keystore, cb) {
-	augur.web.importAccount(name, password, keystore, account => {
-		console.log(account);
-		if (!account) {
-			return cb({ code: 0, message: 'failed to register' });
-		}
-		if (account.error) {
-			return cb({ code: account.error, message: account.message });
-		}
-		return cb(null, {
-			...account,
-			id: account.address
-		});
-	});
-};
-
-ex.loadMeanTradePrices = function loadMeanTradePrices(accountID, cb) {
-	if (!accountID) {
-		cb('AccountID required');
-	}
-	augur.getAccountMeanTradePrices(accountID, meanTradePrices => {
-		if (meanTradePrices && meanTradePrices.error) {
-			return cb(meanTradePrices);
-		}
-		cb(null, meanTradePrices);
-	});
-};
-
-ex.loadPriceHistory = function loadPriceHistory(marketID, cb) {
-	if (!marketID) {
-		return cb('ERROR: loadPriceHistory() marketID required');
-	}
-	augur.getMarketPriceHistory(marketID, (priceHistory) => {
-		if (priceHistory && priceHistory.error) {
-			return cb(priceHistory.error);
-		}
-		cb(null, priceHistory);
 	});
 };
 
@@ -319,7 +156,7 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
 						// wait for second period to start
 						tools.top_up(augur, newBranchID, unlocked, password, (err, unlocked) => {
 							if (err) console.error('top_up failed:', err);
-							augur.checkVotePeriod(newBranchID, periodLength, (err, votePeriod) => {
+							augur.checkPeriod(newBranchID, periodLength, sender, (err, votePeriod) => {
 								if (err) console.error('checkVotePeriod failed:', err);
 								callback(null, 6);
 								tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
@@ -344,9 +181,6 @@ ex.fundNewAccount = function fundNewAccount(env, toAddress, branchID, onSent, on
 	}
 };
 
-ex.getTradingActions = augur.getTradingActions;
-ex.trade = augur.trade;
-ex.buy = augur.buy;
 ex.augur = augur;
 
 module.exports = ex;

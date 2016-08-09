@@ -13,7 +13,6 @@ import { updateTransactionsData } from '../../transactions/actions/update-transa
 
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
-		// dispatch(loadMeanTradePrices());
 		dispatch(updateAssets());
 		dispatch(loadAccountTrades());
 

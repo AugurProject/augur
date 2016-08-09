@@ -1,5 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import {
 	loadLoginAccountDependents,
 	loadLoginAccountLocalStorage
@@ -11,11 +10,14 @@ export function login(secureLoginID, password, rememberMe) {
 	return (dispatch, getState) => {
 		const { links } = require('../../../selectors');
 		const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
-		AugurJS.login(secureLoginID, password, (err, loginAccount) => {
-			if (err) {
-				return dispatch(authError(err));
+		augur.web.login(secureLoginID, password, (account) => {
+			console.log(account);
+			if (!account) {
+				return dispatch(authError({ code: 0, message: 'failed to login' }));
+			} else if (account.error) {
+				return dispatch(authError({ code: account.error, message: account.message }));
 			}
+			const loginAccount = { ...account, id: account.address };
 			if (!loginAccount || !loginAccount.id) {
 				return;
 			}
@@ -35,7 +37,6 @@ export function login(secureLoginID, password, rememberMe) {
 			if (links && links.marketsLink)	{
 				links.marketsLink.onClick(links.marketsLink.href);
 			}
-			return;
 		});
 	};
 }

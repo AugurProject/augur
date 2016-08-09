@@ -1,12 +1,11 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateMarketsData } from '../../markets/actions/update-markets-data';
 
 export function loadMarkets(branchID) {
 	const chunkSize = 10;
 	return (dispatch) => {
 		console.log('loadMarkets:', branchID);
-		AugurJS.loadMarkets(branchID, chunkSize, true, (err, marketsData) => {
+		augur.loadMarkets(branchID, chunkSize, true, (err, marketsData) => {
 			if (err) {
 				console.log('ERROR loadMarkets()', err);
 				return;

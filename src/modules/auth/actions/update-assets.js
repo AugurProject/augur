@@ -1,4 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 
@@ -11,7 +11,7 @@ export function updateAssets() {
 				realEther: undefined,
 				rep: undefined }));
 		}
-		AugurJS.loadAssets(branch.id || BRANCH_ID, loginAccount.id,
+		augur.loadAssets(branch.id || BRANCH_ID, loginAccount.id,
 			(err, ether) => {
 				if (err) {
 					console.info('!! ERROR updateAssets() ether', err);
