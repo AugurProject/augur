@@ -65,7 +65,7 @@ export const selectCombinatorial = (formState) => {
 };
 
 export const initialFairPrices = (formState) => {
-	if (!!!formState.initialFairPrices || formState.type !== formState.initialFairPrices.type) {
+	if (!formState.initialFairPrices || formState.type !== formState.initialFairPrices.type) {
 		return {
 			initialFairPrices: {
 				type: formState.type,

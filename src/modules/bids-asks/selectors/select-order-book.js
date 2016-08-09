@@ -59,7 +59,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders, orderCa
 			const obj = {
 				isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
 				shares: formatShares(shareCountPerPrice[price].shares),
-				price: formatEther(parseFloat(price))
+				price: formatEther(parseFloat(price), { roundUp: true })
 			};
 			return obj;
 		});

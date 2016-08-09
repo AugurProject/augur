@@ -13,7 +13,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
 		if ((!limitPrice) || !numShares) {
-			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `Invalid limit price "${limitPrice}" or shares "${numShares}"` }));
+			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
 		let tradeComplete = false;
@@ -21,7 +21,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message }));
 
-		tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee,
+		tradeRecursively(marketID, outcomeID, numShares, 0,
 			() => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
 			(res) => {
@@ -68,7 +68,7 @@ function generateMessage(numShares, remainingShares) {
 	const filledShares = numShares - remainingShares;
 	// const filledAvgPrice = Math.round(filledShares / filledEth * 100) / 100;
 
-	return `filled ${formatShares(filledShares).full} of ${formatShares(numShares).full}`;
+	return `sold ${formatShares(filledShares).full} of ${formatShares(numShares).full}`;
 }
 
 function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, cb) {

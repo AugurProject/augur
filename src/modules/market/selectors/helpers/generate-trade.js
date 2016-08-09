@@ -63,21 +63,16 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 		return [];
 	}
 
-	let customOutcomeInProgress;
-
-	return tradeActions.map(tradeAction => {
-		customOutcomeInProgress = {
-			numShares: parseFloat(tradeAction.shares),
-			limitPrice: parseFloat(tradeAction.avgPrice),
-			totalCost: parseFloat(tradeAction.costEth)
-		};
-		return makeTradeTransaction(
+	return tradeActions.map(tradeAction => (
+		makeTradeTransaction(
 			TRANSACTIONS_TYPES[tradeAction.action],
 			market.id,
 			outcome.id,
 			market.description,
 			outcome.name,
-			customOutcomeInProgress,
-			store.dispatch);
-	});
+			parseFloat(tradeAction.shares),
+			formatEther(parseFloat(tradeAction.avgPrice), { roundUp: true }).formattedValue,
+			Math.abs(parseFloat(tradeAction.costEth)),
+			store.dispatch)
+	));
 });
