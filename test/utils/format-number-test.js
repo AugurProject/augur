@@ -12,11 +12,11 @@ describe('utils/format-number.js', () => {
 						value: 1000.1,
 						formattedValue: 1000.1,
 						roundedValue: 1000.1,
-						formatted: '1,000.10',
+						formatted: '1,000.100',
 						rounded: '1,000.1',
 						minimized: '1,000.1',
 						denomination: 'eth',
-						full: '1,000.10eth'
+						full: '1,000.100eth'
 					}
 				},
 				{

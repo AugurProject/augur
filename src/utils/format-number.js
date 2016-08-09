@@ -129,6 +129,7 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 	decimalsRounded = decimalsRounded || 0;
 	denomination = denomination || '';
 	positiveSign = !!positiveSign;
+	roundUp = !!roundUp;
 	zeroStyled = zeroStyled !== false;
 	value = parseFloat(num) || 0;
 

@@ -1,9 +1,7 @@
-import * as AugurJS from '../../../services/augurjs';
 import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
-import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../positions/actions/load-account-trades';
 
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
@@ -69,18 +67,4 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 function generateMessage(totalEthWithFee, remainingEth, filledShares) {
 	const filledEth = totalEthWithFee - remainingEth;
 	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
-}
-
-
-function bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, cb) {
-	AugurJS.buy({
-		amount: totalEthWithFee,
-		price: limitPrice,
-		market: marketID,
-		outcome: outcomeID,
-
-		onSent: data => console.log('bid onSent', data),
-		onFailed: cb,
-		onSuccess: data => cb(null, data)
-	});
 }
