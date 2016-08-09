@@ -71,7 +71,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../auth/actions/update-assets': fakeUpdateAssets,
-		'../../positions/actions/load-account-trades': fakeLoadAcctTrades,
+		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
 		'../../reports/actions/update-reports': fakeClearReports,
 		'../../reports/actions/penalize-wrong-reports': fakePenalizeWrong,

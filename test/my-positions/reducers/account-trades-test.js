@@ -1,9 +1,9 @@
 import { assert } from 'chai';
-import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../src/modules/positions/actions/update-account-trades-data';
+import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../src/modules/my-positions/actions/update-account-trades-data';
 import { CLEAR_LOGIN_ACCOUNT } from '../../../src/modules/auth/actions/update-login-account';
-import reducer from '../../../src/modules/positions/reducers/account-trades';
+import reducer from '../../../src/modules/my-positions/reducers/account-trades';
 
-describe(`modules/positions/reducers/account-trades.js`, () => {
+describe(`modules/my-positions/reducers/account-trades.js`, () => {
 	it(`should return updated account trades data`, () => {
 		const data = {
 			test: 'some information'

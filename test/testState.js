@@ -2,6 +2,9 @@
 // Goal: To help keep these unit tests as DRY as possible.
 import env from '../src/env.json';
 
+import { formatNumber, formatShares, formatEther } from '../src/utils/format-number';
+import { formatDate } from '../src/utils/format-date';
+
 const testState = {
 	activePage: 'markets',
 	accountTrades: {
@@ -53,6 +56,7 @@ const testState = {
 	keywords: 'test testtag',
 	marketsData: {
 		testMarketID: {
+			author: '0xtest123',
 			eventID: 'testEventID',
 			name: 'testMarket',
 			description: 'some test description',
@@ -121,7 +125,43 @@ const testState = {
 		selectedPageNum: 1
 	},
 	priceHistory: {
-		testMarketID: {}
+		testMarketID: {},
+		'0xMARKET1': {
+			0: [
+				{
+					shares: 10
+				},
+				{
+					shares: 20
+				}
+			],
+			1: [
+				{
+					shares: 10
+				},
+				{
+					shares: 20
+				}
+			]
+		},
+		'0xMARKET2': {
+			0: [
+				{
+					shares: 10
+				},
+				{
+					shares: 20
+				}
+			],
+			1: [
+				{
+					shares: 10
+				},
+				{
+					shares: 20
+				}
+			]
+		},
 	},
 	reports: {
 		testEventID: {
@@ -161,7 +201,145 @@ const testState = {
 			status: 'failed',
 			type: 'register'
 		}
-	}
+	},
+	marketTrades: {
+		'0xMARKET1': {
+			0: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			],
+			1: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			]
+		},
+		'0xMARKET2': {
+			0: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			],
+			1: [
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' },
+				{ test: 'test' }
+			]
+		},
+	},
+	allMarkets: [
+		{
+			id: '0xMARKET1',
+			author: '0xtest123',
+			description: 'test-market-1',
+			endDate: formatDate(new Date('2017/12/12')),
+			volume: formatNumber(100),
+			outcomes: [
+				{
+					orderBook: {
+						bid: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						],
+						ask: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						]
+					}
+				},
+				{
+					orderBook: {
+						bid: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						],
+						ask: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						]
+					}
+				}
+			]
+		},
+		{
+			id: '0xMARKET2',
+			author: '0xtest123',
+			description: 'test-market-2',
+			endDate: formatDate(new Date('2017/12/12')),
+			volume: formatNumber(100),
+			outcomes: [
+				{
+					orderBook: {
+						bid: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						],
+						ask: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						]
+					}
+				},
+				{
+					orderBook: {
+						bid: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						],
+						ask: [
+							{
+								shares: formatShares(10)
+							},
+							{
+								shares: formatShares(10)
+							},
+						]
+					}
+				}
+			]
+		},
+		{
+			id: '0xMARKET3',
+			author: '0xtest456'
+		},
+		{
+			id: '0xMARKET4',
+			author: '0xtest456'
+		}
+	]
 };
 
 export default testState;
