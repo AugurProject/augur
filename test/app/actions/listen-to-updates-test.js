@@ -15,7 +15,11 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 	let mockAugurJS = {
-		listenToUpdates: () => {}
+		augur: {
+			filters: {
+				listen: () => {}
+			}
+		}
 	};
 	let mockUpBlockchain = {};
 	let mockUpdateAssets = {};
@@ -38,17 +42,17 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			marketID
 		};
 	});
-	sinon.stub(mockAugurJS, 'listenToUpdates', (cb1, cb2, cb3, cb4) => {
-		cb1(null, 'blockhash');
-		// cb2 doesn't do anything so i'm going to skip for now.
-		cb3(null, {
-			marketId: 'testMarketID',
+	sinon.stub(mockAugurJS.augur.filters, 'listen', (cb) => {
+		cb.block('blockhash');
+		cb.log_fill_tx({
+			market: 'testMarketID',
 			outcome: 'testOutcome',
 			price: 123.44250502560001
 		});
-		cb4(null, {
-			marketId: 'testID1'
-		});
+		cb.log_add_tx({ market: 'testMarketID' });
+		cb.log_cancel({ market: 'testMarketID' });
+		cb.marketCreated({ marketID: 'testID1' });
+		cb.tradingFeeUpdated({ marketID: 'testID1' });
 	});
 
 	action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
@@ -77,14 +81,23 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			type: 'UPDATE_OUTCOME_PRICE'
 		}, {
 			type: 'LOAD_BASIC_MARKET',
+			marketID: 'testMarketID'
+		}, {
+			type: 'LOAD_BASIC_MARKET',
+			marketID: 'testMarketID'
+		}, {
+			type: 'LOAD_BASIC_MARKET',
+			marketID: 'testID1'
+		}, {
+			type: 'LOAD_BASIC_MARKET',
 			marketID: 'testID1'
 		}];
 
-		assert(mockAugurJS.listenToUpdates.calledOnce, `Didn't call AugurJS.listenToUpdates() exactly 1 time as expected`);
+		assert(mockAugurJS.augur.filters.listen.calledOnce, `Didn't call AugurJS.augur.filters.listen() exactly 1 time as expected`);
 		assert(mockUpBlockchain.updateBlockchain.calledOnce, `Didn't call updateBlockchain() once as expected`);
 		assert(mockUpdateAssets.updateAssets.calledOnce, `Didn't call updateAssets() once as expected`);
 		assert(mockOutcomePrice.updateOutcomePrice.calledOnce, `Didn't call updateOutcomePrice() once as expected`);
-		assert(mockLoadMarketsInfo.loadMarketsInfo.calledOnce, `Didn't call loadMarketsInfo() once as expected`);
+		assert(mockLoadMarketsInfo.loadMarketsInfo.callCount === 4, `Didn't call loadMarketsInfo() four times as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
 	});
 });
