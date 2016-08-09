@@ -26,6 +26,7 @@ loginAccount.signIn = (name = loginAccount.name) => {
 		...loginAccount,
 		name,
 		editName: loginAccount.editName,
+		transferFunds: loginAccount.transferFunds,
 		signOut: loginAccount.signOut
 	}
 	});
@@ -37,11 +38,16 @@ loginAccount.editName = (name) => {
 	loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
 };
 
+loginAccount.transferFunds = (from, amount, to) => {
+	console.log(`Sending ${amount}eth from: ${from} to: ${to}`);
+};
+
 loginAccount.signIn = (name = loginAccount.name) => {
 	require('../selectors').update({ loginAccount: {
 		...loginAccount,
 		name,
 		editName: loginAccount.editName,
+		transferFunds: loginAccount.transferFunds,
 		signOut: loginAccount.signOut
 	}
 	});
