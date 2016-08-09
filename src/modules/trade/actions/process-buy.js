@@ -68,7 +68,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 function generateMessage(totalEthWithFee, remainingEth, filledShares) {
 	const filledEth = totalEthWithFee - remainingEth;
-	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (incl. fees)`;
+	return `bought ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 }
 
 
