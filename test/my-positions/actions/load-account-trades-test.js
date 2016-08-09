@@ -7,6 +7,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../src/modules/my-positions/actions/update-account-trades-data';
+
 describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -30,10 +32,15 @@ describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 	let mockAugurJS = {
 		loadAccountTrades: () => {}
 	};
-
 	let mock = sinon.stub(mockAugurJS, 'loadAccountTrades', (loginID, cb) => cb(null, testData));
 
+	let stubbedActions = {
+		updateAccountTradesData: () => {}
+	};
+	const stubbedUpdateAccountTradesData = sinon.stub(stubbedActions, 'updateAccountTradesData', (accountTrades) => store.dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data: accountTrades }));
+
 	action = proxyquire('../../../src/modules/my-positions/actions/load-account-trades', {
+		'../../../modules/my-positions/actions/update-account-trades-data': stubbedUpdateAccountTradesData,
 		'../../../services/augurjs': mockAugurJS
 	});
 
@@ -54,8 +61,8 @@ describe(`modules/my-positions/actions/load-account-trades.js`, () => {
 			}
 		}];
 		store.dispatch(action.loadAccountTrades());
+		assert.includeDeepMembers(store.getActions(), out, `Didn't properly dispatch an UPDATE ACCOUNT TRADES DATA action`);
 		assert(mock.calledOnce, `Didn't call AugurJS.loadAccountTrades()`);
-		assert.deepEqual(store.getActions(), out, `Didn't properly dispatch an UPDATE ACCOUNT TRADES DATA action`);
 	});
 });
 

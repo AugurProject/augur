@@ -13,7 +13,7 @@ describe('modules/my-markets/selectors/login-account-markets', () => {
 	let actual;
 
 	const stubbedMyMarkets = sinon.stub(selectMyMarkets, 'default', () => ([]));
-	const stubbedMyMarketsSummary = sinon.stub(selectMyMarketsSummary, 'default', () => {});
+	const stubbedMyMarketsSummary = sinon.stub(selectMyMarketsSummary, 'default', () => ({}));
 
 	const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/login-account-markets', {
 		'../../../modules/my-markets/selectors/my-markets': stubbedMyMarkets,
