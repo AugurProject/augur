@@ -17,7 +17,7 @@ module.exports = {
 
     debug: false,
 
-    version: "0.5.7",
+    version: "0.5.9",
 
     constants: {
         ONE: new BigNumber(10).toPower(new BigNumber(18)),
@@ -347,32 +347,18 @@ module.exports = {
                         } else {
                             bn = new BigNumber(n, 10);
                         }
-                        // try {
-                        //     bn = new BigNumber(n, 10);
-                        // } catch (exc) {
-                        //     if (this.is_hex(n)) {
-                        //         bn = new BigNumber(n, 16);
-                        //     } else {
-                        //         return n;
-                        //     }
-                        // }
                     }
                     break;
                 case String:
-                    if (this.is_hex(n)) {
-                        bn = new BigNumber(n, 16);
-                    } else {
+                    try {
                         bn = new BigNumber(n, 10);
+                    } catch (exc) {
+                        if (this.is_hex(n)) {
+                            bn = new BigNumber(n, 16);
+                        } else {
+                            return n;
+                        }
                     }
-                    // try {
-                    //     bn = new BigNumber(n, 10);
-                    // } catch (exc) {
-                    //     if (this.is_hex(n)) {
-                    //         bn = new BigNumber(n, 16);
-                    //     } else {
-                    //         return n;
-                    //     }
-                    // }
                     break;
                 case Array:
                     len = n.length;
@@ -387,15 +373,6 @@ module.exports = {
                     } else {
                         bn = new BigNumber(n, 10);
                     }
-                    // try {
-                    //     bn = new BigNumber(n, 10);
-                    // } catch (ex) {
-                    //     try {
-                    //         bn = new BigNumber(n, 16);
-                    //     } catch (exc) {
-                    //         return n;
-                    //     }
-                    // }
             }
             if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
                 if (wrap) bn = this.wrap(bn);
@@ -43288,7 +43265,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.46";
+    this.version = "1.9.47";
 
     this.options = {
         debug: {
@@ -45046,7 +45023,7 @@ module.exports = {
         var self = this;
 
         function incrementPeriod(branch, periodLength, next) {
-            self.Consensus.incrementPeriodAfterReporting({
+            self.incrementPeriodAfterReporting({
                 branch: branch,
                 onSent: function (r) {},
                 onSuccess: function (r) {

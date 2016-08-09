@@ -31,7 +31,7 @@ module.exports = {
         var self = this;
 
         function incrementPeriod(branch, periodLength, next) {
-            self.Consensus.incrementPeriodAfterReporting({
+            self.incrementPeriodAfterReporting({
                 branch: branch,
                 onSent: function (r) {},
                 onSuccess: function (r) {
