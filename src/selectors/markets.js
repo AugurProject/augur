@@ -28,6 +28,9 @@ function makeMarkets(numMarkets = 10) {
 		const d = new Date('2017/12/12/');
 		const m = {
 			id,
+			author: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c',
+			resolution: index % 3 === 0 ? 'generic' : 'https://www.augur.net',
+			extraInfo: 'some extraInfo for this market',
 			type: types[randomInt(0, types.length - 1)],
 			description: `Will the dwerps achieve a mwerp by the end of zwerp ${(index + 1)}?`,
 			endDate: makeDate(d),
@@ -41,8 +44,7 @@ function makeMarkets(numMarkets = 10) {
 				text: 'Trade',
 				className: 'trade',
 				onClick: () => require('../selectors').update({ activePage: M, market: m, url: `/m/${id}` })
-			},
-			orderBook: {}
+			}
 		};
 
 		// tags

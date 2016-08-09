@@ -34,12 +34,33 @@ const Basics = (p) => (
 				<span className="property-label">volume</span>
 				<ValueDenomination className="property-value" {...p.volume} formatted={p.volume.rounded} />
 			</li>
+			{p.author != null &&
+				<li className="property author">
+					<span className="property-label">author</span>
+					<span className="property-value">{p.author}</span>
+				</li>
+			}
+			{p.extraInfo != null && p.extraInfo !== '' &&
+				<li className="property extra-info">
+					<span className="property-label">extra info</span>
+					<span className="property-value">{p.extraInfo}</span>
+				</li>
+			}
+			{p.resolution &&
+				<li className="property resolution">
+					<span className="property-label">resolution</span>
+					{getResolutionNode(p.resolution)}
+				</li>
+			}
 		</ul>
 	</section>
 );
 
 Basics.propTypes = {
 	description: PropTypes.string,
+	author: PropTypes.string,
+	extraInfo: PropTypes.string,
+	resolution: PropTypes.string,
 	endDate: PropTypes.object,
 	makerFeePercent: PropTypes.object,
 	takerFeePercent: PropTypes.object,
@@ -48,3 +69,14 @@ Basics.propTypes = {
 };
 
 export default Basics;
+
+function getResolutionNode(resolution) {
+	let resolutionText;
+	if (resolution === 'generic') {
+		resolutionText = 'Covered by local, national or international news media';
+	} else {
+		resolutionText = (<a href={resolution}>{resolution}</a>);
+	}
+
+	return (<span className="property-value">{resolutionText}</span>);
+}

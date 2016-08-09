@@ -20,6 +20,11 @@ export default function (market) {
 			assert.isString(market.id);
 		});
 
+		it('market.author', () => {
+			assert.isDefined(market.author);
+			assert.isString(market.author);
+		});
+
 		it('market.type', () => {
 			assert.isDefined(market.type);
 			assert.isString(market.type);
@@ -28,6 +33,16 @@ export default function (market) {
 		it('market.description', () => {
 			assert.isDefined(market.description);
 			assert.isString(market.description);
+		});
+
+		it('market.resolution', () => {
+			assert.isDefined(market.resolution);
+			assert.isString(market.resolution);
+		});
+
+		it('market.extraInfo', () => {
+			assert.isDefined(market.extraInfo);
+			assert.isString(market.extraInfo);
 		});
 
 		it('market.endDate', () => {
