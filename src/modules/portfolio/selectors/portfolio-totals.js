@@ -7,8 +7,8 @@ export default function () {
 	const positionsSummary = selectMyPositionsSummary();
 	const marketsSummary = selectMyMarketsSummary();
 
-	const totalValue = formatEther((positionsSummary && positionsSummary.totalValue || 0) + (marketsSummary && marketsSummary.totalValue || 0));
-	const netChange = formatEther((positionsSummary && positionsSummary.netChange || 0) + (marketsSummary && marketsSummary.totalValue || 0));
+	const totalValue = formatEther((positionsSummary && positionsSummary.totalValue && positionsSummary.totalValue.value || 0) + (marketsSummary && marketsSummary.totalValue || 0));
+	const netChange = formatEther((positionsSummary && positionsSummary.netChange && positionsSummary.netChange.value || 0) + (marketsSummary && marketsSummary.totalValue || 0));
 
 	return {
 		totalValue,
