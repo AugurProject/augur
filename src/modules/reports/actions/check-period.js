@@ -7,9 +7,9 @@ export function checkPeriod(cb) {
 		console.log('checkPeriod:', !blockchain.isReportConfirmationPhase, loginAccount.rep);
 		if (!blockchain.isReportConfirmationPhase && loginAccount.rep) {
 			augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, reportPeriod) => {
-				if (err) return cb(err);
+				if (err) return cb && cb(err);
 				dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod } });
-				cb(null, reportPeriod);
+				return cb && cb(null, reportPeriod);
 			});
 		}
 	};
