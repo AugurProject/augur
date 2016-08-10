@@ -2,8 +2,9 @@ import { processTransferFunds } from '../../auth/actions/process-transfer-funds'
 import { TRANSFER_FUNDS } from '../../transactions/constants/types';
 import { addTransaction } from '../../transactions/actions/add-transactions';
 
-export const addTransferFunds = (fromAddress, amount, toAddress) => (
+export const addTransferFunds = (amount, toAddress) => (
 	(dispatch, getState) => (
+		const fromAddress = getState().loginAccount.id;
 		dispatch(addTransaction(makeAddTransferFundsTransaction(fromAddress, amount, toAddress, dispatch)))
 	)
 );

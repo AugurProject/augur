@@ -36,7 +36,7 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		linkText,
 		downloadAccountFileName,
 		downloadAccountDataString,
-		transferFunds: (fromAddress, amount, toAddress) => dispatch(addTransferFunds(fromAddress, amount, toAddress)),
+		transferFunds: (fromAddress, amount, toAddress) => dispatch(addTransferFunds(amount, toAddress)),
 		editName: (name) => dispatch(changeAccountName(name)),
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),
