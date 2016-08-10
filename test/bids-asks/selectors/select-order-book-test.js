@@ -4,8 +4,8 @@ import {
 
 import { formatShares, formatEther } from '../../../src/utils/format-number';
 
-describe(`modules/bids-asks/selectors/select-order-book.js`, () => {
-	const selectAggregateOrderBook = require('../../../src/modules/bids-asks/selectors/select-order-book').selectAggregateOrderBook;
+describe(`modules/bids-asks/helpers/select-order-book.js`, () => {
+	const selectAggregateOrderBook = require('../../../src/modules/bids-asks/helpers/select-order-book').selectAggregateOrderBook;
 
 	it(`should return empty order book for no orders`, () => {
 		const orderBook = selectAggregateOrderBook('1', null, {});

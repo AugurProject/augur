@@ -6,10 +6,10 @@ import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
 import { CANCELLED } from '../../bids-asks/constants/order-status';
 
 /**
- * @param {String} outcomeId
+ * @param {String} outcomeID
  * @param {Object} marketOrderBook
  */
-export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrderBook, orderCancellation) => {
+export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrderBook, orderCancellation) => {
 	if (marketOrderBook == null) {
 		return {
 			bids: [],
@@ -18,8 +18,8 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeId, marketOrde
 	}
 
 	return {
-		bids: selectAggregatePricePoints(outcomeId, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
-		asks: selectAggregatePricePoints(outcomeId, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
+		bids: selectAggregatePricePoints(outcomeID, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
+		asks: selectAggregatePricePoints(outcomeID, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
 	};
 });
 
@@ -36,10 +36,10 @@ export const selectTopAsk = memoizerific(10)((marketOrderBook) => {
 /**
  * Selects price points with aggregated amount of shares
  *
- * @param {String} outcomeId
+ * @param {String} outcomeID
  * @param {{String, Object}} orders Key is order ID, value is order
  */
-const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders, orderCancellation) => {
+const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCancellation) => {
 	if (orders == null) {
 		return [];
 	}
@@ -47,7 +47,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeId, orders, orderCa
 
 	const shareCountPerPrice = Object.keys(orders)
 		.map(orderId => orders[orderId])
-		.filter(order => order.outcome === outcomeId && orderCancellation[order.id] !== CANCELLED)
+		.filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CANCELLED)
 		.map(order => ({
 			...order,
 			isOfCurrentUser: isOrderOfUser(order, currentUserAddress)

@@ -42,7 +42,7 @@ import selectUserOpenOrdersSummary from '../../user-open-orders/selectors/user-o
 
 import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
 
-import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
+import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../../modules/my-positions/selectors/my-positions-summary';
