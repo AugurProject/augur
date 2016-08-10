@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
-import assertEndDate from '../../test/assertions/common/end-date';
+import assertFormattedDate from './common/formatted-date';
 
 export default function (market) {
 
@@ -32,7 +32,7 @@ export default function (market) {
 
 		it('market.endDate', () => {
 			assert.isDefined(market.endDate);
-			assertEndDate(market.endDate);
+			assertFormattedDate(market.endDate, 'market.endDate');
 		});
 
 		it('market.endDateLabel', () => {
@@ -399,7 +399,7 @@ export default function (market) {
 		const myMarketSummary = market.myMarketSummary;
 		it('market.myMarketSummary.endDate', () => {
 			assert.isDefined(myMarketSummary.endDate);
-			assertEndDate(myMarketSummary.endDate, 'myMarketSummary.endDate');
+			assertFormattedDate(myMarketSummary.endDate, 'myMarketSummary.endDate');
 		});
 
 		it('market.myMarketSummary.fees', () => {

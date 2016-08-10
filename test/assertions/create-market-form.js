@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import assertEndDate from '../../test/assertions/common/end-date';
+import assertFormattedDate from '../../test/assertions/common/formatted-date';
 import assertInitialFairPrices from '../../test/assertions/common/initial-fair-prices';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
 
@@ -335,7 +335,7 @@ export default function(createMarketForm) {
 						});
 
 						it('should have the correct shape', () => {
-							assertEndDate(createMarketForm.endDate, 'createMarketForm');
+							assertFormattedDate(createMarketForm.endDate, 'createMarketForm');
 						});
 					});
 
