@@ -3,8 +3,7 @@ import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
-import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from '../../positions/actions/load-account-trades';
+import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
@@ -13,7 +12,7 @@ import { updateExistingTransaction } from '../../transactions/actions/update-exi
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
 		if ((!limitPrice) || !numShares) {
-			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `Invalid limit price "${limitPrice}" or shares "${numShares}"` }));
+			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
 		let tradeComplete = false;
@@ -21,8 +20,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message }));
 
-		tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee,
-			() => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
+		tradeRecursively(marketID, outcomeID, numShares, 0, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
 			(res) => {
 				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares) }));
@@ -38,7 +36,6 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				message = generateMessage(numShares, res.remainingShares);
 
 				if (!res.remainingShares || tradeComplete) {
-					dispatch(loadBidsAsks(marketID));
 					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
 				}
 
@@ -55,7 +52,6 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 					if (err) {
 						return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 					}
-					dispatch(loadBidsAsks(marketID));
 					return dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message }));
 				});
 			}
@@ -68,7 +64,7 @@ function generateMessage(numShares, remainingShares) {
 	const filledShares = numShares - remainingShares;
 	// const filledAvgPrice = Math.round(filledShares / filledEth * 100) / 100;
 
-	return `filled ${formatShares(filledShares).full} of ${formatShares(numShares).full}`;
+	return `sold ${formatShares(filledShares).full} of ${formatShares(numShares).full}`;
 }
 
 function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, cb) {

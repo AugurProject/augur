@@ -4,11 +4,11 @@ import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statu
 
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
-import { loadAccountTrades } from '../../positions/actions/load-account-trades';
+import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
-import { updateAccountTradesData } from '../../positions/actions/update-account-trades-data';
+import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 
 // import { commitReports } from '../../reports/actions/commit-reports';

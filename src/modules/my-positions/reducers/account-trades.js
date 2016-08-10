@@ -1,4 +1,4 @@
-import { UPDATE_ACCOUNT_TRADES_DATA } from '../../positions/actions/update-account-trades-data';
+import { UPDATE_ACCOUNT_TRADES_DATA } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
 
 export default function (accountTrades = null, action) {

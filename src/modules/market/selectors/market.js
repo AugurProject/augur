@@ -46,7 +46,9 @@ import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids
 import getOutstandingShares from '../../market/selectors/helpers/get-outstanding-shares';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
-import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../positions/selectors/positions-summary';
+import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../../modules/my-positions/selectors/my-positions-summary';
+
+import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets';
 
 export default function () {
 	const { selectedMarketID } = store.getState();
@@ -218,11 +220,13 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.tradeSummary = generateTradeSummary(marketTradeOrders);
 
-	market.positionsSummary = generateMarketsPositionsSummary([market]);
-	if (market.positionsSummary) {
-		market.positionOutcomes = market.positionsSummary.positionOutcomes;
-		delete market.positionsSummary.positionOutcomes;
+	market.myPositionsSummary = generateMarketsPositionsSummary([market]);
+	if (market.myPositionsSummary) {
+		market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes;
+		delete market.myPositionsSummary.positionOutcomes;
 	}
+
+	market.myMarketSummary = selectMyMarket(market)[0];
 
 	return market;
 });
