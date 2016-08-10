@@ -22,7 +22,7 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatPercent } from '../../../utils/format-number';
+import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
@@ -43,6 +43,7 @@ import selectUserOpenOrdersSummary from '../../user-open-orders/selectors/user-o
 import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
+import getOutstandingShares from '../../market/selectors/helpers/get-outstanding-shares';
 
 import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../positions/selectors/positions-summary';
@@ -139,6 +140,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
+	market.creationTime = formatDate(new Date(marketData.creationTime));
 
 	market.isOpen = isOpen;
 	market.isExpired = !isOpen;
@@ -204,6 +206,8 @@ export const assembleMarket = memoizerific(1000)((
 		};
 		return obj;
 	}).filter(tag => !!tag.name);
+
+	market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
 
 	market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
