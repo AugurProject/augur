@@ -13,7 +13,7 @@ const PortfolioPage = (p) => {
 	switch (p.siteHeader.activePage) {
 	default:
 	case MY_POSITIONS:
-		node = <Positions positions={p.positions} />;
+		node = <Positions {...p.positions} />;
 		break;
 	case MY_MARKETS:
 		node = <Markets {...p.markets} />;
