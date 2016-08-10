@@ -34,6 +34,8 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			minValue: 1,
 			maxValue: 2,
 			numOutcomes: 2,
+			endDate: { value: new Date() },
+			expirySource: true,
 			failTest: FAILED
 		},
 		marketData = {},
@@ -72,22 +74,15 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	});
 
 	let stubbedAugurJS = {
-		createMarket: () => {}
+		augur: { createSingleEventMarket: () => {} }
 	};
-	stubbedAugurJS.createMarket = sinon.stub();
-	stubbedAugurJS.createMarket.withArgs(branchID, failedMarketData).callsArg(2).yields(
-		{
-			status: FAILED,
-			message: 'error!'
+	sinon.stub(stubbedAugurJS.augur, 'createSingleEventMarket', (o) => {
+		if (o.resolution) {
+			o.onFailed({ status: FAILED, message: 'error!' });
+		} else {
+			o.onSuccess({ status: SUCCESS, marketID: 'test123' });
 		}
-	);
-	stubbedAugurJS.createMarket.callsArg(2).yields(
-		null,
-		{
-			marketID: 'test123',
-			status: SUCCESS
-		}
-	);
+	});
 
 	let stubbedGenerateOrderBook = {
 		submitGenerateOrderBook: () => {}
@@ -164,6 +159,9 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 	});
 
 	describe('createMarket states', () => {
+
+		const endDate = { value: new Date() };
+
 		beforeEach(() => {
 			store.clearActions();
 			stubbedUpdateExistingTransaction.updateExistingTransaction.reset();
@@ -183,6 +181,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 		});
 
 		it('should fail correctly', () => {
+			console.log('failedMarketData:', failedMarketData);
 			store.dispatch(action.createMarket( transID, failedMarketData ));
 
 			out = [
@@ -204,6 +203,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a binary market WITH an order book', () => {
 			marketData = {
+				endDate,
 				type: BINARY,
 				isCreatingOrderBook: true
 			};
@@ -232,6 +232,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				endDate,
 				type: BINARY,
 				isCreatingOrderBook: true,
 				minValue: 1,
@@ -246,6 +247,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a binary market WITHOUT an order book', () => {
 			marketData = {
+				endDate,
 				type: BINARY
 			};
 
@@ -270,6 +272,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				endDate,
 				type: BINARY,
 				minValue: 1,
 				maxValue: 2,
@@ -283,6 +286,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a scalar market WITH an order book', () => {
 			marketData = {
+				endDate,
 				type: SCALAR,
 				isCreatingOrderBook: true,
 				scalarSmallNum: 10,
@@ -313,6 +317,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				endDate,
 				type: SCALAR,
 				isCreatingOrderBook: true,
 				scalarSmallNum: 10,
@@ -329,6 +334,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a scalar market WITHOUT an order book', () => {
 			marketData = {
+				endDate,
 				type: SCALAR,
 				scalarSmallNum: 10,
 				scalarBigNum: 100
@@ -355,6 +361,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				endDate,
 				type: SCALAR,
 				scalarSmallNum: 10,
 				scalarBigNum: 100,
@@ -370,6 +377,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a categorical market WITH an order book', () => {
 			marketData = {
+				endDate,
 				description: 'test',
 				type: CATEGORICAL,
 				isCreatingOrderBook: true,
@@ -404,6 +412,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				endDate,
 				description: 'test',
 				formattedDescription: `test${CATEGORICAL_OUTCOMES_SEPARATOR}${marketData.outcomes[0].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[1].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[2].name}`,
 				type: CATEGORICAL,
@@ -425,6 +434,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 
 		it('should be able to create a categorical market WITH an order book', () => {
 			marketData = {
+				endDate,
 				description: 'test',
 				type: CATEGORICAL,
 				outcomes: [
@@ -455,6 +465,7 @@ describe(`modules/create-market/actions/submit-new-market.js`, () => {
 			];
 
 			expectedMarketData = {
+				endDate,
 				description: 'test',
 				formattedDescription: `test${CATEGORICAL_OUTCOMES_SEPARATOR}${marketData.outcomes[0].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[1].name}${CATEGORICAL_OUTCOME_SEPARATOR}${marketData.outcomes[2].name}`,
 				type: CATEGORICAL,

@@ -14,13 +14,15 @@ describe('modules/reports/actions/load-reports.js', () => {
 	let store, action, test, out;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
-	let mockAugurJS = {};
+	let mockAugurJS = { augur: {} };
 	let mockMarketData = {};
 	let mockUpdateReports = {
 		updateReports: () => {}
 	};
 
-	mockAugurJS.getEventsToReportOn = sinon.stub().yields(null, ['test1', 'test2']);
+	mockAugurJS.augur.getEventsToReportOn = sinon.stub().yields(['test1', 'test2']);
+	mockAugurJS.augur.getReportHash = sinon.stub().yields('my-report-hash');
+	mockAugurJS.augur.getAndDecryptReport = sinon.stub().yields({ report: 1, salt: 1337 });
 	sinon.stub(mockUpdateReports, 'updateReports', (eventIDs) => {
 		return {
 			type: 'UPDATE_REPORTS',
@@ -43,11 +45,13 @@ describe('modules/reports/actions/load-reports.js', () => {
 
 	it('should dispatch an update_reports action when given closed markets', () => {
 		test = {
-			test1: {
-				eventID: 'testEvent1'
-			},
-			test2: {
-				eventID: 'testEvent2'
+			[testState.branch.id]: {
+				test1: {
+					eventID: 'testEvent1'
+				},
+				test2: {
+					eventID: 'testEvent2'
+				}
 			}
 		};
 
@@ -58,7 +62,7 @@ describe('modules/reports/actions/load-reports.js', () => {
 
 		store.dispatch(action.loadReports(test));
 
-		assert(mockAugurJS.getEventsToReportOn.calledOnce, `AugurJS.getEventsToReportOn() wasn't only called once as expected`);
+		assert(mockAugurJS.augur.getEventsToReportOn.calledOnce, `augur.getEventsToReportOn() wasn't only called once as expected`);
 		assert(mockUpdateReports.updateReports.calledOnce, `updateReports wasn't only called once as expected`);
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct information`);

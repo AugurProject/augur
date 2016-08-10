@@ -15,7 +15,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 	let mockAugurJS = {
-		batchGetMarketInfo: () => {}
+		augur: { batchGetMarketInfo: () => {} }
 	};
 
 	beforeEach(() => {
@@ -26,9 +26,10 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 		store.clearActions();
 	});
 
-	sinon.stub(mockAugurJS, `batchGetMarketInfo`, (marketIDs, cb) => {
-		cb(null, {
+	sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, cb) => {
+		cb({
 			test123: {
+				branchId: testState.branch.id,
 				events: [{
 					id: 'event1',
 					minValue: 1,
@@ -56,6 +57,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 			type: 'UPDATE_MARKETS_DATA',
 			marketsData: {
 				test123: {
+					branchId: testState.branch.id,
 					events: [{
 						id: 'event1',
 						minValue: 1,

@@ -16,22 +16,26 @@ describe(`modules/reports/reducers/reports.js`, () => {
 		action = {
 			type: UPDATE_REPORTS,
 			reports: {
+				[testState.branch.id]: {
+					test: {
+						example: 'example'
+					},
+					example: {
+						test: 'test'
+					}
+				}
+			}
+		};
+		out = {
+			[testState.branch.id]: {
 				test: {
 					example: 'example'
 				},
 				example: {
 					test: 'test'
 				}
-			}
-		};
-		out = {
-			test: {
-				example: 'example'
 			},
-			testEventID: { isUnethical: false },
-			example: {
-				test: 'test'
-			}
+			testEventID: { isUnethical: false }
 		};
 
 		test = reducer(state.reports, action);
