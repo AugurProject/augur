@@ -83,7 +83,7 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
 	const netChange = totalValue - totalCost;
 
 	return {
-		numPositions: formatNumber(numPositions, { decimals: 0, decimalsRounded: 0, denomination: 'Positions', positiveSign: false, zeroStyled: false }),
+		numPositions: formatNumber(numPositions, { decimals: 0, decimalsRounded: 0, denomination: 'positions', positiveSign: false, zeroStyled: false }),
 		qtyShares: formatShares(qtyShares),
 		purchasePrice: formatEther(purchasePrice),
 		totalValue: formatEther(totalValue),
