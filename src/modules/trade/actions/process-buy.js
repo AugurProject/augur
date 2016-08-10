@@ -15,7 +15,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
-		// we track filled shares again here to take into account the recursiveness of trading
+		// we track filled shares again here to keep track of the full total through the recursiveness of trading
 		let filledShares = 0;
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `buying ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));

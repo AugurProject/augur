@@ -1,7 +1,7 @@
 import * as AugurJS from '../../../../services/augurjs';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
-export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, calculateTradeIDs, cbStatus, cbFill, cb) {
+export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, getTradeIDs, cbStatus, cbFill, cb) {
 	const res = {
 		remainingEth: totalEthWithFee,
 		remainingShares: numShares,
@@ -9,7 +9,8 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		filledEth: 0
 	};
 
-	const matchingIDs = calculateTradeIDs();
+	const matchingIDs = getTradeIDs();
+
 	if (!matchingIDs.length) {
 		return cb(null, res);
 	}
