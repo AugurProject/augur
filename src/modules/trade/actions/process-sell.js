@@ -20,7 +20,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
-		tradeRecursively(marketID, outcomeID, numShares, 0, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
+		tradeRecursively(marketID, outcomeID, numShares, 0, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
 			(res) => {
 				filledEth += parseFloat(res.filledEth);

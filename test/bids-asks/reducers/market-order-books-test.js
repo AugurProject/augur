@@ -1,13 +1,9 @@
-import {
-	assert
-} from 'chai';
+import { assert } from 'chai';
 import testState from '../../testState';
-import {
-	UPDATE_MARKET_ORDER_BOOK
-} from '../../../src/modules/bids-asks/actions/update-market-order-book';
-import reducer from '../../../src/modules/bids-asks/reducers/market-order-books';
+import { UPDATE_MARKET_ORDER_BOOK } from '../../../src/modules/bids-asks/actions/update-market-order-book';
+import reducer from '../../../src/modules/bids-asks/reducers/order-books';
 
-describe(`modules/bids-asks/reducers/market-order-books.js`, () => {
+describe(`modules/bids-asks/reducers/order-books.js`, () => {
 	let thisTestState;
 
 	beforeEach(() => {
@@ -74,6 +70,6 @@ describe(`modules/bids-asks/reducers/market-order-books.js`, () => {
 			}
 		};
 
-		assert.deepEqual(reducer(thisTestState.marketOrderBooks, action), expectedOutput, `Didn't properly set market order book`);
+		assert.deepEqual(reducer(thisTestState.orderBooks, action), expectedOutput, `Didn't properly set market order book`);
 	});
 });

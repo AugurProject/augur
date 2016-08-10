@@ -70,7 +70,7 @@ const testState = {
 			tags: ['tag1', 'tag2', 'tag3']
 		}
 	},
-	marketOrderBooks: {
+	orderBooks: {
 		testMarketID: {
 			buy: {
 				'0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {

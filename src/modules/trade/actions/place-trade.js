@@ -9,7 +9,7 @@ import { addBidTransaction } from '../../transactions/actions/add-bid-transactio
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, outcomesData, marketOrderBooks } = getState();
+		const { tradesInProgress, outcomesData, orderBooks } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
 
@@ -27,7 +27,7 @@ export function placeTrade(marketID) {
 			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
 
 			if (outcomeTradeInProgress.side === BUY) {
-				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, marketOrderBooks);
+				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks);
 				if (tradeIDs && tradeIDs.length) {
 					dispatch(addTradeTransaction(
 						BUY,
