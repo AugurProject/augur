@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "1.9.47",
+  "version": "1.9.48",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "0.5.9",
-    "augur-contracts": "1.7.1",
+    "augur-contracts": "1.7.2",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
