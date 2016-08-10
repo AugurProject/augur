@@ -9,7 +9,7 @@ export function processTransferFunds(transactionID, fromAddress, amount, toAddre
 
 		AugurJS.transferFunds(toAddress, amount, fromAddress,
 			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: 'processing transfering of funds...' }));
+				dispatch(updateExistingTransaction(transactionID, { status: 'processing transferring of funds...' }));
 			},
 			() => {
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Transfer Complete.' }));
