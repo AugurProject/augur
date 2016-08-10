@@ -1,6 +1,7 @@
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { loadPriceHistory } from '../../market/actions/load-price-history';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { loadMarketTrades } from '../../../modules/portfolio/actions/load-market-trades';
 
 export function loadFullMarket(marketId) {
 	return (dispatch, getState) => {
@@ -10,6 +11,7 @@ export function loadFullMarket(marketId) {
 		const loadDetails = () => {
 			dispatch(loadPriceHistory(marketId));
 			dispatch(loadBidsAsks(marketId));
+			dispatch(loadMarketTrades(marketId));
 		};
 
 		// if the basic data hasn't loaded yet, load it first

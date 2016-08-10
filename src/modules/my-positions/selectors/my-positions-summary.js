@@ -1,9 +1,11 @@
 import memoizerific from 'memoizerific';
 import { formatEther, formatPercent, formatShares, formatNumber } from '../../../utils/format-number';
+import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
 
 export default function () {
-	const { positionsMarkets } = require('../../../selectors');
-	return generateMarketsPositionsSummary(positionsMarkets);
+	const myPositions = selectMyPositions();
+
+	return generateMarketsPositionsSummary(myPositions);
 }
 
 export const generateOutcomePositionSummary = memoizerific(50)((outcomeAccountTrades, lastPrice) => {
@@ -65,8 +67,10 @@ export const generateMarketsPositionsSummary = memoizerific(50)(markets => {
 		});
 	});
 
+	const positionsSummary = generatePositionsSummary(positionOutcomes.length, qtyShares, totalValue, totalCost);
+
 	return {
-		...generatePositionsSummary(positionOutcomes.length, qtyShares, totalValue, totalCost),
+		...positionsSummary,
 		positionOutcomes
 	};
 });
