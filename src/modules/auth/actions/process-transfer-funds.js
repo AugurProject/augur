@@ -8,11 +8,11 @@ export function processTransferFunds(transactionID, fromAddress, amount, toAddre
 		dispatch(updateExistingTransaction(transactionID, { status: 'submitting...' }));
 
 		AugurJS.transferFunds(toAddress, amount, fromAddress,
-			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: 'processing transfering of funds...' }));
+			(...args) => {
+				dispatch(updateExistingTransaction(transactionID, { status: `processing transferring of ${amount}eth to ${toAddress}` }));
 			},
-			() => {
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: 'Transfer Complete.' }));
+			(...args) => {
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: `Transfer of ${amount}eth to ${toAddress} Complete.` }));
 				dispatch(updateAssets());
 			},
 			(failedTransaction) => {
