@@ -2,7 +2,7 @@
  * Author: priecint
  */
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
-import { updateOrderStatus } from '../../bids-asks/actions/update-order';
+import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import getOrder from '../../bids-asks/helpers/get-order';
