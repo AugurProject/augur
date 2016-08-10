@@ -52,7 +52,7 @@ export default function (market) {
 
 		it('market.creationTime', () => {
 			assert.isDefined(market.creationTime);
-			assertEndDate(market.creationTime);
+			assertFormattedDate(market.creationTime);
 		});
 
 		it('market.endDateLabel', () => {
