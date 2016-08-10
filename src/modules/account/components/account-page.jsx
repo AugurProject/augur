@@ -145,6 +145,7 @@ export default class AccountPage extends Component {
 									<input
 										type="number"
 										className={classnames('auth-input')}
+										min="0.0"
 										ref="sendAmount"
 										name="sendAmount"
 										placeholder="Amount to transfer"
