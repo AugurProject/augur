@@ -3,6 +3,7 @@ import shouldComponentUpdatePure from '../../../utils/should-component-update-pu
 import SiteHeader from '../../site/components/site-header';
 import SiteFooter from '../../site/components/site-footer';
 import Basics from '../../market/components/basics';
+import MarketInfo from '../../market/components/market-info';
 import TradePanel from '../../../modules/trade/components/trade-panel';
 import ReportPanel from '../../reports/components/report-panel';
 import MarketPositions from '../../market/components/market-positions';
@@ -39,6 +40,7 @@ export default class MarketPage extends Component {
 		} else {
 			// market exists
 			nodes.push(<Basics key="basics" {...p.market} />);
+			nodes.push(<MarketInfo key="market-info" {...p.market} />);
 
 			// report form
 			if (p.market.isPendingReport) {
