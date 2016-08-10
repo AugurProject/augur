@@ -51,8 +51,8 @@ describe('modules/portfolio/selectors/nav-items', () => {
 
 	const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
 		{
-			numPositions: 10,
-			netChange: 2
+			numPositions: formatNumber(10, { denomination: 'positions' }),
+			netChange: formatEther(2)
 		}
 	));
 	const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
