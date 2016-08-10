@@ -2,7 +2,7 @@
  * Author: priecint
  */
 import { ABORT_CANCEL_ORDER_CONFIRMATION, SHOW_CANCEL_ORDER_CONFIRMATION } from '../../bids-asks/actions/cancel-order';
-import { UPDATE_ORDER_STATUS } from '../../bids-asks/actions/update-order';
+import { UPDATE_ORDER_STATUS } from '../../bids-asks/actions/update-order-status';
 import { CANCELLATION_CONFIRMATION } from '../../bids-asks/constants/order-status';
 
 /**

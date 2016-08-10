@@ -81,16 +81,16 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 			type: 'UPDATE_OUTCOME_PRICE'
 		}, {
 			type: 'LOAD_BASIC_MARKET',
-			marketID: 'testMarketID'
+			marketID: ['testMarketID']
 		}, {
 			type: 'LOAD_BASIC_MARKET',
-			marketID: 'testMarketID'
+			marketID: ['testMarketID']
 		}, {
 			type: 'LOAD_BASIC_MARKET',
-			marketID: 'testID1'
+			marketID: ['testID1']
 		}, {
 			type: 'LOAD_BASIC_MARKET',
-			marketID: 'testID1'
+			marketID: ['testID1']
 		}];
 
 		assert(mockAugurJS.augur.filters.listen.calledOnce, `Didn't call AugurJS.augur.filters.listen() exactly 1 time as expected`);

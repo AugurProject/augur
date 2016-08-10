@@ -73,7 +73,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
 			test2: {},
 			test3: {}
 		},
-		marketOrderBooks: {
+		orderBooks: {
 			test: {},
 			test2: {},
 			test3: {}

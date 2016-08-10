@@ -10,7 +10,7 @@ export function loadMarketsInfo(marketIDs, cb) {
 
 		AugurJS.batchGetMarketInfo(marketIDs, (err, marketsData) => {
 			if (err) {
-				console.error('ERROR loadMarketsInfo()', err);
+				console.error('ERROR loadMarketsInfo()', err, 'marketIDs:', marketIDs);
 				return;
 			}
 

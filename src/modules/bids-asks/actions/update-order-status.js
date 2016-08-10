@@ -15,9 +15,9 @@ export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS';
  */
 export function updateOrderStatus(orderID, status, marketID, type) {
 	return (dispatch, getState) => {
-		const { marketOrderBooks } = store.getState();
+		const { orderBooks } = store.getState();
 
-		const order = getOrder(orderID, marketID, type, marketOrderBooks);
+		const order = getOrder(orderID, marketID, type, orderBooks);
 		if (order == null) {
 			warnNonExistingOrder(orderID, status, marketID, type);
 			return;

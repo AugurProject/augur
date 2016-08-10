@@ -23,7 +23,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 	const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
 		'../../transactions/actions/add-cancel-transaction': { addCancelTransaction },
 		'../../../services/augurjs': { cancel },
-		'../../bids-asks/actions/update-order': { updateOrderStatus },
+		'../../bids-asks/actions/update-order-status': { updateOrderStatus },
 		'../../transactions/actions/update-existing-transaction': { updateExistingTransaction }
 	});
 
