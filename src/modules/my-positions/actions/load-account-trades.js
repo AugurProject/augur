@@ -4,10 +4,12 @@ import { updateAccountTradesData } from '../../../modules/my-positions/actions/u
 export function loadAccountTrades() {
 	return (dispatch, getState) => {
 		augur.getAccountTrades(getState().loginAccount.id, null, (accountTrades) => {
-			if (!accountTrades || (accountTrades && accountTrades.error)) {
-				return console.warn('ERROR loadAccountTrades', accountTrades);
+			if (accountTrades) {
+				if (accountTrades.error) {
+					return console.warn('ERROR loadAccountTrades', accountTrades);
+				}
+				dispatch(updateAccountTradesData(accountTrades));
 			}
-			dispatch(updateAccountTradesData(accountTrades));
 		});
 	};
 }
