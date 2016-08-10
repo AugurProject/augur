@@ -44,7 +44,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		console.log('* trade success data:', data, res);
 		if ((res.filledEth && res.remainingEth) || (res.filledShares && res.remainingShares)) {
 			cbFill(res);
-			return tradeRecursively(marketID, outcomeID, res.remainingShares, res.remainingEth, calculateTradeIDs, cbStatus, cbFill, cb);
+			return tradeRecursively(marketID, outcomeID, res.remainingShares, res.remainingEth, getTradeIDs, cbStatus, cbFill, cb);
 		}
 		return cb(null, res);
 	}

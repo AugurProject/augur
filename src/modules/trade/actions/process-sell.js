@@ -1,4 +1,3 @@
-import * as AugurJS from '../../../services/augurjs';
 import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
