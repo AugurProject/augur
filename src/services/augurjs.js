@@ -177,7 +177,7 @@ ex.loadMarkets = function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
 ex.batchGetMarketInfo = function batchGetMarketInfo(marketIDs, cb) {
 	augur.batchGetMarketInfo(marketIDs, (res) => {
 		if (res && res.error) {
-			cb(res);
+			return cb(res);
 		}
 		cb(null, res);
 	});
