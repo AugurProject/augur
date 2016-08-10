@@ -48,7 +48,7 @@ describe(`modules/auth/actions/process-fund-new-account.js`, () => {
 		store.dispatch(action.processFundNewAccount('myTransactionID', 'testAddress123'));
 
 		assert(fakeAugurJS.fundNewAccount.calledOnce, `augurJS.fundNewAccount wasn't called once as expected.`);
-		assert(fakeUpdateTrans.updateExistingTransaction.called, `updateExistingTransaction wasn't called three times as expected`);
+		assert((fakeUpdateTrans.updateExistingTransaction.callCount === 4), `updateExistingTransaction wasn't called four times as expected`);
 		assert(fakeUpdateAssets.updateAssets.calledOnce, `updateAssets wasn't called once as expected`);
 	});
 

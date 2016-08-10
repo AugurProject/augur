@@ -1,7 +1,7 @@
 import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
 import { changeAccountName } from '../../auth/actions/change-account-name';
-import { addTransferFunds } from '../../transactions/actions/add-transfer-funds';
+import { addTransferFunds } from '../../transactions/actions/add-transfer-funds-transaction';
 
 export default function () {
 	const { loginAccount } = store.getState();
