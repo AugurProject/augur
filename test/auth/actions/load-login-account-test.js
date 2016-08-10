@@ -20,7 +20,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const fakeLoadReports = {};
 	const fakeCheckPeriod = {};
 	const fakeCollectFees = {};
-	const fakeClearReports = {};
 	let action, store;
 	let thisTestState = Object.assign({}, testState, {
 		loginAccount: {}
@@ -51,16 +50,12 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeLoadAcctTrades.loadAccountTrades = sinon.stub().returns({
 		type: 'LOAD_ACCOUNT_TRADES'
 	});
-	fakeClearReports.clearReports = sinon.stub().returns({
-		type: 'CLEAR_REPORTS'
-	});
 
 	action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../auth/actions/update-assets': fakeUpdateAssets,
 		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
-		'../../reports/actions/update-reports': fakeClearReports,
 		'../../reports/actions/check-period': fakeCheckPeriod,
 		'../../reports/actions/collect-fees': fakeCollectFees
 	});
@@ -94,11 +89,8 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			}
 		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
-		}, {
-			type: 'CLEAR_REPORTS'
 		}];
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
-		assert(fakeClearReports.clearReports.calledOnce, `clearReports wasn't called once as expected.`);
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't properly update the logged in account`);
 	});
 });
