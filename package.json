@@ -16,7 +16,7 @@
     "*** top-level runnable scripts ***": "",
     "start": "augur-ui-webserver -d './demo'",
     "watch": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* CLEAN * HTML * ASSETS * CSS * WATCHIFY *\"; NODE_ENV=development; npm run -s watch:all",
-    "build": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=production npm run -s build:all",
+    "build": "clear; echo \"* NPM UPDATE *\"; npm update; echo \"* * * *  BUILD  * * * *\"; NODE_ENV=development npm run -s build:all",
     "lint": "clear; echo begin linting... && eslint --ext .jsx,.js src && echo linting complete.",
     "lint:watch": "npm run lint -- --watch",
     "test": "NODE_ENV=test mocha",
