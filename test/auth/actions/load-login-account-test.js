@@ -17,6 +17,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const fakeAugurJS = {};
 	const fakeUpdateAssets = {};
 	const fakeLoadAcctTrades = {};
+	const fakeLoadReports = {};
+	const fakeCheckPeriod = {};
+	const fakeCollectFees = {};
 	const fakeClearReports = {};
 	let action, store;
 	let thisTestState = Object.assign({}, testState, {
@@ -58,9 +61,8 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
 		'../../reports/actions/update-reports': fakeClearReports,
-		'../../reports/actions/penalize-wrong-reports': fakePenalizeWrong,
-		'../../reports/actions/collect-fees': fakeCollectFees,
-		'../../reports/actions/close-markets': fakeCloseMarkets
+		'../../reports/actions/check-period': fakeCheckPeriod,
+		'../../reports/actions/collect-fees': fakeCollectFees
 	});
 
 	beforeEach(() => {

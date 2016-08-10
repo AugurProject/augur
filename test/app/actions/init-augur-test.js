@@ -15,60 +15,31 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
 
-	let mockAugurJS = {};
-	let mockUpBlockchain = {};
-	let mockLoadReports = {};
-	let mockPenalizeWrongReports = {};
-	let mockCloseMarkets = {};
-	let mockListenUp = {};
+	let mockAugurJS = {
+		augur: {
+			loadBranch: () => {}
+		}
+	};
 	let mockLoginAcc = {};
-	let mockLoadMarkets = {};
-	let mockLoadFullMarket = {};
-	let mockReportify = {};
+	let mockReportingTestSetup = {};
 
 	mockAugurJS.connect = sinon.stub().yields(null, {
 		connect: 'test'
 	});
-	mockAugurJS.loadBranch = sinon.stub().yields(null, {
-		id: 'testBranch'
-	});
-	mockUpBlockchain.updateBlockchain = sinon.stub().yields().returns({
-		type: 'UPDATE_BLOCKCHAIN'
-	});
-	mockListenUp.listenToUpdates = sinon.stub().returns({
-		type: 'LISTEN_TO_UPDATES'
-	});
 	mockLoginAcc.loadLoginAccount = sinon.stub().returns({
 		type: 'LOAD_LOGIN_ACCOUNT'
 	});
-	mockLoadReports.loadReports = sinon.stub().returns({
-		type: 'LOAD_REPORTS'
+	sinon.stub(mockAugurJS.augur, 'loadBranch', (branchID, cb) => {
+		cb(null, 'testBranch');
 	});
-	mockPenalizeWrongReports.checkPeriod = sinon.stub().returns({
-		type: 'PENALIZE_WRONG_REPORTS'
-	});
-	mockCloseMarkets.closeMarkets = sinon.stub().returns({
-		type: 'CLOSE_MARKETS'
-	});
-	mockLoadMarkets.loadMarkets = sinon.stub().returns({
-		type: 'LOAD_MARKETS'
-	});
-	mockLoadFullMarket.loadFullMarket = sinon.stub().returns({
-		type: 'LOAD_FULL_MARKET'
-	});
-	mockReportingTestSetup.reportify = sinon.stub().returns({
+	mockReportingTestSetup.reportingTestSetup = sinon.stub().returns({
 		type: 'REPORTING_TEST_SETUP'
 	});
 
 	action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../app/actions/update-blockchain': mockUpBlockchain,
-		'../../app/actions/listen-to-updates': mockListenUp,
 		'../../auth/actions/load-login-account': mockLoginAcc,
-		'../../markets/actions/load-markets': mockLoadMarkets,
-		'../../market/actions/load-full-market': mockLoadFullMarket,
-		'../../reports/actions/load-reports': mockLoadReports,
-		'../../reports/actions/reportify': mockReportingTestSetup
+		'../../reports/actions/reportingTestSetup': mockReportingTestSetup
 	});
 
 	beforeEach(() => {
@@ -86,7 +57,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
 	});
 
 	it(`should initiate the augur app`, () => {
-		out = [{ type: 'UPDATE_ENV', env: { test: 'hello world' } }, {
+		out = [{type: 'UPDATE_ENV', env: { reportingTest: false } }, {
 			isConnected: {
 				connect: 'test'
 			},
@@ -94,35 +65,15 @@ describe(`modules/app/actions/init-augur.js`, () => {
 		}, {
 			type: 'LOAD_LOGIN_ACCOUNT'
 		}, {
-			type: 'UPDATE_BRANCH',
-			branch: {
-				id: 'testBranch'
-			}
-		}, {
-			type: 'LOAD_MARKETS'
-		}, {
-			type: 'LOAD_FULL_MARKET'
-		}, {
-			type: 'LOAD_REPORTS'
-		}, {
-			type: 'LISTEN_TO_UPDATES'
-		}, {
-			type: 'REPORTING_TEST_SETUP'
-		}, {
-			type: 'UPDATE_BLOCKCHAIN'
+			type: 'CLEAR_MARKETS_DATA'
 		}];
 
 		store.dispatch(action.initAugur());
 
-		global.requests[0].respond(200, { contentType: 'text/json' }, `{ "test": "hello world" }`);
+		global.requests[0].respond(200, { contentType: 'text/json' }, `{ "reportingTest": false }`);
 
 		assert(mockAugurJS.connect.calledOnce, `Didn't call AugurJS.connect() exactly once`);
-		assert(mockAugurJS.loadBranch.calledOnce, `Didn't call AugurJS.loadBranch()  exactly once`);
-		assert(mockUpBlockchain.updateBlockchain.calledOnce, `Didn't call updateBlockchain() exactly once as expected`);
 		assert(mockLoginAcc.loadLoginAccount.calledOnce, `Didn't call loadLoginAccount() exactly once as expected`);
-		assert(mockLoadMarkets.loadMarkets.calledOnce, `Didn't call loadMarkets() exactly once as expected`);
-		assert(mockLoadReports.loadReports.calledOnce, `Didn't call loadReports() exactly once as expected`);
-		assert(mockListenUp.listenToUpdates.calledOnce, `Didn't call listenToUpdates() exactly once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct action objects`);
 	});
 });

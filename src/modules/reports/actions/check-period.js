@@ -8,6 +8,7 @@ export function checkPeriod() {
 			augur.checkPeriod(branch.id, branch.periodLength, loginAccount.id, (err, period) => {
 				if (err) console.log('checkPeriod failed:', err);
 				console.log('checkPeriod:', period);
+				dispatch({ type: 'CHECK_PERIOD' });
 			});
 		}
 	};
