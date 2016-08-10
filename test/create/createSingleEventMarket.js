@@ -53,7 +53,6 @@ describe("CreateMarket.createSingleEventMarket", function () {
                 },
                 onSuccess: function (r) {
                     if (DEBUG) console.log("success:", r);
-                    assert.strictEqual(r.marketID, r.callReturn);
                     var marketID = r.callReturn;
                     if (DEBUG) console.log("marketID:", marketID);
                     var periodLength = augur.getPeriodLength(t.branch);

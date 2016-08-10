@@ -100,7 +100,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     onSent: function (r) {},
                     onSuccess: function (r) {
                         augur.generateOrderBook({
-                            market: r.marketID,
+                            market: r.callReturn,
                             liquidity: t.liquidity,
                             initialFairPrices: ["0.4", "0.5"],
                             startingQuantity: t.startingQuantity,
@@ -111,11 +111,11 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                 assert.strictEqual(res.callReturn, "1");
                             },
                             onSetupOutcome: function (res) {
-                                assert.strictEqual(res.market, r.marketID);
+                                assert.strictEqual(res.market, r.callReturn);
                                 assert(res.outcome);
                             },
                             onSetupOrder: function (res) {
-                                assert.strictEqual(res.market, r.marketID);
+                                assert.strictEqual(res.market, r.callReturn);
                                 assert(res.outcome);
                                 assert(res.amount);
                                 assert(res.sellPrice || res.buyPrice);
@@ -153,7 +153,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                     onSuccess: function (r) {
                         var initialFairPrices = [14, 16];
                         augur.generateOrderBook({
-                            market: r.marketID,
+                            market: r.callReturn,
                             liquidity: t.liquidity,
                             initialFairPrices: initialFairPrices,
                             startingQuantity: t.startingQuantity,
@@ -164,11 +164,11 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                 assert.strictEqual(res.callReturn, "1");
                             },
                             onSetupOutcome: function (res) {
-                                assert.strictEqual(res.market, r.marketID);
+                                assert.strictEqual(res.market, r.callReturn);
                                 assert(res.outcome);
                             },
                             onSetupOrder: function (res) {
-                                assert.strictEqual(res.market, r.marketID);
+                                assert.strictEqual(res.market, r.callReturn);
                                 assert(res.outcome);
                                 assert(res.amount);
                                 assert(res.sellPrice || res.buyPrice);
@@ -214,7 +214,7 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                             initialFairPrices[i] = ((0.4*Math.random()) + 0.3).toString();
                         }
                         augur.generateOrderBook({
-                            market: r.marketID,
+                            market: r.callReturn,
                             liquidity: t.liquidity,
                             initialFairPrices: initialFairPrices,
                             startingQuantity: t.startingQuantity,
@@ -225,11 +225,11 @@ if (process.env.AUGURJS_INTEGRATION_TESTS) {
                                 assert.strictEqual(res.callReturn, "1");
                             },
                             onSetupOutcome: function (res) {
-                                assert.strictEqual(res.market, r.marketID);
+                                assert.strictEqual(res.market, r.callReturn);
                                 assert(res.outcome);
                             },
                             onSetupOrder: function (res) {
-                                assert.strictEqual(res.market, r.marketID);
+                                assert.strictEqual(res.market, r.callReturn);
                                 assert(res.outcome);
                                 assert(res.amount);
                                 assert(res.sellPrice || res.buyPrice);

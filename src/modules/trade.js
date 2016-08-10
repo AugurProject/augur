@@ -9,7 +9,6 @@ var clone = require("clone");
 var async = require("async");
 var abi = require("augur-abi");
 var rpc = require("ethrpc");
-var errors = require("augur-contracts").errors;
 var utils = require("../utilities");
 var constants = require("../constants");
 var abacus = require("./abacus");
@@ -85,7 +84,7 @@ module.exports = {
         onTradeFailed = onTradeFailed || utils.noop;
         this.isTradeUnderGasLimit(trade_ids, function (err, isUnderLimit) {
             if (err) return onCommitFailed(err);
-            if (!isUnderLimit) return onCommitFailed(errors.GAS_LIMIT_EXCEEDED);
+            if (!isUnderLimit) return onCommitFailed(self.errors.GAS_LIMIT_EXCEEDED);
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
             onTradeHash(tradeHash);
             self.commitTrade({
@@ -102,14 +101,21 @@ module.exports = {
                             trade_ids
                         ];
                         var prepare = function (result, cb) {
+                            var err;
                             var txHash = result.txHash;
                             if (result.callReturn && result.callReturn.constructor === Array) {
                                 result.callReturn[0] = parseInt(result.callReturn[0], 16);
                                 if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                                    return onTradeFailed(result);
+                                    err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
+                                    if (!err) {
+                                        err = clone(self.errors.TRADE_FAILED);
+                                        err.message += result.callReturn[0].toString();
+                                        return onTradeFailed(err);
+                                    }
+                                    return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx});
                                 }
                                 self.rpc.receipt(txHash, function (receipt) {
-                                    if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                    if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                                     if (receipt.error) return onTradeFailed(receipt);
                                     var sharesBought, cashFromTrade;
                                     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
@@ -143,8 +149,12 @@ module.exports = {
                                     });
                                 });
                             } else {
-                                var err = self.rpc.errorCodes("trade", "number", result.callReturn);
-                                if (!err) return onTradeFailed(result);
+                                err = self.rpc.errorCodes("trade", "number", result.callReturn);
+                                if (!err) {
+                                    err = clone(self.errors.TRADE_FAILED);
+                                    err.message += result.callReturn.toString();
+                                    return onTradeFailed(result);
+                                }
                                 onTradeFailed({error: err, message: self.errors[err], tx: tx});
                             }
                         };
@@ -196,14 +206,21 @@ module.exports = {
                         abi.fix(max_amount, "hex")
                     ];
                     var prepare = function (result, cb) {
+                        var err;
                         var txHash = result.txHash;
                         if (result.callReturn && result.callReturn.constructor === Array) {
                             result.callReturn[0] = parseInt(result.callReturn[0], 16);
                             if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
-                                return onTradeFailed(result);
+                                err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
+                                if (!err) {
+                                    err = clone(self.errors.TRADE_FAILED);
+                                    err.message += result.callReturn[0].toString();
+                                    return onTradeFailed(err);
+                                }
+                                return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
                             }
                             self.rpc.receipt(txHash, function (receipt) {
-                                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                                 if (receipt.error) return onTradeFailed(receipt);
                                 var cashFromTrade;
                                 if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
@@ -228,9 +245,13 @@ module.exports = {
                                 });
                             });
                         } else {
-                            var err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                            if (!err) return onTradeFailed(result);
-                            onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                            err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                            if (!err) {
+                                err = clone(self.errors.TRADE_FAILED);
+                                err.message += result.callReturn.toString();
+                                return onTradeFailed(result);
+                            }
+                            onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
                         }
                     };
                     self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));

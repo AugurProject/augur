@@ -54,21 +54,16 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        var prepare = function (res, cb) {
-            res.marketID = res.callReturn;
-            if (!utils.is_function(cb)) return res;
-            return cb(res);
-        };
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
             tx.value = this.calculateRequiredMarketValue(gasPrice);
-            return prepare(this.transact(tx));
+            return this.transact(tx);
         }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
-            self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+            self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
         });
     },
 
@@ -134,21 +129,16 @@ module.exports = {
             abi.fix(fees.makerProportionOfFee, "hex"),
             extraInfo || ""
         ];
-        var prepare = function (res, cb) {
-            res.marketID = res.callReturn;
-            if (!utils.is_function(cb)) return res;
-            return cb(res);
-        };
         if (!utils.is_function(onSent)) {
             var gasPrice = this.rpc.getGasPrice();
             tx.gasPrice = gasPrice;
             tx.value = this.calculateRequiredMarketValue(gasPrice);
-            return prepare(this.transact(tx));
+            return this.transact(tx);
         }
         this.rpc.getGasPrice(function (gasPrice) {
             tx.gasPrice = gasPrice;
             tx.value = self.calculateRequiredMarketValue(gasPrice);
-            self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed, utils.compose(prepare, onConfirmed));
+            self.transact(tx, onSent, onSuccess, onFailed, onConfirmed);
         });
     },
 

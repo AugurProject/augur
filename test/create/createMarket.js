@@ -52,7 +52,7 @@ describe("CreateMarket.createMarket", function () {
                                 assert.isNull(res.callReturn);
                             },
                             onSuccess: function (res) {
-                                var marketID = res.marketID;
+                                var marketID = res.callReturn;
                                 assert.strictEqual(augur.getCreator(marketID), augur.from);
                                 assert.strictEqual(augur.getDescription(marketID), t.description);
                                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
