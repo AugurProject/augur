@@ -59,16 +59,3 @@ function generateMessage(numShares, remainingShares, filledEth) {
 	const filledShares = numShares - remainingShares;
 	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 }
-
-function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, cb) {
-	AugurJS.sell({
-		amount: totalShares,
-		price: limitPrice,
-		market: marketID,
-		outcome: outcomeID,
-
-		onSent: data => console.log('ask onSent', data),
-		onFailed: cb,
-		onSuccess: data => cb(null, data)
-	});
-}
