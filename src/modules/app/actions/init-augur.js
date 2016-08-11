@@ -22,7 +22,7 @@ export function initAugur() {
 					dispatch(updateConnectionStatus(connected));
 					dispatch(loadLoginAccount());
 					if (env.reportingTest) {
-						dispatch(reportingTestSetup(900));
+						dispatch(reportingTestSetup());
 					} else {
 						dispatch(loadBranch(BRANCH_ID));
 					}
