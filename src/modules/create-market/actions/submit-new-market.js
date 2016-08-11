@@ -1,17 +1,13 @@
-import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { SUCCESS, FAILED, CREATING_MARKET } from '../../transactions/constants/statuses';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from '../../markets/constants/market-outcomes';
+import { BRANCH_ID } from '../../app/constants/network';
 
-import AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { addCreateMarketTransaction } from '../../transactions/actions/add-create-market-transaction';
-
 import { selectTransactionsLink } from '../../link/selectors/links';
-
 import { submitGenerateOrderBook } from '../../create-market/actions/generate-order-book';
-
 import { clearMakeInProgress } from '../../create-market/actions/update-make-in-progress';
 
 export function submitNewMarket(newMarket) {
@@ -22,7 +18,9 @@ export function submitNewMarket(newMarket) {
 }
 
 export function createMarket(transactionID, newMarket) {
-	return dispatch => {
+	return (dispatch, getState) => {
+		const { branch } = getState();
+
 		if (newMarket.type === BINARY) {
 			newMarket.minValue = 1;
 			newMarket.maxValue = 2;
@@ -43,34 +41,37 @@ export function createMarket(transactionID, newMarket) {
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'sending...' }));
 
-		AugurJS.createMarket(BRANCH_ID, newMarket, (err, res) => {
-			if (err) {
-				dispatch(
-					updateExistingTransaction(
-						transactionID,
-						{ status: FAILED, message: err.message }
-					)
-				);
-				return;
-			}
-			if (res.status === CREATING_MARKET) {
+		augur.createSingleEventMarket({
+			branchId: branch.id || BRANCH_ID,
+			description: newMarket.formattedDescription,
+			expDate: newMarket.endDate.value.getTime() / 1000,
+			minValue: newMarket.minValue,
+			maxValue: newMarket.maxValue,
+			numOutcomes: newMarket.numOutcomes,
+			resolution: newMarket.expirySource,
+			takerFee: newMarket.takerFee / 100,
+			tags: newMarket.tags,
+			makerFee: newMarket.makerFee / 100,
+			extraInfo: newMarket.detailsText,
+			onSent: (res) => {
 				dispatch(updateExistingTransaction(transactionID, { status: CREATING_MARKET }));
-			} else {
-				dispatch(updateExistingTransaction(transactionID, { status: res.status }));
-
-				if (res.status === SUCCESS) {
-					dispatch(clearMakeInProgress());
-
-					if (newMarket.isCreatingOrderBook) {
-						const updatedNewMarket = {
-							...newMarket,
-							id: res.marketID,
-							tx: res.tx
-						};
-
-						dispatch(submitGenerateOrderBook(updatedNewMarket));
-					}
+			},
+			onSuccess: (res) => {
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
+				dispatch(clearMakeInProgress());
+				if (newMarket.isCreatingOrderBook) {
+					dispatch(submitGenerateOrderBook({
+						...newMarket,
+						id: res.callReturn,
+						tx: res
+					}));
 				}
+			},
+			onFailed: (err) => {
+				dispatch(updateExistingTransaction(transactionID, {
+					status: FAILED,
+					message: err.message
+				}));
 			}
 		});
 	};

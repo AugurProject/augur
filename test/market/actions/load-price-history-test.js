@@ -14,16 +14,16 @@ describe(`modules/market/actions/load-price-history.js`, () => {
 	let store, action, out;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
-	let mockAugurJS = {};
-	mockAugurJS.loadPriceHistory = sinon.stub();
+	let mockAugurJS = { augur: {} };
+	mockAugurJS.augur.getMarketPriceHistory = sinon.stub();
 
 
 	action = proxyquire('../../../src/modules/market/actions/load-price-history', {
 		'../../../services/augurjs': mockAugurJS
 	});
 
-	it(`should call AugurJS loadPriceHistory`, () => {
+	it(`should call AugurJS getMarketPriceHistory`, () => {
 		store.dispatch(action.loadPriceHistory('test'));
-		assert(mockAugurJS.loadPriceHistory.calledOnce);
+		assert(mockAugurJS.augur.getMarketPriceHistory.calledOnce);
 	});
 });

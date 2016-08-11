@@ -25,7 +25,7 @@
     "restart-faucet": "ssh augur@eth1.augur.net \"sudo service faucet restart\"",
     "_____": "",
     "build:all": "npm run -s clean && (npm run -s build:css & npm run -s build:assets & npm run -s build:env & npm run -s build:js) && npm run -s build:html && npm run -s build:finish",
-    "build:env": "cp ./src/env.json ./build/ && echo ---------ENV---------`date +%r`",
+    "build:env": "cp ./src/env.json ./build/ && echo ---------ENV------------`date +%r`",
     "build:assets": "cp -R ./src/assets/. ./build/$npm_package_version && cp -R $npm_package_config_assets_folder ./build/$npm_package_version && echo ---------ASSETS---------`date +%r`",
     "build:css": "for file in $npm_package_config_less_entry_files; do lessc $file | cleancss --s0 | npm run -s partial:replaceBuildFolderString > ./build/$npm_package_version/$(basename $file | sed -e 's~less~css~') ; done && echo ---------CSS------------`date +%r`",
     "build:js": "npm run -s build:js:browserify | npm run -s partial:replaceBuildFolderString | npm run -s partial:uglify -- --mangle > ./build/$npm_package_version/build.js && echo ---------JS-------------`date +%r`",
@@ -54,8 +54,9 @@
     "partial:index_filename": "[ $NODE_ENV != production ] && echo './build/index.html' || echo \"./build/index-$npm_package_version.html\""
   },
   "dependencies": {
-    "augur-ui-react-components": "3.0.41",
-    "augur.js": "1.9.49",
+    "async": "1.5.2",
+    "augur-ui-react-components": "3.0.43",
+    "augur.js": "2.0.2",
     "bignumber.js": "2.4.0",
     "memoizerific": "1.8.4",
     "redux": "3.5.2",

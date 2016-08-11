@@ -5,33 +5,22 @@ import { SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statu
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
-import { loadReports } from '../../reports/actions/load-reports';
-import { clearReports } from '../../reports/actions/update-reports';
+// import { updateReports, clearReports } from '../../reports/actions/update-reports';
+import { checkPeriod } from '../../reports/actions/check-period';
+import { updateReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
 
-// import { commitReports } from '../../reports/actions/commit-reports';
-import { penalizeWrongReports } from '../../reports/actions/penalize-wrong-reports';
-// import { collectFees } from '../../reports/actions/collect-fees';
-import { closeMarkets } from '../../reports/actions/close-markets';
-
 export function loadLoginAccountDependents() {
 	return (dispatch, getState) => {
-		const { marketsData } = getState();
-
-		// dispatch(loadMeanTradePrices());
 		dispatch(updateAssets());
 		dispatch(loadAccountTrades());
+
 		// clear and load reports for any markets that have been loaded
 		// (partly to handle signing out of one account and into another)
-		dispatch(clearReports());
-		dispatch(loadReports(marketsData));
-
-		// dispatch(commitReports());
-		// dispatch(collectFees());
-		dispatch(penalizeWrongReports(marketsData));
-		dispatch(closeMarkets(marketsData));
+		// dispatch(clearReports());
+		dispatch(checkPeriod());
 	};
 }
 
@@ -54,6 +43,9 @@ export function loadLoginAccountLocalStorage(accountID) {
 		}
 		if (localState.accountTrades) {
 			dispatch(updateAccountTradesData(localState.accountTrades));
+		}
+		if (localState.reports && Object.keys(localState.reports).length) {
+			dispatch(updateReports(localState.reports));
 		}
 		if (localState.transactionsData) {
 			Object.keys(localState.transactionsData).forEach(key => {
@@ -84,11 +76,12 @@ export function loadLoginAccount() {
 				if (account !== null)	localLoginAccount = JSON.parse(account);
 			}
 
+			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
+
 			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
 
-			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
 			return;

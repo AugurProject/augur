@@ -26,6 +26,7 @@ const testState = {
 		reportPeriod: 19
 	},
 	branch: {
+		id: 1010101,
 		description: 'root branch',
 		periodLength: 4000
 	},
@@ -60,14 +61,18 @@ const testState = {
 			eventID: 'testEventID',
 			name: 'testMarket',
 			description: 'some test description',
-			endDate: 123,
+			endDate: 200,
 			type: 'scalar',
 			minValue: 1,
 			maxValue: 2,
 			makerFee: 0.02,
 			takerFee: 0.05,
 			volume: 500,
-			tags: ['tag1', 'tag2', 'tag3']
+			tags: ['tag1', 'tag2', 'tag3'],
+			resolution: 'http://lmgtfy.com',
+			creationTime: 100,
+			outstandingShares: 10,
+			extraInfo: 'some extra info'
 		}
 	},
 	orderBooks: {
@@ -164,8 +169,11 @@ const testState = {
 		},
 	},
 	reports: {
-		testEventID: {
-			isUnethical: false
+		1010101: {
+			testEventID: {
+				eventID: 'testEventID',
+				isUnethical: false
+			}
 		}
 	},
 	selectedFilters: {

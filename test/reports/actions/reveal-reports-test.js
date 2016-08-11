@@ -7,11 +7,42 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe('modules/reports/actions/commit-reports.js', () => {
+describe('modules/reports/actions/reveal-reports.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	let store, action, out, clock;
+	const reports = {
+		[testState.branch.id]: {
+			test1: {
+				eventID: 'test1',
+				reportHash: '0xtesthash123456789testhash1',
+				isRevealed: false,
+				reportedOutcomeID: 'testOutcomeID1',
+				isUnethical: false,
+				isIndeterminate: true,
+				isScalar: false
+			},
+			test2: {
+				eventID: 'test2',
+				reportHash: '0xtesthash123456789testhash2',
+				isRevealed: false,
+				reportedOutcomeID: 'testOutcomeID2',
+				isUnethical: false,
+				isIndeterminate: false,
+				isScalar: true
+			},
+			test3: {
+				eventID: 'test3',
+				reportHash: '0xtesthash123456789testhash3',
+				isRevealed: false,
+				reportedOutcomeID: 'testOutcomeID3',
+				isUnethical: true,
+				isIndeterminate: false,
+				isScalar: false
+			}
+		}
+	};
 	let state = Object.assign({}, testState, {
 		loginAccount: {
 			...testState.loginAccount,
@@ -19,51 +50,16 @@ describe('modules/reports/actions/commit-reports.js', () => {
 			rep: 100,
 			realEther: 100
 		},
-		reports: {
-			test1: {
-				_id: 'test1',
-				reportHash: '0xtesthash123456789testhash1',
-				isCommitted: false,
-				reportedOutcomeID: 'testOutcomeID1',
-				isUnethical: false,
-				isIndeterminate: true,
-				isScalar: false
-			},
-			test2: {
-				_id: 'test2',
-				reportHash: '0xtesthash123456789testhash2',
-				isCommitted: false,
-				reportedOutcomeID: 'testOutcomeID2',
-				isUnethical: false,
-				isIndeterminate: false,
-				isScalar: true
-			},
-			test3: {
-				_id: 'test3',
-				reportHash: '0xtesthash123456789testhash3',
-				isCommitted: false,
-				reportedOutcomeID: 'testOutcomeID3',
-				isUnethical: true,
-				isIndeterminate: false,
-				isScalar: false
-			}
-		}
+		reports
 	});
 	store = mockStore(state);
-	let mockAugurJS = {
-		submitReport: () => {}
-	};
 
-	mockAugurJS.getEventIndex = sinon.stub().yields({
-		err: null,
-		index: 'test'
+	let mockAugurJS = { augur: { submitReport: () => {} } };
+	sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
+		o.onSuccess({ callReturn: 1 });
 	});
 
-	sinon.stub(mockAugurJS, 'submitReport', (argObj) => {
-		argObj.onSuccess('test response!');
-	});
-
-	action = proxyquire('../../../src/modules/reports/actions/commit-reports.js', {
+	action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
 		'../../../services/augurjs': mockAugurJS
 	});
 
@@ -77,37 +73,24 @@ describe('modules/reports/actions/commit-reports.js', () => {
 		clock.restore();
 	});
 
-	it('should commit reports', () => {
+	it('should reveal reports', () => {
 		let out = [{
 			type: 'UPDATE_REPORTS',
-			reports: {
-				test3: {
-					isCommited: true
-				}
-			}
+			reports: { [testState.branch.id]: { test1: { ...reports[testState.branch.id].test1, isRevealed: true } } }
 		}, {
 			type: 'UPDATE_REPORTS',
-			reports: {
-				test2: {
-					isCommited: true
-				}
-			}
+			reports: { [testState.branch.id]: { test2: { ...reports[testState.branch.id].test2, isRevealed: true } } }
 		}, {
 			type: 'UPDATE_REPORTS',
-			reports: {
-				test1: {
-					isCommited: true
-				}
-			}
+			reports: { [testState.branch.id]: { test3: { ...reports[testState.branch.id].test3, isRevealed: true } } }
 		}];
 
-		store.dispatch(action.commitReports());
+		store.dispatch(action.revealReports());
 
 		clock.tick(6000);
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-		assert(mockAugurJS.submitReport.calledThrice, `Didn't call submitReport 3 times as expected`);
-		assert(mockAugurJS.getEventIndex.calledThrice, `Didn't call getEventIndex 3 times as expected`);
+		assert(mockAugurJS.augur.submitReport.calledThrice, `Didn't call submitReport 3 times as expected`);
 	});
 
 });

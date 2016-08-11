@@ -1,4 +1,4 @@
-import * as AugurJS from '../../../../services/augurjs';
+import { augur } from '../../../../services/augurjs';
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
 export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, getTradeIDs, cbStatus, cbFill, cb) {
@@ -17,7 +17,7 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 
 	console.log('* trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'max_amount', numShares, 'max_value', totalEthWithFee, 'trade_ids', matchingIDs);
 
-	AugurJS.trade({
+	augur.trade({
 		max_value: totalEthWithFee,
 		max_amount: numShares,
 		trade_ids: matchingIDs,
