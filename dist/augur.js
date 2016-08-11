@@ -43269,7 +43269,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.0";
+    this.version = "2.0.1";
 
     this.options = {
         debug: {
@@ -43849,11 +43849,11 @@ module.exports = {
             }
             if (isDesc && startIndex > 0) {
                 setTimeout(function () {
-                    self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc);
+                    self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, chunkCB);
                 }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
             } else if (!isDesc && startIndex < numMarkets) {
                 setTimeout(function () {
-                    self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc);
+                    self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, chunkCB);
                 }, constants.PAUSE_BETWEEN_MARKET_BATCHES);
             }
         });
