@@ -1,14 +1,9 @@
 import { augur } from '../../../services/augurjs';
-import { loadReports } from '../../reports/actions/load-reports';
-import { revealReports } from '../../reports/actions/reveal-reports';
-import { collectFees } from '../../reports/actions/collect-fees';
 import { checkPeriod } from '../../reports/actions/check-period';
 
 export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
 let isAlreadyUpdatingBlockchain = false;
-let collectedFees = false;
-let revealedReports = false;
 
 export function updateBlockchain(cb) {
 	return (dispatch, getState) => {
@@ -27,14 +22,8 @@ export function updateBlockchain(cb) {
 			const { branch, blockchain, loginAccount } = getState();
 			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
 			const currentPeriodProgress = augur.getCurrentPeriodProgress(branch.periodLength);
-			const isChangedCurrentPeriod = currentPeriod !== blockchain.currentPeriod;
 			const isReportConfirmationPhase = currentPeriodProgress > 50;
 			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
-
-			if (isChangedCurrentPeriod) {
-				collectedFees = false;
-				revealedReports = false;
-			}
 
 			// update blockchain state
 			dispatch({
@@ -70,21 +59,8 @@ export function updateBlockchain(cb) {
 				// needs to be called
 				dispatch(checkPeriod((err, period) => {
 					if (err) console.error('checkPeriod:', err);
-					dispatch(loadReports((err) => {
-						if (err) console.error('loadReports:', err);
-						if (isReportConfirmationPhase) {
-							if (!collectedFees) {
-								dispatch(collectFees());
-								collectedFees = true;
-							}
-							if (!revealedReports) {
-								dispatch(revealReports());
-								revealedReports = true;
-							}
-						}
-						isAlreadyUpdatingBlockchain = false;
-						return cb && cb();
-					}));
+					isAlreadyUpdatingBlockchain = false;
+					return cb && cb();
 				}));
 			});
 		});

@@ -6,7 +6,7 @@ import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 // import { updateReports, clearReports } from '../../reports/actions/update-reports';
-// import { loadReports } from '../../reports/actions/load-reports';
+import { checkPeriod } from '../../reports/actions/check-period';
 import { updateReports } from '../../reports/actions/update-reports';
 import { updateFavorites } from '../../markets/actions/update-favorites';
 import { updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
@@ -20,6 +20,7 @@ export function loadLoginAccountDependents() {
 		// clear and load reports for any markets that have been loaded
 		// (partly to handle signing out of one account and into another)
 		// dispatch(clearReports());
+		dispatch(checkPeriod());
 	};
 }
 
