@@ -61,7 +61,7 @@ const testState = {
 			eventID: 'testEventID',
 			name: 'testMarket',
 			description: 'some test description',
-			endDate: 200,
+			endDate: 123,
 			type: 'scalar',
 			minValue: 1,
 			maxValue: 2,
@@ -118,10 +118,29 @@ const testState = {
 	},
 	outcomesData: {
 		testMarketID: {
+			'1': {
+				id: '1',
+				outstandingShares: '47',
+				name: 'testOutcome',
+				price: 35
+			},
 			'2': {
 				id: '2',
-				name: 'testOutcome',
+				outstandingShares: '156',
+				name: 'testOutcome 2',
 				price: 50
+			},
+			'3': {
+				id: '3',
+				outstandingShares: '13',
+				name: 'testOutcome 3',
+				price: 48
+			},
+			'4': {
+				id: '4',
+				outstandingShares: '156',
+				name: 'testOutcome 4',
+				price: 75
 			}
 		}
 	},
