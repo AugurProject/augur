@@ -32,7 +32,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		}
 
 		// delete outcomes
-		delete marketData.outcomes;
+		// delete marketData.outcomes;
 
 		// parse out event, currently we only support single event markets, no combinatorial
 		parseEvent(marketData);
