@@ -7,10 +7,10 @@ import mocks from '../../mockStore';
 import { CANCELLING } from '../../../src/modules/bids-asks/constants/order-status';
 import { BID } from '../../../src/modules/bids-asks/constants/bids-asks-types';
 
-describe('modules/bids-asks/actions/update-order.js', () => {
+describe('modules/bids-asks/actions/update-order-status.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const store = mocks.mockStore(mocks.state);
-	const updateOrderModule = proxyquire('../../../src/modules/bids-asks/actions/update-order', {
+	const updateOrderModule = proxyquire('../../../src/modules/bids-asks/actions/update-order-status', {
 		'../../../store': store
 	});
 

@@ -7,11 +7,11 @@
  * @param {String} orderID
  * @param {String} marketID
  * @param {String} type
- * @param {Object} marketOrderBooks
+ * @param {Object} orderBooks
  * @return {Object|null}
  */
-export default function (orderID, marketID, type, marketOrderBooks) {
-	const marketOrderBook = marketOrderBooks[marketID];
+export default function (orderID, marketID, type, orderBooks) {
+	const marketOrderBook = orderBooks[marketID];
 
 	if (marketOrderBook == null) {
 		return null;

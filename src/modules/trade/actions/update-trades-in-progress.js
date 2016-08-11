@@ -8,7 +8,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 // Updates user's trade. Only defined (i.e. !== undefined) parameters are updated
 export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, marketsData, loginAccount, accountTrades, marketOrderBooks, orderCancellation } = getState();
+		const { tradesInProgress, marketsData, loginAccount, accountTrades, orderBooks, orderCancellation } = getState();
 		const outcomeTradeInProgress = tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID] || {};
 		const market = marketsData[marketID];
 
@@ -21,7 +21,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 		const cleanSide = side || outcomeTradeInProgress.side;
 
 		// find top order to default limit price to
-		const marketOrderBook = selectAggregateOrderBook(outcomeID, marketOrderBooks[marketID], orderCancellation);
+		const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation);
 		const topOrderPrice = cleanSide === BUY ?
 			((selectTopAsk(marketOrderBook) || {}).price || {}).formattedValue || 1 :
 			((selectTopBid(marketOrderBook) || {}).price || {}).formattedValue || 0;
@@ -61,7 +61,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 				loginAccount.id,
 				accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares || 0,
 				outcomeID,
-				marketOrderBooks && marketOrderBooks[marketID] || {});
+				orderBooks && orderBooks[marketID] || {});
 		}
 
 		dispatch({

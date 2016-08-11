@@ -15,27 +15,22 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or total "${totalEthWithFee}"` }));
 		}
 
-		// we track filled shares again here to take into account the recursiveness of trading
-		const results = {
-			filledShares: 0,
-			tradeComplete: false
-		};
+		// we track filled shares again here to keep track of the full total through the recursiveness of trading
+		let filledShares = 0;
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `buying ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
-		tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().marketOrderBooks),
+		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
 			(res) => {
-				results.filledShares += parseFloat(res.filledShares);
-				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(totalEthWithFee, res.remainingEth, results.filledShares) }));
+				filledShares += parseFloat(res.filledShares);
+
+				// update user's position
+				dispatch(loadAccountTrades());
+
+				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(totalEthWithFee, res.remainingEth, filledShares) }));
 			},
 			(err, res) => {
-				if (results.tradeComplete) {
-					return;
-				}
-
-				results.tradeComplete = true;
-
 				if (err) {
 					return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: err.message }));
 				}
@@ -43,9 +38,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 				// update user's position
 				dispatch(loadAccountTrades());
 
-				results.filledShares += parseFloat(res.filledShares);
+				filledShares += parseFloat(res.filledShares);
 
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(totalEthWithFee, res.remainingEth, results.filledShares) }));
+				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(totalEthWithFee, res.remainingEth, filledShares) }));
 
 				if (res.remainingEth) {
 					const transactionData = getState().transactionsData[transactionID];
@@ -55,7 +50,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
 						transactionData.data.outcomeName,
-						numShares - results.filledShares,
+						numShares - filledShares,
 						limitPrice,
 						res.remainingEth));
 				}
