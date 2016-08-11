@@ -95,6 +95,7 @@ ex.generateOrderBook = function generateOrderBook(marketData, cb) {
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
 ex.reportingTestSetup = function reportingTestSetup(periodLen, cb) {
+	if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
 	const tools = augur.tools;
 	const constants = augur.constants;
 	const sender = augur.web.account.address || augur.from;
