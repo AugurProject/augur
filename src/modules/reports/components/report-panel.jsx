@@ -18,6 +18,7 @@ ReportPanel.propTypes = {
 	numPendingReports: React.PropTypes.number,
 	outcomes: React.PropTypes.array,
 	reportedOutcomeID: React.PropTypes.any,
+	isIndeterminate: React.PropTypes.bool,
 	isUnethical: React.PropTypes.bool,
 	isReported: React.PropTypes.bool,
 	isReportSubmitted: React.PropTypes.bool,

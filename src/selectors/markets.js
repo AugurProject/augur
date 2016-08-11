@@ -146,6 +146,7 @@ function makeMarkets(numMarkets = 10) {
 
 		// report
 		m.report = {
+			isIndeterminate: false,
 			isUnethical: true,
 			onSubmitReport: (reportedOutcomeID, isUnethical) => {
 			}
