@@ -11,7 +11,7 @@ describe('modules/reports/actions/check-period.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, clock;
+	let store, action;
 	let state = Object.assign({}, testState, {
 		blockchain: {...testState.blockchain,
 			isReportConfirmationPhase: false
@@ -21,13 +21,10 @@ describe('modules/reports/actions/check-period.js', () => {
 		}
 	});
 	store = mockStore(state);
-	let mockAugurJS = {};
-	let mockIsMarketData = {
-		isMarketDataPreviousReportPeriod: () => {}
-	};
-	mockAugurJS.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
-
-	sinon.stub(mockIsMarketData, 'isMarketDataPreviousReportPeriod', () => false);
+	let mockAugurJS = { augur: {} };
+	mockAugurJS.augur.checkPeriod = sinon.stub().yields(null, 'TEST RESPONSE!');
+	mockAugurJS.augur.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
+	mockAugurJS.augur.incrementPeriodAfterReporting = sinon.stub().yields(null, 'TEST RESPONSE!');
 
 	action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
 		'../../../services/augurjs': mockAugurJS
@@ -35,18 +32,15 @@ describe('modules/reports/actions/check-period.js', () => {
 
 	beforeEach(() => {
 		store.clearActions();
-		clock = sinon.useFakeTimers();
 	});
 
 	afterEach(() => {
 		store.clearActions();
-		clock.restore();
 	});
 
-	it('should penalize wrong reports', () => {
+	it('should check for increment period / penalize wrong', () => {
 		store.dispatch(action.checkPeriod());
-		clock.tick(4000);
-		assert(mockAugurJS.penalizeWrong.calledThrice);
+		assert(mockAugurJS.augur.checkPeriod.calledOnce);
 	});
 
 });

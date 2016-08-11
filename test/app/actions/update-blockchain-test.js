@@ -36,13 +36,13 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
 	mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
 	sinon.stub(mockAugurJS.augur.rpc, 'blockNumber', (cb) => {
-		cb("0x2710");
+		cb('0x2710');
 	});
 	mockAugurJS.augur.getVotePeriod = sinon.stub().yields(19);
 	mockAugurJS.augur.getVotePeriod.onCall(1).yields(15);
 	mockAugurJS.augur.getVotePeriod.onCall(2).yields(18);
 	sinon.stub(mockAugurJS.augur, 'incrementPeriodAfterReporting', (o) => {
-		o.onSuccess({ callReturn: "0x2710" });
+		o.onSuccess({ callReturn: '0x2710' });
 	});
 	sinon.stub(mockLoadReports, 'loadReports', (cb) => {
 		return (dispatch, getState) => {

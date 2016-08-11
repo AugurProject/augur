@@ -30,7 +30,7 @@ export function loadReports(callback) {
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
 				if (!reports[branchID]) reports[branchID] = {};
-				const report = reports[branchID][eventID] || {};
+				const report = reports[branchID][eventID] || { eventID };
 				console.log('report for', eventID, report);
 				if (report.reportedOutcomeID && report.salt) {
 					console.debug('Event', eventID, 'is good-to-go!');
@@ -44,6 +44,7 @@ export function loadReports(callback) {
 					});
 				} else {
 					augur.getReportHash(branchID, period, account, eventID, (reportHash) => {
+						console.log('reportHash:', reportHash);
 						if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
 							report.reportHash = null;
 							reports[branchID][eventID] = report;

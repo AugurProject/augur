@@ -165,8 +165,11 @@ const testState = {
 		},
 	},
 	reports: {
-		testEventID: {
-			isUnethical: false
+		1010101: {
+			testEventID: {
+				eventID: 'testEventID',
+				isUnethical: false
+			}
 		}
 	},
 	selectedFilters: {

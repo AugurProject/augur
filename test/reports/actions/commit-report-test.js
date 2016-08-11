@@ -19,31 +19,33 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 			}
 		},
 		reports: {
-			test1EventID: {
-				id: 'test1EventID'
+			[testState.branch.id]: {
+				test1EventID: {
+					id: 'test1EventID'
+				}
 			}
 		}
 	});
 	store = mockStore(state);
-	let mockAugurJS = {};
-	let mockReportTrans = {};
-	let mockUpExTrans = {
+	let mockAugurJS = { augur: { submitReportHash: () => {} } };
+	let mockAddReportTransaction = {};
+	let mockUpdateExistingTransaction = {
 		updateExistingTransaction: () => {}
 	};
-	let mockUpReports = {updateReports: () => {}};
+	let mockUpdateReports = { updateReports: () => {} };
 	let mockMarket = {};
 	let mockLinks = {
 		selectMarketsLink: () => {},
 		selectMarketLink: () => {}
 	};
 	let mockHex = {};
-	sinon.stub(mockUpReports, 'updateReports', (obj) => {
+	sinon.stub(mockUpdateReports, 'updateReports', (obj) => {
 		return {
 			type: 'UPDATE_REPORTS',
 			...obj
 		}
 	});
-	mockReportTrans.addCommitReportTransaction = sinon.stub().returns({
+	mockAddReportTransaction.addCommitReportTransaction = sinon.stub().returns({
 		type: 'ADD_REPORT_TRANSACTION'
 	});
 	mockMarket.selectMarketFromEventID = sinon.stub().returns('testID123');
@@ -68,24 +70,25 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 			}
 		};
 	});
-	sinon.stub(mockUpExTrans, 'updateExistingTransaction', (transID, status) => {
+	sinon.stub(mockUpdateExistingTransaction, 'updateExistingTransaction', (transID, status) => {
 		return {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			transactionID: transID,
 			status
 		};
 	});
-	mockAugurJS.commitReport = sinon.stub().yields(null, {
-		status: 'success',
-		reportHash: 'testReportHash123456789'
+	mockAugurJS.augur.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
+	mockAugurJS.augur.makeHash = sinon.stub().returns('0xdeadbeef')
+	sinon.stub(mockAugurJS.augur, 'submitReportHash', (o) => {
+		o.onSuccess({ callReturn: 1 });
 	});
 	mockHex.bytesToHex = sinon.stub().returns('salt12345');
 
 	action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../transactions/actions/add-report-transaction': mockReportTrans,
-		'../../transactions/actions/update-existing-transaction': mockUpExTrans,
-		'../../reports/actions/update-reports': mockUpReports,
+		'../../transactions/actions/add-report-transaction': mockAddReportTransaction,
+		'../../transactions/actions/update-existing-transaction': mockUpdateExistingTransaction,
+		'../../reports/actions/update-reports': mockUpdateReports,
 		'../../market/selectors/market': mockMarket,
 		'../../link/selectors/links': mockLinks,
 		'../../../utils/bytes-to-hex': mockHex
@@ -97,26 +100,19 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 
 	afterEach(() => {
 		store.clearActions();
-		mockUpReports.updateReports.reset();
-		mockReportTrans.addCommitReportTransaction.reset();
+		mockUpdateReports.updateReports.reset();
+		mockAddReportTransaction.addCommitReportTransaction.reset();
 		mockMarket.selectMarketFromEventID.reset();
-		mockAugurJS.commitReport.reset();
+		mockAugurJS.augur.submitReportHash.reset();
 		mockLinks.selectMarketLink.reset();
 		mockLinks.selectMarketsLink.reset();
-		mockUpExTrans.updateExistingTransaction.reset();
+		mockUpdateExistingTransaction.updateExistingTransaction.reset();
 		mockHex.bytesToHex.reset();
 	});
 
-	it(`should return commit a report`, () => {
-		let market = {
-			id: 'test1'
-		};
+	it(`should initiate a report commit`, () => {
+		let market = { id: 'test1' };
 		out = [{
-			test1EventID: {
-				reportHash: true
-			},
-			type: 'UPDATE_REPORTS'
-		}, {
 			type: 'ADD_REPORT_TRANSACTION'
 		}, {
 			type: 'SELECT_MARKET_LINK',
@@ -125,9 +121,8 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 
 		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
 
-		assert(mockReportTrans.addCommitReportTransaction.calledOnce, `addCommitReportTransaction wasn't called once as expected`);
+		assert(mockAddReportTransaction.addCommitReportTransaction.calledOnce, `addCommitReportTransaction wasn't called once as expected`);
 		assert(mockLinks.selectMarketLink.calledOnce, `selectMarketLink wasn't called once as expected`);
-		assert(mockUpReports.updateReports.calledOnce, `updateReports wasn't called once as expected`);
 		assert(mockMarket.selectMarketFromEventID.calledOnce, `selectMarketFromEventID wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
 
@@ -136,25 +131,18 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		store.dispatch(action.commitReport(market, 'testOutcomeID', false));
 
 		out = [{
-			test1EventID: {
-				reportHash: true
-			},
-			type: 'UPDATE_REPORTS'
-		}, {
 			type: 'ADD_REPORT_TRANSACTION'
 		}, {
 			type: 'SELECT_MARKETS_LINK'
 		}];
 
-
-		assert(mockReportTrans.addCommitReportTransaction.calledTwice, `addCommitReportTransaction wasn't called twice as expected`);
+		assert(mockAddReportTransaction.addCommitReportTransaction.calledTwice, `addCommitReportTransaction wasn't called twice as expected`);
 		assert(mockLinks.selectMarketLink.calledOnce, `selectMarketsLink wasn't called once as expected`);
-		assert(mockUpReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);
 		assert(mockMarket.selectMarketFromEventID.calledTwice, `selectMarketFromEventID wasn't called twice as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions.`);
 	});
 
-	it(`should return processes a report`, () => {
+	it(`should broadcast the report commit to the blockchain`, () => {
 		let market = {
 			id: 'test1',
 			type: 'scalar',
@@ -164,30 +152,39 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		out = [{
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			transactionID: 'transID1',
-			status: {
-				status: 'sending...'
-			}
+			status: { status: 'sending...' }
 		}, {
-			testEventID1: {
-				reportPeriod: '19',
-				reportedOutcomeID: 'testOutcomeID',
-				isIndeterminate: false,
-				isCategorical: false,
-				isScalar: true,
-				isUnethical: false,
-				salt: 'salt12345',
-				reportHash: true
+			[testState.branch.id]: {
+				testEventID1: {
+					reportPeriod: '19',
+					reportedOutcomeID: 'testOutcomeID',
+					isIndeterminate: false,
+					isCategorical: false,
+					isScalar: true,
+					isRevealed: false,
+					isUnethical: false,
+					salt: 'salt12345',
+					reportHash: '0xdeadbeef'
+				}
 			},
 			type: 'UPDATE_REPORTS'
 		}, {
 			type: 'UPDATE_EXISTING_TRANSACTIONS',
 			transactionID: 'transID1',
-			status: {
-				status: 'success'
-			}
+			status: { status: 'success' }
 		}, {
-			testEventID1: {
-				reportHash: 'testReportHash123456789'
+			[testState.branch.id]: {
+				testEventID1: {
+					reportPeriod: '19',
+					reportedOutcomeID: 'testOutcomeID',
+					isIndeterminate: false,
+					isCategorical: false,
+					isScalar: true,
+					isRevealed: false,
+					isUnethical: false,
+					salt: 'salt12345',
+					reportHash: '0xdeadbeef'
+				}
 			},
 			type: 'UPDATE_REPORTS'
 		}];
@@ -195,9 +192,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
 		store.dispatch(action.sendCommitReport('transID1', market, 'testOutcomeID', false, false));
 
 		assert(mockHex.bytesToHex.calledOnce, `bytesToHex wasn't called once as expected`);
-		assert(mockUpReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);
-		assert(mockUpExTrans.updateExistingTransaction.calledTwice, `updateExistingTransaction wasn't called twice as expected`);
-		assert(mockAugurJS.commitReport.calledOnce, `Didn't call commitReport once as expected`);
+		assert(mockUpdateReports.updateReports.calledTwice, `updateReports wasn't called twice as expected`);
+		assert(mockUpdateExistingTransaction.updateExistingTransaction.calledTwice, `updateExistingTransaction wasn't called twice as expected`);
+		assert(mockAugurJS.augur.submitReportHash.calledOnce, `Didn't call commitReport once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions for processing a report`);
 	});
 

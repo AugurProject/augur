@@ -55,6 +55,7 @@ export function sendCommitReport(transactionID, market, reportedOutcomeID, isUne
 
 		dispatch(updateReports({ [branchID]: { [eventID]: report } }));
 
+		// TODO move to augur.js
 		const fixedReport = augur.fixReport(report.reportedOutcomeID, report.isScalar, report.isIndeterminate);
 		const reportHash = augur.makeHash(report.salt, fixedReport, eventID, loginAccount.id);
 		let encryptedReport = 0;
