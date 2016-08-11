@@ -52,7 +52,7 @@ export default function (market) {
 
 		it('market.creationTime', () => {
 			assert.isDefined(market.creationTime);
-			assertFormattedDate(market.creationTime);
+			assertFormattedDate(market.creationTime, 'market.creationTime');
 		});
 
 		it('market.endDateLabel', () => {
@@ -62,22 +62,22 @@ export default function (market) {
 
 		it('market.outstandingShares', () => {
 			assert.isDefined(market.outstandingShares);
-			assertFormattedNumber(market.outstandingShares);
+			assertFormattedNumber(market.outstandingShares, 'market.outstandingShares');
 		});
 
 		it('market.takerFeePercent', () => {
 			assert.isDefined(market.takerFeePercent);
-			assertFormattedNumber(market.takerFeePercent);
+			assertFormattedNumber(market.takerFeePercent, 'market.takerFeePercent');
 		});
 
 		it('market.makerFeePercent', () => {
 			assert.isDefined(market.makerFeePercent);
-			assertFormattedNumber(market.makerFeePercent);
+			assertFormattedNumber(market.makerFeePercent, 'market.makerFeePercent');
 		});
 
 		it('market.volume', () => {
 			assert.isDefined(market.volume);
-			assertFormattedNumber(market.volume);
+			assertFormattedNumber(market.volume, 'market.volume');
 		});
 
 		it('market.isOpen', () => {
@@ -140,12 +140,12 @@ export default function (market) {
 
 				it(`market.outcomes[${i}].lastPrice`, () => {
 					assert.isDefined(outcome.lastPrice);
-					assertFormattedNumber(outcome.lastPrice);
+					assertFormattedNumber(outcome.lastPrice, 'outcome.lastPrice');
 				});
 
 				it(`market.outcomes[${i}].lastPricePercent`, () => {
 					assert.isDefined(outcome.lastPricePercent);
-					assertFormattedNumber(outcome.lastPricePercent);
+					assertFormattedNumber(outcome.lastPricePercent, 'outcome.lastPricePercent');
 				});
 
 				const trade = outcome.trade;
@@ -247,13 +247,13 @@ export default function (market) {
 					it(`market.outcomes[${i}].userOpenOrders[${j}].avgPrice`, () => {
 						assert.isDefined(openOrder.avgPrice);
 						assert.isObject(openOrder.avgPrice);
-						assertFormattedNumber(openOrder.avgPrice);
+						assertFormattedNumber(openOrder.avgPrice, 'openOrder.avgPrice');
 					});
 
 					it(`market.outcomes[${i}].userOpenOrders[${j}].unmatchedShares`, () => {
 						assert.isDefined(openOrder.unmatchedShares);
 						assert.isObject(openOrder.unmatchedShares);
-						assertFormattedNumber(openOrder.unmatchedShares);
+						assertFormattedNumber(openOrder.unmatchedShares, 'openOrder.unmatchedShares');
 					});
 				});
 			});
@@ -289,7 +289,7 @@ export default function (market) {
 
 		it('market.tradeSummary.totalGas', () => {
 			assert.isDefined(tradeSummary.totalGas);
-			assertFormattedNumber(tradeSummary.totalGas);
+			assertFormattedNumber(tradeSummary.totalGas, 'tradeSummary.totalGas');
 		});
 
 		const tradeOrders = tradeSummary.tradeOrders;
@@ -302,7 +302,7 @@ export default function (market) {
 			it(`market.tradeSummary.tradeOrders${i}.shares`, () => {
 				assert.isDefined(trade.shares);
 				assert.isObject(trade.shares);
-				assertFormattedNumber(trade.shares);
+				assertFormattedNumber(trade.shares, 'trade.shares');
 			});
 
 			it(`market.tradeSummary.tradeOrders${i}.limitPrice`, () => {
@@ -313,7 +313,7 @@ export default function (market) {
 			it(`market.tradeSummary.tradeOrders${i}.ether`, () => {
 				assert.isDefined(trade.ether);
 				assert.isObject(trade.ether);
-				assertFormattedNumber(trade.ether);
+				assertFormattedNumber(trade.ether, 'trade.ether');
 			});
 
 			it(`market.tradeSummary.tradeOrders${i}.gas`, () => {
@@ -353,7 +353,7 @@ export default function (market) {
 			it(`market.tradeSummary.tradeOrders${i}.data.avgPrice`, () => {
 				assert.isDefined(trade.data.avgPrice);
 				assert.isObject(trade.data.avgPrice);
-				assertFormattedNumber(trade.data.avgPrice);
+				assertFormattedNumber(trade.data.avgPrice, 'trade.data.avgPrice');
 			});
 		});
 
@@ -372,7 +372,7 @@ export default function (market) {
 
 		it('market.userOpenOrdersSummary.openOrdersCount', () => {
 			assert.isDefined(market.userOpenOrdersSummary.openOrdersCount);
-			assertFormattedNumber(market.userOpenOrdersSummary.openOrdersCount);
+			assertFormattedNumber(market.userOpenOrdersSummary.openOrdersCount, 'market.userOpenOrdersSummary.openOrdersCount');
 		});
 
 		const myPositionsSummary = market.myPositionsSummary;
@@ -383,42 +383,42 @@ export default function (market) {
 
 		it('market.myPositionsSummary.numPositions', () => {
 			assert.isDefined(myPositionsSummary.numPositions);
-			assertFormattedNumber(myPositionsSummary.numPositions);
+			assertFormattedNumber(myPositionsSummary.numPositions, 'myPositionsSummary.numPositions');
 		});
 
 		it('market.myPositionsSummary.qtyShares', () => {
 			assert.isDefined(myPositionsSummary.qtyShares);
-			assertFormattedNumber(myPositionsSummary.qtyShares);
+			assertFormattedNumber(myPositionsSummary.qtyShares, 'myPositionsSummary.qtyShares');
 		});
 
 		it('market.myPositionsSummary.purchasePrice', () => {
 			assert.isDefined(myPositionsSummary.purchasePrice);
-			assertFormattedNumber(myPositionsSummary.purchasePrice);
+			assertFormattedNumber(myPositionsSummary.purchasePrice, 'myPositionsSummary.purchasePrice');
 		});
 
 		it('market.myPositionsSummary.totalValue', () => {
 			assert.isDefined(myPositionsSummary.totalValue);
-			assertFormattedNumber(myPositionsSummary.totalValue);
+			assertFormattedNumber(myPositionsSummary.totalValue, 'myPositionsSummary.totalValue');
 		});
 
 		it('market.myPositionsSummary.totalCost', () => {
 			assert.isDefined(myPositionsSummary.totalCost);
-			assertFormattedNumber(myPositionsSummary.totalCost);
+			assertFormattedNumber(myPositionsSummary.totalCost, 'myPositionsSummary.totalCost');
 		});
 
 		it('market.myPositionsSummary.shareChange', () => {
 			assert.isDefined(myPositionsSummary.shareChange);
-			assertFormattedNumber(myPositionsSummary.shareChange);
+			assertFormattedNumber(myPositionsSummary.shareChange, 'myPositionsSummary.shareChange');
 		});
 
 		it('market.myPositionsSummary.gainPercent', () => {
 			assert.isDefined(myPositionsSummary.gainPercent);
-			assertFormattedNumber(myPositionsSummary.gainPercent);
+			assertFormattedNumber(myPositionsSummary.gainPercent, 'myPositionsSummary.gainPercent');
 		});
 
 		it('market.myPositionsSummary.netChange', () => {
 			assert.isDefined(myPositionsSummary.netChange);
-			assertFormattedNumber(myPositionsSummary.netChange);
+			assertFormattedNumber(myPositionsSummary.netChange, 'myPositionsSummary.netChange');
 		});
 
 		const myMarketSummary = market.myMarketSummary;
