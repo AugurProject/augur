@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
-import assertEndDate from '../../test/assertions/common/end-date';
+import assertFormattedDate from '../../test/assertions/common/formatted-date';
 
 export default function (loginAccountMarkets){
 	describe(`augur-ui-react-components loginAccountMarket's shape`, () => {
@@ -60,7 +60,7 @@ export function assertLoginAccountMarkets(report) {
 		it('endDate', () => {
 			assert.isDefined(report.endDate);
 
-			assertEndDate(report.endDate, 'report.endDate');
+			assertFormattedDate(report.endDate, 'report.endDate');
 		});
 
 		it('isChallenged', () => {

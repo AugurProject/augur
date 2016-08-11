@@ -28,7 +28,7 @@ export default class AccountPage extends Component {
 		const recipient = this.refs.recipientAddress.value;
 		this.refs.sendAmount.value = '';
 		this.refs.recipientAddress.value = '';
-		this.props.account.transferFunds(this.props.account.id, amount, recipient);
+		this.props.account.transferFunds(amount, recipient);
 	}
 
 	render() {
@@ -145,6 +145,7 @@ export default class AccountPage extends Component {
 									<input
 										type="number"
 										className={classnames('auth-input')}
+										min="0.0"
 										ref="sendAmount"
 										name="sendAmount"
 										placeholder="Amount to transfer"

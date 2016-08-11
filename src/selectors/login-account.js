@@ -38,8 +38,8 @@ loginAccount.editName = (name) => {
 	loginAccount.linkText = loginAccount.name || loginAccount.prettySecureLoginID;
 };
 
-loginAccount.transferFunds = (from, amount, to) => {
-	console.log(`Sending ${amount}eth from: ${from} to: ${to}`);
+loginAccount.transferFunds = (amount, to) => {
+	console.log(`Sending ${amount}eth to: ${to}`);
 };
 
 loginAccount.signIn = (name = loginAccount.name) => {

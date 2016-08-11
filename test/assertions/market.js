@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import assertFormattedNumber from '../../test/assertions/common/formatted-number';
-import assertEndDate from '../../test/assertions/common/end-date';
+import assertFormattedDate from './common/formatted-date';
 
 export default function (market) {
 
@@ -20,6 +20,11 @@ export default function (market) {
 			assert.isString(market.id);
 		});
 
+		it('market.author', () => {
+			assert.isDefined(market.author);
+			assert.isString(market.author);
+		});
+
 		it('market.type', () => {
 			assert.isDefined(market.type);
 			assert.isString(market.type);
@@ -30,14 +35,34 @@ export default function (market) {
 			assert.isString(market.description);
 		});
 
+		it('market.resolution', () => {
+			assert.isDefined(market.resolution);
+			assert.isString(market.resolution);
+		});
+
+		it('market.extraInfo', () => {
+			assert.isDefined(market.extraInfo);
+			assert.isString(market.extraInfo);
+		});
+
 		it('market.endDate', () => {
 			assert.isDefined(market.endDate);
-			assertEndDate(market.endDate);
+			assertFormattedDate(market.endDate, 'market.endDate');
+		});
+
+		it('market.creationTime', () => {
+			assert.isDefined(market.creationTime);
+			assertFormattedDate(market.creationTime);
 		});
 
 		it('market.endDateLabel', () => {
 			assert.isDefined(market.endDateLabel);
 			assert.isString(market.endDateLabel);
+		});
+
+		it('market.outstandingShares', () => {
+			assert.isDefined(market.outstandingShares);
+			assertFormattedNumber(market.outstandingShares);
 		});
 
 		it('market.takerFeePercent', () => {
@@ -399,7 +424,7 @@ export default function (market) {
 		const myMarketSummary = market.myMarketSummary;
 		it('market.myMarketSummary.endDate', () => {
 			assert.isDefined(myMarketSummary.endDate);
-			assertEndDate(myMarketSummary.endDate, 'myMarketSummary.endDate');
+			assertFormattedDate(myMarketSummary.endDate, 'myMarketSummary.endDate');
 		});
 
 		it('market.myMarketSummary.fees', () => {
