@@ -12,9 +12,11 @@ describe(`modules/auth/actions/change-account-name.js`, () => {
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
 	const store = mockStore(testState);
-	const fakeAugurJS = { changeAccountName: () => {} };
+	const fakeAugurJS = {
+		augur: { web: { changeAccountName: () => {} } }
+	};
 
-	sinon.stub(fakeAugurJS, 'changeAccountName', (name) => {
+	sinon.stub(fakeAugurJS.augur.web, 'changeAccountName', (name) => {
 		return { type: 'FAKE TYPE NAME CHANGE', name };
 	});
 
@@ -33,6 +35,6 @@ describe(`modules/auth/actions/change-account-name.js`, () => {
 	it('should change an account name', () => {
 		store.dispatch(action.changeAccountName('myNameChange'));
 
-		assert(fakeAugurJS.changeAccountName.calledOnce, `augurJS.changeAccountName wasn't called once as expected.`);
+		assert(fakeAugurJS.augur.web.changeAccountName.calledOnce, `augurJS.changeAccountName wasn't called once as expected.`);
 	});
 });

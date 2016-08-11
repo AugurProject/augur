@@ -1,7 +1,5 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { BUY } from '../../trade/constants/types';
-
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/selectors/select-order-book';
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
@@ -54,7 +52,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
 
 		// trade actions
 		if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.id) {
-			newTradeDetails.tradeActions = AugurJS.getTradingActions(
+			newTradeDetails.tradeActions = augur.getTradingActions(
 				newTradeDetails.side,
 				newTradeDetails.numShares,
 				newTradeDetails.limitPrice,

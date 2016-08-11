@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_DATA } from '../../markets/actions/update-markets-data';
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA } from '../../markets/actions/update-markets-data';
 
 import { CATEGORICAL } from '../../markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR } from '../../markets/constants/market-outcomes';
@@ -10,7 +10,8 @@ export default function (marketsData = {}, action) {
 			...marketsData,
 			...processMarketsData(action.marketsData, marketsData)
 		};
-
+	case CLEAR_MARKETS_DATA:
+		return {};
 	default:
 		return marketsData;
 	}

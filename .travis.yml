@@ -2,11 +2,20 @@ sudo: false
 
 language: node_js
 
+branches:
+  only:
+    - master
+
 env:
   - CXX=g++-4.8
 
 node_js:
-  - "4.2"
+  - "6"
+  - "6.2"
+  - "6.1"
+  - "5"
+  - "4"
+  - "iojs"
 
 addons:
   apt:

@@ -10,10 +10,10 @@ describe(`modules/auth/actions/logout.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = {};
+	const fakeAugurJS = { augur: { web: {} } };
 	let action, store;
 	store = mockStore(testState);
-	fakeAugurJS.logout = () => {
+	fakeAugurJS.augur.web.logout = () => {
 		return;
 	};
 	action = proxyquire('../../../src/modules/auth/actions/logout', {

@@ -1,4 +1,5 @@
-import * as AugurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
+
 import { LOGIN } from '../../auth/constants/auth-types';
 import {
 PASSWORDS_DO_NOT_MATCH,
@@ -12,19 +13,19 @@ import { addFundNewAccount } from '../../transactions/actions/add-fund-new-accou
 
 export function register(name, password, password2) {
 	return (dispatch, getState) => {
-
 		if (!name || !name.length) {
 			return dispatch(authError({ code: USERNAME_REQUIRED }));
 		}
-
 		if (password !== password2) {
 			return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
 		}
-		AugurJS.register(name, password, (err, loginAccount) => {
-			if (err) {
-				dispatch(authError(err));
-				return;
+		augur.web.register(name, password, (account) => {
+			if (!account) {
+				return dispatch(authError({ code: 0, message: 'failed to register' }));
+			} else if (account.error) {
+				return dispatch(authError({ code: account.error, message: account.message }));
 			}
+			const loginAccount = { ...account, id: account.address };
 			dispatch(updateLoginAccount({ secureLoginID: loginAccount.secureLoginID }));
 			dispatch(addFundNewAccount(loginAccount.address));
 			selectAuthLink(LOGIN, false, dispatch).onClick();

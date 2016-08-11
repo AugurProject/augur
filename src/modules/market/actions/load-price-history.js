@@ -1,12 +1,11 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateMarketPriceHistory } from '../../market/actions/update-market-price-history';
 
 export function loadPriceHistory(marketID) {
 	return (dispatch, getState) => {
-		AugurJS.loadPriceHistory(marketID, (err, priceHistory) => {
-			if (err) {
-				return console.info('ERROR: loadPriceHistory()', err);
+		augur.getMarketPriceHistory(marketID, (priceHistory) => {
+			if (priceHistory && priceHistory.error) {
+				return console.warn('ERROR: loadPriceHistory()', priceHistory);
 			}
 			dispatch(updateMarketPriceHistory(marketID, priceHistory));
 		});
