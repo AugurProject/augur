@@ -15,7 +15,9 @@ export function loadMarketsInfo(marketIDs, cb) {
 					delete marketsData[marketID];
 				}
 			}
-			dispatch(updateMarketsData(marketsData));
+			if (Object.keys(marketsData).length) {
+				dispatch(updateMarketsData(marketsData));
+			}
 			cb && cb();
 		});
 	};
