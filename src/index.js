@@ -31,7 +31,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.1";
+    this.version = "2.0.2";
 
     this.options = {
         debug: {
@@ -69,6 +69,7 @@ function Augur() {
     this.web = this.Accounts();
     this.filters = this.Filters();
     if (this.options.debug.tools) this.tools = require("../test/tools");
+    this.sync();
 }
 
 Augur.prototype.Accounts = require("./accounts");

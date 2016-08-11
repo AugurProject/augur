@@ -42479,7 +42479,6 @@ module.exports = function () {
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
@@ -42527,7 +42526,7 @@ module.exports = {
     FAUCET: "https://faucet.augur.net/faucet/"
 };
 
-},{"augur-abi":1,"bignumber.js":82}],236:[function(require,module,exports){
+},{"bignumber.js":82}],236:[function(require,module,exports){
 /**
  * Filters / logging
  */
@@ -43269,7 +43268,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.1";
+    this.version = "2.0.2";
 
     this.options = {
         debug: {
@@ -43307,6 +43306,7 @@ function Augur() {
     this.web = this.Accounts();
     this.filters = this.Filters();
     if (this.options.debug.tools) this.tools = require("../test/tools");
+    this.sync();
 }
 
 Augur.prototype.Accounts = require("./accounts");
@@ -43895,7 +43895,7 @@ module.exports = {
 
     loadBranch: function (branchID, callback) {
         var self = this;
-        var branch = {id: branchID};
+        var branch = {id: abi.hex(branchID)};
         this.getPeriodLength(branchID, function (periodLength) {
             if (!periodLength || periodLength.error) return callback(periodLength);
             branch.periodLength = periodLength;

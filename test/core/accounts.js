@@ -34,8 +34,6 @@ var name2 = utils.sha256(new Date().toString()).slice(10) + "@" +
     utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 var secureLoginID2;
-var name3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
-var password3 = utils.sha256(Math.random().toString(36).substring(4)).slice(0, 7);
 
 var markets = augur.getMarketsInBranch(augur.constants.DEFAULT_BRANCH_ID);
 var market_id = markets[markets.length - 1];
@@ -69,7 +67,7 @@ describe("Register", function () {
     it("register account 1: " + name + " / " + password, function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-          augur.web.register(name, password, function (result) {
+        augur.web.register(name, password, function (result) {
             checkAccount(augur, result, true);
             secureLoginID = result.secureLoginID;
             var rec = result.keystore;
@@ -91,12 +89,12 @@ describe("Register", function () {
                 constants.KEYSIZE*2
             );
             done();
-          });
+        });
     });
     it("register account 2: " + name2 + " / " + password2, function (done) {
         this.timeout(tools.TIMEOUT);
         var augur = tools.setup(require("../../src"), process.argv.slice(2));
-          augur.web.register(name2, password2, function (result) {
+        augur.web.register(name2, password2, function (result) {
             checkAccount(augur, result, true);
             secureLoginID2 = result.secureLoginID;
             var rec = result.keystore;

@@ -76,7 +76,7 @@ module.exports = {
 
     loadBranch: function (branchID, callback) {
         var self = this;
-        var branch = {id: branchID};
+        var branch = {id: abi.hex(branchID)};
         this.getPeriodLength(branchID, function (periodLength) {
             if (!periodLength || periodLength.error) return callback(periodLength);
             branch.periodLength = periodLength;

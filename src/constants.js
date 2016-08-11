@@ -5,7 +5,6 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
 
 BigNumber.config({MODULO_MODE: BigNumber.EUCLID});
 
