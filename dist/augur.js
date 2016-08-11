@@ -43269,11 +43269,11 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "1.9.49";
+    this.version = "2.0.0";
 
     this.options = {
         debug: {
-            tools: true,
+            tools: false,
             abi: false,
             broadcast: false,
             connect: false
