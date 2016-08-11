@@ -76,12 +76,11 @@ export function loadLoginAccount() {
 				if (account !== null)	localLoginAccount = JSON.parse(account);
 			}
 
-			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
-
 			if (!localLoginAccount || !localLoginAccount.id) {
 				return;
 			}
 
+			dispatch(loadLoginAccountLocalStorage(localLoginAccount.id));
 			dispatch(updateLoginAccount(localLoginAccount));
 			dispatch(loadLoginAccountDependents());
 			return;
