@@ -15,7 +15,6 @@ node_js:
   - "6.1"
   - "5"
   - "4"
-  - "iojs"
 
 addons:
   apt:
