@@ -7,6 +7,16 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
+// , {
+// 			type: 'UPDATE_REPORTS',
+// 			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
+// 		}, {
+// 			type: 'UPDATE_ASSETS'
+// 		}, {
+// 			type: 'UPDATE_REPORTS',
+// 			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
+// 		}, 
+
 describe('modules/reports/actions/check-period.js', () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
@@ -22,12 +32,36 @@ describe('modules/reports/actions/check-period.js', () => {
 	});
 	store = mockStore(state);
 	let mockAugurJS = { augur: {} };
+	let mockLoadReports = { loadReports: () => {} };
+	let mockCollectFees = {};
+	let mockRevealReports = {};
+	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
+	mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
 	mockAugurJS.augur.checkPeriod = sinon.stub().yields(null, 'TEST RESPONSE!');
 	mockAugurJS.augur.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
 	mockAugurJS.augur.incrementPeriodAfterReporting = sinon.stub().yields(null, 'TEST RESPONSE!');
+	sinon.stub(mockLoadReports, 'loadReports', (cb) => {
+		return (dispatch, getState) => {
+			dispatch({
+				type: 'UPDATE_REPORTS',
+				reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
+			});
+			cb(null);
+		};
+	});
+	mockCollectFees.collectFees = sinon.stub().returns({
+		type: 'UPDATE_ASSETS'
+	});
+	mockRevealReports.revealReports = sinon.stub().returns({
+		type: 'UPDATE_REPORTS',
+		reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
+	});
 
 	action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
-		'../../../services/augurjs': mockAugurJS
+		'../../../services/augurjs': mockAugurJS,
+		'../../reports/actions/load-reports': mockLoadReports,
+		'../../reports/actions/collect-fees': mockCollectFees,
+		'../../reports/actions/reveal-reports': mockRevealReports
 	});
 
 	beforeEach(() => {

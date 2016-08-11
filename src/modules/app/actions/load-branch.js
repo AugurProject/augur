@@ -4,11 +4,7 @@ import { updateBlockchain } from '../../app/actions/update-blockchain';
 import { listenToUpdates } from '../../app/actions/listen-to-updates';
 import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
-import { loadReports } from '../../reports/actions/load-reports';
 import { clearMarketsData } from '../../markets/actions/update-markets-data';
-import { revealReports } from '../../reports/actions/reveal-reports';
-import { checkPeriod } from '../../reports/actions/check-period';
-import { collectFees } from '../../reports/actions/collect-fees';
 
 export function loadBranch(branchID) {
 	return (dispatch, getState) => {
@@ -26,12 +22,7 @@ export function loadBranch(branchID) {
 			}
 
 			dispatch(updateBlockchain(() => {
-				dispatch(loadReports((err) => {
-					dispatch(revealReports());
-					dispatch(collectFees());
-					dispatch(checkPeriod());
-					dispatch(listenToUpdates());
-				}));
+				dispatch(listenToUpdates());
 			}));
 		});
 	};

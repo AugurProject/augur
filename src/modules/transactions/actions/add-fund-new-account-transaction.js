@@ -16,4 +16,3 @@ export const makeAddFundTransaction = (address, dispatch) => {
 	};
 	return addFundingObject;
 };
-

@@ -22,16 +22,8 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	});
 	let store = mockStore(state);
 
-	let mockAugurJS = {
-		augur: {
-			rpc: { blockNumber: () => {} },
-			incrementPeriodAfterReporting: () => {}
-		}
-	};
-	let mockLoadReports = { loadReports: () => {} };
+	let mockAugurJS = { augur: { rpc: { blockNumber: () => {} } } };
 	let mockCheckPeriod = { checkPeriod: () => {} };
-	let mockCollectFees = {};
-	let mockRevealReports = {};
 
 	mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
 	mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
@@ -41,18 +33,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 	mockAugurJS.augur.getVotePeriod = sinon.stub().yields(19);
 	mockAugurJS.augur.getVotePeriod.onCall(1).yields(15);
 	mockAugurJS.augur.getVotePeriod.onCall(2).yields(18);
-	sinon.stub(mockAugurJS.augur, 'incrementPeriodAfterReporting', (o) => {
-		o.onSuccess({ callReturn: '0x2710' });
-	});
-	sinon.stub(mockLoadReports, 'loadReports', (cb) => {
-		return (dispatch, getState) => {
-			dispatch({
-				type: 'UPDATE_REPORTS',
-				reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
-			});
-			cb(null);
-		};
-	});
 	sinon.stub(mockCheckPeriod, 'checkPeriod', (cb) => {
 		return (dispatch, getState) => {
 			const reportPeriod = 19;
@@ -60,20 +40,10 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 			cb(null, reportPeriod);
 		};
 	});
-	mockCollectFees.collectFees = sinon.stub().returns({
-		type: 'UPDATE_ASSETS'
-	});
-	mockRevealReports.revealReports = sinon.stub().returns({
-		type: 'UPDATE_REPORTS',
-		reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
-	});
 
 	let action = proxyquire('../../../src/modules/app/actions/update-blockchain.js', {
 		'../../../services/augurjs': mockAugurJS,
-		'../../reports/actions/load-reports': mockLoadReports,
-		'../../reports/actions/check-period': mockCheckPeriod,
-		'../../reports/actions/collect-fees': mockCollectFees,
-		'../../reports/actions/reveal-reports': mockRevealReports
+		'../../reports/actions/check-period': mockCheckPeriod
 	});
 
 	beforeEach(() => {
@@ -86,7 +56,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		mockAugurJS.augur.rpc.blockNumber.reset();
 		mockAugurJS.augur.getCurrentPeriod.reset();
 		mockAugurJS.augur.getCurrentPeriodProgress.reset();
-		mockLoadReports.loadReports.reset();
 		mockCheckPeriod.checkPeriod.reset();
 	});
 
@@ -137,9 +106,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 			type: 'UPDATE_BLOCKCHAIN',
 			data: { reportPeriod: 19 }
 		}, {
-			type: 'UPDATE_REPORTS',
-			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
-		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.updateBlockchain(mockCB));
@@ -148,7 +114,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriodProgress.calledOnce, `getCurrentPeriodProgress wasn't called once as expected`);
 		assert(mockCheckPeriod.checkPeriod.calledOnce, `checkPeriod wasn't called once as expected`);
-		assert(mockLoadReports.loadReports.calledOnce, `loadReports wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actons`);
 	});
 
@@ -171,14 +136,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 			type: 'UPDATE_BLOCKCHAIN',
 			data: { reportPeriod: 19 }
 		}, {
-			type: 'UPDATE_REPORTS',
-			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1 } } }
-		}, {
-			type: 'UPDATE_ASSETS'
-		}, {
-			type: 'UPDATE_REPORTS',
-			reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
-		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
 		store.dispatch(action.updateBlockchain(mockCB));
@@ -186,9 +143,6 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		assert(mockAugurJS.augur.getVotePeriod.calledThrice, `getVotePeriod wasn't called three times (no reset) as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriodProgress.calledOnce, `getCurrentPeriodProgress wasn't called once as expected`);
-		assert(mockLoadReports.loadReports.calledOnce, `loadReports wasn't called once as expected`);
-		assert(mockCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected`);
-		assert(mockRevealReports.revealReports.calledOnce, `revealReports wasn't called once as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actons`);
 	});
 });

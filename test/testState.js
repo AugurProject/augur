@@ -70,8 +70,8 @@ const testState = {
 			volume: 500,
 			tags: ['tag1', 'tag2', 'tag3'],
 			resolution: 'http://lmgtfy.com',
-			creationTime: 100,
-			outstandingShares: 10,
+			creationTime: formatDate(new Date('2017/12/12')),
+			outstandingShares: formatShares(10),
 			extraInfo: 'some extra info'
 		}
 	},
