@@ -17,11 +17,9 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	const fakeAugurJS = {};
 	const fakeUpdateAssets = {};
 	const fakeLoadAcctTrades = {};
-	const fakeClearReports = {};
 	const fakeLoadReports = {};
+	const fakeCheckPeriod = {};
 	const fakeCollectFees = {};
-	const fakePenalizeWrong = {};
-	const fakeCloseMarkets = {};
 	let action, store;
 	let thisTestState = Object.assign({}, testState, {
 		loginAccount: {}
@@ -52,31 +50,14 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 	fakeLoadAcctTrades.loadAccountTrades = sinon.stub().returns({
 		type: 'LOAD_ACCOUNT_TRADES'
 	});
-	fakeClearReports.clearReports = sinon.stub().returns({
-		type: 'CLEAR_REPORTS'
-	});
-	fakeLoadReports.loadReports = sinon.stub().returns({
-		type: 'LOAD_REPORTS'
-	});
-	fakeCollectFees.collectFees = sinon.stub().returns({
-		type: 'COLLECT_FEES'
-	});
-	fakePenalizeWrong.penalizeWrongReports = sinon.stub().returns({
-		type: 'PENALIZE_WRONG_REPORTS'
-	});
-	fakeCloseMarkets.closeMarkets = sinon.stub().returns({
-		type: 'CLOSE_MARKETS'
-	});
 
 	action = proxyquire('../../../src/modules/auth/actions/load-login-account', {
 		'../../../services/augurjs': fakeAugurJS,
 		'../../auth/actions/update-assets': fakeUpdateAssets,
 		'../../my-positions/actions/load-account-trades': fakeLoadAcctTrades,
 		'../../reports/actions/load-reports': fakeLoadReports,
-		'../../reports/actions/update-reports': fakeClearReports,
-		'../../reports/actions/penalize-wrong-reports': fakePenalizeWrong,
-		'../../reports/actions/collect-fees': fakeCollectFees,
-		'../../reports/actions/close-markets': fakeCloseMarkets
+		'../../reports/actions/check-period': fakeCheckPeriod,
+		'../../reports/actions/collect-fees': fakeCollectFees
 	});
 
 	beforeEach(() => {
@@ -108,26 +89,8 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 			}
 		}, {
 			type: 'LOAD_ACCOUNT_TRADES'
-		}, {
-			type: 'CLEAR_REPORTS'
-		}, {
-			type: 'LOAD_REPORTS'
-		}, {
-			type: 'PENALIZE_WRONG_REPORTS'
-		}, {
-			type: 'CLOSE_MARKETS'
 		}];
-		// {
-		// 	type: 'COLLECT_FEES'
-		// },
 		assert(fakeLoadAcctTrades.loadAccountTrades.calledOnce, `loadAccountTrades wasn't called once as expected.`);
-		assert(fakeClearReports.clearReports.calledOnce, `clearReports wasn't called once as expected.`);
-		assert(fakeLoadReports.loadReports.calledOnce, `loadReports wasn't called once as expected.`);
-		// assert(fakeCollectFees.collectFees.calledOnce, `collectFees wasn't called once as expected.`);
-		assert(fakePenalizeWrong.penalizeWrongReports.calledOnce, `penalizeWrongReports wasn't called once as expected.`);
-		assert(fakeCloseMarkets.closeMarkets.calledOnce, `closeMarkets wasn't called once as expected.`);
-
-
 		assert.deepEqual(store.getActions(), expectedOutput, `didn't properly update the logged in account`);
 	});
 });

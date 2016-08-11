@@ -1,6 +1,7 @@
-import * as AugurJS from '../../../../services/augurjs';
+import { augur } from '../../../../services/augurjs';
 
-export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, calculateTradeIDs, cbStatus, cbFill, cb) {
+// if buying numShares must be 0, if selling totalEthWithFee must be 0
+export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee, getTradeIDs, cbStatus, cbFill, cb) {
 	const res = {
 		remainingEth: totalEthWithFee,
 		remainingShares: numShares,
@@ -8,14 +9,15 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		filledEth: 0
 	};
 
-	const matchingIDs = calculateTradeIDs();
+	const matchingIDs = getTradeIDs();
+
 	if (!matchingIDs.length) {
 		return cb(null, res);
 	}
 
 	console.log('* trade inputs:', 'marketID', marketID, 'outcomeID', outcomeID, 'max_amount', numShares, 'max_value', totalEthWithFee, 'trade_ids', matchingIDs);
 
-	AugurJS.trade({
+	augur.trade({
 		max_value: totalEthWithFee,
 		max_amount: numShares,
 		trade_ids: matchingIDs,
@@ -39,10 +41,10 @@ export function tradeRecursively(marketID, outcomeID, numShares, totalEthWithFee
 		res.filledShares = parseFloat(data.sharesBought) || 0;
 		res.filledEth = parseFloat(data.cashFromTrade) || 0;
 
-		console.log('* trade success data:', data);
+		console.log('* trade success data:', data, res);
 		if ((res.filledEth && res.remainingEth) || (res.filledShares && res.remainingShares)) {
 			cbFill(res);
-			return tradeRecursively(marketID, outcomeID, res.remainingShares, res.remainingEth, calculateTradeIDs, cbStatus, cbFill, cb);
+			return tradeRecursively(marketID, outcomeID, res.remainingShares, res.remainingEth, getTradeIDs, cbStatus, cbFill, cb);
 		}
 		return cb(null, res);
 	}

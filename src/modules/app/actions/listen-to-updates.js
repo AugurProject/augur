@@ -24,29 +24,29 @@ export function listenToUpdates() {
 			// order added to orderbook
 			log_add_tx: (msg) => {
 				if (msg && msg.market) {
-					dispatch(loadMarketsInfo(msg.market));
+					dispatch(loadMarketsInfo([msg.market]));
 				}
 			},
 
 			// order removed from orderbook
 			log_cancel: (msg) => {
 				if (msg && msg.market) {
-					dispatch(loadMarketsInfo(msg.market));
+					dispatch(loadMarketsInfo([msg.market]));
 				}
 			},
 
 			// new market: msg = { marketID }
 			marketCreated: (msg) => {
 				if (msg && msg.marketID) {
-					dispatch(loadMarketsInfo(msg.marketID));
+					dispatch(loadMarketsInfo([msg.marketID]));
 				}
 			},
 
 			// market trading fee updated (decrease only)
 			tradingFeeUpdated: (msg) => {
-				if (msg) console.debug('tradingFeeUpdated:', msg);
+				if (msg) console.log('tradingFeeUpdated:', msg);
 				if (msg && msg.marketID) {
-					dispatch(loadMarketsInfo(msg.marketID));
+					dispatch(loadMarketsInfo([msg.marketID]));
 				}
 			},
 

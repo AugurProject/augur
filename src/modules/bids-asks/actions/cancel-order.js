@@ -2,7 +2,7 @@
  * Author: priecint
  */
 import { addCancelTransaction } from '../../transactions/actions/add-cancel-transaction';
-import { updateOrderStatus } from '../../bids-asks/actions/update-order';
+import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import getOrder from '../../bids-asks/helpers/get-order';
@@ -17,8 +17,8 @@ export const ABORT_CANCEL_ORDER_CONFIRMATION = 'ABORT_CANCEL_ORDER_CONFIRMATION'
 
 export function cancelOrder(orderID, marketID, type) {
 	return (dispatch, getState) => {
-		const { marketOrderBooks, outcomesData, marketsData } = getState();
-		const order = getOrder(orderID, marketID, type, marketOrderBooks);
+		const { orderBooks, outcomesData, marketsData } = getState();
+		const order = getOrder(orderID, marketID, type, orderBooks);
 		const market = marketsData[marketID];
 
 		if (order == null || market == null || outcomesData[marketID] == null) {
@@ -37,13 +37,13 @@ export function cancelOrder(orderID, marketID, type) {
 export function processCancelOrder(transactionID, orderID) {
 	return (dispatch, getState) => {
 
-		const { transactionsData, marketOrderBooks } = getState();
+		const { transactionsData, orderBooks } = getState();
 		const transaction = transactionsData[transactionID];
 		if (transaction == null) {
 			return;
 		}
 
-		const order = getOrder(orderID, transaction.data.market.id, transaction.data.order.type, marketOrderBooks);
+		const order = getOrder(orderID, transaction.data.market.id, transaction.data.order.type, orderBooks);
 		if (order == null) {
 			return;
 		}

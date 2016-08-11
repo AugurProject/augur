@@ -1,5 +1,5 @@
-export function calculateBuyTradeIDs(marketID, outcomeID, limitPrice, marketOrderBooks) {
-	const marketOrderBookSells = marketOrderBooks[marketID] && marketOrderBooks[marketID].sell || {};
+export function calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks) {
+	const marketOrderBookSells = orderBooks[marketID] && orderBooks[marketID].sell || {};
 
 	const matchingIDs = Object.keys(marketOrderBookSells)
 		.map(orderID => ({ ...marketOrderBookSells[orderID], price: parseFloat(marketOrderBookSells[orderID].price) }))
@@ -10,8 +10,8 @@ export function calculateBuyTradeIDs(marketID, outcomeID, limitPrice, marketOrde
 	return matchingIDs;
 }
 
-export function calculateSellTradeIDs(marketID, outcomeID, limitPrice, marketOrderBooks) {
-	const marketOrderBookBuys = marketOrderBooks[marketID] && marketOrderBooks[marketID].buy || {};
+export function calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks) {
+	const marketOrderBookBuys = orderBooks[marketID] && orderBooks[marketID].buy || {};
 
 	const matchingIDs = Object.keys(marketOrderBookBuys)
 		.map(orderID => ({ ...marketOrderBookBuys[orderID], price: parseFloat(marketOrderBookBuys[orderID].price) }))
