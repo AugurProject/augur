@@ -24,8 +24,12 @@ export function reportingTestSetup() {
 			if (selectedMarketID !== null) {
 				dispatch(loadFullMarket(selectedMarketID));
 			}
+			console.log('[REPORTING TEST SETUP] updating blockchain...');
 			dispatch(updateBlockchain(() => {
-				dispatch(loadReports());
+				console.log('[REPORTING TEST SETUP] updated blockchain, loading reports...');
+				dispatch(loadReports((err) => {
+					console.log('[REPORTING TEST SETUP] reports loaded!', err);
+				}));
 			}));
 		});
 	};

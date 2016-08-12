@@ -21,7 +21,7 @@ export function loadBranch(branchID) {
 				dispatch(loadFullMarket(selectedMarketID));
 			}
 
-			dispatch(updateBlockchain(() => {
+			dispatch(updateBlockchain(true, () => {
 				dispatch(listenToUpdates());
 			}));
 		});
