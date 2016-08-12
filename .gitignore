@@ -38,4 +38,4 @@ build/Release
 
 # IDEs
 .idea
-.iml
+*.iml
