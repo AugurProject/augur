@@ -80,7 +80,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 			type: 'MOCK_CB_CALLED'
 		}];
 
-		store.dispatch(action.updateBlockchain(mockCB));
+		store.dispatch(action.updateBlockchain(true, mockCB));
 
 		assert(mockAugurJS.augur.rpc.blockNumber.calledOnce, `blockNumber wasn't called once as expected`);
 		assert(mockAugurJS.augur.getVotePeriod.calledOnce, `getVotePeriod wasn't called once as expected`);
@@ -108,7 +108,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
-		store.dispatch(action.updateBlockchain(mockCB));
+		store.dispatch(action.updateBlockchain(true, mockCB));
 		assert(mockAugurJS.augur.rpc.blockNumber.calledOnce, `blockNumber wasn't called once as expected`);
 		assert(mockAugurJS.augur.getVotePeriod.calledTwice, `getVotePeriod wasn't called twice (no reset) as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);
@@ -138,7 +138,7 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
 		}, {
 			type: 'MOCK_CB_CALLED'
 		}];
-		store.dispatch(action.updateBlockchain(mockCB));
+		store.dispatch(action.updateBlockchain(true, mockCB));
 		assert(mockAugurJS.augur.rpc.blockNumber.calledOnce, `blockNumber wasn't called once as expected`);
 		assert(mockAugurJS.augur.getVotePeriod.calledThrice, `getVotePeriod wasn't called three times (no reset) as expected`);
 		assert(mockAugurJS.augur.getCurrentPeriod.calledOnce, `getCurrentPeriod wasn't called once as expected`);

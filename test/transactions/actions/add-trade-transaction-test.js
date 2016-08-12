@@ -1,32 +1,38 @@
 import {
 	assert
 } from 'chai';
+import { BUY, SELL } from '../../../src/modules/trade/constants/types';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
 
-describe.skip(`modules/transactions/actions/add-trade-transaction.js`, () => {
+describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	let store, action, out;
-	let state = Object.assign({}, testState);
-	store = mockStore(state);
-	let mockTrade = {};
-	let mockTrans = {};
+	const store = mockStore(testState);
+	const fakeAddTransactions = { addTransaction: () => {} };
+	const fakeProcessBuy = { processBuy: () => {} };
+	const fakeProcessSell = { processSell: () => {} };
 
-	mockTrade.tradeShares = sinon.stub().returns({
-		type: 'TRADE_SHARES'
-	});
-	mockTrans.addTransaction = sinon.stub().returns({
-		type: 'TEST'
+	sinon.stub(fakeAddTransactions, 'addTransaction', (data) => {
+		return { type: 'ADD_TRANSACTION', ...data };
 	});
 
-	action = proxyquire('../../../src/modules/transactions/actions/add-trade-transaction.js', {
-		'../../trade/actions/place-trade': mockTrade,
-		'../../transactions/actions/add-transactions': mockTrans
+	sinon.stub(fakeProcessBuy, 'processBuy', (data) => {
+		return { type: 'BUY', ...data };
+	});
+
+	sinon.stub(fakeProcessSell, 'processSell', (data) => {
+		return { type: 'SELL', ...data };
+	});
+
+	const action = proxyquire('../../../src/modules/transactions/actions/add-trade-transaction.js', {
+		'../../transactions/actions/add-transactions': fakeAddTransactions,
+		'../../trade/actions/process-sell': fakeProcessSell,
+		'../../trade/actions/process-buy': fakeProcessBuy
 	});
 
 	beforeEach(() => {
@@ -37,73 +43,89 @@ describe.skip(`modules/transactions/actions/add-trade-transaction.js`, () => {
 		store.clearActions()
 	});
 
-	it(`should add a trade transaction`, () => {
-		let market = {
-			id: 'test1',
-			description: 'test description'
-		};
-		let outcome = {
-			id: 'testOutcome1',
-			name: 'testOutcome1'
-		};
-		out = [{
-			type: 'TEST'
-		}];
-		store.dispatch(action.addTradeTransaction(false, market, outcome, 10, 5.0, 2.0, 1));
-		assert(mockTrans.addTransaction.calledOnce, `Didn't call addTransaction only once as expected`);
-		assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action given the mock`);
-	});
+	it(`should add a Buy Trade Transaction`, () => {
+		store.dispatch(action.addTradeTransaction(BUY, 'marketID', 'outcomeID', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		const actual = store.getActions();
+		actual[0].action();
 
-	it(`should make a trade transaction`, () => {
-		let market = {
-			id: 'test1',
-			description: 'test description'
-		};
-		let outcome = {
-			id: 'testOutcome1',
-			name: 'testOutcome1'
-		};
-
-		store.dispatch(action.makeTradeTransaction(false, market, outcome, 10, 5.0, 2.0, 1, store.dispatch));
-		out = [{
-			type: 'buy_shares',
-			shares: 10,
-			ether: 7,
-			gas: 1,
+		const expected = [{
+			type: 'buy',
 			data: {
-				marketID: 'test1',
-				outcomeID: 'testOutcome1',
-				marketDescription: 'test description',
-				outcomeName: 'testOutcome1',
-				avgPrice: {
-					value: 0.5,
-					formattedValue: 0.5,
-					formatted: '+0.50',
-					roundedValue: 0.5,
-					rounded: '+0.5',
-					minimized: '+0.5',
-					denomination: 'Eth',
-					full: '+0.50Eth'
+				marketID: 'marketID',
+				outcomeID: 'outcomeID',
+				marketDescription: 'Some Market Description',
+				outcomeName: 'anOutcomeName',
+				numShares: {
+					value: 5,
+					formattedValue: 5,
+					formatted: '5',
+					roundedValue: 5,
+					rounded: '5',
+					minimized: '5',
+					denomination: ' shares',
+					full: '5 shares'
 				},
-				totalFee: {
-					value: 2,
-					formattedValue: 2,
-					formatted: '+2.00',
-					roundedValue: 2,
-					rounded: '+2.0',
-					minimized: '+2',
-					denomination: 'Eth',
-					full: '+2.00Eth'
+				avgPrice: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.000',
+					roundedValue: 10,
+					rounded: '10.0',
+					minimized: '10',
+					denomination: 'eth',
+					full: '10.000eth'
 				}
 			},
-			action: store.getActions()[0].action
+			action: actual[0].action
 		}, {
-			type: 'TRADE_SHARES'
+			type: 'BUY'
 		}];
-		// confirm that our mock was properly attached to the action function.
-		store.getActions()[0].action();
 
-		assert(mockTrade.tradeShares.calledOnce, `tradeShares wasn't called one time only as expected`);
-		assert.deepEqual(store.getActions(), out, `Didn't produce the expected action`);
+		assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+
+		assert(fakeProcessBuy.processBuy.calledOnce, `processBuy wasn't called once as expected`);
+	});
+
+	it(`should add a Sell Trade Transaction`, () => {
+		store.dispatch(action.addTradeTransaction(SELL, 'marketID', 'outcomeID', 'Some Market Description', 'anOutcomeName', 5, 10, 50));
+		const actual = store.getActions();
+		actual[0].action();
+
+		const expected = [{
+			type: 'sell',
+			data: {
+				marketID: 'marketID',
+				outcomeID: 'outcomeID',
+				marketDescription: 'Some Market Description',
+				outcomeName: 'anOutcomeName',
+				numShares: {
+					value: 5,
+					formattedValue: 5,
+					formatted: '5',
+					roundedValue: 5,
+					rounded: '5',
+					minimized: '5',
+					denomination: ' shares',
+					full: '5 shares'
+				},
+				avgPrice: {
+					value: 10,
+					formattedValue: 10,
+					formatted: '10.000',
+					roundedValue: 10,
+					rounded: '10.0',
+					minimized: '10',
+					denomination: 'eth',
+					full: '10.000eth'
+				}
+			},
+			action: actual[0].action
+		}, {
+			type: 'SELL'
+		}];
+
+		assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+
+		assert(fakeProcessSell.processSell.calledOnce, `processSell wasn't called once as expected`);
 	});
 });

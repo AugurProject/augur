@@ -5,11 +5,9 @@ export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN';
 
 let isAlreadyUpdatingBlockchain = false;
 
-export function updateBlockchain(cb) {
+export function updateBlockchain(runCheckPeriod, cb) {
 	return (dispatch, getState) => {
-		if (isAlreadyUpdatingBlockchain) {
-			return; // don't trigger cb on this failure
-		}
+		if (isAlreadyUpdatingBlockchain) return cb && cb();
 		isAlreadyUpdatingBlockchain = true;
 
 		// load latest block number
@@ -17,41 +15,38 @@ export function updateBlockchain(cb) {
 			const currentBlockNumber = parseInt(blockNumber, 16);
 			if (!currentBlockNumber || currentBlockNumber !== parseInt(currentBlockNumber, 10)) {
 				isAlreadyUpdatingBlockchain = false;
-				return; // don't trigger cb on this failure
+				return cb && cb();
 			}
 			const { branch, blockchain, loginAccount } = getState();
 			const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
 			const currentPeriodProgress = augur.getCurrentPeriodProgress(branch.periodLength);
 			const isReportConfirmationPhase = currentPeriodProgress > 50;
 			const isChangedReportPhase = isReportConfirmationPhase !== blockchain.isReportConfirmationPhase;
-
-			// update blockchain state
-			dispatch({
-				type: UPDATE_BLOCKCHAIN,
-				data: {
-					currentBlockNumber,
-					currentBlockMillisSinceEpoch: Date.now(),
-					currentPeriod,
-					isReportConfirmationPhase
-				}
-			});
-
 			augur.getVotePeriod(branch.id, (period) => {
 				if (period && period.error) {
 					console.error('ERROR getVotePeriod', branch.id, period);
-					isAlreadyUpdatingBlockchain = false;
 					return cb && cb();
 				}
 				const reportPeriod = parseInt(period, 10);
+
+				// update blockchain state
+				dispatch({
+					type: UPDATE_BLOCKCHAIN,
+					data: {
+						currentBlockNumber,
+						currentBlockMillisSinceEpoch: Date.now(),
+						currentPeriod,
+						isReportConfirmationPhase
+					}
+				});
+				isAlreadyUpdatingBlockchain = false;
 				const expectedReportPeriod = blockchain.currentPeriod - 1;
 				const isCaughtUpReportPeriod = reportPeriod === expectedReportPeriod;
 
 				// if not logged in, can't increment period
 				// if report period is caught up and we're not in a new
-				// report phase, then update report period to match chain's
-				if (!loginAccount.id || (isCaughtUpReportPeriod && !isChangedReportPhase)) {
-					dispatch({ type: UPDATE_BLOCKCHAIN, data: { reportPeriod } });
-					isAlreadyUpdatingBlockchain = false;
+				// report phase, callback and exit
+				if (!loginAccount.id || (isCaughtUpReportPeriod && !isChangedReportPhase && !runCheckPeriod)) {
 					return cb && cb();
 				}
 
@@ -59,7 +54,6 @@ export function updateBlockchain(cb) {
 				// needs to be called
 				dispatch(checkPeriod((err, period) => {
 					if (err) console.error('checkPeriod:', err);
-					isAlreadyUpdatingBlockchain = false;
 					return cb && cb();
 				}));
 			});

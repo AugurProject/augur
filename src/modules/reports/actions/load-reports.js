@@ -27,7 +27,9 @@ export function loadReports(callback) {
 		const period = blockchain.reportPeriod;
 		const account = loginAccount.id;
 		const branchID = branch.id;
+		console.log('calling getEventsToReportOn:', branchID, period, account);
 		augur.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
+			console.log('eventsToReportOn:', eventsToReportOn);
 			async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
 				if (!reports[branchID]) reports[branchID] = {};
 				const report = reports[branchID][eventID] || { eventID };
