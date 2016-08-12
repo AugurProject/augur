@@ -45,7 +45,7 @@ export default class MarketItem extends Component {
 
 					{!!p.marketLink &&
 						<div className="buttons">
-							<Link {...p.marketLink} className={classnames('button', p.marketLink.className)}>{p.marketLink.text}</Link>
+							<Link onClick={p.marketLink.onClick} className={classnames('button', p.marketLink.className)}>{p.marketLink.text}</Link>
 						</div>
 					}
 				</div>

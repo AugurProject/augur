@@ -51,7 +51,6 @@ const TradeBuilderRow = (p) => {
 				<Input
 					type="text"
 					value={p.trade.numShares}
-					isClearable={false}
 					onChange={(value) => p.trade.updateTradeOrder(value, undefined, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 					onFocus={() => p.updateSelectedOutcome(p.id)}
@@ -61,7 +60,6 @@ const TradeBuilderRow = (p) => {
 				<Input
 					type="text"
 					value={p.trade.limitPrice}
-					isClearable={false}
 					onChange={(value) => p.trade.updateTradeOrder(undefined, value, p.trade.side)}
 					onClick={(e) => { e.stopPropagation(); p.updateSelectedOutcome(p.id); }}
 					onFocus={() => p.updateSelectedOutcome(p.id)}
