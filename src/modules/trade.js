@@ -100,6 +100,8 @@ module.exports = {
                             abi.fix(max_amount, "hex"),
                             trade_ids
                         ];
+                        console.debug("trade info:", self.get_trade(trade_ids[0]));
+                        console.debug("trade tx:", JSON.stringify(tx, null, 2));
                         var prepare = function (result, cb) {
                             var err;
                             var txHash = result.txHash;
