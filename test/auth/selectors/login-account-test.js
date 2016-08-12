@@ -1,6 +1,6 @@
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
-import { assertions } from 'augur-ui-react-components';
+import assertions from 'augur-ui-react-components/lib/assertions';
 
 describe(`modules/auth/selectors/login-account.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

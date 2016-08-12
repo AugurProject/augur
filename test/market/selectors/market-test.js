@@ -1,6 +1,6 @@
 import proxyquire from 'proxyquire';
 import * as mockStore from '../../mockStore';
-import { assertions } from 'augur-ui-react-components';
+import assertions from 'augur-ui-react-components/lib/assertions';
 
 import sinon from 'sinon';
 

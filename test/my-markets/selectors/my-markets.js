@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { assertions } from 'augur-ui-react-components';
+import assertions from 'augur-ui-react-components/lib/assertions';
 import * as mockStore from '../../mockStore';
 
 import { formatNumber, formatShares, formatEther } from '../../../src/utils/format-number';
