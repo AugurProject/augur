@@ -65,7 +65,7 @@ export default class Input extends Component {
 		const s = this.state;
 
 		return (
-			<div className={classnames('input', { clearable: p.isClearable !== false }, this.props.className)}>
+			<div className={classnames('input', { clearable: p.isClearable }, this.props.className)}>
 				{!p.isMultiline &&
 					<input
 						{...p}
@@ -86,7 +86,7 @@ export default class Input extends Component {
 					/>
 				}
 
-				{!p.isMultiline && p.isClearable !== false &&
+				{!p.isMultiline && p.isClearable &&
 					<button type="button" className="clear" onClick={this.handleClear}>
 						&#xf00d;
 					</button>
