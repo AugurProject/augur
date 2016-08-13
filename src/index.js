@@ -31,7 +31,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.9";
+    this.version = "2.0.10";
 
     this.options = {
         debug: {
@@ -39,7 +39,7 @@ function Augur() {
             abi: false,
             broadcast: false,
             connect: false,
-            trading: true
+            trading: false
         }
     };
     this.protocol = NODE_JS || document.location.protocol;

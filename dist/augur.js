@@ -20987,7 +20987,7 @@ module.exports={
         "RoundTwoPenalize": "0x31820d3be1cd391775ce7255a219d52ab298e755", 
         "SendReputation": "0xd330305979d26dac29e6b0bafafc9f05bc472ad6", 
         "SlashRep": "0x2cd26dc9cfd42a0bdbaf5a67b5ddadbe3eed563d", 
-        "Trade": "0xe51d312625499616d25f95cdac8803877eab43c7", 
+        "Trade": "0x972f14b97b7f8c14aa42ebdfed0709567e8fab98", 
         "Trades": "0x51996ae37ab719f126a52ad015fa3c7304a7c136"
     }
 }
@@ -43276,7 +43276,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.9";
+    this.version = "2.0.10";
 
     this.options = {
         debug: {
@@ -43284,7 +43284,7 @@ function Augur() {
             abi: false,
             broadcast: false,
             connect: false,
-            trading: true
+            trading: false
         }
     };
     this.protocol = NODE_JS || document.location.protocol;
