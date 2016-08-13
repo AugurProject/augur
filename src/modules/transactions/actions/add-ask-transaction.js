@@ -3,15 +3,15 @@ import { formatShares, formatEther } from '../../../utils/format-number';
 import { ASK } from '../../transactions/constants/types';
 
 import { addTransaction } from '../../transactions/actions/add-transactions';
-import { processAsk } from '../../trade/actions/process-bid';
+import { processAsk } from '../../trade/actions/process-ask';
 
-export const addBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice) => (
+export const addAskTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeBidransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, dispatch)));
+		dispatch(addTransaction(makeAskTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, dispatch)));
 	}
 );
 
-export const makeBidransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, dispatch) => {
+export const makeAskTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, dispatch) => {
 	const transaction = {
 		type: ASK,
 		data: {

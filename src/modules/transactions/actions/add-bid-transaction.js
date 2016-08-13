@@ -7,11 +7,11 @@ import { processBid } from '../../trade/actions/process-bid';
 
 export const addBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost) => (
 	(dispatch, getState) => {
-		dispatch(addTransaction(makeBidransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
+		dispatch(addTransaction(makeBidTransaction(marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch)));
 	}
 );
 
-export const makeBidransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
+export const makeBidTransaction = (marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
 	const transaction = {
 		type: BID,
 		data: {

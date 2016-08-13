@@ -17,12 +17,12 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
 	const { mockStore, actionCreator, state } = mocks;
 	const addCancelTransaction = actionCreator();
-	const cancel = sinon.stub();
+	const augur = { cancel: sinon.stub() };
 	const updateOrderStatus = actionCreator();
 	const updateExistingTransaction = actionCreator();
 	const cancelOrderModule = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
 		'../../transactions/actions/add-cancel-transaction': { addCancelTransaction },
-		'../../../services/augurjs': { cancel },
+		'../../../services/augurjs': { augur },
 		'../../bids-asks/actions/update-order-status': { updateOrderStatus },
 		'../../transactions/actions/update-existing-transaction': { updateExistingTransaction }
 	});
@@ -43,7 +43,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
 	afterEach(() => {
 		addCancelTransaction.reset();
-		cancel.reset();
+		augur.cancel.reset();
 		updateOrderStatus.reset();
 		updateExistingTransaction.reset();
 		store.clearActions();
@@ -67,7 +67,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 		it(`shouldn't call anything for non-existing transaction`, () => {
 			store.dispatch(cancelOrderModule.processCancelOrder('non-existingID', 'orderID'));
 
-			assert.strictEqual(cancel.callCount, 0);
+			assert.strictEqual(augur.cancel.callCount, 0);
 			assert.strictEqual(updateOrderStatus.callCount, 0);
 			assert.strictEqual(updateExistingTransaction.callCount, 0);
 			assert.lengthOf(store.getActions(), 0);
@@ -78,8 +78,8 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
 			assert.deepEqual(updateOrderStatus.args[0], ['0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CANCELLING, 'testMarketID', BID]);
 			assert.deepEqual(updateExistingTransaction.args[0], ['cancelTxn', { status: CANCELLING_ORDER }]);
-			assert.lengthOf(cancel.args[0], 5);
-			assert.equal(cancel.args[0][0], '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3');
+			assert.lengthOf(augur.cancel.args[0], 1);
+			assert.equal(augur.cancel.args[0][0].trade_id, '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3');
 		});
 	});
 
