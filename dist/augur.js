@@ -20963,7 +20963,7 @@ module.exports={
         "CloseMarketTwo": "0xce61229ccc4a7eca6a39c8240b29de0ee8d28848", 
         "CollectFees": "0x41b9e97513c627b9dab26e3743ccf6c47fac4abc", 
         "CompleteSets": "0xe231eb8225061ab49201afc639adac432319bef8", 
-        "CompositeGetters": "0xcaa919b0d758030b24df65709ee125e6b89cc5ae", 
+        "CompositeGetters": "0x5d10e242e0af6ee41c6e01ebe086c410a7f37111", 
         "Consensus": "0x369d6aa931f607bec2b9585cad2d9df9d60c3964", 
         "ConsensusData": "0x20008d15ff29341dfca3e76a7d642bb81bfd3e55", 
         "CreateBranch": "0x35f2ce06a32153a30b945599ddb705260d934945", 
@@ -43276,7 +43276,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.6";
+    this.version = "2.0.7";
 
     this.options = {
         debug: {
@@ -43396,9 +43396,8 @@ module.exports = {
     },
 
     parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 6;
+        var EVENTS_FIELDS = 7;
         var OUTCOMES_FIELDS = 2;
-        var WINNING_OUTCOMES_FIELDS = 8;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
             // marketInfo[0] = marketID
@@ -43443,13 +43442,18 @@ module.exports = {
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+            var outcome;
+            if (parseInt(rawInfo[index + 2], 16) !== 0) {
+                outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
+            }
             var event = {
                 id: rawInfo[index],
                 endDate: parseInt(rawInfo[index + 1], 16),
-                outcome: abi.unfix(rawInfo[index + 2], "string"),
+                outcome: outcome,
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
-                numOutcomes: parseInt(rawInfo[index + 5], 16)
+                numOutcomes: parseInt(rawInfo[index + 5], 16),
+                isEthical: abi.unfix(abi.hex(rawInfo[index + 6], true), "number") || undefined
             };
 
             // event type: binary, categorical, or scalar
@@ -43474,10 +43478,6 @@ module.exports = {
                 };
             }
             index += info.numOutcomes*OUTCOMES_FIELDS;
-            info.winningOutcomes = abi.string(
-                rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
-            );
-            index += WINNING_OUTCOMES_FIELDS;
 
             // convert description byte array to unicode
             var descriptionLength = parseInt(rawInfo[index], 16);

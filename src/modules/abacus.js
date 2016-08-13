@@ -68,9 +68,8 @@ module.exports = {
     },
 
     parseMarketInfo: function (rawInfo) {
-        var EVENTS_FIELDS = 6;
+        var EVENTS_FIELDS = 7;
         var OUTCOMES_FIELDS = 2;
-        var WINNING_OUTCOMES_FIELDS = 8;
         var info = {};
         if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
             // marketInfo[0] = marketID
@@ -115,13 +114,18 @@ module.exports = {
 
             // organize event info
             // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
+            var outcome;
+            if (parseInt(rawInfo[index + 2], 16) !== 0) {
+                outcome = abi.unfix(abi.hex(rawInfo[index + 2], true), "string");
+            }
             var event = {
                 id: rawInfo[index],
                 endDate: parseInt(rawInfo[index + 1], 16),
-                outcome: abi.unfix(rawInfo[index + 2], "string"),
+                outcome: outcome,
                 minValue: abi.unfix(abi.hex(rawInfo[index + 3], true), "string"),
                 maxValue: abi.unfix(abi.hex(rawInfo[index + 4], true), "string"),
-                numOutcomes: parseInt(rawInfo[index + 5], 16)
+                numOutcomes: parseInt(rawInfo[index + 5], 16),
+                isEthical: abi.unfix(abi.hex(rawInfo[index + 6], true), "number") || undefined
             };
 
             // event type: binary, categorical, or scalar
@@ -146,10 +150,6 @@ module.exports = {
                 };
             }
             index += info.numOutcomes*OUTCOMES_FIELDS;
-            info.winningOutcomes = abi.string(
-                rawInfo.slice(index, index + WINNING_OUTCOMES_FIELDS)
-            );
-            index += WINNING_OUTCOMES_FIELDS;
 
             // convert description byte array to unicode
             var descriptionLength = parseInt(rawInfo[index], 16);
