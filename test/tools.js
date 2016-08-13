@@ -411,6 +411,7 @@ module.exports = {
                         max_value: Object.keys(markets).length*amountPerMarket,
                         max_amount: 0,
                         trade_ids: trades,
+                        sender: taker,
                         onTradeHash: function (tradeHash) {
                             if (self.DEBUG) {
                                 self.print_residual(periodLength, "Trade hash: " + tradeHash);
