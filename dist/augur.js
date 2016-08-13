@@ -20987,7 +20987,7 @@ module.exports={
         "RoundTwoPenalize": "0x31820d3be1cd391775ce7255a219d52ab298e755", 
         "SendReputation": "0xd330305979d26dac29e6b0bafafc9f05bc472ad6", 
         "SlashRep": "0x2cd26dc9cfd42a0bdbaf5a67b5ddadbe3eed563d", 
-        "Trade": "0x9332101c76d97ef0212f6c594f4a314e18a4cb9a", 
+        "Trade": "0xe51d312625499616d25f95cdac8803877eab43c7", 
         "Trades": "0x51996ae37ab719f126a52ad015fa3c7304a7c136"
     }
 }
@@ -21147,7 +21147,7 @@ module.exports={
         "-1": "oracle only branch",
         "-2": "bad trade hash",
         "-3": "trader doesn't exist / own shares in this market",
-        "-4": "must buy at least .00000001 in value",
+        "-4": "must trade at least 0.00000001 in value",
         "-5": "can't pick up your own trade",
         "10": "insufficient balance",
         "22": "trade in same block prohibited"
@@ -43276,7 +43276,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.8";
+    this.version = "2.0.9";
 
     this.options = {
         debug: {
