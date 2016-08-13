@@ -64,6 +64,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		marketData.maxValue = event.maxValue;
 		marketData.numOutcomes = event.numOutcomes;
 		marketData.reportedOutcome = event.outcome;
+		marketData.isEthical = event.isEthical;
 		delete marketData.events;
 	}
 }
