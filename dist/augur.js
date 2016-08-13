@@ -21116,11 +21116,13 @@ module.exports={
         "-2": "Receiving address doesn't exist"
     },
     "short_sell": {
-        "-1": "oracle only branch",
-        "-2": "bad trade hash",
-        "-3": "trader doesn't exist / own shares in this market",
-        "-4": "must buy at least .00000001 in value",
-        "10": "insufficient balance"
+        "-1": "trade doesn't exist",
+        "-2": "invalid trade hash/commitment",
+        "-3": "must be a bid, not an ask",
+        "-4": "market is already resolved",
+        "-5": "can't pickup your own trade",
+        "-6": "can't trade on oracle only branch",
+        "-7": "not a large enough trade"
     },
     "slashRep": {
         "0": "not a valid claim",
@@ -21146,7 +21148,9 @@ module.exports={
         "-2": "bad trade hash",
         "-3": "trader doesn't exist / own shares in this market",
         "-4": "must buy at least .00000001 in value",
-        "10": "insufficient balance"
+        "-5": "can't pick up your own trade",
+        "10": "insufficient balance",
+        "22": "trade in same block prohibited"
     },
     "updateTradingFee": {
         "-1": "invalid trading fee: either fee is below the minimum trading fee or you are trying to raise the trading fee (trading fees can be lowered, but not raised)",
@@ -21291,6 +21295,10 @@ module.exports={
     "TRADE_FAILED": {
         "error": 711,
         "message": "trade failed, instead of success value (1), received "
+    },
+    "TRADE_NOT_FOUND": {
+        "error": 712,
+        "message": "trade not found"
     }
 }
 
@@ -43268,7 +43276,7 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.3";
+    this.version = "2.0.4";
 
     this.options = {
         debug: {
@@ -45252,13 +45260,15 @@ module.exports = {
         });
     },
 
-    isTradeUnderGasLimit: function (trade_ids, callback) {
+    isTradeUnderGasLimit: function (trade_ids, sender, callback) {
         var self = this;
         var gas = 0;
         async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
             self.get_trade(trade_id, function (trade) {
                 if (!trade || !trade.id) {
-                    return next("couldn't find trade: " + trade_id);
+                    return next(self.errors.TRADE_NOT_FOUND);
+                } else if (trade.owner === sender) {
+                    return next({error: "-5", message: self.errors.trade["-5"]});
                 }
                 gas += constants.TRADE_GAS[Number(!!i)][trade.type];
                 next();
@@ -45273,11 +45283,12 @@ module.exports = {
         });
     },
 
-    trade: function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
         if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
+            sender = max_value.sender;
             onTradeHash = max_value.onTradeHash;
             onCommitSent = max_value.onCommitSent;
             onCommitSuccess = max_value.onCommitSuccess;
@@ -45298,9 +45309,9 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        this.isTradeUnderGasLimit(trade_ids, function (err, isUnderLimit) {
-            if (err) return onCommitFailed(err);
-            if (!isUnderLimit) return onCommitFailed(self.errors.GAS_LIMIT_EXCEEDED);
+        this.isTradeUnderGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, isUnderLimit) {
+            if (err) return onTradeFailed(err);
+            if (!isUnderLimit) return onTradeFailed(self.errors.GAS_LIMIT_EXCEEDED);
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
             onTradeHash(tradeHash);
             self.commitTrade({
@@ -45311,13 +45322,7 @@ module.exports = {
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
-                        tx.params = [
-                            abi.fix(max_value, "hex"),
-                            abi.fix(max_amount, "hex"),
-                            trade_ids
-                        ];
-                        console.debug("trade info:", self.get_trade(trade_ids[0]));
-                        console.debug("trade tx:", JSON.stringify(tx, null, 2));
+                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
                         var prepare = function (result, cb) {
                             var err;
                             var txHash = result.txHash;
@@ -45345,6 +45350,7 @@ module.exports = {
                                             if (logs[i].topics[0] === sig) {
                                                 var logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
+
                                                     // buy (matched sell order)
                                                     if (parseInt(logdata[0], 16) === 1) {
                                                         sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
@@ -45419,10 +45425,7 @@ module.exports = {
                 self.rpc.fastforward(1, function (blockNumber) {
                     onNextBlock(blockNumber);
                     var tx = clone(self.tx.Trade.short_sell);
-                    tx.params = [
-                        buyer_trade_id,
-                        abi.fix(max_amount, "hex")
-                    ];
+                    tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
                     var prepare = function (result, cb) {
                         var err;
                         var txHash = result.txHash;
@@ -45743,6 +45746,16 @@ module.exports = {
 	 * @return {Array}
 	 */
 	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
+		console.log("getTradingActions:");
+		console.log("type:", type);
+		console.log("orderShares:", orderShares);
+		console.log("orderLimitPrice:", orderLimitPrice);
+		console.log("takerFee:", takerFee);
+		console.log("makerFee:", makerFee);
+		console.log("userAddress:", userAddress);
+		console.log("userPositionShares:", userPositionShares);
+		console.log("outcomeId:", outcomeId);
+		console.log("marketOrderBook:", marketOrderBook);
 		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;
@@ -45767,13 +45780,11 @@ module.exports = {
 		var gasPrice = augur.rpc.gasPrice;
 		if (type === "buy") {
 			var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
-
 			var areSuitableOrders = matchingSortedAsks.length > 0;
 			if (!areSuitableOrders) {
 				if (isMarketOrder) {
 					return [];
 				}
-
 				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
 			} else {
 				var buyActions = [];

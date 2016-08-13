@@ -2570,11 +2570,11 @@ describe("Integration tests", function () {
                                     augur.useAccount(unlockable[1]);
                                     var trade_ids = augur.get_trade_ids(markets[t.market]);
                                     assert.include(trade_ids, new_trade_id);
-                                    console.log("get_trade before:", augur.get_trade(new_trade_id));
                                     augur.trade({
                                         max_value: t.amount,
                                         max_amount: 0,
                                         trade_ids: [new_trade_id],
+                                        sender: unlockable[1],
                                         onTradeHash: function (r) {
                                             assert.notProperty(r, "error");
                                             assert.isString(r);
@@ -2594,8 +2594,7 @@ describe("Integration tests", function () {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            console.log("get_trade after:", augur.get_trade(new_trade_id));
-                                            console.log("trade succeeded:", r);
+                                            // console.log("trade succeeded:", r);
                                             assert.isObject(r);
                                             assert.notProperty(r, "error");
                                             assert.property(r, "unmatchedCash");
@@ -2657,7 +2656,6 @@ describe("Integration tests", function () {
                                 onSuccess: function (r) {
                                     var trade_ids = augur.get_trade_ids(markets[t.market]);
                                     assert.include(trade_ids, new_trade_id);
-                                    console.log("get_trade before:", augur.get_trade(new_trade_id));
                                     augur.trade({
                                         max_value: 0,
                                         max_amount: t.amount,
@@ -2681,8 +2679,6 @@ describe("Integration tests", function () {
                                             assert.isNull(r.callReturn);
                                         },
                                         onTradeSuccess: function (r) {
-                                            console.log("get_trade after:", augur.get_trade(new_trade_id));
-                                            console.log("trade succeeded:", r);
                                             assert.isObject(r);
                                             assert.notProperty(r, "error");
                                             assert.property(r, "unmatchedCash");
@@ -2850,7 +2846,7 @@ describe("Integration tests", function () {
                                 assert.isNull(r.callReturn);
                             },
                             onTradeSuccess: function (r) {
-                                console.log("short_sell succeeded:", r);
+                                // console.log("short_sell succeeded:", r);
                                 assert.isObject(r);
                                 assert.notProperty(r, "error");
                                 assert.property(r, "matchedShares");

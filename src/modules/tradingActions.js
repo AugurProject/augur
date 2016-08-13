@@ -195,6 +195,16 @@ module.exports = {
 	 * @return {Array}
 	 */
 	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
+		console.log("getTradingActions:");
+		console.log("type:", type);
+		console.log("orderShares:", orderShares);
+		console.log("orderLimitPrice:", orderLimitPrice);
+		console.log("takerFee:", takerFee);
+		console.log("makerFee:", makerFee);
+		console.log("userAddress:", userAddress);
+		console.log("userPositionShares:", userPositionShares);
+		console.log("outcomeId:", outcomeId);
+		console.log("marketOrderBook:", marketOrderBook);
 		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;
@@ -219,13 +229,11 @@ module.exports = {
 		var gasPrice = augur.rpc.gasPrice;
 		if (type === "buy") {
 			var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
-
 			var areSuitableOrders = matchingSortedAsks.length > 0;
 			if (!areSuitableOrders) {
 				if (isMarketOrder) {
 					return [];
 				}
-
 				return [augur.getBidAction(orderShares, orderLimitPrice, makerFee, gasPrice)];
 			} else {
 				var buyActions = [];

@@ -36,13 +36,15 @@ module.exports = {
         });
     },
 
-    isTradeUnderGasLimit: function (trade_ids, callback) {
+    isTradeUnderGasLimit: function (trade_ids, sender, callback) {
         var self = this;
         var gas = 0;
         async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
             self.get_trade(trade_id, function (trade) {
                 if (!trade || !trade.id) {
-                    return next("couldn't find trade: " + trade_id);
+                    return next(self.errors.TRADE_NOT_FOUND);
+                } else if (trade.owner === sender) {
+                    return next({error: "-5", message: self.errors.trade["-5"]});
                 }
                 gas += constants.TRADE_GAS[Number(!!i)][trade.type];
                 next();
@@ -57,11 +59,12 @@ module.exports = {
         });
     },
 
-    trade: function (max_value, max_amount, trade_ids, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
         if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
+            sender = max_value.sender;
             onTradeHash = max_value.onTradeHash;
             onCommitSent = max_value.onCommitSent;
             onCommitSuccess = max_value.onCommitSuccess;
@@ -82,9 +85,9 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        this.isTradeUnderGasLimit(trade_ids, function (err, isUnderLimit) {
-            if (err) return onCommitFailed(err);
-            if (!isUnderLimit) return onCommitFailed(self.errors.GAS_LIMIT_EXCEEDED);
+        this.isTradeUnderGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, isUnderLimit) {
+            if (err) return onTradeFailed(err);
+            if (!isUnderLimit) return onTradeFailed(self.errors.GAS_LIMIT_EXCEEDED);
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
             onTradeHash(tradeHash);
             self.commitTrade({
@@ -95,13 +98,7 @@ module.exports = {
                     self.rpc.fastforward(1, function (blockNumber) {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
-                        tx.params = [
-                            abi.fix(max_value, "hex"),
-                            abi.fix(max_amount, "hex"),
-                            trade_ids
-                        ];
-                        console.debug("trade info:", self.get_trade(trade_ids[0]));
-                        console.debug("trade tx:", JSON.stringify(tx, null, 2));
+                        tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
                         var prepare = function (result, cb) {
                             var err;
                             var txHash = result.txHash;
@@ -129,6 +126,7 @@ module.exports = {
                                             if (logs[i].topics[0] === sig) {
                                                 var logdata = self.rpc.unmarshal(logs[i].data);
                                                 if (logdata && logdata.constructor === Array && logdata.length) {
+
                                                     // buy (matched sell order)
                                                     if (parseInt(logdata[0], 16) === 1) {
                                                         sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
@@ -203,10 +201,7 @@ module.exports = {
                 self.rpc.fastforward(1, function (blockNumber) {
                     onNextBlock(blockNumber);
                     var tx = clone(self.tx.Trade.short_sell);
-                    tx.params = [
-                        buyer_trade_id,
-                        abi.fix(max_amount, "hex")
-                    ];
+                    tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
                     var prepare = function (result, cb) {
                         var err;
                         var txHash = result.txHash;
