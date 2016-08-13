@@ -36,24 +36,32 @@ module.exports = {
         });
     },
 
-    isTradeUnderGasLimit: function (trade_ids, sender, callback) {
+    checkGasLimit: function (trade_ids, sender, callback) {
         var self = this;
         var gas = 0;
-        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-            self.get_trade(trade_id, function (trade) {
-                if (!trade || !trade.id) {
-                    return next(self.errors.TRADE_NOT_FOUND);
-                } else if (trade.owner === sender) {
-                    return next({error: "-5", message: self.errors.trade["-5"]});
-                }
-                gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-                next();
-            });
-        }, function (e) {
-            if (e) return callback(e);
-            self.rpc.blockNumber(function (blockNumber) {
-                self.rpc.getBlock(blockNumber, false, function (block) {
-                    callback(null, gas <= parseInt(block.gasLimit, 16));
+        var count = {buy: 0, sell: 0};
+        self.rpc.blockNumber(function (blockNumber) {
+            self.rpc.getBlock(blockNumber, false, function (block) {
+                async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
+                    self.get_trade(trade_id, function (trade) {
+                        if (!trade || !trade.id) {
+                            return next(self.errors.TRADE_NOT_FOUND);
+                        } else if (trade.owner === sender) {
+                            return next({error: "-5", message: self.errors.trade["-5"]});
+                        }
+                        ++count[trade.type];
+                        gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+                        next();
+                    });
+                }, function (e) {
+                    if (e) return callback(e);
+                    if (gas <= parseInt(block.gasLimit, 16)) {
+                        return callback(null, trade_ids);
+                    } else if (!count.buy || !count.sell) {
+                        var type = (count.buy) ? "buy" : "sell";
+                        return callback(null, trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+                    }
+                    callback(self.errors.GAS_LIMIT_EXCEEDED);
                 });
             });
         });
@@ -85,9 +93,8 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        this.isTradeUnderGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, isUnderLimit) {
+        this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
             if (err) return onTradeFailed(err);
-            if (!isUnderLimit) return onTradeFailed(self.errors.GAS_LIMIT_EXCEEDED);
             var tradeHash = self.makeTradeHash(max_value, max_amount, trade_ids);
             onTradeHash(tradeHash);
             self.commitTrade({
