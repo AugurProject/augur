@@ -69,6 +69,9 @@ module.exports = {
 
     trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
+        if (this.options.debug.trading) {
+            console.log("trade:", JSON.stringify(max_value, null, 2));
+        }
         if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
@@ -106,7 +109,13 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+                        if (self.options.debug.trading) {
+                            console.log("trade tx:", JSON.stringify(tx, null, 2));
+                        }
                         var prepare = function (result, cb) {
+                            if (self.options.debug.trading) {
+                                console.log("trade response:", JSON.stringify(result, null, 2));
+                            }
                             var err;
                             var txHash = result.txHash;
                             if (result.callReturn && result.callReturn.constructor === Array) {

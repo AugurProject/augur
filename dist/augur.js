@@ -20987,7 +20987,7 @@ module.exports={
         "RoundTwoPenalize": "0x31820d3be1cd391775ce7255a219d52ab298e755", 
         "SendReputation": "0xd330305979d26dac29e6b0bafafc9f05bc472ad6", 
         "SlashRep": "0x2cd26dc9cfd42a0bdbaf5a67b5ddadbe3eed563d", 
-        "Trade": "0x84c0222cccf261cbf2050803473e3b6d7bf0792a", 
+        "Trade": "0x9332101c76d97ef0212f6c594f4a314e18a4cb9a", 
         "Trades": "0x51996ae37ab719f126a52ad015fa3c7304a7c136"
     }
 }
@@ -43276,14 +43276,15 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.5";
+    this.version = "2.0.6";
 
     this.options = {
         debug: {
             tools: false,
             abi: false,
             broadcast: false,
-            connect: false
+            connect: false,
+            trading: true
         }
     };
     this.protocol = NODE_JS || document.location.protocol;
@@ -45293,6 +45294,9 @@ module.exports = {
 
     trade: function (max_value, max_amount, trade_ids, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitConfirmed, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
+        if (this.options.debug.trading) {
+            console.log("trade:", JSON.stringify(max_value, null, 2));
+        }
         if (max_value.constructor === Object) {
             max_amount = max_value.max_amount;
             trade_ids = max_value.trade_ids;
@@ -45330,7 +45334,13 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.trade);
                         tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids];
+                        if (self.options.debug.trading) {
+                            console.log("trade tx:", JSON.stringify(tx, null, 2));
+                        }
                         var prepare = function (result, cb) {
+                            if (self.options.debug.trading) {
+                                console.log("trade response:", JSON.stringify(result, null, 2));
+                            }
                             var err;
                             var txHash = result.txHash;
                             if (result.callReturn && result.callReturn.constructor === Array) {

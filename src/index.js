@@ -31,14 +31,15 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.5";
+    this.version = "2.0.6";
 
     this.options = {
         debug: {
             tools: false,
             abi: false,
             broadcast: false,
-            connect: false
+            connect: false,
+            trading: true
         }
     };
     this.protocol = NODE_JS || document.location.protocol;
