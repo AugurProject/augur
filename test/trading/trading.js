@@ -20,7 +20,7 @@ var random = require("../random");
 var errors = require("augur-contracts").errors;
 var abacus = require("../../src/modules/abacus");
 var trade = require("../../src/modules/trade");
-var DEBUG = true;
+var DEBUG = false;
 
 describe("Unit tests", function () {
 
