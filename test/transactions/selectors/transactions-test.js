@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import { assertions } from 'augur-ui-react-components';
+import assertions from 'augur-ui-react-components/lib/assertions';
 
 describe(`modules/transactions/selectors/transactions.js`, () => {
 	proxyquire.noPreserveCache().noCallThru();

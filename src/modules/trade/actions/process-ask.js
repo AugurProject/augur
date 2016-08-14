@@ -1,11 +1,11 @@
-import * as AugurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 
-export function processBid(transactionID, marketID, outcomeID, numShares, limitPrice) {
+export function processAsk(transactionID, marketID, outcomeID, numShares, limitPrice) {
 	return (dispatch, getState) => {
 		if ((!limitPrice) || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
@@ -26,7 +26,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 }
 
 function ask(transactionID, marketID, outcomeID, limitPrice, totalShares, cb) {
-	AugurJS.sell({
+	augur.sell({
 		amount: totalShares,
 		price: limitPrice,
 		market: marketID,

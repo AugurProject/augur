@@ -12,7 +12,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 	getOrderBookStub.withArgs('testMarketID', { minValue: 1, maxValue: 2 }).callsArgWith(2, {});
 	getOrderBookStub.withArgs('nonExistingMarketID', {}).callsArgWith(2, null);
 	const augurJsMock = {
-		getOrderBook: getOrderBookStub
+		augur: { getOrderBook: getOrderBookStub }
 	};
 	const updateMarketOrderBookModule = {
 		updateMarketOrderBook: mocks.actionCreator()
@@ -28,7 +28,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 
 	beforeEach(() => {
 		store.clearActions();
-		augurJsMock.getOrderBook.reset();
+		augurJsMock.augur.getOrderBook.reset();
 		updateMarketOrderBookModule.updateMarketOrderBook.reset();
 	});
 
@@ -36,18 +36,18 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 		it(`should load orders for a market`, () => {
 			store.dispatch(loadBidsAsksModule.loadBidsAsks('testMarketID'));
 
-			sinon.assert.calledOnce(augurJsMock.getOrderBook);
-			sinon.assert.calledWith(augurJsMock.getOrderBook, 'testMarketID', { minValue: 1, maxValue: 2 });
-			assert.lengthOf(augurJsMock.getOrderBook.getCall(0).args, 3);
+			sinon.assert.calledOnce(augurJsMock.augur.getOrderBook);
+			sinon.assert.calledWith(augurJsMock.augur.getOrderBook, 'testMarketID', { minValue: 1, maxValue: 2 });
+			assert.lengthOf(augurJsMock.augur.getOrderBook.getCall(0).args, 3);
 			sinon.assert.calledOnce(updateMarketOrderBookModule.updateMarketOrderBook);
 		});
 
 		it(`shouldn't load orders for a market where there are no orders`, () => {
 			store.dispatch(loadBidsAsksModule.loadBidsAsks('nonExistingMarketID'));
 
-			sinon.assert.calledOnce(augurJsMock.getOrderBook);
-			sinon.assert.calledWith(augurJsMock.getOrderBook, 'nonExistingMarketID', {});
-			assert.lengthOf(augurJsMock.getOrderBook.getCall(0).args, 3);
+			sinon.assert.calledOnce(augurJsMock.augur.getOrderBook);
+			sinon.assert.calledWith(augurJsMock.augur.getOrderBook, 'nonExistingMarketID', {});
+			assert.lengthOf(augurJsMock.augur.getOrderBook.getCall(0).args, 3);
 			sinon.assert.notCalled(updateMarketOrderBookModule.updateMarketOrderBook);
 		});
 	});

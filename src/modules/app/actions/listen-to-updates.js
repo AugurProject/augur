@@ -44,7 +44,7 @@ export function listenToUpdates() {
 
 			// market trading fee updated (decrease only)
 			tradingFeeUpdated: (msg) => {
-				if (msg) console.debug('tradingFeeUpdated:', msg);
+				if (msg) console.log('tradingFeeUpdated:', msg);
 				if (msg && msg.marketID) {
 					dispatch(loadMarketsInfo([msg.marketID]));
 				}

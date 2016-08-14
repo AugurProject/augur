@@ -6,7 +6,7 @@ import { updateOrderStatus } from '../../bids-asks/actions/update-order-status';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import getOrder from '../../bids-asks/helpers/get-order';
-import * as augurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { CANCELLED, CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
 import { CANCELLING_ORDER, SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
@@ -51,26 +51,27 @@ export function processCancelOrder(transactionID, orderID) {
 		dispatch(updateOrderStatus(orderID, CANCELLING, transaction.data.market.id, transaction.data.order.type));
 		dispatch(updateExistingTransaction(transactionID, { status: CANCELLING_ORDER }));
 
-		augurJS.cancel(orderID,
-			function onSent(res) {
+		augur.cancel({
+			trade_id: orderID,
+			onSent: (res) => {
 				console.log('onSent %o', res);
 			},
-			function onSuccess(res) {
+			onSuccess: (res) => {
 				console.log('onSucc %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLED, transaction.data.market.id, transaction.data.order.type));
 				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS }));
 				setTimeout(() => dispatch(loadBidsAsks(transaction.data.market.id)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);
 			},
-			function onFailure(res) {
+			onFailed: (res) => {
 				console.log('onFail %o', res);
 				dispatch(updateOrderStatus(orderID, CANCELLATION_FAILED, transaction.data.market.id, transaction.data.order.type));
 				dispatch(updateExistingTransaction(transactionID, { status: FAILED }));
 				setTimeout(() => dispatch(updateOrderStatus(orderID, null, transaction.data.market.id, transaction.data.order.type)), TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS);
 			},
-			function onConfirmed(res) {
+			onConfirmed: (res) => {
 				console.log('onConfirmed %o', res);
 			}
-		);
+		});
 	};
 }
 

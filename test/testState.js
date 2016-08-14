@@ -26,6 +26,7 @@ const testState = {
 		reportPeriod: 19
 	},
 	branch: {
+		id: 1010101,
 		description: 'root branch',
 		periodLength: 4000
 	},
@@ -67,7 +68,11 @@ const testState = {
 			makerFee: 0.02,
 			takerFee: 0.05,
 			volume: 500,
-			tags: ['tag1', 'tag2', 'tag3']
+			tags: ['tag1', 'tag2', 'tag3'],
+			resolution: 'http://lmgtfy.com',
+			creationTime: 100,
+			outstandingShares: formatShares(10),
+			extraInfo: 'some extra info'
 		}
 	},
 	orderBooks: {
@@ -113,10 +118,29 @@ const testState = {
 	},
 	outcomesData: {
 		testMarketID: {
+			'1': {
+				id: '1',
+				outstandingShares: '47',
+				name: 'testOutcome',
+				price: 35
+			},
 			'2': {
 				id: '2',
-				name: 'testOutcome',
+				outstandingShares: '156',
+				name: 'testOutcome 2',
 				price: 50
+			},
+			'3': {
+				id: '3',
+				outstandingShares: '13',
+				name: 'testOutcome 3',
+				price: 48
+			},
+			'4': {
+				id: '4',
+				outstandingShares: '156',
+				name: 'testOutcome 4',
+				price: 75
 			}
 		}
 	},
@@ -164,8 +188,11 @@ const testState = {
 		},
 	},
 	reports: {
-		testEventID: {
-			isUnethical: false
+		1010101: {
+			testEventID: {
+				eventID: 'testEventID',
+				isUnethical: false
+			}
 		}
 	},
 	selectedFilters: {

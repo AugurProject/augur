@@ -75,6 +75,9 @@ function parseOutcomes(newMarketsData, outcomesData) {
 	}, {});
 
 	function parseBinaryOutcomes(marketData, marketID) {
+		if (marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR).length === 2) {
+			return parseCategoricalOutcomes(marketData, marketID);
+		}
 		return marketData.outcomes.reduce((p, outcome) => {
 			p[outcome.id] = { ...outcome };
 			if (outcome.id === BINARY_NO_ID) {

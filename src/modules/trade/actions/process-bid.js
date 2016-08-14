@@ -1,4 +1,4 @@
-import * as AugurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -26,7 +26,7 @@ export function processBid(transactionID, marketID, outcomeID, numShares, limitP
 }
 
 function bid(transactionID, marketID, outcomeID, limitPrice, totalEthWithFee, cb) {
-	AugurJS.buy({
+	augur.buy({
 		amount: totalEthWithFee,
 		price: limitPrice,
 		market: marketID,

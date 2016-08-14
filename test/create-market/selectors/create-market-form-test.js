@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from '../../testState';
-import { assertions } from 'augur-ui-react-components';
+import assertions from 'augur-ui-react-components/lib/assertions';
 import { BINARY, CATEGORICAL, SCALAR } from '../../../src/modules/markets/constants/market-types';
 
 import * as actualStep2 from '../../../src/modules/create-market/selectors/form-steps/step-2';

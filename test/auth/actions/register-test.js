@@ -11,7 +11,7 @@ describe(`modules/auth/actions/register.js`, () => {
 	proxyquire.noPreserveCache();
 	const middlewares = [thunk];
 	const mockStore = configureMockStore(middlewares);
-	const fakeAugurJS = {};
+	const fakeAugurJS = { augur: { web: {} } };
 	const fakeAuthLink = {};
 	const fakeSelectors = {};
 	const fakeFund = {};
@@ -21,8 +21,8 @@ describe(`modules/auth/actions/register.js`, () => {
 		loginAccount: {}
 	});
 	store = mockStore(thisTestState);
-	fakeAugurJS.register = (name, psswrd, cb) => {
-		cb(null, {
+	fakeAugurJS.augur.web.register = (name, psswrd, cb) => {
+		cb({
 			address: 'test',
 			id: 'test',
 			secureLoginID: 'testid',
@@ -41,7 +41,6 @@ describe(`modules/auth/actions/register.js`, () => {
 		return { onClick: () => {} };
 	};
 	fakeFund.addFundNewAccount = sinon.stub().returns({ type: 'FUND_NEW_ACCOUNT' });
-
 
 	action = proxyquire('../../../src/modules/auth/actions/register', {
 		'../../../services/augurjs': fakeAugurJS,

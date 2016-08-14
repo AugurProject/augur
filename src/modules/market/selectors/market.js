@@ -22,16 +22,17 @@ This is true for all selectors, but especially important for this one.
 
 
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatPercent } from '../../../utils/format-number';
+import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
+import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
-import { submitReport } from '../../reports/actions/submit-report';
+import { commitReport } from '../../reports/actions/commit-report';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
 import store from '../../../store';
@@ -55,24 +56,26 @@ export default function () {
 }
 
 export const selectMarket = (marketID) => {
-	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, orderCancellation } = store.getState();
+	const { marketsData, favorites, reports, outcomesData, accountTrades, tradesInProgress, blockchain, priceHistory, orderBooks, branch, orderCancellation } = store.getState();
 
 	if (!marketID || !marketsData || !marketsData[marketID]) {
 		return {};
 	}
 
 	const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
+	const branchReports = reports[branch.id || BRANCH_ID];
+	const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
 
 	return assembleMarket(
 		marketID,
 		marketsData[marketID],
 		priceHistory[marketID],
-		isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+		isMarketDataOpen(marketsData[marketID]),
 
 		!!favorites[marketID],
 		outcomesData[marketID],
 
-		reports[marketsData[marketID].eventID],
+		marketReport,
 		(accountTrades || {})[marketID],
 		tradesInProgress[marketID],
 
@@ -141,6 +144,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.endDate = endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay)) || null;
 	market.endDateLabel = (market.endDate < new Date()) ? 'ended' : 'ends';
+	market.creationTime = formatDate(new Date(marketData.creationTime));
 
 	market.isOpen = isOpen;
 	market.isExpired = !isOpen;
@@ -163,7 +167,7 @@ export const assembleMarket = memoizerific(1000)((
 
 	market.report = {
 		...marketReport,
-		onSubmitReport: (reportedOutcomeID, isUnethical) => dispatch(submitReport(market, reportedOutcomeID, isUnethical))
+		onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
 	};
 
 	market.outcomes = [];
@@ -206,6 +210,8 @@ export const assembleMarket = memoizerific(1000)((
 		};
 		return obj;
 	}).filter(tag => !!tag.name);
+
+	market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
 
 	market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 

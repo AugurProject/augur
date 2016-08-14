@@ -18,7 +18,7 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 	let mockAdd = {
 		addTransaction: () => {}
 	};
-	mockSubmit.processReport = sinon.stub().returns({
+	mockSubmit.sendCommitReport = sinon.stub().returns({
 		type: 'PROCESS_REPORTS'
 	});
 
@@ -30,7 +30,7 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 	});
 
 	action = proxyquire('../../../src/modules/transactions/actions/add-report-transaction.js', {
-		'../../reports/actions/submit-report': mockSubmit,
+		'../../reports/actions/commit-report': mockSubmit,
 		'../../transactions/actions/add-transactions': mockAdd
 	});
 
@@ -56,12 +56,12 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 			}
 		};
 
-		store.dispatch(action.addReportTransaction(market, 'test1', false, 1, 5));
+		store.dispatch(action.addCommitReportTransaction(market, 'test1', false, false, 1, 5));
 
 		out = [{
 			type: 'ADD_TRANSACTION',
 			data: {
-				type: 'submit_report',
+				type: 'commit_report',
 				gas: 1,
 				ether: 5,
 				data: {
@@ -72,7 +72,8 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 						id: 'test2'
 					}],
 					reportedOutcomeID: 'test1',
-					isUnethical: false
+					isUnethical: false,
+					isIndeterminate: false
 				},
 				action: store.getActions()[0].data.action
 			}
@@ -81,7 +82,7 @@ describe(`modules/transactions/actions/add-report-transaction.js`, () => {
 		}];
 		// make sure to trigger the action function to confirm stub is being added.
 		store.getActions()[0].data.action();
-		assert(mockSubmit.processReport.calledOnce, `processReport didn't fire once when triggered`);
+		assert(mockSubmit.sendCommitReport.calledOnce, `sendCommitReport didn't fire once when triggered`);
 		assert(mockAdd.addTransaction.calledOnce, `addTranscation wasn't called exactly one time as expected`);
 		assert.deepEqual(store.getActions(), out, `Didn't return the expected object`);
 	});

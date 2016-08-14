@@ -10,33 +10,49 @@ import reducer from '../../../src/modules/reports/reducers/reports';
 
 describe(`modules/reports/reducers/reports.js`, () => {
 	let action, out, test;
+	const testStateReports = Object.assign({}, testState.reports[testState.branch.id]);
 	let state = Object.assign({}, testState);
+
+	afterEach(() => {
+		testState.reports[testState.branch.id] = Object.assign({}, testStateReports);
+	});
 
 	it(`should update reports`, () => {
 		action = {
 			type: UPDATE_REPORTS,
 			reports: {
-				test: {
-					example: 'example'
-				},
-				example: {
-					test: 'test'
+				[testState.branch.id]: {
+					test: {
+						eventID: 'test',
+						example: 'example'
+					},
+					example: {
+						eventID: 'example',
+						test: 'test'
+					}
 				}
 			}
 		};
 		out = {
-			test: {
-				example: 'example'
-			},
-			testEventID: { isUnethical: false },
-			example: {
-				test: 'test'
+			[testState.branch.id]: {
+				test: {
+					eventID: 'test',
+					example: 'example'
+				},
+				example: {
+					eventID: 'example',
+					test: 'test'
+				},
+				testEventID: {
+					eventID: 'testEventID',
+					isUnethical: false
+				}
 			}
 		};
 
 		test = reducer(state.reports, action);
 
-		assert.deepEqual(test, out, `Didn't Updated Report Information`);
+		assert.deepEqual(test, out, `Didn't update report information`);
 	});
 
 	it(`should clear reports`, () => {
@@ -44,11 +60,15 @@ describe(`modules/reports/reducers/reports.js`, () => {
 			type: CLEAR_REPORTS
 		};
 		let fakeState = {
-			test: {
-				example: 'example'
-			},
-			example: {
-				test: 'test'
+			[testState.branch.id]: {
+				test: {
+					eventID: 'test',
+					example: 'example'
+				},
+				example: {
+					eventID: 'example',
+					test: 'test'
+				}
 			}
 		};
 

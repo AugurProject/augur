@@ -10,7 +10,7 @@ export function updateURL(url) {
 
 		const { selectedMarketID, connection } = getState();
 
-		if (selectedMarketID != null && connection.isConnected) {
+		if (selectedMarketID && connection.isConnected) {
 			dispatch(loadFullMarket(selectedMarketID));
 		}
 	};

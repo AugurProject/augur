@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-import AugurJS from '../../../services/augurjs';
+import { augur } from '../../../services/augurjs';
 import store from '../../../store';
 import { formatNumber, formatEther } from '../../../utils/format-number';
 
@@ -30,7 +30,8 @@ export const selectLoginAccountMarkets = memoizerific(1)(authorOwnedMarkets => {
 	const markets = [];
 
 	authorOwnedMarkets.forEach((market) => {
-		const fees = formatEther(AugurJS.getFees(market.id));
+		// TODO augur.getFees should be async (provide callback)
+		const fees = formatEther((augur) ? augur.getFees(market.id) : 0);
 
 		const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
 		const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));

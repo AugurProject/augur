@@ -1,23 +1,17 @@
-import * as AugurJS from '../../../services/augurjs';
-
+import { augur } from '../../../services/augurjs';
 import { updateMarketTradesData } from '../../../modules/portfolio/actions/update-market-trades-data';
 
 export function loadMarketTrades(marketID) {
-	return dispatch => {
-		AugurJS.loadMarketTrades(marketID, (err, marketTrades) => {
-			if (err) {
-				console.error('ERROR loadMarketTrades -- ', err);
-				return;
+	return (dispatch) => {
+		augur.getMarketPriceHistory(marketID, null, (marketTrades) => {
+			if (marketTrades) {
+				if (marketTrades.error) {
+					return console.error('ERROR loadMarketTrades -- ', marketTrades);
+				}
+				const trades = {};
+				trades[marketID] = marketTrades;
+				dispatch(updateMarketTradesData(trades));
 			}
-
-			if (!marketTrades) {
-				return;
-			}
-
-			const trades = {};
-			trades[marketID] = marketTrades;
-
-			dispatch(updateMarketTradesData(trades));
 		});
 	};
 }

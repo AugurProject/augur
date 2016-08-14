@@ -22,17 +22,19 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
 		}
 
 		const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
+		const branchReports = reports[marketsData[marketID].branchId];
+		const marketReport = (branchReports) ? branchReports[marketsData[marketID].eventID] : undefined;
 
 		return assembleMarket(
 			marketID,
 			marketsData[marketID],
 			priceHistory[marketID],
-			isMarketDataOpen(marketsData[marketID], blockchain && blockchain.currentBlockNumber),
+			isMarketDataOpen(marketsData[marketID]),
 
 			!!favorites[marketID],
 			outcomesData[marketID],
 
-			reports[marketsData[marketID].eventID],
+			marketReport,
 			(accountTrades || {})[marketID],
 			tradesInProgress[marketID],
 

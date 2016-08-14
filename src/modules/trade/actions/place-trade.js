@@ -4,12 +4,13 @@ import { addTradeTransaction } from '../../transactions/actions/add-trade-transa
 import { selectMarket } from '../../market/selectors/market';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 import { selectTransactionsLink } from '../../link/selectors/links';
-import { calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
+import { calculateSellTradeIDs, calculateBuyTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { addBidTransaction } from '../../transactions/actions/add-bid-transaction';
+import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 
 export function placeTrade(marketID) {
 	return (dispatch, getState) => {
-		const { tradesInProgress, outcomesData, orderBooks } = getState();
+		const { tradesInProgress, outcomesData, orderBooks, loginAccount } = getState();
 		const marketTradeInProgress = tradesInProgress[marketID];
 		const market = selectMarket(marketID);
 
@@ -27,7 +28,7 @@ export function placeTrade(marketID) {
 			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
 
 			if (outcomeTradeInProgress.side === BUY) {
-				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks);
+				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
 				if (tradeIDs && tradeIDs.length) {
 					dispatch(addTradeTransaction(
 						BUY,
@@ -49,15 +50,27 @@ export function placeTrade(marketID) {
 						totalCost));
 				}
 			} else if (outcomeTradeInProgress.side === SELL) {
-				dispatch(addTradeTransaction(
-					SELL,
-					marketID,
-					outcomeID,
-					market.description,
-					outcomesData[marketID][outcomeID].name,
-					outcomeTradeInProgress.numShares,
-					outcomeTradeInProgress.limitPrice,
-					totalCost));
+				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+				if (tradeIDs && tradeIDs.length) {
+					dispatch(addTradeTransaction(
+						SELL,
+						marketID,
+						outcomeID,
+						market.description,
+						outcomesData[marketID][outcomeID].name,
+						outcomeTradeInProgress.numShares,
+						outcomeTradeInProgress.limitPrice,
+						totalCost));
+				} else {
+					dispatch(addAskTransaction(
+						marketID,
+						outcomeID,
+						market.description,
+						outcomesData[marketID][outcomeID].name,
+						outcomeTradeInProgress.numShares,
+						outcomeTradeInProgress.limitPrice,
+						totalCost));
+				}
 			}
 		});
 

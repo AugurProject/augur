@@ -1,6 +1,7 @@
 import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
 import { changeAccountName } from '../../auth/actions/change-account-name';
+import { addTransferFunds } from '../../transactions/actions/add-transfer-funds-transaction';
 
 export default function () {
 	const { loginAccount } = store.getState();
@@ -35,6 +36,7 @@ export const setupLoginAccount = (loginAccount, dispatch) => {
 		linkText,
 		downloadAccountFileName,
 		downloadAccountDataString,
+		transferFunds: (amount, toAddress) => dispatch(addTransferFunds(amount, toAddress)),
 		editName: (name) => dispatch(changeAccountName(name)),
 		rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 0 }),
 		ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 0 }),

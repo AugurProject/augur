@@ -1,6 +1,6 @@
-import { UPDATE_MARKETS_DATA } from '../../markets/actions/update-markets-data';
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA } from '../../markets/actions/update-markets-data';
 
-import { CATEGORICAL } from '../../markets/constants/market-types';
+import { CATEGORICAL, BINARY } from '../../markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR } from '../../markets/constants/market-outcomes';
 
 export default function (marketsData = {}, action) {
@@ -10,7 +10,8 @@ export default function (marketsData = {}, action) {
 			...marketsData,
 			...processMarketsData(action.marketsData, marketsData)
 		};
-
+	case CLEAR_MARKETS_DATA:
+		return {};
 	default:
 		return marketsData;
 	}
@@ -29,9 +30,15 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		if (marketData.type === CATEGORICAL) {
 			marketData.description = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR).slice(0, -1).join();
 		}
+		if (marketData.type === BINARY) {
+			const splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
+			if (splitDescription.length === 2) {
+				marketData.description = splitDescription.slice(0, -1).join();
+			}
+		}
 
 		// delete outcomes
-		delete marketData.outcomes;
+		// delete marketData.outcomes;
 
 		// parse out event, currently we only support single event markets, no combinatorial
 		parseEvent(marketData);
@@ -57,6 +64,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 		marketData.maxValue = event.maxValue;
 		marketData.numOutcomes = event.numOutcomes;
 		marketData.reportedOutcome = event.outcome;
+		marketData.isEthical = event.isEthical;
 		delete marketData.events;
 	}
 }

@@ -178,7 +178,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			stubbedValidateScalarSmallNum.reset();
 			stubbedValidateScalarBigNum.reset();
 		});
-		
+
 		it('should handle binary validations', () => {
 			formState = {
 				type: BINARY
@@ -229,7 +229,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			formState = {
 				type: BINARY,
 				description: 'test',
-				endDate: new Date.now()
+				endDate: new Date()
 			};
 
 			validators.errors(formState);
@@ -242,7 +242,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			formState = {
 				type: CATEGORICAL,
 				description: 'test',
-				endDate: new Date.now(),
+				endDate: new Date(),
 				categoricalOutcomes: [
 					'outcome1',
 					'outcome2'
@@ -260,7 +260,7 @@ describe(`modules/create-market/selectors/form-steps/step-2.js`, () => {
 			formState = {
 				type: SCALAR,
 				description: 'test',
-				endDate: new Date.now(),
+				endDate: new Date(),
 				scalarSmallNum: 10,
 				scalarBigNum: 100
 			};

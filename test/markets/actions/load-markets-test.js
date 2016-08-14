@@ -14,12 +14,12 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 	let store, action, out;
 	let state = Object.assign({}, testState);
 	store = mockStore(state);
-	let mockAugurJS = {};
+	let mockAugurJS = { augur: {} };
 
-	mockAugurJS.loadNumMarkets = sinon.stub();
-	mockAugurJS.loadMarkets = sinon.stub();
-	mockAugurJS.loadNumMarkets.yields(null, 1);
-	mockAugurJS.loadMarkets.yields(null, {
+	mockAugurJS.augur.loadNumMarkets = sinon.stub();
+	mockAugurJS.augur.loadMarkets = sinon.stub();
+	mockAugurJS.augur.loadNumMarkets.yields(null, 1);
+	mockAugurJS.augur.loadMarkets.yields(null, {
 		marketsData: {
 			_id: 'test',
 			test: 'info',
@@ -43,10 +43,10 @@ describe(`modules/markets/actions/load-markets.js`, () => {
 			}
 		}];
 
-		store.dispatch(action.loadMarkets());
+		store.dispatch(action.loadMarkets(1010101));
 
 		assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
-		assert(mockAugurJS.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
+		assert(mockAugurJS.augur.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
 	});
 
 });
