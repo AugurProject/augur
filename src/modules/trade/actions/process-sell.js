@@ -1,3 +1,4 @@
+import { augur } from '../../../services/augurjs';
 import { formatEther, formatShares } from '../../../utils/format-number';
 
 import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
@@ -7,7 +8,6 @@ import { loadAccountTrades } from '../../../modules/my-positions/actions/load-ac
 import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
 
 export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
@@ -17,16 +17,23 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 		const { loginAccount } = getState();
 
+		const messages = [];
+
 		// we track filled eth here as well to take into account the recursiveness of trading
 		let filledEth = 0;
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
+		messages[0] = `selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}`;
+
+		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: messages.join(', ') }));
 
 		tradeRecursively(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().loginAccount.id, getState().orderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
 			(res) => {
 				filledEth += parseFloat(res.filledEth);
-				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares, filledEth) }));
+				messages[0] = `sold ${formatShares(numShares - res.remainingShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
+
+				dispatch(loadAccountTrades());
+				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: messages.join(', ') }));
 			},
 			(err, res) => {
 				if (err) {
@@ -37,26 +44,37 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				dispatch(loadAccountTrades());
 
 				filledEth += parseFloat(res.filledEth);
+				messages[0] = `sold ${formatShares(numShares - res.remainingShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 
-				dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: generateMessage(numShares, res.remainingShares, filledEth) }));
+				if (!res.remainingShares) {
+					dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: messages.join(', ') }));
+				} else {
+					const askNumShares = formatShares(res.remainingShares);
+					let askMessageIndex = 1;
+					if (!filledEth) {
+						askMessageIndex = 0;
+					}
+					messages[askMessageIndex] = `asking ${askNumShares.full} @ ${limitPrice} eth`;
+					dispatch(updateExistingTransaction(transactionID, { status: 'placing ask...', message: messages.join(', ') }));
 
-				if (res.remainingEth) {
-					const transactionData = getState().transactionsData[transactionID];
+					augur.sell({
+						market: marketID,
+						outcome: outcomeID,
+						amount: res.remainingShares,
+						price: limitPrice,
 
-					dispatch(addAskTransaction(
-						transactionData.data.marketID,
-						transactionData.data.outcomeID,
-						transactionData.data.marketDescription,
-						transactionData.data.outcomeName,
-						res.remainingShares,
-						limitPrice));
+						onSent: data => console.log('ask onSent', data),
+						onFailed: err => {
+							messages[askMessageIndex] = err.message;
+							dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: messages.join(', ') }));
+						},
+						onSuccess: data => {
+							messages[askMessageIndex] = `asked ${askNumShares.full} for ${formatEther(res.remainingShares * limitPrice).full}`;
+							dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: messages.join(', ') }));
+						}
+					});
 				}
 			}
 		);
 	};
-}
-
-function generateMessage(numShares, remainingShares, filledEth) {
-	const filledShares = numShares - remainingShares;
-	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 }

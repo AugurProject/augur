@@ -17,88 +17,104 @@ export function placeTrade(marketID) {
 
 		let outcomeTradeInProgress;
 
-		Object.keys(marketTradeInProgress).forEach((outcomeID, i) => {
-			outcomeTradeInProgress = marketTradeInProgress[outcomeID];
-			if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
-				return;
-			}
+		Object.keys(marketTradeInProgress)
+			.sort((a, b) => {
 
-			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
-
-			if (outcomeTradeInProgress.side === BUY) {
-				dispatch(addTradeTransaction(
-					BUY,
-					i,
-					marketID,
-					outcomeID,
-					market.description,
-					outcomesData[marketID][outcomeID].name,
-					outcomeTradeInProgress.numShares,
-					outcomeTradeInProgress.limitPrice,
-					totalCost));
-
-			} else if (outcomeTradeInProgress.side === SELL) {
-				dispatch(addTradeTransaction(
-					SELL,
-					i,
-					marketID,
-					outcomeID,
-					market.description,
-					outcomesData[marketID][outcomeID].name,
-					outcomeTradeInProgress.numShares,
-					outcomeTradeInProgress.limitPrice,
-					totalCost));
-/*
-				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
-
-				// check if user has position
-				//  - if so, sell/ask
-				//  - if not, short sell/short sell risky
-				if (accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares) {
-					if (tradeIDs && tradeIDs.length) {
-						dispatch(addTradeTransaction(
-							SELL,
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost));
-					} else {
-						dispatch(addAskTransaction(
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost));
-					}
-				} else {
-					if (tradeIDs && tradeIDs.length) {
-						dispatch(addShortSellTransaction(
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost));
-					} else {
-						dispatch(addShortSellRiskyTransaction(
-							marketID,
-							outcomeID,
-							market.description,
-							outcomesData[marketID][outcomeID].name,
-							outcomeTradeInProgress.numShares,
-							outcomeTradeInProgress.limitPrice,
-							totalCost));
-					}
+				// sells before buys
+				if (marketTradeInProgress[a].side === SELL && marketTradeInProgress[b].side === BUY) {
+					return -1;
+				} else if (marketTradeInProgress[b].side === SELL && marketTradeInProgress[a].side === BUY) {
+					return 1;
 				}
-*/
-			}
-		});
+
+				if (marketTradeInProgress[a].numShares > marketTradeInProgress[b].numShares) {
+					return -1;
+				}
+
+				return 1;
+			})
+			.forEach((outcomeID, i) => {
+				outcomeTradeInProgress = marketTradeInProgress[outcomeID];
+				if (!outcomeTradeInProgress || !outcomeTradeInProgress.limitPrice || !outcomeTradeInProgress.numShares || !outcomeTradeInProgress.totalCost) {
+					return;
+				}
+
+				const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
+
+				if (outcomeTradeInProgress.side === BUY) {
+					dispatch(addTradeTransaction(
+						BUY,
+						i,
+						marketID,
+						outcomeID,
+						market.description,
+						outcomesData[marketID][outcomeID].name,
+						outcomeTradeInProgress.numShares,
+						outcomeTradeInProgress.limitPrice,
+						totalCost));
+
+				} else if (outcomeTradeInProgress.side === SELL) {
+					dispatch(addTradeTransaction(
+						SELL,
+						i,
+						marketID,
+						outcomeID,
+						market.description,
+						outcomesData[marketID][outcomeID].name,
+						outcomeTradeInProgress.numShares,
+						outcomeTradeInProgress.limitPrice,
+						totalCost));
+	/*
+					const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+
+					// check if user has position
+					//  - if so, sell/ask
+					//  - if not, short sell/short sell risky
+					if (accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares) {
+						if (tradeIDs && tradeIDs.length) {
+							dispatch(addTradeTransaction(
+								SELL,
+								marketID,
+								outcomeID,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								outcomeTradeInProgress.numShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost));
+						} else {
+							dispatch(addAskTransaction(
+								marketID,
+								outcomeID,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								outcomeTradeInProgress.numShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost));
+						}
+					} else {
+						if (tradeIDs && tradeIDs.length) {
+							dispatch(addShortSellTransaction(
+								marketID,
+								outcomeID,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								outcomeTradeInProgress.numShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost));
+						} else {
+							dispatch(addShortSellRiskyTransaction(
+								marketID,
+								outcomeID,
+								market.description,
+								outcomesData[marketID][outcomeID].name,
+								outcomeTradeInProgress.numShares,
+								outcomeTradeInProgress.limitPrice,
+								totalCost));
+						}
+					}
+	*/
+				}
+			});
 
 		dispatch(clearTradeInProgress(marketID));
 

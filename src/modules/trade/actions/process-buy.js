@@ -18,8 +18,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 		const { loginAccount } = getState();
 
-		// we track filled shares here to keep track of the full total through the recursiveness of trading
 		const messages = [];
+
+		// we track filled shares here to keep track of the full total through the recursiveness of trading
 		let filledShares = 0;
 
 		messages[0] = `buying ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}`;
@@ -30,11 +31,9 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
 			(res) => {
 				filledShares += parseFloat(res.filledShares);
-
-				// update user's position
-				dispatch(loadAccountTrades());
 				messages[0] = `bought ${formatShares(filledShares).full} for ${formatEther(totalEthWithFee - res.remainingEth).full} (fees incl.)`;
 
+				dispatch(loadAccountTrades());
 				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: messages.join(', ') }));
 			},
 			(err, res) => {
@@ -73,7 +72,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 						onSuccess: data => {
 							messages[bidMessageIndex] = `bid ${bidNumShares.full} for ${formatEther(res.remainingEth).full}`;
 							dispatch(updateExistingTransaction(transactionID, { status: SUCCESS, message: messages.join(', ') }));
-						},
+						}
 					});
 				}
 			}
