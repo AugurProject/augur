@@ -46,7 +46,7 @@ const selectors = {
 // add update helper fn to selectors object
 Object.defineProperty(selectors, 'update', {
 	value: (newState = {}) => {
-		console.log('*** update', newState);
+		if (!process.env.NODE_ENV === 'test') console.log('*** update', newState);
 		Object.keys(newState).forEach(key => {
 			selectors[key] = newState[key];
 		});
