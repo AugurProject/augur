@@ -20,9 +20,7 @@ export function processBuy(transactionID, marketID, outcomeID, numShares, limitP
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `buying ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
-		const { loginAccount } = getState();
-
-		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee, loginAccount.id, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+		tradeRecursively(marketID, outcomeID, 0, totalEthWithFee, () => calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getState().loginAccount.id, getState().orderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} buy...` })),
 			(res) => {
 				filledShares += parseFloat(res.filledShares);

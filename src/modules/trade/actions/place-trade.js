@@ -28,7 +28,7 @@ export function placeTrade(marketID) {
 			const totalCost = Math.abs(outcomeTradeInProgress.totalCost);
 
 			if (outcomeTradeInProgress.side === BUY) {
-				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
+				const tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, loginAccount.id, orderBooks);
 				if (tradeIDs && tradeIDs.length) {
 					dispatch(addTradeTransaction(
 						BUY,
