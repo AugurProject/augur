@@ -43276,15 +43276,15 @@ var modules = [
 ];
 
 function Augur() {
-    this.version = "2.0.11";
+    this.version = "2.0.12";
 
     this.options = {
         debug: {
-            tools: false,
-            abi: false,
-            broadcast: false,
-            connect: false,
-            trading: false
+            tools: false,       // if true, testing tools (test/tools.js) included
+            abi: false,         // debug logging in augur-abi
+            broadcast: false,   // broadcast debug logging in ethrpc 
+            connect: false,     // connection debug logging in ethereumjs-connect
+            trading: false      // trading-related debug logging
         }
     };
     this.protocol = NODE_JS || document.location.protocol;
@@ -45408,10 +45408,11 @@ module.exports = {
         });
     },
 
-    short_sell: function (buyer_trade_id, max_amount, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
+    short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
         if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
             max_amount = buyer_trade_id.max_amount;
+            sender = buyer_trade_id.sender;
             onTradeHash = buyer_trade_id.onTradeHash;
             onCommitSent = buyer_trade_id.onCommitSent;
             onCommitSuccess = buyer_trade_id.onCommitSuccess;
@@ -45432,71 +45433,74 @@ module.exports = {
         onTradeSent = onTradeSent || utils.noop;
         onTradeSuccess = onTradeSuccess || utils.noop;
         onTradeFailed = onTradeFailed || utils.noop;
-        var tradeHash = this.makeTradeHash(0, max_amount, [buyer_trade_id]);
-        onTradeHash(tradeHash);
-        this.commitTrade({
-            hash: tradeHash,
-            onSent: onCommitSent,
-            onSuccess: function (res) {
-                onCommitSuccess(res);
-                self.rpc.fastforward(1, function (blockNumber) {
-                    onNextBlock(blockNumber);
-                    var tx = clone(self.tx.Trade.short_sell);
-                    tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
-                    var prepare = function (result, cb) {
-                        var err;
-                        var txHash = result.txHash;
-                        if (result.callReturn && result.callReturn.constructor === Array) {
-                            result.callReturn[0] = parseInt(result.callReturn[0], 16);
-                            if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
-                                err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
-                                if (!err) {
-                                    err = clone(self.errors.TRADE_FAILED);
-                                    err.message += result.callReturn[0].toString();
-                                    return onTradeFailed(err);
+        this.checkGasLimit([buyer_trade_id], abi.format_address(sender || this.from), function (err, trade_ids) {
+            if (err) return onTradeFailed(err);
+            var tradeHash = self.makeTradeHash(0, max_amount, trade_ids);
+            onTradeHash(tradeHash);
+            self.commitTrade({
+                hash: tradeHash,
+                onSent: onCommitSent,
+                onSuccess: function (res) {
+                    onCommitSuccess(res);
+                    self.rpc.fastforward(1, function (blockNumber) {
+                        onNextBlock(blockNumber);
+                        var tx = clone(self.tx.Trade.short_sell);
+                        tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
+                        var prepare = function (result, cb) {
+                            var err;
+                            var txHash = result.txHash;
+                            if (result.callReturn && result.callReturn.constructor === Array) {
+                                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                                if (result.callReturn[0] !== 1 || result.callReturn.length !== 4) {
+                                    err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
+                                    if (!err) {
+                                        err = clone(self.errors.TRADE_FAILED);
+                                        err.message += result.callReturn[0].toString();
+                                        return onTradeFailed(err);
+                                    }
+                                    return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
                                 }
-                                return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
-                            }
-                            self.rpc.receipt(txHash, function (receipt) {
-                                if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                                if (receipt.error) return onTradeFailed(receipt);
-                                var cashFromTrade;
-                                if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                                    var logs = receipt.logs;
-                                    var sig = self.api.events.log_fill_tx.signature;
-                                    cashFromTrade = abi.bignum(0);
-                                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                                        if (logs[i].topics[0] === sig) {
-                                            var logdata = self.rpc.unmarshal(logs[i].data);
-                                            if (logdata && logdata.constructor === Array && logdata.length) {
-                                                cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                self.rpc.receipt(txHash, function (receipt) {
+                                    if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                                    if (receipt.error) return onTradeFailed(receipt);
+                                    var cashFromTrade;
+                                    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+                                        var logs = receipt.logs;
+                                        var sig = self.api.events.log_fill_tx.signature;
+                                        cashFromTrade = abi.bignum(0);
+                                        for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+                                            if (logs[i].topics[0] === sig) {
+                                                var logdata = self.rpc.unmarshal(logs[i].data);
+                                                if (logdata && logdata.constructor === Array && logdata.length) {
+                                                    cashFromTrade = cashFromTrade.plus(abi.unfix(logdata[1]).times(abi.unfix(logdata[2])));
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                cb({
-                                    txHash: txHash,
-                                    unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                                    matchedShares: abi.unfix(result.callReturn[2], "string"),
-                                    cashFromTrade: abi.string(cashFromTrade),
-                                    price: abi.unfix(result.callReturn[3], "string")
+                                    cb({
+                                        txHash: txHash,
+                                        unmatchedShares: abi.unfix(result.callReturn[1], "string"),
+                                        matchedShares: abi.unfix(result.callReturn[2], "string"),
+                                        cashFromTrade: abi.string(cashFromTrade),
+                                        price: abi.unfix(result.callReturn[3], "string")
+                                    });
                                 });
-                            });
-                        } else {
-                            err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
-                            if (!err) {
-                                err = clone(self.errors.TRADE_FAILED);
-                                err.message += result.callReturn.toString();
-                                return onTradeFailed(result);
+                            } else {
+                                err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
+                                if (!err) {
+                                    err = clone(self.errors.TRADE_FAILED);
+                                    err.message += result.callReturn.toString();
+                                    return onTradeFailed(result);
+                                }
+                                onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
                             }
-                            onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
-                        }
-                    };
-                    self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
-                });
-            },
-            onFailed: onCommitFailed,
-            onConfirmed: onCommitConfirmed
+                        };
+                        self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed, utils.compose(prepare, onTradeConfirmed));
+                    });
+                },
+                onFailed: onCommitFailed,
+                onConfirmed: onCommitConfirmed
+            });
         });
     }
 };
@@ -45763,16 +45767,16 @@ module.exports = {
 	 * @return {Array}
 	 */
 	getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, marketOrderBook) {
-		console.log("getTradingActions:");
-		console.log("type:", type);
-		console.log("orderShares:", orderShares);
-		console.log("orderLimitPrice:", orderLimitPrice);
-		console.log("takerFee:", takerFee);
-		console.log("makerFee:", makerFee);
-		console.log("userAddress:", userAddress);
-		console.log("userPositionShares:", userPositionShares);
-		console.log("outcomeId:", outcomeId);
-		console.log("marketOrderBook:", marketOrderBook);
+		// console.log("getTradingActions:");
+		// console.log("type:", type);
+		// console.log("orderShares:", orderShares);
+		// console.log("orderLimitPrice:", orderLimitPrice);
+		// console.log("takerFee:", takerFee);
+		// console.log("makerFee:", makerFee);
+		// console.log("userAddress:", userAddress);
+		// console.log("userPositionShares:", userPositionShares);
+		// console.log("outcomeId:", outcomeId);
+		// console.log("marketOrderBook:", marketOrderBook);
 		var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder;
 		if (type.constructor === Object && type.type) {
 			orderShares = type.orderShares;

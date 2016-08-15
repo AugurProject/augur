@@ -2935,6 +2935,7 @@ describe("Integration tests", function () {
                         augur.short_sell({
                             buyer_trade_id: new_trade_id,
                             max_amount: t.amount,
+                            sender: unlockable[1],
                             onTradeHash: function (r) {
                                 assert.notProperty(r, "error");
                                 assert.isString(r);
