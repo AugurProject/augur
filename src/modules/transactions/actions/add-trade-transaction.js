@@ -15,7 +15,7 @@ export const addTradeTransaction = (type, executionOrder, marketID, outcomeID, m
 export const makeTradeTransaction = (type, executionOrder, marketID, outcomeID, marketDescription, outcomeName, numShares, limitPrice, totalCost, dispatch) => {
 	const transaction = {
 		type,
-		message: `waiting to ${type}...`,
+		message: 'waiting for other trades...',
 		executionOrder,
 		data: {
 			marketID,

@@ -11,11 +11,11 @@ export default function () {
 export const selectTransactions = memoizerific(1)((transactionsData) => (
 	Object.keys(transactionsData || {})
 		.sort((a, b) => {
-			let splitA = a.split('-');
-			let splitB = b.split('-');
+			const splitA = a.split('-');
+			const splitB = b.split('-');
 
-			let firstHalfOfKeyA = parseInt(splitA[0], 10);
-			let firstHalfOfKeyB = parseInt(splitB[0], 10);
+			const firstHalfOfKeyA = parseInt(splitA[0], 10);
+			const firstHalfOfKeyB = parseInt(splitB[0], 10);
 
 			if (firstHalfOfKeyA > firstHalfOfKeyB) {
 				return -1;
@@ -23,23 +23,22 @@ export const selectTransactions = memoizerific(1)((transactionsData) => (
 				return 1;
 			}
 
-			let secondHalfOfKeyA = parseInt(splitA[1], 10);
-			let secondHalfOfKeyB = parseInt(splitB[1], 10);
+			const secondHalfOfKeyA = parseInt(splitA[1], 10);
+			const secondHalfOfKeyB = parseInt(splitB[1], 10);
 
 			if (secondHalfOfKeyA > secondHalfOfKeyB) {
 				return -1;
 			}
 			return 1;
 		})
-		.map(id => {
-			return {
-				...transactionsData[id],
-				gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
-				ether: transactionsData[id].etherWithoutGas &&
-				formatEther(transactionsData[id].etherWithoutGas),
-				shares: transactionsData[id].sharesChange &&
-				formatShares(transactionsData[id].sharesChange),
-				rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
-			};
-		})
+		.map(id => ({
+			...transactionsData[id],
+			executionOrder: transactionsData[id].executionOrder || 0,
+			gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
+			ether: transactionsData[id].etherWithoutGas &&
+			formatEther(transactionsData[id].etherWithoutGas),
+			shares: transactionsData[id].sharesChange &&
+			formatShares(transactionsData[id].sharesChange),
+			rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
+		}))
 ));

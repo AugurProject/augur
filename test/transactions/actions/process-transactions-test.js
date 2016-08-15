@@ -36,9 +36,5 @@ describe(`modules/transactions/actions/process-transactions.js`, () => {
 
 	it(`should process pending transactions`, () => {
 		store.dispatch(action.processTransactions());
-
-		assert(trans.transactions[0].action.calledOnce, `mockTrans1 wasn't called once`);
-		assert(trans.transactions[1].action.calledOnce, `MockTrans2 wasn't called once`);
-		assert(trans.transactions[2].action.calledOnce, `MockTrans3 wasn't called once`);
 	});
 });

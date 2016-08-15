@@ -51,6 +51,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 		const expected = [{
 			type: 'buy',
 			executionOrder: 1,
+			message: 'waiting for other trades...',
 			data: {
 				marketID: 'marketID',
 				outcomeID: 'outcomeID',
@@ -95,6 +96,7 @@ describe(`modules/transactions/actions/add-trade-transaction.js`, () => {
 		const expected = [{
 			type: 'sell',
 			executionOrder: 2,
+			message: 'waiting for other trades...',
 			data: {
 				marketID: 'marketID',
 				outcomeID: 'outcomeID',
