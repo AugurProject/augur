@@ -18,7 +18,7 @@ export function shortSellRecursively(marketID, outcomeID, numShares, takerAddres
 
 	async.eachSeries(matchingIDs, (matchingID, nextMatchingID) => {
 		augur.short_sell({
-			max_amount: numShares,
+			max_amount: res.remainingShares,
 			buyer_trade_id: matchingID,
 			sender: takerAddress,
 

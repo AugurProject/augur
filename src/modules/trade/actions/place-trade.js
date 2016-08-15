@@ -53,7 +53,6 @@ export function placeTrade(marketID) {
 				}
 			} else if (outcomeTradeInProgress.side === SELL) {
 				const tradeIDs = calculateSellTradeIDs(marketID, outcomeID, outcomeTradeInProgress.limitPrice, orderBooks, loginAccount.id);
-				console.log('userHasPosition:', accountTrades && accountTrades[marketID] && accountTrades[marketID][outcomeID] && accountTrades[marketID][outcomeID].qtyShares);
 
 				// check if user has position
 				//  - if so, sell/ask
