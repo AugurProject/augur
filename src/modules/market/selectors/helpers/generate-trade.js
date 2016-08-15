@@ -62,7 +62,6 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 	if (!market || !outcome || !outcomeTradeInProgress || !tradeActions || !tradeActions.length) {
 		return [];
 	}
-
 	return tradeActions.map((tradeAction, i) => (
 		makeTradeTransaction(
 			TRANSACTIONS_TYPES[tradeAction.action],
@@ -72,7 +71,7 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 			market.description,
 			outcome.name,
 			parseFloat(tradeAction.shares),
-			formatEther(parseFloat(tradeAction.avgPrice), { roundUp: true }).formattedValue,
+			formatEther(parseFloat(tradeAction.avgPrice), { roundUp: outcomeTradeInProgress.side === BUY, roundDown: outcomeTradeInProgress.side === SELL }).formattedValue,
 			Math.abs(parseFloat(tradeAction.costEth)),
 			store.dispatch)
 	));

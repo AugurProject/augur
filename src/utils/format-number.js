@@ -120,16 +120,17 @@ export function formatNone() {
 	};
 }
 
-export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, positiveSign: false, zeroStyled: true, minimized: false }) {
+export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false }) {
 	const { minimized } = opts;
 	const o = {};
-	let { value, decimals, decimalsRounded, denomination, roundUp, positiveSign, zeroStyled } = opts;
+	let { value, decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled } = opts;
 
 	decimals = decimals || 0;
 	decimalsRounded = decimalsRounded || 0;
 	denomination = denomination || '';
 	positiveSign = !!positiveSign;
 	roundUp = !!roundUp;
+	roundDown = !!roundDown;
 	zeroStyled = zeroStyled !== false;
 	value = parseFloat(num) || 0;
 
@@ -139,7 +140,7 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
 	const decimalsValue = Math.pow(10, decimals);
 	const decimalsRoundedValue = Math.pow(10, decimalsRounded);
-	const roundFunction = !roundUp ? Math.round : Math.ceil;
+	const roundFunction = !roundUp ? !roundDown ? Math.round : Math.floor : Math.ceil;
 
 	o.value = value;
 	o.formattedValue = roundFunction(value * decimalsValue) / decimalsValue;

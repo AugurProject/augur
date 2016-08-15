@@ -1,9 +1,13 @@
 import memoizerific from 'memoizerific';
 
-import store from '../../../store';
 import { formatShares, formatEther } from '../../../utils/format-number';
-import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
+
 import { CANCELLED } from '../../bids-asks/constants/order-status';
+import { BID } from '../../bids-asks/constants/bids-asks-types';
+
+import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
+
+import store from '../../../store';
 
 /**
  * @param {String} outcomeID
@@ -59,7 +63,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
 			const obj = {
 				isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
 				shares: formatShares(shareCountPerPrice[price].shares),
-				price: formatEther(parseFloat(price), { roundUp: true })
+				price: formatEther(parseFloat(price))
 			};
 			return obj;
 		});
@@ -83,6 +87,7 @@ function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
 
 	aggregateOrdersPerPrice[key].shares += parseFloat(order.amount);
 	aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
+
 	return aggregateOrdersPerPrice;
 }
 
