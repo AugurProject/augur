@@ -3,7 +3,6 @@ import memoizerific from 'memoizerific';
 import { formatShares, formatEther } from '../../../utils/format-number';
 
 import { CANCELLED } from '../../bids-asks/constants/order-status';
-import { BID } from '../../bids-asks/constants/bids-asks-types';
 
 import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
 

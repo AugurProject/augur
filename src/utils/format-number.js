@@ -140,7 +140,15 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
 	const decimalsValue = Math.pow(10, decimals);
 	const decimalsRoundedValue = Math.pow(10, decimalsRounded);
-	const roundFunction = !roundUp ? !roundDown ? Math.round : Math.floor : Math.ceil;
+	let roundFunction;
+
+	if (roundUp) {
+		roundFunction = Math.ceil;
+	} else if (roundDown) {
+		roundFunction = Math.floor;
+	} else {
+		roundFunction = Math.round;
+	}
 
 	o.value = value;
 	o.formattedValue = roundFunction(value * decimalsValue) / decimalsValue;
