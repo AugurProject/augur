@@ -185,6 +185,9 @@ module.exports = {
 
     short_sell: function (buyer_trade_id, max_amount, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onCommitConfirmed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed, onTradeConfirmed) {
         var self = this;
+        if (this.options.debug.trading) {
+            console.log("short_sell:", JSON.stringify(buyer_trade_id, null, 2));
+        }
         if (buyer_trade_id.constructor === Object && buyer_trade_id.buyer_trade_id) {
             max_amount = buyer_trade_id.max_amount;
             sender = buyer_trade_id.sender;
@@ -221,7 +224,13 @@ module.exports = {
                         onNextBlock(blockNumber);
                         var tx = clone(self.tx.Trade.short_sell);
                         tx.params = [buyer_trade_id, abi.fix(max_amount, "hex")];
+                        if (self.options.debug.trading) {
+                            console.log("short_sell tx:", JSON.stringify(tx, null, 2));
+                        }
                         var prepare = function (result, cb) {
+                            if (self.options.debug.trading) {
+                                console.log("short_sell response:", JSON.stringify(result, null, 2));
+                            }
                             var err;
                             var txHash = result.txHash;
                             if (result.callReturn && result.callReturn.constructor === Array) {
