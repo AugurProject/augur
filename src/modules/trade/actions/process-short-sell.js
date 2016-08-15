@@ -4,26 +4,26 @@ import { SUCCESS, FAILED } from '../../transactions/constants/statuses';
 
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
-import { tradeRecursively } from '../../trade/actions/helpers/trade-recursively';
+import { shortSellRecursively } from '../../trade/actions/helpers/short-sell-recursively';
 import { calculateSellTradeIDs } from '../../trade/actions/helpers/calculate-trade-ids';
 import { updateExistingTransaction } from '../../transactions/actions/update-existing-transaction';
-import { addAskTransaction } from '../../transactions/actions/add-ask-transaction';
+import { addShortSellRiskyTransaction } from '../../transactions/actions/add-short-sell-risky-transaction';
 
-export function processSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
+export function processShortSell(transactionID, marketID, outcomeID, numShares, limitPrice, totalEthWithFee) {
 	return (dispatch, getState) => {
 		if ((!limitPrice) || !numShares) {
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
-		const { loginAccount } = getState();
-
 		// we track filled eth here as well to take into account the recursiveness of trading
 		let filledEth = 0;
 
-		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
+		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `short selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
-		tradeRecursively(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().loginAccount.id, getState().orderBooks),
-			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
+		const { loginAccount } = getState();
+
+		shortSellRecursively(marketID, outcomeID, numShares, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().orderBooks, loginAccount.id),
+			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} short sell...` })),
 			(res) => {
 				filledEth += parseFloat(res.filledEth);
 				dispatch(updateExistingTransaction(transactionID, { status: 'filling...', message: generateMessage(numShares, res.remainingShares, filledEth) }));
@@ -43,7 +43,7 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 				if (res.remainingEth) {
 					const transactionData = getState().transactionsData[transactionID];
 
-					dispatch(addAskTransaction(
+					dispatch(addShortSellRiskyTransaction(
 						transactionData.data.marketID,
 						transactionData.data.outcomeID,
 						transactionData.data.marketDescription,
@@ -58,5 +58,5 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 
 function generateMessage(numShares, remainingShares, filledEth) {
 	const filledShares = numShares - remainingShares;
-	return `sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
+	return `short sold ${formatShares(filledShares).full} for ${formatEther(filledEth).full} (fees incl.)`;
 }
