@@ -69,11 +69,13 @@ function Augur() {
     this.createBatch = require("./batch").bind(this);
     this.web = this.Accounts();
     this.filters = this.Filters();
+    this.augurNode = this.AugurNode();
     if (this.options.debug.tools) this.tools = require("../test/tools");
     this.sync();
 }
 
 Augur.prototype.Accounts = require("./accounts");
 Augur.prototype.Filters = require("./filters");
+Augur.prototype.AugurNode = require("./augurNode");
 
 module.exports = new Augur();
