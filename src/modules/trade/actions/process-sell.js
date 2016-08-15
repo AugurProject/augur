@@ -15,12 +15,14 @@ export function processSell(transactionID, marketID, outcomeID, numShares, limit
 			return dispatch(updateExistingTransaction(transactionID, { status: FAILED, message: `invalid limit price "${limitPrice}" or shares "${numShares}"` }));
 		}
 
+		const { loginAccount } = getState();
+
 		// we track filled eth here as well to take into account the recursiveness of trading
 		let filledEth = 0;
 
 		dispatch(updateExistingTransaction(transactionID, { status: 'starting...', message: `selling ${formatShares(numShares).full} @ ${formatEther(limitPrice).full}` }));
 
-		tradeRecursively(marketID, outcomeID, numShares, 0, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().loginAccount.id, getState().orderBooks),
+		tradeRecursively(marketID, outcomeID, numShares, 0, loginAccount.id, () => calculateSellTradeIDs(marketID, outcomeID, limitPrice, getState().loginAccount.id, getState().orderBooks),
 			(status) => dispatch(updateExistingTransaction(transactionID, { status: `${status} sell...` })),
 			(res) => {
 				filledEth += parseFloat(res.filledEth);

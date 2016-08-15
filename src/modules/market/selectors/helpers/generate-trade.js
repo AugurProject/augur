@@ -63,9 +63,10 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
 		return [];
 	}
 
-	return tradeActions.map(tradeAction => (
+	return tradeActions.map((tradeAction, i) => (
 		makeTradeTransaction(
 			TRANSACTIONS_TYPES[tradeAction.action],
+			i,
 			market.id,
 			outcome.id,
 			market.description,
