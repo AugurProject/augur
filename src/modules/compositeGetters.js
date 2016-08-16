@@ -134,10 +134,18 @@ module.exports = {
             callback = callback || market.callback;
             market = market.market;
         }
-        var tx = clone(this.tx.CompositeGetters.getMarketInfo);
-        tx.params = market;
-        tx.timeout = 45000;
-        return this.fire(tx, callback, this.validateMarketInfo);
+        if (self.augurNode.nodes.length > 0){
+            self.augurNode.getMarketInfo(market, (err, result) => {
+                //TODO: prob fallback to on chain fetch
+               if (err) return callback(null);
+               return callback(result);
+            });
+        }else{
+            var tx = clone(this.tx.CompositeGetters.getMarketInfo);
+            tx.params = market;
+            tx.timeout = 45000;
+            return this.fire(tx, callback, this.validateMarketInfo);
+        }
     },
 
     parseBatchMarketInfo: function (marketsArray, numMarkets) {
@@ -163,9 +171,18 @@ module.exports = {
     },
 
     batchGetMarketInfo: function (marketIDs, callback) {
-        var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
-        tx.params = [marketIDs];
-        return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
+        var self = this;
+        if (self.augurNode.nodes.length > 0){
+            self.augurNode.batchGetMarketInfo(marketIDs, (err, result) => {
+                //TODO: prob fallback to on chain fetch
+               if (err) return callback(null);
+               return callback(result);
+            });
+        }else{
+            var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+            tx.params = [marketIDs];
+            return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
+        }
     },
 
     parseMarketsInfo: function (marketsArray) {
@@ -207,6 +224,7 @@ module.exports = {
         if (!callback && utils.is_function(offset)) {
             callback = offset;
             offset = null;
+            numMarketsToLoad = null;
         }
         if (branch && branch.branch) {
             offset = branch.offset;
@@ -214,12 +232,23 @@ module.exports = {
             callback = callback || branch.callback;
             branch = branch.branch;
         }
+        //Only use cache if there are nodes available and no offset+numMarkets specified
+        //Can't rely on cache for partial markets fetches since no good way to verify partial data.
+        var useCache = (self.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
         branch = branch || this.constants.DEFAULT_BRANCH_ID;
         offset = offset || 0;
         numMarketsToLoad = numMarketsToLoad || 0;
-        var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
-        tx.params = [branch, offset, numMarketsToLoad];
-        tx.timeout = 240000;
-        return this.fire(tx, callback, this.parseMarketsInfo);
+        if (useCache){
+            self.augurNode.getMarketsInfo(branch, (err, result) => {
+                //TODO: prob fallback to on chain fetch
+               if (err) return callback(null);
+               return callback(result);
+            });
+        }else{
+            var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+            tx.params = [branch, offset, numMarketsToLoad];
+            tx.timeout = 240000;
+            return this.fire(tx, callback, this.parseMarketsInfo);
+        }
     }
 };
